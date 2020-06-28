@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\activity.gif" />
+    <None Remove="Assets\wowup_logo_1.png" />
+    <None Remove="Assets\wowup_logo_512.png" />
+    <None Remove="Assets\wowup_logo_512np.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Styles.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flurl.Http" Version="2.4.2" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\activity.gif" />
+    <Resource Include="Assets\wowup_logo_1.png" />
+    <Resource Include="Assets\wowup_logo_512.png" />
+    <Resource Include="Assets\wowup_logo_512np.png" />
+  </ItemGroup>
+
+</Project>

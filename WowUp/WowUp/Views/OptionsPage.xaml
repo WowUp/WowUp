@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="WowUp.Views.OptionsPage"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <Grid Padding="10">
+            <StackLayout Grid.Row="0">
+                <Label Text="World of Warcraft Folders" FontSize="Subtitle"/>
+                <Label Text="Retail" />
+                <Label Text="{Binding RetailPath}" />
+                <Label Text="Classic" />
+                <Label Text="{Binding ClassicPath}" />
+                <Button Text="Select" Clicked="Button_Clicked" />
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

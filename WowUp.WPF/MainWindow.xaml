@@ -1,0 +1,189 @@
+﻿<Window x:Class="WowUp.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WowUp.WPF"
+        xmlns:vw = "clr-namespace:WowUp.WPF.Views" 
+        mc:Ignorable="d"
+        Title="WowUp.io" 
+        Padding="0"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Height="450" 
+        Width="1024"
+        WindowStyle="None"
+        StateChanged="Window_StateChanged">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" 
+                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ResourceDictionary >
+            <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                <Setter Property="IsTabStop" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border
+					x:Name="border"
+					Background="Transparent"
+					BorderThickness="0"
+					SnapsToDevicePixels="true">
+                                <ContentPresenter
+						x:Name="contentPresenter"
+						Margin="0"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Focusable="False"
+						RecognizesAccessKey="True" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource Purple2}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="true">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource Purple3}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                <Setter Property="IsTabStop" Value="False" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border
+					x:Name="border"
+					Background="Transparent"
+					BorderThickness="0"
+					SnapsToDevicePixels="true">
+                                <ContentPresenter
+						x:Name="contentPresenter"
+						Margin="0"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Focusable="False"
+						RecognizesAccessKey="True" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource Purple2}" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="true">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource Purple3}" />
+                                    <Setter Property="Foreground" Value="White" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                        <Setter Property="Margin" Value="6" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+        <Grid Background="{StaticResource Dark3}" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0"  Background="{StaticResource Purple1}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Padding="10, 0" >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Assets/wowup_logo_512np.png" Margin="0, 0, 10, 0" Height="40" />
+                        <TextBlock Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" FontSize="15"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button
+                            x:Name="MinimizeButton"
+                            Click="MinimizeButton_Click"
+                            RenderOptions.EdgeMode="Aliased"
+                            Style="{StaticResource TitleBarButtonStyle}">
+                        <Path Width="46"
+                              Height="32"
+                              Data="M 18,15 H 28"
+                              Stroke="{Binding Path=Foreground, 
+                                RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                              StrokeThickness="1" />
+                    </Button>
+                    <Button x:Name="MaximizeButton"
+                        Click="MaximizeRestoreButton_Click"
+                        Visibility="{Binding MaximizeVisibility}"
+                        Style="{StaticResource TitleBarButtonStyle}">
+                        <Path Width="46"
+                          Height="32"
+                          Data="M 18.5,10.5 H 27.5 V 19.5 H 18.5 Z"
+                          Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                          StrokeThickness="1" />
+                    </Button>
+                    <Button x:Name="RestoreButton"
+                        Click="MaximizeRestoreButton_Click"
+                        Visibility="{Binding RestoreVisibility}"
+                        Style="{StaticResource TitleBarButtonStyle}">
+                        <Path Width="46"
+                          Height="32"
+                          Data="M 18.5,12.5 H 25.5 V 19.5 H 18.5 Z M 20.5,12.5 V 10.5 H 27.5 V 17.5 H 25.5"
+                          Stroke="{Binding Path=Foreground,
+							 RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                          StrokeThickness="1" />
+                    </Button>
+                    <Button x:Name="CloseButton" 
+                            Click="CloseButton_Click"
+                            Style="{StaticResource TitleBarCloseButtonStyle}">
+                        <Path Width="46"
+                              Height="32"
+                              Data="M 18,11 27,20 M 18,20 27,11"
+                              Stroke="{Binding Path=Foreground,
+							     RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                              StrokeThickness="1" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <TabControl Grid.Row="1" 
+                        Style="{StaticResource CustomTabStyle}">
+                <TabItem Style="{StaticResource CustomTabItemStyle}" Header="My Addons">
+                    <vw:AddonsView></vw:AddonsView>
+                </TabItem>
+                <TabItem Style="{StaticResource CustomTabItemStyle}" Header="About">
+                    <vw:AboutView></vw:AboutView>
+                </TabItem>
+                <TabItem Style="{StaticResource CustomTabItemStyle}" Header="Options">
+                    <vw:OptionsView></vw:OptionsView>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Border>
+</Window>

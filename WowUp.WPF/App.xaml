@@ -1,0 +1,24 @@
+﻿<Application x:Class="WowUp.WPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WowUp.WPF"
+             xmlns:localcv="clr-namespace:WowUp.WPF.Converters"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <localcv:InverseBoolConverter x:Key="InverseBool" />
+            <localcv:BoolToVisibility x:Key="BoolToVisibilty" />
+
+            <!--Global Styles-->
+            <Color x:Key="NavigationPrimary">#6B69D6</Color>
+            <Color x:Key="Dark1">#666666</Color>
+            <Color x:Key="Dark2">#555555</Color>
+            <Color x:Key="Dark3">#444444</Color>
+            <Color x:Key="White1">#FFFFFF</Color>
+            <Color x:Key="White2">#DDDDDD</Color>
+            <Color x:Key="Purple1">#6B69D6</Color>
+            <Color x:Key="Purple2">#504FA1</Color>
+            <Color x:Key="Purple3">#504FA1</Color>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

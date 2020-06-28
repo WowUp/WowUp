@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="WowUp.Views.ItemsPage"
+             Title="{Binding Title}"
+             x:Name="BrowseItemsPage"
+             BackgroundColor="{StaticResource Dark3}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Clicked="AddItem_Clicked" />
+    </ContentPage.ToolbarItems>
+
+    <Grid BackgroundColor="{StaticResource Dark3}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Padding="10" BackgroundColor="{StaticResource Dark3}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackLayout Grid.Column="0" Orientation="Horizontal" BackgroundColor="{StaticResource Dark3}">
+                <Label Text="World of Warcraft" VerticalOptions="Center" />
+                <Picker x:Name="WowTypePicker" SelectedIndex="{Binding SelectedWowIndex, Mode=TwoWay}" 
+                        ItemsSource="{Binding WowTypes}" ItemDisplayBinding="{Binding .}"
+                        SelectedIndexChanged="WowTypePicker_SelectedIndexChanged">
+                </Picker>
+            </StackLayout>
+            <StackLayout Grid.Column="1" Orientation="Horizontal">
+                <Button x:Name="RefreshButton" Text="Refresh" IsEnabled="{Binding IsBusy, Converter={StaticResource inverseBool}}"
+                        Clicked="RefreshButton_Clicked"/>
+                <Button x:Name="RescanButton" Text="Re-Scan" IsEnabled="{Binding IsBusy, Converter={StaticResource inverseBool}}"
+                        Clicked="RescanButton_Clicked"/>
+            </StackLayout>
+        </Grid>
+        <!--Table Header-->
+        <Grid Grid.Row="1" ColumnSpacing="10" Padding="10"
+              BackgroundColor="{StaticResource Dark2}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackLayout Grid.Column="0" VerticalOptions="Center">
+                <Label Text="Addon" 
+                       Style="{StaticResource labelTableHeader}"/>
+            </StackLayout>
+            <StackLayout Grid.Column="1" VerticalOptions="Center">
+                <Label Text="Status"
+                       Style="{StaticResource labelTableHeader}"/>
+            </StackLayout>
+            <StackLayout Grid.Column="2" VerticalOptions="Center">
+                <Label Text="Latest Version"
+                       Style="{StaticResource labelTableHeader}"/>
+            </StackLayout>
+            <StackLayout Grid.Column="3" VerticalOptions="Center">
+                <Label Text="Game Version"
+                       Style="{StaticResource labelTableHeader}"/>
+            </StackLayout>
+            <StackLayout Grid.Column="4" VerticalOptions="Center">
+                <Label Text="Author"
+                       Style="{StaticResource labelTableHeader}"/>
+            </StackLayout>
+        </Grid>
+        <!--Table-->
+        <StackLayout Grid.Row="2">
+            <StackLayout  Padding="10" IsVisible="{Binding IsBusy}" >
+                <Label Text="Loading Addons..." HorizontalOptions="Center" FontSize="Subtitle" />
+                <ActivityIndicator IsRunning="{Binding IsBusy}" Color="White" />
+            </StackLayout>
+            <StackLayout IsVisible="{Binding ShowEmptyLabel}" Padding="10">
+                <Label Text="No Addons found" HorizontalOptions="Center" FontSize="Title"/>
+            </StackLayout>
+        
+            <!--<RefreshView IsRefreshing="{Binding IsBusy, Mode=TwoWay}" Command="{Binding LoadItemsCommand}"
+                          IsVisible="{Binding ShowResults}">-->
+                <CollectionView x:Name="ItemsCollectionView"
+                                ItemsSource="{Binding DisplayAddons}"
+                                SelectionMode="Single"
+                                BackgroundColor="Red">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid  Padding="10" >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="400" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0" Orientation="Horizontal">
+                                    <StackLayout BackgroundColor="{StaticResource Dark2}">
+                                        <Image Source="{Binding ThumbnailUrl}" WidthRequest="40" HeightRequest="40" />
+                                    </StackLayout>
+                                    <StackLayout VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" 
+                                            Style="{StaticResource labelAddonName}"  />
+                                        <Label Text="{Binding CurrentVersion}" 
+                                            Style="{StaticResource labelAddonText}" />
+                                    </StackLayout>
+                                </StackLayout>
+                                <StackLayout Grid.Column="1" VerticalOptions="Center" Padding="10, 0">
+                                    <Button Text="Install" 
+                                            IsVisible="{Binding ShowInstallButton}"
+                                            BackgroundColor="{StaticResource Purple1}"
+                                            HorizontalOptions="Center"
+                                            Command="{Binding InstallCommand}"/>
+                                    <Button Text="Update" 
+                                            IsVisible="{Binding ShowUpdateButton}"
+                                            BackgroundColor="{StaticResource Purple1}"
+                                            HorizontalOptions="Center"
+                                            Command="{Binding InstallCommand}"/>
+                                    <Label Text="Up to Date"
+                                           HorizontalOptions="Center"
+                                           IsVisible="{Binding ShowUpToDate}" />
+                                    <StackLayout IsVisible="{Binding ShowProgressBar}">
+                                        <Label Text="{Binding ProgressText}" 
+                                               HorizontalOptions="Center"
+                                               Style="{StaticResource labelAddonText}"/>
+                                        <ProgressBar Progress="{Binding ProgressPercent}" />
+                                    </StackLayout>
+                                </StackLayout>
+                                <StackLayout Grid.Column="2" VerticalOptions="Center">
+                                    <Label Text="{Binding LatestVersion}"
+                                           Style="{StaticResource labelAddonText}"/>
+                                </StackLayout>
+                                <StackLayout Grid.Column="3" VerticalOptions="Center">
+                                    <Label Text="{Binding GameVersion}"
+                                           HorizontalOptions="Center"
+                                           Style="{StaticResource labelAddonText}"/>
+                                </StackLayout>
+                                <StackLayout Grid.Column="4" VerticalOptions="Center">
+                                    <Label Text="{Binding Author}"
+                                           Style="{StaticResource labelAddonText}"/>
+                                </StackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            <!--</RefreshView>-->
+        </StackLayout>
+    </Grid>
+</ContentPage>
