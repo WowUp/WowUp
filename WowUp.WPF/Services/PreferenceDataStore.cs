@@ -1,35 +1,16 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Base;
-using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
-    public class AddonDataStore : SingletonService<AddonDataStore>, IDataStore<Addon>
+    public class PreferenceDataStore : BaseDataStore<Preference>, IDataStore<Preference>
     {
-        private static object _collisionLock = new object();
-        private SQLiteConnection _database;
-
-        public ObservableCollection<Addon> Addons { get; set; }
-
-        public AddonDataStore()
-        {
-            _database = DbConnection();
-            _database.CreateTable<Addon>();
-
-            EnableWriteAheadLogging();
-
-            Addons = new ObservableCollection<Addon>(_database.Table<Addon>());
-        }
-
-        public bool AddItem(Addon item)
+        public bool AddItem(Preference item)
         {
             lock (_collisionLock)
             {
@@ -48,7 +29,7 @@ namespace WowUp.WPF.Services
             return true;
         }
 
-        public bool UpdateItem(Addon item)
+        public bool UpdateItem(Preference item)
         {
             lock (_collisionLock)
             {
@@ -72,44 +53,24 @@ namespace WowUp.WPF.Services
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Addon> Query(Func<TableQuery<Addon>, TableQuery<Addon>> action)
+        public IEnumerable<Preference> Query(Func<TableQuery<Preference>, TableQuery<Preference>> action)
         {
             lock (_collisionLock)
             {
-                var query = action.Invoke(_database.Table<Addon>());
+                var query = action.Invoke(_database.Table<Preference>());
                 return query.AsEnumerable();
             }
         }
 
-        public Addon Query(Func<TableQuery<Addon>, Addon> action)
+        public Preference Query(Func<TableQuery<Preference>, Preference> action)
         {
             lock (_collisionLock)
             {
-                return action.Invoke(_database.Table<Addon>());
+                return action.Invoke(_database.Table<Preference>());
             }
         }
 
-        public bool AddItems(IEnumerable<Addon> items)
-        {
-            lock (_collisionLock)
-            {
-                foreach (var item in items)
-                {
-                    if (item.Id != 0)
-                    {
-                        _database.Update(item);
-                    }
-                    else
-                    {
-                        _database.Insert(item);
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        public bool SaveItems(IEnumerable<Addon> items)
+        public bool AddItems(IEnumerable<Preference> items)
         {
             lock (_collisionLock)
             {
@@ -129,24 +90,24 @@ namespace WowUp.WPF.Services
             return true;
         }
 
-        private void EnableWriteAheadLogging()
+        public bool SaveItems(IEnumerable<Preference> items)
         {
-            // Enable write-ahead logging
-            try
+            lock (_collisionLock)
             {
-                _database.Execute("PRAGMA journal_mode = 'wal'");
+                foreach (var item in items)
+                {
+                    if (item.Id != 0)
+                    {
+                        _database.Update(item);
+                    }
+                    else
+                    {
+                        _database.Insert(item);
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                // eat
-            }
-        }
 
-        private SQLiteConnection DbConnection()
-        {
-            var dbName = "WowUp.db3";
-            var path = Path.Combine(FileUtilities.AppDataPath, dbName);
-            return new SQLiteConnection(path);
+            return true;
         }
     }
 }

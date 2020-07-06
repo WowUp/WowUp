@@ -8,7 +8,7 @@ using WowUp.WPF.Services.Contracts;
 
 namespace WowUp.WPF.Services
 {
-    public class DownloadService : SingletonService<DownloadService>, IDownloadSevice
+    public class DownloadService : IDownloadSevice
     {
         public async Task<string> DownloadFile(string downloadUrl, string outputFolder)
         {

@@ -43,6 +43,9 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Dark2}"/>
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource Purple3}" />
             </Trigger>
@@ -109,6 +112,7 @@
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
         <Setter Property="TextElement.Foreground" Value="White"/>
+        <Setter Property="TextElement.FontSize" Value="14"/>
         <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -246,7 +250,7 @@
                                 <SolidColorBrush Color="Green"/>
                             </Border.BorderBrush>
                             <ContentPresenter x:Name="PART_SelectedContentHost"
-                              Margin="4"
+                              Margin="0"
                               ContentSource="SelectedContent" />
                         </Border>
                     </Grid>

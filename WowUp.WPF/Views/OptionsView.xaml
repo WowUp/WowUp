@@ -16,8 +16,15 @@
     </UserControl.Resources>
 
     <Grid  Background="{StaticResource Dark3}">
-        <StackPanel>
-            <TextBlock Text="Options"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Padding="10">
+            <StackPanel >
+                <TextBlock FontSize="15" Text="World of Warcraft install location" />
+                <TextBox Margin="0, 10" Text="{Binding WowLocation}" IsEnabled="False" FontSize="14"/>
+                <Button x:Name="SelectLocationButton" Click="SelectLocationButton_Click" Style="{StaticResource purpleButton}">Select Location</Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

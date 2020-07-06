@@ -9,15 +9,21 @@
         Title="WowUp.io" 
         Padding="0"
         AllowsTransparency="True"
-        Background="Transparent"
+        Background="#383773"
         Height="450" 
         Width="1024"
         WindowStyle="None"
+        BorderThickness="0"
+        Margin="0"
+        BorderBrush="Transparent"
+        ResizeMode="CanResize"
         StateChanged="Window_StateChanged">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="32" 
-                      ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
+        <WindowChrome CaptionHeight="32"
+                      CornerRadius="0"
+                      GlassFrameThickness="0"
+                      ResizeBorderThickness="4" />
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
@@ -172,9 +178,20 @@
                     </Button>
                 </StackPanel>
             </Grid>
-            <TabControl Grid.Row="1" 
-                        Style="{StaticResource CustomTabStyle}">
-                <TabItem Style="{StaticResource CustomTabItemStyle}" Header="My Addons">
+            <StackPanel Visibility="{Binding ShowWowSelection, Converter={StaticResource BoolToVisibilty}}" 
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <TextBlock Text="Welcome" FontSize="20" HorizontalAlignment="Center" />
+                <TextBlock Text="Please select your World of Warcraft folder" FontSize="14" />
+                <Button x:Name="SelectWowButton" Click="SelectWowButton_Click" Margin="0, 10" Style="{StaticResource purpleButton}">Select</Button>
+            </StackPanel>
+            <TabControl x:Name="Tabs" 
+                        Grid.Row="1" 
+                        Visibility="{Binding ShowTabs, Converter={StaticResource BoolToVisibilty}}"
+                        Style="{StaticResource CustomTabStyle}"
+                        ItemsSource="{Binding TabItems}">
+                <!--<TabItem Style="{StaticResource CustomTabItemStyle}" Header="My Addons">
                     <vw:AddonsView></vw:AddonsView>
                 </TabItem>
                 <TabItem Style="{StaticResource CustomTabItemStyle}" Header="About">
@@ -182,7 +199,7 @@
                 </TabItem>
                 <TabItem Style="{StaticResource CustomTabItemStyle}" Header="Options">
                     <vw:OptionsView></vw:OptionsView>
-                </TabItem>
+                </TabItem>-->
             </TabControl>
         </Grid>
     </Border>

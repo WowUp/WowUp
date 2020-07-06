@@ -123,7 +123,7 @@
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" Padding="10">
                 <StackPanel  Orientation="Horizontal">
-                    <TextBlock Text="World of Warcraft" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 10,0"/>
+                    <TextBlock Text="World of Warcraft" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 10,0"/>
                     <ComboBox SelectedIndex="{Binding SelectedWowIndex, Mode=TwoWay}"
                               Style="{StaticResource ComboBoxFlatStyle}"
                               SelectionChanged="ComboBox_SelectionChanged">
@@ -134,6 +134,9 @@
             </Border>
             <Border Grid.Column="1" Padding="10">
                 <StackPanel Orientation="Horizontal">
+                    <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0" Click="UpdateAllButton_Click" 
+                            IsEnabled="{Binding EnableUpdateAll}"
+                            Style="{StaticResource purpleButton}">Update All</Button>
                     <Button x:Name="RefreshButton" Margin="0, 0, 10, 0" Click="RefreshButton_Click" 
                             Style="{StaticResource purpleButton}">Refresh</Button>
                     <Button x:Name="RescanButton" Click="RescanButton_Click"

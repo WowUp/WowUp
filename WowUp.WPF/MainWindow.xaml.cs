@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using WowUp.WPF.ViewModels;
+using WowUp.WPF.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WowUp.WPF
 {
@@ -9,20 +12,51 @@ namespace WowUp.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainWindowViewModel viewModel;
+        private MainWindowViewModel _viewModel;
 
-        public MainWindow()
+        public MainWindow(
+            IServiceProvider serviceProvider,
+            MainWindowViewModel viewModel)
         {
-            DataContext = viewModel = new MainWindowViewModel();
+            DataContext = _viewModel = viewModel;
+
             InitializeComponent();
 
-            viewModel.Title = "WowUp.io";
+            _viewModel.Title = "WowUp.io";
+
+            //var addonsTab = new TabItem
+            //{
+            //    Name = "Addons",
+            //    Header = "My Addons",
+            //    Style = Resources["CustomTabItemStyle"] as Style,
+            //    Content = serviceProvider.GetService<AddonsView>()
+            //};
+
+            //var aboutTab = new TabItem
+            //{
+            //    Name = "About",
+            //    Header = "About",
+            //    Style = Resources["CustomTabItemStyle"] as Style,
+            //    Content = serviceProvider.GetService<AboutView>()
+            //};
+
+            //var optionsTab = new TabItem
+            //{
+            //    Name = "Options",
+            //    Header = "Options",
+            //    Style = Resources["CustomTabItemStyle"] as Style,
+            //    Content = serviceProvider.GetService<OptionsView>()
+            //};
+
+            //Tabs.Items.Add(addonsTab);
+            //Tabs.Items.Add(aboutTab);
+            //Tabs.Items.Add(optionsTab);
         }
 
         protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
-            viewModel.SetRestoreMaximizeVisibility(WindowState);
+            _viewModel.SetRestoreMaximizeVisibility(WindowState);
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -49,7 +83,12 @@ namespace WowUp.WPF
 
         private void Window_StateChanged(object sender, EventArgs e)
         {
-            viewModel.SetRestoreMaximizeVisibility(WindowState);
+            _viewModel.SetRestoreMaximizeVisibility(WindowState);
+        }
+
+        private void SelectWowButton_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.SelectWowCommand.Execute(this);
         }
     }
 }

@@ -1,34 +1,15 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Repositories.Base;
 using WowUp.WPF.Repositories.Contracts;
-using WowUp.WPF.Services.Base;
-using WowUp.WPF.Utilities;
 
-namespace WowUp.WPF.Services
+namespace WowUp.WPF.Repositories
 {
-    public class AddonDataStore : SingletonService<AddonDataStore>, IDataStore<Addon>
+    public class AddonRepository : BaseRepository<Addon>, IAddonRepository
     {
-        private static object _collisionLock = new object();
-        private SQLiteConnection _database;
-
-        public ObservableCollection<Addon> Addons { get; set; }
-
-        public AddonDataStore()
-        {
-            _database = DbConnection();
-            _database.CreateTable<Addon>();
-
-            EnableWriteAheadLogging();
-
-            Addons = new ObservableCollection<Addon>(_database.Table<Addon>());
-        }
-
         public bool AddItem(Addon item)
         {
             lock (_collisionLock)
@@ -127,26 +108,6 @@ namespace WowUp.WPF.Services
             }
 
             return true;
-        }
-
-        private void EnableWriteAheadLogging()
-        {
-            // Enable write-ahead logging
-            try
-            {
-                _database.Execute("PRAGMA journal_mode = 'wal'");
-            }
-            catch (Exception ex)
-            {
-                // eat
-            }
-        }
-
-        private SQLiteConnection DbConnection()
-        {
-            var dbName = "WowUp.db3";
-            var path = Path.Combine(FileUtilities.AppDataPath, dbName);
-            return new SQLiteConnection(path);
         }
     }
 }

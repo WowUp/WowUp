@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Models;
-using WowUp.WPF.Services.Base;
+using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
-    public class WarcraftService : SingletonService<WarcraftService>, IWarcraftService
+    public class WarcraftService : IWarcraftService
     {
-        public WarcraftService()
-        {
-        }
-
         private const string ClassicFolderName = "_classic_";
         private const string RetailFolderName = "_retail_";
 
@@ -23,6 +21,16 @@ namespace WowUp.WPF.Services
 
         private const string RetailAddonFolderName = @"AddOns";
         private const string ClassicAddonFolderName = @"Addons";
+
+        private const string WowLocationPreferenceKey = "wow_location";
+
+        private readonly IPreferenceRepository _preferenceRepository;
+
+        public WarcraftService(
+            IPreferenceRepository preferenceRepository)
+        {
+            _preferenceRepository = preferenceRepository;
+        }
 
         public Task<string> GetAddonDirectory(WowClientType clientType)
         {
@@ -61,8 +69,32 @@ namespace WowUp.WPF.Services
 
         public Task<string> GetWowFolderPath()
         {
-            return Task.FromResult(@"C:\Program Files (x86)\World of Warcraft");
+            var preference = GetWowLocationPreference();
+            return Task.FromResult(preference?.Value);
         }
+        
+        public Task<bool> SetWowFolderPath(string folderPath)
+        {
+            if (!ValidateWowFolder(folderPath))
+            {
+                return Task.FromResult(false);
+            }
+
+            var preference = GetWowLocationPreference();
+            if(preference == null)
+            {
+                preference = new Preference
+                {
+                    Key = WowLocationPreferenceKey
+                };
+            }
+
+            preference.Value = folderPath;
+            _preferenceRepository.UpdateItem(preference);
+
+            return Task.FromResult(true);
+        }
+
 
         public Task<IEnumerable<AddonFolder>> ListClassicAddons(bool forceReload = false)
         {
@@ -92,9 +124,30 @@ namespace WowUp.WPF.Services
             return addons;
         }
 
-        public Task<string> SelectWowFolder()
+        public async Task<string> SelectWowFolder()
         {
-            throw new NotImplementedException();
+            using var dialog = new FolderBrowserDialog();
+            var result = dialog.ShowDialog();
+
+            return "";
+        }
+        
+        private Preference GetWowLocationPreference()
+        {
+            return _preferenceRepository.FindByKey(WowLocationPreferenceKey);
+        }
+
+        private bool ValidateWowFolder(string wowFolder)
+        {
+            try
+            {
+                var directories = Directory.GetDirectories(wowFolder);
+                return directories.Any(dir => dir.Contains(ClassicFolderName) || dir.Contains(RetailFolderName));
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
 
         private async Task<AddonFolder> GetAddonFolder(DirectoryInfo directory)

@@ -8,6 +8,10 @@ namespace WowUp.WPF.AddonProviders.Contracts
     {
         string Name { get; }
 
+        Task<IList<AddonSearchResult>> GetAll(
+            WowClientType clientType, 
+            IEnumerable<int> addonIds);
+
         Task<IEnumerable<AddonSearchResult>> Search(
             string addonName,
             string folderName,

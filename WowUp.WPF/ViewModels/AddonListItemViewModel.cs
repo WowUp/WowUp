@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
 using WowUp.WPF.Services;
 using WowUp.WPF.Services.Contracts;
@@ -11,9 +12,17 @@ namespace WowUp.WPF.ViewModels
 {
     public class AddonListItemViewModel : BaseViewModel
     {
-        private readonly IAddonService _addonService = AddonService.Instance;
+        private readonly IAddonService _addonService;
 
         private Addon _addon;
+        public Addon Addon {
+            get => _addon;
+            set
+            {
+                _addon = value;
+                SetupDisplayState();
+            }
+        }
 
         public Command ActionCommand { get; set; }
         public Command InstallCommand { get; set; }
@@ -102,13 +111,23 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _thumbnailUrl, value); }
         }
 
-        public AddonListItemViewModel(Addon addon) : base()
+        private AddonDisplayState _displayState;
+        public AddonDisplayState DisplayState
         {
-            _addon = addon;
+            get => _displayState;
+            set { SetProperty(ref _displayState, value); }
+        }
 
-            InstallCommand = new Command(async () => await OnInstall());
+        public bool CanInstall => _addon.CanInstall();
+        public bool CanUpdate => _addon.CanUpdate();
 
-            SetupDisplayState();
+        public AddonListItemViewModel(
+            IAddonService addonService) 
+            : base()
+        {
+            _addonService = addonService;
+
+            InstallCommand = new Command(async () => await InstallAddon());
         }
 
         private void SetupDisplayState()
@@ -124,12 +143,14 @@ namespace WowUp.WPF.ViewModels
                 ? "/Assets/wowup_logo_1.png"
                 : _addon.ThumbnailUrl;
 
-            ShowInstallButton = string.IsNullOrEmpty(_addon.InstalledVersion);
-            ShowUpToDate = !string.IsNullOrEmpty(_addon.InstalledVersion) && _addon.InstalledVersion == _addon.LatestVersion;
+            DisplayState = _addon.GetDisplayState();
+            ShowInstallButton = DisplayState == AddonDisplayState.Install;
+            ShowUpdateButton = DisplayState == AddonDisplayState.Update;
+            ShowUpToDate = DisplayState == AddonDisplayState.UpToDate;
             ShowProgressBar = false;
         }
 
-        async Task OnInstall()
+        public async Task InstallAddon()
         {
             ShowInstallButton = false;
 

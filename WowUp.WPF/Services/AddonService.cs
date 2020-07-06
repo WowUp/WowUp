@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,13 +8,14 @@ using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models;
+using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Base;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
-    public class AddonService : SingletonService<AddonService>, IAddonService
+    public class AddonService : IAddonService
     {
         protected const string DownloadFolder = "AddonDownloads";
         protected const string BackupFolder = "AddonBackups";
@@ -22,17 +24,25 @@ namespace WowUp.WPF.Services
         {
             ["Ask Mr. Robot"] = "askmrrobot"
         };
+
         protected readonly IEnumerable<IAddonProvider> _providers = new List<IAddonProvider>();
 
-        protected readonly IDataStore<Addon> _addonDataStore = AddonDataStore.Instance;
-        protected readonly IWarcraftService _warcraftService = WarcraftService.Instance;
-        protected readonly IDownloadSevice _downloadService = DownloadService.Instance;
+        protected readonly IAddonRepository _addonRepository;
+        protected readonly IDownloadSevice _downloadService;
+        protected readonly IWarcraftService _warcraftService;
 
         public string DownloadPath => Path.Combine(FileUtilities.AppDataPath, DownloadFolder);
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder); 
 
-        public AddonService()
+        public AddonService(
+            IAddonRepository addonRepository,
+            IDownloadSevice downloadSevice,
+            IWarcraftService warcraftService)
         {
+            _addonRepository = addonRepository;
+            _downloadService = downloadSevice;
+            _warcraftService = warcraftService;
+
             _providers = new List<IAddonProvider>
             {
                 new CurseAddonProvider()
@@ -43,9 +53,8 @@ namespace WowUp.WPF.Services
 
         public Addon GetAddon(int addonId)
         {
-            return _addonDataStore.Query(table => table.FirstOrDefault(a => a.Id == addonId));
+            return _addonRepository.Query(table => table.FirstOrDefault(a => a.Id == addonId));
         }
-
 
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
         {
@@ -60,7 +69,35 @@ namespace WowUp.WPF.Services
                 addons = await RescanAddons(addons, clientType);
             }
 
+            await SyncAddons(clientType, addons);
+
             return addons;
+        }
+
+        private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
+        {
+            var addonIds = addons.Select(addon => addon.CurseAddonId);
+            var addonTasks = _providers.Select(p => p.GetAll(clientType, addonIds));
+            var addonResults = await Task.WhenAll(addonTasks);
+            var addonResultsConcat = addonResults.SelectMany(res => res);
+
+            foreach(var addon in addons)
+            {
+                var match = addonResultsConcat.FirstOrDefault(a => a.ExternalId == addon.CurseAddonId);
+                if(match == null || match.Version == addon.LatestVersion)
+                {
+                    continue;
+                }
+
+                addon.LatestVersion = match.Version;
+                addon.Name = match.Name;
+                addon.Author = match.Author;
+                addon.DownloadUrl = match.DownloadUrl;
+                addon.GameVersion = match.GameVersion;
+                addon.ThumbnailUrl = match.ThumbnailUrl;
+                
+                _addonRepository.UpdateItem(addon);
+            }
         }
 
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
@@ -94,10 +131,11 @@ namespace WowUp.WPF.Services
 
                 addon.InstalledVersion = addon.LatestVersion;
                 addon.InstalledAt = DateTime.UtcNow;
-                _addonDataStore.UpdateItem(addon);
+                _addonRepository.UpdateItem(addon);
             }
             catch(Exception ex)
             {
+                Log.Error(ex, "InstallAddon");
                 Console.WriteLine(ex);
             }
             finally
@@ -158,13 +196,13 @@ namespace WowUp.WPF.Services
                     addon.GameVersion = localAddon.GameVersion;
                     addon.DownloadUrl = localAddon.DownloadUrl;
 
-                    _addonDataStore.UpdateItem(addon);
+                    _addonRepository.UpdateItem(addon);
                 }
                 else
                 {
                     addons.Add(localAddon);
 
-                    _addonDataStore.AddItem(localAddon);
+                    _addonRepository.AddItem(localAddon);
                 }
             }
 
@@ -173,12 +211,12 @@ namespace WowUp.WPF.Services
 
         private List<Addon> GetAllStoredAddons(WowClientType clientType)
         {
-            return _addonDataStore.Query(table => table.Where(a => a.ClientType == clientType)).ToList();
+            return _addonRepository.Query(table => table.Where(a => a.ClientType == clientType)).ToList();
         }
 
         private void SaveAddons(IEnumerable<Addon> addons)
         {
-            _addonDataStore.AddItems(addons);
+            _addonRepository.AddItems(addons);
         }
 
         private async Task<List<Addon>> GetLocalAddons(WowClientType clientType)

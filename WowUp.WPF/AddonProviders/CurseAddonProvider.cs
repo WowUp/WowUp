@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,34 @@ namespace WowUp.WPF.AddonProviders
             return results;
         }
 
+        public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<int> addonIds)
+        {
+            var addonResults = new List<AddonSearchResult>();
+            if (!addonIds.Any())
+            {
+                return addonResults;
+            }
+
+            var results = await GetAllIds(addonIds);
+
+            foreach (var result in results)
+            {
+                var latestFile = GetLatestFile(result, clientType);
+                if (latestFile == null)
+                {
+                    continue;
+                }
+
+                var searchResult = GetAddonSearchResult(result, latestFile);
+                if (searchResult != null)
+                {
+                    addonResults.Add(searchResult);
+                }
+            }
+
+            return addonResults;
+        }
+
         private AddonSearchResult GetAddonSearchResult(CurseSearchResult result, CurseFile latestFile)
         {
             try
@@ -73,6 +102,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "GetAddonSearchResult");
                 Console.WriteLine(ex);
                 return null;
             }
@@ -130,6 +160,24 @@ namespace WowUp.WPF.AddonProviders
                 .FirstOrDefault(f => f.IsDefault && !string.IsNullOrEmpty(f.ThumbnailUrl))?.ThumbnailUrl;
         }
 
+        private async Task<IList<CurseSearchResult>> GetAllIds(IEnumerable<int> addonIds)
+        {
+            var url = $"{ApiUrl}/addon";
+
+            try
+            {
+                return await url
+                    .PostJsonAsync(addonIds.ToArray())
+                    .ReceiveJson<List<CurseSearchResult>>();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "GetAllIds");
+                Console.WriteLine(ex);
+                return new List<CurseSearchResult>();
+            }
+        }
+
         private async Task<IList<CurseSearchResult>> GetSearchResults(string query)
         {
             var url = $"{ApiUrl}/addon/search";
@@ -142,6 +190,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "GetSearchResults");
                 Console.WriteLine(ex);
                 return new List<CurseSearchResult>();
             }
@@ -153,5 +202,7 @@ namespace WowUp.WPF.AddonProviders
                 ? "wow_retail"
                 : "wow_classic";
         }
+
+
     }
 }

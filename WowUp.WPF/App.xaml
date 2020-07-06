@@ -2,8 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WowUp.WPF"
-             xmlns:localcv="clr-namespace:WowUp.WPF.Converters"
-             StartupUri="MainWindow.xaml">
+             xmlns:localcv="clr-namespace:WowUp.WPF.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <localcv:InverseBoolConverter x:Key="InverseBool" />
@@ -19,6 +18,10 @@
             <Color x:Key="Purple1">#6B69D6</Color>
             <Color x:Key="Purple2">#504FA1</Color>
             <Color x:Key="Purple3">#504FA1</Color>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

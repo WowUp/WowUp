@@ -1,14 +1,42 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using WowUp.WPF.Services.Contracts;
+using WowUp.WPF.Views;
+using Microsoft.Extensions.DependencyInjection;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IWarcraftService _warcraftService;
+
+        public Command SelectWowCommand { get; set; }
+
         private string _title;
         public string Title
         {
             get => _title;
             set { SetProperty(ref _title, value); }
+        }
+
+        private bool _showWowSelection;
+        public bool ShowWowSelection
+        {
+            get => _showWowSelection;
+            set { SetProperty(ref _showWowSelection, value); }
+        }
+
+        private bool _showTabs;
+        public bool ShowTabs
+        {
+            get => _showTabs;
+            set { SetProperty(ref _showTabs, value); }
         }
 
         private Visibility _restoreVisibility;
@@ -25,6 +53,22 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _maximizeVisibility, value); }
         }
 
+        public ObservableCollection<TabItem> TabItems { get; set; }
+
+        public MainWindowViewModel(
+            IServiceProvider serviceProvider,
+            IWarcraftService warcraftService)
+        {
+            _serviceProvider = serviceProvider;
+            _warcraftService = warcraftService;
+
+            SelectWowCommand = new Command(async () => await SetWowLocation());
+
+            TabItems = new ObservableCollection<TabItem>();
+
+            InitializeView();
+        }
+
         public void SetRestoreMaximizeVisibility(WindowState windowState)
         {
             if (windowState == WindowState.Maximized)
@@ -37,6 +81,77 @@ namespace WowUp.WPF.ViewModels
                 MaximizeVisibility = Visibility.Visible;
                 RestoreVisibility = Visibility.Collapsed;
             }
+        }
+
+        private async void InitializeView()
+        {
+            var hasWowLocation = await HasWarcraftLocation();
+
+            ShowWowSelection = !hasWowLocation;
+            ShowTabs = hasWowLocation;
+
+            if (ShowTabs)
+            {
+                CreateTabs();
+            }
+        }
+
+        private void CreateTabs()
+        {
+            var tabStyle = System.Windows.Application.Current.TryFindResource("CustomTabItemStyle") as Style;
+
+            var addonsTab = new TabItem
+            {
+                Name = "Addons",
+                Header = "My Addons",
+                Style = tabStyle,
+                Content = _serviceProvider.GetService<AddonsView>()
+            };
+
+            var aboutTab = new TabItem
+            {
+                Name = "About",
+                Header = "About",
+                Style = tabStyle,
+                Content = _serviceProvider.GetService<AboutView>()
+            };
+
+            var optionsTab = new TabItem
+            {
+                Name = "Options",
+                Header = "Options",
+                Style = tabStyle,
+                Content = _serviceProvider.GetService<OptionsView>()
+            };
+
+            TabItems.Add(addonsTab);
+            TabItems.Add(aboutTab);
+            TabItems.Add(optionsTab);
+        }
+
+        private async Task<bool> HasWarcraftLocation()
+        {
+            var wowFolder = await _warcraftService.GetWowFolderPath();
+            return !string.IsNullOrEmpty(wowFolder);
+        }
+
+        private async Task SetWowLocation()
+        {
+            var selectedPath = DialogUtilities.SelectFolder();
+            if (string.IsNullOrEmpty(selectedPath))
+            {
+                System.Windows.MessageBox.Show("You must select a World of Warcraft folder to continue.");
+                return;
+            }
+
+            var didSet = await _warcraftService.SetWowFolderPath(selectedPath);
+            if (!didSet)
+            {
+                System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your World of Warcraft folder");
+                return;
+            }
+
+            InitializeView();
         }
     }
 }
