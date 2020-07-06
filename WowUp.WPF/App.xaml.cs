@@ -55,6 +55,8 @@ namespace WowUp.WPF
 
         private void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+
             services.AddTransient<AboutViewModel>();
             services.AddTransient<AddonListItemViewModel>();
             services.AddTransient<AddonsViewViewModel>();
@@ -70,6 +72,7 @@ namespace WowUp.WPF
             services.AddSingleton<IAddonService, AddonService>();
             services.AddSingleton<IWarcraftService, WarcraftService>();
             services.AddSingleton<IDownloadSevice, DownloadService>();
+            services.AddSingleton<IWowUpService, WowUpService>();
 
             services.AddSingleton<IAddonRepository, AddonRepository>();
             services.AddSingleton<IPreferenceRepository, PreferenceRepository>();

@@ -118,6 +118,7 @@
         <Grid Background="{StaticResource Dark3}" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0"  Background="{StaticResource Purple1}">
@@ -178,8 +179,19 @@
                     </Button>
                 </StackPanel>
             </Grid>
+            <Border Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilty}}"
+                    Grid.Row="1"
+                    Padding="10">
+                <StackPanel HorizontalAlignment="Center" 
+                            Orientation="Horizontal">
+                    <TextBlock Text="A new version of WowUp is available!" 
+                               Margin="10, 0"
+                               VerticalAlignment="Center" />
+                    <Button x:Name="DownloadUpdateButton" Style="{StaticResource purpleButton}" Click="DownloadUpdateButton_Click">Download</Button>
+                </StackPanel>
+            </Border>
             <StackPanel Visibility="{Binding ShowWowSelection, Converter={StaticResource BoolToVisibilty}}" 
-                        Grid.Row="1"
+                        Grid.Row="2"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center">
                 <TextBlock Text="Welcome" FontSize="20" HorizontalAlignment="Center" />
@@ -187,7 +199,7 @@
                 <Button x:Name="SelectWowButton" Click="SelectWowButton_Click" Margin="0, 10" Style="{StaticResource purpleButton}">Select</Button>
             </StackPanel>
             <TabControl x:Name="Tabs" 
-                        Grid.Row="1" 
+                        Grid.Row="2" 
                         Visibility="{Binding ShowTabs, Converter={StaticResource BoolToVisibilty}}"
                         Style="{StaticResource CustomTabStyle}"
                         ItemsSource="{Binding TabItems}">

@@ -8,6 +8,8 @@ using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Views;
 using Microsoft.Extensions.DependencyInjection;
 using WowUp.WPF.Utilities;
+using WowUp.WPF.Extensions;
+using WowUp.WPF.Services;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -15,8 +17,10 @@ namespace WowUp.WPF.ViewModels
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
+        private readonly IWowUpService _wowUpService;
 
         public Command SelectWowCommand { get; set; }
+        public Command DownloadLatestVersionCommand { get; set; }
 
         private string _title;
         public string Title
@@ -53,16 +57,26 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _maximizeVisibility, value); }
         }
 
+        private bool _isUpdateAvailable;
+        public bool IsUpdateAvailable 
+        {
+            get => _isUpdateAvailable;
+            set { SetProperty(ref _isUpdateAvailable, value); }
+        }
+
         public ObservableCollection<TabItem> TabItems { get; set; }
 
         public MainWindowViewModel(
             IServiceProvider serviceProvider,
-            IWarcraftService warcraftService)
+            IWarcraftService warcraftService,
+            IWowUpService wowUpService)
         {
             _serviceProvider = serviceProvider;
             _warcraftService = warcraftService;
+            _wowUpService = wowUpService;
 
             SelectWowCommand = new Command(async () => await SetWowLocation());
+            DownloadLatestVersionCommand = new Command(() => DownloadLatestVersion());
 
             TabItems = new ObservableCollection<TabItem>();
 
@@ -85,6 +99,8 @@ namespace WowUp.WPF.ViewModels
 
         private async void InitializeView()
         {
+            CheckVersion();
+
             var hasWowLocation = await HasWarcraftLocation();
 
             ShowWowSelection = !hasWowLocation;
@@ -94,6 +110,11 @@ namespace WowUp.WPF.ViewModels
             {
                 CreateTabs();
             }
+        }
+
+        private async void CheckVersion()
+        {
+            IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
         }
 
         private void CreateTabs()
@@ -133,6 +154,11 @@ namespace WowUp.WPF.ViewModels
         {
             var wowFolder = await _warcraftService.GetWowFolderPath();
             return !string.IsNullOrEmpty(wowFolder);
+        }
+
+        private void DownloadLatestVersion()
+        {
+            WowUpService.WebsiteUrl.OpenUrlInBrowser();
         }
 
         private async Task SetWowLocation()

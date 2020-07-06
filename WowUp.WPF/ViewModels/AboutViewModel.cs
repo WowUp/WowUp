@@ -3,11 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using WowUp.WPF.Models;
+using WowUp.WPF.Services.Contracts;
 
 namespace WowUp.WPF.ViewModels
 {
     public class AboutViewModel : BaseViewModel
     {
+        private readonly IWowUpService _wowUpService;
+
         private string _version;
         public string Version
         {
@@ -17,13 +20,24 @@ namespace WowUp.WPF.ViewModels
 
         public ObservableCollection<ChangeLog> ChangeLogs { get; set; }
 
-        public AboutViewModel()
+        public AboutViewModel(IWowUpService wowUpService)
         {
-            Version = "v" + GetType().Assembly.GetName().Version.ToString();
+            _wowUpService = wowUpService;
 
-            var changelogTxt = ReadResource("changelog.json");
-            var changelogFile = Newtonsoft.Json.JsonConvert.DeserializeObject<ChangeLogFile>(changelogTxt);
-            ChangeLogs = new ObservableCollection<ChangeLog>(changelogFile.ChangeLogs);
+            ChangeLogs = new ObservableCollection<ChangeLog>();
+
+            InitializeView();
+        }
+
+        private async void InitializeView()
+        {
+            Version = $"v{_wowUpService.CurrentVersionString}";
+
+            var changeLogFile = await _wowUpService.GetChangeLogFile();
+            foreach(var changeLog in changeLogFile.ChangeLogs)
+            {
+                ChangeLogs.Add(changeLog);
+            }
         }
 
         public string ReadResource(string name)

@@ -156,7 +156,7 @@ namespace WowUp.WPF.Services
 
         private async Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
         {
-            var addonFolderPath = await _warcraftService.GetAddonDirectory(clientType);
+            var addonFolderPath = await _warcraftService.GetAddonFolderPath(clientType);
             var unzippedFolders = Directory.GetDirectories(unzippedDirectory);
             foreach (var unzippedFolder in unzippedFolders)
             {
@@ -221,15 +221,8 @@ namespace WowUp.WPF.Services
 
         private async Task<List<Addon>> GetLocalAddons(WowClientType clientType)
         {
-            var addonFolders = await GetAddonFolders(clientType);
+            var addonFolders = await _warcraftService.ListAddons(clientType);
             return await MapAll(addonFolders, clientType);
-        }
-
-        private async Task<IEnumerable<AddonFolder>> GetAddonFolders(WowClientType clientType)
-        {
-            return clientType == WowClientType.Retail
-                ? await _warcraftService.ListRetailAddons(false)
-                : await _warcraftService.ListClassicAddons(false);
         }
 
         public async Task<List<Addon>> MapAll(IEnumerable<Addon> addons, WowClientType clientType)

@@ -14,13 +14,8 @@ namespace WowUp.WPF.Services.Contracts
         Task<string> GetRetailFolderPath();
         Task<string> GetClassicFolderPath();
 
-        Task<string> GetAddonDirectory(WowClientType clientType);
-        Task<string> GetRetailAddonFolderPath();
-        Task<string> GetClassicAddonFolderPath();
+        Task<string> GetAddonFolderPath(WowClientType clientType);
 
-        Task<IEnumerable<AddonFolder>> ListRetailAddons(bool forceReload = false);
-        Task<IEnumerable<AddonFolder>> ListClassicAddons(bool forceReload = false);
-
-        Task<string> SelectWowFolder();
+        Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Controls;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.ViewModels;
 
 namespace WowUp.WPF.Views
@@ -20,7 +21,7 @@ namespace WowUp.WPF.Views
 
         private void WowupLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Uri.AbsoluteUri.OpenUrlInBrowser();
             e.Handled = true;
         }
     }

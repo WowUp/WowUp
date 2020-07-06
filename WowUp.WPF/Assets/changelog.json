@@ -1,12 +1,16 @@
 ﻿{
   "ChangeLogs": [
     {
-      "Version": "1.0.0",
-      "Description": "Initial release!"
+      "Version": "1.2.0",
+      "Description": "Add version checking to alert users of a new version available.\nFix support for classic/classic ptr/retail ptr addon folders."
     },
     {
       "Version": "1.1.0",
-      "Description":  "Attempt to add support for Retail and Classic PTR clients"
+      "Description": "Attempt to add support for Retail and Classic PTR clients"
+    },
+    {
+      "Version": "1.0.0",
+      "Description": "Initial release!"
     }
   ]
 }

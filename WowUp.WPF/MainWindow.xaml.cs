@@ -90,5 +90,10 @@ namespace WowUp.WPF
         {
             _viewModel.SelectWowCommand.Execute(this);
         }
+
+        private void DownloadUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.DownloadLatestVersionCommand.Execute(this);
+        }
     }
 }

@@ -22,9 +22,7 @@ namespace WowUp.WPF.Services
         private const string RetailPtrFolderName = "_ptr_";
 
         private const string InterfaceFolderName = @"Interface";
-
-        private const string RetailAddonFolderName = @"AddOns";
-        private const string ClassicAddonFolderName = @"Addons";
+        private const string AddonFolderName = @"AddOns";
 
         private const string WowLocationPreferenceKey = "wow_location";
 
@@ -83,21 +81,6 @@ namespace WowUp.WPF.Services
             return Directory.Exists(clientPath);
         }
 
-
-        public Task<string> GetAddonDirectory(WowClientType clientType)
-        {
-            return clientType == WowClientType.Retail
-                ? GetRetailAddonFolderPath()
-                : GetClassicAddonFolderPath();
-        }
-
-        public async Task<string> GetClassicAddonFolderPath()
-        {
-            var classicPath = await GetClassicFolderPath();
-            var path = Path.Combine(classicPath, InterfaceFolderName, ClassicAddonFolderName);
-            return path;
-        }
-
         public async Task<string> GetClassicFolderPath()
         {
             var wowPath = await GetWowFolderPath();
@@ -105,11 +88,12 @@ namespace WowUp.WPF.Services
             return path;
         }
 
-        public async Task<string> GetRetailAddonFolderPath()
+        public async Task<string> GetAddonFolderPath(WowClientType clientType)
         {
-            var retailPath = await GetRetailFolderPath();
-            var path = Path.Combine(retailPath, InterfaceFolderName, RetailAddonFolderName);
-            return path;
+            var wowPath = await GetWowFolderPath();
+            var clientFolder = GetClientFolderName(clientType);
+
+            return Path.Combine(wowPath, clientFolder, InterfaceFolderName, AddonFolderName);
         }
 
         public async Task<string> GetRetailFolderPath()
@@ -147,22 +131,9 @@ namespace WowUp.WPF.Services
             return Task.FromResult(true);
         }
 
-
-        public Task<IEnumerable<AddonFolder>> ListClassicAddons(bool forceReload = false)
+        public async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
         {
-            return ListAddons(WowClientType.Classic);
-        }
-
-        public Task<IEnumerable<AddonFolder>> ListRetailAddons(bool forceReload = false)
-        {
-            return ListAddons(WowClientType.Retail);
-        }
-
-        private async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
-        {
-            var addonsPath = clientType == WowClientType.Retail
-                ? await GetRetailAddonFolderPath()
-                : await GetClassicAddonFolderPath();
+            var addonsPath = await GetAddonFolderPath(clientType);
 
             var addons = new List<AddonFolder>();
             var addonDirectories = Directory.GetDirectories(addonsPath);
@@ -176,14 +147,6 @@ namespace WowUp.WPF.Services
             return addons;
         }
 
-        public async Task<string> SelectWowFolder()
-        {
-            using var dialog = new FolderBrowserDialog();
-            var result = dialog.ShowDialog();
-
-            return "";
-        }
-        
         private Preference GetWowLocationPreference()
         {
             return _preferenceRepository.FindByKey(WowLocationPreferenceKey);
