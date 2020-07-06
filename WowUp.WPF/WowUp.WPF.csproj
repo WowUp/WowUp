@@ -10,10 +10,12 @@
     <PackageId>WowUp</PackageId>
     <Authors>Jliddev</Authors>
     <Product>WowUp</Product>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Assets\activity.gif" />
+    <None Remove="Assets\changelog.json" />
     <None Remove="Assets\wowup_logo_1.png" />
     <None Remove="Assets\wowup_logo_512.png" />
     <None Remove="Assets\wowup_logo_512np.png" />
@@ -35,6 +37,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\activity.gif" />
+    <EmbeddedResource Include="Assets\changelog.json" />
     <Resource Include="Assets\wowup_logo_1.png" />
     <Resource Include="Assets\wowup_logo_512.png" />
     <Resource Include="Assets\wowup_logo_512np.png" />

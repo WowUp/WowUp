@@ -5,11 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
-using WowUp.WPF.Services;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System.Windows.Controls;
+using System.Collections.Generic;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -48,13 +49,17 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool IsRetailSelected => SelectedWowIndex == 0;
+        private IList<WowClientType> _clientTypes = new List<WowClientType>();
+        private IList<string> _clientNames = new List<string>();
 
         public Command LoadItemsCommand { get; set; }
         public Command RefreshCommand { get; set; }
         public Command RescanCommand { get; set; }
         public Command UpdateAllCommand { get; set; }
 
+        public ObservableCollection<ComboBoxItem> ClientNames { get; set; }
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
+
 
         public AddonsViewViewModel(
             IServiceProvider serviceProvider,
@@ -65,11 +70,29 @@ namespace WowUp.WPF.ViewModels
             _warcraftService = warcraftService;
             _serviceProvider = serviceProvider;
 
+            Initialize();
+        }
+
+        public async void Initialize()
+        {
+            ClientNames = new ObservableCollection<ComboBoxItem>();
             DisplayAddons = new ObservableCollection<AddonListItemViewModel>();
             LoadItemsCommand = new Command(async () => await LoadItems());
             RefreshCommand = new Command(async () => await LoadItems());
             RescanCommand = new Command(async () => await LoadItems(true));
             UpdateAllCommand = new Command(async () => await UpdateAll());
+
+            _clientTypes = await _warcraftService.GetWowClients();
+            _clientNames = await _warcraftService.GetWowClientNames();
+
+            for(var i = 0; i < _clientNames.Count; i += 1)
+            {
+                var clientName = _clientNames[i];
+                ClientNames.Add(new ComboBoxItem
+                {
+                    Content = clientName
+                });
+            }
         }
 
         public async Task UpdateAll()
@@ -97,9 +120,7 @@ namespace WowUp.WPF.ViewModels
             {
                 DisplayAddons.Clear();
 
-                var wowType = IsRetailSelected
-                    ? WowClientType.Retail
-                    : WowClientType.Classic;
+                var wowType = _clientTypes[SelectedWowIndex];
 
                 var addons = await _addonService.GetAddons(wowType, forceReload);
                 addons = addons.OrderBy(addon => addon.GetDisplayState())
@@ -131,6 +152,12 @@ namespace WowUp.WPF.ViewModels
                 ShowEmptyLabel = !DisplayAddons.Any();
                 EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
             }
+        }
+
+        public class ComboData
+        {
+            public int Id { get; set; }
+            public string Value { get; set; }
         }
     }
 }

@@ -9,13 +9,17 @@ using WowUp.WPF.Models;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using WowUp.WPF.Extensions;
 
 namespace WowUp.WPF.Services
 {
     public class WarcraftService : IWarcraftService
     {
         private const string ClassicFolderName = "_classic_";
+        private const string ClassicPtrFolderName = "_classic_ptr_";
+        
         private const string RetailFolderName = "_retail_";
+        private const string RetailPtrFolderName = "_ptr_";
 
         private const string InterfaceFolderName = @"Interface";
 
@@ -24,6 +28,8 @@ namespace WowUp.WPF.Services
 
         private const string WowLocationPreferenceKey = "wow_location";
 
+        private static readonly string[] FolderNames = new[] { ClassicFolderName, ClassicPtrFolderName, RetailFolderName, RetailPtrFolderName };
+
         private readonly IPreferenceRepository _preferenceRepository;
 
         public WarcraftService(
@@ -31,6 +37,52 @@ namespace WowUp.WPF.Services
         {
             _preferenceRepository = preferenceRepository;
         }
+
+        public async Task<IList<string>> GetWowClientNames()
+        {
+            var clients = await GetWowClients();
+            var clientNames = new List<string>();
+
+            foreach(var client in clients)
+            {
+                var clientDisplay = client.GetDisplayName();
+                clientNames.Add(clientDisplay);
+            }
+
+            return clientNames;
+        }
+
+        public async Task<IList<WowClientType>> GetWowClients()
+        {
+            var clients = new List<WowClientType>();
+            var wowFolder = await GetWowFolderPath();
+            if (string.IsNullOrEmpty(wowFolder))
+            {
+                return clients;
+            }
+
+            var clientTypes = Enum.GetValues(typeof(WowClientType)).Cast<WowClientType>();
+            foreach(var clientType in clientTypes)
+            {
+                var hasClient = await HasClient(clientType);
+                if (hasClient)
+                {
+                    clients.Add(clientType);
+                }
+            }
+
+            return clients;
+        }
+
+        public async Task<bool> HasClient(WowClientType clientType)
+        {
+            var wowFolder = await GetWowFolderPath();
+            var clientFolder = GetClientFolderName(clientType);
+            var clientPath = Path.Combine(wowFolder, clientFolder);
+
+            return Directory.Exists(clientPath);
+        }
+
 
         public Task<string> GetAddonDirectory(WowClientType clientType)
         {
@@ -142,7 +194,7 @@ namespace WowUp.WPF.Services
             try
             {
                 var directories = Directory.GetDirectories(wowFolder);
-                return directories.Any(dir => dir.Contains(ClassicFolderName) || dir.Contains(RetailFolderName));
+                return directories.Any(dir => FolderNames.Any(fn => dir.Contains(fn)));
             }
             catch(Exception ex)
             {
@@ -174,6 +226,18 @@ namespace WowUp.WPF.Services
 
             var fileText = await FileUtilities.GetFileTextAsync(tocFile.FullName);
             return new TocParser(fileText).Toc;
+        }
+
+        private string GetClientFolderName(WowClientType clientType)
+        {
+            return clientType switch
+            {
+                WowClientType.Retail => RetailFolderName,
+                WowClientType.Classic => ClassicFolderName,
+                WowClientType.RetailPtr => RetailPtrFolderName,
+                WowClientType.ClassicPtr => ClassicPtrFolderName,
+                _ => string.Empty,
+            };
         }
     }
 }

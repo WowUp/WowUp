@@ -1,0 +1,12 @@
+﻿{
+  "ChangeLogs": [
+    {
+      "Version": "1.0.0",
+      "Description": "Initial release!"
+    },
+    {
+      "Version": "1.1.0",
+      "Description":  "Attempt to add support for Retail and Classic PTR clients"
+    }
+  ]
+}
