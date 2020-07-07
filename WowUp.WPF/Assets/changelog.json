@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.2.6",
+      "Description": "Requires Re-Scan.\nAdd addon name clicks to open their URL."
+    },
+    {
       "Version": "1.2.5",
       "Description": "Jazz up the about page."
     },
