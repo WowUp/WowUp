@@ -79,7 +79,7 @@ namespace WowUp.WPF.Services
                 changeLogFile = await ChangeLogUrl.GetJsonAsync<ChangeLogFile>();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(30));
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
 
                 _cache.Set(ChangeLogFileCacheKey, changeLogFile, cacheEntryOptions);
 

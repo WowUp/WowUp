@@ -12,5 +12,6 @@ namespace WowUp.WPF.Models
         public IEnumerable<string> Folders { get; set; }
         public int ExternalId { get; set; }
         public string DownloadUrl { get; set; }
+        public string ExternalUrl { get; set; }
     }
 }

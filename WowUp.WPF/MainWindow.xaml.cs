@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using WowUp.WPF.ViewModels;
-using WowUp.WPF.Views;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace WowUp.WPF
 {

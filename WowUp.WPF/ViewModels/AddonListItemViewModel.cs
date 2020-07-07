@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
-using WowUp.WPF.Services;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -26,6 +24,7 @@ namespace WowUp.WPF.ViewModels
 
         public Command ActionCommand { get; set; }
         public Command InstallCommand { get; set; }
+        public Command OpenLinkCommand { get; set; }
 
         private bool _showInstallButton;
         public bool ShowInstallButton
@@ -111,6 +110,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _thumbnailUrl, value); }
         }
 
+        private string _externalUrl;
+        public string ExternalUrl
+        {
+            get => _externalUrl;
+            set { SetProperty(ref _externalUrl, value); }
+        }
+
         private AddonDisplayState _displayState;
         public AddonDisplayState DisplayState
         {
@@ -128,6 +134,7 @@ namespace WowUp.WPF.ViewModels
             _addonService = addonService;
 
             InstallCommand = new Command(async () => await InstallAddon());
+            OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
         }
 
         private void SetupDisplayState()
@@ -143,6 +150,7 @@ namespace WowUp.WPF.ViewModels
                 ? "/Assets/wowup_logo_1.png"
                 : _addon.ThumbnailUrl;
 
+            ExternalUrl = _addon.ExternalUrl;
             DisplayState = _addon.GetDisplayState();
             ShowInstallButton = DisplayState == AddonDisplayState.Install;
             ShowUpdateButton = DisplayState == AddonDisplayState.Update;

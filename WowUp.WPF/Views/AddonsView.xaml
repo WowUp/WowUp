@@ -15,6 +15,11 @@
                 <ResourceDictionary Source="Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="TextDecorations" Value="None" />
+            </Style>
+            
             <DataTemplate x:Key="AddonColumnTemplate" >
                 <Border Padding="10">
                     <Grid Background="Transparent">
@@ -28,9 +33,19 @@
                             </Border>
                         </StackPanel>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Name}" 
-                                       TextWrapping="Wrap"
-                                       Style="{StaticResource labelAddonName}"  />
+                            <TextBlock Visibility="{Binding ExternalUrl, Converter={StaticResource StringToVisibilty}}" 
+                                       Style="{StaticResource labelAddonName}" >
+                                <Hyperlink x:Name="AddonLink"
+                                           Style="{StaticResource HyperlinkStyle}"
+                                           NavigateUri="{Binding ExternalUrl}"
+                                           Command="{Binding OpenLinkCommand}">
+                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+                                </Hyperlink>    
+                            </TextBlock>
+                            <TextBlock Visibility="{Binding ExternalUrl, Converter={StaticResource InverseStringToVisibilty}}"
+                                       Text="{Binding Name}"  
+                                       Style="{StaticResource labelAddonName}" 
+                                       TextWrapping="Wrap"/>
                             <TextBlock Text="{Binding CurrentVersion}" 
                                        Style="{StaticResource labelAddonText}" />
                         </StackPanel>
@@ -188,7 +203,7 @@
                                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                                 <Setter Property="Background" Value="Transparent"/>
                             </Trigger>
-                            
+
                         </Style.Triggers>
                     </Style>
                     <Style TargetType="{x:Type DataGridColumnHeader}">

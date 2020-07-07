@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.ViewModels;
 
 namespace WowUp.WPF.Views
@@ -36,6 +37,12 @@ namespace WowUp.WPF.Views
         private void UpdateAllButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             _viewModel.UpdateAllCommand.Execute(this);
+        }
+
+        private void AddonLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            e.Uri.AbsoluteUri.OpenUrlInBrowser();
+            e.Handled = true;
         }
     }
 }

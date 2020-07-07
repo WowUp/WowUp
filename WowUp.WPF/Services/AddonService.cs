@@ -97,6 +97,7 @@ namespace WowUp.WPF.Services
                 addon.DownloadUrl = match.DownloadUrl;
                 addon.GameVersion = match.GameVersion;
                 addon.ThumbnailUrl = match.ThumbnailUrl;
+                addon.ExternalUrl = match.ExternalUrl;
                 
                 _addonRepository.UpdateItem(addon);
             }
@@ -197,6 +198,7 @@ namespace WowUp.WPF.Services
                     addon.FolderName = localAddon.FolderName;
                     addon.GameVersion = localAddon.GameVersion;
                     addon.DownloadUrl = localAddon.DownloadUrl;
+                    addon.ExternalUrl = localAddon.ExternalUrl;
 
                     _addonRepository.UpdateItem(addon);
                 }
@@ -334,7 +336,8 @@ namespace WowUp.WPF.Services
                 FolderName = folderName,
                 GameVersion = searchResult.GameVersion,
                 Author = searchResult.Author,
-                DownloadUrl = searchResult.DownloadUrl
+                DownloadUrl = searchResult.DownloadUrl,
+                ExternalUrl = searchResult.ExternalUrl
             };
         }
     }

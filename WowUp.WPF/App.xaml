@@ -7,7 +7,9 @@
         <ResourceDictionary>
             <localcv:InverseBoolConverter x:Key="InverseBool" />
             <localcv:BoolToVisibility x:Key="BoolToVisibilty" />
-
+            <localcv:StringToVisibilty x:Key="StringToVisibilty" />
+            <localcv:InverseStringToVisibilty x:Key="InverseStringToVisibilty" />
+            
             <!--Global Styles-->
             <Color x:Key="NavigationPrimary">#6B69D6</Color>
             <Color x:Key="Dark1">#666666</Color>

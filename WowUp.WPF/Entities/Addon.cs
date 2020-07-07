@@ -73,6 +73,13 @@ namespace WowUp.WPF.Entities
             set { SetProperty(ref _curseAddonId, value); }
         }
 
+        private string _externalUrl;
+        public string ExternalUrl
+        {
+            get => _externalUrl;
+            set { SetProperty(ref _externalUrl, value); }
+        }
+
         private string _thumbnailUrl;
         public string ThumbnailUrl
         {

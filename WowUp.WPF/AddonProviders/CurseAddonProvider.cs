@@ -97,7 +97,8 @@ namespace WowUp.WPF.AddonProviders
                     Name = name,
                     ThumbnailUrl = thumbnailUrl,
                     Version = fileName,
-                    DownloadUrl = downloadUrl
+                    DownloadUrl = downloadUrl,
+                    ExternalUrl = result.WebsiteUrl
                 };
             }
             catch (Exception ex)
