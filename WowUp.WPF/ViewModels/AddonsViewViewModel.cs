@@ -143,7 +143,6 @@ namespace WowUp.WPF.ViewModels
             catch (Exception ex)
             {
                 Log.Error(ex, "LoadItems");
-                Debug.WriteLine(ex);
             }
             finally
             {

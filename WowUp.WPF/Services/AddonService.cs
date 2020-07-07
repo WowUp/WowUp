@@ -9,7 +9,6 @@ using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models;
 using WowUp.WPF.Repositories.Contracts;
-using WowUp.WPF.Services.Base;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -59,19 +58,22 @@ namespace WowUp.WPF.Services
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
         {
             var addons = GetAllStoredAddons(clientType);
-            if (!addons.Any())
+            if (rescan || !addons.Any())
             {
+                RemoveAddons(clientType);
                 addons = await GetLocalAddons(clientType);
                 SaveAddons(addons);
-            }
-            else if (rescan)
-            {
-                addons = await RescanAddons(addons, clientType);
             }
 
             await SyncAddons(clientType, addons);
 
             return addons;
+        }
+
+        private void RemoveAddons(WowClientType clientType)
+        {
+            var addons = GetAllStoredAddons(clientType);
+            _addonRepository.DeleteItems(addons);
         }
 
         private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
@@ -120,7 +122,7 @@ namespace WowUp.WPF.Services
                 {
                     updateAction?.Invoke(AddonInstallState.BackingUp, 0.50m);
                     var backupZipFilePath = Path.Combine(BackupPath, $"{addon.Name}-{addon.InstalledVersion}.zip");
-                    await _downloadService.ZipFile(downloadedFilePath, backupZipFilePath);
+                    //await _downloadService.ZipFile(downloadedFilePath, backupZipFilePath);
                 }
 
                 updateAction?.Invoke(AddonInstallState.Installing, 75m);
@@ -227,18 +229,33 @@ namespace WowUp.WPF.Services
 
         public async Task<List<Addon>> MapAll(IEnumerable<Addon> addons, WowClientType clientType)
         {
+            if(addons == null)
+            {
+                Log.Warning("Addon list was null");
+                return new List<Addon>();
+            }
+
             foreach (var addon in addons)
             {
-                var searchResults = await Search(addon.Name, addon.FolderName, clientType);
-                var firstResult = searchResults.FirstOrDefault();
-                if (firstResult == null)
-                {
-                    return null;
-                }
+                Log.Debug($"Addon {addon.FolderName}");
 
-                addon.LatestVersion = firstResult.Version;
-                addon.GameVersion = firstResult.GameVersion;
-                addon.Author = firstResult.Author;
+                try
+                {
+                    var searchResults = await Search(addon.Name, addon.FolderName, clientType);
+                    var firstResult = searchResults.FirstOrDefault();
+                    if (firstResult == null)
+                    {
+                        continue;
+                    }
+
+                    addon.LatestVersion = firstResult.Version;
+                    addon.GameVersion = firstResult.GameVersion;
+                    addon.Author = firstResult.Author;
+                }
+                catch(Exception ex)
+                {
+                    Log.Error(ex, "Failed to map addon");
+                }
             }
 
             return addons.ToList();
@@ -250,13 +267,20 @@ namespace WowUp.WPF.Services
 
             foreach (var addonFolder in addonFolders)
             {
-                var addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
-                if (addon == null)
+                try
                 {
-                    continue;
-                }
+                    var addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
+                    if (addon == null)
+                    {
+                        continue;
+                    }
 
-                results[addon.Name] = addon;
+                    results[addon.Name] = addon;
+                }
+                catch(Exception ex)
+                {
+                    Log.Error(ex, $"Failed to map addon folder {addonFolder.Name}");
+                }
             }
 
             return results.Values

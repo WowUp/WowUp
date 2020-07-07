@@ -143,10 +143,6 @@ namespace WowUp.WPF.AddonProviders
 
         private CurseFile GetLatestFile(CurseSearchResult result, WowClientType clientType)
         {
-            if (result.Name.Contains("Details"))
-            {
-
-            }
             var clientTypeStr = GetClientTypeString(clientType);
 
             return result.LatestFiles
@@ -198,9 +194,16 @@ namespace WowUp.WPF.AddonProviders
 
         private string GetClientTypeString(WowClientType clientType)
         {
-            return clientType == WowClientType.Retail
-                ? "wow_retail"
-                : "wow_classic";
+            switch (clientType)
+            {
+                case WowClientType.Classic:
+                case WowClientType.ClassicPtr:
+                    return "wow_classic";
+                case WowClientType.Retail:
+                case WowClientType.RetailPtr:
+                default:
+                    return "wow_retail";
+            }
         }
 
 

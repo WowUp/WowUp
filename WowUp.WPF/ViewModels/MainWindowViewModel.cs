@@ -19,6 +19,8 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IWowUpService _wowUpService;
 
+        private System.Threading.Timer _timer;
+
         public Command SelectWowCommand { get; set; }
         public Command DownloadLatestVersionCommand { get; set; }
 
@@ -80,6 +82,8 @@ namespace WowUp.WPF.ViewModels
 
             TabItems = new ObservableCollection<TabItem>();
 
+            _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+
             InitializeView();
         }
 
@@ -99,8 +103,6 @@ namespace WowUp.WPF.ViewModels
 
         private async void InitializeView()
         {
-            CheckVersion();
-
             var hasWowLocation = await HasWarcraftLocation();
 
             ShowWowSelection = !hasWowLocation;
@@ -112,7 +114,7 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
-        private async void CheckVersion()
+        private async void CheckVersion(object state)
         {
             IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
         }
@@ -153,7 +155,7 @@ namespace WowUp.WPF.ViewModels
         private async Task<bool> HasWarcraftLocation()
         {
             var wowFolder = await _warcraftService.GetWowFolderPath();
-            return !string.IsNullOrEmpty(wowFolder);
+            return _warcraftService.ValidateWowFolder(wowFolder) && !string.IsNullOrEmpty(wowFolder);
         }
 
         private void DownloadLatestVersion()

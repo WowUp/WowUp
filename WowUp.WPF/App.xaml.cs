@@ -24,7 +24,7 @@ namespace WowUp.WPF
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
 
-            var logFilePath = Path.Combine(FileUtilities.AppDataPath, "logs", "wowup-logs.txt");
+            var logFilePath = Path.Combine(FileUtilities.AppLogsPath, "wowup-logs.txt");
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -32,7 +32,7 @@ namespace WowUp.WPF
                 .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
 
-            Log.Information("Starting");
+            Log.Information($"Starting {GetType().Assembly.GetName().Version}");
 
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);

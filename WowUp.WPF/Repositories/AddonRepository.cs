@@ -48,9 +48,25 @@ namespace WowUp.WPF.Repositories
             return true;
         }
 
-        public bool DeleteItem(string id)
+        public bool DeleteItem(Addon addon)
         {
-            throw new NotImplementedException();
+            lock (_collisionLock)
+            {
+                _database.Delete(addon);
+            }
+            return true;
+        }
+
+        public bool DeleteItems(IEnumerable<Addon> addons)
+        {
+            lock (_collisionLock)
+            {
+                foreach(var addon in addons)
+                {
+                    _database.Delete(addon);
+                }
+            }
+            return true;
         }
 
         public IEnumerable<Addon> Query(Func<TableQuery<Addon>, TableQuery<Addon>> action)

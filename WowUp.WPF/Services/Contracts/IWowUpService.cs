@@ -6,6 +6,8 @@ namespace WowUp.WPF.Services.Contracts
 {
     public interface IWowUpService
     {
+        void ShowLogsFolder();
+
         Version CurrentVersion { get; }
         string CurrentVersionString { get; }
 

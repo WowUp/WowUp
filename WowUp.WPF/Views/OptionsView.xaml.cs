@@ -21,5 +21,10 @@ namespace WowUp.WPF.Views
         {
             _viewModel.SetWowLocation();
         }
+
+        private void ShowLogsButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }

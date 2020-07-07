@@ -196,6 +196,7 @@
                         HorizontalAlignment="Center">
                 <TextBlock Text="Welcome" FontSize="20" HorizontalAlignment="Center" />
                 <TextBlock Text="Please select your World of Warcraft folder" FontSize="14" />
+                <TextBlock Text="Example: C:\Program Files (x86)\World of Warcraft" Foreground="{StaticResource White2}" FontSize="12" />
                 <Button x:Name="SelectWowButton" Click="SelectWowButton_Click" Margin="0, 10" Style="{StaticResource purpleButton}">Select</Button>
             </StackPanel>
             <TabControl x:Name="Tabs" 

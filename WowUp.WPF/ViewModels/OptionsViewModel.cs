@@ -11,6 +11,7 @@ namespace WowUp.WPF.ViewModels
     public class OptionsViewModel : BaseViewModel
     {
         private readonly IWarcraftService _warcraftService;
+        private readonly IWowUpService _wowUpService;
 
         private string _wowLocation;
         public string WowLocation
@@ -19,10 +20,16 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _wowLocation, value); }
         }
 
+        public Command ShowLogsCommand { get; set; }
+
         public OptionsViewModel(
-            IWarcraftService warcraftService)
+            IWarcraftService warcraftService,
+            IWowUpService wowUpService)
         {
             _warcraftService = warcraftService;
+            _wowUpService = wowUpService;
+
+            ShowLogsCommand = new Command(() => ShowLogsFolder());
 
             LoadOptions();
         }
@@ -30,6 +37,11 @@ namespace WowUp.WPF.ViewModels
         private async void LoadOptions()
         {
             WowLocation = await _warcraftService.GetWowFolderPath();
+        }
+
+        private void ShowLogsFolder() 
+        {
+            _wowUpService.ShowLogsFolder();
         }
 
         public async void SetWowLocation()

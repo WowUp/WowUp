@@ -53,7 +53,7 @@ namespace WowUp.WPF.Repositories
             return true;
         }
 
-        public bool DeleteItem(string id)
+        public bool DeleteItem(Preference preference)
         {
             throw new NotImplementedException();
         }
@@ -113,6 +113,11 @@ namespace WowUp.WPF.Repositories
             }
 
             return true;
+        }
+
+        public bool DeleteItems(IEnumerable<Preference> addons)
+        {
+            throw new NotImplementedException();
         }
     }
 }

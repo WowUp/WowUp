@@ -1,6 +1,18 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.2.4",
+      "Description": "More protection against weird toc files.\nImprovements to re-scan function."
+    },
+    {
+      "Version": "1.2.3",
+      "Description": "Add some extra logging and error catching.\nFix some issues searching curse for addons for PTR clients."
+    },
+    {
+      "Version": "1.2.2",
+      "Description": "Add Show Log Files button.\nAdd in recurring call to check for app updates every 10 minutes.\nBetter wow folder selection validation."
+    },
+    {
       "Version": "1.2.1",
       "Description": "Add correct task bar icon."
     },

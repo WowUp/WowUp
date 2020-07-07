@@ -10,7 +10,8 @@ namespace WowUp.WPF.Repositories.Contracts
         bool AddItems(IEnumerable<T> item);
         bool SaveItems(IEnumerable<T> items);
         bool UpdateItem(T item);
-        bool DeleteItem(string id);
+        bool DeleteItem(T item);
+        bool DeleteItems(IEnumerable<T> addons);
         IEnumerable<T> Query(Func<TableQuery<T>, TableQuery<T>> action);
         T Query(Func<TableQuery<T>, T> action);
     }

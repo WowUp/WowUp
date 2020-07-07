@@ -31,7 +31,7 @@ namespace WowUp.WPF.Repositories.Base
             {
                 _database.Execute("PRAGMA journal_mode = 'wal'");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // eat
             }

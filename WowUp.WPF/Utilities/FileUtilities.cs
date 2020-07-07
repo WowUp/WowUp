@@ -10,6 +10,7 @@ namespace WowUp.WPF.Utilities
             .GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
         public static readonly string AppDataPath = Path.Combine(LocalAppDataPath, "WowUp");
+        public static readonly string AppLogsPath = Path.Combine(AppDataPath, "Logs");
 
         static FileUtilities()
         {

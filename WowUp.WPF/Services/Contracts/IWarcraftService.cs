@@ -9,6 +9,7 @@ namespace WowUp.WPF.Services.Contracts
         Task<IList<string>> GetWowClientNames();
         Task<IList<WowClientType>> GetWowClients();
 
+        bool ValidateWowFolder(string wowFolder);
         Task<string> GetWowFolderPath();
         Task<bool> SetWowFolderPath(string folderPath);
         Task<string> GetRetailFolderPath();

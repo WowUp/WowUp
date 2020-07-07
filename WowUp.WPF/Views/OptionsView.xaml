@@ -24,6 +24,8 @@
                 <TextBlock FontSize="15" Text="World of Warcraft install location" />
                 <TextBox Margin="0, 10" Text="{Binding WowLocation}" IsEnabled="False" FontSize="14"/>
                 <Button x:Name="SelectLocationButton" Click="SelectLocationButton_Click" Style="{StaticResource purpleButton}">Select Location</Button>
+                <TextBlock FontSize="15" Text="Log files" Margin="0 10 0 5" />
+                <Button x:Name="ShowLogsButton" Command="{Binding ShowLogsCommand}" Style="{StaticResource purpleButton}">Show Log Files</Button>
             </StackPanel>
         </Border>
     </Grid>

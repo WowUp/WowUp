@@ -10,6 +10,7 @@ using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using WowUp.WPF.Extensions;
+using Serilog;
 
 namespace WowUp.WPF.Services
 {
@@ -106,6 +107,8 @@ namespace WowUp.WPF.Services
         public Task<string> GetWowFolderPath()
         {
             var preference = GetWowLocationPreference();
+            Log.Debug($"Wow Preference {preference?.Value}");
+
             return Task.FromResult(preference?.Value);
         }
         
@@ -134,9 +137,12 @@ namespace WowUp.WPF.Services
         public async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
         {
             var addonsPath = await GetAddonFolderPath(clientType);
+            Log.Debug($"AddonsPath {addonsPath}");
 
             var addons = new List<AddonFolder>();
             var addonDirectories = Directory.GetDirectories(addonsPath);
+            Log.Debug($"addonDirectories {addonDirectories.Length}");
+
             foreach (var directory in addonDirectories)
             {
                 var directoryInfo = new DirectoryInfo(directory);
@@ -152,14 +158,18 @@ namespace WowUp.WPF.Services
             return _preferenceRepository.FindByKey(WowLocationPreferenceKey);
         }
 
-        private bool ValidateWowFolder(string wowFolder)
+        public bool ValidateWowFolder(string wowFolder)
         {
             try
             {
                 var directories = Directory.GetDirectories(wowFolder);
-                return directories.Any(dir => FolderNames.Any(fn => dir.Contains(fn)));
+                return directories.Any(dir =>
+                {
+                    var dirName = Path.GetFileName(dir);
+                    return FolderNames.Any(fn => dirName.Contains(fn));
+                });
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return false;
             }

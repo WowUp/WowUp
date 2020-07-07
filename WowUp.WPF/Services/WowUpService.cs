@@ -4,8 +4,10 @@ using Serilog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
@@ -25,6 +27,11 @@ namespace WowUp.WPF.Services
         public WowUpService(IMemoryCache memoryCache)
         {
             _cache = memoryCache;
+        }
+
+        public void ShowLogsFolder()
+        {
+            FileUtilities.AppLogsPath.OpenUrlInBrowser();
         }
 
         public async Task<bool> IsUpdateAvailable()
@@ -54,7 +61,6 @@ namespace WowUp.WPF.Services
             {
                 return string.Empty;
             }
-
 
             return changeLogFile.ChangeLogs?.FirstOrDefault()?.Version ?? string.Empty;
         }
