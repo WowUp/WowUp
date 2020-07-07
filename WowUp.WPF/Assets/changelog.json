@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.2.5",
+      "Description": "Jazz up the about page."
+    },
+    {
       "Version": "1.2.4",
       "Description": "More protection against weird toc files.\nImprovements to re-scan function."
     },

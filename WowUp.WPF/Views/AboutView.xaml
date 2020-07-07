@@ -56,7 +56,19 @@
                 <Border Padding="10" Grid.Row="0">
                     <TextBlock Text="Change Log" FontSize="18"/>
                 </Border>
-                <ListView ItemsSource="{Binding ChangeLogs}" Grid.Row="1"
+                <ItemsControl Padding="10" ItemsSource="{Binding ChangeLogs}" Grid.Row="1">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0 10" Padding="10 0" BorderBrush="{StaticResource Purple1}" BorderThickness="1 0 0 0">
+                                <StackPanel >
+                                    <TextBlock FontSize="13" FontWeight="Medium" Text="{Binding Version}" />
+                                    <TextBlock FontSize="12" Text="{Binding Description}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <!--<ListView ItemsSource="{Binding ChangeLogs}" Grid.Row="1"
                       Background="Transparent"
                       BorderBrush="Transparent">
                     <ListView.ItemContainerStyle>
@@ -80,7 +92,7 @@
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                </ListView>-->
             </Grid>
         </Grid>
     </ScrollViewer>

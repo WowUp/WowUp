@@ -34,6 +34,11 @@ namespace WowUp.WPF.ViewModels
             Version = $"v{_wowUpService.CurrentVersionString}";
 
             var changeLogFile = await _wowUpService.GetChangeLogFile();
+            if(changeLogFile == null)
+            {
+                return;
+            }
+
             foreach(var changeLog in changeLogFile.ChangeLogs)
             {
                 ChangeLogs.Add(changeLog);
