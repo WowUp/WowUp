@@ -2,7 +2,7 @@
   <img src="https://wowup.io/images/wowup_logo_512np.png" width="200" />
 </p>
 
-![Discord](https://img.shields.io/discord/730098865717379122)
+[![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/wMJVXXQ) 
 
 # WowUp
 WowUp the World of Warcraft addon updater
