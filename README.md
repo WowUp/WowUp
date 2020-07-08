@@ -2,7 +2,7 @@
   <img src="https://wowup.io/images/wowup_logo_512np.png" width="200" />
 </p>
 
-[![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/wMJVXXQ) 
+[![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/rk4F5aD) 
 
 # WowUp
 WowUp the World of Warcraft addon updater
@@ -14,6 +14,7 @@ If you have any ideas/requests for the feature list let me know!
 - [x] Create feature List
 - [x] Scan for already installed addons
 - [x] Update addons that were scanned
+- [ ] TukUI Support
 - [ ] Install new addons
 - [ ] Browse addons
 - [ ] Mac client?
