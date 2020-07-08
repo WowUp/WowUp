@@ -66,8 +66,8 @@ namespace WowUp.WPF.Entities
             set { SetProperty(ref _installedAt, value); }
         }
 
-        private int _curseAddonId;
-        public int CurseAddonId
+        private string _curseAddonId;
+        public string CurseAddonId
         {
             get => _curseAddonId;
             set { SetProperty(ref _curseAddonId, value); }

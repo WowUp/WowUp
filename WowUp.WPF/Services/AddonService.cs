@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
@@ -31,9 +32,10 @@ namespace WowUp.WPF.Services
         protected readonly IWarcraftService _warcraftService;
 
         public string DownloadPath => Path.Combine(FileUtilities.AppDataPath, DownloadFolder);
-        public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder); 
+        public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
         public AddonService(
+            IServiceProvider serviceProvider,
             IAddonRepository addonRepository,
             IDownloadSevice downloadSevice,
             IWarcraftService warcraftService)
@@ -44,7 +46,8 @@ namespace WowUp.WPF.Services
 
             _providers = new List<IAddonProvider>
             {
-                new CurseAddonProvider()
+               serviceProvider.GetService<CurseAddonProvider>(),
+               serviceProvider.GetService<TukUiAddonProvider>()
             };
 
             InitializeDirectories();
@@ -79,27 +82,34 @@ namespace WowUp.WPF.Services
         private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
         {
             var addonIds = addons.Select(addon => addon.CurseAddonId);
-            var addonTasks = _providers.Select(p => p.GetAll(clientType, addonIds));
-            var addonResults = await Task.WhenAll(addonTasks);
-            var addonResultsConcat = addonResults.SelectMany(res => res);
-
-            foreach(var addon in addons)
+            try
             {
-                var match = addonResultsConcat.FirstOrDefault(a => a.ExternalId == addon.CurseAddonId);
-                if(match == null || match.Version == addon.LatestVersion)
-                {
-                    continue;
-                }
+                var addonTasks = _providers.Select(p => p.GetAll(clientType, addonIds));
+                var addonResults = await Task.WhenAll(addonTasks);
+                var addonResultsConcat = addonResults.SelectMany(res => res);
 
-                addon.LatestVersion = match.Version;
-                addon.Name = match.Name;
-                addon.Author = match.Author;
-                addon.DownloadUrl = match.DownloadUrl;
-                addon.GameVersion = match.GameVersion;
-                addon.ThumbnailUrl = match.ThumbnailUrl;
-                addon.ExternalUrl = match.ExternalUrl;
-                
-                _addonRepository.UpdateItem(addon);
+                foreach (var addon in addons)
+                {
+                    var match = addonResultsConcat.FirstOrDefault(a => a.ExternalId == addon.CurseAddonId);
+                    if (match == null || match.Version == addon.LatestVersion)
+                    {
+                        continue;
+                    }
+
+                    addon.LatestVersion = match.Version;
+                    addon.Name = match.Name;
+                    addon.Author = match.Author;
+                    addon.DownloadUrl = match.DownloadUrl;
+                    addon.GameVersion = match.GameVersion;
+                    addon.ThumbnailUrl = match.ThumbnailUrl;
+                    addon.ExternalUrl = match.ExternalUrl;
+
+                    _addonRepository.UpdateItem(addon);
+                }
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "Failed to sync addons");
             }
         }
 
@@ -136,7 +146,7 @@ namespace WowUp.WPF.Services
                 addon.InstalledAt = DateTime.UtcNow;
                 _addonRepository.UpdateItem(addon);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "InstallAddon");
                 Console.WriteLine(ex);
@@ -231,7 +241,7 @@ namespace WowUp.WPF.Services
 
         public async Task<List<Addon>> MapAll(IEnumerable<Addon> addons, WowClientType clientType)
         {
-            if(addons == null)
+            if (addons == null)
             {
                 Log.Warning("Addon list was null");
                 return new List<Addon>();
@@ -254,7 +264,7 @@ namespace WowUp.WPF.Services
                     addon.GameVersion = firstResult.GameVersion;
                     addon.Author = firstResult.Author;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.Error(ex, "Failed to map addon");
                 }
@@ -279,7 +289,7 @@ namespace WowUp.WPF.Services
 
                     results[addon.Name] = addon;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.Error(ex, $"Failed to map addon folder {addonFolder.Name}");
                 }

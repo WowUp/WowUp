@@ -10,7 +10,7 @@ namespace WowUp.WPF.Models
         public string GameVersion { get; set; }
         public string ThumbnailUrl { get; set; }
         public IEnumerable<string> Folders { get; set; }
-        public int ExternalId { get; set; }
+        public string ExternalId { get; set; }
         public string DownloadUrl { get; set; }
         public string ExternalUrl { get; set; }
     }

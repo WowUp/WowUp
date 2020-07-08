@@ -3,6 +3,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Windows;
+using WowUp.WPF.AddonProviders;
 using WowUp.WPF.Repositories;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services;
@@ -66,6 +67,9 @@ namespace WowUp.WPF
             services.AddTransient<AboutView>();
             services.AddTransient<AddonsView>();
             services.AddTransient<OptionsView>();
+
+            services.AddTransient<CurseAddonProvider>();
+            services.AddTransient<TukUiAddonProvider>();
 
             services.AddSingleton<MainWindow>();
 

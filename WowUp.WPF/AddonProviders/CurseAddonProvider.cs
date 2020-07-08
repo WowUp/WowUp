@@ -47,7 +47,7 @@ namespace WowUp.WPF.AddonProviders
             return results;
         }
 
-        public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<int> addonIds)
+        public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
         {
             var addonResults = new List<AddonSearchResult>();
             if (!addonIds.Any())
@@ -91,7 +91,7 @@ namespace WowUp.WPF.AddonProviders
                 return new AddonSearchResult
                 {
                     Author = author,
-                    ExternalId = id,
+                    ExternalId = id.ToString(),
                     Folders = folders,
                     GameVersion = gameVersion,
                     Name = name,
@@ -157,7 +157,7 @@ namespace WowUp.WPF.AddonProviders
                 .FirstOrDefault(f => f.IsDefault && !string.IsNullOrEmpty(f.ThumbnailUrl))?.ThumbnailUrl;
         }
 
-        private async Task<IList<CurseSearchResult>> GetAllIds(IEnumerable<int> addonIds)
+        private async Task<IList<CurseSearchResult>> GetAllIds(IEnumerable<string> addonIds)
         {
             var url = $"{ApiUrl}/addon";
 
