@@ -17,7 +17,8 @@
         Margin="0"
         BorderBrush="Transparent"
         ResizeMode="CanResize"
-        StateChanged="Window_StateChanged">
+        StateChanged="Window_StateChanged"
+        IsVisibleChanged="Window_IsVisibleChanged">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32"

@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.4.0",
+      "Description": "Add collapse to system tray."
+    },
+    {
       "Version": "1.3.0",
       "Description": "Requires Re-Scan.\nAdd support for TukUI/ElvUI."
     },
