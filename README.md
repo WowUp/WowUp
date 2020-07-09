@@ -14,7 +14,7 @@ If you have any ideas/requests for the feature list let me know!
 - [x] Create feature List
 - [x] Scan for already installed addons
 - [x] Update addons that were scanned
-- [ ] TukUI Support
+- [x] TukUI Support
 - [ ] Install new addons
 - [ ] Browse addons
 - [ ] Mac client?
