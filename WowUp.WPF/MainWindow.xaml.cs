@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Forms;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.ViewModels;
 
 namespace WowUp.WPF
@@ -14,6 +15,7 @@ namespace WowUp.WPF
         private readonly NotifyIcon _notifyIcon;
 
         public MainWindow(
+            IAnalyticsService analyticsService,
             MainWindowViewModel viewModel)
         {
             _notifyIcon = CreateNotifyIcon();

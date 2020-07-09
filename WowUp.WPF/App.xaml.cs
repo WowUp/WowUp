@@ -77,6 +77,7 @@ namespace WowUp.WPF
             services.AddSingleton<IWarcraftService, WarcraftService>();
             services.AddSingleton<IDownloadSevice, DownloadService>();
             services.AddSingleton<IWowUpService, WowUpService>();
+            services.AddSingleton<IAnalyticsService, AnalyticsService>();
 
             services.AddSingleton<IAddonRepository, AddonRepository>();
             services.AddSingleton<IPreferenceRepository, PreferenceRepository>();

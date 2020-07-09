@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.5.0",
+      "Description": "Add install tracking analytics."
+    },
+    {
       "Version": "1.4.0",
       "Description": "Add collapse to system tray."
     },
