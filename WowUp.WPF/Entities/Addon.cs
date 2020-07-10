@@ -66,11 +66,18 @@ namespace WowUp.WPF.Entities
             set { SetProperty(ref _installedAt, value); }
         }
 
-        private string _curseAddonId;
-        public string CurseAddonId
+        private string _externalId;
+        public string ExternalId
         {
-            get => _curseAddonId;
-            set { SetProperty(ref _curseAddonId, value); }
+            get => _externalId;
+            set { SetProperty(ref _externalId, value); }
+        }
+
+        private string _providerName;
+        public string ProviderName
+        {
+            get => _providerName;
+            set { SetProperty(ref _providerName, value); }
         }
 
         private string _externalUrl;

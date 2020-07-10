@@ -63,10 +63,12 @@ namespace WowUp.WPF
             services.AddTransient<AddonsViewViewModel>();
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<OptionsViewModel>();
+            services.AddTransient<InstallUrlDialogViewModel>();
 
             services.AddTransient<AboutView>();
             services.AddTransient<AddonsView>();
             services.AddTransient<OptionsView>();
+            services.AddTransient<InstallUrlWindow>();
 
             services.AddTransient<CurseAddonProvider>();
             services.AddTransient<TukUiAddonProvider>();

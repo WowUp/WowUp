@@ -5,7 +5,6 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Extensions;
@@ -27,6 +26,11 @@ namespace WowUp.WPF.AddonProviders
         public TukUiAddonProvider(IMemoryCache memoryCache)
         {
             _cache = memoryCache;
+        }
+
+        public bool IsValidAddonUri(Uri addonUri)
+        {
+            return false;
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
@@ -202,6 +206,11 @@ namespace WowUp.WPF.AddonProviders
                 default:
                     return "addon";
             }
+        }
+
+        public Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
+        {
+            throw new NotImplementedException();
         }
     }
 }

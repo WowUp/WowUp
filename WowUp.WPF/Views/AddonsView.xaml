@@ -148,6 +148,8 @@
             </Border>
             <Border Grid.Column="1" Padding="10">
                 <StackPanel Orientation="Horizontal">
+                    <!--<Button x:Name="InstallButton" Margin="0, 0, 10, 0" Command="{Binding InstallCommand}" 
+                            Style="{StaticResource purpleButton}">Install</Button>-->
                     <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0" Click="UpdateAllButton_Click" 
                             IsEnabled="{Binding EnableUpdateAll}"
                             Style="{StaticResource purpleButton}">Update All</Button>

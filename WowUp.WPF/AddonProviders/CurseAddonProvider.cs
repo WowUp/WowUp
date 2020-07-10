@@ -17,6 +17,40 @@ namespace WowUp.WPF.AddonProviders
 
         public string Name => "Curse";
 
+        public bool IsValidAddonUri(Uri addonUri)
+        {
+            return string.IsNullOrEmpty(addonUri.Host) == false && 
+                addonUri.Host.EndsWith("curseforge.com") &&
+                addonUri.LocalPath.StartsWith("/wow/addons");
+        }
+
+
+        /// <summary>
+        /// This is a basic method, curse api does not search via slug, so you have to get lucky basically.
+        /// Could pre-make a map for slug to addon if wanted.
+        /// </summary>
+        /// <param name="addonUri"></param>
+        /// <param name="clientType"></param>
+        /// <returns></returns>
+        public async Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
+        {
+            var addonSlug = addonUri.LocalPath.Split('/').Last();
+            var response = await GetSearchResults(addonSlug);
+            var result = response.FirstOrDefault(res => res.Slug == addonSlug);
+            if (result == null)
+            {
+                return null;
+            }
+
+            var latestFile = GetLatestFile(result, clientType);
+            if(latestFile == null)
+            {
+                return null;
+            }
+
+            return GetAddonSearchResult(result, latestFile);
+        }
+
         public async Task<IEnumerable<AddonSearchResult>> Search(
             string addonName,
             string folderName,
@@ -117,11 +151,16 @@ namespace WowUp.WPF.AddonProviders
         {
             var clientTypeStr = GetClientTypeString(clientType);
 
+            if (addonName.Contains("Simu"))
+            {
+
+            }
             return results.
                 Where(r =>
                     r.Name == addonName ||
                     r.LatestFiles.Any(f => f.ReleaseType == CurseReleaseType.Release &&
                         f.GameVersionFlavor == clientTypeStr &&
+                        f.IsAlternate == false &&
                         f.Modules.Any(m => m.Foldername == folderName)))
                 .ToList();
         }
@@ -147,8 +186,9 @@ namespace WowUp.WPF.AddonProviders
             var clientTypeStr = GetClientTypeString(clientType);
 
             return result.LatestFiles
-                    .OrderByDescending(f => f.Id)
-                    .FirstOrDefault(f => f.GameVersionFlavor == clientTypeStr && f.ReleaseType == CurseReleaseType.Release);
+                .Where(f => f.IsAlternate == false)
+                .OrderByDescending(f => f.Id)
+                .FirstOrDefault(f => f.GameVersionFlavor == clientTypeStr && f.ReleaseType == CurseReleaseType.Release);
         }
 
         private string GetThumbnailUrl(CurseSearchResult result)
@@ -206,7 +246,5 @@ namespace WowUp.WPF.AddonProviders
                     return "wow_retail";
             }
         }
-
-
     }
 }

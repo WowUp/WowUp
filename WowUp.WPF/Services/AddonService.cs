@@ -12,6 +12,7 @@ using WowUp.WPF.Models;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using WowUp.WPF.Errors;
 
 namespace WowUp.WPF.Services
 {
@@ -81,7 +82,7 @@ namespace WowUp.WPF.Services
 
         private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
         {
-            var addonIds = addons.Select(addon => addon.CurseAddonId);
+            var addonIds = addons.Select(addon => addon.ExternalId);
             try
             {
                 var addonTasks = _providers.Select(p => p.GetAll(clientType, addonIds));
@@ -90,7 +91,7 @@ namespace WowUp.WPF.Services
 
                 foreach (var addon in addons)
                 {
-                    var match = addonResultsConcat.FirstOrDefault(a => a.ExternalId == addon.CurseAddonId);
+                    var match = addonResultsConcat.FirstOrDefault(a => a.ExternalId == addon.ExternalId);
                     if (match == null || match.Version == addon.LatestVersion)
                     {
                         continue;
@@ -107,10 +108,39 @@ namespace WowUp.WPF.Services
                     _addonRepository.UpdateItem(addon);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "Failed to sync addons");
             }
+        }
+
+        public async Task InstallAddon(Uri addonUri, WowClientType clientType, Action<AddonInstallState, decimal> onUpdate = null)
+        {
+            var provider = GetAddonProvider(addonUri);
+
+            var searchResult = await provider.Search(addonUri, clientType);
+            if(searchResult == null)
+            {
+                throw new AddonNotFoundException();
+            }
+
+            var existingAddon = _addonRepository.GetByExternalId(searchResult.ExternalId, clientType);
+
+            if(existingAddon != null)
+            {
+                throw new AddonAlreadyInstalledException();
+            }
+
+            var addon = GetAddon(searchResult.Folders.FirstOrDefault(), searchResult, clientType);
+
+            _addonRepository.SaveItem(addon);
+
+            await InstallAddon(addon.Id, onUpdate);
+        }
+
+        private IAddonProvider GetAddonProvider(Uri addonUri)
+        {
+            return _providers.FirstOrDefault(provider => provider.IsValidAddonUri(addonUri));
         }
 
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
@@ -204,7 +234,7 @@ namespace WowUp.WPF.Services
                     addon.LatestVersion = localAddon.LatestVersion;
                     addon.ThumbnailUrl = localAddon.ThumbnailUrl;
                     addon.Author = localAddon.Author;
-                    addon.CurseAddonId = localAddon.CurseAddonId;
+                    addon.ExternalId = localAddon.ExternalId;
                     addon.FolderName = localAddon.FolderName;
                     addon.GameVersion = localAddon.GameVersion;
                     addon.DownloadUrl = localAddon.DownloadUrl;
@@ -342,7 +372,7 @@ namespace WowUp.WPF.Services
                 ThumbnailUrl = searchResult.ThumbnailUrl,
                 LatestVersion = searchResult.Version,
                 ClientType = clientType,
-                CurseAddonId = searchResult.ExternalId,
+                ExternalId = searchResult.ExternalId,
                 FolderName = folderName,
                 GameVersion = searchResult.GameVersion,
                 Author = searchResult.Author,

@@ -8,6 +8,7 @@ namespace WowUp.WPF.Repositories.Contracts
     {
         bool AddItem(T item);
         bool AddItems(IEnumerable<T> item);
+        bool SaveItem(T item);
         bool SaveItems(IEnumerable<T> items);
         bool UpdateItem(T item);
         bool DeleteItem(T item);

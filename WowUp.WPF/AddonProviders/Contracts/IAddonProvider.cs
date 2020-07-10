@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WowUp.WPF.Models;
 
@@ -17,5 +18,11 @@ namespace WowUp.WPF.AddonProviders.Contracts
             string folderName,
             WowClientType clientType,
             string nameOverride = null);
+
+        Task<AddonSearchResult> Search(
+            Uri addonUri, 
+            WowClientType clientType);
+
+        bool IsValidAddonUri(Uri addonUri);
     }
 }

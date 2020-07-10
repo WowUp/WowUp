@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using WowUp.WPF.Views;
+using System.Windows;
+using WowUp.WPF.Errors;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -55,10 +58,12 @@ namespace WowUp.WPF.ViewModels
         public Command RefreshCommand { get; set; }
         public Command RescanCommand { get; set; }
         public Command UpdateAllCommand { get; set; }
+        public Command InstallCommand { get; set; }
 
         public ObservableCollection<ComboBoxItem> ClientNames { get; set; }
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
 
+        public WowClientType SelectedClientType => _clientTypes[SelectedWowIndex];
 
         public AddonsViewViewModel(
             IServiceProvider serviceProvider,
@@ -80,6 +85,7 @@ namespace WowUp.WPF.ViewModels
             RefreshCommand = new Command(async () => await LoadItems());
             RescanCommand = new Command(async () => await LoadItems(true));
             UpdateAllCommand = new Command(async () => await UpdateAll());
+            InstallCommand = new Command(async () => await InstallNewAddon());
 
             _clientTypes = await _warcraftService.GetWowClients();
             _clientNames = await _warcraftService.GetWowClientNames();
@@ -106,6 +112,53 @@ namespace WowUp.WPF.ViewModels
                 });
 
             EnableUpdateAll = true;
+        }
+
+        private async Task InstallNewAddon()
+        {
+            // Instantiate the dialog box
+            var dlg = _serviceProvider.GetService<InstallUrlWindow>();
+
+            // Configure the dialog box
+            dlg.Owner = Application.Current.MainWindow;
+
+            // Open the dialog box modally
+            if (dlg.ShowDialog() == false)
+            {
+                return;
+            }
+
+            var result = (dlg.DataContext as InstallUrlDialogViewModel).Input;
+            if (string.IsNullOrEmpty(result))
+            {
+                return;
+            }
+
+            Uri uri;
+            try
+            {
+                uri = new Uri(result);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Input was not a valid URL.");
+                return;
+            }
+
+            try
+            {
+                await _addonService.InstallAddon(uri, SelectedClientType);
+            }
+            catch (AddonNotFoundException)
+            {
+                MessageBox.Show("Addon not found");
+            }
+            catch (AddonAlreadyInstalledException)
+            {
+                MessageBox.Show("Addon already installed");
+            }
+
+            await LoadItems();
         }
 
         public async Task LoadItems(bool forceReload = false)

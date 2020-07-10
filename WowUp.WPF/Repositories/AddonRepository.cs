@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models;
 using WowUp.WPF.Repositories.Base;
 using WowUp.WPF.Repositories.Contracts;
 
@@ -11,6 +12,11 @@ namespace WowUp.WPF.Repositories
     public class AddonRepository : BaseRepository<Addon>, IAddonRepository
     {
         public bool AddItem(Addon item)
+        {
+            return SaveItem(item);
+        }
+
+        public bool SaveItem(Addon item)
         {
             lock (_collisionLock)
             {
@@ -124,6 +130,12 @@ namespace WowUp.WPF.Repositories
             }
 
             return true;
+        }
+
+        public Addon GetByExternalId(string externalId, WowClientType clientType)
+        {
+            return Query(addons => 
+                addons.FirstOrDefault(ad => ad.ClientType == clientType && ad.ExternalId == externalId));
         }
     }
 }

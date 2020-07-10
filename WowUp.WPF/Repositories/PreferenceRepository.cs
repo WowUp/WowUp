@@ -17,6 +17,11 @@ namespace WowUp.WPF.Repositories
 
         public bool AddItem(Preference item)
         {
+            return SaveItem(item);
+        }
+
+        public bool SaveItem(Preference item)
+        {
             lock (_collisionLock)
             {
                 item.UpdatedAt = DateTime.UtcNow;

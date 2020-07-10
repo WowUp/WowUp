@@ -13,7 +13,14 @@ namespace WowUp.WPF.Services.Contracts
 
         Addon GetAddon(int addonId);
 
-        Task InstallAddon(int addonId, Action<AddonInstallState, decimal> onUpdate);
+        Task InstallAddon(
+            Uri addonUri,
+            WowClientType clientType, 
+            Action<AddonInstallState, decimal> onUpdate = null);
+
+        Task InstallAddon(
+            int addonId, 
+            Action<AddonInstallState, decimal> onUpdate);
 
         Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false);
     }
