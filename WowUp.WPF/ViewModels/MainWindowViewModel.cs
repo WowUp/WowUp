@@ -130,6 +130,14 @@ namespace WowUp.WPF.ViewModels
                 Content = _serviceProvider.GetService<AddonsView>()
             };
 
+            var getAddonsTab = new TabItem
+            {
+                Name = "GetAddons",
+                Header = "Get Addons",
+                Style = tabStyle,
+                Content = _serviceProvider.GetService<GetAddonsView>()
+            };
+
             var aboutTab = new TabItem
             {
                 Name = "About",
@@ -147,6 +155,7 @@ namespace WowUp.WPF.ViewModels
             };
 
             TabItems.Add(addonsTab);
+            TabItems.Add(getAddonsTab);
             TabItems.Add(aboutTab);
             TabItems.Add(optionsTab);
         }

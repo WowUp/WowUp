@@ -21,9 +21,6 @@ namespace WowUp.WPF.Services
 
         private readonly IMemoryCache _cache;
 
-        public Version CurrentVersion => GetType().Assembly.GetName().Version;
-        public string CurrentVersionString => GetType().Assembly.GetName().Version.ToString();
-
         public WowUpService(IMemoryCache memoryCache)
         {
             _cache = memoryCache;
@@ -43,7 +40,7 @@ namespace WowUp.WPF.Services
             }
 
             var latestVersion = new Version(latestVersionStr);
-            var currentVersion = CurrentVersion;
+            var currentVersion = AppUtilities.CurrentVersion;
 
             return latestVersion > currentVersion;
         }

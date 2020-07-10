@@ -16,6 +16,8 @@ namespace WowUp.WPF.AddonProviders
     public class TukUiAddonProvider : IAddonProvider
     {
         private const string ApiUrl = "https://www.tukui.org/api.php";
+        private const string RetailAddonKey = "addon";
+        private const string ClassicAddonKey = "classic-addon";
         private const string ElvUiRetailTocUrl = "https://git.tukui.org/elvui/elvui/-/raw/master/ElvUI/ElvUI.toc";
         private const string TukUiRetailTocUrl = "https://git.tukui.org/Tukz/Tukui/-/raw/master/Tukui/Tukui.toc";
 
@@ -31,6 +33,13 @@ namespace WowUp.WPF.AddonProviders
         public bool IsValidAddonUri(Uri addonUri)
         {
             return false;
+        }
+
+        public async Task<AddonSearchResult> GetById(
+            string addonId,
+            WowClientType clientType)
+        {
+            return null;
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
@@ -211,6 +220,11 @@ namespace WowUp.WPF.AddonProviders
         public Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
+        {
+            return new List<PotentialAddon>();
         }
     }
 }

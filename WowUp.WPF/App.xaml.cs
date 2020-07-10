@@ -33,7 +33,7 @@ namespace WowUp.WPF
                 .WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .CreateLogger();
 
-            Log.Information($"Starting {GetType().Assembly.GetName().Version}");
+            Log.Information($"Starting {AppUtilities.CurrentVersion}");
 
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
@@ -61,12 +61,15 @@ namespace WowUp.WPF
             services.AddTransient<AboutViewModel>();
             services.AddTransient<AddonListItemViewModel>();
             services.AddTransient<AddonsViewViewModel>();
+            services.AddTransient<GetAddonsViewModel>();
+            services.AddTransient<InstallUrlDialogViewModel>();
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<OptionsViewModel>();
-            services.AddTransient<InstallUrlDialogViewModel>();
+            services.AddTransient<PotentialAddonListItemViewModel>();
 
             services.AddTransient<AboutView>();
             services.AddTransient<AddonsView>();
+            services.AddTransient<GetAddonsView>();
             services.AddTransient<OptionsView>();
             services.AddTransient<InstallUrlWindow>();
 

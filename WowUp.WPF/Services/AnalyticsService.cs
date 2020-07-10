@@ -43,6 +43,7 @@ namespace WowUp.WPF.Services
                     .SetQueryParam("t", "pageview")
                     .SetQueryParam("dp", "startup")
                     .SetQueryParam("ua", HttpUtilities.UserAgent)
+                    .SetQueryParam("av", HttpUtilities.UserAgent)
                     .PostJsonAsync(new { });
             }
             catch (Exception)

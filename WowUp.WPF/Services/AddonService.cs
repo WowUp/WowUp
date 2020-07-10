@@ -54,9 +54,24 @@ namespace WowUp.WPF.Services
             InitializeDirectories();
         }
 
+        public bool IsInstalled(string externalId, WowClientType clientType)
+        {
+            return _addonRepository.GetByExternalId(externalId, clientType) != null;
+        }
+
+
         public Addon GetAddon(int addonId)
         {
             return _addonRepository.Query(table => table.FirstOrDefault(a => a.Id == addonId));
+        }
+
+        public async Task<List<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
+        {
+            var addonTasks = _providers.Select(p => p.GetFeaturedAddons(clientType));
+            var addonResults = await Task.WhenAll(addonTasks);
+            var addonResultsConcat = addonResults.SelectMany(res => res);
+
+            return addonResultsConcat.ToList();
         }
 
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
@@ -114,7 +129,32 @@ namespace WowUp.WPF.Services
             }
         }
 
-        public async Task InstallAddon(Uri addonUri, WowClientType clientType, Action<AddonInstallState, decimal> onUpdate = null)
+        public async Task InstallAddon(
+            PotentialAddon potentialAddon,
+            WowClientType clientType,
+            Action<AddonInstallState, decimal> onUpdate = null)
+        {
+            var provider = _providers.First(p => p.Name == potentialAddon.ProviderName);
+            var searchResult = await provider.GetById(potentialAddon.ExternalId, clientType);
+
+            var existingAddon = _addonRepository.GetByExternalId(searchResult.ExternalId, clientType);
+
+            if (existingAddon != null)
+            {
+                throw new AddonAlreadyInstalledException();
+            }
+
+            var addon = GetAddon(searchResult.Folders.FirstOrDefault(), searchResult, clientType);
+
+            _addonRepository.SaveItem(addon);
+
+            await InstallAddon(addon.Id, onUpdate);
+        }
+
+        public async Task InstallAddon(
+            Uri addonUri, 
+            WowClientType clientType, 
+            Action<AddonInstallState, decimal> onUpdate = null)
         {
             var provider = GetAddonProvider(addonUri);
 

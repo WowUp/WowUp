@@ -8,6 +8,7 @@
     <SolidColorBrush x:Key="Dark3">#444444</SolidColorBrush>
     <SolidColorBrush x:Key="White1">#FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="White2">#DDDDDD</SolidColorBrush>
+    <SolidColorBrush x:Key="White3">#CCCCCC</SolidColorBrush>
     <SolidColorBrush x:Key="Purple1">#6B69D6</SolidColorBrush>
     <SolidColorBrush x:Key="Purple2">#504FA1</SolidColorBrush>
     <SolidColorBrush x:Key="Purple3">#383773</SolidColorBrush>
@@ -337,6 +338,37 @@
                             <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{StaticResource White2}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!--PLACEHOLDER TEXT-->
+    <Style x:Key="placeHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <TextBox Text="{Binding Path=Text,
+                                                RelativeSource={RelativeSource TemplatedParent}, 
+                                                Mode=TwoWay,
+                                                UpdateSourceTrigger=PropertyChanged}"
+                                 x:Name="textSource" 
+                                 Background="Transparent" 
+                                 Panel.ZIndex="2" />
+                        <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
+                            <TextBox.Style>
+                                <Style TargetType="{x:Type TextBox}">
+                                    <Setter Property="Foreground" Value="Transparent"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
+                                            <Setter Property="Foreground" Value="LightGray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

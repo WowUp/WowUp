@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -31,7 +32,7 @@ namespace WowUp.WPF.ViewModels
 
         private async void InitializeView()
         {
-            Version = $"v{_wowUpService.CurrentVersionString}";
+            Version = $"v{AppUtilities.CurrentVersionString}";
 
             var changeLogFile = await _wowUpService.GetChangeLogFile();
             if(changeLogFile == null)

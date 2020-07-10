@@ -19,11 +19,31 @@ namespace WowUp.WPF.AddonProviders
 
         public bool IsValidAddonUri(Uri addonUri)
         {
-            return string.IsNullOrEmpty(addonUri.Host) == false && 
+            return string.IsNullOrEmpty(addonUri.Host) == false &&
                 addonUri.Host.EndsWith("curseforge.com") &&
                 addonUri.LocalPath.StartsWith("/wow/addons");
         }
 
+        public async Task<AddonSearchResult> GetById(
+            string addonId,
+            WowClientType clientType)
+        {
+            var url = $"{ApiUrl}/addon/{addonId}";
+
+            var result = await url.GetJsonAsync<CurseSearchResult>();
+            if (result == null)
+            {
+                return null;
+            }
+
+            var latestFile = GetLatestFile(result, clientType);
+            if (latestFile == null)
+            {
+                return null;
+            }
+
+            return GetAddonSearchResult(result, latestFile);
+        }
 
         /// <summary>
         /// This is a basic method, curse api does not search via slug, so you have to get lucky basically.
@@ -43,7 +63,7 @@ namespace WowUp.WPF.AddonProviders
             }
 
             var latestFile = GetLatestFile(result, clientType);
-            if(latestFile == null)
+            if (latestFile == null)
             {
                 return null;
             }
@@ -109,6 +129,31 @@ namespace WowUp.WPF.AddonProviders
             return addonResults;
         }
 
+        public async Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
+        {
+            var featured = await GetFeaturedAddonList();
+
+            featured = FilterClientType(featured, clientType);
+
+            return featured.Select(f => GetPotentialAddon(f)).ToList();
+        }
+
+        private IList<CurseSearchResult> FilterClientType(IEnumerable<CurseSearchResult> results, WowClientType clientType)
+        {
+            var clientTypeStr = GetClientTypeString(clientType);
+
+            return results
+                .Where(r => r.LatestFiles.Any(f => DoesFileMatchClientType(f, clientTypeStr)))
+                .ToList();
+        }
+
+        private bool DoesFileMatchClientType(CurseFile file, string clientTypeStr)
+        {
+            return file.ReleaseType == CurseReleaseType.Release &&
+                file.GameVersionFlavor == clientTypeStr &&
+                file.IsAlternate == false;
+        }
+
         private AddonSearchResult GetAddonSearchResult(CurseSearchResult result, CurseFile latestFile)
         {
             try
@@ -151,10 +196,6 @@ namespace WowUp.WPF.AddonProviders
         {
             var clientTypeStr = GetClientTypeString(clientType);
 
-            if (addonName.Contains("Simu"))
-            {
-
-            }
             return results.
                 Where(r =>
                     r.Name == addonName ||
@@ -231,6 +272,48 @@ namespace WowUp.WPF.AddonProviders
                 Console.WriteLine(ex);
                 return new List<CurseSearchResult>();
             }
+        }
+
+        private async Task<IList<CurseSearchResult>> GetFeaturedAddonList()
+        {
+            var url = $"{ApiUrl}/addon/featured";
+
+            try
+            {
+                var body = new
+                {
+                    GameId = 1,
+                    featuredCount = 6,
+                    popularCount = 50,
+                    updatedCount = 0
+                };
+
+                var response = await url
+                    .PostJsonAsync(body)
+                    .ReceiveJson<CurseGetFeaturedResponse>();
+
+                return response.Popular.ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "GetSearchResults");
+                Console.WriteLine(ex);
+                return new List<CurseSearchResult>();
+            }
+        }
+
+        private PotentialAddon GetPotentialAddon(CurseSearchResult searchResult)
+        {
+            return new PotentialAddon
+            {
+                ProviderName = Name,
+                Name = searchResult.Name,
+                DownloadCount = (int)searchResult.DownloadCount,
+                ThumbnailUrl = GetThumbnailUrl(searchResult),
+                ExternalId = searchResult.Id.ToString(),
+                ExternalUrl = searchResult.WebsiteUrl,
+                Author = GetAuthor(searchResult)
+            };
         }
 
         private string GetClientTypeString(WowClientType clientType)

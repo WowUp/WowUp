@@ -50,7 +50,6 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _enableUpdateAll, value); }
         }
 
-        private bool IsRetailSelected => SelectedWowIndex == 0;
         private IList<WowClientType> _clientTypes = new List<WowClientType>();
         private IList<string> _clientNames = new List<string>();
 

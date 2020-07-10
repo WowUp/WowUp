@@ -8,9 +8,6 @@ namespace WowUp.WPF.Services.Contracts
     {
         void ShowLogsFolder();
 
-        Version CurrentVersion { get; }
-        string CurrentVersionString { get; }
-
         Task<bool> IsUpdateAvailable();
         Task<string> GetLatestVersion();
         Task<string> GetLatestVersionUrl();

@@ -9,6 +9,8 @@ namespace WowUp.WPF.AddonProviders.Contracts
     {
         string Name { get; }
 
+        Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType);
+
         Task<IList<AddonSearchResult>> GetAll(
             WowClientType clientType, 
             IEnumerable<string> addonIds);
@@ -18,6 +20,10 @@ namespace WowUp.WPF.AddonProviders.Contracts
             string folderName,
             WowClientType clientType,
             string nameOverride = null);
+
+        Task<AddonSearchResult> GetById(
+            string addonId,
+            WowClientType clientType);
 
         Task<AddonSearchResult> Search(
             Uri addonUri, 

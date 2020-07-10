@@ -13,6 +13,17 @@ namespace WowUp.WPF.Services.Contracts
 
         Addon GetAddon(int addonId);
 
+        bool IsInstalled(
+            string externalId, 
+            WowClientType clientType);
+
+        Task<List<PotentialAddon>> GetFeaturedAddons(WowClientType clientType);
+
+        Task InstallAddon(
+            PotentialAddon addon,
+            WowClientType clientType,
+            Action<AddonInstallState, decimal> onUpdate = null);
+
         Task InstallAddon(
             Uri addonUri,
             WowClientType clientType, 

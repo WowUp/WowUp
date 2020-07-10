@@ -13,5 +13,6 @@ namespace WowUp.WPF.Models
         public string ExternalId { get; set; }
         public string DownloadUrl { get; set; }
         public string ExternalUrl { get; set; }
+        public string ProviderName { get; set; }
     }
 }

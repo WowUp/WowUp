@@ -141,6 +141,7 @@
                     <TextBlock Text="World of Warcraft" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 10,0"/>
                     <ComboBox SelectedIndex="{Binding SelectedWowIndex, Mode=TwoWay}"
                               Style="{StaticResource ComboBoxFlatStyle}"
+                              IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
                               SelectionChanged="ComboBox_SelectionChanged"
                               ItemsSource="{Binding ClientNames}">
                     </ComboBox>

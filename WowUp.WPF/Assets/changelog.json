@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.6.0",
+      "Description": "Add the new Get Addons screen."
+    },
+    {
+      "Version": "1.5.1",
+      "Description": "Requires Re-Scan.\nFix Curse addon filtering to not suggest 'alternate' packages.\nRename a column in the database."
+    },
+    {
       "Version": "1.5.0",
       "Description": "Add install tracking analytics."
     },
