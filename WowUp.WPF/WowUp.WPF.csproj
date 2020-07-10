@@ -10,12 +10,13 @@
     <PackageId>WowUp</PackageId>
     <Authors>Jliddev</Authors>
     <Product>WowUp</Product>
-    <Version>1.6.0</Version>
+    <Version>1.6.1</Version>
     <ApplicationIcon>wowup_logo_512np_RRT_icon.ico</ApplicationIcon>
     <Copyright>jliddev</Copyright>
     <PackageProjectUrl>https://wowup.io</PackageProjectUrl>
     <Description>World of Warcraft addon updater</Description>
     <RepositoryUrl>https://github.com/jliddev/WowUp</RepositoryUrl>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>

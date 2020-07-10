@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.6.1",
+      "Description": "Report installed versoin, jazz up the user-agent."
+    },
+    {
       "Version": "1.6.0",
       "Description": "Add the new Get Addons screen."
     },
