@@ -15,7 +15,9 @@ If you have any ideas/requests for the feature list let me know!
 - [x] Scan for already installed addons
 - [x] Update addons that were scanned
 - [x] TukUI Support
-- [ ] Install new addons
-- [ ] Browse addons
+- [x] Install new addons
+- [x] Browse addons
+- [ ] Addon Search
 - [ ] Mac client?
+- [ ] Linux Client?
 - [ ] Curse alternative?
