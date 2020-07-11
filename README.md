@@ -17,7 +17,9 @@ If you have any ideas/requests for the feature list let me know!
 - [x] TukUI Support
 - [x] Install new addons
 - [x] Browse addons
+- [ ] Uninstall option
 - [ ] Addon Search
+- [ ] Per monitor scaling on Windows
 - [ ] Mac client?
 - [ ] Linux Client?
 - [ ] Curse alternative?
