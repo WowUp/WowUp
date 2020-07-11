@@ -121,6 +121,7 @@
                               Style="{StaticResource ComboBoxFlatStyle}"
                               ItemsSource="{Binding ClientNames}">
                     </ComboBox>
+                    <Button Style="{StaticResource purpleButton}" Margin="10 0 0 0" Command="{Binding RefreshCommand}">Refresh</Button>
                 </StackPanel>
             </Border>
             <Border Grid.Column="1" Padding="10">

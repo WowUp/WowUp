@@ -176,7 +176,7 @@
             </StackPanel>
             <DataGrid Grid.Row="2" Padding="0" Margin="0" 
                       Visibility="{Binding ShowResults, Converter={StaticResource BoolToVisibilty}}"
-                      ItemsSource="{Binding DisplayAddons}" 
+                      ItemsSource="{Binding DisplayAddons}"
                       AutoGenerateColumns="False" 
                       GridLinesVisibility="Horizontal"
                       CanUserReorderColumns="False"
@@ -185,6 +185,19 @@
                       RowHeaderWidth="0"
                       BorderBrush="Transparent">
                 <DataGrid.Resources>
+                    <ContextMenu x:Key="RowMenu"
+                                 Style="{StaticResource DarkMenu}"
+                                 DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="{Binding Name}" IsEnabled="False" />
+                        <MenuItem Header="Re-Install" 
+                                  Visibility="{Binding ShowReInstall, Converter={StaticResource BoolToVisibilty}}"
+                                  Command="{Binding ReInstallCommand}"/>
+                        <Separator Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVisibilty}}" />
+                        <MenuItem Header="Uninstall"
+                                  Command="{Binding UninstallCommand}"
+                                  Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVisibilty}}" />
+                    </ContextMenu>
+                    
                     <Style TargetType="{x:Type DataGrid}">
                         <Setter Property="Background" Value="{StaticResource Dark3}"/>
                     </Style>
@@ -222,6 +235,17 @@
                         </Setter>
                     </Style>
                 </DataGrid.Resources>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow" >
+                        <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                        <Setter Property="Background" Value="{StaticResource Dark3}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource Dark1}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Addon" CellTemplate="{StaticResource AddonColumnTemplate}" Width="*" />
                     <DataGridTemplateColumn Header="Status" CellTemplate="{StaticResource StatusColumnTemplate}" Width="120" CanUserResize="False"/>

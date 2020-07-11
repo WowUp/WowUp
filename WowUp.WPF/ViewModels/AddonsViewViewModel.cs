@@ -50,6 +50,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _enableUpdateAll, value); }
         }
 
+        private AddonListItemViewModel _selectedRow;
+        public AddonListItemViewModel SelectedRow
+        {
+            get => _selectedRow;
+            set { SetProperty(ref _selectedRow, value); }
+        }
+
         private IList<WowClientType> _clientTypes = new List<WowClientType>();
         private IList<string> _clientNames = new List<string>();
 
@@ -72,6 +79,16 @@ namespace WowUp.WPF.ViewModels
             _addonService = addonService;
             _warcraftService = warcraftService;
             _serviceProvider = serviceProvider;
+
+            _addonService.AddonInstalled += async (sender, args) =>
+            {
+                await LoadItems();
+            };
+
+            _addonService.AddonUninstalled += async (sender, args) =>
+            {
+                await LoadItems();
+            };
 
             Initialize();
         }

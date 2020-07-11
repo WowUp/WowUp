@@ -97,7 +97,8 @@ namespace WowUp.WPF.AddonProviders
                 ThumbnailUrl = addon.ScreenshotUrl,
                 Version = addon.Version,
                 DownloadUrl = addon.Url,
-                ExternalUrl = addon.WebUrl
+                ExternalUrl = addon.WebUrl,
+                ProviderName = Name
             };
         }
 

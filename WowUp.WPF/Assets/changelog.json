@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.7.0",
+      "Description": "Requires Re-Scan\nAdded Right-Click Re-Install.\nAdded Right-Click Uninstall."
+    },
+    {
       "Version": "1.6.1",
       "Description": "Report installed versoin, jazz up the user-agent."
     },

@@ -108,6 +108,13 @@ namespace WowUp.WPF.Entities
             set { SetProperty(ref _author, value); }
         }
 
+        private string _installedFolders;
+        public string InstalledFolders
+        {
+            get => _installedFolders;
+            set { SetProperty(ref _installedFolders, value); }
+        }
+
         private WowClientType _clientType;
         public WowClientType ClientType
         {

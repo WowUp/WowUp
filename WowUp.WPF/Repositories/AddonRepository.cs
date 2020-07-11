@@ -94,22 +94,7 @@ namespace WowUp.WPF.Repositories
 
         public bool AddItems(IEnumerable<Addon> items)
         {
-            lock (_collisionLock)
-            {
-                foreach (var item in items)
-                {
-                    if (item.Id != 0)
-                    {
-                        _database.Update(item);
-                    }
-                    else
-                    {
-                        _database.Insert(item);
-                    }
-                }
-            }
-
-            return true;
+            return SaveItems(items);
         }
 
         public bool SaveItems(IEnumerable<Addon> items)
@@ -118,6 +103,8 @@ namespace WowUp.WPF.Repositories
             {
                 foreach (var item in items)
                 {
+                    item.UpdatedAt = DateTime.UtcNow;
+
                     if (item.Id != 0)
                     {
                         _database.Update(item);

@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models;
+using WowUp.WPF.Models.Events;
 
 namespace WowUp.WPF.Services.Contracts
 {
+    public delegate void AddonEventHandler(object sender, AddonEventArgs e);
+
     public interface IAddonService
     {
+        event AddonEventHandler AddonUninstalled;
+        event AddonEventHandler AddonInstalled;
+
         string DownloadPath { get; }
         string BackupPath { get; }
 
@@ -33,6 +39,10 @@ namespace WowUp.WPF.Services.Contracts
             int addonId, 
             Action<AddonInstallState, decimal> onUpdate);
 
-        Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false);
+        Task UninstallAddon(Addon addon);
+
+        Task<List<Addon>> GetAddons(
+            WowClientType clientType, 
+            bool rescan = false);
     }
 }

@@ -13,6 +13,8 @@ using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using WowUp.WPF.Errors;
+using WowUp.WPF.Extensions;
+using WowUp.WPF.Models.Events;
 
 namespace WowUp.WPF.Services
 {
@@ -31,6 +33,9 @@ namespace WowUp.WPF.Services
         protected readonly IAddonRepository _addonRepository;
         protected readonly IDownloadSevice _downloadService;
         protected readonly IWarcraftService _warcraftService;
+
+        public event AddonEventHandler AddonUninstalled;
+        public event AddonEventHandler AddonInstalled;
 
         public string DownloadPath => Path.Combine(FileUtilities.AppDataPath, DownloadFolder);
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
@@ -178,10 +183,22 @@ namespace WowUp.WPF.Services
             await InstallAddon(addon.Id, onUpdate);
         }
 
-        private IAddonProvider GetAddonProvider(Uri addonUri)
+        public async Task UninstallAddon(Addon addon)
         {
-            return _providers.FirstOrDefault(provider => provider.IsValidAddonUri(addonUri));
+            var installedDirectories = addon.GetInstalledDirectories();
+            var addonFolder = await _warcraftService.GetAddonFolderPath(addon.ClientType);
+
+            foreach(var dir in installedDirectories)
+            {
+                var addonDirectory = Path.Combine(addonFolder, dir);
+                await FileUtilities.DeleteDirectory(addonDirectory);
+            }
+
+            _addonRepository.DeleteItem(addon);
+
+            AddonUninstalled?.Invoke(this, new AddonEventArgs(addon));
         }
+
 
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
         {
@@ -214,7 +231,10 @@ namespace WowUp.WPF.Services
 
                 addon.InstalledVersion = addon.LatestVersion;
                 addon.InstalledAt = DateTime.UtcNow;
+                addon.InstalledFolders = string.Join(',', FileUtilities.GetDirectoryNames(unzippedDirectory));
                 _addonRepository.UpdateItem(addon);
+
+                AddonInstalled?.Invoke(this, new AddonEventArgs(addon));
             }
             catch (Exception ex)
             {
@@ -235,6 +255,11 @@ namespace WowUp.WPF.Services
             }
 
             updateAction?.Invoke(AddonInstallState.Complete, 100m);
+        }
+
+        private IAddonProvider GetAddonProvider(Uri addonUri)
+        {
+            return _providers.FirstOrDefault(provider => provider.IsValidAddonUri(addonUri));
         }
 
         private async Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
@@ -260,37 +285,6 @@ namespace WowUp.WPF.Services
             {
                 Directory.CreateDirectory(BackupPath);
             }
-        }
-
-        private async Task<List<Addon>> RescanAddons(List<Addon> addons, WowClientType clientType)
-        {
-            var localAddons = await GetLocalAddons(clientType);
-
-            foreach (var localAddon in localAddons)
-            {
-                var addon = addons.FirstOrDefault(a => a.Name == localAddon.Name);
-                if (addon != null)
-                {
-                    addon.LatestVersion = localAddon.LatestVersion;
-                    addon.ThumbnailUrl = localAddon.ThumbnailUrl;
-                    addon.Author = localAddon.Author;
-                    addon.ExternalId = localAddon.ExternalId;
-                    addon.FolderName = localAddon.FolderName;
-                    addon.GameVersion = localAddon.GameVersion;
-                    addon.DownloadUrl = localAddon.DownloadUrl;
-                    addon.ExternalUrl = localAddon.ExternalUrl;
-
-                    _addonRepository.UpdateItem(addon);
-                }
-                else
-                {
-                    addons.Add(localAddon);
-
-                    _addonRepository.AddItem(localAddon);
-                }
-            }
-
-            return addons;
         }
 
         private List<Addon> GetAllStoredAddons(WowClientType clientType)
@@ -417,7 +411,8 @@ namespace WowUp.WPF.Services
                 GameVersion = searchResult.GameVersion,
                 Author = searchResult.Author,
                 DownloadUrl = searchResult.DownloadUrl,
-                ExternalUrl = searchResult.ExternalUrl
+                ExternalUrl = searchResult.ExternalUrl,
+                ProviderName = searchResult.ProviderName
             };
         }
     }

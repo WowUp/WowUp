@@ -1,10 +1,17 @@
-﻿using WowUp.WPF.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Models;
 
 namespace WowUp.WPF.Extensions
 {
     public static class AddonExtensions
     {
+        public static IList<string> GetInstalledDirectories(this Addon addon)
+        {
+            return addon.InstalledFolders.Split(',').ToList();
+        }
+
         public static bool CanInstall(this Addon addon)
         {
             return addon.GetDisplayState() == AddonDisplayState.Install;

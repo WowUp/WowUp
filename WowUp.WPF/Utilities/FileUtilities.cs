@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace WowUp.WPF.Utilities
@@ -46,6 +49,12 @@ namespace WowUp.WPF.Utilities
                 attempts += 1;
                 await Task.Delay(100);
             }
+        }
+
+        public static IEnumerable<string> GetDirectoryNames(string baseDir)
+        {
+            var directoryPaths = Directory.GetDirectories(baseDir);
+            return directoryPaths.Select(path => Path.GetFileName(path));
         }
 
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs = true)

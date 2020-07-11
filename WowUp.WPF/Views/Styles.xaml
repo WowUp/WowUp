@@ -16,6 +16,9 @@
     <Color x:Key="Purple1Color">#6B69D6</Color>
     <Color x:Key="Purple2Color">#504FA1</Color>
     <Color x:Key="Purple3Color">#383773</Color>
+    <Color x:Key="Dark1Color">#666666</Color>
+    <Color x:Key="Dark2Color">#555555</Color>
+    <Color x:Key="Dark3Color">#444444</Color>
 
     <Style TargetType="TextBlock">
         <Setter Property="Foreground" Value="White" />
@@ -60,6 +63,48 @@
     <Style x:Key="labelAddonText" TargetType="TextBlock">
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Foreground" Value="{StaticResource White1}" />
+    </Style>
+
+    <!--CONTEXT MENU-->
+    <Style x:Key="RedMenuItem" TargetType="MenuItem">
+        <Setter Property="Foreground" Value="Red" />
+    </Style>
+
+    <Style x:Key="DarkMenu" TargetType="ContextMenu">
+        <Setter Property="SnapsToDevicePixels"
+          Value="True" />
+        <Setter Property="OverridesDefaultStyle"
+          Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope"
+          Value="true" />
+        <Setter Property="HasDropShadow"
+          Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border"
+                Background="{StaticResource Dark3}"
+                BorderThickness="1">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{StaticResource Dark1Color}" />
+                        </Border.BorderBrush>
+                        <StackPanel IsItemsHost="True"
+                                    KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasDropShadow"
+                                 Value="true">
+                            <Setter TargetName="Border"
+                                    Property="Padding"
+                                    Value="0,3,0,3" />
+                            <Setter TargetName="Border"
+                                    Property="CornerRadius"
+                                    Value="4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- Flat ComboBox -->
@@ -187,7 +232,7 @@
         </Setter>
     </Style>
     <!-- End of Flat ComboBox -->
-    
+
     <!--TAB CONTROL-->
     <Color x:Key="ControlPressedColor">#FF211AA9</Color>
     <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
@@ -222,7 +267,7 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Border Background="{StaticResource Purple1}" BorderThickness="1" BorderBrush="{StaticResource Purple1}">
-                        <TabPanel x:Name="HeaderPanel"
+                            <TabPanel x:Name="HeaderPanel"
                             Grid.Row="0"
                             Panel.ZIndex="1"
                             Margin="0,0,0,-1"
@@ -342,7 +387,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!--PLACEHOLDER TEXT-->
     <Style x:Key="placeHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="Template">

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Threading.Tasks;
+using System.Windows;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
@@ -25,6 +27,8 @@ namespace WowUp.WPF.ViewModels
         public Command ActionCommand { get; set; }
         public Command InstallCommand { get; set; }
         public Command OpenLinkCommand { get; set; }
+        public Command ReInstallCommand { get; set; }
+        public Command UninstallCommand { get; set; }
 
         private bool _showInstallButton;
         public bool ShowInstallButton
@@ -52,6 +56,20 @@ namespace WowUp.WPF.ViewModels
         {
             get => _showUpToDate;
             set { SetProperty(ref _showUpToDate, value); }
+        }
+
+        public bool _showUninstall;
+        public bool ShowUninstall
+        {
+            get => _showUninstall;
+            set { SetProperty(ref _showUninstall, value); }
+        }
+
+        public bool _showReInstall;
+        public bool ShowReInstall
+        {
+            get => _showReInstall;
+            set { SetProperty(ref _showReInstall, value); }
         }
 
         private string _progressText;
@@ -135,6 +153,8 @@ namespace WowUp.WPF.ViewModels
 
             InstallCommand = new Command(async () => await InstallAddon());
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
+            ReInstallCommand = new Command(() => OnReInstall());
+            UninstallCommand = new Command(() => OnUninstall());
         }
 
         private void SetupDisplayState()
@@ -155,11 +175,14 @@ namespace WowUp.WPF.ViewModels
             ShowInstallButton = DisplayState == AddonDisplayState.Install;
             ShowUpdateButton = DisplayState == AddonDisplayState.Update;
             ShowUpToDate = DisplayState == AddonDisplayState.UpToDate;
+            ShowReInstall = DisplayState == AddonDisplayState.Update || DisplayState == AddonDisplayState.UpToDate;
+            ShowUninstall = DisplayState != AddonDisplayState.Unknown;
             ShowProgressBar = false;
         }
 
         public async Task InstallAddon()
         {
+            ShowUpToDate = false;
             ShowInstallButton = false;
 
             try
@@ -173,6 +196,24 @@ namespace WowUp.WPF.ViewModels
             }
 
             //var result = await Application.Current.MainPage.DisplayActionSheet("Test", "Cancel", "Delete", "Recheck");
+        }
+
+        private async void OnReInstall()
+        {
+            await InstallAddon();
+        }
+
+        private async void OnUninstall()
+        {
+            try
+            {
+                await _addonService.UninstallAddon(Addon);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Failed to uninstall addon {Addon.Name}");
+                MessageBox.Show("An error occurred during uninstall.");
+            }
         }
 
         private void OnInstallUpdate(AddonInstallState installState, decimal percent)
