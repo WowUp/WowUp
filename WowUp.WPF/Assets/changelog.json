@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.8.0",
+      "Description": "Add telemetry opt-in."
+    },
+    {
+      "Version": "1.7.1",
+      "Description": "Fix issue with update-all."
+    },
+    {
       "Version": "1.7.0",
       "Description": "Requires Re-Scan\nAdded Right-Click Re-Install.\nAdded Right-Click Uninstall."
     },

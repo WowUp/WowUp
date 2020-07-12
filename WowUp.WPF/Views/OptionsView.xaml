@@ -26,6 +26,11 @@
                 <Button x:Name="SelectLocationButton" Click="SelectLocationButton_Click" Style="{StaticResource purpleButton}">Select Location</Button>
                 <TextBlock FontSize="15" Text="Log files" Margin="0 10 0 5" />
                 <Button x:Name="ShowLogsButton" Command="{Binding ShowLogsCommand}" Style="{StaticResource purpleButton}">Show Log Files</Button>
+                <TextBlock FontSize="15" Text="Telemetry" Margin="0 10 0 5" />
+                <CheckBox IsChecked="{Binding IsTelemetryEnabled, Mode=TwoWay}"
+                          Command="{Binding TelemetryCheckCommand}">
+                    Help improve WowUp by sending anonymous install data and/or errors
+                </CheckBox>
             </StackPanel>
         </Border>
     </Grid>

@@ -23,6 +23,8 @@ namespace WowUp.WPF.ViewModels
         private readonly IAddonService _addonService;
 
         private int _selectedWowIndex = 0;
+        private bool _isUpdatingAll;
+
         public int SelectedWowIndex
         {
             get => _selectedWowIndex;
@@ -82,6 +84,11 @@ namespace WowUp.WPF.ViewModels
 
             _addonService.AddonInstalled += async (sender, args) =>
             {
+                if (_isUpdatingAll)
+                {
+                    return;
+                }
+
                 await LoadItems();
             };
 
@@ -118,6 +125,7 @@ namespace WowUp.WPF.ViewModels
 
         public async Task UpdateAll()
         {
+            _isUpdatingAll = true;
             EnableUpdateAll = false;
 
             await DisplayAddons
@@ -128,6 +136,7 @@ namespace WowUp.WPF.ViewModels
                 });
 
             EnableUpdateAll = true;
+            _isUpdatingAll = false;
         }
 
         private async Task InstallNewAddon()

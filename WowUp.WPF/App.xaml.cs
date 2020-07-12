@@ -43,8 +43,13 @@ namespace WowUp.WPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            var analyticsService = _serviceProvider.GetRequiredService<IAnalyticsService>();
+            analyticsService.PromptTelemetry();
+            analyticsService.TrackStartup();
+
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
+
         }
 
         protected override void OnExit(ExitEventArgs e)
