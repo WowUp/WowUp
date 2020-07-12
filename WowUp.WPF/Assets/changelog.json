@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.8.2",
+      "Description": "Add TukUI addons to the 'Get Addons' tab.\nAdd in some window position saving on Windows."
+    },
+    {
+      "Version": "1.8.1",
+      "Description": "Add per monitor DPI awareness on Windows."
+    },
+    {
       "Version": "1.8.0",
       "Description": "Add telemetry opt-in."
     },

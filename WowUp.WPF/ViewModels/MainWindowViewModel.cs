@@ -9,14 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 using WowUp.WPF.Utilities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services;
+using WowUp.WPF.Repositories.Contracts;
+using WowUp.WPF.Entities;
 
 namespace WowUp.WPF.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
+        private const string WindowPlacementKey = "window_placement";
+
         private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
         private readonly IWowUpService _wowUpService;
+        private readonly IPreferenceRepository _preferenceRepository;
 
         private System.Threading.Timer _timer;
 
@@ -68,10 +73,12 @@ namespace WowUp.WPF.ViewModels
         public ObservableCollection<TabItem> TabItems { get; set; }
 
         public MainWindowViewModel(
+            IPreferenceRepository preferenceRepository,
             IServiceProvider serviceProvider,
             IWarcraftService warcraftService,
             IWowUpService wowUpService)
         {
+            _preferenceRepository = preferenceRepository;
             _serviceProvider = serviceProvider;
             _warcraftService = warcraftService;
             _wowUpService = wowUpService;
@@ -98,6 +105,44 @@ namespace WowUp.WPF.ViewModels
                 MaximizeVisibility = Visibility.Visible;
                 RestoreVisibility = Visibility.Collapsed;
             }
+        }
+
+        public void OnSourceInitialized(Window window)
+        {
+            var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
+            if(windowPref == null)
+            {
+                return;
+            }
+
+            try
+            {
+                window.SetPlacement(windowPref.Value);
+            }
+            catch (Exception)
+            {
+                // eat
+            }
+        }
+
+        public void OnClosing(Window window)
+        {
+            var placement = window.GetPlacement();
+            var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
+            if(windowPref == null)
+            {
+                windowPref = new Preference
+                {
+                    Key = WindowPlacementKey,
+                    Value = placement
+                };
+            }
+            else
+            {
+                windowPref.Value = placement;
+            }
+
+            _preferenceRepository.SaveItem(windowPref);
         }
 
         private async void InitializeView()

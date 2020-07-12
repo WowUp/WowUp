@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WowUp.WPF.Models.TukUi
+namespace WowUp.Common.Models.TukUi
 {
     public class TukUiAddon
     {
@@ -29,6 +29,6 @@ namespace WowUp.WPF.Models.TukUi
         public string Changelog { get; set; }
 
         [JsonProperty("donate_url")]
-        public string DonateUrl{ get; set; }
+        public string DonateUrl { get; set; }
     }
 }

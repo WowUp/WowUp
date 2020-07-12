@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WowUp.Common.Models.TukUi;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
-using WowUp.WPF.Models.TukUi;
 
 namespace WowUp.WPF.AddonProviders
 {
@@ -40,6 +40,29 @@ namespace WowUp.WPF.AddonProviders
             WowClientType clientType)
         {
             return null;
+        }
+
+        public Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
+        {
+            //if (clientType.IsRetail())
+            //{
+            //    var results = await Task.WhenAll(
+            //        GetTukUiRetailAddon(),
+            //        GetElvUiRetailAddon());
+
+            //    return results.Select(r => ToPotentialAddon(r)).ToList();
+            //}
+
+            var addons = await GetAllAddons(clientType);
+            return addons.Select(addon => ToPotentialAddon(addon))
+                .OrderByDescending(addon => addon.DownloadCount)
+                .Take(20)
+                .ToList();
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
@@ -83,6 +106,20 @@ namespace WowUp.WPF.AddonProviders
             }
 
             return results;
+        }
+
+        private PotentialAddon ToPotentialAddon(TukUiAddon addon)
+        {
+            return new PotentialAddon
+            {
+                Author = addon.Author,
+                DownloadCount = int.Parse(addon.Downloads),
+                ExternalId = addon.Id,
+                ExternalUrl = addon.WebUrl,
+                Name = addon.Name,
+                ProviderName = Name,
+                ThumbnailUrl = addon.ScreenshotUrl
+            };
         }
 
         private AddonSearchResult ToSearchResult(TukUiAddon addon, string folderName)
@@ -138,7 +175,7 @@ namespace WowUp.WPF.AddonProviders
                 Patch = toc.Interface,
                 Changelog = string.Empty,
                 DonateUrl = "https://www.tukui.org/support.php",
-                Downloads = "1",
+                Downloads = "3000000",
                 Id = "123321",
                 LastDownload = string.Empty,
                 LastUpdate = string.Empty,
@@ -163,7 +200,7 @@ namespace WowUp.WPF.AddonProviders
                 Patch = toc.Interface,
                 Changelog = string.Empty,
                 DonateUrl = "https://www.tukui.org/support.php",
-                Downloads = "1",
+                Downloads = "4000000",
                 Id = "43252",
                 LastDownload = string.Empty,
                 LastUpdate = string.Empty,
@@ -216,16 +253,6 @@ namespace WowUp.WPF.AddonProviders
                 default:
                     return "addon";
             }
-        }
-
-        public Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
-        {
-            return new List<PotentialAddon>();
         }
     }
 }

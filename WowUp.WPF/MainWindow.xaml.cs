@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Forms;
 using WowUp.WPF.Services.Contracts;
@@ -31,6 +32,18 @@ namespace WowUp.WPF
         {
             base.OnContentRendered(e);
             _viewModel.SetRestoreMaximizeVisibility(WindowState);
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            _viewModel.OnSourceInitialized(this);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            _viewModel.OnClosing(this);
         }
 
         private NotifyIcon CreateNotifyIcon()
