@@ -143,6 +143,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _displayState, value); }
         }
 
+        private bool _isIgnored;
+        public bool IsIgnored
+        {
+            get => _isIgnored;
+            set { SetProperty(ref _isIgnored, value); }
+        }
+
         public bool CanInstall => _addon.CanInstall();
         public bool CanUpdate => _addon.CanUpdate();
 

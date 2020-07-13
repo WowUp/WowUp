@@ -14,6 +14,8 @@ using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using Microsoft.Extensions.DependencyInjection;
+using WowUp.WPF.Repositories.Contracts;
+using WowUp.WPF.Entities;
 
 namespace WowUp.WPF.Services
 {
@@ -22,26 +24,51 @@ namespace WowUp.WPF.Services
         private const string ChangeLogUrl = "https://wowup-builds.s3.us-east-2.amazonaws.com/changelog/changelog.json";
         private const string LatestVersionUrlFormat = "https://wowup-builds.s3.us-east-2.amazonaws.com/v{0}/WowUp.zip";
         private const string ChangeLogFileCacheKey = "change_log_file";
+        private const string CollapseToTrayKey = "collapse_to_tray";
 
         public const string WebsiteUrl = "https://wowup.io";
 
         private readonly IMemoryCache _cache;
         private readonly IDownloadService _downloadSevice;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IPreferenceRepository _preferenceRepository;
 
         public WowUpService(
             IMemoryCache memoryCache,
+            IPreferenceRepository preferenceRepository,
             IServiceProvider serviceProvider,
             IDownloadService downloadService)
         {
             _cache = memoryCache;
             _downloadSevice = downloadService;
             _serviceProvider = serviceProvider;
+            _preferenceRepository = preferenceRepository;
+
+            SetDefaultPreferences();
         }
 
         public void ShowLogsFolder()
         {
             FileUtilities.AppLogsPath.OpenUrlInBrowser();
+        }
+
+        public bool GetCollapseToTray()
+        {
+            var pref = _preferenceRepository.FindByKey(CollapseToTrayKey);
+            return pref != null && bool.Parse(pref.Value) == true;
+        }
+
+        public void SetCollapseToTray(bool enabled)
+        {
+            var pref = _preferenceRepository.FindByKey(CollapseToTrayKey);
+            if (pref == null)
+            {
+                pref = new Preference { Key = CollapseToTrayKey };
+            }
+
+            pref.Value = enabled.ToString();
+
+            _preferenceRepository.SaveItem(pref);
         }
 
         public async Task<bool> IsUpdateAvailable()
@@ -123,6 +150,14 @@ namespace WowUp.WPF.Services
             //WowUpService.WebsiteUrl.OpenUrlInBrowser();
         }
 
-        
+        private void SetDefaultPreferences()
+        {
+            var pref = _preferenceRepository.FindByKey(CollapseToTrayKey);
+            if (pref == null)
+            {
+                SetCollapseToTray(true);
+            }
+        }
+
     }
 }

@@ -40,6 +40,11 @@ namespace WowUp.WPF
             _viewModel.OnSourceInitialized(this);
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+        }
+
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
@@ -73,12 +78,6 @@ namespace WowUp.WPF
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Hide();
             WindowState = WindowState.Minimized;
         }
 

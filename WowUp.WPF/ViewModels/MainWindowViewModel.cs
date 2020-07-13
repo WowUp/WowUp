@@ -27,6 +27,7 @@ namespace WowUp.WPF.ViewModels
         private System.Threading.Timer _timer;
 
         public Command SelectWowCommand { get; set; }
+        public Command CloseWindowCommand { get; set; }
 
         private string _title;
         public string Title
@@ -86,6 +87,7 @@ namespace WowUp.WPF.ViewModels
             _wowUpService = wowUpService;
 
             SelectWowCommand = new Command(async () => await SetWowLocation());
+            CloseWindowCommand = new Command(() => OnCloseWindow());
 
             ApplicationUpdateControlViewModel = serviceProvider.GetService<ApplicationUpdateControlViewModel>();
 
@@ -146,6 +148,18 @@ namespace WowUp.WPF.ViewModels
             }
 
             _preferenceRepository.SaveItem(windowPref);
+        }
+
+        private void OnCloseWindow()
+        {
+            if (!_wowUpService.GetCollapseToTray())
+            {
+                Application.Current.MainWindow.Close();
+                return;
+            }
+
+            Application.Current.MainWindow.Hide();
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 
         private async void InitializeView()

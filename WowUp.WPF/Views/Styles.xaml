@@ -75,6 +75,85 @@
         <Setter Property="Foreground" Value="Red" />
     </Style>
 
+
+
+    <ControlTemplate x:Key="DarkMenuItemTemplateKey" TargetType="MenuItem">
+        <Border Name="Border" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut"/>
+                    <ColumnDefinition Width="13"/>
+                </Grid.ColumnDefinitions>
+                <ContentPresenter Name="Icon"
+                                  Margin="6,0,6,0"
+                                  VerticalAlignment="Center"
+                                  ContentSource="Icon"/>
+                <Border Name="Check"  
+                        Width="13" Height="13" 
+                        Visibility="Collapsed"
+                        Margin="6,0,6,0" 
+                        Background="Transparent"
+                        BorderThickness="1"
+                        BorderBrush="Transparent">
+                    <Path Name="CheckMark"
+                          Width="7" Height="7" 
+                          Visibility="Hidden" 
+                          SnapsToDevicePixels="False" 
+                          Stroke="{StaticResource White2}"
+                          StrokeThickness="2"
+                          Data="M 0 0 L 7 7 M 0 7 L 7 0" />
+                </Border>
+                <ContentPresenter Name="HeaderHost"
+                                  Grid.Column="1"
+                                  Margin="10 0 0 0"
+                                  ContentSource="Header"
+                                  RecognizesAccessKey="True"/>
+                <TextBlock x:Name="InputGestureText"
+                           Grid.Column="2"
+                           Text="{TemplateBinding InputGestureText}"
+                           Margin="5,2,0,2"
+                           DockPanel.Dock="Right" />
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Icon" Value="{x:Null}">
+                <Setter TargetName="Icon" Property="Visibility" Value="Hidden"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="true">
+                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+            </Trigger>
+            <Trigger Property="IsCheckable" Value="true">
+                <Setter TargetName="Check" Property="Visibility" Value="Visible"/>
+                <Setter TargetName="Icon" Property="Visibility" Value="Hidden"/>
+            </Trigger>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border" Property="Background"
+              Value="{StaticResource Dark2}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{StaticResource White2}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="DarkMenuItem" TargetType="MenuItem">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Style.Triggers>
+            <Trigger Property="Role" Value="TopLevelItem">
+                <Setter Property="Template" Value="{StaticResource DarkMenuItemTemplateKey}"/>
+            </Trigger>
+
+            <Trigger Property="Role" Value="SubmenuItem">
+                <Setter Property="Template" Value="{StaticResource DarkMenuItemTemplateKey}"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="Green"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="DarkMenu" TargetType="ContextMenu">
         <Setter Property="SnapsToDevicePixels"
           Value="True" />

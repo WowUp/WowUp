@@ -17,5 +17,8 @@ namespace WowUp.Common.Services.Contracts
         Task<string> GetLatestVersionUrl();
         Task<ChangeLogFile> GetChangeLogFile();
         Task UpdateApplication(Action<ApplicationUpdateState, decimal> updateAction);
+
+        bool GetCollapseToTray();
+        void SetCollapseToTray(bool enabled);
     }
 }

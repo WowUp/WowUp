@@ -15,23 +15,54 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid  Background="{StaticResource Dark3}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" Padding="10">
             <StackPanel >
-                <TextBlock FontSize="15" Text="World of Warcraft install location" />
-                <TextBox Margin="0, 10" Text="{Binding WowLocation}" IsEnabled="False" FontSize="14"/>
-                <Button x:Name="SelectLocationButton" Click="SelectLocationButton_Click" Style="{StaticResource purpleButton}">Select Location</Button>
-                <TextBlock FontSize="15" Text="Log files" Margin="0 10 0 5" />
-                <Button x:Name="ShowLogsButton" Command="{Binding ShowLogsCommand}" Style="{StaticResource purpleButton}">Show Log Files</Button>
-                <TextBlock FontSize="15" Text="Telemetry" Margin="0 10 0 5" />
-                <CheckBox IsChecked="{Binding IsTelemetryEnabled, Mode=TwoWay}"
-                          Command="{Binding TelemetryCheckCommand}">
-                    Help improve WowUp by sending anonymous install data and/or errors
-                </CheckBox>
+                <Border Margin="0 10">
+                    <StackPanel>
+                        <TextBlock FontSize="15" Text="World of Warcraft install location" />
+                        <TextBox Margin="0, 10" Text="{Binding WowLocation}" IsEnabled="False" FontSize="14"/>
+                        <Button x:Name="SelectLocationButton" Click="SelectLocationButton_Click" Style="{StaticResource purpleButton}">Select Location</Button>
+                        <TextBlock FontSize="15" Text="Log files" Margin="0 10 0 5" />
+                        <Button x:Name="ShowLogsButton" Command="{Binding ShowLogsCommand}" Style="{StaticResource purpleButton}">Show Log Files</Button>
+                    </StackPanel>
+                </Border>
+                
+                <TextBlock Text="Preferences" FontSize="17" />
+                <Border Margin="0" Padding="10 0 0 0">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0">Telemetry</Label>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 5">
+                            <CheckBox IsChecked="{Binding IsTelemetryEnabled, Mode=TwoWay}"
+                                      Command="{Binding TelemetryCheckCommand}" Grid.Row="0" Grid.Column="1">
+                            </CheckBox>
+                            <Label>Help improve WowUp by sending anonymous install data and/or errors.</Label>
+                        </StackPanel>
+
+                        <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0" >Minimize on close</Label>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 5">
+                                <CheckBox IsChecked="{Binding CollapseToTrayEnabled, Mode=TwoWay}"
+                                      Command="{Binding CollapseToTrayCheckCommand}" Grid.Row="0" Grid.Column="1">
+                            </CheckBox>
+                            <Label>When closing the WowUp window, minimize to the system tray.</Label>
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
             </StackPanel>
         </Border>
     </Grid>
+    </ScrollViewer>
 </UserControl>

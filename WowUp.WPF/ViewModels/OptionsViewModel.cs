@@ -25,8 +25,16 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _isTelemetryEnabled, value); }
         }
 
+        private bool _collapseToTrayEnabled;
+        public bool CollapseToTrayEnabled
+        {
+            get => _collapseToTrayEnabled;
+            set { SetProperty(ref _collapseToTrayEnabled, value); }
+        }
+
         public Command ShowLogsCommand { get; set; }
         public Command TelemetryCheckCommand { get; set; }
+        public Command CollapseToTrayCheckCommand { get; set; }
 
         public OptionsViewModel(
             IAnalyticsService analyticsService,
@@ -39,6 +47,7 @@ namespace WowUp.WPF.ViewModels
 
             ShowLogsCommand = new Command(() => ShowLogsFolder());
             TelemetryCheckCommand = new Command(() => OnTelemetryChange());
+            CollapseToTrayCheckCommand = new Command(() => OnCollapseToTrayChanged());
 
             LoadOptions();
         }
@@ -47,6 +56,7 @@ namespace WowUp.WPF.ViewModels
         {
             IsTelemetryEnabled = _analyticsService.IsTelemetryEnabled();
             WowLocation = await _warcraftService.GetWowFolderPath();
+            CollapseToTrayEnabled = _wowUpService.GetCollapseToTray();
         }
 
         private void ShowLogsFolder() 
@@ -57,6 +67,11 @@ namespace WowUp.WPF.ViewModels
         private void OnTelemetryChange()
         {
             _analyticsService.SetTelemetryEnabled(IsTelemetryEnabled);
+        }
+
+        private void OnCollapseToTrayChanged()
+        {
+            _wowUpService.SetCollapseToTray(CollapseToTrayEnabled);
         }
 
         public async void SetWowLocation()
