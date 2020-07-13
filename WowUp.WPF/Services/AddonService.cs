@@ -15,12 +15,13 @@ using WowUp.WPF.Utilities;
 using WowUp.WPF.Errors;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models.Events;
+using WowUp.Common.Enums;
+using WowUp.Common.Services.Contracts;
 
 namespace WowUp.WPF.Services
 {
     public class AddonService : IAddonService
     {
-        protected const string DownloadFolder = "AddonDownloads";
         protected const string BackupFolder = "AddonBackups";
 
         protected readonly Dictionary<string, string> _addonNameOverrides = new Dictionary<string, string>
@@ -31,19 +32,18 @@ namespace WowUp.WPF.Services
         protected readonly IEnumerable<IAddonProvider> _providers = new List<IAddonProvider>();
 
         protected readonly IAddonRepository _addonRepository;
-        protected readonly IDownloadSevice _downloadService;
+        protected readonly IDownloadService _downloadService;
         protected readonly IWarcraftService _warcraftService;
 
         public event AddonEventHandler AddonUninstalled;
         public event AddonEventHandler AddonInstalled;
 
-        public string DownloadPath => Path.Combine(FileUtilities.AppDataPath, DownloadFolder);
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
         public AddonService(
             IServiceProvider serviceProvider,
             IAddonRepository addonRepository,
-            IDownloadSevice downloadSevice,
+            IDownloadService downloadSevice,
             IWarcraftService warcraftService)
         {
             _addonRepository = addonRepository;
@@ -63,7 +63,6 @@ namespace WowUp.WPF.Services
         {
             return _addonRepository.GetByExternalId(externalId, clientType) != null;
         }
-
 
         public Addon GetAddon(int addonId)
         {
@@ -214,7 +213,7 @@ namespace WowUp.WPF.Services
             string unzippedDirectory = string.Empty;
             try
             {
-                downloadedFilePath = await _downloadService.DownloadFile(addon.DownloadUrl, DownloadPath);
+                downloadedFilePath = await _downloadService.DownloadFile(addon.DownloadUrl, FileUtilities.DownloadPath);
 
                 if (!string.IsNullOrEmpty(addon.InstalledVersion))
                 {
@@ -276,11 +275,6 @@ namespace WowUp.WPF.Services
 
         protected virtual void InitializeDirectories()
         {
-            if (!Directory.Exists(DownloadPath))
-            {
-                Directory.CreateDirectory(DownloadPath);
-            }
-
             if (!Directory.Exists(BackupPath))
             {
                 Directory.CreateDirectory(BackupPath);

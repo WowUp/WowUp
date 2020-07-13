@@ -2,12 +2,18 @@
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WowUp.Common.Enums;
+using WowUp.Common.Models;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WowUp.WPF.Services
 {
@@ -20,10 +26,17 @@ namespace WowUp.WPF.Services
         public const string WebsiteUrl = "https://wowup.io";
 
         private readonly IMemoryCache _cache;
+        private readonly IDownloadService _downloadSevice;
+        private readonly IServiceProvider _serviceProvider;
 
-        public WowUpService(IMemoryCache memoryCache)
+        public WowUpService(
+            IMemoryCache memoryCache,
+            IServiceProvider serviceProvider,
+            IDownloadService downloadService)
         {
             _cache = memoryCache;
+            _downloadSevice = downloadService;
+            _serviceProvider = serviceProvider;
         }
 
         public void ShowLogsFolder()
@@ -88,5 +101,28 @@ namespace WowUp.WPF.Services
                 return null;
             }
         }
+
+        public async Task UpdateApplication(Action<ApplicationUpdateState, decimal> updateAction)
+        {
+            var isUpdateAvailable = await IsUpdateAvailable();
+            if (!isUpdateAvailable)
+            {
+                return;
+            }
+
+            var updater = _serviceProvider.GetService<ApplicationUpdater>();
+            updater.LatestVersionUrl = await GetLatestVersionUrl();
+
+            updater.UpdateChanged += (sender, e) =>
+            {
+                updateAction?.Invoke(e.State, e.Progress);
+            };
+
+            await updater.Update();
+
+            //WowUpService.WebsiteUrl.OpenUrlInBrowser();
+        }
+
+        
     }
 }

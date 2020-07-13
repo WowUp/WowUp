@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.9.0",
+      "Description": "Add In-App updating and restart.\nAdd Open Sans font to be more readible?"
+    },
+    {
       "Version": "1.8.2",
       "Description": "Add TukUI addons to the 'Get Addons' tab.\nAdd in some window position saving on Windows."
     },

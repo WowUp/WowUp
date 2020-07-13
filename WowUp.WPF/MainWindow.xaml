@@ -180,7 +180,8 @@
                     </Button>
                 </StackPanel>
             </Grid>
-            <Border Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilty}}"
+            <vw:ApplicationUpdateControl Grid.Row="1" DataContext="{Binding ApplicationUpdateControlViewModel}"  />
+            <!--<Border Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilty}}"
                     Grid.Row="1"
                     Padding="10">
                 <StackPanel HorizontalAlignment="Center" 
@@ -190,7 +191,7 @@
                                VerticalAlignment="Center" />
                     <Button x:Name="DownloadUpdateButton" Style="{StaticResource purpleButton}" Click="DownloadUpdateButton_Click">Download</Button>
                 </StackPanel>
-            </Border>
+            </Border>-->
             <StackPanel Visibility="{Binding ShowWowSelection, Converter={StaticResource BoolToVisibilty}}" 
                         Grid.Row="2"
                         VerticalAlignment="Center"

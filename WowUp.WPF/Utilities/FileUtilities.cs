@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,12 +15,19 @@ namespace WowUp.WPF.Utilities
 
         public static readonly string AppDataPath = Path.Combine(LocalAppDataPath, "WowUp");
         public static readonly string AppLogsPath = Path.Combine(AppDataPath, "Logs");
+        public static readonly string DownloadPath = Path.Combine(AppDataPath, "Downloads");
+        public static readonly string ExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
 
         static FileUtilities()
         {
             if (!Directory.Exists(AppDataPath))
             {
                 Directory.CreateDirectory(AppDataPath);
+            }
+
+            if (!Directory.Exists(DownloadPath))
+            {
+                Directory.CreateDirectory(DownloadPath);
             }
         }
 

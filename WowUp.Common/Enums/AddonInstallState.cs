@@ -1,4 +1,4 @@
-﻿namespace WowUp.WPF.Models
+﻿namespace WowUp.Common.Enums
 {
     public enum AddonInstallState
     {

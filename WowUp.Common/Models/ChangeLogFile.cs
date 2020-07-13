@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WowUp.WPF.Models
+namespace WowUp.Common.Models
 {
     public class ChangeLogFile
     {

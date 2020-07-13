@@ -11,6 +11,7 @@ using WowUp.WPF.Extensions;
 using WowUp.WPF.Services;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.Common.Services.Contracts;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -26,7 +27,6 @@ namespace WowUp.WPF.ViewModels
         private System.Threading.Timer _timer;
 
         public Command SelectWowCommand { get; set; }
-        public Command DownloadLatestVersionCommand { get; set; }
 
         private string _title;
         public string Title
@@ -72,6 +72,8 @@ namespace WowUp.WPF.ViewModels
 
         public ObservableCollection<TabItem> TabItems { get; set; }
 
+        public ApplicationUpdateControlViewModel ApplicationUpdateControlViewModel { get; set; }
+
         public MainWindowViewModel(
             IPreferenceRepository preferenceRepository,
             IServiceProvider serviceProvider,
@@ -84,11 +86,12 @@ namespace WowUp.WPF.ViewModels
             _wowUpService = wowUpService;
 
             SelectWowCommand = new Command(async () => await SetWowLocation());
-            DownloadLatestVersionCommand = new Command(() => DownloadLatestVersion());
+
+            ApplicationUpdateControlViewModel = serviceProvider.GetService<ApplicationUpdateControlViewModel>();
 
             TabItems = new ObservableCollection<TabItem>();
 
-            _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+            //_timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
 
             InitializeView();
         }
@@ -209,11 +212,6 @@ namespace WowUp.WPF.ViewModels
         {
             var wowFolder = await _warcraftService.GetWowFolderPath();
             return _warcraftService.ValidateWowFolder(wowFolder) && !string.IsNullOrEmpty(wowFolder);
-        }
-
-        private void DownloadLatestVersion()
-        {
-            WowUpService.WebsiteUrl.OpenUrlInBrowser();
         }
 
         private async Task SetWowLocation()

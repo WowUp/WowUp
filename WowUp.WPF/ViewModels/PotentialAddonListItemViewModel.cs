@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System;
+using WowUp.Common.Enums;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;

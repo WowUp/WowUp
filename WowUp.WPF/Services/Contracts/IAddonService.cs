@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models;
 using WowUp.WPF.Models.Events;
@@ -14,7 +15,6 @@ namespace WowUp.WPF.Services.Contracts
         event AddonEventHandler AddonUninstalled;
         event AddonEventHandler AddonInstalled;
 
-        string DownloadPath { get; }
         string BackupPath { get; }
 
         Addon GetAddon(int addonId);

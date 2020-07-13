@@ -5,6 +5,9 @@
              xmlns:localcv="clr-namespace:WowUp.WPF.Converters">
     <Application.Resources>
         <ResourceDictionary>
+            
+            <FontFamily x:Key="OpenSans">pack://application:,,,/Assets/Fonts/#Open Sans</FontFamily>
+            
             <localcv:InverseBoolConverter x:Key="InverseBool" />
             <localcv:BoolToVisibility x:Key="BoolToVisibilty" />
             <localcv:StringToVisibilty x:Key="StringToVisibilty" />

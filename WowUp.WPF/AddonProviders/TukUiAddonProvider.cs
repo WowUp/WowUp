@@ -49,15 +49,6 @@ namespace WowUp.WPF.AddonProviders
 
         public async Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
         {
-            //if (clientType.IsRetail())
-            //{
-            //    var results = await Task.WhenAll(
-            //        GetTukUiRetailAddon(),
-            //        GetElvUiRetailAddon());
-
-            //    return results.Select(r => ToPotentialAddon(r)).ToList();
-            //}
-
             var addons = await GetAllAddons(clientType);
             return addons.Select(addon => ToPotentialAddon(addon))
                 .OrderByDescending(addon => addon.DownloadCount)
@@ -95,12 +86,12 @@ namespace WowUp.WPF.AddonProviders
                     .Where(a => a.Name.Equals(addonName, StringComparison.OrdinalIgnoreCase))
                     .FirstOrDefault();
 
-                if(addon != null)
+                if (addon != null)
                 {
                     results.Add(ToSearchResult(addon, folderName));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "Failed to search TukUi");
             }
@@ -142,7 +133,7 @@ namespace WowUp.WPF.AddonProviders
         private async Task<IEnumerable<TukUiAddon>> GetAllAddons(WowClientType clientType)
         {
             var cacheKey = GetCacheKey(clientType);
-            if(_cache.TryGetValue(cacheKey, out var cachedAddons))
+            if (_cache.TryGetValue(cacheKey, out var cachedAddons))
             {
                 return cachedAddons as IEnumerable<TukUiAddon>;
             }

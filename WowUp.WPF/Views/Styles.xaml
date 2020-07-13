@@ -20,8 +20,13 @@
     <Color x:Key="Dark2Color">#555555</Color>
     <Color x:Key="Dark3Color">#444444</Color>
 
-    <Style TargetType="TextBlock">
+    <Style TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
+    </Style>
+
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
     </Style>
 
     <Style x:Key="labelTableHeader" TargetType="TextBlock">

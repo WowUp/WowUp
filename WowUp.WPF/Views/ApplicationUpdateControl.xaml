@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="WowUp.WPF.Views.ApplicationUpdateControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WowUp.WPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilty}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Visibility="{Binding ShowDownload, Converter={StaticResource BoolToVisibilty}}"
+                Grid.Row="0"
+                Padding="10">
+            <StackPanel HorizontalAlignment="Center" 
+                            Orientation="Horizontal">
+                <TextBlock Text="A new version of WowUp is available!" 
+                               Margin="10, 0"
+                               VerticalAlignment="Center" />
+                <Button x:Name="DownloadUpdateButton" 
+                        Style="{StaticResource purpleButton}"
+                        Command="{Binding DownloadUpdateCommand}">Download</Button>
+            </StackPanel>
+        </Border>
+        <Border Visibility="{Binding ShowProgress, Converter={StaticResource BoolToVisibilty}}"
+                Grid.Row="1" 
+                Padding="10">
+            <StackPanel>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding ProgressText}" Margin="0 0 0 5"/>
+                <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent}" IsIndeterminate="{Binding ProgressIndeterminate}"/>
+            </StackPanel>
+        </Border>
+        <Border Visibility="{Binding ShowRestart, Converter={StaticResource BoolToVisibilty}}"
+                Grid.Row="2"
+                Padding="10">
+            <StackPanel HorizontalAlignment="Center" 
+                            Orientation="Horizontal">
+                <TextBlock Text="A new version of WowUp is available!" 
+                               Margin="10, 0"
+                               VerticalAlignment="Center" />
+                <Button x:Name="RestartButton" 
+                        Style="{StaticResource purpleButton}"
+                        Command="{Binding RestartAppCommand}">Restart</Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

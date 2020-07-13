@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using WowUp.Common.Models;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Models;
-using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.ViewModels

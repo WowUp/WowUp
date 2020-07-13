@@ -10,7 +10,7 @@
     <PackageId>WowUp</PackageId>
     <Authors>Jliddev</Authors>
     <Product>WowUp</Product>
-    <Version>1.8.2</Version>
+    <Version>1.9.0</Version>
     <ApplicationIcon>wowup_logo_512np_RRT_icon.ico</ApplicationIcon>
     <Copyright>jliddev</Copyright>
     <PackageProjectUrl>https://wowup.io</PackageProjectUrl>
@@ -21,6 +21,16 @@
 
   <ItemGroup>
     <None Remove="Assets\activity.gif" />
+    <None Remove="Assets\Fonts\OpenSans-Bold.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-BoldItalic.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-ExtraBold.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-ExtraBoldItalic.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-Italic.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-Light.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-LightItalic.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-Regular.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-SemiBold.ttf" />
+    <None Remove="Assets\Fonts\OpenSans-SemiBoldItalic.ttf" />
     <None Remove="Assets\wowup_logo_1.png" />
     <None Remove="Assets\wowup_logo_512.png" />
     <None Remove="Assets\wowup_logo_512np.png" />
@@ -48,6 +58,16 @@
 
   <ItemGroup>
     <Resource Include="Assets\activity.gif" />
+    <Resource Include="Assets\Fonts\OpenSans-Bold.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-BoldItalic.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-ExtraBold.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-ExtraBoldItalic.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-Italic.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-Light.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-LightItalic.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-Regular.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-SemiBold.ttf" />
+    <Resource Include="Assets\Fonts\OpenSans-SemiBoldItalic.ttf" />
     <Resource Include="Assets\wowup_logo_1.png" />
     <Resource Include="Assets\wowup_logo_512.png" />
     <Resource Include="Assets\wowup_logo_512np.png" />

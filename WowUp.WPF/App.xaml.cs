@@ -3,6 +3,8 @@ using Serilog;
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.Repositories;
 using WowUp.WPF.Repositories.Contracts;
@@ -71,6 +73,7 @@ namespace WowUp.WPF
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<OptionsViewModel>();
             services.AddTransient<PotentialAddonListItemViewModel>();
+            services.AddTransient<ApplicationUpdateControlViewModel>();
 
             services.AddTransient<AboutView>();
             services.AddTransient<AddonsView>();
@@ -80,12 +83,13 @@ namespace WowUp.WPF
 
             services.AddTransient<CurseAddonProvider>();
             services.AddTransient<TukUiAddonProvider>();
+            services.AddTransient<ApplicationUpdater>();
 
             services.AddSingleton<MainWindow>();
 
             services.AddSingleton<IAddonService, AddonService>();
             services.AddSingleton<IWarcraftService, WarcraftService>();
-            services.AddSingleton<IDownloadSevice, DownloadService>();
+            services.AddSingleton<IDownloadService, DownloadService>();
             services.AddSingleton<IWowUpService, WowUpService>();
             services.AddSingleton<IAnalyticsService, AnalyticsService>();
 
