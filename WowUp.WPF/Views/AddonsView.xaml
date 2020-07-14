@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
+             xmlns:t="http://schemas.telerik.com/2008/xaml/presentation"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:WowUp.WPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -109,10 +111,10 @@
                                 Style="{StaticResource purpleButton}"
                                 HorizontalAlignment="Center"
                                 Command="{Binding InstallCommand}">Update</Button>
-                        <TextBlock Text="Up to Date"
+                        <TextBlock Text="{Binding StatusText}"
                                    Style="{StaticResource labelAddonText}"
                                    HorizontalAlignment="Center"
-                                   Visibility="{Binding ShowUpToDate, Converter={StaticResource BoolToVisibilty}}" />
+                                   Visibility="{Binding ShowStatusText, Converter={StaticResource BoolToVisibilty}}" />
                         <StackPanel Visibility="{Binding ShowProgressBar, Converter={StaticResource BoolToVisibilty}}">
                             <TextBlock Text="{Binding ProgressText}" 
                                        Style="{StaticResource labelAddonText}"
@@ -154,9 +156,11 @@
                     <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0" Click="UpdateAllButton_Click" 
                             IsEnabled="{Binding EnableUpdateAll}"
                             Style="{StaticResource purpleButton}">Update All</Button>
-                    <Button x:Name="RefreshButton" Margin="0, 0, 10, 0" Click="RefreshButton_Click" 
+                    <Button x:Name="RefreshButton" Margin="0, 0, 10, 0" Click="RefreshButton_Click"
+                            IsEnabled="{Binding EnableRefresh}"
                             Style="{StaticResource purpleButton}">Refresh</Button>
                     <Button x:Name="RescanButton" Click="RescanButton_Click"
+                            IsEnabled="{Binding EnableRescan}"
                             Style="{StaticResource purpleButton}">Re-Scan</Button>
                 </StackPanel>
             </Border>
@@ -189,7 +193,11 @@
                                  Style="{StaticResource DarkMenu}"
                                  DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                         <MenuItem Header="{Binding Name}" IsEnabled="False" />
-                        <!--<MenuItem Header="Ignore" IsCheckable="{Binding IsIgnored}" Style="{StaticResource DarkMenuItem}" />-->
+                        <MenuItem Header="Ignore" IsCheckable="True" 
+                                  IsChecked="{Binding IsIgnored}" 
+                                  Command="{Binding IgnoreCheckedCommand}"
+                                  CommandParameter="{Binding}">
+                        </MenuItem>
                         <MenuItem Header="Re-Install" 
                                   Visibility="{Binding ShowReInstall, Converter={StaticResource BoolToVisibilty}}"
                                   Command="{Binding ReInstallCommand}"/>

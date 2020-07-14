@@ -59,6 +59,14 @@ namespace WowUp.WPF.Services
             InitializeDirectories();
         }
 
+        public Addon UpdateAddon(Addon addon)
+        {
+            _addonRepository.SaveItem(addon);
+
+            return addon;
+        }
+
+
         public bool IsInstalled(string externalId, WowClientType clientType)
         {
             return _addonRepository.GetByExternalId(externalId, clientType) != null;
@@ -197,7 +205,6 @@ namespace WowUp.WPF.Services
 
             AddonUninstalled?.Invoke(this, new AddonEventArgs(addon));
         }
-
 
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
         {

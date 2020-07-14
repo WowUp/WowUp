@@ -30,6 +30,7 @@ namespace WowUp.WPF.ViewModels
         public Command OpenLinkCommand { get; set; }
         public Command ReInstallCommand { get; set; }
         public Command UninstallCommand { get; set; }
+        public Command IgnoreCheckedCommand { get; set; }
 
         private bool _showInstallButton;
         public bool ShowInstallButton
@@ -52,11 +53,11 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _showProgressBar, value); }
         }
 
-        public bool _showUpToDate;
-        public bool ShowUpToDate
+        public bool _showStatusText;
+        public bool ShowStatusText
         {
-            get => _showUpToDate;
-            set { SetProperty(ref _showUpToDate, value); }
+            get => _showStatusText;
+            set { SetProperty(ref _showStatusText, value); }
         }
 
         public bool _showUninstall;
@@ -147,7 +148,16 @@ namespace WowUp.WPF.ViewModels
         public bool IsIgnored
         {
             get => _isIgnored;
-            set { SetProperty(ref _isIgnored, value); }
+            set { 
+                SetProperty(ref _isIgnored, value); 
+            }
+        }
+
+        private string _statusText;
+        public string StatusText
+        {
+            get => _statusText;
+            set { SetProperty(ref _statusText, value); }
         }
 
         public bool CanInstall => _addon.CanInstall();
@@ -163,6 +173,7 @@ namespace WowUp.WPF.ViewModels
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
             ReInstallCommand = new Command(() => OnReInstall());
             UninstallCommand = new Command(() => OnUninstall());
+            IgnoreCheckedCommand = new Command(() => OnIgnoreChanged());
         }
 
         private void SetupDisplayState()
@@ -178,19 +189,21 @@ namespace WowUp.WPF.ViewModels
                 ? "/Assets/wowup_logo_1.png"
                 : _addon.ThumbnailUrl;
 
+            IsIgnored = _addon.IsIgnored;
             ExternalUrl = _addon.ExternalUrl;
             DisplayState = _addon.GetDisplayState();
             ShowInstallButton = DisplayState == AddonDisplayState.Install;
             ShowUpdateButton = DisplayState == AddonDisplayState.Update;
-            ShowUpToDate = DisplayState == AddonDisplayState.UpToDate;
+            ShowStatusText = DisplayState == AddonDisplayState.UpToDate || DisplayState == AddonDisplayState.Ignored;
             ShowReInstall = DisplayState == AddonDisplayState.Update || DisplayState == AddonDisplayState.UpToDate;
             ShowUninstall = DisplayState != AddonDisplayState.Unknown;
             ShowProgressBar = false;
+            StatusText = GetStatusText(DisplayState);
         }
 
         public async Task InstallAddon()
         {
-            ShowUpToDate = false;
+            ShowStatusText = false;
             ShowInstallButton = false;
 
             try
@@ -224,6 +237,15 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
+        private void OnIgnoreChanged()
+        {
+            _addon.IsIgnored = !_addon.IsIgnored;
+
+            _addonService.UpdateAddon(_addon);
+
+            SetupDisplayState();
+        }
+
         private void OnInstallUpdate(AddonInstallState installState, decimal percent)
         {
             ProgressText = GetInstallStateText(installState);
@@ -234,6 +256,22 @@ namespace WowUp.WPF.ViewModels
             {
                 _addon = _addonService.GetAddon(_addon.Id);
                 SetupDisplayState();
+            }
+        }
+
+        private string GetStatusText(AddonDisplayState displayState)
+        {
+            switch (displayState)
+            {
+                case AddonDisplayState.UpToDate:
+                    return "Up to Date";
+                case AddonDisplayState.Ignored:
+                    return "Ignored";
+                case AddonDisplayState.Update:
+                case AddonDisplayState.Install:
+                case AddonDisplayState.Unknown:
+                default:
+                    return string.Empty;
             }
         }
 

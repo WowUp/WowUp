@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.9.2",
+      "Description": "Add ignore right-click option."
+    },
+    {
       "Version": "1.9.1",
       "Description": "Add option for collapse to tray."
     },

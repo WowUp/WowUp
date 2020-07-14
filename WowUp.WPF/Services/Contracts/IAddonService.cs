@@ -18,6 +18,7 @@ namespace WowUp.WPF.Services.Contracts
         string BackupPath { get; }
 
         Addon GetAddon(int addonId);
+        Addon UpdateAddon(Addon addon);
 
         bool IsInstalled(
             string externalId, 

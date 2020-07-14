@@ -10,6 +10,11 @@ namespace WowUp.WPF.Extensions
     {
         public static IList<string> GetInstalledDirectories(this Addon addon)
         {
+            if (string.IsNullOrEmpty(addon.InstalledFolders))
+            {
+                return new List<string>();
+            }
+
             return addon.InstalledFolders.Split(',').ToList();
         }
 
@@ -28,6 +33,11 @@ namespace WowUp.WPF.Extensions
             if(addon == null)
             {
                 return AddonDisplayState.Unknown;
+            }
+
+            if (addon.IsIgnored)
+            {
+                return AddonDisplayState.Ignored;
             }
 
             if (string.IsNullOrEmpty(addon.InstalledVersion))

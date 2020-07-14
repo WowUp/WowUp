@@ -5,6 +5,7 @@
         Install,
         Update,
         UpToDate,
+        Ignored,
         Unknown,
     }
 }

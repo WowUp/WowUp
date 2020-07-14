@@ -115,6 +115,13 @@ namespace WowUp.WPF.Entities
             set { SetProperty(ref _installedFolders, value); }
         }
 
+        private bool _isIgnored;
+        public bool IsIgnored 
+        {
+            get => _isIgnored;
+            set { SetProperty(ref _isIgnored, value); }
+        }
+
         private WowClientType _clientType;
         public WowClientType ClientType
         {

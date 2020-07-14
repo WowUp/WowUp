@@ -52,6 +52,20 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _enableUpdateAll, value); }
         }
 
+        private bool _enableRefresh;
+        public bool EnableRefresh
+        {
+            get => _enableRefresh;
+            set { SetProperty(ref _enableRefresh, value); }
+        }
+
+        private bool _enableReScan;
+        public bool EnableRescan
+        {
+            get => _enableReScan;
+            set { SetProperty(ref _enableReScan, value); }
+        }
+
         private AddonListItemViewModel _selectedRow;
         public AddonListItemViewModel SelectedRow
         {
@@ -127,16 +141,27 @@ namespace WowUp.WPF.ViewModels
         {
             _isUpdatingAll = true;
             EnableUpdateAll = false;
+            EnableRefresh = false;
+            EnableRescan = false;
+            IsBusy = true;
 
-            await DisplayAddons
-                .Where(addon => addon.CanUpdate || addon.CanInstall)
-                .ForEachAsync(2, async addon =>
-                {
-                    await addon.InstallAddon();
-                });
-
-            EnableUpdateAll = true;
-            _isUpdatingAll = false;
+            try
+            {
+                await DisplayAddons
+                    .Where(addon => addon.CanUpdate || addon.CanInstall)
+                    .ForEachAsync(2, async addon =>
+                    {
+                        await addon.InstallAddon();
+                    });
+            }
+            finally
+            {
+                EnableUpdateAll = true;
+                EnableRefresh = true;
+                EnableRescan = true;
+                IsBusy = false;
+                _isUpdatingAll = false;
+            }
         }
 
         private async Task InstallNewAddon()
@@ -192,6 +217,8 @@ namespace WowUp.WPF.ViewModels
             EnableUpdateAll = false;
             ShowResults = false;
             ShowEmptyLabel = false;
+            EnableRefresh = false;
+            EnableRescan = false;
 
             try
             {
@@ -227,6 +254,8 @@ namespace WowUp.WPF.ViewModels
                 ShowResults = DisplayAddons.Any();
                 ShowEmptyLabel = !DisplayAddons.Any();
                 EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
+                EnableRefresh = true;
+                EnableRescan = true;
             }
         }
 
