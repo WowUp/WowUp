@@ -8,7 +8,6 @@ using WowUp.WPF.Views;
 using Microsoft.Extensions.DependencyInjection;
 using WowUp.WPF.Utilities;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Services;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.Common.Services.Contracts;

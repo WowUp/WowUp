@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WowUp.Common.Models.Github
+﻿namespace WowUp.Common.Models.Github
 {
     public class GithubReleaseResponse
     {

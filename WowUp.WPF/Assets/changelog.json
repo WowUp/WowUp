@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.9.3",
+      "Description": "UI updates."
+    },
+    {
       "Version": "1.9.2",
       "Description": "Add ignore right-click option."
     },

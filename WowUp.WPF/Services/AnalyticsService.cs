@@ -1,7 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Repositories.Contracts;

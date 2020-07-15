@@ -5,7 +5,6 @@ using System.Windows;
 using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -195,7 +194,7 @@ namespace WowUp.WPF.ViewModels
             ShowInstallButton = DisplayState == AddonDisplayState.Install;
             ShowUpdateButton = DisplayState == AddonDisplayState.Update;
             ShowStatusText = DisplayState == AddonDisplayState.UpToDate || DisplayState == AddonDisplayState.Ignored;
-            ShowReInstall = DisplayState == AddonDisplayState.Update || DisplayState == AddonDisplayState.UpToDate;
+            ShowReInstall = DisplayState == AddonDisplayState.UpToDate;
             ShowUninstall = DisplayState != AddonDisplayState.Unknown;
             ShowProgressBar = false;
             StatusText = GetStatusText(DisplayState);

@@ -31,7 +31,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" BorderThickness="0" BorderBrush="Transparent">
         <Grid Background="{StaticResource Dark3}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

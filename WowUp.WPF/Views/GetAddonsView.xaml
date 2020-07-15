@@ -144,6 +144,8 @@
                   GridLinesVisibility="Horizontal"       
                   CanUserReorderColumns="False"
                   HorizontalGridLinesBrush="{StaticResource Dark2}"
+                  BorderBrush="Transparent"
+                  BorderThickness="0"
                   IsReadOnly="True">
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGrid}">
@@ -185,7 +187,7 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Addon" CellTemplate="{StaticResource AddonColumnTemplate}" Width="*" />
-                <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource AuthorTemplate}" Width="Auto" MinWidth="150" CanUserResize="False" />
+                <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource AuthorTemplate}" Width="150" MinWidth="150"  CanUserResize="True" />
                 <DataGridTemplateColumn Header="Provider" CellTemplate="{StaticResource ProviderTemplate}" Width="Auto" MinWidth="80" CanUserResize="False" />
                 <DataGridTemplateColumn Header="Status" CellTemplate="{StaticResource StatusColumnTemplate}" Width="120" CanUserResize="False"/>
             </DataGrid.Columns>

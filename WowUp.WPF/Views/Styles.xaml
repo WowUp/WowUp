@@ -6,6 +6,7 @@
     <SolidColorBrush x:Key="Dark1">#666666</SolidColorBrush>
     <SolidColorBrush x:Key="Dark2">#555555</SolidColorBrush>
     <SolidColorBrush x:Key="Dark3">#444444</SolidColorBrush>
+    <SolidColorBrush x:Key="Dark4">#333333</SolidColorBrush>
     <SolidColorBrush x:Key="White1">#FFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="White2">#DDDDDD</SolidColorBrush>
     <SolidColorBrush x:Key="White3">#CCCCCC</SolidColorBrush>
@@ -75,7 +76,60 @@
         <Setter Property="Foreground" Value="Red" />
     </Style>
 
+    <ControlTemplate x:Key="DarkHeaderMenuItemTemplateKey" TargetType="MenuItem">
+        <Border Name="Border" BorderThickness="0 0 0 1" BorderBrush="{StaticResource White2}"
+                Padding="4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
+                <Border Grid.Column="0" Margin="0 0 4 0">
+                    <StackPanel>
+                        <Image Source="{Binding ThumbnailUrl}" Width="30" Height="30" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding CurrentVersion}" Foreground="{StaticResource White3}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Icon" Value="{x:Null}">
+            </Trigger>
+            <Trigger Property="IsChecked" Value="true">
+            </Trigger>
+            <Trigger Property="IsCheckable" Value="true">
+            </Trigger>
+            <Trigger Property="IsHighlighted" Value="true">
+                <Setter TargetName="Border" Property="Background"
+              Value="{StaticResource Dark2}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{StaticResource White2}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="DarkHeaderMenuItem" TargetType="MenuItem">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Style.Triggers>
+            <Trigger Property="Role" Value="TopLevelItem">
+                <Setter Property="Template" Value="{StaticResource DarkHeaderMenuItemTemplateKey}"/>
+            </Trigger>
+
+            <Trigger Property="Role" Value="SubmenuItem">
+                <Setter Property="Template" Value="{StaticResource DarkHeaderMenuItemTemplateKey}"/>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="Green"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <ControlTemplate x:Key="DarkMenuItemTemplateKey" TargetType="MenuItem">
         <Border Name="Border" >
@@ -107,7 +161,7 @@
                 </Border>
                 <ContentPresenter Name="HeaderHost"
                                   Grid.Column="1"
-                                  Margin="10 0 0 0"
+                                  Margin="0 0 0 0"
                                   ContentSource="Header"
                                   RecognizesAccessKey="True"/>
                 <TextBlock x:Name="InputGestureText"
@@ -167,7 +221,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
                     <Border x:Name="Border"
-                Background="{StaticResource Dark3}"
+                Background="{StaticResource Dark4}"
                 BorderThickness="1">
                         <Border.BorderBrush>
                             <SolidColorBrush Color="{StaticResource Dark1Color}" />
@@ -403,7 +457,7 @@
                                                 Storyboard.TargetProperty="(Panel.Background).
                     (GradientBrush.GradientStops)[1].(GradientStop.Color)">
                                             <EasingColorKeyFrame KeyTime="0"
-                                         Value="{StaticResource ControlPressedColor}" />
+                                         Value="{StaticResource Dark1Color}" />
                                         </ColorAnimationUsingKeyFrames>
                                         <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderThickness)"
                                                     Storyboard.TargetName="Border">
@@ -435,24 +489,22 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Border x:Name="Border"
-                  Margin="0"
-                  BorderThickness="0"
-                  >
+                                Margin="0"
+                                BorderThickness="0"
+                                CornerRadius="0 0 0 0">
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="Transparent" />
                             </Border.BorderBrush>
                             <Border.Background>
-
                                 <SolidColorBrush Color="Transparent" />
-
                             </Border.Background>
                             <ContentPresenter x:Name="ContentSite"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Center"
-                              ContentSource="Header"
-                              Margin="12,2,12,2"
-                              TextBlock.Foreground="White"
-                              RecognizesAccessKey="True">
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="12,2,12,2"
+                                              TextBlock.Foreground="White"
+                                              RecognizesAccessKey="True">
                             </ContentPresenter>
                         </Border>
                     </Grid>
@@ -460,7 +512,8 @@
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Panel.ZIndex" Value="100" />
                             <Setter Property="TextElement.FontSize" TargetName="ContentSite" Value="16"/>
-                            <!--<Setter Property="TextElement.FontWeight" TargetName="ContentSite" Value="DemiBold"/>-->
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Dark3}"/>
+                            <Setter Property="TextElement.FontWeight" TargetName="ContentSite" Value="DemiBold"/>
                             <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{StaticResource White1}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">

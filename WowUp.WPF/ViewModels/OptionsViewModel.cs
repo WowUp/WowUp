@@ -1,5 +1,4 @@
 ﻿using WowUp.Common.Services.Contracts;
-using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 

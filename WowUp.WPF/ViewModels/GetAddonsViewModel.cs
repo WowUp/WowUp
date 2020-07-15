@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using WowUp.WPF.Extensions;
 using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;

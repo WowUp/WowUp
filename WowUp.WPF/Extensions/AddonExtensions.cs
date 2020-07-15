@@ -2,7 +2,6 @@
 using System.Linq;
 using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
-using WowUp.WPF.Models;
 
 namespace WowUp.WPF.Extensions
 {

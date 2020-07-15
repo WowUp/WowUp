@@ -2,16 +2,12 @@
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Models;
-using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using WowUp.WPF.Repositories.Contracts;

@@ -187,17 +187,22 @@
                       IsReadOnly="True"
                       HorizontalGridLinesBrush="{StaticResource Dark2}"
                       RowHeaderWidth="0"
+                      BorderThickness="0"
                       BorderBrush="Transparent">
                 <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu"
                                  Style="{StaticResource DarkMenu}"
                                  DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                        <MenuItem Header="{Binding Name}" IsEnabled="False" />
+                        <MenuItem Style="{StaticResource DarkHeaderMenuItem}" Header="{Binding Name}" IsEnabled="False" />
                         <MenuItem Header="Ignore" IsCheckable="True" 
                                   IsChecked="{Binding IsIgnored}" 
+                                  Style="{StaticResource DarkMenuItem}"
                                   Command="{Binding IgnoreCheckedCommand}"
                                   CommandParameter="{Binding}">
                         </MenuItem>
+                        <MenuItem Header="Update" 
+                                  Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
+                                  Command="{Binding InstallCommand}"/>
                         <MenuItem Header="Re-Install" 
                                   Visibility="{Binding ShowReInstall, Converter={StaticResource BoolToVisibilty}}"
                                   Command="{Binding ReInstallCommand}"/>
@@ -260,7 +265,7 @@
                     <DataGridTemplateColumn Header="Status" CellTemplate="{StaticResource StatusColumnTemplate}" Width="120" CanUserResize="False"/>
                     <DataGridTemplateColumn Header="Latest Version" CellTemplate="{StaticResource LatestVersionTemplate}" Width="120" MinWidth="80"/>
                     <DataGridTemplateColumn Header="Game Version" CellTemplate="{StaticResource GameVersionTemplate}" Width="120" CanUserResize="False"/>
-                    <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource AuthorTemplate}" Width="Auto" MinWidth="80" CanUserResize="False" />
+                    <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource AuthorTemplate}" Width="150" MinWidth="80" CanUserResize="False" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

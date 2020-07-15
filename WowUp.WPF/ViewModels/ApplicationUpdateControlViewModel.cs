@@ -75,7 +75,7 @@ namespace WowUp.WPF.ViewModels
 
             ProgressText = string.Empty;
 
-            _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+            _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
         }
 
         private async void CheckVersion(object state)

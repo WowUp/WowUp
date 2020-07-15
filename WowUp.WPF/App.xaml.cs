@@ -3,7 +3,6 @@ using Serilog;
 using System;
 using System.IO;
 using System.Windows;
-using System.Windows.Media;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.Repositories;
