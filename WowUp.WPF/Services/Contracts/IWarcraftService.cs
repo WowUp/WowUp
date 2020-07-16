@@ -1,21 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using WowUp.Common.Enums;
+using WowUp.Common.Models.Events;
+using WowUp.Common.Models.Warcraft;
 using WowUp.WPF.Models;
 
 namespace WowUp.WPF.Services.Contracts
 {
+    public delegate void WarcraftEventHandler(object sender, WarcraftEventArgs e);
+
     public interface IWarcraftService
     {
-        Task<IList<string>> GetWowClientNames();
-        Task<IList<WowClientType>> GetWowClients();
+        event WarcraftEventHandler ProductChanged;
 
-        bool ValidateWowFolder(string wowFolder);
-        Task<string> GetWowFolderPath();
-        Task<bool> SetWowFolderPath(string folderPath);
-        Task<string> GetRetailFolderPath();
-        Task<string> GetClassicFolderPath();
+        IList<InstalledProduct> ScanProducts();
+        IList<string> GetWowClientNames();
+        IList<WowClientType> GetWowClientTypes();
 
-        Task<string> GetAddonFolderPath(WowClientType clientType);
+        string GetClientLocation(WowClientType clientType);
+        IList<string> GetClientLocations();
+        bool IsClientFolder(WowClientType clientType, string folderPath);
+        bool SetWowFolderPath(WowClientType clientType, string folderPath);
+        
+        string GetAddonFolderPath(WowClientType clientType);
 
         Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType);
     }

@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using WowUp.Common.Enums;
 using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
@@ -60,8 +61,8 @@ namespace WowUp.WPF.ViewModels
 
         public async void OnInitialized()
         {
-            _clientTypes = await _warcraftService.GetWowClients();
-            _clientNames = await _warcraftService.GetWowClientNames();
+            _clientTypes = _warcraftService.GetWowClientTypes();
+            _clientNames = _warcraftService.GetWowClientNames();
 
             for (var i = 0; i < _clientNames.Count; i += 1)
             {

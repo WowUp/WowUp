@@ -1,4 +1,7 @@
-﻿using WowUp.Common.Services.Contracts;
+﻿using WowUp.Common.Enums;
+using WowUp.Common.Extensions;
+using WowUp.Common.Services.Contracts;
+using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -10,11 +13,32 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IWowUpService _wowUpService;
 
-        private string _wowLocation;
-        public string WowLocation
+        private string _wowRetailLocation;
+        public string WowRetailLocation
         {
-            get => _wowLocation;
-            set { SetProperty(ref _wowLocation, value); }
+            get => _wowRetailLocation;
+            set { SetProperty(ref _wowRetailLocation, value); }
+        }
+
+        private string _wowRetailPtrLocation;
+        public string WowRetailPtrLocation
+        {
+            get => _wowRetailPtrLocation;
+            set { SetProperty(ref _wowRetailPtrLocation, value); }
+        }
+
+        private string _wowClassicLocation;
+        public string WowClassicLocation
+        {
+            get => _wowClassicLocation;
+            set { SetProperty(ref _wowClassicLocation, value); }
+        }
+
+        private string _wowClassicPtrLocation;
+        public string WowClassicPtrLocation
+        {
+            get => _wowClassicPtrLocation;
+            set { SetProperty(ref _wowClassicPtrLocation, value); }
         }
 
         private bool _isTelemetryEnabled;
@@ -34,7 +58,12 @@ namespace WowUp.WPF.ViewModels
         public Command ShowLogsCommand { get; set; }
         public Command TelemetryCheckCommand { get; set; }
         public Command CollapseToTrayCheckCommand { get; set; }
-
+        public Command SetRetailLocationCommand { get; set; }
+        public Command SetRetailPtrLocationCommand { get; set; }
+        public Command SetClassicLocationCommand { get; set; }
+        public Command SetClassicPtrLocationCommand { get; set; }
+        public Command RescanFoldersCommand { get; set; }
+        
         public OptionsViewModel(
             IAnalyticsService analyticsService,
             IWarcraftService warcraftService,
@@ -47,15 +76,24 @@ namespace WowUp.WPF.ViewModels
             ShowLogsCommand = new Command(() => ShowLogsFolder());
             TelemetryCheckCommand = new Command(() => OnTelemetryChange());
             CollapseToTrayCheckCommand = new Command(() => OnCollapseToTrayChanged());
+            SetRetailLocationCommand = new Command(() => OnSetLocation(WowClientType.Retail));
+            SetRetailPtrLocationCommand = new Command(() => OnSetLocation(WowClientType.RetailPtr));
+            SetClassicLocationCommand = new Command(() => OnSetLocation(WowClientType.Classic));
+            SetClassicPtrLocationCommand = new Command(() => OnSetLocation(WowClientType.ClassicPtr));
+            RescanFoldersCommand = new Command(() => OnRescanFolders());
 
             LoadOptions();
         }
 
-        private async void LoadOptions()
+        private void LoadOptions()
         {
             IsTelemetryEnabled = _analyticsService.IsTelemetryEnabled();
-            WowLocation = await _warcraftService.GetWowFolderPath();
             CollapseToTrayEnabled = _wowUpService.GetCollapseToTray();
+
+            WowRetailLocation = _warcraftService.GetClientLocation(WowClientType.Retail);
+            WowRetailPtrLocation = _warcraftService.GetClientLocation(WowClientType.RetailPtr);
+            WowClassicLocation = _warcraftService.GetClientLocation(WowClientType.Classic);
+            WowClassicPtrLocation = _warcraftService.GetClientLocation(WowClientType.ClassicPtr);
         }
 
         private void ShowLogsFolder() 
@@ -73,7 +111,7 @@ namespace WowUp.WPF.ViewModels
             _wowUpService.SetCollapseToTray(CollapseToTrayEnabled);
         }
 
-        public async void SetWowLocation()
+        private void OnSetLocation(WowClientType clientType)
         {
             var selectedPath = DialogUtilities.SelectFolder();
             if (string.IsNullOrEmpty(selectedPath))
@@ -81,14 +119,19 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
-            var didSet = await _warcraftService.SetWowFolderPath(selectedPath);
-            if (!didSet)
+            if(!_warcraftService.SetWowFolderPath(clientType, selectedPath))
             {
-                System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your World of Warcraft folder");
+                System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your {clientType} folder");
                 return;
             }
 
-            WowLocation = selectedPath;
+            LoadOptions();
+        }
+
+        private void OnRescanFolders()
+        {
+            _warcraftService.ScanProducts();
+            LoadOptions();
         }
     }
 }

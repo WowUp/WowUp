@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WowUp.WPF.Models
+namespace WowUp.Common.Enums
 {
     public enum WowClientType
     {

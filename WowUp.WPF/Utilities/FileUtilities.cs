@@ -32,10 +32,8 @@ namespace WowUp.WPF.Utilities
 
         public static async Task<string> GetFileTextAsync(string filePath)
         {
-            using (var reader = File.OpenText(filePath))
-            {
-                return await reader.ReadToEndAsync();
-            }
+            using var reader = File.OpenText(filePath);
+            return await reader.ReadToEndAsync();
         }
 
         public static async Task DeleteDirectory(string filePath)
@@ -56,6 +54,16 @@ namespace WowUp.WPF.Utilities
                 attempts += 1;
                 await Task.Delay(100);
             }
+        }
+
+        public static IEnumerable<string> GetAllDriveLetters()
+        {
+            return GetAllDrives().Select(drive => drive.Name);
+        }
+
+        public static IEnumerable<DriveInfo> GetAllDrives()
+        {
+            return DriveInfo.GetDrives();
         }
 
         public static IEnumerable<string> GetDirectoryNames(string baseDir)

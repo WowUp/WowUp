@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.10.0",
+      "Description": "Requires Re-Scan.\nSupport for different locations per WoW client."
+    },
+    {
       "Version": "1.9.3",
       "Description": "UI updates."
     },

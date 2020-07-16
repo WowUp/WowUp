@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using WowUp.Services;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace WowUp.Views
@@ -33,10 +32,17 @@ namespace WowUp.Views
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(new WowLocationSelectPopupPage());
-            });
+            //MainThread.BeginInvokeOnMainThread(async () =>
+            //{
+            //    try
+            //    {
+            //        await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(new WowLocationSelectPopupPage());
+            //    }
+            //    catch(Exception ex)
+            //    {
+            //        //
+            //    }
+            //});
 
         }
     }

@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using System;
+using WowUp.Common.Enums;
 using WowUp.WPF.Models;
 
 namespace WowUp.WPF.Entities

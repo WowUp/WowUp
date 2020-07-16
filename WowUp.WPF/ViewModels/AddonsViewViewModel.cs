@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using WowUp.WPF.Views;
 using System.Windows;
 using WowUp.WPF.Errors;
+using WowUp.Common.Enums;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -22,9 +22,9 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IAddonService _addonService;
 
-        private int _selectedWowIndex = 0;
         private bool _isUpdatingAll;
 
+        private int _selectedWowIndex = 0;
         public int SelectedWowIndex
         {
             get => _selectedWowIndex;
@@ -111,10 +111,15 @@ namespace WowUp.WPF.ViewModels
                 await LoadItems();
             };
 
+            _warcraftService.ProductChanged += (sender, args) =>
+            {
+                SetClientNames();
+            };
+
             Initialize();
         }
 
-        public async void Initialize()
+        public void Initialize()
         {
             ClientNames = new ObservableCollection<ComboBoxItem>();
             DisplayAddons = new ObservableCollection<AddonListItemViewModel>();
@@ -124,10 +129,17 @@ namespace WowUp.WPF.ViewModels
             UpdateAllCommand = new Command(async () => await UpdateAll());
             InstallCommand = new Command(async () => await InstallNewAddon());
 
-            _clientTypes = await _warcraftService.GetWowClients();
-            _clientNames = await _warcraftService.GetWowClientNames();
+            SetClientNames();
+        }
 
-            for(var i = 0; i < _clientNames.Count; i += 1)
+        private void SetClientNames()
+        {
+            ClientNames.Clear();
+
+            _clientTypes = _warcraftService.GetWowClientTypes();
+            _clientNames = _warcraftService.GetWowClientNames();
+
+            for (var i = 0; i < _clientNames.Count; i += 1)
             {
                 var clientName = _clientNames[i];
                 ClientNames.Add(new ComboBoxItem
@@ -135,6 +147,8 @@ namespace WowUp.WPF.ViewModels
                     Content = clientName
                 });
             }
+
+            SelectedWowIndex = 0;
         }
 
         public async Task UpdateAll()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WowUp.Common.Enums;
 using WowUp.WPF.Models;
 
 namespace WowUp.WPF.AddonProviders.Contracts

@@ -16,15 +16,5 @@ namespace WowUp.WPF.Views
 
             InitializeComponent();
         }
-
-        private void SelectLocationButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            _viewModel.SetWowLocation();
-        }
-
-        private void ShowLogsButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-
-        }
     }
 }

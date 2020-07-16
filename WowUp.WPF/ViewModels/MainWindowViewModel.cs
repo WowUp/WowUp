@@ -11,6 +11,7 @@ using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.Common.Services.Contracts;
+using System.Linq;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -85,7 +86,7 @@ namespace WowUp.WPF.ViewModels
             _warcraftService = warcraftService;
             _wowUpService = wowUpService;
 
-            SelectWowCommand = new Command(async () => await SetWowLocation());
+            SelectWowCommand = new Command(() => { });
             CloseWindowCommand = new Command(() => OnCloseWindow());
 
             ApplicationUpdateControlViewModel = serviceProvider.GetService<ApplicationUpdateControlViewModel>();
@@ -163,7 +164,7 @@ namespace WowUp.WPF.ViewModels
 
         private async void InitializeView()
         {
-            var hasWowLocation = await HasWarcraftLocation();
+            var hasWowLocation = HasWarcraftLocation();
 
             ShowWowSelection = !hasWowLocation;
             ShowTabs = hasWowLocation;
@@ -172,11 +173,6 @@ namespace WowUp.WPF.ViewModels
             {
                 CreateTabs();
             }
-        }
-
-        private async void CheckVersion(object state)
-        {
-            IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
         }
 
         private void CreateTabs()
@@ -221,29 +217,30 @@ namespace WowUp.WPF.ViewModels
             TabItems.Add(optionsTab);
         }
 
-        private async Task<bool> HasWarcraftLocation()
+        private bool HasWarcraftLocation()
         {
-            var wowFolder = await _warcraftService.GetWowFolderPath();
-            return _warcraftService.ValidateWowFolder(wowFolder) && !string.IsNullOrEmpty(wowFolder);
+            var wowLocations = _warcraftService.GetClientLocations();
+
+            return wowLocations.Any(loc => !string.IsNullOrEmpty(loc));
         }
 
-        private async Task SetWowLocation()
-        {
-            var selectedPath = DialogUtilities.SelectFolder();
-            if (string.IsNullOrEmpty(selectedPath))
-            {
-                System.Windows.MessageBox.Show("You must select a World of Warcraft folder to continue.");
-                return;
-            }
+        //private async Task SetWowLocation()
+        //{
+        //    var selectedPath = DialogUtilities.SelectFolder();
+        //    if (string.IsNullOrEmpty(selectedPath))
+        //    {
+        //        System.Windows.MessageBox.Show("You must select a World of Warcraft folder to continue.");
+        //        return;
+        //    }
 
-            var didSet = await _warcraftService.SetWowFolderPath(selectedPath);
-            if (!didSet)
-            {
-                System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your World of Warcraft folder");
-                return;
-            }
+        //    var didSet = await _warcraftService.SetWowFolderPath(selectedPath);
+        //    if (!didSet)
+        //    {
+        //        System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your World of Warcraft folder");
+        //        return;
+        //    }
 
-            InitializeView();
-        }
+        //    InitializeView();
+        //}
     }
 }

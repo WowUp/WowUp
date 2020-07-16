@@ -10,9 +10,27 @@ namespace WowUp.WPF.Repositories
 {
     public class PreferenceRepository : BaseRepository<Preference>, IPreferenceRepository
     {
+        public Preference Create(string key, string value)
+        {
+            var pref = new Preference
+            {
+                Key = key,
+                Value = value
+            };
+
+            SaveItem(pref);
+
+            return pref;
+        }
+
         public Preference FindByKey(string key)
         {
             return Query(table => table.FirstOrDefault(p => p.Key == key));
+        }
+
+        public IList<Preference> FindAllByKey(IEnumerable<string> keys)
+        {
+            return Query(table => table.Where(p => keys.Contains(p.Key))).ToList();
         }
 
         public bool AddItem(Preference item)

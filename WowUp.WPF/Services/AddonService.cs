@@ -193,7 +193,7 @@ namespace WowUp.WPF.Services
         public async Task UninstallAddon(Addon addon)
         {
             var installedDirectories = addon.GetInstalledDirectories();
-            var addonFolder = await _warcraftService.GetAddonFolderPath(addon.ClientType);
+            var addonFolder = _warcraftService.GetAddonFolderPath(addon.ClientType);
 
             foreach(var dir in installedDirectories)
             {
@@ -270,7 +270,7 @@ namespace WowUp.WPF.Services
 
         private async Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
         {
-            var addonFolderPath = await _warcraftService.GetAddonFolderPath(clientType);
+            var addonFolderPath = _warcraftService.GetAddonFolderPath(clientType);
             var unzippedFolders = Directory.GetDirectories(unzippedDirectory);
             foreach (var unzippedFolder in unzippedFolders)
             {

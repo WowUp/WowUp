@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WowUp.Common.Enums;
+using WowUp.Common.Extensions;
 using WowUp.Common.Models.TukUi;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Extensions;

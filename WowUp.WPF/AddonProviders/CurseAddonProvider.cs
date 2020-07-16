@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WowUp.Common.Enums;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Models;
 using WowUp.WPF.Models.Curse;
