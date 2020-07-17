@@ -24,8 +24,6 @@ namespace WowUp.WPF.ViewModels
         private readonly IWowUpService _wowUpService;
         private readonly IPreferenceRepository _preferenceRepository;
 
-        private System.Threading.Timer _timer;
-
         public Command SelectWowCommand { get; set; }
         public Command CloseWindowCommand { get; set; }
 

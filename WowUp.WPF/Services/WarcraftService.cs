@@ -98,6 +98,10 @@ namespace WowUp.WPF.Services
 
         private bool AreEqualPaths(string path1, string path2)
         {
+            if(string.IsNullOrEmpty(path1) && string.IsNullOrEmpty(path2))
+            {
+                return true;
+            }
             if(string.IsNullOrEmpty(path1) && !string.IsNullOrEmpty(path2))
             {
                 return false;

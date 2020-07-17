@@ -2,6 +2,7 @@
 using Serilog;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
@@ -25,6 +26,8 @@ namespace WowUp.WPF
         public App()
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
+            Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
             var logFilePath = Path.Combine(FileUtilities.AppLogsPath, "wowup-logs.txt");
 
@@ -40,6 +43,18 @@ namespace WowUp.WPF
             ConfigureServices(serviceCollection);
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            Log.Error(e.Exception, "Uncaught Exception");
+            Log.Error($"Terminating");
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Log.Error(e.Exception, "Uncaught Exception");
+            Log.Error($"Terminating");
         }
 
         protected override void OnStartup(StartupEventArgs e)
