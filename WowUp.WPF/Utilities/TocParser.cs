@@ -17,6 +17,8 @@ namespace WowUp.WPF.Utilities
         public string PartOf => GetValue("X-Part-Of");
         public string Category => GetValue("X-Category");
         public string Localizations => GetValue("X-Localizations");
+        public string CurseProjectId => GetValue("X-Curse-Project-ID");
+        public string WowInterfaceId => GetValue("X-WoWI-ID");
         public string Dependencies => GetValue("Dependencies");
 
         public Toc Toc => new Toc
@@ -29,7 +31,9 @@ namespace WowUp.WPF.Utilities
             Title = Title,
             Version = Version,
             Website = Website,
-            Dependencies = Dependencies
+            Dependencies = Dependencies,
+            CurseProjectId = CurseProjectId,
+            WowInterfaceId = WowInterfaceId
         };
 
         public TocParser(string tocText)

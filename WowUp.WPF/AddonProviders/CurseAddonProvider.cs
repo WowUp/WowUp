@@ -12,7 +12,7 @@ using WowUp.WPF.Models.Curse;
 
 namespace WowUp.WPF.AddonProviders
 {
-    public class CurseAddonProvider : IAddonProvider
+    public class CurseAddonProvider : ICurseAddonProvider
     {
         private const string ApiUrl = "https://addons-ecs.forgesvc.net/api/v2";
 
@@ -78,6 +78,11 @@ namespace WowUp.WPF.AddonProviders
             WowClientType clientType,
             string nameOverride = null)
         {
+            if(addonName.Contains("bigwig", StringComparison.OrdinalIgnoreCase))
+            {
+
+            }
+
             var results = new List<AddonSearchResult>();
 
             var response = await GetSearchResults(nameOverride ?? addonName);

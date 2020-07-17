@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.10.2",
+      "Description": "When trying to guess installed addons, prefer toc metadata."
+    },
+    {
+      "Version": "1.10.1",
+      "Description": "Hopefully improve install/uninstall breaking the app during certain actions."
+    },
+    {
       "Version": "1.10.0",
       "Description": "Requires Re-Scan.\nSupport for different locations per WoW client."
     },

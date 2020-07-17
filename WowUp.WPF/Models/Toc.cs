@@ -11,5 +11,8 @@
         public string Category { get; set; }
         public string Localizations { get; set; }
         public string Dependencies { get; set; }
+
+        public string CurseProjectId { get; set; }
+        public string WowInterfaceId { get; set; }
     }
 }

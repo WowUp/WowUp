@@ -346,7 +346,18 @@ namespace WowUp.WPF.Services
             {
                 try
                 {
-                    var addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
+                    Addon addon;
+                    if (!string.IsNullOrEmpty(addonFolder.Toc?.CurseProjectId))
+                    {
+                        var provider = _providers.First(p => p is CurseAddonProvider) as CurseAddonProvider;
+                        var searchResult = await provider.GetById(addonFolder.Toc.CurseProjectId, clientType);
+                        addon = GetAddon(addonFolder.Name, searchResult, clientType);
+                    }
+                    else
+                    {
+                        addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
+                    }
+
                     if (addon == null)
                     {
                         continue;
