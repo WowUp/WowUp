@@ -3,7 +3,7 @@
     public enum CurseReleaseType
     {
         Release = 1,
-        Beta,
-        Alpha
+        Beta = 2,
+        Alpha = 3
     }
 }

@@ -12,6 +12,7 @@ using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.Common.Services.Contracts;
 using System.Linq;
+using WowUp.WPF.Repositories.Base;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -23,6 +24,7 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IWowUpService _wowUpService;
         private readonly IPreferenceRepository _preferenceRepository;
+        private readonly IAnalyticsService _analyticsService;
 
         public Command SelectWowCommand { get; set; }
         public Command CloseWindowCommand { get; set; }
@@ -74,11 +76,14 @@ namespace WowUp.WPF.ViewModels
         public ApplicationUpdateControlViewModel ApplicationUpdateControlViewModel { get; set; }
 
         public MainWindowViewModel(
+            IAnalyticsService analyticsService,
+            IMigrationService migrationService,
             IPreferenceRepository preferenceRepository,
             IServiceProvider serviceProvider,
             IWarcraftService warcraftService,
             IWowUpService wowUpService)
         {
+            _analyticsService = analyticsService;
             _preferenceRepository = preferenceRepository;
             _serviceProvider = serviceProvider;
             _warcraftService = warcraftService;
@@ -91,9 +96,11 @@ namespace WowUp.WPF.ViewModels
 
             TabItems = new ObservableCollection<TabItem>();
 
-            //_timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+            migrationService.MigrateDatabase();
 
             InitializeView();
+
+
         }
 
         public void SetRestoreMaximizeVisibility(WindowState windowState)
@@ -108,6 +115,12 @@ namespace WowUp.WPF.ViewModels
                 MaximizeVisibility = Visibility.Visible;
                 RestoreVisibility = Visibility.Collapsed;
             }
+        }
+
+        public void OnLoaded()
+        {
+            _analyticsService.PromptTelemetry();
+            _analyticsService.TrackStartup();
         }
 
         public void OnSourceInitialized(Window window)

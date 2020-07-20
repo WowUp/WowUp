@@ -11,6 +11,8 @@ namespace WowUp.Common.Enums
         [Display(Name = "Retail PTR")]
         RetailPtr,
         [Display(Name = "Classic PTR")]
-        ClassicPtr
+        ClassicPtr,
+        [Display(Name = "Beta")]
+        Beta
     }
 }

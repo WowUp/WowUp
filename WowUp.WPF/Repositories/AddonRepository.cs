@@ -10,7 +10,7 @@ using WowUp.WPF.Repositories.Contracts;
 
 namespace WowUp.WPF.Repositories
 {
-    public class AddonRepository : BaseRepository<Addon>, IAddonRepository
+    public class AddonRepository : BaseEntityRepository<Addon>, IAddonRepository
     {
         public bool AddItem(Addon item)
         {

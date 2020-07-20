@@ -24,8 +24,10 @@ namespace WowUp.WPF.Services
         private const string ClassicPtrFolderName = "_classic_ptr_";
         private const string RetailFolderName = "_retail_";
         private const string RetailPtrFolderName = "_ptr_";
+        private const string BetaFolderName = "_beta_";
         private const string InterfaceFolderName = "Interface";
         private const string AddonFolderName = "AddOns";
+        private const string BetaExecutableName = "WowB.exe";
         private const string RetailExecutableName = "Wow.exe";
         private const string RetailPtrExecutableName = "WowT.exe";
         private const string ClassicExecutableName = "WowClassic.exe";
@@ -40,6 +42,7 @@ namespace WowUp.WPF.Services
         private const string WowRetailPtrLocationPreferenceKey = "wow_retail_ptr_location";
         private const string WowClassicLocationPreferenceKey = "wow_classic_location";
         private const string WowClassicPtrLocationPreferenceKey = "wow_classic_ptr_location";
+        private const string WowBetaLocationPreferenceKey = "wow_beta_location";
 
         private readonly IPreferenceRepository _preferenceRepository;
 
@@ -261,6 +264,7 @@ namespace WowUp.WPF.Services
                 WowClientType.Classic => ClassicFolderName,
                 WowClientType.RetailPtr => RetailPtrFolderName,
                 WowClientType.ClassicPtr => ClassicPtrFolderName,
+                WowClientType.Beta => BetaFolderName,
                 _ => string.Empty,
             };
         }
@@ -273,6 +277,7 @@ namespace WowUp.WPF.Services
                 WowClientType.Classic => WowClassicLocationPreferenceKey,
                 WowClientType.RetailPtr => WowRetailPtrLocationPreferenceKey,
                 WowClientType.ClassicPtr => WowClassicPtrLocationPreferenceKey,
+                WowClientType.Beta => WowBetaLocationPreferenceKey,
                 _ => string.Empty,
             };
         }
@@ -285,6 +290,7 @@ namespace WowUp.WPF.Services
                 WowClientType.Classic => ClassicExecutableName,
                 WowClientType.RetailPtr => RetailPtrExecutableName,
                 WowClientType.ClassicPtr => ClassicPtrExecutableName,
+                WowClientType.Beta => BetaExecutableName,
                 _ => string.Empty,
             };
         }

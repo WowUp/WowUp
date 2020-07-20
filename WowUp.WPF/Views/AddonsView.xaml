@@ -29,10 +29,18 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Margin="0, 0, 10, 0" VerticalAlignment="Center">
+                        <StackPanel Grid.Column="0" Margin="0, 0, 10, 0" VerticalAlignment="Center"
+                                    Background="#222">
                             <Border Background="{StaticResource Dark2}"  >
-                                <Image Source="{Binding ThumbnailUrl}" Width="40" Height="40" />
+                                <Image Source="{Binding ThumbnailUrl}" Width="40" Height="40"
+                                       RenderOptions.BitmapScalingMode="HighQuality"/>
                             </Border>
+                            <TextBlock Visibility="{Binding ShowChannelName, Converter={StaticResource BoolToVisibilty}}" 
+                                       Text="{Binding ChannelName}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{Binding ChannelNameBrush}"
+                                       
+                                       FontWeight="ExtraBold"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock Visibility="{Binding ExternalUrl, Converter={StaticResource StringToVisibilty}}" 
@@ -110,7 +118,7 @@
                         <Button Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
                                 Style="{StaticResource purpleButton}"
                                 HorizontalAlignment="Center"
-                                Command="{Binding InstallCommand}">Update</Button>
+                                Command="{Binding UpdateCommand}">Update</Button>
                         <TextBlock Text="{Binding StatusText}"
                                    Style="{StaticResource labelAddonText}"
                                    HorizontalAlignment="Center"
@@ -173,7 +181,8 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="2" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center">
                 <TextBlock Text="Loading Addons..." HorizontalAlignment="Center" FontSize="14" Foreground="White" />
-                <Image gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="40" />
+                <Image gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="40"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
             </StackPanel>
             <StackPanel Grid.Row="1" Visibility="{Binding ShowEmptyLabel, Converter={StaticResource BoolToVisibilty}}" >
                 <TextBlock Text="No Addons found" HorizontalAlignment="Center" FontSize="16" Foreground="White"/>
@@ -181,6 +190,7 @@
             <DataGrid Grid.Row="2" Padding="0" Margin="0" 
                       Visibility="{Binding ShowResults, Converter={StaticResource BoolToVisibilty}}"
                       ItemsSource="{Binding DisplayAddons}"
+                      Background="{StaticResource Dark2}"
                       AutoGenerateColumns="False" 
                       GridLinesVisibility="Horizontal"
                       CanUserReorderColumns="False"
@@ -196,10 +206,24 @@
                         <MenuItem Style="{StaticResource DarkHeaderMenuItem}" Header="{Binding Name}" IsEnabled="False" />
                         <MenuItem Header="Ignore" IsCheckable="True" 
                                   IsChecked="{Binding IsIgnored}" 
-                                  Style="{StaticResource DarkMenuItem}"
                                   Command="{Binding IgnoreCheckedCommand}"
                                   CommandParameter="{Binding}">
                         </MenuItem>
+                        <MenuItem Header="Channel">
+                            <MenuItem Header="Stable" 
+                                      IsCheckable="True" IsChecked="{Binding IsStableChannel}"
+                                      IsEnabled="{Binding CanCheckStable}"
+                                      Command="{Binding StableCheckedCommand, Mode=TwoWay, UpdateSourceTrigger=Explicit}"></MenuItem>
+                            <MenuItem Header="Beta" 
+                                      IsCheckable="True" IsChecked="{Binding IsBetaChannel}"
+                                      IsEnabled="{Binding CanCheckBeta}"
+                                      Command="{Binding BetaCheckedCommand}"></MenuItem>
+                            <MenuItem Header="Alpha" 
+                                      IsCheckable="True" IsChecked="{Binding IsAlphaChannel}"
+                                      IsEnabled="{Binding CanCheckAlpha}"
+                                      Command="{Binding AlphaCheckedCommand}"></MenuItem>
+                        </MenuItem>
+                        <Separator Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVisibilty}}" />
                         <MenuItem Header="Update" 
                                   Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
                                   Command="{Binding InstallCommand}"/>

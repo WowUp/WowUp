@@ -41,6 +41,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _wowClassicPtrLocation, value); }
         }
 
+        private string _wowBetaLocation;
+        public string WowBetaLocation
+        {
+            get => _wowBetaLocation;
+            set { SetProperty(ref _wowBetaLocation, value); }
+        }
+
         private bool _isTelemetryEnabled;
         public bool IsTelemetryEnabled
         {
@@ -94,6 +101,7 @@ namespace WowUp.WPF.ViewModels
             WowRetailPtrLocation = _warcraftService.GetClientLocation(WowClientType.RetailPtr);
             WowClassicLocation = _warcraftService.GetClientLocation(WowClientType.Classic);
             WowClassicPtrLocation = _warcraftService.GetClientLocation(WowClientType.ClassicPtr);
+            WowBetaLocation = _warcraftService.GetClientLocation(WowClientType.Beta);
         }
 
         private void ShowLogsFolder() 

@@ -19,21 +19,25 @@ namespace WowUp.Common.Extensions
 
         public static string GetDisplayName(this Enum val)
         {
-            return val.GetType()
-                            .GetMember(val.ToString())
-                            .First()
-                            .GetCustomAttribute<DisplayAttribute>()
-                            .GetName();
+            return val
+                .GetType()
+                .GetMember(val.ToString())
+                .First()
+                .GetCustomAttribute<DisplayAttribute>()
+                .GetName();
         }
 
         public static bool IsRetail(this WowClientType clientType)
         {
-            return clientType == WowClientType.Retail || clientType == WowClientType.RetailPtr;
+            return clientType == WowClientType.Retail || 
+                clientType == WowClientType.RetailPtr || 
+                clientType == WowClientType.Beta;
         }
 
         public static bool IsClassic(this WowClientType clientType)
         {
-            return clientType == WowClientType.Classic || clientType == WowClientType.ClassicPtr;
+            return clientType == WowClientType.Classic || 
+                clientType == WowClientType.ClassicPtr;
         }
     }
 }

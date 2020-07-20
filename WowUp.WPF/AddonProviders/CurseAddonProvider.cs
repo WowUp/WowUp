@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
+using WowUp.Common.Models.Addons;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Models;
 using WowUp.WPF.Models.Curse;
@@ -37,13 +38,13 @@ namespace WowUp.WPF.AddonProviders
                 return null;
             }
 
-            var latestFile = GetLatestFile(result, clientType);
-            if (latestFile == null)
+            var latestFiles = GetLatestFiles(result, clientType);
+            if (!latestFiles.Any())
             {
                 return null;
             }
 
-            return GetAddonSearchResult(result, latestFile);
+            return GetAddonSearchResult(result, latestFiles);
         }
 
         /// <summary>
@@ -63,13 +64,13 @@ namespace WowUp.WPF.AddonProviders
                 return null;
             }
 
-            var latestFile = GetLatestFile(result, clientType);
-            if (latestFile == null)
+            var latestFiles = GetLatestFiles(result, clientType);
+            if (!latestFiles.Any())
             {
                 return null;
             }
 
-            return GetAddonSearchResult(result, latestFile);
+            return GetAddonSearchResult(result, latestFiles);
         }
 
         public async Task<IEnumerable<AddonSearchResult>> Search(
@@ -78,11 +79,6 @@ namespace WowUp.WPF.AddonProviders
             WowClientType clientType,
             string nameOverride = null)
         {
-            if(addonName.Contains("bigwig", StringComparison.OrdinalIgnoreCase))
-            {
-
-            }
-
             var results = new List<AddonSearchResult>();
 
             var response = await GetSearchResults(nameOverride ?? addonName);
@@ -91,13 +87,13 @@ namespace WowUp.WPF.AddonProviders
 
             foreach (var match in matches)
             {
-                var latestFile = GetLatestFile(match, clientType);
-                if (latestFile == null)
+                var latestFiles = GetLatestFiles(match, clientType);
+                if (!latestFiles.Any())
                 {
                     continue;
                 }
 
-                var searchResult = GetAddonSearchResult(match, latestFile);
+                var searchResult = GetAddonSearchResult(match, latestFiles);
                 if (searchResult != null)
                 {
                     results.Add(searchResult);
@@ -119,13 +115,13 @@ namespace WowUp.WPF.AddonProviders
 
             foreach (var result in results)
             {
-                var latestFile = GetLatestFile(result, clientType);
-                if (latestFile == null)
+                var latestFiles = GetLatestFiles(result, clientType);
+                if (!latestFiles.Any())
                 {
                     continue;
                 }
 
-                var searchResult = GetAddonSearchResult(result, latestFile);
+                var searchResult =  GetAddonSearchResult(result, latestFiles);
                 if (searchResult != null)
                 {
                     addonResults.Add(searchResult);
@@ -160,31 +156,43 @@ namespace WowUp.WPF.AddonProviders
                 file.IsAlternate == false;
         }
 
-        private AddonSearchResult GetAddonSearchResult(CurseSearchResult result, CurseFile latestFile)
+        private AddonChannelType GetChannelType(CurseReleaseType releaseType)
+        {
+            return releaseType switch
+            {
+                CurseReleaseType.Alpha => AddonChannelType.Alpha,
+                CurseReleaseType.Beta => AddonChannelType.Beta,
+                _ => AddonChannelType.Stable,
+            };
+        }
+
+        private AddonSearchResult GetAddonSearchResult(CurseSearchResult result, IEnumerable<CurseFile> latestFiles)
         {
             try
             {
                 var thumbnailUrl = GetThumbnailUrl(result);
                 var id = result.Id;
                 var name = result.Name;
-                var fileName = latestFile.FileName;
-                var folders = GetFolderNames(latestFile);
-                var gameVersion = GetGameVersion(latestFile);
                 var author = GetAuthor(result);
-                var downloadUrl = latestFile.DownloadUrl;
+
+                var searchResultFiles = latestFiles.Select(lf => new AddonSearchResultFile
+                {
+                    ChannelType = GetChannelType(lf.ReleaseType),
+                    Version = lf.FileName,
+                    DownloadUrl = lf.DownloadUrl,
+                    Folders = GetFolderNames(lf),
+                    GameVersion = GetGameVersion(lf)
+                });
 
                 return new AddonSearchResult
                 {
                     Author = author,
                     ExternalId = id.ToString(),
-                    Folders = folders,
-                    GameVersion = gameVersion,
                     Name = name,
                     ThumbnailUrl = thumbnailUrl,
-                    Version = fileName,
-                    DownloadUrl = downloadUrl,
                     ExternalUrl = result.WebsiteUrl,
-                    ProviderName = Name
+                    ProviderName = Name,
+                    Files = searchResultFiles
                 };
             }
             catch (Exception ex)
@@ -229,14 +237,13 @@ namespace WowUp.WPF.AddonProviders
             return file.GameVersion.FirstOrDefault();
         }
 
-        private CurseFile GetLatestFile(CurseSearchResult result, WowClientType clientType)
+        private IEnumerable<CurseFile> GetLatestFiles(CurseSearchResult result, WowClientType clientType)
         {
             var clientTypeStr = GetClientTypeString(clientType);
 
             return result.LatestFiles
-                .Where(f => f.IsAlternate == false)
-                .OrderByDescending(f => f.Id)
-                .FirstOrDefault(f => f.GameVersionFlavor == clientTypeStr && f.ReleaseType == CurseReleaseType.Release);
+                .Where(f => f.IsAlternate == false && f.GameVersionFlavor == clientTypeStr)
+                .OrderByDescending(f => f.Id);
         }
 
         private string GetThumbnailUrl(CurseSearchResult result)
@@ -332,6 +339,7 @@ namespace WowUp.WPF.AddonProviders
                     return "wow_classic";
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
+                case WowClientType.Beta:
                 default:
                     return "wow_retail";
             }

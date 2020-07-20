@@ -1,6 +1,18 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.11.0",
+      "Description": "Add support for Addon Channels (Stable/Beta/Alpha).\nImproved context menu UI.\nFix bug with trying to install TukUi from Get Addons page.\nImages should look much better now.\nFix various UI bugs."
+    },
+    {
+      "Version": "1.10.4",
+      "Description": "Try to add beta support."
+    },
+    {
+      "Version": "1.10.3",
+      "Description": "My Addon list should no longer duplicate when hitting update-all.\nNew scrollbar style."
+    },
+    {
       "Version": "1.10.2",
       "Description": "When trying to guess installed addons, prefer toc metadata."
     },

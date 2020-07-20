@@ -59,13 +59,8 @@ namespace WowUp.WPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var analyticsService = _serviceProvider.GetRequiredService<IAnalyticsService>();
-            analyticsService.PromptTelemetry();
-            analyticsService.TrackStartup();
-
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
-
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -106,6 +101,7 @@ namespace WowUp.WPF
             services.AddSingleton<IDownloadService, DownloadService>();
             services.AddSingleton<IWowUpService, WowUpService>();
             services.AddSingleton<IAnalyticsService, AnalyticsService>();
+            services.AddSingleton<IMigrationService, MigrationService>();
 
             services.AddSingleton<IAddonRepository, AddonRepository>();
             services.AddSingleton<IPreferenceRepository, PreferenceRepository>();

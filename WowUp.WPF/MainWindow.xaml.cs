@@ -124,5 +124,10 @@ namespace WowUp.WPF
         {
             Close();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _viewModel.OnLoaded();
+        }
     }
 }

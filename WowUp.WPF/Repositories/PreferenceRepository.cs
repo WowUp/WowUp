@@ -8,7 +8,7 @@ using WowUp.WPF.Repositories.Contracts;
 
 namespace WowUp.WPF.Repositories
 {
-    public class PreferenceRepository : BaseRepository<Preference>, IPreferenceRepository
+    public class PreferenceRepository : BaseEntityRepository<Preference>, IPreferenceRepository
     {
         public Preference Create(string key, string value)
         {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Extensions;
+using WowUp.Common.Models.Addons;
 using WowUp.Common.Models.TukUi;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Extensions;
@@ -41,7 +42,10 @@ namespace WowUp.WPF.AddonProviders
             string addonId,
             WowClientType clientType)
         {
-            return null;
+            var allAddons = await GetAllAddons(clientType);
+            var match = allAddons.First(a => a.Id == addonId);
+
+            return ToSearchResult(match, string.Empty);
         }
 
         public Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
@@ -117,18 +121,24 @@ namespace WowUp.WPF.AddonProviders
 
         private AddonSearchResult ToSearchResult(TukUiAddon addon, string folderName)
         {
+            var latestFile = new AddonSearchResultFile
+            {
+                ChannelType = AddonChannelType.Stable,
+                Folders = new[] { folderName },
+                DownloadUrl = addon.Url,
+                GameVersion = addon.Patch,
+                Version = addon.Version
+            };
+
             return new AddonSearchResult
             {
                 Author = addon.Author,
                 ExternalId = addon.Id,
-                Folders = new[] { folderName },
-                GameVersion = addon.Patch,
                 Name = addon.Name,
                 ThumbnailUrl = addon.ScreenshotUrl,
-                Version = addon.Version,
-                DownloadUrl = addon.Url,
                 ExternalUrl = addon.WebUrl,
-                ProviderName = Name
+                ProviderName = Name,
+                Files = new[] { latestFile }
             };
         }
 
@@ -215,6 +225,7 @@ namespace WowUp.WPF.AddonProviders
                     return "tukui_classic_addons";
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
+                case WowClientType.Beta:
                 default:
                     return "tukui_addons";
             }
@@ -229,22 +240,9 @@ namespace WowUp.WPF.AddonProviders
                     return "classic-addons";
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
+                case WowClientType.Beta:
                 default:
                     return "addons";
-            }
-        }
-
-        private string GetAddonSuffix(WowClientType clientType)
-        {
-            switch (clientType)
-            {
-                case WowClientType.Classic:
-                case WowClientType.ClassicPtr:
-                    return "classic-addon";
-                case WowClientType.Retail:
-                case WowClientType.RetailPtr:
-                default:
-                    return "addon";
             }
         }
     }

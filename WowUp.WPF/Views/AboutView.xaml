@@ -38,7 +38,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
-                <Image Source="/Assets/wowup_logo_512np.png" Width="150" />
+                <Image Source="/Assets/wowup_logo_512np.png" Width="150"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
                 <TextBlock Text="WowUp.io" Style="{StaticResource TitleStyle}" />
                 <TextBlock HorizontalAlignment="Center" Text="{Binding Version}" Style="{StaticResource VersionStyle}" />
                 <TextBlock HorizontalAlignment="Center" FontSize="16" Margin="0, 10, 0, 0">

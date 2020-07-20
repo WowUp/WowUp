@@ -110,6 +110,11 @@ namespace WowUp.WPF.ViewModels
                 RemoveAddonListItem(args.Addon);
             };
 
+            _addonService.AddonUpdated += (sender, args) =>
+            {
+                AddonUpdated(args.Addon);
+            };
+
             _warcraftService.ProductChanged += (sender, args) =>
             {
                 SetClientNames();
@@ -171,7 +176,7 @@ namespace WowUp.WPF.ViewModels
             }
             finally
             {
-                EnableUpdateAll = true;
+                EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
                 EnableRefresh = true;
                 EnableRescan = true;
                 IsBusy = false;
@@ -285,10 +290,32 @@ namespace WowUp.WPF.ViewModels
         {
             lock (LoadLock)
             {
-                var viewModel = GetAddonViewModel(addon);
+                try
+                {
+                    if (DisplayAddons.Any(da => da.Addon.Id == addon.Id))
+                    {
+                        return;
+                    }
 
-                DisplayAddons.Add(viewModel);
+                    var viewModel = GetAddonViewModel(addon);
+
+                    DisplayAddons.Add(viewModel);
+                }
+                finally
+                {
+                    EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
+                }
             }
+        }
+
+        private void AddonUpdated(Addon addon)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.Invoke(async () => await LoadItems());
         }
 
         private void RemoveAddonListItem(Addon addon)

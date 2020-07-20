@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using System;
+using System.ComponentModel;
 using WowUp.Common.Enums;
 using WowUp.WPF.Models;
 
@@ -124,10 +125,18 @@ namespace WowUp.WPF.Entities
         }
 
         private WowClientType _clientType;
+        [NotNull]
         public WowClientType ClientType
         {
             get => _clientType;
             set { SetProperty(ref _clientType, value); }
+        }
+
+        private AddonChannelType _channelType = AddonChannelType.Stable;
+        public AddonChannelType ChannelType
+        {
+            get => _channelType;
+            set { SetProperty(ref _channelType, value); }
         }
 
         private DateTime _updatedAt;

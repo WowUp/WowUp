@@ -15,14 +15,6 @@
             
             <!--Global Styles-->
             <Color x:Key="NavigationPrimary">#6B69D6</Color>
-            <Color x:Key="Dark1">#666666</Color>
-            <Color x:Key="Dark2">#555555</Color>
-            <Color x:Key="Dark3">#444444</Color>
-            <Color x:Key="White1">#FFFFFF</Color>
-            <Color x:Key="White2">#DDDDDD</Color>
-            <Color x:Key="Purple1">#6B69D6</Color>
-            <Color x:Key="Purple2">#504FA1</Color>
-            <Color x:Key="Purple3">#504FA1</Color>
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Views/Styles.xaml"/>

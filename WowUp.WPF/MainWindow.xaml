@@ -18,7 +18,8 @@
         BorderBrush="Transparent"
         ResizeMode="CanResize"
         StateChanged="Window_StateChanged"
-        IsVisibleChanged="Window_IsVisibleChanged">
+        IsVisibleChanged="Window_IsVisibleChanged"
+        Loaded="Window_Loaded">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32"
@@ -129,7 +130,8 @@
                 </Grid.ColumnDefinitions>
                 <Border Grid.Column="0" Padding="10, 0" >
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="Assets/wowup_logo_512np.png" Margin="0, 0, 10, 0" Height="40" />
+                        <Image Source="Assets/wowup_logo_512np.png" Margin="0, 0, 10, 0" Height="40" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
                         <TextBlock Text="{Binding Title}" Foreground="White" VerticalAlignment="Center" FontSize="15"/>
                     </StackPanel>
                 </Border>

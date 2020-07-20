@@ -2,7 +2,9 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using WowUp.Common.Enums;
+using WowUp.Common.Extensions;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
@@ -15,7 +17,8 @@ namespace WowUp.WPF.ViewModels
         private readonly IAddonService _addonService;
 
         private Addon _addon;
-        public Addon Addon {
+        public Addon Addon
+        {
             get => _addon;
             set
             {
@@ -26,10 +29,14 @@ namespace WowUp.WPF.ViewModels
 
         public Command ActionCommand { get; set; }
         public Command InstallCommand { get; set; }
+        public Command UpdateCommand { get; set; }
         public Command OpenLinkCommand { get; set; }
         public Command ReInstallCommand { get; set; }
         public Command UninstallCommand { get; set; }
         public Command IgnoreCheckedCommand { get; set; }
+        public Command StableCheckedCommand { get; set; }
+        public Command BetaCheckedCommand { get; set; }
+        public Command AlphaCheckedCommand { get; set; }
 
         private bool _showInstallButton;
         public bool ShowInstallButton
@@ -147,9 +154,70 @@ namespace WowUp.WPF.ViewModels
         public bool IsIgnored
         {
             get => _isIgnored;
-            set { 
-                SetProperty(ref _isIgnored, value); 
-            }
+            set { SetProperty(ref _isIgnored, value); }
+        }
+
+        private AddonChannelType _channelType;
+        public AddonChannelType ChannelType
+        {
+            get => _channelType;
+            set { SetProperty(ref _channelType, value); }
+        }
+
+        private bool _showChannelName;
+        public bool ShowChannelName
+        {
+            get => _showChannelName;
+            set { SetProperty(ref _showChannelName, value); }
+        }
+
+        private string _channelName;
+        public string ChannelName
+        {
+            get => _channelName;
+            set { SetProperty(ref _channelName, value); }
+        }
+
+        private bool _canCheckStable;
+        public bool CanCheckStable
+        {
+            get => _canCheckStable;
+            set { SetProperty(ref _canCheckStable, value); }
+        }
+
+        private bool _canCheckBeta;
+        public bool CanCheckBeta
+        {
+            get => _canCheckBeta;
+            set { SetProperty(ref _canCheckBeta, value); }
+        }
+
+        private bool _canCheckAlpha;
+        public bool CanCheckAlpha
+        {
+            get => _canCheckAlpha;
+            set { SetProperty(ref _canCheckAlpha, value); }
+        }
+
+        private bool _isStableChannel;
+        public bool IsStableChannel
+        {
+            get => _isStableChannel;
+            set { SetProperty(ref _isStableChannel, value); }
+        }
+
+        private bool _isBetaChannel;
+        public bool IsBetaChannel
+        {
+            get => _isBetaChannel;
+            set { SetProperty(ref _isBetaChannel, value); }
+        }
+
+        private bool _isAlphaChannel;
+        public bool IsAlphaChannel
+        {
+            get => _isAlphaChannel;
+            set { SetProperty(ref _isAlphaChannel, value); }
         }
 
         private string _statusText;
@@ -159,20 +227,31 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _statusText, value); }
         }
 
+        private Brush _channelNameBrush;
+        public Brush ChannelNameBrush
+        {
+            get => _channelNameBrush;
+            set { SetProperty(ref _channelNameBrush, value); }
+        }
+
         public bool CanInstall => _addon.CanInstall();
         public bool CanUpdate => _addon.CanUpdate();
 
         public AddonListItemViewModel(
-            IAddonService addonService) 
+            IAddonService addonService)
             : base()
         {
             _addonService = addonService;
 
             InstallCommand = new Command(async () => await InstallAddon());
+            UpdateCommand = new Command(async () => await UpdateAddon());
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
             ReInstallCommand = new Command(() => OnReInstall());
             UninstallCommand = new Command(() => OnUninstall());
             IgnoreCheckedCommand = new Command(() => OnIgnoreChanged());
+            StableCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Stable));
+            BetaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Beta));
+            AlphaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Alpha));
         }
 
         private void SetupDisplayState()
@@ -189,6 +268,27 @@ namespace WowUp.WPF.ViewModels
                 : _addon.ThumbnailUrl;
 
             IsIgnored = _addon.IsIgnored;
+
+            ChannelType = _addon.ChannelType;
+            ChannelName = _addon.ChannelType.GetDisplayName();
+            ShowChannelName = _addon.ChannelType != AddonChannelType.Stable;
+            CanCheckStable = _addon.ChannelType != AddonChannelType.Stable;
+            CanCheckBeta = _addon.ChannelType != AddonChannelType.Beta;
+            CanCheckAlpha = _addon.ChannelType != AddonChannelType.Alpha;
+
+            IsStableChannel = _addon.ChannelType == AddonChannelType.Stable;
+            IsBetaChannel = _addon.ChannelType == AddonChannelType.Beta;
+            IsAlphaChannel = _addon.ChannelType == AddonChannelType.Alpha;
+
+            if(ChannelType == AddonChannelType.Beta)
+            {
+                ChannelNameBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#0070DD");
+            }
+            else if(ChannelType == AddonChannelType.Alpha)
+            {
+                ChannelNameBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#A335EE");
+            }
+
             ExternalUrl = _addon.ExternalUrl;
             DisplayState = _addon.GetDisplayState();
             ShowInstallButton = DisplayState == AddonDisplayState.Install;
@@ -198,6 +298,22 @@ namespace WowUp.WPF.ViewModels
             ShowUninstall = DisplayState != AddonDisplayState.Unknown;
             ShowProgressBar = false;
             StatusText = GetStatusText(DisplayState);
+        }
+
+        public async Task UpdateAddon()
+        {
+            ShowStatusText = false;
+            ShowUpdateButton = false;
+
+            try
+            {
+                await _addonService.InstallAddon(_addon.Id, OnInstallUpdate);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                ShowUpdateButton = true;
+            }
         }
 
         public async Task InstallAddon()
@@ -239,6 +355,15 @@ namespace WowUp.WPF.ViewModels
         private void OnIgnoreChanged()
         {
             _addon.IsIgnored = !_addon.IsIgnored;
+
+            _addonService.UpdateAddon(_addon);
+
+            SetupDisplayState();
+        }
+
+        private void OnChannelChanged(AddonChannelType channelType)
+        {
+            _addon.ChannelType = channelType;
 
             _addonService.UpdateAddon(_addon);
 
