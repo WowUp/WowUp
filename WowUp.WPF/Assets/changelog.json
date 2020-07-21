@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.11.2",
+      "Description": "Fix issue with new version check happening too fast."
+    },
+    {
+      "Version": "1.11.1",
+      "Description": "Fix crash bug when a search result has no valid file."
+    },
+    {
       "Version": "1.11.0",
       "Description": "Add support for Addon Channels (Stable/Beta/Alpha).\nImproved context menu UI.\nFix bug with trying to install TukUi from Get Addons page.\nImages should look much better now.\nFix various UI bugs."
     },

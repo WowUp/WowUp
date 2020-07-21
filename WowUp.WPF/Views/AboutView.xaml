@@ -48,6 +48,11 @@
                     Check out the website!
                 </Hyperlink>
                 </TextBlock>
+                <TextBlock Margin="0 10">
+                    <Hyperlink NavigateUri="https://www.patreon.com/jliddev" TextDecorations="None" RequestNavigate="WowupLink_RequestNavigate">
+                        <Image Source="/Assets/patron.png" Width="100"  />
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>

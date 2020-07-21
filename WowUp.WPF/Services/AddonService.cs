@@ -399,15 +399,27 @@ namespace WowUp.WPF.Services
         public async Task<Addon> Map(string addonName, string folderName, WowClientType clientType)
         {
             var searchResults = await Search(addonName, folderName, clientType);
-            var firstResult = searchResults.FirstOrDefault();
-            if (firstResult == null)
+
+            AddonSearchResult nearestResult = null;
+            AddonSearchResultFile latestFile = null;
+            foreach(var result in searchResults)
+            {
+                latestFile = GetLatestFile(result, AddonChannelType.Stable);
+                if (latestFile == null)
+                {
+                    continue;
+                }
+
+                nearestResult = result;
+                break;
+            }
+
+            if (nearestResult == null || latestFile == null)
             {
                 return null;
             }
 
-            var latestFile = GetLatestFile(firstResult, AddonChannelType.Stable);
-
-            return CreateAddon(folderName, firstResult, latestFile, clientType);
+            return CreateAddon(folderName, nearestResult, latestFile, clientType);
         }
 
         public async Task<List<AddonSearchResult>> Search(
@@ -435,6 +447,11 @@ namespace WowUp.WPF.Services
             AddonSearchResultFile latestFile,
             WowClientType clientType)
         {
+            if(latestFile == null)
+            {
+                return null;
+            }
+
             return new Addon
             {
                 Name = searchResult.Name,

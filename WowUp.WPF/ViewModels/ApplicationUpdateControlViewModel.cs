@@ -61,6 +61,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _didUpdateError;
+        private bool _isUpdatePending;
 
         public Command DownloadUpdateCommand { get; set; }
         public Command RestartAppCommand { get; set; }
@@ -75,12 +76,12 @@ namespace WowUp.WPF.ViewModels
 
             ProgressText = string.Empty;
 
-            _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
         }
 
         private async void CheckVersion(object state)
         {
-            if (_didUpdateError)
+            if (_didUpdateError || _isUpdatePending)
             {
                 return;
             }
@@ -99,6 +100,7 @@ namespace WowUp.WPF.ViewModels
         {
             ShowDownload = false;
             ShowProgress = true;
+            _isUpdatePending = true;
 
             try
             {
@@ -113,6 +115,7 @@ namespace WowUp.WPF.ViewModels
             catch (Exception)
             {
                 _didUpdateError = true;
+                _isUpdatePending = false;
             }
 
             ShowProgress = false;
