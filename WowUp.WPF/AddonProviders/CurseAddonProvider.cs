@@ -47,6 +47,25 @@ namespace WowUp.WPF.AddonProviders
             return GetAddonSearchResult(result, latestFiles);
         }
 
+        public async Task<IEnumerable<PotentialAddon>> Search(string query, WowClientType clientType)
+        {
+            var searchResults = new List<PotentialAddon>();
+
+            var response = await GetSearchResults(query);
+            foreach(var result in response)
+            {
+                var latestFiles = GetLatestFiles(result, clientType);
+                if (!latestFiles.Any())
+                {
+                    continue;
+                }
+
+                searchResults.Add(GetPotentialAddon(result));
+            }
+
+            return searchResults;
+        }
+
         /// <summary>
         /// This is a basic method, curse api does not search via slug, so you have to get lucky basically.
         /// Could pre-make a map for slug to addon if wanted.
@@ -344,5 +363,6 @@ namespace WowUp.WPF.AddonProviders
                     return "wow_retail";
             }
         }
+
     }
 }

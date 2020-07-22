@@ -56,6 +56,16 @@ namespace WowUp.WPF.Utilities
             public RECT normalPosition;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct MINMAXINFO
+        {
+            public POINT ptReserved;
+            public POINT ptMaxSize;
+            public POINT ptMaxPosition;
+            public POINT ptMinTrackSize;
+            public POINT ptMaxTrackSize;
+        };
+
         private static Encoding encoding = new UTF8Encoding();
         private static XmlSerializer serializer = new XmlSerializer(typeof(WINDOWPLACEMENT));
 

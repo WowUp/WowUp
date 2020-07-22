@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.12.1",
+      "Description": "Attempt to fix issues with maxmizing the window going being the taskbar."
+    },
+    {
+      "Version": "1.12.0",
+      "Description": "Add basic addon search for Curse and TukUi.\nAdd Patreon button."
+    },
+    {
       "Version": "1.11.2",
       "Description": "Fix issue with new version check happening too fast."
     },

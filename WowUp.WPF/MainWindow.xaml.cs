@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Interop;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.ViewModels;
+using static WowUp.WPF.Utilities.WindowUtilities;
 
 namespace WowUp.WPF
 {
@@ -28,6 +31,11 @@ namespace WowUp.WPF
             _viewModel.Title = "WowUp.io";
         }
 
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+        }
+
         protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
@@ -38,6 +46,12 @@ namespace WowUp.WPF
         {
             base.OnSourceInitialized(e);
             _viewModel.OnSourceInitialized(this);
+
+            var handle = (new WindowInteropHelper(this)).Handle;
+            var handleSource = HwndSource.FromHwnd(handle);
+            if (handleSource == null)
+                return;
+            handleSource.AddHook(WindowProc);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -74,6 +88,35 @@ namespace WowUp.WPF
             notifyIcon.Visible = true;
 
             return notifyIcon;
+        }
+
+        private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            switch (msg)
+            {
+                case 0x0024:/* WM_GETMINMAXINFO */
+                    WmGetMinMaxInfo(hwnd, lParam);
+                    handled = true;
+                    break;
+            }
+
+            return (IntPtr)0;
+        }
+
+        private static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+        {
+            var mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
+
+            // Adjust the maximized size and position to fit the work area of the correct monitor
+            var currentScreen = Screen.FromHandle(hwnd);
+            var workArea = currentScreen.WorkingArea;
+            var monitorArea = currentScreen.Bounds;
+            mmi.ptMaxPosition.X = Math.Abs(workArea.Left - monitorArea.Left);
+            mmi.ptMaxPosition.Y = Math.Abs(workArea.Top - monitorArea.Top);
+            mmi.ptMaxSize.X = Math.Abs(workArea.Right - workArea.Left);
+            mmi.ptMaxSize.Y = Math.Abs(workArea.Bottom - workArea.Top);
+
+            Marshal.StructureToPtr(mmi, lParam, true);
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)

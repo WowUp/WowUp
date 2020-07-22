@@ -223,7 +223,7 @@
                                       IsEnabled="{Binding CanCheckAlpha}"
                                       Command="{Binding AlphaCheckedCommand}"></MenuItem>
                         </MenuItem>
-                        <Separator Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVisibilty}}" />
+                        <Separator Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}" />
                         <MenuItem Header="Update" 
                                   Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
                                   Command="{Binding InstallCommand}"/>
@@ -231,7 +231,7 @@
                                   Visibility="{Binding ShowReInstall, Converter={StaticResource BoolToVisibilty}}"
                                   Command="{Binding ReInstallCommand}"/>
                         <Separator Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVisibilty}}" />
-                        <MenuItem Header="Uninstall"
+                        <MenuItem Header="Remove"
                                   Command="{Binding UninstallCommand}"
                                   Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVisibilty}}" />
                     </ContextMenu>

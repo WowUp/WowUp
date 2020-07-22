@@ -13,6 +13,10 @@ namespace WowUp.WPF.AddonProviders.Contracts
 
         Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType);
 
+        Task<IEnumerable<PotentialAddon>> Search(
+            string query,
+            WowClientType clientType);
+
         Task<IList<AddonSearchResult>> GetAll(
             WowClientType clientType, 
             IEnumerable<string> addonIds);

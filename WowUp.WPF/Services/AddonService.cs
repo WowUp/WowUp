@@ -70,7 +70,6 @@ namespace WowUp.WPF.Services
             return addon;
         }
 
-
         public bool IsInstalled(string externalId, WowClientType clientType)
         {
             return _addonRepository.GetByExternalId(externalId, clientType) != null;
@@ -79,6 +78,16 @@ namespace WowUp.WPF.Services
         public Addon GetAddon(int addonId)
         {
             return _addonRepository.Query(table => table.FirstOrDefault(a => a.Id == addonId));
+        }
+
+        public async Task<List<PotentialAddon>> Search(string query, WowClientType clientType)
+        {
+            var potentialAddons = new List<PotentialAddon>();
+
+            var searchTasks = _providers.Select(p => p.Search(query, clientType));
+            var searchResults = await Task.WhenAll(searchTasks);
+
+            return searchResults.SelectMany(res => res).OrderByDescending(res => res.DownloadCount).ToList();
         }
 
         public async Task<List<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)

@@ -85,6 +85,11 @@
             <DataTemplate x:Key="StatusColumnTemplate" >
                 <Border Padding="10">
                     <StackPanel VerticalAlignment="Center">
+                        <StackPanel>
+                            <TextBlock Text="Installed"
+                                       HorizontalAlignment="Center"
+                                       Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisibilty}}" />
+                        </StackPanel>
                         <Button Visibility="{Binding ShowInstallButton, Converter={StaticResource BoolToVisibilty}}"
                                 Style="{StaticResource purpleButton}"
                                 Command="{Binding InstallCommand}">Install</Button>
@@ -127,7 +132,8 @@
             <Border Grid.Column="1" Padding="10">
                 <StackPanel  Orientation="Horizontal">
                     <TextBlock Text="Search" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 10,0"/>
-                    <TextBox  Padding="4" Width="150">
+                    <TextBox  Padding="4" Width="150"
+                              Text="{Binding SearchText, Mode=TwoWay}">
                         <TextBox.InputBindings>
                             <KeyBinding Key="Enter" 
                                         Command="{Binding SearchCommand}" 

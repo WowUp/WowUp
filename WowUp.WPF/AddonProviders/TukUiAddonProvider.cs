@@ -48,6 +48,16 @@ namespace WowUp.WPF.AddonProviders
             return ToSearchResult(match, string.Empty);
         }
 
+        public async Task<IEnumerable<PotentialAddon>> Search(string query, WowClientType clientType)
+        {
+            var addons = await GetAllAddons(clientType);
+            var similarAddons = addons
+                .Where(a => a.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(a => a.Downloads);
+
+            return similarAddons.Select(ToPotentialAddon);
+        }
+
         public Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
         {
             throw new NotImplementedException();

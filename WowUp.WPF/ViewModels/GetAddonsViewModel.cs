@@ -33,6 +33,13 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set { SetProperty(ref _searchText, value); }
+        }
+
         public WowClientType SelectedClientType => _clientTypes[SelectedWowIndex];
 
         public ObservableCollection<PotentialAddonListItemViewModel> DisplayAddons { get; set; }
@@ -78,12 +85,40 @@ namespace WowUp.WPF.ViewModels
 
         private async void OnRefresh()
         {
-            await LoadPopularAddons();
+            if (string.IsNullOrEmpty(SearchText))
+            {
+                await LoadPopularAddons();
+            }
+            else
+            {
+                OnSearch(SearchText);
+            }
         }
 
         private async void OnSearch(string text)
         {
-            System.Windows.MessageBox.Show("Search Coming Soon");
+            if (string.IsNullOrEmpty(text))
+            {
+                await LoadPopularAddons();
+                return;
+            }
+
+            IsBusy = true;
+
+            var searchResults = await _addonService.Search(text, SelectedClientType);
+
+            DisplayAddons.Clear();
+            foreach(var result in searchResults)
+            {
+                var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
+                viewModel.ClientType = SelectedClientType;
+                viewModel.IsInstalled = _addonService.IsInstalled(result.ExternalId, SelectedClientType);
+                viewModel.Addon = result;
+
+                DisplayAddons.Add(viewModel);
+            }
+
+            IsBusy = false;
         }
 
         private async void OnSelectedWowChange()
@@ -95,10 +130,13 @@ namespace WowUp.WPF.ViewModels
         {
             IsBusy = true;
 
-            _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
-            _popularAddons = _popularAddons
-                .Where(addon => !_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
-                .ToList();
+            if(_popularAddons == null || !_popularAddons.Any())
+            {
+                _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
+                _popularAddons = _popularAddons
+                    .Where(addon => !_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
+                    .ToList();
+            }
 
             DisplayAddons.Clear();
             foreach (var addon in _popularAddons)

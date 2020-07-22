@@ -102,6 +102,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _showProgressText, value); }
         }
 
+        private bool _isInstalled;
+        public bool IsInstalled
+        {
+            get => _isInstalled;
+            set { SetProperty(ref _isInstalled, value); }
+        }
+
         public Command OpenLinkCommand { get; set; }
         public Command InstallCommand { get; set; }
 
@@ -145,26 +152,20 @@ namespace WowUp.WPF.ViewModels
 
         private string GetInstallStateText(AddonInstallState installState)
         {
-            switch (installState)
+            return installState switch
             {
-                case AddonInstallState.Pending:
-                    return "Pending";
-                case AddonInstallState.Downloading:
-                    return "Downloading";
-                case AddonInstallState.BackingUp:
-                    return "BackingUp";
-                case AddonInstallState.Installing:
-                    return "Installing";
-                case AddonInstallState.Complete:
-                    return "Complete";
-                default:
-                    return "Unknown";
-            }
+                AddonInstallState.Pending => "Pending",
+                AddonInstallState.Downloading => "Downloading",
+                AddonInstallState.BackingUp => "BackingUp",
+                AddonInstallState.Installing => "Installing",
+                AddonInstallState.Complete => "Complete",
+                _ => "Unknown",
+            };
         }
 
         private void SetupDisplayState()
         {
-            ShowInstallButton = true;
+            ShowInstallButton = !IsInstalled;
             Name = Addon.Name;
             ThumbnailUrl = Addon.ThumbnailUrl;
             DownloadCount = FormatDownloadCount(Addon.DownloadCount);

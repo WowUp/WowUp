@@ -13,6 +13,7 @@ using WowUp.WPF.Entities;
 using WowUp.Common.Services.Contracts;
 using System.Linq;
 using WowUp.WPF.Repositories.Base;
+using System.Windows.Interop;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -99,7 +100,6 @@ namespace WowUp.WPF.ViewModels
             migrationService.MigrateDatabase();
 
             InitializeView();
-
 
         }
 
