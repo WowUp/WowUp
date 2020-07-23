@@ -1,0 +1,19 @@
+@import './custom-theme.scss';
+
+html {
+    background-color: $dark-3;
+}
+
+.tab-container {
+  height: calc( 100vh - 78px );
+}
+
+.no-pad-select {
+  .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+}
+
+.mat-input-element {
+  color: $white-1 !important;
+}
