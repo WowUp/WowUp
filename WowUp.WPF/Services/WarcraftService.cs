@@ -73,13 +73,21 @@ namespace WowUp.WPF.Services
                 var clientLocation = GetClientLocation(clientType);
                 var productLocation = GetProductLocation(clientType);
 
-                if(AreEqualPaths(clientLocation, productLocation))
+                Log.Information($"clientLocation {clientLocation}, productLocation: {productLocation}");
+                if (AreEqualPaths(clientLocation, productLocation))
                 {
                     continue;
                 }
 
                 var locationPreference = GetClientLocationPreference(clientType);
+                if(locationPreference == null)
+                {
+                    locationPreference = _preferenceRepository.Create(GetClientLocationPreferenceKey(clientType), string.Empty);
+                }
+
                 locationPreference.Value = productLocation;
+
+                Log.Information($"locationPreference {locationPreference}");
 
                 _preferenceRepository.SaveItem(locationPreference);
 
