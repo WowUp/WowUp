@@ -20,7 +20,7 @@ If you have any ideas/requests for the feature list let me know!
 - [x] Browse addons
 - [x] Ignoring addons
 - [ ] GitHub support
-- [ ] Addon Search
+- [x] Addon Search
 - [ ] Mac client?
 - [ ] Linux Client?
 - [ ] Curse alternative?
