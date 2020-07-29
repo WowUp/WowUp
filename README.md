@@ -19,8 +19,9 @@ If you have any ideas/requests for the feature list let me know!
 - [x] Install new addons
 - [x] Browse addons
 - [x] Ignoring addons
-- [ ] GitHub support
+- [X] GitHub support
 - [x] Addon Search
+- [ ] Auto addon updates
 - [ ] Mac client?
 - [ ] Linux Client?
 - [ ] Curse alternative?
