@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WowUp.WPF.Services.Contracts;
@@ -12,8 +11,6 @@ using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.Common.Services.Contracts;
 using System.Linq;
-using WowUp.WPF.Repositories.Base;
-using System.Windows.Interop;
 
 namespace WowUp.WPF.ViewModels
 {

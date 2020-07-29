@@ -1,6 +1,7 @@
 ﻿namespace WowUp.WPF.AddonProviders.Contracts
 {
-    public interface ICurseAddonProvider : IAddonProvider
+    public interface IGitHubAddonProvider : IAddonProvider
     {
+
     }
 }

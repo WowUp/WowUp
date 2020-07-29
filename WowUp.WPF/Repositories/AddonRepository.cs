@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
-using WowUp.WPF.Models;
 using WowUp.WPF.Repositories.Base;
 using WowUp.WPF.Repositories.Contracts;
 

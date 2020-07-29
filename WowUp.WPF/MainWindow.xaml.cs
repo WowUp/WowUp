@@ -172,5 +172,13 @@ namespace WowUp.WPF
         {
             _viewModel.OnLoaded();
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(e.NewSize.Width < this.MinWidth)
+            {
+                return;
+            }
+        }
     }
 }

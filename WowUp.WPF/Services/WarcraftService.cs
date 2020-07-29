@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using WowUp.WPF.Models;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
@@ -14,6 +13,7 @@ using WowUp.Common.Enums;
 using WowUp.Common.Models.Warcraft;
 using WowUp.WPF.Entities;
 using WowUp.Common.Models.Events;
+using WowUp.Common.Models;
 
 namespace WowUp.WPF.Services
 {

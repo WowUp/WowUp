@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WowUp.WPF.Errors
+namespace WowUp.Common.Exceptions
 {
     public class AddonNotFoundException : Exception
     {

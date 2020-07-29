@@ -1,8 +1,8 @@
 ﻿using Serilog;
 using System;
 using WowUp.Common.Enums;
+using WowUp.Common.Models;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 

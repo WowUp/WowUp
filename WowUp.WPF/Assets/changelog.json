@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.13.0",
+      "Description": "Add ability to install from GitHub URLS.\nAdd crude error reporting for telemetry users.\nTidy up options screen."
+    },
+    {
       "Version": "1.12.2",
       "Description": "Fix an issue with beta client crashing the app when detected."
     },

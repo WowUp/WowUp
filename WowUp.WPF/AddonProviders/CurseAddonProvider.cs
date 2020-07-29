@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
+using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
 using WowUp.WPF.AddonProviders.Contracts;
-using WowUp.WPF.Models;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Models.Curse;
 
 namespace WowUp.WPF.AddonProviders
@@ -73,7 +74,7 @@ namespace WowUp.WPF.AddonProviders
         /// <param name="addonUri"></param>
         /// <param name="clientType"></param>
         /// <returns></returns>
-        public async Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
+        public async Task<PotentialAddon> Search(Uri addonUri, WowClientType clientType)
         {
             var addonSlug = addonUri.LocalPath.Split('/').Last();
             var response = await GetSearchResults(addonSlug);
@@ -89,7 +90,7 @@ namespace WowUp.WPF.AddonProviders
                 return null;
             }
 
-            return GetAddonSearchResult(result, latestFiles);
+            return GetPotentialAddon(result);
         }
 
         public async Task<IEnumerable<AddonSearchResult>> Search(
@@ -157,6 +158,10 @@ namespace WowUp.WPF.AddonProviders
             featured = FilterClientType(featured, clientType);
 
             return featured.Select(f => GetPotentialAddon(f)).ToList();
+        }
+
+        public void OnPostInstall(Addon addon)
+        {
         }
 
         private IList<CurseSearchResult> FilterClientType(IEnumerable<CurseSearchResult> results, WowClientType clientType)
@@ -363,6 +368,7 @@ namespace WowUp.WPF.AddonProviders
                     return "wow_retail";
             }
         }
+
 
     }
 }

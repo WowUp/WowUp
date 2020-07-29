@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using WowUp.Common.Enums;
-using WowUp.WPF.Models;
+using WowUp.Common.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using WowUp.WPF.Views;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -46,6 +48,7 @@ namespace WowUp.WPF.ViewModels
         public ObservableCollection<ComboBoxItem> ClientNames { get; set; }
         public Command RefreshCommand { get; set; }
         public Command SearchCommand { get; set; }
+        public Command InstallNewCommand { get; set; }
 
         public GetAddonsViewModel(
             IServiceProvider serviceProvider,
@@ -64,6 +67,7 @@ namespace WowUp.WPF.ViewModels
 
             RefreshCommand = new Command(() => OnRefresh());
             SearchCommand = new Command((text) => OnSearch((string)text));
+            InstallNewCommand = new Command(() => onInstallNew());
         }
 
         public async void OnInitialized()
@@ -124,6 +128,28 @@ namespace WowUp.WPF.ViewModels
         private async void OnSelectedWowChange()
         {
             await LoadPopularAddons();
+        }
+
+        private async void onInstallNew()
+        {
+            // Instantiate the dialog box
+            var dlg = _serviceProvider.GetService<InstallUrlWindow>();
+            (dlg.DataContext as InstallUrlDialogViewModel).ClientType = SelectedClientType;
+
+            // Configure the dialog box
+            dlg.Owner = Application.Current.MainWindow;
+
+            // Open the dialog box modally
+            if (dlg.ShowDialog() == false)
+            {
+                return;
+            }
+
+            var result = (dlg.DataContext as InstallUrlDialogViewModel).Input;
+            if (string.IsNullOrEmpty(result))
+            {
+                return;
+            }
         }
 
         private async Task LoadPopularAddons()

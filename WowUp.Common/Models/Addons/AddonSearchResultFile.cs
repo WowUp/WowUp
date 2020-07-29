@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using WowUp.Common.Enums;
 
 namespace WowUp.Common.Models.Addons

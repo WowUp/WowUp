@@ -28,9 +28,27 @@ namespace WowUp.WPF.Services
             InstallId = GetInstallId();
         }
 
-        public async Task Track()
+        public async Task TrackStartup()
         {
-            if(!IsTelemetryEnabled())
+            await Track(request =>
+            {
+                request.SetQueryParam("t", "pageview")
+                    .SetQueryParam("dp", "startup");
+            });
+        }
+
+        public async Task Track(Exception ex, bool isFatal)
+        {
+            await Track(request =>
+            {
+                request.SetQueryParam("exd", ex.GetType().Name)
+                    .SetQueryParam("exf", isFatal ? "1" : "0");
+            });
+        }
+
+        private async Task Track(Action<IFlurlRequest> requestAction)
+        {
+            if (!IsTelemetryEnabled())
             {
                 return;
             }
@@ -39,13 +57,15 @@ namespace WowUp.WPF.Services
 
             try
             {
-                var response = await url
-                    .WithHeaders(HttpUtilities.DefaultHeaders)
+                var request = url
+                    .WithHeaders(HttpUtilities.DefaultHeaders);
+
+                requestAction?.Invoke(request);
+
+                var response = await request
                     .SetQueryParam("v", "1")
                     .SetQueryParam("tid", "UA-92563227-4")
                     .SetQueryParam("cid", InstallId)
-                    .SetQueryParam("t", "pageview")
-                    .SetQueryParam("dp", "startup")
                     .SetQueryParam("ua", HttpUtilities.UserAgent)
                     .SetQueryParam("an", "WowUp Client")
                     .SetQueryParam("av", AppUtilities.CurrentVersionString)
@@ -60,7 +80,7 @@ namespace WowUp.WPF.Services
         public void SetTelemetryEnabled(bool enabled)
         {
             var telemetryPreference = _preferenceRepository.FindByKey(TelemetryEnabledKey);
-            if(telemetryPreference == null)
+            if (telemetryPreference == null)
             {
                 telemetryPreference = new Preference
                 {
@@ -101,11 +121,6 @@ namespace WowUp.WPF.Services
             };
 
             _preferenceRepository.SaveItem(telemetryPromptPreference);
-        }
-
-        public async Task TrackStartup()
-        {
-            await Track();
         }
 
         private string GetInstallId()

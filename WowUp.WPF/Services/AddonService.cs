@@ -8,16 +8,16 @@ using Microsoft.Extensions.DependencyInjection;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
-using WowUp.WPF.Models;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using WowUp.WPF.Errors;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models.Events;
 using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
 using WowUp.Common.Models.Addons;
+using WowUp.Common.Models;
+using WowUp.Common.Exceptions;
 
 namespace WowUp.WPF.Services
 {
@@ -54,8 +54,9 @@ namespace WowUp.WPF.Services
 
             _providers = new List<IAddonProvider>
             {
-               serviceProvider.GetService<CurseAddonProvider>(),
-               serviceProvider.GetService<TukUiAddonProvider>()
+               serviceProvider.GetService<ICurseAddonProvider>(),
+               serviceProvider.GetService<ITukUiAddonProvider>(),
+               serviceProvider.GetService<IGitHubAddonProvider>()
             };
 
             InitializeDirectories();
@@ -122,31 +123,40 @@ namespace WowUp.WPF.Services
 
         private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
         {
-            var addonIds = addons.Select(addon => addon.ExternalId);
             try
             {
-                var addonTasks = _providers.Select(p => p.GetAll(clientType, addonIds));
-                var addonResults = await Task.WhenAll(addonTasks);
-                var addonResultsConcat = addonResults.SelectMany(res => res);
-
-                foreach (var addon in addons)
+                foreach (var provider in _providers)
                 {
-                    var match = addonResultsConcat.FirstOrDefault(a => a.ExternalId == addon.ExternalId);
-                    var latestFile = GetLatestFile(match, addon.ChannelType);
-                    if (match == null || latestFile == null || latestFile.Version == addon.LatestVersion)
+                    var providerAddonIds = addons
+                        .Where(addon => addon.ProviderName == provider.Name)
+                        .Select(addon => addon.ExternalId);
+
+                    var addonResults = await provider.GetAll(clientType, providerAddonIds);
+
+                    foreach (var result in addonResults)
                     {
-                        continue;
+                        var addon = addons.FirstOrDefault(addon => addon.ExternalId == result.ExternalId);
+                        var latestFile = GetLatestFile(result, addon.ChannelType);
+                        if (result == null || latestFile == null || latestFile.Version == addon.LatestVersion)
+                        {
+                            continue;
+                        }
+
+                        addon.LatestVersion = latestFile.Version;
+                        addon.Name = result.Name;
+                        addon.Author = result.Author;
+                        addon.DownloadUrl = latestFile.DownloadUrl;
+
+                        if (!string.IsNullOrEmpty(latestFile.GameVersion))
+                        {
+                            addon.GameVersion = latestFile.GameVersion;
+                        }
+
+                        addon.ThumbnailUrl = result.ThumbnailUrl;
+                        addon.ExternalUrl = result.ExternalUrl;
+
+                        _addonRepository.UpdateItem(addon);
                     }
-
-                    addon.LatestVersion = latestFile.Version;
-                    addon.Name = match.Name;
-                    addon.Author = match.Author;
-                    addon.DownloadUrl = latestFile.DownloadUrl;
-                    addon.GameVersion = latestFile.GameVersion;
-                    addon.ThumbnailUrl = match.ThumbnailUrl;
-                    addon.ExternalUrl = match.ExternalUrl;
-
-                    _addonRepository.UpdateItem(addon);
                 }
             }
             catch (Exception ex)
@@ -185,37 +195,33 @@ namespace WowUp.WPF.Services
             await InstallAddon(addon.Id, onUpdate);
         }
 
-        public async Task InstallAddon(
-            Uri addonUri, 
-            WowClientType clientType, 
+        public async Task<PotentialAddon> GetAddonByUri(
+            Uri addonUri,
+            WowClientType clientType,
             Action<AddonInstallState, decimal> onUpdate = null)
         {
             var provider = GetAddonProvider(addonUri);
 
-            var searchResult = await provider.Search(addonUri, clientType);
-            if(searchResult == null)
-            {
-                throw new AddonNotFoundException();
-            }
+            return await provider.Search(addonUri, clientType);
 
-            var latestFile = GetLatestFile(searchResult, AddonChannelType.Stable);
-            if (latestFile == null)
-            {
-                throw new AddonNotFoundException();
-            }
+            //var latestFile = GetLatestFile(searchResult, AddonChannelType.Stable);
+            //if (latestFile == null)
+            //{
+            //    throw new AddonNotFoundException();
+            //}
 
-            var existingAddon = _addonRepository.GetByExternalId(searchResult.ExternalId, clientType);
+            //var existingAddon = _addonRepository.GetByExternalId(searchResult.ExternalId, clientType);
 
-            if(existingAddon != null)
-            {
-                throw new AddonAlreadyInstalledException();
-            }
+            //if(existingAddon != null)
+            //{
+            //    throw new AddonAlreadyInstalledException();
+            //}
 
-            var addon = CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType);
+            //var addon = CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType);
 
-            _addonRepository.SaveItem(addon);
+            //_addonRepository.SaveItem(addon);
 
-            await InstallAddon(addon.Id, onUpdate);
+            //await InstallAddon(addon.Id, onUpdate);
         }
 
         public async Task UninstallAddon(Addon addon)
@@ -223,7 +229,7 @@ namespace WowUp.WPF.Services
             var installedDirectories = addon.GetInstalledDirectories();
             var addonFolder = _warcraftService.GetAddonFolderPath(addon.ClientType);
 
-            foreach(var dir in installedDirectories)
+            foreach (var dir in installedDirectories)
             {
                 var addonDirectory = Path.Combine(addonFolder, dir);
                 await FileUtilities.DeleteDirectory(addonDirectory);
@@ -262,10 +268,17 @@ namespace WowUp.WPF.Services
                 unzippedDirectory = await _downloadService.UnzipFile(downloadedFilePath);
 
                 await InstallUnzippedDirectory(unzippedDirectory, addon.ClientType);
+                var unzippedDirectoryNames = FileUtilities.GetDirectoryNames(unzippedDirectory);
 
                 addon.InstalledVersion = addon.LatestVersion;
                 addon.InstalledAt = DateTime.UtcNow;
-                addon.InstalledFolders = string.Join(',', FileUtilities.GetDirectoryNames(unzippedDirectory));
+                addon.InstalledFolders = string.Join(',', unzippedDirectoryNames);
+
+                if (string.IsNullOrEmpty(addon.GameVersion))
+                {
+                    addon.GameVersion = GetLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
+                }
+
                 _addonRepository.UpdateItem(addon);
 
                 AddonInstalled?.Invoke(this, new AddonEventArgs(addon));
@@ -289,6 +302,32 @@ namespace WowUp.WPF.Services
             }
 
             updateAction?.Invoke(AddonInstallState.Complete, 100m);
+        }
+
+        private string GetLatestGameVersion(string baseDir, IEnumerable<string> installedFolders)
+        {
+            var versions = new List<string>();
+
+            foreach (var dir in installedFolders)
+            {
+                var path = Path.Combine(baseDir, dir);
+
+                var tocFile = FileUtilities.GetFiles(path, "*.toc").FirstOrDefault();
+                if (tocFile == null)
+                {
+                    continue;
+                }
+
+                var gameVersion = new TocParser(tocFile).Interface;
+                if (string.IsNullOrEmpty(gameVersion))
+                {
+                    continue;
+                }
+
+                versions.Add(gameVersion);
+            }
+
+            return versions.OrderByDescending(ver => ver).FirstOrDefault() ?? string.Empty;
         }
 
         private IAddonProvider GetAddonProvider(Uri addonUri)
@@ -411,7 +450,7 @@ namespace WowUp.WPF.Services
 
             AddonSearchResult nearestResult = null;
             AddonSearchResultFile latestFile = null;
-            foreach(var result in searchResults)
+            foreach (var result in searchResults)
             {
                 latestFile = GetLatestFile(result, AddonChannelType.Stable);
                 if (latestFile == null)
@@ -456,7 +495,7 @@ namespace WowUp.WPF.Services
             AddonSearchResultFile latestFile,
             WowClientType clientType)
         {
-            if(latestFile == null)
+            if (latestFile == null)
             {
                 return null;
             }

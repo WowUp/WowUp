@@ -1,7 +1,5 @@
 ﻿using WowUp.Common.Enums;
-using WowUp.Common.Extensions;
 using WowUp.Common.Services.Contracts;
-using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 

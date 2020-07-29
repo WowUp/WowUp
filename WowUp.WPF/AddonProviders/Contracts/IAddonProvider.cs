@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
+using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
-using WowUp.WPF.Models;
+using WowUp.WPF.Entities;
 
 namespace WowUp.WPF.AddonProviders.Contracts
 {
@@ -17,8 +18,12 @@ namespace WowUp.WPF.AddonProviders.Contracts
             string query,
             WowClientType clientType);
 
+        Task<PotentialAddon> Search(
+            Uri addonUri,
+            WowClientType clientType);
+
         Task<IList<AddonSearchResult>> GetAll(
-            WowClientType clientType, 
+            WowClientType clientType,
             IEnumerable<string> addonIds);
 
         Task<IEnumerable<AddonSearchResult>> Search(
@@ -31,10 +36,8 @@ namespace WowUp.WPF.AddonProviders.Contracts
             string addonId,
             WowClientType clientType);
 
-        Task<AddonSearchResult> Search(
-            Uri addonUri, 
-            WowClientType clientType);
-
         bool IsValidAddonUri(Uri addonUri);
+
+        void OnPostInstall(Addon addon);
     }
 }
