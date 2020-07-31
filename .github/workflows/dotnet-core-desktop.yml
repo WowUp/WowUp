@@ -41,8 +41,8 @@ name: .NET Core Desktop
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags: 
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
 
@@ -109,15 +109,28 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     - name: Test Build
+      id: test_build
       run: dir ./WowUp.WPF/bin/Release/netcoreapp3.1/win-x64/publish
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        prerelease: false
       
-    - name: Test PS
-      run: '$changelogJson = Get-Content ${env:Wap_Project_Directory}/Assets/changelog.json | ConvertFrom-Json; $env:APP_VERSION=$changelogJson[0].Version; $env:APP_CHANGE_DESCRIPTION=$changelogJson[0].Description'
-      shell: pwsh
+    #- name: Test PS
+    #  run: '$changelogJson = Get-Content ${env:Wap_Project_Directory}/Assets/changelog.json | ConvertFrom-Json; $env:APP_VERSION=$changelogJson[0].Version; $env:APP_CHANGE_DESCRIPTION=$changelogJson[0].Description'
+    #  shell: pwsh
 
-    - name: Test Persist
-      run: 'echo ${env:APP_VERSION}; echo ${env:APP_CHANGE_DESCRIPTION}'
-      shell: pwsh
+    #- name: Test Persist
+    #  run: 'echo ${env:APP_VERSION}; echo ${env:APP_CHANGE_DESCRIPTION}'
+    #  shell: pwsh
+      
     # Remove the pfx
     #- name: Remove the pfx
     #  run: Remove-Item -path $env:Wap_Project_Directory\$env:Signing_Certificate
