@@ -110,9 +110,12 @@ jobs:
       run: dir ./WowUp.WPF/bin/Release/netcoreapp3.1/win-x64/publish
       
     - name: Test PS
-      run: '$changelogJson = Get-Content ${env:Wap_Project_Directory}/Assets/changelog.json | ConvertFrom-Json; echo $changelogJson[0]'
+      run: '$changelogJson = Get-Content ${env:Wap_Project_Directory}/Assets/changelog.json | ConvertFrom-Json; $env:APP_VERSION=$changelogJson[0].Version; $env:APP_CHANGE_DESCRIPTION=$changelogJson[0].Description'
       shell: pwsh
 
+    - name: Test Persist
+      run: 'echo ${env:APP_VERSION}; echo ${env:APP_CHANGE_DESCRIPTION}'
+      shell: pwsh
     # Remove the pfx
     #- name: Remove the pfx
     #  run: Remove-Item -path $env:Wap_Project_Directory\$env:Signing_Certificate
