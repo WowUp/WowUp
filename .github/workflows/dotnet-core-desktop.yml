@@ -107,10 +107,14 @@ jobs:
         Appx_Bundle_Platforms: x86|x64
         Appx_Package_Build_Mode: StoreUpload
         Configuration: ${{ matrix.configuration }}
+        
+    - name: Zip Build
+      id: zip_build
+      run: Compress-Archive -Path ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish/*.exe -DestinationPath ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish
 
     - name: Test Build
       id: test_build
-      run: dir ./WowUp.WPF/bin/Release/netcoreapp3.1/win-x64/publish
+      run: dir ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish
     
     - name: Create Release
       id: create_release
