@@ -108,6 +108,10 @@ jobs:
 
     - name: Test Build
       run: dir ./WowUp.WPF/bin/Release/netcoreapp3.1/win-x64/publish
+      
+    - name: Test PS
+      run: 'Get-Content ${env:Wap_Project_Directory}/Assets/changelog.json | ConvertFrom-Json -AsHashtable'
+      shell: pwsh
 
     # Remove the pfx
     #- name: Remove the pfx
