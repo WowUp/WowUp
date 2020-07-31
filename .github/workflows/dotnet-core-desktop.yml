@@ -61,6 +61,8 @@ jobs:
       Test_Project_Path: your-test-project-path     # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       Wap_Project_Directory: WowUp.WPF              # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
       Wap_Project_Path: WowUp.WPF/WowUp.WPF.csproj  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      APP_CHANGE_DESCRIPTION: ''
+      APP_VERSION: ''
 
     steps:
     - name: Checkout
