@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using WowUp.Common.Enums;
@@ -149,7 +150,7 @@ namespace WowUp.WPF.ViewModels
 
                 IsInstalled = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 EnableInstall = true;
                 CanInstall = true;
@@ -216,6 +217,7 @@ namespace WowUp.WPF.ViewModels
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Failed to install addon");
                 MessageBox.Show("Failed to import addon");
             }
         }

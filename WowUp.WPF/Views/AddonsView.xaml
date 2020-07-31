@@ -209,6 +209,11 @@
                                   Command="{Binding IgnoreCheckedCommand}"
                                   CommandParameter="{Binding}">
                         </MenuItem>
+                        <MenuItem Header="Auto Update" IsCheckable="True" 
+                                  IsChecked="{Binding IsAutoUpdated}" 
+                                  Command="{Binding AutoUpdateCheckedCommand}"
+                                  CommandParameter="{Binding}">
+                        </MenuItem>
                         <MenuItem Header="Channel">
                             <MenuItem Header="Stable" 
                                       IsCheckable="True" IsChecked="{Binding IsStableChannel}"

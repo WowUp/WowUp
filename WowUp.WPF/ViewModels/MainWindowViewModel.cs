@@ -170,7 +170,7 @@ namespace WowUp.WPF.ViewModels
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 
-        private async void InitializeView()
+        private void InitializeView()
         {
             var hasWowLocation = HasWarcraftLocation();
 

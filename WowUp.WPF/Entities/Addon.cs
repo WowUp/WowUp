@@ -122,6 +122,13 @@ namespace WowUp.WPF.Entities
             set { SetProperty(ref _isIgnored, value); }
         }
 
+        private bool _autoUpdateEnabled = false;
+        public bool AutoUpdateEnabled
+        {
+            get => _autoUpdateEnabled;
+            set { SetProperty(ref _autoUpdateEnabled, value); }
+        }
+
         private WowClientType _clientType;
         [NotNull]
         public WowClientType ClientType

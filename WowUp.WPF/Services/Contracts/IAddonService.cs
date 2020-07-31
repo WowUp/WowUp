@@ -15,6 +15,7 @@ namespace WowUp.WPF.Services.Contracts
         event AddonEventHandler AddonUninstalled;
         event AddonEventHandler AddonInstalled;
         event AddonEventHandler AddonUpdated;
+        event AddonEventHandler AddonChanged;
 
         string BackupPath { get; }
 

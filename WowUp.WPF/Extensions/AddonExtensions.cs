@@ -51,6 +51,7 @@ namespace WowUp.WPF.Extensions
 
             if (addon.InstalledVersion == addon.LatestVersion)
             {
+                return AddonDisplayState.Update;
                 return AddonDisplayState.UpToDate;
             }
 

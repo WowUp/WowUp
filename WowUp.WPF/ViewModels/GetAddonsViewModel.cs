@@ -130,7 +130,7 @@ namespace WowUp.WPF.ViewModels
             await LoadPopularAddons();
         }
 
-        private async void onInstallNew()
+        private void onInstallNew()
         {
             // Instantiate the dialog box
             var dlg = _serviceProvider.GetService<InstallUrlWindow>();

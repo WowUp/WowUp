@@ -39,6 +39,7 @@ namespace WowUp.WPF.Services
         public event AddonEventHandler AddonUninstalled;
         public event AddonEventHandler AddonInstalled;
         public event AddonEventHandler AddonUpdated;
+        public event AddonEventHandler AddonChanged;
 
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
@@ -66,7 +67,7 @@ namespace WowUp.WPF.Services
         {
             _addonRepository.SaveItem(addon);
 
-            AddonUpdated?.Invoke(this, new AddonEventArgs(addon));
+            AddonUpdated?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Updated));
 
             return addon;
         }
@@ -237,7 +238,7 @@ namespace WowUp.WPF.Services
 
             _addonRepository.DeleteItem(addon);
 
-            AddonUninstalled?.Invoke(this, new AddonEventArgs(addon));
+            AddonUninstalled?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Uninstalled));
         }
 
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
@@ -281,7 +282,7 @@ namespace WowUp.WPF.Services
 
                 _addonRepository.UpdateItem(addon);
 
-                AddonInstalled?.Invoke(this, new AddonEventArgs(addon));
+                AddonInstalled?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Installed));
             }
             catch (Exception ex)
             {
@@ -335,7 +336,7 @@ namespace WowUp.WPF.Services
             return _providers.FirstOrDefault(provider => provider.IsValidAddonUri(addonUri));
         }
 
-        private async Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
+        private Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
         {
             var addonFolderPath = _warcraftService.GetAddonFolderPath(clientType);
             var unzippedFolders = Directory.GetDirectories(unzippedDirectory);
@@ -345,6 +346,8 @@ namespace WowUp.WPF.Services
                 var unzipLocation = Path.Combine(addonFolderPath, unzippedDirectoryName);
                 FileUtilities.DirectoryCopy(unzippedFolder, unzipLocation);
             }
+
+            return Task.CompletedTask;
         }
 
         protected virtual void InitializeDirectories()

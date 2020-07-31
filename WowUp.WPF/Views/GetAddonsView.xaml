@@ -115,7 +115,6 @@
         <!--MENU BAR-->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -127,16 +126,12 @@
                               Style="{StaticResource ComboBoxFlatStyle}"
                               ItemsSource="{Binding ClientNames}">
                     </ComboBox>
-                    <Button Style="{StaticResource purpleButton}" Margin="10 0 0 0" Command="{Binding RefreshCommand}">Refresh</Button>
                 </StackPanel>
             </Border>
             <Border Grid.Column="1" Padding="10">
-                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource purpleButton}" Margin="10 0 0 0" Command="{Binding InstallNewCommand}">Install From URL</Button>
-                </StackPanel>
-            </Border>
-            <Border Grid.Column="2" Padding="10">
                 <StackPanel  Orientation="Horizontal">
+                    <Button Style="{StaticResource purpleButton}" Margin="0 0 10 0" Command="{Binding RefreshCommand}">Refresh</Button>
+                    <Button Style="{StaticResource purpleButton}" Margin="0 0 10 0" Command="{Binding InstallNewCommand}">Install From URL</Button>
                     <TextBlock Text="Search" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 10,0"/>
                     <TextBox  Padding="4" Width="150"
                               Text="{Binding SearchText, Mode=TwoWay}">

@@ -37,6 +37,7 @@ namespace WowUp.WPF.ViewModels
         public Command StableCheckedCommand { get; set; }
         public Command BetaCheckedCommand { get; set; }
         public Command AlphaCheckedCommand { get; set; }
+        public Command AutoUpdateCheckedCommand { get; set; }
 
         private bool _showInstallButton;
         public bool ShowInstallButton
@@ -157,6 +158,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _isIgnored, value); }
         }
 
+        private bool _isAutoUpdated;
+        public bool IsAutoUpdated
+        {
+            get => _isAutoUpdated;
+            set { SetProperty(ref _isAutoUpdated, value); }
+        }
+
         private AddonChannelType _channelType;
         public AddonChannelType ChannelType
         {
@@ -252,6 +260,7 @@ namespace WowUp.WPF.ViewModels
             StableCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Stable));
             BetaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Beta));
             AlphaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Alpha));
+            AutoUpdateCheckedCommand = new Command(() => OnAutoUpdateChanged());
         }
 
         private void SetupDisplayState()
@@ -279,6 +288,8 @@ namespace WowUp.WPF.ViewModels
             IsStableChannel = _addon.ChannelType == AddonChannelType.Stable;
             IsBetaChannel = _addon.ChannelType == AddonChannelType.Beta;
             IsAlphaChannel = _addon.ChannelType == AddonChannelType.Alpha;
+
+            IsAutoUpdated = _addon.AutoUpdateEnabled;
 
             if(ChannelType == AddonChannelType.Beta)
             {
@@ -355,9 +366,14 @@ namespace WowUp.WPF.ViewModels
         private void OnIgnoreChanged()
         {
             _addon.IsIgnored = !_addon.IsIgnored;
-
             _addonService.UpdateAddon(_addon);
+            SetupDisplayState();
+        }
 
+        private void OnAutoUpdateChanged()
+        {
+            _addon.AutoUpdateEnabled = !_addon.AutoUpdateEnabled;
+            _addonService.UpdateAddon(_addon);
             SetupDisplayState();
         }
 

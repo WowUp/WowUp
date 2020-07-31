@@ -33,7 +33,7 @@ namespace WowUp.WPF.Services
             await Track(request =>
             {
                 request.SetQueryParam("t", "pageview")
-                    .SetQueryParam("dp", "startup");
+                    .SetQueryParam("dp", "app/startup");
             });
         }
 

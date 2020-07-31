@@ -8,14 +8,12 @@ using Xamarin.Forms;
 using WowUp.Models;
 using WowUp.Views;
 using WowUp.Services;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace WowUp.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        private readonly IWarcraftService _warcraftService = DependencyService.Get<IWarcraftService>();
         private readonly IAddonService _addonService = DependencyService.Get<IAddonService>();
 
         private int _selectedWowIndex = 0;
@@ -80,7 +78,7 @@ namespace WowUp.ViewModels
             try
             {
                 DisplayAddons.Clear();
-                IEnumerable<AddonFolder> localAddons;
+
                 var wowType = IsRetailSelected
                     ? WowClientType.Retail
                     : WowClientType.Classic;
