@@ -110,11 +110,15 @@ jobs:
         
     - name: Zip Build
       id: zip_build
-      run: Compress-Archive -Path ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish/*.exe -DestinationPath ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish
-
+      run: Compress-Archive ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish/WowUp.exe WowUp.zip
+      
     - name: Test Build
       id: test_build
       run: dir ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish
+    
+    - name: Test Build2
+      id: test_build2
+      run: dir 
     
     - name: Create Release
       id: create_release
