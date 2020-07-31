@@ -110,7 +110,7 @@ jobs:
       run: dir ./WowUp.WPF/bin/Release/netcoreapp3.1/win-x64/publish
       
     - name: Test PS
-      run: 'Get-Content ${env:Wap_Project_Directory}/Assets/changelog.json | ConvertFrom-Json -AsHashtable'
+      run: '$changelogJson = Get-Content ${env:Wap_Project_Directory}/Assets/changelog.json | ConvertFrom-Json; echo $changelogJson[0]'
       shell: pwsh
 
     # Remove the pfx
