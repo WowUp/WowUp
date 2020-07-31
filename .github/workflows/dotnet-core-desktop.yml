@@ -40,7 +40,7 @@ name: .NET Core Desktop
 
 on:
   push:
-    branches: [ master ]
+    #branches: [ master ]
     tags: 
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
