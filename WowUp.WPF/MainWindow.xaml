@@ -136,17 +136,21 @@
                 </TabItem>-->
             </TabControl>
             <!--FOOTER-->
-            <Grid Grid.Row="3">
-                <Border Padding="10 5" Background="{StaticResource Dark4}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="0 0" HorizontalAlignment="Center">
-                            <Hyperlink x:Name="PatreonLink" NavigateUri="https://www.patreon.com/jliddev" TextDecorations="None" RequestNavigate="PatreonLink_RequestNavigate">
-                                <Image Source="/Assets/patron.png" Height="25"  />
-                            </Hyperlink>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
-            </Grid>
+            <Border Grid.Row="3" Padding="10 5" Background="{StaticResource Dark4}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Margin="0 0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <Hyperlink x:Name="PatreonLink" NavigateUri="https://www.patreon.com/jliddev" TextDecorations="None" RequestNavigate="PatreonLink_RequestNavigate">
+                            <Image Source="/Assets/patron.png" Height="25"  />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Text="{Binding Version}" VerticalAlignment="Center" Foreground="{StaticResource White3}"></TextBlock>
+                </Grid>
+            </Border>
         </Grid>
     </Border>
 </Window>

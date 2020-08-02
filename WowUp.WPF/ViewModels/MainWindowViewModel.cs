@@ -69,6 +69,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _isUpdateAvailable, value); }
         }
 
+        private string _version;
+        public string Version
+        {
+            get => _version;
+            set { SetProperty(ref _version, value); }
+        }
+
         public ObservableCollection<TabItem> TabItems { get; set; }
 
         public ApplicationUpdateControlViewModel ApplicationUpdateControlViewModel { get; set; }
@@ -118,6 +125,8 @@ namespace WowUp.WPF.ViewModels
         {
             _analyticsService.PromptTelemetry();
             _analyticsService.TrackStartup();
+
+            Version = $"v{AppUtilities.CurrentVersionString}";
         }
 
         public void OnSourceInitialized(Window window)
