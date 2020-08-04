@@ -10,6 +10,7 @@ namespace WowUp.WPF.Services.Contracts
         void PromptTelemetry();
         Task TrackStartup();
         Task Track(Exception ex, bool isFatal);
+        Task TrackUserAction(string category, string action, string label = null);
 
         string InstallId { get; }
     }

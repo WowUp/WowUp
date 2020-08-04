@@ -37,11 +37,23 @@ namespace WowUp.WPF.Services
             });
         }
 
+        public async Task TrackUserAction(string category, string action, string label = null)
+        {
+            await Track(request =>
+            {
+                request.SetQueryParam("t", "event")
+                    .SetQueryParam("ec", category)
+                    .SetQueryParam("ea", action)
+                    .SetQueryParam("el", label);
+            });
+        }
+
         public async Task Track(Exception ex, bool isFatal)
         {
             await Track(request =>
             {
-                request.SetQueryParam("exd", ex.GetType().Name)
+                request.SetQueryParam("t", "exception")
+                    .SetQueryParam("exd", ex.GetType().Name)
                     .SetQueryParam("exf", isFatal ? "1" : "0");
             });
         }

@@ -33,6 +33,7 @@ namespace WowUp.WPF.Services
         protected readonly IEnumerable<IAddonProvider> _providers = new List<IAddonProvider>();
 
         protected readonly IAddonRepository _addonRepository;
+        protected readonly IAnalyticsService _analyticsService;
         protected readonly IDownloadService _downloadService;
         protected readonly IWarcraftService _warcraftService;
 
@@ -46,10 +47,12 @@ namespace WowUp.WPF.Services
         public AddonService(
             IServiceProvider serviceProvider,
             IAddonRepository addonRepository,
+            IAnalyticsService analyticsService,
             IDownloadService downloadSevice,
             IWarcraftService warcraftService)
         {
             _addonRepository = addonRepository;
+            _analyticsService = analyticsService;
             _downloadService = downloadSevice;
             _warcraftService = warcraftService;
 
@@ -88,6 +91,8 @@ namespace WowUp.WPF.Services
 
             var searchTasks = _providers.Select(p => p.Search(query, clientType));
             var searchResults = await Task.WhenAll(searchTasks);
+
+            await _analyticsService.TrackUserAction("Addons", "Search", $"{clientType}|{query}");
 
             return searchResults.SelectMany(res => res).OrderByDescending(res => res.DownloadCount).ToList();
         }
@@ -281,6 +286,8 @@ namespace WowUp.WPF.Services
                 }
 
                 _addonRepository.UpdateItem(addon);
+
+                await _analyticsService.TrackUserAction("Addons", "InstallById", $"{addon.ClientType}|{addon.Name}");
 
                 AddonInstalled?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Installed));
             }

@@ -2,7 +2,7 @@
   "ChangeLogs": [
     {
       "Version": "1.14.0",
-      "Description": ""
+      "Description": "Add the ability to set an addon as Auto Update, should happen on app start and when hitting refresh.\nAdded confirmation to the re-scan button to help avoid confusion."
     },
     {
       "Version": "1.13.0",

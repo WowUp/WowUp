@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using WowUp.Common.Enums;
 using System.Windows.Data;
 using WowUp.WPF.Entities;
+using System.Windows;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -125,7 +126,7 @@ namespace WowUp.WPF.ViewModels
             DisplayAddons = new ObservableCollection<AddonListItemViewModel>();
             LoadItemsCommand = new Command(async () => await LoadItems());
             RefreshCommand = new Command(async () => await LoadItems());
-            RescanCommand = new Command(async () => await LoadItems(true));
+            RescanCommand = new Command(async () => await ReScan());
             UpdateAllCommand = new Command(async () => await UpdateAll());
 
             BindingOperations.EnableCollectionSynchronization(ClientNames, ClientNamesLock);
@@ -201,6 +202,21 @@ namespace WowUp.WPF.ViewModels
                 EnableRescan = true;
                 IsBusy = false;
             }
+        }
+
+        private async Task ReScan()
+        {
+            var messageBoxResult = MessageBox.Show(
+                "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.", 
+                "Start re-scan?", 
+                MessageBoxButton.YesNo);
+
+            if (messageBoxResult != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            await LoadItems(true);
         }
 
         public async Task LoadItems(bool forceReload = false)
@@ -307,7 +323,7 @@ namespace WowUp.WPF.ViewModels
             {
                 DisplayAddons.Clear();
 
-                for(var i = 0; i < addons.Count(); i += 1)
+                for (var i = 0; i < addons.Count(); i += 1)
                 {
                     DisplayAddons.Add(addons[i]);
                 }
