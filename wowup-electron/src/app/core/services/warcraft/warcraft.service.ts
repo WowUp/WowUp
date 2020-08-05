@@ -10,8 +10,10 @@ import { map } from "rxjs/operators";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { StorageService } from "../storage/storage.service";
 import log from 'electron-log';
+import { WarcraftServiceMac } from "./warcraft.service.mac";
 
 const isWin = process.platform === "win32";
+const isMac = process.platform === "darwin";
 
 // WOW STRINGS
 const InterfaceFolderName = "Interface";
@@ -179,6 +181,10 @@ export class WarcraftService {
     private getImplementation(): WarcraftServiceImpl {
         if (isWin) {
             return new WarcraftServiceWin();
+        }
+
+        if (isMac) {
+            return new WarcraftServiceMac();
         }
 
         throw new Error('No warcraft service implementation found');
