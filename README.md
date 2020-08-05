@@ -21,7 +21,7 @@ If you have any ideas/requests for the feature list let me know!
 - [x] Ignoring addons
 - [X] GitHub support
 - [x] Addon Search
-- [ ] Auto addon updates
+- [x] Auto addon updates
 - [ ] Mac client?
 - [ ] Linux Client?
 - [ ] Curse alternative?
