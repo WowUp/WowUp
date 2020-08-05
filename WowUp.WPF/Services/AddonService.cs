@@ -40,7 +40,6 @@ namespace WowUp.WPF.Services
         public event AddonEventHandler AddonUninstalled;
         public event AddonEventHandler AddonInstalled;
         public event AddonEventHandler AddonUpdated;
-        public event AddonEventHandler AddonChanged;
 
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 

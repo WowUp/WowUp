@@ -192,7 +192,7 @@ namespace WowUp.WPF.ViewModels
                     .Where(addon => addon.IsAutoUpdated && (addon.CanUpdate || addon.CanInstall))
                     .ForEachAsync(2, async addon =>
                     {
-                        await addon.InstallAddon();
+                        await addon.UpdateAddon();
                     });
             }
             finally
