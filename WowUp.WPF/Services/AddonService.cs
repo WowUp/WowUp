@@ -33,9 +33,11 @@ namespace WowUp.WPF.Services
         protected readonly IEnumerable<IAddonProvider> _providers = new List<IAddonProvider>();
 
         protected readonly IAddonRepository _addonRepository;
+
         protected readonly IAnalyticsService _analyticsService;
         protected readonly IDownloadService _downloadService;
         protected readonly IWarcraftService _warcraftService;
+        protected readonly IWowUpService _wowUpService;
 
         public event AddonEventHandler AddonUninstalled;
         public event AddonEventHandler AddonInstalled;
@@ -48,12 +50,15 @@ namespace WowUp.WPF.Services
             IAddonRepository addonRepository,
             IAnalyticsService analyticsService,
             IDownloadService downloadSevice,
-            IWarcraftService warcraftService)
+            IWarcraftService warcraftService,
+            IWowUpService wowUpService)
         {
             _addonRepository = addonRepository;
+
             _analyticsService = analyticsService;
             _downloadService = downloadSevice;
             _warcraftService = warcraftService;
+            _wowUpService = wowUpService;
 
             _providers = new List<IAddonProvider>
             {
@@ -177,29 +182,6 @@ namespace WowUp.WPF.Services
                 .FirstOrDefault();
         }
 
-        public async Task InstallAddon(
-            PotentialAddon potentialAddon,
-            WowClientType clientType,
-            Action<AddonInstallState, decimal> onUpdate = null)
-        {
-            var provider = _providers.First(p => p.Name == potentialAddon.ProviderName);
-            var searchResult = await provider.GetById(potentialAddon.ExternalId, clientType);
-            var latestFile = GetLatestFile(searchResult, AddonChannelType.Stable);
-
-            var existingAddon = _addonRepository.GetByExternalId(searchResult.ExternalId, clientType);
-
-            if (existingAddon != null)
-            {
-                throw new AddonAlreadyInstalledException();
-            }
-
-            var addon = CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType);
-
-            _addonRepository.SaveItem(addon);
-
-            await InstallAddon(addon.Id, onUpdate);
-        }
-
         public async Task<PotentialAddon> GetAddonByUri(
             Uri addonUri,
             WowClientType clientType,
@@ -208,25 +190,6 @@ namespace WowUp.WPF.Services
             var provider = GetAddonProvider(addonUri);
 
             return await provider.Search(addonUri, clientType);
-
-            //var latestFile = GetLatestFile(searchResult, AddonChannelType.Stable);
-            //if (latestFile == null)
-            //{
-            //    throw new AddonNotFoundException();
-            //}
-
-            //var existingAddon = _addonRepository.GetByExternalId(searchResult.ExternalId, clientType);
-
-            //if(existingAddon != null)
-            //{
-            //    throw new AddonAlreadyInstalledException();
-            //}
-
-            //var addon = CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType);
-
-            //_addonRepository.SaveItem(addon);
-
-            //await InstallAddon(addon.Id, onUpdate);
         }
 
         public async Task UninstallAddon(Addon addon)
@@ -245,12 +208,53 @@ namespace WowUp.WPF.Services
             AddonUninstalled?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Uninstalled));
         }
 
+        public async Task<Addon> GetAddon(
+            string externalId, 
+            string providerName,
+            WowClientType clientType)
+        {
+            var provider = GetProvider(providerName);
+            var searchResult = await provider.GetById(externalId, clientType);
+            var latestFile = GetLatestFile(searchResult, _wowUpService.GetDefaultAddonChannel());
+
+            return CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType);
+        }
+
+        private IAddonProvider GetProvider(string providerName)
+        {
+            return _providers.First(p => p.Name == providerName);
+        }
+
+        public async Task InstallAddon(
+            PotentialAddon potentialAddon,
+            WowClientType clientType,
+            Action<AddonInstallState, decimal> onUpdate = null)
+        {
+            var existingAddon = _addonRepository.GetByExternalId(potentialAddon.ExternalId, clientType);
+            if (existingAddon != null)
+            {
+                throw new AddonAlreadyInstalledException();
+            }
+
+            var addon = await GetAddon(potentialAddon.ExternalId, potentialAddon.ProviderName, clientType);
+
+            _addonRepository.SaveItem(addon);
+
+            await InstallAddon(addon.Id, onUpdate);
+        }
+
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
         {
             var addon = GetAddon(addonId);
             if (addon == null || string.IsNullOrEmpty(addon.DownloadUrl))
             {
                 throw new Exception("Addon not found or invalid");
+            }
+
+            if(addon.ChannelType != _wowUpService.GetDefaultAddonChannel())
+            {
+                var newAddon = await GetAddon(addon.ExternalId, addon.ProviderName, addon.ClientType);
+                addon.Assign(newAddon);
             }
 
             updateAction?.Invoke(AddonInstallState.Downloading, 25m);
@@ -380,40 +384,6 @@ namespace WowUp.WPF.Services
             return await MapAll(addonFolders, clientType);
         }
 
-        //public async Task<List<Addon>> MapAll(IEnumerable<Addon> addons, WowClientType clientType)
-        //{
-        //    if (addons == null)
-        //    {
-        //        Log.Warning("Addon list was null");
-        //        return new List<Addon>();
-        //    }
-
-        //    foreach (var addon in addons)
-        //    {
-        //        Log.Debug($"Addon {addon.FolderName}");
-
-        //        try
-        //        {
-        //            var searchResults = await Search(addon.Name, addon.FolderName, clientType);
-        //            var firstResult = searchResults.FirstOrDefault();
-        //            if (firstResult == null)
-        //            {
-        //                continue;
-        //            }
-
-        //            addon.LatestVersion = firstResult.Version;
-        //            addon.GameVersion = firstResult.GameVersion;
-        //            addon.Author = firstResult.Author;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Log.Error(ex, "Failed to map addon");
-        //        }
-        //    }
-
-        //    return addons.ToList();
-        //}
-
         public async Task<List<Addon>> MapAll(IEnumerable<AddonFolder> addonFolders, WowClientType clientType)
         {
             var results = new Dictionary<string, Addon>();
@@ -427,7 +397,7 @@ namespace WowUp.WPF.Services
                     {
                         var provider = _providers.First(p => p is CurseAddonProvider) as CurseAddonProvider;
                         var searchResult = await provider.GetById(addonFolder.Toc.CurseProjectId, clientType);
-                        var latestFile = GetLatestFile(searchResult, AddonChannelType.Stable);
+                        var latestFile = GetLatestFile(searchResult, _wowUpService.GetDefaultAddonChannel());
                         addon = CreateAddon(addonFolder.Name, searchResult, latestFile, clientType);
                     }
                     else
@@ -522,7 +492,7 @@ namespace WowUp.WPF.Services
                 DownloadUrl = latestFile.DownloadUrl,
                 ExternalUrl = searchResult.ExternalUrl,
                 ProviderName = searchResult.ProviderName,
-                ChannelType = latestFile.ChannelType
+                ChannelType = _wowUpService.GetDefaultAddonChannel()
             };
         }
     }

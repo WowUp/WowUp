@@ -1,4 +1,6 @@
-﻿using WowUp.Common.Enums;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
+using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
@@ -60,6 +62,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _collapseToTrayEnabled, value); }
         }
 
+        private AddonChannelType _selectedAddonChannelType;
+        public AddonChannelType SelectedAddonChannelType
+        {
+            get => _selectedAddonChannelType;
+            set { SetProperty(ref _selectedAddonChannelType, value); }
+        }
+
         public Command ShowLogsCommand { get; set; }
         public Command TelemetryCheckCommand { get; set; }
         public Command CollapseToTrayCheckCommand { get; set; }
@@ -68,7 +77,10 @@ namespace WowUp.WPF.ViewModels
         public Command SetClassicLocationCommand { get; set; }
         public Command SetClassicPtrLocationCommand { get; set; }
         public Command RescanFoldersCommand { get; set; }
-        
+        public Command AddonChannelChangeCommand { get; set; }
+
+        public ObservableCollection<AddonChannelType> AddonChannelNames { get; set; }
+
         public OptionsViewModel(
             IAnalyticsService analyticsService,
             IWarcraftService warcraftService,
@@ -86,6 +98,14 @@ namespace WowUp.WPF.ViewModels
             SetClassicLocationCommand = new Command(() => OnSetLocation(WowClientType.Classic));
             SetClassicPtrLocationCommand = new Command(() => OnSetLocation(WowClientType.ClassicPtr));
             RescanFoldersCommand = new Command(() => OnRescanFolders());
+            AddonChannelChangeCommand = new Command(() => OnAddonChannelChange(SelectedAddonChannelType));
+
+            AddonChannelNames = new ObservableCollection<AddonChannelType>
+            {
+                AddonChannelType.Stable,
+                AddonChannelType.Beta,
+                AddonChannelType.Alpha
+            };
 
             LoadOptions();
         }
@@ -94,6 +114,7 @@ namespace WowUp.WPF.ViewModels
         {
             IsTelemetryEnabled = _analyticsService.IsTelemetryEnabled();
             CollapseToTrayEnabled = _wowUpService.GetCollapseToTray();
+            SelectedAddonChannelType = _wowUpService.GetDefaultAddonChannel();
 
             WowRetailLocation = _warcraftService.GetClientLocation(WowClientType.Retail);
             WowRetailPtrLocation = _warcraftService.GetClientLocation(WowClientType.RetailPtr);
@@ -138,6 +159,11 @@ namespace WowUp.WPF.ViewModels
         {
             _warcraftService.ScanProducts();
             LoadOptions();
+        }
+
+        private void OnAddonChannelChange(AddonChannelType addonChannelType)
+        {
+            _wowUpService.SetDefaultAddonChannel(addonChannelType);
         }
     }
 }

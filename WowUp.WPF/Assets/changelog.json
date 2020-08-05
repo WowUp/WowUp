@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.2",
+      "Description": "Add the ability to set a global addon channel."
+    },
+    {
       "Version": "1.14.1",
       "Description": "Fix issue with update button being shown over progress bar during auto update."
     },
