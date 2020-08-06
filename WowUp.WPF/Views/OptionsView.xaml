@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:WowUp.WPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -33,7 +34,7 @@
                         </StackPanel>
                     </Grid>
 
-                    <Border Margin="0" Padding="10 0 0 0">
+                    <Border Margin="0 10 0 0" Padding="10 0 0 0" >
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -47,29 +48,50 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0">Retail</Label>
-                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 0 0 10" >
-                                <TextBox Margin="0 5" Text="{Binding WowRetailLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button  Command="{Binding SetRetailLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                            </StackPanel>
+                            <Grid Grid.Row="0" Grid.Column="1" Margin="0 0 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailLocation}" IsEnabled="False" FontSize="14"/>
+                                <Button  Grid.Column="1" Command="{Binding SetRetailLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                            </Grid>
                             <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0">Retail PTR</Label>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 0 0 10" >
-                                <TextBox Margin="0 5" Text="{Binding WowRetailPtrLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button   Command="{Binding SetRetailPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                            </StackPanel>
+                            <Grid Grid.Row="1" Grid.Column="1" Margin="0 0 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailPtrLocation}" IsEnabled="False" FontSize="14"/>
+                                <Button  Grid.Column="1" Command="{Binding SetRetailPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                            </Grid>
                             <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0">Classic</Label>
-                            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 0 0 10" >
-                                <TextBox Margin="0 5" Text="{Binding WowClassicLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button   Command="{Binding SetClassicLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                            </StackPanel>
+                            <Grid Grid.Row="2" Grid.Column="1" Margin="0 0 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicLocation}" IsEnabled="False" FontSize="14"/>
+                                <Button  Grid.Column="1" Command="{Binding SetClassicLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                            </Grid>
                             <Label FontWeight="Bold" Grid.Row="3" Grid.Column="0">Classic PTR</Label>
-                            <StackPanel Grid.Row="3" Grid.Column="1" Margin="0 0 0 10" >
-                                <TextBox Margin="0 5" Text="{Binding WowClassicPtrLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button  Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                            </StackPanel>
+                            <Grid Grid.Row="3" Grid.Column="1" Margin="0 0 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicPtrLocation}" IsEnabled="False" FontSize="14"/>
+                                <Button  Grid.Column="1" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                            </Grid>
                             <Label FontWeight="Bold" Grid.Row="4" Grid.Column="0">Beta</Label>
-                            <StackPanel Grid.Row="4" Grid.Column="1" Margin="0 0 0 10" >
-                                <TextBox Margin="0 5" Text="{Binding WowBetaLocation}" IsEnabled="False" FontSize="14"/>
-                            </StackPanel>
+                            <Grid Grid.Row="4" Grid.Column="1" Margin="0 0 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowBetaLocation}" IsEnabled="False" FontSize="14"/>
+                                <!--<Button  Grid.Column="1" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>-->
+                            </Grid>
                         </Grid>
                         <!--<StackPanel>
                         <Label FontWeight="Bold" >Retail Folder</Label>
@@ -85,6 +107,9 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -94,37 +119,39 @@
                             <Button Grid.Row="0" Grid.Column="1" 
                                     Command="{Binding ShowLogsCommand}" 
                                     Style="{StaticResource purpleButton}">Show Log Files</Button>
-
-                        </Grid>
-                    </Border>
-
-                    <Label FontSize="17" Margin="0 10 0 0" >Preferences</Label>
-                    <Border Margin="0" Padding="10 0 0 0">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0">Telemetry</Label>
-                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 5">
+                            <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0">Telemetry</Label>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
                                 <CheckBox IsChecked="{Binding IsTelemetryEnabled, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
                                       Command="{Binding TelemetryCheckCommand}" Grid.Row="0" Grid.Column="1">
                                 </CheckBox>
-                                <Label>Help improve WowUp by sending anonymous install data and/or errors.</Label>
+                                <Label VerticalAlignment="Top">Help improve WowUp by sending anonymous install data and/or errors.</Label>
                             </StackPanel>
-
-                            <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0" >Minimize on close</Label>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 5">
+                            <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0" >Minimize on close</Label>
+                            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
                                 <CheckBox IsChecked="{Binding CollapseToTrayEnabled, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
                                       Command="{Binding CollapseToTrayCheckCommand}" Grid.Row="0" Grid.Column="1">
                                 </CheckBox>
-                                <Label>When closing the WowUp window, minimize to the system tray.</Label>
+                                <Label VerticalAlignment="Top">When closing the WowUp window, minimize to the system tray.</Label>
                             </StackPanel>
-
+                            <Label FontWeight="Bold" Grid.Row="3" Grid.Column="0" >Default Addon Channel</Label>
+                            <StackPanel Grid.Row="3" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
+                                <ComboBox x:Name="AddonChannelComboBox" SelectedItem="{Binding SelectedAddonChannelType}"
+                                          HorizontalAlignment="Left"
+                                          Style="{StaticResource ComboBoxFlatStyle}"
+                                          ItemsSource="{Binding AddonChannelNames}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding AddonChannelChangeCommand}" 
+                                                                   CommandParameter="{Binding ElementName=AddonChannelComboBox, Path=SelectedValue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <TextBlock Padding="0" Margin="5 0 0 0" VerticalAlignment="Center">
+                                    Newly installed addons will assume this release channel.
+                                </TextBlock>
+                            </StackPanel>
                         </Grid>
                     </Border>
                 </StackPanel>

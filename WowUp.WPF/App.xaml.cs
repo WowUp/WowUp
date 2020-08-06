@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
+using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Repositories;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services;
@@ -22,6 +23,7 @@ namespace WowUp.WPF
     public partial class App : Application
     {
         private readonly ServiceProvider _serviceProvider;
+        private readonly IAnalyticsService _analyticsService;
 
         public App()
         {
@@ -43,18 +45,7 @@ namespace WowUp.WPF
             ConfigureServices(serviceCollection);
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
-        }
-
-        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-        {
-            Log.Error(e.Exception, "Uncaught Exception");
-            Log.Error($"Terminating");
-        }
-
-        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            Log.Error(e.Exception, "Uncaught Exception");
-            Log.Error($"Terminating");
+            _analyticsService = _serviceProvider.GetRequiredService<IAnalyticsService>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -90,8 +81,9 @@ namespace WowUp.WPF
             services.AddTransient<OptionsView>();
             services.AddTransient<InstallUrlWindow>();
 
-            services.AddTransient<CurseAddonProvider>();
-            services.AddTransient<TukUiAddonProvider>();
+            services.AddTransient<ICurseAddonProvider, CurseAddonProvider>();
+            services.AddTransient<IGitHubAddonProvider, GitHubAddonProvider>();
+            services.AddTransient<ITukUiAddonProvider, TukUiAddonProvider>();
             services.AddTransient<ApplicationUpdater>();
 
             services.AddSingleton<MainWindow>();
@@ -107,9 +99,25 @@ namespace WowUp.WPF
             services.AddSingleton<IPreferenceRepository, PreferenceRepository>();
         }
 
-        static void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            _analyticsService.Track(e.Exception, true);
+            Log.Error(e.Exception, "Uncaught Exception");
+            Log.Error($"Terminating");
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            _analyticsService.Track(e.Exception, true);
+            Log.Error(e.Exception, "Uncaught Exception");
+            Log.Error($"Terminating");
+        }
+
+        private void ExceptionHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
+            _analyticsService.Track(e, true);
+
             Log.Error(e, "Uncaught Exception");
             Log.Error($"Terminating {args.IsTerminating}");
         }

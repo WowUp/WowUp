@@ -15,6 +15,7 @@ namespace WowUp.WPF.ViewModels
     public class AddonListItemViewModel : BaseViewModel
     {
         private readonly IAddonService _addonService;
+        private readonly IAnalyticsService _analyticsService;
 
         private Addon _addon;
         public Addon Addon
@@ -37,6 +38,7 @@ namespace WowUp.WPF.ViewModels
         public Command StableCheckedCommand { get; set; }
         public Command BetaCheckedCommand { get; set; }
         public Command AlphaCheckedCommand { get; set; }
+        public Command AutoUpdateCheckedCommand { get; set; }
 
         private bool _showInstallButton;
         public bool ShowInstallButton
@@ -157,6 +159,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _isIgnored, value); }
         }
 
+        private bool _isAutoUpdated;
+        public bool IsAutoUpdated
+        {
+            get => _isAutoUpdated;
+            set { SetProperty(ref _isAutoUpdated, value); }
+        }
+
         private AddonChannelType _channelType;
         public AddonChannelType ChannelType
         {
@@ -238,10 +247,12 @@ namespace WowUp.WPF.ViewModels
         public bool CanUpdate => _addon.CanUpdate();
 
         public AddonListItemViewModel(
-            IAddonService addonService)
+            IAddonService addonService,
+            IAnalyticsService analyticsService)
             : base()
         {
             _addonService = addonService;
+            _analyticsService = analyticsService;
 
             InstallCommand = new Command(async () => await InstallAddon());
             UpdateCommand = new Command(async () => await UpdateAddon());
@@ -252,6 +263,7 @@ namespace WowUp.WPF.ViewModels
             StableCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Stable));
             BetaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Beta));
             AlphaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Alpha));
+            AutoUpdateCheckedCommand = new Command(() => OnAutoUpdateChanged());
         }
 
         private void SetupDisplayState()
@@ -279,6 +291,8 @@ namespace WowUp.WPF.ViewModels
             IsStableChannel = _addon.ChannelType == AddonChannelType.Stable;
             IsBetaChannel = _addon.ChannelType == AddonChannelType.Beta;
             IsAlphaChannel = _addon.ChannelType == AddonChannelType.Alpha;
+
+            IsAutoUpdated = _addon.AutoUpdateEnabled;
 
             if(ChannelType == AddonChannelType.Beta)
             {
@@ -324,6 +338,8 @@ namespace WowUp.WPF.ViewModels
             try
             {
                 await _addonService.InstallAddon(_addon.Id, OnInstallUpdate);
+
+                await _analyticsService.TrackUserAction("Addons", "InstallScanned", _addon.Name);
             }
             catch (Exception ex)
             {
@@ -355,10 +371,25 @@ namespace WowUp.WPF.ViewModels
         private void OnIgnoreChanged()
         {
             _addon.IsIgnored = !_addon.IsIgnored;
-
             _addonService.UpdateAddon(_addon);
-
             SetupDisplayState();
+
+            if (_addon.IsIgnored)
+            {
+                _analyticsService.TrackUserAction("Addons", "Ignore", _addon.Name);
+            }
+        }
+
+        private void OnAutoUpdateChanged()
+        {
+            _addon.AutoUpdateEnabled = !_addon.AutoUpdateEnabled;
+            _addonService.UpdateAddon(_addon);
+            SetupDisplayState();
+
+            if (_addon.AutoUpdateEnabled)
+            {
+                _analyticsService.TrackUserAction("Addons", "AutoUpdate", _addon.Name);
+            }
         }
 
         private void OnChannelChanged(AddonChannelType channelType)
@@ -368,6 +399,8 @@ namespace WowUp.WPF.ViewModels
             _addonService.UpdateAddon(_addon);
 
             SetupDisplayState();
+
+            _analyticsService.TrackUserAction("Addons", "Channel", channelType.ToString());
         }
 
         private void OnInstallUpdate(AddonInstallState installState, decimal percent)

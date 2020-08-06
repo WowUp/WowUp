@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
+using WowUp.Common.Models;
 using WowUp.WPF.Entities;
-using WowUp.WPF.Models;
 using WowUp.WPF.Models.Events;
 
 namespace WowUp.WPF.Services.Contracts
@@ -31,14 +31,14 @@ namespace WowUp.WPF.Services.Contracts
 
         Task<List<PotentialAddon>> GetFeaturedAddons(WowClientType clientType);
 
-        Task InstallAddon(
-            PotentialAddon addon,
+        Task<PotentialAddon> GetAddonByUri(
+            Uri addonUri,
             WowClientType clientType,
             Action<AddonInstallState, decimal> onUpdate = null);
 
         Task InstallAddon(
-            Uri addonUri,
-            WowClientType clientType, 
+            PotentialAddon addon,
+            WowClientType clientType,
             Action<AddonInstallState, decimal> onUpdate = null);
 
         Task InstallAddon(

@@ -4,10 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WowUp.WPF.Views"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
-        Title="Install Addon" Height="140" Width="350"
+        Title="Install Addon" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="{StaticResource Purple1}"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        MaxWidth="600"
+        WindowStartupLocation="CenterOwner"
         >
 
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      CornerRadius="0"
+                      GlassFrameThickness="0"
+                      ResizeBorderThickness="4" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <ResourceDictionary >
             <ResourceDictionary.MergedDictionaries>
@@ -15,21 +29,102 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Border Padding="10" Background="{StaticResource Dark1}">
-        <Grid >
+    <Border BorderBrush="{StaticResource Purple1}" BorderThickness="1">
+        <Grid Background="{StaticResource Dark3}" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-        <!-- Accept or Cancel -->
-            <StackPanel Grid.Row="0">
-                <TextBlock Text="Enter Addon URL" />
-                <TextBox FontSize="14" Text="{Binding Input, Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 10 0 0">
-                <Button x:Name="CancelButton" IsCancel="True" Width="80"  Style="{StaticResource purpleButton}">Cancel</Button>
-                <Button x:Name="OkButton"  IsDefault="True" Width="80" Margin="10 0 0 0" Style="{StaticResource purpleButton}" Command="{Binding SubmitCommand}">OK</Button>
-            </StackPanel>
+            <!--TOOLBAR-->
+            <Grid Grid.Row="0"  Background="{StaticResource Purple1}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Padding="10, 0" >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Assets/wowup_logo_512np.png" Margin="0, 0, 10, 0" Height="40" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="{Binding Title}"
+                                   Foreground="White" 
+                                   VerticalAlignment="Center" 
+                                   FontSize="15"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="CloseButton" 
+                            IsCancel="True"
+                            Command="{Binding CloseWindowCommand}"
+                            Style="{StaticResource TitleBarCloseButtonStyle}">
+                        <Path Width="46"
+                              Height="32"
+                              Data="M 18,11 27,20 M 18,20 27,11"
+                              Stroke="{Binding Path=Foreground,
+							     RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                              StrokeThickness="1" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <!--END TOOLBAR-->
+            <!--CONTENT-->
+            <Border Grid.Row="1" Padding="10" Background="{StaticResource Dark3}">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!-- Accept or Cancel -->
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Margin="0 0 0 10">
+                            If you want to install an addon directly from a URL paste it below to get started.
+                            <LineBreak />
+                            Currently only GitHub URLs are supported.
+                        </TextBlock>
+                        <TextBlock Text="Enter Addon URL" />
+                        <TextBox FontSize="14" Text="{Binding Input, Mode=TwoWay}" 
+                                 FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Margin="0 10 0 0" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}">
+                        <Image gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="40"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Loading..." FontStyle="Italic" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding Input}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                    <Grid Grid.Row="1" Margin="0 10 0 0"
+                                Visibility="{Binding ShowImportedAddon, Converter={StaticResource BoolToVisibilty}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="{Binding ImportedAddon.ThumbnailUrl}" Width="50" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0">
+                            <TextBlock Text="{Binding ImportedAddon.Name}" FontSize="14" FontWeight="Bold" />
+                            <TextBlock Text="{Binding ImportedAddonSubtitle}" FontSize="14" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Button Visibility="{Binding CanInstall, Converter={StaticResource BoolToVisibilty}}"
+                                    Style="{StaticResource purpleButton}" 
+                                    IsEnabled="{Binding EnableInstall}"
+                                    Command="{Binding InstallCommand}"
+                                    VerticalAlignment="Center" HorizontalAlignment="Center" Width="80">Install</Button>
+                            <TextBlock Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisibilty}}"
+                                       VerticalAlignment="Center" HorizontalAlignment="Center" Width="80" 
+                                       TextAlignment="Center">Installed</TextBlock>
+                            <Image Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVisibilty}}"
+                                   HorizontalAlignment="Center"
+                                   gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="20"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 10 0 0">
+                        <Button x:Name="CancelButton" IsCancel="True" Width="80"  Style="{StaticResource PurpleButtonInverse}">Close</Button>
+                        <Button IsEnabled="{Binding EnableImportButton}" IsDefault="True" Width="80" Margin="10 0 0 0" Style="{StaticResource purpleButton}" Command="{Binding SubmitCommand}">Import</Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <!--END CONTENT-->
         </Grid>
     </Border>
 </Window>

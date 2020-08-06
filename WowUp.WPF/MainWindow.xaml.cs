@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.ViewModels;
 using static WowUp.WPF.Utilities.WindowUtilities;
@@ -171,6 +172,20 @@ namespace WowUp.WPF
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _viewModel.OnLoaded();
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(e.NewSize.Width < this.MinWidth)
+            {
+                return;
+            }
+        }
+
+        private void PatreonLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            e.Uri.AbsoluteUri.OpenUrlInBrowser();
+            e.Handled = true;
         }
     }
 }

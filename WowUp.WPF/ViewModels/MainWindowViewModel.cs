@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WowUp.WPF.Services.Contracts;
@@ -12,8 +11,6 @@ using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.Common.Services.Contracts;
 using System.Linq;
-using WowUp.WPF.Repositories.Base;
-using System.Windows.Interop;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -72,6 +69,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _isUpdateAvailable, value); }
         }
 
+        private string _version;
+        public string Version
+        {
+            get => _version;
+            set { SetProperty(ref _version, value); }
+        }
+
         public ObservableCollection<TabItem> TabItems { get; set; }
 
         public ApplicationUpdateControlViewModel ApplicationUpdateControlViewModel { get; set; }
@@ -121,6 +125,8 @@ namespace WowUp.WPF.ViewModels
         {
             _analyticsService.PromptTelemetry();
             _analyticsService.TrackStartup();
+
+            Version = $"v{AppUtilities.CurrentVersionString}";
         }
 
         public void OnSourceInitialized(Window window)
@@ -173,7 +179,7 @@ namespace WowUp.WPF.ViewModels
             Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
 
-        private async void InitializeView()
+        private void InitializeView()
         {
             var hasWowLocation = HasWarcraftLocation();
 

@@ -29,7 +29,7 @@
     <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
     <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
     <Color x:Key="DisabledForegroundColor">#FF888888</Color>
-    
+
     <SolidColorBrush x:Key="AccentColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="NavigationPrimary">#6B69D6</SolidColorBrush>
     <SolidColorBrush x:Key="Dark1">#666666</SolidColorBrush>
@@ -88,10 +88,118 @@
         <Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
     </Style>
 
+    <!--WINDOW CHROME-->
+    <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+					x:Name="border"
+					Background="Transparent"
+					BorderThickness="0"
+					SnapsToDevicePixels="true">
+                        <ContentPresenter
+						x:Name="contentPresenter"
+						Margin="0"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Focusable="False"
+						RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple2}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple3}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border
+					x:Name="border"
+					Background="Transparent"
+					BorderThickness="0"
+					SnapsToDevicePixels="true">
+                        <ContentPresenter
+						x:Name="contentPresenter"
+						Margin="0"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Focusable="False"
+						RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple2}" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Purple3}" />
+                            <Setter Property="Foreground" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                <Setter Property="Margin" Value="6" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--END WINDOW CHROME-->
+
     <Style x:Key="labelTableHeader" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{StaticResource White2}" />
+    </Style>
+    <Style x:Key="PurpleButtonInverse" TargetType="Button">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource Purple2}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="{StaticResource Purple3}" 
+                            BorderThickness="1"
+                            Padding="10, 5">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Dark2}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Purple3}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style x:Key="purpleButton" TargetType="Button">
         <Setter Property="FontSize" Value="14" />

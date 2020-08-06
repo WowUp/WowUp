@@ -8,15 +8,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Extensions;
+using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
 using WowUp.Common.Models.TukUi;
 using WowUp.WPF.AddonProviders.Contracts;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Models;
 
 namespace WowUp.WPF.AddonProviders
 {
-    public class TukUiAddonProvider : IAddonProvider
+    public class TukUiAddonProvider : ITukUiAddonProvider
     {
         private const string ApiUrl = "https://www.tukui.org/api.php";
         private const string RetailAddonKey = "addon";
@@ -58,7 +59,7 @@ namespace WowUp.WPF.AddonProviders
             return similarAddons.Select(ToPotentialAddon);
         }
 
-        public Task<AddonSearchResult> Search(Uri addonUri, WowClientType clientType)
+        public Task<PotentialAddon> Search(Uri addonUri, WowClientType clientType)
         {
             throw new NotImplementedException();
         }
@@ -90,6 +91,10 @@ namespace WowUp.WPF.AddonProviders
             }
 
             return results;
+        }
+
+        public void OnPostInstall(Addon addon)
+        {
         }
 
         public async Task<IEnumerable<AddonSearchResult>> Search(string addonName, string folderName, WowClientType clientType, string nameOverride = null)
@@ -255,5 +260,7 @@ namespace WowUp.WPF.AddonProviders
                     return "addons";
             }
         }
+
+
     }
 }

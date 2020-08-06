@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WowUp.WPF.Models
+namespace WowUp.Common.Models
 {
     public class CurrentVersion
     {

@@ -72,6 +72,11 @@ namespace WowUp.WPF.Utilities
             return directoryPaths.Select(path => Path.GetFileName(path));
         }
 
+        public static IEnumerable<FileInfo> GetFiles(string directoryPath, string searchPattern = null)
+        {
+            return new DirectoryInfo(directoryPath).GetFiles(searchPattern);
+        }
+
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs = true)
         {
             // Get the subdirectories for the specified directory.

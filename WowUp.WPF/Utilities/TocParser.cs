@@ -1,5 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using WowUp.WPF.Models;
+﻿using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using WowUp.Common.Models;
 
 namespace WowUp.WPF.Utilities
 {
@@ -35,6 +37,11 @@ namespace WowUp.WPF.Utilities
             CurseProjectId = CurseProjectId,
             WowInterfaceId = WowInterfaceId
         };
+
+        public TocParser(FileInfo fileInfo)
+        {
+            _tocText = File.ReadAllText(fileInfo.FullName, Encoding.UTF8);
+        }
 
         public TocParser(string tocText)
         {

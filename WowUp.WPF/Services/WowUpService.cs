@@ -21,22 +21,20 @@ namespace WowUp.WPF.Services
         private const string LatestVersionUrlFormat = "https://wowup-builds.s3.us-east-2.amazonaws.com/v{0}/WowUp.zip";
         private const string ChangeLogFileCacheKey = "change_log_file";
         private const string CollapseToTrayKey = "collapse_to_tray";
+        private const string DefaultAddonChannelKey = "default_addon_channel";
 
         public const string WebsiteUrl = "https://wowup.io";
 
         private readonly IMemoryCache _cache;
-        private readonly IDownloadService _downloadSevice;
         private readonly IServiceProvider _serviceProvider;
         private readonly IPreferenceRepository _preferenceRepository;
 
         public WowUpService(
             IMemoryCache memoryCache,
             IPreferenceRepository preferenceRepository,
-            IServiceProvider serviceProvider,
-            IDownloadService downloadService)
+            IServiceProvider serviceProvider)
         {
             _cache = memoryCache;
-            _downloadSevice = downloadService;
             _serviceProvider = serviceProvider;
             _preferenceRepository = preferenceRepository;
 
@@ -56,13 +54,34 @@ namespace WowUp.WPF.Services
 
         public void SetCollapseToTray(bool enabled)
         {
-            var pref = _preferenceRepository.FindByKey(CollapseToTrayKey);
-            if (pref == null)
+            SetPreference(CollapseToTrayKey, enabled.ToString());
+        }
+
+        public AddonChannelType GetDefaultAddonChannel()
+        {
+            var pref = _preferenceRepository.FindByKey(DefaultAddonChannelKey);
+            if(pref == null)
             {
-                pref = new Preference { Key = CollapseToTrayKey };
+                throw new Exception("Default addon channel preference not found");
             }
 
-            pref.Value = enabled.ToString();
+            return pref.Value.ToAddonChannelType();
+        }
+
+        public void SetDefaultAddonChannel(AddonChannelType type)
+        {
+            SetPreference(DefaultAddonChannelKey, type.ToString());
+        }
+
+        public void SetPreference(string key, string value)
+        {
+            var pref = _preferenceRepository.FindByKey(key);
+            if (pref == null)
+            {
+                pref = new Preference { Key = key };
+            }
+
+            pref.Value = value;
 
             _preferenceRepository.SaveItem(pref);
         }
@@ -90,7 +109,7 @@ namespace WowUp.WPF.Services
         public async Task<string> GetLatestVersion()
         {
             var changeLogFile = await GetChangeLogFile();
-            if(changeLogFile == null)
+            if (changeLogFile == null)
             {
                 return string.Empty;
             }
@@ -153,8 +172,14 @@ namespace WowUp.WPF.Services
             {
                 SetCollapseToTray(true);
             }
+
+            pref = _preferenceRepository.FindByKey(DefaultAddonChannelKey);
+            if (pref == null)
+            {
+                SetDefaultAddonChannel(AddonChannelType.Stable);
+            }
         }
 
-        
+
     }
 }

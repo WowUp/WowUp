@@ -9,12 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Windows.Controls;
 using System.Collections.Generic;
-using WowUp.WPF.Views;
-using System.Windows;
-using WowUp.WPF.Errors;
 using WowUp.Common.Enums;
 using System.Windows.Data;
 using WowUp.WPF.Entities;
+using System.Windows;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -84,7 +82,6 @@ namespace WowUp.WPF.ViewModels
         public Command RefreshCommand { get; set; }
         public Command RescanCommand { get; set; }
         public Command UpdateAllCommand { get; set; }
-        public Command InstallCommand { get; set; }
 
         public ObservableCollection<ComboBoxItem> ClientNames { get; set; }
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
@@ -129,9 +126,8 @@ namespace WowUp.WPF.ViewModels
             DisplayAddons = new ObservableCollection<AddonListItemViewModel>();
             LoadItemsCommand = new Command(async () => await LoadItems());
             RefreshCommand = new Command(async () => await LoadItems());
-            RescanCommand = new Command(async () => await LoadItems(true));
+            RescanCommand = new Command(async () => await ReScan());
             UpdateAllCommand = new Command(async () => await UpdateAll());
-            InstallCommand = new Command(async () => await InstallNewAddon());
 
             BindingOperations.EnableCollectionSynchronization(ClientNames, ClientNamesLock);
             BindingOperations.EnableCollectionSynchronization(DisplayAddons, DisplayAddonsLock);
@@ -183,51 +179,44 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
-        private async Task InstallNewAddon()
+        private async void UpdateAutoUpdateAddons()
         {
-            // Instantiate the dialog box
-            var dlg = _serviceProvider.GetService<InstallUrlWindow>();
-
-            // Configure the dialog box
-            dlg.Owner = Application.Current.MainWindow;
-
-            // Open the dialog box modally
-            if (dlg.ShowDialog() == false)
-            {
-                return;
-            }
-
-            var result = (dlg.DataContext as InstallUrlDialogViewModel).Input;
-            if (string.IsNullOrEmpty(result))
-            {
-                return;
-            }
-
-            Uri uri;
-            try
-            {
-                uri = new Uri(result);
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Input was not a valid URL.");
-                return;
-            }
+            EnableUpdateAll = false;
+            EnableRefresh = false;
+            EnableRescan = false;
+            IsBusy = true;
 
             try
             {
-                await _addonService.InstallAddon(uri, SelectedClientType);
+                await DisplayAddons
+                    .Where(addon => addon.IsAutoUpdated && (addon.CanUpdate || addon.CanInstall))
+                    .ForEachAsync(2, async addon =>
+                    {
+                        await addon.UpdateAddon();
+                    });
             }
-            catch (AddonNotFoundException)
+            finally
             {
-                MessageBox.Show("Addon not found");
+                EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
+                EnableRefresh = true;
+                EnableRescan = true;
+                IsBusy = false;
             }
-            catch (AddonAlreadyInstalledException)
+        }
+
+        private async Task ReScan()
+        {
+            var messageBoxResult = MessageBox.Show(
+                "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.", 
+                "Start re-scan?", 
+                MessageBoxButton.YesNo);
+
+            if (messageBoxResult != MessageBoxResult.Yes)
             {
-                MessageBox.Show("Addon already installed");
+                return;
             }
 
-            await LoadItems();
+            await LoadItems(true);
         }
 
         public async Task LoadItems(bool forceReload = false)
@@ -262,6 +251,8 @@ namespace WowUp.WPF.ViewModels
                 }
 
                 UpdateDisplayAddons(listViewItems);
+
+                this.UpdateAutoUpdateAddons();
             }
             catch (Exception ex)
             {
@@ -332,7 +323,7 @@ namespace WowUp.WPF.ViewModels
             {
                 DisplayAddons.Clear();
 
-                for(var i = 0; i < addons.Count(); i += 1)
+                for (var i = 0; i < addons.Count(); i += 1)
                 {
                     DisplayAddons.Add(addons[i]);
                 }

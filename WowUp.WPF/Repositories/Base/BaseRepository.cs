@@ -2,7 +2,6 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using WowUp.WPF.Migrations;
 using WowUp.WPF.Migrations.Contracts;

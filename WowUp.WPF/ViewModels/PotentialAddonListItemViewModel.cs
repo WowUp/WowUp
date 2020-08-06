@@ -1,8 +1,8 @@
 ﻿using Serilog;
 using System;
 using WowUp.Common.Enums;
+using WowUp.Common.Models;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -11,6 +11,7 @@ namespace WowUp.WPF.ViewModels
     public class PotentialAddonListItemViewModel : BaseViewModel
     {
         private readonly IAddonService _addonService;
+        private readonly IAnalyticsService _analyticsService;
 
         public WowClientType ClientType { get; set; }
 
@@ -113,9 +114,11 @@ namespace WowUp.WPF.ViewModels
         public Command InstallCommand { get; set; }
 
         public PotentialAddonListItemViewModel(
-            IAddonService addonService)
+            IAddonService addonService,
+            IAnalyticsService analyticsService)
         {
             _addonService = addonService;
+            _analyticsService = analyticsService;
 
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
             InstallCommand = new Command(() => OnInstall());
@@ -128,6 +131,8 @@ namespace WowUp.WPF.ViewModels
             try
             {
                 await _addonService.InstallAddon(Addon, ClientType, OnInstallUpdate);
+
+                await _analyticsService.TrackUserAction("Addons", "InstallFeaturedAddon", $"{ClientType}|{Addon.Name}");
             }
             catch (Exception ex)
             {

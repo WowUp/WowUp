@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace WowUp.WPF.Services.Contracts
 {
@@ -8,6 +9,8 @@ namespace WowUp.WPF.Services.Contracts
         bool IsTelemetryEnabled();
         void PromptTelemetry();
         Task TrackStartup();
+        Task Track(Exception ex, bool isFatal);
+        Task TrackUserAction(string category, string action, string label = null);
 
         string InstallId { get; }
     }

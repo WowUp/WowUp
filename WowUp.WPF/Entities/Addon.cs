@@ -1,8 +1,6 @@
 ﻿using SQLite;
 using System;
-using System.ComponentModel;
 using WowUp.Common.Enums;
-using WowUp.WPF.Models;
 
 namespace WowUp.WPF.Entities
 {
@@ -122,6 +120,13 @@ namespace WowUp.WPF.Entities
         {
             get => _isIgnored;
             set { SetProperty(ref _isIgnored, value); }
+        }
+
+        private bool _autoUpdateEnabled = false;
+        public bool AutoUpdateEnabled
+        {
+            get => _autoUpdateEnabled;
+            set { SetProperty(ref _autoUpdateEnabled, value); }
         }
 
         private WowClientType _clientType;
