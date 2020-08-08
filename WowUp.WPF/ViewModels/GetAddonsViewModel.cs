@@ -67,7 +67,12 @@ namespace WowUp.WPF.ViewModels
 
             RefreshCommand = new Command(() => OnRefresh());
             SearchCommand = new Command((text) => OnSearch((string)text));
-            InstallNewCommand = new Command(() => onInstallNew());
+            InstallNewCommand = new Command(() => OnInstallFromUrl());
+
+            _addonService.AddonUninstalled += (sender, args) =>
+            {
+                OnRefresh();
+            };
         }
 
         public async void OnInitialized()
@@ -130,7 +135,7 @@ namespace WowUp.WPF.ViewModels
             await LoadPopularAddons();
         }
 
-        private void onInstallNew()
+        private void OnInstallFromUrl()
         {
             // Instantiate the dialog box
             var dlg = _serviceProvider.GetService<InstallUrlWindow>();
@@ -159,14 +164,16 @@ namespace WowUp.WPF.ViewModels
             if(_popularAddons == null || !_popularAddons.Any())
             {
                 _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
-                _popularAddons = _popularAddons
-                    .Where(addon => !_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
-                    .ToList();
             }
 
             DisplayAddons.Clear();
             foreach (var addon in _popularAddons)
             {
+                if(_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
+                {
+                    continue;
+                }
+
                 var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
                 viewModel.Addon = addon;
                 viewModel.ClientType = SelectedClientType;

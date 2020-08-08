@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.3",
+      "Description": "Fix issue where addons from TukUI would not install correctly.\nAdd confirmation box to addon uninstall.\nNewly installed addons should appear in the correct spot in the list, not the bottom.\nUninstalling an addon sould be reflected on the 'Get Addons' page.\nRefreshing the 'Get Addons' page should show the correct addons now.\nAddon lists should scroll a little more smoothly."
+    },
+    {
       "Version": "1.14.2",
       "Description": "Add the ability to set a global addon channel."
     },

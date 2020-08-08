@@ -207,8 +207,8 @@ namespace WowUp.WPF.ViewModels
         private async Task ReScan()
         {
             var messageBoxResult = MessageBox.Show(
-                "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.", 
-                "Start re-scan?", 
+                "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.",
+                "Start re-scan?",
                 MessageBoxButton.YesNo);
 
             if (messageBoxResult != MessageBoxResult.Yes)
@@ -252,7 +252,7 @@ namespace WowUp.WPF.ViewModels
 
                 UpdateDisplayAddons(listViewItems);
 
-                this.UpdateAutoUpdateAddons();
+                UpdateAutoUpdateAddons();
             }
             catch (Exception ex)
             {
@@ -291,6 +291,7 @@ namespace WowUp.WPF.ViewModels
                     var viewModel = GetAddonViewModel(addon);
 
                     DisplayAddons.Add(viewModel);
+                    SortAddons(DisplayAddons);
                 }
                 finally
                 {
@@ -323,17 +324,24 @@ namespace WowUp.WPF.ViewModels
             {
                 DisplayAddons.Clear();
 
-                for (var i = 0; i < addons.Count(); i += 1)
+                foreach(var addon in addons)
                 {
-                    DisplayAddons.Add(addons[i]);
+                    DisplayAddons.Add(addon);
                 }
             }
         }
 
-        public class ComboData
+        private static void SortAddons(ObservableCollection<AddonListItemViewModel> addons)
         {
-            public int Id { get; set; }
-            public string Value { get; set; }
+            var sorted = addons
+                .OrderBy(addon => addon.DisplayState)
+                .ThenBy(addon => addon.Name)
+                .ToList();
+
+            for (int i = 0; i < sorted.Count(); i++)
+            {
+                addons.Move(addons.IndexOf(sorted[i]), i);
+            }
         }
     }
 }

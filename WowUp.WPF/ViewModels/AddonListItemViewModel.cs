@@ -294,11 +294,11 @@ namespace WowUp.WPF.ViewModels
 
             IsAutoUpdated = _addon.AutoUpdateEnabled;
 
-            if(ChannelType == AddonChannelType.Beta)
+            if (ChannelType == AddonChannelType.Beta)
             {
                 ChannelNameBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#0070DD");
             }
-            else if(ChannelType == AddonChannelType.Alpha)
+            else if (ChannelType == AddonChannelType.Alpha)
             {
                 ChannelNameBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#A335EE");
             }
@@ -357,6 +357,16 @@ namespace WowUp.WPF.ViewModels
 
         private async void OnUninstall()
         {
+            var messageBoxResult = MessageBox.Show(
+                $"Are you sure you want to remove {Addon.Name}? This will remove all related folders from your World of Warcraft folder.",
+                "Uninstall Addon?",
+                MessageBoxButton.YesNo);
+
+            if (messageBoxResult != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
             try
             {
                 await _addonService.UninstallAddon(Addon);

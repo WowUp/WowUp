@@ -198,6 +198,7 @@
                       HorizontalGridLinesBrush="{StaticResource Dark2}"
                       RowHeaderWidth="0"
                       BorderThickness="0"
+                      VirtualizingPanel.ScrollUnit="Pixel"
                       BorderBrush="Transparent">
                 <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu"
