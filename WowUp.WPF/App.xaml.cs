@@ -1,7 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using WowUp.Common.Services.Contracts;
@@ -14,6 +18,7 @@ using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using WowUp.WPF.ViewModels;
 using WowUp.WPF.Views;
+using static WowUp.WPF.Utilities.WindowUtilities;
 
 namespace WowUp.WPF
 {
@@ -22,11 +27,21 @@ namespace WowUp.WPF
     /// </summary>
     public partial class App : Application
     {
+        private static readonly Mutex singleton = new Mutex(true, "WowUp.io");
+
         private readonly ServiceProvider _serviceProvider;
         private readonly IAnalyticsService _analyticsService;
 
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool ShowWindow(IntPtr hWnd, ShowWindowEnum flags);
+
+        [DllImport("user32.dll")]
+        public static extern int SetForegroundWindow(IntPtr hwnd);
+
         public App()
         {
+
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -50,6 +65,8 @@ namespace WowUp.WPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            HandleSingleInstance();
+
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
@@ -120,6 +137,34 @@ namespace WowUp.WPF
 
             Log.Error(e, "Uncaught Exception");
             Log.Error($"Terminating {args.IsTerminating}");
+        }
+
+        private void HandleSingleInstance() 
+        {
+            if (singleton.WaitOne(TimeSpan.Zero, true))
+            {
+                return;
+            }
+
+            MessageBox.Show("WowUp is already running.");
+
+            var currentPocess = Process.GetCurrentProcess();
+            var runningProcess = Process
+                .GetProcessesByName(currentPocess.ProcessName)
+                .FirstOrDefault(p => p.Id != currentPocess.Id);
+
+            if (runningProcess != null)
+            {
+                if (runningProcess.MainWindowHandle == IntPtr.Zero)
+                {
+                    ShowWindow(runningProcess.Handle, ShowWindowEnum.Show);
+                }
+
+                SetForegroundWindow(runningProcess.MainWindowHandle);
+            }
+
+            //there is already another instance running!
+            Current.Shutdown();
         }
     }
 }
