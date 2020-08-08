@@ -1,16 +1,37 @@
-@import '../../custom-theme.scss';
+@import "../../custom-theme.scss";
 
+.tab-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.options {
+    max-width: 900px;
+    width: 100%;
+}
 .row {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 1em 0;
+    // margin: 1em 0;
+    padding: 0.5em;
+}
+hr {
+    border: 1px solid $white-4;
+}
+.row.hover {
+    &:hover {
+        background-color: $dark-4;
+    }
 }
 .grow {
     flex-grow: 1;
 }
-.no-shrink{
+.no-shrink {
     flex-shrink: 0;
+}
+table {
+    width: 100%;
 }
 section {
     color: $white-1;
@@ -28,7 +49,7 @@ section {
     .select-button {
         flex-shrink: 0;
     }
-    
+
     small {
         color: $white-2;
     }

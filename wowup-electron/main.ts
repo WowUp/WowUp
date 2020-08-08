@@ -1,6 +1,12 @@
-import { app, BrowserWindow, screen, BrowserWindowConstructorOptions, Tray, Menu } from 'electron';
+import { app, BrowserWindow, screen, BrowserWindowConstructorOptions, Tray, Menu, nativeImage } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { release, arch } from 'os';
+
+// app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+
+const appVersion = require('./package.json').version;
+const USER_AGENT = `WowUp-Client/${appVersion} (${release()}; ${arch()}; +https://wowup.io)`;
 
 const isWin = process.platform === "win32";
 
@@ -11,15 +17,18 @@ const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
 function createTray() {
-  tray = new Tray(path.join(__dirname, 'src', 'assets', 'icons', "favicon.png"))
+  console.log('TRAY')
+  const trayIconPath = path.join(__dirname, 'src', 'assets', 'wowup_logo_512np.png');
+  const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
+
+  tray = new Tray(icon)
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' }
+    { label: 'WowUp', type: 'normal', icon: icon, enabled: false },
+    { label: 'Close', type: 'normal', role: 'quit' },
   ])
 
   tray.on('click', function (event) {
+    console.log('SHOW')
     win.show();
   });
 
@@ -43,7 +52,10 @@ function createWindow(): BrowserWindow {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
+      webSecurity: false
     },
+    minWidth: 700,
+    minHeight: 400
   };
 
   if (isWin) {
@@ -53,6 +65,7 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
+  win.webContents.userAgent = USER_AGENT;
   win.webContents.once('dom-ready', () => {
     win.webContents.openDevTools();
   })
@@ -72,22 +85,22 @@ function createWindow(): BrowserWindow {
   }
 
   // Emitted when the window is closed.
-  win.on('closed', () => {
-    // Dereference the window object, usually you would store window
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    win = null;
-  });
+  // win.on('closed', () => {
+  //   // Dereference the window object, usually you would store window
+  //   // in an array if your app supports multi windows, this is the time
+  //   // when you should delete the corresponding element.
+  //   win = null;
+  // });
 
 
-  win.on('minimize', function (event) {
-    event.preventDefault();
-    win.hide();
-  });
+  // win.on('minimize', function (event) {
+  //   event.preventDefault();
+  //   win.hide();
+  // });
 
-  win.on('restore', function (event) {
-    win.show();
-  });
+  // win.on('restore', function (event) {
+  //   win.show();
+  // });
 
   return win;
 }
@@ -100,8 +113,10 @@ try {
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on('ready', () => {
-    setTimeout(createWindow, 400)
-    createTray();
+    setTimeout(() => {
+      createWindow();
+      createTray();
+    }, 400)
   });
 
   // Quit when all windows are closed.

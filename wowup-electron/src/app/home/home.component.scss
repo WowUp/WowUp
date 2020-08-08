@@ -1,3 +1,5 @@
+@import '../../custom-theme.scss';
+
 :host {
   
 }
@@ -10,5 +12,32 @@
 
     img {
         width: 100%;
+    }
+}
+.page-container {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.tabs {
+    flex-grow: 1;
+    overflow: hidden;
+}
+footer {
+    height: 25px;
+    padding: 0.25em 0.5em;
+    background-color: $dark-4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: $white-2;
+
+    a, img {
+        height: 25px;
+    }
+
+    div {
+        font-size: 0.8em;
     }
 }

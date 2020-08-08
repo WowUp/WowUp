@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { AgGridModule } from 'ag-grid-angular';
 
 import { HomeRoutingModule } from './home-routing.module';
 
@@ -12,6 +12,7 @@ import { AboutComponent } from 'app/about/about.component';
 import { GetAddonsComponent } from 'app/get-addons/get-addons.component';
 import { OptionsComponent } from 'app/options/options.component';
 import { ExternalLinkDirective } from 'app/core/directives/external-link.directive';
+import { AddonTableColumnComponent } from 'app/components/addon-table-column/addon-table-column.component';
 
 @NgModule({
   declarations: [
@@ -20,13 +21,16 @@ import { ExternalLinkDirective } from 'app/core/directives/external-link.directi
     AboutComponent,
     GetAddonsComponent,
     OptionsComponent,
-    ExternalLinkDirective
+    ExternalLinkDirective,
   ],
   imports: [
-    CommonModule, 
-    SharedModule, 
+    AgGridModule.withComponents([
+      AddonTableColumnComponent
+    ]),
+    CommonModule,
+    SharedModule,
     HomeRoutingModule,
     MatModule
   ]
 })
-export class HomeModule {}
+export class HomeModule { }

@@ -6,15 +6,10 @@
         <div class="link-container">
             <a appExternalLink href="https://wowup.io">Check out the website!</a>
         </div>
-        <div class="link-container">
-            <a appExternalLink href="https://www.patreon.com/jliddev">
-                <img class="patron-img" src="assets/patron.png" />
-            </a>
-        </div>
     </div>
     <div class="changelog-container">
         <h2>Change Log</h2>
-        <ul>
+        <ul class="change-log-list">
             <li class="changelog" *ngFor="let cl of changeLogs">
                 <div class="version">{{cl.Version}}</div>
                 <pre class="description">{{cl.Description}}</pre>

@@ -6,21 +6,27 @@
 
   <a routerLink="/detail">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a>
 </div> -->
-<div class="app-logo">
-  <img src="/assets/wowup_logo_512np.png" />
+<div class="page-container">
+  <div class="tabs">
+    <mat-tab-group mat-align-tabs="center" [backgroundColor]="'primary'">
+      <mat-tab label="My Addons">
+        <app-my-addons></app-my-addons>
+      </mat-tab>
+      <mat-tab label="Get Addons">
+        <app-get-addons></app-get-addons>
+      </mat-tab>
+      <mat-tab label="About">
+        <app-about></app-about>
+      </mat-tab>
+      <mat-tab label="Options">
+        <app-options></app-options>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <footer>
+    <a appExternalLink href="https://www.patreon.com/jliddev">
+      <img class="patron-img" src="assets/patron.png" />
+    </a>
+    <div>v2.X.X</div>
+  </footer>
 </div>
-
-<mat-tab-group mat-align-tabs="center" [backgroundColor]="'primary'">
-  <mat-tab label="My Addons">
-    <app-my-addons></app-my-addons>
-  </mat-tab>
-  <mat-tab label="Get Addons">
-    <app-get-addons></app-get-addons>
-  </mat-tab>
-  <mat-tab label="About">
-    <app-about></app-about>
-  </mat-tab>
-  <mat-tab label="Options">
-    <app-options></app-options>
-  </mat-tab>
-</mat-tab-group>

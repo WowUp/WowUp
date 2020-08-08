@@ -58,6 +58,16 @@ $candy-app-theme: mat-dark-theme((
   )
 ));
 
+$wowup-app-white-primary: mat-palette($md-wowup-pallette, 50, 50, 300);
+$wowup-app-secondary-theme: mat-dark-theme((
+  color: (
+    primary: $wowup-app-white-primary,
+    accent: $candy-app-accent,
+    warn: $candy-app-warn,  
+  )
+));
+
+
 $dark-primary: mat-palette($mat-blue-grey);
 $dark-accent:  mat-palette($mat-amber, A200, A100, A400);
 $dark-warn:    mat-palette($mat-deep-orange);
@@ -86,3 +96,4 @@ $purple-3: #383773;
 $white-1: #FFFFFF;
 $white-2: #DDDDDD;
 $white-3: #CCCCCC;
+$white-4: #BBBBBB;

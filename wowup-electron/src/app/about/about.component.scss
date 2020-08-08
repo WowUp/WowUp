@@ -1,4 +1,4 @@
-@import '../../custom-theme.scss';
+@import "../../custom-theme.scss";
 
 .header {
     text-align: center;
@@ -32,6 +32,9 @@
     padding: 1em;
     color: $white-1;
 
+    .change-log-list {
+        padding-left: 1em;
+    }
     .changelog {
         list-style-type: none;
         margin: 1em 0;
@@ -45,6 +48,8 @@
 
         .description {
             margin: 0;
+            word-break: break-all;
+            white-space: pre-wrap;
         }
     }
 }

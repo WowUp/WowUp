@@ -98,10 +98,15 @@
     "@angular/cdk": "10.1.0",
     "@angular/forms": "^10.0.0 || ^11.0.0-0",
     "@angular/material": "10.1.0",
+    "ag-grid-angular": "23.2.1",
+    "ag-grid-community": "23.2.1",
+    "conf": "7.1.1",
     "custom-electron-titlebar": "3.2.3",
     "electron-log": "4.2.2",
     "electron-store": "6.0.0",
+    "lodash": "4.17.19",
     "node-disk-info": "1.1.0",
-    "protobufjs": "6.10.1"
+    "protobufjs": "6.10.1",
+    "uuid": "8.3.0"
   }
 }

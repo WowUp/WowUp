@@ -24,7 +24,7 @@ export class FileUtils {
         return fs.readFileSync(path);
     }
 
-    static getUserDataPath(){
+    static getUserDataPath() {
         return userDataPath;
     }
 }

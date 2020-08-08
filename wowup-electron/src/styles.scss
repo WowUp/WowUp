@@ -1,11 +1,39 @@
-@import './custom-theme.scss';
+@import "ag-grid-community/dist/styles/ag-grid.css";
+@import "ag-grid-community/dist/styles/ag-theme-balham.css";
+@import "~ag-grid-community/src/styles/ag-theme-balham/sass/ag-theme-balham-mixin";
+@import "./custom-theme.scss";
 
 html {
-    background-color: $dark-3;
+  background-color: $dark-3;
+  overflow: hidden;
+}
+
+body {
+  overflow: hidden;
+}
+
+.pre-load-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  justify-content: center;
+  align-items: center;
+
+  .logo {
+    width: 200px;
+  }
+}
+
+.window-appicon {
+  background-size: 30px !important;
+  padding-left: 12px !important;
 }
 
 .tab-container {
-  height: calc( 100vh - 78px );
+  height: calc(100vh - 110px);
+  overflow: auto;
 }
 
 .no-pad-select {
@@ -16,4 +44,38 @@ html {
 
 .mat-input-element {
   color: $white-1 !important;
+}
+
+.mat-option.mat-selected:not(.mat-option-disabled) {
+  color: $white-3 !important;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+
+  &.align-items-center {
+    align-items: center;
+  }
+}
+
+.ag-theme-balham {
+  @include ag-theme-balham(
+    (
+      // use theme parameters where possible
+      foreground-color: $white-1,
+      background-color: $dark-3,
+      row-hover-color: $dark-1,
+      header-background-color: $dark-2,
+      header-foreground-color: $white-2,
+      odd-row-background-color: null,
+      borders: true,
+      borders-critical: false,
+      borders-secondary: false,
+      border-color: red,
+      secondary-border-color: blue,
+      row-border-color: green,
+      cell-horizontal-border: red
+    )
+  );
 }

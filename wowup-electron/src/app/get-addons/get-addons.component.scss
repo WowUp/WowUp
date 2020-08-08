@@ -1,22 +1,26 @@
 .control-container {
-    display: flex;
-    flex-direction: row;
-    padding: 1.25em 1em 0 1em;
-  
-    .select-container {
-      flex-grow: 1;
-    }
-  
-    .button-container {
-      button {
-        &:not(:last-child) {
-          margin-right: 0.5em;
-        }
+  display: flex;
+  flex-direction: row;
+  padding: 1.25em 1em 0 1em;
+
+  .select-container {
+    flex-grow: 1;
+  }
+
+  .button-container {
+    button {
+      &:not(:last-child) {
+        margin-right: 0.5em;
       }
     }
   }
-  
+}
+
+.table-container {
+  height: calc(100% - 75px);
+  overflow: auto;
+
   table {
     width: 100%;
   }
-  
+}

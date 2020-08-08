@@ -1,67 +1,66 @@
 <div class="tab-container">
-  <section>
-    <div class="row">
-      <div class="title">World of Warcraft Folders</div>
-      <button mat-flat-button color="primary" (click)="onReScan()">Re-Scan</button>
-    </div>
-    <div class="row">
-      <mat-form-field class="grow folder-input">
-        <mat-label>Retail</mat-label>
-        <input matInput disabled [value]="retailLocation">
-      </mat-form-field>
-      <button mat-flat-button color="primary" class="select-button">Select</button>
-    </div>
-    <div class="row">
-      <mat-form-field class="grow folder-input">
-        <mat-label>Classic</mat-label>
-        <input matInput disabled [value]="classicLocation">
-      </mat-form-field>
-      <button mat-flat-button color="primary" class="select-button">Select</button>
-    </div>
-    <div class="row">
-      <mat-form-field class="grow folder-input">
-        <mat-label>Retail PTR</mat-label>
-        <input matInput disabled [value]="retailPtrLocation">
-      </mat-form-field>
-      <button mat-flat-button color="primary" class="select-button">Select</button>
-    </div>
-    <div class="row">
-      <mat-form-field class="grow folder-input">
-        <mat-label>Classic PTR</mat-label>
-        <input matInput disabled [value]="classicPtrLocation">
-      </mat-form-field>
-      <button mat-flat-button color="primary" class="select-button">Select</button>
-    </div>
-    <div class="row">
-      <mat-form-field class="grow folder-input">
-        <mat-label>Beta</mat-label>
-        <input matInput disabled [value]="betaLocation">
-      </mat-form-field>
-      <button mat-flat-button color="primary" class="select-button">Select</button>
-    </div>
-  </section>
-  <section>
-    <div class="row">
-      <div class="title">Application</div>
-    </div>
-    <div class="row">
-      <button mat-flat-button color="primary" class="grow" (click)="onShowLogs()">Show Log Files</button>
-    </div>
-    <div class="row">
-      <div>
-        <mat-slide-toggle>Enable Telemetry</mat-slide-toggle>
-        <div>
-          <small>Help improve WowUp by sending anonymous install data and/or errors.</small>
-        </div>
+  <div class="options">
+    <section>
+      <div class="row ">
+        <div class="title">World of Warcraft Folders</div>
       </div>
-    </div>
-    <div class="row">
-      <div>
-        <mat-slide-toggle>Minimize on Close</mat-slide-toggle>
-        <div>
-          <small>When closing the WowUp window, minimize to the system tray.</small>
-        </div>
+      <hr />
+      <div class="row hover">
+        <div class="grow">Rescan installed World of Warcraft products</div>
+        <button mat-flat-button color="primary" (click)="onReScan()">Re-Scan</button>
       </div>
-    </div>
-  </section>
+      <div class="row">
+        <mat-form-field class="grow folder-input">
+          <mat-label>Retail</mat-label>
+          <input matInput disabled [value]="retailLocation">
+        </mat-form-field>
+        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
+      </div>
+      <div class="row">
+        <mat-form-field class="grow folder-input">
+          <mat-label>Classic</mat-label>
+          <input matInput disabled [value]="classicLocation">
+        </mat-form-field>
+        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
+      </div>
+      <div class="row">
+        <mat-form-field class="grow folder-input">
+          <mat-label>Retail PTR</mat-label>
+          <input matInput disabled [value]="retailPtrLocation">
+        </mat-form-field>
+        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
+      </div>
+      <div class="row">
+        <mat-form-field class="grow folder-input">
+          <mat-label>Classic PTR</mat-label>
+          <input matInput disabled [value]="classicPtrLocation">
+        </mat-form-field>
+        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
+      </div>
+      <div class="row">
+        <mat-form-field class="grow folder-input">
+          <mat-label>Beta</mat-label>
+          <input matInput disabled [value]="betaLocation">
+        </mat-form-field>
+      </div>
+    </section>
+    <section>
+      <div class="row">
+        <div class="title">Application</div>
+      </div>
+      <hr />
+      <div class="row hover">
+        <div class="grow">Log Files</div>
+        <button mat-flat-button color="primary" (click)="onShowLogs()">Show Log Files</button>
+      </div>
+      <div class="row hover">
+        <div class="grow">Enable Telemetry</div>
+        <mat-slide-toggle></mat-slide-toggle>
+      </div>
+      <div class="row hover">
+        <div class="grow">Minimize on Close</div>
+        <mat-slide-toggle></mat-slide-toggle>
+      </div>
+    </section>
+  </div>
 </div>

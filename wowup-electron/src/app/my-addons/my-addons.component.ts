@@ -1,4 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { WarcraftService } from 'app/core/services/warcraft/warcraft.service';
+import { WowClientType } from 'app/models/warcraft/wow-client-type';
+import { AddonService } from 'app/core/services/addons/addon.service';
+import { first, tap } from 'rxjs/operators';
+import { from, BehaviorSubject } from 'rxjs';
+import { Addon } from 'app/core/entities/addon';
+import { AddonTableColumnComponent } from 'app/components/addon-table-column/addon-table-column.component';
 
 @Component({
   selector: 'app-my-addons',
@@ -7,7 +14,32 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MyAddonsComponent implements OnInit {
 
-  public displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  private readonly _displayAddonsSrc = new BehaviorSubject<Addon[]>([]);
+
+  public displayedColumns: string[] = [
+    'addon',
+    'status',
+    'latest-version',
+    'game-version',
+    'author'
+  ];
+
+  gridOptions = {
+    autoHeight: true
+  }
+
+  columnDefs = [
+    {
+      headerName: 'Addon',
+      field: 'value',
+      cellRendererFramework: AddonTableColumnComponent,
+      autoHeight: true
+    },
+    { headerName: 'Status', field: '' },
+    { headerName: 'Model', field: 'latestVersion' },
+    { headerName: 'Game Version', field: 'gameVersion' },
+    { headerName: 'Author', field: 'author' }
+  ];
 
   public dataSource = [
     { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
@@ -22,11 +54,58 @@ export class MyAddonsComponent implements OnInit {
     { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
   ];
 
-  public selectedClient = 'retail';
+  public selectedClient = WowClientType.Retail;
+  public busy = false;
+  public displayAddons$ = this._displayAddonsSrc.asObservable();
 
-  constructor() { }
+  constructor(
+    public warcraftService: WarcraftService,
+    private addonService: AddonService
+  ) {
+
+    this.warcraftService.clientTypes$
+      .pipe(
+        first(types => Array.isArray(types) && types.length > 0),
+        tap(() => this.loadAddons())
+      )
+      .subscribe(types => this.selectedClient = types[0]);
+
+  }
 
   ngOnInit(): void {
   }
 
+  onReScan() {
+    this.loadAddons(true)
+  }
+
+  onClientChange() {
+    this.busy = true;
+    console.log(this.selectedClient);
+    this.busy = false;
+  }
+
+  private loadAddons(rescan: boolean = false) {
+    this.busy = true;
+
+    console.log('Load-addons')
+
+    from(this.addonService.getAddons(this.selectedClient, rescan))
+      .subscribe((addons) => {
+        this.busy = false;
+        this.formatAddons(addons);
+        this._displayAddonsSrc.next(addons);
+      });
+  }
+
+  private formatAddons(addons: Addon[]) {
+    addons.forEach(addon => {
+      if (!addon.thumbnailUrl) {
+        addon.thumbnailUrl = 'assets/wowup_logo_512np.png';
+      }
+      if (!addon.installedVersion) {
+        addon.installedVersion = 'None';
+      }
+    })
+  }
 }
