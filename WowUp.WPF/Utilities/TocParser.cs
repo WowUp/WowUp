@@ -22,6 +22,8 @@ namespace WowUp.WPF.Utilities
         public string CurseProjectId => GetValue("X-Curse-Project-ID");
         public string WowInterfaceId => GetValue("X-WoWI-ID");
         public string Dependencies => GetValue("Dependencies");
+        public string TukUiProjectId => GetValue("X-Tukui-ProjectID");
+        public string TukUiProjectFolders => GetValue("X-Tukui-ProjectFolders");
 
         public Toc Toc => new Toc
         {
@@ -35,7 +37,10 @@ namespace WowUp.WPF.Utilities
             Website = Website,
             Dependencies = Dependencies,
             CurseProjectId = CurseProjectId,
-            WowInterfaceId = WowInterfaceId
+            WowInterfaceId = WowInterfaceId,
+            TukUiProjectId = TukUiProjectId,
+            TukUiProjectFolders = TukUiProjectFolders
+
         };
 
         public TocParser(FileInfo fileInfo)

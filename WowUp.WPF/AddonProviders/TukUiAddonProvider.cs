@@ -44,7 +44,11 @@ namespace WowUp.WPF.AddonProviders
             WowClientType clientType)
         {
             var allAddons = await GetAllAddons(clientType);
-            var match = allAddons.First(a => a.Id == addonId);
+            var match = allAddons.FirstOrDefault(a => a.Id == addonId);
+            if(match == default(TukUiAddon))
+            {
+                return null;
+            }
 
             return ToSearchResult(match, string.Empty);
         }

@@ -14,5 +14,7 @@
 
         public string CurseProjectId { get; set; }
         public string WowInterfaceId { get; set; }
+        public string TukUiProjectId { get; set; }
+        public string TukUiProjectFolders { get; set; }
     }
 }
