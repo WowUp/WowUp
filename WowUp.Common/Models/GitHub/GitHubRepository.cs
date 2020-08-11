@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace WowUp.Common.Models.GitHub
 {
@@ -10,7 +7,7 @@ namespace WowUp.Common.Models.GitHub
         public long Id { get; set; }
 
         [JsonProperty("node_id")]
-        public string NodeId{ get; set; }
+        public string NodeId { get; set; }
 
         public string Name { get; set; }
 

@@ -100,7 +100,7 @@ namespace WowUp.ViewModels
             set { SetProperty(ref _thumbnailUrl, value); }
         }
 
-        public AddonListItemViewModel(Addon addon): base()
+        public AddonListItemViewModel(Addon addon) : base()
         {
             _addon = addon;
 
@@ -133,7 +133,7 @@ namespace WowUp.ViewModels
             {
                 await _addonService.InstallAddon(_addon.Id, OnInstallUpdate);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 ShowInstallButton = true;
@@ -148,7 +148,7 @@ namespace WowUp.ViewModels
             ProgressPercent = percent;
             ShowProgressBar = true;
 
-            if(installState == AddonInstallState.Complete)
+            if (installState == AddonInstallState.Complete)
             {
                 _addon = _addonService.GetAddon(_addon.Id);
                 SetupDisplayState();

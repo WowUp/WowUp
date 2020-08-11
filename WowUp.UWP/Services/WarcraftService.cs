@@ -18,7 +18,7 @@ namespace WowUp.UWP.Services
 
         private const string ClassicFolderName = "_classic_";
         private const string RetailFolderName = "_retail_";
-        
+
         private const string InterfaceFolderName = @"Interface";
 
         private const string RetailAddonFolderName = @"AddOns";
@@ -99,7 +99,7 @@ namespace WowUp.UWP.Services
 
         public async Task<IEnumerable<AddonFolder>> ListRetailAddons(bool forceReload = false)
         {
-            if(!forceReload && _retailAddonCache != null)
+            if (!forceReload && _retailAddonCache != null)
             {
                 return _retailAddonCache;
             }
@@ -110,7 +110,7 @@ namespace WowUp.UWP.Services
             var addonFolders = await addonsFolder.GetFoldersAsync();
 
             var addons = new List<AddonFolder>();
-            foreach(var folder in addonFolders)
+            foreach (var folder in addonFolders)
             {
                 var addonFolder = await GetAddonFolder(folder);
                 addons.Add(addonFolder);
@@ -165,7 +165,7 @@ namespace WowUp.UWP.Services
         private async Task<Toc> ParseToc(StorageFolder folder)
         {
             var files = await folder.GetFilesAsync();
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 if (!file.Name.EndsWith(".toc"))
                 {

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Threading.Tasks;
-
-using Xamarin.Forms;
-
-using WowUp.Models;
-using WowUp.Views;
-using WowUp.Services;
 using System.Linq;
+using System.Threading.Tasks;
+using WowUp.Models;
+using WowUp.Services;
+using WowUp.Views;
+using Xamarin.Forms;
 
 namespace WowUp.ViewModels
 {
@@ -19,7 +17,8 @@ namespace WowUp.ViewModels
         private int _selectedWowIndex = 0;
 
         private bool _forceReload = false;
-        public bool ForceReload {
+        public bool ForceReload
+        {
             get => _forceReload;
             set { SetProperty(ref _forceReload, value); }
         }
@@ -32,7 +31,7 @@ namespace WowUp.ViewModels
             get => _showResults;
             set { SetProperty(ref _showResults, value); }
         }
-        
+
         public int SelectedWowIndex
         {
             get => _selectedWowIndex;

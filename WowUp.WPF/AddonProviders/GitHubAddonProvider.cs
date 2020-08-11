@@ -165,9 +165,9 @@ namespace WowUp.WPF.AddonProviders
                 .WithHeaders(HttpUtilities.DefaultHeaders)
                 .GetJsonAsync<IEnumerable<GitHubRelease>>();
             }
-            catch(FlurlHttpException ex)
+            catch (FlurlHttpException ex)
             {
-                if(ex.Message.Contains("rate limit exceeded", StringComparison.OrdinalIgnoreCase))
+                if (ex.Message.Contains("rate limit exceeded", StringComparison.OrdinalIgnoreCase))
                 {
                     throw new RateLimitExceededException();
                 }

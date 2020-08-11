@@ -1,8 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using Xamarin.Forms;
-
 using WowUp.Models;
+using Xamarin.Forms;
 
 namespace WowUp.Views
 {

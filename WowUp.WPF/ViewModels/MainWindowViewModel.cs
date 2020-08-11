@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WowUp.WPF.Services.Contracts;
-using WowUp.WPF.Views;
-using Microsoft.Extensions.DependencyInjection;
-using WowUp.WPF.Utilities;
+using WowUp.Common.Services.Contracts;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
-using WowUp.WPF.Entities;
-using WowUp.Common.Services.Contracts;
-using System.Linq;
+using WowUp.WPF.Services.Contracts;
+using WowUp.WPF.Utilities;
+using WowUp.WPF.Views;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -63,7 +63,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _isUpdateAvailable;
-        public bool IsUpdateAvailable 
+        public bool IsUpdateAvailable
         {
             get => _isUpdateAvailable;
             set { SetProperty(ref _isUpdateAvailable, value); }
@@ -132,7 +132,7 @@ namespace WowUp.WPF.ViewModels
         public void OnSourceInitialized(Window window)
         {
             var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
-            if(windowPref == null)
+            if (windowPref == null)
             {
                 return;
             }
@@ -151,7 +151,7 @@ namespace WowUp.WPF.ViewModels
         {
             var placement = window.GetPlacement();
             var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
-            if(windowPref == null)
+            if (windowPref == null)
             {
                 windowPref = new Preference
                 {

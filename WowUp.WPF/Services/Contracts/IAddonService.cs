@@ -22,11 +22,11 @@ namespace WowUp.WPF.Services.Contracts
         Addon UpdateAddon(Addon addon);
 
         Task<List<PotentialAddon>> Search(
-            string query, 
+            string query,
             WowClientType clientType);
 
         bool IsInstalled(
-            string externalId, 
+            string externalId,
             WowClientType clientType);
 
         Task<List<PotentialAddon>> GetFeaturedAddons(WowClientType clientType);
@@ -42,13 +42,13 @@ namespace WowUp.WPF.Services.Contracts
             Action<AddonInstallState, decimal> onUpdate = null);
 
         Task InstallAddon(
-            int addonId, 
+            int addonId,
             Action<AddonInstallState, decimal> onUpdate);
 
         Task UninstallAddon(Addon addon);
 
         Task<List<Addon>> GetAddons(
-            WowClientType clientType, 
+            WowClientType clientType,
             bool rescan = false);
     }
 }

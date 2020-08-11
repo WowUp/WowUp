@@ -1,18 +1,18 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using WowUp.Common.Enums;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using System.Windows.Controls;
-using System.Collections.Generic;
-using WowUp.Common.Enums;
-using System.Windows.Data;
-using WowUp.WPF.Entities;
-using System.Windows;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -324,7 +324,7 @@ namespace WowUp.WPF.ViewModels
             {
                 DisplayAddons.Clear();
 
-                foreach(var addon in addons)
+                foreach (var addon in addons)
                 {
                     DisplayAddons.Add(addon);
                 }

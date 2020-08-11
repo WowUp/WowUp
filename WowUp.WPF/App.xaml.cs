@@ -139,7 +139,7 @@ namespace WowUp.WPF
             Log.Error($"Terminating {args.IsTerminating}");
         }
 
-        private void HandleSingleInstance() 
+        private void HandleSingleInstance()
         {
             if (singleton.WaitOne(TimeSpan.Zero, true))
             {

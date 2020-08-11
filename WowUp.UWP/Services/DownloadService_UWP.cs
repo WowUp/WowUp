@@ -39,7 +39,7 @@ namespace WowUp.UWP.Services
             }
 
             var unzippedFolders = await tempZipStorageFolder.GetFoldersAsync();
-            foreach(var unzippedFolder in unzippedFolders)
+            foreach (var unzippedFolder in unzippedFolders)
             {
                 await CopyFolderAsync(unzippedFolder, outputStorageFolder);
             }
@@ -57,7 +57,7 @@ namespace WowUp.UWP.Services
             var attempts = 0;
             while (Directory.Exists(filePath))
             {
-                if(attempts >= 10)
+                if (attempts >= 10)
                 {
                     throw new Exception("Failed to delete directory");
                 }

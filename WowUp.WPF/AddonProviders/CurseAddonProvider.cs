@@ -53,7 +53,7 @@ namespace WowUp.WPF.AddonProviders
             var searchResults = new List<PotentialAddon>();
 
             var response = await GetSearchResults(query);
-            foreach(var result in response)
+            foreach (var result in response)
             {
                 var latestFiles = GetLatestFiles(result, clientType);
                 if (!latestFiles.Any())
@@ -141,7 +141,7 @@ namespace WowUp.WPF.AddonProviders
                     continue;
                 }
 
-                var searchResult =  GetAddonSearchResult(result, latestFiles);
+                var searchResult = GetAddonSearchResult(result, latestFiles);
                 if (searchResult != null)
                 {
                     addonResults.Add(searchResult);

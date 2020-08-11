@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Controls;
 using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Services.Contracts;
@@ -123,7 +122,7 @@ namespace WowUp.WPF.ViewModels
             WowBetaLocation = _warcraftService.GetClientLocation(WowClientType.Beta);
         }
 
-        private void ShowLogsFolder() 
+        private void ShowLogsFolder()
         {
             _wowUpService.ShowLogsFolder();
         }
@@ -146,7 +145,7 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
-            if(!_warcraftService.SetWowFolderPath(clientType, selectedPath))
+            if (!_warcraftService.SetWowFolderPath(clientType, selectedPath))
             {
                 System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your {clientType} folder");
                 return;

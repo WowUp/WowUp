@@ -1,24 +1,23 @@
-﻿using Serilog;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using WowUp.Common.Enums;
+using WowUp.Common.Exceptions;
+using WowUp.Common.Models;
+using WowUp.Common.Models.Addons;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Extensions;
+using WowUp.WPF.Models.Events;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using WowUp.WPF.Extensions;
-using WowUp.WPF.Models.Events;
-using WowUp.Common.Enums;
-using WowUp.Common.Services.Contracts;
-using WowUp.Common.Models.Addons;
-using WowUp.Common.Models;
-using WowUp.Common.Exceptions;
-using System.Reflection;
 
 namespace WowUp.WPF.Services
 {
@@ -210,7 +209,7 @@ namespace WowUp.WPF.Services
         }
 
         public async Task<Addon> GetAddon(
-            string externalId, 
+            string externalId,
             string providerName,
             WowClientType clientType)
         {
@@ -252,7 +251,7 @@ namespace WowUp.WPF.Services
                 throw new Exception("Addon not found or invalid");
             }
 
-            if(addon.ChannelType != _wowUpService.GetDefaultAddonChannel())
+            if (addon.ChannelType != _wowUpService.GetDefaultAddonChannel())
             {
                 var newAddon = await GetAddon(addon.ExternalId, addon.ProviderName, addon.ClientType);
                 addon.Assign(newAddon);
@@ -385,7 +384,7 @@ namespace WowUp.WPF.Services
             return await MapAll(addonFolders, clientType);
         }
 
-       
+
         public async Task<List<Addon>> MapAll(IEnumerable<AddonFolder> addonFolders, WowClientType clientType)
         {
             var results = new Dictionary<string, Addon>();
@@ -405,8 +404,8 @@ namespace WowUp.WPF.Services
                     {
                         addon = await GetAddonSearchResultById<CurseAddonProvider>(addonFolder.Name, addonFolder.Toc.CurseProjectId, clientType);
                     }
-                    
-                    if(addon == null)
+
+                    if (addon == null)
                     {
                         addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
                     }
@@ -437,10 +436,10 @@ namespace WowUp.WPF.Services
 
 
         private async Task<Addon> GetAddonSearchResultById<T>(
-            string folderName, 
-            string addonId, 
+            string folderName,
+            string addonId,
             WowClientType clientType)
-            where T: IAddonProvider
+            where T : IAddonProvider
         {
             var provider = GetProvider<T>();
             var searchResult = await provider.GetById(addonId, clientType);
@@ -490,7 +489,7 @@ namespace WowUp.WPF.Services
                 nameOverride = _addonNameOverrides[addonName];
             }
 
-            if(addonName.Contains("genn", StringComparison.OrdinalIgnoreCase))
+            if (addonName.Contains("genn", StringComparison.OrdinalIgnoreCase))
             {
 
             }

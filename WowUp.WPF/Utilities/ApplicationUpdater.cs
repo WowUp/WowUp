@@ -47,7 +47,7 @@ namespace WowUp.WPF.Utilities
             IDownloadService downloadService)
         {
             _downloadService = downloadService;
-         
+
             _cleanupFiles = new List<string>();
             _downloadedZipPath = string.Empty;
             _unpackedPath = string.Empty;
@@ -83,7 +83,7 @@ namespace WowUp.WPF.Utilities
 
         private async Task Dispose()
         {
-            foreach(var file in _cleanupFiles)
+            foreach (var file in _cleanupFiles)
             {
                 if (Directory.Exists(file))
                 {

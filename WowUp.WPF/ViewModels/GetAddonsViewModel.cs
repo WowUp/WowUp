@@ -29,7 +29,8 @@ namespace WowUp.WPF.ViewModels
         public int SelectedWowIndex
         {
             get => _selectedWowIndex;
-            set { 
+            set
+            {
                 SetProperty(ref _selectedWowIndex, value);
                 OnSelectedWowChange();
             }
@@ -117,7 +118,7 @@ namespace WowUp.WPF.ViewModels
             var searchResults = await _addonService.Search(text, SelectedClientType);
 
             DisplayAddons.Clear();
-            foreach(var result in searchResults)
+            foreach (var result in searchResults)
             {
                 var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
                 viewModel.ClientType = SelectedClientType;
@@ -161,7 +162,7 @@ namespace WowUp.WPF.ViewModels
         {
             IsBusy = true;
 
-            if(_popularAddons == null || !_popularAddons.Any())
+            if (_popularAddons == null || !_popularAddons.Any())
             {
                 _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
             }
@@ -169,7 +170,7 @@ namespace WowUp.WPF.ViewModels
             DisplayAddons.Clear();
             foreach (var addon in _popularAddons)
             {
-                if(_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
+                if (_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
                 {
                     continue;
                 }

@@ -155,7 +155,7 @@ namespace WowUp.WPF
         {
             if (e is MouseEventArgs mouseEvt)
             {
-                if( mouseEvt.Button == System.Windows.Forms.MouseButtons.Left)
+                if (mouseEvt.Button == System.Windows.Forms.MouseButtons.Left)
                 {
                     Show();
                     WindowState = WindowState.Normal;
@@ -176,7 +176,7 @@ namespace WowUp.WPF
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(e.NewSize.Width < this.MinWidth)
+            if (e.NewSize.Width < this.MinWidth)
             {
                 return;
             }

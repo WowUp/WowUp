@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
-using Xamarin.Forms;
-
 using WowUp.Models;
 using WowUp.Services;
+using Xamarin.Forms;
 
 namespace WowUp.ViewModels
 {

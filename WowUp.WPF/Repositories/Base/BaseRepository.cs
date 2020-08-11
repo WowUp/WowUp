@@ -87,7 +87,7 @@ namespace WowUp.WPF.Repositories.Base
             try
             {
                 connection.Execute("CREATE TABLE IF NOT EXISTS wowup ( key TEXT PRIMARY KEY, value TEXT NOT NULL )");
-                
+
             }
             catch (Exception e)
             {
