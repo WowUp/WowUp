@@ -15,9 +15,10 @@ namespace WowUp.Views
         private string _retailPath = string.Empty;
         private string _classicPath = string.Empty;
 
-        public bool ShowRetailSection {
+        public bool ShowRetailSection
+        {
             get => _showRetailSection;
-            set 
+            set
             {
                 _showRetailSection = value;
                 OnPropertyChanged(nameof(ShowRetailSection));
@@ -84,7 +85,7 @@ namespace WowUp.Views
         private async void SelectRetail_Clicked(object sender, EventArgs e)
         {
             var wowFolder = await _warcraftService.SelectWowFolder();
-            if(wowFolder == null)
+            if (wowFolder == null)
             {
                 return;
             }

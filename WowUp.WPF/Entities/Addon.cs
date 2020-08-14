@@ -116,7 +116,7 @@ namespace WowUp.WPF.Entities
         }
 
         private bool _isIgnored;
-        public bool IsIgnored 
+        public bool IsIgnored
         {
             get => _isIgnored;
             set { SetProperty(ref _isIgnored, value); }

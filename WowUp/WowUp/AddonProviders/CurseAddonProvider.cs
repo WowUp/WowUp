@@ -14,7 +14,7 @@ namespace WowUp.AddonProviders
         private const string ApiUrl = "https://addons-ecs.forgesvc.net/api/v2";
 
         public string Name => "Curse";
-        
+
         public async Task<IEnumerable<AddonSearchResult>> Search(
             string addonName,
             string folderName,
@@ -36,7 +36,7 @@ namespace WowUp.AddonProviders
                 }
 
                 var searchResult = GetAddonSearchResult(match, latestFile);
-                if(searchResult != null)
+                if (searchResult != null)
                 {
                     results.Add(searchResult);
                 }
@@ -93,7 +93,7 @@ namespace WowUp.AddonProviders
                         f.Modules.Any(m => m.Foldername == folderName)))
                 .ToList();
         }
-        
+
         private IList<string> GetFolderNames(CurseFile file)
         {
             return file.Modules.Select(m => m.Foldername).ToList();
@@ -139,7 +139,7 @@ namespace WowUp.AddonProviders
                     .SetQueryParams(new { gameId = 1, searchFilter = query })
                     .GetJsonAsync<IList<CurseSearchResult>>();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 return new List<CurseSearchResult>();

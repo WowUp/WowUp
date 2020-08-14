@@ -1,5 +1,6 @@
 ﻿using Flurl.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
 using System.Linq;
@@ -7,11 +8,10 @@ using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Services.Contracts;
-using WowUp.WPF.Extensions;
-using WowUp.WPF.Utilities;
-using Microsoft.Extensions.DependencyInjection;
-using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Extensions;
+using WowUp.WPF.Repositories.Contracts;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
@@ -60,7 +60,7 @@ namespace WowUp.WPF.Services
         public AddonChannelType GetDefaultAddonChannel()
         {
             var pref = _preferenceRepository.FindByKey(DefaultAddonChannelKey);
-            if(pref == null)
+            if (pref == null)
             {
                 throw new Exception("Default addon channel preference not found");
             }

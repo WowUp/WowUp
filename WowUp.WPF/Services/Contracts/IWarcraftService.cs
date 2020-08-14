@@ -21,7 +21,7 @@ namespace WowUp.WPF.Services.Contracts
         IList<string> GetClientLocations();
         bool IsClientFolder(WowClientType clientType, string folderPath);
         bool SetWowFolderPath(WowClientType clientType, string folderPath);
-        
+
         string GetAddonFolderPath(WowClientType clientType);
 
         Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType);

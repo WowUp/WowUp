@@ -14,7 +14,7 @@ namespace WowUp.UWP.Views
         {
             base.OnElementChanged(e);
 
-            if(Control != null)
+            if (Control != null)
             {
                 Control.Style = (Style)Application.Current.Resources["DefaultPivotStyle"];
             }

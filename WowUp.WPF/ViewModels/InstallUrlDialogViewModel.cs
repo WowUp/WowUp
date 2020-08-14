@@ -137,7 +137,7 @@ namespace WowUp.WPF.ViewModels
 
         private async void OnInstall()
         {
-            if(ImportedAddon == null)
+            if (ImportedAddon == null)
             {
                 return;
             }
@@ -194,7 +194,7 @@ namespace WowUp.WPF.ViewModels
             {
                 ImportedAddon = await _addonService.GetAddonByUri(uri, ClientType);
 
-                if(ImportedAddon == null)
+                if (ImportedAddon == null)
                 {
                     throw new AddonNotFoundException();
                 }

@@ -67,7 +67,7 @@ namespace WowUp.WPF.Repositories
         {
             lock (_collisionLock)
             {
-                foreach(var addon in addons)
+                foreach (var addon in addons)
                 {
                     _database.Delete(addon);
                 }
@@ -121,7 +121,7 @@ namespace WowUp.WPF.Repositories
 
         public Addon GetByExternalId(string externalId, WowClientType clientType)
         {
-            return Query(addons => 
+            return Query(addons =>
                 addons.FirstOrDefault(ad => ad.ClientType == clientType && ad.ExternalId == externalId));
         }
     }

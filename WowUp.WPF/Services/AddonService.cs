@@ -1,23 +1,23 @@
-﻿using Serilog;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using WowUp.Common.Enums;
+using WowUp.Common.Exceptions;
+using WowUp.Common.Models;
+using WowUp.Common.Models.Addons;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Extensions;
+using WowUp.WPF.Models.Events;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using WowUp.WPF.Extensions;
-using WowUp.WPF.Models.Events;
-using WowUp.Common.Enums;
-using WowUp.Common.Services.Contracts;
-using WowUp.Common.Models.Addons;
-using WowUp.Common.Models;
-using WowUp.Common.Exceptions;
 
 namespace WowUp.WPF.Services
 {
@@ -209,7 +209,7 @@ namespace WowUp.WPF.Services
         }
 
         public async Task<Addon> GetAddon(
-            string externalId, 
+            string externalId,
             string providerName,
             WowClientType clientType)
         {
@@ -251,7 +251,7 @@ namespace WowUp.WPF.Services
                 throw new Exception("Addon not found or invalid");
             }
 
-            if(addon.ChannelType != _wowUpService.GetDefaultAddonChannel())
+            if (addon.ChannelType != _wowUpService.GetDefaultAddonChannel())
             {
                 var newAddon = await GetAddon(addon.ExternalId, addon.ProviderName, addon.ClientType);
                 addon.Assign(newAddon);
@@ -384,6 +384,7 @@ namespace WowUp.WPF.Services
             return await MapAll(addonFolders, clientType);
         }
 
+
         public async Task<List<Addon>> MapAll(IEnumerable<AddonFolder> addonFolders, WowClientType clientType)
         {
             var results = new Dictionary<string, Addon>();
@@ -392,15 +393,19 @@ namespace WowUp.WPF.Services
             {
                 try
                 {
-                    Addon addon;
-                    if (!string.IsNullOrEmpty(addonFolder.Toc?.CurseProjectId))
+                    Addon addon = null;
+
+                    if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.TukUiProjectId))
                     {
-                        var provider = _providers.First(p => p is CurseAddonProvider) as CurseAddonProvider;
-                        var searchResult = await provider.GetById(addonFolder.Toc.CurseProjectId, clientType);
-                        var latestFile = GetLatestFile(searchResult, _wowUpService.GetDefaultAddonChannel());
-                        addon = CreateAddon(addonFolder.Name, searchResult, latestFile, clientType);
+                        addon = await GetAddonSearchResultById<TukUiAddonProvider>(addonFolder.Name, addonFolder.Toc.TukUiProjectId, clientType);
                     }
-                    else
+
+                    if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.CurseProjectId))
+                    {
+                        addon = await GetAddonSearchResultById<CurseAddonProvider>(addonFolder.Name, addonFolder.Toc.CurseProjectId, clientType);
+                    }
+
+                    if (addon == null)
                     {
                         addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
                     }
@@ -421,6 +426,30 @@ namespace WowUp.WPF.Services
             return results.Values
                 .OrderBy(v => v.Name)
                 .ToList();
+        }
+
+        private T GetProvider<T>()
+           where T : IAddonProvider
+        {
+            return (T)_providers.First(p => typeof(T).IsInstanceOfType(p));
+        }
+
+
+        private async Task<Addon> GetAddonSearchResultById<T>(
+            string folderName,
+            string addonId,
+            WowClientType clientType)
+            where T : IAddonProvider
+        {
+            var provider = GetProvider<T>();
+            var searchResult = await provider.GetById(addonId, clientType);
+            if (searchResult == null)
+            {
+                return null;
+            }
+
+            var latestFile = GetLatestFile(searchResult, _wowUpService.GetDefaultAddonChannel());
+            return CreateAddon(folderName, searchResult, latestFile, clientType);
         }
 
         public async Task<Addon> Map(string addonName, string folderName, WowClientType clientType)

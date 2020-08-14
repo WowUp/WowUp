@@ -1,6 +1,6 @@
-﻿using Xamarin.Forms;
-using WowUp.Services;
+﻿using WowUp.Services;
 using WowUp.Views;
+using Xamarin.Forms;
 
 namespace WowUp
 {
@@ -18,7 +18,7 @@ namespace WowUp
 
         protected override void OnStart()
         {
-           
+
 
         }
 

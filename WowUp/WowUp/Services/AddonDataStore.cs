@@ -22,7 +22,7 @@ namespace WowUp.Services
             database.CreateTable<Addon>();
 
             EnableWriteAheadLogging();
-            
+
             Addons = new ObservableCollection<Addon>(database.Table<Addon>());
         }
 
@@ -134,7 +134,7 @@ namespace WowUp.Services
             {
                 database.Execute("PRAGMA journal_mode = 'wal'");
             }
-            catch(Exception)
+            catch (Exception)
             {
                 // eat
             }

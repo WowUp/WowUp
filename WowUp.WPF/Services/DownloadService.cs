@@ -10,13 +10,19 @@ namespace WowUp.WPF.Services
     public class DownloadService : IDownloadService
     {
         public async Task<string> DownloadFile(
-            string downloadUrl, 
-            string outputFolder, 
+            string downloadUrl,
+            string outputFolder,
             Action<int> progressAction = null)
         {
             WebClient client = new WebClient();
             Uri uri = new Uri(downloadUrl);
             var fileName = Path.GetFileName(downloadUrl);
+            var fileExtension = Path.GetExtension(fileName);
+            if (fileExtension != ".zip")
+            {
+                fileName = $"{Guid.NewGuid()}.zip";
+            }
+
             var downloadFilePath = Path.Join(outputFolder, fileName);
 
             client.DownloadProgressChanged += (sender, e) =>
@@ -47,7 +53,7 @@ namespace WowUp.WPF.Services
                 throw new FileNotFoundException("Unzipped addon folder not found");
             }
 
-            return  Task.FromResult(tempZipDirectory);
+            return Task.FromResult(tempZipDirectory);
         }
 
         public Task ZipFile(string inputDirectory, string outputFilePath)

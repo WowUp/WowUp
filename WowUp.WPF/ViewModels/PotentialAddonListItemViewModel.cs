@@ -183,12 +183,12 @@ namespace WowUp.WPF.ViewModels
         {
             var suffix = string.Empty;
             var value = (double)downloadCount;
-            if(downloadCount >= 1000000)
+            if (downloadCount >= 1000000)
             {
                 suffix = "million ";
                 value /= 1000000.0;
             }
-            else if(downloadCount >= 1000)
+            else if (downloadCount >= 1000)
             {
                 suffix = "thousand ";
                 value /= 1000.0;

@@ -153,6 +153,7 @@
                   HorizontalGridLinesBrush="{StaticResource Dark2}"
                   BorderBrush="Transparent"
                   BorderThickness="0"
+                  VirtualizingPanel.ScrollUnit="Pixel"
                   IsReadOnly="True">
             <DataGrid.Resources>
                 <Style TargetType="{x:Type DataGrid}">

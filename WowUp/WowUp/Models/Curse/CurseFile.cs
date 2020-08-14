@@ -15,14 +15,14 @@ namespace WowUp.Models.Curse
         public string DownloadUrl { get; set; }
         public bool IsAlternate { get; set; }
         public int AlternateFileId { get; set; }
-        public bool IsAvailable{ get; set; }
+        public bool IsAvailable { get; set; }
         public IEnumerable<CurseDependency> Dependencies { get; set; }
         public IEnumerable<CurseModule> Modules { get; set; }
         public long PackageFingerprint { get; set; }
         public IEnumerable<string> GameVersion { get; set; }
         public IEnumerable<CurseSortableGameVersion> SortableGameVersion { get; set; }
         public object InstallMetadata { get; set; }
-        public object Changelog{ get; set; }
+        public object Changelog { get; set; }
         public bool HasInstallScript { get; set; }
         public bool IsCompatibleWithClient { get; set; }
         public int CategorySectionPackageType { get; set; }

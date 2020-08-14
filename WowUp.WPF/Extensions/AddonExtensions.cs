@@ -46,7 +46,7 @@ namespace WowUp.WPF.Extensions
 
         public static AddonDisplayState GetDisplayState(this Addon addon)
         {
-            if(addon == null)
+            if (addon == null)
             {
                 return AddonDisplayState.Unknown;
             }

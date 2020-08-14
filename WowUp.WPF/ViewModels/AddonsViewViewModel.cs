@@ -1,18 +1,18 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using WowUp.Common.Enums;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using System.Windows.Controls;
-using System.Collections.Generic;
-using WowUp.Common.Enums;
-using System.Windows.Data;
-using WowUp.WPF.Entities;
-using System.Windows;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -207,8 +207,8 @@ namespace WowUp.WPF.ViewModels
         private async Task ReScan()
         {
             var messageBoxResult = MessageBox.Show(
-                "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.", 
-                "Start re-scan?", 
+                "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.",
+                "Start re-scan?",
                 MessageBoxButton.YesNo);
 
             if (messageBoxResult != MessageBoxResult.Yes)
@@ -252,7 +252,7 @@ namespace WowUp.WPF.ViewModels
 
                 UpdateDisplayAddons(listViewItems);
 
-                this.UpdateAutoUpdateAddons();
+                UpdateAutoUpdateAddons();
             }
             catch (Exception ex)
             {
@@ -291,6 +291,7 @@ namespace WowUp.WPF.ViewModels
                     var viewModel = GetAddonViewModel(addon);
 
                     DisplayAddons.Add(viewModel);
+                    SortAddons(DisplayAddons);
                 }
                 finally
                 {
@@ -323,17 +324,24 @@ namespace WowUp.WPF.ViewModels
             {
                 DisplayAddons.Clear();
 
-                for (var i = 0; i < addons.Count(); i += 1)
+                foreach (var addon in addons)
                 {
-                    DisplayAddons.Add(addons[i]);
+                    DisplayAddons.Add(addon);
                 }
             }
         }
 
-        public class ComboData
+        private static void SortAddons(ObservableCollection<AddonListItemViewModel> addons)
         {
-            public int Id { get; set; }
-            public string Value { get; set; }
+            var sorted = addons
+                .OrderBy(addon => addon.DisplayState)
+                .ThenBy(addon => addon.Name)
+                .ToList();
+
+            for (int i = 0; i < sorted.Count(); i++)
+            {
+                addons.Move(addons.IndexOf(sorted[i]), i);
+            }
         }
     }
 }

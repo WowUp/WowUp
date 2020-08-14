@@ -9,7 +9,7 @@ namespace WowUp.Entities
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected bool SetProperty<T>(
-            ref T backingStore, 
+            ref T backingStore,
             T value,
             [CallerMemberName] string propertyName = "")
         {

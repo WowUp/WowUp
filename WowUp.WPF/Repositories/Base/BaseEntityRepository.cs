@@ -8,7 +8,7 @@ namespace WowUp.WPF.Repositories.Base
 
         protected ObservableCollection<TEntity> _entities;
 
-        public BaseEntityRepository(): base()
+        public BaseEntityRepository() : base()
         {
             _database.CreateTable<TEntity>();
             _entities = new ObservableCollection<TEntity>(_database.Table<TEntity>());

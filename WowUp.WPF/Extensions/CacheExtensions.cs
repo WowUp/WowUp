@@ -7,7 +7,7 @@ namespace WowUp.WPF.Extensions
     {
         public static void CacheForAbsolute(this IMemoryCache cache, string cacheKey, object value, TimeSpan expiresIn)
         {
-            if(cache == null)
+            if (cache == null)
             {
                 return;
             }

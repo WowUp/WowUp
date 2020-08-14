@@ -1,19 +1,19 @@
-﻿using System;
+﻿using ProtoBuf;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WowUp.Common.Enums;
+using WowUp.Common.Extensions;
+using WowUp.Common.Models;
+using WowUp.Common.Models.Events;
+using WowUp.Common.Models.Warcraft;
+using WowUp.WPF.Entities;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using Serilog;
-using ProtoBuf;
-using WowUp.Common.Extensions;
-using WowUp.Common.Enums;
-using WowUp.Common.Models.Warcraft;
-using WowUp.WPF.Entities;
-using WowUp.Common.Models.Events;
-using WowUp.Common.Models;
 
 namespace WowUp.WPF.Services
 {
@@ -68,7 +68,7 @@ namespace WowUp.WPF.Services
             InstalledProducts = DecodeProducts(ProductsDbPath);
 
             var clientTypes = EnumExtensions.Values<WowClientType>();
-            foreach(var clientType in clientTypes)
+            foreach (var clientType in clientTypes)
             {
                 var clientLocation = GetClientLocation(clientType);
                 var productLocation = GetProductLocation(clientType);
@@ -80,7 +80,7 @@ namespace WowUp.WPF.Services
                 }
 
                 var locationPreference = GetClientLocationPreference(clientType);
-                if(locationPreference == null)
+                if (locationPreference == null)
                 {
                     locationPreference = _preferenceRepository.Create(GetClientLocationPreferenceKey(clientType), string.Empty);
                 }
@@ -109,15 +109,15 @@ namespace WowUp.WPF.Services
 
         private bool AreEqualPaths(string path1, string path2)
         {
-            if(string.IsNullOrEmpty(path1) && string.IsNullOrEmpty(path2))
+            if (string.IsNullOrEmpty(path1) && string.IsNullOrEmpty(path2))
             {
                 return true;
             }
-            if(string.IsNullOrEmpty(path1) && !string.IsNullOrEmpty(path2))
+            if (string.IsNullOrEmpty(path1) && !string.IsNullOrEmpty(path2))
             {
                 return false;
             }
-            if(string.IsNullOrEmpty(path2) && !string.IsNullOrEmpty(path1))
+            if (string.IsNullOrEmpty(path2) && !string.IsNullOrEmpty(path1))
             {
                 return false;
             }
@@ -241,13 +241,15 @@ namespace WowUp.WPF.Services
         private async Task<AddonFolder> GetAddonFolder(DirectoryInfo directory)
         {
             var toc = await ParseToc(directory);
+            var tocMetaData = await ParseTocMetadata(directory);
 
             return new AddonFolder
             {
                 Name = directory.Name,
                 Path = directory.FullName,
                 Status = "Pending",
-                Toc = toc
+                Toc = toc,
+                TocMetaData = tocMetaData
             };
         }
 
@@ -262,6 +264,19 @@ namespace WowUp.WPF.Services
 
             var fileText = await FileUtilities.GetFileTextAsync(tocFile.FullName);
             return new TocParser(fileText).Toc;
+        }
+
+        private async Task<IList<string>> ParseTocMetadata(DirectoryInfo directory)
+        {
+            var files = directory.GetFiles();
+            var tocFile = files.FirstOrDefault(f => f.Extension.Contains("toc"));
+            if (tocFile == null)
+            {
+                return default;
+            }
+
+            var fileText = await FileUtilities.GetFileTextAsync(tocFile.FullName);
+            return new TocParser(fileText).GetMetaData();
         }
 
         private string GetClientFolderName(WowClientType clientType)
@@ -361,7 +376,7 @@ namespace WowUp.WPF.Services
             var classicLocation = _preferenceRepository.FindByKey(WowClassicLocationPreferenceKey);
             var classicPtrLocation = _preferenceRepository.FindByKey(WowClassicPtrLocationPreferenceKey);
 
-            if(retailLocation == null)
+            if (retailLocation == null)
             {
                 _preferenceRepository.Create(WowRetailLocationPreferenceKey, string.Empty);
             }

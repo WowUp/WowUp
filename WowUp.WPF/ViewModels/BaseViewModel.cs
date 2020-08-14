@@ -15,7 +15,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         protected bool SetProperty<T>(
-            ref T backingStore, 
+            ref T backingStore,
             T value,
             [CallerMemberName] string propertyName = "",
             Action onChanged = null)

@@ -6,14 +6,14 @@ namespace WowUp.Common.Models.GitHub
     public class GitHubAsset
     {
         public string Url { get; set; }
-        
+
         public long Id { get; set; }
-        
+
         [JsonProperty("node_id")]
         public string NodeId { get; set; }
-        
+
         public string Name { get; set; }
-        
+
         public string Label { get; set; }
 
         public GitHubUploader Uploader { get; set; }

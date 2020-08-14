@@ -43,7 +43,7 @@ namespace WowUp.Services
             return _addonDataStore.Query(table => table.FirstOrDefault(a => a.Id == addonId));
         }
 
-        
+
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
         {
             var addons = GetAllStoredAddons(clientType);
@@ -51,7 +51,7 @@ namespace WowUp.Services
             {
                 addons = await GetLocalAddons(clientType);
                 SaveAddons(addons);
-            } 
+            }
             else if (rescan)
             {
                 addons = await RescanAddons(addons, clientType);
@@ -63,7 +63,7 @@ namespace WowUp.Services
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
         {
             var addon = GetAddon(addonId);
-            if(addon == null || string.IsNullOrEmpty(addon.DownloadUrl))
+            if (addon == null || string.IsNullOrEmpty(addon.DownloadUrl))
             {
                 throw new Exception("Addon not found or invalid");
             }
@@ -78,7 +78,7 @@ namespace WowUp.Services
                 var backupZipFilePath = Path.Combine(BackupPath, $"{addon.Name}-{addon.InstalledVersion}.zip");
                 await _downloadService.ZipFile(downloadedFilePath, backupZipFilePath);
             }
-            
+
             updateAction?.Invoke(AddonInstallState.Installing, 0.75m);
 
             var addonFolderPath = await _warcraftService.GetAddonDirectory(addon.ClientType);
@@ -110,7 +110,7 @@ namespace WowUp.Services
         {
             var localAddons = await GetLocalAddons(clientType);
 
-            foreach(var localAddon in localAddons)
+            foreach (var localAddon in localAddons)
             {
                 var addon = addons.FirstOrDefault(a => a.Name == localAddon.Name);
                 if (addon != null)
@@ -182,10 +182,10 @@ namespace WowUp.Services
         {
             var results = new Dictionary<string, Addon>();
 
-            foreach(var addonFolder in addonFolders)
+            foreach (var addonFolder in addonFolders)
             {
                 var addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
-                if(addon == null)
+                if (addon == null)
                 {
                     continue;
                 }
@@ -209,10 +209,10 @@ namespace WowUp.Services
 
             return GetAddon(folderName, firstResult, clientType);
         }
-        
+
         public async Task<List<AddonSearchResult>> Search(
-            string addonName, 
-            string folderName, 
+            string addonName,
+            string folderName,
             WowClientType clientType,
             string nameOverride = null)
         {
@@ -230,8 +230,8 @@ namespace WowUp.Services
         }
 
         private Addon GetAddon(
-            string folderName, 
-            AddonSearchResult searchResult, 
+            string folderName,
+            AddonSearchResult searchResult,
             WowClientType clientType)
         {
             return new Addon
