@@ -489,11 +489,6 @@ namespace WowUp.WPF.Services
                 nameOverride = _addonNameOverrides[addonName];
             }
 
-            if (addonName.Contains("genn", StringComparison.OrdinalIgnoreCase))
-            {
-
-            }
-
             var results = new List<AddonSearchResult>();
             var tasks = _providers.Select(p => p.Search(addonName, folderName, clientType, nameOverride));
             var searchResults = await Task.WhenAll(tasks);

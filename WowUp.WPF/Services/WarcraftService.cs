@@ -241,13 +241,15 @@ namespace WowUp.WPF.Services
         private async Task<AddonFolder> GetAddonFolder(DirectoryInfo directory)
         {
             var toc = await ParseToc(directory);
+            var tocMetaData = await ParseTocMetadata(directory);
 
             return new AddonFolder
             {
                 Name = directory.Name,
                 Path = directory.FullName,
                 Status = "Pending",
-                Toc = toc
+                Toc = toc,
+                TocMetaData = tocMetaData
             };
         }
 
@@ -262,6 +264,19 @@ namespace WowUp.WPF.Services
 
             var fileText = await FileUtilities.GetFileTextAsync(tocFile.FullName);
             return new TocParser(fileText).Toc;
+        }
+
+        private async Task<IList<string>> ParseTocMetadata(DirectoryInfo directory)
+        {
+            var files = directory.GetFiles();
+            var tocFile = files.FirstOrDefault(f => f.Extension.Contains("toc"));
+            if (tocFile == null)
+            {
+                return default;
+            }
+
+            var fileText = await FileUtilities.GetFileTextAsync(tocFile.FullName);
+            return new TocParser(fileText).GetMetaData();
         }
 
         private string GetClientFolderName(WowClientType clientType)

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using WowUp.Common.Models;
@@ -42,6 +44,13 @@ namespace WowUp.WPF.Utilities
             TukUiProjectFolders = TukUiProjectFolders
 
         };
+
+        public IList<string> GetMetaData()
+        {
+            return _tocText.Split("\n")
+                .Where(line => line.Trim().StartsWith("#") && line.Trim() != "##")
+                .ToList();
+        }
 
         public TocParser(FileInfo fileInfo)
         {
