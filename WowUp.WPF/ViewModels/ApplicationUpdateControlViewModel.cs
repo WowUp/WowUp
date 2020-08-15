@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Windows;
 using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
@@ -86,7 +87,15 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
-            ShowDownload = IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
+            try
+            {
+                ShowDownload = IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failure during WowUp version check");
+                ShowDownload = IsUpdateAvailable = false;
+            }
         }
 
         private void OnRestartApp()

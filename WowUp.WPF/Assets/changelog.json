@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.6",
+      "Description": "In-App updates should now use the same GitHub download as the website.\nIf the In-App update fails to download dont just leave the user with a .bak file."
+    },
+    {
       "Version": "1.14.5",
       "Description": "Attempt to fix startup crash bug from windows for some users."
     },

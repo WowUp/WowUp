@@ -3,10 +3,10 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
+using WowUp.Common.Models.WowUpApi.Response;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
@@ -18,7 +18,6 @@ namespace WowUp.WPF.Services
     public class WowUpService : IWowUpService
     {
         private const string ChangeLogUrl = "https://wowup-builds.s3.us-east-2.amazonaws.com/changelog/changelog.json";
-        private const string LatestVersionUrlFormat = "https://wowup-builds.s3.us-east-2.amazonaws.com/v{0}/WowUp.zip";
         private const string ChangeLogFileCacheKey = "change_log_file";
         private const string CollapseToTrayKey = "collapse_to_tray";
         private const string DefaultAddonChannelKey = "default_addon_channel";
@@ -28,15 +27,18 @@ namespace WowUp.WPF.Services
         private readonly IMemoryCache _cache;
         private readonly IServiceProvider _serviceProvider;
         private readonly IPreferenceRepository _preferenceRepository;
+        private readonly IWowUpApiService _wowUpApiService;
 
         public WowUpService(
             IMemoryCache memoryCache,
             IPreferenceRepository preferenceRepository,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IWowUpApiService wowUpApiService)
         {
             _cache = memoryCache;
             _serviceProvider = serviceProvider;
             _preferenceRepository = preferenceRepository;
+            _wowUpApiService = wowUpApiService;
 
             SetDefaultPreferences();
         }
@@ -73,48 +75,24 @@ namespace WowUp.WPF.Services
             SetPreference(DefaultAddonChannelKey, type.ToString());
         }
 
-        public void SetPreference(string key, string value)
-        {
-            var pref = _preferenceRepository.FindByKey(key);
-            if (pref == null)
-            {
-                pref = new Preference { Key = key };
-            }
-
-            pref.Value = value;
-
-            _preferenceRepository.SaveItem(pref);
-        }
-
         public async Task<bool> IsUpdateAvailable()
         {
-            var latestVersionStr = await GetLatestVersion();
-            if (string.IsNullOrEmpty(latestVersionStr))
+            var latestVersionResponse = await GetLatestVersion();
+            if (string.IsNullOrEmpty(latestVersionResponse?.Version))
             {
+                Log.Error("Got empty WowUp version");
                 return false;
             }
 
-            var latestVersion = new Version(latestVersionStr);
+            var latestVersion = new Version(latestVersionResponse.Version.Replace("v", string.Empty));
             var currentVersion = AppUtilities.CurrentVersion;
 
             return latestVersion > currentVersion;
         }
 
-        public async Task<string> GetLatestVersionUrl()
+        public async Task<LatestVersionResponse> GetLatestVersion()
         {
-            var latestVersionString = await GetLatestVersion();
-            return string.Format(LatestVersionUrlFormat, latestVersionString);
-        }
-
-        public async Task<string> GetLatestVersion()
-        {
-            var changeLogFile = await GetChangeLogFile();
-            if (changeLogFile == null)
-            {
-                return string.Empty;
-            }
-
-            return changeLogFile.ChangeLogs?.FirstOrDefault()?.Version ?? string.Empty;
+            return await _wowUpApiService.GetLatestVersion();
         }
 
         public async Task<ChangeLogFile> GetChangeLogFile()
@@ -161,8 +139,12 @@ namespace WowUp.WPF.Services
             };
 
             await updater.Update();
+        }
 
-            //WowUpService.WebsiteUrl.OpenUrlInBrowser();
+        private async Task<string> GetLatestVersionUrl()
+        {
+            var latestVersion = await GetLatestVersion();
+            return latestVersion.Url;
         }
 
         private void SetDefaultPreferences()
@@ -180,6 +162,18 @@ namespace WowUp.WPF.Services
             }
         }
 
+        private void SetPreference(string key, string value)
+        {
+            var pref = _preferenceRepository.FindByKey(key);
+            if (pref == null)
+            {
+                pref = new Preference { Key = key };
+            }
+
+            pref.Value = value;
+
+            _preferenceRepository.SaveItem(pref);
+        }
 
     }
 }
