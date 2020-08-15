@@ -95,6 +95,17 @@ namespace WowUp.WPF
         {
             switch (msg)
             {
+                case 0x0084: /*WM_NCHITTEST*/
+                    // Attempt to prevent a crash in WindowChromeWorker._HandleNCHitTest
+                    try
+                    {
+                        lParam.ToInt32();
+                    }
+                    catch (OverflowException)
+                    {
+                        handled = true;
+                    }
+                    break;
                 case 0x0024:/* WM_GETMINMAXINFO */
                     WmGetMinMaxInfo(hwnd, lParam);
                     handled = true;

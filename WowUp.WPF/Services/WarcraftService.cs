@@ -241,7 +241,7 @@ namespace WowUp.WPF.Services
         private async Task<AddonFolder> GetAddonFolder(DirectoryInfo directory)
         {
             var toc = await ParseToc(directory);
-            var tocMetaData = await ParseTocMetadata(directory);
+            //var tocMetaData = await ParseTocMetadata(directory);
 
             return new AddonFolder
             {
@@ -249,7 +249,7 @@ namespace WowUp.WPF.Services
                 Path = directory.FullName,
                 Status = "Pending",
                 Toc = toc,
-                TocMetaData = tocMetaData
+                //TocMetaData = tocMetaData
             };
         }
 

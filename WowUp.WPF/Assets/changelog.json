@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.5",
+      "Description": "Attempt to fix startup crash bug from windows for some users."
+    },
+    {
       "Version": "1.14.4",
       "Description": "Improve TukUI support while scanning, will now check for X-Tukui-ProjectID for improved results.\nAttempted to make the app single instance, so you cant launch it a bunch of times."
     },
