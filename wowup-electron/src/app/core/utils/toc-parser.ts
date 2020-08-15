@@ -36,6 +36,14 @@ export class TocParser {
         };
     }
 
+    public parseMetaData(): string[] {
+        this._tocText = fs.readFileSync(this._tocPath, { encoding: 'utf-8' })
+
+        return this._tocText
+            .split('\n')
+            .filter(line => line.trim().startsWith('## '));
+    }
+
     private getValue(key: string): string {
         const match = new RegExp(`^## ${key}:(.*?)$`, 'm').exec(this._tocText);
 

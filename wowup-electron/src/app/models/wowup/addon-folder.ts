@@ -7,4 +7,5 @@ export interface AddonFolder {
     thumbnailUrl?: string;
     latestVersion?: string;
     toc: Toc;
+    tocMetaData: string[];
 }

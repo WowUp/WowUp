@@ -153,12 +153,14 @@ export class WarcraftService {
             }
 
             const toc = await this.getToc(path.join(dirPath, tocFile));
+            const tocMetaData = this.getTocMetaData(path.join(dirPath, tocFile));
 
             return {
                 name: dir,
                 path: dirPath,
                 status: 'Pending',
-                toc: toc
+                toc: toc,
+                tocMetaData: tocMetaData
             };
         } catch (e) {
             console.error(e);
@@ -169,6 +171,11 @@ export class WarcraftService {
     private async getToc(filePath: string) {
         const parser = new TocParser(filePath);
         return await parser.parse();
+    }
+
+    private getTocMetaData(filePath: string) {
+        const parser = new TocParser(filePath);
+        return parser.parseMetaData();
     }
 
     public getClientLocation(clientType: WowClientType) {

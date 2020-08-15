@@ -12,6 +12,7 @@ import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import * as _ from 'lodash';
 import * as uuid from 'uuid';
 import { AddonFolder } from "app/models/wowup/addon-folder";
+import { WowUpApiService } from "../wowup-api/wowup-api.service";
 
 @Injectable({
     providedIn: 'root'
@@ -22,8 +23,9 @@ export class AddonService {
 
     constructor(
         private _addonStorage: AddonStorageService,
-        private httpClient: HttpClient,
-        private warcraftService: WarcraftService
+        private warcraftService: WarcraftService,
+        private _wowupApiService: WowUpApiService,
+        httpClient: HttpClient
     ) {
         this._addonProviders = [
             new CurseAddonProvider(httpClient)
@@ -69,11 +71,19 @@ export class AddonService {
         for (let folder of addonFolders) {
             try {
                 let addon: Addon;
-                if (folder.toc.curseProjectId) {
-                    addon = await this.getCurseAddonById(folder, clientType);
-                } else {
 
-                }
+                const response = await this._wowupApiService.scanAddon({
+                    channelType: AddonChannelType.Stable,
+                    clientType,
+                    folderName: folder.name,
+                    tocMetaData: folder.tocMetaData
+                });
+
+                // if (folder.toc.curseProjectId) {
+                //     addon = await this.getCurseAddonById(folder, clientType);
+                // } else {
+
+                // }
 
                 if (!addon) {
                     continue;
@@ -88,7 +98,10 @@ export class AddonService {
         return addons;
     }
 
-    private async getCurseAddonById(addonFolder: AddonFolder, clientType: WowClientType) {
+    private async getCurseAddonById(
+        addonFolder: AddonFolder,
+        clientType: WowClientType
+    ) {
         const curseProvider = this._addonProviders.find(p => p instanceof CurseAddonProvider);
         const searchResult = await curseProvider.getById(addonFolder.toc.curseProjectId, clientType);
         const latestFile = this.getLatestFile(searchResult, AddonChannelType.Stable);
