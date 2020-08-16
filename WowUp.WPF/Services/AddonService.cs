@@ -417,11 +417,6 @@ namespace WowUp.WPF.Services
 
         private async Task<Addon> Map(AddonFolder addonFolder, WowClientType clientType)
         {
-            if (addonFolder.Name.StartsWith("S"))
-            {
-
-            }
-
             try
             {
                 Addon addon = null;
