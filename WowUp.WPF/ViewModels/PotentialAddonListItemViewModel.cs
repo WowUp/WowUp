@@ -138,6 +138,8 @@ namespace WowUp.WPF.ViewModels
             {
                 Log.Error(ex, "Failed to install addon");
                 ShowInstallButton = true;
+
+                System.Windows.MessageBox.Show("Failure during addon install, please try again later.");
             }
         }
 

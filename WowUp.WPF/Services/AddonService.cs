@@ -213,11 +213,17 @@ namespace WowUp.WPF.Services
             string providerName,
             WowClientType clientType)
         {
+            var targetAddonChannel = _wowUpService.GetDefaultAddonChannel();
             var provider = GetProvider(providerName);
             var searchResult = await provider.GetById(externalId, clientType);
-            var latestFile = GetLatestFile(searchResult, _wowUpService.GetDefaultAddonChannel());
+            var latestFile = GetLatestFile(searchResult, targetAddonChannel);
+            if(latestFile == null)
+            {
+                latestFile = searchResult.Files.First();
+                targetAddonChannel = latestFile.ChannelType;
+            }
 
-            return CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType);
+            return CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType, targetAddonChannel);
         }
 
         private IAddonProvider GetProvider(string providerName)
@@ -391,6 +397,11 @@ namespace WowUp.WPF.Services
 
             foreach (var addonFolder in addonFolders)
             {
+                if (addonFolder.Name.StartsWith("S"))
+                {
+
+                }
+
                 try
                 {
                     Addon addon = null;
@@ -501,7 +512,8 @@ namespace WowUp.WPF.Services
             string folderName,
             AddonSearchResult searchResult,
             AddonSearchResultFile latestFile,
-            WowClientType clientType)
+            WowClientType clientType,
+            AddonChannelType? channelType = null)
         {
             if (latestFile == null)
             {
@@ -521,7 +533,7 @@ namespace WowUp.WPF.Services
                 DownloadUrl = latestFile.DownloadUrl,
                 ExternalUrl = searchResult.ExternalUrl,
                 ProviderName = searchResult.ProviderName,
-                ChannelType = _wowUpService.GetDefaultAddonChannel()
+                ChannelType = channelType ?? _wowUpService.GetDefaultAddonChannel()
             };
         }
     }
