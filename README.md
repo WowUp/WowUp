@@ -6,7 +6,7 @@
 [![WowUp on Patreon](https://img.shields.io/static/v1?label=Patreon&message=WowUp&color=f96854)](https://www.patreon.com/jliddev) 
 
 # WowUp
-WowUp the World of Warcraft addon updater
+[WowUp](https://wowup.io) the World of Warcraft addon updater
 
 Thanks to the announcement that Twitch is giving the Curse addon client to yet another company I wanted to try and create something the community can believe in.
 If you have any ideas/requests for the feature list let me know!
