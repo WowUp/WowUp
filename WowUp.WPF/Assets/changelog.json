@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.7",
+      "Description": "Fix install error when an addon has no files matching the selected channel.\nAttempt to fix some perfomance issues during install.\nSpeed up the scan process."
+    },
+    {
       "Version": "1.14.6",
       "Description": "In-App updates should now use the same GitHub download as the website.\nIf the In-App update fails to download dont just leave the user with a .bak file."
     },
