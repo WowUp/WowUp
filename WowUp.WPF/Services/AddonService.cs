@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -217,7 +218,7 @@ namespace WowUp.WPF.Services
             var provider = GetProvider(providerName);
             var searchResult = await provider.GetById(externalId, clientType);
             var latestFile = GetLatestFile(searchResult, targetAddonChannel);
-            if(latestFile == null)
+            if (latestFile == null)
             {
                 latestFile = searchResult.Files.First();
                 targetAddonChannel = latestFile.ChannelType;
@@ -352,18 +353,22 @@ namespace WowUp.WPF.Services
             return _providers.FirstOrDefault(provider => provider.IsValidAddonUri(addonUri));
         }
 
-        private Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
+        private async Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
         {
-            var addonFolderPath = _warcraftService.GetAddonFolderPath(clientType);
-            var unzippedFolders = Directory.GetDirectories(unzippedDirectory);
-            foreach (var unzippedFolder in unzippedFolders)
+            await Task.Run(() =>
             {
-                var unzippedDirectoryName = Path.GetFileName(unzippedFolder);
-                var unzipLocation = Path.Combine(addonFolderPath, unzippedDirectoryName);
-                FileUtilities.DirectoryCopy(unzippedFolder, unzipLocation);
-            }
+                var addonFolderPath = _warcraftService.GetAddonFolderPath(clientType);
+                var unzippedFolders = Directory.GetDirectories(unzippedDirectory);
+                foreach (var unzippedFolder in unzippedFolders)
+                {
+                    var unzippedDirectoryName = Path.GetFileName(unzippedFolder);
+                    var unzipLocation = Path.Combine(addonFolderPath, unzippedDirectoryName);
+                    FileUtilities.DirectoryCopy(unzippedFolder, unzipLocation);
+                }
 
-            return Task.CompletedTask;
+            });
+
+            //return Task.CompletedTask;
         }
 
         protected virtual void InitializeDirectories()
@@ -393,50 +398,57 @@ namespace WowUp.WPF.Services
 
         public async Task<List<Addon>> MapAll(IEnumerable<AddonFolder> addonFolders, WowClientType clientType)
         {
-            var results = new Dictionary<string, Addon>();
+            var results = new ConcurrentDictionary<string, Addon>();
 
-            foreach (var addonFolder in addonFolders)
-            {
-                if (addonFolder.Name.StartsWith("S"))
-                {
-
-                }
-
-                try
-                {
-                    Addon addon = null;
-
-                    if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.TukUiProjectId))
+            await addonFolders
+                    .ForEachAsync(2, async addonFolder =>
                     {
-                        addon = await GetAddonSearchResultById<TukUiAddonProvider>(addonFolder.Name, addonFolder.Toc.TukUiProjectId, clientType);
-                    }
-
-                    if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.CurseProjectId))
-                    {
-                        addon = await GetAddonSearchResultById<CurseAddonProvider>(addonFolder.Name, addonFolder.Toc.CurseProjectId, clientType);
-                    }
-
-                    if (addon == null)
-                    {
-                        addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
-                    }
-
-                    if (addon == null)
-                    {
-                        continue;
-                    }
-
-                    results[addon.Name] = addon;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, $"Failed to map addon folder {addonFolder.Name}");
-                }
-            }
+                        var addon = await Map(addonFolder, clientType);
+                        if(addon != default)
+                        {
+                            results.TryAdd(addon.Name, addon);
+                        }
+                    });
 
             return results.Values
                 .OrderBy(v => v.Name)
                 .ToList();
+        }
+
+        private async Task<Addon> Map(AddonFolder addonFolder, WowClientType clientType)
+        {
+            if (addonFolder.Name.StartsWith("S"))
+            {
+
+            }
+
+            try
+            {
+                Addon addon = null;
+
+                if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.TukUiProjectId))
+                {
+                    addon = await GetAddonSearchResultById<TukUiAddonProvider>(addonFolder.Name, addonFolder.Toc.TukUiProjectId, clientType);
+                }
+
+                if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.CurseProjectId))
+                {
+                    addon = await GetAddonSearchResultById<CurseAddonProvider>(addonFolder.Name, addonFolder.Toc.CurseProjectId, clientType);
+                }
+
+                if (addon == null)
+                {
+                    addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
+                }
+
+                return addon;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Failed to map addon folder {addonFolder.Name}");
+
+                return default;
+            }
         }
 
         private T GetProvider<T>()
