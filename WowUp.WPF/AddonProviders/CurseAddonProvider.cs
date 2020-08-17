@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models.Curse;
@@ -19,7 +20,15 @@ namespace WowUp.WPF.AddonProviders
     {
         private const string ApiUrl = "https://addons-ecs.forgesvc.net/api/v2";
 
+        private readonly ICacheService _cacheService;
+
         public string Name => "Curse";
+
+        public CurseAddonProvider(
+            ICacheService cacheService)
+        {
+            _cacheService = cacheService;
+        }
 
         public bool IsValidAddonUri(Uri addonUri)
         {
@@ -34,22 +43,25 @@ namespace WowUp.WPF.AddonProviders
         {
             var url = $"{ApiUrl}/addon/{addonId}";
 
-            var result = await url
-                .WithHeaders(HttpUtilities.DefaultHeaders)
-                .GetJsonAsync<CurseSearchResult>();
-
-            if (result == null)
+            return await _cacheService.GetCache(url, async () =>
             {
-                return null;
-            }
+                var result = await url
+                    .WithHeaders(HttpUtilities.DefaultHeaders)
+                    .GetJsonAsync<CurseSearchResult>();
 
-            var latestFiles = GetLatestFiles(result, clientType);
-            if (!latestFiles.Any())
-            {
-                return null;
-            }
+                if (result == null)
+                {
+                    return null;
+                }
 
-            return GetAddonSearchResult(result, latestFiles);
+                var latestFiles = GetLatestFiles(result, clientType);
+                if (!latestFiles.Any())
+                {
+                    return null;
+                }
+
+                return GetAddonSearchResult(result, latestFiles);
+            });
         }
 
         public async Task<IEnumerable<PotentialAddon>> Search(string query, WowClientType clientType)

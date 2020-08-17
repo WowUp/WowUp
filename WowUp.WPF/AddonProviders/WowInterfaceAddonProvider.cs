@@ -1,5 +1,4 @@
 ﻿using Flurl.Http;
-using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -10,9 +9,9 @@ using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
 using WowUp.Common.Models.WowInterface;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
-using WowUp.WPF.Extensions;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -22,13 +21,15 @@ namespace WowUp.WPF.AddonProviders
         private const string ApiUrl = "https://api.mmoui.com/v4/game/WOW";
         private const string AddonUrl = "https://www.wowinterface.com/downloads/info";
 
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cacheService;
 
         public string Name => "WowInterface";
 
-        public WowInterfaceAddonProvider(IMemoryCache memoryCache)
+        public WowInterfaceAddonProvider(
+            ICacheService cacheService)
         {
-            _cache = memoryCache;
+            _cacheService = cacheService;
+
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
@@ -107,20 +108,15 @@ namespace WowUp.WPF.AddonProviders
         private async Task<AddonDetailsResponse> GetAddonDetails(string addonId)
         {
             var url = $"{ApiUrl}/filedetails/{addonId}.json";
-            if (_cache.TryGetValue(url, out var cachedResponse))
+
+            return await _cacheService.GetCache(url, async () =>
             {
-                return cachedResponse as AddonDetailsResponse;
-            }
+                var results = await url
+                   .WithHeaders(HttpUtilities.DefaultHeaders)
+                   .GetJsonAsync<List<AddonDetailsResponse>>();
 
-            var results = await url
-                .WithHeaders(HttpUtilities.DefaultHeaders)
-                .GetJsonAsync<List<AddonDetailsResponse>>();
-
-            var result = results.FirstOrDefault();
-
-            _cache.CacheForAbsolute(url, result, TimeSpan.FromMinutes(60));
-
-            return result;
+                return results.FirstOrDefault();
+            });
         }
 
         private string GetAddonId(Uri addonUri)

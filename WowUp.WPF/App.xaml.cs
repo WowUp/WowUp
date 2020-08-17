@@ -106,11 +106,12 @@ namespace WowUp.WPF
             services.AddSingleton<MainWindow>();
 
             services.AddSingleton<IAddonService, AddonService>();
-            services.AddSingleton<IWarcraftService, WarcraftService>();
-            services.AddSingleton<IDownloadService, DownloadService>();
-            services.AddSingleton<IWowUpService, WowUpService>();
             services.AddSingleton<IAnalyticsService, AnalyticsService>();
+            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<IDownloadService, DownloadService>();
             services.AddSingleton<IMigrationService, MigrationService>();
+            services.AddSingleton<IWarcraftService, WarcraftService>();
+            services.AddSingleton<IWowUpService, WowUpService>();
             services.AddSingleton<IWowUpApiService, WowUpApiService>();
 
             services.AddSingleton<IAddonRepository, AddonRepository>();

@@ -24,18 +24,18 @@ namespace WowUp.WPF.Services
 
         public const string WebsiteUrl = "https://wowup.io";
 
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cacheService;
         private readonly IServiceProvider _serviceProvider;
         private readonly IPreferenceRepository _preferenceRepository;
         private readonly IWowUpApiService _wowUpApiService;
 
         public WowUpService(
-            IMemoryCache memoryCache,
+            ICacheService cacheService,
             IPreferenceRepository preferenceRepository,
             IServiceProvider serviceProvider,
             IWowUpApiService wowUpApiService)
         {
-            _cache = memoryCache;
+            _cacheService = cacheService;
             _serviceProvider = serviceProvider;
             _preferenceRepository = preferenceRepository;
             _wowUpApiService = wowUpApiService;
@@ -99,23 +99,21 @@ namespace WowUp.WPF.Services
         {
             ChangeLogFile changeLogFile;
 
-            if (_cache.TryGetValue(ChangeLogFileCacheKey, out changeLogFile))
-            {
-                return changeLogFile;
-            }
-
             try
             {
-                changeLogFile = await ChangeLogUrl
-                    .WithHeaders(HttpUtilities.DefaultHeaders)
-                    .GetJsonAsync<ChangeLogFile>();
+                return await _cacheService.GetCache(ChangeLogFileCacheKey, async () =>
+                {
+                
+                        changeLogFile = await ChangeLogUrl
+                            .WithHeaders(HttpUtilities.DefaultHeaders)
+                            .GetJsonAsync<ChangeLogFile>();
 
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
+                        var cacheEntryOptions = new MemoryCacheEntryOptions()
+                            .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
 
-                _cache.Set(ChangeLogFileCacheKey, changeLogFile, cacheEntryOptions);
-
-                return changeLogFile;
+                        return changeLogFile;
+                
+                });
             }
             catch (Exception ex)
             {

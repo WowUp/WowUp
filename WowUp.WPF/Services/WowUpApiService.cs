@@ -1,10 +1,7 @@
 ﻿using Flurl.Http;
-using Microsoft.Extensions.Caching.Memory;
-using System;
 using System.Threading.Tasks;
 using WowUp.Common.Models.WowUpApi.Response;
 using WowUp.Common.Services.Contracts;
-using WowUp.WPF.Extensions;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
@@ -13,31 +10,24 @@ namespace WowUp.WPF.Services
     {
         const string ApiUrl = "https://4g2nuwcupj.execute-api.us-east-1.amazonaws.com/production";
 
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService _cacheService;
 
         public WowUpApiService(
-            IMemoryCache memoryCache)
+            ICacheService cacheService)
         {
-            _memoryCache = memoryCache;
-
+            _cacheService = cacheService;
         }
 
         public async Task<LatestVersionResponse> GetLatestVersion()
         {
             var url = $"{ApiUrl}/wowup/latest";
 
-            if (_memoryCache.TryGetValue(url, out var cachedVersion))
+            return await _cacheService.GetCache(url, async () =>
             {
-                return cachedVersion as LatestVersionResponse;
-            }
-
-            var response = await url
-                .WithHeaders(HttpUtilities.DefaultHeaders)
-                .GetJsonAsync<LatestVersionResponse>();
-
-            _memoryCache.CacheForAbsolute(url, response, TimeSpan.FromMinutes(60));
-
-            return response;
+                return await url
+                    .WithHeaders(HttpUtilities.DefaultHeaders)
+                    .GetJsonAsync<LatestVersionResponse>();
+            });
         }
     }
 }
