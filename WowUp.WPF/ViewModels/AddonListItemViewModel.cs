@@ -325,7 +325,7 @@ namespace WowUp.WPF.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Log.Error("Failed to update addon", ex);
                 ShowUpdateButton = true;
             }
         }
@@ -334,6 +334,7 @@ namespace WowUp.WPF.ViewModels
         {
             ShowStatusText = false;
             ShowInstallButton = false;
+            ShowUpdateButton = false;
 
             try
             {

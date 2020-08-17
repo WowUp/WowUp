@@ -20,7 +20,6 @@ namespace WowUp.WPF.ViewModels
     {
         private static readonly object ClientNamesLock = new object();
         private static readonly object DisplayAddonsLock = new object();
-        private static readonly object LoadLock = new object();
 
         private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
@@ -137,18 +136,21 @@ namespace WowUp.WPF.ViewModels
 
         private void SetClientNames()
         {
-            ClientNames.Clear();
-
-            _clientTypes = _warcraftService.GetWowClientTypes();
-            _clientNames = _warcraftService.GetWowClientNames();
-
-            for (var i = 0; i < _clientNames.Count; i += 1)
+            lock (ClientNamesLock)
             {
-                var clientName = _clientNames[i];
-                ClientNames.Add(new ComboBoxItem
+                ClientNames.Clear();
+
+                _clientTypes = _warcraftService.GetWowClientTypes();
+                _clientNames = _warcraftService.GetWowClientNames();
+
+                for (var i = 0; i < _clientNames.Count; i += 1)
                 {
-                    Content = clientName
-                });
+                    var clientName = _clientNames[i];
+                    ClientNames.Add(new ComboBoxItem
+                    {
+                        Content = clientName
+                    });
+                }
             }
 
             SelectedWowIndex = 0;
@@ -188,7 +190,7 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                await DisplayAddons
+                await DisplayAddons.ToList()
                     .Where(addon => addon.IsAutoUpdated && (addon.CanUpdate || addon.CanInstall))
                     .ForEachAsync(2, async addon =>
                     {
@@ -279,24 +281,24 @@ namespace WowUp.WPF.ViewModels
 
         private void AddAddonListItem(Addon addon)
         {
-            lock (LoadLock)
+            try
             {
-                try
+                if (DisplayAddons.Any(da => da.Addon.Id == addon.Id))
                 {
-                    if (DisplayAddons.Any(da => da.Addon.Id == addon.Id))
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    var viewModel = GetAddonViewModel(addon);
+                var viewModel = GetAddonViewModel(addon);
 
+                lock (DisplayAddonsLock)
+                {
                     DisplayAddons.Add(viewModel);
                     SortAddons(DisplayAddons);
                 }
-                finally
-                {
-                    EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
-                }
+            }
+            finally
+            {
+                EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
             }
         }
 
@@ -312,7 +314,7 @@ namespace WowUp.WPF.ViewModels
 
         private void RemoveAddonListItem(Addon addon)
         {
-            lock (LoadLock)
+            lock (DisplayAddonsLock)
             {
                 DisplayAddons.Remove(DisplayAddons.First(da => addon.Id == da.Addon.Id));
             }
@@ -320,7 +322,7 @@ namespace WowUp.WPF.ViewModels
 
         private void UpdateDisplayAddons(IList<AddonListItemViewModel> addons)
         {
-            lock (LoadLock)
+            lock (DisplayAddonsLock)
             {
                 DisplayAddons.Clear();
 
