@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.8",
+      "Description": "Add Wow Interface integration for Scanning.\nAdd Wow Interface intergration for 'Install from URL'.\nPerformance updates."
+    },
+    {
       "Version": "1.14.7",
       "Description": "Fix install error when an addon has no files matching the selected channel.\nAttempt to fix some perfomance issues during install.\nSpeed up the scan process."
     },
