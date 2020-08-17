@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.9",
+      "Description": "Fix crash bug related to 'Update All' and alpha/beta addons.\nFix issue causing updated alpha/beta addons to revert to stable."
+    },
+    {
       "Version": "1.14.8",
       "Description": "Add Wow Interface integration for Scanning.\nAdd Wow Interface intergration for 'Install from URL'.\nPerformance updates."
     },
