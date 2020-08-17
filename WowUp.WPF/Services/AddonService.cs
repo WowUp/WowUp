@@ -259,12 +259,6 @@ namespace WowUp.WPF.Services
                 throw new Exception("Addon not found or invalid");
             }
 
-            if (addon.ChannelType != _wowUpService.GetDefaultAddonChannel())
-            {
-                var newAddon = await GetAddon(addon.ExternalId, addon.ProviderName, addon.ClientType);
-                addon.Assign(newAddon);
-            }
-
             updateAction?.Invoke(AddonInstallState.Downloading, 25m);
 
             string downloadedFilePath = string.Empty;

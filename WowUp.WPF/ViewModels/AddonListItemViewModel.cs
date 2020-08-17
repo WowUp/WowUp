@@ -16,6 +16,8 @@ namespace WowUp.WPF.ViewModels
     {
         private readonly IAddonService _addonService;
         private readonly IAnalyticsService _analyticsService;
+        private readonly SolidColorBrush _rareBrush;
+        private readonly SolidColorBrush _epicBrush;
 
         private Addon _addon;
         public Addon Addon
@@ -264,6 +266,9 @@ namespace WowUp.WPF.ViewModels
             BetaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Beta));
             AlphaCheckedCommand = new Command(() => OnChannelChanged(AddonChannelType.Alpha));
             AutoUpdateCheckedCommand = new Command(() => OnAutoUpdateChanged());
+
+            _rareBrush = Application.Current.Resources["RareBrush"] as SolidColorBrush;
+            _epicBrush = Application.Current.Resources["EpicBrush"] as SolidColorBrush;
         }
 
         private void SetupDisplayState()
@@ -296,11 +301,11 @@ namespace WowUp.WPF.ViewModels
 
             if (ChannelType == AddonChannelType.Beta)
             {
-                ChannelNameBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#0070DD");
+                ChannelNameBrush = _rareBrush;
             }
             else if (ChannelType == AddonChannelType.Alpha)
             {
-                ChannelNameBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#A335EE");
+                ChannelNameBrush = _epicBrush;
             }
 
             ExternalUrl = _addon.ExternalUrl;
@@ -347,8 +352,6 @@ namespace WowUp.WPF.ViewModels
                 Console.WriteLine(ex);
                 ShowInstallButton = true;
             }
-
-            //var result = await Application.Current.MainPage.DisplayActionSheet("Test", "Cancel", "Delete", "Recheck");
         }
 
         private async void OnReInstall()
@@ -416,14 +419,21 @@ namespace WowUp.WPF.ViewModels
 
         private void OnInstallUpdate(AddonInstallState installState, decimal percent)
         {
-            ProgressText = GetInstallStateText(installState);
-            ProgressPercent = percent;
-            ShowProgressBar = true;
-
-            if (installState == AddonInstallState.Complete)
+            try
             {
-                _addon = _addonService.GetAddon(_addon.Id);
-                SetupDisplayState();
+                ProgressText = GetInstallStateText(installState);
+                ProgressPercent = percent;
+                ShowProgressBar = true;
+
+                if (installState == AddonInstallState.Complete)
+                {
+                    _addon = _addonService.GetAddon(_addon.Id);
+                    SetupDisplayState();
+                }
+            }
+            catch(Exception ex)
+            {
+                Log.Error("Failed to handle addon install event", ex);
             }
         }
 
