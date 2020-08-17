@@ -65,6 +65,7 @@ namespace WowUp.WPF.Services
             {
                serviceProvider.GetService<ICurseAddonProvider>(),
                serviceProvider.GetService<ITukUiAddonProvider>(),
+               serviceProvider.GetService<IWowInterfaceAddonProvider>(),
                serviceProvider.GetService<IGitHubAddonProvider>()
             };
 
@@ -423,17 +424,34 @@ namespace WowUp.WPF.Services
 
                 if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.TukUiProjectId))
                 {
-                    addon = await GetAddonSearchResultById<TukUiAddonProvider>(addonFolder.Name, addonFolder.Toc.TukUiProjectId, clientType);
+                    addon = await GetAddonSearchResultById<TukUiAddonProvider>(
+                        addonFolder.Name, 
+                        addonFolder.Toc.TukUiProjectId, 
+                        clientType);
                 }
 
                 if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.CurseProjectId))
                 {
-                    addon = await GetAddonSearchResultById<CurseAddonProvider>(addonFolder.Name, addonFolder.Toc.CurseProjectId, clientType);
+                    addon = await GetAddonSearchResultById<CurseAddonProvider>(
+                        addonFolder.Name, 
+                        addonFolder.Toc.CurseProjectId, 
+                        clientType);
+                }
+
+                if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.WowInterfaceId))
+                {
+                    addon = await GetAddonSearchResultById<IWowInterfaceAddonProvider>(
+                        addonFolder.Name,
+                        addonFolder.Toc.WowInterfaceId,
+                        clientType);
                 }
 
                 if (addon == null)
                 {
-                    addon = await Map(addonFolder.Toc.Title, addonFolder.Name, clientType);
+                    addon = await Map(
+                        addonFolder.Toc.Title, 
+                        addonFolder.Name, 
+                        clientType);
                 }
 
                 return addon;

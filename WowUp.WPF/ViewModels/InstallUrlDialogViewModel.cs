@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WowUp.Common.Enums;
 using WowUp.Common.Exceptions;
+using WowUp.Common.Extensions;
 using WowUp.Common.Models;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
@@ -149,9 +150,9 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                await _addonService.InstallAddon(ImportedAddon, ClientType);
-
                 await _analyticsService.TrackUserAction("Addons", "InstallByUrlImport", $"{ClientType}|{ImportedAddon.Name}");
+
+                await _addonService.InstallAddon(ImportedAddon, ClientType);
 
                 IsInstalled = true;
             }
@@ -192,6 +193,8 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
+                await _analyticsService.TrackUserAction("Addons", "ImportAddonUrl", $"{ClientType}|{input}");
+                
                 ImportedAddon = await _addonService.GetAddonByUri(uri, ClientType);
 
                 if (ImportedAddon == null)
@@ -199,7 +202,7 @@ namespace WowUp.WPF.ViewModels
                     throw new AddonNotFoundException();
                 }
 
-                ImportedAddonSubtitle = $"By {ImportedAddon.Author}\n{ImportedAddon.DownloadCount} downloads on {ImportedAddon.ProviderName}";
+                ImportedAddonSubtitle = $"By {ImportedAddon.Author}\n{ImportedAddon.DownloadCount.FormatDownloadCount()} downloads on {ImportedAddon.ProviderName}";
                 IsInstalled = _addonService.IsInstalled(ImportedAddon.ExternalId, ClientType);
                 CanInstall = !IsInstalled;
                 ShowImportedAddon = true;

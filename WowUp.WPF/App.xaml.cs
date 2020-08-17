@@ -41,7 +41,6 @@ namespace WowUp.WPF
 
         public App()
         {
-
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -101,6 +100,7 @@ namespace WowUp.WPF
             services.AddTransient<ICurseAddonProvider, CurseAddonProvider>();
             services.AddTransient<IGitHubAddonProvider, GitHubAddonProvider>();
             services.AddTransient<ITukUiAddonProvider, TukUiAddonProvider>();
+            services.AddTransient<IWowInterfaceAddonProvider, WowInterfaceAddonProvider>();
             services.AddTransient<ApplicationUpdater>();
 
             services.AddSingleton<MainWindow>();

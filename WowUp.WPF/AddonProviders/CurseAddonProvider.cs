@@ -11,6 +11,7 @@ using WowUp.Common.Models.Addons;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models.Curse;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
 {
@@ -33,7 +34,10 @@ namespace WowUp.WPF.AddonProviders
         {
             var url = $"{ApiUrl}/addon/{addonId}";
 
-            var result = await url.GetJsonAsync<CurseSearchResult>();
+            var result = await url
+                .WithHeaders(HttpUtilities.DefaultHeaders)
+                .GetJsonAsync<CurseSearchResult>();
+
             if (result == null)
             {
                 return null;
@@ -302,6 +306,7 @@ namespace WowUp.WPF.AddonProviders
             {
                 return await url
                     .SetQueryParams(new { gameId = 1, searchFilter = query })
+                    .WithHeaders(HttpUtilities.DefaultHeaders)
                     .GetJsonAsync<IList<CurseSearchResult>>();
             }
             catch (Exception ex)

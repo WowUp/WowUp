@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WowUp.Common.Models.WowUpApi.Response;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Extensions;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
@@ -30,7 +31,9 @@ namespace WowUp.WPF.Services
                 return cachedVersion as LatestVersionResponse;
             }
 
-            var response = await url.GetJsonAsync<LatestVersionResponse>();
+            var response = await url
+                .WithHeaders(HttpUtilities.DefaultHeaders)
+                .GetJsonAsync<LatestVersionResponse>();
 
             _memoryCache.CacheForAbsolute(url, response, TimeSpan.FromMinutes(60));
 

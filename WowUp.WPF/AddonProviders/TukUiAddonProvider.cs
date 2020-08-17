@@ -14,6 +14,7 @@ using WowUp.Common.Models.TukUi;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
 {
@@ -172,6 +173,7 @@ namespace WowUp.WPF.AddonProviders
             var query = GetAddonsSuffix(clientType);
             var result = await ApiUrl
                 .SetQueryParam(query, "all")
+                .WithHeaders(HttpUtilities.DefaultHeaders)
                 .GetJsonAsync<List<TukUiAddon>>();
 
             if (clientType.IsRetail())
@@ -180,7 +182,7 @@ namespace WowUp.WPF.AddonProviders
                 result.Add(await GetElvUiRetailAddon());
             }
 
-            _cache.CacheForAbsolute(cacheKey, result, TimeSpan.FromMinutes(10));
+            _cache.CacheForAbsolute(cacheKey, result, TimeSpan.FromMinutes(60));
 
             return result;
         }

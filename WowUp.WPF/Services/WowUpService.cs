@@ -106,7 +106,9 @@ namespace WowUp.WPF.Services
 
             try
             {
-                changeLogFile = await ChangeLogUrl.GetJsonAsync<ChangeLogFile>();
+                changeLogFile = await ChangeLogUrl
+                    .WithHeaders(HttpUtilities.DefaultHeaders)
+                    .GetJsonAsync<ChangeLogFile>();
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
