@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Data;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using WowUp.WPF.Views;
@@ -16,25 +16,15 @@ namespace WowUp.WPF.ViewModels
 {
     public class GetAddonsViewModel : BaseViewModel
     {
-        private readonly IServiceProvider _serviceProvider;
+        private static readonly object ClientNamesLock = new object();
+        private static readonly object DisplayAddonsLock = new object();
+
         private readonly IAddonService _addonService;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ISessionService _sessionService;
         private readonly IWarcraftService _warcraftService;
 
-        private IList<WowClientType> _clientTypes;
-        private IList<string> _clientNames;
-
         private List<PotentialAddon> _popularAddons;
-
-        private int _selectedWowIndex = 0;
-        public int SelectedWowIndex
-        {
-            get => _selectedWowIndex;
-            set
-            {
-                SetProperty(ref _selectedWowIndex, value);
-                OnSelectedWowChange();
-            }
-        }
 
         private string _searchText;
         public string SearchText
@@ -43,54 +33,72 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _searchText, value); }
         }
 
-        public WowClientType SelectedClientType => _clientTypes[SelectedWowIndex];
+        private WowClientType _selectedClientType;
+        public WowClientType SelectedClientType
+        {
+            get => _selectedClientType;
+            set { SetProperty(ref _selectedClientType, value); }
+        }
 
         public ObservableCollection<PotentialAddonListItemViewModel> DisplayAddons { get; set; }
-        public ObservableCollection<ComboBoxItem> ClientNames { get; set; }
+        public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
         public Command RefreshCommand { get; set; }
         public Command SearchCommand { get; set; }
         public Command InstallNewCommand { get; set; }
+        public Command SelectedWowClientCommand { get; set; }
 
         public GetAddonsViewModel(
             IServiceProvider serviceProvider,
             IAddonService addonService,
-            IWarcraftService warcraftService)
+            IWarcraftService warcraftService,
+            ISessionService sessionService)
         {
             _addonService = addonService;
             _serviceProvider = serviceProvider;
             _warcraftService = warcraftService;
+            _sessionService = sessionService;
 
-            _clientTypes = new List<WowClientType>();
-            _clientNames = new List<string>();
-
-            ClientNames = new ObservableCollection<ComboBoxItem>();
+            ClientTypeNames = new ObservableCollection<WowClientType>();
             DisplayAddons = new ObservableCollection<PotentialAddonListItemViewModel>();
 
             RefreshCommand = new Command(() => OnRefresh());
             SearchCommand = new Command((text) => OnSearch((string)text));
             InstallNewCommand = new Command(() => OnInstallFromUrl());
+            SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
+
+            BindingOperations.EnableCollectionSynchronization(ClientTypeNames, ClientNamesLock);
+            BindingOperations.EnableCollectionSynchronization(DisplayAddons, DisplayAddonsLock);
 
             _addonService.AddonUninstalled += (sender, args) =>
             {
                 OnRefresh();
             };
+
+            _sessionService.SessionChanged += (sender, args) =>
+            {
+                SelectedClientType = args.SessionState.SelectedClientType;
+            };
+
+            SelectedClientType = _sessionService.SelectedClientType;
         }
 
         public async void OnInitialized()
         {
-            _clientTypes = _warcraftService.GetWowClientTypes();
-            _clientNames = _warcraftService.GetWowClientNames();
-
-            for (var i = 0; i < _clientNames.Count; i += 1)
-            {
-                var clientName = _clientNames[i];
-                ClientNames.Add(new ComboBoxItem
-                {
-                    Content = clientName
-                });
-            }
-
+            SetClientNames();
             await LoadPopularAddons();
+        }
+
+        private void SetClientNames()
+        {
+            lock (ClientNamesLock)
+            {
+                ClientTypeNames.Clear();
+
+                foreach (var clientType in _warcraftService.GetWowClientTypes())
+                {
+                    ClientTypeNames.Add(clientType);
+                }
+            }
         }
 
         private async void OnRefresh()
@@ -105,6 +113,12 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
+        public async Task OnSelectedWowClientChanged(WowClientType clientType)
+        {
+            _sessionService.SelectedClientType = _selectedClientType;
+            await LoadPopularAddons();
+        }
+
         private async void OnSearch(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -117,23 +131,21 @@ namespace WowUp.WPF.ViewModels
 
             var searchResults = await _addonService.Search(text, SelectedClientType);
 
-            DisplayAddons.Clear();
-            foreach (var result in searchResults)
+            lock (DisplayAddonsLock)
             {
-                var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
-                viewModel.ClientType = SelectedClientType;
-                viewModel.IsInstalled = _addonService.IsInstalled(result.ExternalId, SelectedClientType);
-                viewModel.Addon = result;
+                DisplayAddons.Clear();
+                foreach (var result in searchResults)
+                {
+                    var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
+                    viewModel.ClientType = SelectedClientType;
+                    viewModel.IsInstalled = _addonService.IsInstalled(result.ExternalId, SelectedClientType);
+                    viewModel.Addon = result;
 
-                DisplayAddons.Add(viewModel);
+                    DisplayAddons.Add(viewModel);
+                }
             }
 
             IsBusy = false;
-        }
-
-        private async void OnSelectedWowChange()
-        {
-            await LoadPopularAddons();
         }
 
         private void OnInstallFromUrl()
@@ -162,24 +174,24 @@ namespace WowUp.WPF.ViewModels
         {
             IsBusy = true;
 
-            if (_popularAddons == null || !_popularAddons.Any())
-            {
-                _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
-            }
+            _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
 
-            DisplayAddons.Clear();
-            foreach (var addon in _popularAddons)
+            lock (DisplayAddonsLock)
             {
-                if (_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
+                DisplayAddons.Clear();
+                foreach (var addon in _popularAddons)
                 {
-                    continue;
+                    if (_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
+                    {
+                        continue;
+                    }
+
+                    var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
+                    viewModel.Addon = addon;
+                    viewModel.ClientType = SelectedClientType;
+
+                    DisplayAddons.Add(viewModel);
                 }
-
-                var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
-                viewModel.Addon = addon;
-                viewModel.ClientType = SelectedClientType;
-
-                DisplayAddons.Add(viewModel);
             }
 
             IsBusy = false;

@@ -343,9 +343,12 @@ namespace WowUp.WPF.AddonProviders
                     updatedCount = 0
                 };
 
-                var response = await url
-                    .PostJsonAsync(body)
-                    .ReceiveJson<CurseGetFeaturedResponse>();
+                var response = await _cacheService.GetCache(url, async () =>
+                {
+                    return await url
+                        .PostJsonAsync(body)
+                        .ReceiveJson<CurseGetFeaturedResponse>();
+                });
 
                 return response.Popular.ToList();
             }

@@ -162,7 +162,8 @@
                             </StackPanel>
                             <Label FontWeight="Bold" Grid.Row="3" Grid.Column="0" >Default Addon Channel</Label>
                             <StackPanel Grid.Row="3" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
-                                <ComboBox x:Name="AddonChannelComboBox" SelectedItem="{Binding SelectedAddonChannelType}"
+                                <ComboBox x:Name="AddonChannelComboBox" 
+                                          SelectedItem="{Binding SelectedAddonChannelType}"
                                           HorizontalAlignment="Left"
                                           Style="{StaticResource ComboBoxFlatStyle}"
                                           ItemsSource="{Binding AddonChannelNames}">
