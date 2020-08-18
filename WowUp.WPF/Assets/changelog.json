@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.10",
+      "Description": "Bind the client type dropdown on 'My Addons' and 'Get Addons' to the same value to reduce confusion.\n"
+    },
+    {
       "Version": "1.14.9",
       "Description": "Fix crash bug related to 'Update All' and alpha/beta addons.\nFix issue causing updated alpha/beta addons to revert to stable."
     },
