@@ -35,25 +35,30 @@ namespace WowUp.WPF.Services
             return downloadFilePath;
         }
 
-        public Task<string> UnzipFile(string inputFilePath)
+        public async Task<string> UnzipFile(string inputFilePath)
         {
-            var zipFileDirectory = Path.GetDirectoryName(inputFilePath);
-            var tempZipDirectory = Path.Combine(zipFileDirectory, Guid.NewGuid().ToString());
-
-            Directory.CreateDirectory(tempZipDirectory);
-
-            using (var fileStream = File.OpenRead(inputFilePath))
+            return await Task.Run(() =>
             {
-                var archive = new ZipArchive(fileStream);
-                archive.ExtractToDirectory(tempZipDirectory);
-            }
+                var zipFileDirectory = Path.GetDirectoryName(inputFilePath);
+                var tempZipDirectory = Path.Combine(zipFileDirectory, Guid.NewGuid().ToString());
 
-            if (!Directory.Exists(tempZipDirectory))
-            {
-                throw new FileNotFoundException("Unzipped addon folder not found");
-            }
+                Directory.CreateDirectory(tempZipDirectory);
 
-            return Task.FromResult(tempZipDirectory);
+                using (var fileStream = File.OpenRead(inputFilePath))
+                {
+                    var archive = new ZipArchive(fileStream);
+                    archive.ExtractToDirectory(tempZipDirectory);
+                }
+
+                if (!Directory.Exists(tempZipDirectory))
+                {
+                    throw new FileNotFoundException("Unzipped addon folder not found");
+                }
+
+                return tempZipDirectory;
+            });
+
+            //return Task.FromResult(tempZipDirectory);
         }
 
         public Task ZipFile(string inputDirectory, string outputFilePath)

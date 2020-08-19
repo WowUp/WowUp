@@ -41,7 +41,6 @@ namespace WowUp.WPF
 
         public App()
         {
-
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
             Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
@@ -101,16 +100,20 @@ namespace WowUp.WPF
             services.AddTransient<ICurseAddonProvider, CurseAddonProvider>();
             services.AddTransient<IGitHubAddonProvider, GitHubAddonProvider>();
             services.AddTransient<ITukUiAddonProvider, TukUiAddonProvider>();
+            services.AddTransient<IWowInterfaceAddonProvider, WowInterfaceAddonProvider>();
             services.AddTransient<ApplicationUpdater>();
 
             services.AddSingleton<MainWindow>();
 
             services.AddSingleton<IAddonService, AddonService>();
-            services.AddSingleton<IWarcraftService, WarcraftService>();
-            services.AddSingleton<IDownloadService, DownloadService>();
-            services.AddSingleton<IWowUpService, WowUpService>();
             services.AddSingleton<IAnalyticsService, AnalyticsService>();
+            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<IDownloadService, DownloadService>();
             services.AddSingleton<IMigrationService, MigrationService>();
+            services.AddSingleton<IWarcraftService, WarcraftService>();
+            services.AddSingleton<IWowUpService, WowUpService>();
+            services.AddSingleton<IWowUpApiService, WowUpApiService>();
+            services.AddSingleton<ISessionService, SessionService>();
 
             services.AddSingleton<IAddonRepository, AddonRepository>();
             services.AddSingleton<IPreferenceRepository, PreferenceRepository>();

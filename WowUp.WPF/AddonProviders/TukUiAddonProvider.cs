@@ -1,6 +1,5 @@
 ﻿using Flurl;
 using Flurl.Http;
-using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -11,27 +10,26 @@ using WowUp.Common.Extensions;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
 using WowUp.Common.Models.TukUi;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
-using WowUp.WPF.Extensions;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
 {
     public class TukUiAddonProvider : ITukUiAddonProvider
     {
         private const string ApiUrl = "https://www.tukui.org/api.php";
-        private const string RetailAddonKey = "addon";
-        private const string ClassicAddonKey = "classic-addon";
         private const string ElvUiRetailTocUrl = "https://git.tukui.org/elvui/elvui/-/raw/master/ElvUI/ElvUI.toc";
         private const string TukUiRetailTocUrl = "https://git.tukui.org/Tukz/Tukui/-/raw/master/Tukui/Tukui.toc";
 
-        private readonly IMemoryCache _cache;
+        private readonly ICacheService _cacheService;
 
         public string Name => "TukUI";
 
-        public TukUiAddonProvider(IMemoryCache memoryCache)
+        public TukUiAddonProvider(ICacheService cacheService)
         {
-            _cache = memoryCache;
+            _cacheService = cacheService;
         }
 
         public bool IsValidAddonUri(Uri addonUri)
@@ -164,25 +162,23 @@ namespace WowUp.WPF.AddonProviders
         private async Task<IEnumerable<TukUiAddon>> GetAllAddons(WowClientType clientType)
         {
             var cacheKey = GetCacheKey(clientType);
-            if (_cache.TryGetValue(cacheKey, out var cachedAddons))
+
+            return await _cacheService.GetCache(cacheKey, async () =>
             {
-                return cachedAddons as IEnumerable<TukUiAddon>;
-            }
+                var query = GetAddonsSuffix(clientType);
+                var result = await ApiUrl
+                    .SetQueryParam(query, "all")
+                    .WithHeaders(HttpUtilities.DefaultHeaders)
+                    .GetJsonAsync<List<TukUiAddon>>();
 
-            var query = GetAddonsSuffix(clientType);
-            var result = await ApiUrl
-                .SetQueryParam(query, "all")
-                .GetJsonAsync<List<TukUiAddon>>();
+                if (clientType.IsRetail())
+                {
+                    result.Add(await GetTukUiRetailAddon());
+                    result.Add(await GetElvUiRetailAddon());
+                }
 
-            if (clientType.IsRetail())
-            {
-                result.Add(await GetTukUiRetailAddon());
-                result.Add(await GetElvUiRetailAddon());
-            }
-
-            _cache.CacheForAbsolute(cacheKey, result, TimeSpan.FromMinutes(10));
-
-            return result;
+                return result;
+            });
         }
 
         private async Task<TukUiAddon> GetElvUiRetailAddon()

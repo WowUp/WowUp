@@ -6,9 +6,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using WowUp.Common.Enums;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
@@ -20,18 +20,11 @@ namespace WowUp.WPF.ViewModels
     {
         private static readonly object ClientNamesLock = new object();
         private static readonly object DisplayAddonsLock = new object();
-        private static readonly object LoadLock = new object();
 
         private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
         private readonly IAddonService _addonService;
-
-        private int _selectedWowIndex = 0;
-        public int SelectedWowIndex
-        {
-            get => _selectedWowIndex;
-            set { SetProperty(ref _selectedWowIndex, value); }
-        }
+        private readonly ISessionService _sessionService;
 
         private bool _showEmptyLabel;
         public bool ShowEmptyLabel
@@ -75,27 +68,32 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _selectedRow, value); }
         }
 
-        private IList<WowClientType> _clientTypes = new List<WowClientType>();
-        private IList<string> _clientNames = new List<string>();
+        private WowClientType _selectedClientType;
+        public WowClientType SelectedClientType
+        {
+            get => _selectedClientType;
+            set { SetProperty(ref _selectedClientType, value); }
+        }
 
         public Command LoadItemsCommand { get; set; }
         public Command RefreshCommand { get; set; }
         public Command RescanCommand { get; set; }
         public Command UpdateAllCommand { get; set; }
+        public Command SelectedWowClientCommand { get; set; }
 
-        public ObservableCollection<ComboBoxItem> ClientNames { get; set; }
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
-
-        public WowClientType SelectedClientType => _clientTypes[SelectedWowIndex];
+        public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
 
         public AddonsViewViewModel(
             IServiceProvider serviceProvider,
             IAddonService addonService,
-            IWarcraftService warcraftService)
+            IWarcraftService warcraftService,
+            ISessionService sessionService)
         {
             _addonService = addonService;
             _warcraftService = warcraftService;
             _serviceProvider = serviceProvider;
+            _sessionService = sessionService;
 
             _addonService.AddonInstalled += (sender, args) =>
             {
@@ -117,41 +115,45 @@ namespace WowUp.WPF.ViewModels
                 SetClientNames();
             };
 
-            Initialize();
-        }
+            _sessionService.SessionChanged += (sender, args) =>
+            {
+                SelectedClientType = args.SessionState.SelectedClientType;
+            };
 
-        public void Initialize()
-        {
-            ClientNames = new ObservableCollection<ComboBoxItem>();
+            ClientTypeNames = new ObservableCollection<WowClientType>();
             DisplayAddons = new ObservableCollection<AddonListItemViewModel>();
             LoadItemsCommand = new Command(async () => await LoadItems());
             RefreshCommand = new Command(async () => await LoadItems());
             RescanCommand = new Command(async () => await ReScan());
             UpdateAllCommand = new Command(async () => await UpdateAll());
+            SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
 
-            BindingOperations.EnableCollectionSynchronization(ClientNames, ClientNamesLock);
+            BindingOperations.EnableCollectionSynchronization(ClientTypeNames, ClientNamesLock);
             BindingOperations.EnableCollectionSynchronization(DisplayAddons, DisplayAddonsLock);
 
+            SelectedClientType = _sessionService.SelectedClientType;
+
             SetClientNames();
+
+            Initialize();
         }
 
         private void SetClientNames()
         {
-            ClientNames.Clear();
-
-            _clientTypes = _warcraftService.GetWowClientTypes();
-            _clientNames = _warcraftService.GetWowClientNames();
-
-            for (var i = 0; i < _clientNames.Count; i += 1)
+            lock (ClientNamesLock)
             {
-                var clientName = _clientNames[i];
-                ClientNames.Add(new ComboBoxItem
-                {
-                    Content = clientName
-                });
-            }
+                ClientTypeNames.Clear();
 
-            SelectedWowIndex = 0;
+                foreach(var clientType in _warcraftService.GetWowClientTypes())
+                {
+                    ClientTypeNames.Add(clientType);
+                }
+            }
+        }
+
+        private async void Initialize()
+        {
+            await LoadItems();
         }
 
         public async Task UpdateAll()
@@ -188,7 +190,7 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                await DisplayAddons
+                await DisplayAddons.ToList()
                     .Where(addon => addon.IsAutoUpdated && (addon.CanUpdate || addon.CanInstall))
                     .ForEachAsync(2, async addon =>
                     {
@@ -231,9 +233,8 @@ namespace WowUp.WPF.ViewModels
             try
             {
                 var listViewItems = new List<AddonListItemViewModel>();
-                var wowType = _clientTypes[SelectedWowIndex];
 
-                var addons = await _addonService.GetAddons(wowType, forceReload);
+                var addons = await _addonService.GetAddons(SelectedClientType, forceReload);
                 addons = addons.OrderBy(addon => addon.GetDisplayState())
                     .ThenBy(addon => addon.Name)
                     .ToList();
@@ -269,6 +270,12 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
+        public async Task OnSelectedWowClientChanged(WowClientType clientType)
+        {
+            _sessionService.SelectedClientType = _selectedClientType;
+            await LoadItems();
+        }
+
         private AddonListItemViewModel GetAddonViewModel(Addon addon)
         {
             var viewModel = _serviceProvider.GetService<AddonListItemViewModel>();
@@ -279,24 +286,31 @@ namespace WowUp.WPF.ViewModels
 
         private void AddAddonListItem(Addon addon)
         {
-            lock (LoadLock)
+            try
             {
-                try
+                // If an addon not for the currently selected client was installed, ignore it
+                if (addon.ClientType != SelectedClientType)
                 {
-                    if (DisplayAddons.Any(da => da.Addon.Id == addon.Id))
-                    {
-                        return;
-                    }
+                    return;
+                }
 
-                    var viewModel = GetAddonViewModel(addon);
+                // If this addon is already in the list, ignore it
+                if (DisplayAddons.Any(da => da.Addon.Id == addon.Id))
+                {
+                    return;
+                }
 
+                var viewModel = GetAddonViewModel(addon);
+
+                lock (DisplayAddonsLock)
+                {
                     DisplayAddons.Add(viewModel);
                     SortAddons(DisplayAddons);
                 }
-                finally
-                {
-                    EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
-                }
+            }
+            finally
+            {
+                EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
             }
         }
 
@@ -312,7 +326,7 @@ namespace WowUp.WPF.ViewModels
 
         private void RemoveAddonListItem(Addon addon)
         {
-            lock (LoadLock)
+            lock (DisplayAddonsLock)
             {
                 DisplayAddons.Remove(DisplayAddons.First(da => addon.Id == da.Addon.Id));
             }
@@ -320,7 +334,7 @@ namespace WowUp.WPF.ViewModels
 
         private void UpdateDisplayAddons(IList<AddonListItemViewModel> addons)
         {
-            lock (LoadLock)
+            lock (DisplayAddonsLock)
             {
                 DisplayAddons.Clear();
 

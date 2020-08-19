@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using WowUp.Common.Enums;
+using WowUp.Common.Extensions;
 using WowUp.Common.Models;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
@@ -138,6 +139,8 @@ namespace WowUp.WPF.ViewModels
             {
                 Log.Error(ex, "Failed to install addon");
                 ShowInstallButton = true;
+
+                System.Windows.MessageBox.Show("Failure during addon install, please try again later.");
             }
         }
 
@@ -173,28 +176,10 @@ namespace WowUp.WPF.ViewModels
             ShowInstallButton = !IsInstalled;
             Name = Addon.Name;
             ThumbnailUrl = Addon.ThumbnailUrl;
-            DownloadCount = FormatDownloadCount(Addon.DownloadCount);
+            DownloadCount = $"{Addon.DownloadCount.FormatDownloadCount()} downloads";
             ExternalUrl = Addon.ExternalUrl;
             Author = Addon.Author;
             ProviderName = Addon.ProviderName;
-        }
-
-        private string FormatDownloadCount(int downloadCount)
-        {
-            var suffix = string.Empty;
-            var value = (double)downloadCount;
-            if (downloadCount >= 1000000)
-            {
-                suffix = "million ";
-                value /= 1000000.0;
-            }
-            else if (downloadCount >= 1000)
-            {
-                suffix = "thousand ";
-                value /= 1000.0;
-            }
-
-            return string.Format("{0:0.0} {1}downloads", value, suffix);
         }
     }
 }

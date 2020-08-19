@@ -15,13 +15,6 @@ namespace WowUp.WPF.Views
         {
             DataContext = _viewModel = viewModel;
             InitializeComponent();
-
-            _viewModel.SelectedWowIndex = 0;
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            _viewModel.LoadItemsCommand.Execute(this);
         }
 
         private void RescanButton_Click(object sender, System.Windows.RoutedEventArgs e)

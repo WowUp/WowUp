@@ -60,11 +60,11 @@ namespace WowUp.WPF.Utilities
         {
             try
             {
-                SetNewState(ApplicationUpdateState.CreateBackup);
-                BackupExecutable();
-
                 SetNewState(ApplicationUpdateState.Downloading);
                 await DownloadUpdate();
+
+                SetNewState(ApplicationUpdateState.CreateBackup);
+                BackupExecutable();
 
                 SetNewState(ApplicationUpdateState.Unpacking);
                 await UnpackUpdate();

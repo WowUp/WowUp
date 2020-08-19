@@ -13,8 +13,6 @@ namespace WowUp.Common.Services.Contracts
         void ShowLogsFolder();
 
         Task<bool> IsUpdateAvailable();
-        Task<string> GetLatestVersion();
-        Task<string> GetLatestVersionUrl();
         Task<ChangeLogFile> GetChangeLogFile();
         Task UpdateApplication(Action<ApplicationUpdateState, decimal> updateAction);
 

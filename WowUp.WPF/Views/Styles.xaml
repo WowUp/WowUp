@@ -42,8 +42,8 @@
     <SolidColorBrush x:Key="Purple1">#6B69D6</SolidColorBrush>
     <SolidColorBrush x:Key="Purple2">#504FA1</SolidColorBrush>
     <SolidColorBrush x:Key="Purple3">#383773</SolidColorBrush>
-    <SolidColorBrush x:Key="Rare">#0070DD</SolidColorBrush>
-    <SolidColorBrush x:Key="Epic">#A335EE</SolidColorBrush>
+    <SolidColorBrush x:Key="RareBrush">#0070DD</SolidColorBrush>
+    <SolidColorBrush x:Key="EpicBrush">#A335EE</SolidColorBrush>
     <SolidColorBrush x:Key="ContextMenuBackgroundBrush" Color="{StaticResource Dark4Color}" />
     <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
     <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="{StaticResource Dark3Color}" />

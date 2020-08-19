@@ -1,5 +1,29 @@
 ﻿{
-  "ChangeLogs": [
+  "ChangeLogs": [ 
+    {
+      "Version": "1.14.10",
+      "Description": "Bind the client type dropdown on 'My Addons' and 'Get Addons' to the same value to reduce confusion."
+    },
+    {
+      "Version": "1.14.9",
+      "Description": "Fix crash bug related to 'Update All' and alpha/beta addons.\nFix issue causing updated alpha/beta addons to revert to stable."
+    },
+    {
+      "Version": "1.14.8",
+      "Description": "Add Wow Interface integration for Scanning.\nAdd Wow Interface intergration for 'Install from URL'.\nPerformance updates."
+    },
+    {
+      "Version": "1.14.7",
+      "Description": "Fix install error when an addon has no files matching the selected channel.\nAttempt to fix some perfomance issues during install.\nSpeed up the scan process."
+    },
+    {
+      "Version": "1.14.6",
+      "Description": "In-App updates should now use the same GitHub download as the website.\nIf the In-App update fails to download dont just leave the user with a .bak file."
+    },
+    {
+      "Version": "1.14.5",
+      "Description": "Attempt to fix startup crash bug from windows for some users."
+    },
     {
       "Version": "1.14.4",
       "Description": "Improve TukUI support while scanning, will now check for X-Tukui-ProjectID for improved results.\nAttempted to make the app single instance, so you cant launch it a bunch of times."
