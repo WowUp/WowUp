@@ -26,36 +26,31 @@
     width: 100%;
   }
 
-  .addon-table {
-    tr {
-      &:hover {
-        background-color: $dark-1;
-      }
+  tr {
+    &:hover {
+      background-color: $dark-1;
     }
+  }
 
-    .addon-column {
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
+  .addon-logo-container {
+    background-color: $dark-2;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 0.5em;
+    flex-shrink: 0;
 
-      .addon-logo-container {
-        background-color: $dark-2;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin-right: 0.5em;
-        flex-shrink: 0;
-
-        .addon-logo {
-          width: 100%;
-        }
-      }
-
-      .addon-title {
-        font-weight: bold;
-        font-size: 1.1em;
-      }
+    .addon-logo {
+      width: 100%;
     }
+  }
+
+  .addon-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    word-break: break-all;
+    white-space: pre-wrap;
   }
 }

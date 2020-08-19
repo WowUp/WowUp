@@ -72,18 +72,11 @@ export class AddonService {
             try {
                 let addon: Addon;
 
-                const response = await this._wowupApiService.scanAddon({
-                    channelType: AddonChannelType.Stable,
-                    clientType,
-                    folderName: folder.name,
-                    tocMetaData: folder.tocMetaData
-                });
+                if (folder.toc.curseProjectId) {
+                    addon = await this.getCurseAddonById(folder, clientType);
+                } else {
 
-                // if (folder.toc.curseProjectId) {
-                //     addon = await this.getCurseAddonById(folder, clientType);
-                // } else {
-
-                // }
+                }
 
                 if (!addon) {
                     continue;

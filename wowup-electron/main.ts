@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as url from 'url';
 import { release, arch } from 'os';
 
-// app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
 const appVersion = require('./package.json').version;
 const USER_AGENT = `WowUp-Client/${appVersion} (${release()}; ${arch()}; +https://wowup.io)`;

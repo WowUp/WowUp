@@ -13,6 +13,7 @@ import { GetAddonsComponent } from 'app/get-addons/get-addons.component';
 import { OptionsComponent } from 'app/options/options.component';
 import { ExternalLinkDirective } from 'app/core/directives/external-link.directive';
 import { AddonTableColumnComponent } from 'app/components/addon-table-column/addon-table-column.component';
+import { AddonStatusColumnComponent } from 'app/components/addon-status-column/addon-status-column.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AddonTableColumnComponent } from 'app/components/addon-table-column/add
   ],
   imports: [
     AgGridModule.withComponents([
-      AddonTableColumnComponent
+      AddonTableColumnComponent,
+      AddonStatusColumnComponent
     ]),
     CommonModule,
     SharedModule,

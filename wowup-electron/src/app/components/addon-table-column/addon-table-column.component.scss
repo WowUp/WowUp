@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-right: 0.5em;
+    margin-right: 11px;
     flex-shrink: 0;
 
     .addon-logo {
@@ -22,5 +22,7 @@
   .addon-title {
     font-weight: bold;
     font-size: 1.1em;
+    // word-break: break-all;
+    white-space: normal;
   }
 }

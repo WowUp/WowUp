@@ -22,6 +22,7 @@ import { DetailModule } from './detail/detail.module';
 import { AppComponent } from './app.component';
 import { DefaultHeadersInterceptor } from './core/interceptors/default-headers.interceptor';
 import { AddonTableColumnComponent } from './components/addon-table-column/addon-table-column.component';
+import { AddonStatusColumnComponent } from './components/addon-status-column/addon-status-column.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -32,6 +33,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   declarations: [
     AppComponent,
     AddonTableColumnComponent,
+    AddonStatusColumnComponent,
   ],
   imports: [
     BrowserModule,

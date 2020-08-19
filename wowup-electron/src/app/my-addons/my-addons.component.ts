@@ -6,6 +6,7 @@ import { first, tap } from 'rxjs/operators';
 import { from, BehaviorSubject } from 'rxjs';
 import { Addon } from 'app/core/entities/addon';
 import { AddonTableColumnComponent } from 'app/components/addon-table-column/addon-table-column.component';
+import { AddonStatusColumnComponent } from 'app/components/addon-status-column/addon-status-column.component';
 
 @Component({
   selector: 'app-my-addons',
@@ -15,6 +16,8 @@ import { AddonTableColumnComponent } from 'app/components/addon-table-column/add
 export class MyAddonsComponent implements OnInit {
 
   private readonly _displayAddonsSrc = new BehaviorSubject<Addon[]>([]);
+
+  private gridApi;
 
   public displayedColumns: string[] = [
     'addon',
@@ -33,12 +36,20 @@ export class MyAddonsComponent implements OnInit {
       headerName: 'Addon',
       field: 'value',
       cellRendererFramework: AddonTableColumnComponent,
-      autoHeight: true
+      autoHeight: true,
+      suppressSizeToFit: true,
+      width: 400
     },
-    { headerName: 'Status', field: '' },
-    { headerName: 'Model', field: 'latestVersion' },
+    {
+      headerName: 'Status',
+      field: 'value',
+      cellRendererFramework: AddonStatusColumnComponent,
+      width: 80,
+      suppressSizeToFit: true,
+    },
+    { headerName: 'Latest Version', field: 'latestVersion', cellClass: 'cell-wrap-text ' },
     { headerName: 'Game Version', field: 'gameVersion' },
-    { headerName: 'Author', field: 'author' }
+    { headerName: 'Author', field: 'author', cellClass: 'cell-wrap-text' }
   ];
 
   public dataSource = [
@@ -83,6 +94,12 @@ export class MyAddonsComponent implements OnInit {
     this.busy = true;
     console.log(this.selectedClient);
     this.busy = false;
+  }
+
+  onGridReady(params) {
+    this.gridApi = params.api;
+    this.gridApi.sizeColumnsToFit();
+
   }
 
   private loadAddons(rescan: boolean = false) {

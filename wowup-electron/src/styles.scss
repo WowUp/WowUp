@@ -50,6 +50,17 @@ body {
   color: $white-3 !important;
 }
 
+.d-flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
 .row {
   display: flex;
   flex-direction: row;
@@ -63,7 +74,7 @@ body {
   @include ag-theme-balham(
     (
       // use theme parameters where possible
-      foreground-color: $white-1,
+        foreground-color: $white-1,
       background-color: $dark-3,
       row-hover-color: $dark-1,
       header-background-color: $dark-2,
@@ -72,10 +83,31 @@ body {
       borders: true,
       borders-critical: false,
       borders-secondary: false,
-      border-color: red,
+      border-color: transparent,
       secondary-border-color: blue,
       row-border-color: green,
       cell-horizontal-border: red
     )
   );
+
+  .ag-row {
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+}
+
+.addon-table {
+  width: 100%;
+  height: 100%;
+
+  .cell-break-all {
+    word-break: break-all;
+  }
+  .cell-wrap-text {
+    white-space: normal;
+  }
+  // .addon-title {
+  //   font-weight: bold;
+  //   font-size: 1.1em;
+
+  // }
 }
