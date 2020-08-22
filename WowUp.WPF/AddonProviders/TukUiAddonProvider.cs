@@ -32,6 +32,11 @@ namespace WowUp.WPF.AddonProviders
             _cacheService = cacheService;
         }
 
+        public Task Scan(IEnumerable<AddonFolder> addonFolder)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsValidAddonUri(Uri addonUri)
         {
             return false;

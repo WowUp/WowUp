@@ -1,4 +1,4 @@
-﻿namespace WowUp.WPF.Models.Curse
+﻿namespace WowUp.Common.Models.Curse
 {
     public class CurseDependency
     {

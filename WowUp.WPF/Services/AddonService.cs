@@ -118,6 +118,7 @@ namespace WowUp.WPF.Services
             if (rescan || !addons.Any())
             {
                 RemoveAddons(clientType);
+                //await ScanAddons(clientType);
                 addons = await GetLocalAddons(clientType);
                 SaveAddons(addons);
             }
@@ -384,12 +385,22 @@ namespace WowUp.WPF.Services
             _addonRepository.AddItems(addons);
         }
 
+        private async Task ScanAddons(WowClientType clientType)
+        {
+            var addonFolders = await _warcraftService.ListAddons(clientType);
+
+            foreach(var provider in _providers)
+            {
+                await provider.Scan(addonFolders);
+            }
+
+        }
+
         private async Task<List<Addon>> GetLocalAddons(WowClientType clientType)
         {
             var addonFolders = await _warcraftService.ListAddons(clientType);
             return await MapAll(addonFolders, clientType);
         }
-
 
         public async Task<List<Addon>> MapAll(IEnumerable<AddonFolder> addonFolders, WowClientType clientType)
         {

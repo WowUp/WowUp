@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace WowUp.Common.Models
 {
     public class AddonFolder
     {
+        public DirectoryInfo Directory { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
         public string Status { get; set; }

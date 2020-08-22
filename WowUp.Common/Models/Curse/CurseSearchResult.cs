@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WowUp.WPF.Models.Curse
+namespace WowUp.Common.Models.Curse
 {
     public class CurseSearchResult
     {

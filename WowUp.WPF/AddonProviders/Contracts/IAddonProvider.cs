@@ -39,5 +39,7 @@ namespace WowUp.WPF.AddonProviders.Contracts
         bool IsValidAddonUri(Uri addonUri);
 
         void OnPostInstall(Addon addon);
+
+        Task Scan(IEnumerable<AddonFolder> addonFolders);
     }
 }

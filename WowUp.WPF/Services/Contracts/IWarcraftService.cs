@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
@@ -25,5 +26,6 @@ namespace WowUp.WPF.Services.Contracts
         string GetAddonFolderPath(WowClientType clientType);
 
         Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType);
+        Task<IEnumerable<FileInfo>> ListAddonFolders(WowClientType clientType);
     }
 }

@@ -2,16 +2,19 @@
 using Flurl.Http;
 using Serilog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
+using WowUp.Common.Models.Curse;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
+using WowUp.WPF.AddonProviders.Curse;
 using WowUp.WPF.Entities;
-using WowUp.WPF.Models.Curse;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -28,6 +31,22 @@ namespace WowUp.WPF.AddonProviders
             ICacheService cacheService)
         {
             _cacheService = cacheService;
+        }
+
+        public async Task Scan(IEnumerable<AddonFolder> addonFolders)
+        {
+            var scannedFolders = new ConcurrentBag<CurseFolderScanner>();
+            await addonFolders.ForEachAsync(3, async addonFolder =>
+            {
+                var scanner = await new CurseFolderScanner(addonFolder.Directory).ScanFolder();
+                scannedFolders.Add(scanner);
+            });
+
+            var scannedFolderList = scannedFolders.ToList();
+
+            await GetAddonsByFingerprints(scannedFolderList.Select(sf => sf.Fingerprint));
+
+            throw new NotImplementedException();
         }
 
         public bool IsValidAddonUri(Uri addonUri)
@@ -218,7 +237,7 @@ namespace WowUp.WPF.AddonProviders
                 var searchResultFiles = latestFiles.Select(lf => new AddonSearchResultFile
                 {
                     ChannelType = GetChannelType(lf.ReleaseType),
-                    Version = lf.FileName,
+                    Version = lf.DisplayName,
                     DownloadUrl = lf.DownloadUrl,
                     Folders = GetFolderNames(lf),
                     GameVersion = GetGameVersion(lf)
@@ -360,6 +379,15 @@ namespace WowUp.WPF.AddonProviders
             }
         }
 
+        private async Task GetAddonsByFingerprints(IEnumerable<long> fingerprints)
+        {
+            var url = $"{ApiUrl}/fingerprint";
+
+            var response = await url
+                .PostJsonAsync(fingerprints);
+
+        }
+
         private PotentialAddon GetPotentialAddon(CurseSearchResult searchResult)
         {
             return new PotentialAddon
@@ -388,7 +416,5 @@ namespace WowUp.WPF.AddonProviders
                     return "wow_retail";
             }
         }
-
-
     }
 }

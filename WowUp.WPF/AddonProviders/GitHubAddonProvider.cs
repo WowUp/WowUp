@@ -25,6 +25,11 @@ namespace WowUp.WPF.AddonProviders
 
         public string Name => "GitHub";
 
+        public Task Scan(IEnumerable<AddonFolder> addonFolder)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
         {
             var searchResults = new List<AddonSearchResult>();

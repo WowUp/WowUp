@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Extensions;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
 using WowUp.Common.Models.Warcraft;
+using WowUp.WPF.AddonProviders.Curse;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
@@ -213,25 +215,64 @@ namespace WowUp.WPF.Services
             return true;
         }
 
+        public async Task<IEnumerable<FileInfo>> ListAddonFolders(WowClientType clientType)
+        {
+            var addonFolders = new List<string>();
+            var addonsPath = GetAddonFolderPath(clientType);
+            var parser = new CurseAddonScanner(addonsPath).Scan();
+
+            var addonsPathDi = new DirectoryInfo(addonsPath);
+            var directories = addonsPathDi.GetDirectories(string.Empty, SearchOption.AllDirectories);
+
+            var infs = addonsPathDi.GetFileSystemInfos();
+            var dh = CurseHash.GetFileDateHash(infs);
+            var fileExts = new string[] { ".toc", ".lua", ".xml" };
+
+            foreach (var dir in directories)
+            {
+                var hashes = new List<(long, string)>();
+                var files = dir.GetFiles("*.*", SearchOption.AllDirectories);
+                foreach (var file in files)
+                {
+                    if (!fileExts.Any(ext => ext == file.Extension))
+                    {
+                        continue;
+                    }
+
+                    var nhash = CurseHash.ComputeNormalizedFileHash(file.FullName);
+                    var hash = CurseHash.ComputeFileHash(file.FullName, false);
+                    hashes.Add((nhash, file.FullName));
+                }
+
+                hashes.Sort((a,b) => a.Item1.CompareTo(b.Item1));
+
+                var str = string.Join(string.Empty, hashes.Select(hash => hash.Item1));
+                var strHash = CurseHash.ComputeHash(System.Text.Encoding.ASCII.GetBytes(str), false);
+
+            }
+
+            return new FileInfo[0];
+        }
+
         public async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
         {
             var addons = new List<AddonFolder>();
 
             var addonsPath = GetAddonFolderPath(clientType);
+            var addonsDirectory = new DirectoryInfo(addonsPath);
 
             // Folder may not exist if no addons have been installed
-            if (!Directory.Exists(addonsPath))
+            if (!addonsDirectory.Exists)
             {
                 return addons;
             }
 
-            var addonDirectories = Directory.GetDirectories(addonsPath);
+            var addonDirectories = addonsDirectory.GetDirectories();
             Log.Debug($"addonDirectories {addonDirectories.Length}");
 
             foreach (var directory in addonDirectories)
             {
-                var directoryInfo = new DirectoryInfo(directory);
-                var addonFolder = await GetAddonFolder(directoryInfo);
+                var addonFolder = await GetAddonFolder(directory);
                 addons.Add(addonFolder);
             }
 
@@ -245,6 +286,7 @@ namespace WowUp.WPF.Services
 
             return new AddonFolder
             {
+                Directory = directory,
                 Name = directory.Name,
                 Path = directory.FullName,
                 Status = "Pending",
