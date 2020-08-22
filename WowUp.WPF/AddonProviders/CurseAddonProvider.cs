@@ -218,7 +218,7 @@ namespace WowUp.WPF.AddonProviders
                 var searchResultFiles = latestFiles.Select(lf => new AddonSearchResultFile
                 {
                     ChannelType = GetChannelType(lf.ReleaseType),
-                    Version = lf.FileName,
+                    Version = lf.DisplayName,
                     DownloadUrl = lf.DownloadUrl,
                     Folders = GetFolderNames(lf),
                     GameVersion = GetGameVersion(lf)
