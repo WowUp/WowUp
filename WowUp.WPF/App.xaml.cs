@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using System.Windows;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
+using WowUp.WPF.Enums;
 using WowUp.WPF.Repositories;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services;
@@ -27,6 +27,8 @@ namespace WowUp.WPF
     /// </summary>
     public partial class App : Application
     {
+        private const string IpcPipeName = "ipc.wowup.io";
+
         private static readonly Mutex singleton = new Mutex(true, "WowUp.io");
 
         private readonly ServiceProvider _serviceProvider;
@@ -114,6 +116,7 @@ namespace WowUp.WPF
             services.AddSingleton<IWowUpService, WowUpService>();
             services.AddSingleton<IWowUpApiService, WowUpApiService>();
             services.AddSingleton<ISessionService, SessionService>();
+            services.AddSingleton<IIpcServerService, IpcServerService>();
 
             services.AddSingleton<IAddonRepository, AddonRepository>();
             services.AddSingleton<IPreferenceRepository, PreferenceRepository>();
@@ -142,29 +145,33 @@ namespace WowUp.WPF
             Log.Error($"Terminating {args.IsTerminating}");
         }
 
+        private bool SendShowWindowCommand()
+        {
+            NamedPipeClientStream clientStream = new NamedPipeClientStream(IpcPipeName);
+            try
+            {
+                clientStream.Connect(500);
+            }
+            catch (TimeoutException)
+            {
+                return false;
+            }
+
+            clientStream.WriteByte((byte)IpcCommand.Show);
+            return true;
+        }
+
         private void HandleSingleInstance()
         {
+            var ipcService = _serviceProvider.GetService<IIpcServerService>();
+
             if (singleton.WaitOne(TimeSpan.Zero, true))
             {
+                ipcService.Start(IpcPipeName);
                 return;
             }
 
-            MessageBox.Show("WowUp is already running.");
-
-            var currentPocess = Process.GetCurrentProcess();
-            var runningProcess = Process
-                .GetProcessesByName(currentPocess.ProcessName)
-                .FirstOrDefault(p => p.Id != currentPocess.Id);
-
-            if (runningProcess != null)
-            {
-                if (runningProcess.MainWindowHandle == IntPtr.Zero)
-                {
-                    ShowWindow(runningProcess.Handle, ShowWindowEnum.Show);
-                }
-
-                SetForegroundWindow(runningProcess.MainWindowHandle);
-            }
+            ipcService.Send(IpcPipeName, IpcCommand.Show);
 
             //there is already another instance running!
             Current.Shutdown();

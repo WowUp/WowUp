@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.14.12",
+      "Description": "When running the exe multiple times the original window should restore instead of showing an alert."
+    },
+    {
       "Version": "1.14.11",
       "Description": "Change the value used for current version for Curse addons.\nThis will require you to re-update all Curse addons."
     },

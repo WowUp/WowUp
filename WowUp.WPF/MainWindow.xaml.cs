@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using System.Windows.Threading;
+using WowUp.WPF.Enums;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.ViewModels;
@@ -19,13 +21,28 @@ namespace WowUp.WPF
         private readonly MainWindowViewModel _viewModel;
         private readonly NotifyIcon _notifyIcon;
 
+        private readonly IIpcServerService _ipcServerService;
+
         public MainWindow(
             IAnalyticsService analyticsService,
+            IIpcServerService ipcServerService,
             MainWindowViewModel viewModel)
         {
+            _ipcServerService = ipcServerService;
+
             _notifyIcon = CreateNotifyIcon();
 
             DataContext = _viewModel = viewModel;
+
+            ipcServerService.CommandReceived += (sender, args) =>
+            {
+                if (args.Command != IpcCommand.Show)
+                {
+                    return;
+                }
+
+                ShowFromBackground();
+            };
 
             InitializeComponent();
 
@@ -197,6 +214,16 @@ namespace WowUp.WPF
         {
             e.Uri.AbsoluteUri.OpenUrlInBrowser();
             e.Handled = true;
+        }
+
+        private void ShowFromBackground()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                Show();
+                WindowState = WindowState.Normal;
+                Activate();
+            }));
         }
     }
 }
