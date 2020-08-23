@@ -316,7 +316,7 @@
                     <DataGridTemplateColumn Header="Status" CellTemplate="{StaticResource StatusColumnTemplate}" Width="120" CanUserResize="False"/>
                     <DataGridTemplateColumn Header="Latest Version" CellTemplate="{StaticResource LatestVersionTemplate}" Width="120" MinWidth="80"/>
                     <DataGridTemplateColumn Header="Game Version" CellTemplate="{StaticResource GameVersionTemplate}" Width="120" CanUserResize="False"/>
-                    <DataGridTemplateColumn Header="Source" CellTemplate="{StaticResource SourceTemplate}" Width="110" CanUserResize="False"/>
+                    <DataGridTemplateColumn Header="Provider" CellTemplate="{StaticResource SourceTemplate}" Width="110" CanUserResize="False"/>
                     <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource AuthorTemplate}" Width="150" MinWidth="80" CanUserResize="False" />
                 </DataGrid.Columns>
             </DataGrid>
