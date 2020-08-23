@@ -2,7 +2,7 @@
   "ChangeLogs": [
     {
       "Version": "1.14.12",
-      "Description": "When running the exe multiple times the original window should restore instead of showing an alert.\nAdd some color to the In-App update bar to make it more noticable.\nAdd a column with the provider name to 'My Addons' page."
+      "Description": "When running the app multiple times the original window should restore instead of showing an alert.\nAdd some color to the In-App update bar to make it more noticeable.\nAdd a column with the provider name to 'My Addons' page."
     },
     {
       "Version": "1.14.11",
