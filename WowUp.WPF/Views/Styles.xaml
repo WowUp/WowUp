@@ -12,6 +12,9 @@
     <Color x:Key="White1Color">#FFFFFF</Color>
     <Color x:Key="White2Color">#DDDDDD</Color>
     <Color x:Key="White3Color">#CCCCCC</Color>
+    <Color x:Key="Blue1Color">#315891</Color>
+    <Color x:Key="Blue2Color">#24416c</Color>
+    <Color x:Key="Highlight1Color">#01BAEF</Color>
     <Color x:Key="RareColor">#0070DD</Color>
     <Color x:Key="EpicColor">#A335EE</Color>
     <Color x:Key="ControlPressedColor">#FF211AA9</Color>
@@ -42,6 +45,9 @@
     <SolidColorBrush x:Key="Purple1">#6B69D6</SolidColorBrush>
     <SolidColorBrush x:Key="Purple2">#504FA1</SolidColorBrush>
     <SolidColorBrush x:Key="Purple3">#383773</SolidColorBrush>
+    <SolidColorBrush x:Key="Blue1Brush">#315891</SolidColorBrush>
+    <SolidColorBrush x:Key="Blue2Brush">#24416c</SolidColorBrush>
+    <SolidColorBrush x:Key="Highlight1Brush">#01BAEF</SolidColorBrush>
     <SolidColorBrush x:Key="RareBrush">#0070DD</SolidColorBrush>
     <SolidColorBrush x:Key="EpicBrush">#A335EE</SolidColorBrush>
     <SolidColorBrush x:Key="ContextMenuBackgroundBrush" Color="{StaticResource Dark4Color}" />
@@ -206,6 +212,32 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource White1}" />
         <Setter Property="Background" Value="{StaticResource Purple2}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="Transparent" 
+                            BorderThickness="0"
+                            Padding="10, 5">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Dark2}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Purple3}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="PurpleButtonLight" TargetType="Button">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource White1}" />
+        <Setter Property="Background" Value="{StaticResource Purple1}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
