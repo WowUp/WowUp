@@ -79,6 +79,8 @@ namespace WowUp.WPF
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            _notifyIcon?.Dispose();
+
             base.OnClosing(e);
             _viewModel.OnClosing(this);
         }
