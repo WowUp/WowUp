@@ -59,7 +59,7 @@
                                 </Grid.RowDefinitions>
                                 <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailLocation}" IsEnabled="False" FontSize="14"/>
                                 <Button  Grid.Column="1" Grid.Row="0" Margin="0" Command="{Binding SetRetailLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2}" FontSize="13">The folder that contains the retail client folder __retail_</Label>
+                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail client folder __retail_</Label>
                             </Grid>
                             <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0">Retail PTR</Label>
                             <Grid Grid.Row="1" Grid.Column="1" Margin="0 0 0 10">
@@ -73,7 +73,7 @@
                                 </Grid.RowDefinitions>
                                 <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailPtrLocation}" IsEnabled="False" FontSize="14"/>
                                 <Button  Grid.Column="1" Grid.Row="0"  Command="{Binding SetRetailPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2}" FontSize="13">The folder that contains the retail PTR client folder __ptr_</Label>
+                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail PTR client folder __ptr_</Label>
                             </Grid>
                             <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0">Classic</Label>
                             <Grid Grid.Row="2" Grid.Column="1" Margin="0 0 0 10">
@@ -87,7 +87,7 @@
                                 </Grid.RowDefinitions>
                                 <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicLocation}" IsEnabled="False" FontSize="14"/>
                                 <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2}" FontSize="13">The folder that contains the classic client folder __classic_</Label>
+                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic client folder __classic_</Label>
                             </Grid>
                             <Label FontWeight="Bold" Grid.Row="3" Grid.Column="0">Classic PTR</Label>
                             <Grid Grid.Row="3" Grid.Column="1" Margin="0 0 0 10">
@@ -101,7 +101,7 @@
                                 </Grid.RowDefinitions>
                                 <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicPtrLocation}" IsEnabled="False" FontSize="14"/>
                                 <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2}" FontSize="13">The folder that contains the classic PTR client folder __classic_ptr_</Label>
+                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic PTR client folder __classic_ptr_</Label>
                             </Grid>
                             <Label FontWeight="Bold" Grid.Row="4" Grid.Column="0">Beta</Label>
                             <Grid Grid.Row="4" Grid.Column="1" Margin="0 0 0 10">
@@ -115,7 +115,7 @@
                                 </Grid.RowDefinitions>
                                 <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowBetaLocation}" IsEnabled="False" FontSize="14"/>
                                 <!--<Button  Grid.Column="1" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>-->
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2}" FontSize="13">The folder that contains the beta client folder __beta_</Label>
+                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the beta client folder __beta_</Label>
                             </Grid>
                         </Grid>
                         <!--<StackPanel>

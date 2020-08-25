@@ -25,6 +25,8 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IAddonService _addonService;
         private readonly ISessionService _sessionService;
+        
+        private List<Addon> _addons;
 
         private bool _showEmptyLabel;
         public bool ShowEmptyLabel
@@ -75,6 +77,8 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _selectedClientType, value); }
         }
 
+        public SearchInputViewModel SearchInputViewModel { get; set; }
+
         public Command LoadItemsCommand { get; set; }
         public Command RefreshCommand { get; set; }
         public Command RescanCommand { get; set; }
@@ -94,6 +98,7 @@ namespace WowUp.WPF.ViewModels
             _warcraftService = warcraftService;
             _serviceProvider = serviceProvider;
             _sessionService = sessionService;
+            _addons = new List<Addon>();
 
             _addonService.AddonInstalled += (sender, args) =>
             {
@@ -128,6 +133,10 @@ namespace WowUp.WPF.ViewModels
             UpdateAllCommand = new Command(async () => await UpdateAll());
             SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
 
+            SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
+            SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
+            SearchInputViewModel.Searched += SearchInputViewModel_Searched;
+
             BindingOperations.EnableCollectionSynchronization(ClientTypeNames, ClientNamesLock);
             BindingOperations.EnableCollectionSynchronization(DisplayAddons, DisplayAddonsLock);
 
@@ -136,6 +145,15 @@ namespace WowUp.WPF.ViewModels
             SetClientNames();
 
             Initialize();
+        }
+
+        private void SearchInputViewModel_Searched(object sender, Models.Events.SearchInputEventArgs e)
+        {
+        }
+
+        private void SearchInputViewModel_TextChanged(object sender, Models.Events.SearchInputEventArgs e)
+        {
+            FilterAddons(e.Text);
         }
 
         private void SetClientNames()
@@ -221,6 +239,20 @@ namespace WowUp.WPF.ViewModels
             await LoadItems(true);
         }
 
+        private void FilterAddons(string filter)
+        {
+            var filteredAddons = string.IsNullOrEmpty(filter) 
+                ? _addons
+                : _addons.Where(addon => addon.Name.Contains(filter, StringComparison.OrdinalIgnoreCase));
+
+            ShowResults = filteredAddons.Any();
+            ShowEmptyLabel = !filteredAddons.Any();
+
+            var listViewItems = CreateListViewModels(filteredAddons);
+
+            UpdateDisplayAddons(listViewItems);
+        }
+
         public async Task LoadItems(bool forceReload = false)
         {
             IsBusy = true;
@@ -232,24 +264,12 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                var listViewItems = new List<AddonListItemViewModel>();
-
-                var addons = await _addonService.GetAddons(SelectedClientType, forceReload);
-                addons = addons.OrderBy(addon => addon.GetDisplayState())
+                _addons = await _addonService.GetAddons(SelectedClientType, forceReload);
+                _addons = _addons.OrderBy(addon => addon.GetDisplayState())
                     .ThenBy(addon => addon.Name)
                     .ToList();
 
-                foreach (var addon in addons)
-                {
-                    if (string.IsNullOrEmpty(addon.LatestVersion))
-                    {
-                        continue;
-                    }
-
-                    var viewModel = GetAddonViewModel(addon);
-
-                    listViewItems.Add(viewModel);
-                }
+                var listViewItems = CreateListViewModels(_addons);
 
                 UpdateDisplayAddons(listViewItems);
 
@@ -268,6 +288,25 @@ namespace WowUp.WPF.ViewModels
                 EnableRefresh = true;
                 EnableRescan = true;
             }
+        }
+
+        private List<AddonListItemViewModel> CreateListViewModels(IEnumerable<Addon> addons)
+        {
+            var listViewItems = new List<AddonListItemViewModel>();
+
+            foreach (var addon in addons)
+            {
+                if (string.IsNullOrEmpty(addon.LatestVersion))
+                {
+                    continue;
+                }
+
+                var viewModel = GetAddonViewModel(addon);
+
+                listViewItems.Add(viewModel);
+            }
+
+            return listViewItems;
         }
 
         public async Task OnSelectedWowClientChanged(WowClientType clientType)

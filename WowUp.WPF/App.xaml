@@ -12,6 +12,7 @@
             <localcv:BoolToVisibility x:Key="BoolToVisibilty" />
             <localcv:StringToVisibilty x:Key="StringToVisibilty" />
             <localcv:InverseStringToVisibilty x:Key="InverseStringToVisibilty" />
+            <localcv:InverseBoolToVisibility x:Key="InverseBoolToVisibility" />
             
             <!--Global Styles-->
             <Color x:Key="NavigationPrimary">#6B69D6</Color>

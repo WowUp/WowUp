@@ -43,9 +43,9 @@ namespace WowUp.WPF.ViewModels
         public ObservableCollection<PotentialAddonListItemViewModel> DisplayAddons { get; set; }
         public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
         public Command RefreshCommand { get; set; }
-        public Command SearchCommand { get; set; }
         public Command InstallNewCommand { get; set; }
         public Command SelectedWowClientCommand { get; set; }
+        public SearchInputViewModel SearchInputViewModel { get; set; }
 
         public GetAddonsViewModel(
             IServiceProvider serviceProvider,
@@ -62,12 +62,15 @@ namespace WowUp.WPF.ViewModels
             DisplayAddons = new ObservableCollection<PotentialAddonListItemViewModel>();
 
             RefreshCommand = new Command(() => OnRefresh());
-            SearchCommand = new Command((text) => OnSearch((string)text));
             InstallNewCommand = new Command(() => OnInstallFromUrl());
             SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
 
             BindingOperations.EnableCollectionSynchronization(ClientTypeNames, ClientNamesLock);
             BindingOperations.EnableCollectionSynchronization(DisplayAddons, DisplayAddonsLock);
+
+            SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
+            SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged; ;
+            SearchInputViewModel.Searched += SearchInputViewModel_Searched; ;
 
             _addonService.AddonUninstalled += (sender, args) =>
             {
@@ -86,6 +89,19 @@ namespace WowUp.WPF.ViewModels
         {
             SetClientNames();
             await LoadPopularAddons();
+        }
+
+        private void SearchInputViewModel_Searched(object sender, Models.Events.SearchInputEventArgs e)
+        {
+            OnSearch(e.Text);
+        }
+
+        private void SearchInputViewModel_TextChanged(object sender, Models.Events.SearchInputEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.Text))
+            {
+                OnSearch(e.Text);
+            }
         }
 
         private void SetClientNames()

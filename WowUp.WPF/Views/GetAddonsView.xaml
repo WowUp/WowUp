@@ -46,11 +46,11 @@
                                        TextWrapping="Wrap"/>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding DownloadCount}" 
-                                           Foreground="{StaticResource White3}"
+                                           Foreground="{StaticResource White3Brush}"
                                            Style="{StaticResource labelAddonText}" />
                                 <TextBlock Text="{Binding ProviderName}"
                                            Margin="10 0 0 0"
-                                           Foreground="{StaticResource White3}"
+                                           Foreground="{StaticResource White3Brush}"
                                            Style="{StaticResource labelAddonText}" />
                             </StackPanel>
                         </StackPanel>
@@ -140,15 +140,7 @@
                 <StackPanel  Orientation="Horizontal">
                     <Button Style="{StaticResource purpleButton}" Margin="0 0 10 0" Command="{Binding RefreshCommand}">Refresh</Button>
                     <Button Style="{StaticResource purpleButton}" Margin="0 0 10 0" Command="{Binding InstallNewCommand}">Install From URL</Button>
-                    <TextBlock Text="Search" FontSize="14" Foreground="White" VerticalAlignment="Center" Margin="0, 0, 10,0"/>
-                    <TextBox  Padding="4" Width="150"
-                              Text="{Binding SearchText, Mode=TwoWay}">
-                        <TextBox.InputBindings>
-                            <KeyBinding Key="Enter" 
-                                        Command="{Binding SearchCommand}" 
-                                        CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}" />
-                        </TextBox.InputBindings>
-                    </TextBox>
+                    <local:SearchInput Width="150" VerticalAlignment="Center" DataContext="{Binding SearchInputViewModel}"/>
                 </StackPanel>
             </Border>
         </Grid>

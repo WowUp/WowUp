@@ -6,7 +6,7 @@
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:t="http://schemas.telerik.com/2008/xaml/presentation"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:WowUp.WPF.Views"
+             xmlns:vw = "clr-namespace:WowUp.WPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              >
@@ -180,8 +180,6 @@
             </Border>
             <Border Grid.Column="1" Padding="10">
                 <StackPanel Orientation="Horizontal">
-                    <!--<Button x:Name="InstallButton" Margin="0, 0, 10, 0" Command="{Binding InstallCommand}" 
-                            Style="{StaticResource purpleButton}">Install</Button>-->
                     <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0" Click="UpdateAllButton_Click" 
                             IsEnabled="{Binding EnableUpdateAll}"
                             Style="{StaticResource purpleButton}">Update All</Button>
@@ -191,24 +189,23 @@
                     <Button x:Name="RescanButton" Click="RescanButton_Click"
                             IsEnabled="{Binding EnableRescan}"
                             Style="{StaticResource purpleButton}">Re-Scan</Button>
+                    <vw:SearchInput Width="150" Margin="10 0 0 0" VerticalAlignment="Center" DataContext="{Binding SearchInputViewModel}"/>
                 </StackPanel>
             </Border>
         </Grid>
         <Grid x:Name="AddonTable" Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="2" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center">
+            <StackPanel Grid.Row="0" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center">
                 <TextBlock Text="Loading Addons..." HorizontalAlignment="Center" FontSize="14" Foreground="White" />
                 <Image gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="40"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
             </StackPanel>
-            <StackPanel Grid.Row="1" Visibility="{Binding ShowEmptyLabel, Converter={StaticResource BoolToVisibilty}}" >
+            <StackPanel Grid.Row="0" Visibility="{Binding ShowEmptyLabel, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center" >
                 <TextBlock Text="No Addons found" HorizontalAlignment="Center" FontSize="16" Foreground="White"/>
             </StackPanel>
-            <DataGrid Grid.Row="2" Padding="0" Margin="0" 
+            <DataGrid Grid.Row="0" Padding="0" Margin="0" 
                       Visibility="{Binding ShowResults, Converter={StaticResource BoolToVisibilty}}"
                       ItemsSource="{Binding DisplayAddons}"
                       Background="{StaticResource Dark2}"

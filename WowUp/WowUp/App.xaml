@@ -18,19 +18,17 @@
             <Color x:Key="Dark1">#666666</Color>
             <Color x:Key="Dark2">#555555</Color>
             <Color x:Key="Dark3">#444444</Color>
-            <Color x:Key="White1">#FFFFFF</Color>
-            <Color x:Key="White2">#DDDDDD</Color>
             <Color x:Key="Purple1">#6B69D6</Color>
             <Color x:Key="Purple2">#504FA1</Color>
             <Color x:Key="Purple3">#504FA1</Color>
 
-            <Style TargetType="{x:Type Label}">
+            <!--<Style TargetType="{x:Type Label}">
                 <Setter Property="TextColor" Value="{StaticResource White1}" />
             </Style>
 
             <Style TargetType="{x:Type Button}">
                 <Setter Property="TextColor" Value="{StaticResource White1}" />
-            </Style>
+            </Style>-->
 
             <Style TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />

@@ -92,6 +92,7 @@ namespace WowUp.WPF
             services.AddTransient<OptionsViewModel>();
             services.AddTransient<PotentialAddonListItemViewModel>();
             services.AddTransient<ApplicationUpdateControlViewModel>();
+            services.AddTransient<SearchInputViewModel>();
 
             services.AddTransient<AboutView>();
             services.AddTransient<AddonsView>();

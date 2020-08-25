@@ -32,6 +32,7 @@
     <None Remove="Assets\Fonts\OpenSans-SemiBold.ttf" />
     <None Remove="Assets\Fonts\OpenSans-SemiBoldItalic.ttf" />
     <None Remove="Assets\patron.png" />
+    <None Remove="Assets\search_icon.png" />
     <None Remove="Assets\wowup_logo_1.png" />
     <None Remove="Assets\wowup_logo_512.png" />
     <None Remove="Assets\wowup_logo_512np.png" />
@@ -72,6 +73,7 @@
     <Resource Include="Assets\Fonts\OpenSans-SemiBold.ttf" />
     <Resource Include="Assets\Fonts\OpenSans-SemiBoldItalic.ttf" />
     <Resource Include="Assets\patron.png" />
+    <Resource Include="Assets\search_icon.png" />
     <Resource Include="Assets\wowup_logo_1.png" />
     <Resource Include="Assets\wowup_logo_512.png" />
     <Resource Include="Assets\wowup_logo_512np.png" />
