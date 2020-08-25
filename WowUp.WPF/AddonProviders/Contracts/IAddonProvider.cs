@@ -5,6 +5,7 @@ using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
 
 namespace WowUp.WPF.AddonProviders.Contracts
 {
@@ -40,6 +41,9 @@ namespace WowUp.WPF.AddonProviders.Contracts
 
         void OnPostInstall(Addon addon);
 
-        Task Scan(IEnumerable<AddonFolder> addonFolders);
+        Task Scan(
+            WowClientType clientType,
+            AddonChannelType addonChannelType, 
+            IEnumerable<AddonFolder> addonFolders);
     }
 }

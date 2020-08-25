@@ -13,6 +13,7 @@ using WowUp.Common.Models.Events;
 using WowUp.Common.Models.Warcraft;
 using WowUp.WPF.AddonProviders.Curse;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;

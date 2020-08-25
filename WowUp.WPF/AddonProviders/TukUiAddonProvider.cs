@@ -13,6 +13,7 @@ using WowUp.Common.Models.TukUi;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -32,9 +33,50 @@ namespace WowUp.WPF.AddonProviders
             _cacheService = cacheService;
         }
 
-        public Task Scan(IEnumerable<AddonFolder> addonFolder)
+        public async Task Scan(
+            WowClientType clientType,
+            AddonChannelType addonChannelType, 
+            IEnumerable<AddonFolder> addonFolders)
         {
-            throw new NotImplementedException();
+            var addons = await GetAllAddons(clientType);
+
+            foreach(var addonFolder in addonFolders)
+            {
+                TukUiAddon addon = null;
+                if (!string.IsNullOrEmpty(addonFolder.Toc.TukUiProjectId))
+                {
+                    addon = addons.FirstOrDefault(a => a.Id == addonFolder.Toc.TukUiProjectId);
+                }
+                else
+                {
+                    var results = await SearchAddons(clientType, addonFolder.Toc.Title);
+                    addon = results.FirstOrDefault();
+                }
+
+                if(addon != null)
+                {
+                    addonFolder.MatchingAddon = new Addon
+                    {
+                        Author = addon.Author,
+                        AutoUpdateEnabled = false,
+                        ChannelType = addonChannelType,
+                        ClientType = clientType,
+                        DownloadUrl = addon.Url,
+                        ExternalId = addon.Id,
+                        ExternalUrl = addon.WebUrl,
+                        FolderName = addonFolder.Name,
+                        Name = addon.Name,
+                        GameVersion = addon.Patch,
+                        InstalledAt = DateTime.UtcNow,
+                        InstalledFolders = addonFolder.Name,
+                        InstalledVersion = addonFolder.Toc.Version,
+                        IsIgnored = false,
+                        LatestVersion = addon.Version,
+                        ProviderName = Name,
+                        ThumbnailUrl = addon.ScreenshotUrl
+                    };
+                }
+            }
         }
 
         public bool IsValidAddonUri(Uri addonUri)
@@ -109,10 +151,8 @@ namespace WowUp.WPF.AddonProviders
             var results = new List<AddonSearchResult>();
             try
             {
-                var addons = await GetAllAddons(clientType);
-                var addon = addons
-                    .Where(a => a.Name.Equals(addonName, StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault();
+                var addons = await SearchAddons(clientType, addonName);
+                var addon = addons.FirstOrDefault();
 
                 if (addon != null)
                 {
@@ -125,6 +165,14 @@ namespace WowUp.WPF.AddonProviders
             }
 
             return results;
+        }
+
+        private async Task<List<TukUiAddon>> SearchAddons(WowClientType clientType, string addonName)
+        {
+            var addons = await GetAllAddons(clientType);
+            return addons
+                .Where(a => a.Name.Equals(addonName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
         private PotentialAddon ToPotentialAddon(TukUiAddon addon)
@@ -199,7 +247,7 @@ namespace WowUp.WPF.AddonProviders
                 Changelog = string.Empty,
                 DonateUrl = "https://www.tukui.org/support.php",
                 Downloads = "3000000",
-                Id = "123321",
+                Id = toc.TukUiProjectId ?? "-2",
                 LastDownload = string.Empty,
                 LastUpdate = string.Empty,
                 Name = toc.Title,
@@ -224,7 +272,7 @@ namespace WowUp.WPF.AddonProviders
                 Changelog = string.Empty,
                 DonateUrl = "https://www.tukui.org/support.php",
                 Downloads = "4000000",
-                Id = "43252",
+                Id = toc.TukUiProjectId ?? "-1",
                 LastDownload = string.Empty,
                 LastUpdate = string.Empty,
                 Name = toc.Title,

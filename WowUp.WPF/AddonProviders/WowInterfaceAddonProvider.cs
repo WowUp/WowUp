@@ -12,6 +12,7 @@ using WowUp.Common.Models.WowInterface;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -32,9 +33,11 @@ namespace WowUp.WPF.AddonProviders
 
         }
 
-        public Task Scan(IEnumerable<AddonFolder> addonFolder)
+        public async Task Scan(
+            WowClientType clientType,
+            AddonChannelType addonChannelType, 
+            IEnumerable<AddonFolder> addonFolder)
         {
-            throw new NotImplementedException();
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)

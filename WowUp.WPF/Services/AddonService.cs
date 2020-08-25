@@ -16,6 +16,7 @@ using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models.Events;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
@@ -118,8 +119,7 @@ namespace WowUp.WPF.Services
             if (rescan || !addons.Any())
             {
                 RemoveAddons(clientType);
-                //await ScanAddons(clientType);
-                addons = await GetLocalAddons(clientType);
+                addons = await ScanAddons(clientType);
                 SaveAddons(addons);
             }
 
@@ -385,15 +385,24 @@ namespace WowUp.WPF.Services
             _addonRepository.AddItems(addons);
         }
 
-        private async Task ScanAddons(WowClientType clientType)
+        private async Task<List<Addon>> ScanAddons(WowClientType clientType)
         {
             var addonFolders = await _warcraftService.ListAddons(clientType);
 
-            foreach(var provider in _providers)
+            foreach (var provider in _providers)
             {
-                await provider.Scan(addonFolders);
+                await provider.Scan(
+                    clientType,
+                    _wowUpService.GetDefaultAddonChannel(),
+                    addonFolders.Where(af => af.MatchingAddon == null));
             }
 
+            var matchedAddonFolders = addonFolders.Where(af => af.MatchingAddon != null);
+            var matchedGroups = matchedAddonFolders.GroupBy(af => $"{af.MatchingAddon.ProviderName}{af.MatchingAddon.ExternalId}");
+
+            return matchedGroups
+                .Select(g => g.First().MatchingAddon)
+                .ToList();
         }
 
         private async Task<List<Addon>> GetLocalAddons(WowClientType clientType)
@@ -410,7 +419,7 @@ namespace WowUp.WPF.Services
                     .ForEachAsync(2, async addonFolder =>
                     {
                         var addon = await Map(addonFolder, clientType);
-                        if(addon != default)
+                        if (addon != default)
                         {
                             results.TryAdd(addon.Name, addon);
                         }
@@ -430,16 +439,16 @@ namespace WowUp.WPF.Services
                 if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.TukUiProjectId))
                 {
                     addon = await GetAddonSearchResultById<TukUiAddonProvider>(
-                        addonFolder.Name, 
-                        addonFolder.Toc.TukUiProjectId, 
+                        addonFolder.Name,
+                        addonFolder.Toc.TukUiProjectId,
                         clientType);
                 }
 
                 if (addon == null && !string.IsNullOrEmpty(addonFolder.Toc?.CurseProjectId))
                 {
                     addon = await GetAddonSearchResultById<CurseAddonProvider>(
-                        addonFolder.Name, 
-                        addonFolder.Toc.CurseProjectId, 
+                        addonFolder.Name,
+                        addonFolder.Toc.CurseProjectId,
                         clientType);
                 }
 
@@ -454,8 +463,8 @@ namespace WowUp.WPF.Services
                 if (addon == null)
                 {
                     addon = await Map(
-                        addonFolder.Toc.Title, 
-                        addonFolder.Name, 
+                        addonFolder.Toc.Title,
+                        addonFolder.Name,
                         clientType);
                 }
 

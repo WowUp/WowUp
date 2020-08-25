@@ -5,6 +5,7 @@ using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
 using WowUp.Common.Models.Warcraft;
+using WowUp.WPF.Models.WowUp;
 
 namespace WowUp.WPF.Services.Contracts
 {

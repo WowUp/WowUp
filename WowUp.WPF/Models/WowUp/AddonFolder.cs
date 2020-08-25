@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using WowUp.Common.Models;
+using WowUp.WPF.Entities;
 
-namespace WowUp.Common.Models
+namespace WowUp.WPF.Models.WowUp
 {
     public class AddonFolder
     {
@@ -14,5 +16,7 @@ namespace WowUp.Common.Models
 
         public Toc Toc { get; set; }
         public IList<string> TocMetaData { get; set; }
+
+        public Addon MatchingAddon { get; set; }
     }
 }

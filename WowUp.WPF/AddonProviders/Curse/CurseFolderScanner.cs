@@ -13,8 +13,6 @@ namespace WowUp.WPF.AddonProviders.Curse
     /// </summary>
     public class CurseFolderScanner
     {
-        private readonly DirectoryInfo _addonDirectory;
-
         private Regex TocFileCommentsRegex() => new Regex(@"(?m)\s*#.*$");
         private Regex TocFileIncludesRegex() => new Regex(@"(?mi)^\s*((?:(?<!\.\.).)+\.(?:xml|lua))\s*$");
         private Regex TocFileRegex() => new Regex(@"(?i)^([^\/]+)[\\\/]\1\.toc$");
@@ -28,11 +26,12 @@ namespace WowUp.WPF.AddonProviders.Curse
         public long Fingerprint { get; private set; }
         public string FolderName { get; private set; }
         public List<long> IndividualFingerprints { get; private set; }
-        public DateTime LastWriteTimeUtc { get { return _addonDirectory.LastWriteTimeUtc; } }
+        public DateTime LastWriteTimeUtc { get { return AddonDirectory.LastWriteTimeUtc; } }
+        public DirectoryInfo AddonDirectory { get; }
 
         public CurseFolderScanner(DirectoryInfo addonDirectory)
         {
-            _addonDirectory = addonDirectory;
+            AddonDirectory = addonDirectory;
         }
 
         private static bool FilePathHasInvalidChars(string path)
@@ -42,11 +41,11 @@ namespace WowUp.WPF.AddonProviders.Curse
 
         public async Task<CurseFolderScanner> ScanFolder()
         {
-            var fileSystemInfos = _addonDirectory.GetFileSystemInfos();
+            var fileSystemInfos = AddonDirectory.GetFileSystemInfos();
             FileCount = fileSystemInfos.Length;
             FileDateHash = CurseHash.GetFileDateHash(fileSystemInfos);
 
-            var matchingFiles = await GetMatchingFiles(_addonDirectory);
+            var matchingFiles = await GetMatchingFiles(AddonDirectory);
             matchingFiles.Sort();
 
             IndividualFingerprints = new List<long>();
@@ -73,7 +72,7 @@ namespace WowUp.WPF.AddonProviders.Curse
             var matchingFileList = new List<string>();
             var fileInfoList = new List<FileInfo>();
 
-            string str = _addonDirectory.Parent.FullName + Path.DirectorySeparatorChar.ToString();
+            string str = AddonDirectory.Parent.FullName + Path.DirectorySeparatorChar.ToString();
             foreach (FileInfo file in directory.GetFiles("*.*", SearchOption.AllDirectories))
             {
                 string input = file.FullName.ToLower().Replace(str.ToLower(), "");

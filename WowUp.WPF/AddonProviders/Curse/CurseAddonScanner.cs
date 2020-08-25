@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WowUp.Common.Models.Curse;
 
 namespace WowUp.WPF.AddonProviders.Curse
 {
@@ -26,7 +28,5 @@ namespace WowUp.WPF.AddonProviders.Curse
             var str = string.Join(",\n", fingerprints);
             return this;
         }
-
-        
     }
 }
