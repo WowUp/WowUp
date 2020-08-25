@@ -36,8 +36,37 @@ namespace WowUp.WPF.AddonProviders
         public async Task Scan(
             WowClientType clientType,
             AddonChannelType addonChannelType, 
-            IEnumerable<AddonFolder> addonFolder)
+            IEnumerable<AddonFolder> addonFolders)
         {
+            foreach (var addonFolder in addonFolders)
+            {
+                if (string.IsNullOrEmpty(addonFolder.Toc.WowInterfaceId))
+                {
+                    continue;
+                }
+
+                var details = await GetAddonDetails(addonFolder.Toc.WowInterfaceId);
+                addonFolder.MatchingAddon = new Addon
+                {
+                    Author = details.Author,
+                    AutoUpdateEnabled = false,
+                    ChannelType = addonChannelType,
+                    ClientType = clientType,
+                    DownloadUrl = details.DownloadUri,
+                    ExternalId = details.Id.ToString(),
+                    ExternalUrl = GetAddonUrl(details),
+                    FolderName = addonFolder.Name,
+                    GameVersion = string.Empty,
+                    InstalledAt = DateTime.UtcNow,
+                    InstalledFolders = addonFolder.Name,
+                    InstalledVersion = addonFolder.Toc.Version,
+                    IsIgnored = false,
+                    LatestVersion = details.Version,
+                    Name = details.Title,
+                    ProviderName = Name,
+                    ThumbnailUrl = GetThumbnailUrl(details)
+                };
+            }
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
