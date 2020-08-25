@@ -394,7 +394,7 @@ namespace WowUp.WPF.Services
                 await provider.Scan(
                     clientType,
                     _wowUpService.GetDefaultAddonChannel(),
-                    addonFolders.Where(af => af.MatchingAddon == null));
+                    addonFolders.Where(af => af.MatchingAddon == null && af.Toc != null));
             }
 
             var matchedAddonFolders = addonFolders.Where(af => af.MatchingAddon != null);
