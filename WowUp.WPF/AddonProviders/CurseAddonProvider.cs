@@ -24,6 +24,8 @@ namespace WowUp.WPF.AddonProviders
     public class CurseAddonProvider : ICurseAddonProvider
     {
         private const string ApiUrl = "https://addons-ecs.forgesvc.net/api/v2";
+        private const string ClassicGameVersionFlavor = "wow_classic";
+        private const string RetailGameVersionFlavor = "wow_retail";
 
         private readonly ICacheService _cacheService;
 
@@ -43,12 +45,14 @@ namespace WowUp.WPF.AddonProviders
             var addonDirectory = addonFolders.FirstOrDefault()?.Directory.Parent.FullName;
             var scanResults = await GetScanResults(addonFolders);
 
-            await MapAddonFolders(scanResults);
+            await MapAddonFolders(scanResults, clientType);
 
             var addonIds = scanResults
                 .Where(sr => sr.ExactMatch != null)
                 .Select(sr => sr.ExactMatch.Id.ToString())
                 .Distinct();
+
+            //var addonIdStr = string.Join(",", addonIds);
 
             var addonResults = await GetAllIds(addonIds);
 
@@ -240,7 +244,7 @@ namespace WowUp.WPF.AddonProviders
             AddonFolder addonFolder,
             CurseSearchResult searchResult)
         {
-            if(addonFolder == null || searchResult == null)
+            if (addonFolder == null || searchResult == null)
             {
                 return null;
             }
@@ -303,22 +307,31 @@ namespace WowUp.WPF.AddonProviders
             };
         }
 
-        private async Task MapAddonFolders(List<CurseScanResult> scanResults)
+        private async Task MapAddonFolders(List<CurseScanResult> scanResults, WowClientType clientType)
         {
+            //var fingerprintStr = string.Join(",", scanResults.Select(sf => sf.FolderScanner.Fingerprint));
             var fingerprintResponse = await GetAddonsByFingerprints(scanResults.Select(sf => sf.FolderScanner.Fingerprint));
 
             foreach (var scanResult in scanResults)
             {
+                // Curse can deliver the wrong result sometimes, ensure the result matches the client type
                 scanResult.ExactMatch = fingerprintResponse.ExactMatches
-                    .FirstOrDefault(em => em.File.Modules.Any(m => m.Fingerprint == scanResult.FolderScanner.Fingerprint));
+                    .FirstOrDefault(exactMatch =>
+                        IsClientType(exactMatch.File.GameVersionFlavor, clientType) &&
+                        HasMatchingFingerprint(scanResult, exactMatch));
 
                 // If the addon does not have an exact match, check the partial matches.
-                if(scanResult.ExactMatch == null)
+                if (scanResult.ExactMatch == null)
                 {
                     scanResult.ExactMatch = fingerprintResponse.PartialMatches
                         .FirstOrDefault(partialMatch => partialMatch.File.Modules.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint));
                 }
             }
+        }
+
+        private bool HasMatchingFingerprint(CurseScanResult scanResult, CurseMatch exactMatch)
+        {
+            return exactMatch.File.Modules.Any(m => m.Fingerprint == scanResult.FolderScanner.Fingerprint);
         }
 
         private async Task<List<CurseScanResult>> GetScanResults(IEnumerable<AddonFolder> addonFolders)
@@ -546,18 +559,33 @@ namespace WowUp.WPF.AddonProviders
             };
         }
 
+        private bool IsClientType(string gameVesionFlavor, WowClientType clientType)
+        {
+            switch (clientType)
+            {
+                case WowClientType.Classic:
+                case WowClientType.ClassicPtr:
+                    return ClassicGameVersionFlavor == gameVesionFlavor;
+                case WowClientType.Retail:
+                case WowClientType.RetailPtr:
+                case WowClientType.Beta:
+                default:
+                    return RetailGameVersionFlavor == gameVesionFlavor;
+            }
+        }
+
         private string GetClientTypeString(WowClientType clientType)
         {
             switch (clientType)
             {
                 case WowClientType.Classic:
                 case WowClientType.ClassicPtr:
-                    return "wow_classic";
+                    return ClassicGameVersionFlavor;
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
                 case WowClientType.Beta:
                 default:
-                    return "wow_retail";
+                    return RetailGameVersionFlavor;
             }
         }
     }

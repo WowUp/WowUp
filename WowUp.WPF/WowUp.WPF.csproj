@@ -10,7 +10,7 @@
     <PackageId>WowUp</PackageId>
     <Authors>Jliddev</Authors>
     <Product>WowUp</Product>
-    <Version>1.15.0-beta.2</Version>
+    <Version>1.15.0-beta.3</Version>
     <ApplicationIcon>wowup_logo_512np_RRT_icon.ico</ApplicationIcon>
     <Copyright>jliddev</Copyright>
     <PackageProjectUrl>https://wowup.io</PackageProjectUrl>
@@ -18,6 +18,10 @@
     <RepositoryUrl>https://github.com/jliddev/WowUp</RepositoryUrl>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+
+  <ItemGroup>
+    <TrimmerRootAssembly Include="System.IO" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Assets\activity.gif" />

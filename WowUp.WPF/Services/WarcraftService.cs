@@ -51,16 +51,14 @@ namespace WowUp.WPF.Services
 
         public event WarcraftEventHandler ProductChanged;
 
-        public string BlizzardAgentPath { get; private set; }
         public IList<InstalledProduct> InstalledProducts { get; private set; }
 
-        public string ProductsDbPath => Path.Combine(BlizzardAgentPath, BlizzardProductDbName);
+        public string ProductsDbPath => Path.Combine(GetBlizzardAgentPath(), BlizzardProductDbName);
 
         public WarcraftService(
             IPreferenceRepository preferenceRepository)
         {
             _preferenceRepository = preferenceRepository;
-            BlizzardAgentPath = GetBlizzardAgentPath();
             SetDefaultPreferences();
 
             ScanProducts();
