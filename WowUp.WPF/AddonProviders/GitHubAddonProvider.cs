@@ -26,11 +26,12 @@ namespace WowUp.WPF.AddonProviders
 
         public string Name => "GitHub";
 
-        public async Task Scan(
+        public Task Scan(
             WowClientType clientType,
             AddonChannelType addonChannelType, 
             IEnumerable<AddonFolder> addonFolder)
         {
+            return Task.CompletedTask;
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)

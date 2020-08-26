@@ -76,6 +76,7 @@ namespace WowUp.WPF.AddonProviders
                 }
                 catch (Exception ex)
                 {
+                    Log.Error(ex, $"Failed to create addon for result {scanResult.FolderScanner.Fingerprint}");
                 }
             }
         }

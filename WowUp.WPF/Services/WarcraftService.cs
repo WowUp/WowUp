@@ -214,45 +214,6 @@ namespace WowUp.WPF.Services
             return true;
         }
 
-        public async Task<IEnumerable<FileInfo>> ListAddonFolders(WowClientType clientType)
-        {
-            var addonFolders = new List<string>();
-            var addonsPath = GetAddonFolderPath(clientType);
-            var parser = new CurseAddonScanner(addonsPath).Scan();
-
-            var addonsPathDi = new DirectoryInfo(addonsPath);
-            var directories = addonsPathDi.GetDirectories(string.Empty, SearchOption.AllDirectories);
-
-            var infs = addonsPathDi.GetFileSystemInfos();
-            var dh = CurseHash.GetFileDateHash(infs);
-            var fileExts = new string[] { ".toc", ".lua", ".xml" };
-
-            foreach (var dir in directories)
-            {
-                var hashes = new List<(long, string)>();
-                var files = dir.GetFiles("*.*", SearchOption.AllDirectories);
-                foreach (var file in files)
-                {
-                    if (!fileExts.Any(ext => ext == file.Extension))
-                    {
-                        continue;
-                    }
-
-                    var nhash = CurseHash.ComputeNormalizedFileHash(file.FullName);
-                    var hash = CurseHash.ComputeFileHash(file.FullName, false);
-                    hashes.Add((nhash, file.FullName));
-                }
-
-                hashes.Sort((a,b) => a.Item1.CompareTo(b.Item1));
-
-                var str = string.Join(string.Empty, hashes.Select(hash => hash.Item1));
-                var strHash = CurseHash.ComputeHash(System.Text.Encoding.ASCII.GetBytes(str), false);
-
-            }
-
-            return new FileInfo[0];
-        }
-
         public async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
         {
             var addons = new List<AddonFolder>();
