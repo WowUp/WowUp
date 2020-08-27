@@ -164,6 +164,11 @@ namespace WowUp.WPF.ViewModels
 
                 foreach(var clientType in _warcraftService.GetWowClientTypes())
                 {
+                    if(clientType == WowClientType.None)
+                    {
+                        continue;
+                    }
+
                     ClientTypeNames.Add(clientType);
                 }
             }

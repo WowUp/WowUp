@@ -13,6 +13,7 @@ namespace WowUp.Common.Enums
         [Display(Name = "Classic PTR")]
         ClassicPtr,
         [Display(Name = "Beta")]
-        Beta
+        Beta,
+        None
     }
 }

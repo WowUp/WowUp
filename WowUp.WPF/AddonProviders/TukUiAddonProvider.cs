@@ -294,8 +294,9 @@ namespace WowUp.WPF.AddonProviders
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
                 case WowClientType.Beta:
-                default:
                     return "tukui_addons";
+                default:
+                    return string.Empty;
             }
         }
 
@@ -309,8 +310,9 @@ namespace WowUp.WPF.AddonProviders
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
                 case WowClientType.Beta:
-                default:
                     return "addons";
+                default:
+                    return string.Empty;
             }
         }
 

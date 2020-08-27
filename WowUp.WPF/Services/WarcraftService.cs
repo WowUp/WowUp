@@ -148,12 +148,15 @@ namespace WowUp.WPF.Services
 
         public IList<string> GetClientLocations()
         {
+            return new List<string>();
+
             var clientTypes = EnumExtensions.Values<WowClientType>();
             return clientTypes.Select(clientType => GetClientLocation(clientType)).ToList();
         }
 
         public IList<WowClientType> GetWowClientTypes()
         {
+            return new List<WowClientType>();
             IList<WowClientType> clients = new List<WowClientType>();
 
             var clientTypes = EnumExtensions.Values<WowClientType>();
@@ -216,6 +219,11 @@ namespace WowUp.WPF.Services
 
         public async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
         {
+            if(clientType == WowClientType.None)
+            {
+                return new List<AddonFolder>();
+            }
+
             var addons = new List<AddonFolder>();
 
             var addonsPath = GetAddonFolderPath(clientType);

@@ -104,7 +104,6 @@ namespace WowUp.WPF.ViewModels
             migrationService.MigrateDatabase();
 
             InitializeView();
-
         }
 
         public void SetRestoreMaximizeVisibility(WindowState windowState)
@@ -194,7 +193,7 @@ namespace WowUp.WPF.ViewModels
 
         private void CreateTabs()
         {
-            var tabStyle = System.Windows.Application.Current.TryFindResource("CustomTabItemStyle") as Style;
+            var tabStyle = Application.Current.TryFindResource("CustomTabItemStyle") as Style;
 
             var addonsTab = new TabItem
             {

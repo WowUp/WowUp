@@ -17,6 +17,7 @@
     <Description>World of Warcraft addon updater</Description>
     <RepositoryUrl>https://github.com/jliddev/WowUp</RepositoryUrl>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

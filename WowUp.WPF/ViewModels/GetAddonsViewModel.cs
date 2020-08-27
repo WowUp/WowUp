@@ -190,27 +190,37 @@ namespace WowUp.WPF.ViewModels
         {
             IsBusy = true;
 
-            _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
-
-            lock (DisplayAddonsLock)
+            try
             {
-                DisplayAddons.Clear();
-                foreach (var addon in _popularAddons)
+                if(SelectedClientType == WowClientType.None)
                 {
-                    if (_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
+                    return;
+                }
+
+                _popularAddons = await _addonService.GetFeaturedAddons(SelectedClientType);
+
+                lock (DisplayAddonsLock)
+                {
+                    DisplayAddons.Clear();
+                    foreach (var addon in _popularAddons)
                     {
-                        continue;
+                        if (_addonService.IsInstalled(addon.ExternalId, SelectedClientType))
+                        {
+                            continue;
+                        }
+
+                        var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
+                        viewModel.Addon = addon;
+                        viewModel.ClientType = SelectedClientType;
+
+                        DisplayAddons.Add(viewModel);
                     }
-
-                    var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
-                    viewModel.Addon = addon;
-                    viewModel.ClientType = SelectedClientType;
-
-                    DisplayAddons.Add(viewModel);
                 }
             }
-
-            IsBusy = false;
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

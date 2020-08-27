@@ -115,9 +115,13 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center">
                 <TextBlock Text="Welcome" FontSize="20" HorizontalAlignment="Center" />
-                <TextBlock Text="Please select your World of Warcraft folder" FontSize="14" />
-                <TextBlock Text="Example: C:\Program Files (x86)\World of Warcraft" Foreground="{StaticResource White2Brush}" FontSize="12" />
-                <Button x:Name="SelectWowButton" Click="SelectWowButton_Click" Margin="0, 10" Style="{StaticResource purpleButton}">Select</Button>
+                <TextBlock Text="We were unable to detect an installed World of Warcraft clients." 
+                           FontSize="14"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="Please ensure your Battle.net app is up to date!" 
+                           Foreground="{StaticResource White2Brush}" 
+                           FontSize="12"
+                           HorizontalAlignment="Center"/>
             </StackPanel>
             <!--TABS-->
             <TabControl x:Name="Tabs" 
@@ -125,15 +129,6 @@
                         Visibility="{Binding ShowTabs, Converter={StaticResource BoolToVisibilty}}"
                         Style="{StaticResource CustomTabStyle}"
                         ItemsSource="{Binding TabItems}">
-                <!--<TabItem Style="{StaticResource CustomTabItemStyle}" Header="My Addons">
-                    <vw:AddonsView></vw:AddonsView>
-                </TabItem>
-                <TabItem Style="{StaticResource CustomTabItemStyle}" Header="About">
-                    <vw:AboutView></vw:AboutView>
-                </TabItem>
-                <TabItem Style="{StaticResource CustomTabItemStyle}" Header="Options">
-                    <vw:OptionsView></vw:OptionsView>
-                </TabItem>-->
             </TabControl>
             <!--FOOTER-->
             <Border Grid.Row="3" Padding="10 5" Background="{StaticResource Dark4}">

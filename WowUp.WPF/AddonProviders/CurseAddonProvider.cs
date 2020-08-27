@@ -570,8 +570,9 @@ namespace WowUp.WPF.AddonProviders
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
                 case WowClientType.Beta:
-                default:
                     return RetailGameVersionFlavor == gameVesionFlavor;
+                default:
+                    return false;
             }
         }
 
@@ -585,8 +586,9 @@ namespace WowUp.WPF.AddonProviders
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
                 case WowClientType.Beta:
-                default:
                     return RetailGameVersionFlavor;
+                default:
+                    return string.Empty;
             }
         }
     }
