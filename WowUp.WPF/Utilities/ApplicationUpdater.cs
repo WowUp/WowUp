@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models.Events;
 using WowUp.Common.Services.Contracts;
+using WowUp.WPF.Services.Contracts;
 
 namespace WowUp.WPF.Utilities
 {

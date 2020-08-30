@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
@@ -125,7 +124,7 @@ namespace WowUp.WPF.ViewModels
             _analyticsService.PromptTelemetry();
             _analyticsService.TrackStartup();
 
-            Version = $"v{AppUtilities.CurrentVersionString}";
+            Version = $"v{AppUtilities.LongVersionName}";
         }
 
         public void OnSourceInitialized(Window window)

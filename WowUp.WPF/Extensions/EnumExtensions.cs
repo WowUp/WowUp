@@ -18,5 +18,19 @@ namespace WowUp.WPF.Extensions
 
             return AddonChannelType.Stable;
         }
+
+        public static WowUpReleaseChannelType ToWowUpReleaseChannelType(this string str)
+        {
+            if (WowUpReleaseChannelType.Stable.ToString().Equals(str, StringComparison.OrdinalIgnoreCase))
+            {
+                return WowUpReleaseChannelType.Stable;
+            }
+            else if (WowUpReleaseChannelType.Beta.ToString().Equals(str, StringComparison.OrdinalIgnoreCase))
+            {
+                return WowUpReleaseChannelType.Beta;
+            }
+
+            return WowUpReleaseChannelType.Stable;
+        }
     }
 }

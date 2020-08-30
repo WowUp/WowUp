@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace WowUp.WPF.Extensions
 {
@@ -12,6 +13,18 @@ namespace WowUp.WPF.Extensions
             }
 
             Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+
+        public static string TrimSemVerString(this string semVer)
+        {
+            var regex = new Regex(@"^v?(\d+.\d+.\d+)");
+            var match = regex.Match(semVer);
+            if (!match.Success)
+            {
+                return string.Empty;
+            }
+
+            return match.Groups[1].Value;
         }
     }
 }

@@ -4,14 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Extensions;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
 using WowUp.Common.Models.Warcraft;
-using WowUp.WPF.AddonProviders.Curse;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories.Contracts;
@@ -148,15 +146,12 @@ namespace WowUp.WPF.Services
 
         public IList<string> GetClientLocations()
         {
-            return new List<string>();
-
             var clientTypes = EnumExtensions.Values<WowClientType>();
             return clientTypes.Select(clientType => GetClientLocation(clientType)).ToList();
         }
 
         public IList<WowClientType> GetWowClientTypes()
         {
-            return new List<WowClientType>();
             IList<WowClientType> clients = new List<WowClientType>();
 
             var clientTypes = EnumExtensions.Values<WowClientType>();
