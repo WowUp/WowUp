@@ -32,8 +32,10 @@
                         <StackPanel Grid.Column="0" Margin="0, 0, 10, 0" VerticalAlignment="Center"
                                     Background="#222">
                             <Border Background="{StaticResource Dark2}"  >
-                                <Image Source="{Binding ThumbnailUrl}" Width="40" Height="40"
-                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <Image Width="40" Height="40"
+                                       Source="{Binding ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}"
+                                       RenderOptions.BitmapScalingMode="HighQuality">
+                                </Image>
                             </Border>
                             <TextBlock Visibility="{Binding ShowChannelName, Converter={StaticResource BoolToVisibilty}}" 
                                        Text="{Binding ChannelName}"

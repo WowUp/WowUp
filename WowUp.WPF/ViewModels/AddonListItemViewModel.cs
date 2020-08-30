@@ -289,7 +289,7 @@ namespace WowUp.WPF.ViewModels
             ProviderName = _addon.ProviderName;
             GameVersion = _addon.GameVersion;
             ThumbnailUrl = string.IsNullOrEmpty(_addon.ThumbnailUrl)
-                ? "/Assets/wowup_logo_1.png"
+                ? "pack://application:,,,/WowUp;component/Assets/wowup_logo_1.png"
                 : _addon.ThumbnailUrl;
 
             IsIgnored = _addon.IsIgnored;
