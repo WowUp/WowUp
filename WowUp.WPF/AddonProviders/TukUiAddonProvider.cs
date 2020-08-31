@@ -21,8 +21,7 @@ namespace WowUp.WPF.AddonProviders
     public class TukUiAddonProvider : ITukUiAddonProvider
     {
         private const string ApiUrl = "https://www.tukui.org/api.php";
-        private const string ElvUiRetailTocUrl = "https://git.tukui.org/elvui/elvui/-/raw/master/ElvUI/ElvUI.toc";
-        private const string TukUiRetailTocUrl = "https://git.tukui.org/Tukz/Tukui/-/raw/master/Tukui/Tukui.toc";
+        private const string ClientApiUrl = "https://www.tukui.org/client-api.php";
 
         private readonly ICacheService _cacheService;
 
@@ -35,12 +34,12 @@ namespace WowUp.WPF.AddonProviders
 
         public async Task Scan(
             WowClientType clientType,
-            AddonChannelType addonChannelType, 
+            AddonChannelType addonChannelType,
             IEnumerable<AddonFolder> addonFolders)
         {
             var addons = await GetAllAddons(clientType);
 
-            foreach(var addonFolder in addonFolders)
+            foreach (var addonFolder in addonFolders)
             {
                 TukUiAddon addon = null;
                 if (!string.IsNullOrEmpty(addonFolder.Toc.TukUiProjectId))
@@ -53,7 +52,7 @@ namespace WowUp.WPF.AddonProviders
                     addon = results.FirstOrDefault();
                 }
 
-                if(addon != null)
+                if (addon != null)
                 {
                     addonFolder.MatchingAddon = new Addon
                     {
@@ -234,54 +233,22 @@ namespace WowUp.WPF.AddonProviders
             });
         }
 
+        private async Task<TukUiAddon> GetClientApiAddon(string addonName)
+        {
+            return await ClientApiUrl
+                .SetQueryParam("ui", addonName)
+                .WithHeaders(HttpUtilities.DefaultHeaders)
+                .GetJsonAsync<TukUiAddon>();
+        }
+
         private async Task<TukUiAddon> GetElvUiRetailAddon()
         {
-            var tocText = await ElvUiRetailTocUrl.GetStringAsync();
-            var toc = new Utilities.TocParser(tocText).Toc;
-
-            return new TukUiAddon
-            {
-                Author = toc.Author,
-                Category = "Interfaces",
-                Patch = toc.Interface,
-                Changelog = string.Empty,
-                DonateUrl = "https://www.tukui.org/support.php",
-                Downloads = "3000000",
-                Id = toc.TukUiProjectId ?? "-2",
-                LastDownload = string.Empty,
-                LastUpdate = string.Empty,
-                Name = toc.Title,
-                ScreenshotUrl = "https://www.tukui.org/images/apple-touch-icon-120x120.png",
-                SmallDesc = "A USER INTERFACE DESIGNED AROUND USER-FRIENDLINESS WITH EXTRA FEATURES THAT ARE NOT INCLUDED IN THE STANDARD UI.",
-                Url = $"https://www.tukui.org/downloads/elvui-{toc.Version}.zip",
-                Version = toc.Version,
-                WebUrl = "https://www.tukui.org/download.php?ui=elvui"
-            };
+            return await GetClientApiAddon("elvui");
         }
 
         private async Task<TukUiAddon> GetTukUiRetailAddon()
         {
-            var tocText = await TukUiRetailTocUrl.GetStringAsync();
-            var toc = new Utilities.TocParser(tocText).Toc;
-
-            return new TukUiAddon
-            {
-                Author = toc.Author,
-                Category = "Interfaces",
-                Patch = toc.Interface,
-                Changelog = string.Empty,
-                DonateUrl = "https://www.tukui.org/support.php",
-                Downloads = "4000000",
-                Id = toc.TukUiProjectId ?? "-1",
-                LastDownload = string.Empty,
-                LastUpdate = string.Empty,
-                Name = toc.Title,
-                ScreenshotUrl = "https://www.tukui.org/images/apple-touch-icon-120x120.png",
-                SmallDesc = "A clean, lightweight, minimalist and popular user interface among the warcraft community since 2007.",
-                Url = $"https://www.tukui.org/downloads/tukui-{toc.Version}.zip",
-                Version = toc.Version,
-                WebUrl = "https://www.tukui.org/download.php?ui=tukui"
-            };
+            return await GetClientApiAddon("tukui");
         }
 
         private string GetCacheKey(WowClientType clientType)
