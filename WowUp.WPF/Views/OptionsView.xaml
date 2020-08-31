@@ -18,226 +18,207 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   Background="{StaticResource Dark3}">
-        <Grid  Background="{StaticResource Dark3}" MaxWidth="1024">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Border Grid.Row="0" Padding="10">
-                <StackPanel >
-                    <Grid>
+        <StackPanel MaxWidth="1024">
+            <!--WOW SECTION-->
+            <Label FontSize="17">World of Warcraft</Label>
+            <Border Background="{StaticResource Dark4}" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--RE-SCAN-->
+                    <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Re-Scan</Label>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="0 0 0 10">
+                        <Button Command="{Binding RescanFoldersCommand}" Style="{StaticResource purpleButton}">Re-Scan World of Warcraft Clients</Button>
+                        <Label>Scan your World of Warcraft install locations from the battle.net app.</Label>
+                    </StackPanel>
+                    <!--RETAIL LOCATION-->
+                    <Label FontWeight="Bold" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right">Retail</Label>
+                    <Grid Grid.Column="1" Grid.Row="1" Margin="0 0 0 10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label FontSize="17" Grid.Column="0">World of Warcraft Folders</Label>
-                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                            <Button Command="{Binding RescanFoldersCommand}" Style="{StaticResource purpleButton}">Re-Scan</Button>
-                        </StackPanel>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Column="0" Grid.Row="0" 
+                                 Margin="0 0 10 0" Text="{Binding WowRetailLocation}" IsEnabled="False" FontSize="14"/>
+                        <Button  Grid.Column="1" Grid.Row="0" 
+                                 Margin="0" Command="{Binding SetRetailLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                        <Label Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" 
+                               Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail client folder __retail_</Label>
                     </Grid>
-
-                    <Border Margin="0 10 0 0" Padding="10 0 0 0" >
-                        <StackPanel>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0">Retail</Label>
-                            <Grid Grid.Row="0" Grid.Column="1" Margin="0 0 0 10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button  Grid.Column="1" Grid.Row="0" Margin="0" Command="{Binding SetRetailLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail client folder __retail_</Label>
-                            </Grid>
-                            <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0">Retail PTR</Label>
-                            <Grid Grid.Row="1" Grid.Column="1" Margin="0 0 0 10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailPtrLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button  Grid.Column="1" Grid.Row="0"  Command="{Binding SetRetailPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail PTR client folder __ptr_</Label>
-                            </Grid>
-                            <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0">Classic</Label>
-                            <Grid Grid.Row="2" Grid.Column="1" Margin="0 0 0 10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic client folder __classic_</Label>
-                            </Grid>
-                            <Label FontWeight="Bold" Grid.Row="3" Grid.Column="0">Classic PTR</Label>
-                            <Grid Grid.Row="3" Grid.Column="1" Margin="0 0 0 10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicPtrLocation}" IsEnabled="False" FontSize="14"/>
-                                <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic PTR client folder __classic_ptr_</Label>
-                            </Grid>
-                            <Label FontWeight="Bold" Grid.Row="4" Grid.Column="0">Beta</Label>
-                            <Grid Grid.Row="4" Grid.Column="1" Margin="0 0 0 10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowBetaLocation}" IsEnabled="False" FontSize="14"/>
-                                <!--<Button  Grid.Column="1" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>-->
-                                <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the beta client folder __beta_</Label>
-                            </Grid>
-                            
-                        </Grid>
-                        <!--<StackPanel>
-                        <Label FontWeight="Bold" >Retail Folder</Label>
-                        <TextBox Margin="0, 10" Text="{Binding WowLocation}" IsEnabled="False" FontSize="14"/>
-                        <Button x:Name="SelectLocationButton" Click="SelectLocationButton_Click" Style="{StaticResource purpleButton}">Select Location</Button>
-                        <TextBlock FontSize="15" Text="Log files" Margin="0 10 0 5" />
-                        <Button x:Name="ShowLogsButton" Command="{Binding ShowLogsCommand}" Style="{StaticResource purpleButton}">Show Log Files</Button>
-                    </StackPanel>-->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0" >Default Addon Channel</Label>
-                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
-                                    <ComboBox x:Name="AddonChannelComboBox" 
+                    <!--RETAIL PTR LOCATION-->
+                    <Label FontWeight="Bold" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right">Retail PTR</Label>
+                    <Grid Grid.Column="1" Grid.Row="2" Margin="0 0 0 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailPtrLocation}" IsEnabled="False" FontSize="14"/>
+                        <Button  Grid.Column="1" Grid.Row="0"  Command="{Binding SetRetailPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                        <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail PTR client folder __ptr_</Label>
+                    </Grid>
+                    <!--CLASSIC LOCATION-->
+                    <Label FontWeight="Bold" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right">Classic</Label>
+                    <Grid Grid.Column="1" Grid.Row="3" Margin="0 0 0 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicLocation}" IsEnabled="False" FontSize="14"/>
+                        <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                        <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic client folder __classic_</Label>
+                    </Grid>
+                    <!--CLASSIC PTR LOCATION-->
+                    <Label FontWeight="Bold" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right">Classic PTR</Label>
+                    <Grid Grid.Column="1" Grid.Row="4" Margin="0 0 0 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicPtrLocation}" IsEnabled="False" FontSize="14"/>
+                        <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
+                        <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic PTR client folder __classic_ptr_</Label>
+                    </Grid>
+                    <!--BETA LOCATION-->
+                    <Label FontWeight="Bold" Grid.Column="0" Grid.Row="5" HorizontalAlignment="Right">Beta</Label>
+                    <Grid Grid.Column="1" Grid.Row="5" Margin="0 0 0 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowBetaLocation}" IsEnabled="False" FontSize="14"/>
+                        <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the beta client folder __beta_</Label>
+                    </Grid>
+                    <!--DEFAULT ADDON CHANNEL-->
+                    <Label Grid.Column="0" Grid.Row="6" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
+                    <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                        <ComboBox x:Name="AddonChannelComboBox" 
                                               SelectedItem="{Binding SelectedAddonChannelType}"
                                               HorizontalAlignment="Left"
                                               Style="{StaticResource ComboBoxFlatStyle}"
                                               ItemsSource="{Binding AddonChannelNames}">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="SelectionChanged">
-                                                <i:InvokeCommandAction Command="{Binding AddonChannelChangeCommand}" 
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding AddonChannelChangeCommand}" 
                                                                        CommandParameter="{Binding ElementName=AddonChannelComboBox, Path=SelectedValue}"/>
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </ComboBox>
-                                    <TextBlock Padding="0" Margin="5 0 0 0" VerticalAlignment="Center">
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                        <TextBlock Padding="0" Margin="5 0 0 0" VerticalAlignment="Center">
                                         Newly installed addons will assume this release channel.
-                                    </TextBlock>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <Label FontSize="17">Application</Label>
-                    <Border>
-                        <StackPanel Margin="10 0 0 0">
-                            <Grid Margin="0 0 0 10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0" >WowUp Release Channel</Label>
-                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
-                                    <ComboBox x:Name="WowUpChannelComboBox" 
-                                            SelectedItem="{Binding SelectedWowUpReleaseChannelType}"
-                                            HorizontalAlignment="Left"
-                                            Style="{StaticResource ComboBoxFlatStyle}"
-                                            ItemsSource="{Binding WowUpChannelNames}">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="SelectionChanged">
-                                                <i:InvokeCommandAction Command="{Binding WowUpReleaseChannelChangedCommand}" 
-                                                                    CommandParameter="{Binding ElementName=WowUpChannelComboBox, Path=SelectedValue}"/>
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </ComboBox>
-                                    <TextBlock Padding="0" Margin="5 0 0 0" VerticalAlignment="Center">
-                                    Select Stable for a cleaner less buggy build. Select Beta to see the next wave of features as they come.
-                                    </TextBlock>
-                                </StackPanel>
-                            </Grid>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0">Log files</Label>
-                            <Button Grid.Row="0" Grid.Column="1" 
-                                    Command="{Binding ShowLogsCommand}" 
-                                    Style="{StaticResource purpleButton}">Show Log Files</Button>
-                            <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0">Telemetry</Label>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
-                                <CheckBox IsChecked="{Binding IsTelemetryEnabled, Mode=TwoWay}"
+                        </TextBlock>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <!--APPLICATION SECTION-->
+            <Label FontSize="17">Application</Label>
+            <Border Background="{StaticResource Dark4}" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--RELEASE CHANNEL-->
+                    <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">WowUp Release Channel</Label>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
+                        <ComboBox x:Name="WowUpChannelComboBox" 
+                                        SelectedItem="{Binding SelectedWowUpReleaseChannelType}"
+                                        HorizontalAlignment="Left"
+                                        Style="{StaticResource ComboBoxFlatStyle}"
+                                        ItemsSource="{Binding WowUpChannelNames}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding WowUpReleaseChannelChangedCommand}" 
+                                                                CommandParameter="{Binding ElementName=WowUpChannelComboBox, Path=SelectedValue}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                        <TextBlock Padding="0" Margin="5 0 0 0" VerticalAlignment="Center">
+                                Select Stable for a cleaner less buggy build. Select Beta to see the next wave of features as they come.
+                        </TextBlock>
+                    </StackPanel>
+                    <!--TELEMETRY-->
+                    <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right">Telemetry</Label>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsTelemetryEnabled, Mode=TwoWay}"
                                           VerticalAlignment="Center"
                                       Command="{Binding TelemetryCheckCommand}" Grid.Row="0" Grid.Column="1">
-                                </CheckBox>
-                                <Label VerticalAlignment="Top">Help improve WowUp by sending anonymous install data and/or errors.</Label>
-                            </StackPanel>
-                            <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0" >Minimize on close</Label>
-                            <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
-                                <CheckBox IsChecked="{Binding CollapseToTrayEnabled, Mode=TwoWay}"
+                        </CheckBox>
+                        <Label VerticalAlignment="Top">Help improve WowUp by sending anonymous install data and/or errors.</Label>
+                    </StackPanel>
+                    <!--MINIMIZE ON CLOSE-->
+                    <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">Minimize on close</Label>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding CollapseToTrayEnabled, Mode=TwoWay}"
                                           VerticalAlignment="Center"
                                       Command="{Binding CollapseToTrayCheckCommand}" Grid.Row="0" Grid.Column="1">
-                                </CheckBox>
-                                <Label VerticalAlignment="Top">When closing the WowUp window, minimize to the system tray.</Label>
-                            </StackPanel>
-                            <!--<Label FontWeight="Bold" Grid.Row="3" Grid.Column="0" >Default Addon Channel</Label>
-                            <StackPanel Grid.Row="3" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
-                                <ComboBox x:Name="AddonChannelComboBox" 
-                                          SelectedItem="{Binding SelectedAddonChannelType}"
-                                          HorizontalAlignment="Left"
-                                          Style="{StaticResource ComboBoxFlatStyle}"
-                                          ItemsSource="{Binding AddonChannelNames}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="SelectionChanged">
-                                            <i:InvokeCommandAction Command="{Binding AddonChannelChangeCommand}" 
-                                                                   CommandParameter="{Binding ElementName=AddonChannelComboBox, Path=SelectedValue}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
-                                <TextBlock Padding="0" Margin="5 0 0 0" VerticalAlignment="Center">
-                                    Newly installed addons will assume this release channel.
-                                </TextBlock>
-                            </StackPanel>-->
-                        </Grid>
-                            
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+                        </CheckBox>
+                        <Label VerticalAlignment="Top">When closing the WowUp window, minimize to the system tray.</Label>
+                    </StackPanel>
+                </Grid>
             </Border>
-        </Grid>
+            <!--DEBUG SECTION-->
+            <Label FontSize="17">Debug</Label>
+            <Border Background="{StaticResource Dark4}" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Log Files</Label>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="0 0 0 10">
+                        <Button Command="{Binding ShowLogsCommand}" 
+                                        Style="{StaticResource purpleButton}">Show Log Files</Button>
+                        <Label>Open the folder that contains your last couple of log files.</Label>
+                    </StackPanel>
+                    <Label Grid.Column="0" Grid.Row="1" FontWeight="Bold" HorizontalAlignment="Right" >Debug Data</Label>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 0 0 10">
+                        <Button Style="{StaticResource purpleButton}" Command="{Binding DumpDebugDataCommand}"
+                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}">Dump Debug Data</Button>
+                        <Label>Log debug data to help with diagnosing potential issues. This can be found in your latest log file for the curious.</Label>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
     </ScrollViewer>
 </UserControl>

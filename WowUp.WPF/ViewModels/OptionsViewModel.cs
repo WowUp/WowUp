@@ -1,13 +1,19 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using WowUp.Common.Enums;
+using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace WowUp.WPF.ViewModels
 {
     public class OptionsViewModel : BaseViewModel
     {
         private readonly IAnalyticsService _analyticsService;
+        private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
         private readonly IWowUpService _wowUpService;
 
@@ -84,16 +90,19 @@ namespace WowUp.WPF.ViewModels
         public Command RescanFoldersCommand { get; set; }
         public Command AddonChannelChangeCommand { get; set; }
         public Command WowUpReleaseChannelChangedCommand { get; set; }
+        public Command DumpDebugDataCommand { get; set; }
 
         public ObservableCollection<AddonChannelType> AddonChannelNames { get; set; }
         public ObservableCollection<WowUpReleaseChannelType> WowUpChannelNames { get; set; }
 
         public OptionsViewModel(
             IAnalyticsService analyticsService,
+            IServiceProvider serviceProvider,
             IWarcraftService warcraftService,
             IWowUpService wowUpService)
         {
             _analyticsService = analyticsService;
+            _serviceProvider = serviceProvider;
             _warcraftService = warcraftService;
             _wowUpService = wowUpService;
 
@@ -107,6 +116,7 @@ namespace WowUp.WPF.ViewModels
             RescanFoldersCommand = new Command(() => OnRescanFolders());
             AddonChannelChangeCommand = new Command(() => OnAddonChannelChange(SelectedAddonChannelType));
             WowUpReleaseChannelChangedCommand = new Command(() => OnWowUpReleaseChannelChange(SelectedWowUpReleaseChannelType));
+            DumpDebugDataCommand = new Command(() => DumpDebugData());
 
             AddonChannelNames = new ObservableCollection<AddonChannelType>
             {
@@ -184,6 +194,28 @@ namespace WowUp.WPF.ViewModels
         private void OnWowUpReleaseChannelChange(WowUpReleaseChannelType type)
         {
             _wowUpService.SetWowUpReleaseChannel(type);
+        }
+
+        private async void DumpDebugData()
+        {
+            IsBusy = true;
+
+            var curseAddonProvider = _serviceProvider.GetService<ICurseAddonProvider>();
+
+            var clientTypes = _warcraftService.GetWowClientTypes();
+            foreach(var clientType in clientTypes)
+            {
+                var addonFolders = await _warcraftService.ListAddons(clientType);
+                var scanResults = await curseAddonProvider.GetScanResults(addonFolders);
+
+                Log.Debug($"{clientType} ADDON CURSE FINGERPRINTS");
+                foreach(var scanResult in scanResults)
+                {
+                    Log.Debug($"{scanResult.AddonFolder.Name}|{scanResult.FolderScanner.Fingerprint}");
+                }
+            }
+
+            IsBusy = false;
         }
     }
 }

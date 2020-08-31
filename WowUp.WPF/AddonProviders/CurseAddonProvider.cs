@@ -239,6 +239,25 @@ namespace WowUp.WPF.AddonProviders
         {
         }
 
+        public async Task<List<CurseScanResult>> GetScanResults(IEnumerable<AddonFolder> addonFolders)
+        {
+            var scanResults = new ConcurrentBag<CurseScanResult>();
+            await addonFolders.ForEachAsync(3, async addonFolder =>
+            {
+                var scanner = await new CurseFolderScanner(addonFolder.Directory).ScanFolder();
+
+                var scanResult = new CurseScanResult
+                {
+                    FolderScanner = scanner,
+                    AddonFolder = addonFolder
+                };
+
+                scanResults.Add(scanResult);
+            });
+
+            return scanResults.ToList();
+        }
+
         private Addon GetAddon(
             WowClientType clientType,
             AddonChannelType addonChannelType,
@@ -333,25 +352,6 @@ namespace WowUp.WPF.AddonProviders
         private bool HasMatchingFingerprint(CurseScanResult scanResult, CurseMatch exactMatch)
         {
             return exactMatch.File.Modules.Any(m => m.Fingerprint == scanResult.FolderScanner.Fingerprint);
-        }
-
-        private async Task<List<CurseScanResult>> GetScanResults(IEnumerable<AddonFolder> addonFolders)
-        {
-            var scanResults = new ConcurrentBag<CurseScanResult>();
-            await addonFolders.ForEachAsync(3, async addonFolder =>
-            {
-                var scanner = await new CurseFolderScanner(addonFolder.Directory).ScanFolder();
-
-                var scanResult = new CurseScanResult
-                {
-                    FolderScanner = scanner,
-                    AddonFolder = addonFolder
-                };
-
-                scanResults.Add(scanResult);
-            });
-
-            return scanResults.ToList();
         }
 
         private IList<CurseSearchResult> FilterClientType(IEnumerable<CurseSearchResult> results, WowClientType clientType)
