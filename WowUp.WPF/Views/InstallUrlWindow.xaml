@@ -98,7 +98,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" Source="{Binding ImportedAddon.ThumbnailUrl}" Width="50" />
+                        <Image Grid.Column="0" Source="{Binding ImportedAddon.ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}" Width="50" />
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10 0 0 0">
                             <TextBlock Text="{Binding ImportedAddon.Name}" FontSize="14" FontWeight="Bold" />
                             <TextBlock Text="{Binding ImportedAddonSubtitle}" FontSize="14" />

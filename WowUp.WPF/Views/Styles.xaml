@@ -535,7 +535,7 @@
 
                 <Border Grid.Column="0" Margin="0 0 4 0">
                     <StackPanel>
-                        <Image Source="{Binding ThumbnailUrl}" Width="30" Height="30" />
+                        <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}" Width="30" Height="30" />
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="1">

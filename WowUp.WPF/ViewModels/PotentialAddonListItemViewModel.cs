@@ -175,7 +175,7 @@ namespace WowUp.WPF.ViewModels
         {
             ShowInstallButton = !IsInstalled;
             Name = Addon.Name;
-            ThumbnailUrl = Addon.ThumbnailUrl;
+            ThumbnailUrl = Addon.GetThumbnailUrl();
             DownloadCount = $"{Addon.DownloadCount.FormatDownloadCount()} downloads";
             ExternalUrl = Addon.ExternalUrl;
             Author = Addon.Author;

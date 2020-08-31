@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Flurl.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,15 +11,15 @@ using WowUp.Common.Exceptions;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
 using WowUp.Common.Services.Contracts;
-using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models.Events;
-using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace WowUp.WPF.Services
 {
@@ -150,8 +150,11 @@ namespace WowUp.WPF.Services
                     {
                         var addon = addons.FirstOrDefault(addon => addon.ExternalId == result.ExternalId);
                         var latestFile = GetLatestFile(result, addon.ChannelType);
+
                         if (result == null || latestFile == null || latestFile.Version == addon.LatestVersion)
                         {
+                            await SyncThumbnail(addon);
+
                             continue;
                         }
 
@@ -168,6 +171,8 @@ namespace WowUp.WPF.Services
                         addon.ThumbnailUrl = result.ThumbnailUrl;
                         addon.ExternalUrl = result.ExternalUrl;
 
+                        await SyncThumbnail(addon);
+
                         _addonRepository.UpdateItem(addon);
                     }
                 }
@@ -175,6 +180,14 @@ namespace WowUp.WPF.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to sync addons");
+            }
+        }
+
+        private async Task SyncThumbnail(Addon addon)
+        {
+            if (!File.Exists(addon.GetThumbnailPath()))
+            {
+                await CacheThumbnail(addon);
             }
         }
 
@@ -200,6 +213,8 @@ namespace WowUp.WPF.Services
             var installedDirectories = addon.GetInstalledDirectories();
             var addonFolder = _warcraftService.GetAddonFolderPath(addon.ClientType);
 
+            RemoveThumbnail(addon);
+
             foreach (var dir in installedDirectories)
             {
                 var addonDirectory = Path.Combine(addonFolder, dir);
@@ -209,6 +224,15 @@ namespace WowUp.WPF.Services
             _addonRepository.DeleteItem(addon);
 
             AddonUninstalled?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Uninstalled));
+        }
+
+        private void RemoveThumbnail(Addon addon)
+        {
+            var thumbnailPath = addon.GetThumbnailPath();
+            if (File.Exists(thumbnailPath))
+            {
+                File.Delete(thumbnailPath);
+            }
         }
 
         public async Task<Addon> GetAddon(
@@ -264,9 +288,12 @@ namespace WowUp.WPF.Services
 
             string downloadedFilePath = string.Empty;
             string unzippedDirectory = string.Empty;
+            string downloadedThumbnail = string.Empty;
             try
             {
-                downloadedFilePath = await _downloadService.DownloadFile(addon.DownloadUrl, FileUtilities.DownloadPath);
+                await CacheThumbnail(addon);
+
+                downloadedFilePath = await _downloadService.DownloadZipFile(addon.DownloadUrl, FileUtilities.DownloadPath);
 
                 if (!string.IsNullOrEmpty(addon.InstalledVersion))
                 {
@@ -316,6 +343,35 @@ namespace WowUp.WPF.Services
             }
 
             updateAction?.Invoke(AddonInstallState.Complete, 100m);
+        }
+
+        private async Task CacheThumbnail(Addon addon)
+        {
+            if (string.IsNullOrEmpty(addon.ThumbnailUrl))
+            {
+                return;
+            }
+
+            try
+            {
+                using var imageStream = await addon.ThumbnailUrl.GetStreamAsync();
+
+                using Image image = Image.Load(imageStream);
+                image.Mutate(x => x.Resize(new ResizeOptions
+                {
+                    Size = new Size
+                    {
+                        Width = 80,
+                        Height = 80
+                    }
+                }));
+
+                image.Save(addon.GetThumbnailCachePath());
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "Failed to download thumbnail");
+            }
         }
 
         private string GetLatestGameVersion(string baseDir, IEnumerable<string> installedFolders)

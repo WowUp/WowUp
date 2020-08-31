@@ -27,7 +27,7 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" Margin="0, 0, 10, 0" VerticalAlignment="Center">
                             <Border Background="{StaticResource Dark2}"  >
-                                <Image Source="{Binding ThumbnailUrl}" Width="40" Height="40" />
+                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}" Width="40" Height="40" />
                             </Border>
                         </StackPanel>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
