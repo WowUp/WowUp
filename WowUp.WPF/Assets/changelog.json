@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.15.1",
+      "Description": "Add column sorting for My Addons page.\nTry out new error tracking service for telemetry users."
+    },
+    {
       "Version": "1.15.0",
       "Description": "All new scanning method, better results less 'Install' button.\nWowInterface support during scan.\nBetter TukUI support.\nNew filtering on the 'My Addons' page.\nSystem tray icons should not hang around after you close the app.\nNew option to switch between Stable and Beta WowUp releases.\nUI improvements.\nPerformance improvements."
     },
