@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.15.2",
+      "Description": "Fix bug with local image paths for certain users."
+    },
+    {
       "Version": "1.15.1",
       "Description": "Add column sorting for My Addons page.\nTry out new error tracking service for telemetry users."
     },
