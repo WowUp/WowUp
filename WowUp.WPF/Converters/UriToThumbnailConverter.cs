@@ -25,14 +25,13 @@ namespace WowUp.WPF.Converters
             {
                 try
                 {
-
                     BitmapImage thumbnail = new BitmapImage();
                     thumbnail.BeginInit();
                     thumbnail.DecodePixelWidth = 80;
 
                     if (uri.IsFile)
                     {
-                        thumbnail.StreamSource = FileUtilities.GetMemoryStreamFromFile(uri.AbsolutePath);
+                        thumbnail.StreamSource = FileUtilities.GetMemoryStreamFromFile(uri.LocalPath);
                     }
                     else
                     {
