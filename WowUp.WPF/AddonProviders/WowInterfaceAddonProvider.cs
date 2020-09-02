@@ -13,6 +13,7 @@ using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models.WowUp;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -22,15 +23,17 @@ namespace WowUp.WPF.AddonProviders
         private const string ApiUrl = "https://api.mmoui.com/v4/game/WOW";
         private const string AddonUrl = "https://www.wowinterface.com/downloads/info";
 
+        private readonly IAnalyticsService _analyticsService;
         private readonly ICacheService _cacheService;
 
         public string Name => "WowInterface";
 
         public WowInterfaceAddonProvider(
+            IAnalyticsService analyticsService,
             ICacheService cacheService)
         {
+            _analyticsService = analyticsService;
             _cacheService = cacheService;
-
         }
 
         public async Task Scan(
@@ -218,7 +221,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"GetAddonSearchResult {response.Id}");
+                _analyticsService.Track(ex, $"GetAddonSearchResult {response.Id}");
                 return default;
             }
         }

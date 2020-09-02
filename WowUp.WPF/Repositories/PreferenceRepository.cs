@@ -10,6 +10,8 @@ namespace WowUp.WPF.Repositories
 {
     public class PreferenceRepository : BaseEntityRepository<Preference>, IPreferenceRepository
     {
+        public event PreferenceEventHandler PreferenceUpdated;
+
         public Preference Create(string key, string value)
         {
             var pref = new Preference
@@ -53,6 +55,8 @@ namespace WowUp.WPF.Repositories
                     _database.Insert(item);
                 }
             }
+
+            PreferenceUpdated?.Invoke(this, new Models.Events.PreferenceEventArgs(item));
 
             return true;
         }

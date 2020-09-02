@@ -37,5 +37,16 @@ namespace WowUp.WPF.Views
             e.Uri.AbsoluteUri.OpenUrlInBrowser();
             e.Handled = true;
         }
+
+        // The command binder in XAML didnt want to forward me the event :(
+        private void AddonGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            _viewModel.GridSortingCommand.Execute(e);
+        }
+
+        private void UserControl_Initialized(object sender, System.EventArgs e)
+        {
+            _viewModel.ViewInitializedCommand.Execute(e);
+        }
     }
 }

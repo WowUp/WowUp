@@ -29,5 +29,16 @@ namespace WowUp.WPF.Services
                     .GetJsonAsync<LatestVersionResponse>();
             });
         }
+
+        public async Task<AppCenterResponse> GetAppCenter()
+        {
+            var url = $"{ApiUrl}/wowup/appcenter";
+            return await _cacheService.GetCache(url, async () =>
+            {
+                return await url
+                    .WithHeaders(HttpUtilities.DefaultHeaders)
+                    .GetJsonAsync<AppCenterResponse>();
+            });
+        }
     }
 }

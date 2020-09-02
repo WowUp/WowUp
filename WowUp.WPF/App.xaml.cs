@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
 using System.IO;
-using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,24 +88,25 @@ namespace WowUp.WPF
             services.AddTransient<AboutViewModel>();
             services.AddTransient<AddonListItemViewModel>();
             services.AddTransient<AddonsViewViewModel>();
+            services.AddTransient<ApplicationUpdateControlViewModel>();
             services.AddTransient<GetAddonsViewModel>();
             services.AddTransient<InstallUrlDialogViewModel>();
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<OptionsViewModel>();
             services.AddTransient<PotentialAddonListItemViewModel>();
-            services.AddTransient<ApplicationUpdateControlViewModel>();
             services.AddTransient<SearchInputViewModel>();
 
             services.AddTransient<AboutView>();
             services.AddTransient<AddonsView>();
             services.AddTransient<GetAddonsView>();
-            services.AddTransient<OptionsView>();
             services.AddTransient<InstallUrlWindow>();
+            services.AddTransient<OptionsView>();
 
             services.AddTransient<ICurseAddonProvider, CurseAddonProvider>();
             services.AddTransient<IGitHubAddonProvider, GitHubAddonProvider>();
             services.AddTransient<ITukUiAddonProvider, TukUiAddonProvider>();
             services.AddTransient<IWowInterfaceAddonProvider, WowInterfaceAddonProvider>();
+
             services.AddTransient<ApplicationUpdater>();
 
             services.AddSingleton<MainWindow>();
@@ -144,22 +147,6 @@ namespace WowUp.WPF
 
             Log.Error(e, "Uncaught Exception");
             Log.Error($"Terminating {args.IsTerminating}");
-        }
-
-        private bool SendShowWindowCommand()
-        {
-            NamedPipeClientStream clientStream = new NamedPipeClientStream(IpcPipeName);
-            try
-            {
-                clientStream.Connect(500);
-            }
-            catch (TimeoutException)
-            {
-                return false;
-            }
-
-            clientStream.WriteByte((byte)IpcCommand.Show);
-            return true;
         }
 
         private void HandleSingleInstance()

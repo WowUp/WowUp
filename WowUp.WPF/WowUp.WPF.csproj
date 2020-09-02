@@ -10,7 +10,7 @@
     <PackageId>WowUp</PackageId>
     <Authors>Jliddev</Authors>
     <Product>WowUp</Product>
-    <Version>1.15.0</Version>
+    <Version>1.15.1</Version>
     <ApplicationIcon>wowup_logo_512np_RRT_icon.ico</ApplicationIcon>
     <Copyright>jliddev</Copyright>
     <PackageProjectUrl>https://wowup.io</PackageProjectUrl>
@@ -38,6 +38,8 @@
     <None Remove="Assets\Fonts\OpenSans-SemiBoldItalic.ttf" />
     <None Remove="Assets\patron.png" />
     <None Remove="Assets\search_icon.png" />
+    <None Remove="Assets\sort_down_icon.png" />
+    <None Remove="Assets\sort_up_icon.png" />
     <None Remove="Assets\wowup_logo_1.png" />
     <None Remove="Assets\wowup_logo_512.png" />
     <None Remove="Assets\wowup_logo_512np.png" />
@@ -50,6 +52,8 @@
 
   <ItemGroup>
     <PackageReference Include="Flurl.Http" Version="2.4.2" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="3.4.1" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="3.4.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.7" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
@@ -80,6 +84,8 @@
     <Resource Include="Assets\Fonts\OpenSans-SemiBoldItalic.ttf" />
     <Resource Include="Assets\patron.png" />
     <Resource Include="Assets\search_icon.png" />
+    <Resource Include="Assets\sort_down_icon.png" />
+    <Resource Include="Assets\sort_up_icon.png" />
     <Resource Include="Assets\wowup_logo_1.png" />
     <Resource Include="Assets\wowup_logo_512.png" />
     <Resource Include="Assets\wowup_logo_512np.png" />

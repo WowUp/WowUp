@@ -14,6 +14,8 @@
             <localcv:InverseStringToVisibilty x:Key="InverseStringToVisibilty" />
             <localcv:InverseBoolToVisibility x:Key="InverseBoolToVisibility" />
             <localcv:UriToThumbnailConverter x:Key="UriToThumbnailConverter" />
+            <localcv:SortAscendingToVisibilityConverter x:Key="SortAscendingToVisibilityConverter" />
+            <localcv:SortDescendingToVisibilityConverter x:Key="SortDescendingToVisibilityConverter" />
             
             <!--Global Styles-->
             <Color x:Key="NavigationPrimary">#6B69D6</Color>

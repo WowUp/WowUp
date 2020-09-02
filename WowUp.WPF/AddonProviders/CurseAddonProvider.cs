@@ -17,6 +17,7 @@ using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Models.Curse;
 using WowUp.WPF.Models.WowUp;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -28,12 +29,15 @@ namespace WowUp.WPF.AddonProviders
         private const string RetailGameVersionFlavor = "wow_retail";
 
         private readonly ICacheService _cacheService;
+        private readonly IAnalyticsService _analyticsService;
 
         public string Name => "Curse";
 
         public CurseAddonProvider(
+            IAnalyticsService analyticsService,
             ICacheService cacheService)
         {
+            _analyticsService = analyticsService;
             _cacheService = cacheService;
         }
 
@@ -76,7 +80,7 @@ namespace WowUp.WPF.AddonProviders
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, $"Failed to create addon for result {scanResult.FolderScanner.Fingerprint}");
+                    _analyticsService.Track(ex, $"Failed to create addon for result {scanResult.FolderScanner.Fingerprint}");
                 }
             }
         }
@@ -411,8 +415,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "GetAddonSearchResult");
-                Console.WriteLine(ex);
+                _analyticsService.Track(ex, "GetAddonSearchResult");
                 return null;
             }
         }
@@ -479,8 +482,8 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "GetAllIds");
-                Console.WriteLine(ex);
+                _analyticsService.Track(ex, "GetAllIds");
+
                 return new List<CurseSearchResult>();
             }
         }
@@ -498,8 +501,8 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "GetSearchResults");
-                Console.WriteLine(ex);
+                _analyticsService.Track(ex, "GetSearchResults");
+
                 return new List<CurseSearchResult>();
             }
         }
@@ -530,8 +533,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "GetSearchResults");
-                Console.WriteLine(ex);
+                _analyticsService.Track(ex, "GetSearchResults");
                 return new List<CurseSearchResult>();
             }
         }

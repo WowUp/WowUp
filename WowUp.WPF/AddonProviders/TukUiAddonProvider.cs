@@ -14,6 +14,7 @@ using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Models.WowUp;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -24,11 +25,15 @@ namespace WowUp.WPF.AddonProviders
         private const string ClientApiUrl = "https://www.tukui.org/client-api.php";
 
         private readonly ICacheService _cacheService;
+        private readonly IAnalyticsService _analyticsService;
 
         public string Name => "TukUI";
 
-        public TukUiAddonProvider(ICacheService cacheService)
+        public TukUiAddonProvider(
+            IAnalyticsService analyticsService,
+            ICacheService cacheService)
         {
+            _analyticsService = analyticsService;
             _cacheService = cacheService;
         }
 
@@ -135,7 +140,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to search TukUi");
+                _analyticsService.Track(ex, "Failed to search TukUi");
             }
 
             return results;
@@ -160,7 +165,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to search TukUi");
+                _analyticsService.Track(ex, "Failed to search TukUi");
             }
 
             return results;

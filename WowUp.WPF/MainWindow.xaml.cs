@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AppCenter.Crashes;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -21,15 +22,10 @@ namespace WowUp.WPF
         private readonly MainWindowViewModel _viewModel;
         private readonly NotifyIcon _notifyIcon;
 
-        private readonly IIpcServerService _ipcServerService;
-
         public MainWindow(
-            IAnalyticsService analyticsService,
             IIpcServerService ipcServerService,
             MainWindowViewModel viewModel)
         {
-            _ipcServerService = ipcServerService;
-
             _notifyIcon = CreateNotifyIcon();
 
             DataContext = _viewModel = viewModel;

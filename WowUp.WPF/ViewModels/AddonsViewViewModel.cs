@@ -3,9 +3,11 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
@@ -63,6 +65,90 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _enableReScan, value); }
         }
 
+        private string _addonHeaderText = "Addon";
+        public string AddonHeaderText
+        {
+            get => _addonHeaderText;
+            set { SetProperty(ref _addonHeaderText, value); }
+        }
+
+        private string _statusHeaderText = "Status";
+        public string StatusHeaderText
+        {
+            get => _statusHeaderText;
+            set { SetProperty(ref _statusHeaderText, value); }
+        }
+
+        private string _providerHeaderText = "Provider";
+        public string ProviderHeaderText
+        {
+            get => _providerHeaderText;
+            set { SetProperty(ref _providerHeaderText, value); }
+        }
+
+        private string _gameVersionHeaderText = "Game Version";
+        public string GameVersionHeaderText
+        {
+            get => _gameVersionHeaderText;
+            set { SetProperty(ref _gameVersionHeaderText, value); }
+        }
+
+        private string _latestVersionHeaderText = "Latest Version";
+        public string LatestVersionHeaderText
+        {
+            get => _latestVersionHeaderText;
+            set { SetProperty(ref _latestVersionHeaderText, value); }
+        }
+
+        private string _authorHeaderText = "Author";
+        public string AuthorHeaderText
+        {
+            get => _authorHeaderText;
+            set { SetProperty(ref _authorHeaderText, value); }
+        }
+
+        public ListSortDirection? _addonNameSortDirection;
+        public ListSortDirection? AddonNameSortDirection
+        {
+            get => _addonNameSortDirection;
+            set { SetProperty(ref _addonNameSortDirection, value); }
+        }
+
+        public ListSortDirection? _providerNameSortDirection;
+        public ListSortDirection? ProviderNameSortDirection
+        {
+            get => _providerNameSortDirection;
+            set { SetProperty(ref _providerNameSortDirection, value); }
+        }
+
+        public ListSortDirection? _gameVersionSortDirection;
+        public ListSortDirection? GameVersionSortDirection
+        {
+            get => _gameVersionSortDirection;
+            set { SetProperty(ref _gameVersionSortDirection, value); }
+        }
+
+        public ListSortDirection? _latestVersionSortDirection;
+        public ListSortDirection? LatestVersionSortDirection
+        {
+            get => _latestVersionSortDirection;
+            set { SetProperty(ref _latestVersionSortDirection, value); }
+        }
+
+        public ListSortDirection? _statusSortDirection;
+        public ListSortDirection? StatusSortDirection
+        {
+            get => _statusSortDirection;
+            set { SetProperty(ref _statusSortDirection, value); }
+        }
+
+        public ListSortDirection? _authorSortDirection;
+        public ListSortDirection? AuthorSortDirection
+        {
+            get => _authorSortDirection;
+            set { SetProperty(ref _authorSortDirection, value); }
+        }
+
         private AddonListItemViewModel _selectedRow;
         public AddonListItemViewModel SelectedRow
         {
@@ -84,6 +170,8 @@ namespace WowUp.WPF.ViewModels
         public Command RescanCommand { get; set; }
         public Command UpdateAllCommand { get; set; }
         public Command SelectedWowClientCommand { get; set; }
+        public Command GridSortingCommand { get; set; }
+        public Command ViewInitializedCommand { get; set; }
 
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
         public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
@@ -132,6 +220,8 @@ namespace WowUp.WPF.ViewModels
             RescanCommand = new Command(async () => await ReScan());
             UpdateAllCommand = new Command(async () => await UpdateAll());
             SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
+            GridSortingCommand = new Command((args) => OnGridSorting(args as DataGridSortingEventArgs));
+            ViewInitializedCommand = new Command(() => OnViewInitialized());
 
             SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
             SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
@@ -154,6 +244,67 @@ namespace WowUp.WPF.ViewModels
         private void SearchInputViewModel_TextChanged(object sender, Models.Events.SearchInputEventArgs e)
         {
             FilterAddons(e.Text);
+        }
+
+        private void OnViewInitialized()
+        {
+        }
+
+        private void ResetSorting()
+        {
+            AddonNameSortDirection = null;
+            AuthorSortDirection = null;
+            GameVersionSortDirection = null;
+            LatestVersionSortDirection = null;
+            ProviderNameSortDirection = null;
+            StatusSortDirection = null;
+        }
+
+        private void OnGridSorting(DataGridSortingEventArgs args)
+        {
+            ResetSorting();
+
+            var nextSortDirection = GetNextSortDirection(args.Column.SortDirection);
+
+            switch (args.Column.SortMemberPath)
+            {
+                case "Name":
+                    AddonNameSortDirection = nextSortDirection;
+                    break;
+                case "ProviderName":
+                    ProviderNameSortDirection = nextSortDirection;
+                    break;
+                case "GameVersion":
+                    GameVersionSortDirection = nextSortDirection;
+                    break;
+                case "LatestVersion":
+                    LatestVersionSortDirection = nextSortDirection;
+                    break;
+                case "DisplayState":
+                    StatusSortDirection = nextSortDirection;
+                    break;
+                case "Author":
+                    AuthorSortDirection = nextSortDirection;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private ListSortDirection? GetNextSortDirection(ListSortDirection? sortDirection)
+        {
+            if (sortDirection == null)
+            {
+                return ListSortDirection.Ascending;
+            }
+            else if (sortDirection == ListSortDirection.Ascending)
+            {
+                return ListSortDirection.Descending;
+            }
+            else
+            {
+                return ListSortDirection.Ascending;
+            }
         }
 
         private void SetClientNames()

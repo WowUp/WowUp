@@ -179,7 +179,7 @@ namespace WowUp.WPF.Services
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to sync addons");
+                _analyticsService.Track(ex, "Failed to sync addons");
             }
         }
 
@@ -326,8 +326,7 @@ namespace WowUp.WPF.Services
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "InstallAddon");
-                Console.WriteLine(ex);
+                _analyticsService.Track(ex, "InstallAddon");
             }
             finally
             {
@@ -370,7 +369,7 @@ namespace WowUp.WPF.Services
             }
             catch(Exception ex)
             {
-                Log.Error(ex, "Failed to download thumbnail");
+                _analyticsService.Track(ex, "Failed to download thumbnail");
             }
         }
 
@@ -454,7 +453,7 @@ namespace WowUp.WPF.Services
                 }
                 catch(Exception ex)
                 {
-                    Log.Error(ex, $"Addon scan failed {provider.Name}");
+                    _analyticsService.Track(ex, $"Addon scan failed {provider.Name}");
                 }
             }
 
