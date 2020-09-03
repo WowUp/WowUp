@@ -61,6 +61,8 @@ jobs:
       Test_Project_Path: your-test-project-path     # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
       Wap_Project_Directory: WowUp.WPF              # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
       Wap_Project_Path: WowUp.WPF/WowUp.WPF.csproj  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      UPDATE_PROJECT_DIRECTORY: WowUp.Updater              # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      UPDATE_PROJECT_PATH: WowUp.Updater/WowUp.Updater.csproj
       APP_CHANGE_DESCRIPTION: ''
       APP_VERSION: ''
 
@@ -101,7 +103,15 @@ jobs:
     # Create the app package by building and packaging the Windows Application Packaging project
     - name: Create the app package
       run: dotnet publish $env:Wap_Project_Path /p:PublishProfile=FolderProfile
-      #run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
+      env:
+        Appx_Bundle: Always
+        Appx_Bundle_Platforms: x86|x64
+        Appx_Package_Build_Mode: StoreUpload
+        Configuration: ${{ matrix.configuration }}
+
+    # Build the updater package
+    - name: Create the updater app package
+      run: dotnet publish $env:UPDATE_PROJECT_PATH /p:PublishProfile=FolderProfile
       env:
         Appx_Bundle: Always
         Appx_Bundle_Platforms: x86|x64
@@ -110,7 +120,7 @@ jobs:
         
     - name: Zip Build
       id: zip_build
-      run: Compress-Archive ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish/WowUp.exe WowUp.zip
+      run: Compress-Archive -LiteralPath ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish/WowUp.exe, ${env:UPDATE_PROJECT_DIRECTORY}/bin/Release/Publish/WowUp.Updater.exe -DestinationPath WowUp.zip
       
     - name: Test Build
       id: test_build
