@@ -129,7 +129,7 @@ namespace WowUp.WPF.Utilities
 
         private async Task DownloadUpdate()
         {
-            _downloadedZipPath = await _downloadService.DownloadZipFile(
+            await _downloadService.DownloadZipFile(
                 LatestVersionUrl,
                 FileUtilities.DownloadPath,
                 (progress) =>
