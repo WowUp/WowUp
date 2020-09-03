@@ -15,7 +15,7 @@ namespace WowUp.Utilities
 
         public static void TryMove(string sourcePath, string destinationPath, bool overwrite)
         {
-            var retryMax = 3;
+            var retryMax = 10;
             var retryDelay = 1000;
 
             for (int i = 1; i <= retryMax; ++i)
