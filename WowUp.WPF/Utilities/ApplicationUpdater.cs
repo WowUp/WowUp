@@ -15,6 +15,9 @@ namespace WowUp.WPF.Utilities
         private readonly IDownloadService _downloadService;
         private readonly List<string> _cleanupFiles;
 
+        public static string UpdateFilePath => Path.Combine(FileUtilities.DownloadPath, AppUtilities.ApplicationFileName);
+        public static bool UpdateFileExists => File.Exists(UpdateFilePath);
+
         public string LatestVersionUrl { get; set; }
 
         private ApplicationUpdateState _state;
@@ -57,15 +60,31 @@ namespace WowUp.WPF.Utilities
             CurrentProgress = 0.0m;
         }
 
+        public static void ProcessUpdateFile()
+        {
+            if (!UpdateFileExists)
+            {
+                return;
+            }
+
+            var destination = AppUtilities.ApplicationFilePath;
+            var backupPath = Path.Combine(Path.GetDirectoryName(destination), Path.GetFileName(destination) + ".bak");
+
+            // move the current exe to a .exe.bak file
+            File.Move(destination, backupPath);
+
+            // move the pending wowup.exe to the current location
+            File.Move(UpdateFilePath, destination);
+
+            AppUtilities.RestartApplication();
+        }
+
         public async Task Update()
         {
             try
             {
                 SetNewState(ApplicationUpdateState.Downloading);
                 await DownloadUpdate();
-
-                SetNewState(ApplicationUpdateState.CreateBackup);
-                BackupExecutable();
 
                 SetNewState(ApplicationUpdateState.Unpacking);
                 await UnpackUpdate();
@@ -133,8 +152,7 @@ namespace WowUp.WPF.Utilities
 
         private void MoveUnpackedExe()
         {
-            var assemblyLocation = FileUtilities.ExecutablePath;
-            var fileName = Path.GetFileName(assemblyLocation);
+            var fileName = AppUtilities.ApplicationFileName;
 
             var unpackedFile = Path.Combine(_unpackedPath, fileName);
             if (!File.Exists(unpackedFile))
@@ -142,7 +160,14 @@ namespace WowUp.WPF.Utilities
                 throw new Exception($"Unpacked {fileName} not found");
             }
 
-            File.Move(unpackedFile, assemblyLocation);
+            var destination = Path.Combine(FileUtilities.DownloadPath, fileName);
+            if (File.Exists(destination))
+            {
+                File.Delete(destination);
+            }
+
+            // copy the unzipped wowup.exe to the pending location
+            File.Move(unpackedFile, destination);
         }
 
         private void BackupExecutable()

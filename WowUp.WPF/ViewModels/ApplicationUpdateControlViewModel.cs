@@ -120,9 +120,7 @@ namespace WowUp.WPF.ViewModels
 
         private void OnRestartApp()
         {
-            Application.Current.MainWindow.Close();
-            Application.Current.Shutdown();
-            System.Diagnostics.Process.Start(FileUtilities.ExecutablePath);
+            AppUtilities.RestartApplication();
         }
 
         private async void OnDownloadUpdate()

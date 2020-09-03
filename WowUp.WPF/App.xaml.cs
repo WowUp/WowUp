@@ -70,6 +70,8 @@ namespace WowUp.WPF
         {
             HandleSingleInstance();
 
+            HandlePendingUpdate();
+
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
         }
@@ -163,6 +165,23 @@ namespace WowUp.WPF
 
             //there is already another instance running!
             Current.Shutdown();
+        }
+
+        private void HandlePendingUpdate()
+        {
+            if (!ApplicationUpdater.UpdateFileExists)
+            {
+                return;
+            }
+
+            try
+            {
+                ApplicationUpdater.ProcessUpdateFile();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to process update file.");
+            }
         }
     }
 }
