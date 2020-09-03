@@ -1,6 +1,5 @@
 ﻿using Flurl.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
