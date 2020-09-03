@@ -25,6 +25,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _progressIndeterminate, value); }
         }
 
+        private bool _showUpdaterMissing;
+        public bool ShowUpdaterMissing
+        {
+            get => _showUpdaterMissing;
+            set { SetProperty(ref _showUpdaterMissing, value); }
+        }
+
         private bool _showProgress;
         public bool ShowProgress
         {
@@ -119,7 +126,7 @@ namespace WowUp.WPF.ViewModels
 
         private void OnRestartApp()
         {
-            AppUtilities.RestartApplication();
+            ApplicationUpdater.ProcessUpdateFile();
         }
 
         private async void OnDownloadUpdate()

@@ -1,8 +1,10 @@
 ﻿using CommandLine;
 using Serilog;
 using System;
+using System.Diagnostics;
 using System.IO;
 using WowUp.Updater.Models;
+using WowUp.Updater.Utilities;
 using WowUp.Utilities;
 
 namespace WowUp.Updater
@@ -26,26 +28,31 @@ namespace WowUp.Updater
         private static void ProcessUpdate(Options opts)
         {
             var backupPath = GetBackupPath(opts.Origin);
+            var unzippedPath = string.Empty;
 
             try
             {
+                WaitForWowUpToEnd(opts.ProcessName);
+
                 Log.Information("Checking Origin");
-                if (!File.Exists(opts.Origin))
-                {
-                    throw new Exception($"Origin exe not found: {opts.Origin}");
-                }
+                ValidateOrigin(opts.Origin);
 
                 Log.Information("Checking Update");
-                if (!File.Exists(opts.Update))
-                {
-                    throw new Exception($"Update exe not found: {opts.Update}");
-                }
+                ValidateUpdate(opts.Update);
+
+                Log.Information("Unzipping update");
+                unzippedPath = ZipUtilities.UnzipFile(opts.Update);
          
                 Log.Information($"Backing up original exe {opts.Origin} => {backupPath}");
-                File.Move(opts.Origin, backupPath);
+                File.Move(opts.Origin, backupPath, true);
 
-                Log.Information($"Moving update exe {opts.Update} => {opts.Origin}");
-                File.Move(opts.Update, opts.Origin);
+                FileUtilities.Move(unzippedPath, Path.GetDirectoryName(opts.Origin));
+
+                Log.Information("Deleting update zip");
+                File.Delete(opts.Update);
+
+                Log.Information("Update complete");
+                Process.Start(opts.Origin);
             }
             catch (Exception ex)
             {
@@ -60,8 +67,53 @@ namespace WowUp.Updater
 
                 throw;
             }
+            finally
+            {
+                if (Directory.Exists(unzippedPath))
+                {
+                    Directory.Delete(unzippedPath, true);
+                }
+            }
+        }
 
-            Log.Information("Update complete");
+        private static void WaitForWowUpToEnd(string processName)
+        {
+            Log.Information($"Waiting for {processName} to exit");
+            var processes = Process.GetProcessesByName(processName);
+            foreach(var process in processes)
+            {
+                var exited = process.WaitForExit(5000);
+                if (!exited)
+                {
+                    throw new Exception("WowUp did not exit");
+                }
+            }
+        }
+
+        private static void ValidateUpdate(string updatePath)
+        {
+            if (!File.Exists(updatePath))
+            {
+                throw new Exception($"Update file not found: {updatePath}");
+            }
+
+            if (!Path.GetExtension(updatePath).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new Exception("Invalid update path, must be a zip file");
+            }
+        }
+
+        private static void ValidateOrigin(string originPath)
+        {
+            if (!File.Exists(originPath))
+            {
+                throw new Exception($"Origin file not found: {originPath}");
+            }
+
+            if (!Path.GetExtension(originPath).Equals(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new Exception("Invalid origin path, must be an exe file");
+            }
         }
 
         private static string GetBackupPath(string exePath)

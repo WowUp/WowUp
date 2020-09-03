@@ -9,5 +9,8 @@ namespace WowUp.Updater.Models
 
         [Option('u', "update", Required = true, HelpText = "The WowUp.exe update path")]
         public string Update { get; set; }
+
+        [Option('p', "process", Required = true, HelpText = "The WowUp.exe process name to wait for")]
+        public string ProcessName { get; set; }
     }
 }
