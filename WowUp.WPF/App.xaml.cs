@@ -59,6 +59,9 @@ namespace WowUp.WPF
 
             Log.Information($"Starting {AppUtilities.CurrentVersion}");
 
+            HandlePendingUpdate();
+
+
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
@@ -69,8 +72,6 @@ namespace WowUp.WPF
         protected override void OnStartup(StartupEventArgs e)
         {
             HandleSingleInstance();
-
-            HandlePendingUpdate();
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
