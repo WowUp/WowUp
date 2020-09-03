@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace WowUp.Utilities
 {
@@ -11,6 +12,26 @@ namespace WowUp.Utilities
 
         public static readonly string AppDataPath = Path.Combine(LocalAppDataPath, "WowUp");
         public static readonly string AppLogsPath = Path.Combine(AppDataPath, "Logs");
+
+        public static void TryMove(string sourcePath, string destinationPath, bool overwrite)
+        {
+            var retryMax = 3;
+            var retryDelay = 1000;
+
+            for (int i = 1; i <= retryMax; ++i)
+            {
+                try
+                {
+                    File.Move(sourcePath, destinationPath, overwrite);
+                    break;
+                }
+                catch (IOException e) when (i <= retryMax)
+                {
+                    Log.Error(e, "Move failed");
+                    Thread.Sleep(retryDelay);
+                }
+            }
+        }
 
         public static void Move(string sourceDirectory, string targetDirectory)
         {

@@ -44,7 +44,7 @@ namespace WowUp.Updater
                 unzippedPath = ZipUtilities.UnzipFile(opts.Update);
          
                 Log.Information($"Backing up original exe {opts.Origin} => {backupPath}");
-                File.Move(opts.Origin, backupPath, true);
+                FileUtilities.TryMove(opts.Origin, backupPath, true);
 
                 FileUtilities.Move(unzippedPath, Path.GetDirectoryName(opts.Origin));
 
