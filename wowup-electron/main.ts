@@ -42,7 +42,7 @@ function createWindow(): BrowserWindow {
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
   const windowOptions: BrowserWindowConstructorOptions = {
-    width: 800,
+    width: 900,
     height: 600,
     backgroundColor: '#444444',
     // frame: false,
@@ -54,8 +54,8 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: (serve) ? true : false,
       webSecurity: false
     },
-    minWidth: 700,
-    minHeight: 400
+    minWidth: 900,
+    minHeight: 550
   };
 
   if (isWin) {

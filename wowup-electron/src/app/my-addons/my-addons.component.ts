@@ -65,7 +65,7 @@ export class MyAddonsComponent implements OnInit {
     { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
   ];
 
-  public selectedClient = WowClientType.Retail;
+  public selectedClient = WowClientType.Classic;
   public busy = false;
   public displayAddons$ = this._displayAddonsSrc.asObservable();
 
