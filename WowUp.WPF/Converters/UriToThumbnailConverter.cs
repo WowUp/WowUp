@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using WowUp.WPF.Utilities;
@@ -23,6 +24,8 @@ namespace WowUp.WPF.Converters
 
             if (value is Uri uri)
             {
+                MemoryStream imageStream = null;
+
                 try
                 {
                     BitmapImage thumbnail = new BitmapImage();
@@ -31,7 +34,8 @@ namespace WowUp.WPF.Converters
 
                     if (uri.IsFile)
                     {
-                        thumbnail.StreamSource = FileUtilities.GetMemoryStreamFromFile(uri.LocalPath);
+                        imageStream = FileUtilities.GetMemoryStreamFromFile(uri.LocalPath);
+                        thumbnail.StreamSource = imageStream;
                     }
                     else
                     {
@@ -45,6 +49,11 @@ namespace WowUp.WPF.Converters
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Failed to create bitmap image");
+                }
+                finally
+                {
+                    imageStream?.Close();
+                    imageStream?.Dispose();
                 }
             }
 
