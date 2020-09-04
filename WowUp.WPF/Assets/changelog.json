@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.16.0",
+      "Description": "New updater companion app, to deal with in-app update issues."
+    },
+    {
       "Version": "1.15.2",
       "Description": "Fix bug with local image paths for certain users."
     },
