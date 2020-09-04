@@ -22,7 +22,7 @@ namespace WowUp.Utilities
             {
                 try
                 {
-                    File.Move(sourcePath, destinationPath, overwrite);
+                    File.Copy(sourcePath, destinationPath, overwrite);
                     break;
                 }
                 catch (IOException e) when (i <= retryMax)
@@ -49,7 +49,7 @@ namespace WowUp.Utilities
             foreach (FileInfo fi in source.GetFiles())
             {
                 Log.Information($"Moving file {target.FullName} => {fi.Name}");
-                fi.MoveTo(Path.Combine(target.FullName, fi.Name), true);
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
             }
 
             // Copy each subdirectory using recursion.
@@ -57,27 +57,6 @@ namespace WowUp.Utilities
             {
                 DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
                 MoveAll(diSourceSubDir, nextTargetSubDir);
-            }
-        }
-
-        public static void MoveContents(string sourcePath, string destinationPath)
-        {
-            //Now Create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-            {
-                var newDirectoryPath = dirPath.Replace(sourcePath, destinationPath);
-                Log.Information($"Creating directory {newDirectoryPath}");
-
-                Directory.CreateDirectory(newDirectoryPath);
-            }
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-            {
-                var newDestinationPath = newPath.Replace(sourcePath, destinationPath);
-                Log.Information($"Moving file {newPath} => {newDestinationPath}");
-
-                File.Move(newPath, newDestinationPath, true);
             }
         }
     }
