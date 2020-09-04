@@ -82,10 +82,17 @@ namespace WowUp.Updater
             var processes = Process.GetProcessesByName(processName);
             foreach(var process in processes)
             {
-                var exited = process.WaitForExit(5000);
-                if (!exited)
+                try
                 {
-                    throw new Exception("WowUp did not exit");
+                    var exited = process.WaitForExit(5000);
+                    if (!exited)
+                    {
+                        throw new Exception("WowUp did not exit");
+                    }
+                }
+                finally
+                {
+                    process.Dispose();
                 }
             }
         }
