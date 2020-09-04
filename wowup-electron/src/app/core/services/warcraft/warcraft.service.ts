@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import { WarcraftServiceWin } from "./warcraft.service.win";
-import { FileUtils } from "app/core/utils/file.utils";
+import { FileUtils } from "../../utils/file.utils";
 import { ProductDb } from "app/models/warcraft/product-db";
 import { InstalledProduct } from "app/models/warcraft/installed-product";
 import { from, BehaviorSubject } from "rxjs";

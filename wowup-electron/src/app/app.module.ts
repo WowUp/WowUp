@@ -23,6 +23,8 @@ import { AppComponent } from './app.component';
 import { DefaultHeadersInterceptor } from './core/interceptors/default-headers.interceptor';
 import { AddonTableColumnComponent } from './components/addon-table-column/addon-table-column.component';
 import { AddonStatusColumnComponent } from './components/addon-status-column/addon-status-column.component';
+import { TitlebarComponent } from './components/titlebar/titlebar.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -34,6 +36,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AppComponent,
     AddonTableColumnComponent,
     AddonStatusColumnComponent,
+    TitlebarComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

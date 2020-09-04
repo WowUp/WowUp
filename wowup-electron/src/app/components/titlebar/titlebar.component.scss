@@ -1,0 +1,10 @@
+.titlebar-mac {
+height: 22px;
+}
+.titlebar-win{
+height: 30px;
+}
+.titlebar-drag-region {
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}

@@ -1,9 +1,9 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { Titlebar, Color } from 'custom-electron-titlebar'
 
 import { AppModule } from './app/app.module';
 import { AppConfig } from './environments/environment';
+import { WowUpTitlebar} from './titlebar';
 
 if (AppConfig.production) {
   enableProdMode();
@@ -15,11 +15,13 @@ platformBrowserDynamic()
   })
   .catch(err => console.error(err));
 
-new Titlebar({
-  backgroundColor: Color.fromHex('#6B69D6'),
-  menu: null,
-  icon: '/assets/wowup_logo_512np.png'
-});
+  // new WowUpTitlebar();
+
+// new Titlebar({
+//   backgroundColor: Color.fromHex('#6B69D6'),
+//   menu: null,
+//   icon: '/assets/wowup_logo_512np.png'
+// });
 
 document.addEventListener('click', (evt: any) => {
   console.debug('CLICK')

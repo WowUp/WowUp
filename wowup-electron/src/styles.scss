@@ -10,6 +10,21 @@ html {
 
 body {
   overflow: hidden;
+  margin: 0;
+}
+
+.bg-dark-4 {
+  background-color: $dark-4;
+}
+.bg-purple-1 {
+  background-color: $purple-1;
+}
+
+.text-light {
+  color: $white-1;
+}
+.text-light-2 {
+  color: $white-2;
 }
 
 .pre-load-container {
@@ -67,6 +82,9 @@ body {
 
   &.align-items-center {
     align-items: center;
+  }
+  &.justify-content-center {
+    justify-content: center;
   }
 }
 

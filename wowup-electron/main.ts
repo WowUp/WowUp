@@ -52,7 +52,8 @@ function createWindow(): BrowserWindow {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
-      webSecurity: false
+      webSecurity: false,
+      enableRemoteModule: true
     },
     minWidth: 900,
     minHeight: 550
