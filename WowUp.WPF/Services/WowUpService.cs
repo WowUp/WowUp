@@ -94,6 +94,23 @@ namespace WowUp.WPF.Services
             SetPreference(Constants.Preferences.WowUpReleaseChannelKey, type.ToString());
         }
 
+        public WowClientType GetLastSelectedClientType()
+        {
+            var pref = _preferenceRepository.FindByKey(Constants.Preferences.LastSelectedClientTypeKey);
+            if (pref == null)
+            {
+                return WowClientType.None;
+            }
+
+            return pref.Value.ToWowClientType();
+        }
+
+        public void SetLastSelectedClientType(WowClientType clientType)
+        {
+            SetPreference(Constants.Preferences.LastSelectedClientTypeKey, clientType.ToString());
+        }
+
+
         public async Task<bool> IsUpdateAvailable()
         {
             var releaseChannel = GetWowUpReleaseChannel();
@@ -171,6 +188,7 @@ namespace WowUp.WPF.Services
 
             await updater.Update();
         }
+
 
         private async Task<string> GetLatestVersionUrl()
         {

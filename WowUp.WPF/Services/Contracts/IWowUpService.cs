@@ -29,6 +29,9 @@ namespace WowUp.WPF.Services.Contracts
         AddonChannelType GetDefaultAddonChannel();
         void SetDefaultAddonChannel(AddonChannelType type);
 
+        WowClientType GetLastSelectedClientType();
+        void SetLastSelectedClientType(WowClientType clientType);
+
         WowUpReleaseChannelType GetWowUpReleaseChannel();
         void SetWowUpReleaseChannel(WowUpReleaseChannelType type);
     }

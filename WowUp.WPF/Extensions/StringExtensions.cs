@@ -32,5 +32,6 @@ namespace WowUp.WPF.Extensions
 
             return $"{version}{betaVersion}";
         }
+
     }
 }
