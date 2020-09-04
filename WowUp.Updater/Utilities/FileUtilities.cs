@@ -49,7 +49,14 @@ namespace WowUp.Utilities
             foreach (FileInfo fi in source.GetFiles())
             {
                 Log.Information($"Moving file {target.FullName} => {fi.Name}");
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                try
+                {
+                    fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                }
+                catch(Exception ex)
+                {
+                    Log.Error(ex, "Failed to copy file");
+                }
             }
 
             // Copy each subdirectory using recursion.
