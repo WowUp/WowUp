@@ -1,5 +1,4 @@
 ﻿using Flurl.Http;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,8 @@ using WowUp.Common.Models.WowInterface;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -21,15 +22,53 @@ namespace WowUp.WPF.AddonProviders
         private const string ApiUrl = "https://api.mmoui.com/v4/game/WOW";
         private const string AddonUrl = "https://www.wowinterface.com/downloads/info";
 
+        private readonly IAnalyticsService _analyticsService;
         private readonly ICacheService _cacheService;
 
         public string Name => "WowInterface";
 
         public WowInterfaceAddonProvider(
+            IAnalyticsService analyticsService,
             ICacheService cacheService)
         {
+            _analyticsService = analyticsService;
             _cacheService = cacheService;
+        }
 
+        public async Task Scan(
+            WowClientType clientType,
+            AddonChannelType addonChannelType, 
+            IEnumerable<AddonFolder> addonFolders)
+        {
+            foreach (var addonFolder in addonFolders)
+            {
+                if (string.IsNullOrEmpty(addonFolder.Toc.WowInterfaceId))
+                {
+                    continue;
+                }
+
+                var details = await GetAddonDetails(addonFolder.Toc.WowInterfaceId);
+                addonFolder.MatchingAddon = new Addon
+                {
+                    Author = details.Author,
+                    AutoUpdateEnabled = false,
+                    ChannelType = addonChannelType,
+                    ClientType = clientType,
+                    DownloadUrl = details.DownloadUri,
+                    ExternalId = details.Id.ToString(),
+                    ExternalUrl = GetAddonUrl(details),
+                    FolderName = addonFolder.Name,
+                    GameVersion = string.Empty,
+                    InstalledAt = DateTime.UtcNow,
+                    InstalledFolders = addonFolder.Name,
+                    InstalledVersion = addonFolder.Toc.Version,
+                    IsIgnored = false,
+                    LatestVersion = details.Version,
+                    Name = details.Title,
+                    ProviderName = Name,
+                    ThumbnailUrl = GetThumbnailUrl(details)
+                };
+            }
         }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
@@ -181,7 +220,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"GetAddonSearchResult {response.Id}");
+                _analyticsService.Track(ex, $"GetAddonSearchResult {response.Id}");
                 return default;
             }
         }

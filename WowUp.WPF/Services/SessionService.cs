@@ -16,7 +16,8 @@ namespace WowUp.WPF.Services
         public SessionService(
             IWarcraftService warcraftService)
         {
-            var initialClientType = warcraftService.GetWowClientTypes().First();
+            var installedClientTypes = warcraftService.GetWowClientTypes();
+            var initialClientType = installedClientTypes.Any() ? installedClientTypes.First() : WowClientType.None;
 
             _sessionState = new SessionState
             {

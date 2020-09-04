@@ -12,6 +12,9 @@
     <Color x:Key="White1Color">#FFFFFF</Color>
     <Color x:Key="White2Color">#DDDDDD</Color>
     <Color x:Key="White3Color">#CCCCCC</Color>
+    <Color x:Key="Blue1Color">#315891</Color>
+    <Color x:Key="Blue2Color">#24416c</Color>
+    <Color x:Key="Highlight1Color">#01BAEF</Color>
     <Color x:Key="RareColor">#0070DD</Color>
     <Color x:Key="EpicColor">#A335EE</Color>
     <Color x:Key="ControlPressedColor">#FF211AA9</Color>
@@ -36,12 +39,15 @@
     <SolidColorBrush x:Key="Dark2">#555555</SolidColorBrush>
     <SolidColorBrush x:Key="Dark3">#444444</SolidColorBrush>
     <SolidColorBrush x:Key="Dark4">#333333</SolidColorBrush>
-    <SolidColorBrush x:Key="White1">#FFFFFF</SolidColorBrush>
-    <SolidColorBrush x:Key="White2">#DDDDDD</SolidColorBrush>
-    <SolidColorBrush x:Key="White3">#CCCCCC</SolidColorBrush>
+    <SolidColorBrush x:Key="White1Brush">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="White2Brush">#DDDDDD</SolidColorBrush>
+    <SolidColorBrush x:Key="White3Brush">#CCCCCC</SolidColorBrush>
     <SolidColorBrush x:Key="Purple1">#6B69D6</SolidColorBrush>
     <SolidColorBrush x:Key="Purple2">#504FA1</SolidColorBrush>
     <SolidColorBrush x:Key="Purple3">#383773</SolidColorBrush>
+    <SolidColorBrush x:Key="Blue1Brush">#315891</SolidColorBrush>
+    <SolidColorBrush x:Key="Blue2Brush">#24416c</SolidColorBrush>
+    <SolidColorBrush x:Key="Highlight1Brush">#01BAEF</SolidColorBrush>
     <SolidColorBrush x:Key="RareBrush">#0070DD</SolidColorBrush>
     <SolidColorBrush x:Key="EpicBrush">#A335EE</SolidColorBrush>
     <SolidColorBrush x:Key="ContextMenuBackgroundBrush" Color="{StaticResource Dark4Color}" />
@@ -174,7 +180,7 @@
     <Style x:Key="labelTableHeader" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="Foreground" Value="{StaticResource White2}" />
+        <Setter Property="Foreground" Value="{StaticResource White2Brush}" />
     </Style>
     <Style x:Key="PurpleButtonInverse" TargetType="Button">
         <Setter Property="FontSize" Value="14" />
@@ -204,8 +210,34 @@
     <Style x:Key="purpleButton" TargetType="Button">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource White1}" />
+        <Setter Property="Foreground" Value="{StaticResource White1Brush}" />
         <Setter Property="Background" Value="{StaticResource Purple2}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" 
+                            BorderBrush="Transparent" 
+                            BorderThickness="0"
+                            Padding="10, 5">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource Dark2}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Purple3}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="PurpleButtonLight" TargetType="Button">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource White1Brush}" />
+        <Setter Property="Background" Value="{StaticResource Purple1}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -230,11 +262,11 @@
     <Style x:Key="labelAddonName" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="FontSize" Value="16" />
-        <Setter Property="Foreground" Value="{StaticResource White1}" />
+        <Setter Property="Foreground" Value="{StaticResource White1Brush}" />
     </Style>
     <Style x:Key="labelAddonText" TargetType="TextBlock">
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="Foreground" Value="{StaticResource White1}" />
+        <Setter Property="Foreground" Value="{StaticResource White1Brush}" />
     </Style>
 
     <!--CONTEXT MENU-->
@@ -493,7 +525,7 @@
 
     <!--DARK-->
     <ControlTemplate x:Key="DarkHeaderMenuItemTemplateKey" TargetType="MenuItem">
-        <Border Name="Border" BorderThickness="0 0 0 1" BorderBrush="{StaticResource White2}"
+        <Border Name="Border" BorderThickness="0 0 0 1" BorderBrush="{StaticResource White2Brush}"
                 Padding="4">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -503,13 +535,13 @@
 
                 <Border Grid.Column="0" Margin="0 0 4 0">
                     <StackPanel>
-                        <Image Source="{Binding ThumbnailUrl}" Width="30" Height="30" />
+                        <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}" Width="30" Height="30" />
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="1">
                     <StackPanel>
                         <TextBlock Text="{Binding Name}" />
-                        <TextBlock Text="{Binding CurrentVersion}" Foreground="{StaticResource White3}" />
+                        <TextBlock Text="{Binding CurrentVersion}" Foreground="{StaticResource White3Brush}" />
                     </StackPanel>
                 </Border>
             </Grid>
@@ -526,7 +558,7 @@
               Value="{StaticResource Dark2}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="{StaticResource White2}"/>
+                <Setter Property="Foreground" Value="{StaticResource White2Brush}"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -546,83 +578,6 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
-    <!--<ControlTemplate x:Key="DarkMenuItemTemplateKey" TargetType="MenuItem">
-        <Border Name="Border" >
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut"/>
-                    <ColumnDefinition Width="13"/>
-                </Grid.ColumnDefinitions>
-                <ContentPresenter Name="Icon"
-                                  Margin="6,0,6,0"
-                                  VerticalAlignment="Center"
-                                  ContentSource="Icon"/>
-                <Border Name="Check"  
-                        Width="13" Height="13" 
-                        Visibility="Collapsed"
-                        Margin="6,0,6,0" 
-                        Background="Transparent"
-                        BorderThickness="1"
-                        BorderBrush="Transparent">
-                    <Path Name="CheckMark"
-                          Width="7" Height="7" 
-                          Visibility="Hidden" 
-                          SnapsToDevicePixels="False" 
-                          Stroke="{StaticResource White2}"
-                          StrokeThickness="2"
-                          Data="M 0 0 L 7 7 M 0 7 L 7 0" />
-                </Border>
-                <ContentPresenter Name="HeaderHost"
-                                  Grid.Column="1"
-                                  Margin="0 0 0 0"
-                                  ContentSource="Header"
-                                  RecognizesAccessKey="True"/>
-                <TextBlock x:Name="InputGestureText"
-                           Grid.Column="2"
-                           Text="{TemplateBinding InputGestureText}"
-                           Margin="5,2,0,2"
-                           DockPanel.Dock="Right" />
-            </Grid>
-        </Border>
-        <ControlTemplate.Triggers>
-            <Trigger Property="Icon" Value="{x:Null}">
-                <Setter TargetName="Icon" Property="Visibility" Value="Hidden"/>
-            </Trigger>
-            <Trigger Property="IsChecked" Value="true">
-                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
-            </Trigger>
-            <Trigger Property="IsCheckable" Value="true">
-                <Setter TargetName="Check" Property="Visibility" Value="Visible"/>
-                <Setter TargetName="Icon" Property="Visibility" Value="Hidden"/>
-            </Trigger>
-            <Trigger Property="IsHighlighted" Value="true">
-                <Setter TargetName="Border" Property="Background"
-              Value="{StaticResource Dark2}"/>
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="{StaticResource White2}"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <Style x:Key="DarkMenuItem" TargetType="MenuItem">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Style.Triggers>
-            <Trigger Property="Role" Value="TopLevelItem">
-                <Setter Property="Template" Value="{StaticResource DarkMenuItemTemplateKey}"/>
-            </Trigger>
-
-            <Trigger Property="Role" Value="SubmenuItem">
-                <Setter Property="Template" Value="{StaticResource DarkMenuItemTemplateKey}"/>
-            </Trigger>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="Green"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>-->
 
     <Style x:Key="DarkMenu" TargetType="{x:Type ContextMenu}">
         <Setter Property="SnapsToDevicePixels"
@@ -928,10 +883,10 @@
                             <Setter Property="TextElement.FontSize" TargetName="ContentSite" Value="16"/>
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource Dark3}"/>
                             <Setter Property="TextElement.FontWeight" TargetName="ContentSite" Value="DemiBold"/>
-                            <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{StaticResource White1}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{StaticResource White1Brush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">
-                            <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{StaticResource White2}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="ContentSite" Value="{StaticResource White2Brush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

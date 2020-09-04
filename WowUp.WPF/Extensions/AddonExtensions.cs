@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Extensions
 {
@@ -22,6 +24,32 @@ namespace WowUp.WPF.Extensions
             addon1.ChannelType = addon2.ChannelType;
 
             return addon1;
+        }
+
+        public static string GetThumbnailCacheName(this Addon addon)
+        {
+            if (string.IsNullOrEmpty(addon.ThumbnailUrl))
+            {
+                return string.Empty;
+            }
+
+            return $"{addon.Id}-thumb{Path.GetExtension(addon.ThumbnailUrl).ToLower()}";
+        }
+
+        public static string GetThumbnailCachePath(this Addon addon)
+        {
+            return Path.Combine(FileUtilities.ThumbnailCachePath, addon.GetThumbnailCacheName());
+        }
+
+        public static string GetThumbnailPath(this Addon addon)
+        {
+            var thumbnailCachePath = addon.GetThumbnailCachePath();
+            if (string.IsNullOrEmpty(addon.ThumbnailUrl) || !File.Exists(thumbnailCachePath))
+            {
+                return "pack://application:,,,/WowUp;component/Assets/wowup_logo_1.png";
+            }
+
+            return thumbnailCachePath;
         }
 
         public static IList<string> GetInstalledDirectories(this Addon addon)

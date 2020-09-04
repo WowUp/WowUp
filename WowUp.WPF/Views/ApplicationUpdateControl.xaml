@@ -6,7 +6,28 @@
              xmlns:local="clr-namespace:WowUp.WPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilty}}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style x:Key="{x:Type ProgressBar}"
+                   TargetType="{x:Type ProgressBar}">
+                
+                <Setter Property="Foreground">
+                    <Setter.Value>
+                        <LinearGradientBrush EndPoint="1,1"
+                           StartPoint="0,0">
+                            <GradientStop Color="{StaticResource White3Color}"
+                      Offset="0.5" />
+                            <GradientStop Color="{StaticResource White1Color}"
+                      Offset="0.95" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibilty}}"
+          Background="{StaticResource Blue1Brush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -18,11 +39,16 @@
                 Padding="10">
             <StackPanel HorizontalAlignment="Center" 
                             Orientation="Horizontal">
-                <TextBlock Text="A new version of WowUp is available!" 
-                               Margin="10, 0"
-                               VerticalAlignment="Center" />
+                <TextBlock Margin="10, 0"
+                           VerticalAlignment="Center" >
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="A new version of WowUp is available! {0}">
+                            <Binding Path="LatestVersion" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
                 <Button x:Name="DownloadUpdateButton" 
-                        Style="{StaticResource purpleButton}"
+                        Style="{StaticResource PurpleButtonLight}"
                         Command="{Binding DownloadUpdateCommand}">Download</Button>
             </StackPanel>
         </Border>
@@ -31,7 +57,12 @@
                 Padding="10">
             <StackPanel>
                 <TextBlock HorizontalAlignment="Center" Text="{Binding ProgressText}" Margin="0 0 0 5"/>
-                <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent}" IsIndeterminate="{Binding ProgressIndeterminate}"/>
+                <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent}" IsIndeterminate="{Binding ProgressIndeterminate}"
+                             Height="5"
+                             BorderBrush="Transparent"
+                             Background="{StaticResource Blue2Brush}" >
+                    
+                </ProgressBar>
             </StackPanel>
         </Border>
         <Border Visibility="{Binding ShowRestart, Converter={StaticResource BoolToVisibilty}}"

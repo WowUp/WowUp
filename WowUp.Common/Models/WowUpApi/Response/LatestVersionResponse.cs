@@ -1,8 +1,8 @@
 ﻿namespace WowUp.Common.Models.WowUpApi.Response
 {
-    public class LatestVersionResponse
+    public class LatestVersionResponse : LatestVersion
     {
-        public string Version { get; set; }
-        public string Url { get; set; }
+        public LatestVersion Beta { get; set; }
+        public LatestVersion Stable { get; set; }
     }
 }

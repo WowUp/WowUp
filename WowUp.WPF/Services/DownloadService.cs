@@ -9,7 +9,17 @@ namespace WowUp.WPF.Services
 {
     public class DownloadService : IDownloadService
     {
-        public async Task<string> DownloadFile(
+        public async Task DownloadFile(
+            string downloadUrl,
+            string outputPath)
+        {
+            WebClient client = new WebClient();
+            Uri uri = new Uri(downloadUrl);
+
+            await client.DownloadFileTaskAsync(uri, outputPath);
+        }
+
+        public async Task<string> DownloadZipFile(
             string downloadUrl,
             string outputFolder,
             Action<int> progressAction = null)

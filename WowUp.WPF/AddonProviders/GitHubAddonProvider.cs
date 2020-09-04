@@ -11,6 +11,7 @@ using WowUp.Common.Models.Addons;
 using WowUp.Common.Models.GitHub;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -24,6 +25,14 @@ namespace WowUp.WPF.AddonProviders
         private static readonly string[] ReleaseContentTypes = new[] { "application/x-zip-compressed", "application/zip" };
 
         public string Name => "GitHub";
+
+        public Task Scan(
+            WowClientType clientType,
+            AddonChannelType addonChannelType, 
+            IEnumerable<AddonFolder> addonFolder)
+        {
+            return Task.CompletedTask;
+        }
 
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
         {

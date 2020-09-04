@@ -1,5 +1,25 @@
 ﻿{
-  "ChangeLogs": [ 
+  "ChangeLogs": [
+    {
+      "Version": "1.15.2",
+      "Description": "Fix bug with local image paths for certain users."
+    },
+    {
+      "Version": "1.15.1",
+      "Description": "Add column sorting for My Addons page.\nTry out new error tracking service for telemetry users."
+    },
+    {
+      "Version": "1.15.0",
+      "Description": "All new scanning method, better results less 'Install' button.\nWowInterface support during scan.\nBetter TukUI support.\nNew filtering on the 'My Addons' page.\nSystem tray icons should not hang around after you close the app.\nNew option to switch between Stable and Beta WowUp releases.\nUI improvements.\nPerformance improvements."
+    },
+    {
+      "Version": "1.14.12",
+      "Description": "When running the app multiple times the original window should restore instead of showing an alert.\nAdd some color to the In-App update bar to make it more noticeable.\nAdd a column with the provider name to 'My Addons' page."
+    },
+    {
+      "Version": "1.14.11",
+      "Description": "Change the value used for current version for Curse addons.\nThis will require you to re-update all Curse addons."
+    },
     {
       "Version": "1.14.10",
       "Description": "Bind the client type dropdown on 'My Addons' and 'Get Addons' to the same value to reduce confusion."

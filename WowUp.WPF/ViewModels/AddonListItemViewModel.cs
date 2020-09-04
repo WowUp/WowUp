@@ -133,6 +133,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _gameVersion, value); }
         }
 
+        private string _providerName;
+        public string ProviderName
+        {
+            get => _providerName;
+            set { SetProperty(ref _providerName, value); }
+        }
+
         private string _thumbnailUrl;
         public string ThumbnailUrl
         {
@@ -279,10 +286,9 @@ namespace WowUp.WPF.ViewModels
                 : _addon.InstalledVersion;
             LatestVersion = _addon.LatestVersion;
             Author = _addon.Author;
+            ProviderName = _addon.ProviderName;
             GameVersion = _addon.GameVersion;
-            ThumbnailUrl = string.IsNullOrEmpty(_addon.ThumbnailUrl)
-                ? "/Assets/wowup_logo_1.png"
-                : _addon.ThumbnailUrl;
+            ThumbnailUrl = _addon.GetThumbnailPath();
 
             IsIgnored = _addon.IsIgnored;
 

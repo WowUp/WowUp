@@ -15,7 +15,10 @@ namespace WowUp.WPF.Utilities
         public static readonly string AppDataPath = Path.Combine(LocalAppDataPath, "WowUp");
         public static readonly string AppLogsPath = Path.Combine(AppDataPath, "Logs");
         public static readonly string DownloadPath = Path.Combine(AppDataPath, "Downloads");
+        public static readonly string CachePath = Path.Combine(AppDataPath, "Cache");
+        public static readonly string ThumbnailCachePath = Path.Combine(CachePath, "Thumbnails");
         public static readonly string ExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
+        public static readonly string UpdaterPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "WowUp.Updater.exe");
 
         static FileUtilities()
         {
@@ -28,6 +31,22 @@ namespace WowUp.WPF.Utilities
             {
                 Directory.CreateDirectory(DownloadPath);
             }
+
+            if (!Directory.Exists(ThumbnailCachePath))
+            {
+                Directory.CreateDirectory(ThumbnailCachePath);
+            }
+        }
+
+        public static MemoryStream GetMemoryStreamFromFile(string filePath)
+        {
+            return new MemoryStream(File.ReadAllBytes(filePath));
+        }
+
+        public static async Task<MemoryStream> GetMemoryStreamFromFileAsync(string filePath)
+        {
+            var fileData = await File.ReadAllBytesAsync(filePath);
+            return new MemoryStream(fileData);
         }
 
         public static async Task<string> GetFileTextAsync(string filePath)

@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="WowUp.WPF.Views.SearchInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:WowUp.WPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style x:Key="SearchButton" TargetType="Button">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource Dark4}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="SearchButtonText" TargetType="TextBlock">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{StaticResource Purple1}" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource Purple2}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="SearchInput" TargetType="TextBox">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Foreground" Value="{StaticResource White1Brush}" />
+                <Setter Property="CaretBrush" Value="{StaticResource White3Brush}" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border BorderBrush="Transparent"
+            BorderThickness="0">
+        <StackPanel>
+            <Grid Background="{StaticResource Dark4}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0"
+                       Visibility="{Binding ShowIcon, Converter={StaticResource BoolToVisibilty}}"
+                       Foreground="{StaticResource White3Brush}"
+                           VerticalAlignment="Center"
+                           Margin="7 0 0 0">Search...</TextBlock>
+                <TextBox x:Name="SearchInputBox" Grid.Column="0" Grid.Row="0" Padding="4"
+                         Style="{StaticResource SearchInput}"
+                         BorderThickness="0"
+                         Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" 
+                                            Command="{Binding SearchCommand}" 
+                                            CommandParameter="{Binding Path=Text, RelativeSource={RelativeSource AncestorType={x:Type TextBox}}}" />
+                    </TextBox.InputBindings>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged">
+                            <i:InvokeCommandAction Command="{Binding TextChangedCommand}" 
+                                                   CommandParameter="{Binding ElementName=SearchInputBox, Path=Text}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <StackPanel x:Name="ButtonContainer" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+                    <Button Style="{StaticResource SearchButton}"
+                            Command="{Binding ClearCommand}"
+                            VerticalAlignment="Center">
+                            <StackPanel >
+                            <Border Padding="6 4" Visibility="{Binding ShowIcon, Converter={StaticResource InverseBoolToVisibility}}">
+                                <TextBlock Style="{StaticResource SearchButtonText}">X</TextBlock>
+                                </Border>
+                            <Image Visibility="{Binding ShowIcon, Converter={StaticResource BoolToVisibilty}}" 
+                                       Source="/Assets/search_icon.png" Width="16"/>
+                            </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Border>
+</UserControl>

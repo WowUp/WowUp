@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WowUp.Updater": {
+      "commandName": "Project",
+      "commandLineArgs": "-o \"C:\\Users\\trade\\Downloads\\WowUp (11)\\WowUp.exe\" -u \"C:\\Users\\trade\\AppData\\Local\\WowUp\\Downloads\\WowUp.exe\" -p WowUp"
+    }
+  }
+}

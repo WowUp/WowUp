@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using System.Windows.Threading;
+using WowUp.WPF.Enums;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.ViewModels;
@@ -20,12 +22,22 @@ namespace WowUp.WPF
         private readonly NotifyIcon _notifyIcon;
 
         public MainWindow(
-            IAnalyticsService analyticsService,
+            IIpcServerService ipcServerService,
             MainWindowViewModel viewModel)
         {
             _notifyIcon = CreateNotifyIcon();
 
             DataContext = _viewModel = viewModel;
+
+            ipcServerService.CommandReceived += (sender, args) =>
+            {
+                if (args.Command != IpcCommand.Show)
+                {
+                    return;
+                }
+
+                ShowFromBackground();
+            };
 
             InitializeComponent();
 
@@ -62,6 +74,8 @@ namespace WowUp.WPF
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            _notifyIcon?.Dispose();
+
             base.OnClosing(e);
             _viewModel.OnClosing(this);
         }
@@ -153,11 +167,6 @@ namespace WowUp.WPF
             _viewModel.SetRestoreMaximizeVisibility(WindowState);
         }
 
-        private void SelectWowButton_Click(object sender, RoutedEventArgs e)
-        {
-            _viewModel.SelectWowCommand.Execute(this);
-        }
-
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
         }
@@ -197,6 +206,16 @@ namespace WowUp.WPF
         {
             e.Uri.AbsoluteUri.OpenUrlInBrowser();
             e.Handled = true;
+        }
+
+        private void ShowFromBackground()
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                Show();
+                WindowState = WindowState.Normal;
+                Activate();
+            }));
         }
     }
 }

@@ -27,6 +27,9 @@
     <Compile Update="Views\OptionsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\SearchInput.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
@@ -48,6 +51,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\OptionsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SearchInput.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Styles.xaml">

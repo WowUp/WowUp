@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
@@ -104,7 +103,6 @@ namespace WowUp.WPF.ViewModels
             migrationService.MigrateDatabase();
 
             InitializeView();
-
         }
 
         public void SetRestoreMaximizeVisibility(WindowState windowState)
@@ -126,7 +124,7 @@ namespace WowUp.WPF.ViewModels
             _analyticsService.PromptTelemetry();
             _analyticsService.TrackStartup();
 
-            Version = $"v{AppUtilities.CurrentVersionString}";
+            Version = $"v{AppUtilities.LongVersionName}";
         }
 
         public void OnSourceInitialized(Window window)
@@ -194,7 +192,7 @@ namespace WowUp.WPF.ViewModels
 
         private void CreateTabs()
         {
-            var tabStyle = System.Windows.Application.Current.TryFindResource("CustomTabItemStyle") as Style;
+            var tabStyle = Application.Current.TryFindResource("CustomTabItemStyle") as Style;
 
             var addonsTab = new TabItem
             {

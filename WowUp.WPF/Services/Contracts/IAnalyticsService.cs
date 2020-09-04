@@ -9,7 +9,8 @@ namespace WowUp.WPF.Services.Contracts
         bool IsTelemetryEnabled();
         void PromptTelemetry();
         Task TrackStartup();
-        Task Track(Exception ex, bool isFatal);
+        Task Track(Exception ex, bool isFatal = false, string message = "");
+        void Track(Exception ex, string message = "");
         Task TrackUserAction(string category, string action, string label = null);
 
         string InstallId { get; }

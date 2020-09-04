@@ -3,9 +3,11 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
@@ -25,6 +27,8 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IAddonService _addonService;
         private readonly ISessionService _sessionService;
+        
+        private List<Addon> _addons;
 
         private bool _showEmptyLabel;
         public bool ShowEmptyLabel
@@ -61,6 +65,90 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _enableReScan, value); }
         }
 
+        private string _addonHeaderText = "Addon";
+        public string AddonHeaderText
+        {
+            get => _addonHeaderText;
+            set { SetProperty(ref _addonHeaderText, value); }
+        }
+
+        private string _statusHeaderText = "Status";
+        public string StatusHeaderText
+        {
+            get => _statusHeaderText;
+            set { SetProperty(ref _statusHeaderText, value); }
+        }
+
+        private string _providerHeaderText = "Provider";
+        public string ProviderHeaderText
+        {
+            get => _providerHeaderText;
+            set { SetProperty(ref _providerHeaderText, value); }
+        }
+
+        private string _gameVersionHeaderText = "Game Version";
+        public string GameVersionHeaderText
+        {
+            get => _gameVersionHeaderText;
+            set { SetProperty(ref _gameVersionHeaderText, value); }
+        }
+
+        private string _latestVersionHeaderText = "Latest Version";
+        public string LatestVersionHeaderText
+        {
+            get => _latestVersionHeaderText;
+            set { SetProperty(ref _latestVersionHeaderText, value); }
+        }
+
+        private string _authorHeaderText = "Author";
+        public string AuthorHeaderText
+        {
+            get => _authorHeaderText;
+            set { SetProperty(ref _authorHeaderText, value); }
+        }
+
+        public ListSortDirection? _addonNameSortDirection;
+        public ListSortDirection? AddonNameSortDirection
+        {
+            get => _addonNameSortDirection;
+            set { SetProperty(ref _addonNameSortDirection, value); }
+        }
+
+        public ListSortDirection? _providerNameSortDirection;
+        public ListSortDirection? ProviderNameSortDirection
+        {
+            get => _providerNameSortDirection;
+            set { SetProperty(ref _providerNameSortDirection, value); }
+        }
+
+        public ListSortDirection? _gameVersionSortDirection;
+        public ListSortDirection? GameVersionSortDirection
+        {
+            get => _gameVersionSortDirection;
+            set { SetProperty(ref _gameVersionSortDirection, value); }
+        }
+
+        public ListSortDirection? _latestVersionSortDirection;
+        public ListSortDirection? LatestVersionSortDirection
+        {
+            get => _latestVersionSortDirection;
+            set { SetProperty(ref _latestVersionSortDirection, value); }
+        }
+
+        public ListSortDirection? _statusSortDirection;
+        public ListSortDirection? StatusSortDirection
+        {
+            get => _statusSortDirection;
+            set { SetProperty(ref _statusSortDirection, value); }
+        }
+
+        public ListSortDirection? _authorSortDirection;
+        public ListSortDirection? AuthorSortDirection
+        {
+            get => _authorSortDirection;
+            set { SetProperty(ref _authorSortDirection, value); }
+        }
+
         private AddonListItemViewModel _selectedRow;
         public AddonListItemViewModel SelectedRow
         {
@@ -75,11 +163,15 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _selectedClientType, value); }
         }
 
+        public SearchInputViewModel SearchInputViewModel { get; set; }
+
         public Command LoadItemsCommand { get; set; }
         public Command RefreshCommand { get; set; }
         public Command RescanCommand { get; set; }
         public Command UpdateAllCommand { get; set; }
         public Command SelectedWowClientCommand { get; set; }
+        public Command GridSortingCommand { get; set; }
+        public Command ViewInitializedCommand { get; set; }
 
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
         public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
@@ -94,6 +186,7 @@ namespace WowUp.WPF.ViewModels
             _warcraftService = warcraftService;
             _serviceProvider = serviceProvider;
             _sessionService = sessionService;
+            _addons = new List<Addon>();
 
             _addonService.AddonInstalled += (sender, args) =>
             {
@@ -127,6 +220,12 @@ namespace WowUp.WPF.ViewModels
             RescanCommand = new Command(async () => await ReScan());
             UpdateAllCommand = new Command(async () => await UpdateAll());
             SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
+            GridSortingCommand = new Command((args) => OnGridSorting(args as DataGridSortingEventArgs));
+            ViewInitializedCommand = new Command(() => OnViewInitialized());
+
+            SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
+            SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
+            SearchInputViewModel.Searched += SearchInputViewModel_Searched;
 
             BindingOperations.EnableCollectionSynchronization(ClientTypeNames, ClientNamesLock);
             BindingOperations.EnableCollectionSynchronization(DisplayAddons, DisplayAddonsLock);
@@ -138,6 +237,76 @@ namespace WowUp.WPF.ViewModels
             Initialize();
         }
 
+        private void SearchInputViewModel_Searched(object sender, Models.Events.SearchInputEventArgs e)
+        {
+        }
+
+        private void SearchInputViewModel_TextChanged(object sender, Models.Events.SearchInputEventArgs e)
+        {
+            FilterAddons(e.Text);
+        }
+
+        private void OnViewInitialized()
+        {
+        }
+
+        private void ResetSorting()
+        {
+            AddonNameSortDirection = null;
+            AuthorSortDirection = null;
+            GameVersionSortDirection = null;
+            LatestVersionSortDirection = null;
+            ProviderNameSortDirection = null;
+            StatusSortDirection = null;
+        }
+
+        private void OnGridSorting(DataGridSortingEventArgs args)
+        {
+            ResetSorting();
+
+            var nextSortDirection = GetNextSortDirection(args.Column.SortDirection);
+
+            switch (args.Column.SortMemberPath)
+            {
+                case "Name":
+                    AddonNameSortDirection = nextSortDirection;
+                    break;
+                case "ProviderName":
+                    ProviderNameSortDirection = nextSortDirection;
+                    break;
+                case "GameVersion":
+                    GameVersionSortDirection = nextSortDirection;
+                    break;
+                case "LatestVersion":
+                    LatestVersionSortDirection = nextSortDirection;
+                    break;
+                case "DisplayState":
+                    StatusSortDirection = nextSortDirection;
+                    break;
+                case "Author":
+                    AuthorSortDirection = nextSortDirection;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private ListSortDirection? GetNextSortDirection(ListSortDirection? sortDirection)
+        {
+            if (sortDirection == null)
+            {
+                return ListSortDirection.Ascending;
+            }
+            else if (sortDirection == ListSortDirection.Ascending)
+            {
+                return ListSortDirection.Descending;
+            }
+            else
+            {
+                return ListSortDirection.Ascending;
+            }
+        }
+
         private void SetClientNames()
         {
             lock (ClientNamesLock)
@@ -146,6 +315,11 @@ namespace WowUp.WPF.ViewModels
 
                 foreach(var clientType in _warcraftService.GetWowClientTypes())
                 {
+                    if(clientType == WowClientType.None)
+                    {
+                        continue;
+                    }
+
                     ClientTypeNames.Add(clientType);
                 }
             }
@@ -221,6 +395,20 @@ namespace WowUp.WPF.ViewModels
             await LoadItems(true);
         }
 
+        private void FilterAddons(string filter)
+        {
+            var filteredAddons = string.IsNullOrEmpty(filter) 
+                ? _addons
+                : _addons.Where(addon => addon.Name.Contains(filter, StringComparison.OrdinalIgnoreCase));
+
+            ShowResults = filteredAddons.Any();
+            ShowEmptyLabel = !filteredAddons.Any();
+
+            var listViewItems = CreateListViewModels(filteredAddons);
+
+            UpdateDisplayAddons(listViewItems);
+        }
+
         public async Task LoadItems(bool forceReload = false)
         {
             IsBusy = true;
@@ -232,24 +420,12 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                var listViewItems = new List<AddonListItemViewModel>();
-
-                var addons = await _addonService.GetAddons(SelectedClientType, forceReload);
-                addons = addons.OrderBy(addon => addon.GetDisplayState())
+                _addons = await _addonService.GetAddons(SelectedClientType, forceReload);
+                _addons = _addons.OrderBy(addon => addon.GetDisplayState())
                     .ThenBy(addon => addon.Name)
                     .ToList();
 
-                foreach (var addon in addons)
-                {
-                    if (string.IsNullOrEmpty(addon.LatestVersion))
-                    {
-                        continue;
-                    }
-
-                    var viewModel = GetAddonViewModel(addon);
-
-                    listViewItems.Add(viewModel);
-                }
+                var listViewItems = CreateListViewModels(_addons);
 
                 UpdateDisplayAddons(listViewItems);
 
@@ -268,6 +444,25 @@ namespace WowUp.WPF.ViewModels
                 EnableRefresh = true;
                 EnableRescan = true;
             }
+        }
+
+        private List<AddonListItemViewModel> CreateListViewModels(IEnumerable<Addon> addons)
+        {
+            var listViewItems = new List<AddonListItemViewModel>();
+
+            foreach (var addon in addons)
+            {
+                if (string.IsNullOrEmpty(addon.LatestVersion))
+                {
+                    continue;
+                }
+
+                var viewModel = GetAddonViewModel(addon);
+
+                listViewItems.Add(viewModel);
+            }
+
+            return listViewItems;
         }
 
         public async Task OnSelectedWowClientChanged(WowClientType clientType)

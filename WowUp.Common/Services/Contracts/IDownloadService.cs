@@ -5,7 +5,9 @@ namespace WowUp.Common.Services.Contracts
 {
     public interface IDownloadService
     {
-        Task<string> DownloadFile(string downloadUrl, string outputFolder, Action<int> progressAction = null);
+        Task DownloadFile(string downloadUrl, string outputPath);
+
+        Task<string> DownloadZipFile(string downloadUrl, string outputFolder, Action<int> progressAction = null);
 
         Task ZipFile(string inputDirectory, string outputFilePath);
 

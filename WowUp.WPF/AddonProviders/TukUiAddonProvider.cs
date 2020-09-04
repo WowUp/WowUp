@@ -1,6 +1,5 @@
 ﻿using Flurl;
 using Flurl.Http;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,8 @@ using WowUp.Common.Models.TukUi;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.AddonProviders
@@ -20,16 +21,65 @@ namespace WowUp.WPF.AddonProviders
     public class TukUiAddonProvider : ITukUiAddonProvider
     {
         private const string ApiUrl = "https://www.tukui.org/api.php";
-        private const string ElvUiRetailTocUrl = "https://git.tukui.org/elvui/elvui/-/raw/master/ElvUI/ElvUI.toc";
-        private const string TukUiRetailTocUrl = "https://git.tukui.org/Tukz/Tukui/-/raw/master/Tukui/Tukui.toc";
+        private const string ClientApiUrl = "https://www.tukui.org/client-api.php";
 
         private readonly ICacheService _cacheService;
+        private readonly IAnalyticsService _analyticsService;
 
         public string Name => "TukUI";
 
-        public TukUiAddonProvider(ICacheService cacheService)
+        public TukUiAddonProvider(
+            IAnalyticsService analyticsService,
+            ICacheService cacheService)
         {
+            _analyticsService = analyticsService;
             _cacheService = cacheService;
+        }
+
+        public async Task Scan(
+            WowClientType clientType,
+            AddonChannelType addonChannelType,
+            IEnumerable<AddonFolder> addonFolders)
+        {
+            var addons = await GetAllAddons(clientType);
+
+            foreach (var addonFolder in addonFolders)
+            {
+                TukUiAddon addon = null;
+                if (!string.IsNullOrEmpty(addonFolder.Toc.TukUiProjectId))
+                {
+                    addon = addons.FirstOrDefault(a => a.Id == addonFolder.Toc.TukUiProjectId);
+                }
+                else
+                {
+                    var results = await SearchAddons(clientType, addonFolder.Toc.Title);
+                    addon = results.FirstOrDefault();
+                }
+
+                if (addon != null)
+                {
+                    addonFolder.MatchingAddon = new Addon
+                    {
+                        Author = addon.Author,
+                        AutoUpdateEnabled = false,
+                        ChannelType = addonChannelType,
+                        ClientType = clientType,
+                        DownloadUrl = addon.Url,
+                        ExternalId = addon.Id,
+                        ExternalUrl = addon.WebUrl,
+                        FolderName = addonFolder.Name,
+                        Name = addon.Name,
+                        GameVersion = addon.Patch,
+                        InstalledAt = DateTime.UtcNow,
+                        InstalledFolders = addonFolder.Name,
+                        InstalledVersion = addonFolder.Toc.Version,
+                        IsIgnored = false,
+                        LatestVersion = addon.Version,
+                        ProviderName = Name,
+                        ThumbnailUrl = addon.ScreenshotUrl
+                    };
+                }
+            }
         }
 
         public bool IsValidAddonUri(Uri addonUri)
@@ -89,7 +139,7 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to search TukUi");
+                _analyticsService.Track(ex, "Failed to search TukUi");
             }
 
             return results;
@@ -104,10 +154,8 @@ namespace WowUp.WPF.AddonProviders
             var results = new List<AddonSearchResult>();
             try
             {
-                var addons = await GetAllAddons(clientType);
-                var addon = addons
-                    .Where(a => a.Name.Equals(addonName, StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault();
+                var addons = await SearchAddons(clientType, addonName);
+                var addon = addons.FirstOrDefault();
 
                 if (addon != null)
                 {
@@ -116,10 +164,18 @@ namespace WowUp.WPF.AddonProviders
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Failed to search TukUi");
+                _analyticsService.Track(ex, "Failed to search TukUi");
             }
 
             return results;
+        }
+
+        private async Task<List<TukUiAddon>> SearchAddons(WowClientType clientType, string addonName)
+        {
+            var addons = await GetAllAddons(clientType);
+            return addons
+                .Where(a => a.Name.Equals(addonName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
 
         private PotentialAddon ToPotentialAddon(TukUiAddon addon)
@@ -181,54 +237,22 @@ namespace WowUp.WPF.AddonProviders
             });
         }
 
+        private async Task<TukUiAddon> GetClientApiAddon(string addonName)
+        {
+            return await ClientApiUrl
+                .SetQueryParam("ui", addonName)
+                .WithHeaders(HttpUtilities.DefaultHeaders)
+                .GetJsonAsync<TukUiAddon>();
+        }
+
         private async Task<TukUiAddon> GetElvUiRetailAddon()
         {
-            var tocText = await ElvUiRetailTocUrl.GetStringAsync();
-            var toc = new Utilities.TocParser(tocText).Toc;
-
-            return new TukUiAddon
-            {
-                Author = toc.Author,
-                Category = "Interfaces",
-                Patch = toc.Interface,
-                Changelog = string.Empty,
-                DonateUrl = "https://www.tukui.org/support.php",
-                Downloads = "3000000",
-                Id = "123321",
-                LastDownload = string.Empty,
-                LastUpdate = string.Empty,
-                Name = toc.Title,
-                ScreenshotUrl = "https://www.tukui.org/images/apple-touch-icon-120x120.png",
-                SmallDesc = "A USER INTERFACE DESIGNED AROUND USER-FRIENDLINESS WITH EXTRA FEATURES THAT ARE NOT INCLUDED IN THE STANDARD UI.",
-                Url = $"https://www.tukui.org/downloads/elvui-{toc.Version}.zip",
-                Version = toc.Version,
-                WebUrl = "https://www.tukui.org/download.php?ui=elvui"
-            };
+            return await GetClientApiAddon("elvui");
         }
 
         private async Task<TukUiAddon> GetTukUiRetailAddon()
         {
-            var tocText = await TukUiRetailTocUrl.GetStringAsync();
-            var toc = new Utilities.TocParser(tocText).Toc;
-
-            return new TukUiAddon
-            {
-                Author = toc.Author,
-                Category = "Interfaces",
-                Patch = toc.Interface,
-                Changelog = string.Empty,
-                DonateUrl = "https://www.tukui.org/support.php",
-                Downloads = "4000000",
-                Id = "43252",
-                LastDownload = string.Empty,
-                LastUpdate = string.Empty,
-                Name = toc.Title,
-                ScreenshotUrl = "https://www.tukui.org/images/apple-touch-icon-120x120.png",
-                SmallDesc = "A clean, lightweight, minimalist and popular user interface among the warcraft community since 2007.",
-                Url = $"https://www.tukui.org/downloads/tukui-{toc.Version}.zip",
-                Version = toc.Version,
-                WebUrl = "https://www.tukui.org/download.php?ui=tukui"
-            };
+            return await GetClientApiAddon("tukui");
         }
 
         private string GetCacheKey(WowClientType clientType)
@@ -241,8 +265,9 @@ namespace WowUp.WPF.AddonProviders
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
                 case WowClientType.Beta:
-                default:
                     return "tukui_addons";
+                default:
+                    return string.Empty;
             }
         }
 
@@ -256,8 +281,9 @@ namespace WowUp.WPF.AddonProviders
                 case WowClientType.Retail:
                 case WowClientType.RetailPtr:
                 case WowClientType.Beta:
-                default:
                     return "addons";
+                default:
+                    return string.Empty;
             }
         }
 

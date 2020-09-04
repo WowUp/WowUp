@@ -11,6 +11,7 @@ using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
 using WowUp.Common.Models.Warcraft;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
@@ -48,16 +49,14 @@ namespace WowUp.WPF.Services
 
         public event WarcraftEventHandler ProductChanged;
 
-        public string BlizzardAgentPath { get; private set; }
         public IList<InstalledProduct> InstalledProducts { get; private set; }
 
-        public string ProductsDbPath => Path.Combine(BlizzardAgentPath, BlizzardProductDbName);
+        public string ProductsDbPath => Path.Combine(GetBlizzardAgentPath(), BlizzardProductDbName);
 
         public WarcraftService(
             IPreferenceRepository preferenceRepository)
         {
             _preferenceRepository = preferenceRepository;
-            BlizzardAgentPath = GetBlizzardAgentPath();
             SetDefaultPreferences();
 
             ScanProducts();
@@ -215,23 +214,28 @@ namespace WowUp.WPF.Services
 
         public async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
         {
+            if(clientType == WowClientType.None)
+            {
+                return new List<AddonFolder>();
+            }
+
             var addons = new List<AddonFolder>();
 
             var addonsPath = GetAddonFolderPath(clientType);
+            var addonsDirectory = new DirectoryInfo(addonsPath);
 
             // Folder may not exist if no addons have been installed
-            if (!Directory.Exists(addonsPath))
+            if (!addonsDirectory.Exists)
             {
                 return addons;
             }
 
-            var addonDirectories = Directory.GetDirectories(addonsPath);
+            var addonDirectories = addonsDirectory.GetDirectories();
             Log.Debug($"addonDirectories {addonDirectories.Length}");
 
             foreach (var directory in addonDirectories)
             {
-                var directoryInfo = new DirectoryInfo(directory);
-                var addonFolder = await GetAddonFolder(directoryInfo);
+                var addonFolder = await GetAddonFolder(directory);
                 addons.Add(addonFolder);
             }
 
@@ -245,6 +249,7 @@ namespace WowUp.WPF.Services
 
             return new AddonFolder
             {
+                Directory = directory,
                 Name = directory.Name,
                 Path = directory.FullName,
                 Status = "Pending",

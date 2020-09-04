@@ -6,5 +6,6 @@ namespace WowUp.Common.Services.Contracts
     public interface IWowUpApiService
     {
         Task<LatestVersionResponse> GetLatestVersion();
+        Task<AppCenterResponse> GetAppCenter();
     }
 }

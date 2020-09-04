@@ -8,6 +8,7 @@
         public string ExternalId { get; set; }
         public string ExternalUrl { get; set; }
         public string Author { get; set; }
-        public int DownloadCount { get; set; }
+        public long DownloadCount { get; set; }
+        public string Version { get; set; }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using Serilog;
 using System;
-using System.Windows;
 using WowUp.Common.Enums;
-using WowUp.Common.Services.Contracts;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.ViewModels
@@ -24,6 +23,13 @@ namespace WowUp.WPF.ViewModels
         {
             get => _progressIndeterminate;
             set { SetProperty(ref _progressIndeterminate, value); }
+        }
+
+        private bool _showUpdaterMissing;
+        public bool ShowUpdaterMissing
+        {
+            get => _showUpdaterMissing;
+            set { SetProperty(ref _showUpdaterMissing, value); }
         }
 
         private bool _showProgress;
@@ -54,6 +60,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _progressText, value); }
         }
 
+        private string _latestVersion;
+        public string LatestVersion
+        {
+            get => _latestVersion;
+            set { SetProperty(ref _latestVersion, value); }
+        }
+
         public decimal _progressPercent;
         public decimal ProgressPercent
         {
@@ -72,12 +85,22 @@ namespace WowUp.WPF.ViewModels
         {
             _wowUpService = wowUpService;
 
+            _wowUpService.PreferenceUpdated += _wowUpService_PreferenceUpdated;
+
             DownloadUpdateCommand = new Command(() => OnDownloadUpdate());
             RestartAppCommand = new Command(() => OnRestartApp());
 
             ProgressText = string.Empty;
 
             _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+        }
+
+        private void _wowUpService_PreferenceUpdated(object sender, Models.WowUp.WowUpPreferenceEventArgs e)
+        {
+            if (e.Preference.Key == Constants.Preferences.WowUpReleaseChannelKey)
+            {
+                CheckVersion(null);
+            }
         }
 
         private async void CheckVersion(object state)
@@ -89,6 +112,9 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
+                var latestVersion = await _wowUpService.GetLatestVersion();
+
+                LatestVersion = latestVersion.Version;
                 ShowDownload = IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
             }
             catch (Exception ex)
@@ -100,9 +126,7 @@ namespace WowUp.WPF.ViewModels
 
         private void OnRestartApp()
         {
-            Application.Current.MainWindow.Close();
-            Application.Current.Shutdown();
-            System.Diagnostics.Process.Start(FileUtilities.ExecutablePath);
+            ApplicationUpdater.ProcessUpdateFile();
         }
 
         private async void OnDownloadUpdate()

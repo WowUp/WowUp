@@ -6,10 +6,10 @@
              xmlns:gif="http://wpfanimatedgif.codeplex.com"
              xmlns:t="http://schemas.telerik.com/2008/xaml/presentation"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:WowUp.WPF.Views"
+             xmlns:vw = "clr-namespace:WowUp.WPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             >
+             Initialized="UserControl_Initialized">
 
     <UserControl.Resources>
         <ResourceDictionary >
@@ -21,7 +21,7 @@
                 <Setter Property="Foreground" Value="White" />
                 <Setter Property="TextDecorations" Value="None" />
             </Style>
-            
+
             <DataTemplate x:Key="AddonColumnTemplate" >
                 <Border Padding="10">
                     <Grid Background="Transparent">
@@ -32,8 +32,10 @@
                         <StackPanel Grid.Column="0" Margin="0, 0, 10, 0" VerticalAlignment="Center"
                                     Background="#222">
                             <Border Background="{StaticResource Dark2}"  >
-                                <Image Source="{Binding ThumbnailUrl}" Width="40" Height="40"
-                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <Image Width="40" Height="40"
+                                       Source="{Binding ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}"
+                                       RenderOptions.BitmapScalingMode="HighQuality">
+                                </Image>
                             </Border>
                             <TextBlock Visibility="{Binding ShowChannelName, Converter={StaticResource BoolToVisibilty}}" 
                                        Text="{Binding ChannelName}"
@@ -108,6 +110,21 @@
                 </Border>
             </DataTemplate>
 
+            <DataTemplate x:Key="SourceTemplate" >
+                <Border Padding="10">
+                    <Grid Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding ProviderName}" 
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource labelAddonText}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+
             <DataTemplate x:Key="StatusColumnTemplate" >
                 <Border Padding="10">
                     <StackPanel VerticalAlignment="Center">
@@ -165,8 +182,6 @@
             </Border>
             <Border Grid.Column="1" Padding="10">
                 <StackPanel Orientation="Horizontal">
-                    <!--<Button x:Name="InstallButton" Margin="0, 0, 10, 0" Command="{Binding InstallCommand}" 
-                            Style="{StaticResource purpleButton}">Install</Button>-->
                     <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0" Click="UpdateAllButton_Click" 
                             IsEnabled="{Binding EnableUpdateAll}"
                             Style="{StaticResource purpleButton}">Update All</Button>
@@ -176,24 +191,24 @@
                     <Button x:Name="RescanButton" Click="RescanButton_Click"
                             IsEnabled="{Binding EnableRescan}"
                             Style="{StaticResource purpleButton}">Re-Scan</Button>
+                    <vw:SearchInput Width="150" Margin="10 0 0 0" VerticalAlignment="Center" DataContext="{Binding SearchInputViewModel}"/>
                 </StackPanel>
             </Border>
         </Grid>
         <Grid x:Name="AddonTable" Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="2" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center">
+            <StackPanel Grid.Row="0" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center">
                 <TextBlock Text="Loading Addons..." HorizontalAlignment="Center" FontSize="14" Foreground="White" />
                 <Image gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="40"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
             </StackPanel>
-            <StackPanel Grid.Row="1" Visibility="{Binding ShowEmptyLabel, Converter={StaticResource BoolToVisibilty}}" >
+            <StackPanel Grid.Row="0" Visibility="{Binding ShowEmptyLabel, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center" >
                 <TextBlock Text="No Addons found" HorizontalAlignment="Center" FontSize="16" Foreground="White"/>
             </StackPanel>
-            <DataGrid Grid.Row="2" Padding="0" Margin="0" 
+            <DataGrid Grid.Row="0" Padding="0" Margin="0"
+                      x:Name="AddonGrid"
                       Visibility="{Binding ShowResults, Converter={StaticResource BoolToVisibilty}}"
                       ItemsSource="{Binding DisplayAddons}"
                       Background="{StaticResource Dark2}"
@@ -205,7 +220,8 @@
                       RowHeaderWidth="0"
                       BorderThickness="0"
                       VirtualizingPanel.ScrollUnit="Pixel"
-                      BorderBrush="Transparent">
+                      BorderBrush="Transparent"
+                      Sorting="AddonGrid_Sorting">
                 <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu"
                                  Style="{StaticResource DarkMenu}"
@@ -247,7 +263,7 @@
                                   Command="{Binding UninstallCommand}"
                                   Visibility="{Binding ShowUninstall, Converter={StaticResource BoolToVisibilty}}" />
                     </ContextMenu>
-                    
+
                     <Style TargetType="{x:Type DataGrid}">
                         <Setter Property="Background" Value="{StaticResource Dark3}"/>
                     </Style>
@@ -274,15 +290,7 @@
                     </Style>
                     <Style TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="{StaticResource Dark2}"/>
-                        <Setter Property="ContentTemplate">
-                            <Setter.Value>
-                                <DataTemplate>
-                                    <Border Padding="5">
-                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" Style="{StaticResource labelTableHeader}"/>
-                                    </Border>
-                                </DataTemplate>
-                            </Setter.Value>
-                        </Setter>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.RowStyle>
@@ -297,11 +305,132 @@
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Addon" CellTemplate="{StaticResource AddonColumnTemplate}" Width="*" />
-                    <DataGridTemplateColumn Header="Status" CellTemplate="{StaticResource StatusColumnTemplate}" Width="120" CanUserResize="False"/>
-                    <DataGridTemplateColumn Header="Latest Version" CellTemplate="{StaticResource LatestVersionTemplate}" Width="120" MinWidth="80"/>
-                    <DataGridTemplateColumn Header="Game Version" CellTemplate="{StaticResource GameVersionTemplate}" Width="120" CanUserResize="False"/>
-                    <DataGridTemplateColumn Header="Author" CellTemplate="{StaticResource AuthorTemplate}" Width="150" MinWidth="80" CanUserResize="False" />
+                    <!--ADDON COLUMN-->
+                    <DataGridTemplateColumn SortMemberPath="Name" CellTemplate="{StaticResource AddonColumnTemplate}" Width="*">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <Grid >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                                Text="{Binding DataContext.AddonHeaderText, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" 
+                                                TextWrapping="Wrap" 
+                                                Style="{StaticResource labelTableHeader}" />
+                                    <Image Grid.Column="1" Margin="10 0 0 0"
+                                                Width="20"
+                                                Source="/Assets/sort_up_icon.png"
+                                                Visibility="{Binding DataContext.AddonNameSortDirection, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource SortAscendingToVisibilityConverter}}" />
+                                    <Image Grid.Column="1" Margin="10 0 0 0"
+                                                Width="20"
+                                                Source="/Assets/sort_down_icon.png"
+                                                Visibility="{Binding DataContext.AddonNameSortDirection, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource SortDescendingToVisibilityConverter}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                    </DataGridTemplateColumn>
+                    <!--STATUS COLUMN-->
+                    <DataGridTemplateColumn SortMemberPath="DisplayState" CellTemplate="{StaticResource StatusColumnTemplate}" Width="120" CanUserResize="False">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <Border Padding="5">
+                                    <StackPanel Orientation="Horizontal" >
+                                        <TextBlock Text="{Binding DataContext.StatusHeaderText, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                   TextWrapping="Wrap" 
+                                                   Style="{StaticResource labelTableHeader}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_up_icon.png"
+                                               Visibility="{Binding DataContext.StatusSortDirection, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource SortAscendingToVisibilityConverter}}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_down_icon.png"
+                                               Visibility="{Binding DataContext.StatusSortDirection, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource SortDescendingToVisibilityConverter}}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                    </DataGridTemplateColumn>
+                    <!--LATEST VERSION COLUMN-->
+                    <DataGridTemplateColumn SortMemberPath="LatestVersion" CellTemplate="{StaticResource LatestVersionTemplate}" Width="120" MinWidth="80">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <Border Padding="5">
+                                    <StackPanel Orientation="Horizontal" >
+                                        <TextBlock 
+                                                   Text="{Binding DataContext.LatestVersionHeaderText, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                   TextWrapping="Wrap" 
+                                                   Style="{StaticResource labelTableHeader}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_up_icon.png"
+                                               Visibility="{Binding DataContext.LatestVersionSortDirection, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource SortAscendingToVisibilityConverter}}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_down_icon.png"
+                                               Visibility="{Binding DataContext.LatestVersionSortDirection, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource SortDescendingToVisibilityConverter}}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                    </DataGridTemplateColumn>
+                    <!--GAME VERSION COLUMN-->
+                    <DataGridTemplateColumn SortMemberPath="GameVersion" CellTemplate="{StaticResource GameVersionTemplate}" Width="120" CanUserResize="False">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <Border Padding="5">
+                                    <StackPanel Orientation="Horizontal" >
+                                        <TextBlock Text="{Binding DataContext.GameVersionHeaderText, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                   TextWrapping="Wrap" 
+                                                   Style="{StaticResource labelTableHeader}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_up_icon.png"
+                                               Visibility="{Binding DataContext.GameVersionSortDirection, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource SortAscendingToVisibilityConverter}}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_down_icon.png"
+                                               Visibility="{Binding DataContext.GameVersionSortDirection, RelativeSource={RelativeSource AncestorType=DataGrid}, Converter={StaticResource SortDescendingToVisibilityConverter}}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                    </DataGridTemplateColumn>
+                    <!--PROVIDER COLUMN-->
+                    <DataGridTemplateColumn SortMemberPath="ProviderName" CellTemplate="{StaticResource SourceTemplate}" Width="110" CanUserResize="False">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <Border Padding="5">
+                                    <StackPanel Orientation="Horizontal" >
+                                        <TextBlock Text="{Binding DataContext.ProviderHeaderText, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                   TextWrapping="Wrap" 
+                                                   Style="{StaticResource labelTableHeader}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_up_icon.png"
+                                               Visibility="{Binding DataContext.ProviderNameSortDirection, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource SortAscendingToVisibilityConverter}}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_down_icon.png"
+                                               Visibility="{Binding DataContext.ProviderNameSortDirection, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource SortDescendingToVisibilityConverter}}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                    </DataGridTemplateColumn>
+                    <!--AUTHOR COLUMN-->
+                    <DataGridTemplateColumn SortMemberPath="Author" CellTemplate="{StaticResource AuthorTemplate}" Width="150" MinWidth="80" CanUserResize="False">
+                        <DataGridTemplateColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <Border Padding="5">
+                                    <StackPanel Orientation="Horizontal" >
+                                        <TextBlock Text="{Binding DataContext.AuthorHeaderText, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                   TextWrapping="Wrap" 
+                                                   Style="{StaticResource labelTableHeader}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_up_icon.png"
+                                               Visibility="{Binding DataContext.AuthorSortDirection, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource SortAscendingToVisibilityConverter}}" />
+                                        <Image Width="20"
+                                               Source="/Assets/sort_down_icon.png"
+                                               Visibility="{Binding DataContext.AuthorSortDirection, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource SortDescendingToVisibilityConverter}}" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.HeaderTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

@@ -1,11 +1,13 @@
 ﻿using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models.Events;
 using WowUp.Common.Services.Contracts;
+using WowUp.WPF.Services.Contracts;
 
 namespace WowUp.WPF.Utilities
 {
@@ -13,6 +15,9 @@ namespace WowUp.WPF.Utilities
     {
         private readonly IDownloadService _downloadService;
         private readonly List<string> _cleanupFiles;
+
+        public static string UpdateFilePath => Path.Combine(FileUtilities.DownloadPath, "WowUp.zip");
+        public static bool UpdateFileExists => File.Exists(UpdateFilePath);
 
         public string LatestVersionUrl { get; set; }
 
@@ -40,20 +45,36 @@ namespace WowUp.WPF.Utilities
 
         public event WowUpUpdateEventHandler UpdateChanged;
 
-        private string _downloadedZipPath;
-        private string _unpackedPath;
-
         public ApplicationUpdater(
             IDownloadService downloadService)
         {
             _downloadService = downloadService;
 
             _cleanupFiles = new List<string>();
-            _downloadedZipPath = string.Empty;
-            _unpackedPath = string.Empty;
 
             State = ApplicationUpdateState.Pending;
             CurrentProgress = 0.0m;
+        }
+
+        public static void ProcessUpdateFile()
+        {
+            if (!UpdateFileExists)
+            {
+                return;
+            }
+
+            if (!File.Exists(FileUtilities.UpdaterPath))
+            {
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = FileUtilities.UpdaterPath,
+                Arguments = $"-o \"{FileUtilities.ExecutablePath}\" -u \"{UpdateFilePath}\" -p {AppUtilities.ApplicationProcessName}"
+            });
+
+            AppUtilities.ShutdownApplication();
         }
 
         public async Task Update()
@@ -63,11 +84,8 @@ namespace WowUp.WPF.Utilities
                 SetNewState(ApplicationUpdateState.Downloading);
                 await DownloadUpdate();
 
-                SetNewState(ApplicationUpdateState.CreateBackup);
-                BackupExecutable();
-
-                SetNewState(ApplicationUpdateState.Unpacking);
-                await UnpackUpdate();
+                //SetNewState(ApplicationUpdateState.Unpacking);
+                //await UnpackUpdate();
 
                 SetNewState(ApplicationUpdateState.Complete);
             }
@@ -109,47 +127,15 @@ namespace WowUp.WPF.Utilities
             UpdateChanged?.Invoke(this, new WowUpUpdateEventArgs(State, CurrentProgress));
         }
 
-        private async Task UnpackUpdate()
-        {
-            _unpackedPath = await _downloadService.UnzipFile(_downloadedZipPath);
-            _cleanupFiles.Add(_unpackedPath);
-
-            MoveUnpackedExe();
-        }
-
         private async Task DownloadUpdate()
         {
-            _downloadedZipPath = await _downloadService.DownloadFile(
+            await _downloadService.DownloadZipFile(
                 LatestVersionUrl,
                 FileUtilities.DownloadPath,
                 (progress) =>
                 {
                     CurrentProgress = progress;
                 });
-
-            _cleanupFiles.Add(_downloadedZipPath);
-        }
-
-        private void MoveUnpackedExe()
-        {
-            var assemblyLocation = FileUtilities.ExecutablePath;
-            var fileName = Path.GetFileName(assemblyLocation);
-
-            var unpackedFile = Path.Combine(_unpackedPath, fileName);
-            if (!File.Exists(unpackedFile))
-            {
-                throw new Exception($"Unpacked {fileName} not found");
-            }
-
-            File.Move(unpackedFile, assemblyLocation);
-        }
-
-        private void BackupExecutable()
-        {
-            var assemblyLocation = FileUtilities.ExecutablePath;
-            var fileName = Path.GetFileNameWithoutExtension(assemblyLocation);
-            var fileDir = Path.GetDirectoryName(assemblyLocation);
-            File.Move(assemblyLocation, Path.Combine(fileDir, $"{fileName}.bak"), true);
         }
     }
 }

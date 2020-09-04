@@ -18,7 +18,7 @@ namespace WowUp.WPF.Services
         public async Task<T> GetCache<T>(
             string cacheKey, 
             Func<Task<T>> fallbackAction, 
-            int ttlMinutes = 60)
+            int ttlMinutes = 10)
         {
             if (_cache.TryGetValue(cacheKey, out var cachedItem))
             {

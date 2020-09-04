@@ -5,6 +5,7 @@ using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Addons;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Models.WowUp;
 
 namespace WowUp.WPF.AddonProviders.Contracts
 {
@@ -39,5 +40,10 @@ namespace WowUp.WPF.AddonProviders.Contracts
         bool IsValidAddonUri(Uri addonUri);
 
         void OnPostInstall(Addon addon);
+
+        Task Scan(
+            WowClientType clientType,
+            AddonChannelType addonChannelType, 
+            IEnumerable<AddonFolder> addonFolders);
     }
 }
