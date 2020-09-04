@@ -106,7 +106,7 @@ namespace WowUp.WPF.Services
             }
 
             var latestVersion = new Version(latestServerVersion.Version.TrimSemVerString());
-            var currentVersion = new Version(AppUtilities.CurrentVersionString.TrimSemVerString());
+            var currentVersion = new Version(AppUtilities.LongVersionName.TrimSemVerString());
 
             if (AppUtilities.IsBetaBuild && releaseChannel != WowUpReleaseChannelType.Beta)
             {
