@@ -1,18 +1,19 @@
 import { Injectable } from "@angular/core";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
+import { WowClientType } from "../../../models/warcraft/wow-client-type";
 import { AddonStorageService } from "../storage/addon.storage.service";
-import { Addon } from "app/core/entities/addon";
+import { Addon } from "../../entities/addon";
 import { WarcraftService } from "../warcraft/warcraft.service";
-import { AddonProvider } from "app/core/addon-providers/addon-provider";
-import { CurseAddonProvider } from "app/core/addon-providers/curse-addon-provider";
+import { AddonProvider } from "../../addon-providers/addon-provider";
+import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { HttpClient } from "@angular/common/http";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
+import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../../../models/wowup/addon-search-result-file";
+import { AddonChannelType } from "../../../models/wowup/addon-channel-type";
 import * as _ from 'lodash';
 import * as uuid from 'uuid';
-import { AddonFolder } from "app/models/wowup/addon-folder";
+import { AddonFolder } from "../../../models/wowup/addon-folder";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
+import { PotentialAddon } from "../../../models/wowup/potential-addon";
 
 @Injectable({
     providedIn: 'root'
@@ -49,6 +50,11 @@ export class AddonService {
 
         // return addons;
         return addons;
+    }
+
+    public async getFeaturedAddons(clientType: WowClientType) : Promise<PotentialAddon[]>{
+        const results = await Promise.all(this._addonProviders.map(p => p.getFeaturedAddons(clientType)));
+        return results.flat(1);
     }
 
     private getAllStoredAddons(clientType: WowClientType) {

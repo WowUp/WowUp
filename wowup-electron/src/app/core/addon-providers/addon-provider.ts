@@ -1,7 +1,7 @@
-import { WowClientType } from "app/models/warcraft/wow-client-type";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { Addon } from "../entities/addon";
-import { PotentialAddon } from "app/models/wowup/potential-addon";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
+import { PotentialAddon } from "../../models/wowup/potential-addon";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 
 export interface AddonProvider {
 

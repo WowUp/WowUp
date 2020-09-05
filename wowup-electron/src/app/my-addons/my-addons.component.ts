@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { WarcraftService } from 'app/core/services/warcraft/warcraft.service';
-import { WowClientType } from 'app/models/warcraft/wow-client-type';
-import { AddonService } from 'app/core/services/addons/addon.service';
+import { WarcraftService } from '../core/services/warcraft/warcraft.service';
+import { WowClientType } from '../models/warcraft/wow-client-type';
+import { AddonService } from '../core/services/addons/addon.service';
 import { first, tap } from 'rxjs/operators';
 import { from, BehaviorSubject } from 'rxjs';
-import { Addon } from 'app/core/entities/addon';
-import { AddonTableColumnComponent } from 'app/components/addon-table-column/addon-table-column.component';
-import { AddonStatusColumnComponent } from 'app/components/addon-status-column/addon-status-column.component';
+import { Addon } from '../core/entities/addon';
+import { AddonTableColumnComponent } from '../components/addon-table-column/addon-table-column.component';
+import { AddonStatusColumnComponent } from '../components/addon-status-column/addon-status-column.component';
 
 @Component({
   selector: 'app-my-addons',
@@ -77,7 +77,7 @@ export class MyAddonsComponent implements OnInit {
     this.warcraftService.clientTypes$
       .pipe(
         first(types => Array.isArray(types) && types.length > 0),
-        tap(() => this.loadAddons())
+        tap(() => this.loadAddons(this.selectedClient))
       )
       .subscribe(types => this.selectedClient = types[0]);
 
@@ -87,27 +87,24 @@ export class MyAddonsComponent implements OnInit {
   }
 
   onReScan() {
-    this.loadAddons(true)
+    this.loadAddons(this.selectedClient, true)
   }
 
   onClientChange() {
-    this.busy = true;
-    console.log(this.selectedClient);
-    this.busy = false;
+    this.loadAddons(this.selectedClient, false);
   }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridApi.sizeColumnsToFit();
-
   }
 
-  private loadAddons(rescan: boolean = false) {
+  private loadAddons(clientType: WowClientType, rescan: boolean = false) {
     this.busy = true;
 
-    console.log('Load-addons')
+    console.log('Load-addons', clientType);
 
-    from(this.addonService.getAddons(this.selectedClient, rescan))
+    from(this.addonService.getAddons(clientType, rescan))
       .subscribe((addons) => {
         this.busy = false;
         this.formatAddons(addons);

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { WowClientType } from '../models/warcraft/wow-client-type';
+import { AddonService } from '../core/services/addons/addon.service';
 
 @Component({
   selector: 'app-get-addons',
@@ -22,12 +24,21 @@ export class GetAddonsComponent implements OnInit {
     { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
   ];
 
-  public selectedClient = 'retail';
   public query = '';
+  public selectedClient = WowClientType.Classic;
 
-  constructor() { }
+  constructor(
+    private _addonService: AddonService
+  ) { }
 
   ngOnInit(): void {
   }
 
+  private loadPopularAddons(){
+    if(this.selectedClient === WowClientType.None){
+      return;
+    }
+
+
+  }
 }

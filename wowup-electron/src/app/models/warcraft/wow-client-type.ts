@@ -3,5 +3,6 @@ export enum WowClientType {
     Classic,
     RetailPtr,
     ClassicPtr,
-    Beta
+    Beta,
+    None
 }
