@@ -8,5 +8,7 @@ namespace WowUp.Common.Services.Contracts
     public interface ISessionService : ISessionState
     {
         event SessionEventHandler SessionChanged;
+
+        void AppLoaded();
     }
 }

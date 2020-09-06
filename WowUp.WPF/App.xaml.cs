@@ -104,8 +104,6 @@ namespace WowUp.WPF
             services.AddTransient<ITukUiAddonProvider, TukUiAddonProvider>();
             services.AddTransient<IWowInterfaceAddonProvider, WowInterfaceAddonProvider>();
 
-            services.AddTransient<ApplicationUpdater>();
-
             services.AddSingleton<MainWindow>();
 
             services.AddSingleton<IAddonService, AddonService>();

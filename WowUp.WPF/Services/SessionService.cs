@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Serilog;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
@@ -36,9 +39,10 @@ namespace WowUp.WPF.Services
 
             _sessionState = new SessionState
             {
-                SelectedClientType = initialClientType
+                SelectedClientType = initialClientType,
+                StatusText = string.Empty,
+                UpdaterReady = false
             };
-            
         }
 
         public WowClientType SelectedClientType
@@ -48,7 +52,57 @@ namespace WowUp.WPF.Services
             {
                 _wowUpService.SetLastSelectedClientType(value);
                 _sessionState.SelectedClientType = value;
-                SessionChanged?.Invoke(this, new SessionEventArgs(_sessionState));
+                SendStateChange();
+            }
+        }
+
+        public string StatusText
+        {
+            get { return _sessionState.StatusText; }
+            set
+            {
+                _sessionState.StatusText = value;
+                SendStateChange();
+            }
+        }
+
+        public bool UpdaterReady
+        {
+            get { return _sessionState.UpdaterReady; }
+            set
+            {
+                _sessionState.UpdaterReady = value;
+                SendStateChange();
+            }
+        }
+
+        private void SendStateChange()
+        {
+            SessionChanged?.Invoke(this, new SessionEventArgs(_sessionState));
+        }
+
+        public async void AppLoaded()
+        {
+            await CheckUpdaterApp();
+        }
+
+        private async Task CheckUpdaterApp()
+        {
+            try
+            {
+                StatusText = "Checking updater app...";
+                await _wowUpService.CheckUpdaterApp((progress) =>
+                {
+                    StatusText = $"Downloading updater ({progress}%)...";
+                });
+
+                UpdaterReady = true;
+                StatusText = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed during updater check");
+                StatusText = "Updater check error";
             }
         }
     }

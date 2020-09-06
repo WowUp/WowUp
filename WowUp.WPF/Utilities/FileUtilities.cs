@@ -38,6 +38,16 @@ namespace WowUp.WPF.Utilities
             }
         }
 
+        public static void CopyFile(string sourcePath, string destinationPath, bool overwrite)
+        {
+            File.Copy(sourcePath, destinationPath, overwrite);
+        }
+
+        public static FileVersionInfo GetFileVersion(string filePath)
+        {
+            return FileVersionInfo.GetVersionInfo(filePath);
+        }
+
         public static MemoryStream GetMemoryStreamFromFile(string filePath)
         {
             return new MemoryStream(File.ReadAllBytes(filePath));

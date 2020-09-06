@@ -134,6 +134,7 @@
             <Border Grid.Row="3" Padding="10 5" Background="{StaticResource Dark4}">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
@@ -143,7 +144,10 @@
                             <Image Source="/Assets/patron.png" Height="25"  />
                         </Hyperlink>
                     </TextBlock>
-                    <TextBlock Grid.Column="1" Text="{Binding Version}" VerticalAlignment="Center" Foreground="{StaticResource White3Brush}"></TextBlock>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0">
+                        <TextBlock Text="{Binding StatusText}"></TextBlock>
+                    </StackPanel>
+                    <TextBlock Grid.Column="2" Text="{Binding Version}" VerticalAlignment="Center" Foreground="{StaticResource White3Brush}"></TextBlock>
                 </Grid>
             </Border>
         </Grid>

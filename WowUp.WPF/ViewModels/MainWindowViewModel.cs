@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
@@ -22,6 +23,7 @@ namespace WowUp.WPF.ViewModels
         private readonly IWowUpService _wowUpService;
         private readonly IPreferenceRepository _preferenceRepository;
         private readonly IAnalyticsService _analyticsService;
+        private readonly ISessionService _sessionService;
 
         public Command SelectWowCommand { get; set; }
         public Command CloseWindowCommand { get; set; }
@@ -75,6 +77,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _version, value); }
         }
 
+        private string _statusText;
+        public string StatusText
+        {
+            get => _statusText;
+            set { SetProperty(ref _statusText, value); }
+        }
+
         public ObservableCollection<TabItem> TabItems { get; set; }
 
         public ApplicationUpdateControlViewModel ApplicationUpdateControlViewModel { get; set; }
@@ -84,12 +93,14 @@ namespace WowUp.WPF.ViewModels
             IMigrationService migrationService,
             IPreferenceRepository preferenceRepository,
             IServiceProvider serviceProvider,
+            ISessionService sessionService,
             IWarcraftService warcraftService,
             IWowUpService wowUpService)
         {
             _analyticsService = analyticsService;
             _preferenceRepository = preferenceRepository;
             _serviceProvider = serviceProvider;
+            _sessionService = sessionService;
             _warcraftService = warcraftService;
             _wowUpService = wowUpService;
 
@@ -103,6 +114,8 @@ namespace WowUp.WPF.ViewModels
             migrationService.MigrateDatabase();
 
             InitializeView();
+
+            _sessionService.SessionChanged += SessionService_SessionChanged;
         }
 
         public void SetRestoreMaximizeVisibility(WindowState windowState)
@@ -119,12 +132,14 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
-        public void OnLoaded()
+        public async void OnLoaded()
         {
             _analyticsService.PromptTelemetry();
-            _analyticsService.TrackStartup();
+            await _analyticsService.TrackStartup();
 
             Version = $"v{AppUtilities.LongVersionName}";
+
+            _sessionService.AppLoaded();
         }
 
         public void OnSourceInitialized(Window window)
@@ -163,6 +178,11 @@ namespace WowUp.WPF.ViewModels
             }
 
             _preferenceRepository.SaveItem(windowPref);
+        }
+
+        private void SessionService_SessionChanged(object sender, Common.Models.Events.SessionEventArgs e)
+        {
+            StatusText = e.SessionState.StatusText;
         }
 
         private void OnCloseWindow()

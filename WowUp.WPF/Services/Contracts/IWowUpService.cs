@@ -16,12 +16,13 @@ namespace WowUp.WPF.Services.Contracts
         event WowUpPreferenceEventHandler PreferenceUpdated;
 
         void ShowLogsFolder();
+        void InstallUpdate();
 
         Task<bool> IsUpdateAvailable();
         Task<LatestVersion> GetLatestVersion();
         Task<ChangeLogFile> GetChangeLogFile();
-        Task UpdateApplication(Action<ApplicationUpdateState, decimal> updateAction);
-
+        Task DownloadUpdate(Action<int> onProgress);
+        Task CheckUpdaterApp(Action<int> onProgress = null);
 
         bool GetCollapseToTray();
         void SetCollapseToTray(bool enabled);
