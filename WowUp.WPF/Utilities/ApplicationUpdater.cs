@@ -68,10 +68,14 @@ namespace WowUp.WPF.Utilities
                 return;
             }
 
+            var arguments = $"-o \"{FileUtilities.ExecutablePath}\" -u \"{UpdateFilePath}\"";
+            Log.Debug("Running updater");
+            Log.Debug(arguments);
+
             Process.Start(new ProcessStartInfo
             {
                 FileName = FileUtilities.UpdaterPath,
-                Arguments = $"-o \"{FileUtilities.ExecutablePath}\" -u \"{UpdateFilePath}\" -p {AppUtilities.ApplicationProcessName}"
+                Arguments = arguments
             });
 
             AppUtilities.ShutdownApplication();

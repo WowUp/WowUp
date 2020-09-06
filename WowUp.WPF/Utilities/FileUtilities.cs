@@ -18,7 +18,7 @@ namespace WowUp.WPF.Utilities
         public static readonly string CachePath = Path.Combine(AppDataPath, "Cache");
         public static readonly string ThumbnailCachePath = Path.Combine(CachePath, "Thumbnails");
         public static readonly string ExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
-        public static readonly string UpdaterPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "WowUp.Updater.exe");
+        public static readonly string UpdaterPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "WowUpUpdater.exe");
 
         static FileUtilities()
         {
