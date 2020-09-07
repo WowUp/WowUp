@@ -229,7 +229,7 @@ namespace WowUp.WPF.Services
             var latestUpdaterVersion = new Version(latestVersions.Updater.Version.TrimSemVerString());
             var currentVersion = new Version(UpdaterVersion.ProductVersion.TrimSemVerString());
 
-            if(latestUpdaterVersion < currentVersion)
+            if(latestUpdaterVersion > currentVersion)
             {
                 await InstallUpdater(onProgress);
             }

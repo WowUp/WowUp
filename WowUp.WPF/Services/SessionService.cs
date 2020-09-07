@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
@@ -14,6 +15,9 @@ namespace WowUp.WPF.Services
     {
         private readonly SessionState _sessionState;
         private readonly IWowUpService _wowUpService;
+
+        private Task _updaterCheckTimer;
+        private bool _runUpdateCheckTimer = true;
 
         public event SessionEventHandler SessionChanged;
 
@@ -81,9 +85,17 @@ namespace WowUp.WPF.Services
             SessionChanged?.Invoke(this, new SessionEventArgs(_sessionState));
         }
 
-        public async void AppLoaded()
+        public void AppLoaded()
         {
-            await CheckUpdaterApp();
+            _updaterCheckTimer = Task.Run(async () =>
+            {
+                while (_runUpdateCheckTimer)
+                {
+                    await CheckUpdaterApp();
+                    await Task.Delay(TimeSpan.FromMinutes(30));
+                }
+                Log.Information("Stopping update check timer");
+            });
         }
 
         private async Task CheckUpdaterApp()
@@ -103,6 +115,7 @@ namespace WowUp.WPF.Services
             {
                 Log.Error(ex, "Failed during updater check");
                 StatusText = "Updater check error";
+                _runUpdateCheckTimer = false;
             }
         }
     }
