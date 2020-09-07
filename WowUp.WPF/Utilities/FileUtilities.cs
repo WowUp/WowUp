@@ -18,6 +18,7 @@ namespace WowUp.WPF.Utilities
         public static readonly string CachePath = Path.Combine(AppDataPath, "Cache");
         public static readonly string ThumbnailCachePath = Path.Combine(CachePath, "Thumbnails");
         public static readonly string ExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
+        public static readonly string UpdaterPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "WowUpUpdater.exe");
 
         static FileUtilities()
         {
@@ -35,6 +36,16 @@ namespace WowUp.WPF.Utilities
             {
                 Directory.CreateDirectory(ThumbnailCachePath);
             }
+        }
+
+        public static void CopyFile(string sourcePath, string destinationPath, bool overwrite)
+        {
+            File.Copy(sourcePath, destinationPath, overwrite);
+        }
+
+        public static FileVersionInfo GetFileVersion(string filePath)
+        {
+            return FileVersionInfo.GetVersionInfo(filePath);
         }
 
         public static MemoryStream GetMemoryStreamFromFile(string filePath)

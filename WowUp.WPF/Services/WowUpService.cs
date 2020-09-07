@@ -3,6 +3,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
@@ -22,23 +24,38 @@ namespace WowUp.WPF.Services
     {
         private const string ChangeLogUrl = "https://wowup-builds.s3.us-east-2.amazonaws.com/changelog/changelog.json";
         private const string ChangeLogFileCacheKey = "change_log_file";
+        private const string UpdaterName = "WowUpUpdater.exe";
+        private const string UpdateFileName = "WowUp.zip";
 
         public const string WebsiteUrl = "https://wowup.io";
 
-        public event WowUpPreferenceEventHandler PreferenceUpdated;
+        private static string LocalAppDataPath => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private static bool UpdaterExists => File.Exists(UpdaterPath);
+        private static FileVersionInfo UpdaterVersion => FileUtilities.GetFileVersion(UpdaterPath);
 
         private readonly ICacheService _cacheService;
+        private readonly IDownloadService _downloadService;
         private readonly IServiceProvider _serviceProvider;
         private readonly IPreferenceRepository _preferenceRepository;
         private readonly IWowUpApiService _wowUpApiService;
 
+        public static string ExecutablePath => Process.GetCurrentProcess().MainModule.FileName;
+        public static string AppDataPath => Path.Combine(LocalAppDataPath, "WowUp");
+        public static string AppLogsPath => Path.Combine(AppDataPath, "Logs");
+        public static string DownloadPath => Path.Combine(AppDataPath, "Downloads");
+        public static string UpdaterPath => Path.Combine(AppDataPath, UpdaterName);
+
+        public event WowUpPreferenceEventHandler PreferenceUpdated;
+
         public WowUpService(
             ICacheService cacheService,
+            IDownloadService downloadService,
             IPreferenceRepository preferenceRepository,
             IServiceProvider serviceProvider,
             IWowUpApiService wowUpApiService)
         {
             _cacheService = cacheService;
+            _downloadService = downloadService;
             _serviceProvider = serviceProvider;
             _preferenceRepository = preferenceRepository;
             _wowUpApiService = wowUpApiService;
@@ -48,7 +65,7 @@ namespace WowUp.WPF.Services
 
         public void ShowLogsFolder()
         {
-            FileUtilities.AppLogsPath.OpenUrlInBrowser();
+            AppLogsPath.OpenUrlInBrowser();
         }
 
         public bool GetCollapseToTray()
@@ -94,6 +111,23 @@ namespace WowUp.WPF.Services
             SetPreference(Constants.Preferences.WowUpReleaseChannelKey, type.ToString());
         }
 
+        public WowClientType GetLastSelectedClientType()
+        {
+            var pref = _preferenceRepository.FindByKey(Constants.Preferences.LastSelectedClientTypeKey);
+            if (pref == null)
+            {
+                return WowClientType.None;
+            }
+
+            return pref.Value.ToWowClientType();
+        }
+
+        public void SetLastSelectedClientType(WowClientType clientType)
+        {
+            SetPreference(Constants.Preferences.LastSelectedClientTypeKey, clientType.ToString());
+        }
+
+
         public async Task<bool> IsUpdateAvailable()
         {
             var releaseChannel = GetWowUpReleaseChannel();
@@ -106,7 +140,7 @@ namespace WowUp.WPF.Services
             }
 
             var latestVersion = new Version(latestServerVersion.Version.TrimSemVerString());
-            var currentVersion = new Version(AppUtilities.CurrentVersionString.TrimSemVerString());
+            var currentVersion = new Version(AppUtilities.LongVersionName.TrimSemVerString());
 
             if (AppUtilities.IsBetaBuild && releaseChannel != WowUpReleaseChannelType.Beta)
             {
@@ -114,6 +148,30 @@ namespace WowUp.WPF.Services
             }
 
             return latestVersion > currentVersion;
+        }
+
+        public void InstallUpdate()
+        {
+            var updateFilePath = Path.Combine(DownloadPath, UpdateFileName);
+            var updateExists = File.Exists(updateFilePath);
+
+            if (!updateExists)
+            {
+                Log.Warning($"Cannot update, update file not found. {updateFilePath}");
+                return;
+            }
+
+            var arguments = $"-o \"{ExecutablePath}\" -u \"{updateFilePath}\"";
+            Log.Debug("Running updater");
+            Log.Debug(arguments);
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = UpdaterPath,
+                Arguments = arguments
+            });
+
+            AppUtilities.ShutdownApplication();
         }
 
         public async Task<LatestVersion> GetLatestVersion()
@@ -153,7 +211,67 @@ namespace WowUp.WPF.Services
             }
         }
 
-        public async Task UpdateApplication(Action<ApplicationUpdateState, decimal> updateAction)
+        public async Task CheckUpdaterApp(Action<int> onProgress = null)
+        {
+            if (UpdaterExists)
+            {
+                await CheckUpdaterVersion(onProgress);
+            }
+            else
+            {
+                await InstallUpdater(onProgress);
+            }
+        }
+
+        private async Task CheckUpdaterVersion(Action<int> onProgress = null)
+        {
+            var latestVersions = await _wowUpApiService.GetLatestVersion();
+            var latestUpdaterVersion = new Version(latestVersions.Updater.Version.TrimSemVerString());
+            var currentVersion = new Version(UpdaterVersion.ProductVersion.TrimSemVerString());
+
+            if(latestUpdaterVersion > currentVersion)
+            {
+                await InstallUpdater(onProgress);
+            }
+        }
+
+        private async Task InstallUpdater(Action<int> onProgress = null)
+        {
+            var downloadedZipPath = string.Empty;
+            var unzippedDirPath = string.Empty;
+            try
+            {
+                var latestVersions = await _wowUpApiService.GetLatestVersion();
+
+                downloadedZipPath = await _downloadService.DownloadZipFile(
+                    latestVersions.Updater.Url,
+                    DownloadPath,
+                    (progress) =>
+                    {
+                        onProgress?.Invoke(progress);
+                    });
+
+                unzippedDirPath = await _downloadService.UnzipFile(downloadedZipPath);
+                var newUpdater = Path.Combine(unzippedDirPath, UpdaterName);
+                var targetUpdater = Path.Combine(FileUtilities.AppDataPath, UpdaterName);
+
+                FileUtilities.CopyFile(newUpdater, targetUpdater, true);
+            }
+            finally
+            {
+                if(!string.IsNullOrEmpty(downloadedZipPath) && File.Exists(downloadedZipPath))
+                {
+                    File.Delete(downloadedZipPath);
+                }
+                
+                if(!string.IsNullOrEmpty(unzippedDirPath) && Directory.Exists(unzippedDirPath))
+                {
+                    Directory.Delete(unzippedDirPath, true);
+                }
+            }
+        }
+
+        public async Task DownloadUpdate(Action<int> onProgress)
         {
             var isUpdateAvailable = await IsUpdateAvailable();
             if (!isUpdateAvailable)
@@ -161,16 +279,30 @@ namespace WowUp.WPF.Services
                 return;
             }
 
-            var updater = _serviceProvider.GetService<ApplicationUpdater>();
-            updater.LatestVersionUrl = await GetLatestVersionUrl();
-
-            updater.UpdateChanged += (sender, e) =>
+            var downloadedZipPath = string.Empty;
+            try
             {
-                updateAction?.Invoke(e.State, e.Progress);
-            };
+                var latestVersionUrl = await GetLatestVersionUrl();
 
-            await updater.Update();
+                downloadedZipPath = await _downloadService.DownloadZipFile(
+                        latestVersionUrl,
+                        DownloadPath,
+                        (progress) =>
+                        {
+                            onProgress?.Invoke(progress);
+                        });
+            }
+            catch(Exception)
+            {
+                if(!string.IsNullOrEmpty(downloadedZipPath) && File.Exists(downloadedZipPath))
+                {
+                    File.Delete(downloadedZipPath);
+                }
+
+                throw;
+            }
         }
+
 
         private async Task<string> GetLatestVersionUrl()
         {

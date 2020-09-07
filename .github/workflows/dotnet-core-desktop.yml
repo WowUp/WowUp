@@ -76,7 +76,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.401
+        dotnet-version: '3.1.x'
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
@@ -109,18 +109,18 @@ jobs:
         Appx_Package_Build_Mode: StoreUpload
         Configuration: ${{ matrix.configuration }}
 
-    # Build the updater package
-    - name: Create the updater app package
-      run: dotnet publish $env:UPDATE_PROJECT_PATH /p:PublishProfile=FolderProfile
-      env:
-        Appx_Bundle: Always
-        Appx_Bundle_Platforms: x86|x64
-        Appx_Package_Build_Mode: StoreUpload
-        Configuration: ${{ matrix.configuration }}
+    # # Build the updater package
+    # - name: Create the updater app package
+    #   run: dotnet publish $env:UPDATE_PROJECT_PATH /p:PublishProfile=FolderProfile
+    #   env:
+    #     Appx_Bundle: Always
+    #     Appx_Bundle_Platforms: x86|x64
+    #     Appx_Package_Build_Mode: StoreUpload
+    #     Configuration: ${{ matrix.configuration }}
         
     - name: Zip Build
       id: zip_build
-      run: Compress-Archive -LiteralPath ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish/WowUp.exe, ${env:UPDATE_PROJECT_DIRECTORY}/bin/Release/Publish/WowUp.Updater.exe -DestinationPath WowUp.zip
+      run: Compress-Archive -LiteralPath ${env:Wap_Project_Directory}/bin/Release/netcoreapp3.1/win-x64/publish/WowUp.exe -DestinationPath WowUp.zip
       
     - name: Test Build
       id: test_build

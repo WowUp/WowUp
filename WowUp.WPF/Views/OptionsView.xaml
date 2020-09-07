@@ -18,7 +18,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   Background="{StaticResource Dark3}">
-        <StackPanel MaxWidth="1024">
+        <StackPanel MaxWidth="1024" Margin="0 0 0 10">
             <!--WOW SECTION-->
             <Label FontSize="17">World of Warcraft</Label>
             <Border Background="{StaticResource Dark4}" Padding="10">

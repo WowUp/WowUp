@@ -56,9 +56,6 @@ namespace WowUp.WPF
 
             Log.Information($"Starting {AppUtilities.CurrentVersion}");
 
-            HandlePendingUpdate();
-
-
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
@@ -106,8 +103,6 @@ namespace WowUp.WPF
             services.AddTransient<IGitHubAddonProvider, GitHubAddonProvider>();
             services.AddTransient<ITukUiAddonProvider, TukUiAddonProvider>();
             services.AddTransient<IWowInterfaceAddonProvider, WowInterfaceAddonProvider>();
-
-            services.AddTransient<ApplicationUpdater>();
 
             services.AddSingleton<MainWindow>();
 
@@ -163,23 +158,6 @@ namespace WowUp.WPF
 
             //there is already another instance running!
             Current.Shutdown();
-        }
-
-        private void HandlePendingUpdate()
-        {
-            if (!ApplicationUpdater.UpdateFileExists)
-            {
-                return;
-            }
-
-            try
-            {
-                ApplicationUpdater.ProcessUpdateFile();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Failed to process update file.");
-            }
         }
     }
 }
