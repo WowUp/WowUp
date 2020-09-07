@@ -129,7 +129,6 @@ namespace WowUp.WPF.Services
 
         public async Task<bool> IsUpdateAvailable()
         {
-            return true;
             var releaseChannel = GetWowUpReleaseChannel();
             var latestServerVersion = await GetLatestVersion();
 
