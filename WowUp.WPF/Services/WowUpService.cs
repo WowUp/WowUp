@@ -127,7 +127,6 @@ namespace WowUp.WPF.Services
             SetPreference(Constants.Preferences.LastSelectedClientTypeKey, clientType.ToString());
         }
 
-
         public async Task<bool> IsUpdateAvailable()
         {
             var releaseChannel = GetWowUpReleaseChannel();
@@ -165,11 +164,20 @@ namespace WowUp.WPF.Services
             Log.Debug("Running updater");
             Log.Debug(arguments);
 
-            Process.Start(new ProcessStartInfo
+            var processStartInfo = new ProcessStartInfo
             {
                 FileName = UpdaterPath,
-                Arguments = arguments
-            });
+                Arguments = arguments,
+                UseShellExecute = true
+            };
+
+            if (!FileUtilities.HasWriteAccess(AppUtilities.ApplicationFilePath) && Environment.OSVersion.Version.Major >= 6)
+            {
+                Log.Information("Running updater as admin");
+                processStartInfo.Verb = "runas";
+            }
+
+            Process.Start(processStartInfo);
 
             AppUtilities.ShutdownApplication();
         }

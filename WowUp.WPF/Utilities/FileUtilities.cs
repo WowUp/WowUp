@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 
 namespace WowUp.WPF.Utilities
@@ -35,6 +37,29 @@ namespace WowUp.WPF.Utilities
             if (!Directory.Exists(ThumbnailCachePath))
             {
                 Directory.CreateDirectory(ThumbnailCachePath);
+            }
+        }
+
+        public static bool HasWriteAccess(string path)
+        {
+            var dir = Path.GetDirectoryName(path);
+            var testPath = Path.Combine(dir, $"{Guid.NewGuid()}.txt");
+
+            try
+            {
+                File.WriteAllText(testPath, string.Empty);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                if (File.Exists(testPath))
+                {
+                    File.Delete(testPath);
+                }
             }
         }
 
