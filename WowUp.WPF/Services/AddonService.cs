@@ -405,7 +405,7 @@ namespace WowUp.WPF.Services
 
         private async Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 var addonFolderPath = _warcraftService.GetAddonFolderPath(clientType);
                 var unzippedFolders = Directory.GetDirectories(unzippedDirectory);
@@ -413,9 +413,13 @@ namespace WowUp.WPF.Services
                 {
                     var unzippedDirectoryName = Path.GetFileName(unzippedFolder);
                     var unzipLocation = Path.Combine(addonFolderPath, unzippedDirectoryName);
+                    if (Directory.Exists(unzipLocation))
+                    {
+                        await FileUtilities.DeleteDirectory(unzipLocation);
+                    }
+
                     FileUtilities.DirectoryCopy(unzippedFolder, unzipLocation);
                 }
-
             });
         }
 
