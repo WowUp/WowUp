@@ -18,6 +18,6 @@ jobs:
           vt_api_key: ${{ secrets.VIRUSTOTAL_API_KEY }}
           github_token: ${{ github.token }}
           files: |
-            *.zip
+            .*\.zip
           update_release_body: true
             
