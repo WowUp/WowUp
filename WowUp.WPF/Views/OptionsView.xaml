@@ -52,6 +52,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBox Grid.Column="0" Grid.Row="0" 
                                  Margin="0 0 10 0" Text="{Binding WowRetailLocation}" IsEnabled="False" FontSize="14"/>
@@ -59,6 +60,33 @@
                                  Margin="0" Command="{Binding SetRetailLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
                         <Label Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" 
                                Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail client folder __retail_</Label>
+                        <!--SUB CLIENT OPTIONS-->
+                        <Grid Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="2" Margin="0 10 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--DEFAULT ADDON CHANNEL-->
+                            <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                                <ComboBox x:Name="RetailAddonChannelComboBox" 
+                                          SelectedItem="{Binding SelectedRetailAddonChannelType}"
+                                          HorizontalAlignment="Left"
+                                          Style="{StaticResource ComboBoxFlatStyle}"
+                                          ToolTip="Newly installed addons will assume this release channel"
+                                          ItemsSource="{Binding AddonChannelNames}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding RetailAddonChannelChangeCommand}" 
+                                                                   CommandParameter="{Binding ElementName=RetailAddonChannelComboBox, Path=SelectedValue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                     <!--RETAIL PTR LOCATION-->
                     <Label FontWeight="Bold" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right">Retail PTR</Label>
@@ -70,10 +98,38 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowRetailPtrLocation}" IsEnabled="False" FontSize="14"/>
                         <Button  Grid.Column="1" Grid.Row="0"  Command="{Binding SetRetailPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
                         <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the retail PTR client folder __ptr_</Label>
+                        <!--SUB CLIENT OPTIONS-->
+                        <Grid Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="2" Margin="0 10 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--DEFAULT ADDON CHANNEL-->
+                            <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                                <ComboBox x:Name="RetailPtrAddonChannelComboBox" 
+                                          SelectedItem="{Binding SelectedRetailPtrAddonChannelType}"
+                                          HorizontalAlignment="Left"
+                                          Style="{StaticResource ComboBoxFlatStyle}"
+                                          ToolTip="Newly installed addons will assume this release channel"
+                                          ItemsSource="{Binding AddonChannelNames}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding RetailPtrAddonChannelChangeCommand}" 
+                                                                   CommandParameter="{Binding ElementName=RetailAddonChannelComboBox, Path=SelectedValue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                     <!--CLASSIC LOCATION-->
                     <Label FontWeight="Bold" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right">Classic</Label>
@@ -85,10 +141,38 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicLocation}" IsEnabled="False" FontSize="14"/>
                         <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
                         <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic client folder __classic_</Label>
+                        <!--SUB CLIENT OPTIONS-->
+                        <Grid Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="2" Margin="0 10 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--DEFAULT ADDON CHANNEL-->
+                            <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                                <ComboBox x:Name="ClassicAddonChannelComboBox" 
+                                              SelectedItem="{Binding SelectedClassicAddonChannelType}"
+                                              HorizontalAlignment="Left"
+                                              Style="{StaticResource ComboBoxFlatStyle}"
+                                          ToolTip="Newly installed addons will assume this release channel"
+                                              ItemsSource="{Binding AddonChannelNames}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ClassicAddonChannelChangeCommand}" 
+                                                                   CommandParameter="{Binding ElementName=ClassicAddonChannelComboBox, Path=SelectedValue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                     <!--CLASSIC PTR LOCATION-->
                     <Label FontWeight="Bold" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right">Classic PTR</Label>
@@ -100,10 +184,38 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowClassicPtrLocation}" IsEnabled="False" FontSize="14"/>
                         <Button  Grid.Column="1" Grid.Row="0" Command="{Binding SetClassicPtrLocationCommand}" Style="{StaticResource purpleButton}">Select Location</Button>
                         <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the classic PTR client folder __classic__ptr_</Label>
+                        <!--SUB CLIENT OPTIONS-->
+                        <Grid Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="2" Margin="0 10 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--DEFAULT ADDON CHANNEL-->
+                            <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                                <ComboBox x:Name="ClassicPtrAddonChannelComboBox" 
+                                              SelectedItem="{Binding SelectedClassicPtrAddonChannelType}"
+                                              HorizontalAlignment="Left"
+                                          ToolTip="Newly installed addons will assume this release channel"
+                                              Style="{StaticResource ComboBoxFlatStyle}"
+                                              ItemsSource="{Binding AddonChannelNames}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding ClassicPtrAddonChannelChangeCommand}" 
+                                                                   CommandParameter="{Binding ElementName=ClassicPtrAddonChannelComboBox, Path=SelectedValue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                     <!--BETA LOCATION-->
                     <Label FontWeight="Bold" Grid.Column="0" Grid.Row="5" HorizontalAlignment="Right">Beta</Label>
@@ -115,29 +227,38 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBox Grid.Column="0" Grid.Row="0" Margin="0 0 10 0" VerticalAlignment="Center" Text="{Binding WowBetaLocation}" IsEnabled="False" FontSize="14"/>
                         <Label Grid.ColumnSpan="2" Grid.Row="1" Margin="0" Padding="0" Foreground="{StaticResource White2Brush}" FontSize="13">The folder that contains the beta client folder __beta_</Label>
-                    </Grid>
-                    <!--DEFAULT ADDON CHANNEL-->
-                    <Label Grid.Column="0" Grid.Row="6" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
-                    <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
-                        <ComboBox x:Name="AddonChannelComboBox" 
-                                              SelectedItem="{Binding SelectedAddonChannelType}"
+                        <!--SUB CLIENT OPTIONS-->
+                        <Grid Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="2" Margin="0 10 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!--DEFAULT ADDON CHANNEL-->
+                            <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                                <ComboBox x:Name="BetaAddonChannelComboBox" 
+                                              SelectedItem="{Binding SelectedBetaAddonChannelType}"
                                               HorizontalAlignment="Left"
+                                          ToolTip="Newly installed addons will assume this release channel"
                                               Style="{StaticResource ComboBoxFlatStyle}"
                                               ItemsSource="{Binding AddonChannelNames}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectionChanged">
-                                    <i:InvokeCommandAction Command="{Binding AddonChannelChangeCommand}" 
-                                                                       CommandParameter="{Binding ElementName=AddonChannelComboBox, Path=SelectedValue}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </ComboBox>
-                        <TextBlock Padding="0" Margin="5 0 0 0" VerticalAlignment="Center">
-                                        Newly installed addons will assume this release channel.
-                        </TextBlock>
-                    </StackPanel>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction Command="{Binding BetaAddonChannelChangeCommand}" 
+                                                                   CommandParameter="{Binding ElementName=BetaAddonChannelComboBox, Path=SelectedValue}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Border>
             <!--APPLICATION SECTION-->

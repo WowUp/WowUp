@@ -94,6 +94,12 @@
         <Setter Property="FontFamily" Value="{StaticResource OpenSans}"/>
     </Style>
 
+    <Style x:Key="{x:Type ToolTip}"
+       TargetType="{x:Type ToolTip}">
+        <Setter Property="Background"
+            Value="Transparent" />
+    </Style>
+    
     <!--WINDOW CHROME-->
     <Style x:Key="TitleBarButtonStyle" TargetType="Button">
         <Setter Property="Foreground" Value="White" />

@@ -239,7 +239,7 @@ namespace WowUp.WPF.Services
             string providerName,
             WowClientType clientType)
         {
-            var targetAddonChannel = _wowUpService.GetDefaultAddonChannel();
+            var targetAddonChannel = _wowUpService.GetClientAddonChannelType(clientType);
             var provider = GetProvider(providerName);
             var searchResult = await provider.GetById(externalId, clientType);
             var latestFile = GetLatestFile(searchResult, targetAddonChannel);
@@ -447,7 +447,7 @@ namespace WowUp.WPF.Services
                 {
                     await provider.Scan(
                         clientType,
-                        _wowUpService.GetDefaultAddonChannel(),
+                        _wowUpService.GetClientAddonChannelType(clientType),
                         addonFolders.Where(af => af.MatchingAddon == null && af.Toc != null));
                 }
                 catch(Exception ex)
@@ -540,7 +540,7 @@ namespace WowUp.WPF.Services
                 DownloadUrl = latestFile.DownloadUrl,
                 ExternalUrl = searchResult.ExternalUrl,
                 ProviderName = searchResult.ProviderName,
-                ChannelType = channelType ?? _wowUpService.GetDefaultAddonChannel()
+                ChannelType = channelType ?? _wowUpService.GetClientAddonChannelType(clientType)
             };
         }
     }

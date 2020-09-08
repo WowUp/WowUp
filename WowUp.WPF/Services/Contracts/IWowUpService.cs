@@ -27,13 +27,13 @@ namespace WowUp.WPF.Services.Contracts
         bool GetCollapseToTray();
         void SetCollapseToTray(bool enabled);
 
-        AddonChannelType GetDefaultAddonChannel();
-        void SetDefaultAddonChannel(AddonChannelType type);
-
         WowClientType GetLastSelectedClientType();
         void SetLastSelectedClientType(WowClientType clientType);
 
         WowUpReleaseChannelType GetWowUpReleaseChannel();
         void SetWowUpReleaseChannel(WowUpReleaseChannelType type);
+
+        void SetClientAddonChannelType(WowClientType clientType, AddonChannelType channelType);
+        AddonChannelType GetClientAddonChannelType(WowClientType clientType);
     }
 }

@@ -1,10 +1,10 @@
-﻿using Flurl.Http;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
@@ -22,8 +22,6 @@ namespace WowUp.WPF.Services
 
     public class WowUpService : IWowUpService
     {
-        private const string ChangeLogUrl = "https://wowup-builds.s3.us-east-2.amazonaws.com/changelog/changelog.json";
-        private const string ChangeLogFileCacheKey = "change_log_file";
         private const string UpdaterName = "WowUpUpdater.exe";
         private const string UpdateFileName = "WowUp.zip";
 
@@ -33,30 +31,46 @@ namespace WowUp.WPF.Services
         private static bool UpdaterExists => File.Exists(UpdaterPath);
         private static FileVersionInfo UpdaterVersion => FileUtilities.GetFileVersion(UpdaterPath);
 
-        private readonly ICacheService _cacheService;
+        private readonly IAnalyticsService _analyticsService;
         private readonly IDownloadService _downloadService;
-        private readonly IServiceProvider _serviceProvider;
         private readonly IPreferenceRepository _preferenceRepository;
         private readonly IWowUpApiService _wowUpApiService;
 
+        /// <summary>
+        /// The full path to the running exe file
+        /// </summary>
         public static string ExecutablePath => Process.GetCurrentProcess().MainModule.FileName;
+
+        /// <summary>
+        /// Path to the working directory of the app
+        /// </summary>
         public static string AppDataPath => Path.Combine(LocalAppDataPath, "WowUp");
+
+        /// <summary>
+        /// Path to the log folder inside the working directory
+        /// </summary>
         public static string AppLogsPath => Path.Combine(AppDataPath, "Logs");
+
+        /// <summary>
+        /// Path to the download folder inside the working directory
+        /// </summary>
         public static string DownloadPath => Path.Combine(AppDataPath, "Downloads");
+
+        /// <summary>
+        /// Path to the updater application inside the working directory
+        /// </summary>
         public static string UpdaterPath => Path.Combine(AppDataPath, UpdaterName);
 
         public event WowUpPreferenceEventHandler PreferenceUpdated;
 
         public WowUpService(
-            ICacheService cacheService,
+            IAnalyticsService analyticsService,
             IDownloadService downloadService,
             IPreferenceRepository preferenceRepository,
-            IServiceProvider serviceProvider,
             IWowUpApiService wowUpApiService)
         {
-            _cacheService = cacheService;
+            _analyticsService = analyticsService;
             _downloadService = downloadService;
-            _serviceProvider = serviceProvider;
             _preferenceRepository = preferenceRepository;
             _wowUpApiService = wowUpApiService;
 
@@ -77,22 +91,7 @@ namespace WowUp.WPF.Services
         public void SetCollapseToTray(bool enabled)
         {
             SetPreference(Constants.Preferences.CollapseToTrayKey, enabled.ToString());
-        }
-
-        public AddonChannelType GetDefaultAddonChannel()
-        {
-            var pref = _preferenceRepository.FindByKey(Constants.Preferences.DefaultAddonChannelKey);
-            if (pref == null)
-            {
-                throw new Exception("Default addon channel preference not found");
-            }
-
-            return pref.Value.ToAddonChannelType();
-        }
-
-        public void SetDefaultAddonChannel(AddonChannelType type)
-        {
-            SetPreference(Constants.Preferences.DefaultAddonChannelKey, type.ToString());
+            _analyticsService.TrackUserAction("WowUp", "CollapseToTray", enabled.ToString());
         }
 
         public WowUpReleaseChannelType GetWowUpReleaseChannel()
@@ -125,6 +124,20 @@ namespace WowUp.WPF.Services
         public void SetLastSelectedClientType(WowClientType clientType)
         {
             SetPreference(Constants.Preferences.LastSelectedClientTypeKey, clientType.ToString());
+        }
+
+        public void SetClientAddonChannelType(WowClientType clientType, AddonChannelType channelType)
+        {
+            var preferenceKey = GetClientDefaultAddonChannelKey(clientType);
+            SetPreference(preferenceKey, channelType.ToString());
+            _analyticsService.TrackUserAction("WowUp", $"ClientDefaultChannel|{clientType}", channelType.ToString());
+        }
+
+        public AddonChannelType GetClientAddonChannelType(WowClientType clientType)
+        {
+            var preferenceKey = GetClientDefaultAddonChannelKey(clientType);
+            var preference = _preferenceRepository.FindByKey(preferenceKey);
+            return preference.Value.ToAddonChannelType();
         }
 
         public async Task<bool> IsUpdateAvailable()
@@ -194,23 +207,17 @@ namespace WowUp.WPF.Services
 
         public async Task<ChangeLogFile> GetChangeLogFile()
         {
-            ChangeLogFile changeLogFile;
-
             try
             {
-                return await _cacheService.GetCache(ChangeLogFileCacheKey, async () =>
-                {
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = assembly.GetManifestResourceNames()
+                    .First(str => str.EndsWith("changelog.json"));
 
-                    changeLogFile = await ChangeLogUrl
-                        .WithHeaders(HttpUtilities.DefaultHeaders)
-                        .GetJsonAsync<ChangeLogFile>();
+                using Stream stream = assembly.GetManifestResourceStream(resourceName);
+                using StreamReader reader = new StreamReader(stream);
 
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetAbsoluteExpiration(TimeSpan.FromMinutes(10));
-
-                    return changeLogFile;
-
-                });
+                var result = await reader.ReadToEndAsync();
+                return JsonConvert.DeserializeObject<ChangeLogFile>(result);
             }
             catch (Exception ex)
             {
@@ -310,12 +317,16 @@ namespace WowUp.WPF.Services
                 throw;
             }
         }
-
-
+        
         private async Task<string> GetLatestVersionUrl()
         {
             var latestVersion = await GetLatestVersion();
             return latestVersion.Url;
+        }
+
+        private string GetClientDefaultAddonChannelKey(WowClientType clientType)
+        {
+            return $"{clientType}{Constants.Preferences.ClientDefaultAddonChannelSuffix}".ToLower();
         }
 
         private void SetDefaultPreferences()
@@ -326,16 +337,30 @@ namespace WowUp.WPF.Services
                 SetCollapseToTray(true);
             }
 
-            pref = _preferenceRepository.FindByKey(Constants.Preferences.DefaultAddonChannelKey);
-            if (pref == null)
-            {
-                SetDefaultAddonChannel(AddonChannelType.Stable);
-            }
-
             pref = _preferenceRepository.FindByKey(Constants.Preferences.WowUpReleaseChannelKey);
             if (pref == null)
             {
                 SetWowUpReleaseChannel(GetDefaultReleaseChannel());
+            }
+
+            SetDefaultClientPreferences();
+        }
+
+        private void SetDefaultClientPreferences()
+        {
+            var clientTypes = Enum.GetValues(typeof(WowClientType))
+                .Cast<WowClientType>()
+                .Where(type => type != WowClientType.None)
+                .ToList();
+
+            foreach(var clientType in clientTypes)
+            {
+                var preferenceKey = GetClientDefaultAddonChannelKey(clientType);
+                var preference = _preferenceRepository.FindByKey(preferenceKey);
+                if(preference == null)
+                {
+                    SetClientAddonChannelType(clientType, AddonChannelType.Stable);
+                }
             }
         }
 
