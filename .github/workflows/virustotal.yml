@@ -6,7 +6,6 @@ name: VirusTotal
 # events but only for the master branch
 on:
   release:
-    types: [published]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,6 +18,6 @@ jobs:
           vt_api_key: ${{ secrets.VIRUSTOTAL_API_KEY }}
           github_token: ${{ github.token }}
           files: |
-            *.exe
+            .*\.zip
           update_release_body: true
             
