@@ -125,7 +125,7 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                var latestVersion = await _wowUpService.GetLatestVersion();
+                var latestVersion = await _wowUpService.GetLatestClientVersion();
 
                 LatestVersion = latestVersion.Version;
                 ShowDownload = IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();

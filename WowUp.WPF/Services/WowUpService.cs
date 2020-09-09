@@ -24,6 +24,7 @@ namespace WowUp.WPF.Services
     {
         private const string UpdaterName = "WowUpUpdater.exe";
         private const string UpdateFileName = "WowUp.zip";
+        private const string LatestVersionCacheKey = "latest-version-response";
 
         public const string WebsiteUrl = "https://wowup.io";
 
@@ -32,6 +33,7 @@ namespace WowUp.WPF.Services
         private static FileVersionInfo UpdaterVersion => FileUtilities.GetFileVersion(UpdaterPath);
 
         private readonly IAnalyticsService _analyticsService;
+        private readonly ICacheService _cacheService;
         private readonly IDownloadService _downloadService;
         private readonly IPreferenceRepository _preferenceRepository;
         private readonly IWowUpApiService _wowUpApiService;
@@ -65,11 +67,13 @@ namespace WowUp.WPF.Services
 
         public WowUpService(
             IAnalyticsService analyticsService,
+            ICacheService cacheService,
             IDownloadService downloadService,
             IPreferenceRepository preferenceRepository,
             IWowUpApiService wowUpApiService)
         {
             _analyticsService = analyticsService;
+            _cacheService = cacheService;
             _downloadService = downloadService;
             _preferenceRepository = preferenceRepository;
             _wowUpApiService = wowUpApiService;
@@ -195,12 +199,24 @@ namespace WowUp.WPF.Services
             AppUtilities.ShutdownApplication();
         }
 
-        public async Task<LatestVersion> GetLatestVersion()
+        public async Task<LatestVersionResponse> GetLatestVersion()
         {
-            var response = await _wowUpApiService.GetLatestVersion();
-            var releaseChannel = GetWowUpReleaseChannel();
+            return await _cacheService.GetCache(LatestVersionCacheKey, async () =>
+            {
+                return await _wowUpApiService.GetLatestVersion();
+            }, 5);
+        }
 
-            return releaseChannel == WowUpReleaseChannelType.Stable
+        public async Task<LatestVersion> GetLatestClientVersion()
+        {
+            return await GetLatestClientVersion(GetWowUpReleaseChannel());
+        }
+
+        public async Task<LatestVersion> GetLatestClientVersion(WowUpReleaseChannelType releaseChannelType)
+        {
+            var response = await GetLatestVersion();
+
+            return releaseChannelType == WowUpReleaseChannelType.Stable
                 ? response.Stable
                 : response.Beta;
         }
@@ -240,7 +256,7 @@ namespace WowUp.WPF.Services
 
         private async Task CheckUpdaterVersion(Action<int> onProgress = null)
         {
-            var latestVersions = await _wowUpApiService.GetLatestVersion();
+            var latestVersions = await GetLatestVersion();
             var latestUpdaterVersion = new Version(latestVersions.Updater.Version.TrimSemVerString());
             var currentVersion = new Version(UpdaterVersion.ProductVersion.TrimSemVerString());
 
@@ -256,7 +272,7 @@ namespace WowUp.WPF.Services
             var unzippedDirPath = string.Empty;
             try
             {
-                var latestVersions = await _wowUpApiService.GetLatestVersion();
+                var latestVersions = await GetLatestVersion();
 
                 downloadedZipPath = await _downloadService.DownloadZipFile(
                     latestVersions.Updater.Url,

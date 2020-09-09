@@ -19,7 +19,10 @@ namespace WowUp.WPF.Services.Contracts
         void InstallUpdate();
 
         Task<bool> IsUpdateAvailable();
-        Task<LatestVersion> GetLatestVersion();
+
+        Task<LatestVersion> GetLatestClientVersion();
+        Task<LatestVersion> GetLatestClientVersion(WowUpReleaseChannelType releaseChannelType);
+
         Task<ChangeLogFile> GetChangeLogFile();
         Task DownloadUpdate(Action<int> onProgress);
         Task CheckUpdaterApp(Action<int> onProgress = null);
@@ -33,7 +36,7 @@ namespace WowUp.WPF.Services.Contracts
         WowUpReleaseChannelType GetWowUpReleaseChannel();
         void SetWowUpReleaseChannel(WowUpReleaseChannelType type);
 
-        void SetClientAddonChannelType(WowClientType clientType, AddonChannelType channelType);
         AddonChannelType GetClientAddonChannelType(WowClientType clientType);
+        void SetClientAddonChannelType(WowClientType clientType, AddonChannelType channelType);
     }
 }
