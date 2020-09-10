@@ -19,6 +19,7 @@ using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Serilog;
 
 namespace WowUp.WPF.Services
 {
@@ -239,7 +240,7 @@ namespace WowUp.WPF.Services
             string providerName,
             WowClientType clientType)
         {
-            var targetAddonChannel = _wowUpService.GetDefaultAddonChannel();
+            var targetAddonChannel = _wowUpService.GetClientAddonChannelType(clientType);
             var provider = GetProvider(providerName);
             var searchResult = await provider.GetById(externalId, clientType);
             var latestFile = GetLatestFile(searchResult, targetAddonChannel);
@@ -405,7 +406,7 @@ namespace WowUp.WPF.Services
 
         private async Task InstallUnzippedDirectory(string unzippedDirectory, WowClientType clientType)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 var addonFolderPath = _warcraftService.GetAddonFolderPath(clientType);
                 var unzippedFolders = Directory.GetDirectories(unzippedDirectory);
@@ -413,9 +414,45 @@ namespace WowUp.WPF.Services
                 {
                     var unzippedDirectoryName = Path.GetFileName(unzippedFolder);
                     var unzipLocation = Path.Combine(addonFolderPath, unzippedDirectoryName);
-                    FileUtilities.DirectoryCopy(unzippedFolder, unzipLocation);
-                }
+                    var unzipBackupLocation = Path.Combine(addonFolderPath, $"{unzippedDirectoryName}-bak");
 
+                    // If the user already has the addon installed, create a temporary backup
+                    if (Directory.Exists(unzipLocation))
+                    {
+                        Directory.Move(unzipLocation, unzipBackupLocation);
+                    }
+
+                    try
+                    {
+                        // Copy contents from unzipped new directory to existing addon folder location
+                        FileUtilities.DirectoryCopy(unzippedFolder, unzipLocation);
+
+                        // If the copy succeeds, delete the backup
+                        if (Directory.Exists(unzipBackupLocation))
+                        {
+                            await FileUtilities.DeleteDirectory(unzipBackupLocation);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, $"Failed to copy addon directory {unzipLocation}");
+                        // If a backup directory exists, attempt to roll back
+                        if (Directory.Exists(unzipBackupLocation))
+                        {
+                            // If the new addon folder was already created delete it
+                            if (Directory.Exists(unzipLocation))
+                            {
+                                await FileUtilities.DeleteDirectory(unzipLocation);
+                            }
+
+                            // Move the backup folder into the original location
+                            Log.Information($"Attempting to roll back {unzipBackupLocation}");
+                            Directory.Move(unzipBackupLocation, unzipLocation);
+                        }
+
+                        throw;
+                    }
+                }
             });
         }
 
@@ -447,7 +484,7 @@ namespace WowUp.WPF.Services
                 {
                     await provider.Scan(
                         clientType,
-                        _wowUpService.GetDefaultAddonChannel(),
+                        _wowUpService.GetClientAddonChannelType(clientType),
                         addonFolders.Where(af => af.MatchingAddon == null && af.Toc != null));
                 }
                 catch(Exception ex)
@@ -540,7 +577,7 @@ namespace WowUp.WPF.Services
                 DownloadUrl = latestFile.DownloadUrl,
                 ExternalUrl = searchResult.ExternalUrl,
                 ProviderName = searchResult.ProviderName,
-                ChannelType = channelType ?? _wowUpService.GetDefaultAddonChannel()
+                ChannelType = channelType ?? _wowUpService.GetClientAddonChannelType(clientType)
             };
         }
     }

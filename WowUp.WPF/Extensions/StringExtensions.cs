@@ -17,14 +17,21 @@ namespace WowUp.WPF.Extensions
 
         public static string TrimSemVerString(this string semVer)
         {
-            var regex = new Regex(@"^v?(\d+.\d+.\d+)");
+            var regex = new Regex(@"^v?(?<version>\d+.\d+.\d+)(?<build>.\d+)?(-beta\.)?(?<beta>\d+)?$");
             var match = regex.Match(semVer);
             if (!match.Success)
             {
                 return string.Empty;
             }
 
-            return match.Groups[1].Value;
+            var version = match.Groups["version"]?.Value;
+            var betaVersion = match.Groups["beta"]?.Value;
+            betaVersion = string.IsNullOrEmpty(betaVersion)
+                ? ".0"
+                : $".{betaVersion}";
+
+            return $"{version}{betaVersion}";
         }
+
     }
 }

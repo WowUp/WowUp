@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 
 namespace WowUp.WPF.Utilities
@@ -18,7 +20,7 @@ namespace WowUp.WPF.Utilities
         public static readonly string CachePath = Path.Combine(AppDataPath, "Cache");
         public static readonly string ThumbnailCachePath = Path.Combine(CachePath, "Thumbnails");
         public static readonly string ExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
-        public static readonly string UpdaterPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "WowUp.Updater.exe");
+        public static readonly string UpdaterPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "WowUpUpdater.exe");
 
         static FileUtilities()
         {
@@ -36,6 +38,39 @@ namespace WowUp.WPF.Utilities
             {
                 Directory.CreateDirectory(ThumbnailCachePath);
             }
+        }
+
+        public static bool HasWriteAccess(string path)
+        {
+            var dir = Path.GetDirectoryName(path);
+            var testPath = Path.Combine(dir, $"{Guid.NewGuid()}.txt");
+
+            try
+            {
+                File.WriteAllText(testPath, string.Empty);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+            finally
+            {
+                if (File.Exists(testPath))
+                {
+                    File.Delete(testPath);
+                }
+            }
+        }
+
+        public static void CopyFile(string sourcePath, string destinationPath, bool overwrite)
+        {
+            File.Copy(sourcePath, destinationPath, overwrite);
+        }
+
+        public static FileVersionInfo GetFileVersion(string filePath)
+        {
+            return FileVersionInfo.GetVersionInfo(filePath);
         }
 
         public static MemoryStream GetMemoryStreamFromFile(string filePath)

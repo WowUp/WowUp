@@ -65,11 +65,39 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _collapseToTrayEnabled, value); }
         }
 
-        private AddonChannelType _selectedAddonChannelType;
-        public AddonChannelType SelectedAddonChannelType
+        private AddonChannelType _selectedRetailAddonChannelType;
+        public AddonChannelType SelectedRetailAddonChannelType
         {
-            get => _selectedAddonChannelType;
-            set { SetProperty(ref _selectedAddonChannelType, value); }
+            get => _selectedRetailAddonChannelType;
+            set { SetProperty(ref _selectedRetailAddonChannelType, value); }
+        }
+
+        private AddonChannelType _selectedRetailPtrAddonChannelType;
+        public AddonChannelType SelectedRetailPtrAddonChannelType
+        {
+            get => _selectedRetailPtrAddonChannelType;
+            set { SetProperty(ref _selectedRetailPtrAddonChannelType, value); }
+        }
+
+        private AddonChannelType _selectedClassicAddonChannelType;
+        public AddonChannelType SelectedClassicAddonChannelType
+        {
+            get => _selectedClassicAddonChannelType;
+            set { SetProperty(ref _selectedClassicAddonChannelType, value); }
+        }
+
+        private AddonChannelType _selectedClassicPtrAddonChannelType;
+        public AddonChannelType SelectedClassicPtrAddonChannelType
+        {
+            get => _selectedClassicPtrAddonChannelType;
+            set { SetProperty(ref _selectedClassicPtrAddonChannelType, value); }
+        }
+
+        private AddonChannelType _selectedBetaAddonChannelType;
+        public AddonChannelType SelectedBetaAddonChannelType
+        {
+            get => _selectedBetaAddonChannelType;
+            set { SetProperty(ref _selectedBetaAddonChannelType, value); }
         }
 
         private WowUpReleaseChannelType _selectedWowUpReleaseChannelType;
@@ -87,9 +115,13 @@ namespace WowUp.WPF.ViewModels
         public Command SetClassicLocationCommand { get; set; }
         public Command SetClassicPtrLocationCommand { get; set; }
         public Command RescanFoldersCommand { get; set; }
-        public Command AddonChannelChangeCommand { get; set; }
         public Command WowUpReleaseChannelChangedCommand { get; set; }
         public Command DumpDebugDataCommand { get; set; }
+        public Command RetailAddonChannelChangeCommand { get; set; }
+        public Command RetailPtrAddonChannelChangeCommand { get; set; }
+        public Command ClassicAddonChannelChangeCommand { get; set; }
+        public Command ClassicPtrAddonChannelChangeCommand { get; set; }
+        public Command BetaAddonChannelChangeCommand { get; set; }
 
         public ObservableCollection<AddonChannelType> AddonChannelNames { get; set; }
         public ObservableCollection<WowUpReleaseChannelType> WowUpChannelNames { get; set; }
@@ -113,9 +145,14 @@ namespace WowUp.WPF.ViewModels
             SetClassicLocationCommand = new Command(() => OnSetLocation(WowClientType.Classic));
             SetClassicPtrLocationCommand = new Command(() => OnSetLocation(WowClientType.ClassicPtr));
             RescanFoldersCommand = new Command(() => OnRescanFolders());
-            AddonChannelChangeCommand = new Command(() => OnAddonChannelChange(SelectedAddonChannelType));
             WowUpReleaseChannelChangedCommand = new Command(() => OnWowUpReleaseChannelChange(SelectedWowUpReleaseChannelType));
             DumpDebugDataCommand = new Command(() => DumpDebugData());
+
+            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType));;
+            RetailPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.RetailPtr, SelectedRetailPtrAddonChannelType));
+            ClassicAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Classic, SelectedClassicAddonChannelType));
+            ClassicPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.ClassicPtr, SelectedClassicPtrAddonChannelType));
+            BetaAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Beta, SelectedBetaAddonChannelType));
 
             AddonChannelNames = new ObservableCollection<AddonChannelType>
             {
@@ -137,8 +174,13 @@ namespace WowUp.WPF.ViewModels
         {
             IsTelemetryEnabled = _analyticsService.IsTelemetryEnabled();
             CollapseToTrayEnabled = _wowUpService.GetCollapseToTray();
-            SelectedAddonChannelType = _wowUpService.GetDefaultAddonChannel();
             SelectedWowUpReleaseChannelType = _wowUpService.GetWowUpReleaseChannel();
+
+            SelectedRetailAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Retail);
+            SelectedRetailPtrAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.RetailPtr);
+            SelectedClassicAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Classic);
+            SelectedClassicPtrAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.ClassicPtr);
+            SelectedBetaAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Beta);
 
             WowRetailLocation = _warcraftService.GetClientLocation(WowClientType.Retail);
             WowRetailPtrLocation = _warcraftService.GetClientLocation(WowClientType.RetailPtr);
@@ -162,6 +204,10 @@ namespace WowUp.WPF.ViewModels
             _wowUpService.SetCollapseToTray(CollapseToTrayEnabled);
         }
 
+        /// <summary>
+        /// Handle when the user wants to change the install folder for a particular client
+        /// </summary>
+        /// <param name="clientType"></param>
         private void OnSetLocation(WowClientType clientType)
         {
             var selectedPath = DialogUtilities.SelectFolder();
@@ -185,9 +231,9 @@ namespace WowUp.WPF.ViewModels
             LoadOptions();
         }
 
-        private void OnAddonChannelChange(AddonChannelType addonChannelType)
+        private void OnAddonChannelChange(WowClientType clientType, AddonChannelType addonChannelType)
         {
-            _wowUpService.SetDefaultAddonChannel(addonChannelType);
+            _wowUpService.SetClientAddonChannelType(clientType, addonChannelType);
         }
 
         private void OnWowUpReleaseChannelChange(WowUpReleaseChannelType type)

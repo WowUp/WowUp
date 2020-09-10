@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using WowUp.Common.Enums;
+using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -8,6 +9,7 @@ namespace WowUp.WPF.ViewModels
 {
     public class ApplicationUpdateControlViewModel : BaseViewModel
     {
+        private readonly ISessionService _sessionService;
         private readonly IWowUpService _wowUpService;
         private readonly System.Threading.Timer _timer;
 
@@ -76,16 +78,21 @@ namespace WowUp.WPF.ViewModels
 
         private bool _didUpdateError;
         private bool _isUpdatePending;
+        private bool _updaterReady;
 
         public Command DownloadUpdateCommand { get; set; }
         public Command RestartAppCommand { get; set; }
 
         public ApplicationUpdateControlViewModel(
+            ISessionService sessionService,
             IWowUpService wowUpService)
         {
+            _sessionService = sessionService;
             _wowUpService = wowUpService;
 
-            _wowUpService.PreferenceUpdated += _wowUpService_PreferenceUpdated;
+            _wowUpService.PreferenceUpdated += WowUpService_PreferenceUpdated;
+
+            _sessionService.SessionChanged += SessionService_SessionChanged;
 
             DownloadUpdateCommand = new Command(() => OnDownloadUpdate());
             RestartAppCommand = new Command(() => OnRestartApp());
@@ -95,7 +102,13 @@ namespace WowUp.WPF.ViewModels
             _timer = new System.Threading.Timer(CheckVersion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
         }
 
-        private void _wowUpService_PreferenceUpdated(object sender, Models.WowUp.WowUpPreferenceEventArgs e)
+        private void SessionService_SessionChanged(object sender, Common.Models.Events.SessionEventArgs e)
+        {
+            _updaterReady = e.SessionState.UpdaterReady;
+            CheckVersion(null);
+        }
+
+        private void WowUpService_PreferenceUpdated(object sender, Models.WowUp.WowUpPreferenceEventArgs e)
         {
             if (e.Preference.Key == Constants.Preferences.WowUpReleaseChannelKey)
             {
@@ -105,14 +118,14 @@ namespace WowUp.WPF.ViewModels
 
         private async void CheckVersion(object state)
         {
-            if (_didUpdateError || _isUpdatePending)
+            if (_didUpdateError || _isUpdatePending || !_updaterReady)
             {
                 return;
             }
 
             try
             {
-                var latestVersion = await _wowUpService.GetLatestVersion();
+                var latestVersion = await _wowUpService.GetLatestClientVersion();
 
                 LatestVersion = latestVersion.Version;
                 ShowDownload = IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
@@ -126,7 +139,7 @@ namespace WowUp.WPF.ViewModels
 
         private void OnRestartApp()
         {
-            ApplicationUpdater.ProcessUpdateFile();
+            _wowUpService.InstallUpdate();
         }
 
         private async void OnDownloadUpdate()
@@ -137,9 +150,9 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                await _wowUpService.UpdateApplication((state, progress) =>
+                OnDownloadState(ApplicationUpdateState.Downloading);
+                await _wowUpService.DownloadUpdate(progress =>
                 {
-                    OnDownloadState(state);
                     ProgressPercent = progress;
                 });
 
@@ -149,6 +162,10 @@ namespace WowUp.WPF.ViewModels
             {
                 _didUpdateError = true;
                 _isUpdatePending = false;
+            }
+            finally
+            {
+                OnDownloadState(ApplicationUpdateState.Complete);
             }
 
             ShowProgress = false;

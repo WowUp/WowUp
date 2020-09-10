@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.16.1",
+      "Description": "Default addon channel can now be set separately per World of Warcraft client.\nUI updates.\nBug Fixes."
+    },
+    {
+      "Version": "1.16.0",
+      "Description": "Remember the last selected client type.\nNew updater companion app, to deal with in-app update issues."
+    },
+    {
       "Version": "1.15.2",
       "Description": "Fix bug with local image paths for certain users."
     },

@@ -5,6 +5,8 @@
 [![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/rk4F5aD) 
 [![WowUp on Patreon](https://img.shields.io/static/v1?label=Patreon&message=WowUp&color=f96854)](https://www.patreon.com/jliddev) 
 
+### Due to a bug in the 1.15.0-1.15.2 updater Users will have to manually update 1.16.0. We apologize for the inconvenience
+
 # WowUp
 [WowUp](https://wowup.io) the World of Warcraft addon updater
 

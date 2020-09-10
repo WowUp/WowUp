@@ -7,30 +7,20 @@ namespace WowUp.WPF.Extensions
     {
         public static AddonChannelType ToAddonChannelType(this string str)
         {
-            if (AddonChannelType.Alpha.ToString().Equals(str, StringComparison.OrdinalIgnoreCase))
-            {
-                return AddonChannelType.Alpha;
-            }
-            else if (AddonChannelType.Beta.ToString().Equals(str, StringComparison.OrdinalIgnoreCase))
-            {
-                return AddonChannelType.Beta;
-            }
+            var parsed = Enum.TryParse<AddonChannelType>(str, true, out var result);
+            return parsed ? result : AddonChannelType.Stable;
+        }
 
-            return AddonChannelType.Stable;
+        public static WowClientType ToWowClientType(this string str)
+        {
+            var parsed = Enum.TryParse<WowClientType>(str, true, out var result);
+            return parsed ? result : WowClientType.None;
         }
 
         public static WowUpReleaseChannelType ToWowUpReleaseChannelType(this string str)
         {
-            if (WowUpReleaseChannelType.Stable.ToString().Equals(str, StringComparison.OrdinalIgnoreCase))
-            {
-                return WowUpReleaseChannelType.Stable;
-            }
-            else if (WowUpReleaseChannelType.Beta.ToString().Equals(str, StringComparison.OrdinalIgnoreCase))
-            {
-                return WowUpReleaseChannelType.Beta;
-            }
-
-            return WowUpReleaseChannelType.Stable;
+            var parsed = Enum.TryParse<WowUpReleaseChannelType>(str, true, out var result);
+            return parsed ? result : WowUpReleaseChannelType.Stable;
         }
     }
 }

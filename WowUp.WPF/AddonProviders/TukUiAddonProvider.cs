@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -219,22 +220,33 @@ namespace WowUp.WPF.AddonProviders
         {
             var cacheKey = GetCacheKey(clientType);
 
-            return await _cacheService.GetCache(cacheKey, async () =>
+            var results = await _cacheService.GetCache(cacheKey, async () =>
             {
-                var query = GetAddonsSuffix(clientType);
-                var result = await ApiUrl
-                    .SetQueryParam(query, "all")
-                    .WithHeaders(HttpUtilities.DefaultHeaders)
-                    .GetJsonAsync<List<TukUiAddon>>();
-
-                if (clientType.IsRetail())
+                try
                 {
-                    result.Add(await GetTukUiRetailAddon());
-                    result.Add(await GetElvUiRetailAddon());
-                }
+                    var query = GetAddonsSuffix(clientType);
 
-                return result;
+                    var result = await ApiUrl
+                        .SetQueryParam(query, "all")
+                        .WithHeaders(HttpUtilities.DefaultHeaders)
+                        .GetJsonAsync<List<TukUiAddon>>();
+
+                    if (clientType.IsRetail())
+                    {
+                        result.Add(await GetTukUiRetailAddon());
+                        result.Add(await GetElvUiRetailAddon());
+                    }
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Failed to get all addons");
+                    return null;
+                }
             });
+
+            return results ?? new List<TukUiAddon>();
         }
 
         private async Task<TukUiAddon> GetClientApiAddon(string addonName)
