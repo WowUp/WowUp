@@ -10,25 +10,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
-    exports: [
-        MatSliderModule,
-        MatTabsModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatTableModule,
-        MatInputModule,
-        MatIconModule,
-        MatSlideToggleModule
-    ],
-    imports: [
-        MatSliderModule,
-        MatTabsModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatTableModule,
-        MatInputModule,
-        MatIconModule,
-        MatSlideToggleModule
-    ]
+  exports: [
+    MatSliderModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatTableModule,
+    MatInputModule,
+    MatIconModule,
+    MatSlideToggleModule
+  ],
+  imports: [
+    MatSliderModule,
+    MatTabsModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatTableModule,
+    MatInputModule,
+    MatIconModule,
+    MatSlideToggleModule
+  ]
 })
 export class MatModule { }

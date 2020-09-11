@@ -5,7 +5,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,15 +15,15 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AgGridModule } from 'ag-grid-angular';
 
-import { HomeModule } from './home/home.module';
+import { HomeModule } from './pages/home/home.module';
 import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
-import { DefaultHeadersInterceptor } from './core/interceptors/default-headers.interceptor';
 import { AddonTableColumnComponent } from './components/addon-table-column/addon-table-column.component';
 import { AddonStatusColumnComponent } from './components/addon-status-column/addon-status-column.component';
 import { TitlebarComponent } from './components/titlebar/titlebar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { DefaultHeadersInterceptor } from './interceptors/default-headers.interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -43,7 +42,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    CoreModule,
     SharedModule,
     HomeModule,
     DetailModule,

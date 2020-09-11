@@ -1,6 +1,6 @@
 export interface CurseDependency {
-    id: number;
-    addonId: number;
-    type: number;
-    fileId: number;
+  id: number;
+  addonId: number;
+  type: number;
+  fileId: number;
 }

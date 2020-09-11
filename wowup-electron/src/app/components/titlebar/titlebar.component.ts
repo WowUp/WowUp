@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ElectronService } from 'app/services/electron/electron.service';
 import { platform } from 'os'
 
 @Component({
@@ -13,7 +14,9 @@ export class TitlebarComponent implements OnInit {
   public isLinux = platform() === 'linux';
   public userAgent = platform();
 
-  constructor() { }
+  constructor(
+    public electronService: ElectronService
+  ) { }
 
   ngOnInit(): void {
   }

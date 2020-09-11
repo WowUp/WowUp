@@ -15,7 +15,7 @@ platformBrowserDynamic()
   })
   .catch(err => console.error(err));
 
-  // new WowUpTitlebar();
+// new WowUpTitlebar();
 
 // new Titlebar({
 //   backgroundColor: Color.fromHex('#6B69D6'),

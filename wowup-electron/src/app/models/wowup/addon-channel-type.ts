@@ -1,5 +1,5 @@
 export enum AddonChannelType {
-    Stable,
-    Beta,
-    Alpha
+  Stable,
+  Beta,
+  Alpha
 }

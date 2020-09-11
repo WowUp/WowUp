@@ -1,0 +1,55 @@
+@import "../../../variables.scss";
+
+.header {
+    text-align: center;
+    color: $white-1;
+
+    .logo {
+        width: 150px;
+    }
+
+    h2 {
+        margin-bottom: 0;
+    }
+
+    .version {
+        color: $white-3;
+    }
+
+    .link-container {
+        margin-top: 1em;
+    }
+    a {
+        color: $white-1;
+    }
+
+    .patron-img {
+        width: 120px;
+    }
+}
+
+.changelog-container {
+    padding: 1em;
+    color: $white-1;
+
+    .change-log-list {
+        padding-left: 1em;
+    }
+    .changelog {
+        list-style-type: none;
+        margin: 1em 0;
+        border-left: 3px solid $purple-1;
+        padding-left: 1em;
+
+        .version {
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .description {
+            margin: 0;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+    }
+}

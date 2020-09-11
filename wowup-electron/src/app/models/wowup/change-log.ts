@@ -1,4 +1,4 @@
 export interface ChangeLog {
-    Version: string;
-    Description: string;
+  Version: string;
+  Description: string;
 }

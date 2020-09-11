@@ -10,7 +10,7 @@ describe('AddonStatusColumnComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ AddonStatusColumnComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

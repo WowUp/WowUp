@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams, IAfterGuiAttachedParams } from 'ag-grid-community';
-import { Addon } from 'app/core/entities/addon';
+import { Addon } from 'app/entities/addon';
 
 @Component({
   selector: 'app-addon-status-column',

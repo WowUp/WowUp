@@ -1,4 +1,4 @@
 export interface CacheItem<T> {
-    expires: number;
-    value: T;
+  expires: number;
+  value: T;
 }

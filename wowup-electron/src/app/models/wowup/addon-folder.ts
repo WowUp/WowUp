@@ -1,11 +1,11 @@
 import { Toc } from "./toc";
 
 export interface AddonFolder {
-    name: string;
-    path: string;
-    status: string;
-    thumbnailUrl?: string;
-    latestVersion?: string;
-    toc: Toc;
-    tocMetaData: string[];
+  name: string;
+  path: string;
+  status: string;
+  thumbnailUrl?: string;
+  latestVersion?: string;
+  toc: Toc;
+  tocMetaData: string[];
 }

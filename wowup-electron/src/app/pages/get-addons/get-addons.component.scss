@@ -1,0 +1,30 @@
+.control-container {
+  display: flex;
+  flex-direction: row;
+  padding: 0 1em 0 1em;
+
+  .select-container {
+    padding-top: 1em;
+    flex-grow: 1;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    button {
+      &:not(:last-child) {
+        margin-right: 0.5em;
+      }
+    }
+  }
+}
+.table-container {
+  height: calc(100% - 75px);
+  overflow: auto;
+
+  table {
+    width: 100%;
+  }
+}

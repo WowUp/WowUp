@@ -1,5 +1,5 @@
 export interface CurseModule {
-    foldername: string;
-    fingerprint: number;
-    type: number;
+  foldername: string;
+  fingerprint: number;
+  type: number;
 }

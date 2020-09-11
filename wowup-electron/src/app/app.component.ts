@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { ElectronService } from './core/services';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
-import { WarcraftService } from './core/services/warcraft/warcraft.service';
+import { ElectronService } from './services';
+import { WarcraftService } from './services/warcraft/warcraft.service';
 
 @Component({
   selector: 'app-root',

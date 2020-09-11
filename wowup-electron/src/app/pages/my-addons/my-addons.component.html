@@ -1,0 +1,33 @@
+<div class="tab-container d-flex flex-col">
+  <div class="control-container">
+    <div class="select-container ">
+      <mat-form-field>
+        <mat-label>World of Warcraft</mat-label>
+        <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
+          [disabled]="busy === true">
+          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.clientTypes$ | async">
+            {{warcraftService.getClientDisplayName(clientType)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="button-container">
+      <button mat-flat-button color="primary" [disabled]="busy === true">Update All</button>
+      <button mat-flat-button color="primary" [disabled]="busy === true">Refresh</button>
+      <button mat-flat-button color="primary" [disabled]="busy === true" (click)="onReScan()">Re-Scan</button>
+      <mat-form-field class="example-form-field">
+        <mat-label>Search</mat-label>
+        <input matInput type="text" [(ngModel)]="query">
+        <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear" (click)="query=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="table-container flex-grow-1">
+    <ag-grid-angular class="ag-theme-balham addon-table" [gridOptions]="gridOptions" [rowData]="displayAddons$ | async"
+      [columnDefs]="columnDefs" (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+  </div>
+</div>
