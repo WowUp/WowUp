@@ -21,11 +21,7 @@ export class PreferenceStorageService {
     return action(this._store);
   }
 
-  public setAll(addons: Addon[]) {
-    addons.forEach(addon => this.set(addon.id, addon));
-  }
-
-  public set(key: string, value: Addon) {
+  public set(key: string, value: string) {
     this._store.set(key, value);
   }
 

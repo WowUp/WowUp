@@ -24,8 +24,7 @@ platformBrowserDynamic()
 // });
 
 document.addEventListener('click', (evt: any) => {
-  console.debug('CLICK')
   if (evt.target.tagName === 'A' && evt.target.href.startsWith('http')) {
-    event.preventDefault()
+    evt.preventDefault()
   }
 })

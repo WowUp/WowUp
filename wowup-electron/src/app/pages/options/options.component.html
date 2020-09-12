@@ -59,7 +59,7 @@
       </div>
       <div class="row hover">
         <div class="grow">Minimize on Close</div>
-        <mat-slide-toggle></mat-slide-toggle>
+        <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" ></mat-slide-toggle>
       </div>
     </section>
   </div>
