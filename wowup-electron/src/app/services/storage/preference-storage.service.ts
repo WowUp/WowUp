@@ -21,17 +21,15 @@ export class PreferenceStorageService {
     return action(this._store);
   }
 
-  public set(key: string, value: string) {
-    this._store.set(key, value);
+  public set(key: string, value: any) {
+    this._store.set(key, value.toString());
   }
 
   public get(key: string): Addon {
     return this._store.get(key) as Addon;
   }
 
-  public findByKey(key: string){
-    console.log(this._store)
-
-    return this._store.get(key);
+  public findByKey(key: string): string{
+    return this._store.get(key) as string;
   }
 }

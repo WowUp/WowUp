@@ -16,6 +16,7 @@ const WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY = 'wowup_release_channel';
 const DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX = '_default_addon_channel';
 const TELEMETRY_ENABLED_PREFERENCE_KEY = 'telemetry_enabled';
 const TELEMETRY_PROMPT_SENT_PREFERENCE_KEY = 'telemetry_prompt_sent';
+const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = 'last_selected_client_type';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,7 @@ export class WowUpService {
   }
 
   public set collapseToTray(value: boolean) {
-    this._preferenceStorageService.set(COLLAPSE_TO_TRAY_PREFERENCE_KEY, value.toString());
+    this._preferenceStorageService.set(COLLAPSE_TO_TRAY_PREFERENCE_KEY, value);
   }
 
   public get telemetryEnabled() {
@@ -54,15 +55,32 @@ export class WowUpService {
   }
 
   public set telemetryEnabled(value: boolean) {
-    this._preferenceStorageService.set(TELEMETRY_ENABLED_PREFERENCE_KEY, value.toString());
+    this._preferenceStorageService.set(TELEMETRY_ENABLED_PREFERENCE_KEY, value);
+  }
+
+  public get wowUpReleaseChannel() {
+    const preference = this._preferenceStorageService.findByKey(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY);
+    return parseInt(preference, 10) as WowUpReleaseChannelType;
+  }
+
+  public set wowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType) {
+    this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
+  }
+
+  public get lastSelectedClientType(): WowClientType {
+    const preference = this._preferenceStorageService.findByKey(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY);
+    const value = parseInt(preference, 10);
+    return isNaN(value)
+      ? WowClientType.None
+      : value as WowClientType;
+  }
+
+  public set lastSelectedClientType(clientType: WowClientType) {
+    this._preferenceStorageService.set(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY, clientType);
   }
 
   public showLogsFolder() {
     this._electronService.shell.openExternal(this.applicationLogsFolderPath, { activate: true });
-  }
-
-  public setCollapseToTray(enabled: boolean) {
-    this._preferenceStorageService.set(COLLAPSE_TO_TRAY_PREFERENCE_KEY, enabled.toString())
   }
 
   private setDefaultPreference(key: string, defaultValue: any) {
