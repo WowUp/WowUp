@@ -22,6 +22,10 @@ export class AddonStorageService {
     return action(this._store);
   }
 
+  public queryAll(action: (items: Addon[]) => Addon[]) {
+    return action(Object.values(this._store));
+  }
+
   public setAll(addons: Addon[]) {
     addons.forEach(addon => this.set(addon.id, addon));
   }
@@ -37,6 +41,20 @@ export class AddonStorageService {
   public removeForClientType(clientType: WowClientType) {
     const addons = this.getAllForClientType(clientType);
     addons.forEach(addon => this._store.delete(addon.id));
+  }
+
+  public getByExternalId(externalId: string, clientType: WowClientType) {
+    const addons: Addon[] = [];
+
+    for (const result of this._store) {
+      const addon = result[1] as Addon;
+      if (addon.clientType === clientType && addon.externalId === externalId) {
+        addons.push(addon);
+        break;
+      }
+    }
+
+    return addons[0];
   }
 
   public getAllForClientType(

@@ -70,7 +70,7 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  getById(addonId: string, clientType: WowClientType): Promise<AddonSearchResult> {
+  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     const url = `${API_URL}/addon/${addonId}`;
 
     return this._httpClient.get<CurseSearchResult>(url)
@@ -87,8 +87,7 @@ export class CurseAddonProvider implements AddonProvider {
 
           return this.getAddonSearchResult(result, latestFiles);
         })
-      )
-      .toPromise();
+      );
   }
 
   isValidAddonUri(addonUri: URL): boolean {

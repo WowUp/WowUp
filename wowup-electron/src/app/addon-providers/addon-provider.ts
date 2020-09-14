@@ -18,7 +18,7 @@ export interface AddonProvider {
 
   searchByName(addonName: string, folderName: string, clientType: WowClientType, nameOverride?: string): Promise<AddonSearchResult[]>;
 
-  getById(addonId: string, clientType: WowClientType): Promise<AddonSearchResult>;
+  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult>;
 
   isValidAddonUri(addonUri: URL): boolean;
 

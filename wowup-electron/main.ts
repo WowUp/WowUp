@@ -9,10 +9,16 @@ import { DownloadRequest } from './src/common/models/download-request';
 import { DownloadStatus } from './src/common/models/download-status';
 import { DownloadStatusType } from './src/common/models/download-status-type';
 import { UnzipStatus } from './src/common/models/unzip-status';
-import { DOWNLOAD_FILE_CHANNEL, UNZIP_FILE_CHANNEL, COPY_FILE_CHANNEL } from './src/common/constants';
+import { DOWNLOAD_FILE_CHANNEL, UNZIP_FILE_CHANNEL, COPY_FILE_CHANNEL, COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, RENAME_DIRECTORY_CHANNEL, READ_FILE_CHANNEL } from './src/common/constants';
 import { UnzipStatusType } from './src/common/models/unzip-status-type';
 import { UnzipRequest } from './src/common/models/unzip-request';
 import { CopyFileRequest } from './src/common/models/copy-file-request';
+import { CopyDirectoryRequest } from './src/common/models/copy-directory-request';
+import { DeleteDirectoryRequest } from './src/common/models/delete-directory-request';
+import { ReadFileRequest } from './src/common/models/read-file-request';
+import { ReadFileResponse } from './src/common/models/read-file-response';
+import { ncp } from 'ncp';
+import * as rimraf from 'rimraf';
 
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 electronDl();
@@ -204,5 +210,37 @@ ipcMain.on(COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest) => {
   console.log('Copy File', arg);
   fs.copyFile(arg.sourceFilePath, arg.destinationFilePath, (err) => {
     win.webContents.send(arg.destinationFilePath, { error: err });
+  });
+});
+
+ipcMain.on(COPY_DIRECTORY_CHANNEL, async (evt, arg: CopyDirectoryRequest) => {
+  console.log('Copy Dir', arg);
+  ncp(arg.sourcePath, arg.destinationPath, (err) => {
+    win.webContents.send(arg.destinationPath, err);
+  });
+});
+
+ipcMain.on(DELETE_DIRECTORY_CHANNEL, async (evt, arg: DeleteDirectoryRequest) => {
+  console.log('Delete Dir', arg);
+  rimraf(arg.sourcePath, (err) => {
+    win.webContents.send(arg.sourcePath, err);
+  });
+});
+
+ipcMain.on(RENAME_DIRECTORY_CHANNEL, async (evt, arg: CopyDirectoryRequest) => {
+  console.log('Rename Dir', arg);
+  fs.rename(arg.sourcePath, arg.destinationPath, (err) => {
+    win.webContents.send(arg.destinationPath, err);
+  })
+});
+
+ipcMain.on(READ_FILE_CHANNEL, async (evt, arg: ReadFileRequest) => {
+  console.log('Read File', arg);
+  fs.readFile(arg.sourcePath, { encoding: 'utf-8' }, (err, data) => {
+    const response: ReadFileResponse = {
+      data: data,
+      error: err
+    }
+    win.webContents.send(arg.sourcePath, response);
   });
 });

@@ -14,8 +14,8 @@ import { StorageService } from "../storage/storage.service";
 import log from 'electron-log';
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { AddonFolder } from "app/models/wowup/addon-folder";
-import { TocParser } from "app/utils/toc-parser";
 import { ElectronService } from "..";
+import { TocService } from "../toc/toc.service";
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = '_retail_';
@@ -63,7 +63,8 @@ export class WarcraftService {
 
   constructor(
     private _electronService: ElectronService,
-    private storage: StorageService
+    private storage: StorageService,
+    private _tocService: TocService
   ) {
     this._impl = this.getImplementation();
 
@@ -151,8 +152,9 @@ export class WarcraftService {
         return null;
       }
 
-      const toc = await this.getToc(path.join(dirPath, tocFile));
-      const tocMetaData = this.getTocMetaData(path.join(dirPath, tocFile));
+      const tocPath = path.join(dirPath, tocFile);
+      const toc = await this._tocService.parse(tocPath);
+      const tocMetaData = await this._tocService.parseMetaData(tocPath);
 
       return {
         name: dir,
@@ -165,16 +167,6 @@ export class WarcraftService {
       console.error(e);
       return null;
     }
-  }
-
-  private async getToc(filePath: string) {
-    const parser = new TocParser(filePath);
-    return await parser.parse();
-  }
-
-  private getTocMetaData(filePath: string) {
-    const parser = new TocParser(filePath);
-    return parser.parseMetaData();
   }
 
   public getClientLocation(clientType: WowClientType) {

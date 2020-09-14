@@ -26,6 +26,7 @@ export class GetAddonsComponent implements OnInit {
   gridOptions: GridOptions = {
     suppressMovableColumns: true,
     suppressDragLeaveHidesColumns: true,
+    rowBuffer: 500
   }
 
   defaultColDef = {
@@ -123,15 +124,19 @@ export class GetAddonsComponent implements OnInit {
       .subscribe({
         next: (addons) => {
           console.log('FEAT ADDONS', addons);
-          this.isBusy = false;
+          addons = this.filterInstalledAddons(addons);
           this.formatAddons(addons);
           this._displayAddonsSrc.next(addons);
+          this.isBusy = false;
         },
         error: (err) => {
           console.error(err);
         }
       });
+  }
 
+  private filterInstalledAddons(addons: PotentialAddon[]) {
+    return addons.filter(addon => !this._addonService.isInstalled(addon.externalId, this._sessionService.selectedClientType));
   }
 
   private formatAddons(addons: PotentialAddon[]) {

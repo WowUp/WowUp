@@ -31,8 +31,12 @@ export class SessionService {
     this._selectedHomeTab.next(tabIndex);
   }
 
-  public set selectedClientType(clientType: WowClientType){
+  public set selectedClientType(clientType: WowClientType) {
     this._selectedClientTypeSrc.next(clientType);
+  }
+
+  public get selectedClientType() {
+    return this._selectedClientTypeSrc.value;
   }
 
   public startUpdaterCheck() {
@@ -44,9 +48,9 @@ export class SessionService {
       .pipe(
         first(installedClientTypes => installedClientTypes.length > 0),
         map(installedClientTypes => {
-          console.log('installedClientTypes',installedClientTypes)
+          console.log('installedClientTypes', installedClientTypes)
           const lastSelectedType = this._wowUpService.lastSelectedClientType;
-          console.log('lastSelectedType',lastSelectedType)
+          console.log('lastSelectedType', lastSelectedType)
           let initialClientType = installedClientTypes.length ? installedClientTypes[0] : WowClientType.None;
 
           // If the user has no stored type, or the type is no longer found just set it.
