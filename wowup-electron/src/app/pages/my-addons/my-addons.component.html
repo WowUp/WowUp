@@ -27,7 +27,7 @@
 
   <div class="table-container flex-grow-1">
     <ag-grid-angular class="ag-theme-balham addon-table" [gridOptions]="gridOptions" [rowData]="displayAddons$ | async"
-      [columnDefs]="columnDefs" (gridReady)="onGridReady($event)">
+      [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)">
     </ag-grid-angular>
   </div>
 </div>

@@ -2,5 +2,6 @@
     <a appExternalLink href="https://www.patreon.com/jliddev">
         <img class="patron-img" src="assets/patron.png" />
     </a>
+    <div>{{sessionService.statusText$ | async}}</div>
     <div>v{{wowUpService.applicationVersion}}</div>
 </footer>

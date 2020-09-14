@@ -2,6 +2,7 @@ import { WowClientType } from "../models/warcraft/wow-client-type";
 import { Addon } from "../entities/addon";
 import { PotentialAddon } from "../models/wowup/potential-addon";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { Observable } from "rxjs";
 
 export interface AddonProvider {
 
@@ -9,7 +10,7 @@ export interface AddonProvider {
 
   getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]>;
 
-  getFeaturedAddons(clientType: WowClientType): Promise<PotentialAddon[]>;
+  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]>;
 
   searchByQuery(query: string, clientType: WowClientType): Promise<PotentialAddon[]>;
 

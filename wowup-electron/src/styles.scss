@@ -49,6 +49,7 @@ body {
 .tab-container {
   height: calc(100vh - 110px);
   overflow: auto;
+  overflow-x: hidden;
 }
 
 .no-pad-select {
@@ -111,6 +112,7 @@ body {
   .ag-row {
     border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
   }
+
 }
 
 .addon-table {
@@ -123,9 +125,25 @@ body {
   .cell-wrap-text {
     white-space: normal;
   }
+
   // .addon-title {
   //   font-weight: bold;
   //   font-size: 1.1em;
 
   // }
+}
+
+.cell-break-all {
+  word-break: break-all;
+}
+.cell-wrap-text {
+  white-space: normal;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+}
+
+.cell-center-text {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
-import { ICellRendererParams, IAfterGuiAttachedParams } from 'ag-grid-community';
+import { IAfterGuiAttachedParams, ICellRendererParams } from 'ag-grid-community';
 import { Addon } from 'app/entities/addon';
 
 @Component({
@@ -19,7 +19,7 @@ export class AddonStatusColumnComponent implements ICellRendererAngularComp {
 
   agInit(params: ICellRendererParams): void {
     this.addon = params.data;
-    console.log(this.addon)
+    // console.log(this.addon)
   }
 
   afterGuiAttached?(params?: IAfterGuiAttachedParams): void {

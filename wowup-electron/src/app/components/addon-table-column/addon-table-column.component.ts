@@ -20,7 +20,7 @@ export class AddonTableColumnComponent implements ICellRendererAngularComp {
 
   agInit(params: ICellRendererParams): void {
     this.addon = params.data;
-    console.log(this.addon)
+    // console.log(this.addon)
   }
 
   afterGuiAttached?(params?: IAfterGuiAttachedParams): void {

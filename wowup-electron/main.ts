@@ -1,9 +1,21 @@
-import { app, BrowserWindow, screen, BrowserWindowConstructorOptions, Tray, Menu, nativeImage } from 'electron';
+import { app, BrowserWindow, screen, BrowserWindowConstructorOptions, Tray, Menu, nativeImage, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import * as fs from 'fs';
 import { release, arch } from 'os';
+import * as electronDl from 'electron-dl';
+import * as admZip from 'adm-zip';
+import { DownloadRequest } from './src/common/models/download-request';
+import { DownloadStatus } from './src/common/models/download-status';
+import { DownloadStatusType } from './src/common/models/download-status-type';
+import { UnzipStatus } from './src/common/models/unzip-status';
+import { DOWNLOAD_FILE_CHANNEL, UNZIP_FILE_CHANNEL, COPY_FILE_CHANNEL } from './src/common/constants';
+import { UnzipStatusType } from './src/common/models/unzip-status-type';
+import { UnzipRequest } from './src/common/models/unzip-request';
+import { CopyFileRequest } from './src/common/models/copy-file-request';
 
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+electronDl();
 
 const appVersion = require('./package.json').version;
 const USER_AGENT = `WowUp-Client/${appVersion} (${release()}; ${arch()}; +https://wowup.io)`;
@@ -141,3 +153,56 @@ try {
   // Catch Error
   // throw e;
 }
+
+ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
+  try {
+    const download = await electronDl.download(
+      win,
+      arg.url,
+      {
+        directory: arg.outputFolder,
+        onProgress: (progress) => {
+          win.webContents.send(arg.url, {
+            type: DownloadStatusType.Progress,
+            progress: parseFloat((progress.percent * 100.0).toFixed(2))
+          } as DownloadStatus);
+        }
+      }
+    );
+
+    win.webContents.send(arg.url, {
+      type: DownloadStatusType.Complete,
+      savePath: download.getSavePath()
+    } as DownloadStatus);
+  } catch (err) {
+    console.error(err);
+    win.webContents.send(arg.url, { type: DownloadStatusType.Error, error: err } as DownloadStatus)
+  }
+});
+
+ipcMain.on(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
+  const zipFilePath = arg.zipFilePath;
+  const outputFolder = arg.outputFolder;
+
+  const zip = new admZip(zipFilePath);
+  zip.extractAllToAsync(outputFolder, true, (err) => {
+    const status: UnzipStatus = {
+      type: UnzipStatusType.Complete,
+      outputFolder
+    };
+
+    if (err) {
+      status.type = UnzipStatusType.Error;
+      status.error = err;
+    }
+
+    win.webContents.send(zipFilePath, status)
+  });
+});
+
+ipcMain.on(COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest) => {
+  console.log('Copy File', arg);
+  fs.copyFile(arg.sourceFilePath, arg.destinationFilePath, (err) => {
+    win.webContents.send(arg.destinationFilePath, { error: err });
+  });
+});

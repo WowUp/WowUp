@@ -24,6 +24,9 @@ import { AddonStatusColumnComponent } from './components/addon-status-column/add
 import { TitlebarComponent } from './components/titlebar/titlebar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { DefaultHeadersInterceptor } from './interceptors/default-headers.interceptor';
+import { PotentialAddonTableColumnComponent } from './components/potential-addon-table-column/potential-addon-table-column.component';
+import { PotentialAddonStatusColumnComponent } from './components/potential-addon-status-column/potential-addon-status-column.component';
+import { DownloadCountPipe } from './pipes/download-count.pipe';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -37,6 +40,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AddonStatusColumnComponent,
     TitlebarComponent,
     FooterComponent,
+    PotentialAddonTableColumnComponent,
+    PotentialAddonStatusColumnComponent,
+    DownloadCountPipe,
   ],
   imports: [
     BrowserModule,

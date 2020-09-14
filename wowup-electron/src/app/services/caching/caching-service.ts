@@ -26,7 +26,7 @@ export class CachingService {
     return cacheItem.value as T;
   }
 
-  set(key: string, value: any, ttlMs = 0) {
+  set(key: string, value: any, ttlMs = 60000) {
     const cacheItem: CacheItem<any> = {
       expires: new Date().getTime() + ttlMs,
       value

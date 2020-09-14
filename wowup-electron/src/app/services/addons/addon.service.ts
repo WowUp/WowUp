@@ -14,6 +14,9 @@ import { AddonFolder } from "app/models/wowup/addon-folder";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
+import { forkJoin, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { CachingService } from "../caching/caching-service";
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +27,13 @@ export class AddonService {
 
   constructor(
     private _addonStorage: AddonStorageService,
+    private _cachingService: CachingService,
     private warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService,
     httpClient: HttpClient
   ) {
     this._addonProviders = [
-      new CurseAddonProvider(httpClient)
+      new CurseAddonProvider(httpClient, this._cachingService)
     ];
   }
 
@@ -52,9 +56,13 @@ export class AddonService {
     return addons;
   }
 
-  public async getFeaturedAddons(clientType: WowClientType): Promise<PotentialAddon[]> {
-    const results = await Promise.all(this._addonProviders.map(p => p.getFeaturedAddons(clientType)));
-    return results.flat(1);
+  public getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
+    return forkJoin(this._addonProviders.map(p => p.getFeaturedAddons(clientType)))
+      .pipe(
+        map(results => {
+          return results.flat(1);
+        })
+      );
   }
 
   private getAllStoredAddons(clientType: WowClientType) {

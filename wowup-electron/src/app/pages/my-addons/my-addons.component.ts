@@ -7,6 +7,8 @@ import { AddonStatusColumnComponent } from '../../components/addon-status-column
 import { Addon } from 'app/entities/addon';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { AddonService } from 'app/services/addons/addon.service';
+import { SessionService } from 'app/services/session/session.service';
+import { GridApi, GridOptions } from 'ag-grid-community';
 
 @Component({
   selector: 'app-my-addons',
@@ -17,74 +19,77 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private readonly _displayAddonsSrc = new BehaviorSubject<Addon[]>([]);
 
-  private gridApi;
+  private gridApi: GridApi;
   private subscriptions: Subscription[] = [];
 
-  public displayedColumns: string[] = [
-    'addon',
-    'status',
-    'latest-version',
-    'game-version',
-    'author'
-  ];
-
-  gridOptions = {
-    autoHeight: true
+  gridOptions: GridOptions = {
+    suppressMovableColumns: true,
+    suppressDragLeaveHidesColumns: true,
   }
+
+  defaultColDef = {
+    wrapText: true,
+    sortable: true,
+    autoHeight: true,
+  };
 
   columnDefs = [
     {
       headerName: 'Addon',
-      field: 'value',
+      field: 'name',
       cellRendererFramework: AddonTableColumnComponent,
-      autoHeight: true,
+      resizable: true,
+      suppressMovable: true,
       suppressSizeToFit: true,
-      width: 400
+      minWidth: 200,
+      flex: 1
     },
     {
       headerName: 'Status',
       field: 'value',
       cellRendererFramework: AddonStatusColumnComponent,
-      width: 80,
+      width: 120,
       suppressSizeToFit: true,
     },
-    { headerName: 'Latest Version', field: 'latestVersion', cellClass: 'cell-wrap-text ' },
-    { headerName: 'Game Version', field: 'gameVersion' },
-    { headerName: 'Author', field: 'author', cellClass: 'cell-wrap-text' }
+    {
+      headerName: 'Latest Version', field: 'latestVersion', cellClass: 'cell-center-text', resizable: true
+    },
+    { headerName: 'Game Version', field: 'gameVersion', cellClass: 'cell-center-text', width: 100, suppressSizeToFit: true },
+    { headerName: 'Author', field: 'author', cellClass: 'cell-center-text', flex: 1 }
   ];
 
-  public dataSource = [
-    { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-    { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-    { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-    { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-    { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-    { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-    { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-    { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-    { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-    { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-  ];
-
-  public selectedClient = WowClientType.Classic;
+  public selectedClient = WowClientType.None;
   public busy = false;
   public displayAddons$ = this._displayAddonsSrc.asObservable();
 
   constructor(
     public warcraftService: WarcraftService,
-    private addonService: AddonService
+    private addonService: AddonService,
+    private _sessionService: SessionService
   ) {
-
-    this.warcraftService.clientTypes$
-      .pipe(
-        first(types => Array.isArray(types) && types.length > 0),
-        tap(() => this.loadAddons(this.selectedClient))
-      )
-      .subscribe(types => this.selectedClient = types[0]);
-
+    this._sessionService.selectedHomeTab$
+      .subscribe(index => {
+        if (index !== 0) {
+          return;
+        }
+        window.setTimeout(() => {
+          this.gridApi?.sizeColumnsToFit();
+          this.gridApi?.resetRowHeights();
+        }, 100);
+      })
   }
 
   ngOnInit(): void {
+    this._sessionService.selectedClientType$
+      .pipe(
+        map(clientType => {
+          console.log('SEL', clientType)
+          this.selectedClient = clientType;
+          this.loadAddons(this.selectedClient);
+        })
+      )
+      .subscribe();
+
     const resizeSub = fromEvent(window, 'resize')
       .pipe(
         debounceTime(100),
@@ -106,12 +111,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   onClientChange() {
-    this.loadAddons(this.selectedClient, false);
+    this._sessionService.selectedClientType = this.selectedClient;
   }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridApi.sizeColumnsToFit();
+
+    // simple resize debouncer
+    let resizeTime = 0;
+    this.gridApi.addEventListener('columnResized', () => {
+      clearTimeout(resizeTime);
+      resizeTime = window.setTimeout(() => {
+        this.gridApi?.resetRowHeights();
+      }, 100);
+    });
   }
 
   private loadAddons(clientType: WowClientType, rescan = false) {

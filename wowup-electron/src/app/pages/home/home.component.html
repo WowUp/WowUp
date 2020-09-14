@@ -1,6 +1,7 @@
 <div class="page-container">
   <div class="tabs">
-    <mat-tab-group mat-align-tabs="center" [backgroundColor]="'primary'">
+    <mat-tab-group mat-align-tabs="center" [backgroundColor]="'primary'" [disablePagination]="true"
+      (selectedIndexChange)="onSelectedIndexChange($event)">
       <mat-tab label="My Addons">
         <app-my-addons></app-my-addons>
       </mat-tab>
