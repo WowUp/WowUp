@@ -21,7 +21,6 @@ import { ListFilesRequest } from './src/common/models/list-files-request';
 import { ListFilesResponse } from './src/common/models/list-files-response';
 import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
-import { setIpcEventsWindow } from './ipc-events';
 
 const nativeAddon = require('./build/Debug/addon.node');
 
@@ -129,8 +128,6 @@ function createWindow(): BrowserWindow {
   // win.on('restore', function (event) {
   //   win.show();
   // });
-
-  setIpcEventsWindow(win);
 
   return win;
 }
