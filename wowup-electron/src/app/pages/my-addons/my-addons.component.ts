@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { WowClientType } from '../../models/warcraft/wow-client-type';
-import { debounceTime, first, map, tap } from 'rxjs/operators';
+import { debounceTime, filter, first, map, take, tap } from 'rxjs/operators';
 import { from, BehaviorSubject, Observable, fromEvent, Subscription } from 'rxjs';
 import { AddonTableColumnComponent } from '../../components/addon-table-column/addon-table-column.component';
 import { AddonStatusColumnComponent } from '../../components/addon-status-column/addon-status-column.component';
@@ -9,6 +9,10 @@ import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { AddonService } from 'app/services/addons/addon.service';
 import { SessionService } from 'app/services/session/session.service';
 import { GridApi, GridOptions } from 'ag-grid-community';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { ColumnState } from 'app/models/wowup/column-state';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-my-addons',
@@ -17,10 +21,13 @@ import { GridApi, GridOptions } from 'ag-grid-community';
 })
 export class MyAddonsComponent implements OnInit, OnDestroy {
 
+  @ViewChild('columnMenu') columnMenu: TemplateRef<any>;
+
   private readonly _displayAddonsSrc = new BehaviorSubject<Addon[]>([]);
 
   private gridApi: GridApi;
   private subscriptions: Subscription[] = [];
+  private sub: Subscription;
 
   gridOptions: GridOptions = {
     suppressMovableColumns: true,
@@ -39,8 +46,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       field: 'name',
       cellRendererFramework: AddonTableColumnComponent,
       resizable: true,
-      suppressMovable: true,
-      suppressSizeToFit: true,
       minWidth: 200,
       flex: 1
     },
@@ -52,20 +57,51 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       suppressSizeToFit: true,
     },
     {
-      headerName: 'Latest Version', field: 'latestVersion', cellClass: 'cell-center-text', resizable: true
+      headerName: 'Latest Version',
+      field: 'latestVersion',
+      cellClass: 'cell-center-text',
+      suppressSizeToFit: true,
+      resizable: true
     },
-    { headerName: 'Game Version', field: 'gameVersion', cellClass: 'cell-center-text', width: 100, suppressSizeToFit: true },
-    { headerName: 'Author', field: 'author', cellClass: 'cell-center-text', flex: 1 }
+    {
+      headerName: 'Game Version',
+      field: 'gameVersion',
+      cellClass: 'cell-center-text',
+      width: 100,
+      suppressSizeToFit: true
+    },
+    {
+      headerName: 'Author',
+      field: 'author',
+      cellClass: 'cell-center-text',
+      width: 100,
+    }
   ];
+
+  columns: ColumnState[] = [
+    { name: 'addon', display: 'Addon', visible: true },
+    { name: 'status', display: 'Status', visible: true },
+    { name: 'latestVersion', display: 'Latest Version', visible: true },
+    { name: 'gameVersion', display: 'Game Version', visible: true },
+    { name: 'provider', display: 'Provider', visible: true },
+    { name: 'author', display: 'Author', visible: true },
+  ]
+
+  public get displayedColumns(): string[] {
+    return this.columns.filter(col => col.visible).map(col => col.name);
+  }
 
   public selectedClient = WowClientType.None;
   public busy = false;
   public displayAddons$ = this._displayAddonsSrc.asObservable();
+  public overlayRef: OverlayRef | null;
 
   constructor(
     public warcraftService: WarcraftService,
     private addonService: AddonService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    public overlay: Overlay,
+    public viewContainerRef: ViewContainerRef
   ) {
     this._sessionService.selectedHomeTab$
       .subscribe(index => {
@@ -106,6 +142,51 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  onHeaderContext({ x, y }: MouseEvent) {
+    this.closeContext();
+    console.log(x, y)
+
+    const positionStrategy = this.overlay.position()
+      .flexibleConnectedTo({ x, y })
+      .withPositions([
+        {
+          originX: 'end',
+          originY: 'bottom',
+          overlayX: 'end',
+          overlayY: 'top',
+        }
+      ]);
+
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+      scrollStrategy: this.overlay.scrollStrategies.close()
+    });
+
+    this.overlayRef.attach(new TemplatePortal(this.columnMenu, this.viewContainerRef, {
+      $implicit: this.displayedColumns
+    }));
+
+    this.sub = fromEvent<MouseEvent>(document, 'click')
+      .pipe(
+        filter(event => {
+          const clickTarget = event.target as HTMLElement;
+          return !!this.overlayRef && !this.overlayRef.overlayElement.contains(clickTarget);
+        }),
+        take(1)
+      ).subscribe(() => this.closeContext())
+  }
+
+  onCellContext(event: MouseEvent, addon: Addon) {
+    console.log(addon)
+  }
+
+  public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
+    console.log(event, column);
+
+    const col = this.columns.find(col => col.name === column.name);
+    col.visible = event.checked;
+  }
+
   onReScan() {
     this.loadAddons(this.selectedClient, true)
   }
@@ -126,6 +207,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         this.gridApi?.resetRowHeights();
       }, 100);
     });
+  }
+
+  private closeContext() {
+    this.sub && this.sub.unsubscribe();
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+    }
   }
 
   private loadAddons(clientType: WowClientType, rescan = false) {

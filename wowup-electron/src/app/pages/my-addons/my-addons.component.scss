@@ -24,7 +24,7 @@
 }
 
 .table-container {
-  height: calc(100% - 75px);
+  // height: calc(100% - 75px);
   overflow: auto;
 
   table {
@@ -57,5 +57,21 @@
     font-size: 1.1em;
     word-break: break-all;
     white-space: pre-wrap;
+  }
+}
+
+.author-column {
+  width: 100px;
+}
+.provider-column {
+  min-width: 60px;
+}
+
+.column-menu {
+  padding: 0.5em;
+  color: $white-1;
+
+  p {
+    margin-bottom: 0.5em;
   }
 }

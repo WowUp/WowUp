@@ -1,0 +1,8 @@
+<div class="container">
+    <p *ngIf="isInstalled" class="installed-text">Installed</p>
+    <button *ngIf="showInstallButton" mat-flat-button color="primary" (click)="onInstall()">Install</button>
+    <div *ngIf="showProgress" class="progress-container">
+        <p class="progress-text">{{progressText}}</p>
+        <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
+    </div>
+</div>

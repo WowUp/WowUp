@@ -16,6 +16,8 @@ import { GetAddonsComponent } from '../get-addons/get-addons.component';
 import { AboutComponent } from '../about/about.component';
 import { PotentialAddonTableColumnComponent } from 'app/components/potential-addon-table-column/potential-addon-table-column.component';
 import { PotentialAddonStatusColumnComponent } from 'app/components/potential-addon-status-column/potential-addon-status-column.component';
+import { MyAddonsAddonCellComponent } from 'app/components/my-addons-addon-cell/my-addons-addon-cell.component';
+import { MyAddonsStatusCellComponent } from 'app/components/my-addons-status-cell/my-addons-status-cell.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { PotentialAddonStatusColumnComponent } from 'app/components/potential-ad
     GetAddonsComponent,
     OptionsComponent,
     ExternalLinkDirective,
+    MyAddonsAddonCellComponent,
+    MyAddonsStatusCellComponent
   ],
   imports: [
     AgGridModule.withComponents([

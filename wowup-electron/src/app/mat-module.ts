@@ -8,6 +8,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   exports: [
@@ -18,7 +21,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatTableModule,
     MatInputModule,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatProgressBarModule,
+    MatCheckboxModule,
+    MatDividerModule
   ],
   imports: [
     MatSliderModule,
@@ -28,7 +34,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatTableModule,
     MatInputModule,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatProgressBarModule,
+    MatCheckboxModule,
+    MatDividerModule
   ]
 })
 export class MatModule { }
