@@ -6,6 +6,7 @@
 /out-tsc
 /app-builds
 /release
+/build
 main.js
 ipc-events.js
 src/**/*.js
