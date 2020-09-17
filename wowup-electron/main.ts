@@ -9,7 +9,7 @@ import { DownloadRequest } from './src/common/models/download-request';
 import { DownloadStatus } from './src/common/models/download-status';
 import { DownloadStatusType } from './src/common/models/download-status-type';
 import { UnzipStatus } from './src/common/models/unzip-status';
-import { DOWNLOAD_FILE_CHANNEL, UNZIP_FILE_CHANNEL, COPY_FILE_CHANNEL, COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, RENAME_DIRECTORY_CHANNEL, READ_FILE_CHANNEL } from './src/common/constants';
+import { DOWNLOAD_FILE_CHANNEL, UNZIP_FILE_CHANNEL, COPY_FILE_CHANNEL, COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, RENAME_DIRECTORY_CHANNEL, READ_FILE_CHANNEL, STAT_DIRECTORY_CHANNEL, LIST_FILES_CHANNEL } from './src/common/constants';
 import { UnzipStatusType } from './src/common/models/unzip-status-type';
 import { UnzipRequest } from './src/common/models/unzip-request';
 import { CopyFileRequest } from './src/common/models/copy-file-request';
@@ -17,8 +17,17 @@ import { CopyDirectoryRequest } from './src/common/models/copy-directory-request
 import { DeleteDirectoryRequest } from './src/common/models/delete-directory-request';
 import { ReadFileRequest } from './src/common/models/read-file-request';
 import { ReadFileResponse } from './src/common/models/read-file-response';
+import { ListFilesRequest } from './src/common/models/list-files-request';
+import { ListFilesResponse } from './src/common/models/list-files-response';
 import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
+import { setIpcEventsWindow } from './ipc-events';
+
+const nativeAddon = require('./build/Debug/addon.node');
+
+const b1 = fs.readFileSync('c:\\program files (x86)\\world of warcraft\\_retail_\\interface\\addons\\aap-core\\banners.lua')
+console.log(b1.length);
+console.log('addon', nativeAddon.computeHash(b1, b1.length));
 
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 electronDl();
@@ -120,6 +129,8 @@ function createWindow(): BrowserWindow {
   // win.on('restore', function (event) {
   //   win.show();
   // });
+
+  setIpcEventsWindow(win);
 
   return win;
 }
@@ -235,7 +246,7 @@ ipcMain.on(RENAME_DIRECTORY_CHANNEL, async (evt, arg: CopyDirectoryRequest) => {
 });
 
 ipcMain.on(READ_FILE_CHANNEL, async (evt, arg: ReadFileRequest) => {
-  console.log('Read File', arg);
+  // console.log('Read File', arg);
   fs.readFile(arg.sourcePath, { encoding: 'utf-8' }, (err, data) => {
     const response: ReadFileResponse = {
       data: data,
@@ -244,3 +255,42 @@ ipcMain.on(READ_FILE_CHANNEL, async (evt, arg: ReadFileRequest) => {
     win.webContents.send(arg.sourcePath, response);
   });
 });
+
+ipcMain.on(LIST_FILES_CHANNEL, async (evt, arg: ListFilesRequest) => {
+  console.log('list files', arg);
+  const response: ListFilesResponse = {
+    files: []
+  };
+
+  try {
+    response.files = await readDirRecursive(arg.sourcePath);
+
+  } catch (err) {
+    response.error = err;
+  }
+
+  win.webContents.send(arg.sourcePath, response);
+});
+
+async function readDirRecursive(sourcePath: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const dirFiles: string[] = [];
+    fs.readdir(sourcePath, { withFileTypes: true }, async (err, files) => {
+      if (err) {
+        return reject(err);
+      }
+
+      for (let file of files) {
+        const filePath = path.join(sourcePath, file.name);
+        if (file.isDirectory()) {
+          const nestedFiles = await readDirRecursive(filePath);
+          dirFiles.push(...nestedFiles);
+        } else {
+          dirFiles.push(filePath)
+        }
+      }
+
+      resolve(dirFiles);
+    });
+  });
+}

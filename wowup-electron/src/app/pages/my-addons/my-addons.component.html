@@ -15,13 +15,6 @@
       <button mat-flat-button color="primary" [disabled]="busy === true">Update All</button>
       <button mat-flat-button color="primary" [disabled]="busy === true">Refresh</button>
       <button mat-flat-button color="primary" [disabled]="busy === true" (click)="onReScan()">Re-Scan</button>
-      <mat-form-field class="example-form-field">
-        <mat-label>Search</mat-label>
-        <input matInput type="text" [(ngModel)]="query">
-        <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear" (click)="query=''">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
     </div>
   </div>
 

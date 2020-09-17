@@ -3,17 +3,27 @@ import { WowClientType } from "../models/warcraft/wow-client-type";
 import { Addon } from "../entities/addon";
 import { HttpClient } from "@angular/common/http";
 import { CurseSearchResult } from "../models/curse/curse-search-result";
-import { map } from "rxjs/operators";
+import { map, mergeMap } from "rxjs/operators";
 import { CurseFile } from "../models/curse/curse-file";
 import * as _ from 'lodash';
+import * as fp from 'lodash/fp';
+import * as path from 'path';
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { Observable, of } from "rxjs";
+import { from, Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { CurseReleaseType } from "../models/curse/curse-release-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { PotentialAddon } from "../models/wowup/potential-addon";
 import { CurseGetFeaturedResponse } from "../models/curse/curse-get-featured-response";
 import { CachingService } from "app/services/caching/caching-service";
+import { AddonFolder } from "app/models/wowup/addon-folder";
+import { FileService } from "app/services/files/file.service";
+import { CurseFolderScanner } from "./curse/curse-folder-scanner";
+import { ElectronService } from "app/services";
+import { CurseScanResult } from "../models/curse/curse-scan-result";
+import { CurseFingerprintsResponse } from "app/models/curse/curse-fingerprint-response";
+import { CurseMatch } from "app/models/curse/curse-match";
+import { v4 as uuidv4 } from 'uuid';
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 
@@ -25,9 +35,111 @@ export class CurseAddonProvider implements AddonProvider {
 
   constructor(
     httpClient: HttpClient,
-    private _cachingService: CachingService
+    private _cachingService: CachingService,
+    private _electronService: ElectronService,
+    private _fileService: FileService
   ) {
     this._httpClient = httpClient;
+  }
+
+  async scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void> {
+    const addonDirectory = path.dirname(addonFolders[0].path);
+    const scanResults = await this.getScanResults(addonFolders);
+
+    await this.mapAddonFolders(scanResults, clientType);
+
+    const addonIds = fp.flow(
+      fp.filter((sr: CurseScanResult) => !!sr.exactMatch),
+      fp.map((sr: CurseScanResult) => sr.exactMatch.id),
+      fp.uniq
+    )(scanResults);
+
+    // console.log(_.sortBy(addonIds).join('\n'));
+
+    var addonResults = await this.getAllIds(addonIds).toPromise();
+
+    for (let addonFolder of addonFolders) {
+      var scanResult = scanResults.find(sr => sr.addonFolder.name === addonFolder.name);
+      if (!scanResult.exactMatch) {
+        continue;
+      }
+
+      scanResult.searchResult = addonResults.find(addonResult => addonResult.id === scanResult.exactMatch.id);
+      if (!scanResult.searchResult) {
+        continue;
+      }
+
+      try {
+        addonFolder.matchingAddon = this.getAddon(clientType, addonChannelType, scanResult);
+      } catch (err) {
+        // TODO
+        // _analyticsService.Track(ex, $"Failed to create addon for result {scanResult.FolderScanner.Fingerprint}");
+      }
+    }
+  }
+
+  private async mapAddonFolders(scanResults: CurseScanResult[], clientType: WowClientType) {
+    const fingerprintResponse = await this.getAddonsByFingerprints(scanResults.map(result => result.fingerprint)).toPromise();
+
+    console.log(fingerprintResponse);
+
+    for (let scanResult of scanResults) {
+      // Curse can deliver the wrong result sometimes, ensure the result matches the client type
+      scanResult.exactMatch = fingerprintResponse.exactMatches
+        .find(exactMatch =>
+          this.isGameVersionFlavor(exactMatch.file.gameVersionFlavor, clientType) &&
+          this.hasMatchingFingerprint(scanResult, exactMatch));
+
+      // If the addon does not have an exact match, check the partial matches.
+      if (!scanResult.exactMatch) {
+        scanResult.exactMatch = fingerprintResponse.partialMatches
+          .find(partialMatch => partialMatch.file.modules.some(module => module.fingerprint === scanResult.fingerprint));
+      }
+    }
+  }
+
+  private hasMatchingFingerprint(scanResult: CurseScanResult, exactMatch: CurseMatch) {
+    return exactMatch.file.modules.some(m => m.fingerprint === scanResult.fingerprint);
+  }
+
+  private isGameVersionFlavor(gameVersionFlavor: string, clientType: WowClientType) {
+    return gameVersionFlavor === this.getGameVersionFlavor(clientType);
+  }
+
+  private getAddonsByFingerprints(fingerprints: number[]): Observable<CurseFingerprintsResponse> {
+    const url = `${API_URL}/fingerprint`;
+
+    return this._httpClient.post<CurseFingerprintsResponse>(url, fingerprints);
+  }
+
+  private getAllIds(addonIds: number[]): Observable<CurseSearchResult[]> {
+    const url = `${API_URL}/addon`;
+
+    return this._httpClient.post<CurseSearchResult[]>(url, addonIds);
+  }
+
+  private async getScanResults(addonFolders: AddonFolder[]): Promise<CurseScanResult[]> {
+    const scanResults: CurseScanResult[] = [];
+
+    const t1 = Date.now();
+
+    // Scan addon folders in parallel for speed!?
+    await from(addonFolders.map(folder => {
+      return new CurseFolderScanner(this._electronService, this._fileService).scanFolder(folder);
+    }))
+      .pipe(
+        mergeMap(obs => obs, 3),
+        map(res => scanResults.push(res))
+      )
+      .toPromise();
+
+    console.log('scan delta', Date.now() - t1);
+
+    // const str = _.orderBy(scanResults, sr => sr.folderName.toLowerCase())
+    //   .map(sr => `${sr.fingerprint} ${sr.folderName}`).join('\n');
+    // console.log(str);
+
+    return scanResults;
   }
 
   getAll(clientType: WowClientType, addonIds: string[]): Promise<import("../models/wowup/addon-search-result").AddonSearchResult[]> {
@@ -47,7 +159,7 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   private filterFeaturedAddons(results: CurseSearchResult[], clientType: WowClientType) {
-    const clientTypeStr = this.getClientTypeString(clientType);
+    const clientTypeStr = this.getGameVersionFlavor(clientType);
 
     return results.filter(r => r.latestFiles.some(lf => this.isClientType(lf, clientTypeStr)));
   }
@@ -198,12 +310,12 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   private getThumbnailUrl(result: CurseSearchResult): string {
-    const attachment = _.find(result.attachments, f => f.isDefault && !!f.thumbnailUrl);
+    const attachment = result.attachments.find(f => f.isDefault && !!f.thumbnailUrl);
     return attachment?.thumbnailUrl;
   }
 
   private getLatestFiles(result: CurseSearchResult, clientType: WowClientType): CurseFile[] {
-    const clientTypeStr = this.getClientTypeString(clientType);
+    const clientTypeStr = this.getGameVersionFlavor(clientType);
 
     return _.flow(
       _.filter((f: CurseFile) => f.isAlternate == false && f.gameVersionFlavor == clientTypeStr),
@@ -212,7 +324,7 @@ export class CurseAddonProvider implements AddonProvider {
     )(result.latestFiles) as CurseFile[];
   }
 
-  private getClientTypeString(clientType: WowClientType): string {
+  private getGameVersionFlavor(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
@@ -223,6 +335,34 @@ export class CurseAddonProvider implements AddonProvider {
       default:
         return "wow_retail";
     }
+  }
+
+  private getAddon(clientType: WowClientType, addonChannelType: AddonChannelType, scanResult: CurseScanResult): Addon {
+    const currentVersion = scanResult.exactMatch.file;
+    const authors = scanResult.searchResult.authors.map(author => author.name).join(', ');
+    const folderList = scanResult.exactMatch.file.modules.map(module => module.foldername).join(',');
+    const latestVersion = this.getLatestFiles(scanResult.searchResult, clientType)[0];
+
+    return {
+      id: uuidv4(),
+      author: authors,
+      name: scanResult.searchResult.name,
+      channelType: addonChannelType,
+      autoUpdateEnabled: false,
+      clientType: clientType,
+      downloadUrl: latestVersion.downloadUrl,
+      externalUrl: scanResult.searchResult.websiteUrl,
+      externalId: scanResult.searchResult.id.toString(),
+      folderName: scanResult.addonFolder.name,
+      gameVersion: currentVersion.gameVersion[0],
+      installedAt: new Date(),
+      installedFolders: folderList,
+      installedVersion: currentVersion.displayName,
+      isIgnored: false,
+      latestVersion: latestVersion.displayName,
+      providerName: this.name,
+      thumbnailUrl: this.getThumbnailUrl(scanResult.searchResult)
+    };
   }
 
 }

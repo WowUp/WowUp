@@ -45,8 +45,8 @@ export class GetAddonsComponent implements OnInit {
       minWidth: 200,
       flex: 1
     },
-    { headerName: 'Author', field: 'author', cellClass: 'cell-wrap-text', flex: 1 },
-    { headerName: 'Provider', field: 'providerName', cellClass: 'cell-wrap-text', width: 100, suppressSizeToFit: true },
+    { headerName: 'Author', field: 'author', cellClass: 'cell-center-text', flex: 1 },
+    { headerName: 'Provider', field: 'providerName', cellClass: 'cell-center-text', width: 100, suppressSizeToFit: true },
     {
       headerName: 'Status',
       field: 'value',

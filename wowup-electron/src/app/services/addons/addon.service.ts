@@ -24,6 +24,7 @@ import { DownloadSevice } from "../download/download.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
+import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
   providedIn: 'root'
@@ -39,12 +40,13 @@ export class AddonService {
     private _wowUpService: WowUpService,
     private _wowupApiService: WowUpApiService,
     private _downloadService: DownloadSevice,
+    private _electronService: ElectronService,
     private _fileService: FileService,
     private _tocService: TocService,
     httpClient: HttpClient
   ) {
     this._addonProviders = [
-      new CurseAddonProvider(httpClient, this._cachingService)
+      new CurseAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService)
     ];
   }
 
@@ -204,10 +206,9 @@ export class AddonService {
 
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
     let addons = this._addonStorage.getAllForClientType(clientType);
-    console.log('addons', addons.length)
     if (rescan || !addons.length) {
       this._addonStorage.removeForClientType(clientType);
-      addons = await this.getLocalAddons(clientType);
+      addons = await this.scanAddons(clientType);
       this._addonStorage.setAll(addons);
     }
     //     RemoveAddons(clientType);
@@ -219,6 +220,24 @@ export class AddonService {
 
     // return addons;
     return addons;
+  }
+
+  private async scanAddons(clientType: WowClientType): Promise<Addon[]> {
+    const addonFolders = await this._warcraftService.listAddons(clientType);
+    for (let provider of this._addonProviders) {
+      try {
+        const validFolders = addonFolders.filter(af => !af.matchingAddon && af.toc)
+        await provider.scan(clientType, AddonChannelType.Stable, validFolders);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    const matchedAddonFolders = addonFolders.filter(addonFolder => !!addonFolder.matchingAddon);
+    const matchedGroups = _.groupBy(matchedAddonFolders, addonFolder => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`);
+
+    console.log(matchedGroups);
+    return Object.values(matchedGroups).map(value => value[0].matchingAddon);
   }
 
   public getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {

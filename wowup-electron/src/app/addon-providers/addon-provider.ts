@@ -3,6 +3,8 @@ import { Addon } from "../entities/addon";
 import { PotentialAddon } from "../models/wowup/potential-addon";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { Observable } from "rxjs";
+import { AddonFolder } from "app/models/wowup/addon-folder";
+import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 export interface AddonProvider {
 
@@ -23,4 +25,6 @@ export interface AddonProvider {
   isValidAddonUri(addonUri: URL): boolean;
 
   onPostInstall(addon: Addon): void;
+
+  scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void>;
 }

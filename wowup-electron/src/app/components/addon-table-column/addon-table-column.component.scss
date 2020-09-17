@@ -13,9 +13,11 @@
     justify-content: center;
     margin-right: 11px;
     flex-shrink: 0;
+    background-size: contain;
+    background-repeat: none;
 
     .addon-logo {
-      width: 100%;
+      height: 100%;
     }
   }
 

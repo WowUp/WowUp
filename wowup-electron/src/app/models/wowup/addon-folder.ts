@@ -1,3 +1,4 @@
+import { Addon } from "app/entities/addon";
 import { Toc } from "./toc";
 
 export interface AddonFolder {
@@ -8,4 +9,5 @@ export interface AddonFolder {
   latestVersion?: string;
   toc: Toc;
   tocMetaData: string[];
+  matchingAddon?: Addon;
 }
