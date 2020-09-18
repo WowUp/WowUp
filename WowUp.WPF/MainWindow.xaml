@@ -127,6 +127,7 @@
             <TabControl x:Name="Tabs" 
                         Grid.Row="2" 
                         Visibility="{Binding ShowTabs, Converter={StaticResource BoolToVisibilty}}"
+                        SelectedIndex="{Binding SelectedTabIndex}"
                         Style="{StaticResource CustomTabStyle}"
                         ItemsSource="{Binding TabItems}">
             </TabControl>
@@ -136,6 +137,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -147,7 +149,10 @@
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0">
                         <TextBlock Text="{Binding StatusText}"></TextBlock>
                     </StackPanel>
-                    <TextBlock Grid.Column="2" Text="{Binding Version}" VerticalAlignment="Center" Foreground="{StaticResource White3Brush}"></TextBlock>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0" >
+                        <TextBlock Text="{Binding ContextText}" Foreground="{StaticResource White3Brush}"></TextBlock>
+                    </StackPanel>
+                    <TextBlock Grid.Column="3" Text="{Binding Version}" VerticalAlignment="Center" Foreground="{StaticResource White3Brush}"></TextBlock>
                 </Grid>
             </Border>
         </Grid>

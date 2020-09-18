@@ -9,6 +9,8 @@ namespace WowUp.Common.Services.Contracts
     {
         event SessionEventHandler SessionChanged;
 
+        string ContextText { get; set; }
+
         void AppLoaded();
     }
 }

@@ -10,11 +10,12 @@ using WowUp.Common.Models;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using WowUp.WPF.ViewModels.Contracts;
 using WowUp.WPF.Views;
 
 namespace WowUp.WPF.ViewModels
 {
-    public class GetAddonsViewModel : BaseViewModel
+    public class GetAddonsViewModel : BaseViewModel, ITabController
     {
         private static readonly object ClientNamesLock = new object();
         private static readonly object DisplayAddonsLock = new object();
@@ -91,6 +92,16 @@ namespace WowUp.WPF.ViewModels
             await LoadPopularAddons();
         }
 
+        public void OnActivated()
+        {
+            SetResultCountContextText(DisplayAddons.Count);
+        }
+
+        private void SetResultCountContextText(int count)
+        {
+            _sessionService.ContextText = $"{count} results";
+        }
+
         private void SearchInputViewModel_Searched(object sender, Models.Events.SearchInputEventArgs e)
         {
             OnSearch(e.Text);
@@ -161,6 +172,7 @@ namespace WowUp.WPF.ViewModels
                 }
             }
 
+            SetResultCountContextText(DisplayAddons.Count);
             IsBusy = false;
         }
 
@@ -216,6 +228,8 @@ namespace WowUp.WPF.ViewModels
                         DisplayAddons.Add(viewModel);
                     }
                 }
+
+                SetResultCountContextText(DisplayAddons.Count);
             }
             finally
             {

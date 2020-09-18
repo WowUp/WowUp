@@ -70,6 +70,16 @@ namespace WowUp.WPF.Services
             }
         }
 
+        public string ContextText
+        {
+            get { return _sessionState.ContextText; }
+            set
+            {
+                _sessionState.ContextText = value;
+                SendStateChange();
+            }
+        }
+
         public bool UpdaterReady
         {
             get { return _sessionState.UpdaterReady; }

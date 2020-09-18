@@ -10,6 +10,7 @@ using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using WowUp.WPF.ViewModels.Contracts;
 using WowUp.WPF.Views;
 
 namespace WowUp.WPF.ViewModels
@@ -50,6 +51,16 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _showTabs, value); }
         }
 
+        private int _selectedTabIndex;
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set { 
+                SetProperty(ref _selectedTabIndex, value);
+                OnSelectedTabChanged(value);
+            }
+        }
+
         private Visibility _restoreVisibility;
         public Visibility RestoreVisibility
         {
@@ -83,6 +94,13 @@ namespace WowUp.WPF.ViewModels
         {
             get => _statusText;
             set { SetProperty(ref _statusText, value); }
+        }
+
+        private string _contextText;
+        public string ContextText
+        {
+            get => _contextText;
+            set { SetProperty(ref _contextText, value); }
         }
 
         public ObservableCollection<TabItem> TabItems { get; set; }
@@ -204,9 +222,22 @@ namespace WowUp.WPF.ViewModels
             _preferenceRepository.SaveItem(windowStatePref);
         }
 
+        private void OnSelectedTabChanged(int selectedTabIndex)
+        {
+            _sessionService.ContextText = string.Empty;
+
+            var tab = TabItems[selectedTabIndex];
+            if(tab.Content is UserControl && (tab.Content as UserControl).DataContext is ITabController)
+            {
+                var context = (tab.Content as UserControl).DataContext as ITabController;
+                context.OnActivated();
+            }
+        }
+
         private void SessionService_SessionChanged(object sender, Common.Models.Events.SessionEventArgs e)
         {
             StatusText = e.SessionState.StatusText;
+            ContextText = e.SessionState.ContextText;
         }
 
         private void OnCloseWindow()
@@ -282,24 +313,5 @@ namespace WowUp.WPF.ViewModels
 
             return wowLocations.Any(loc => !string.IsNullOrEmpty(loc));
         }
-
-        //private async Task SetWowLocation()
-        //{
-        //    var selectedPath = DialogUtilities.SelectFolder();
-        //    if (string.IsNullOrEmpty(selectedPath))
-        //    {
-        //        System.Windows.MessageBox.Show("You must select a World of Warcraft folder to continue.");
-        //        return;
-        //    }
-
-        //    var didSet = await _warcraftService.SetWowFolderPath(selectedPath);
-        //    if (!didSet)
-        //    {
-        //        System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your World of Warcraft folder");
-        //        return;
-        //    }
-
-        //    InitializeView();
-        //}
     }
 }
