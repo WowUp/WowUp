@@ -1,55 +1,66 @@
 @import "../../../variables.scss";
 
-.header {
+.about-container {
+    display: flex;
+    justify-content: center;
+}
+.about {
+  max-width: 1024px;
+
+  .header {
     text-align: center;
     color: $white-1;
 
     .logo {
-        width: 150px;
+      width: 150px;
     }
 
     h2 {
-        margin-bottom: 0;
+      margin-bottom: 0;
     }
 
     .version {
-        color: $white-3;
+      color: $white-3;
     }
 
     .link-container {
-        margin-top: 1em;
+      margin-top: 1em;
     }
+
     a {
-        color: $white-1;
+      color: $white-1;
     }
 
     .patron-img {
-        width: 120px;
+      width: 120px;
     }
-}
+  }
 
-.changelog-container {
+  .changelog-container {
     padding: 1em;
     color: $white-1;
 
     .change-log-list {
-        padding-left: 1em;
+      padding-left: 0;
     }
+
     .changelog {
-        list-style-type: none;
-        margin: 1em 0;
-        border-left: 3px solid $purple-1;
-        padding-left: 1em;
+      list-style-type: none;
+      margin: 1em 0;
+      border-left: 3px solid $purple-1;
+      padding: 0 1em 1em 1em;
+      background-color: $dark-4;
 
-        .version {
-            font-size: 1em;
-            font-weight: bold;
-        }
+      .version {
+        font-size: 1em;
+        font-weight: bold;
+      }
 
-        .description {
-            margin: 0;
-            word-break: break-all;
-            white-space: pre-wrap;
-        }
+      .description {
+        margin: 0;
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
     }
+  }
 }

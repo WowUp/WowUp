@@ -16,6 +16,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MyAddonsListItem } from 'app/business-objects/my-addons-list-item';
 import { AddonDisplayState } from 'app/models/wowup/addon-display-state';
 import * as _ from 'lodash';
+import { ElectronService } from 'app/services';
 
 @Component({
   selector: 'app-my-addons',
@@ -25,6 +26,7 @@ import * as _ from 'lodash';
 export class MyAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild('columnMenu') columnMenu: TemplateRef<any>;
+  @ViewChild('addonMenu') addonMenu: TemplateRef<any>;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>([]);
 
@@ -100,11 +102,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public overlayRef: OverlayRef | null;
 
   constructor(
-    public warcraftService: WarcraftService,
     private addonService: AddonService,
     private _sessionService: SessionService,
+    public electronService: ElectronService,
     public overlay: Overlay,
-    public viewContainerRef: ViewContainerRef
+    public viewContainerRef: ViewContainerRef,
+    public warcraftService: WarcraftService
   ) {
     this._sessionService.selectedHomeTab$
       .subscribe(index => {
@@ -128,59 +131,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-
-    const resizeSub = fromEvent(window, 'resize')
-      .pipe(
-        debounceTime(100),
-        map(() => {
-          this.gridApi.sizeColumnsToFit();
-        })
-      )
-      .subscribe();
-
-    this.subscriptions.push(resizeSub);
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  onHeaderContext({ x, y }: MouseEvent) {
-    this.closeContext();
-    console.log(x, y)
-
-    const positionStrategy = this.overlay.position()
-      .flexibleConnectedTo({ x, y })
-      .withPositions([
-        {
-          originX: 'end',
-          originY: 'bottom',
-          overlayX: 'end',
-          overlayY: 'top',
-        }
-      ]);
-
-    this.overlayRef = this.overlay.create({
-      positionStrategy,
-      scrollStrategy: this.overlay.scrollStrategies.close()
-    });
-
-    this.overlayRef.attach(new TemplatePortal(this.columnMenu, this.viewContainerRef, {
-      $implicit: this.displayedColumns
-    }));
-
-    this.sub = fromEvent<MouseEvent>(document, 'click')
-      .pipe(
-        filter(event => {
-          const clickTarget = event.target as HTMLElement;
-          return !!this.overlayRef && !this.overlayRef.overlayElement.contains(clickTarget);
-        }),
-        take(1)
-      ).subscribe(() => this.closeContext())
+  onRefresh() {
+    this.loadAddons(this.selectedClient);
   }
 
-  onCellContext(event: MouseEvent, addon: Addon) {
-    console.log(addon)
+  onHeaderContext({ x, y }: MouseEvent) {
+    this.showContextMenu(x, y, this.columnMenu, this.displayedColumns);
+  }
+
+  onCellContext({ x, y }: MouseEvent, addon: Addon) {
+    this.showContextMenu(x, y, this.addonMenu, addon);
   }
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
@@ -210,6 +176,39 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         this.gridApi?.resetRowHeights();
       }, 100);
     });
+  }
+
+  private showContextMenu(x: number, y: number, template: TemplateRef<any>, data: any) {
+    this.closeContext();
+
+    const positionStrategy = this.overlay.position()
+      .flexibleConnectedTo({ x, y })
+      .withPositions([
+        {
+          originX: 'end',
+          originY: 'bottom',
+          overlayX: 'end',
+          overlayY: 'top',
+        }
+      ]);
+
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+      scrollStrategy: this.overlay.scrollStrategies.close()
+    });
+
+    this.overlayRef.attach(new TemplatePortal(template, this.viewContainerRef, {
+      $implicit: data
+    }));
+
+    this.sub = fromEvent<MouseEvent>(document, 'click')
+      .pipe(
+        filter(event => {
+          const clickTarget = event.target as HTMLElement;
+          return !!this.overlayRef && !this.overlayRef.overlayElement.contains(clickTarget);
+        }),
+        take(1)
+      ).subscribe(() => this.closeContext())
   }
 
   private closeContext() {

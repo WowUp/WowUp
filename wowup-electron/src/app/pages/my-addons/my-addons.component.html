@@ -1,4 +1,4 @@
-<div class="tab-container d-flex flex-col">
+<div class="tab-container d-flex flex-col" [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
   <div class="control-container">
     <div class="select-container ">
       <mat-form-field>
@@ -13,7 +13,7 @@
     </div>
     <div class="button-container">
       <button mat-flat-button color="primary" [disabled]="busy === true">Update All</button>
-      <button mat-flat-button color="primary" [disabled]="busy === true">Refresh</button>
+      <button mat-flat-button color="primary" [disabled]="busy === true" (click)="onRefresh()">Refresh</button>
       <button mat-flat-button color="primary" [disabled]="busy === true" (click)="onReScan()">Re-Scan</button>
     </div>
   </div>
@@ -85,4 +85,8 @@
         {{column.display}}</mat-checkbox>
     </div>
   </section>
+</ng-template>
+
+<ng-template #addonMenu let-addon>
+  <app-addon-context-menu [addon]="addon"></app-addon-context-menu>
 </ng-template>

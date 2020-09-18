@@ -43,7 +43,10 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   async scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void> {
-    const addonDirectory = path.dirname(addonFolders[0].path);
+    if(!addonFolders.length){
+      return;
+    }
+    
     const scanResults = await this.getScanResults(addonFolders);
 
     await this.mapAddonFolders(scanResults, clientType);

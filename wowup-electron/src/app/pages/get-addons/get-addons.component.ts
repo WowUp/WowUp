@@ -5,7 +5,9 @@ import { AddonTableColumnComponent } from 'app/components/addon-table-column/add
 import { PotentialAddonStatusColumnComponent } from 'app/components/potential-addon-status-column/potential-addon-status-column.component';
 import { PotentialAddonTableColumnComponent } from 'app/components/potential-addon-table-column/potential-addon-table-column.component';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
+import { ColumnState } from 'app/models/wowup/column-state';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';
+import { ElectronService } from 'app/services';
 import { AddonService } from 'app/services/addons/addon.service';
 import { SessionService } from 'app/services/session/session.service';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
@@ -57,6 +59,17 @@ export class GetAddonsComponent implements OnInit {
     },
   ];
 
+  columns: ColumnState[] = [
+    { name: 'addon', display: 'Addon', visible: true },
+    { name: 'author', display: 'Author', visible: true },
+    { name: 'provider', display: 'Provider', visible: true },
+    { name: 'status', display: 'Status', visible: true },
+  ]
+
+  public get displayedColumns(): string[] {
+    return this.columns.filter(col => col.visible).map(col => col.name);
+  }
+  
   public query = '';
   public displayAddons$ = this._displayAddonsSrc.asObservable();
   public isBusy = false;
@@ -65,18 +78,10 @@ export class GetAddonsComponent implements OnInit {
   constructor(
     private _addonService: AddonService,
     private _sessionService: SessionService,
+    public electronService: ElectronService,
     public warcraftService: WarcraftService
   ) {
-    this._sessionService.selectedHomeTab$
-      .subscribe(index => {
-        if (index !== 1) {
-          return;
-        }
-        window.setTimeout(() => {
-          this.gridApi?.sizeColumnsToFit();
-          this.gridApi?.resetRowHeights();
-        }, 100);
-      })
+    
   }
 
   ngOnInit(): void {

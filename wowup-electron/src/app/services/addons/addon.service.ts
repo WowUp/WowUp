@@ -156,11 +156,13 @@ export class AddonService {
         }
 
         // Copy contents from unzipped new directory to existing addon folder location
+        console.log('COPY', unzipLocation);
         await this._fileService.copyDirectory(unzippedFilePath, unzipLocation);
 
         // If the copy succeeds, delete the backup
         if (fs.existsSync(unzipBackupLocation)) {
-          await this._fileService.deleteDirectory(unzipBackupLocation);
+        console.log('DELETE BKUP', unzipLocation);
+        await this._fileService.deleteDirectory(unzipBackupLocation);
         }
       } catch (err) {
         console.error(`Failed to copy addon directory ${unzipLocation}`);

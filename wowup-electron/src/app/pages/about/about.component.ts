@@ -4,6 +4,7 @@ import { ChangeLog } from '../../models/wowup/change-log';
 
 import * as ChangeLogJson from '../../../assets/changelog.json';
 import { WowUpService } from 'app/services/wowup/wowup.service';
+import { ElectronService } from 'app/services';
 
 @Component({
   selector: 'app-about',
@@ -15,7 +16,10 @@ export class AboutComponent implements OnInit {
   public version = '';
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;
 
-  constructor(private wowup: WowUpService) { 
+  constructor(
+    private wowup: WowUpService,
+    public electronService: ElectronService
+  ) {
     console.log('ChangeLogJson', ChangeLogJson)
   }
 

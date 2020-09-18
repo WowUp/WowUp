@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, Input, NgZone, OnInit } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { IAfterGuiAttachedParams, ICellRendererParams } from 'ag-grid-community';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';
@@ -10,8 +10,9 @@ import { SessionService } from 'app/services/session/session.service';
   templateUrl: './potential-addon-status-column.component.html',
   styleUrls: ['./potential-addon-status-column.component.scss']
 })
-export class PotentialAddonStatusColumnComponent implements ICellRendererAngularComp {
-  public addon: PotentialAddon;
+export class PotentialAddonStatusColumnComponent implements OnInit {
+
+  @Input('addon') addon: PotentialAddon;
 
   public isInstalled = false;
   public showInstallButton = false;
@@ -24,6 +25,11 @@ export class PotentialAddonStatusColumnComponent implements ICellRendererAngular
     private _addonService: AddonService,
     private _sessionService: SessionService
   ) { }
+
+  ngOnInit(): void {
+    this.isInstalled = this._addonService.isInstalled(this.addon.externalId, this._sessionService.selectedClientType);
+    this.showInstallButton = !this.isInstalled;
+  }
 
   refresh(params: any): boolean {
     throw new Error("Method not implemented.");

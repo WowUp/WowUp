@@ -1,6 +1,7 @@
 import { Component, OnInit, NgZone, OnChanges, SimpleChanges } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
+import { ElectronService } from 'app/services';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { WowUpService } from 'app/services/wowup/wowup.service';
 import { FileUtils } from 'app/utils/file.utils';
@@ -25,7 +26,8 @@ export class OptionsComponent implements OnInit, OnChanges {
   constructor(
     private warcraft: WarcraftService,
     private _wowUpService: WowUpService,
-    private zone: NgZone
+    private zone: NgZone,
+    public electronService: ElectronService
   ) { }
 
   ngOnChanges(changes: SimpleChanges): void {

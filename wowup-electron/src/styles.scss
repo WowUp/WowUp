@@ -3,6 +3,36 @@
 @import "~ag-grid-community/src/styles/ag-theme-balham/sass/ag-theme-balham-mixin";
 @import "./custom-theme.scss";
 
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+input,
+button,
+textarea,
+:focus {
+  outline: none; // You should add some other style for :focus to help UX/a11y
+}
+
+a:not([draggable=true]),
+img:not([draggable=true]) {
+  -webkit-user-drag: none;
+  user-drag: none;
+  /* Technically not supported in Electron yet */
+}
+
+a[href^="http://"],
+a[href^="https://"],
+a[href^="ftp://"] {
+  -webkit-user-drag: auto;
+  user-drag: auto;
+  /* Technically not supported in Electron yet */
+}
+
 html {
   background-color: $dark-3;
   overflow: hidden;
@@ -16,9 +46,11 @@ body {
 .bg-dark-3 {
   background-color: $dark-3;
 }
+
 .bg-dark-4 {
   background-color: $dark-4;
 }
+
 .bg-purple-1 {
   background-color: $purple-1;
 }
@@ -26,6 +58,7 @@ body {
 .text-light {
   color: $white-1;
 }
+
 .text-light-2 {
   color: $white-2;
 }
@@ -50,9 +83,16 @@ body {
 }
 
 .tab-container {
-  height: calc(100vh - 110px);
   overflow: auto;
   overflow-x: hidden;
+
+  &.mac {
+    height: calc(100vh - 102px);
+  }
+
+  &.windows {
+    height: calc(100vh - 110px);
+  }
 }
 
 .no-pad-select {
@@ -80,6 +120,7 @@ body {
 .flex-grow-1 {
   flex-grow: 1;
 }
+
 .row {
   display: flex;
   flex-direction: row;
@@ -87,15 +128,14 @@ body {
   &.align-items-center {
     align-items: center;
   }
+
   &.justify-content-center {
     justify-content: center;
   }
 }
 
 .ag-theme-balham {
-  @include ag-theme-balham(
-    (
-           // use theme parameters
+  @include ag-theme-balham(( // use theme parameters
       foreground-color: $white-1,
       background-color: $dark-3,
       row-hover-color: $dark-1,
@@ -108,9 +148,7 @@ body {
       border-color: transparent,
       secondary-border-color: blue,
       row-border-color: green,
-      cell-horizontal-border: red
-    )
-  );
+      cell-horizontal-border: red));
 
   .ag-row {
     border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -124,6 +162,7 @@ body {
   .cell-break-all {
     word-break: break-all;
   }
+
   .cell-wrap-text {
     white-space: normal;
   }
@@ -138,6 +177,7 @@ body {
 .cell-break-all {
   word-break: break-all;
 }
+
 .cell-wrap-text {
   white-space: normal;
   -webkit-line-clamp: 2;
@@ -150,25 +190,23 @@ body {
   align-items: center;
 }
 
-.tab-container {
-  ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
 
-  ::-webkit-scrollbar-track {
-    background-color: $dark-2;
-    // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-  }
+::-webkit-scrollbar-track {
+  background-color: $dark-2;
+  // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
 
-  ::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    border: 1px solid $purple-3;
-    // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-    // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-    background: rgb(107,105,214);
-    background: linear-gradient(146deg, rgba(107,105,214,1) 0%, rgba(80,79,161,1) 100%);
-  }
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  border: 1px solid $purple-3;
+  // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  background: rgb(107, 105, 214);
+  background: linear-gradient(146deg, rgba(107, 105, 214, 1) 0%, rgba(80, 79, 161, 1) 100%);
 }

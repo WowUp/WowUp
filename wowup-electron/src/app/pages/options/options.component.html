@@ -1,4 +1,4 @@
-<div class="tab-container">
+<div class="tab-container" [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
   <div class="options">
     <section>
       <div class="row ">
