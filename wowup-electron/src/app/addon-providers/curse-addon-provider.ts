@@ -29,24 +29,20 @@ const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 
 export class CurseAddonProvider implements AddonProvider {
 
-  private readonly _httpClient: HttpClient;
-
   public readonly name = "Curse";
 
   constructor(
-    httpClient: HttpClient,
+    private _httpClient: HttpClient,
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _fileService: FileService
-  ) {
-    this._httpClient = httpClient;
-  }
+  ) { }
 
   async scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void> {
-    if(!addonFolders.length){
+    if (!addonFolders.length) {
       return;
     }
-    
+
     const scanResults = await this.getScanResults(addonFolders);
 
     await this.mapAddonFolders(scanResults, clientType);

@@ -6,20 +6,20 @@ import { CacheItem } from "app/models/cache-item";
 })
 export class CachingService {
 
-  private readonly _cache: { [key: string]: CacheItem<any> } = {};
+  private readonly _cache = new Map<string, CacheItem<any>>();
 
   constructor() { }
 
   get<T>(key: string): T {
-    if (!(key in this._cache)) {
+    if (!this._cache.has(key)) {
       return undefined;
     }
 
     const now = new Date().getTime();
-    const cacheItem = this._cache[key];
+    const cacheItem = this._cache.get(key);
 
     if (now >= cacheItem.expires) {
-      delete this._cache[key];
+      this._cache.delete(key);
       return undefined;
     }
 
@@ -32,6 +32,6 @@ export class CachingService {
       value
     };
 
-    this._cache[key] = cacheItem;
+    this._cache.set(key, cacheItem);
   }
 }
