@@ -10,12 +10,11 @@ using WowUp.Common.Models;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using WowUp.WPF.ViewModels.Contracts;
 using WowUp.WPF.Views;
 
 namespace WowUp.WPF.ViewModels
 {
-    public class GetAddonsViewModel : BaseViewModel, ITabController
+    public class GetAddonsViewModel : BaseViewModel
     {
         private static readonly object ClientNamesLock = new object();
         private static readonly object DisplayAddonsLock = new object();
@@ -83,6 +82,16 @@ namespace WowUp.WPF.ViewModels
                 SelectedClientType = args.SessionState.SelectedClientType;
             };
 
+            _sessionService.TabChanged += (sender, tabType) =>
+            {
+                if (tabType != GetType())
+                {
+                    return;
+                }
+
+                OnTabActivated();
+            };
+
             SelectedClientType = _sessionService.SelectedClientType;
         }
 
@@ -92,14 +101,14 @@ namespace WowUp.WPF.ViewModels
             await LoadPopularAddons();
         }
 
-        public void OnActivated()
+        private void OnTabActivated()
         {
             SetResultCountContextText(DisplayAddons.Count);
         }
 
         private void SetResultCountContextText(int count)
         {
-            _sessionService.ContextText = $"{count} results";
+            _sessionService.SetContextText(this, $"{count} results");
         }
 
         private void SearchInputViewModel_Searched(object sender, Models.Events.SearchInputEventArgs e)

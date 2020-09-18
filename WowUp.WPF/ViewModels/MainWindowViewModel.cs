@@ -10,7 +10,6 @@ using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using WowUp.WPF.ViewModels.Contracts;
 using WowUp.WPF.Views;
 
 namespace WowUp.WPF.ViewModels
@@ -135,6 +134,7 @@ namespace WowUp.WPF.ViewModels
             InitializeView();
 
             _sessionService.SessionChanged += SessionService_SessionChanged;
+            _sessionService.ContextTextChanged += SessionService_ContextTextChanged;
         }
 
         public void SetRestoreMaximizeVisibility(WindowState windowState)
@@ -224,20 +224,21 @@ namespace WowUp.WPF.ViewModels
 
         private void OnSelectedTabChanged(int selectedTabIndex)
         {
-            _sessionService.ContextText = string.Empty;
-
             var tab = TabItems[selectedTabIndex];
-            if(tab.Content is UserControl && (tab.Content as UserControl).DataContext is ITabController)
+            if(tab.Content is UserControl)
             {
-                var context = (tab.Content as UserControl).DataContext as ITabController;
-                context.OnActivated();
+                _sessionService.SelectedTabType = (tab.Content as UserControl).DataContext.GetType();
             }
+        }
+
+        private void SessionService_ContextTextChanged(object sender, string text)
+        {
+            ContextText = text;
         }
 
         private void SessionService_SessionChanged(object sender, Common.Models.Events.SessionEventArgs e)
         {
             StatusText = e.SessionState.StatusText;
-            ContextText = e.SessionState.ContextText;
         }
 
         private void OnCloseWindow()
@@ -305,6 +306,8 @@ namespace WowUp.WPF.ViewModels
             TabItems.Add(getAddonsTab);
             TabItems.Add(aboutTab);
             TabItems.Add(optionsTab);
+
+            _sessionService.SelectedTabType = (addonsTab.Content as UserControl).DataContext.GetType();
         }
 
         private bool HasWarcraftLocation()

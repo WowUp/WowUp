@@ -15,11 +15,10 @@ using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
-using WowUp.WPF.ViewModels.Contracts;
 
 namespace WowUp.WPF.ViewModels
 {
-    public class AddonsViewViewModel : BaseViewModel, ITabController
+    public class AddonsViewViewModel : BaseViewModel
     {
         private static readonly object ClientNamesLock = new object();
         private static readonly object DisplayAddonsLock = new object();
@@ -214,6 +213,8 @@ namespace WowUp.WPF.ViewModels
                 SelectedClientType = args.SessionState.SelectedClientType;
             };
 
+            _sessionService.TabChanged += SessionService_TabChanged;
+
             ClientTypeNames = new ObservableCollection<WowClientType>();
             DisplayAddons = new ObservableCollection<AddonListItemViewModel>();
             LoadItemsCommand = new Command(async () => await LoadItems());
@@ -238,7 +239,7 @@ namespace WowUp.WPF.ViewModels
             Initialize();
         }
 
-        public void OnActivated()
+        private void SessionService_TabChanged(object sender, Type tabType)
         {
             SetAddonCountContextText(DisplayAddons.Count);
         }
@@ -423,7 +424,7 @@ namespace WowUp.WPF.ViewModels
             ShowEmptyLabel = false;
             EnableRefresh = false;
             EnableRescan = false;
-            _sessionService.ContextText = string.Empty;
+            _sessionService.SetContextText(this, string.Empty);
 
             try
             {
@@ -551,7 +552,7 @@ namespace WowUp.WPF.ViewModels
 
         private void SetAddonCountContextText(int count)
         {
-            _sessionService.ContextText = $"{count} addons";
+            _sessionService.SetContextText(this, $"{count} addons");
         }
 
         private static void SortAddons(ObservableCollection<AddonListItemViewModel> addons)
