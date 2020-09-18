@@ -22,12 +22,6 @@ import { ListFilesResponse } from './src/common/models/list-files-response';
 import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
 
-const nativeAddon = require('./build/Debug/addon.node');
-
-const b1 = fs.readFileSync('c:\\program files (x86)\\world of warcraft\\_retail_\\interface\\addons\\aap-core\\banners.lua')
-console.log(b1.length);
-console.log('addon', nativeAddon.computeHash(b1, b1.length));
-
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 electronDl();
 
