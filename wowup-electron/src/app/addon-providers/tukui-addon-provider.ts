@@ -9,10 +9,11 @@ import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { CachingService } from "app/services/caching/caching-service";
 import { ElectronService } from "app/services/electron/electron.service";
 import { FileService } from "app/services/files/file.service";
-import { Observable, of } from "rxjs";
+import { from, Observable, of } from "rxjs";
 import { AddonProvider } from "./addon-provider";
 import * as _ from 'lodash';
 import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
+import { map } from "rxjs/operators";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -44,7 +45,12 @@ export class TukUiAddonProvider implements AddonProvider {
   }
 
   getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
-    throw new Error("Method not implemented.");
+    return from(this.getAllAddons(clientType))
+      .pipe(
+        map(tukUiAddons => {
+          
+        })
+      );
   }
   searchByQuery(query: string, clientType: WowClientType): Promise<PotentialAddon[]> {
     throw new Error("Method not implemented.");
@@ -66,6 +72,18 @@ export class TukUiAddonProvider implements AddonProvider {
   }
   scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void> {
     throw new Error("Method not implemented.");
+  }
+
+  private toPotentialAddon(addon: TukUiAddon): PotentialAddon {
+    return {
+      author: addon.author,
+      downloadCount: parseInt(addon.downloads, 10),
+      externalId: addon.id,
+      externalUrl: addon.web_url,
+      name: addon.name,
+      providerName: this.name,
+      thumbnailUrl: addon.screenshot_url
+    };
   }
 
   private toSearchResult(addon: TukUiAddon, folderName: string): AddonSearchResult {
