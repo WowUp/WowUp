@@ -17,6 +17,7 @@ namespace WowUp.WPF.ViewModels
     public class MainWindowViewModel : BaseViewModel
     {
         private const string WindowPlacementKey = "window_placement";
+        private const string WindowStateKey = "window_state";
 
         private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
@@ -145,7 +146,18 @@ namespace WowUp.WPF.ViewModels
         public void OnSourceInitialized(Window window)
         {
             var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
+            var windowStatePref = _preferenceRepository.FindByKey(WindowStateKey);
             if (windowPref == null)
+            {
+                return;
+            }
+
+            if (windowStatePref != null && Enum.TryParse<WindowState>(windowStatePref.Value, true, out var windowState))
+            {
+                window.WindowState = windowState;
+            }
+
+            if(window.WindowState == WindowState.Maximized)
             {
                 return;
             }
@@ -178,6 +190,18 @@ namespace WowUp.WPF.ViewModels
             }
 
             _preferenceRepository.SaveItem(windowPref);
+
+            var windowStatePref = _preferenceRepository.FindByKey(WindowStateKey);
+            if(windowStatePref == null)
+            {
+                windowStatePref = new Preference
+                {
+                    Key = WindowStateKey
+                };
+            } 
+
+            windowStatePref.Value = window.WindowState.ToString();
+            _preferenceRepository.SaveItem(windowStatePref);
         }
 
         private void SessionService_SessionChanged(object sender, Common.Models.Events.SessionEventArgs e)
