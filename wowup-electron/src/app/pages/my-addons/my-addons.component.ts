@@ -13,6 +13,9 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { ColumnState } from 'app/models/wowup/column-state';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MyAddonsListItem } from 'app/business-objects/my-addons-list-item';
+import { AddonDisplayState } from 'app/models/wowup/addon-display-state';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-my-addons',
@@ -23,7 +26,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild('columnMenu') columnMenu: TemplateRef<any>;
 
-  private readonly _displayAddonsSrc = new BehaviorSubject<Addon[]>([]);
+  private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>([]);
 
   private gridApi: GridApi;
   private subscriptions: Subscription[] = [];
@@ -225,19 +228,24 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     from(this.addonService.getAddons(clientType, rescan))
       .subscribe((addons) => {
         this.busy = false;
-        this.formatAddons(addons);
-        this._displayAddonsSrc.next(addons);
+        this._displayAddonsSrc.next(this.formatAddons(addons));
       });
   }
 
-  private formatAddons(addons: Addon[]) {
-    addons.forEach(addon => {
-      if (!addon.thumbnailUrl) {
-        addon.thumbnailUrl = 'assets/wowup_logo_512np.png';
+  private formatAddons(addons: Addon[]): MyAddonsListItem[] {
+    const listItems = addons.map(addon => {
+      const listItem = new MyAddonsListItem(addon);
+
+      if (!listItem.thumbnailUrl) {
+        listItem.thumbnailUrl = 'assets/wowup_logo_512np.png';
       }
-      if (!addon.installedVersion) {
-        addon.installedVersion = 'None';
+      if (!listItem.installedVersion) {
+        listItem.installedVersion = 'None';
       }
-    })
+
+      return listItem;
+    });
+
+    return _.sortBy(listItems, ['displayState', 'name']);
   }
 }

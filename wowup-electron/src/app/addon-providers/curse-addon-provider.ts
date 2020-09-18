@@ -316,12 +316,10 @@ export class CurseAddonProvider implements AddonProvider {
 
   private getLatestFiles(result: CurseSearchResult, clientType: WowClientType): CurseFile[] {
     const clientTypeStr = this.getGameVersionFlavor(clientType);
+    console.log(clientType, clientTypeStr);
 
-    return _.flow(
-      _.filter((f: CurseFile) => f.isAlternate == false && f.gameVersionFlavor == clientTypeStr),
-      _.orderBy((f: CurseFile) => f.id),
-      _.reverse
-    )(result.latestFiles) as CurseFile[];
+    const filtered = result.latestFiles.filter(lf => lf.isAlternate === false && lf.gameVersionFlavor === clientTypeStr);
+    return _.sortBy(filtered, lf => lf.id).reverse();
   }
 
   private getGameVersionFlavor(clientType: WowClientType): string {
@@ -341,7 +339,8 @@ export class CurseAddonProvider implements AddonProvider {
     const currentVersion = scanResult.exactMatch.file;
     const authors = scanResult.searchResult.authors.map(author => author.name).join(', ');
     const folderList = scanResult.exactMatch.file.modules.map(module => module.foldername).join(',');
-    const latestVersion = this.getLatestFiles(scanResult.searchResult, clientType)[0];
+    const latestFiles = this.getLatestFiles(scanResult.searchResult, clientType);
+    const latestVersion = latestFiles.find(lf => this.getChannelType(lf.releaseType) <= addonChannelType);
 
     return {
       id: uuidv4(),

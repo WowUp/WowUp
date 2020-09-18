@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Addon } from 'app/entities/addon';
+import { MyAddonsListItem } from 'app/business-objects/my-addons-list-item';
 
 @Component({
   selector: 'app-my-addons-addon-cell',
@@ -8,8 +9,8 @@ import { Addon } from 'app/entities/addon';
 })
 export class MyAddonsAddonCellComponent implements OnInit {
 
-  @Input('addon') addon: Addon;
-  
+  @Input('addon') addon: MyAddonsListItem;
+
   constructor() { }
 
   ngOnInit(): void {
