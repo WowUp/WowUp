@@ -4,7 +4,7 @@
       <mat-form-field>
         <mat-label>World of Warcraft</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
-          [disabled]="busy === true">
+          [disabled]="isBusy === true">
           <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.clientTypes$ | async">
             {{warcraftService.getClientDisplayName(clientType)}}
           </mat-option>
@@ -24,7 +24,9 @@
     </div>
   </div>
 
-  <div class="table-container flex-grow-1">
+  <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
+
+  <div class="table-container flex-grow-1" *ngIf="isBusy === false">
     <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8">
       <ng-container matColumnDef="addon">
         <th mat-header-cell *matHeaderCellDef> Addon </th>

@@ -97,9 +97,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public selectedClient = WowClientType.None;
-  public busy = false;
   public displayAddons$ = this._displayAddonsSrc.asObservable();
   public overlayRef: OverlayRef | null;
+  public isBusy = true;
 
   constructor(
     private addonService: AddonService,
@@ -220,13 +220,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   private loadAddons(clientType: WowClientType, rescan = false) {
-    this.busy = true;
+    this.isBusy = true;
 
     console.log('Load-addons', clientType);
 
     from(this.addonService.getAddons(clientType, rescan))
       .subscribe((addons) => {
-        this.busy = false;
+        this.isBusy = false;
         this._displayAddonsSrc.next(this.formatAddons(addons));
       });
   }

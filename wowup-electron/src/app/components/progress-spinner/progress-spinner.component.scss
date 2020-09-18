@@ -1,0 +1,10 @@
+@import "../../../variables.scss";
+
+.busy-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2em;
+  color: $white-1;
+}

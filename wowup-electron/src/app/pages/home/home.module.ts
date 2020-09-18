@@ -19,6 +19,7 @@ import { PotentialAddonStatusColumnComponent } from 'app/components/potential-ad
 import { MyAddonsAddonCellComponent } from 'app/components/my-addons-addon-cell/my-addons-addon-cell.component';
 import { MyAddonsStatusCellComponent } from 'app/components/my-addons-status-cell/my-addons-status-cell.component';
 import { AddonContextMenuComponent } from 'app/components/addon-context-menu/addon-context-menu.component';
+import { ProgressSpinnerComponent } from 'app/components/progress-spinner/progress-spinner.component';
 
 @NgModule({
   declarations: [
@@ -31,13 +32,15 @@ import { AddonContextMenuComponent } from 'app/components/addon-context-menu/add
     MyAddonsAddonCellComponent,
     MyAddonsStatusCellComponent,
     AddonContextMenuComponent,
-    PotentialAddonStatusColumnComponent
+    PotentialAddonStatusColumnComponent,
+    ProgressSpinnerComponent
   ],
   imports: [
     AgGridModule.withComponents([
       AddonTableColumnComponent,
       AddonStatusColumnComponent,
       PotentialAddonTableColumnComponent,
+      PotentialAddonStatusColumnComponent
     ]),
     CommonModule,
     SharedModule,

@@ -1,10 +1,11 @@
-<div class="tab-container d-flex flex-col" [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
+<div class="tab-container d-flex flex-col"
+  [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
   <div class="control-container">
     <div class="select-container ">
       <mat-form-field>
         <mat-label>World of Warcraft</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
-          [disabled]="busy === true">
+          [disabled]="isBusy === true">
           <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.clientTypes$ | async">
             {{warcraftService.getClientDisplayName(clientType)}}
           </mat-option>
@@ -12,15 +13,15 @@
       </mat-form-field>
     </div>
     <div class="button-container">
-      <button mat-flat-button color="primary" [disabled]="busy === true">Update All</button>
-      <button mat-flat-button color="primary" [disabled]="busy === true" (click)="onRefresh()">Refresh</button>
-      <button mat-flat-button color="primary" [disabled]="busy === true" (click)="onReScan()">Re-Scan</button>
+      <button mat-flat-button color="primary" [disabled]="isBusy === true">Update All</button>
+      <button mat-flat-button color="primary" [disabled]="isBusy === true" (click)="onRefresh()">Refresh</button>
+      <button mat-flat-button color="primary" [disabled]="isBusy === true" (click)="onReScan()">Re-Scan</button>
     </div>
   </div>
 
+  <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
 
-
-  <div class="table-container flex-grow-1">
+  <div class="table-container flex-grow-1" *ngIf="isBusy === false">
     <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8">
       <!-- Position Column -->
       <ng-container matColumnDef="addon">
