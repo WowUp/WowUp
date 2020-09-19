@@ -130,6 +130,20 @@ namespace WowUp.WPF.Services
             SetPreference(Constants.Preferences.LastSelectedClientTypeKey, clientType.ToString());
         }
 
+        public void SetClientDefaultAutoUpdate(WowClientType clientType, bool autoUpdate)
+        {
+            var preferenceKey = GetClientDefaultAutoUpdateKey(clientType);
+            SetPreference(preferenceKey, autoUpdate.ToString());
+            _analyticsService.TrackUserAction("WowUp", $"ClientDefaultAutoUpdate|{clientType}", autoUpdate.ToString());
+        }
+
+        public bool GetClientDefaultAutoUpdate(WowClientType clientType)
+        {
+            var preferenceKey = GetClientDefaultAutoUpdateKey(clientType);
+            var preference = _preferenceRepository.FindByKey(preferenceKey);
+            return bool.Parse(preference.Value);
+        }
+
         public void SetClientAddonChannelType(WowClientType clientType, AddonChannelType channelType)
         {
             var preferenceKey = GetClientDefaultAddonChannelKey(clientType);
@@ -345,6 +359,11 @@ namespace WowUp.WPF.Services
             return $"{clientType}{Constants.Preferences.ClientDefaultAddonChannelSuffix}".ToLower();
         }
 
+        private string GetClientDefaultAutoUpdateKey(WowClientType clientType)
+        {
+            return $"{clientType}{Constants.Preferences.ClientDefaultAutoUpdateSuffix}".ToLower();
+        }
+
         private void SetDefaultPreferences()
         {
             var pref = _preferenceRepository.FindByKey(Constants.Preferences.CollapseToTrayKey);
@@ -376,6 +395,13 @@ namespace WowUp.WPF.Services
                 if(preference == null)
                 {
                     SetClientAddonChannelType(clientType, AddonChannelType.Stable);
+                }
+
+                preferenceKey = GetClientDefaultAutoUpdateKey(clientType);
+                preference = _preferenceRepository.FindByKey(preferenceKey);
+                if (preference == null)
+                {
+                    SetClientDefaultAutoUpdate(clientType, false);
                 }
             }
         }

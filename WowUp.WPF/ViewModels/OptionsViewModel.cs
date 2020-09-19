@@ -107,6 +107,41 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _selectedWowUpReleaseChannelType, value); }
         }
 
+        private bool _retailAutoUpdateAddons;
+        public bool RetailAutoUpdateAddons
+        {
+            get => _retailAutoUpdateAddons;
+            set { SetProperty(ref _retailAutoUpdateAddons, value); }
+        }
+
+        private bool _retailPtrAutoUpdateAddons;
+        public bool RetailPtrAutoUpdateAddons
+        {
+            get => _retailPtrAutoUpdateAddons;
+            set { SetProperty(ref _retailPtrAutoUpdateAddons, value); }
+        }
+
+        private bool _classicAutoUpdateAddons;
+        public bool ClassicAutoUpdateAddons
+        {
+            get => _classicAutoUpdateAddons;
+            set { SetProperty(ref _classicAutoUpdateAddons, value); }
+        }
+
+        private bool _classicPtrAutoUpdateAddons;
+        public bool ClassicPtrAutoUpdateAddons
+        {
+            get => _classicPtrAutoUpdateAddons;
+            set { SetProperty(ref _classicPtrAutoUpdateAddons, value); }
+        }
+
+        private bool _betaAutoUpdateAddons;
+        public bool BetaAutoUpdateAddons
+        {
+            get => _betaAutoUpdateAddons;
+            set { SetProperty(ref _betaAutoUpdateAddons, value); }
+        }
+
         public Command ShowLogsCommand { get; set; }
         public Command TelemetryCheckCommand { get; set; }
         public Command CollapseToTrayCheckCommand { get; set; }
@@ -117,11 +152,20 @@ namespace WowUp.WPF.ViewModels
         public Command RescanFoldersCommand { get; set; }
         public Command WowUpReleaseChannelChangedCommand { get; set; }
         public Command DumpDebugDataCommand { get; set; }
+
+        // DEFAULT ADDON CHANNELS
         public Command RetailAddonChannelChangeCommand { get; set; }
         public Command RetailPtrAddonChannelChangeCommand { get; set; }
         public Command ClassicAddonChannelChangeCommand { get; set; }
         public Command ClassicPtrAddonChannelChangeCommand { get; set; }
         public Command BetaAddonChannelChangeCommand { get; set; }
+
+        // AUTO UPDATE DEFAULTS
+        public Command RetailAutoUpdateChangeCommand { get; set; }
+        public Command RetailPtrAutoUpdateChangeCommand { get; set; }
+        public Command ClassicAutoUpdateChangeCommand { get; set; }
+        public Command ClassicPtrAutoUpdateChangeCommand { get; set; }
+        public Command BetaAutoUpdateChangeCommand { get; set; }
 
         public ObservableCollection<AddonChannelType> AddonChannelNames { get; set; }
         public ObservableCollection<WowUpReleaseChannelType> WowUpChannelNames { get; set; }
@@ -154,6 +198,12 @@ namespace WowUp.WPF.ViewModels
             ClassicPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.ClassicPtr, SelectedClassicPtrAddonChannelType));
             BetaAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Beta, SelectedBetaAddonChannelType));
 
+            RetailAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Retail, RetailAutoUpdateAddons)); ;
+            RetailPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.RetailPtr, RetailPtrAutoUpdateAddons)); ;
+            ClassicAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons)); ;
+            ClassicPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons)); ;
+            BetaAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons)); ;
+            
             AddonChannelNames = new ObservableCollection<AddonChannelType>
             {
                 AddonChannelType.Stable,
@@ -181,6 +231,12 @@ namespace WowUp.WPF.ViewModels
             SelectedClassicAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Classic);
             SelectedClassicPtrAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.ClassicPtr);
             SelectedBetaAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Beta);
+
+            RetailAutoUpdateAddons = _wowUpService.GetClientDefaultAutoUpdate(WowClientType.Retail);
+            RetailPtrAutoUpdateAddons = _wowUpService.GetClientDefaultAutoUpdate(WowClientType.RetailPtr);
+            ClassicAutoUpdateAddons = _wowUpService.GetClientDefaultAutoUpdate(WowClientType.Classic);
+            ClassicPtrAutoUpdateAddons = _wowUpService.GetClientDefaultAutoUpdate(WowClientType.ClassicPtr);
+            BetaAutoUpdateAddons = _wowUpService.GetClientDefaultAutoUpdate(WowClientType.Beta);
 
             WowRetailLocation = _warcraftService.GetClientLocation(WowClientType.Retail);
             WowRetailPtrLocation = _warcraftService.GetClientLocation(WowClientType.RetailPtr);
@@ -234,6 +290,11 @@ namespace WowUp.WPF.ViewModels
         private void OnAddonChannelChange(WowClientType clientType, AddonChannelType addonChannelType)
         {
             _wowUpService.SetClientAddonChannelType(clientType, addonChannelType);
+        }
+
+        private void OnAddonAutoUpdateChange(WowClientType clientType, bool autoUpdate)
+        {
+            _wowUpService.SetClientDefaultAutoUpdate(clientType, autoUpdate);
         }
 
         private void OnWowUpReleaseChannelChange(WowUpReleaseChannelType type)

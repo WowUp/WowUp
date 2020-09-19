@@ -35,6 +35,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <!--RE-SCAN-->
                     <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Re-Scan</Label>
@@ -68,10 +69,11 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--DEFAULT ADDON CHANNEL-->
                             <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
-                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="0 0 0 10" Orientation="Horizontal">
                                 <ComboBox x:Name="RetailAddonChannelComboBox" 
                                           SelectedItem="{Binding SelectedRetailAddonChannelType}"
                                           HorizontalAlignment="Left"
@@ -85,6 +87,15 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                            </StackPanel>
+                            <!--DEFAULT AUTO UPDATE-->
+                            <Label Grid.Column="0" Grid.Row="1" FontWeight="Bold"  HorizontalAlignment="Right">Auto Update</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 0 0 0" VerticalAlignment="Center" Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding RetailAutoUpdateAddons, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
+                                          Command="{Binding RetailAutoUpdateChangeCommand}" Grid.Row="0" Grid.Column="1">
+                                </CheckBox>
+                                <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -111,10 +122,11 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--DEFAULT ADDON CHANNEL-->
                             <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
-                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="0 0 0 10" Orientation="Horizontal">
                                 <ComboBox x:Name="RetailPtrAddonChannelComboBox" 
                                           SelectedItem="{Binding SelectedRetailPtrAddonChannelType}"
                                           HorizontalAlignment="Left"
@@ -128,6 +140,15 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                            </StackPanel>
+                            <!--DEFAULT AUTO UPDATE-->
+                            <Label Grid.Column="0" Grid.Row="1" FontWeight="Bold"  HorizontalAlignment="Right">Auto Update</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 0 0 0" VerticalAlignment="Center" Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding RetailPtrAutoUpdateAddons, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
+                                          Command="{Binding RetailPtrAutoUpdateChangeCommand}" Grid.Row="0" Grid.Column="1">
+                                </CheckBox>
+                                <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -154,10 +175,11 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--DEFAULT ADDON CHANNEL-->
                             <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
-                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="0 0 0 10" Orientation="Horizontal">
                                 <ComboBox x:Name="ClassicAddonChannelComboBox" 
                                               SelectedItem="{Binding SelectedClassicAddonChannelType}"
                                               HorizontalAlignment="Left"
@@ -171,6 +193,15 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                            </StackPanel>
+                            <!--DEFAULT AUTO UPDATE-->
+                            <Label Grid.Column="0" Grid.Row="1" FontWeight="Bold"  HorizontalAlignment="Right">Auto Update</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 0 0 0" VerticalAlignment="Center" Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding ClassicAutoUpdateAddons, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
+                                          Command="{Binding ClassicAutoUpdateChangeCommand}" Grid.Row="0" Grid.Column="1">
+                                </CheckBox>
+                                <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -197,10 +228,11 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--DEFAULT ADDON CHANNEL-->
                             <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
-                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="0 0 0 10" Orientation="Horizontal">
                                 <ComboBox x:Name="ClassicPtrAddonChannelComboBox" 
                                               SelectedItem="{Binding SelectedClassicPtrAddonChannelType}"
                                               HorizontalAlignment="Left"
@@ -214,6 +246,15 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                            </StackPanel>
+                            <!--DEFAULT AUTO UPDATE-->
+                            <Label Grid.Column="0" Grid.Row="1" FontWeight="Bold"  HorizontalAlignment="Right">Auto Update</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 0 0 0" VerticalAlignment="Center" Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding ClassicPtrAutoUpdateAddons, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
+                                          Command="{Binding ClassicPtrAutoUpdateChangeCommand}" Grid.Row="0" Grid.Column="1">
+                                </CheckBox>
+                                <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -239,10 +280,11 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--DEFAULT ADDON CHANNEL-->
                             <Label Grid.Column="0" Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Right" >Default Addon Channel</Label>
-                            <StackPanel Grid.Column="1" Grid.Row="6" Margin="0 0 0 10" Orientation="Horizontal">
+                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="0 0 0 10" Orientation="Horizontal">
                                 <ComboBox x:Name="BetaAddonChannelComboBox" 
                                               SelectedItem="{Binding SelectedBetaAddonChannelType}"
                                               HorizontalAlignment="Left"
@@ -256,6 +298,15 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                            </StackPanel>
+                            <!--DEFAULT AUTO UPDATE-->
+                            <Label Grid.Column="0" Grid.Row="1" FontWeight="Bold"  HorizontalAlignment="Right">Auto Update</Label>
+                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 0 0 0" VerticalAlignment="Center" Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding BetaAutoUpdateAddons, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
+                                          Command="{Binding BetaAutoUpdateChangeCommand}" Grid.Row="0" Grid.Column="1">
+                                </CheckBox>
+                                <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
                         </Grid>
                     </Grid>
@@ -276,7 +327,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <!--RELEASE CHANNEL-->
-                    <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">WowUp Release Channel</Label>
+                    <Label FontWeight="Bold" Grid.Row="0" Grid.Column="0" Margin="0 5" HorizontalAlignment="Right">WowUp Release Channel</Label>
                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
                         <ComboBox x:Name="WowUpChannelComboBox" 
                                         SelectedItem="{Binding SelectedWowUpReleaseChannelType}"
@@ -295,7 +346,7 @@
                         </TextBlock>
                     </StackPanel>
                     <!--TELEMETRY-->
-                    <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right">Telemetry</Label>
+                    <Label FontWeight="Bold" Grid.Row="1" Grid.Column="0" Margin="0 5" HorizontalAlignment="Right">Telemetry</Label>
                     <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding IsTelemetryEnabled, Mode=TwoWay}"
                                           VerticalAlignment="Center"
@@ -304,7 +355,7 @@
                         <Label VerticalAlignment="Top">Help improve WowUp by sending anonymous install data and/or errors.</Label>
                     </StackPanel>
                     <!--MINIMIZE ON CLOSE-->
-                    <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right">Minimize on close</Label>
+                    <Label FontWeight="Bold" Grid.Row="2" Grid.Column="0" Margin="0 5" HorizontalAlignment="Right">Minimize on close</Label>
                     <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
                         <CheckBox IsChecked="{Binding CollapseToTrayEnabled, Mode=TwoWay}"
                                           VerticalAlignment="Center"

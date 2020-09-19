@@ -38,5 +38,8 @@ namespace WowUp.WPF.Services.Contracts
 
         AddonChannelType GetClientAddonChannelType(WowClientType clientType);
         void SetClientAddonChannelType(WowClientType clientType, AddonChannelType channelType);
+
+        bool GetClientDefaultAutoUpdate(WowClientType clientType);
+        void SetClientDefaultAutoUpdate(WowClientType clientType, bool autoUpdate);
     }
 }
