@@ -83,11 +83,7 @@ namespace WowUp.WPF.Services
             }
         }
 
-        private string _contextText;
-        public string ContextText
-        {
-            get { return _contextText; }
-        }
+        public string ContextText { get; private set; }
 
         public bool UpdaterReady
         {
@@ -130,7 +126,7 @@ namespace WowUp.WPF.Services
 
         private void SetContextText(string text)
         {
-            _contextText = text;
+            ContextText = text;
             ContextTextChanged?.Invoke(this, ContextText);
         }
 
