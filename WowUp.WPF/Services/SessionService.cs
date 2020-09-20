@@ -1,7 +1,6 @@
 ﻿using Serilog;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
@@ -16,10 +15,12 @@ namespace WowUp.WPF.Services
         private readonly SessionState _sessionState;
         private readonly IWowUpService _wowUpService;
 
-        private Task _updaterCheckTimer;
         private bool _runUpdateCheckTimer = true;
+        private Task _updaterCheckTimer;
 
+        public event SessionTextEventHandler ContextTextChanged;
         public event SessionEventHandler SessionChanged;
+        public event SessionTabEventHandler TabChanged;
 
         public SessionService(
             IWarcraftService warcraftService,
@@ -60,6 +61,18 @@ namespace WowUp.WPF.Services
             }
         }
 
+        private Type _selectedTabType;
+        public Type SelectedTabType
+        {
+            get { return _selectedTabType; }
+            set
+            {
+                _selectedTabType = value;
+                SetContextText(string.Empty);
+                TabChanged?.Invoke(this, value);
+            }
+        }
+
         public string StatusText
         {
             get { return _sessionState.StatusText; }
@@ -68,6 +81,12 @@ namespace WowUp.WPF.Services
                 _sessionState.StatusText = value;
                 SendStateChange();
             }
+        }
+
+        private string _contextText;
+        public string ContextText
+        {
+            get { return _contextText; }
         }
 
         public bool UpdaterReady
@@ -96,6 +115,23 @@ namespace WowUp.WPF.Services
                 }
                 Log.Information("Stopping update check timer");
             });
+        }
+
+        public void SetContextText(object requestor, string text)
+        {
+            if(requestor.GetType() != SelectedTabType)
+            {
+                // If the request is not from the active tab, dont set it
+                return;
+            }
+
+            SetContextText(text);
+        }
+
+        private void SetContextText(string text)
+        {
+            _contextText = text;
+            ContextTextChanged?.Invoke(this, ContextText);
         }
 
         private async Task CheckUpdaterApp()

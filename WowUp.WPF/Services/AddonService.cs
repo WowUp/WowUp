@@ -577,7 +577,8 @@ namespace WowUp.WPF.Services
                 DownloadUrl = latestFile.DownloadUrl,
                 ExternalUrl = searchResult.ExternalUrl,
                 ProviderName = searchResult.ProviderName,
-                ChannelType = channelType ?? _wowUpService.GetClientAddonChannelType(clientType)
+                ChannelType = channelType ?? _wowUpService.GetClientAddonChannelType(clientType),
+                AutoUpdateEnabled = _wowUpService.GetClientDefaultAutoUpdate(clientType)
             };
         }
     }

@@ -10,7 +10,7 @@
     <PackageId>WowUp</PackageId>
     <Authors>Jliddev</Authors>
     <Product>WowUp</Product>
-    <Version>1.16.1-beta.5</Version>
+    <Version>1.16.1</Version>
     <ApplicationIcon>wowup_logo_512np_RRT_icon.ico</ApplicationIcon>
     <Copyright>jliddev</Copyright>
     <PackageProjectUrl>https://wowup.io</PackageProjectUrl>
@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <None Remove="Assets\activity.gif" />
+    <None Remove="Assets\auto_update_icon.png" />
     <None Remove="Assets\changelog.json" />
     <None Remove="Assets\Fonts\OpenSans-Bold.ttf" />
     <None Remove="Assets\Fonts\OpenSans-BoldItalic.ttf" />
@@ -75,6 +76,7 @@
   <ItemGroup>
     <Resource Include="Assets\activity.gif" />
     <EmbeddedResource Include="Assets\changelog.json" />
+    <Resource Include="Assets\auto_update_icon.png" />
     <Resource Include="Assets\Fonts\OpenSans-Bold.ttf" />
     <Resource Include="Assets\Fonts\OpenSans-BoldItalic.ttf" />
     <Resource Include="Assets\Fonts\OpenSans-ExtraBold.ttf" />

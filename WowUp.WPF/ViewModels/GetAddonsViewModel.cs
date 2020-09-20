@@ -82,6 +82,16 @@ namespace WowUp.WPF.ViewModels
                 SelectedClientType = args.SessionState.SelectedClientType;
             };
 
+            _sessionService.TabChanged += (sender, tabType) =>
+            {
+                if (tabType != GetType())
+                {
+                    return;
+                }
+
+                OnTabActivated();
+            };
+
             SelectedClientType = _sessionService.SelectedClientType;
         }
 
@@ -89,6 +99,16 @@ namespace WowUp.WPF.ViewModels
         {
             SetClientNames();
             await LoadPopularAddons();
+        }
+
+        private void OnTabActivated()
+        {
+            SetResultCountContextText(DisplayAddons.Count);
+        }
+
+        private void SetResultCountContextText(int count)
+        {
+            _sessionService.SetContextText(this, $"{count} results");
         }
 
         private void SearchInputViewModel_Searched(object sender, Models.Events.SearchInputEventArgs e)
@@ -161,6 +181,7 @@ namespace WowUp.WPF.ViewModels
                 }
             }
 
+            SetResultCountContextText(DisplayAddons.Count);
             IsBusy = false;
         }
 
@@ -216,6 +237,8 @@ namespace WowUp.WPF.ViewModels
                         DisplayAddons.Add(viewModel);
                     }
                 }
+
+                SetResultCountContextText(DisplayAddons.Count);
             }
             finally
             {

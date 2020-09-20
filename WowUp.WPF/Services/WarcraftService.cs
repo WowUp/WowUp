@@ -35,7 +35,7 @@ namespace WowUp.WPF.Services
         private const string ClassicPtrExecutableName = "WowClassicT.exe";
 
         // BLIZZARD STRINGS
-        private const string BlizzardAgentFolderFormat = "ProgramData/Battle.net/Agent";
+        private const string BlizzardAgentFolderFormat = "ProgramData\\Battle.net\\Agent";
         private const string BlizzardProductDbName = "product.db";
 
         // PREFERENCE KEYS
@@ -326,15 +326,20 @@ namespace WowUp.WPF.Services
         private string GetBlizzardAgentPath()
         {
             var driveLetters = FileUtilities.GetAllDriveLetters();
+            Log.Debug($"Drives: {string.Join(",", driveLetters)}");
+
             foreach (var drive in driveLetters)
             {
                 var agentPath = Path.Combine(drive, BlizzardAgentFolderFormat);
+                Log.Debug($"Searching for blizzard agent: {agentPath}");
+
                 if (Directory.Exists(agentPath))
                 {
                     return agentPath;
                 }
             }
 
+            Log.Debug("No blizzard agent path was found");
             return string.Empty;
         }
 

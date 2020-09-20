@@ -23,46 +23,47 @@
             </Style>
 
             <DataTemplate x:Key="AddonColumnTemplate" >
-                <Border Padding="10">
-                    <Grid Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Margin="0, 0, 10, 0" VerticalAlignment="Center"
-                                    Background="#222">
-                            <Border Background="{StaticResource Dark2}"  >
-                                <Image Width="40" Height="40"
-                                       Source="{Binding ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}"
-                                       RenderOptions.BitmapScalingMode="HighQuality">
-                                </Image>
-                            </Border>
-                            <TextBlock Visibility="{Binding ShowChannelName, Converter={StaticResource BoolToVisibilty}}" 
-                                       Text="{Binding ChannelName}"
-                                       HorizontalAlignment="Center"
-                                       Foreground="{Binding ChannelNameBrush}"
+                <Grid Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="10" VerticalAlignment="Center"
+                                Background="#222">
+                        <Border Background="{StaticResource Dark2}"  >
+                            <Image Width="40" Height="40"
+                                    Source="{Binding ThumbnailUrl, Converter={StaticResource UriToThumbnailConverter}}"
+                                    RenderOptions.BitmapScalingMode="HighQuality">
+                            </Image>
+                        </Border>
+                        <TextBlock Visibility="{Binding ShowChannelName, Converter={StaticResource BoolToVisibilty}}" 
+                                    Text="{Binding ChannelName}"
+                                    HorizontalAlignment="Center"
+                                    Foreground="{Binding ChannelNameBrush}"
                                        
-                                       FontWeight="ExtraBold"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Visibility="{Binding ExternalUrl, Converter={StaticResource StringToVisibilty}}" 
-                                       Style="{StaticResource labelAddonName}" >
-                                <Hyperlink x:Name="AddonLink"
-                                           Style="{StaticResource HyperlinkStyle}"
-                                           NavigateUri="{Binding ExternalUrl}"
-                                           Command="{Binding OpenLinkCommand}">
-                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
-                                </Hyperlink>    
-                            </TextBlock>
-                            <TextBlock Visibility="{Binding ExternalUrl, Converter={StaticResource InverseStringToVisibilty}}"
-                                       Text="{Binding Name}"  
-                                       Style="{StaticResource labelAddonName}" 
-                                       TextWrapping="Wrap"/>
+                                    FontWeight="ExtraBold"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Visibility="{Binding ExternalUrl, Converter={StaticResource StringToVisibilty}}" 
+                                    Style="{StaticResource labelAddonName}" >
+                            <Hyperlink x:Name="AddonLink"
+                                        Style="{StaticResource HyperlinkStyle}"
+                                        NavigateUri="{Binding ExternalUrl}"
+                                        Command="{Binding OpenLinkCommand}">
+                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+                            </Hyperlink>    
+                        </TextBlock>
+                        <TextBlock Visibility="{Binding ExternalUrl, Converter={StaticResource InverseStringToVisibilty}}"
+                                    Text="{Binding Name}"  
+                                    Style="{StaticResource labelAddonName}" 
+                                    TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding CurrentVersion}" 
-                                       Style="{StaticResource labelAddonText}" />
+                                        Style="{StaticResource labelAddonText}" />
+                            
                         </StackPanel>
-                    </Grid>
-                </Border>
+                    </StackPanel>
+                </Grid>
             </DataTemplate>
 
             <DataTemplate x:Key="LatestVersionTemplate" >
@@ -127,26 +128,40 @@
 
             <DataTemplate x:Key="StatusColumnTemplate" >
                 <Border Padding="10">
-                    <StackPanel VerticalAlignment="Center">
-                        <Button Visibility="{Binding ShowInstallButton, Converter={StaticResource BoolToVisibilty}}"
-                                Style="{StaticResource purpleButton}"
-                                HorizontalAlignment="Center"
-                                Command="{Binding InstallCommand}">Install</Button>
-                        <Button Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
-                                Style="{StaticResource purpleButton}"
-                                HorizontalAlignment="Center"
-                                Command="{Binding UpdateCommand}">Update</Button>
-                        <TextBlock Text="{Binding StatusText}"
-                                   Style="{StaticResource labelAddonText}"
-                                   HorizontalAlignment="Center"
-                                   Visibility="{Binding ShowStatusText, Converter={StaticResource BoolToVisibilty}}" />
-                        <StackPanel Visibility="{Binding ShowProgressBar, Converter={StaticResource BoolToVisibilty}}">
-                            <TextBlock Text="{Binding ProgressText}" 
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" >
+                            <Image Width="15" Height="15"
+                                   Margin="0 0 10 0"
+                                   Visibility="{Binding IsAutoUpdated, Converter={StaticResource BoolToVisibilty}}"
+                                   ToolTip="Auto Update Enabled"
+                                   Source="/Assets/auto_update_icon.png"
+                                   RenderOptions.BitmapScalingMode="HighQuality">
+                            </Image>
+                        </StackPanel >
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <Button Visibility="{Binding ShowInstallButton, Converter={StaticResource BoolToVisibilty}}"
+                                    Style="{StaticResource purpleButton}"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding InstallCommand}">Install</Button>
+                            <Button Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
+                                    Style="{StaticResource purpleButton}"
+                                    Command="{Binding UpdateCommand}">Update</Button>
+                            <TextBlock Text="{Binding StatusText}"
                                        Style="{StaticResource labelAddonText}"
-                                       HorizontalAlignment ="Center"/>
-                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent}" />
+                                       HorizontalAlignment="Center"
+                                       Visibility="{Binding ShowStatusText, Converter={StaticResource BoolToVisibilty}}" />
+                            <StackPanel Visibility="{Binding ShowProgressBar, Converter={StaticResource BoolToVisibilty}}">
+                                <TextBlock Text="{Binding ProgressText}" 
+                                           Style="{StaticResource labelAddonText}"
+                                           HorizontalAlignment ="Center"/>
+                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressPercent}" />
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
+                    </Grid>
                 </Border>
             </DataTemplate>
         </ResourceDictionary>
@@ -331,7 +346,7 @@
                         </DataGridTemplateColumn.HeaderTemplate>
                     </DataGridTemplateColumn>
                     <!--STATUS COLUMN-->
-                    <DataGridTemplateColumn SortMemberPath="DisplayState" CellTemplate="{StaticResource StatusColumnTemplate}" Width="120" CanUserResize="False">
+                    <DataGridTemplateColumn SortMemberPath="DisplayState" CellTemplate="{StaticResource StatusColumnTemplate}" Width="140" CanUserResize="False">
                         <DataGridTemplateColumn.HeaderTemplate>
                             <DataTemplate>
                                 <Border Padding="5">

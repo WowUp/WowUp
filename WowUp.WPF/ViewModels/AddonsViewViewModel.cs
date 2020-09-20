@@ -213,6 +213,8 @@ namespace WowUp.WPF.ViewModels
                 SelectedClientType = args.SessionState.SelectedClientType;
             };
 
+            _sessionService.TabChanged += SessionService_TabChanged;
+
             ClientTypeNames = new ObservableCollection<WowClientType>();
             DisplayAddons = new ObservableCollection<AddonListItemViewModel>();
             LoadItemsCommand = new Command(async () => await LoadItems());
@@ -235,6 +237,11 @@ namespace WowUp.WPF.ViewModels
             SetClientNames();
 
             Initialize();
+        }
+
+        private void SessionService_TabChanged(object sender, Type tabType)
+        {
+            SetAddonCountContextText(DisplayAddons.Count);
         }
 
         private void SearchInputViewModel_Searched(object sender, Models.Events.SearchInputEventArgs e)
@@ -417,6 +424,7 @@ namespace WowUp.WPF.ViewModels
             ShowEmptyLabel = false;
             EnableRefresh = false;
             EnableRescan = false;
+            _sessionService.SetContextText(this, string.Empty);
 
             try
             {
@@ -426,6 +434,8 @@ namespace WowUp.WPF.ViewModels
                     .ToList();
 
                 var listViewItems = CreateListViewModels(_addons);
+
+                SetAddonCountContextText(listViewItems.Count);
 
                 UpdateDisplayAddons(listViewItems);
 
@@ -538,6 +548,11 @@ namespace WowUp.WPF.ViewModels
                     DisplayAddons.Add(addon);
                 }
             }
+        }
+
+        private void SetAddonCountContextText(int count)
+        {
+            _sessionService.SetContextText(this, $"{count} addons");
         }
 
         private static void SortAddons(ObservableCollection<AddonListItemViewModel> addons)

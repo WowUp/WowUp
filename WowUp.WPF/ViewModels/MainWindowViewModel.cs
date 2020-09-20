@@ -17,6 +17,7 @@ namespace WowUp.WPF.ViewModels
     public class MainWindowViewModel : BaseViewModel
     {
         private const string WindowPlacementKey = "window_placement";
+        private const string WindowStateKey = "window_state";
 
         private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
@@ -47,6 +48,16 @@ namespace WowUp.WPF.ViewModels
         {
             get => _showTabs;
             set { SetProperty(ref _showTabs, value); }
+        }
+
+        private int _selectedTabIndex;
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set { 
+                SetProperty(ref _selectedTabIndex, value);
+                OnSelectedTabChanged(value);
+            }
         }
 
         private Visibility _restoreVisibility;
@@ -84,6 +95,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _statusText, value); }
         }
 
+        private string _contextText;
+        public string ContextText
+        {
+            get => _contextText;
+            set { SetProperty(ref _contextText, value); }
+        }
+
         public ObservableCollection<TabItem> TabItems { get; set; }
 
         public ApplicationUpdateControlViewModel ApplicationUpdateControlViewModel { get; set; }
@@ -116,6 +134,7 @@ namespace WowUp.WPF.ViewModels
             InitializeView();
 
             _sessionService.SessionChanged += SessionService_SessionChanged;
+            _sessionService.ContextTextChanged += SessionService_ContextTextChanged;
         }
 
         public void SetRestoreMaximizeVisibility(WindowState windowState)
@@ -145,7 +164,18 @@ namespace WowUp.WPF.ViewModels
         public void OnSourceInitialized(Window window)
         {
             var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
+            var windowStatePref = _preferenceRepository.FindByKey(WindowStateKey);
             if (windowPref == null)
+            {
+                return;
+            }
+
+            if (windowStatePref != null && Enum.TryParse<WindowState>(windowStatePref.Value, true, out var windowState))
+            {
+                window.WindowState = windowState;
+            }
+
+            if(window.WindowState == WindowState.Maximized)
             {
                 return;
             }
@@ -178,6 +208,32 @@ namespace WowUp.WPF.ViewModels
             }
 
             _preferenceRepository.SaveItem(windowPref);
+
+            var windowStatePref = _preferenceRepository.FindByKey(WindowStateKey);
+            if(windowStatePref == null)
+            {
+                windowStatePref = new Preference
+                {
+                    Key = WindowStateKey
+                };
+            } 
+
+            windowStatePref.Value = window.WindowState.ToString();
+            _preferenceRepository.SaveItem(windowStatePref);
+        }
+
+        private void OnSelectedTabChanged(int selectedTabIndex)
+        {
+            var tab = TabItems[selectedTabIndex];
+            if(tab.Content is UserControl)
+            {
+                _sessionService.SelectedTabType = (tab.Content as UserControl).DataContext.GetType();
+            }
+        }
+
+        private void SessionService_ContextTextChanged(object sender, string text)
+        {
+            ContextText = text;
         }
 
         private void SessionService_SessionChanged(object sender, Common.Models.Events.SessionEventArgs e)
@@ -250,6 +306,8 @@ namespace WowUp.WPF.ViewModels
             TabItems.Add(getAddonsTab);
             TabItems.Add(aboutTab);
             TabItems.Add(optionsTab);
+
+            _sessionService.SelectedTabType = (addonsTab.Content as UserControl).DataContext.GetType();
         }
 
         private bool HasWarcraftLocation()
@@ -258,24 +316,5 @@ namespace WowUp.WPF.ViewModels
 
             return wowLocations.Any(loc => !string.IsNullOrEmpty(loc));
         }
-
-        //private async Task SetWowLocation()
-        //{
-        //    var selectedPath = DialogUtilities.SelectFolder();
-        //    if (string.IsNullOrEmpty(selectedPath))
-        //    {
-        //        System.Windows.MessageBox.Show("You must select a World of Warcraft folder to continue.");
-        //        return;
-        //    }
-
-        //    var didSet = await _warcraftService.SetWowFolderPath(selectedPath);
-        //    if (!didSet)
-        //    {
-        //        System.Windows.MessageBox.Show($"Unable to set \"{selectedPath}\" as your World of Warcraft folder");
-        //        return;
-        //    }
-
-        //    InitializeView();
-        //}
     }
 }

@@ -1,8 +1,8 @@
 ﻿{
-  "ChangeLogs": [
+  "ChangeLogs": [ 
     {
       "Version": "1.16.1",
-      "Description": "Default addon channel can now be set separately per World of Warcraft client.\nUI updates.\nBug Fixes."
+      "Description": "Default addon channel can now be set separately per World of Warcraft client.\nAddons can now be set to auto update by default per World of Warcraft client.\nAttempt to make updating safer with rollback ability.\nContext information added to the bottom screen bar.\nSmall indicator for auto updated addons.\nWhen closing WowUp maximized it should start back up maximized.\nUI updates.\nBug Fixes."
     },
     {
       "Version": "1.16.0",
