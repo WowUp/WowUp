@@ -42,19 +42,7 @@ bool curse::isWhitespaceCharacter(char b)
 
 uint32_t curse::computeNormalizedLength(char *input, int length)
 {
-  int32_t bufferSize = 65536;
   int32_t num1 = 0;
-  int32_t pos = 0;
-  int32_t chunkSize = 0;
-
-  // do
-  // {
-  //   chunkSize = std::min(length - pos, bufferSize);
-
-  //   if (chunkSize == 0)
-  //   {
-  //     return num1;
-  //   }
 
   for (int32_t index = 0; index < length; ++index)
   {
@@ -64,20 +52,14 @@ uint32_t curse::computeNormalizedLength(char *input, int length)
     }
   }
   return num1;
-
-  //   pos += num2;
-
-  // } while (true);
 }
 
 uint32_t curse::computeHash(char *buffer, int length)
 {
   // std::ofstream myfile("hash.txt", std::ios::out | std::ios::binary);
 
-  uint32_t bufferSize = 65536;
   uint32_t multiplex = 1540483477;
   uint32_t num1 = length;
-  uint32_t pos = 0;
 
   if (true)
   {
