@@ -113,6 +113,7 @@ export class FileService {
       const request: ListFilesRequest = { sourcePath, recursive };
 
       this._electronService.ipcRenderer.once(sourcePath, eventHandler);
+      console.log(LIST_FILES_CHANNEL);
       this._electronService.ipcRenderer.send(LIST_FILES_CHANNEL, request);
     })
   }

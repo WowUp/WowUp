@@ -10,4 +10,6 @@ export interface Toc {
   dependencies?: string;
   curseProjectId?: string;
   wowInterfaceId?: string;
+  tukUiProjectId?: string;
+  tukUiProjectFolders?: string;
 }

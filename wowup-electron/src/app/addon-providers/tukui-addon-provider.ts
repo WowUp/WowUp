@@ -14,6 +14,7 @@ import { AddonProvider } from "./addon-provider";
 import * as _ from 'lodash';
 import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
 import { map } from "rxjs/operators";
+import { v4 as uuidv4 } from 'uuid';
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -21,7 +22,7 @@ const CACHE_TIME = 10 * 60 * 1000;
 
 export class TukUiAddonProvider implements AddonProvider {
 
-  public readonly name = "Curse";
+  public readonly name = "TukUI";
 
   constructor(
     private _httpClient: HttpClient,
@@ -48,30 +49,98 @@ export class TukUiAddonProvider implements AddonProvider {
     return from(this.getAllAddons(clientType))
       .pipe(
         map(tukUiAddons => {
-          
+          const potentialAddons = tukUiAddons.map(addon => this.toPotentialAddon(addon));
+          return _.orderBy(potentialAddons, ['downloadCount']);
         })
       );
   }
-  searchByQuery(query: string, clientType: WowClientType): Promise<PotentialAddon[]> {
-    throw new Error("Method not implemented.");
+
+  async searchByQuery(query: string, clientType: WowClientType): Promise<PotentialAddon[]> {
+    const addons = await this.getAllAddons(clientType);
+    const canonQuery = query.toLowerCase();
+    let similarAddons = _.filter(addons, addon => addon.name.toLowerCase().indexOf(canonQuery) !== -1);
+    similarAddons = _.orderBy(similarAddons, ['downloads']);
+
+    return _.map(similarAddons, addon => this.toPotentialAddon(addon));
   }
+
   searchByUrl(addonUri: URL, clientType: WowClientType): Promise<PotentialAddon> {
     throw new Error("Method not implemented.");
   }
-  searchByName(addonName: string, folderName: string, clientType: WowClientType, nameOverride?: string): Promise<AddonSearchResult[]> {
-    throw new Error("Method not implemented.");
+
+  async searchByName(addonName: string, folderName: string, clientType: WowClientType, nameOverride?: string): Promise<AddonSearchResult[]> {
+    const results: AddonSearchResult[] = [];
+    try {
+      const addons = await this.searchAddons(addonName, clientType);
+      const searchResult = this.toSearchResult(_.first(addons), folderName);
+      if (searchResult) {
+        results.push(searchResult);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return results;
   }
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    throw new Error("Method not implemented.");
+
+  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult | undefined> {
+    return from(this.getAllAddons(clientType))
+      .pipe(
+        map(addons => {
+          const match = _.find(addons, addon => addon.id === addonId);
+          return this.toSearchResult(match, '');
+        })
+      )
   }
+
   isValidAddonUri(addonUri: URL): boolean {
-    throw new Error("Method not implemented.");
+    return false;
   }
+
   onPostInstall(addon: Addon): void {
-    throw new Error("Method not implemented.");
   }
-  scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void> {
+    const allAddons = await this.getAllAddons(clientType);
+    for (let addonFolder of addonFolders) {
+      let tukUiAddon: TukUiAddon;
+      if (addonFolder.toc?.tukUiProjectId) {
+        tukUiAddon = _.find(allAddons, addon => addon.id === addonFolder.toc.tukUiProjectId);
+      } else {
+        const results = await this.searchAddons(addonFolder.toc.title, clientType);
+        tukUiAddon = _.first(results);
+      }
+
+      if (tukUiAddon) {
+        addonFolder.matchingAddon = {
+          autoUpdateEnabled: false,
+          channelType: addonChannelType,
+          clientType: clientType,
+          folderName: addonFolder.name,
+          id: uuidv4(),
+          isIgnored: false,
+          name: tukUiAddon.name,
+          author: tukUiAddon.author,
+          downloadUrl: tukUiAddon.url,
+          externalId: tukUiAddon.id,
+          externalUrl: tukUiAddon.web_url,
+          gameVersion: tukUiAddon.patch,
+          installedAt: new Date(),
+          installedFolders: addonFolder.name,
+          installedVersion: addonFolder.toc.version,
+          latestVersion: tukUiAddon.version,
+          providerName: this.name,
+          thumbnailUrl: tukUiAddon.screenshot_url,
+          updatedAt: new Date()
+        }
+      }
+    }
+  }
+
+  private async searchAddons(addonName: string, clientType: WowClientType) {
+    var addons = await this.getAllAddons(clientType);
+    return addons
+      .filter(addon => addon.name.toLowerCase() === addonName.toLowerCase());
   }
 
   private toPotentialAddon(addon: TukUiAddon): PotentialAddon {
@@ -86,7 +155,11 @@ export class TukUiAddonProvider implements AddonProvider {
     };
   }
 
-  private toSearchResult(addon: TukUiAddon, folderName: string): AddonSearchResult {
+  private toSearchResult(addon: TukUiAddon, folderName: string): AddonSearchResult | undefined {
+    if (!addon) {
+      return undefined;
+    }
+
     var latestFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
       folders: [folderName],
@@ -107,8 +180,11 @@ export class TukUiAddonProvider implements AddonProvider {
   }
 
   private async getAllAddons(clientType: WowClientType): Promise<TukUiAddon[]> {
-    const cacheKey = this.getCacheKey(clientType);
+    if(clientType === WowClientType.None){
+      return [];
+    }
 
+    const cacheKey = this.getCacheKey(clientType);
     const cachedAddons = this._cachingService.get<TukUiAddon[]>(cacheKey);
     if (cachedAddons) {
       return cachedAddons;
@@ -125,6 +201,7 @@ export class TukUiAddonProvider implements AddonProvider {
         addons.push(await this.getElvUiRetailAddon().toPromise());
       }
 
+      console.log('CACHED')
       this._cachingService.set(cacheKey, addons, CACHE_TIME);
       return addons;
     } catch (err) {

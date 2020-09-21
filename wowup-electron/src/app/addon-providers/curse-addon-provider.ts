@@ -7,7 +7,6 @@ import { map, mergeMap } from "rxjs/operators";
 import { CurseFile } from "../models/curse/curse-file";
 import * as _ from 'lodash';
 import * as fp from 'lodash/fp';
-import * as path from 'path';
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { from, Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
@@ -45,7 +44,11 @@ export class CurseAddonProvider implements AddonProvider {
 
     const scanResults = await this.getScanResults(addonFolders);
 
+    console.log('ScanResults')
+
     await this.mapAddonFolders(scanResults, clientType);
+
+    console.log('mapAddonFolders')
 
     const addonIds = fp.flow(
       fp.filter((sr: CurseScanResult) => !!sr.exactMatch),

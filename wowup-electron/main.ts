@@ -21,6 +21,7 @@ import { ListFilesRequest } from './src/common/models/list-files-request';
 import { ListFilesResponse } from './src/common/models/list-files-response';
 import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
+import './ipc-events';
 
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 electronDl();
@@ -247,41 +248,4 @@ ipcMain.on(READ_FILE_CHANNEL, async (evt, arg: ReadFileRequest) => {
   });
 });
 
-ipcMain.on(LIST_FILES_CHANNEL, async (evt, arg: ListFilesRequest) => {
-  console.log('list files', arg);
-  const response: ListFilesResponse = {
-    files: []
-  };
 
-  try {
-    response.files = await readDirRecursive(arg.sourcePath);
-
-  } catch (err) {
-    response.error = err;
-  }
-
-  win.webContents.send(arg.sourcePath, response);
-});
-
-async function readDirRecursive(sourcePath: string): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const dirFiles: string[] = [];
-    fs.readdir(sourcePath, { withFileTypes: true }, async (err, files) => {
-      if (err) {
-        return reject(err);
-      }
-
-      for (let file of files) {
-        const filePath = path.join(sourcePath, file.name);
-        if (file.isDirectory()) {
-          const nestedFiles = await readDirRecursive(filePath);
-          dirFiles.push(...nestedFiles);
-        } else {
-          dirFiles.push(filePath)
-        }
-      }
-
-      resolve(dirFiles);
-    });
-  });
-}

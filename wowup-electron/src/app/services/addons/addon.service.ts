@@ -25,6 +25,7 @@ import { WowUpService } from "../wowup/wowup.service";
 import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { ElectronService } from "../electron/electron.service";
+import { TukUiAddonProvider } from "app/addon-providers/tukui-addon-provider";
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,8 @@ export class AddonService {
     httpClient: HttpClient
   ) {
     this._addonProviders = [
-      new CurseAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService)
+      new TukUiAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
+      new CurseAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
     ];
   }
 
