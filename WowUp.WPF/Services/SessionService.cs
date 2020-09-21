@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
@@ -15,8 +16,7 @@ namespace WowUp.WPF.Services
         private readonly SessionState _sessionState;
         private readonly IWowUpService _wowUpService;
 
-        private bool _runUpdateCheckTimer = true;
-        private Task _updaterCheckTimer;
+        private Timer _updateCheckTimer;
 
         public event SessionTextEventHandler ContextTextChanged;
         public event SessionEventHandler SessionChanged;
@@ -48,6 +48,13 @@ namespace WowUp.WPF.Services
                 StatusText = string.Empty,
                 UpdaterReady = false
             };
+
+            _updateCheckTimer = new Timer(_ => UpdateCheckTimerElapsed(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
+        }
+
+        private async void UpdateCheckTimerElapsed()
+        {
+            await CheckUpdaterApp();
         }
 
         public WowClientType SelectedClientType
@@ -102,15 +109,7 @@ namespace WowUp.WPF.Services
 
         public void AppLoaded()
         {
-            _updaterCheckTimer = Task.Run(async () =>
-            {
-                while (_runUpdateCheckTimer)
-                {
-                    await CheckUpdaterApp();
-                    await Task.Delay(TimeSpan.FromMinutes(30));
-                }
-                Log.Information("Stopping update check timer");
-            });
+            
         }
 
         public void SetContextText(object requestor, string text)
@@ -147,7 +146,6 @@ namespace WowUp.WPF.Services
             {
                 Log.Error(ex, "Failed during updater check");
                 StatusText = "Updater check error";
-                _runUpdateCheckTimer = false;
             }
         }
     }
