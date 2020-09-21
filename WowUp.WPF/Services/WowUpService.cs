@@ -218,7 +218,7 @@ namespace WowUp.WPF.Services
             return await _cacheService.GetCache(LatestVersionCacheKey, async () =>
             {
                 return await _wowUpApiService.GetLatestVersion();
-            }, 5);
+            });
         }
 
         public async Task<LatestVersion> GetLatestClientVersion()
