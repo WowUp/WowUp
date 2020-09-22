@@ -26,6 +26,6 @@ The windows version uses [WowUpdater](https://github.com/jliddev/WowUpUpdater) u
 - [X] GitHub support
 - [x] Addon Search
 - [x] Auto addon updates
-- [ ] Mac client?
-- [ ] Linux Client?
+- [ ] Mac client [Coming Soon](https://github.com/jliddev/WowUp/tree/electron)
+- [ ] Linux Client [Coming Soon](https://github.com/jliddev/WowUp/tree/electron)
 - [ ] Curse alternative?
