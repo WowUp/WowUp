@@ -13,6 +13,9 @@
     justify-content: center;
     margin-right: 11px;
     flex-shrink: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 
     .addon-logo {
       width: 100%;
@@ -24,5 +27,13 @@
     font-size: 1.1em;
     // word-break: break-all;
     white-space: normal;
+    text-decoration: none;
+    color: $white-1;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+      color: $white-2;
+    }
   }
 }

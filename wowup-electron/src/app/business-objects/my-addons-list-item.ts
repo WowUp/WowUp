@@ -24,6 +24,22 @@ export class MyAddonsListItem implements Addon {
     channelType: AddonChannelType;
     updatedAt?: Date;
 
+    isInstalling: boolean = false;
+    installProgress: number = 0;
+    statusText: string = '';
+
+    get needsInstall() {
+        return !this.isInstalling && this.displayState === AddonDisplayState.Install;
+    }
+
+    get needsUpdate() {
+        return !this.isInstalling && this.displayState === AddonDisplayState.Update;
+    }
+
+    get isUpToDate() {
+        return !this.isInstalling && this.displayState === AddonDisplayState.UpToDate;
+    }
+
     get displayState(): AddonDisplayState {
         if (this.isIgnored) {
             return AddonDisplayState.Ignored;
@@ -38,6 +54,7 @@ export class MyAddonsListItem implements Addon {
         }
 
         if (this.installedVersion === this.latestVersion) {
+            return AddonDisplayState.Update;
             return AddonDisplayState.UpToDate;
         }
 
@@ -47,6 +64,21 @@ export class MyAddonsListItem implements Addon {
     constructor(addon?: Addon) {
         if (addon) {
             Object.assign(this, addon);
+            this.statusText = this.getStateText();
+        }
+    }
+
+    private getStateText() {
+        switch (this.displayState) {
+            case AddonDisplayState.UpToDate:
+                return "Up to Date";
+            case AddonDisplayState.Ignored:
+                return "Ignored";
+            case AddonDisplayState.Update:
+            case AddonDisplayState.Install:
+            case AddonDisplayState.Unknown:
+            default:
+                return '';
         }
     }
 }

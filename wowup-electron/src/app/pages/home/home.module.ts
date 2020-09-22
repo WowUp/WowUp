@@ -20,6 +20,7 @@ import { MyAddonsAddonCellComponent } from 'app/components/my-addons-addon-cell/
 import { MyAddonsStatusCellComponent } from 'app/components/my-addons-status-cell/my-addons-status-cell.component';
 import { AddonContextMenuComponent } from 'app/components/addon-context-menu/addon-context-menu.component';
 import { ProgressSpinnerComponent } from 'app/components/progress-spinner/progress-spinner.component';
+import { DownloadCountPipe } from 'app/pipes/download-count.pipe';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,9 @@ import { ProgressSpinnerComponent } from 'app/components/progress-spinner/progre
     MyAddonsStatusCellComponent,
     AddonContextMenuComponent,
     PotentialAddonStatusColumnComponent,
-    ProgressSpinnerComponent
+    ProgressSpinnerComponent,
+    PotentialAddonTableColumnComponent,
+    DownloadCountPipe
   ],
   imports: [
     AgGridModule.withComponents([

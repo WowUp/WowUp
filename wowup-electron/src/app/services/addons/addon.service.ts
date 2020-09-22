@@ -16,7 +16,7 @@ import { AddonFolder } from "app/models/wowup/addon-folder";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
-import { forkJoin, Observable } from "rxjs";
+import { forkJoin, Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import { CachingService } from "../caching/caching-service";
 import { AddonInstallState } from "app/models/wowup/addon-install-state";
@@ -26,6 +26,7 @@ import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { ElectronService } from "../electron/electron.service";
 import { TukUiAddonProvider } from "app/addon-providers/tukui-addon-provider";
+import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,9 @@ import { TukUiAddonProvider } from "app/addon-providers/tukui-addon-provider";
 export class AddonService {
 
   private readonly _addonProviders: AddonProvider[];
+  private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
+
+  public addonInstalled$ = this._addonInstalledSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -67,13 +71,14 @@ export class AddonService {
     await this.installAddon(addon.id, onUpdate);
   }
 
-  public async installAddon(addonId: string, onUpdate: (installState: AddonInstallState, progress: number) => void) {
+  public async installAddon(addonId: string, onUpdate: (installState: AddonInstallState, progress: number) => void = undefined) {
     const addon = this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
       throw new Error("Addon not found or invalid");
     }
 
     onUpdate?.call(this, AddonInstallState.Downloading, 25);
+    this._addonInstalledSrc.next({ addon, installState: AddonInstallState.Downloading, progress: 25 });
 
     let downloadedFilePath = '';
     let unzippedDirectory = '';
@@ -82,6 +87,7 @@ export class AddonService {
       downloadedFilePath = await this._downloadService.downloadZipFile(addon.downloadUrl, this._wowUpService.applicationDownloadsFolderPath);
 
       onUpdate?.call(this, AddonInstallState.Installing, 75);
+      this._addonInstalledSrc.next({ addon, installState: AddonInstallState.Installing, progress: 75 });
 
       const unzipPath = path.join(this._wowUpService.applicationDownloadsFolderPath, uuidv4());
       unzippedDirectory = await this._downloadService.unzipFile(downloadedFilePath, unzipPath);
@@ -101,7 +107,6 @@ export class AddonService {
 
       // await _analyticsService.TrackUserAction("Addons", "InstallById", $"{addon.ClientType}|{addon.Name}");
 
-      // TODO update listeners
     } catch (err) {
       console.error(err);
 
@@ -116,7 +121,8 @@ export class AddonService {
       }
     }
 
-    onUpdate(AddonInstallState.Complete, 100);
+    onUpdate?.call(this, AddonInstallState.Complete, 100);
+    this._addonInstalledSrc.next({ addon, installState: AddonInstallState.Complete, progress: 100 });
   }
 
   private async getLatestGameVersion(baseDir: string, installedFolders: string[]) {
@@ -163,8 +169,8 @@ export class AddonService {
 
         // If the copy succeeds, delete the backup
         if (fs.existsSync(unzipBackupLocation)) {
-        console.log('DELETE BKUP', unzipLocation);
-        await this._fileService.deleteDirectory(unzipBackupLocation);
+          console.log('DELETE BKUP', unzipLocation);
+          await this._fileService.deleteDirectory(unzipBackupLocation);
         }
       } catch (err) {
         console.error(`Failed to copy addon directory ${unzipLocation}`);
@@ -248,7 +254,7 @@ export class AddonService {
     return forkJoin(this._addonProviders.map(p => p.getFeaturedAddons(clientType)))
       .pipe(
         map(results => {
-          return results.flat(1);
+          return _.orderBy(results.flat(1), ['downloadCount']).reverse();
         })
       );
   }

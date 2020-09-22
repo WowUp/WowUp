@@ -3,7 +3,7 @@
       <!-- <img class="addon-logo" [src]="addon.thumbnailUrl" /> -->
     </div>
     <div>
-      <div class="addon-title">{{addon.name}}</div>
+      <a appExternalLink class="addon-title" [href]="addon.externalUrl">{{addon.name}}</a>
       <div>{{addon.installedVersion}}</div>
     </div>
   </div>

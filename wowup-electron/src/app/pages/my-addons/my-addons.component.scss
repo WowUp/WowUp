@@ -58,6 +58,20 @@
     word-break: break-all;
     white-space: pre-wrap;
   }
+
+  .status-column {
+    display: flex;
+    justify-content: center;
+    width: 130px;
+
+    .progress-text {
+      text-align: center;
+    }
+
+    .addon-progress {
+      width: 110px;
+    }
+  }
 }
 
 .author-column {

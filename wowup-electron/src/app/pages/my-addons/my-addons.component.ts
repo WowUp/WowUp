@@ -2,8 +2,6 @@ import { Component, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild, ViewConta
 import { WowClientType } from '../../models/warcraft/wow-client-type';
 import { debounceTime, filter, first, map, take, tap } from 'rxjs/operators';
 import { from, BehaviorSubject, Observable, fromEvent, Subscription } from 'rxjs';
-import { AddonTableColumnComponent } from '../../components/addon-table-column/addon-table-column.component';
-import { AddonStatusColumnComponent } from '../../components/addon-status-column/addon-status-column.component';
 import { Addon } from 'app/entities/addon';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { AddonService } from 'app/services/addons/addon.service';
@@ -14,9 +12,10 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { ColumnState } from 'app/models/wowup/column-state';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MyAddonsListItem } from 'app/business-objects/my-addons-list-item';
-import { AddonDisplayState } from 'app/models/wowup/addon-display-state';
 import * as _ from 'lodash';
 import { ElectronService } from 'app/services';
+import { AddonDisplayState } from 'app/models/wowup/addon-display-state';
+import { AddonInstallState } from 'app/models/wowup/addon-install-state';
 
 @Component({
   selector: 'app-my-addons',
@@ -45,44 +44,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     autoHeight: true,
   };
 
-  columnDefs = [
-    {
-      headerName: 'Addon',
-      field: 'name',
-      cellRendererFramework: AddonTableColumnComponent,
-      resizable: true,
-      minWidth: 200,
-      flex: 1
-    },
-    {
-      headerName: 'Status',
-      field: 'value',
-      cellRendererFramework: AddonStatusColumnComponent,
-      width: 120,
-      suppressSizeToFit: true,
-    },
-    {
-      headerName: 'Latest Version',
-      field: 'latestVersion',
-      cellClass: 'cell-center-text',
-      suppressSizeToFit: true,
-      resizable: true
-    },
-    {
-      headerName: 'Game Version',
-      field: 'gameVersion',
-      cellClass: 'cell-center-text',
-      width: 100,
-      suppressSizeToFit: true
-    },
-    {
-      headerName: 'Author',
-      field: 'author',
-      cellClass: 'cell-center-text',
-      width: 100,
-    }
-  ];
-
   columns: ColumnState[] = [
     { name: 'addon', display: 'Addon', visible: true },
     { name: 'status', display: 'Status', visible: true },
@@ -100,6 +61,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public displayAddons$ = this._displayAddonsSrc.asObservable();
   public overlayRef: OverlayRef | null;
   public isBusy = true;
+  public enableControls = true;
 
   constructor(
     private addonService: AddonService,
@@ -107,7 +69,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     public electronService: ElectronService,
     public overlay: Overlay,
     public viewContainerRef: ViewContainerRef,
-    public warcraftService: WarcraftService
+    public warcraftService: WarcraftService,
+    private _ngZone: NgZone
   ) {
     this._sessionService.selectedHomeTab$
       .subscribe(index => {
@@ -118,7 +81,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
           this.gridApi?.sizeColumnsToFit();
           this.gridApi?.resetRowHeights();
         }, 100);
-      })
+      });
+
+    this.addonService.addonInstalled$.subscribe((evt) => {
+      console.log('UPDATE')
+      const addons = [].concat(this._displayAddonsSrc.value);
+      const listItemIdx = addons.findIndex(li => li.id === evt.addon.id);
+      const listItem = new MyAddonsListItem(evt.addon);
+      listItem.isInstalling = evt.installState === AddonInstallState.Installing || evt.installState === AddonInstallState.Downloading;
+      listItem.statusText = this.getInstallStateText(evt.installState);
+      listItem.installProgress = evt.progress;
+
+      console.log(listItem);
+      addons[listItemIdx] = listItem;
+      this._ngZone.run(() => {
+        this._displayAddonsSrc.next(addons);
+      });
+    })
   }
 
   ngOnInit(): void {
@@ -141,12 +120,35 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.loadAddons(this.selectedClient);
   }
 
+  async onUpdateAll() {
+    this.enableControls = false;
+
+    try {
+      const listItems = _.filter(this._displayAddonsSrc.value,
+        listItem => listItem.displayState === AddonDisplayState.Install || listItem.displayState === AddonDisplayState.Update);
+
+      for (let listItem of listItems) {
+        await this.addonService.installAddon(listItem.id,)
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    this.enableControls = true;
+  }
+
   onHeaderContext({ x, y }: MouseEvent) {
     this.showContextMenu(x, y, this.columnMenu, this.displayedColumns);
   }
 
   onCellContext({ x, y }: MouseEvent, addon: Addon) {
     this.showContextMenu(x, y, this.addonMenu, addon);
+  }
+
+  onUpdateAddon(listItem: MyAddonsListItem) {
+    listItem.isInstalling = true;
+
+    this.addonService.installAddon(listItem.id);
   }
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
@@ -221,13 +223,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private loadAddons(clientType: WowClientType, rescan = false) {
     this.isBusy = true;
+    this.enableControls = false;
 
     console.log('Load-addons', clientType);
 
     from(this.addonService.getAddons(clientType, rescan))
-      .subscribe((addons) => {
-        this.isBusy = false;
-        this._displayAddonsSrc.next(this.formatAddons(addons));
+      .subscribe({
+        next: (addons) => {
+          this.isBusy = false;
+          this.enableControls = true;
+          this._displayAddonsSrc.next(this.formatAddons(addons));
+        },
+        error: (err) => {
+          this.isBusy = false;
+          this.enableControls = true;
+        }
       });
   }
 
@@ -246,5 +256,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
 
     return _.sortBy(listItems, ['displayState', 'name']);
+  }
+
+  private getInstallStateText(installState: AddonInstallState) {
+    switch (installState) {
+      case AddonInstallState.Pending:
+        return "Pending";
+      case AddonInstallState.Downloading:
+        return "Downloading";
+      case AddonInstallState.BackingUp:
+        return "BackingUp";
+      case AddonInstallState.Installing:
+        return "Installing";
+      case AddonInstallState.Complete:
+        return "Complete";
+      default:
+        return "Unknown";
+    }
   }
 }

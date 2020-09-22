@@ -31,7 +31,7 @@
       <ng-container matColumnDef="addon">
         <th mat-header-cell *matHeaderCellDef> Addon </th>
         <td mat-cell *matCellDef="let element" (contextmenu)="onCellContext($event, element)">
-          <app-my-addons-addon-cell [addon]="element"></app-my-addons-addon-cell>
+          <app-potential-addon-table-column [addon]="element"></app-potential-addon-table-column>
         </td>
       </ng-container>
 

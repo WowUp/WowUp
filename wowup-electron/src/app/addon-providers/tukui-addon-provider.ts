@@ -49,8 +49,7 @@ export class TukUiAddonProvider implements AddonProvider {
     return from(this.getAllAddons(clientType))
       .pipe(
         map(tukUiAddons => {
-          const potentialAddons = tukUiAddons.map(addon => this.toPotentialAddon(addon));
-          return _.orderBy(potentialAddons, ['downloadCount']);
+          return tukUiAddons.map(addon => this.toPotentialAddon(addon));
         })
       );
   }

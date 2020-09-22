@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { IAfterGuiAttachedParams, ICellRendererParams } from 'ag-grid-community';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';
@@ -10,7 +10,7 @@ import { PotentialAddon } from 'app/models/wowup/potential-addon';
 })
 export class PotentialAddonTableColumnComponent implements ICellRendererAngularComp {
 
-  public addon: PotentialAddon;
+  @Input('addon') addon: PotentialAddon;
 
   constructor() { }
 

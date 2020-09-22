@@ -5,7 +5,7 @@
       <mat-form-field>
         <mat-label>World of Warcraft</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
-          [disabled]="isBusy === true">
+          [disabled]="enableControls === false">
           <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.clientTypes$ | async">
             {{warcraftService.getClientDisplayName(clientType)}}
           </mat-option>
@@ -13,9 +13,12 @@
       </mat-form-field>
     </div>
     <div class="button-container">
-      <button mat-flat-button color="primary" [disabled]="isBusy === true">Update All</button>
-      <button mat-flat-button color="primary" [disabled]="isBusy === true" (click)="onRefresh()">Refresh</button>
-      <button mat-flat-button color="primary" [disabled]="isBusy === true" (click)="onReScan()">Re-Scan</button>
+      <button mat-flat-button color="primary" [disabled]="enableControls === false" (click)="onUpdateAll()">Update
+        All</button>
+      <button mat-flat-button color="primary" [disabled]="enableControls === false"
+        (click)="onRefresh()">Refresh</button>
+      <button mat-flat-button color="primary" [disabled]="enableControls === false"
+        (click)="onReScan()">Re-Scan</button>
     </div>
   </div>
 
@@ -34,9 +37,25 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element">
-          <app-my-addons-status-cell [addon]="element"></app-my-addons-status-cell>
+          <div class="status-column">
+            <button *ngIf="element.needsInstall === true" mat-flat-button color="primary"
+              (click)="onInstall()">Install</button>
+            <button *ngIf="element.needsUpdate === true" mat-flat-button color="primary"
+              (click)="onUpdateAddon(element)">Update</button>
+            <p *ngIf="element.isUpToDate === true" class="status-text">{{element.statusText}}</p>
+            <div *ngIf="element.isInstalling === true" class="progress-container">
+              <p class="progress-text">{{element.statusText}}</p>
+              <mat-progress-bar class="addon-progress" mode="determinate" [value]="element.installProgress"></mat-progress-bar>
+            </div>
+          </div>
         </td>
       </ng-container>
+      <!-- <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element">
+          <app-my-addons-status-cell [addon]="element"></app-my-addons-status-cell>
+        </td>
+      </ng-container> -->
 
       <ng-container matColumnDef="latestVersion">
         <th mat-header-cell *matHeaderCellDef> Latest Version </th>
