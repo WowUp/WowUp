@@ -27,6 +27,7 @@ namespace WowUp.WPF.Services
     {
         protected const string BackupFolder = "AddonBackups";
 
+        // TODO this is probably no longer needed.
         protected readonly Dictionary<string, string> _addonNameOverrides = new Dictionary<string, string>
         {
             ["Ask Mr. Robot"] = "askmrrobot"
@@ -130,15 +131,9 @@ namespace WowUp.WPF.Services
             }
             catch(Exception ex)
             {
-                Log.Error(ex, $"Failed to get addons for client {clientType}");
+                _analyticsService.Track(ex, $"Failed to get addons for client {clientType}");
                 return new List<Addon>();
             }
-        }
-
-        private void RemoveAddons(WowClientType clientType)
-        {
-            var addons = GetAllStoredAddons(clientType);
-            _addonRepository.DeleteItems(addons);
         }
 
         private List<Addon> UpdateAddons(List<Addon> existingAddons, List<Addon> newAddons)
@@ -490,7 +485,7 @@ namespace WowUp.WPF.Services
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, $"Failed to copy addon directory {unzipLocation}");
+                        _analyticsService.Track(ex, $"Failed to copy addon directory {unzipLocation}");
                         // If a backup directory exists, attempt to roll back
                         if (Directory.Exists(unzipBackupLocation))
                         {
