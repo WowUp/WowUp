@@ -43,7 +43,7 @@ namespace WowUp.WPF.Services.Contracts
 
         Task InstallAddon(
             int addonId,
-            Action<AddonInstallState, decimal> onUpdate);
+            Action<AddonInstallState, decimal> onUpdate = null);
 
         Task UninstallAddon(Addon addon);
 

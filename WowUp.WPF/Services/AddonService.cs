@@ -27,6 +27,7 @@ namespace WowUp.WPF.Services
     {
         protected const string BackupFolder = "AddonBackups";
 
+        // TODO this is probably no longer needed.
         protected readonly Dictionary<string, string> _addonNameOverrides = new Dictionary<string, string>
         {
             ["Ask Mr. Robot"] = "askmrrobot"
@@ -115,23 +116,67 @@ namespace WowUp.WPF.Services
 
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
         {
-            var addons = GetAllStoredAddons(clientType);
-            if (rescan || !addons.Any())
+            try
             {
-                RemoveAddons(clientType);
-                addons = await ScanAddons(clientType);
-                SaveAddons(addons);
+                var addons = GetAllStoredAddons(clientType);
+                if (rescan || !addons.Any())
+                {
+                    var newAddons = await ScanAddons(clientType);
+                    addons = UpdateAddons(addons, newAddons);
+                }
+
+                await SyncAddons(clientType, addons);
+
+                return addons;
             }
-
-            await SyncAddons(clientType, addons);
-
-            return addons;
+            catch(Exception ex)
+            {
+                _analyticsService.Track(ex, $"Failed to get addons for client {clientType}");
+                return new List<Addon>();
+            }
         }
 
-        private void RemoveAddons(WowClientType clientType)
+        private List<Addon> UpdateAddons(List<Addon> existingAddons, List<Addon> newAddons)
         {
-            var addons = GetAllStoredAddons(clientType);
-            _addonRepository.DeleteItems(addons);
+            var removedAddons = existingAddons
+                .Where(existingAddon => !newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
+                .ToList();
+
+            var addedAddons = newAddons
+                .Where(newAddon => !existingAddons.Any(existingAddon => existingAddon.Matches(newAddon)))
+                .ToList();
+
+            var currentAddons = existingAddons
+                .Where(existingAddon => newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
+                .ToList();
+
+            existingAddons.RemoveAll(addon => removedAddons.Any(removedAddon => removedAddon.Id == addon.Id));
+            existingAddons.AddRange(addedAddons);
+
+            foreach (var existingAddon in existingAddons)
+            {
+                var matchingAddon = newAddons.FirstOrDefault(newAddon => newAddon.Matches(existingAddon));
+                if(matchingAddon == default)
+                {
+                    continue;
+                }
+
+                existingAddon.Name = matchingAddon.Name;
+                existingAddon.FolderName = matchingAddon.FolderName;
+                existingAddon.DownloadUrl = matchingAddon.DownloadUrl;
+                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
+                existingAddon.ExternalUrl = matchingAddon.ExternalUrl;
+                existingAddon.LatestVersion = matchingAddon.LatestVersion;
+                existingAddon.ThumbnailUrl = matchingAddon.ThumbnailUrl;
+                existingAddon.GameVersion = matchingAddon.GameVersion;
+                existingAddon.Author = matchingAddon.Author;
+                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
+            }
+
+            _addonRepository.DeleteItems(removedAddons);
+            _addonRepository.SaveItems(existingAddons);
+
+            return existingAddons;
         }
 
         private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
@@ -193,9 +238,14 @@ namespace WowUp.WPF.Services
 
         private AddonSearchResultFile GetLatestFile(AddonSearchResult searchResult, AddonChannelType channelType)
         {
+            var exactMatch = searchResult.Files.FirstOrDefault(lf => lf.ChannelType == channelType);
+            if (exactMatch != null)
+            {
+                return exactMatch;
+            }
+
             return searchResult.Files
-                .Where(lf => lf.ChannelType <= channelType)
-                .FirstOrDefault();
+                .FirstOrDefault(lf => lf.ChannelType <= channelType);
         }
 
         public async Task<PotentialAddon> GetAddonByUri(
@@ -276,7 +326,7 @@ namespace WowUp.WPF.Services
             await InstallAddon(addon.Id, onUpdate);
         }
 
-        public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
+        public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction = null)
         {
             var addon = GetAddon(addonId);
             if (addon == null || string.IsNullOrEmpty(addon.DownloadUrl))
@@ -435,7 +485,7 @@ namespace WowUp.WPF.Services
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, $"Failed to copy addon directory {unzipLocation}");
+                        _analyticsService.Track(ex, $"Failed to copy addon directory {unzipLocation}");
                         // If a backup directory exists, attempt to roll back
                         if (Directory.Exists(unzipBackupLocation))
                         {
