@@ -193,9 +193,14 @@ namespace WowUp.WPF.Services
 
         private AddonSearchResultFile GetLatestFile(AddonSearchResult searchResult, AddonChannelType channelType)
         {
+            var exactMatch = searchResult.Files.FirstOrDefault(lf => lf.ChannelType == channelType);
+            if (exactMatch != null)
+            {
+                return exactMatch;
+            }
+
             return searchResult.Files
-                .Where(lf => lf.ChannelType <= channelType)
-                .FirstOrDefault();
+                .FirstOrDefault(lf => lf.ChannelType <= channelType);
         }
 
         public async Task<PotentialAddon> GetAddonByUri(
