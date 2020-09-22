@@ -101,5 +101,12 @@ namespace WowUp.WPF.Extensions
 
             return AddonDisplayState.Unknown;
         }
+
+        public static bool Matches(this Addon addon1, Addon addon2)
+        {
+            return addon1.ExternalId == addon2.ExternalId &&
+                addon1.ProviderName == addon2.ProviderName &&
+                addon1.ClientType == addon2.ClientType;
+        }
     }
 }

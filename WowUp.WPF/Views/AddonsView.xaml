@@ -199,13 +199,26 @@
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0" Click="UpdateAllButton_Click" 
                             IsEnabled="{Binding EnableUpdateAll}"
-                            Style="{StaticResource purpleButton}">Update All</Button>
+                            Style="{StaticResource purpleButton}"
+                            ToolTip="Update all addons for this client">
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="UpdateAllMenu" Style="{StaticResource DarkMenu}" >
+                                <MenuItem Header="Update Retail/Classic" 
+                                          Command="{Binding UpdateAllRetailClassicCommand}"/>
+                                <MenuItem Header="Update All Clients"
+                                          Command="{Binding UpdateAllClientAddonsCommand}"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                        Update All
+                    </Button>
                     <Button x:Name="RefreshButton" Margin="0, 0, 10, 0" Click="RefreshButton_Click"
                             IsEnabled="{Binding EnableRefresh}"
-                            Style="{StaticResource purpleButton}">Refresh</Button>
+                            Style="{StaticResource purpleButton}"
+                            ToolTip="Check for latest addon updates">Check Updates</Button>
                     <Button x:Name="RescanButton" Click="RescanButton_Click"
                             IsEnabled="{Binding EnableRescan}"
-                            Style="{StaticResource purpleButton}">Re-Scan</Button>
+                            Style="{StaticResource purpleButton}"
+                            ToolTip="Scan your client folder for installed addons">Re-Scan Folders</Button>
                     <vw:SearchInput Width="150" Margin="10 0 0 0" VerticalAlignment="Center" DataContext="{Binding SearchInputViewModel}"/>
                 </StackPanel>
             </Border>
@@ -215,9 +228,9 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center">
-                <TextBlock Text="Loading Addons..." HorizontalAlignment="Center" FontSize="14" Foreground="White" />
                 <Image gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="40"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
+                <TextBlock Text="{Binding BusyText}" HorizontalAlignment="Center" TextAlignment="Center" FontSize="14" Foreground="White" />
             </StackPanel>
             <StackPanel Grid.Row="0" Visibility="{Binding ShowEmptyLabel, Converter={StaticResource BoolToVisibilty}}" VerticalAlignment="Center" >
                 <TextBlock Text="No Addons found" HorizontalAlignment="Center" FontSize="16" Foreground="White"/>
@@ -331,7 +344,8 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" 
                                                 Text="{Binding DataContext.AddonHeaderText, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" 
-                                                TextWrapping="Wrap" 
+                                                TextWrapping="Wrap"
+                                                Margin="10 0 0 0"
                                                 Style="{StaticResource labelTableHeader}" />
                                     <Image Grid.Column="1" Margin="10 0 0 0"
                                                 Width="20"

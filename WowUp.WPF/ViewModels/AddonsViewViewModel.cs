@@ -30,6 +30,13 @@ namespace WowUp.WPF.ViewModels
         
         private List<Addon> _addons;
 
+        private string _busyText;
+        public string BusyText
+        {
+            get => _busyText;
+            set { SetProperty(ref _busyText, value); }
+        }
+
         private bool _showEmptyLabel;
         public bool ShowEmptyLabel
         {
@@ -169,6 +176,8 @@ namespace WowUp.WPF.ViewModels
         public Command RefreshCommand { get; set; }
         public Command RescanCommand { get; set; }
         public Command UpdateAllCommand { get; set; }
+        public Command UpdateAllRetailClassicCommand { get; set; }
+        public Command UpdateAllClientAddonsCommand { get; set; }
         public Command SelectedWowClientCommand { get; set; }
         public Command GridSortingCommand { get; set; }
         public Command ViewInitializedCommand { get; set; }
@@ -221,6 +230,8 @@ namespace WowUp.WPF.ViewModels
             RefreshCommand = new Command(async () => await LoadItems());
             RescanCommand = new Command(async () => await ReScan());
             UpdateAllCommand = new Command(async () => await UpdateAll());
+            UpdateAllRetailClassicCommand = new Command(async () => await UpdateAllRetailClassic());
+            UpdateAllClientAddonsCommand = new Command(async () => await UpdateAllClientAddons());
             SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
             GridSortingCommand = new Command((args) => OnGridSorting(args as DataGridSortingEventArgs));
             ViewInitializedCommand = new Command(() => OnViewInitialized());
@@ -233,6 +244,8 @@ namespace WowUp.WPF.ViewModels
             BindingOperations.EnableCollectionSynchronization(DisplayAddons, DisplayAddonsLock);
 
             SelectedClientType = _sessionService.SelectedClientType;
+
+            BusyText = string.Empty;
 
             SetClientNames();
 
@@ -362,6 +375,68 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
+        public async Task UpdateAllRetailClassic()
+        {
+            await UpdateAllWithSpinner(WowClientType.Retail, WowClientType.Classic);
+        }
+
+        public async Task UpdateAllClientAddons()
+        {
+            await UpdateAllWithSpinner(
+                WowClientType.Retail, 
+                WowClientType.RetailPtr,
+                WowClientType.Classic,
+                WowClientType.ClassicPtr,
+                WowClientType.Beta);
+        }
+
+        public async Task UpdateAllWithSpinner(params WowClientType[] clientTypes)
+        {
+            EnableUpdateAll = false;
+            EnableRefresh = false;
+            EnableRescan = false;
+            ShowResults = false;
+            IsBusy = true;
+            BusyText = "Gathering addons...";
+
+            try
+            {
+                var updatedCount = 0;
+                var allAddons = new List<Addon>();
+                foreach(var clientType in clientTypes)
+                {
+                    allAddons.AddRange(await _addonService.GetAddons(clientType));
+                }
+
+                // Only care about the ones that need to be updated/installed
+                allAddons = allAddons
+                    .Where(addon => addon.CanUpdate() || addon.CanInstall())
+                    .ToList();
+
+                BusyText = $"Updating {updatedCount}/{allAddons.Count}";
+
+                foreach (var addon in allAddons)
+                {
+                    updatedCount += 1;
+                    BusyText = $"Updating {updatedCount}/{allAddons.Count}\n{addon.ClientType}: {addon.Name}";
+
+                    await _addonService.InstallAddon(addon.Id);
+                }
+
+                await LoadItems();
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "Failed to update with spinner");
+
+                EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
+                EnableRefresh = true;
+                EnableRescan = true;
+                ShowResults = true;
+                IsBusy = false;
+            }
+        }
+
         private async void UpdateAutoUpdateAddons()
         {
             EnableUpdateAll = false;
@@ -424,6 +499,7 @@ namespace WowUp.WPF.ViewModels
             ShowEmptyLabel = false;
             EnableRefresh = false;
             EnableRescan = false;
+            BusyText = "Loading Addons...";
             _sessionService.SetContextText(this, string.Empty);
 
             try

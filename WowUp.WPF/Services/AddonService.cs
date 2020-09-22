@@ -115,23 +115,67 @@ namespace WowUp.WPF.Services
 
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
         {
-            var addons = GetAllStoredAddons(clientType);
-            if (rescan || !addons.Any())
+            try
             {
-                RemoveAddons(clientType);
-                addons = await ScanAddons(clientType);
-                SaveAddons(addons);
+                var addons = GetAllStoredAddons(clientType);
+                if (rescan || !addons.Any())
+                {
+                    RemoveAddons(clientType);
+                    var newAddons = await ScanAddons(clientType);
+                    UpdateAddons(addons, newAddons);
+
+                    SaveAddons(addons);
+                }
+
+                await SyncAddons(clientType, addons);
+
+                return addons;
             }
-
-            await SyncAddons(clientType, addons);
-
-            return addons;
+            catch(Exception ex)
+            {
+                Log.Error(ex, $"Failed to get addons for client {clientType}");
+                return new List<Addon>();
+            }
         }
 
         private void RemoveAddons(WowClientType clientType)
         {
             var addons = GetAllStoredAddons(clientType);
             _addonRepository.DeleteItems(addons);
+        }
+
+        private void UpdateAddons(List<Addon> existingAddons, List<Addon> newAddons)
+        {
+            var removedAddons = existingAddons
+                .Where(existingAddon => !newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
+                .ToList();
+
+            var addedAddons = newAddons
+                .Where(newAddon => !existingAddons.Any(existingAddon => existingAddon.Matches(newAddon)))
+                .ToList();
+
+            var currentAddons = existingAddons
+                .Where(existingAddon => newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
+                .ToList();
+
+            existingAddons.RemoveAll(addon => removedAddons.Any(removedAddon => removedAddon.Id == addon.Id));
+            existingAddons.AddRange(addedAddons);
+
+            foreach(var currentAddon in currentAddons)
+            {
+                var matchingAddon = newAddons.FirstOrDefault(newAddon => newAddon.Matches(currentAddon));
+
+                currentAddon.Name = matchingAddon.Name;
+                currentAddon.FolderName = matchingAddon.FolderName;
+                currentAddon.DownloadUrl = matchingAddon.DownloadUrl;
+                currentAddon.InstalledVersion = matchingAddon.InstalledVersion;
+                currentAddon.ExternalUrl = matchingAddon.ExternalUrl;
+                currentAddon.LatestVersion = matchingAddon.LatestVersion;
+                currentAddon.ThumbnailUrl = matchingAddon.ThumbnailUrl;
+                currentAddon.GameVersion = matchingAddon.GameVersion;
+                currentAddon.Author = matchingAddon.Author;
+                currentAddon.InstalledVersion = matchingAddon.InstalledVersion;
+            }
         }
 
         private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
@@ -281,7 +325,7 @@ namespace WowUp.WPF.Services
             await InstallAddon(addon.Id, onUpdate);
         }
 
-        public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction)
+        public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction = null)
         {
             var addon = GetAddon(addonId);
             if (addon == null || string.IsNullOrEmpty(addon.DownloadUrl))
