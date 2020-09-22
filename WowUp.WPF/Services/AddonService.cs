@@ -120,11 +120,8 @@ namespace WowUp.WPF.Services
                 var addons = GetAllStoredAddons(clientType);
                 if (rescan || !addons.Any())
                 {
-                    RemoveAddons(clientType);
                     var newAddons = await ScanAddons(clientType);
-                    UpdateAddons(addons, newAddons);
-
-                    SaveAddons(addons);
+                    addons = UpdateAddons(addons, newAddons);
                 }
 
                 await SyncAddons(clientType, addons);
@@ -144,7 +141,7 @@ namespace WowUp.WPF.Services
             _addonRepository.DeleteItems(addons);
         }
 
-        private void UpdateAddons(List<Addon> existingAddons, List<Addon> newAddons)
+        private List<Addon> UpdateAddons(List<Addon> existingAddons, List<Addon> newAddons)
         {
             var removedAddons = existingAddons
                 .Where(existingAddon => !newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
@@ -161,21 +158,30 @@ namespace WowUp.WPF.Services
             existingAddons.RemoveAll(addon => removedAddons.Any(removedAddon => removedAddon.Id == addon.Id));
             existingAddons.AddRange(addedAddons);
 
-            foreach(var currentAddon in currentAddons)
+            foreach (var existingAddon in existingAddons)
             {
-                var matchingAddon = newAddons.FirstOrDefault(newAddon => newAddon.Matches(currentAddon));
+                var matchingAddon = newAddons.FirstOrDefault(newAddon => newAddon.Matches(existingAddon));
+                if(matchingAddon == default)
+                {
+                    continue;
+                }
 
-                currentAddon.Name = matchingAddon.Name;
-                currentAddon.FolderName = matchingAddon.FolderName;
-                currentAddon.DownloadUrl = matchingAddon.DownloadUrl;
-                currentAddon.InstalledVersion = matchingAddon.InstalledVersion;
-                currentAddon.ExternalUrl = matchingAddon.ExternalUrl;
-                currentAddon.LatestVersion = matchingAddon.LatestVersion;
-                currentAddon.ThumbnailUrl = matchingAddon.ThumbnailUrl;
-                currentAddon.GameVersion = matchingAddon.GameVersion;
-                currentAddon.Author = matchingAddon.Author;
-                currentAddon.InstalledVersion = matchingAddon.InstalledVersion;
+                existingAddon.Name = matchingAddon.Name;
+                existingAddon.FolderName = matchingAddon.FolderName;
+                existingAddon.DownloadUrl = matchingAddon.DownloadUrl;
+                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
+                existingAddon.ExternalUrl = matchingAddon.ExternalUrl;
+                existingAddon.LatestVersion = matchingAddon.LatestVersion;
+                existingAddon.ThumbnailUrl = matchingAddon.ThumbnailUrl;
+                existingAddon.GameVersion = matchingAddon.GameVersion;
+                existingAddon.Author = matchingAddon.Author;
+                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
             }
+
+            _addonRepository.DeleteItems(removedAddons);
+            _addonRepository.SaveItems(existingAddons);
+
+            return existingAddons;
         }
 
         private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
