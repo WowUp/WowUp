@@ -72,8 +72,14 @@ namespace WowUp.WPF.Services
                 var clientLocation = GetClientLocation(clientType);
                 var productLocation = GetProductLocation(clientType);
 
-                //Log.Information($"clientLocation {clientLocation}, productLocation: {productLocation}");
+                Log.Information($"clientLocation {clientLocation}, productLocation: {productLocation}");
                 if (AreEqualPaths(clientLocation, productLocation))
+                {
+                    continue;
+                }
+
+                // If the path that the user selected is valid, then move on.
+                if (!string.IsNullOrEmpty(clientLocation) && IsClientFolder(clientType, clientLocation))
                 {
                     continue;
                 }
