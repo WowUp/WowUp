@@ -13,6 +13,8 @@
 Thanks to the announcement that Twitch is giving the Curse addon client to yet another company I wanted to try and create something the community can believe in.
 If you have any ideas/requests for the feature list let me know!
 
+The windows version uses [WowUpdater](https://github.com/jliddev/WowUpUpdater) under the hood for now.
+
 ### Upcoming Features
 - [x] Create feature List
 - [x] Scan for already installed addons
@@ -24,6 +26,6 @@ If you have any ideas/requests for the feature list let me know!
 - [X] GitHub support
 - [x] Addon Search
 - [x] Auto addon updates
-- [ ] Mac client?
-- [ ] Linux Client?
+- [ ] Mac client [Coming Soon](https://github.com/jliddev/WowUp/tree/electron)
+- [ ] Linux Client [Coming Soon](https://github.com/jliddev/WowUp/tree/electron)
 - [ ] Curse alternative?

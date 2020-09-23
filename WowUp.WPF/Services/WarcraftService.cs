@@ -79,7 +79,7 @@ namespace WowUp.WPF.Services
                 }
 
                 // If the path that the user selected is valid, then move on.
-                if(!string.IsNullOrEmpty(clientLocation) && IsClientFolder(clientType, clientLocation))
+                if (!string.IsNullOrEmpty(clientLocation) && IsClientFolder(clientType, clientLocation))
                 {
                     continue;
                 }
