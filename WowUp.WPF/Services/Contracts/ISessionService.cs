@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
 
-namespace WowUp.Common.Services.Contracts
+namespace WowUp.WPF.Services.Contracts
 {
     public delegate void SessionEventHandler(object sender, SessionEventArgs e);
     public delegate void SessionTabEventHandler(object sender, Type tabType);
@@ -18,6 +19,7 @@ namespace WowUp.Common.Services.Contracts
         string ContextText { get; }
 
         Type SelectedTabType { get; set; }
+        TaskbarIcon TaskbarIcon { get; set; }
 
         void AppLoaded();
     }

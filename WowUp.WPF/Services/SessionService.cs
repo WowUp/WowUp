@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using Serilog;
 using System;
 using System.Linq;
 using System.Threading;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
-using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Services.Contracts;
 
 namespace WowUp.WPF.Services
@@ -14,18 +14,24 @@ namespace WowUp.WPF.Services
     public class SessionService : ISessionService
     {
         private readonly SessionState _sessionState;
+        private readonly IAddonService _addonService;
         private readonly IWowUpService _wowUpService;
 
         private Timer _updateCheckTimer;
+        private Timer _autoUpdateCheckTimer;
 
         public event SessionTextEventHandler ContextTextChanged;
         public event SessionEventHandler SessionChanged;
         public event SessionTabEventHandler TabChanged;
 
+        public TaskbarIcon TaskbarIcon { get; set; }
+
         public SessionService(
+            IAddonService addonService,
             IWarcraftService warcraftService,
             IWowUpService wowUpService)
         {
+            _addonService = addonService;
             _wowUpService = wowUpService;
 
             var installedClientTypes = warcraftService.GetWowClientTypes();
@@ -49,7 +55,6 @@ namespace WowUp.WPF.Services
                 UpdaterReady = false
             };
 
-            _updateCheckTimer = new Timer(_ => UpdateCheckTimerElapsed(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
         }
 
         private async void UpdateCheckTimerElapsed()
@@ -109,7 +114,15 @@ namespace WowUp.WPF.Services
 
         public void AppLoaded()
         {
-            
+            if(_updateCheckTimer == null)
+            {
+                _updateCheckTimer = new Timer(_ => UpdateCheckTimerElapsed(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
+            }
+
+            if (_autoUpdateCheckTimer == null)
+            {
+                _autoUpdateCheckTimer = new Timer(_ => ProcessAutoUpdates(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
+            }
         }
 
         public void SetContextText(object requestor, string text)
@@ -121,6 +134,16 @@ namespace WowUp.WPF.Services
             }
 
             SetContextText(text);
+        }
+
+        private async void ProcessAutoUpdates()
+        {
+            var updateCount = await _addonService.ProcessAutoUpdates();
+
+            if (TaskbarIcon != null && updateCount > 0)
+            {
+                TaskbarIcon.ShowBalloonTip("WowUp", $"Automatically updated {updateCount} addons.", TaskbarIcon.Icon, true);
+            }
         }
 
         private void SetContextText(string text)

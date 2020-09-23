@@ -50,5 +50,7 @@ namespace WowUp.WPF.Services.Contracts
         Task<List<Addon>> GetAddons(
             WowClientType clientType,
             bool rescan = false);
+
+        Task<int> ProcessAutoUpdates();
     }
 }

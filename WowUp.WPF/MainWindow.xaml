@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WowUp.WPF"
         xmlns:vw = "clr-namespace:WowUp.WPF.Views" 
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         Title="WowUp.io" 
         Padding="0"
@@ -155,6 +156,24 @@
                     <TextBlock Grid.Column="3" Text="{Binding Version}" VerticalAlignment="Center" Foreground="{StaticResource White3Brush}"></TextBlock>
                 </Grid>
             </Border>
+
+            <tb:TaskbarIcon
+                x:Name="TrayIcon"
+                IconSource="/Assets/wowup_logo_512np_RRT_icon.ico"
+                ToolTipText="WowUp"
+                LeftClickCommand="{Binding TaskbarIconClickCommand}">
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu Style="{StaticResource DarkMenu}">
+                        <MenuItem Header="WowUp" IsEnabled="False">
+                            <MenuItem.Icon>
+                                <Image Source="/Assets/wowup_logo_512np_RRT_icon.ico" 
+                                       Width="16" Height="16" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Quit WowUp" Command="{Binding TaskbarIconCloseCommand}" />
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
         </Grid>
     </Border>
 </Window>

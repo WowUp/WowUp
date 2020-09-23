@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -28,6 +29,19 @@ namespace WowUp.WPF.ViewModels
 
         public Command SelectWowCommand { get; set; }
         public Command CloseWindowCommand { get; set; }
+        public Command TaskbarIconCloseCommand { get; set; }
+        public Command TaskbarIconClickCommand { get; set; }
+
+        private TaskbarIcon _taskbarIcon;
+        public TaskbarIcon TaskbarIcon
+        {
+            get => _taskbarIcon;
+            set
+            {
+                _taskbarIcon = value;
+                _sessionService.TaskbarIcon = value;
+            }
+        }
 
         private string _title;
         public string Title
@@ -124,6 +138,8 @@ namespace WowUp.WPF.ViewModels
 
             SelectWowCommand = new Command(() => { });
             CloseWindowCommand = new Command(() => OnCloseWindow());
+            TaskbarIconCloseCommand = new Command(() => OnTaskbarIconClose());
+            TaskbarIconClickCommand = new Command(() => OnTaskbarIconClick());
 
             ApplicationUpdateControlViewModel = serviceProvider.GetService<ApplicationUpdateControlViewModel>();
 
@@ -135,6 +151,23 @@ namespace WowUp.WPF.ViewModels
 
             _sessionService.SessionChanged += SessionService_SessionChanged;
             _sessionService.ContextTextChanged += SessionService_ContextTextChanged;
+        }
+
+        private void OnTaskbarIconClick()
+        {
+            if (Application.Current?.MainWindow == null)
+            {
+                return;
+            }
+
+            Application.Current.MainWindow.Show();
+            Application.Current.MainWindow.WindowState = WindowState.Normal;
+            Application.Current.MainWindow.Activate();
+        }
+
+        private void OnTaskbarIconClose()
+        {
+            Application.Current?.MainWindow?.Close();
         }
 
         public void SetRestoreMaximizeVisibility(WindowState windowState)
