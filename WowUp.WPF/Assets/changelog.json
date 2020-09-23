@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.16.6",
+      "Description": "Actually fix the switch from stable to beta WowUp client?"
+    },
+    {
+      "Version": "1.16.5",
+      "Description": "Fix bug where the proper WowUp release channel version was not selected."
+    },
+    {
       "Version": "1.16.4",
       "Description": "When using alpha/beta addons, the latest release will always be recommended even if its not the same release type."
     },

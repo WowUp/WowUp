@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -24,6 +25,7 @@ namespace WowUp.WPF.Services
             string outputFolder,
             Action<int> progressAction = null)
         {
+            Log.Information($"Downloading Zip File: {downloadUrl}");
             WebClient client = new WebClient();
             Uri uri = new Uri(downloadUrl);
             var fileName = Path.GetFileName(downloadUrl);
