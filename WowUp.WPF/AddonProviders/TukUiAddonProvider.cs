@@ -201,7 +201,8 @@ namespace WowUp.WPF.AddonProviders
                 Folders = new[] { folderName },
                 DownloadUrl = addon.Url,
                 GameVersion = addon.Patch,
-                Version = addon.Version
+                Version = addon.Version,
+                ReleaseDate = addon.LastUpdate
             };
 
             return new AddonSearchResult

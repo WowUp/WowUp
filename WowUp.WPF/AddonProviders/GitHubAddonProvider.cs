@@ -85,7 +85,8 @@ namespace WowUp.WPF.AddonProviders
                 DownloadUrl = asset.BrowserDownloadUrl,
                 Folders = new List<string> { name },
                 GameVersion = string.Empty,
-                Version = asset.Name
+                Version = asset.Name,
+                ReleaseDate = asset.CreatedAt
             };
 
             var searchResult = new AddonSearchResult

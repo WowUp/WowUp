@@ -398,7 +398,8 @@ namespace WowUp.WPF.AddonProviders
                     Version = lf.DisplayName,
                     DownloadUrl = lf.DownloadUrl,
                     Folders = GetFolderNames(lf),
-                    GameVersion = GetGameVersion(lf)
+                    GameVersion = GetGameVersion(lf),
+                    ReleaseDate = lf.FileDate
                 });
 
                 return new AddonSearchResult
