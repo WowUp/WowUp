@@ -169,7 +169,11 @@ namespace WowUp.WPF.Services
                 return false;
             }
 
-            var latestVersion = new Version(latestServerVersion.Version.TrimSemVerString());
+            var serverVersion = releaseChannel == WowUpReleaseChannelType.Stable 
+                ? latestServerVersion.Stable 
+                : latestServerVersion.Beta;
+
+            var latestVersion = new Version(serverVersion.Version.TrimSemVerString());
             var currentVersion = new Version(AppUtilities.LongVersionName.TrimSemVerString());
 
             if (AppUtilities.IsBetaBuild && releaseChannel != WowUpReleaseChannelType.Beta)
