@@ -72,6 +72,11 @@ namespace WowUp.WPF.Services
                 var clientLocation = GetClientLocation(clientType);
                 var productLocation = GetProductLocation(clientType);
 
+                if(string.IsNullOrEmpty(clientLocation) && string.IsNullOrEmpty(productLocation))
+                {
+                    continue;
+                }
+
                 Log.Information($"clientLocation {clientLocation}, productLocation: {productLocation}");
                 if (AreEqualPaths(clientLocation, productLocation))
                 {
