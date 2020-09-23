@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.16.4",
+      "Description": "When using alpha/beta addons, the latest release will always be recommended even if its not the same release type."
+    },
+    {
       "Version": "1.16.3",
       "Description": "Fix an issue causing a selected WoW client path to be overwritten at startup."
     },
