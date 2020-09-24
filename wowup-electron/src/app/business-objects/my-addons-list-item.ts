@@ -3,26 +3,8 @@ import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonDisplayState } from "../models/wowup/addon-display-state";
 
-export class MyAddonsListItem implements Addon {
-    id: string;
-    name: string;
-    folderName: string;
-    downloadUrl?: string;
-    installedVersion?: string;
-    latestVersion?: string;
-    installedAt?: Date;
-    externalId?: string;
-    providerName?: string;
-    externalUrl?: string;
-    thumbnailUrl?: string;
-    gameVersion?: string;
-    author?: string;
-    installedFolders?: string;
-    isIgnored: boolean;
-    autoUpdateEnabled: boolean;
-    clientType: WowClientType;
-    channelType: AddonChannelType;
-    updatedAt?: Date;
+export class MyAddonsListItem {
+    addon: Addon;
 
     isInstalling: boolean = false;
     installProgress: number = 0;
@@ -40,21 +22,36 @@ export class MyAddonsListItem implements Addon {
         return !this.isInstalling && this.displayState === AddonDisplayState.UpToDate;
     }
 
+    get isIgnored() {
+        return this.displayState === AddonDisplayState.Ignored;
+    }
+
+    get isStableChannel() {
+        return this.addon.channelType === AddonChannelType.Stable;
+    }
+
+    get isBetaChannel() {
+        return this.addon.channelType === AddonChannelType.Beta;
+    }
+
+    get isAlphaChannel() {
+        return this.addon.channelType === AddonChannelType.Alpha;
+    }
+
     get displayState(): AddonDisplayState {
-        if (this.isIgnored) {
+        if (this.addon.isIgnored) {
             return AddonDisplayState.Ignored;
         }
 
-        if (!this.installedVersion) {
+        if (!this.addon.installedVersion) {
             return AddonDisplayState.Install;
         }
 
-        if (this.installedVersion != this.latestVersion) {
+        if (this.addon.installedVersion != this.addon.latestVersion) {
             return AddonDisplayState.Update;
         }
 
-        if (this.installedVersion === this.latestVersion) {
-            return AddonDisplayState.Update;
+        if (this.addon.installedVersion === this.addon.latestVersion) {
             return AddonDisplayState.UpToDate;
         }
 
@@ -62,13 +59,11 @@ export class MyAddonsListItem implements Addon {
     }
 
     constructor(addon?: Addon) {
-        if (addon) {
-            Object.assign(this, addon);
-            this.statusText = this.getStateText();
-        }
+        this.addon = addon;
+        this.statusText = this.getStateText();
     }
 
-    private getStateText() {
+    public getStateText() {
         switch (this.displayState) {
             case AddonDisplayState.UpToDate:
                 return "Up to Date";

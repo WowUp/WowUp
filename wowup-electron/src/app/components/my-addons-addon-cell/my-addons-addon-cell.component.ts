@@ -9,7 +9,7 @@ import { MyAddonsListItem } from 'app/business-objects/my-addons-list-item';
 })
 export class MyAddonsAddonCellComponent implements OnInit {
 
-  @Input('addon') addon: MyAddonsListItem;
+  @Input('addon') listItem: MyAddonsListItem;
 
   constructor() { }
 

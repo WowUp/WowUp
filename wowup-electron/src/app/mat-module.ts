@@ -13,6 +13,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   exports: [
@@ -28,7 +30,9 @@ import { MatMenuModule } from '@angular/material/menu';
     MatCheckboxModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MatMenuModule
+    MatMenuModule,
+    MatRadioModule,
+    MatTooltipModule
   ],
   imports: [
     MatSliderModule,
@@ -43,7 +47,9 @@ import { MatMenuModule } from '@angular/material/menu';
     MatCheckboxModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MatMenuModule
+    MatMenuModule,
+    MatRadioModule,
+    MatTooltipModule
   ]
 })
 export class MatModule { }

@@ -13,12 +13,12 @@
       </mat-form-field>
     </div>
     <div class="button-container">
-      <button mat-flat-button color="primary" [disabled]="enableControls === false" (click)="onUpdateAll()">Update
-        All</button>
-      <button mat-flat-button color="primary" [disabled]="enableControls === false"
-        (click)="onRefresh()">Refresh</button>
-      <button mat-flat-button color="primary" [disabled]="enableControls === false"
-        (click)="onReScan()">Re-Scan</button>
+      <button mat-flat-button color="primary" matTooltip="Update all addons for this client"
+        [disabled]="enableControls === false" (click)="onUpdateAll()">Update All</button>
+      <button mat-flat-button color="primary" matTooltip="Check for latest addon updates"
+        [disabled]="enableControls === false" (click)="onRefresh()">Refresh</button>
+      <button mat-flat-button color="primary" matTooltip="Scan your client folder for installed addons"
+        [disabled]="enableControls === false" (click)="onReScan()">Re-Scan</button>
     </div>
   </div>
 
@@ -38,50 +38,46 @@
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element">
           <div class="status-column">
+            <mat-icon *ngIf="element.addon.autoUpdateEnabled" class="auto-update-icon" matTooltip="Auto update enabled">update</mat-icon>
             <button *ngIf="element.needsInstall === true" mat-flat-button color="primary"
               (click)="onInstall()">Install</button>
             <button *ngIf="element.needsUpdate === true" mat-flat-button color="primary"
               (click)="onUpdateAddon(element)">Update</button>
-            <p *ngIf="element.isUpToDate === true" class="status-text">{{element.statusText}}</p>
+            <div *ngIf="element.isUpToDate === true || element.isIgnored === true" class="status-text">{{element.statusText}}</div>
             <div *ngIf="element.isInstalling === true" class="progress-container">
               <p class="progress-text">{{element.statusText}}</p>
-              <mat-progress-bar class="addon-progress" mode="determinate" [value]="element.installProgress"></mat-progress-bar>
+              <mat-progress-bar class="addon-progress" mode="determinate" [value]="element.installProgress">
+              </mat-progress-bar>
             </div>
           </div>
         </td>
       </ng-container>
-      <!-- <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef> Status </th>
-        <td mat-cell *matCellDef="let element">
-          <app-my-addons-status-cell [addon]="element"></app-my-addons-status-cell>
-        </td>
-      </ng-container> -->
 
       <ng-container matColumnDef="latestVersion">
         <th mat-header-cell *matHeaderCellDef> Latest Version </th>
         <td mat-cell *matCellDef="let element">
-          {{element.latestVersion}}
+          {{element.addon.latestVersion}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="gameVersion">
         <th mat-header-cell *matHeaderCellDef> Game Version </th>
         <td mat-cell *matCellDef="let element">
-          {{element.gameVersion}}
+          {{element.addon.gameVersion}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="provider">
         <th mat-header-cell *matHeaderCellDef class="provider-column"> Provider </th>
         <td mat-cell *matCellDef="let element">
-          {{element.providerName}}
+          {{element.addon.providerName}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="author">
         <th mat-header-cell *matHeaderCellDef class="author-column"> Author </th>
         <td mat-cell *matCellDef="let element">
-          {{element.author}}
+          {{element.addon.author}}
         </td>
       </ng-container>
 
@@ -90,9 +86,6 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <!-- <ag-grid-angular class="ag-theme-balham addon-table" [gridOptions]="gridOptions" [rowData]="displayAddons$ | async"
-      [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)">
-    </ag-grid-angular> -->
   </div>
 </div>
 
@@ -107,6 +100,41 @@
   </section>
 </ng-template>
 
+<div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu" class="addon-context-menu">
+  <ng-template matMenuContent let-listItem="listItem">
+    <div class="addon-context-menu-header">
+      <div class="thumbnail" [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"></div>
+      <div>
+        <div class="addon-name">{{listItem.addon.name}}</div>
+        <div class="addon-version">{{listItem.addon.latestVersion}}</div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-checkbox class="mat-menu-item" [checked]="listItem.addon.isIgnored" (change)="onClickIgnoreAddon($event, listItem)">Ignore
+    </mat-checkbox>
+    <mat-checkbox *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item" [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem.addon)">Auto
+      Update
+    </mat-checkbox>
+    <button mat-menu-item [matMenuTriggerFor]="addonChannels">Channel</button>
+    <button mat-menu-item (click)="onContextMenuAction2(item)">Re-Install</button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="onContextMenuAction2(item)">Remove</button>
+    <mat-menu #addonChannels="matMenu" class="addon-context-menu">
+      <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
+        (change)="onSelectedAddonChannelChange($event, listItem.addon)">
+        <mat-radio-button class="mat-menu-item" [value]="0">Stable</mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="1">Beta</mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="2">Alpha</mat-radio-button>
+      </mat-radio-group>
+    </mat-menu>
+  </ng-template>
+</mat-menu>
+
+
+<!-- 
 <ng-template #addonMenu let-addon>
   <app-addon-context-menu [addon]="addon"></app-addon-context-menu>
-</ng-template>
+</ng-template> -->

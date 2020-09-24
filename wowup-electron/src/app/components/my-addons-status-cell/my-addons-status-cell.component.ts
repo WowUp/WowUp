@@ -34,7 +34,7 @@ export class MyAddonsStatusCellComponent implements OnInit, OnDestroy {
   showUpdateButton = false;
 
   get externalUrl() {
-    return this.listItem.externalUrl;
+    return this.listItem.addon.externalUrl;
   }
 
   get showInstallButton() {
@@ -80,7 +80,7 @@ export class MyAddonsStatusCellComponent implements OnInit, OnDestroy {
     this.showUpdateButton = false;
 
     try {
-      this._addonService.installAddon(this.listItem.id, this.onUpdateProgress);
+      this._addonService.installAddon(this.listItem.addon.id, this.onUpdateProgress);
     } catch (err) {
       console.error('Failed to update addon', err);
       this.showUpdateButton = true;

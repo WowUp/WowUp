@@ -39,12 +39,6 @@ import { DownloadCountPipe } from 'app/pipes/download-count.pipe';
     DownloadCountPipe
   ],
   imports: [
-    AgGridModule.withComponents([
-      AddonTableColumnComponent,
-      AddonStatusColumnComponent,
-      PotentialAddonTableColumnComponent,
-      PotentialAddonStatusColumnComponent
-    ]),
     CommonModule,
     SharedModule,
     HomeRoutingModule,

@@ -56,6 +56,10 @@ export class AddonService {
     ];
   }
 
+  public saveAddon(addon: Addon){
+    this._addonStorage.set(addon.id, addon);
+  }
+
   public async installPotentialAddon(
     potentialAddon: PotentialAddon,
     clientType: WowClientType,

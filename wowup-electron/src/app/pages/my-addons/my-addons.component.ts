@@ -16,6 +16,8 @@ import * as _ from 'lodash';
 import { ElectronService } from 'app/services';
 import { AddonDisplayState } from 'app/models/wowup/addon-display-state';
 import { AddonInstallState } from 'app/models/wowup/addon-install-state';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MatRadioChange } from '@angular/material/radio';
 
 @Component({
   selector: 'app-my-addons',
@@ -26,12 +28,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild('columnMenu') columnMenu: TemplateRef<any>;
   @ViewChild('addonMenu') addonMenu: TemplateRef<any>;
+  @ViewChild(MatMenuTrigger)
+  contextMenu: MatMenuTrigger;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>([]);
 
   private gridApi: GridApi;
   private subscriptions: Subscription[] = [];
   private sub: Subscription;
+
+  contextMenuPosition = { x: '0px', y: '0px' };
 
   gridOptions: GridOptions = {
     suppressMovableColumns: true,
@@ -85,8 +91,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     this.addonService.addonInstalled$.subscribe((evt) => {
       console.log('UPDATE')
-      const addons = [].concat(this._displayAddonsSrc.value);
-      const listItemIdx = addons.findIndex(li => li.id === evt.addon.id);
+      const addons: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
+      const listItemIdx = addons.findIndex(li => li.addon.id === evt.addon.id);
       const listItem = new MyAddonsListItem(evt.addon);
       listItem.isInstalling = evt.installState === AddonInstallState.Installing || evt.installState === AddonInstallState.Downloading;
       listItem.statusText = this.getInstallStateText(evt.installState);
@@ -128,7 +134,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         listItem => listItem.displayState === AddonDisplayState.Install || listItem.displayState === AddonDisplayState.Update);
 
       for (let listItem of listItems) {
-        await this.addonService.installAddon(listItem.id,)
+        await this.addonService.installAddon(listItem.addon.id,)
       }
     } catch (err) {
       console.error(err);
@@ -141,14 +147,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.showContextMenu(x, y, this.columnMenu, this.displayedColumns);
   }
 
-  onCellContext({ x, y }: MouseEvent, addon: Addon) {
-    this.showContextMenu(x, y, this.addonMenu, addon);
+  onCellContext(event: MouseEvent, listItem: MyAddonsListItem) {
+    console.log(listItem)
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    this.contextMenu.menuData = { 'listItem': listItem };
+    this.contextMenu.menu.focusFirstItem('mouse');
+    this.contextMenu.openMenu();
+
+    // this.showContextMenu(event.x, event.y, this.addonMenu, addon);
   }
 
   onUpdateAddon(listItem: MyAddonsListItem) {
     listItem.isInstalling = true;
 
-    this.addonService.installAddon(listItem.id);
+    this.addonService.installAddon(listItem.addon.id);
   }
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
@@ -164,6 +178,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   onClientChange() {
     this._sessionService.selectedClientType = this.selectedClient;
+  }
+
+  onClickIgnoreAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
+    listItem.addon.isIgnored = evt.checked;
+    listItem.statusText = listItem.getStateText();
+    this.addonService.saveAddon(listItem.addon);
+  }
+
+  onClickAutoUpdateAddon(evt: MatCheckboxChange, addon: Addon){
+    addon.autoUpdateEnabled = evt.checked;
+    this.addonService.saveAddon(addon);
+  }
+
+  onSelectedAddonChannelChange(evt: MatRadioChange, addon: Addon) {
+    addon.channelType = evt.value;
+    this.addonService.saveAddon(addon);
   }
 
   onGridReady(params) {
@@ -245,11 +275,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     const listItems = addons.map(addon => {
       const listItem = new MyAddonsListItem(addon);
 
-      if (!listItem.thumbnailUrl) {
-        listItem.thumbnailUrl = 'assets/wowup_logo_512np.png';
+      if (!listItem.addon.thumbnailUrl) {
+        listItem.addon.thumbnailUrl = 'assets/wowup_logo_512np.png';
       }
-      if (!listItem.installedVersion) {
-        listItem.installedVersion = 'None';
+      if (!listItem.addon.installedVersion) {
+        listItem.addon.installedVersion = 'None';
       }
 
       return listItem;

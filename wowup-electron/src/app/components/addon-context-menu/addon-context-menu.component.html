@@ -6,11 +6,14 @@
         </div>
     </div>
     <mat-divider></mat-divider>
-    <div style="visibility: hidden; position: fixed" [style.left]="contextMenuPosition.x"
-        [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
+    <div style="visibility: hidden; position: fixed" [style.left]="xPos"
+        [style.top]="yPos" [matMenuTriggerFor]="contextMenu">
     </div>
     <mat-menu #contextMenu="matMenu">
-        <button mat-menu-item>Item 1</button>
-        <button mat-menu-item>Item 2</button>
+        <ng-template matMenuContent let-addon="addon">
+            <div>{{addon.name}}</div>
+            <button mat-menu-item (click)="onContextMenuAction1(item)">Action 1</button>
+            <button mat-menu-item (click)="onContextMenuAction2(item)">Action 2</button>
+        </ng-template>
     </mat-menu>
 </div>

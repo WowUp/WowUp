@@ -1,9 +1,13 @@
 <div class="addon-column row align-items-center">
-    <div class="addon-logo-container" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'">
+  <div class="thumbnail-container">
+    <div class="addon-logo-container" [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'">
       <!-- <img class="addon-logo" [src]="addon.thumbnailUrl" /> -->
     </div>
-    <div>
-      <a appExternalLink class="addon-title" [href]="addon.externalUrl">{{addon.name}}</a>
-      <div>{{addon.installedVersion}}</div>
-    </div>
+    <div *ngIf="listItem.isBetaChannel || listItem.isAlphaChannel" class="channel"
+      [ngClass]="{'beta': listItem.isBetaChannel, 'alpha': listItem.isAlphaChannel }">{{listItem.isAlphaChannel ? 'Alpha': 'Beta'}}</div>
   </div>
+  <div>
+    <a appExternalLink class="addon-title" [href]="listItem.addon.externalUrl">{{listItem.addon.name}}</a>
+    <div class="addon-version">{{listItem.addon.installedVersion}}</div>
+  </div>
+</div>
