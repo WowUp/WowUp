@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace WowUp.Common.Models.TukUi
 {
@@ -18,7 +19,7 @@ namespace WowUp.Common.Models.TukUi
         public string Url { get; set; }
         public string Category { get; set; }
         public string Downloads { get; set; }
-        public string LastUpdate { get; set; }
+        public DateTime LastUpdate { get; set; }
         public string Patch { get; set; }
 
         [JsonProperty("web_url")]

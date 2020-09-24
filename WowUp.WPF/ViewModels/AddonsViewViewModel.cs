@@ -437,31 +437,6 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
-        private async void UpdateAutoUpdateAddons()
-        {
-            EnableUpdateAll = false;
-            EnableRefresh = false;
-            EnableRescan = false;
-            IsBusy = true;
-
-            try
-            {
-                await DisplayAddons.ToList()
-                    .Where(addon => addon.IsAutoUpdated && (addon.CanUpdate || addon.CanInstall))
-                    .ForEachAsync(2, async addon =>
-                    {
-                        await addon.UpdateAddon();
-                    });
-            }
-            finally
-            {
-                EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
-                EnableRefresh = true;
-                EnableRescan = true;
-                IsBusy = false;
-            }
-        }
-
         private async Task ReScan()
         {
             var messageBoxResult = MessageBox.Show(
@@ -514,8 +489,6 @@ namespace WowUp.WPF.ViewModels
                 SetAddonCountContextText(listViewItems.Count);
 
                 UpdateDisplayAddons(listViewItems);
-
-                UpdateAutoUpdateAddons();
             }
             catch (Exception ex)
             {

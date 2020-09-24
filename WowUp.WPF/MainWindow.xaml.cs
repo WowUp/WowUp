@@ -19,14 +19,11 @@ namespace WowUp.WPF
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel _viewModel;
-        private readonly NotifyIcon _notifyIcon;
 
         public MainWindow(
             IIpcServerService ipcServerService,
             MainWindowViewModel viewModel)
         {
-            _notifyIcon = CreateNotifyIcon();
-
             DataContext = _viewModel = viewModel;
 
             ipcServerService.CommandReceived += (sender, args) =>
@@ -52,6 +49,7 @@ namespace WowUp.WPF
         protected override void OnContentRendered(EventArgs e)
         {
             base.OnContentRendered(e);
+            _viewModel.TaskbarIcon = TrayIcon;
             _viewModel.SetRestoreMaximizeVisibility(WindowState);
         }
 
@@ -74,35 +72,8 @@ namespace WowUp.WPF
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            _notifyIcon?.Dispose();
-
             base.OnClosing(e);
             _viewModel.OnClosing(this);
-        }
-
-        private NotifyIcon CreateNotifyIcon()
-        {
-            var iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/WowUp;component/Assets/wowup_logo_512np_RRT_icon.ico")).Stream;
-            var icon = new System.Drawing.Icon(iconStream);
-            var image = System.Drawing.Image.FromStream(iconStream);
-
-            var contextMenu = new ContextMenuStrip();
-            contextMenu.Items.Add(new ToolStripLabel("WowUp", image));
-            contextMenu.Items.Add("Close", null, this.NotifyIcon_Close_Click);
-
-            var notifyIcon = new NotifyIcon();
-            notifyIcon.BalloonTipText = "The app has been minimised. Click the tray icon to show.";
-            notifyIcon.BalloonTipTitle = "WowUp";
-            notifyIcon.Text = "WowUp";
-
-            notifyIcon.Icon = icon;
-            notifyIcon.Click += new EventHandler(NotifyIcon_Click);
-
-            notifyIcon.ContextMenuStrip = contextMenu;
-
-            notifyIcon.Visible = true;
-
-            return notifyIcon;
         }
 
         private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -169,19 +140,6 @@ namespace WowUp.WPF
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-        }
-
-        private void NotifyIcon_Click(object sender, EventArgs e)
-        {
-            if (e is MouseEventArgs mouseEvt)
-            {
-                if (mouseEvt.Button == System.Windows.Forms.MouseButtons.Left)
-                {
-                    Show();
-                    WindowState = WindowState.Normal;
-                    Activate();
-                }
-            }
         }
 
         private void NotifyIcon_Close_Click(object sender, EventArgs e)

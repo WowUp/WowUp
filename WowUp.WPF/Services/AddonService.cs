@@ -83,6 +83,48 @@ namespace WowUp.WPF.Services
             return addon;
         }
 
+        public async Task<int> ProcessAutoUpdates()
+        {
+            var autoUpdateAddons = GetAutoUpdateEnabledAddons();
+            var clientTypeGroups = autoUpdateAddons.GroupBy(addon => addon.ClientType);
+            var updateCt = 0;
+
+            foreach (var clientTypeGroup in clientTypeGroups)
+            {
+                if(!await SyncAddons(clientTypeGroup.Key, clientTypeGroup))
+                {
+                    continue;
+                }
+
+                foreach (var addon in clientTypeGroup)
+                {
+                    if (!addon.CanUpdate())
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        await InstallAddon(addon.Id);
+                        updateCt += 1;
+                    }
+                    catch(Exception ex)
+                    {
+                        _analyticsService.Track(ex, "Failed to install addon");
+                    }
+                }
+            }
+
+            return updateCt;
+        }
+
+        public List<Addon> GetAutoUpdateEnabledAddons()
+        {
+            return _addonRepository
+                .Query(addons => addons.Where(addon => !addon.IsIgnored && addon.AutoUpdateEnabled))
+                .ToList();
+        }
+
         public bool IsInstalled(string externalId, WowClientType clientType)
         {
             return _addonRepository.GetByExternalId(externalId, clientType) != null;
@@ -91,6 +133,13 @@ namespace WowUp.WPF.Services
         public Addon GetAddon(int addonId)
         {
             return _addonRepository.Query(table => table.FirstOrDefault(a => a.Id == addonId));
+        }
+
+        private List<string> GetExternalIdsForProvider(IAddonProvider provider, IEnumerable<Addon> addons)
+        {
+            return addons.Where(addon => addon.ProviderName == provider.Name)
+                .Select(addon => addon.ExternalId)
+                .ToList();
         }
 
         public async Task<List<PotentialAddon>> Search(string query, WowClientType clientType)
@@ -179,52 +228,65 @@ namespace WowUp.WPF.Services
             return existingAddons;
         }
 
-        private async Task SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
+        private async Task<bool> SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
         {
             try
             {
                 foreach (var provider in _providers)
                 {
-                    var providerAddonIds = addons
-                        .Where(addon => addon.ProviderName == provider.Name)
-                        .Select(addon => addon.ExternalId);
-
-                    var addonResults = await provider.GetAll(clientType, providerAddonIds);
-
-                    foreach (var result in addonResults)
-                    {
-                        var addon = addons.FirstOrDefault(addon => addon.ExternalId == result.ExternalId);
-                        var latestFile = GetLatestFile(result, addon.ChannelType);
-
-                        if (result == null || latestFile == null || latestFile.Version == addon.LatestVersion)
-                        {
-                            await SyncThumbnail(addon);
-
-                            continue;
-                        }
-
-                        addon.LatestVersion = latestFile.Version;
-                        addon.Name = result.Name;
-                        addon.Author = result.Author;
-                        addon.DownloadUrl = latestFile.DownloadUrl;
-
-                        if (!string.IsNullOrEmpty(latestFile.GameVersion))
-                        {
-                            addon.GameVersion = latestFile.GameVersion;
-                        }
-
-                        addon.ThumbnailUrl = result.ThumbnailUrl;
-                        addon.ExternalUrl = result.ExternalUrl;
-
-                        await SyncThumbnail(addon);
-
-                        _addonRepository.UpdateItem(addon);
-                    }
+                    await SyncAddons(clientType, addons, provider);
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
                 _analyticsService.Track(ex, "Failed to sync addons");
+                return false;
+            }
+        }
+
+        private async Task SyncAddons(
+            WowClientType clientType, 
+            IEnumerable<Addon> addons,
+            IAddonProvider provider)
+        {
+            var providerAddonIds = GetExternalIdsForProvider(provider, addons);
+            if (!providerAddonIds.Any())
+            {
+                return;
+            }
+
+            var searchResults = await provider.GetAll(clientType, providerAddonIds);
+
+            foreach (var result in searchResults)
+            {
+                var addon = addons.FirstOrDefault(addon => addon.ExternalId == result.ExternalId);
+                var latestFile = GetLatestFile(result, addon.ChannelType);
+
+                if (result == null || latestFile == null || latestFile.Version == addon.LatestVersion)
+                {
+                    await SyncThumbnail(addon);
+
+                    continue;
+                }
+
+                addon.LatestVersion = latestFile.Version;
+                addon.Name = result.Name;
+                addon.Author = result.Author;
+                addon.DownloadUrl = latestFile.DownloadUrl;
+
+                if (!string.IsNullOrEmpty(latestFile.GameVersion))
+                {
+                    addon.GameVersion = latestFile.GameVersion;
+                }
+
+                addon.ThumbnailUrl = result.ThumbnailUrl;
+                addon.ExternalUrl = result.ExternalUrl;
+
+                await SyncThumbnail(addon);
+
+                _addonRepository.UpdateItem(addon);
             }
         }
 
@@ -238,13 +300,8 @@ namespace WowUp.WPF.Services
 
         private AddonSearchResultFile GetLatestFile(AddonSearchResult searchResult, AddonChannelType channelType)
         {
-            var exactMatch = searchResult.Files.FirstOrDefault(lf => lf.ChannelType == channelType);
-            if (exactMatch != null)
-            {
-                return exactMatch;
-            }
-
             return searchResult.Files
+                .OrderByDescending(f => f.ReleaseDate)
                 .FirstOrDefault(lf => lf.ChannelType <= channelType);
         }
 
