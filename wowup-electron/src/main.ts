@@ -4,6 +4,12 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 import { AppConfig } from './environments/environment';
 import * as log from 'electron-log';
+import { app, remote } from 'electron';
+import { join } from 'path';
+
+log.transports.file.resolvePath = (variables: log.PathVariables, message?: log.LogMessage) => {
+  return join(remote.app.getPath('logs'), variables.fileName);
+}
 
 if (AppConfig.production) {
   enableProdMode();

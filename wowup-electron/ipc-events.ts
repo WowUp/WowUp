@@ -1,13 +1,19 @@
-import { ipcMain } from "electron";
+import { ipcMain, shell } from "electron";
 import * as fs from 'fs';
 import * as path from 'path';
-import { CURSE_HASH_FILE_CHANNEL, LIST_FILES_CHANNEL } from './src/common/constants';
+import { CURSE_HASH_FILE_CHANNEL, LIST_FILES_CHANNEL, SHOW_DIRECTORY } from './src/common/constants';
 import { CurseHashFileRequest } from './src/common/models/curse-hash-file-request';
 import { CurseHashFileResponse } from './src/common/models/curse-hash-file-response';
 import { ListFilesRequest } from "./src/common/models/list-files-request";
 import { ListFilesResponse } from "./src/common/models/list-files-response";
+import { ShowDirectoryRequest } from "./src/common/models/show-directory-request";
 
 const nativeAddon = require('./build/Release/addon.node');
+
+ipcMain.on(SHOW_DIRECTORY, async (evt, arg: ShowDirectoryRequest) => {
+  const result = await shell.openPath(arg.sourceDir);
+  evt.reply(arg.responseKey, true);
+})
 
 ipcMain.on(CURSE_HASH_FILE_CHANNEL, async (evt, arg: CurseHashFileRequest) => {
   // console.log(CURSE_HASH_FILE_CHANNEL, arg);

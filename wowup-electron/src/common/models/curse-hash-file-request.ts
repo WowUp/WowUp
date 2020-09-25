@@ -1,6 +1,6 @@
-import { IpcResponse } from "./ipc-response";
+import { IpcRequest } from "./ipc-request";
 
-export interface CurseHashFileRequest extends IpcResponse {
+export interface CurseHashFileRequest extends IpcRequest {
     filePath?: string;
     targetString?: string;
     targetStringEncoding?: BufferEncoding;

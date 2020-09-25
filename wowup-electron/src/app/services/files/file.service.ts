@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, LIST_FILES_CHANNEL, READ_FILE_CHANNEL, RENAME_DIRECTORY_CHANNEL } from "common/constants";
+import { COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, LIST_FILES_CHANNEL, READ_FILE_CHANNEL, RENAME_DIRECTORY_CHANNEL, SHOW_DIRECTORY } from "common/constants";
 import { CopyDirectoryRequest } from "common/models/copy-directory-request";
 import { DeleteDirectoryRequest } from "common/models/delete-directory-request";
 import { ElectronService } from "../electron/electron.service";
@@ -9,6 +9,8 @@ import { ReadFileResponse } from "common/models/read-file-response";
 import { ReadFileRequest } from "common/models/read-file-request";
 import { ListFilesResponse } from "common/models/list-files-response";
 import { ListFilesRequest } from "common/models/list-files-request";
+import { ShowDirectoryRequest } from "common/models/show-directory-request";
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +20,19 @@ export class FileService {
   constructor(
     private _electronService: ElectronService
   ) { }
+
+  public showDirectory(sourceDir: string) {
+    return new Promise((resolve, reject) => {
+      const eventHandler = (_evt: any, arg: boolean) => {
+        resolve(arg);
+      };
+
+      const request: ShowDirectoryRequest = { sourceDir, responseKey: uuidv4() };
+
+      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+      this._electronService.ipcRenderer.send(SHOW_DIRECTORY, request);
+    })
+  }
 
   public deleteDirectory(sourcePath: string) {
     return new Promise((resolve, reject) => {

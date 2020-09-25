@@ -22,6 +22,15 @@ import { ListFilesResponse } from './src/common/models/list-files-response';
 import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
 import './ipc-events';
+import * as log from 'electron-log';
+
+const LOG_PATH = path.join(app.getPath('userData'), 'logs');
+app.setAppLogsPath(LOG_PATH);
+log.transports.file.resolvePath = (variables: log.PathVariables, message?: log.LogMessage) => {
+  console.log('RES', path.join(LOG_PATH, variables.fileName))
+  return path.join(LOG_PATH, variables.fileName);
+}
+log.info('Main starting');
 
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 electronDl();

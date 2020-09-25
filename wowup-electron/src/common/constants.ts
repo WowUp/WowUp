@@ -8,3 +8,4 @@ export const READ_FILE_CHANNEL = 'read-file';
 export const UNZIP_FILE_CHANNEL = 'unzip-file';
 export const COPY_FILE_CHANNEL = 'copy-file';
 export const CURSE_HASH_FILE_CHANNEL = 'curse-hash-file';
+export const SHOW_DIRECTORY = 'show-directory';

@@ -20,6 +20,7 @@ import * as compareVersions from 'compare-versions';
 import { DownloadSevice } from "../download/download.service";
 import { Preferences } from "../../../constants";
 import { PreferenceChange } from "app/models/wowup/preference-change";
+import { FileService } from "../files/file.service";
 
 const LATEST_VERSION_CACHE_KEY = 'latest-version-response';
 
@@ -32,7 +33,7 @@ export class WowUpService {
 
   public readonly updaterName = 'WowUpUpdater.exe';
   public readonly applicationFolderPath: string = remote.app.getPath('userData');
-  public readonly applicationLogsFolderPath: string = join(this.applicationFolderPath, 'logs');
+  public readonly applicationLogsFolderPath: string = remote.app.getPath('logs');
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, 'downloads');
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
   public readonly applicationVersion: string = AppConfig.appVersion;
@@ -43,6 +44,7 @@ export class WowUpService {
     private _preferenceStorageService: PreferenceStorageService,
     private _downloadService: DownloadSevice,
     private _electronService: ElectronService,
+    private _fileService: FileService,
     private _cacheService: CachingService,
     private _wowUpApiService: WowUpApiService
   ) {
@@ -97,7 +99,7 @@ export class WowUpService {
   }
 
   public showLogsFolder() {
-    this._electronService.shell.openExternal(this.applicationLogsFolderPath, { activate: true });
+    this._fileService.showDirectory(this.applicationLogsFolderPath);
   }
 
   public isUpdateAvailable(): Observable<boolean> {
