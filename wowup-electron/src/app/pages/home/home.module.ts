@@ -21,6 +21,7 @@ import { MyAddonsStatusCellComponent } from 'app/components/my-addons-status-cel
 import { AddonContextMenuComponent } from 'app/components/addon-context-menu/addon-context-menu.component';
 import { ProgressSpinnerComponent } from 'app/components/progress-spinner/progress-spinner.component';
 import { DownloadCountPipe } from 'app/pipes/download-count.pipe';
+import { TelemetryDialogComponent } from 'app/components/telemetry-dialog/telemetry-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { DownloadCountPipe } from 'app/pipes/download-count.pipe';
     PotentialAddonStatusColumnComponent,
     ProgressSpinnerComponent,
     PotentialAddonTableColumnComponent,
-    DownloadCountPipe
+    DownloadCountPipe,
+    TelemetryDialogComponent
   ],
   imports: [
     CommonModule,

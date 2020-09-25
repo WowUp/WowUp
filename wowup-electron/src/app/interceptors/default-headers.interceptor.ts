@@ -2,9 +2,10 @@ import { HttpInterceptor, HttpRequest, HttpHandler } from "@angular/common/http"
 import { Injectable } from "@angular/core";
 import { AppConfig } from "environments/environment";
 import { release, arch } from 'os';
+import * as log from 'electron-log';
 
 const USER_AGENT = `WowUp-Client/${AppConfig.appVersion} (${release()}; ${arch()}; +https://wowup.io)`;
-console.log('USER_AGENT', USER_AGENT);
+log.info('USER_AGENT', USER_AGENT);
 
 @Injectable()
 export class DefaultHeadersInterceptor implements HttpInterceptor {

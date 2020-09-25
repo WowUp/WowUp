@@ -71,4 +71,13 @@ export class ElectronService {
   unmaximizeWindow() {
     this.remote.getCurrentWindow().unmaximize();
   }
+
+  hideWindow(){
+    this.remote.getCurrentWindow().hide();
+  }
+
+  closeWindow() {
+    this.remote.getCurrentWindow().close();
+    this.remote.app.quit();
+  }
 }

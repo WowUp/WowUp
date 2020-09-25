@@ -122,6 +122,7 @@
     "node-disk-info": "1.1.0",
     "protobufjs": "6.10.1",
     "rimraf": "3.0.2",
+    "rollbar": "2.19.3",
     "uuid": "8.3.0"
   }
 }

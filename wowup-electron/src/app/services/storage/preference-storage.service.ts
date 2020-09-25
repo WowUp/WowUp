@@ -14,7 +14,6 @@ export class PreferenceStorageService {
   });
 
   constructor() {
-    console.log(this._store)
   }
 
   public query<T>(action: (items: Store) => T) {
@@ -25,8 +24,8 @@ export class PreferenceStorageService {
     this._store.set(key, value.toString());
   }
 
-  public get(key: string): Addon {
-    return this._store.get(key) as Addon;
+  public get(key: string): string {
+    return this._store.get(key) as string;
   }
 
   public findByKey(key: string): string{

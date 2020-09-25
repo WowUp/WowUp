@@ -46,10 +46,13 @@ export class CurseFolderScanner {
     async scanFolder(addonFolder: AddonFolder): Promise<CurseScanResult> {
         const folderPath = addonFolder.path;
         const files = await this._fileService.listAllFiles(folderPath);
+        console.log('listAllFiles', folderPath, files.length);
+
         let matchingFiles = await this.getMatchingFiles(folderPath, files);
         matchingFiles = _.sortBy(matchingFiles, f => f.toLowerCase());
 
-        const fst = matchingFiles.map(f => f.toLowerCase()).join('\n');
+        console.log('matching files', matchingFiles.length)
+        // const fst = matchingFiles.map(f => f.toLowerCase()).join('\n');
 
         const individualFingerprints: number[] = [];
         for (let path of matchingFiles) {
@@ -59,6 +62,7 @@ export class CurseFolderScanner {
 
         const hashConcat = _.orderBy(individualFingerprints).join('');
         const fingerprint = await this.computeStringHash(hashConcat);
+        console.log('fingerprint', fingerprint);
 
         return {
             directory: folderPath,

@@ -110,7 +110,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this._sessionService.selectedClientType$
       .pipe(
         map(clientType => {
-          console.log('SEL', clientType)
           this.selectedClient = clientType;
           this.loadAddons(this.selectedClient);
         })

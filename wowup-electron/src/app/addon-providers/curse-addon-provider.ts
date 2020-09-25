@@ -44,7 +44,7 @@ export class CurseAddonProvider implements AddonProvider {
 
     const scanResults = await this.getScanResults(addonFolders);
 
-    console.log('ScanResults')
+    console.log('ScanResults', scanResults.length);
 
     await this.mapAddonFolders(scanResults, clientType);
 
@@ -126,14 +126,10 @@ export class CurseAddonProvider implements AddonProvider {
     const t1 = Date.now();
 
     // Scan addon folders in parallel for speed!?
-    await from(addonFolders.map(folder => {
-      return new CurseFolderScanner(this._electronService, this._fileService).scanFolder(folder);
-    }))
-      .pipe(
-        mergeMap(obs => obs, 3),
-        map(res => scanResults.push(res))
-      )
-      .toPromise();
+    for (let folder of addonFolders) {
+      const scanResult = await new CurseFolderScanner(this._electronService, this._fileService).scanFolder(folder);
+      scanResults.push(scanResult);
+    }
 
     console.log('scan delta', Date.now() - t1);
 
@@ -318,8 +314,6 @@ export class CurseAddonProvider implements AddonProvider {
 
   private getLatestFiles(result: CurseSearchResult, clientType: WowClientType): CurseFile[] {
     const clientTypeStr = this.getGameVersionFlavor(clientType);
-    console.log(clientType, clientTypeStr);
-
     const filtered = result.latestFiles.filter(lf => lf.isAlternate === false && lf.gameVersionFlavor === clientTypeStr);
     return _.sortBy(filtered, lf => lf.id).reverse();
   }

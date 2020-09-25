@@ -18,7 +18,7 @@
       (click)="electronService.unmaximizeWindow()">
       <img src="/assets/chrome-restore.svg" />
     </div>
-    <div class="window-control">
+    <div class="window-control" (click)="onClickClose()">
       <img src="/assets/chrome-close.svg" />
     </div>
   </div>

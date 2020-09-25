@@ -11,7 +11,6 @@ export class StorageService {
   private readonly _store = new Store();
 
   constructor() {
-    console.log(this._store)
   }
 
   public set(key: string, value: any) {

@@ -15,7 +15,6 @@ export class AddonStorageService {
   });
 
   constructor() {
-    console.log(this._store)
   }
 
   public query<T>(action: (items: Store) => T) {

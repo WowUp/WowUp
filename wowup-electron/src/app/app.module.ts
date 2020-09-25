@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import '../polyfills';
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { ErrorHandler, InjectionToken, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
@@ -13,7 +13,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { AgGridModule } from 'ag-grid-angular';
 
 import { HomeModule } from './pages/home/home.module';
 import { DetailModule } from './detail/detail.module';
@@ -24,9 +23,10 @@ import { AddonStatusColumnComponent } from './components/addon-status-column/add
 import { TitlebarComponent } from './components/titlebar/titlebar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { DefaultHeadersInterceptor } from './interceptors/default-headers.interceptor';
+import { AnalyticsService } from './services/analytics/analytics.service';
 
 // AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
@@ -49,7 +49,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
+        useFactory: httpLoaderFactory,
         deps: [HttpClient]
       }
     }),
@@ -57,7 +57,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: DefaultHeadersInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: DefaultHeadersInterceptor, multi: true },
+    { provide: ErrorHandler, useClass: AnalyticsService }
   ],
   bootstrap: [AppComponent]
 })

@@ -250,7 +250,7 @@ export class AddonService {
     const matchedAddonFolders = addonFolders.filter(addonFolder => !!addonFolder.matchingAddon);
     const matchedGroups = _.groupBy(matchedAddonFolders, addonFolder => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`);
 
-    console.log(matchedGroups);
+    console.log(Object.keys(matchedGroups));
     return Object.values(matchedGroups).map(value => value[0].matchingAddon);
   }
 

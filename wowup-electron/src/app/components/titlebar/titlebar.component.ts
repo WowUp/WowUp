@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectronService } from 'app/services/electron/electron.service';
+import { WowUpService } from 'app/services/wowup/wowup.service';
 import { platform } from 'os'
 
 @Component({
@@ -15,10 +16,19 @@ export class TitlebarComponent implements OnInit {
   public userAgent = platform();
 
   constructor(
-    public electronService: ElectronService
+    public electronService: ElectronService,
+    private _wowUpService: WowUpService
   ) { }
 
   ngOnInit(): void {
+  }
+
+  onClickClose() {
+    if(this._wowUpService.collapseToTray){
+      this.electronService.hideWindow();
+    } else {
+
+    }
   }
 
 }

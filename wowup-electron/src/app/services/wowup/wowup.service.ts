@@ -12,19 +12,14 @@ import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
 import { AppConfig } from '../../../environments/environment';
-import { from, Observable, of } from "rxjs";
+import { from, Observable, of, Subject } from "rxjs";
 import { LatestVersionResponse } from "app/models/wowup-api/latest-version-response";
 import { map, switchMap } from "rxjs/operators";
 import { LatestVersion } from "app/models/wowup-api/latest-version";
 import * as compareVersions from 'compare-versions';
 import { DownloadSevice } from "../download/download.service";
-
-const COLLAPSE_TO_TRAY_PREFERENCE_KEY = 'collapse_to_tray';
-const WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY = 'wowup_release_channel';
-const DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX = '_default_addon_channel';
-const TELEMETRY_ENABLED_PREFERENCE_KEY = 'telemetry_enabled';
-const TELEMETRY_PROMPT_SENT_PREFERENCE_KEY = 'telemetry_prompt_sent';
-const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = 'last_selected_client_type';
+import { Preferences } from "../../../constants";
+import { PreferenceChange } from "app/models/wowup/preference-change";
 
 const LATEST_VERSION_CACHE_KEY = 'latest-version-response';
 
@@ -33,6 +28,8 @@ const LATEST_VERSION_CACHE_KEY = 'latest-version-response';
 })
 export class WowUpService {
 
+  private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
+
   public readonly updaterName = 'WowUpUpdater.exe';
   public readonly applicationFolderPath: string = remote.app.getPath('userData');
   public readonly applicationLogsFolderPath: string = join(this.applicationFolderPath, 'logs');
@@ -40,6 +37,7 @@ export class WowUpService {
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
   public readonly applicationVersion: string = AppConfig.appVersion;
   public readonly isBetaBuild: boolean = AppConfig.appVersion.toLowerCase().indexOf('beta') != -1;
+  public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
 
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
@@ -56,34 +54,38 @@ export class WowUpService {
   }
 
   public get collapseToTray() {
-    const preference = this._preferenceStorageService.findByKey(COLLAPSE_TO_TRAY_PREFERENCE_KEY);
+    const preference = this._preferenceStorageService.findByKey(Preferences.collapseToTrayKey);
     return preference === 'true';
   }
 
   public set collapseToTray(value: boolean) {
-    this._preferenceStorageService.set(COLLAPSE_TO_TRAY_PREFERENCE_KEY, value);
+    const key = Preferences.collapseToTrayKey;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() })
   }
 
   public get telemetryEnabled() {
-    const preference = this._preferenceStorageService.findByKey(TELEMETRY_ENABLED_PREFERENCE_KEY);
+    const preference = this._preferenceStorageService.findByKey(Preferences.telemetryEnabledKey);
     return preference === 'true';
   }
 
   public set telemetryEnabled(value: boolean) {
-    this._preferenceStorageService.set(TELEMETRY_ENABLED_PREFERENCE_KEY, value);
+    const key = Preferences.telemetryEnabledKey;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() })
   }
 
   public get wowUpReleaseChannel() {
-    const preference = this._preferenceStorageService.findByKey(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY);
+    const preference = this._preferenceStorageService.findByKey(Preferences.wowupReleaseChannelKey);
     return parseInt(preference, 10) as WowUpReleaseChannelType;
   }
 
   public set wowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType) {
-    this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
+    this._preferenceStorageService.set(Preferences.wowupReleaseChannelKey, releaseChannel);
   }
 
   public get lastSelectedClientType(): WowClientType {
-    const preference = this._preferenceStorageService.findByKey(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY);
+    const preference = this._preferenceStorageService.findByKey(Preferences.lastSelectedWowClientTypeKey);
     const value = parseInt(preference, 10);
     return isNaN(value)
       ? WowClientType.None
@@ -91,7 +93,7 @@ export class WowUpService {
   }
 
   public set lastSelectedClientType(clientType: WowClientType) {
-    this._preferenceStorageService.set(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY, clientType);
+    this._preferenceStorageService.set(Preferences.lastSelectedWowClientTypeKey, clientType);
   }
 
   public showLogsFolder() {
@@ -181,12 +183,12 @@ export class WowUpService {
 
   private getClientDefaultAddonChannelKey(clientType: WowClientType) {
     const typeName = getEnumName(WowClientType, clientType);
-    return `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
+    return `${typeName}${Preferences.defaultChannelKeySuffix}`.toLowerCase();
   }
 
   private setDefaultPreferences() {
-    this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
-    this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, this.getDefaultReleaseChannel());
+    this.setDefaultPreference(Preferences.collapseToTrayKey, true);
+    this.setDefaultPreference(Preferences.wowupReleaseChannelKey, this.getDefaultReleaseChannel());
     this.setDefaultClientPreferences();
   }
 

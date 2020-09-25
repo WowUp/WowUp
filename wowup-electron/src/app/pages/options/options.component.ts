@@ -4,9 +4,8 @@ import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ElectronService } from 'app/services';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { WowUpService } from 'app/services/wowup/wowup.service';
-import { FileUtils } from 'app/utils/file.utils';
-import { shell } from 'electron'
-import * as path from 'path';
+import { Preferences } from '../../../constants';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-options',
@@ -28,7 +27,13 @@ export class OptionsComponent implements OnInit, OnChanges {
     private _wowUpService: WowUpService,
     private zone: NgZone,
     public electronService: ElectronService
-  ) { }
+  ) {
+    _wowUpService.preferenceChange$
+      .pipe(filter(change => change.key === Preferences.telemetryEnabledKey))
+      .subscribe(change => {
+        this.telemetryEnabled = change.value === true.toString()
+      })
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(changes)
@@ -43,6 +48,7 @@ export class OptionsComponent implements OnInit, OnChanges {
   }
 
   onReScan = () => {
+    throw new Error('TEST')
     this.warcraft.scanProducts();
     this.loadData();
   }

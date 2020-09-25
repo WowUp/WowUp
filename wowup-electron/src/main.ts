@@ -3,10 +3,29 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { AppConfig } from './environments/environment';
-import { WowUpTitlebar} from './titlebar';
+import * as log from 'electron-log';
 
 if (AppConfig.production) {
   enableProdMode();
+}
+
+const oldTrace = console.trace;
+const oldDebug = console.debug;
+const oldLog = console.log;
+const oldWarn = console.warn;
+const oldError = console.error;
+
+console.log = function(message?: any, ...optionalParams: any[]) {
+    oldLog.call(console, message, ...optionalParams);
+    log.info(message, ...optionalParams);
+}
+console.warn = function(message?: any, ...optionalParams: any[]) {
+    oldWarn.call(this, message, ...optionalParams);
+    log.warn(message, ...optionalParams);
+}
+console.error = function(message?: any, ...optionalParams: any[]) {
+    oldError.call(this, message, ...optionalParams);
+    log.error(message, ...optionalParams);
 }
 
 platformBrowserDynamic()

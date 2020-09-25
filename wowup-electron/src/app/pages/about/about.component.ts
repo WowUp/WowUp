@@ -19,9 +19,7 @@ export class AboutComponent implements OnInit {
   constructor(
     private wowup: WowUpService,
     public electronService: ElectronService
-  ) {
-    console.log('ChangeLogJson', ChangeLogJson)
-  }
+  ) {}
 
   ngOnInit(): void {
     this.version = remote.app.getVersion();

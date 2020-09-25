@@ -55,7 +55,7 @@
       </div>
       <div class="row hover">
         <div class="grow">Enable Telemetry</div>
-        <mat-slide-toggle></mat-slide-toggle>
+        <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
       </div>
       <div class="row hover">
         <div class="grow">Minimize on Close</div>
