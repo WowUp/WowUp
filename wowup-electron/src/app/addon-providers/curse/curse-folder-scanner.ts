@@ -88,6 +88,7 @@ export class CurseFolderScanner {
             }
         }
 
+        console.log('fileInfoList', fileInfoList.length)
         for (let fileInfo of fileInfoList) {
             await this.processIncludeFile(matchingFileList, fileInfo);
         }
@@ -110,8 +111,9 @@ export class CurseFolderScanner {
             return;
         }
 
+        const dirname = path.dirname(fileInfo);
         for (let include of inclusions) {
-            const fileName = path.join(path.dirname(fileInfo), include);
+            const fileName = path.join(dirname, include.replace(/\\/g, path.sep));
             await this.processIncludeFile(matchingFileList, fileName);
         }
     }

@@ -115,6 +115,10 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   private getAllIds(addonIds: number[]): Observable<CurseSearchResult[]> {
+    if (!addonIds?.length) {
+      return of([]);
+    }
+    
     const url = `${API_URL}/addon`;
 
     return this._httpClient.post<CurseSearchResult[]>(url, addonIds);

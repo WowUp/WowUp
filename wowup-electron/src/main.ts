@@ -22,7 +22,7 @@ const oldWarn = console.warn;
 const oldError = console.error;
 
 console.log = function(message?: any, ...optionalParams: any[]) {
-    oldLog.call(console, message, ...optionalParams);
+    // oldLog.call(console, message, ...optionalParams);
     log.info(message, ...optionalParams);
 }
 console.warn = function(message?: any, ...optionalParams: any[]) {

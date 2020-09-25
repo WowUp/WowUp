@@ -48,7 +48,6 @@ export class OptionsComponent implements OnInit, OnChanges {
   }
 
   onReScan = () => {
-    throw new Error('TEST')
     this.warcraft.scanProducts();
     this.loadData();
   }
