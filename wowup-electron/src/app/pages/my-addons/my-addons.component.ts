@@ -8,7 +8,6 @@ import { AddonService } from 'app/services/addons/addon.service';
 import { SessionService } from 'app/services/session/session.service';
 import { GridApi, GridOptions } from 'ag-grid-community';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
 import { ColumnState } from 'app/models/wowup/column-state';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MyAddonsListItem } from 'app/business-objects/my-addons-list-item';
@@ -26,10 +25,8 @@ import { MatRadioChange } from '@angular/material/radio';
 })
 export class MyAddonsComponent implements OnInit, OnDestroy {
 
-  @ViewChild('columnMenu') columnMenu: TemplateRef<any>;
-  @ViewChild('addonMenu') addonMenu: TemplateRef<any>;
-  @ViewChild(MatMenuTrigger)
-  contextMenu: MatMenuTrigger;
+  @ViewChild('addonContextMenuTrigger') contextMenu: MatMenuTrigger;
+  @ViewChild('columnContextMenuTrigger') columnContextMenu: MatMenuTrigger;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>([]);
 
@@ -39,24 +36,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   contextMenuPosition = { x: '0px', y: '0px' };
 
-  gridOptions: GridOptions = {
-    suppressMovableColumns: true,
-    suppressDragLeaveHidesColumns: true,
-  }
-
-  defaultColDef = {
-    wrapText: true,
-    sortable: true,
-    autoHeight: true,
-  };
-
   columns: ColumnState[] = [
     { name: 'addon', display: 'Addon', visible: true },
     { name: 'status', display: 'Status', visible: true },
-    { name: 'latestVersion', display: 'Latest Version', visible: true },
-    { name: 'gameVersion', display: 'Game Version', visible: true },
-    { name: 'provider', display: 'Provider', visible: true },
-    { name: 'author', display: 'Author', visible: true },
+    { name: 'latestVersion', display: 'Latest Version', visible: true, allowToggle: true },
+    { name: 'gameVersion', display: 'Game Version', visible: true, allowToggle: true },
+    { name: 'provider', display: 'Provider', visible: true, allowToggle: true },
+    { name: 'author', display: 'Author', visible: true, allowToggle: true },
   ]
 
   public get displayedColumns(): string[] {
@@ -142,20 +128,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.enableControls = true;
   }
 
-  onHeaderContext({ x, y }: MouseEvent) {
-    this.showContextMenu(x, y, this.columnMenu, this.displayedColumns);
+  onHeaderContext(event: MouseEvent) {
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    this.columnContextMenu.menuData = { 'columns': this.columns.filter(col => col.allowToggle) };
+    this.columnContextMenu.menu.focusFirstItem('mouse');
+    this.columnContextMenu.openMenu();
   }
 
   onCellContext(event: MouseEvent, listItem: MyAddonsListItem) {
-    console.log(listItem)
     event.preventDefault();
     this.contextMenuPosition.x = event.clientX + 'px';
     this.contextMenuPosition.y = event.clientY + 'px';
     this.contextMenu.menuData = { 'listItem': listItem };
     this.contextMenu.menu.focusFirstItem('mouse');
     this.contextMenu.openMenu();
-
-    // this.showContextMenu(event.x, event.y, this.addonMenu, addon);
   }
 
   onUpdateAddon(listItem: MyAddonsListItem) {
@@ -185,7 +173,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.addonService.saveAddon(listItem.addon);
   }
 
-  onClickAutoUpdateAddon(evt: MatCheckboxChange, addon: Addon){
+  onClickAutoUpdateAddon(evt: MatCheckboxChange, addon: Addon) {
     addon.autoUpdateEnabled = evt.checked;
     this.addonService.saveAddon(addon);
   }
@@ -193,61 +181,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   onSelectedAddonChannelChange(evt: MatRadioChange, addon: Addon) {
     addon.channelType = evt.value;
     this.addonService.saveAddon(addon);
-  }
-
-  onGridReady(params) {
-    this.gridApi = params.api;
-    this.gridApi.sizeColumnsToFit();
-
-    // simple resize debouncer
-    let resizeTime = 0;
-    this.gridApi.addEventListener('columnResized', () => {
-      clearTimeout(resizeTime);
-      resizeTime = window.setTimeout(() => {
-        this.gridApi?.resetRowHeights();
-      }, 100);
-    });
-  }
-
-  private showContextMenu(x: number, y: number, template: TemplateRef<any>, data: any) {
-    this.closeContext();
-
-    const positionStrategy = this.overlay.position()
-      .flexibleConnectedTo({ x, y })
-      .withPositions([
-        {
-          originX: 'end',
-          originY: 'bottom',
-          overlayX: 'end',
-          overlayY: 'top',
-        }
-      ]);
-
-    this.overlayRef = this.overlay.create({
-      positionStrategy,
-      scrollStrategy: this.overlay.scrollStrategies.close()
-    });
-
-    this.overlayRef.attach(new TemplatePortal(template, this.viewContainerRef, {
-      $implicit: data
-    }));
-
-    this.sub = fromEvent<MouseEvent>(document, 'click')
-      .pipe(
-        filter(event => {
-          const clickTarget = event.target as HTMLElement;
-          return !!this.overlayRef && !this.overlayRef.overlayElement.contains(clickTarget);
-        }),
-        take(1)
-      ).subscribe(() => this.closeContext())
-  }
-
-  private closeContext() {
-    this.sub && this.sub.unsubscribe();
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
-      this.overlayRef = null;
-    }
   }
 
   private loadAddons(clientType: WowClientType, rescan = false) {
