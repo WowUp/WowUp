@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GridApi, GridOptions } from 'ag-grid-community';
-import { AddonStatusColumnComponent } from 'app/components/addon-status-column/addon-status-column.component';
-import { AddonTableColumnComponent } from 'app/components/addon-table-column/addon-table-column.component';
 import { PotentialAddonStatusColumnComponent } from 'app/components/potential-addon-status-column/potential-addon-status-column.component';
 import { PotentialAddonTableColumnComponent } from 'app/components/potential-addon-table-column/potential-addon-table-column.component';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
@@ -22,42 +19,7 @@ import { debounceTime, map } from 'rxjs/operators';
 export class GetAddonsComponent implements OnInit {
   private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>([]);
 
-  private gridApi: GridApi;
   private subscriptions: Subscription[] = [];
-
-  gridOptions: GridOptions = {
-    suppressMovableColumns: true,
-    suppressDragLeaveHidesColumns: true,
-    rowBuffer: 500
-  }
-
-  defaultColDef = {
-    wrapText: true,
-    sortable: true,
-    autoHeight: true
-  };
-
-  columnDefs = [
-    {
-      headerName: 'Addon',
-      field: 'name',
-      cellRendererFramework: PotentialAddonTableColumnComponent,
-      suppressSizeToFit: true,
-      resizable: true,
-      minWidth: 200,
-      flex: 1
-    },
-    { headerName: 'Author', field: 'author', cellClass: 'cell-center-text', flex: 1 },
-    { headerName: 'Provider', field: 'providerName', cellClass: 'cell-center-text', width: 100, suppressSizeToFit: true },
-    {
-      headerName: 'Status',
-      field: 'value',
-      sortable: false,
-      cellRendererFramework: PotentialAddonStatusColumnComponent,
-      width: 120,
-      suppressSizeToFit: true,
-    },
-  ];
 
   columns: ColumnState[] = [
     { name: 'addon', display: 'Addon', visible: true },
@@ -101,20 +63,6 @@ export class GetAddonsComponent implements OnInit {
 
   onRefresh() {
     this.loadPopularAddons(this.selectedClient);
-  }
-
-  onGridReady(params) {
-    this.gridApi = params.api;
-    this.gridApi.sizeColumnsToFit();
-
-    // simple resize debouncer
-    let resizeTime = 0;
-    this.gridApi.addEventListener('columnResized', () => {
-      clearTimeout(resizeTime);
-      resizeTime = window.setTimeout(() => {
-        this.gridApi?.resetRowHeights();
-      }, 100);
-    });
   }
 
   private async loadPopularAddons(clientType: WowClientType) {

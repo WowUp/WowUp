@@ -18,8 +18,6 @@ import { HomeModule } from './pages/home/home.module';
 import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
-import { AddonTableColumnComponent } from './components/addon-table-column/addon-table-column.component';
-import { AddonStatusColumnComponent } from './components/addon-status-column/addon-status-column.component';
 import { TitlebarComponent } from './components/titlebar/titlebar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { DefaultHeadersInterceptor } from './interceptors/default-headers.interceptor';
@@ -33,8 +31,6 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 @NgModule({
   declarations: [
     AppComponent,
-    AddonTableColumnComponent,
-    AddonStatusColumnComponent,
     TitlebarComponent,
     FooterComponent,
   ],

@@ -1,6 +1,3 @@
-@import "ag-grid-community/dist/styles/ag-grid.css";
-@import "ag-grid-community/dist/styles/ag-theme-balham.css";
-@import "~ag-grid-community/src/styles/ag-theme-balham/sass/ag-theme-balham-mixin";
 @import "./custom-theme.scss";
 
 :not(input):not(textarea),
@@ -131,27 +128,6 @@ body {
 
   &.justify-content-center {
     justify-content: center;
-  }
-}
-
-.ag-theme-balham {
-  @include ag-theme-balham(( // use theme parameters
-      foreground-color: $white-1,
-      background-color: $dark-3,
-      row-hover-color: $dark-1,
-      header-background-color: $dark-2,
-      header-foreground-color: $white-2,
-      odd-row-background-color: null,
-      borders: true,
-      borders-critical: false,
-      borders-secondary: false,
-      border-color: transparent,
-      secondary-border-color: blue,
-      row-border-color: green,
-      cell-horizontal-border: red));
-
-  .ag-row {
-    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
   }
 }
 

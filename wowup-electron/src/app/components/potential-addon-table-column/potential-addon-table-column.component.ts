@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ICellRendererAngularComp } from 'ag-grid-angular';
-import { IAfterGuiAttachedParams, ICellRendererParams } from 'ag-grid-community';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';
 
 @Component({
@@ -8,23 +6,13 @@ import { PotentialAddon } from 'app/models/wowup/potential-addon';
   templateUrl: './potential-addon-table-column.component.html',
   styleUrls: ['./potential-addon-table-column.component.scss']
 })
-export class PotentialAddonTableColumnComponent implements ICellRendererAngularComp {
+export class PotentialAddonTableColumnComponent implements OnInit {
 
   @Input('addon') addon: PotentialAddon;
 
   constructor() { }
 
-  refresh(params: any): boolean {
-    throw new Error("Method not implemented.");
-  }
-
-  agInit(params: ICellRendererParams): void {
-    this.addon = params.data;
-    // console.log(this.addon)
-  }
-
-  afterGuiAttached?(params?: IAfterGuiAttachedParams): void {
-    throw new Error("Method not implemented.");
+  ngOnInit(): void {
   }
 
 }
