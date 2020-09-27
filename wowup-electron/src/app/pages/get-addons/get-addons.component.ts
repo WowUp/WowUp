@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { PotentialAddonStatusColumnComponent } from 'app/components/potential-addon-status-column/potential-addon-status-column.component';
-import { PotentialAddonTableColumnComponent } from 'app/components/potential-addon-table-column/potential-addon-table-column.component';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ColumnState } from 'app/models/wowup/column-state';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';

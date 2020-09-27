@@ -106,6 +106,7 @@
     "@angular/platform-browser": "~10.1.1",
     "@angular/platform-browser-dynamic": "~10.1.1",
     "@angular/router": "~10.1.1",
+    "@types/lodash": "4.14.161",
     "adm-zip": "0.4.16",
     "compare-versions": "3.6.0",
     "conf": "7.1.1",

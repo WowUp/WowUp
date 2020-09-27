@@ -337,10 +337,8 @@ export class AddonService {
   }
 
   private getLatestFile(searchResult: AddonSearchResult, channelType: AddonChannelType): AddonSearchResultFile {
-    return _.flow(
-      _.filter((f: AddonSearchResultFile) => f.channelType <= channelType),
-      _.first
-    )(searchResult.files);
+    let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
+    return _.first(files);
   }
 
   private createAddon(

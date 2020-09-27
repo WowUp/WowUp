@@ -68,17 +68,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     this.addonService.addonInstalled$.subscribe((evt) => {
       console.log('UPDATE')
-      const addons: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
-      const listItemIdx = addons.findIndex(li => li.addon.id === evt.addon.id);
+      let listItems: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
+      const listItemIdx = listItems.findIndex(li => li.addon.id === evt.addon.id);
       const listItem = this.createAddonListItem(evt.addon);
       listItem.isInstalling = evt.installState === AddonInstallState.Installing || evt.installState === AddonInstallState.Downloading;
       listItem.statusText = this.getInstallStateText(evt.installState);
       listItem.installProgress = evt.progress;
 
-      console.log(listItem);
-      addons[listItemIdx] = listItem;
+      if (listItemIdx === -1) {
+        listItems.push(listItem);
+      } else {
+        listItems[listItemIdx] = listItem;
+      }
+
+      listItems = this.sortListItems(listItems);
+
       this._ngZone.run(() => {
-        this._displayAddonsSrc.next(addons);
+        this._displayAddonsSrc.next(listItems);
       });
     });
 
@@ -234,7 +240,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private formatAddons(addons: Addon[]): MyAddonsListItem[] {
     const listItems = addons.map(addon => this.createAddonListItem(addon));
 
-    return _.sortBy(listItems, ['displayState', 'name']);
+    return this.sortListItems(listItems);
+  }
+
+  private sortListItems(listItems: MyAddonsListItem[]) {
+    return _.orderBy(listItems, ['displayState', 'addon.name']);
   }
 
   private createAddonListItem(addon: Addon) {
