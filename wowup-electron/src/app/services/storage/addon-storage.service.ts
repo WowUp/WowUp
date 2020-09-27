@@ -37,6 +37,10 @@ export class AddonStorageService {
     return this._store.get(key) as Addon;
   }
 
+  public remove(addon: Addon){
+    this._store.delete(addon.id);
+  }
+
   public removeForClientType(clientType: WowClientType) {
     const addons = this.getAllForClientType(clientType);
     addons.forEach(addon => this._store.delete(addon.id));

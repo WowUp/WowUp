@@ -112,9 +112,9 @@
       Update
     </mat-checkbox>
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">Channel</button>
-    <button mat-menu-item (click)="onContextMenuAction2(item)">Re-Install</button>
+    <button mat-menu-item (click)="onReInstallAddon(listItem.addon)">Re-Install</button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="onContextMenuAction2(item)">Remove</button>
+    <button mat-menu-item (click)="onRemoveAddon(listItem.addon)">Remove</button>
     <mat-menu #addonChannels="matMenu" class="addon-context-menu">
       <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
         (change)="onSelectedAddonChannelChange($event, listItem.addon)">

@@ -1,10 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-export interface DialogData {
-  animal: string;
-  name: string;
-}
+
 
 @Component({
   selector: 'app-telemetry-dialog',
@@ -14,8 +11,8 @@ export interface DialogData {
 export class TelemetryDialogComponent implements OnInit {
 
   constructor(
-    public dialogRef: MatDialogRef<TelemetryDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+    public dialogRef: MatDialogRef<TelemetryDialogComponent>
+  ) { }
 
   ngOnInit(): void {
   }
@@ -23,5 +20,5 @@ export class TelemetryDialogComponent implements OnInit {
   onNoClick(): void {
     this.dialogRef.close();
   }
-  
+
 }

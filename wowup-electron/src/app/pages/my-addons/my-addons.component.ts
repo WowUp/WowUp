@@ -6,7 +6,6 @@ import { Addon } from 'app/entities/addon';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { AddonService } from 'app/services/addons/addon.service';
 import { SessionService } from 'app/services/session/session.service';
-import { GridApi, GridOptions } from 'ag-grid-community';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ColumnState } from 'app/models/wowup/column-state';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -17,6 +16,8 @@ import { AddonDisplayState } from 'app/models/wowup/addon-display-state';
 import { AddonInstallState } from 'app/models/wowup/addon-install-state';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatRadioChange } from '@angular/material/radio';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-my-addons',
@@ -30,7 +31,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>([]);
 
-  private gridApi: GridApi;
   private subscriptions: Subscription[] = [];
   private sub: Subscription;
 
@@ -62,24 +62,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     public overlay: Overlay,
     public viewContainerRef: ViewContainerRef,
     public warcraftService: WarcraftService,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private _dialog: MatDialog
   ) {
-    this._sessionService.selectedHomeTab$
-      .subscribe(index => {
-        if (index !== 0) {
-          return;
-        }
-        window.setTimeout(() => {
-          this.gridApi?.sizeColumnsToFit();
-          this.gridApi?.resetRowHeights();
-        }, 100);
-      });
 
     this.addonService.addonInstalled$.subscribe((evt) => {
       console.log('UPDATE')
       const addons: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
       const listItemIdx = addons.findIndex(li => li.addon.id === evt.addon.id);
-      const listItem = new MyAddonsListItem(evt.addon);
+      const listItem = this.createAddonListItem(evt.addon);
       listItem.isInstalling = evt.installState === AddonInstallState.Installing || evt.installState === AddonInstallState.Downloading;
       listItem.statusText = this.getInstallStateText(evt.installState);
       listItem.installProgress = evt.progress;
@@ -89,7 +80,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       this._ngZone.run(() => {
         this._displayAddonsSrc.next(addons);
       });
-    })
+    });
+
+    this.addonService.addonRemoved$
+      .subscribe((addonId) => {
+        const addons: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
+        const listItemIdx = addons.findIndex(li => li.addon.id === addonId);
+        addons.splice(listItemIdx, 1);
+
+        this._ngZone.run(() => {
+          this._displayAddonsSrc.next(addons);
+        });
+      })
   }
 
   ngOnInit(): void {
@@ -146,6 +148,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.contextMenu.openMenu();
   }
 
+  async onReInstallAddon(addon: Addon) {
+    try {
+      this.addonService.installAddon(addon.id);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   onUpdateAddon(listItem: MyAddonsListItem) {
     listItem.isInstalling = true;
 
@@ -165,6 +175,24 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   onClientChange() {
     this._sessionService.selectedClientType = this.selectedClient;
+  }
+
+  onRemoveAddon(addon: Addon) {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: `Uninstall Addon?`,
+        message: `Are you sure you want to remove ${addon.name}?\nThis will remove all related folders from your World of Warcraft folder.`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed', result);
+      if (!result) {
+        return;
+      }
+
+      this.addonService.removeAddon(addon);
+    });
   }
 
   onClickIgnoreAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
@@ -204,20 +232,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   private formatAddons(addons: Addon[]): MyAddonsListItem[] {
-    const listItems = addons.map(addon => {
-      const listItem = new MyAddonsListItem(addon);
-
-      if (!listItem.addon.thumbnailUrl) {
-        listItem.addon.thumbnailUrl = 'assets/wowup_logo_512np.png';
-      }
-      if (!listItem.addon.installedVersion) {
-        listItem.addon.installedVersion = 'None';
-      }
-
-      return listItem;
-    });
+    const listItems = addons.map(addon => this.createAddonListItem(addon));
 
     return _.sortBy(listItems, ['displayState', 'name']);
+  }
+
+  private createAddonListItem(addon: Addon) {
+    const listItem = new MyAddonsListItem(addon);
+
+    if (!listItem.addon.thumbnailUrl) {
+      listItem.addon.thumbnailUrl = 'assets/wowup_logo_512np.png';
+    }
+    if (!listItem.addon.installedVersion) {
+      listItem.addon.installedVersion = 'None';
+    }
+
+    return listItem;
   }
 
   private getInstallStateText(installState: AddonInstallState) {

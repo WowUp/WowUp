@@ -35,8 +35,10 @@ export class AddonService {
 
   private readonly _addonProviders: AddonProvider[];
   private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
+  private readonly _addonRemovedSrc = new Subject<string>();
 
   public addonInstalled$ = this._addonInstalledSrc.asObservable();
+  public addonRemoved$ = this._addonRemovedSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -56,7 +58,7 @@ export class AddonService {
     ];
   }
 
-  public saveAddon(addon: Addon){
+  public saveAddon(addon: Addon) {
     this._addonStorage.set(addon.id, addon);
   }
 
@@ -216,6 +218,19 @@ export class AddonService {
           return this.createAddon(latestFile.folders[0], searchResult, latestFile, clientType);
         })
       )
+  }
+
+  public async removeAddon(addon: Addon) {
+    const installedDirectories = addon.installedFolders.split(',');
+
+    const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
+    for(let directory of installedDirectories){
+      const addonDirectory = path.join(addonFolderPath, directory);
+      await this._fileService.deleteDirectory(addonDirectory);
+    }
+
+    this._addonStorage.remove(addon);
+    this._addonRemovedSrc.next(addon.id);
   }
 
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
