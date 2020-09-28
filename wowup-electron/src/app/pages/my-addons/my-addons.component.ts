@@ -18,6 +18,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { MatRadioChange } from '@angular/material/radio';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-dialog.component';
+import { getEnumName } from 'app/utils/enum.utils';
 
 @Component({
   selector: 'app-my-addons',
@@ -28,11 +29,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild('addonContextMenuTrigger') contextMenu: MatMenuTrigger;
   @ViewChild('columnContextMenuTrigger') columnContextMenu: MatMenuTrigger;
+  @ViewChild('updateAllContextMenuTrigger') updateAllContextMenu: MatMenuTrigger;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>([]);
 
   private subscriptions: Subscription[] = [];
   private sub: Subscription;
+
+  public spinnerMessage = 'Loading...';
 
   contextMenuPosition = { x: '0px', y: '0px' };
 
@@ -136,10 +140,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.enableControls = true;
   }
 
+  async onUpdateAllRetailClassic() {
+    await this.updateAllWithSpinner(WowClientType.Retail, WowClientType.Classic);
+  }
+
+  async onUpdateAllClients() {
+    await this.updateAllWithSpinner(WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta, WowClientType.ClassicPtr, WowClientType.Classic);
+  }
+
   onHeaderContext(event: MouseEvent) {
     event.preventDefault();
-    this.contextMenuPosition.x = event.clientX + 'px';
-    this.contextMenuPosition.y = event.clientY + 'px';
+    this.updateContextMenuPosition(event);
     this.columnContextMenu.menuData = { 'columns': this.columns.filter(col => col.allowToggle) };
     this.columnContextMenu.menu.focusFirstItem('mouse');
     this.columnContextMenu.openMenu();
@@ -147,11 +158,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   onCellContext(event: MouseEvent, listItem: MyAddonsListItem) {
     event.preventDefault();
-    this.contextMenuPosition.x = event.clientX + 'px';
-    this.contextMenuPosition.y = event.clientY + 'px';
+    this.updateContextMenuPosition(event);
     this.contextMenu.menuData = { 'listItem': listItem };
     this.contextMenu.menu.focusFirstItem('mouse');
     this.contextMenu.openMenu();
+  }
+
+  onUpdateAllContext(event: MouseEvent) {
+    event.preventDefault();
+    this.updateContextMenuPosition(event);
+    this.updateAllContextMenu.openMenu();
   }
 
   async onReInstallAddon(addon: Addon) {
@@ -176,7 +192,19 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   onReScan() {
-    this.loadAddons(this.selectedClient, true)
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: `Start re-scan?`,
+        message: `Doing a re-scan may reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+      this.loadAddons(this.selectedClient, true)
+    });
   }
 
   onClientChange() {
@@ -202,7 +230,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   onInstall() {
-    
+
   }
 
   onClickIgnoreAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
@@ -219,6 +247,44 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   onSelectedAddonChannelChange(evt: MatRadioChange, addon: Addon) {
     addon.channelType = evt.value;
     this.addonService.saveAddon(addon);
+  }
+
+  private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
+    this.isBusy = true;
+    this.spinnerMessage = 'Gathering addons...';
+
+    try {
+      let updatedCt = 0;
+      let addons: Addon[] = [];
+      for (let clientType of clientTypes) {
+        addons = addons.concat(await this.addonService.getAddons(clientType));
+      }
+
+      // Only care about the ones that need to be updated/installed
+      addons = addons
+        .map(addon => new MyAddonsListItem(addon))
+        .filter(listItem => listItem.needsUpdate || listItem.needsInstall)
+        .map(listItem => listItem.addon);
+
+      this.spinnerMessage = `Updating ${updatedCt}/${addons.length}`;
+
+      for (let addon of addons) {
+        updatedCt += 1;
+        this.spinnerMessage = `Updating ${updatedCt}/${addons.length}\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
+
+        await this.addonService.installAddon(addon.id);
+      }
+
+      this.loadAddons(this.selectedClient);
+    } catch (err) {
+      console.error('Failed to update classic/retail', err);
+      this.isBusy = false;
+    }
+  }
+
+  private updateContextMenuPosition(event: MouseEvent) {
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
   }
 
   private loadAddons(clientType: WowClientType, rescan = false) {

@@ -14,15 +14,16 @@
     </div>
     <div class="button-container">
       <button mat-flat-button color="primary" matTooltip="Update all addons for this client"
-        [disabled]="enableControls === false" (click)="onUpdateAll()">Update All</button>
+        [disabled]="enableControls === false" (click)="onUpdateAll()" (contextmenu)="onUpdateAllContext($event)">Update
+        All</button>
       <button mat-flat-button color="primary" matTooltip="Check for latest addon updates"
-        [disabled]="enableControls === false" (click)="onRefresh()">Refresh</button>
+        [disabled]="enableControls === false" (click)="onRefresh()">Check Updates</button>
       <button mat-flat-button color="primary" matTooltip="Scan your client folder for installed addons"
-        [disabled]="enableControls === false" (click)="onReScan()">Re-Scan</button>
+        [disabled]="enableControls === false" (click)="onReScan()">Re-Scan Folders</button>
     </div>
   </div>
 
-  <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
+  <app-progress-spinner *ngIf="isBusy === true" [message]="spinnerMessage" ></app-progress-spinner>
 
   <div class="table-container flex-grow-1" *ngIf="isBusy === false">
     <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8">
@@ -139,5 +140,15 @@
       (change)="onColumnVisibleChange($event, column)">
       {{column.display}}
     </mat-checkbox>
+  </ng-template>
+</mat-menu>
+
+<div style="visibility: hidden; position: fixed" #updateAllContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="updateAllContextMenu">
+</div>
+<mat-menu #updateAllContextMenu="matMenu" class="addon-context-menu">
+  <ng-template matMenuContent let-columns="columns">
+    <button mat-menu-item (click)="onUpdateAllRetailClassic()">Update Retail/Classic</button>
+    <button mat-menu-item (click)="onUpdateAllClients()">Update All Clients</button>
   </ng-template>
 </mat-menu>

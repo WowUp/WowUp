@@ -29,7 +29,7 @@ export class GetAddonsComponent implements OnInit {
   public get displayedColumns(): string[] {
     return this.columns.filter(col => col.visible).map(col => col.name);
   }
-  
+
   public query = '';
   public displayAddons$ = this._displayAddonsSrc.asObservable();
   public isBusy = false;
@@ -41,7 +41,7 @@ export class GetAddonsComponent implements OnInit {
     public electronService: ElectronService,
     public warcraftService: WarcraftService
   ) {
-    
+
   }
 
   ngOnInit(): void {

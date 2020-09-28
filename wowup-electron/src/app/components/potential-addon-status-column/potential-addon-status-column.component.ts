@@ -1,4 +1,5 @@
 import { Component, Input, NgZone, OnInit } from '@angular/core';
+import { AddonInstallState } from 'app/models/wowup/addon-install-state';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';
 import { AddonService } from 'app/services/addons/addon.service';
 import { SessionService } from 'app/services/session/session.service';
@@ -39,7 +40,13 @@ export class PotentialAddonStatusColumnComponent implements OnInit {
     this.progressText = 'Installing...';
 
     this._addonService.installPotentialAddon(this.addon, this._sessionService.selectedClientType, (state, progress) => {
-      console.log('UPDATE');
+      console.log('UPDATE', state);
+      
+      if(state === AddonInstallState.Complete){
+        this.showInstallButton = false;
+        this.showProgress = false;
+        this.isInstalled = true;
+      }
 
       this._ngZone.run(() => {
         this.progressValue = progress;
