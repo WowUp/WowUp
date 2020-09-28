@@ -19,6 +19,16 @@
   ],
   "main": "main.js",
   "private": true,
+  "build": {
+    "appId": "io.wowup.app",
+    "nodeGypRebuild": true,
+    "directories": {
+      "buildResources": "electron-build"
+    },
+    "mac": {
+      "category": "public.app-category.games"
+    }
+  },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",

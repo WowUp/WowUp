@@ -14,7 +14,6 @@ import { AboutComponent } from '../about/about.component';
 import { PotentialAddonTableColumnComponent } from 'app/components/potential-addon-table-column/potential-addon-table-column.component';
 import { PotentialAddonStatusColumnComponent } from 'app/components/potential-addon-status-column/potential-addon-status-column.component';
 import { MyAddonsAddonCellComponent } from 'app/components/my-addons-addon-cell/my-addons-addon-cell.component';
-import { MyAddonsStatusCellComponent } from 'app/components/my-addons-status-cell/my-addons-status-cell.component';
 import { ProgressSpinnerComponent } from 'app/components/progress-spinner/progress-spinner.component';
 import { DownloadCountPipe } from 'app/pipes/download-count.pipe';
 import { TelemetryDialogComponent } from 'app/components/telemetry-dialog/telemetry-dialog.component';
@@ -29,7 +28,6 @@ import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-di
     OptionsComponent,
     ExternalLinkDirective,
     MyAddonsAddonCellComponent,
-    MyAddonsStatusCellComponent,
     PotentialAddonStatusColumnComponent,
     ProgressSpinnerComponent,
     PotentialAddonTableColumnComponent,

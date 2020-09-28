@@ -201,6 +201,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
+  onInstall() {
+    
+  }
+
   onClickIgnoreAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
     listItem.addon.isIgnored = evt.checked;
     listItem.statusText = listItem.getStateText();

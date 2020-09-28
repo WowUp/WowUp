@@ -1,4 +1,6 @@
 export const AppConfig = {
   production: true,
-  environment: 'PROD'
+  environment: 'PROD',
+  appVersion: require('../../package.json').version,
+  wowUpApiUrl: 'https://api.wowup.io'
 };
