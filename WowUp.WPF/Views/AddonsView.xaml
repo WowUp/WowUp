@@ -267,6 +267,9 @@
                                       Command="{Binding AlphaCheckedCommand}"></MenuItem>
                         </MenuItem>
                         <Separator Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}" />
+                        <MenuItem Header="Open Folder"
+                                  Command="{Binding OpenFolderCommand}" />
+                        <Separator Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}" />
                         <MenuItem Header="Update" 
                                   Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
                                   Command="{Binding InstallCommand}"/>

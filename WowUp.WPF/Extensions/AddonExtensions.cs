@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Extensions
@@ -101,5 +102,7 @@ namespace WowUp.WPF.Extensions
 
             return AddonDisplayState.Unknown;
         }
+
+        public static string GetFullFolderPath(this Addon addon, IWarcraftService warcraftService) => Path.GetFullPath(Path.Combine(warcraftService.GetAddonFolderPath(addon.ClientType), addon.FolderName));
     }
 }
