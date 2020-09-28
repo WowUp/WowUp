@@ -6,4 +6,5 @@ export interface AddonSearchResultFile {
   folders: string[];
   gameVersion: string;
   downloadUrl: string;
+  releaseDate: Date;
 }

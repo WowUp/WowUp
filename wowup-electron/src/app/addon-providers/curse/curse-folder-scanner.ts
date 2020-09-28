@@ -51,7 +51,7 @@ export class CurseFolderScanner {
         let matchingFiles = await this.getMatchingFiles(folderPath, files);
         matchingFiles = _.sortBy(matchingFiles, f => f.toLowerCase());
 
-        console.log('matching files', matchingFiles.length)
+        // console.log('matching files', matchingFiles.length)
         // const fst = matchingFiles.map(f => f.toLowerCase()).join('\n');
 
         const individualFingerprints: number[] = [];
@@ -88,7 +88,7 @@ export class CurseFolderScanner {
             }
         }
 
-        console.log('fileInfoList', fileInfoList.length)
+        // console.log('fileInfoList', fileInfoList.length)
         for (let fileInfo of fileInfoList) {
             await this.processIncludeFile(matchingFileList, fileInfo);
         }

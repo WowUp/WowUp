@@ -27,6 +27,7 @@ import { TocService } from "../toc/toc.service";
 import { ElectronService } from "../electron/electron.service";
 import { TukUiAddonProvider } from "app/addon-providers/tukui-addon-provider";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
+import { WowInterfaceAddonProvider } from "app/addon-providers/wow-interface-addon-provider";
 
 @Injectable({
   providedIn: 'root'
@@ -53,8 +54,9 @@ export class AddonService {
     httpClient: HttpClient
   ) {
     this._addonProviders = [
-      new TukUiAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
       new CurseAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
+      new WowInterfaceAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
+      new TukUiAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
     ];
   }
 
@@ -266,6 +268,7 @@ export class AddonService {
     const matchedGroups = _.groupBy(matchedAddonFolders, addonFolder => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`);
 
     console.log(Object.keys(matchedGroups));
+    console.log(matchedGroups['Curse2382'])
     return Object.values(matchedGroups).map(value => value[0].matchingAddon);
   }
 
@@ -338,6 +341,7 @@ export class AddonService {
 
   private getLatestFile(searchResult: AddonSearchResult, channelType: AddonChannelType): AddonSearchResultFile {
     let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
+    files = _.orderBy(files, ['releaseDate']).reverse();
     return _.first(files);
   }
 

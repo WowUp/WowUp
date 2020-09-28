@@ -237,7 +237,8 @@ export class CurseAddonProvider implements AddonProvider {
           version: lf.displayName,
           downloadUrl: lf.downloadUrl,
           folders: this.getFolderNames(lf),
-          gameVersion: this.getGameVersion(lf)
+          gameVersion: this.getGameVersion(lf),
+          releaseDate: new Date(lf.fileDate)
         };
       });
 

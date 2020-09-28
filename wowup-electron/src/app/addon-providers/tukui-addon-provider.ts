@@ -164,7 +164,8 @@ export class TukUiAddonProvider implements AddonProvider {
       folders: [folderName],
       downloadUrl: addon.url,
       gameVersion: addon.patch,
-      version: addon.version
+      version: addon.version,
+      releaseDate: new Date(addon.lastUpdate)
     };
 
     return {
