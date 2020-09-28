@@ -28,7 +28,8 @@
     "!tsconfig.json",
     "!tslint.json",
     "!.vscode/",
-    "!node_modules/@angular"
+    "!node_modules/@angular",
+    "!node_modules\\@angular"
   ],
   "win": {
     "icon": "dist/assets/icons",
