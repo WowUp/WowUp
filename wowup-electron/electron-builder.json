@@ -3,22 +3,33 @@
   "directories": {
     "output": "release/"
   },
-    "files": [
-        "**/*",
-        "!**/*.ts",
-        "!*.code-workspace",
-        "!LICENSE.md",
-        "!package.json",
-        "!package-lock.json",
-        "!src/",
-        "!e2e/",
-        "!hooks/",
-        "!angular.json",
-        "!_config.yml",
-        "!karma.conf.js",
-        "!tsconfig.json",
-        "!tslint.json"
-    ],
+  "nodeGypRebuild": true,
+  "files": [
+    "**/*",
+    "build/Release/*.node",
+    "!**/*.ts",
+    "!*.code-workspace",
+    "!LICENSE.md",
+    "!package.json",
+    "!package-lock.json",
+    "!src/app/",
+    "!src/assets/",
+    "!src/environments/",
+    "!src/**/*.map",
+    "!src/**/*.scss",
+    "!src/**/*.html",
+    "!src/**/*.conf.js",
+    "!src/**/*.json",
+    "!e2e/",
+    "!hooks/",
+    "!angular.json",
+    "!_config.yml",
+    "!karma.conf.js",
+    "!tsconfig.json",
+    "!tslint.json",
+    "!.vscode/",
+    "!node_modules/@angular"
+  ],
   "win": {
     "icon": "dist/assets/icons",
     "target": [
@@ -27,6 +38,7 @@
   },
   "mac": {
     "icon": "dist/assets/icons",
+    "category": "public.app-category.games",
     "target": [
       "dmg"
     ]

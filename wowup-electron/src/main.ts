@@ -52,4 +52,8 @@ document.addEventListener('click', (evt: any) => {
   if (evt.target.tagName === 'A' && evt.target.href.startsWith('http')) {
     evt.preventDefault()
   }
-})
+});
+
+// Disable file drop
+document.addEventListener('dragover', event => event.preventDefault());
+document.addEventListener('drop', event => event.preventDefault());

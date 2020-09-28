@@ -6,6 +6,7 @@ import { ipcRenderer, webFrame, remote, shell } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { BehaviorSubject } from 'rxjs';
+import { AppConfig } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +59,12 @@ export class ElectronService {
     this.remote.getCurrentWindow().on('unmaximize', () => {
       this._windowMaximizedSrc.next(false);
     });
+
+    if (AppConfig.production) {
+      if (this.isMac) {
+        this.remote.Menu.setApplicationMenu(this.remote.Menu.buildFromTemplate([]));
+      }
+    }
   }
 
   minimizeWindow() {
@@ -72,7 +79,7 @@ export class ElectronService {
     this.remote.getCurrentWindow().unmaximize();
   }
 
-  hideWindow(){
+  hideWindow() {
     this.remote.getCurrentWindow().hide();
   }
 
