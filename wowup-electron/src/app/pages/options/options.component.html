@@ -1,66 +1,73 @@
 <div class="tab-container" [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
   <div class="options">
-    <section>
-      <div class="row ">
-        <div class="title">World of Warcraft Folders</div>
-      </div>
-      <hr />
-      <div class="row hover">
-        <div class="grow">Rescan installed World of Warcraft products</div>
-        <button mat-flat-button color="primary" (click)="onReScan()">Re-Scan</button>
-      </div>
-      <div class="row">
-        <mat-form-field class="grow folder-input">
-          <mat-label>Retail</mat-label>
-          <input matInput disabled [value]="retailLocation">
-        </mat-form-field>
-        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
-      </div>
-      <div class="row">
-        <mat-form-field class="grow folder-input">
-          <mat-label>Classic</mat-label>
-          <input matInput disabled [value]="classicLocation">
-        </mat-form-field>
-        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
-      </div>
-      <div class="row">
-        <mat-form-field class="grow folder-input">
-          <mat-label>Retail PTR</mat-label>
-          <input matInput disabled [value]="retailPtrLocation">
-        </mat-form-field>
-        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
-      </div>
-      <div class="row">
-        <mat-form-field class="grow folder-input">
-          <mat-label>Classic PTR</mat-label>
-          <input matInput disabled [value]="classicPtrLocation">
-        </mat-form-field>
-        <!-- <button mat-flat-button color="primary" class="select-button">Select</button> -->
-      </div>
-      <div class="row">
-        <mat-form-field class="grow folder-input">
-          <mat-label>Beta</mat-label>
-          <input matInput disabled [value]="betaLocation">
-        </mat-form-field>
-      </div>
-    </section>
-    <section>
-      <div class="row">
-        <div class="title">Application</div>
-      </div>
-      <hr />
-      <div class="row hover">
-        <div class="grow">Log Files</div>
-        <button mat-flat-button color="primary" (click)="onShowLogs()">Show Log Files</button>
-      </div>
-      <div class="row hover">
-        <div class="grow">Enable Telemetry</div>
-        <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
-      </div>
-      <div class="row hover">
-        <div class="grow">Minimize on Close</div>
-        <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" ></mat-slide-toggle>
-      </div>
-    </section>
+    <mat-card class="option-card">
+      <mat-card-header>
+        <mat-card-title>World of Warcraft</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="grow">Rescan installed World of Warcraft products</div>
+          <button mat-flat-button color="primary" (click)="onReScan()">Re-Scan</button>
+        </div>
+        <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes" [clientType]="clientType"></app-wow-client-options>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="option-card">
+      <mat-card-header>
+        <mat-card-title>Application</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row hover">
+          <div class="grow">
+            <p>WowUp Release Channel</p>
+            <small class="hint">Select Stable for a cleaner less buggy build. Select Beta to see the next wave of
+              features as they come.</small>
+          </div>
+          <mat-form-field class="light-select">
+            <mat-label>Release Channel</mat-label>
+            <mat-select [(value)]="wowUpReleaseChannel" (selectionChange)="onWowUpChannelChange($event)">
+              <mat-option *ngFor="let channel of wowUpReleaseChannels" [value]="channel.type" >{{channel.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="row hover">
+          <div class="grow">
+            <p>Telemetry</p>
+            <small class="hint">Help improve WowUp by sending anonymous install data and/or errors.</small>
+          </div>
+          <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
+        </div>
+        <div class="row hover">
+          <div class="grow">
+            <p>Minimize on Close</p>
+            <small class="hint">When closing the WowUp window, minimize to the system tray.</small>
+          </div>
+          <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)">
+          </mat-slide-toggle>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="option-card">
+      <mat-card-header>
+        <mat-card-title>Debug</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="grow">
+            <p>Log Files</p>
+            <small class="hint">Open the folder that contains your last couple of log files.</small>
+          </div>
+          <button mat-flat-button color="primary" (click)="onShowLogs()">Show Log Files</button>
+        </div>
+        <div class="row">
+          <div class="grow">
+            <p>Debug Data</p>
+            <small class="hint">Log debug data to help with diagnosing potential issues. This can be found in your
+              latest log file for the curious.</small>
+          </div>
+          <button mat-flat-button color="primary" (click)="onShowLogs()">Dump Debug Data</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

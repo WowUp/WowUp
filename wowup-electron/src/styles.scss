@@ -15,8 +15,8 @@ textarea,
   outline: none; // You should add some other style for :focus to help UX/a11y
 }
 
-a:not([draggable=true]),
-img:not([draggable=true]) {
+a:not([draggable="true"]),
+img:not([draggable="true"]) {
   -webkit-user-drag: none;
   user-drag: none;
   /* Technically not supported in Electron yet */
@@ -24,7 +24,8 @@ img:not([draggable=true]) {
 
 a[href^="http://"],
 a[href^="https://"],
-a[href^="ftp://"] {
+a[href^="ftp://"]
+{
   -webkit-user-drag: auto;
   user-drag: auto;
   /* Technically not supported in Electron yet */
@@ -171,12 +172,36 @@ body {
     }
 
     .addon-name {
-      font-size: 1.0em;
+      font-size: 1em;
       font-weight: bold;
     }
     .addon-version {
       color: $white-2;
     }
+  }
+}
+
+.wide-slide-toggle {
+  width: 100%;
+
+  &:hover {
+    cursor: pointer !important;
+  }
+
+  .mat-slide-toggle-label {
+    &:hover {
+      cursor: pointer !important;
+    }
+  }
+
+  .mat-slide-toggle-content {
+    flex-grow: 1;
+  }
+}
+
+.light-select {
+  .mat-form-field-label {
+    color: $white-2 !important;
   }
 }
 

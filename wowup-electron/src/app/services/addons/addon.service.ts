@@ -206,7 +206,7 @@ export class AddonService {
   }
 
   public getAddon(externalId: string, providerName: string, clientType: WowClientType) {
-    const targetAddonChannel = AddonChannelType.Stable; // TOOD _wowUpService.GetClientAddonChannelType(clientType);
+    const targetAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType)
       .pipe(
@@ -242,14 +242,7 @@ export class AddonService {
       addons = await this.scanAddons(clientType);
       this._addonStorage.setAll(addons);
     }
-    //     RemoveAddons(clientType);
-    //     addons = await GetLocalAddons(clientType);
-    //     SaveAddons(addons);
-    // }
 
-    // await SyncAddons(clientType, addons);
-
-    // return addons;
     return addons;
   }
 
@@ -258,7 +251,7 @@ export class AddonService {
     for (let provider of this._addonProviders) {
       try {
         const validFolders = addonFolders.filter(af => !af.matchingAddon && af.toc)
-        await provider.scan(clientType, AddonChannelType.Stable, validFolders);
+        await provider.scan(clientType, this._wowUpService.getDefaultAddonChannel(clientType), validFolders);
       } catch (err) {
         console.log(err);
       }
@@ -368,9 +361,9 @@ export class AddonService {
       downloadUrl: latestFile.downloadUrl,
       externalUrl: searchResult.externalUrl,
       providerName: searchResult.providerName,
-      channelType: AddonChannelType.Stable,
+      channelType: this._wowUpService.getDefaultAddonChannel(clientType),
       isIgnored: false,
-      autoUpdateEnabled: false,
+      autoUpdateEnabled: this._wowUpService.getDefaultAutoUpdate(clientType),
     };
   }
 }

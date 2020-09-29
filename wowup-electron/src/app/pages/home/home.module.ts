@@ -18,6 +18,8 @@ import { ProgressSpinnerComponent } from 'app/components/progress-spinner/progre
 import { DownloadCountPipe } from 'app/pipes/download-count.pipe';
 import { TelemetryDialogComponent } from 'app/components/telemetry-dialog/telemetry-dialog.component';
 import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-dialog.component';
+import { AlertDialogComponent } from 'app/components/alert-dialog/alert-dialog.component';
+import { WowClientOptionsComponent } from 'app/components/wow-client-options/wow-client-options.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-di
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,
     TelemetryDialogComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    AlertDialogComponent,
+    WowClientOptionsComponent
   ],
   imports: [
     CommonModule,

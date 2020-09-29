@@ -8,20 +8,60 @@
 .options {
     max-width: 900px;
     width: 100%;
+
+    .option-card {
+        margin-top: 1em;
+        background-color: $dark-2;
+
+        &:last-child {
+            margin-bottom: 1em;
+        }
+    }
+
+    .title {
+        font-size: 1.5em;
+        flex-grow: 1;
+    }
+
+    .setting-section {
+        background-color: $dark-4;
+    }
+
+    .folder-input {
+        margin-right: 1em;
+    }
 }
+
 .row {
     display: flex;
     flex-direction: row;
     align-items: center;
     // margin: 1em 0;
     padding: 0.5em;
+    &.np {
+        padding: 0;
+    }
+    &.sub {
+        padding-left: 2em;
+    }
+}
+
+.col {
+    padding: 0.5em;
 }
 hr {
     border: 1px solid $white-4;
 }
-.row.hover {
+p {
+    margin: 0; 
+    padding: 0;
+}
+.hint {
+    color: $white-3;
+}
+.hover {
     &:hover {
-        background-color: $dark-4;
+       cursor: pointer;
     }
 }
 .grow {
@@ -37,14 +77,7 @@ section {
     color: $white-1;
     padding: 1em;
 
-    .title {
-        font-size: 1.5em;
-        flex-grow: 1;
-    }
-
-    .folder-input {
-        margin-right: 1em;
-    }
+    
 
     .select-button {
         flex-shrink: 0;

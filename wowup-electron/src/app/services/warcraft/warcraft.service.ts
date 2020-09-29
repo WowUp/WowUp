@@ -16,6 +16,7 @@ import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { ElectronService } from "..";
 import { TocService } from "../toc/toc.service";
+import { getEnumName } from "app/utils/enum.utils";
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = '_retail_';
@@ -179,6 +180,24 @@ export class WarcraftService {
     return this.storage.setPreference(clientLocationKey, clientPath);
   }
 
+  public setWowFolderPath(clientType: WowClientType, folderPath: string): boolean {
+    if (!this.isClientFolder(clientType, folderPath)) {
+      return false;
+    }
+
+    this.setClientLocation(clientType, folderPath);
+
+    return true;
+  }
+
+  private isClientFolder(clientType: WowClientType, folderPath: string) {
+    const clientFolderName = this.getClientFolderName(clientType);
+    const executableName = this.getExecutableName(clientType);
+    const executablePath = path.join(folderPath, clientFolderName, executableName);
+
+    return fs.existsSync(executablePath);
+  }
+
   public getClientTypeForFolderName(folderName: string): WowClientType {
     switch (folderName) {
       case CLIENT_RETAIL_FOLDER:
@@ -243,7 +262,7 @@ export class WarcraftService {
       case WowClientType.Beta:
         return BETA_LOCATION_KEY;
       default:
-        return '';
+        throw new Error(`Failed to get client location key: ${clientType}, ${getEnumName(WowClientType, clientType)}`)
     }
   }
 

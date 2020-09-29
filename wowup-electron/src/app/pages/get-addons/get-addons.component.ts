@@ -73,7 +73,7 @@ export class GetAddonsComponent implements OnInit {
     this._addonService.getFeaturedAddons(clientType)
       .subscribe({
         next: (addons) => {
-          console.log('FEAT ADDONS', addons);
+          // console.log('FEAT ADDONS', addons);
           addons = this.filterInstalledAddons(addons);
           this.formatAddons(addons);
           this._displayAddonsSrc.next(addons);

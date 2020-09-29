@@ -101,6 +101,28 @@ export class WowUpService {
     this._preferenceStorageService.set(Preferences.lastSelectedWowClientTypeKey, clientType);
   }
 
+  public getDefaultAddonChannel(clientType: WowClientType): AddonChannelType {
+    const key = this.getClientDefaultAddonChannelKey(clientType);
+    const preference = this._preferenceStorageService.findByKey(key);
+    return parseInt(preference, 10) as AddonChannelType;
+  }
+
+  public setDefaultAddonChannel(clientType: WowClientType, channelType: AddonChannelType) {
+    const key = this.getClientDefaultAddonChannelKey(clientType);
+    this._preferenceStorageService.set(key, channelType);
+  }
+
+  public getDefaultAutoUpdate(clientType: WowClientType): boolean {
+    const key = this.getClientDefaultAutoUpdateKey(clientType);
+    const preference = this._preferenceStorageService.findByKey(key);
+    return preference === true.toString();
+  }
+
+  public setDefaultAutoUpdate(clientType: WowClientType, autoUpdate: boolean) {
+    const key = this.getClientDefaultAutoUpdateKey(clientType);
+    this._preferenceStorageService.set(key, autoUpdate);
+  }
+
   public showLogsFolder() {
     this._fileService.showDirectory(this.applicationLogsFolderPath);
   }
@@ -120,7 +142,7 @@ export class WowUpService {
             return true;
           }
 
-          return compareVersions(response.version, AppConfig.appVersion) > 0;
+          return compareVersions(response.version, this._electronService.remote.app.getVersion()) > 0;
         })
       );
   }
@@ -191,6 +213,11 @@ export class WowUpService {
     return `${typeName}${Preferences.defaultChannelKeySuffix}`.toLowerCase();
   }
 
+  private getClientDefaultAutoUpdateKey(clientType: WowClientType): string {
+    const typeName = getEnumName(WowClientType, clientType);
+    return `${typeName}${Preferences.defaultAutoUpdateKeySuffix}`.toLowerCase();
+  }
+
   private setDefaultPreferences() {
     this.setDefaultPreference(Preferences.collapseToTrayKey, true);
     this.setDefaultPreference(Preferences.wowupReleaseChannelKey, this.getDefaultReleaseChannel());
@@ -202,7 +229,10 @@ export class WowUpService {
     keys.forEach(key => {
       const preferenceKey = this.getClientDefaultAddonChannelKey(key);
       this.setDefaultPreference(preferenceKey, AddonChannelType.Stable);
-    })
+
+      const autoUpdateKey = this.getClientDefaultAutoUpdateKey(key);
+      this.setDefaultPreference(autoUpdateKey, false);
+    });
   }
 
   private getDefaultReleaseChannel() {

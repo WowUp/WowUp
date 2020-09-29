@@ -15,7 +15,20 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
   }
 
   getExecutableName(clientType: WowClientType): string {
-    throw new Error("Method not implemented.");
+    switch (clientType) {
+      case WowClientType.Retail:
+        return 'World of Warcraft.app';
+      case WowClientType.Classic:
+        return 'World of Warcraft Classic.app';
+      case WowClientType.RetailPtr:
+        return 'World of Warcraft Test.app';
+      case WowClientType.ClassicPtr:
+        return 'World of Warcraft Classic Test.app';
+      case WowClientType.Beta:
+        return 'World of Warcraft Beta.app';
+      default:
+        return '';
+    }
   }
 
 }
