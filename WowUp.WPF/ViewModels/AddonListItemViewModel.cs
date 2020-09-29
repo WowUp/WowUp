@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -16,6 +17,7 @@ namespace WowUp.WPF.ViewModels
     {
         private readonly IAddonService _addonService;
         private readonly IAnalyticsService _analyticsService;
+        private readonly IWarcraftService _warcraftService;
         private readonly SolidColorBrush _rareBrush;
         private readonly SolidColorBrush _epicBrush;
 
@@ -31,6 +33,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         public Command ActionCommand { get; set; }
+        public Command OpenFolderCommand { get; set; }
         public Command InstallCommand { get; set; }
         public Command UpdateCommand { get; set; }
         public Command OpenLinkCommand { get; set; }
@@ -257,12 +260,15 @@ namespace WowUp.WPF.ViewModels
 
         public AddonListItemViewModel(
             IAddonService addonService,
-            IAnalyticsService analyticsService)
+            IAnalyticsService analyticsService,
+            IWarcraftService warcraftService)
             : base()
         {
             _addonService = addonService;
             _analyticsService = analyticsService;
+            _warcraftService = warcraftService;
 
+            OpenFolderCommand = new Command(() => FileUtilities.OpenInFileManager(Addon.GetFullFolderPath(_warcraftService)));
             InstallCommand = new Command(async () => await InstallAddon());
             UpdateCommand = new Command(async () => await UpdateAddon());
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
