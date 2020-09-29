@@ -268,7 +268,7 @@ namespace WowUp.WPF.ViewModels
             _analyticsService = analyticsService;
             _warcraftService = warcraftService;
 
-            OpenFolderCommand = new Command(() => FileUtilities.OpenInFileManager(Addon.GetFullFolderPath(_warcraftService)));
+            OpenFolderCommand = new Command(() => Addon.GetFullFolderPath(_warcraftService).OpenUrlInBrowser());
             InstallCommand = new Command(async () => await InstallAddon());
             UpdateCommand = new Command(async () => await UpdateAddon());
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());

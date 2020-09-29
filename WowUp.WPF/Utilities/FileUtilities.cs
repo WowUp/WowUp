@@ -168,12 +168,5 @@ namespace WowUp.WPF.Utilities
                 }
             }
         }
-
-        public static void OpenInFileManager(string path)
-        {
-            if (OperatingSystem.IsWindows()) {
-                Process.Start("explorer.exe", $"\"{path}\"");
-            }
-        }
     }
 }
