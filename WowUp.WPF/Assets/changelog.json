@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.17.0",
+      "Description": "Auto updates should function more like you would expect.\nSystem Notifications should appear when addons are auto updated.\nRe-Scan is now less desctructive, should preserve channels and auto update state.\nAdd the ability to update multiple clients at once by right clicking update-all.\nBug fixes.\nUI Updates."
+    },
+    {
       "Version": "1.16.6",
       "Description": "Actually fix the switch from stable to beta WowUp client?"
     },
