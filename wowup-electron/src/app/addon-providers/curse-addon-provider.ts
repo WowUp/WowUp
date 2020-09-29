@@ -118,7 +118,7 @@ export class CurseAddonProvider implements AddonProvider {
     if (!addonIds?.length) {
       return of([]);
     }
-    
+
     const url = `${API_URL}/addon`;
 
     return this._httpClient.post<CurseSearchResult[]>(url, addonIds);
@@ -144,8 +144,27 @@ export class CurseAddonProvider implements AddonProvider {
     return scanResults;
   }
 
-  getAll(clientType: WowClientType, addonIds: string[]): Promise<import("../models/wowup/addon-search-result").AddonSearchResult[]> {
-    throw new Error("Method not implemented.");
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
+    if (!addonIds.length) {
+      return [];
+    }
+
+    const addonResults: AddonSearchResult[] = [];
+    const searchResults = await this.getAllIds(addonIds.map(id => parseInt(id, 10))).toPromise();
+
+    for (let result of searchResults) {
+      const latestFiles = this.getLatestFiles(result, clientType);
+      if (!latestFiles.length) {
+        continue;
+      }
+
+      const addonSearchResult = this.getAddonSearchResult(result, latestFiles);
+      if (addonSearchResult) {
+        addonResults.push(addonSearchResult);
+      }
+    }
+
+    return addonResults;
   }
 
   getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {

@@ -226,7 +226,7 @@ export class AddonService {
     const installedDirectories = addon.installedFolders.split(',');
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
-    for(let directory of installedDirectories){
+    for (let directory of installedDirectories) {
       const addonDirectory = path.join(addonFolderPath, directory);
       await this._fileService.deleteDirectory(addonDirectory);
     }
@@ -243,7 +243,59 @@ export class AddonService {
       this._addonStorage.setAll(addons);
     }
 
+    this.syncAddons(clientType, addons);
+
     return addons;
+  }
+
+  private async syncAddons(clientType: WowClientType, addons: Addon[]) {
+    try {
+      for (let provider of this._addonProviders) {
+        await this.syncProviderAddons(clientType, addons, provider);
+      }
+
+      return true;
+    }
+    catch (err) {
+      console.error(err);
+      return false;
+    }
+  }
+
+  private async syncProviderAddons(clientType: WowClientType, addons: Addon[], addonProvider: AddonProvider) {
+    const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
+    if (!providerAddonIds.length) {
+      return;
+    }
+
+    const searchResults = await addonProvider.getAll(clientType, providerAddonIds);
+    for (let result of searchResults) {
+      const addon = addons.find(addon => addon.externalId === result?.externalId);
+      const latestFile = this.getLatestFile(result, addon?.channelType);
+
+      if (!result || !latestFile || latestFile.version === addon.latestVersion) {
+        continue;
+      }
+
+      addon.latestVersion = latestFile.version;
+      addon.downloadUrl = latestFile.downloadUrl;
+      addon.name = result.name;
+      addon.author = result.author;
+
+      if (latestFile.gameVersion) {
+        addon.gameVersion = latestFile.gameVersion;
+      }
+
+      addon.thumbnailUrl = result.thumbnailUrl;
+      addon.externalUrl = result.externalUrl;
+
+      this._addonStorage.set(addon.id, addon);
+    }
+  }
+
+  private getExternalIdsForProvider(addonProvider: AddonProvider, addons: Addon[]): string[] {
+    return addons.filter(addon => addon.providerName === addonProvider.name)
+      .map(addon => addon.externalId);
   }
 
   private async scanAddons(clientType: WowClientType): Promise<Addon[]> {

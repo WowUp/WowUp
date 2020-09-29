@@ -247,6 +247,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   onSelectedAddonChannelChange(evt: MatRadioChange, addon: Addon) {
     addon.channelType = evt.value;
     this.addonService.saveAddon(addon);
+    this.loadAddons(this.selectedClient);
   }
 
   private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
@@ -298,7 +299,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         next: (addons) => {
           this.isBusy = false;
           this.enableControls = true;
-          this._displayAddonsSrc.next(this.formatAddons(addons));
+          this._ngZone.run(() => {
+            this._displayAddonsSrc.next(this.formatAddons(addons));
+          });
         },
         error: (err) => {
           this.isBusy = false;

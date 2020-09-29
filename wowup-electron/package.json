@@ -122,6 +122,7 @@
     "globrex": "0.1.2",
     "lodash": "4.17.19",
     "ncp": "2.0.0",
+    "node-cache": "5.1.2",
     "node-disk-info": "1.1.0",
     "protobufjs": "6.10.1",
     "rimraf": "3.0.2",
