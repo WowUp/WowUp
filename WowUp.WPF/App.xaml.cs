@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +14,7 @@ using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Enums;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services;
@@ -32,6 +37,9 @@ namespace WowUp.WPF
 
         private readonly ServiceProvider _serviceProvider;
         private readonly IAnalyticsService _analyticsService;
+        private readonly ISessionService _sessionService;
+        private readonly IAddonService _addonService;
+        private bool _startSilent;
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -61,14 +69,67 @@ namespace WowUp.WPF
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
             _analyticsService = _serviceProvider.GetRequiredService<IAnalyticsService>();
+            _sessionService = _serviceProvider.GetRequiredService<ISessionService>();
+            _addonService = _serviceProvider.GetRequiredService<IAddonService>();
         }
 
+        async void TestParsed(StartupOptions options)
+        {
+            if (options.ClientType != Common.Enums.WowClientType.None)
+                _sessionService.SelectedClientType = options.ClientType;
+            if (options.Update)
+            {
+                var addons = await _addonService.GetAddons(_sessionService.SelectedClientType);
+                var addonsToUpdate = addons.Where(x => x.CanUpdate() || x.CanInstall() && !x.IsIgnored || options.Force);
+                await addonsToUpdate.ForEachAsync(2, async x =>
+                    await _addonService.InstallAddon(x.Id
+                        //Without these lines addons are updated as expected but the view stays unrefreshed
+                        //If I uncomment them, installation is not working
+
+                        //,(s,e) => { 
+                        //    if (s == Common.Enums.AddonInstallState.Complete)
+                        //        _addonService.UpdateAddon(x); 
+                        //}
+                    )
+                );
+            }
+            if (options.Silent)
+            {
+                _startSilent = true;
+            }
+            if (options.InputURLs.Any())
+            {
+                await options.InputURLs.ForEachAsync(2, async x => 
+                { 
+                    var potentialAddon = await _addonService.GetAddonByUri(new Uri(x), _sessionService.SelectedClientType);
+                    if (potentialAddon != null)
+                        await _addonService.InstallAddon(potentialAddon, _sessionService.SelectedClientType
+                        //,(s,e) => { 
+                        //    if (s == Common.Enums.AddonInstallState.Complete)
+                        //        _addonService.UpdateAddon(); 
+                        //}
+                        );
+                });
+            }
+
+        }
+        void TestNotParsed(IEnumerable<Error> errors)
+        {
+            Debug.WriteLine(string.Join("\r\n", errors.Select(x => x.ToString()).ToArray()));
+            Current.Shutdown();
+        }
         protected override void OnStartup(StartupEventArgs e)
         {
+            var args = Environment.GetCommandLineArgs().Skip(1);
+            Parser.Default.ParseArguments<StartupOptions>(args).WithParsed(TestParsed).WithNotParsed(TestNotParsed);
+
             HandleSingleInstance();
 
-            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            if(!_startSilent)
+            {
+                var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+                mainWindow.Show();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WowUp.WPF": {
+      "commandName": "Project",
+      "commandLineArgs": "-u"
+    }
+  }
+}
