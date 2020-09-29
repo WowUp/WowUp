@@ -109,7 +109,5 @@ namespace WowUp.WPF.Extensions
                 addon1.ProviderName == addon2.ProviderName &&
                 addon1.ClientType == addon2.ClientType;
         }
-
-        public static string GetFullFolderPath(this Addon addon, IWarcraftService warcraftService) => Path.GetFullPath(Path.Combine(warcraftService.GetAddonFolderPath(addon.ClientType), addon.FolderName));
     }
 }

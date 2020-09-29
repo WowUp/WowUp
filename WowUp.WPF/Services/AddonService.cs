@@ -48,6 +48,8 @@ namespace WowUp.WPF.Services
 
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
+        public string GetFullInstallPath(Addon addon) => Path.GetFullPath(Path.Combine(_warcraftService.GetAddonFolderPath(addon.ClientType), addon.FolderName));
+
         public AddonService(
             IServiceProvider serviceProvider,
             IAddonRepository addonRepository,

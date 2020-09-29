@@ -17,7 +17,6 @@ namespace WowUp.WPF.ViewModels
     {
         private readonly IAddonService _addonService;
         private readonly IAnalyticsService _analyticsService;
-        private readonly IWarcraftService _warcraftService;
         private readonly SolidColorBrush _rareBrush;
         private readonly SolidColorBrush _epicBrush;
 
@@ -260,15 +259,13 @@ namespace WowUp.WPF.ViewModels
 
         public AddonListItemViewModel(
             IAddonService addonService,
-            IAnalyticsService analyticsService,
-            IWarcraftService warcraftService)
+            IAnalyticsService analyticsService)
             : base()
         {
             _addonService = addonService;
             _analyticsService = analyticsService;
-            _warcraftService = warcraftService;
 
-            OpenFolderCommand = new Command(() => Addon.GetFullFolderPath(_warcraftService).OpenUrlInBrowser());
+            OpenFolderCommand = new Command(() => addonService.GetFullInstallPath(Addon).OpenUrlInBrowser());
             InstallCommand = new Command(async () => await InstallAddon());
             UpdateCommand = new Command(async () => await UpdateAddon());
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
