@@ -23,6 +23,18 @@ import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
 import './ipc-events';
 import * as log from 'electron-log';
+import { autoUpdater } from "electron-updater"
+
+autoUpdater.logger = log;
+autoUpdater.on('update-available', () => {
+  log.info('AVAILABLE')
+  win.webContents.send('update_available');
+});
+autoUpdater.on('update-downloaded', () => {
+  log.info('DOWNLOADED')
+  win.webContents.send('update_downloaded');
+});
+
 
 const LOG_PATH = path.join(app.getPath('userData'), 'logs');
 app.setAppLogsPath(LOG_PATH);
@@ -35,8 +47,8 @@ log.info('Main starting');
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 electronDl();
 
-const appVersion = require('./package.json').version;
-const USER_AGENT = `WowUp-Client/${appVersion} (${release()}; ${arch()}; +https://wowup.io)`;
+const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
+log.info('USER_AGENT', USER_AGENT);
 
 const isWin = process.platform === "win32";
 
@@ -100,6 +112,13 @@ function createWindow(): BrowserWindow {
   win.webContents.once('dom-ready', () => {
     win.webContents.openDevTools();
   })
+
+  win.once('ready-to-show', () => {
+    autoUpdater.checkForUpdatesAndNotify()
+      .then((result) => {
+        console.log('UPDATE', result)
+      })
+  });
 
   if (serve) {
     require('electron-reload')(__dirname, {

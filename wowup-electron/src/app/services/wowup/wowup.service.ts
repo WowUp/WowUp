@@ -36,8 +36,8 @@ export class WowUpService {
   public readonly applicationLogsFolderPath: string = remote.app.getPath('logs');
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, 'downloads');
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
-  public readonly applicationVersion: string = AppConfig.appVersion;
-  public readonly isBetaBuild: boolean = AppConfig.appVersion.toLowerCase().indexOf('beta') != -1;
+  public readonly applicationVersion: string;
+  public readonly isBetaBuild: boolean;
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
 
   constructor(
@@ -49,6 +49,9 @@ export class WowUpService {
     private _wowUpApiService: WowUpApiService
   ) {
     this.setDefaultPreferences();
+
+    this.applicationVersion = _electronService.remote.app.getVersion();
+    this.isBetaBuild = this.applicationVersion.toLowerCase().indexOf('beta') != -1;
   }
 
   public get updaterExists() {

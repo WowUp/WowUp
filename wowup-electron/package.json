@@ -19,6 +19,10 @@
   ],
   "main": "main.js",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jliddev/WowUp.git"
+  },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
@@ -114,6 +118,7 @@
     "electron-dl": "3.0.2",
     "electron-log": "4.2.4",
     "electron-store": "6.0.0",
+    "electron-updater": "4.3.5",
     "globrex": "0.1.2",
     "lodash": "4.17.19",
     "ncp": "2.0.0",

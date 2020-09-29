@@ -3,6 +3,11 @@
   "directories": {
     "output": "release/"
   },
+  "publish": {
+    "provider": "s3",
+    "bucket": "test-update",
+    "endpoint": "http://127.0.0.1:9000"
+  },
   "nodeGypRebuild": true,
   "files": [
     "**/*",
@@ -41,7 +46,7 @@
     "icon": "dist/assets/icons",
     "category": "public.app-category.games",
     "target": [
-      "dmg"
+      "default"
     ]
   },
   "linux": {
