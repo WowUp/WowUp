@@ -1,21 +1,16 @@
 {
   "name": "wowup",
   "version": "2.0.0-alpha.1",
-  "description": "Angular 10 with Electron (Typescript + SASS + Hot Reload)",
+  "description": "Word of Warcraft addon updater",
   "homepage": "https://github.com/maximegris/angular-electron",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Jliddev",
+    "email": "jliddev@gmail.com"
   },
   "gypfile": true,
   "keywords": [
-    "angular",
-    "angular 10",
-    "electron",
-    "typescript",
-    "eslint",
-    "spectron",
-    "sass"
+    "wow",
+    "world of warcraft"
   ],
   "main": "main.js",
   "private": true,
@@ -36,6 +31,7 @@
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
     "electron:local": "npm run build:prod && npx electron .",
     "electron:build": "npm run build:prod && electron-builder build",
+    "electron:publish": "npm run electron:build && electron-builder --publish onTagOrDraft",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "e2e": "npm run build:prod && cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",

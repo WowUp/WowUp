@@ -3,11 +3,7 @@
   "directories": {
     "output": "release/"
   },
-  "publish": {
-    "provider": "s3",
-    "bucket": "test-update",
-    "endpoint": "http://127.0.0.1:9000"
-  },
+  "publish": ["github"],
   "nodeGypRebuild": true,
   "files": [
     "**/*",
