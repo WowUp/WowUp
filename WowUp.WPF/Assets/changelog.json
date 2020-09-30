@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.18.0",
+      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz)"
+    },
+    {
       "Version": "1.17.1",
       "Description": "Fix a visual bug where auto updated addons were not shown up to date on the My Addons page."
     },
