@@ -1,6 +1,14 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.18.0",
+      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nFeatured addons are now sorted by download count."
+    },
+    {
+      "Version": "1.17.1",
+      "Description": "Fix a visual bug where auto updated addons were not shown up to date on the My Addons page."
+    },
+    {
       "Version": "1.17.0",
       "Description": "Auto updates should function more like you would expect.\nSystem Notifications should appear when addons are auto updated.\nRe-Scan is now less desctructive, should preserve channels and auto update state.\nAdd the ability to update multiple clients at once by right clicking update-all.\nBug fixes.\nUI Updates."
     },

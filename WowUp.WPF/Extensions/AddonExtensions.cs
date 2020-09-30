@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Extensions
