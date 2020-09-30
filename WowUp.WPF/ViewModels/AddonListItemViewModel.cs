@@ -330,12 +330,9 @@ namespace WowUp.WPF.ViewModels
 
         public async Task UpdateAddon()
         {
-            ShowStatusText = false;
-            ShowUpdateButton = false;
-
             try
             {
-                await _addonService.InstallAddon(_addon.Id, OnInstallUpdate);
+                await _addonService.InstallAddon(_addon.Id);
             }
             catch (Exception ex)
             {
@@ -426,8 +423,11 @@ namespace WowUp.WPF.ViewModels
             _analyticsService.TrackUserAction("Addons", "Channel", channelType.ToString());
         }
 
-        private void OnInstallUpdate(AddonInstallState installState, decimal percent)
+        public void OnInstallUpdate(AddonInstallState installState, decimal percent)
         {
+            ShowStatusText = false;
+            ShowUpdateButton = false;
+
             try
             {
                 ProgressText = GetInstallStateText(installState);

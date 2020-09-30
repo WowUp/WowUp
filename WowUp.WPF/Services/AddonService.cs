@@ -45,6 +45,7 @@ namespace WowUp.WPF.Services
         public event AddonEventHandler AddonUninstalled;
         public event AddonEventHandler AddonInstalled;
         public event AddonEventHandler AddonUpdated;
+        public event AddonStateEventHandler AddonStateChanged;
 
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
@@ -385,6 +386,19 @@ namespace WowUp.WPF.Services
             await InstallAddon(addon.Id, onUpdate);
         }
 
+        private void SendAddonStateChange(
+            Addon addon, 
+            AddonInstallState addonInstallState, 
+            decimal progress)
+        {
+            AddonStateChanged?.Invoke(this, new AddonStateEventArgs
+            {
+                Addon = addon,
+                AddonInstallState = addonInstallState,
+                Progress = progress
+            });
+        }
+
         public async Task InstallAddon(int addonId, Action<AddonInstallState, decimal> updateAction = null)
         {
             var addon = GetAddon(addonId);
@@ -394,6 +408,7 @@ namespace WowUp.WPF.Services
             }
 
             updateAction?.Invoke(AddonInstallState.Downloading, 25m);
+            SendAddonStateChange(addon, AddonInstallState.Downloading, 25m);
 
             string downloadedFilePath = string.Empty;
             string unzippedDirectory = string.Empty;
@@ -407,11 +422,13 @@ namespace WowUp.WPF.Services
                 if (!string.IsNullOrEmpty(addon.InstalledVersion))
                 {
                     updateAction?.Invoke(AddonInstallState.BackingUp, 0.50m);
+                    SendAddonStateChange(addon, AddonInstallState.BackingUp, 75m);
                     var backupZipFilePath = Path.Combine(BackupPath, $"{addon.Name}-{addon.InstalledVersion}.zip");
                     //await _downloadService.ZipFile(downloadedFilePath, backupZipFilePath);
                 }
 
                 updateAction?.Invoke(AddonInstallState.Installing, 75m);
+                SendAddonStateChange(addon, AddonInstallState.Installing, 75m);
 
                 unzippedDirectory = await _downloadService.UnzipFile(downloadedFilePath);
 
@@ -451,6 +468,7 @@ namespace WowUp.WPF.Services
             }
 
             updateAction?.Invoke(AddonInstallState.Complete, 100m);
+            SendAddonStateChange(addon, AddonInstallState.Complete, 100m);
         }
 
         private async Task CacheThumbnail(Addon addon)
