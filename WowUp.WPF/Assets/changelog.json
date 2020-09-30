@@ -2,7 +2,7 @@
   "ChangeLogs": [
     {
       "Version": "1.18.0",
-      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz)"
+      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nFeatured addons are now sorted by download count."
     },
     {
       "Version": "1.17.1",

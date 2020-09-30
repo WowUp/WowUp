@@ -163,7 +163,7 @@ namespace WowUp.WPF.Services
             var addonResults = await Task.WhenAll(addonTasks);
             var addonResultsConcat = addonResults.SelectMany(res => res);
 
-            return addonResultsConcat.ToList();
+            return addonResultsConcat.OrderByDescending(result => result.DownloadCount).ToList();
         }
 
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
