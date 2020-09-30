@@ -13,10 +13,10 @@
     </div>
     <div class="button-container">
       <button mat-flat-button color="primary" (click)="onRefresh()">Refresh</button>
-      <button mat-flat-button color="primary">Install from URL</button>
-      <mat-form-field class="example-form-field">
+      <button mat-flat-button color="primary" disabled>Install from URL</button>
+      <mat-form-field class="example-form-field" >
         <mat-label>Search</mat-label>
-        <input matInput type="text" [(ngModel)]="query">
+        <input matInput type="text" [(ngModel)]="query" disabled>
         <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear" (click)="query=''">
           <mat-icon>close</mat-icon>
         </button>
@@ -59,8 +59,5 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <!-- <ag-grid-angular class="ag-theme-balham addon-table" [gridOptions]="gridOptions" [rowData]="displayAddons$ | async"
-      [defaultColDef]="defaultColDef" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)">
-    </ag-grid-angular> -->
   </div>
 </div>
