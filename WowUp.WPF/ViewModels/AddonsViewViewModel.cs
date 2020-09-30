@@ -212,6 +212,15 @@ namespace WowUp.WPF.ViewModels
                 AddonUpdated(args.Addon);
             };
 
+            _addonService.AddonStateChanged += (sender, args) =>
+            {
+                var addon = DisplayAddons.FirstOrDefault(listItem => listItem.Addon.Id == args.Addon.Id);
+                if(addon != null)
+                {
+                    addon.OnInstallUpdate(args.AddonInstallState, args.Progress);
+                }
+            };
+
             _warcraftService.ProductChanged += (sender, args) =>
             {
                 SetClientNames();
