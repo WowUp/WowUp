@@ -2,7 +2,7 @@
   "ChangeLogs": [
     {
       "Version": "1.18.0",
-      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nFeatured addons are now sorted by download count."
+      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nAdd new ability to manually select your initial WoW client folder if the intial auto detection fails.\nNew ability to perform bulk operations on 'My Addons' page.\nFeatured addons are now sorted by download count."
     },
     {
       "Version": "1.17.1",
