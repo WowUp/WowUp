@@ -116,9 +116,37 @@ namespace WowUp.WPF.Services
             SessionChanged?.Invoke(this, new SessionEventArgs(_sessionState));
         }
 
-        public void AppLoaded()
+        public async void AppLoaded()
         {
-            if (StartupHelper.StartupOptions.ClientType != WowClientType.None)
+            if (StartupHelper.StartupOptions?.InputURLs.Any() == true)
+            {
+                await StartupHelper.StartupOptions.InputURLs.ForEachAsync(2, async x =>
+                {
+                    PotentialAddon potentialAddon = null;
+                    try
+                    {
+                        potentialAddon = await _addonService.GetAddonByUri(new Uri(x), SelectedClientType);
+                    }
+                    catch
+                    {
+                        MessageBox.Show($"Failed to import addon by URI: {x}");
+                    }
+                    if (potentialAddon != null)
+                    {
+                        try
+                        {
+                            await _addonService.InstallAddon(potentialAddon, SelectedClientType);
+                        }
+                        catch
+                        {
+                            MessageBox.Show($"Failed to install addon {potentialAddon.Name}");
+                        }
+                    }
+                        
+                });
+            }
+
+            if (StartupHelper.StartupOptions != null && StartupHelper.StartupOptions.ClientType != WowClientType.None)
                 SelectedClientType = StartupHelper.StartupOptions.ClientType;
 
             if (_updateCheckTimer == null)
@@ -131,20 +159,7 @@ namespace WowUp.WPF.Services
                 _autoUpdateCheckTimer = new Timer(_ => ProcessAutoUpdates(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
             }
 
-            //if (StartupHelper.StartupOptions.InputURLs.Any())
-            //{
-            //    await StartupHelper.StartupOptions.InputURLs.ForEachAsync(2, async x =>
-            //    {
-            //        var potentialAddon = await _addonService.GetAddonByUri(new Uri(x), SelectedClientType);
-            //        if (potentialAddon != null)
-            //            await _addonService.InstallAddon(potentialAddon, SelectedClientType
-            //            //,(s,e) => { 
-            //            //    if (s == Common.Enums.AddonInstallState.Complete)
-            //            //        _addonService.UpdateAddon(); 
-            //            //}
-            //            );
-            //    });
-            //}
+
         }
 
         public void SetContextText(object requestor, string text)
@@ -167,9 +182,9 @@ namespace WowUp.WPF.Services
                 TaskbarIcon.ShowBalloonTip("WowUp", $"Automatically updated {updateCount} addons.", TaskbarIcon.Icon, true);
             }
 
-            if (StartupHelper.StartupOptions.Quit)
+            if (StartupHelper.StartupOptions?.Quit == true)
             {
-                await Application.Current.Dispatcher.BeginInvoke(() => { Application.Current.Shutdown(); }, DispatcherPriority.ApplicationIdle);
+                await Application.Current.Dispatcher.BeginInvoke(() => { Application.Current.Shutdown(); }, DispatcherPriority.SystemIdle);
             }
         }
 

@@ -199,7 +199,7 @@ namespace WowUp.WPF.ViewModels
 
         public void OnSourceInitialized(Window window)
         {
-            if (StartupHelper.StartupOptions.Minimized)
+            if (StartupHelper.StartupOptions?.Minimized == true)
             {
                 window.Hide();
                 window.ShowInTaskbar = false;
