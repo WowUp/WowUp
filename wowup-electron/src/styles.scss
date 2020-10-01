@@ -24,8 +24,7 @@ img:not([draggable="true"]) {
 
 a[href^="http://"],
 a[href^="https://"],
-a[href^="ftp://"]
-{
+a[href^="ftp://"] {
   -webkit-user-drag: auto;
   user-drag: auto;
   /* Technically not supported in Electron yet */
@@ -43,8 +42,26 @@ body {
   -webkit-app-region: no-drag;
 }
 
-a, img {
+a,
+img {
   -webkit-app-region: no-drag;
+}
+
+.no-reg-drag {
+  -webkit-app-region: no-drag;
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+.mat-slide-toggle-thumb,
+.mat-slide-toggle-bar,
+.mat-button-wrapper {
+  -webkit-app-region: no-drag;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .bg-dark-3 {
@@ -181,6 +198,7 @@ a, img {
       font-size: 1em;
       font-weight: bold;
     }
+
     .addon-version {
       color: $white-2;
     }
@@ -215,6 +233,7 @@ a, img {
   display: flex;
   flex-direction: column;
 }
+
 .cell-break-all {
   word-break: break-all;
 }
