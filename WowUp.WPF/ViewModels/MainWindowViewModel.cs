@@ -1,4 +1,4 @@
-﻿using CommandLine;
+using CommandLine;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
@@ -30,10 +30,15 @@ namespace WowUp.WPF.ViewModels
         private readonly IAnalyticsService _analyticsService;
         private readonly ISessionService _sessionService;
 
+        public ObservableCollection<WowClientType> WowClientTypes { get; set; }
+        public ObservableCollection<TabItem> TabItems { get; set; }
+
         public Command SelectWowCommand { get; set; }
         public Command CloseWindowCommand { get; set; }
         public Command TaskbarIconCloseCommand { get; set; }
         public Command TaskbarIconClickCommand { get; set; }
+        public Command SetWowLocationCommand { get; set; }
+        public Command SelectedWowClientChangedCommand { get; set; }
 
         private TaskbarIcon _taskbarIcon;
         public TaskbarIcon TaskbarIcon
@@ -119,7 +124,19 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _contextText, value); }
         }
 
-        public ObservableCollection<TabItem> TabItems { get; set; }
+        private WowClientType _selectedClientType;
+        public WowClientType SelectedClientType
+        {
+            get => _selectedClientType;
+            set { SetProperty(ref _selectedClientType, value); }
+        }
+
+        private string _wowClientHint;
+        public string WowClientHint
+        {
+            get => _wowClientHint;
+            set { SetProperty(ref _wowClientHint, value); }
+        }
 
         public ApplicationUpdateControlViewModel ApplicationUpdateControlViewModel { get; set; }
 
@@ -143,10 +160,17 @@ namespace WowUp.WPF.ViewModels
             CloseWindowCommand = new Command(() => OnCloseWindow());
             TaskbarIconCloseCommand = new Command(() => OnTaskbarIconClose());
             TaskbarIconClickCommand = new Command(() => OnTaskbarIconClick());
+            SetWowLocationCommand = new Command(() => OnSetWowLocation());
+            SelectedWowClientChangedCommand = new Command(() => OnSelectedWowClientChanged());
 
             ApplicationUpdateControlViewModel = serviceProvider.GetService<ApplicationUpdateControlViewModel>();
 
             TabItems = new ObservableCollection<TabItem>();
+
+            WowClientTypes = new ObservableCollection<WowClientType>(
+                Enum.GetValues(typeof(WowClientType))
+                    .Cast<WowClientType>()
+                    .Where(type => type != WowClientType.None));
 
             migrationService.MigrateDatabase();
 
@@ -154,6 +178,41 @@ namespace WowUp.WPF.ViewModels
 
             _sessionService.SessionChanged += SessionService_SessionChanged;
             _sessionService.ContextTextChanged += SessionService_ContextTextChanged;
+
+            SetClientHint();
+        }
+
+        /// <summary>
+        /// Handle when the user wants to change the install folder for a particular client
+        /// </summary>
+        /// <param name="clientType"></param>
+        private void OnSetWowLocation()
+        {
+            var selectedPath = DialogUtilities.SelectFolder();
+            if (string.IsNullOrEmpty(selectedPath))
+            {
+                return;
+            }
+
+            if (!_warcraftService.SetWowFolderPath(SelectedClientType, selectedPath))
+            {
+                MessageBox.Show($"Unable to set \"{selectedPath}\" as your {SelectedClientType} folder");
+                return;
+            }
+
+            _sessionService.SelectedClientType = SelectedClientType;
+            InitializeView();
+        }
+
+        private void OnSelectedWowClientChanged()
+        {
+            SetClientHint();
+        }
+
+        private void SetClientHint()
+        {
+            var clientFolderName = _warcraftService.GetClientFolderName(SelectedClientType);
+            WowClientHint = $"Select the folder that contains the {SelectedClientType} client folder _{clientFolderName}";
         }
 
         private void OnTaskbarIconClick()
