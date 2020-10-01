@@ -8,7 +8,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { MatModule } from '../../mat-module';
 import { MyAddonsComponent } from '../my-addons/my-addons.component';
 import { OptionsComponent } from '../options/options.component';
-import { ExternalLinkDirective } from 'app/directives/external-link.directive';
 import { GetAddonsComponent } from '../get-addons/get-addons.component';
 import { AboutComponent } from '../about/about.component';
 import { PotentialAddonTableColumnComponent } from 'app/components/potential-addon-table-column/potential-addon-table-column.component';
@@ -28,7 +27,6 @@ import { WowClientOptionsComponent } from 'app/components/wow-client-options/wow
     AboutComponent,
     GetAddonsComponent,
     OptionsComponent,
-    ExternalLinkDirective,
     MyAddonsAddonCellComponent,
     PotentialAddonStatusColumnComponent,
     ProgressSpinnerComponent,

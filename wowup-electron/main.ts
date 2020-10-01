@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, BrowserWindowConstructorOptions, Tray, Menu, nativeImage, ipcMain } from 'electron';
+import { app, BrowserWindow, screen, BrowserWindowConstructorOptions, Tray, Menu, nativeImage, ipcMain, MenuItem, MenuItemConstructorOptions } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
@@ -17,13 +17,14 @@ import { CopyDirectoryRequest } from './src/common/models/copy-directory-request
 import { DeleteDirectoryRequest } from './src/common/models/delete-directory-request';
 import { ReadFileRequest } from './src/common/models/read-file-request';
 import { ReadFileResponse } from './src/common/models/read-file-response';
-import { ListFilesRequest } from './src/common/models/list-files-request';
-import { ListFilesResponse } from './src/common/models/list-files-response';
+import './ipc-events';
 import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
-import './ipc-events';
 import * as log from 'electron-log';
 import { autoUpdater } from "electron-updater"
+
+const isMac = process.platform === 'darwin';
+const isWin = process.platform === 'win32';
 
 autoUpdater.logger = log;
 autoUpdater.on('update-available', () => {
@@ -35,6 +36,17 @@ autoUpdater.on('update-downloaded', () => {
   win.webContents.send('update_downloaded');
 });
 
+const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac ? [
+  {
+    label: app.name,
+    submenu: [
+      { role: 'quit' }
+    ]
+  }
+] : [];
+
+const appMenu = Menu.buildFromTemplate(appMenuTemplate);
+Menu.setApplicationMenu(appMenu);
 
 const LOG_PATH = path.join(app.getPath('userData'), 'logs');
 app.setAppLogsPath(LOG_PATH);
@@ -50,8 +62,6 @@ electronDl();
 const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
 log.info('USER_AGENT', USER_AGENT);
 
-const isWin = process.platform === "win32";
-
 let win: BrowserWindow = null;
 let tray: Tray = null;
 
@@ -60,19 +70,30 @@ const args = process.argv.slice(1),
 
 function createTray() {
   console.log('TRAY')
-  const trayIconPath = path.join(__dirname, 'src', 'assets', 'wowup_logo_512np.png');
+  const trayIconPath = path.join(__dirname, 'assets', 'wowup_logo_512np.png');
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
   tray = new Tray(icon)
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'WowUp', type: 'normal', icon: icon, enabled: false },
-    { label: 'Close', type: 'normal', role: 'quit' },
-  ])
+    { label: app.name, type: 'normal', icon: icon, enabled: false },
+    {
+      label: 'Show', click: () => {
+        win.show();
 
-  tray.on('click', function (event) {
-    console.log('SHOW')
-    win.show();
-  });
+        if (isMac) {
+          app.dock.show();
+        }
+      }
+    },
+    { role: 'quit' },
+  ]);
+
+  if (isWin) {
+    tray.on('click', function (event) {
+      console.log('SHOW')
+      win.show();
+    });
+  }
 
   tray.setToolTip('WowUp')
   tray.setContextMenu(contextMenu)
@@ -109,9 +130,9 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow(windowOptions);
 
   win.webContents.userAgent = USER_AGENT;
-  // win.webContents.once('dom-ready', () => {
-  //   win.webContents.openDevTools();
-  // })
+  win.webContents.once('dom-ready', () => {
+    win.webContents.openDevTools();
+  });
 
   win.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify()
@@ -119,6 +140,18 @@ function createWindow(): BrowserWindow {
         console.log('UPDATE', result)
       })
   });
+
+  if (isMac) {
+    win.on('close', (e) => {
+      e.preventDefault();
+      app.dock.hide();
+      win.hide();
+    });
+  }
+
+  win.once('closed', () => {
+    win = null;
+  })
 
   if (serve) {
     require('electron-reload')(__dirname, {
@@ -181,6 +214,11 @@ try {
   app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
+    if (isMac) {
+      app.dock.show();
+      win.show();
+    }
+
     if (win === null) {
       createWindow();
     }

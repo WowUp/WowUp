@@ -22,6 +22,7 @@ import { TitlebarComponent } from './components/titlebar/titlebar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { DefaultHeadersInterceptor } from './interceptors/default-headers.interceptor';
 import { AnalyticsService } from './services/analytics/analytics.service';
+import { ExternalLinkDirective } from './directives/external-link.directive';
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -33,6 +34,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AppComponent,
     TitlebarComponent,
     FooterComponent,
+    ExternalLinkDirective,
   ],
   imports: [
     BrowserModule,

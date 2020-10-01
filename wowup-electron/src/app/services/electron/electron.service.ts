@@ -59,12 +59,6 @@ export class ElectronService {
     this.remote.getCurrentWindow().on('unmaximize', () => {
       this._windowMaximizedSrc.next(false);
     });
-
-    if (AppConfig.production) {
-      if (this.isMac) {
-        this.remote.Menu.setApplicationMenu(this.remote.Menu.buildFromTemplate([]));
-      }
-    }
   }
 
   minimizeWindow() {
