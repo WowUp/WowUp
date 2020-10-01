@@ -249,6 +249,7 @@
                       BorderThickness="0"
                       VirtualizingPanel.ScrollUnit="Pixel"
                       BorderBrush="Transparent"
+                      SelectionMode="Extended"
                       Sorting="AddonGrid_Sorting">
                 <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu"
@@ -279,6 +280,9 @@
                                       IsEnabled="{Binding CanCheckAlpha}"
                                       Command="{Binding AlphaCheckedCommand}"></MenuItem>
                         </MenuItem>
+                        <Separator Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}" />
+                        <MenuItem Header="Open Folder"
+                                  Command="{Binding OpenFolderCommand}" />
                         <Separator Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}" />
                         <MenuItem Header="Update" 
                                   Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
@@ -328,6 +332,13 @@
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{StaticResource Dark1}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected"
+                        Value="True">
+                                <Setter Property="BorderBrush"
+                        Value="Blue" />
+                                <Setter Property="BorderThickness"
+                        Value="2" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>

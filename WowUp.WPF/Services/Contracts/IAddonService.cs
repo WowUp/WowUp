@@ -9,14 +9,18 @@ using WowUp.WPF.Models.Events;
 namespace WowUp.WPF.Services.Contracts
 {
     public delegate void AddonEventHandler(object sender, AddonEventArgs e);
+    public delegate void AddonStateEventHandler(object sender, AddonStateEventArgs e);
 
     public interface IAddonService
     {
         event AddonEventHandler AddonUninstalled;
         event AddonEventHandler AddonInstalled;
         event AddonEventHandler AddonUpdated;
+        event AddonStateEventHandler AddonStateChanged;
 
         string BackupPath { get; }
+
+        string GetFullInstallPath(Addon addon);
 
         Addon GetAddon(int addonId);
         Addon UpdateAddon(Addon addon);
