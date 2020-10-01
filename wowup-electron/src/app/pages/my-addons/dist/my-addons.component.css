@@ -1,0 +1,83 @@
+.control-container {
+  display: flex;
+  flex-direction: row;
+  padding: 0 1em 0 1em;
+}
+.control-container .select-container {
+  padding-top: 1em;
+  flex-grow: 1;
+}
+.control-container .button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.control-container .button-container button:not(:last-child) {
+  margin-right: 0.5em;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-container {
+  overflow: auto;
+}
+.table-container table {
+  width: 100%;
+}
+.table-container tr:hover {
+  background-color: #666666;
+}
+.table-container .addon-logo-container {
+  background-color: #555555;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-right: 0.5em;
+  flex-shrink: 0;
+}
+.table-container .addon-logo-container .addon-logo {
+  width: 100%;
+}
+.table-container .addon-title {
+  font-weight: bold;
+  font-size: 1.1em;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+.table-container .status-column {
+  display: flex;
+  justify-content: center;
+  width: 130px;
+  align-items: center;
+}
+.table-container .status-column .auto-update-icon {
+  margin-right: 0.5em;
+}
+.table-container .status-column .progress-text {
+  text-align: center;
+}
+.table-container .status-column .addon-progress {
+  width: 110px;
+}
+
+.author-column {
+  width: 100px;
+}
+
+.provider-column {
+  min-width: 60px;
+}
+
+.column-menu {
+  padding: 0.5em;
+  color: #FFFFFF;
+}
+.column-menu p {
+  margin-bottom: 0.5em;
+}

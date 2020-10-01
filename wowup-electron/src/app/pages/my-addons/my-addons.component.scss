@@ -23,6 +23,12 @@
   }
 }
 
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .table-container {
   // height: calc(100% - 75px);
   overflow: auto;
