@@ -4,10 +4,14 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
+using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
@@ -114,7 +118,10 @@ namespace WowUp.WPF.Services
 
         public void AppLoaded()
         {
-            if(_updateCheckTimer == null)
+            if (StartupHelper.StartupOptions.ClientType != WowClientType.None)
+                SelectedClientType = StartupHelper.StartupOptions.ClientType;
+
+            if (_updateCheckTimer == null)
             {
                 _updateCheckTimer = new Timer(_ => UpdateCheckTimerElapsed(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
             }
@@ -123,6 +130,21 @@ namespace WowUp.WPF.Services
             {
                 _autoUpdateCheckTimer = new Timer(_ => ProcessAutoUpdates(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
             }
+
+            //if (StartupHelper.StartupOptions.InputURLs.Any())
+            //{
+            //    await StartupHelper.StartupOptions.InputURLs.ForEachAsync(2, async x =>
+            //    {
+            //        var potentialAddon = await _addonService.GetAddonByUri(new Uri(x), SelectedClientType);
+            //        if (potentialAddon != null)
+            //            await _addonService.InstallAddon(potentialAddon, SelectedClientType
+            //            //,(s,e) => { 
+            //            //    if (s == Common.Enums.AddonInstallState.Complete)
+            //            //        _addonService.UpdateAddon(); 
+            //            //}
+            //            );
+            //    });
+            //}
         }
 
         public void SetContextText(object requestor, string text)
@@ -143,6 +165,11 @@ namespace WowUp.WPF.Services
             if (TaskbarIcon != null && updateCount > 0)
             {
                 TaskbarIcon.ShowBalloonTip("WowUp", $"Automatically updated {updateCount} addons.", TaskbarIcon.Icon, true);
+            }
+
+            if (StartupHelper.StartupOptions.Quit)
+            {
+                await Application.Current.Dispatcher.BeginInvoke(() => { Application.Current.Shutdown(); }, DispatcherPriority.ApplicationIdle);
             }
         }
 

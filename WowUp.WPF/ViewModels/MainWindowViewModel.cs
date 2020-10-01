@@ -1,13 +1,16 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
+﻿using CommandLine;
+using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
@@ -196,6 +199,13 @@ namespace WowUp.WPF.ViewModels
 
         public void OnSourceInitialized(Window window)
         {
+            if (StartupHelper.StartupOptions.Minimized)
+            {
+                window.Hide();
+                window.ShowInTaskbar = false;
+                window.IsVisibleChanged += Window_IsVisibleChanged;
+            }
+
             var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
             var windowStatePref = _preferenceRepository.FindByKey(WindowStateKey);
             if (windowPref == null)
@@ -221,6 +231,13 @@ namespace WowUp.WPF.ViewModels
             {
                 // eat
             }
+        }
+
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var window = (Window)sender;
+            window.IsVisibleChanged -= Window_IsVisibleChanged;
+            window.ShowInTaskbar = true;
         }
 
         public void OnClosing(Window window)
