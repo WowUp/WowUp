@@ -34,11 +34,17 @@ a[href^="ftp://"]
 html {
   background-color: $dark-3;
   overflow: hidden;
+  -webkit-app-region: no-drag;
 }
 
 body {
   overflow: hidden;
   margin: 0;
+  -webkit-app-region: no-drag;
+}
+
+a, img {
+  -webkit-app-region: no-drag;
 }
 
 .bg-dark-3 {

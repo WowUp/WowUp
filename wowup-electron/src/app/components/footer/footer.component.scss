@@ -1,3 +1,5 @@
+@import "../../../variables.scss";
+
 .patron-img {
     height: 25px;
 }
@@ -10,7 +12,12 @@ footer {
 
     a, img {
         height: 25px;
+        -webkit-app-region: no-drag;
+        cursor: pointer;
     }
+    // a:hover {
+    //     background: $dark-3;
+    // }
 
     div {
         font-size: 0.8em;
