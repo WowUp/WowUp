@@ -118,6 +118,9 @@ namespace WowUp.WPF.Services
 
         public async void AppLoaded()
         {
+            if (StartupHelper.StartupOptions != null && StartupHelper.StartupOptions.ClientType != WowClientType.None)
+                SelectedClientType = StartupHelper.StartupOptions.ClientType;
+
             if (StartupHelper.StartupOptions?.InputURLs.Any() == true)
             {
                 await StartupHelper.StartupOptions.InputURLs.ForEachAsync(2, async x =>
@@ -145,9 +148,6 @@ namespace WowUp.WPF.Services
                         
                 });
             }
-
-            if (StartupHelper.StartupOptions != null && StartupHelper.StartupOptions.ClientType != WowClientType.None)
-                SelectedClientType = StartupHelper.StartupOptions.ClientType;
 
             if (_updateCheckTimer == null)
             {
