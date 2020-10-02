@@ -8,7 +8,7 @@ import { from, BehaviorSubject } from "rxjs";
 import * as path from 'path';
 import * as fs from 'fs';
 import { promisify } from 'util';
-import { map, filter, delay } from "rxjs/operators";
+import { map, filter, delay, switchMap } from "rxjs/operators";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { StorageService } from "../storage/storage.service";
 import log from 'electron-log';
@@ -16,7 +16,7 @@ import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { ElectronService } from "..";
 import { TocService } from "../toc/toc.service";
-import { getEnumName } from "app/utils/enum.utils";
+import { getEnumList, getEnumName } from "app/utils/enum.utils";
 import { FileService } from "../files/file.service";
 
 // WOW STRINGS
@@ -44,6 +44,7 @@ export class WarcraftService {
 
   private readonly _impl: WarcraftServiceImpl;
   private readonly _productsSrc = new BehaviorSubject<InstalledProduct[]>([]);
+  private readonly _installedClientTypesSrc = new BehaviorSubject<WowClientType[]>([]);
 
   private _productDbPath = '';
 
@@ -53,15 +54,7 @@ export class WarcraftService {
       filter(products => Array.isArray(products))
     );
 
-  public clientTypes$ = this.products$
-    .pipe(
-      map(products => products.map(product => product.clientType))
-    );
-
-  public clientTypesNames$ = this.products$
-    .pipe(
-      map(products => products.map(product => this.getClientDisplayName(product.clientType)))
-    );
+  public installedClientTypes$ = this._installedClientTypesSrc.asObservable();
 
   constructor(
     private _electronService: ElectronService,
@@ -74,7 +67,9 @@ export class WarcraftService {
     from(this._impl.getBlizzardAgentPath())
       .pipe(
         map(productDbPath => this._productDbPath = productDbPath),
-        map(() => this.scanProducts())
+        map(() => this.scanProducts()),
+        switchMap(() => from(this.getWowClientTypes())),
+        map(installedClientTypes => this._installedClientTypesSrc.next(installedClientTypes))
       )
       .subscribe();
   }
@@ -103,21 +98,61 @@ export class WarcraftService {
     return path.join(fullClientPath, INTERFACE_FOLDER_NAME, ADDON_FOLDER_NAME);
   }
 
-  public scanProducts() {
-    const installedProducts = this.decodeProducts(this._productDbPath);
+  public async getWowClientTypes() {
+    const clients: WowClientType[] = [];
 
-    for (const product of installedProducts) {
-      const clientType = product.clientType;
+    const clientTypes = getEnumList<WowClientType>(WowClientType)
+      .filter(clientType => clientType !== WowClientType.None);
+
+    for (let clientType of clientTypes) {
       const clientLocation = this.getClientLocation(clientType);
-
-      if (this.arePathsEqual(clientLocation, product.location)) {
+      if (!clientLocation) {
         continue;
       }
 
-      this.setClientLocation(clientType, product.location);
+      const locationExists = await this._fileService.pathExists(clientLocation);
+      if (!locationExists) {
+        continue;
+      }
+
+      clients.push(clientType);
     }
 
-    this._productsSrc.next(installedProducts);
+    return clients;
+  }
+
+  public getProductLocation(clientType: WowClientType) {
+    const clientFolderName = this.getClientFolderName(clientType);
+    const clientLocation = this._productsSrc.value.find(product => product.name === clientFolderName);
+    return clientLocation?.location ?? '';
+  }
+
+  public scanProducts() {
+    const installedProducts = this.decodeProducts(this._productDbPath);
+
+    const clientTypes = getEnumList<WowClientType>(WowClientType)
+      .filter(clientType => clientType !== WowClientType.None);
+      
+    for (const clientType of clientTypes) {
+      const clientLocation = this.getClientLocation(clientType);
+      const productLocation = this.getProductLocation(clientType);
+
+      if (!clientLocation && !productLocation) {
+        continue;
+      }
+
+      console.log(`clientLocation ${clientLocation}, productLocation ${productLocation}`);
+      if (this.arePathsEqual(clientLocation, productLocation)) {
+        continue;
+      }
+
+      // If the path that the user selected is valid, then move on.
+      if (clientLocation && this.isClientFolder(clientType, clientLocation)) {
+        continue;
+      }
+
+      this.setClientLocation(clientType, productLocation);
+    }
 
     return installedProducts;
   }

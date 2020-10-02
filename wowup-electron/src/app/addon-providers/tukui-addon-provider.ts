@@ -104,7 +104,7 @@ export class TukUiAddonProvider implements AddonProvider {
     for (let addonFolder of addonFolders) {
       let tukUiAddon: TukUiAddon;
       if (addonFolder.toc?.tukUiProjectId) {
-        tukUiAddon = _.find(allAddons, addon => addon.id === addonFolder.toc.tukUiProjectId);
+        tukUiAddon = _.find(allAddons, addon => addon.id.toString() === addonFolder.toc.tukUiProjectId);
       } else {
         const results = await this.searchAddons(addonFolder.toc.title, clientType);
         tukUiAddon = _.first(results);

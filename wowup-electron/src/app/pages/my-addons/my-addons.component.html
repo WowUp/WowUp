@@ -6,7 +6,7 @@
         <mat-label>World of Warcraft</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
           [disabled]="enableControls === false">
-          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.clientTypes$ | async">
+          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
             {{warcraftService.getClientDisplayName(clientType)}}
           </mat-option>
         </mat-select>

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, LIST_DIRECTORIES_CHANNEL, LIST_FILES_CHANNEL, READ_FILE_CHANNEL, RENAME_DIRECTORY_CHANNEL, SHOW_DIRECTORY } from "common/constants";
+import { COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, LIST_DIRECTORIES_CHANNEL, LIST_FILES_CHANNEL, PATH_EXISTS_CHANNEL, READ_FILE_CHANNEL, RENAME_DIRECTORY_CHANNEL, SHOW_DIRECTORY } from "common/constants";
 import { CopyDirectoryRequest } from "common/models/copy-directory-request";
 import { DeleteDirectoryRequest } from "common/models/delete-directory-request";
 import { ElectronService } from "../electron/electron.service";
@@ -33,6 +33,22 @@ export class FileService {
 
       this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
       this._electronService.ipcRenderer.send(SHOW_DIRECTORY, request);
+    })
+  }
+
+  public pathExists(sourcePath: string) {
+    return new Promise((resolve, reject) => {
+      const eventHandler = (_evt: any, arg: ValueResponse<boolean>) => {
+        if (arg.error) {
+          return reject(arg.error);
+        }
+        resolve(arg.value);
+      };
+
+      const request: ValueRequest<string> = { value: sourcePath, responseKey: uuidv4() };
+
+      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+      this._electronService.ipcRenderer.send(PATH_EXISTS_CHANNEL, request);
     })
   }
 

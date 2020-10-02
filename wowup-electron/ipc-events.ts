@@ -1,7 +1,7 @@
 import { ipcMain, shell } from "electron";
 import * as fs from 'fs';
 import * as path from 'path';
-import { CURSE_HASH_FILE_CHANNEL, LIST_DIRECTORIES_CHANNEL, LIST_FILES_CHANNEL, SHOW_DIRECTORY } from './src/common/constants';
+import { CURSE_HASH_FILE_CHANNEL, LIST_DIRECTORIES_CHANNEL, LIST_FILES_CHANNEL, SHOW_DIRECTORY, PATH_EXISTS_CHANNEL } from './src/common/constants';
 import { CurseHashFileRequest } from './src/common/models/curse-hash-file-request';
 import { CurseHashFileResponse } from './src/common/models/curse-hash-file-response';
 import { ListFilesRequest } from "./src/common/models/list-files-request";
@@ -66,7 +66,7 @@ ipcMain.on(LIST_FILES_CHANNEL, async (evt, arg: ListFilesRequest) => {
   evt.reply(arg.sourcePath, response);
 });
 
-ipcMain.on(LIST_DIRECTORIES_CHANNEL, async (evt, arg: ValueRequest<string>) => {
+ipcMain.on(LIST_DIRECTORIES_CHANNEL, (evt, arg: ValueRequest<string>) => {
   const response: ValueResponse<string[]> = { value: [] };
 
   fs.readdir(arg.value, { withFileTypes: true }, (err, files) => {
@@ -74,6 +74,24 @@ ipcMain.on(LIST_DIRECTORIES_CHANNEL, async (evt, arg: ValueRequest<string>) => {
       response.error = err;
     } else {
       response.value = files.filter(file => file.isDirectory()).map(file => file.name);
+    }
+
+    evt.reply(arg.responseKey, response);
+  });
+})
+
+ipcMain.on(PATH_EXISTS_CHANNEL, (evt, arg: ValueRequest<string>) => {
+  const response: ValueResponse<boolean> = { value: false };
+
+  fs.open(arg.value, 'r', (err, fid) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        response.value = false;
+      } else {
+        response.error = err;
+      }
+    } else {
+      response.value = true;
     }
 
     evt.reply(arg.responseKey, response);

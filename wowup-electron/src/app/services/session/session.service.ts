@@ -44,7 +44,7 @@ export class SessionService {
   }
 
   private loadInitialClientType() {
-    return this._warcraftService.clientTypes$
+    return this._warcraftService.installedClientTypes$
       .pipe(
         first(installedClientTypes => installedClientTypes.length > 0),
         map(installedClientTypes => {
