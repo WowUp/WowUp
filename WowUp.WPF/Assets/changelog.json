@@ -5,6 +5,10 @@
       "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nAdd new ability to manually select your initial WoW client folder if the intial auto detection fails.\nNew ability to perform bulk operations on 'My Addons' page.\nFeatured addons are now sorted by download count."
     },
     {
+      "Version": "1.17.3",
+      "Description": "Fix another CurseForge API error.\nAdd some better error logging around CurseForge scanning."
+    },
+    {
       "Version": "1.17.2",
       "Description": "Fix an issue with handling CurseForge API responses."
     },
