@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.17.4",
+      "Description": "Fix another CurseForge API error."
+    },
+    {
       "Version": "1.17.3",
       "Description": "Fix another CurseForge API error.\nAdd some better error logging around CurseForge scanning."
     },
