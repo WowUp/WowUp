@@ -614,8 +614,10 @@ namespace WowUp.WPF.ViewModels
                 }
 
                 // If this addon is already in the list, ignore it
-                if (DisplayAddons.Any(da => da.Addon.Id == addon.Id))
+                var displayItem = DisplayAddons.FirstOrDefault(listItem => listItem.Addon.Id == addon.Id);
+                if (displayItem != null)
                 {
+                    displayItem.ThumbnailUrl = addon.ThumbnailUrl;
                     return;
                 }
 
