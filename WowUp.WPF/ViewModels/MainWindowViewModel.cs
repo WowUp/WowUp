@@ -1,4 +1,3 @@
-using CommandLine;
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,10 +6,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WowUp.Common.Enums;
-using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
-using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;

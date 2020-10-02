@@ -1,11 +1,7 @@
-﻿using CommandLine;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,8 +10,6 @@ using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Enums;
-using WowUp.WPF.Extensions;
-using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services;
@@ -70,9 +64,9 @@ namespace WowUp.WPF
         }
         protected override void OnStartup(StartupEventArgs e)
         {
-            StartupHelper.SetOptions();
-
             HandleSingleInstance();
+
+            StartupHelper.SetOptions();
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();

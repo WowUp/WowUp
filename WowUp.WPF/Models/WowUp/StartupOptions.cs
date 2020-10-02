@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using System;
 using System.Collections.Generic;
 using WowUp.Common.Enums;
 

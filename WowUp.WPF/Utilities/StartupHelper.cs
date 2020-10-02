@@ -1,9 +1,7 @@
 ﻿using CommandLine;
+using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using WowUp.WPF.Models.WowUp;
 
 namespace WowUp.WPF.Utilities
@@ -17,7 +15,7 @@ namespace WowUp.WPF.Utilities
                 .WithParsed(
                     options => StartupOptions = options)
                 .WithNotParsed(
-                    errors => Debug.WriteLine(string.Join("\r\n", errors.Select(x => x.ToString()).ToArray())));
+                    errors => Log.Error(string.Join("\r\n", errors.Select(x => x.ToString()).ToArray())));
         }
         public static StartupOptions StartupOptions { get; private set; }
     }
