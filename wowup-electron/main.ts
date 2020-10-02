@@ -9,7 +9,7 @@ import { DownloadRequest } from './src/common/models/download-request';
 import { DownloadStatus } from './src/common/models/download-status';
 import { DownloadStatusType } from './src/common/models/download-status-type';
 import { UnzipStatus } from './src/common/models/unzip-status';
-import { DOWNLOAD_FILE_CHANNEL, UNZIP_FILE_CHANNEL, COPY_FILE_CHANNEL, COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, RENAME_DIRECTORY_CHANNEL, READ_FILE_CHANNEL, STAT_DIRECTORY_CHANNEL, LIST_FILES_CHANNEL } from './src/common/constants';
+import { DOWNLOAD_FILE_CHANNEL, UNZIP_FILE_CHANNEL, COPY_FILE_CHANNEL, COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, RENAME_DIRECTORY_CHANNEL, READ_FILE_CHANNEL } from './src/common/constants';
 import { UnzipStatusType } from './src/common/models/unzip-status-type';
 import { UnzipRequest } from './src/common/models/unzip-request';
 import { CopyFileRequest } from './src/common/models/copy-file-request';
@@ -25,6 +25,8 @@ import { autoUpdater } from "electron-updater"
 
 const isMac = process.platform === 'darwin';
 const isWin = process.platform === 'win32';
+
+let appIsQuitting = false;
 
 autoUpdater.logger = log;
 autoUpdater.on('update-available', () => {
@@ -130,9 +132,9 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow(windowOptions);
 
   win.webContents.userAgent = USER_AGENT;
-  // win.webContents.once('dom-ready', () => {
-  //   win.webContents.openDevTools();
-  // });
+  win.webContents.once('dom-ready', () => {
+    win.webContents.openDevTools();
+  });
 
   win.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify()
@@ -143,6 +145,10 @@ function createWindow(): BrowserWindow {
 
   if (isMac) {
     win.on('close', (e) => {
+      if(appIsQuitting){
+        return;
+      }
+
       e.preventDefault();
       app.dock.hide();
       win.hide();
@@ -201,6 +207,10 @@ try {
       createTray();
     }, 400)
   });
+
+  app.on('before-quit', (e) => {
+    appIsQuitting = true;
+  })
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
