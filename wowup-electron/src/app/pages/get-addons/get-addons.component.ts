@@ -49,7 +49,7 @@ export class GetAddonsComponent implements OnInit {
       .pipe(
         map(clientType => {
           this.selectedClient = clientType;
-          this.loadPopularAddons(clientType);
+          this.loadPopularAddons(this.selectedClient);
         })
       )
       .subscribe();
@@ -61,6 +61,28 @@ export class GetAddonsComponent implements OnInit {
 
   onRefresh() {
     this.loadPopularAddons(this.selectedClient);
+  }
+
+  onClearSearch() {
+    this.query = '';
+    this.onSearch();
+  }
+
+  async onSearch() {
+    if (!this.query) {
+      this.loadPopularAddons(this.selectedClient);
+      return;
+    }
+    console.log(this.query)
+
+    this.isBusy = true;
+
+    let searchResults = await this._addonService.search(this.query, this.selectedClient);
+    console.log(searchResults)
+    searchResults = this.filterInstalledAddons(searchResults);
+    this.formatAddons(searchResults);
+    this._displayAddonsSrc.next(searchResults);
+    this.isBusy = false;
   }
 
   private async loadPopularAddons(clientType: WowClientType) {

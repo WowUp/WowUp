@@ -64,6 +64,16 @@ export class AddonService {
     this._addonStorage.set(addon.id, addon);
   }
 
+  public async search(query: string, clientType: WowClientType): Promise<PotentialAddon[]> {
+    var searchTasks = this._addonProviders.map(p => p.searchByQuery(query, clientType));
+    var searchResults = await Promise.all(searchTasks);
+
+    // await _analyticsService.TrackUserAction("Addons", "Search", $"{clientType}|{query}");
+    const flatResults = searchResults.flat(1);
+
+    return _.orderBy(flatResults, 'downloadCount').reverse();
+  }
+
   public async installPotentialAddon(
     potentialAddon: PotentialAddon,
     clientType: WowClientType,

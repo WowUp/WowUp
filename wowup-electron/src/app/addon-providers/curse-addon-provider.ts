@@ -191,8 +191,20 @@ export class CurseAddonProvider implements AddonProvider {
       file.isAlternate === false;
   }
 
-  searchByQuery(query: string, clientType: WowClientType): Promise<import("../models/wowup/potential-addon").PotentialAddon[]> {
-    throw new Error("Method not implemented.");
+  async searchByQuery(query: string, clientType: WowClientType): Promise<PotentialAddon[]> {
+    var searchResults: PotentialAddon[] = [];
+
+    var response = await this.getSearchResults(query).toPromise();
+    for (let result of response) {
+      var latestFiles = this.getLatestFiles(result, clientType);
+      if (!latestFiles.length) {
+        continue;
+      }
+
+      searchResults.push(this.getPotentialAddon(result));
+    }
+
+    return searchResults;
   }
 
   searchByUrl(addonUri: URL, clientType: WowClientType): Promise<import("../models/wowup/potential-addon").PotentialAddon> {
@@ -201,6 +213,14 @@ export class CurseAddonProvider implements AddonProvider {
 
   searchByName(addonName: string, folderName: string, clientType: WowClientType, nameOverride?: string): Promise<import("../models/wowup/addon-search-result").AddonSearchResult[]> {
     throw new Error("Method not implemented.");
+  }
+
+  private getSearchResults(query: string): Observable<CurseSearchResult[]> {
+    const url = new URL(`${API_URL}/addon/search`);
+    url.searchParams.set('gameId', '1');
+    url.searchParams.set('searchFilter', query);
+
+    return this._httpClient.get<CurseSearchResult[]>(url.toString())
   }
 
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
