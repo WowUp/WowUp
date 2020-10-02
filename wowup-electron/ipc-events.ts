@@ -1,12 +1,14 @@
 import { ipcMain, shell } from "electron";
 import * as fs from 'fs';
 import * as path from 'path';
-import { CURSE_HASH_FILE_CHANNEL, LIST_FILES_CHANNEL, SHOW_DIRECTORY } from './src/common/constants';
+import { CURSE_HASH_FILE_CHANNEL, LIST_DIRECTORIES_CHANNEL, LIST_FILES_CHANNEL, SHOW_DIRECTORY } from './src/common/constants';
 import { CurseHashFileRequest } from './src/common/models/curse-hash-file-request';
 import { CurseHashFileResponse } from './src/common/models/curse-hash-file-response';
 import { ListFilesRequest } from "./src/common/models/list-files-request";
 import { ListFilesResponse } from "./src/common/models/list-files-response";
 import { ShowDirectoryRequest } from "./src/common/models/show-directory-request";
+import { ValueRequest } from "./src/common/models/value-request";
+import { ValueResponse } from "./src/common/models/value-response";
 
 const nativeAddon = require('./build/Release/addon.node');
 
@@ -63,6 +65,20 @@ ipcMain.on(LIST_FILES_CHANNEL, async (evt, arg: ListFilesRequest) => {
 
   evt.reply(arg.sourcePath, response);
 });
+
+ipcMain.on(LIST_DIRECTORIES_CHANNEL, async (evt, arg: ValueRequest<string>) => {
+  const response: ValueResponse<string[]> = { value: [] };
+
+  fs.readdir(arg.value, { withFileTypes: true }, (err, files) => {
+    if (err) {
+      response.error = err;
+    } else {
+      response.value = files.filter(file => file.isDirectory()).map(file => file.name);
+    }
+
+    evt.reply(arg.responseKey, response);
+  });
+})
 
 async function readDirRecursive(sourcePath: string): Promise<string[]> {
   return new Promise((resolve, reject) => {

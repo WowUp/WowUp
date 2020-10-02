@@ -17,6 +17,7 @@ import { AddonFolder } from "app/models/wowup/addon-folder";
 import { ElectronService } from "..";
 import { TocService } from "../toc/toc.service";
 import { getEnumName } from "app/utils/enum.utils";
+import { FileService } from "../files/file.service";
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = '_retail_';
@@ -64,6 +65,7 @@ export class WarcraftService {
 
   constructor(
     private _electronService: ElectronService,
+    private _fileService: FileService,
     private storage: StorageService,
     private _tocService: TocService
   ) {
@@ -129,9 +131,8 @@ export class WarcraftService {
       return addonFolders;
     }
 
-    const files = fs.readdirSync(addonFolderPath, { withFileTypes: true });
-    const directories = files.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
-
+    const directories = await this._fileService.listDirectories(addonFolderPath);
+    // const directories = files.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
     for (let i = 0; i < directories.length; i += 1) {
       const dir = directories[i];
       const addonFolder = await this.getAddonFolder(addonFolderPath, dir);

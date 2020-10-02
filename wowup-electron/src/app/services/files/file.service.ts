@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, LIST_FILES_CHANNEL, READ_FILE_CHANNEL, RENAME_DIRECTORY_CHANNEL, SHOW_DIRECTORY } from "common/constants";
+import { COPY_DIRECTORY_CHANNEL, DELETE_DIRECTORY_CHANNEL, LIST_DIRECTORIES_CHANNEL, LIST_FILES_CHANNEL, READ_FILE_CHANNEL, RENAME_DIRECTORY_CHANNEL, SHOW_DIRECTORY } from "common/constants";
 import { CopyDirectoryRequest } from "common/models/copy-directory-request";
 import { DeleteDirectoryRequest } from "common/models/delete-directory-request";
 import { ElectronService } from "../electron/electron.service";
@@ -11,6 +11,8 @@ import { ListFilesResponse } from "common/models/list-files-response";
 import { ListFilesRequest } from "common/models/list-files-request";
 import { ShowDirectoryRequest } from "common/models/show-directory-request";
 import { v4 as uuidv4 } from 'uuid';
+import { ValueRequest } from "common/models/value-request";
+import { ValueResponse } from "common/models/value-response";
 
 @Injectable({
   providedIn: 'root'
@@ -101,10 +103,21 @@ export class FileService {
     })
   }
 
-  public listDirectories(sourcePath: string) {
-    return fs.readdirSync(sourcePath, { withFileTypes: true })
-      .filter(entry => entry.isDirectory())
-      .map(entry => entry.name);
+  public listDirectories(sourcePath: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      const eventHandler = (_evt: any, arg: ValueResponse<string[]>) => {
+        if (arg.error) {
+          return reject(arg.error);
+        }
+
+        resolve(arg.value);
+      };
+
+      const request: ValueRequest<string> = { value: sourcePath, responseKey: uuidv4() };
+
+      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+      this._electronService.ipcRenderer.send(LIST_DIRECTORIES_CHANNEL, request);
+    });
   }
 
   public listFiles(sourcePath: string, filter: string) {
@@ -125,7 +138,7 @@ export class FileService {
         resolve(arg.files);
       };
 
-      const request: ListFilesRequest = { sourcePath, recursive };
+      const request: ListFilesRequest = { sourcePath, recursive, responseKey: uuidv4() };
 
       this._electronService.ipcRenderer.once(sourcePath, eventHandler);
       this._electronService.ipcRenderer.send(LIST_FILES_CHANNEL, request);

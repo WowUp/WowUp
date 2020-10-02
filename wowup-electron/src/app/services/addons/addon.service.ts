@@ -101,7 +101,7 @@ export class AddonService {
       unzippedDirectory = await this._downloadService.unzipFile(downloadedFilePath, unzipPath);
 
       await this.installUnzippedDirectory(unzippedDirectory, addon.clientType);
-      const unzippedDirectoryNames = this._fileService.listDirectories(unzippedDirectory);
+      const unzippedDirectoryNames = await this._fileService.listDirectories(unzippedDirectory);
 
       addon.installedVersion = addon.latestVersion;
       addon.installedAt = new Date();
@@ -158,7 +158,7 @@ export class AddonService {
 
   private async installUnzippedDirectory(unzippedDirectory: string, clientType: WowClientType) {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(clientType);
-    const unzippedFolders = this._fileService.listDirectories(unzippedDirectory);
+    const unzippedFolders = await this._fileService.listDirectories(unzippedDirectory);
     for (let unzippedFolder of unzippedFolders) {
       const unzippedFilePath = path.join(unzippedDirectory, unzippedFolder);
       const unzipLocation = path.join(addonFolderPath, unzippedFolder);
