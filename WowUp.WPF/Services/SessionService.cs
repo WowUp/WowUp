@@ -11,7 +11,6 @@ using WowUp.Common.Models;
 using WowUp.Common.Models.Events;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
-using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Services
 {
@@ -58,7 +57,6 @@ namespace WowUp.WPF.Services
                 StatusText = string.Empty,
                 UpdaterReady = false
             };
-
         }
 
         private async void UpdateCheckTimerElapsed()
@@ -118,36 +116,12 @@ namespace WowUp.WPF.Services
 
         public async void AppLoaded()
         {
-            if (StartupHelper.StartupOptions != null && StartupHelper.StartupOptions.ClientType != WowClientType.None)
-                SelectedClientType = StartupHelper.StartupOptions.ClientType;
-
-            if (StartupHelper.StartupOptions?.InputURLs.Any() == true)
+            if (App.StartupOptions != null && App.StartupOptions.ClientType != WowClientType.None)
             {
-                await StartupHelper.StartupOptions.InputURLs.ForEachAsync(2, async x =>
-                {
-                    PotentialAddon potentialAddon = null;
-                    try
-                    {
-                        potentialAddon = await _addonService.GetAddonByUri(new Uri(x), SelectedClientType);
-                    }
-                    catch
-                    {
-                        MessageBox.Show($"Failed to import addon by URI: {x}");
-                    }
-                    if (potentialAddon != null)
-                    {
-                        try
-                        {
-                            await _addonService.InstallAddon(potentialAddon, SelectedClientType);
-                        }
-                        catch
-                        {
-                            MessageBox.Show($"Failed to install addon {potentialAddon.Name}");
-                        }
-                    }
-                        
-                });
+                SelectedClientType = App.StartupOptions.ClientType;
             }
+
+            await ProcessInputUrls();
 
             if (_updateCheckTimer == null)
             {
@@ -158,8 +132,6 @@ namespace WowUp.WPF.Services
             {
                 _autoUpdateCheckTimer = new Timer(_ => ProcessAutoUpdates(), null, TimeSpan.FromSeconds(0), TimeSpan.FromMinutes(60));
             }
-
-
         }
 
         public void SetContextText(object requestor, string text)
@@ -173,6 +145,41 @@ namespace WowUp.WPF.Services
             SetContextText(text);
         }
 
+        private async Task ProcessInputUrls()
+        {
+            if (!App.StartupOptions?.InputURLs.Any() ?? false)
+            {
+                return;
+            }
+
+            await App.StartupOptions.InputURLs.ForEachAsync(2, async x =>
+            {
+                PotentialAddon potentialAddon = null;
+                try
+                {
+                    potentialAddon = await _addonService.GetAddonByUri(new Uri(x), SelectedClientType);
+                }
+                catch
+                {
+                    MessageBox.Show($"Failed to import addon by URI: {x}");
+                    return;
+                }
+
+                if (potentialAddon != null)
+                {
+                    try
+                    {
+                        await _addonService.InstallAddon(potentialAddon, SelectedClientType);
+                    }
+                    catch
+                    {
+                        MessageBox.Show($"Failed to install addon {potentialAddon.Name}");
+                    }
+                }
+
+            });
+        }
+
         private async void ProcessAutoUpdates()
         {
             var updateCount = await _addonService.ProcessAutoUpdates();
@@ -182,8 +189,10 @@ namespace WowUp.WPF.Services
                 TaskbarIcon.ShowBalloonTip("WowUp", $"Automatically updated {updateCount} addons.", TaskbarIcon.Icon, true);
             }
 
-            if (StartupHelper.StartupOptions?.Quit == true)
+            if (App.StartupOptions?.Quit == true)
             {
+                // Artificial delay to allow notification to fire.
+                await Task.Delay(3000);
                 await Application.Current.Dispatcher.BeginInvoke(() => { Application.Current.Shutdown(); }, DispatcherPriority.SystemIdle);
             }
         }

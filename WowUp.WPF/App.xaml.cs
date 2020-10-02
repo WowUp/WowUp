@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +12,7 @@ using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
 using WowUp.WPF.Enums;
+using WowUp.WPF.Models.WowUp;
 using WowUp.WPF.Repositories;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services;
@@ -40,6 +43,8 @@ namespace WowUp.WPF
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hwnd);
 
+        public static StartupOptions StartupOptions { get; private set; }
+
         public App()
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(ExceptionHandler);
@@ -56,6 +61,8 @@ namespace WowUp.WPF
 
             Log.Information($"Starting {AppUtilities.CurrentVersion}");
 
+            ParseCommandLineArgs();
+
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
@@ -65,8 +72,6 @@ namespace WowUp.WPF
         protected override void OnStartup(StartupEventArgs e)
         {
             HandleSingleInstance();
-
-            StartupHelper.SetOptions();
 
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
@@ -159,6 +164,16 @@ namespace WowUp.WPF
 
             //there is already another instance running!
             Current.Shutdown();
+        }
+
+        private void ParseCommandLineArgs()
+        {
+            var args = Environment.GetCommandLineArgs().Skip(1);
+            Parser.Default.ParseArguments<StartupOptions>(args)
+                .WithParsed(
+                    options => StartupOptions = options)
+                .WithNotParsed(
+                    errors => Log.Error(string.Join("\r\n", errors.Select(x => x.ToString()).ToArray())));
         }
     }
 }

@@ -219,6 +219,7 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
+            Application.Current.MainWindow.ShowInTaskbar = true;
             Application.Current.MainWindow.Show();
             Application.Current.MainWindow.WindowState = WindowState.Normal;
             Application.Current.MainWindow.Activate();
@@ -255,11 +256,11 @@ namespace WowUp.WPF.ViewModels
 
         public void OnSourceInitialized(Window window)
         {
-            if (StartupHelper.StartupOptions?.Minimized == true)
+            if (App.StartupOptions?.Minimized == true)
             {
                 window.Hide();
                 window.ShowInTaskbar = false;
-                window.IsVisibleChanged += Window_IsVisibleChanged;
+                window.WindowState = WindowState.Minimized;
             }
 
             var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
@@ -287,13 +288,6 @@ namespace WowUp.WPF.ViewModels
             {
                 // eat
             }
-        }
-
-        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var window = (Window)sender;
-            window.IsVisibleChanged -= Window_IsVisibleChanged;
-            window.ShowInTaskbar = true;
         }
 
         public void OnClosing(Window window)
