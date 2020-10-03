@@ -5,9 +5,9 @@
     <mat-form-field class="url-input-container">
         <mat-label>Addon URL</mat-label>
         <input matInput placeholder="Ex. GitHub or WowInterface URL" [(ngModel)]="query" (keyup.enter)="onImportUrl()"
-            [disabled]="isInstalling === true || isBusy === true">
+            [disabled]="isBusy === true">
         <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
-            (click)="onClearSearch()" [disabled]="isInstalling === true || isBusy === true">
+            (click)="onClearSearch()" [disabled]="isBusy === true">
             <mat-icon>close</mat-icon>
         </button>
     </mat-form-field>
