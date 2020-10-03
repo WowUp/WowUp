@@ -79,7 +79,7 @@ export class AddonService {
   public async installPotentialAddon(
     potentialAddon: PotentialAddon,
     clientType: WowClientType,
-    onUpdate: (installState: AddonInstallState, progress: number) => void
+    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
   ) {
     var existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, clientType);
     if (existingAddon) {
@@ -91,7 +91,10 @@ export class AddonService {
     await this.installAddon(addon.id, onUpdate);
   }
 
-  public async installAddon(addonId: string, onUpdate: (installState: AddonInstallState, progress: number) => void = undefined) {
+  public async installAddon(
+    addonId: string,
+    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
+  ) {
     const addon = this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
       throw new Error("Addon not found or invalid");

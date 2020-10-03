@@ -1,9 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';
 import { AddonService } from 'app/services/addons/addon.service';
 import { SessionService } from 'app/services/session/session.service';
-import { Subscription } from 'rxjs';
+import { from, Subscription } from 'rxjs';
+import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-install-from-url-dialog',
@@ -23,6 +25,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
 
   constructor(
     private _addonService: AddonService,
+    private _dialog: MatDialog,
     private _sessionService: SessionService,
     public dialogRef: MatDialogRef<InstallFromUrlDialogComponent>,
   ) { }
@@ -34,6 +37,10 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     this._installSubscription?.unsubscribe();
   }
 
+  onClose() {
+    this.dialogRef.close();
+  }
+
   onClearSearch() {
     this.query = '';
     this.onImportUrl();
@@ -43,19 +50,37 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     this.showInstallButton = false;
     this.showInstallSpinner = true;
 
-    this.showInstallSpinner = false;
-    this.showInstallSuccess = true;
+    this._installSubscription = from(this._addonService
+      .installPotentialAddon(this.addon, this._sessionService.selectedClientType))
+      .subscribe({
+        next: () => {
+          this.showInstallSpinner = false;
+          this.showInstallSuccess = true;
+        },
+        error: (err) => {
+          console.error(err);
+          this.showInstallSpinner = false;
+          this.showInstallButton = true;
+          this.showErrorMessage('Failed to install addon.');
+        }
+      });
   }
 
   async onImportUrl() {
     this.addon = undefined;
+    this.showInstallSuccess = false;
+    this.showInstallSpinner = false;
 
     if (!this.query) {
       return;
     }
 
+    const url: URL = this.getUrlFromQuery();
+    if (!url) {
+      return;
+    }
+
     try {
-      const url = new URL(this.query);
       const importedAddon = await this._addonService
         .getAddonByUrl(url, this._sessionService.selectedClientType);
 
@@ -65,11 +90,51 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
       }
 
       this.addon = importedAddon;
+
+      if (this.addonExists(importedAddon.externalId)) {
+        this.showInstallSuccess = true;
+        this.showInstallButton = false;
+        return;
+      }
+
       this.showInstallButton = true;
     }
     catch (err) {
       console.error(err);
+
+      let message = err.message;
+      if (err instanceof HttpErrorResponse) {
+        message = `No addon was found.`;
+      }
+
+      this.showErrorMessage(message);
     }
+  }
+
+  private addonExists(externalId: string) {
+    return this._addonService.isInstalled(externalId, this._sessionService.selectedClientType);
+  }
+
+  private getUrlFromQuery(): URL | undefined {
+    try {
+      return new URL(this.query);
+    }
+    catch (err) {
+      console.error(`Invalid url: ${this.query}`);
+      this.showErrorMessage('Invalid URL.');
+      return undefined;
+    }
+  }
+
+  private showErrorMessage(errorMessage: string) {
+    const dialogRef = this._dialog.open(AlertDialogComponent, {
+      minWidth: 250,
+      data: {
+        title: `Error`,
+        message: errorMessage
+      }
+    });
+    dialogRef.afterClosed().subscribe();
   }
 
 }
