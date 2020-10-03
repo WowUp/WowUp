@@ -19,6 +19,7 @@ import { TelemetryDialogComponent } from 'app/components/telemetry-dialog/teleme
 import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-dialog.component';
 import { AlertDialogComponent } from 'app/components/alert-dialog/alert-dialog.component';
 import { WowClientOptionsComponent } from 'app/components/wow-client-options/wow-client-options.component';
+import { DirectiveModule } from 'app/directive.module';
 
 @NgModule({
   declarations: [
@@ -35,13 +36,14 @@ import { WowClientOptionsComponent } from 'app/components/wow-client-options/wow
     TelemetryDialogComponent,
     ConfirmDialogComponent,
     AlertDialogComponent,
-    WowClientOptionsComponent
+    WowClientOptionsComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     HomeRoutingModule,
-    MatModule
+    MatModule,
+    DirectiveModule
   ]
 })
 export class HomeModule { }

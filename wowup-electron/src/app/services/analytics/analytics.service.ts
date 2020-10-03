@@ -1,4 +1,4 @@
-import { ErrorHandler, Inject, Injectable } from "@angular/core";
+import { ErrorHandler, Injectable } from "@angular/core";
 import * as Rollbar from 'rollbar';
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { Preferences } from "../../../constants";
