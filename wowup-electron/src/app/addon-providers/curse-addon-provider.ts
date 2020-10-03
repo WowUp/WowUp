@@ -261,7 +261,8 @@ export class CurseAddonProvider implements AddonProvider {
       externalUrl: result.websiteUrl,
       name: result.name,
       providerName: this.name,
-      thumbnailUrl: this.getThumbnailUrl(result)
+      thumbnailUrl: this.getThumbnailUrl(result),
+      summary: result.summary
     };
   }
 

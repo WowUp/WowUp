@@ -6,4 +6,5 @@ export interface PotentialAddon {
   externalUrl: string;
   author: string;
   downloadCount: number;
+  summary?: string;
 }

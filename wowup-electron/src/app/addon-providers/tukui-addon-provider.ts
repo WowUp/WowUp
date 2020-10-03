@@ -150,7 +150,8 @@ export class TukUiAddonProvider implements AddonProvider {
       externalUrl: addon.web_url,
       name: addon.name,
       providerName: this.name,
-      thumbnailUrl: addon.screenshot_url
+      thumbnailUrl: addon.screenshot_url,
+      summary: addon.small_desc
     };
   }
 

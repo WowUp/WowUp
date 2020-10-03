@@ -10,8 +10,8 @@ import { ElectronService } from "app/services";
 import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { BehaviorSubject, fromEvent, Subscription } from "rxjs";
-import { debounceTime, map } from "rxjs/operators";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { map, tap } from "rxjs/operators";
 
 @Component({
   selector: "app-get-addons",
@@ -37,9 +37,13 @@ export class GetAddonsComponent implements OnInit {
   }
 
   public query = "";
-  public displayAddons$ = this._displayAddonsSrc.asObservable();
+  public displayAddons$ = this._displayAddonsSrc
+    .asObservable()
+    .pipe(tap((addons) => (this.displayedAddons = addons)));
   public isBusy = false;
   public selectedClient = WowClientType.None;
+
+  displayedAddons: PotentialAddon[];
 
   constructor(
     private _addonService: AddonService,

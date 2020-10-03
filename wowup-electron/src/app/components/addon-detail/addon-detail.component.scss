@@ -7,10 +7,17 @@
     display: flex;
     justify-content: space-between;
   }
-  .mat-icon-button .mat-button-wrapper, .close-icon {
+  .mat-icon-button .mat-button-wrapper,
+  .close-icon {
     cursor: pointer !important;
     &:hover {
       cursor: pointer !important;
     }
+  }
+  .addon-detail-summary {
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0.6px;
   }
 }
