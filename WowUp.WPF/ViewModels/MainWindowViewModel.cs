@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WowUp.Common.Enums;
 using WowUp.WPF.Entities;
+using WowUp.WPF.Enums;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
@@ -34,6 +35,8 @@ namespace WowUp.WPF.ViewModels
         public Command CloseWindowCommand { get; set; }
         public Command TaskbarIconCloseCommand { get; set; }
         public Command TaskbarIconClickCommand { get; set; }
+        public Command TaskbarIconShowTabCommand { get; set; }
+        public Command ExecuteTaskbarIconActionCommand { get; set; }
         public Command SetWowLocationCommand { get; set; }
         public Command SelectedWowClientChangedCommand { get; set; }
 
@@ -157,6 +160,8 @@ namespace WowUp.WPF.ViewModels
             CloseWindowCommand = new Command(() => OnCloseWindow());
             TaskbarIconCloseCommand = new Command(() => OnTaskbarIconClose());
             TaskbarIconClickCommand = new Command(() => OnTaskbarIconClick());
+            TaskbarIconShowTabCommand = new Command((x) => ShowTab(x.ToString()));
+            ExecuteTaskbarIconActionCommand = new Command((x) => ExecuteCommand(x));
             SetWowLocationCommand = new Command(() => OnSetWowLocation());
             SelectedWowClientChangedCommand = new Command(() => OnSelectedWowClientChanged());
 
@@ -415,6 +420,63 @@ namespace WowUp.WPF.ViewModels
             var wowLocations = _warcraftService.GetClientLocations();
 
             return wowLocations.Any(loc => !string.IsNullOrEmpty(loc));
+        }
+        void ShowTab(string header)
+        {
+            if (Application.Current?.MainWindow == null)
+            {
+                return;
+            }
+
+            TaskbarIconClickCommand.Execute(null);
+            SelectedTabIndex = TabItems.IndexOf(GetTabItemByHeader(header));
+        }
+        void ShowTab(TabItem item)
+        {
+            if (Application.Current?.MainWindow == null)
+            {
+                return;
+            }
+
+            TaskbarIconClickCommand.Execute(null);
+            SelectedTabIndex = TabItems.IndexOf(item);
+        }
+        TabItem GetTabItemByHeader(string header)
+        {
+            return TabItems.Where(x => Equals(x.Header, header)).FirstOrDefault();
+        }
+
+        void ExecuteCommand(object argument)
+        {
+            if (argument is TaskbarIconClickAction action)
+            {
+                var tabItem = GetTabItemByHeader("My Addons");
+
+                var content = tabItem.Content as FrameworkElement;
+                if (content == null)
+                    return;
+
+                ShowTab(tabItem);
+
+                var vm = content.DataContext as AddonsViewViewModel;
+                if (vm == null)
+                    return;
+
+                switch (action) {
+                    case TaskbarIconClickAction.Check:
+                        if (vm.EnableRefresh)
+                            vm.LoadItemsCommand.Execute(null);
+                        break;
+                    case TaskbarIconClickAction.Update:
+                        if (vm.EnableUpdateAll)
+                            vm.UpdateAllCommand.Execute(null);
+                        break;
+                    case TaskbarIconClickAction.Rescan:
+                        if (vm.EnableRescan)
+                            vm.RescanCommand.Execute(null);
+                        break;
+                }
+            }
         }
     }
 }

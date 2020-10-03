@@ -9,6 +9,8 @@
             <FontFamily x:Key="OpenSans">pack://application:,,,/Assets/Fonts/#Open Sans</FontFamily>
             
             <localcv:InverseBoolConverter x:Key="InverseBool" />
+            <!--There is a typo btw :)-->
+            <!--BoolToVisibilty -> BoolToVisibility-->
             <localcv:BoolToVisibility x:Key="BoolToVisibilty" />
             <localcv:StringToVisibilty x:Key="StringToVisibilty" />
             <localcv:InverseStringToVisibilty x:Key="InverseStringToVisibilty" />
