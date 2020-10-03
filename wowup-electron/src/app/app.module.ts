@@ -15,7 +15,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { HomeModule } from './pages/home/home.module';
-import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
 import { TitlebarComponent } from './components/titlebar/titlebar.component';
@@ -41,7 +40,6 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HttpClientModule,
     SharedModule,
     HomeModule,
-    DetailModule,
     AppRoutingModule,
     DirectiveModule,
     TranslateModule.forRoot({

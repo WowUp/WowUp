@@ -21,6 +21,8 @@ import { AlertDialogComponent } from 'app/components/alert-dialog/alert-dialog.c
 import { WowClientOptionsComponent } from 'app/components/wow-client-options/wow-client-options.component';
 import { DirectiveModule } from 'app/directive.module';
 import { InstallFromUrlDialogComponent } from 'app/components/install-from-url-dialog/install-from-url-dialog.component';
+import { AddonDetailComponent } from 'app/components/addon-detail/addon-detail.component';
+import { AddonProviderBadgeComponent } from 'app/components/addon-provider-badge/addon-provider-badge.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { InstallFromUrlDialogComponent } from 'app/components/install-from-url-d
     ConfirmDialogComponent,
     AlertDialogComponent,
     WowClientOptionsComponent,
-    InstallFromUrlDialogComponent
+    InstallFromUrlDialogComponent,
+    AddonDetailComponent,
+    AddonProviderBadgeComponent
   ],
   imports: [
     CommonModule,

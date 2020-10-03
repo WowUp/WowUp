@@ -1,0 +1,16 @@
+.addon-detail-view {
+  width: 450px;
+  margin-top: 8px;
+
+  .addon-detail-title,
+  .addon-detail-subtitle {
+    display: flex;
+    justify-content: space-between;
+  }
+  .mat-icon-button .mat-button-wrapper, .close-icon {
+    cursor: pointer !important;
+    &:hover {
+      cursor: pointer !important;
+    }
+  }
+}

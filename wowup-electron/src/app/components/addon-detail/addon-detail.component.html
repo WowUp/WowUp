@@ -1,0 +1,43 @@
+<div class="addon-detail-view">
+  <div class="addon-detail-title">
+    <img
+      mat-card-avatar
+      class="addon-header-thumbnail"
+      [src]="addonDetail.thumbnailUrl"
+    />
+    <h2 mat-dialog-title>{{ addonDetail.name }}</h2>
+    <button mat-icon-button [mat-dialog-close]="true">
+      <mat-icon class="close-icon" color="accent">close</mat-icon>
+    </button>
+  </div>
+  <div class="addon-detail-subtitle">
+    <h3>By {{ addonDetail.author }}</h3>
+   <app-addon-provider-badge [providerName]="addonDetail.providerName"></app-addon-provider-badge>
+  </div>
+  <mat-dialog-content>
+    <p>
+      <!-- {{ addonDetail.description }} -->
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+      est laborum."
+    </p>
+    <img mat-card-image [src]="defaultImageUrl" alt="Addon Picture" />
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button
+      mat-raised-button
+      class="mat-primary"
+      (click)="installAddon()"
+      cdkFocusInitial
+    >
+      INSTALL
+    </button>
+    <a appExternalLink mat-button [href]="addonDetail.externalUrl"
+      >VIEW IN BROWSER</a
+    >
+  </mat-dialog-actions>
+</div>
