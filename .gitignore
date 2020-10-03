@@ -3,3 +3,5 @@ bin/
 obj/
 .vs/
 Packages/
+.vscode/
+.history/

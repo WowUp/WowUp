@@ -32,6 +32,7 @@ namespace WowUp.WPF
 
         private readonly ServiceProvider _serviceProvider;
         private readonly IAnalyticsService _analyticsService;
+        private readonly IWowUpService _wowUpService;
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -66,9 +67,9 @@ namespace WowUp.WPF
         protected override void OnStartup(StartupEventArgs e)
         {
             HandleSingleInstance();
-
-            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+            MainWindow mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+            mainWindow.WindowState = WindowState.Normal;
+            mainWindow.Hide();
         }
 
         protected override void OnExit(ExitEventArgs e)

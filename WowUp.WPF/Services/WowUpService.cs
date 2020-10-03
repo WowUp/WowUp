@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Diagnostics;
@@ -96,6 +97,30 @@ namespace WowUp.WPF.Services
         {
             SetPreference(Constants.Preferences.CollapseToTrayKey, enabled.ToString());
             _analyticsService.TrackUserAction("WowUp", "CollapseToTray", enabled.ToString());
+        }
+
+        public bool GetRunOnStartup()
+        {
+            var pref = _preferenceRepository.FindByKey(Constants.Preferences.RunOnStartupKey);
+            return pref != null && bool.Parse(pref.Value) == true;
+        }
+
+        public void SetRunOnStartup(bool enabled)
+        {
+            SetPreference(Constants.Preferences.RunOnStartupKey, enabled.ToString());
+            _analyticsService.TrackUserAction("WowUp", "RunOnStartup", enabled.ToString());
+
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true))
+            {
+                if (enabled)
+                {
+                    key.SetValue("WowUp", $"\"{Process.GetCurrentProcess().MainModule.FileName}\"");
+                }
+                else
+                {
+                    key.DeleteValue("WowUp", false);
+                }
+            }
         }
 
         public WowUpReleaseChannelType GetWowUpReleaseChannel()
@@ -274,7 +299,7 @@ namespace WowUp.WPF.Services
             var latestUpdaterVersion = new Version(latestVersions.Updater.Version.TrimSemVerString());
             var currentVersion = new Version(UpdaterVersion.ProductVersion.TrimSemVerString());
 
-            if(latestUpdaterVersion > currentVersion)
+            if (latestUpdaterVersion > currentVersion)
             {
                 await InstallUpdater(onProgress);
             }
@@ -304,12 +329,12 @@ namespace WowUp.WPF.Services
             }
             finally
             {
-                if(!string.IsNullOrEmpty(downloadedZipPath) && File.Exists(downloadedZipPath))
+                if (!string.IsNullOrEmpty(downloadedZipPath) && File.Exists(downloadedZipPath))
                 {
                     File.Delete(downloadedZipPath);
                 }
-                
-                if(!string.IsNullOrEmpty(unzippedDirPath) && Directory.Exists(unzippedDirPath))
+
+                if (!string.IsNullOrEmpty(unzippedDirPath) && Directory.Exists(unzippedDirPath))
                 {
                     Directory.Delete(unzippedDirPath, true);
                 }
@@ -337,9 +362,9 @@ namespace WowUp.WPF.Services
                             onProgress?.Invoke(progress);
                         });
             }
-            catch(Exception)
+            catch (Exception)
             {
-                if(!string.IsNullOrEmpty(downloadedZipPath) && File.Exists(downloadedZipPath))
+                if (!string.IsNullOrEmpty(downloadedZipPath) && File.Exists(downloadedZipPath))
                 {
                     File.Delete(downloadedZipPath);
                 }
@@ -347,7 +372,7 @@ namespace WowUp.WPF.Services
                 throw;
             }
         }
-        
+
         private string GetClientDefaultAddonChannelKey(WowClientType clientType)
         {
             return $"{clientType}{Constants.Preferences.ClientDefaultAddonChannelSuffix}".ToLower();
@@ -372,6 +397,12 @@ namespace WowUp.WPF.Services
                 SetWowUpReleaseChannel(GetDefaultReleaseChannel());
             }
 
+            pref = _preferenceRepository.FindByKey(Constants.Preferences.RunOnStartupKey);
+            if (pref == null)
+            {
+                SetRunOnStartup(false);
+            }
+
             SetDefaultClientPreferences();
         }
 
@@ -382,11 +413,11 @@ namespace WowUp.WPF.Services
                 .Where(type => type != WowClientType.None)
                 .ToList();
 
-            foreach(var clientType in clientTypes)
+            foreach (var clientType in clientTypes)
             {
                 var preferenceKey = GetClientDefaultAddonChannelKey(clientType);
                 var preference = _preferenceRepository.FindByKey(preferenceKey);
-                if(preference == null)
+                if (preference == null)
                 {
                     SetClientAddonChannelType(clientType, AddonChannelType.Stable);
                 }

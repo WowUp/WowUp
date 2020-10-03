@@ -29,7 +29,8 @@ namespace WowUp.WPF.Services.Contracts
 
         bool GetCollapseToTray();
         void SetCollapseToTray(bool enabled);
-
+        bool GetRunOnStartup();
+        void SetRunOnStartup(bool enabled);
         WowClientType GetLastSelectedClientType();
         void SetLastSelectedClientType(WowClientType clientType);
 

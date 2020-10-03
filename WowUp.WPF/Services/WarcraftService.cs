@@ -253,6 +253,19 @@ namespace WowUp.WPF.Services
             return addons;
         }
 
+        public string GetClientFolderName(WowClientType clientType)
+        {
+            return clientType switch
+            {
+                WowClientType.Retail => RetailFolderName,
+                WowClientType.Classic => ClassicFolderName,
+                WowClientType.RetailPtr => RetailPtrFolderName,
+                WowClientType.ClassicPtr => ClassicPtrFolderName,
+                WowClientType.Beta => BetaFolderName,
+                _ => string.Empty,
+            };
+        }
+
         private async Task<AddonFolder> GetAddonFolder(DirectoryInfo directory)
         {
             var toc = await ParseToc(directory);
@@ -293,19 +306,6 @@ namespace WowUp.WPF.Services
 
             var fileText = await FileUtilities.GetFileTextAsync(tocFile.FullName);
             return new TocParser(fileText).GetMetaData();
-        }
-
-        private string GetClientFolderName(WowClientType clientType)
-        {
-            return clientType switch
-            {
-                WowClientType.Retail => RetailFolderName,
-                WowClientType.Classic => ClassicFolderName,
-                WowClientType.RetailPtr => RetailPtrFolderName,
-                WowClientType.ClassicPtr => ClassicPtrFolderName,
-                WowClientType.Beta => BetaFolderName,
-                _ => string.Empty,
-            };
         }
 
         private string GetClientLocationPreferenceKey(WowClientType clientType)

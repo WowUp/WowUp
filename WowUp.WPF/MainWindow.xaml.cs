@@ -171,7 +171,7 @@ namespace WowUp.WPF
             System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
                 Show();
-                WindowState = WindowState.Normal;
+                WindowState = WindowState.Minimized;
                 Activate();
             }));
         }

@@ -65,6 +65,13 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _collapseToTrayEnabled, value); }
         }
 
+        private bool _onStartup;
+        public bool OnStartup
+        {
+            get => _onStartup;
+            set { SetProperty(ref _onStartup, value); }
+        }
+
         private AddonChannelType _selectedRetailAddonChannelType;
         public AddonChannelType SelectedRetailAddonChannelType
         {
@@ -145,6 +152,7 @@ namespace WowUp.WPF.ViewModels
         public Command ShowLogsCommand { get; set; }
         public Command TelemetryCheckCommand { get; set; }
         public Command CollapseToTrayCheckCommand { get; set; }
+        public Command RunStartupCheckCommand { get; set; }
         public Command SetRetailLocationCommand { get; set; }
         public Command SetRetailPtrLocationCommand { get; set; }
         public Command SetClassicLocationCommand { get; set; }
@@ -184,6 +192,7 @@ namespace WowUp.WPF.ViewModels
             ShowLogsCommand = new Command(() => ShowLogsFolder());
             TelemetryCheckCommand = new Command(() => OnTelemetryChange());
             CollapseToTrayCheckCommand = new Command(() => OnCollapseToTrayChanged());
+            RunStartupCheckCommand = new Command(() => OnRunStartupChanged());
             SetRetailLocationCommand = new Command(() => OnSetLocation(WowClientType.Retail));
             SetRetailPtrLocationCommand = new Command(() => OnSetLocation(WowClientType.RetailPtr));
             SetClassicLocationCommand = new Command(() => OnSetLocation(WowClientType.Classic));
@@ -191,8 +200,7 @@ namespace WowUp.WPF.ViewModels
             RescanFoldersCommand = new Command(() => OnRescanFolders());
             WowUpReleaseChannelChangedCommand = new Command(() => OnWowUpReleaseChannelChange(SelectedWowUpReleaseChannelType));
             DumpDebugDataCommand = new Command(() => DumpDebugData());
-
-            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType));;
+            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType)); ;
             RetailPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.RetailPtr, SelectedRetailPtrAddonChannelType));
             ClassicAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Classic, SelectedClassicAddonChannelType));
             ClassicPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.ClassicPtr, SelectedClassicPtrAddonChannelType));
@@ -203,7 +211,7 @@ namespace WowUp.WPF.ViewModels
             ClassicAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons)); ;
             ClassicPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons)); ;
             BetaAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons)); ;
-            
+
             AddonChannelNames = new ObservableCollection<AddonChannelType>
             {
                 AddonChannelType.Stable,
@@ -225,7 +233,7 @@ namespace WowUp.WPF.ViewModels
             IsTelemetryEnabled = _analyticsService.IsTelemetryEnabled();
             CollapseToTrayEnabled = _wowUpService.GetCollapseToTray();
             SelectedWowUpReleaseChannelType = _wowUpService.GetWowUpReleaseChannel();
-
+            OnStartup = _wowUpService.GetRunOnStartup();
             SelectedRetailAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Retail);
             SelectedRetailPtrAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.RetailPtr);
             SelectedClassicAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Classic);
@@ -258,6 +266,10 @@ namespace WowUp.WPF.ViewModels
         private void OnCollapseToTrayChanged()
         {
             _wowUpService.SetCollapseToTray(CollapseToTrayEnabled);
+        }
+        private void OnRunStartupChanged()
+        {
+            _wowUpService.SetRunOnStartup(OnStartup);
         }
 
         /// <summary>
@@ -309,13 +321,13 @@ namespace WowUp.WPF.ViewModels
             var curseAddonProvider = _serviceProvider.GetService<ICurseAddonProvider>();
 
             var clientTypes = _warcraftService.GetWowClientTypes();
-            foreach(var clientType in clientTypes)
+            foreach (var clientType in clientTypes)
             {
                 var addonFolders = await _warcraftService.ListAddons(clientType);
                 var scanResults = await curseAddonProvider.GetScanResults(addonFolders);
 
                 Log.Debug($"{clientType} ADDON CURSE FINGERPRINTS");
-                foreach(var scanResult in scanResults)
+                foreach (var scanResult in scanResults)
                 {
                     Log.Debug($"{scanResult.AddonFolder.Name}|{scanResult.FolderScanner.Fingerprint}");
                 }

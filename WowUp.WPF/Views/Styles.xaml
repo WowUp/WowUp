@@ -9,6 +9,7 @@
     <Color x:Key="Purple1Color">#6B69D6</Color>
     <Color x:Key="Purple2Color">#504FA1</Color>
     <Color x:Key="Purple3Color">#383773</Color>
+    <Color x:Key="Purple4Color">#282836</Color>
     <Color x:Key="White1Color">#FFFFFF</Color>
     <Color x:Key="White2Color">#DDDDDD</Color>
     <Color x:Key="White3Color">#CCCCCC</Color>
@@ -45,6 +46,7 @@
     <SolidColorBrush x:Key="Purple1">#6B69D6</SolidColorBrush>
     <SolidColorBrush x:Key="Purple2">#504FA1</SolidColorBrush>
     <SolidColorBrush x:Key="Purple3">#383773</SolidColorBrush>
+    <SolidColorBrush x:Key="Purple4">#282836</SolidColorBrush>
     <SolidColorBrush x:Key="Blue1Brush">#315891</SolidColorBrush>
     <SolidColorBrush x:Key="Blue2Brush">#24416c</SolidColorBrush>
     <SolidColorBrush x:Key="Highlight1Brush">#01BAEF</SolidColorBrush>

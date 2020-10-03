@@ -49,6 +49,8 @@ namespace WowUp.WPF.Services
 
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
+        public string GetFullInstallPath(Addon addon) => Path.GetFullPath(Path.Combine(_warcraftService.GetAddonFolderPath(addon.ClientType), addon.FolderName));
+
         public AddonService(
             IServiceProvider serviceProvider,
             IAddonRepository addonRepository,
@@ -161,7 +163,7 @@ namespace WowUp.WPF.Services
             var addonResults = await Task.WhenAll(addonTasks);
             var addonResultsConcat = addonResults.SelectMany(res => res);
 
-            return addonResultsConcat.ToList();
+            return addonResultsConcat.OrderByDescending(result => result.DownloadCount).ToList();
         }
 
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)

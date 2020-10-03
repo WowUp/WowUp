@@ -362,6 +362,15 @@
                                       Command="{Binding CollapseToTrayCheckCommand}" Grid.Row="0" Grid.Column="1">
                         </CheckBox>
                         <Label VerticalAlignment="Top">When closing the WowUp window, minimize to the system tray.</Label>
+                    </StackPanel> 
+                    <!--RUN ON STARTUP-->
+                    <Label FontWeight="Bold" Grid.Row="3" Grid.Column="0" Margin="0 5" HorizontalAlignment="Right">Run on startup</Label>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Margin="0 5" Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding OnStartup, Mode=TwoWay}"
+                                          VerticalAlignment="Center"
+                                      Command="{Binding RunStartupCheckCommand}" Grid.Row="0" Grid.Column="1">
+                        </CheckBox>
+                        <Label VerticalAlignment="Top">When window is up, app lunched.</Label>
                     </StackPanel>
                 </Grid>
             </Border>

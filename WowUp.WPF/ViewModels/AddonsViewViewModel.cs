@@ -29,6 +29,8 @@ namespace WowUp.WPF.ViewModels
         private readonly ISessionService _sessionService;
         
         private List<Addon> _addons;
+        private bool _disableUpdateLoad;
+        private IEnumerable<Addon> _selectedAddons;
 
         private string _busyText;
         public string BusyText
@@ -170,6 +172,27 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _selectedClientType, value); }
         }
 
+        private ContextMenu _activeContextMenu;
+        public ContextMenu ActiveContextMenu
+        {
+            get => _activeContextMenu;
+            set { SetProperty(ref _activeContextMenu, value); }
+        }
+
+        private string _multiRowMenuTitle;
+        public string MultiRowMenuTitle
+        {
+            get => _multiRowMenuTitle;
+            set { SetProperty(ref _multiRowMenuTitle, value); }
+        }
+
+        private bool _multiRowMenuAutoUpdateCheck;
+        public bool MultiRowMenuAutoUpdateCheck
+        {
+            get => _multiRowMenuAutoUpdateCheck;
+            set { SetProperty(ref _multiRowMenuAutoUpdateCheck, value); }
+        }
+
         public SearchInputViewModel SearchInputViewModel { get; set; }
 
         public Command LoadItemsCommand { get; set; }
@@ -181,6 +204,10 @@ namespace WowUp.WPF.ViewModels
         public Command SelectedWowClientCommand { get; set; }
         public Command GridSortingCommand { get; set; }
         public Command ViewInitializedCommand { get; set; }
+        public Command AutoUpdateCheckedCommand { get; set; }
+        
+        public ContextMenu MultiRowMenu { get; set; }
+        public ContextMenu RowMenu { get; set; }
 
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
         public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
@@ -244,6 +271,7 @@ namespace WowUp.WPF.ViewModels
             SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
             GridSortingCommand = new Command((args) => OnGridSorting(args as DataGridSortingEventArgs));
             ViewInitializedCommand = new Command(() => OnViewInitialized());
+            AutoUpdateCheckedCommand = new Command(() => OnAutoUpdateCheckedCommand());
 
             SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
             SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
@@ -259,6 +287,34 @@ namespace WowUp.WPF.ViewModels
             SetClientNames();
 
             Initialize();
+        }
+
+        private async void OnAutoUpdateCheckedCommand()
+        {
+            _disableUpdateLoad = true;
+            foreach (var addon in _selectedAddons)
+            {
+                addon.AutoUpdateEnabled = MultiRowMenuAutoUpdateCheck;
+                _addonService.UpdateAddon(addon);
+
+                var listItem = DisplayAddons.FirstOrDefault(item => item.Addon.Id == addon.Id);
+                listItem.IsAutoUpdated = addon.AutoUpdateEnabled;
+            }
+            _disableUpdateLoad = false;
+        }
+
+        public void OnDataGridSelectionChange(IEnumerable<AddonListItemViewModel> selectedItems)
+        {
+            _selectedAddons = selectedItems.Select(item => item.Addon);
+            MultiRowMenuTitle = selectedItems.Count() > 1
+               ? $"{selectedItems.Count()} addons selected"
+               : string.Empty;
+
+            ActiveContextMenu = selectedItems.Count() > 1
+                ? MultiRowMenu
+                : RowMenu;
+
+            MultiRowMenuAutoUpdateCheck = selectedItems.All(item => item.IsAutoUpdated);
         }
 
         private void SessionService_TabChanged(object sender, Type tabType)
@@ -579,7 +635,7 @@ namespace WowUp.WPF.ViewModels
 
         private void AddonUpdated(Addon addon)
         {
-            if (IsBusy)
+            if (IsBusy || _disableUpdateLoad)
             {
                 return;
             }

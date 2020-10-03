@@ -25,5 +25,7 @@ namespace WowUp.WPF.Services.Contracts
         string GetAddonFolderPath(WowClientType clientType);
 
         Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType);
+
+        string GetClientFolderName(WowClientType clientType);
     }
 }
