@@ -20,4 +20,11 @@
     font-size: 14px;
     letter-spacing: 0.6px;
   }
+  .dialog-buttons {
+    display:flex;
+    .btn-wrapper {
+      margin-left: auto;
+    }
+  }
+
 }
