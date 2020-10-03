@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { InstallFromUrlDialogComponent } from 'app/components/install-from-url-dialog/install-from-url-dialog.component';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ColumnState } from 'app/models/wowup/column-state';
 import { PotentialAddon } from 'app/models/wowup/potential-addon';
@@ -38,6 +40,7 @@ export class GetAddonsComponent implements OnInit {
   constructor(
     private _addonService: AddonService,
     private _sessionService: SessionService,
+    private _dialog: MatDialog,
     public electronService: ElectronService,
     public warcraftService: WarcraftService
   ) {
@@ -53,6 +56,13 @@ export class GetAddonsComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+
+  onInstallFromUrl() {
+    const dialogRef = this._dialog.open(InstallFromUrlDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   onClientChange() {

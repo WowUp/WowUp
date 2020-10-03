@@ -100,9 +100,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     const regex = /\/info(\d+)/i;
     const match = regex.exec(addonUri.pathname);
 
-    console.log(addonUri, match)
-
-    return '';
+    return match[1];
   }
 
   private getAddonDetails(addonId: string): Observable<AddonDetailsResponse> {

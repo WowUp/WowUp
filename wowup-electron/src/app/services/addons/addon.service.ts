@@ -217,6 +217,12 @@ export class AddonService {
     return this._addonStorage.get(addonId);
   }
 
+  public async getAddonByUrl(url: URL, clientType: WowClientType) {
+    const provider = this.getAddonProvider(url);
+
+    return await provider.searchByUrl(url, clientType);
+  }
+
   public getAddon(externalId: string, providerName: string, clientType: WowClientType) {
     const targetAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
     const provider = this.getProvider(providerName);
@@ -384,6 +390,10 @@ export class AddonService {
     }
 
     return addons;
+  }
+
+  private getAddonProvider(addonUri: URL): AddonProvider {
+    return this._addonProviders.find(provider => provider.isValidAddonUri(addonUri));
   }
 
   private async getCurseAddonById(

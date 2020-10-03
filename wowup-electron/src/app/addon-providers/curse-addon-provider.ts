@@ -244,7 +244,9 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   isValidAddonUri(addonUri: URL): boolean {
-    throw new Error("Method not implemented.");
+    return addonUri.host &&
+      addonUri.host.endsWith("curseforge.com") &&
+      addonUri.pathname.startsWith("/wow/addons");
   }
 
   onPostInstall(addon: Addon): void {

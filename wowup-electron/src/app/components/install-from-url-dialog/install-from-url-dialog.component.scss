@@ -1,0 +1,50 @@
+@import "../../../variables.scss";
+
+.url-input-container {
+    width: 100%;
+}
+.busy-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.addon-container {
+    display: flex;
+    flex-direction: row;
+
+    .addon-thumb {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        margin-right: 1em;
+        background-color: $dark-2;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    .addon-info {
+        flex-grow: 1;
+        h4,
+        p {
+            margin: 0;
+        }
+
+        .addon-download-count {
+            color: $white-3;
+        }
+    }
+
+    .install-container {
+        margin-left: 1em;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .success-icon {
+            color: green;
+            text-align: center;
+        }
+    }
+}

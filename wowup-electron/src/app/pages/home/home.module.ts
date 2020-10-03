@@ -20,6 +20,7 @@ import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-di
 import { AlertDialogComponent } from 'app/components/alert-dialog/alert-dialog.component';
 import { WowClientOptionsComponent } from 'app/components/wow-client-options/wow-client-options.component';
 import { DirectiveModule } from 'app/directive.module';
+import { InstallFromUrlDialogComponent } from 'app/components/install-from-url-dialog/install-from-url-dialog.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { DirectiveModule } from 'app/directive.module';
     ConfirmDialogComponent,
     AlertDialogComponent,
     WowClientOptionsComponent,
+    InstallFromUrlDialogComponent
   ],
   imports: [
     CommonModule,
