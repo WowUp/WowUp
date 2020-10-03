@@ -28,6 +28,7 @@ import { ElectronService } from "../electron/electron.service";
 import { TukUiAddonProvider } from "app/addon-providers/tukui-addon-provider";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { WowInterfaceAddonProvider } from "app/addon-providers/wow-interface-addon-provider";
+import { GitHubAddonProvider } from "app/addon-providers/github-addon-provider";
 
 @Injectable({
   providedIn: 'root'
@@ -55,8 +56,9 @@ export class AddonService {
   ) {
     this._addonProviders = [
       new CurseAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
-      new WowInterfaceAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
       new TukUiAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
+      new WowInterfaceAddonProvider(httpClient, this._cachingService, this._electronService, this._fileService),
+      new GitHubAddonProvider(httpClient),
     ];
   }
 
