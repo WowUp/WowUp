@@ -22,9 +22,11 @@ import { ncp } from 'ncp';
 import * as rimraf from 'rimraf';
 import * as log from 'electron-log';
 import { autoUpdater } from "electron-updater"
+import * as Store from 'electron-store'
 
 const isMac = process.platform === 'darwin';
 const isWin = process.platform === 'win32';
+const preferenceStore = new Store({ name: 'preferences' });
 
 let appIsQuitting = false;
 
@@ -145,13 +147,16 @@ function createWindow(): BrowserWindow {
 
   if (isMac) {
     win.on('close', (e) => {
-      if(appIsQuitting){
+      if (appIsQuitting) {
         return;
       }
 
       e.preventDefault();
-      app.dock.hide();
       win.hide();
+
+      if (preferenceStore.get('collapse_to_tray') === true) {
+        app.dock.hide();
+      }
     });
   }
 
