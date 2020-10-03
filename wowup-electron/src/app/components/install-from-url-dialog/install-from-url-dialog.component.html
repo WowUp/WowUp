@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Install Addon URL</h1>
 <div mat-dialog-content>
-    <p>If you want to install an addon directly from a URL paste it below to get started.</p>
+    <p class="p-0 m-0">If you want to install an addon directly from a URL paste it below to get started.</p>
     <p>Supports WowInterface and GitHub*</p>
     <mat-form-field class="url-input-container">
         <mat-label>Addon URL</mat-label>
@@ -39,5 +39,5 @@
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onClose()">Close</button>
-    <button mat-button cdkFocusInitial (click)="onImportUrl()">Import</button>
+    <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()">Import</button>
 </div>

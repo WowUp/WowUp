@@ -27,7 +27,7 @@ export class TitlebarComponent implements OnInit {
     if(this._wowUpService.collapseToTray){
       this.electronService.hideWindow();
     } else {
-
+      this.electronService.closeWindow();
     }
   }
 
