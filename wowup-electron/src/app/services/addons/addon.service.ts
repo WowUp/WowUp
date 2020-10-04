@@ -91,6 +91,49 @@ export class AddonService {
     await this.installAddon(addon.id, onUpdate);
   }
 
+  public async processAutoUpdates(): Promise<number> {
+    const autoUpdateAddons = this.getAutoUpdateEnabledAddons();
+    const clientTypeGroups = _.groupBy(autoUpdateAddons, addon => addon.clientType);
+    let updateCt = 0;
+
+    for (let clientTypeStr in clientTypeGroups) {
+      const clientType: WowClientType = parseInt(clientTypeStr, 10);
+      // console.log('clientType', clientType, clientTypeGroups[clientType]);
+
+      const synced = await this.syncAddons(clientType, clientTypeGroups[clientType]);
+      if (!synced) {
+        continue;
+      }
+
+      for (let addon of clientTypeGroups[clientType]) {
+        if (!this.canUpdateAddon(addon)) {
+          continue;
+        }
+
+        try {
+          await this.installAddon(addon.id);
+          updateCt += 1;
+        }
+        catch (err)
+        {
+          // _analyticsService.Track(ex, "Failed to install addon");
+        }
+      }
+    }
+    
+    return updateCt;
+  }
+
+  public canUpdateAddon(addon: Addon) {
+    return addon.installedVersion && addon.installedVersion !== addon.latestVersion;
+  }
+
+  public getAutoUpdateEnabledAddons() {
+    return this._addonStorage.queryAll(addon => {
+      return addon.isIgnored !== true && addon.autoUpdateEnabled;
+    });
+  }
+
   public async installAddon(
     addonId: string,
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined

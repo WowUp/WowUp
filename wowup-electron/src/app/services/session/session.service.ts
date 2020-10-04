@@ -2,9 +2,12 @@ import { Injectable } from "@angular/core";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { BehaviorSubject } from "rxjs";
 import { first, map } from "rxjs/operators";
+import { AddonService } from "../addons/addon.service";
 import { ElectronService } from "../electron/electron.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
+
+const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +18,14 @@ export class SessionService {
   private readonly _statusTextSrc = new BehaviorSubject('');
   private readonly _selectedHomeTab = new BehaviorSubject(0);
 
+  private _autoUpdateInterval?: number;
+
   public readonly selectedClientType$ = this._selectedClientTypeSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
   public readonly selectedHomeTab$ = this._selectedHomeTab.asObservable();
 
   constructor(
+    private _addonService: AddonService,
     private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService
@@ -40,8 +46,20 @@ export class SessionService {
     return this._selectedClientTypeSrc.value;
   }
 
+  public appLoaded() {
+    if(!this._autoUpdateInterval){
+      this.onAutoUpdateInterval();
+      this._autoUpdateInterval = window.setInterval(this.onAutoUpdateInterval, AUTO_UPDATE_PERIOD_MS);
+    }
+  }
+
   public startUpdaterCheck() {
     this.checkUpdaterApp();
+  }
+
+  private onAutoUpdateInterval = async () => {
+    console.log('Auto update');
+    const updateCount = await this._addonService.processAutoUpdates();
   }
 
   private loadInitialClientType() {

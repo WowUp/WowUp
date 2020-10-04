@@ -67,12 +67,11 @@
 
   .status-column {
     display: flex;
-    justify-content: center;
     width: 130px;
     align-items: center;
 
     .auto-update-icon {
-      margin-right: 0.5em;
+      margin-left: 0.5em;
     }
 
     .progress-text {

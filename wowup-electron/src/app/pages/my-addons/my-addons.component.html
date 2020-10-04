@@ -24,7 +24,7 @@
   </div>
 
   <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
-    <app-progress-spinner  [message]="spinnerMessage">
+    <app-progress-spinner [message]="spinnerMessage">
     </app-progress-spinner>
   </div>
 
@@ -42,14 +42,14 @@
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element">
           <div class="status-column">
-            <mat-icon *ngIf="element.addon.autoUpdateEnabled" class="auto-update-icon" matTooltip="Auto update enabled">
-              update</mat-icon>
             <button *ngIf="element.needsInstall === true" mat-flat-button color="primary"
               (click)="onInstall()">Install</button>
             <button *ngIf="element.needsUpdate === true" mat-flat-button color="primary"
               (click)="onUpdateAddon(element)">Update</button>
             <div *ngIf="element.isUpToDate === true || element.isIgnored === true" class="status-text">
               {{element.statusText}}</div>
+            <mat-icon *ngIf="element.addon.autoUpdateEnabled" class="auto-update-icon" matTooltip="Auto update enabled">
+              update</mat-icon>
             <div *ngIf="element.isInstalling === true" class="progress-container">
               <p class="progress-text">{{element.statusText}}</p>
               <mat-progress-bar class="addon-progress" mode="determinate" [value]="element.installProgress">

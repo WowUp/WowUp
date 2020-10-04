@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._sessionService.startUpdaterCheck();
+    this._sessionService.appLoaded();
   }
 
   onSelectedIndexChange(index: number) {
