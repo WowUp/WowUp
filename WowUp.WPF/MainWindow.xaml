@@ -189,7 +189,8 @@
                 x:Name="TrayIcon"
                 IconSource="/Assets/wowup_logo_512np_RRT_icon.ico"
                 ToolTipText="WowUp"
-                LeftClickCommand="{Binding TaskbarIconClickCommand}">
+                LeftClickCommand="{Binding TaskbarIconClickCommand}"
+                DoubleClickCommand="{Binding TaskbarIconClickCommand}">
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu Style="{StaticResource DarkMenu}">
                         <MenuItem Header="WowUp" IsEnabled="False">
