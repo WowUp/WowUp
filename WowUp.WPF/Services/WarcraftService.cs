@@ -246,6 +246,7 @@ namespace WowUp.WPF.Services
 
             foreach (var directory in addonDirectories)
             {
+                Log.Debug($"Getting addon folder {directory.Name}");
                 var addonFolder = await GetAddonFolder(directory);
                 addons.Add(addonFolder);
             }

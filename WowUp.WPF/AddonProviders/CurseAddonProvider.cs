@@ -46,6 +46,7 @@ namespace WowUp.WPF.AddonProviders
             AddonChannelType addonChannelType,
             IEnumerable<AddonFolder> addonFolders)
         {
+            Log.Debug($"{Name} Scanning {addonFolders.Count()} addons");
             var addonDirectory = addonFolders.FirstOrDefault()?.Directory.Parent.FullName;
             var scanResults = await GetScanResults(addonFolders);
 
