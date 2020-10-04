@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using WowUp.Common.Enums;
-using WowUp.Common.Services.Contracts;
+using WowUp.Common.Extensions;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
@@ -193,6 +193,27 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _multiRowMenuAutoUpdateCheck, value); }
         }
 
+        private bool _multiRowMenuStableChannelCheck;
+        public bool MultiRowMenuStableChannelCheck
+        {
+            get => _multiRowMenuStableChannelCheck;
+            set { SetProperty(ref _multiRowMenuStableChannelCheck, value); }
+        }
+
+        private bool _multiRowMenuBetaChannelCheck;
+        public bool MultiRowMenuBetaChannelCheck
+        {
+            get => _multiRowMenuBetaChannelCheck;
+            set { SetProperty(ref _multiRowMenuBetaChannelCheck, value); }
+        }
+
+        private bool _multiRowMenuAlphaChannelCheck;
+        public bool MultiRowMenuAlphaChannelCheck
+        {
+            get => _multiRowMenuAlphaChannelCheck;
+            set { SetProperty(ref _multiRowMenuAlphaChannelCheck, value); }
+        }
+
         public SearchInputViewModel SearchInputViewModel { get; set; }
 
         public Command LoadItemsCommand { get; set; }
@@ -205,9 +226,13 @@ namespace WowUp.WPF.ViewModels
         public Command GridSortingCommand { get; set; }
         public Command ViewInitializedCommand { get; set; }
         public Command AutoUpdateCheckedCommand { get; set; }
-        
+        public Command StableChannelCheckedCommand { get; set; }
+        public Command BetaChannelCheckedCommand { get; set; }
+        public Command AlphaChannelCheckedCommand { get; set; }
+
         public ContextMenu MultiRowMenu { get; set; }
         public ContextMenu RowMenu { get; set; }
+        public DataGrid DataGrid { get; set; }
 
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
         public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
@@ -272,6 +297,9 @@ namespace WowUp.WPF.ViewModels
             GridSortingCommand = new Command((args) => OnGridSorting(args as DataGridSortingEventArgs));
             ViewInitializedCommand = new Command(() => OnViewInitialized());
             AutoUpdateCheckedCommand = new Command(() => OnAutoUpdateCheckedCommand());
+            StableChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Stable));
+            BetaChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Beta));
+            AlphaChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Alpha));
 
             SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
             SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
@@ -289,7 +317,7 @@ namespace WowUp.WPF.ViewModels
             Initialize();
         }
 
-        private async void OnAutoUpdateCheckedCommand()
+        private void OnAutoUpdateCheckedCommand()
         {
             _disableUpdateLoad = true;
             foreach (var addon in _selectedAddons)
@@ -303,7 +331,26 @@ namespace WowUp.WPF.ViewModels
             _disableUpdateLoad = false;
         }
 
-        public void OnDataGridSelectionChange(IEnumerable<AddonListItemViewModel> selectedItems)
+        private void OnChangeAllChannelCommand(AddonChannelType addonChannel)
+        {
+            _disableUpdateLoad = true;
+            foreach (var addon in _selectedAddons)
+            {
+                addon.ChannelType = addonChannel;
+                _addonService.UpdateAddon(addon);
+
+                var listItem = DisplayAddons.FirstOrDefault(item => item.Addon.Id == addon.Id);
+                listItem.Addon.ChannelType = addonChannel;
+                listItem.SetupDisplayState();
+            }
+
+            SetSelectionChannelState();
+
+            _disableUpdateLoad = false;
+        }
+
+        public void OnDataGridSelectionChange(
+            IEnumerable<AddonListItemViewModel> selectedItems)
         {
             _selectedAddons = selectedItems.Select(item => item.Addon);
             MultiRowMenuTitle = selectedItems.Count() > 1
@@ -315,6 +362,23 @@ namespace WowUp.WPF.ViewModels
                 : RowMenu;
 
             MultiRowMenuAutoUpdateCheck = selectedItems.All(item => item.IsAutoUpdated);
+
+            SetSelectionChannelState();
+        }
+
+        private void SetSelectionChannelState()
+        {
+            MultiRowMenuStableChannelCheck = DataGrid.SelectedItems
+                .Cast<AddonListItemViewModel>()
+                .All(item => item.Addon.ChannelType == AddonChannelType.Stable);
+
+            MultiRowMenuBetaChannelCheck = DataGrid.SelectedItems
+                .Cast<AddonListItemViewModel>()
+                .All(item => item.Addon.ChannelType == AddonChannelType.Beta);
+
+            MultiRowMenuAlphaChannelCheck = DataGrid.SelectedItems
+                .Cast<AddonListItemViewModel>()
+                .All(item => item.Addon.ChannelType == AddonChannelType.Alpha);
         }
 
         private void SessionService_TabChanged(object sender, Type tabType)
