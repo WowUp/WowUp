@@ -141,6 +141,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    this._destroyed$.next();
+    this._destroyed$.complete();
   }
 
   onRefresh() {
