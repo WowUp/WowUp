@@ -237,7 +237,6 @@
 
             <tb:TaskbarIcon
                 x:Name="TrayIcon"
-                DoubleClickCommand="{Binding TaskbarIconClickCommand}"
                 IconSource="/Assets/wowup_logo_512np_RRT_icon.ico"
                 ToolTipText="WowUp"
                 NoLeftClickDelay="True"
