@@ -630,7 +630,7 @@ namespace WowUp.WPF.Services
                 }
             }
 
-            Log.Debug($"Scanned {addonFolders.Count} folders");
+            Log.Debug($"Scanned {addonFolders.Count()} folders");
 
             var matchedAddonFolders = addonFolders.Where(af => af.MatchingAddon != null);
             var matchedGroups = matchedAddonFolders.GroupBy(af => $"{af.MatchingAddon.ProviderName}{af.MatchingAddon.ExternalId}");
