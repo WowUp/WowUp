@@ -1,9 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
+import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { ColumnState } from "app/models/wowup/column-state";
 import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { ElectronService } from "app/services";
@@ -18,11 +19,10 @@ import { map, tap } from "rxjs/operators";
   templateUrl: "./get-addons.component.html",
   styleUrls: ["./get-addons.component.scss"],
 })
-export class GetAddonsComponent implements OnInit {
+export class GetAddonsComponent implements OnInit, OnDestroy {
   private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>(
     []
   );
-
   private subscriptions: Subscription[] = [];
 
   columns: ColumnState[] = [
@@ -54,7 +54,7 @@ export class GetAddonsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this._sessionService.selectedClientType$
+    const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
         map((clientType) => {
           this.selectedClient = clientType;
@@ -62,6 +62,19 @@ export class GetAddonsComponent implements OnInit {
         })
       )
       .subscribe();
+
+    const addonRemovedSubscription = this._addonService.addonRemoved$
+      .pipe(
+        map((event: string) => {
+          this.onRefresh();
+        })
+      )
+      .subscribe();
+    this.subscriptions = [selectedClientSubscription, addonRemovedSubscription];
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   onInstallFromUrl() {
@@ -109,7 +122,7 @@ export class GetAddonsComponent implements OnInit {
       data: new AddonDetailModel(addon),
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log("The dialog was closed");
+      // this.onRefresh();
     });
   }
 
