@@ -259,14 +259,53 @@ export class AddonService {
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
     let addons = this._addonStorage.getAllForClientType(clientType);
     if (rescan || !addons.length) {
-      this._addonStorage.removeForClientType(clientType);
-      addons = await this.scanAddons(clientType);
-      this._addonStorage.setAll(addons);
+      const newAddons = await this.scanAddons(clientType);
+      this.updateAddons(addons, newAddons);
     }
 
     this.syncAddons(clientType, addons);
 
     return addons;
+  }
+
+  private updateAddons(existingAddons: Addon[], newAddons: Addon[]): Addon[] {
+    const removedAddons = existingAddons
+      .filter(existingAddon => !newAddons.some(newAddon => this.addonsMatch(existingAddon, newAddon)));
+
+    const addedAddons = newAddons
+      .filter(newAddon => !existingAddons.some(existingAddon => this.addonsMatch(existingAddon, newAddon)));
+
+    _.remove(existingAddons, addon => removedAddons.some(removedAddon => removedAddon.id === addon.id));
+
+    existingAddons.push(...addedAddons);
+
+    for (let existingAddon of existingAddons) {
+      var matchingAddon = newAddons.find(newAddon => this.addonsMatch(newAddon, existingAddon));
+      if (!matchingAddon) {
+        continue;
+      }
+
+      existingAddon.name = matchingAddon.name;
+      existingAddon.folderName = matchingAddon.folderName;
+      existingAddon.downloadUrl = matchingAddon.downloadUrl;
+      existingAddon.installedVersion = matchingAddon.installedVersion;
+      existingAddon.externalUrl = matchingAddon.externalUrl;
+      existingAddon.latestVersion = matchingAddon.latestVersion;
+      existingAddon.thumbnailUrl = matchingAddon.thumbnailUrl;
+      existingAddon.gameVersion = matchingAddon.gameVersion;
+      existingAddon.author = matchingAddon.author;
+    }
+
+    this._addonStorage.removeAll(...removedAddons);
+    this._addonStorage.setAll(existingAddons);
+
+    return existingAddons;
+  }
+
+  private addonsMatch(addon1: Addon, addon2: Addon): boolean {
+    return addon1.externalId == addon2.externalId &&
+      addon1.providerName == addon2.providerName &&
+      addon1.clientType == addon2.clientType;
   }
 
   private async syncAddons(clientType: WowClientType, addons: Addon[]) {

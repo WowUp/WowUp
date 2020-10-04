@@ -37,7 +37,11 @@ export class AddonStorageService {
     return this._store.get(key) as Addon;
   }
 
-  public remove(addon: Addon){
+  public removeAll(...addons: Addon[]) {
+    addons.forEach(addon => this.remove(addon));
+  }
+
+  public remove(addon: Addon) {
     this._store.delete(addon.id);
   }
 
