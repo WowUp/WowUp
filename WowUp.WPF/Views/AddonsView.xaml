@@ -276,6 +276,11 @@
                                       IsChecked="{Binding MultiRowMenuAlphaChannelCheck}"
                                       Command="{Binding AlphaChannelCheckedCommand}"></MenuItem>
                         </MenuItem>
+                        <MenuItem Header="Re-Install" 
+                                  Command="{Binding ReInstallAllCommand}"/>
+                        <Separator />
+                        <MenuItem Header="Remove"
+                                  Command="{Binding UninstallAllCommand}"/>
                     </ContextMenu>
                     <ContextMenu x:Key="RowMenu"
                                  Style="{StaticResource DarkMenu}"

@@ -51,7 +51,6 @@ namespace WowUp.WPF.Views
         {
             _viewModel.MultiRowMenu = (ContextMenu)AddonGrid.Resources["MultiRowMenu"];
             _viewModel.RowMenu = (ContextMenu)AddonGrid.Resources["RowMenu"];
-            _viewModel.DataGrid = AddonGrid;
             _viewModel.ViewInitializedCommand.Execute(e);
         }
 
