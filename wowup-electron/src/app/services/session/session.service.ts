@@ -32,6 +32,7 @@ export class SessionService {
   }
 
   public set selectedClientType(clientType: WowClientType) {
+    this._wowUpService.lastSelectedClientType = clientType;
     this._selectedClientTypeSrc.next(clientType);
   }
 
