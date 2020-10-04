@@ -1,4 +1,5 @@
 ﻿using Flurl.Http;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,7 @@ namespace WowUp.WPF.AddonProviders
             AddonChannelType addonChannelType, 
             IEnumerable<AddonFolder> addonFolders)
         {
+            Log.Debug($"{Name} Scanning {addonFolders.Count()} addons");
             foreach (var addonFolder in addonFolders)
             {
                 if (string.IsNullOrEmpty(addonFolder.Toc.WowInterfaceId))

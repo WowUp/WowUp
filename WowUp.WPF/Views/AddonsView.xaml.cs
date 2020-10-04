@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Controls;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.ViewModels;
 
@@ -46,7 +49,15 @@ namespace WowUp.WPF.Views
 
         private void UserControl_Initialized(object sender, System.EventArgs e)
         {
+            _viewModel.MultiRowMenu = (ContextMenu)AddonGrid.Resources["MultiRowMenu"];
+            _viewModel.RowMenu = (ContextMenu)AddonGrid.Resources["RowMenu"];
             _viewModel.ViewInitializedCommand.Execute(e);
+        }
+
+        private void AddonGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItems = ((DataGrid)sender).SelectedItems.Cast<AddonListItemViewModel>();
+            _viewModel.OnDataGridSelectionChange(selectedItems);
         }
     }
 }

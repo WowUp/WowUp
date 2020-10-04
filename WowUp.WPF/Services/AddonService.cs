@@ -269,7 +269,16 @@ namespace WowUp.WPF.Services
 
                 if (result == null || latestFile == null || latestFile.Version == addon.LatestVersion)
                 {
-                    await SyncThumbnail(addon);
+                    if(addon.ThumbnailUrl != result.ThumbnailUrl)
+                    {
+                        addon.ThumbnailUrl = result.ThumbnailUrl;
+                        _addonRepository.UpdateItem(addon);
+                        await SyncThumbnail(addon, true);
+                    }
+                    else
+                    {
+                        await SyncThumbnail(addon);
+                    }
 
                     continue;
                 }
@@ -293,9 +302,9 @@ namespace WowUp.WPF.Services
             }
         }
 
-        private async Task SyncThumbnail(Addon addon)
+        private async Task SyncThumbnail(Addon addon, bool force = false)
         {
-            if (!File.Exists(addon.GetThumbnailPath()))
+            if (force || !File.Exists(addon.GetThumbnailPath()))
             {
                 await CacheThumbnail(addon);
             }
@@ -480,6 +489,7 @@ namespace WowUp.WPF.Services
 
             try
             {
+                Log.Information($"Caching thumbnail {addon.Name}: {addon.ThumbnailUrl}");
                 using var imageStream = await addon.ThumbnailUrl.GetStreamAsync();
 
                 using Image image = Image.Load(imageStream);
@@ -496,7 +506,7 @@ namespace WowUp.WPF.Services
             }
             catch(Exception ex)
             {
-                _analyticsService.Track(ex, "Failed to download thumbnail");
+                _analyticsService.Track(ex, $"Failed to download thumbnail {addon.Name}");
             }
         }
 
@@ -619,6 +629,8 @@ namespace WowUp.WPF.Services
                     _analyticsService.Track(ex, $"Addon scan failed {provider.Name}");
                 }
             }
+
+            Log.Debug($"Scanned {addonFolders.Count()} folders");
 
             var matchedAddonFolders = addonFolders.Where(af => af.MatchingAddon != null);
             var matchedGroups = matchedAddonFolders.GroupBy(af => $"{af.MatchingAddon.ProviderName}{af.MatchingAddon.ExternalId}");
