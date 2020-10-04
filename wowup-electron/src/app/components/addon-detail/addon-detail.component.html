@@ -27,17 +27,14 @@
   </mat-dialog-content>
   <mat-dialog-actions class="dialog-buttons">
     <div class="btn-wrapper">
-      <a appExternalLink mat-stroked-button color="primary"[href]="addonDetail.externalUrl"
+      <a
+        appExternalLink
+        mat-stroked-button
+        color="primary"
+        [href]="addonDetail.externalUrl"
         >VIEW IN BROWSER</a
       >
-      <button
-        mat-raised-button
-        class="mat-primary"
-        (click)="installAddon()"
-        cdkFocusInitial
-      >
-        INSTALL
-      </button>
+      <app-addon-install-button [addon]="addonDetail"> </app-addon-install-button>
     </div>
   </mat-dialog-actions>
 </div>

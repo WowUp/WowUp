@@ -3,6 +3,7 @@ import { AddonProviderType } from "app/addon-providers/addon-provider";
 export class AddonDetailModel {
   id: number;
   categoryId: number;
+  externalId: string;
   version: string;
   name: string;
   author: string;
@@ -33,5 +34,6 @@ export class AddonDetailModel {
     this.latestVersion = json.latestVersion;
     this.updatedAt = json.updatedAt;
     this.externalUrl = json.externalUrl;
+    this.externalId = json.externalId;
   }
 }
