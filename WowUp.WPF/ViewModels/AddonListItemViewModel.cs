@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -31,6 +32,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         public Command ActionCommand { get; set; }
+        public Command OpenFolderCommand { get; set; }
         public Command InstallCommand { get; set; }
         public Command UpdateCommand { get; set; }
         public Command OpenLinkCommand { get; set; }
@@ -263,6 +265,7 @@ namespace WowUp.WPF.ViewModels
             _addonService = addonService;
             _analyticsService = analyticsService;
 
+            OpenFolderCommand = new Command(() => addonService.GetFullInstallPath(Addon).OpenUrlInBrowser());
             InstallCommand = new Command(async () => await InstallAddon());
             UpdateCommand = new Command(async () => await UpdateAddon());
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
@@ -278,7 +281,7 @@ namespace WowUp.WPF.ViewModels
             _epicBrush = Application.Current.Resources["EpicBrush"] as SolidColorBrush;
         }
 
-        private void SetupDisplayState()
+        public void SetupDisplayState()
         {
             Name = _addon.Name;
             CurrentVersion = string.IsNullOrEmpty(_addon.InstalledVersion)

@@ -9,6 +9,7 @@
              xmlns:vw = "clr-namespace:WowUp.WPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="AddonsViewControl"
              Initialized="UserControl_Initialized">
 
     <UserControl.Resources>
@@ -247,10 +248,40 @@
                       HorizontalGridLinesBrush="{StaticResource Dark2}"
                       RowHeaderWidth="0"
                       BorderThickness="0"
+                      SelectionMode="Extended"
                       VirtualizingPanel.ScrollUnit="Pixel"
+                      SelectionChanged="AddonGrid_SelectionChanged"
                       BorderBrush="Transparent"
                       Sorting="AddonGrid_Sorting">
                 <DataGrid.Resources>
+                    <ContextMenu x:Key="MultiRowMenu"
+                         DataContext="{Binding DataContext, Source={x:Reference AddonsViewControl}}"
+                         Style="{StaticResource DarkMenu}">
+                        <MenuItem Header="{Binding MultiRowMenuTitle}" IsEnabled="False" />
+                        <MenuItem Header="Auto Update" 
+                          IsCheckable="True" 
+                          IsChecked="{Binding MultiRowMenuAutoUpdateCheck}"
+                          Command="{Binding AutoUpdateCheckedCommand}" />
+                        <MenuItem Header="Channel">
+                            <MenuItem Header="Stable" 
+                                      IsCheckable="True" 
+                                      IsChecked="{Binding MultiRowMenuStableChannelCheck}"
+                                      Command="{Binding StableChannelCheckedCommand}"></MenuItem>
+                            <MenuItem Header="Beta" 
+                                      IsCheckable="True" 
+                                      IsChecked="{Binding MultiRowMenuBetaChannelCheck}"
+                                      Command="{Binding BetaChannelCheckedCommand}"></MenuItem>
+                            <MenuItem Header="Alpha" 
+                                      IsCheckable="True" 
+                                      IsChecked="{Binding MultiRowMenuAlphaChannelCheck}"
+                                      Command="{Binding AlphaChannelCheckedCommand}"></MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="Re-Install" 
+                                  Command="{Binding ReInstallAllCommand}"/>
+                        <Separator />
+                        <MenuItem Header="Remove"
+                                  Command="{Binding UninstallAllCommand}"/>
+                    </ContextMenu>
                     <ContextMenu x:Key="RowMenu"
                                  Style="{StaticResource DarkMenu}"
                                  DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
@@ -279,6 +310,9 @@
                                       IsEnabled="{Binding CanCheckAlpha}"
                                       Command="{Binding AlphaCheckedCommand}"></MenuItem>
                         </MenuItem>
+                        <Separator Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}" />
+                        <MenuItem Header="Open Folder"
+                                  Command="{Binding OpenFolderCommand}" />
                         <Separator Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}" />
                         <MenuItem Header="Update" 
                                   Visibility="{Binding ShowUpdateButton, Converter={StaticResource BoolToVisibilty}}"
@@ -323,11 +357,14 @@
                 </DataGrid.Resources>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow" >
-                        <Setter Property="ContextMenu" Value="{StaticResource RowMenu}" />
+                        <Setter Property="ContextMenu" Value="{Binding DataContext.ActiveContextMenu, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                         <Setter Property="Background" Value="{StaticResource Dark3}"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{StaticResource Dark1}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{StaticResource Purple4}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -385,8 +422,7 @@
                             <DataTemplate>
                                 <Border Padding="5">
                                     <StackPanel Orientation="Horizontal" >
-                                        <TextBlock 
-                                                   Text="{Binding DataContext.LatestVersionHeaderText, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                        <TextBlock Text="{Binding DataContext.LatestVersionHeaderText, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                                                    TextWrapping="Wrap" 
                                                    Style="{StaticResource labelTableHeader}" />
                                         <Image Width="20"

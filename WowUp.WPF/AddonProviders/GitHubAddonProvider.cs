@@ -1,4 +1,5 @@
 ﻿using Flurl.Http;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,8 +30,9 @@ namespace WowUp.WPF.AddonProviders
         public Task Scan(
             WowClientType clientType,
             AddonChannelType addonChannelType, 
-            IEnumerable<AddonFolder> addonFolder)
+            IEnumerable<AddonFolder> addonFolders)
         {
+            Log.Debug($"{Name} Scanning {addonFolders.Count()} addons");
             return Task.CompletedTask;
         }
 

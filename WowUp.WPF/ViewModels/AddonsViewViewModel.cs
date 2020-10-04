@@ -10,7 +10,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using WowUp.Common.Enums;
-using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
@@ -23,12 +22,16 @@ namespace WowUp.WPF.ViewModels
         private static readonly object ClientNamesLock = new object();
         private static readonly object DisplayAddonsLock = new object();
 
+        private readonly IAnalyticsService _analyticsService;
         private readonly IServiceProvider _serviceProvider;
         private readonly IWarcraftService _warcraftService;
         private readonly IAddonService _addonService;
         private readonly ISessionService _sessionService;
         
         private List<Addon> _addons;
+        private bool _disableUpdateLoad;
+        private IEnumerable<AddonListItemViewModel> _selectedRows;
+        private IEnumerable<Addon> _selectedAddons;
 
         private string _busyText;
         public string BusyText
@@ -170,6 +173,48 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _selectedClientType, value); }
         }
 
+        private ContextMenu _activeContextMenu;
+        public ContextMenu ActiveContextMenu
+        {
+            get => _activeContextMenu;
+            set { SetProperty(ref _activeContextMenu, value); }
+        }
+
+        private string _multiRowMenuTitle;
+        public string MultiRowMenuTitle
+        {
+            get => _multiRowMenuTitle;
+            set { SetProperty(ref _multiRowMenuTitle, value); }
+        }
+
+        private bool _multiRowMenuAutoUpdateCheck;
+        public bool MultiRowMenuAutoUpdateCheck
+        {
+            get => _multiRowMenuAutoUpdateCheck;
+            set { SetProperty(ref _multiRowMenuAutoUpdateCheck, value); }
+        }
+
+        private bool _multiRowMenuStableChannelCheck;
+        public bool MultiRowMenuStableChannelCheck
+        {
+            get => _multiRowMenuStableChannelCheck;
+            set { SetProperty(ref _multiRowMenuStableChannelCheck, value); }
+        }
+
+        private bool _multiRowMenuBetaChannelCheck;
+        public bool MultiRowMenuBetaChannelCheck
+        {
+            get => _multiRowMenuBetaChannelCheck;
+            set { SetProperty(ref _multiRowMenuBetaChannelCheck, value); }
+        }
+
+        private bool _multiRowMenuAlphaChannelCheck;
+        public bool MultiRowMenuAlphaChannelCheck
+        {
+            get => _multiRowMenuAlphaChannelCheck;
+            set { SetProperty(ref _multiRowMenuAlphaChannelCheck, value); }
+        }
+
         public SearchInputViewModel SearchInputViewModel { get; set; }
 
         public Command LoadItemsCommand { get; set; }
@@ -181,17 +226,28 @@ namespace WowUp.WPF.ViewModels
         public Command SelectedWowClientCommand { get; set; }
         public Command GridSortingCommand { get; set; }
         public Command ViewInitializedCommand { get; set; }
+        public Command AutoUpdateCheckedCommand { get; set; }
+        public Command StableChannelCheckedCommand { get; set; }
+        public Command BetaChannelCheckedCommand { get; set; }
+        public Command AlphaChannelCheckedCommand { get; set; }
+        public Command ReInstallAllCommand { get; set; }
+        public Command UninstallAllCommand { get; set; }
+
+        public ContextMenu MultiRowMenu { get; set; }
+        public ContextMenu RowMenu { get; set; }
 
         public ObservableCollection<AddonListItemViewModel> DisplayAddons { get; set; }
         public ObservableCollection<WowClientType> ClientTypeNames { get; set; }
 
         public AddonsViewViewModel(
+            IAnalyticsService analyticsService,
             IServiceProvider serviceProvider,
             IAddonService addonService,
             IWarcraftService warcraftService,
             ISessionService sessionService)
         {
             _addonService = addonService;
+            _analyticsService = analyticsService;
             _warcraftService = warcraftService;
             _serviceProvider = serviceProvider;
             _sessionService = sessionService;
@@ -244,6 +300,12 @@ namespace WowUp.WPF.ViewModels
             SelectedWowClientCommand = new Command(async () => await OnSelectedWowClientChanged(SelectedClientType));
             GridSortingCommand = new Command((args) => OnGridSorting(args as DataGridSortingEventArgs));
             ViewInitializedCommand = new Command(() => OnViewInitialized());
+            AutoUpdateCheckedCommand = new Command(() => OnAutoUpdateCheckedCommand());
+            StableChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Stable));
+            BetaChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Beta));
+            AlphaChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Alpha));
+            ReInstallAllCommand = new Command(async () => await ReInstallAll());
+            UninstallAllCommand = new Command(async () => await UninstallAll());
 
             SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
             SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
@@ -259,6 +321,138 @@ namespace WowUp.WPF.ViewModels
             SetClientNames();
 
             Initialize();
+        }
+
+        private void OnAutoUpdateCheckedCommand()
+        {
+            _disableUpdateLoad = true;
+            foreach (var addon in _selectedAddons)
+            {
+                addon.AutoUpdateEnabled = MultiRowMenuAutoUpdateCheck;
+                _addonService.UpdateAddon(addon);
+
+                var listItem = DisplayAddons.FirstOrDefault(item => item.Addon.Id == addon.Id);
+                listItem.IsAutoUpdated = addon.AutoUpdateEnabled;
+            }
+            _disableUpdateLoad = false;
+        }
+
+        private void OnChangeAllChannelCommand(AddonChannelType addonChannel)
+        {
+            _disableUpdateLoad = true;
+            foreach (var addon in _selectedAddons)
+            {
+                addon.ChannelType = addonChannel;
+                _addonService.UpdateAddon(addon);
+
+                var listItem = DisplayAddons.FirstOrDefault(item => item.Addon.Id == addon.Id);
+                listItem.Addon.ChannelType = addonChannel;
+                listItem.SetupDisplayState();
+            }
+
+            SetSelectionChannelState();
+
+            _disableUpdateLoad = false;
+        }
+
+        private async Task ReInstallAll()
+        {
+            IsBusy = true;
+            EnableUpdateAll = false;
+            EnableRefresh = false;
+            EnableRescan = false;
+
+            await _selectedAddons.ForEachAsync(2, async (addon) =>
+            {
+                try
+                {
+                    await _addonService.InstallAddon(addon.Id);
+                }
+                catch (Exception ex)
+                {
+                    _analyticsService.Track(ex, "Failed during bulk install");
+                }
+            });
+
+            IsBusy = false;
+            EnableUpdateAll = CanUpdateAll;
+            EnableRefresh = true;
+            EnableRescan = true;
+
+            await _analyticsService.TrackUserAction(
+                "Addons", 
+                "ReInstallBulk", 
+                _selectedAddons.Count().ToString());
+        }
+
+        public async Task UninstallAll()
+        {
+            var messageBoxResult = MessageBox.Show(
+                $"Are you sure you want to remove {_selectedAddons.Count()} addons? This will remove all related folders from your World of Warcraft folder.",
+                "Uninstall Addon?",
+                MessageBoxButton.YesNo);
+
+            if (messageBoxResult != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            IsBusy = true;
+            EnableUpdateAll = false;
+            EnableRefresh = false;
+            EnableRescan = false;
+
+            foreach (var addon in _selectedAddons.ToList())
+            {
+                try
+                {
+                    await _addonService.UninstallAddon(addon);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, $"Failed to uninstall addon {addon.Name}");
+                }
+            }
+
+            IsBusy = false;
+            EnableUpdateAll = CanUpdateAll;
+            EnableRefresh = true;
+            EnableRescan = true;
+
+            await _analyticsService.TrackUserAction(
+                "Addons",
+                "UninstallBulk",
+                _selectedAddons.Count().ToString());
+        }
+
+        public void OnDataGridSelectionChange(
+            IEnumerable<AddonListItemViewModel> selectedItems)
+        {
+            _selectedRows = selectedItems;
+            _selectedAddons = selectedItems.Select(item => item.Addon);
+            MultiRowMenuTitle = selectedItems.Count() > 1
+               ? $"{selectedItems.Count()} addons selected"
+               : string.Empty;
+
+            ActiveContextMenu = selectedItems.Count() > 1
+                ? MultiRowMenu
+                : RowMenu;
+
+            MultiRowMenuAutoUpdateCheck = selectedItems.All(item => item.IsAutoUpdated);
+
+            SetSelectionChannelState();
+        }
+
+        private void SetSelectionChannelState()
+        {
+            MultiRowMenuStableChannelCheck = _selectedRows
+                .All(item => item.Addon.ChannelType == AddonChannelType.Stable);
+
+            MultiRowMenuBetaChannelCheck = _selectedRows
+                .All(item => item.Addon.ChannelType == AddonChannelType.Beta);
+
+            MultiRowMenuAlphaChannelCheck = _selectedRows
+                .All(item => item.Addon.ChannelType == AddonChannelType.Alpha);
         }
 
         private void SessionService_TabChanged(object sender, Type tabType)
@@ -377,12 +571,14 @@ namespace WowUp.WPF.ViewModels
             }
             finally
             {
-                EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
+                EnableUpdateAll = CanUpdateAll;
                 EnableRefresh = true;
                 EnableRescan = true;
                 IsBusy = false;
             }
         }
+
+        public bool CanUpdateAll => DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
 
         public async Task UpdateAllRetailClassic()
         {
@@ -558,8 +754,10 @@ namespace WowUp.WPF.ViewModels
                 }
 
                 // If this addon is already in the list, ignore it
-                if (DisplayAddons.Any(da => da.Addon.Id == addon.Id))
+                var displayItem = DisplayAddons.FirstOrDefault(listItem => listItem.Addon.Id == addon.Id);
+                if (displayItem != null)
                 {
+                    displayItem.ThumbnailUrl = addon.ThumbnailUrl;
                     return;
                 }
 
@@ -579,7 +777,7 @@ namespace WowUp.WPF.ViewModels
 
         private void AddonUpdated(Addon addon)
         {
-            if (IsBusy)
+            if (IsBusy || _disableUpdateLoad)
             {
                 return;
             }
