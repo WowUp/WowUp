@@ -46,6 +46,18 @@ const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac ? [
     submenu: [
       { role: 'quit' }
     ]
+  },
+  {
+    label: "Edit",
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: "separator" },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      { role: 'selectAll' }
+    ]
   }
 ] : [];
 
@@ -134,9 +146,9 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow(windowOptions);
 
   win.webContents.userAgent = USER_AGENT;
-  win.webContents.once('dom-ready', () => {
-    win.webContents.openDevTools();
-  });
+  // win.webContents.once('dom-ready', () => {
+  //   win.webContents.openDevTools();
+  // });
 
   win.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify()

@@ -53,8 +53,8 @@ export class GitHubAddonProvider implements AddonProvider {
 
     async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<PotentialAddon> {
         const repoPath = addonUri.pathname;
-        const repoExtension = extname(repoPath);
-        if (!repoPath || !repoExtension) {
+        const repoExtension = extname(repoPath); // if the repo has the git extension it wont work?
+        if (!repoPath || repoExtension) {
             throw new Error(`Invlaid URL: ${addonUri}`);
         }
 
@@ -75,7 +75,7 @@ export class GitHubAddonProvider implements AddonProvider {
             downloadCount: asset.download_count,
             externalId: repoPath,
             externalUrl: latestRelease.url,
-            name: asset.name,
+            name: repository.name,
             providerName: this.name,
             thumbnailUrl: authorImageUrl
         };
@@ -115,7 +115,7 @@ export class GitHubAddonProvider implements AddonProvider {
                     var searchResultFile: AddonSearchResultFile = {
                         channelType: AddonChannelType.Stable,
                         downloadUrl: asset.browser_download_url,
-                        folders: [name],
+                        folders: [addonName],
                         gameVersion: '',
                         version: asset.name,
                         releaseDate: new Date(asset.created_at)
@@ -126,7 +126,7 @@ export class GitHubAddonProvider implements AddonProvider {
                         externalId: addonId,
                         externalUrl: asset.url,
                         files: [searchResultFile],
-                        name: name,
+                        name: addonName,
                         providerName: this.name,
                         thumbnailUrl: authorImageUrl
                     };
@@ -137,7 +137,7 @@ export class GitHubAddonProvider implements AddonProvider {
     }
 
     isValidAddonUri(addonUri: URL): boolean {
-        return !!addonUri.host &&
+        return addonUri.host &&
             addonUri.host.endsWith("github.com");
     }
 
@@ -196,17 +196,17 @@ export class GitHubAddonProvider implements AddonProvider {
     }
 
     private getAddonName(addonId: string): string {
-        return addonId.split("/").filter(str => !!str)[2];
+        return addonId.split("/").filter(str => !!str)[1];
     }
 
     private getReleases(repositoryPath: string): Observable<GitHubRelease[]> {
-        const url = `${API_URL}/${repositoryPath}/releases`;
+        const url = `${API_URL}${repositoryPath}/releases`;
 
         return this._httpClient.get<GitHubRelease[]>(url.toString());
     }
 
     private getRepository(repositoryPath: string): Observable<GitHubRepository> {
-        const url = `${API_URL}/${repositoryPath}`;
+        const url = `${API_URL}${repositoryPath}`;
         return this._httpClient.get<GitHubRepository>(url.toString());
     }
 

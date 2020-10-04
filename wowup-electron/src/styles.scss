@@ -24,7 +24,8 @@ img:not([draggable="true"]) {
 
 a[href^="http://"],
 a[href^="https://"],
-a[href^="ftp://"] {
+a[href^="ftp://"]
+{
   -webkit-user-drag: auto;
   user-drag: auto;
   /* Technically not supported in Electron yet */
@@ -45,6 +46,14 @@ body {
 a,
 img {
   -webkit-app-region: no-drag;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+
+.m-0 {
+  margin: 0 !important;
 }
 
 .no-reg-drag {
