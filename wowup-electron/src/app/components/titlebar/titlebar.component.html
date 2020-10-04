@@ -1,25 +1,25 @@
 <div class="titlebar bg-purple-1 text-light" [ngClass]="{'titlebar-mac': isMac, 'titlebar-windows': isWindows }">
   <div class="titlebar-drag-region"></div>
   <div class="window-logo-container" *ngIf="electronService.isWin">
-    <img src="/assets/wowup_logo_512np.png" />
+    <img src="assets/wowup_logo_512np.png" />
   </div>
   <div class="title-container">
     <div>WowUp.io</div>
   </div>
   <div class="window-control-container" *ngIf="electronService.isWin">
     <div class="window-control" (click)="electronService.minimizeWindow()">
-      <img src="/assets/chrome-minimize.svg" />
+      <img src="assets/chrome-minimize.svg" />
     </div>
     <div class="window-control" *ngIf="(electronService.windowMaximized$ | async) === false"
       (click)="electronService.maximizeWindow()">
-      <img src="/assets/chrome-maximize.svg" />
+      <img src="assets/chrome-maximize.svg" />
     </div>
     <div class="window-control" *ngIf="(electronService.windowMaximized$ | async) === true"
       (click)="electronService.unmaximizeWindow()">
-      <img src="/assets/chrome-restore.svg" />
+      <img src="assets/chrome-restore.svg" />
     </div>
     <div class="window-control" (click)="onClickClose()">
-      <img src="/assets/chrome-close.svg" />
+      <img src="assets/chrome-close.svg" />
     </div>
   </div>
 </div>
