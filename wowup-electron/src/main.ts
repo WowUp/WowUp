@@ -22,16 +22,16 @@ const oldWarn = console.warn;
 const oldError = console.error;
 
 console.log = function(message?: any, ...optionalParams: any[]) {
-    // oldLog.call(console, message, ...optionalParams);
-    log.info(message, ...optionalParams);
+  // oldLog.call(console, message, ...optionalParams);
+  log.info(message, ...optionalParams);
 }
 console.warn = function(message?: any, ...optionalParams: any[]) {
-    oldWarn.call(this, message, ...optionalParams);
-    log.warn(message, ...optionalParams);
+  oldWarn.call(this, message, ...optionalParams);
+  log.warn(message, ...optionalParams);
 }
 console.error = function(message?: any, ...optionalParams: any[]) {
-    oldError.call(this, message, ...optionalParams);
-    log.error(message, ...optionalParams);
+  oldError.call(this, message, ...optionalParams);
+  log.error(message, ...optionalParams);
 }
 
 platformBrowserDynamic()
