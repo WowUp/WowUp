@@ -37,13 +37,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public query = "";
-  public displayAddons$ = this._displayAddonsSrc
-    .asObservable()
-    .pipe(tap((addons) => (this.displayedAddons = addons)));
+  public displayAddons$ = this._displayAddonsSrc.asObservable();
+
   public isBusy = false;
   public selectedClient = WowClientType.None;
-
-  displayedAddons: PotentialAddon[];
 
   constructor(
     private _addonService: AddonService,
@@ -51,26 +48,26 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     public electronService: ElectronService,
     public warcraftService: WarcraftService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    const selectedClientSubscription = this._sessionService.selectedClientType$
-      .pipe(
-        map((clientType) => {
-          this.selectedClient = clientType;
-          this.loadPopularAddons(this.selectedClient);
-        })
-      )
-      .subscribe();
+    const selectedClientSubscription = this._sessionService.selectedClientType$.pipe(
+      map((clientType) => {
+        this.selectedClient = clientType;
+        this.loadPopularAddons(this.selectedClient);
+      })
+    ).subscribe();
 
-    const addonRemovedSubscription = this._addonService.addonRemoved$
-      .pipe(
-        map((event: string) => {
-          this.onRefresh();
-        })
-      )
-      .subscribe();
-    this.subscriptions = [selectedClientSubscription, addonRemovedSubscription];
+    const addonRemovedSubscription = this._addonService.addonRemoved$.pipe(
+      map((event: string) => {
+        this.onRefresh();
+      })
+    ).subscribe();
+
+    this.subscriptions = [
+      selectedClientSubscription,
+      addonRemovedSubscription
+    ];
   }
 
   ngOnDestroy() {
@@ -102,7 +99,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.loadPopularAddons(this.selectedClient);
       return;
     }
-    console.log(this.query);
 
     this.isBusy = true;
 
@@ -110,7 +106,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.query,
       this.selectedClient
     );
-    console.log(searchResults);
+
     searchResults = this.filterInstalledAddons(searchResults);
     this.formatAddons(searchResults);
     this._displayAddonsSrc.next(searchResults);
@@ -121,9 +117,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     const dialogRef = this._dialog.open(AddonDetailComponent, {
       data: new AddonDetailModel(addon),
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      // this.onRefresh();
-    });
+
+    dialogRef.afterClosed().subscribe();
   }
 
   private async loadPopularAddons(clientType: WowClientType) {
@@ -135,7 +130,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
-        // console.log('FEAT ADDONS', addons);
         addons = this.filterInstalledAddons(addons);
         this.formatAddons(addons);
         this._displayAddonsSrc.next(addons);

@@ -34,7 +34,7 @@ export class CurseAddonProvider implements AddonProvider {
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _fileService: FileService
-  ) {}
+  ) { }
 
   async scan(
     clientType: WowClientType,
@@ -262,7 +262,7 @@ export class CurseAddonProvider implements AddonProvider {
   searchByUrl(
     addonUri: URL,
     clientType: WowClientType
-  ): Promise<import("../models/wowup/potential-addon").PotentialAddon> {
+  ): Promise<PotentialAddon> {
     throw new Error("Method not implemented.");
   }
 
@@ -271,9 +271,7 @@ export class CurseAddonProvider implements AddonProvider {
     folderName: string,
     clientType: WowClientType,
     nameOverride?: string
-  ): Promise<
-    import("../models/wowup/addon-search-result").AddonSearchResult[]
-  > {
+  ): Promise<AddonSearchResult[]> {
     throw new Error("Method not implemented.");
   }
 

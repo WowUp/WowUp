@@ -58,7 +58,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;let i = index" (dblclick)="openDetailDialog(displayedAddons[i])"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;let i = index" (dblclick)="openDetailDialog(row)"></tr>
     </table>
   </div>
 </div>

@@ -39,8 +39,8 @@ export class AddonService {
   private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
   private readonly _addonRemovedSrc = new Subject<string>();
 
-  public addonInstalled$ = this._addonInstalledSrc.asObservable();
-  public addonRemoved$ = this._addonRemovedSrc.asObservable();
+  public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
+  public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
