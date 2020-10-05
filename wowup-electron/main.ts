@@ -58,6 +58,20 @@ const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac ? [
       { role: 'paste' },
       { role: 'selectAll' }
     ]
+  },
+  {
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
   }
 ] : [];
 
@@ -146,9 +160,6 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow(windowOptions);
 
   win.webContents.userAgent = USER_AGENT;
-  // win.webContents.once('dom-ready', () => {
-  //   win.webContents.openDevTools();
-  // });
 
   win.once('ready-to-show', () => {
     autoUpdater.checkForUpdatesAndNotify()

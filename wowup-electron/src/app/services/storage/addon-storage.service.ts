@@ -17,12 +17,20 @@ export class AddonStorageService {
   constructor() {
   }
 
-  public query<T>(action: (items: Store) => T) {
+  public query<T>(action: (store: Store) => T) {
     return action(this._store);
   }
 
-  public queryAll(action: (items: Addon[]) => Addon[]) {
-    return action(Object.values(this._store));
+  public queryAll(action: (item: Addon) => boolean): Addon[] {
+    const addons: Addon[] = [];
+    for (const item of this._store) {
+      const addon = item[1] as Addon;
+      if(action(addon)){
+        addons.push(addon);
+      }
+    }
+
+    return addons;
   }
 
   public setAll(addons: Addon[]) {
@@ -37,7 +45,11 @@ export class AddonStorageService {
     return this._store.get(key) as Addon;
   }
 
-  public remove(addon: Addon){
+  public removeAll(...addons: Addon[]) {
+    addons.forEach(addon => this.remove(addon));
+  }
+
+  public remove(addon: Addon) {
     this._store.delete(addon.id);
   }
 

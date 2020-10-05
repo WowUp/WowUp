@@ -129,13 +129,16 @@ export class WarcraftService {
 
   public scanProducts() {
     const installedProducts = this.decodeProducts(this._productDbPath);
+    this._productsSrc.next(installedProducts);
 
     const clientTypes = getEnumList<WowClientType>(WowClientType)
       .filter(clientType => clientType !== WowClientType.None);
-      
+
     for (const clientType of clientTypes) {
       const clientLocation = this.getClientLocation(clientType);
       const productLocation = this.getProductLocation(clientType);
+
+      console.log(clientLocation, productLocation)
 
       if (!clientLocation && !productLocation) {
         continue;
@@ -222,6 +225,12 @@ export class WarcraftService {
     }
 
     this.setClientLocation(clientType, folderPath);
+
+    from(this.getWowClientTypes())
+      .pipe(
+        map(wowClientTypes => this._installedClientTypesSrc.next(wowClientTypes))
+      )
+      .subscribe();
 
     return true;
   }
@@ -315,7 +324,7 @@ export class WarcraftService {
           clientType: this.getClientTypeForFolderName(p.client.name)
         }));
 
-      console.log(wowProducts)
+      console.log('wowProducts', wowProducts)
       return wowProducts;
     } catch (e) {
       console.error('failed to decode product db')

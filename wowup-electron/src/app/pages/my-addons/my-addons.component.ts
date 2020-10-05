@@ -123,6 +123,41 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.loadAddons(this.selectedClient);
   }
 
+  onRowClicked(event: MouseEvent, row: MyAddonsListItem, index: number) {
+    console.log(row.displayState);
+    console.log('index clicked: ' + index);
+
+    if (event.ctrlKey) {
+      row.selected = !row.selected;
+      return;
+    }
+
+    let listItems: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
+
+    if (event.shiftKey) {
+      const startIdx = listItems.findIndex(item => item.selected);
+      listItems.forEach((item, i) => {
+        if (i >= startIdx && i <= index) {
+          item.selected = true;
+        } else {
+          item.selected = false;
+        }
+      });
+    } else {
+      listItems.forEach((item, i) => {
+        if (i === index) {
+          item.selected = true;
+        } else {
+          item.selected = false;
+        }
+      });
+    }
+
+    this._ngZone.run(() => {
+      this._displayAddonsSrc.next(listItems);
+    });
+  }
+
   async onUpdateAll() {
     this.enableControls = false;
 

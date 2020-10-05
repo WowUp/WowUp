@@ -31,4 +31,8 @@ export class TitlebarComponent implements OnInit {
     }
   }
 
+  onClickDebug(){
+    this.electronService.remote.getCurrentWebContents().openDevTools();
+  }
+
 }

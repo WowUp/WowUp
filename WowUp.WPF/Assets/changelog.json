@@ -2,7 +2,15 @@
   "ChangeLogs": [
     {
       "Version": "1.18.0",
-      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nFeatured addons are now sorted by download count."
+      "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nAdd command line paramater to start the app minimized '-m' (By Noxis).\nAdd command line paramater to start the app and quit after auto updates are complete '-q' (By Noxis).\nAdd selector for when the app fails to automatically find WoW install folders.\nAdd the ability to select multiple addons and update their AutoUpdate status.\nAdd the ability to select multiple addons and update their Channel.\nAdd the ability to select multiple addons and re-install them.\nAdd the ability to select multiple addons and un-install them.\nFeatured addons are now sorted by download count.\nAddon icons should now be updated when a change is detected.\nThe system tray icon will now show the window when double clicked."
+    },
+    {
+      "Version": "1.17.3",
+      "Description": "Fix another CurseForge API error.\nAdd some better error logging around CurseForge scanning."
+    },
+    {
+      "Version": "1.17.2",
+      "Description": "Fix an issue with handling CurseForge API responses."
     },
     {
       "Version": "1.17.1",

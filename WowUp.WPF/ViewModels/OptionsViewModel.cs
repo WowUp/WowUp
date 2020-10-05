@@ -192,17 +192,17 @@ namespace WowUp.WPF.ViewModels
             WowUpReleaseChannelChangedCommand = new Command(() => OnWowUpReleaseChannelChange(SelectedWowUpReleaseChannelType));
             DumpDebugDataCommand = new Command(() => DumpDebugData());
 
-            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType));;
+            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType));
             RetailPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.RetailPtr, SelectedRetailPtrAddonChannelType));
             ClassicAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Classic, SelectedClassicAddonChannelType));
             ClassicPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.ClassicPtr, SelectedClassicPtrAddonChannelType));
             BetaAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Beta, SelectedBetaAddonChannelType));
 
-            RetailAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Retail, RetailAutoUpdateAddons)); ;
-            RetailPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.RetailPtr, RetailPtrAutoUpdateAddons)); ;
-            ClassicAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons)); ;
-            ClassicPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons)); ;
-            BetaAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons)); ;
+            RetailAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Retail, RetailAutoUpdateAddons)); 
+            RetailPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.RetailPtr, RetailPtrAutoUpdateAddons)); 
+            ClassicAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons)); 
+            ClassicPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons)); 
+            BetaAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons)); 
             
             AddonChannelNames = new ObservableCollection<AddonChannelType>
             {
