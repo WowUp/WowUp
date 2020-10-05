@@ -23,6 +23,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { DefaultHeadersInterceptor } from './interceptors/default-headers.interceptor';
 import { AnalyticsService } from './services/analytics/analytics.service';
 import { DirectiveModule } from './directive.module';
+import { MatModule } from './mat-module';
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -44,6 +45,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     DetailModule,
     AppRoutingModule,
     DirectiveModule,
+    MatModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

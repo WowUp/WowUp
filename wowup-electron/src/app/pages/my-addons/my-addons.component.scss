@@ -82,6 +82,10 @@
       width: 110px;
     }
   }
+
+  .selected-row {
+    background: $dark-4;
+  }
 }
 
 .author-column {
@@ -99,4 +103,3 @@
     margin-bottom: 0.5em;
   }
 }
-

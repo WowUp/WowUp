@@ -9,6 +9,7 @@ export class MyAddonsListItem {
     isInstalling: boolean = false;
     installProgress: number = 0;
     statusText: string = '';
+    selected: boolean = false;
 
     get needsInstall() {
         return !this.isInstalling && this.displayState === AddonDisplayState.Install;
@@ -61,6 +62,11 @@ export class MyAddonsListItem {
     constructor(addon?: Addon) {
         this.addon = addon;
         this.statusText = this.getStateText();
+    }
+
+    public onClicked() {
+        console.log(this.addon.name);
+        this.selected = !this.selected;
     }
 
     public getStateText() {
