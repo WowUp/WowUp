@@ -4,13 +4,9 @@
 </div>
 <div mat-dialog-actions class="dialog-buttons">
   <div class="btn-wrapper">
-    <button mat-button [mat-dialog-close]="false" color="primary">No</button>
-    <button
-      mat-raised-button
-      [mat-dialog-close]="true"
-      cdkFocusInitial
-      color="primary"
-    >
+    <button mat-button [mat-dialog-close]="false" color="primary" i18n="Confirm dialog no button">No</button>
+    <button mat-raised-button [mat-dialog-close]="true" cdkFocusInitial color="primary"
+      i18n="Confirm dialog yes button">
       Yes
     </button>
   </div>

@@ -5,11 +5,11 @@
       <h2>WowUp.io</h2>
       <div class="version">v{{version}}</div>
       <div class="link-container">
-        <a appExternalLink href="https://wowup.io">Check out the website!</a>
+        <a appExternalLink href="https://wowup.io" i18n="WowUp Website link">Check out the website!</a>
       </div>
     </div>
     <div class="changelog-container">
-      <h2>Change Log</h2>
+      <h2 i18n="Change log section title">Change Log</h2>
       <ul class="change-log-list">
         <li class="changelog" *ngFor="let cl of changeLogs">
           <div class="version">{{cl.Version}}</div>

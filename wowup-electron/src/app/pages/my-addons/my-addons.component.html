@@ -1,57 +1,73 @@
-<div class="tab-container d-flex flex-col"
-  [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
+<div class="tab-container d-flex flex-col" [ngClass]="{ mac: electronService.isMac, windows: electronService.isWin }">
   <div class="control-container">
-    <div class="select-container ">
+    <div class="select-container">
       <mat-form-field>
-        <mat-label>World of Warcraft</mat-label>
+        <mat-label i18n="World of Warcraft client selection label">World of Warcraft</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
           [disabled]="enableControls === false">
-          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
-            {{warcraftService.getClientDisplayName(clientType)}}
+          <mat-option [value]="clientType" *ngFor="
+              let clientType of warcraftService.installedClientTypes$ | async
+            ">
+            {{ warcraftService.getClientDisplayName(clientType) }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div class="button-container">
       <button mat-flat-button color="primary" matTooltip="Update all addons for this client"
-        [disabled]="enableControls === false" (click)="onUpdateAll()" (contextmenu)="onUpdateAllContext($event)">Update
-        All</button>
+        [disabled]="enableControls === false" (click)="onUpdateAll()" (contextmenu)="onUpdateAllContext($event)"
+        i18n-matTooltip="Update all button tooltip" i18n="Update all button">
+        Update All
+      </button>
       <button mat-flat-button color="primary" matTooltip="Check for latest addon updates"
-        [disabled]="enableControls === false" (click)="onRefresh()">Check Updates</button>
+        [disabled]="enableControls === false" (click)="onRefresh()" i18n-matTooltip="Check updates button tooltip"
+        i18n="Check updates all button">
+        Check Updates
+      </button>
       <button mat-flat-button color="primary" matTooltip="Scan your client folder for installed addons"
-        [disabled]="enableControls === false" (click)="onReScan()">Re-Scan Folders</button>
+        [disabled]="enableControls === false" (click)="onReScan()" i18n-matTooltip="Re-scan folders button tooltip"
+        i18n="Re-scan folders button">
+        Re-Scan Folders
+      </button>
     </div>
   </div>
 
   <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
-    <app-progress-spinner [message]="spinnerMessage">
-    </app-progress-spinner>
+    <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
   </div>
 
   <div class="table-container flex-grow-1" *ngIf="isBusy === false">
     <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8">
       <!-- Position Column -->
       <ng-container matColumnDef="addon">
-        <th mat-header-cell *matHeaderCellDef> Addon </th>
+        <th mat-header-cell *matHeaderCellDef i18n="Addon column header">
+          Addon
+        </th>
         <td mat-cell *matCellDef="let element">
           <app-my-addons-addon-cell [addon]="element"></app-my-addons-addon-cell>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <th mat-header-cell *matHeaderCellDef i18n="Status column header">
+          Status
+        </th>
         <td mat-cell *matCellDef="let element">
           <div class="status-column">
-            <button *ngIf="element.needsInstall === true" mat-flat-button color="primary"
-              (click)="onInstall()">Install</button>
+            <button *ngIf="element.needsInstall === true" mat-flat-button color="primary" (click)="onInstall()">
+              Install
+            </button>
             <button *ngIf="element.needsUpdate === true" mat-flat-button color="primary"
-              (click)="onUpdateAddon(element)">Update</button>
+              (click)="onUpdateAddon(element)">
+              Update
+            </button>
             <div *ngIf="element.isUpToDate === true || element.isIgnored === true" class="status-text">
-              {{element.statusText}}</div>
+              {{ element.statusText }}
+            </div>
             <mat-icon *ngIf="element.addon.autoUpdateEnabled" class="auto-update-icon" matTooltip="Auto update enabled">
               update</mat-icon>
             <div *ngIf="element.isInstalling === true" class="progress-container">
-              <p class="progress-text">{{element.statusText}}</p>
+              <p class="progress-text">{{ element.statusText }}</p>
               <mat-progress-bar class="addon-progress" mode="determinate" [value]="element.installProgress">
               </mat-progress-bar>
             </div>
@@ -60,90 +76,102 @@
       </ng-container>
 
       <ng-container matColumnDef="latestVersion">
-        <th mat-header-cell *matHeaderCellDef> Latest Version </th>
+        <th mat-header-cell *matHeaderCellDef i18n="Latest version column header">
+          Latest Version
+        </th>
         <td mat-cell *matCellDef="let element">
-          {{element.addon.latestVersion}}
+          {{ element.addon.latestVersion }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="gameVersion">
-        <th mat-header-cell *matHeaderCellDef> Game Version </th>
+        <th mat-header-cell *matHeaderCellDef i18n="Game version column header">
+          Game Version
+        </th>
         <td mat-cell *matCellDef="let element">
-          {{element.addon.gameVersion}}
+          {{ element.addon.gameVersion }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="provider">
-        <th mat-header-cell *matHeaderCellDef class="provider-column"> Provider </th>
+        <th mat-header-cell *matHeaderCellDef class="provider-column" i18n="Provider column header">
+          Provider
+        </th>
         <td mat-cell *matCellDef="let element">
-          {{element.addon.providerName}}
+          {{ element.addon.providerName }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="author">
-        <th mat-header-cell *matHeaderCellDef class="author-column"> Author </th>
+        <th mat-header-cell *matHeaderCellDef class="author-column" i18n="Author column header">
+          Author
+        </th>
         <td mat-cell *matCellDef="let element">
-          {{element.addon.author}}
+          {{ element.addon.author }}
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
-        (contextmenu)="onHeaderContext($event); $event.preventDefault();"></tr>
-      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns;"
-        [ngClass]="{'selected-row': row.selected}" (click)="onRowClicked($event, row, i)"
+        (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
+      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns"
+        [ngClass]="{ 'selected-row': row.selected }" (click)="onRowClicked($event, row, i)"
         (contextmenu)="onCellContext($event, row)"></tr>
     </table>
-
   </div>
 </div>
 
 <div style="visibility: hidden; position: fixed" #addonContextMenuTrigger="matMenuTrigger"
-  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu">
-</div>
+  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu"></div>
 <mat-menu #contextMenu="matMenu" class="addon-context-menu">
   <ng-template matMenuContent let-listItem="listItem">
     <div class="addon-context-menu-header">
       <div class="thumbnail" [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"></div>
       <div>
-        <div class="addon-name">{{listItem.addon.name}}</div>
-        <div class="addon-version">{{listItem.addon.latestVersion}}</div>
+        <div class="addon-name">{{ listItem.addon.name }}</div>
+        <div class="addon-version">{{ listItem.addon.latestVersion }}</div>
       </div>
     </div>
     <mat-divider></mat-divider>
     <mat-checkbox class="mat-menu-item" [checked]="listItem.addon.isIgnored"
-      (change)="onClickIgnoreAddon($event, listItem)">Ignore
+      (change)="onClickIgnoreAddon($event, listItem)" i18n="Ignore addon menu item">Ignore
     </mat-checkbox>
     <mat-checkbox *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item"
-      [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem.addon)">Auto
-      Update
+      [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem.addon)"
+      i18n="Toggle auto update button">Auto Update
     </mat-checkbox>
-    <button mat-menu-item [matMenuTriggerFor]="addonChannels">Channel</button>
-    <button mat-menu-item (click)="onReInstallAddon(listItem.addon)">Re-Install</button>
+    <button mat-menu-item [matMenuTriggerFor]="addonChannels" i18n="Addon channel menu label">Channel</button>
+    <button mat-menu-item (click)="onReInstallAddon(listItem.addon)" i18n="Re-install addon menu item">
+      Re-Install
+    </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="onRemoveAddon(listItem.addon)">Remove</button>
+    <button mat-menu-item (click)="onRemoveAddon(listItem.addon)" i18n="Remove addon menu label">
+      Remove
+    </button>
     <mat-menu #addonChannels="matMenu" class="addon-context-menu">
       <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
         (change)="onSelectedAddonChannelChange($event, listItem.addon)">
-        <mat-radio-button class="mat-menu-item" [value]="0">Stable</mat-radio-button>
-        <mat-radio-button class="mat-menu-item" [value]="1">Beta</mat-radio-button>
-        <mat-radio-button class="mat-menu-item" [value]="2">Alpha</mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="0" i18n="Addon stable channel menu item">Stable
+        </mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="1" i18n="Addon beta channel menu item">Beta</mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="2" i18n="Addon alpha channel menu item">Alpha
+        </mat-radio-button>
       </mat-radio-group>
     </mat-menu>
   </ng-template>
 </mat-menu>
 
-<div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
+<div #columnContextMenuTrigger="matMenuTrigger" style="visibility: hidden; position: fixed"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
 </div>
 <mat-menu #columnContextMenu="matMenu" class="addon-context-menu">
   <ng-template matMenuContent let-columns="columns">
     <div class="addon-context-menu-header">
-      <div class="addon-name">Show Columns</div>
+      <div class="addon-name" i18n="Show columns menu title">Show Columns</div>
     </div>
     <mat-divider></mat-divider>
     <mat-checkbox *ngFor="let column of columns" class="mat-menu-item" [checked]="column.visible"
       (change)="onColumnVisibleChange($event, column)">
-      {{column.display}}
+      {{ column.display }}
     </mat-checkbox>
   </ng-template>
 </mat-menu>
@@ -153,7 +181,11 @@
 </div>
 <mat-menu #updateAllContextMenu="matMenu" class="addon-context-menu">
   <ng-template matMenuContent let-columns="columns">
-    <button mat-menu-item (click)="onUpdateAllRetailClassic()">Update Retail/Classic</button>
-    <button mat-menu-item (click)="onUpdateAllClients()">Update All Clients</button>
+    <button mat-menu-item (click)="onUpdateAllRetailClassic()" i18n="Update retail and classic addons button">
+      Update Retail/Classic
+    </button>
+    <button mat-menu-item (click)="onUpdateAllClients()" i18n="Update all wow client addons button">
+      Update All Clients
+    </button>
   </ng-template>
 </mat-menu>

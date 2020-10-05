@@ -1,9 +1,10 @@
-<h1 mat-dialog-title>Install Addon URL</h1>
+<h1 mat-dialog-title i18n="Install from url dialog title">Install Addon URL</h1>
 <div mat-dialog-content>
-    <p class="p-0 m-0">If you want to install an addon directly from a URL paste it below to get started.</p>
-    <p>Supports WowInterface and GitHub*</p>
+    <p class="p-0 m-0" i18n="Install from url dialog description">If you want to install an addon directly from a URL
+        paste it below to get started.</p>
+    <p i18n="Install from url dialog supported sources">Supports WowInterface and GitHub*</p>
     <mat-form-field class="url-input-container">
-        <mat-label>Addon URL</mat-label>
+        <mat-label i18n="Install from url addon url input label">Addon URL</mat-label>
         <input matInput placeholder="Ex. GitHub or WowInterface URL" [(ngModel)]="query" (keyup.enter)="onImportUrl()"
             [disabled]="isBusy === true">
         <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
@@ -13,7 +14,6 @@
     </mat-form-field>
     <div *ngIf="isBusy === true" class="busy-container">
         <mat-spinner diameter="50"></mat-spinner>
-        <i>Loading...</i>
     </div>
     <div *ngIf="isBusy === false && addon !== undefined" class="addon-container">
         <div class="addon-thumb" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"></div>
@@ -25,19 +25,21 @@
         </div>
         <div class="install-container">
             <mat-spinner *ngIf="showInstallSpinner === true" diameter="40"></mat-spinner>
-            <button *ngIf="showInstallButton === true" mat-flat-button color="primary" (click)="onInstall()">
+            <button *ngIf="showInstallButton === true" mat-flat-button color="primary" (click)="onInstall()"
+                i18n="Install from url install button">
                 Install
             </button>
             <div *ngIf="showInstallSuccess === true">
                 <div class="success-icon">
                     <mat-icon>check_circle_outline</mat-icon>
                 </div>
-                <div>Installed!</div>
+                <div i18n="Install from url install success label">Installed!</div>
             </div>
         </div>
     </div>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onClose()">Close</button>
-    <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()">Import</button>
+    <button mat-button (click)="onClose()" i18n="Install from url close button">Close</button>
+    <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()"
+        i18n="Install from url import button">Import</button>
 </div>

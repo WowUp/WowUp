@@ -2,19 +2,22 @@
   <div class="options">
     <mat-card class="option-card">
       <mat-card-header>
-        <mat-card-title>World of Warcraft</mat-card-title>
+        <mat-card-title i18n="World of Warcraft options section title">World of Warcraft</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="row">
-          <div class="grow">Rescan installed World of Warcraft products</div>
-          <button mat-flat-button color="primary" (click)="onReScan()">Re-Scan</button>
+          <div class="grow" i18n="Rescan World of Warcraft clients label">Rescan installed World of Warcraft products
+          </div>
+          <button mat-flat-button color="primary" (click)="onReScan()"
+            i18n="Rescan World of Warcraft clients button">Re-Scan</button>
         </div>
-        <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes" [clientType]="clientType"></app-wow-client-options>
+        <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes"
+          [clientType]="clientType"></app-wow-client-options>
       </mat-card-content>
     </mat-card>
     <mat-card class="option-card">
       <mat-card-header>
-        <mat-card-title>Application</mat-card-title>
+        <mat-card-title i18n="Application options section title">Application</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <!-- <div class="row hover">
@@ -32,15 +35,17 @@
         </div> -->
         <div class="row hover">
           <div class="grow">
-            <p>Telemetry</p>
-            <small class="hint">Help improve WowUp by sending anonymous install data and/or errors.</small>
+            <p i18n="WowUp telemetry option label">Telemetry</p>
+            <small class="hint" i18n="WowUp telemetry description">Help improve WowUp by sending anonymous install data
+              and/or errors.</small>
           </div>
           <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
         </div>
         <div class="row hover">
           <div class="grow">
-            <p>Minimize on Close</p>
-            <small class="hint">When closing the WowUp window, minimize to the system tray.</small>
+            <p i18n="Minimize on close option label">Minimize on Close</p>
+            <small class="hint" i18n="Minimize on close option description">When closing the WowUp window, minimize to
+              the system tray.</small>
           </div>
           <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)">
           </mat-slide-toggle>
@@ -49,23 +54,27 @@
     </mat-card>
     <mat-card class="option-card">
       <mat-card-header>
-        <mat-card-title>Debug</mat-card-title>
+        <mat-card-title i18n="Debug options section title">Debug</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="row">
           <div class="grow">
-            <p>Log Files</p>
-            <small class="hint">Open the folder that contains your last couple of log files.</small>
+            <p i18n="Log files options label">Log Files</p>
+            <small class="hint" i18n="Log files options description">Open the folder that contains your last
+              couple of log files.</small>
           </div>
-          <button mat-flat-button color="primary" (click)="onShowLogs()">Show Log Files</button>
+          <button mat-flat-button color="primary" (click)="onShowLogs()" i18n="Log files options button">Show Log
+            Files</button>
         </div>
         <div class="row">
           <div class="grow">
-            <p>Debug Data</p>
-            <small class="hint">Log debug data to help with diagnosing potential issues. This can be found in your
+            <p i18n="Debug data label">Debug Data</p>
+            <small class="hint" i18n="Debug data description">Log debug data to help with diagnosing potential issues.
+              This can be found in your
               latest log file for the curious.</small>
           </div>
-          <button mat-flat-button color="primary" (click)="onShowLogs()">Dump Debug Data</button>
+          <button mat-flat-button color="primary" (click)="onShowLogs()" i18n="Debug data button">Dump Debug
+            Data</button>
         </div>
       </mat-card-content>
     </mat-card>
