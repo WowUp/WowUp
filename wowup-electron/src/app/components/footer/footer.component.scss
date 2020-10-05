@@ -22,4 +22,10 @@ footer {
     div {
         font-size: 0.8em;
     }
+
+    .patreon-link{
+        &:hover {
+            background-color: $dark-3;
+        }
+    }
 }
