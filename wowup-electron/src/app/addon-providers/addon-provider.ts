@@ -8,7 +8,7 @@ import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 export interface AddonProvider {
 
-  name: string;
+  name: AddonProviderType;
 
   getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]>;
 
@@ -28,3 +28,5 @@ export interface AddonProvider {
 
   scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void>;
 }
+
+export type AddonProviderType = 'Curse' | 'GitHub' | 'TukUI' | 'WowInterface';

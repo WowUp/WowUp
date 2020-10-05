@@ -27,11 +27,11 @@
   <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
 
   <div class="table-container flex-grow-1" *ngIf="isBusy === false">
-    <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8">
+    <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8" >
       <ng-container matColumnDef="addon">
         <th mat-header-cell *matHeaderCellDef> Addon </th>
         <td mat-cell *matCellDef="let element" >
-          <app-potential-addon-table-column [addon]="element"></app-potential-addon-table-column>
+          <app-potential-addon-table-column [addon]="element" (onViewDetails)="openDetailDialog($event)"></app-potential-addon-table-column>
         </td>
       </ng-container>
 
@@ -52,12 +52,13 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element">
-          <app-potential-addon-status-column [addon]="element" ></app-potential-addon-status-column>
+          <!-- <app-potential-addon-status-column [addon]="element" ></app-potential-addon-status-column> -->
+          <app-addon-install-button [addon]="element"> </app-addon-install-button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;let i = index" (dblclick)="openDetailDialog(row)"></tr>
     </table>
   </div>
 </div>

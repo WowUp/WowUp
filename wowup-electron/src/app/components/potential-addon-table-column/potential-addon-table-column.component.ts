@@ -1,18 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { PotentialAddon } from 'app/models/wowup/potential-addon';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { PotentialAddon } from "app/models/wowup/potential-addon";
 
 @Component({
-  selector: 'app-potential-addon-table-column',
-  templateUrl: './potential-addon-table-column.component.html',
-  styleUrls: ['./potential-addon-table-column.component.scss']
+  selector: "app-potential-addon-table-column",
+  templateUrl: "./potential-addon-table-column.component.html",
+  styleUrls: ["./potential-addon-table-column.component.scss"],
 })
 export class PotentialAddonTableColumnComponent implements OnInit {
+  @Input("addon") addon: PotentialAddon;
 
-  @Input('addon') addon: PotentialAddon;
+  @Output() onViewDetails: EventEmitter<PotentialAddon> = new EventEmitter();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
+  ngOnInit(): void { }
+
+  viewDetails() {
+    this.onViewDetails.emit(this.addon);
   }
-
 }

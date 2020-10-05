@@ -157,7 +157,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       thumbnailUrl: this.getThumbnailUrl(response),
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
-      author: response.author
+      author: response.author,
     };
   }
 

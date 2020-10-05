@@ -15,7 +15,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { HomeModule } from './pages/home/home.module';
-import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
 import { TitlebarComponent } from './components/titlebar/titlebar.component';
@@ -24,6 +23,7 @@ import { DefaultHeadersInterceptor } from './interceptors/default-headers.interc
 import { AnalyticsService } from './services/analytics/analytics.service';
 import { DirectiveModule } from './directive.module';
 import { MatModule } from './mat-module';
+import { MatProgressButtonsModule } from 'mat-progress-buttons';
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -42,9 +42,9 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HttpClientModule,
     SharedModule,
     HomeModule,
-    DetailModule,
     AppRoutingModule,
     DirectiveModule,
+    MatProgressButtonsModule.forRoot(),
     MatModule,
     TranslateModule.forRoot({
       loader: {

@@ -33,4 +33,5 @@ export interface CurseSearchResult {
   dateReleased: string;
   isAvailable: boolean;
   isExperiemental: boolean;
+  summary: string;
 }

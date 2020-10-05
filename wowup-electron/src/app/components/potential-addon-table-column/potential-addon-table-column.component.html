@@ -2,7 +2,7 @@
     <div class="addon-logo-container" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'">
     </div>
     <div>
-      <a appExternalLink class="addon-title" [href]="addon.externalUrl">{{addon.name}}</a>
+      <a class="addon-title" (click)="viewDetails()">{{addon.name}}</a>
       <div>{{addon.downloadCount | downloadCount}} downloads</div>
     </div>
   </div>
