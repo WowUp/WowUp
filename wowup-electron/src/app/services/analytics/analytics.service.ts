@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable } from "@angular/core";
 import * as Rollbar from 'rollbar';
 import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { Preferences } from "../../../constants";
+import { telemetryEnabledKey } from "../../../constants";
 
 @Injectable({
     providedIn: 'root'
@@ -26,12 +26,12 @@ export class AnalyticsService implements ErrorHandler {
     }
 
     private get telemetryEnabled() {
-        return this._preferenceStorageService.get(Preferences.telemetryEnabledKey) === true.toString();
+        return this._preferenceStorageService.get(telemetryEnabledKey) === true.toString();
     }
 
 
     public get shouldPromptTelemetry() {
-        return this._preferenceStorageService.get(Preferences.telemetryEnabledKey) === undefined;
+        return this._preferenceStorageService.get(telemetryEnabledKey) === undefined;
     }
 
     constructor(

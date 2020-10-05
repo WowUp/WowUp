@@ -3,7 +3,9 @@
   "directories": {
     "output": "release/"
   },
-  "publish": ["github"],
+  "publish": [
+    "github"
+  ],
   "nodeGypRebuild": true,
   "files": [
     "**/*",
@@ -13,14 +15,7 @@
     "!LICENSE.md",
     "!package.json",
     "!package-lock.json",
-    "!src/app/",
-    "!src/assets/",
-    "!src/environments/",
-    "!src/**/*.map",
-    "!src/**/*.scss",
-    "!src/**/*.html",
-    "!src/**/*.conf.js",
-    "!src/**/*.json",
+    "!src/",
     "!e2e/",
     "!hooks/",
     "!angular.json",
