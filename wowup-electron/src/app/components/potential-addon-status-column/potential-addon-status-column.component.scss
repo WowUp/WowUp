@@ -1,0 +1,52 @@
+@import "../../../variables.scss";
+
+.container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+
+    .installed-text {
+        padding: 0;
+        margin: 0;
+    }
+
+    .progress-text {
+        padding: 0;
+        margin: 0;
+        text-align: center;
+    }
+
+    .progress {
+        width: 80px;
+        height: 4px;
+        margin: 0;
+        padding: 0;
+        background: $dark-4;
+        box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14),
+            0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+    }
+    .progress-value {
+        width: 50%;
+        height: 100%;
+        background: $purple-1;
+    }
+}
+
+button {
+    align-items: flex-start;
+    border-radius: 4px;
+    border: none;
+    background-color: $purple-2;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14),
+        0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 36px;
+    padding: 0 16px;
+
+    &:focus {
+        outline: 0;
+    }
+}

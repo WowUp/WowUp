@@ -6,15 +6,14 @@
     <input matInput disabled [value]="clientLocation">
     <mat-hint>The folder that contains the retail client folder "{{clientFolderName}}"</mat-hint>
   </mat-form-field>
-  <button mat-flat-button color="primary" class="select-button" (click)="onSelectClientPath()"
-    i18n="Select World of Warcraft client location button">Select</button>
+  <button mat-flat-button color="primary" class="select-button" (click)="onSelectClientPath()">Select</button>
 </div>
 <div class="row">
   <div class="grow">
-    <p i18n="World of Warcraft client addon channel option label">Default Addon Channel</p>
+    <p>Default Addon Channel</p>
   </div>
   <mat-form-field class="light-select">
-    <mat-label i18n="World of Warcraft client addon channel select label">Addon Channel</mat-label>
+    <mat-label>Addon Channel</mat-label>
     <mat-select [(value)]="selectedAddonChannelType" (selectionChange)="onDefaultAddonChannelChange($event)">
       <mat-option *ngFor="let channel of addonChannelInfos" [value]="channel.type">{{channel.name}}</mat-option>
     </mat-select>
@@ -22,9 +21,8 @@
 </div>
 <div class="row">
   <div class="grow">
-    <p i18n="World of Warcraft client addon auto update option label">Auto Update</p>
-    <small class="hint" i18n="World of Warcraft client addon auto update option description">Newly installed addons will
-      be set to auto update by default</small>
+    <p>Auto Update</p>
+    <small class="hint">Newly installed addons will be set to auto update by default</small>
   </div>
   <mat-slide-toggle [(checked)]="clientAutoUpdate" (change)="onDefaultAutoUpdateChange($event)">
   </mat-slide-toggle>

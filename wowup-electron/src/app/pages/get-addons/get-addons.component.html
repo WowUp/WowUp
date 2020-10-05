@@ -2,7 +2,7 @@
   <div class="control-container">
     <div class="select-container ">
       <mat-form-field>
-        <mat-label i18n="World of Warcraft client selection label">World of Warcraft</mat-label>
+        <mat-label>World of Warcraft</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
           [disabled]="isBusy === true">
           <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
@@ -12,17 +12,12 @@
       </mat-form-field>
     </div>
     <div class="button-container">
-      <button mat-flat-button color="primary" (click)="onRefresh()" matTooltip="Refresh results"
-        i18n-matTooltip="Refresh results button tooltip" i18n="Refresh results button">Refresh</button>
-      <button mat-flat-button color="primary" (click)="onInstallFromUrl()"
-        matTooltip="Install an addon directly from a URL" i18n-matTooltip="Install from url button tooltip"
-        i18n="Install from url button">Install from
-        URL</button>
-      <mat-form-field class="example-form-field">
-        <mat-label i18n="Search box label">Search</mat-label>
-        <input matInput type="text" [(ngModel)]="query" (keyup.enter)="onSearch()">
-        <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
-          (click)="onClearSearch()">
+      <button mat-flat-button color="primary" (click)="onRefresh()">Refresh</button>
+      <button mat-flat-button color="primary" (click)="onInstallFromUrl()">Install from URL</button>
+      <mat-form-field class="example-form-field" >
+        <mat-label>Search</mat-label>
+        <input matInput type="text" [(ngModel)]="query" (keyup.enter)="onSearch()" >
+        <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
@@ -32,32 +27,32 @@
   <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
 
   <div class="table-container flex-grow-1" *ngIf="isBusy === false">
-    <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8">
+    <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8" >
       <ng-container matColumnDef="addon">
-        <th mat-header-cell *matHeaderCellDef i18n="Addon column header"> Addon </th>
-        <td mat-cell *matCellDef="let element">
-          <app-potential-addon-table-column [addon]="element" (onViewDetails)="openDetailDialog($event)">
-          </app-potential-addon-table-column>
+        <th mat-header-cell *matHeaderCellDef> Addon </th>
+        <td mat-cell *matCellDef="let element" >
+          <app-potential-addon-table-column [addon]="element" (onViewDetails)="openDetailDialog($event)"></app-potential-addon-table-column>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="provider">
-        <th mat-header-cell *matHeaderCellDef class="provider-column" i18n="Provider column header"> Provider </th>
+        <th mat-header-cell *matHeaderCellDef class="provider-column"> Provider </th>
         <td mat-cell *matCellDef="let element">
           {{element.providerName}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="author">
-        <th mat-header-cell *matHeaderCellDef class="author-column" i18n="Author column header"> Author </th>
+        <th mat-header-cell *matHeaderCellDef class="author-column"> Author </th>
         <td mat-cell *matCellDef="let element">
           {{element.author}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef i18n="Status column header"> Status </th>
+        <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element">
+          <!-- <app-potential-addon-status-column [addon]="element" ></app-potential-addon-status-column> -->
           <app-addon-install-button [addon]="element"> </app-addon-install-button>
         </td>
       </ng-container>
