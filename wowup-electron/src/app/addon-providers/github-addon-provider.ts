@@ -142,11 +142,13 @@ export class GitHubAddonProvider implements AddonProvider {
     }
 
     onPostInstall(addon: Addon): void {
-        throw new Error("Method not implemented.");
     }
 
-    scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void> {
-        throw new Error("Method not implemented.");
+    async scan(
+        clientType: WowClientType,
+        addonChannelType: AddonChannelType,
+        addonFolders: AddonFolder[]
+    ): Promise<void> {
     }
 
     private getLatestRelease(releases: GitHubRelease[]): GitHubRelease {
