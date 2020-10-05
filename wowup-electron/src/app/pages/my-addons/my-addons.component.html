@@ -33,9 +33,8 @@
     </app-progress-spinner>
   </div>
 
-  <div class="table-container flex-grow-1" *ngIf="isBusy === false">
+  <div class="table-container flex-grow-1" [hidden]="isBusy === true">
     <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
-      <!-- Position Column -->
       <ng-container matColumnDef="addon.name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>{{'PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER' | translate}}</th>
         <td mat-cell *matCellDef="let element">
