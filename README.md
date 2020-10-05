@@ -15,6 +15,14 @@ If you have any ideas/requests for the feature list let me know!
 
 The windows version uses [WowUpdater](https://github.com/jliddev/WowUpUpdater) under the hood for now.
 
+### [Chocolatey](https://chocolatey.org)
+
+You can also install the latest version via Chocolatey package manager:
+
+```cmd
+choco install wowup
+```
+
 ### Upcoming Features
 - [x] Create feature List
 - [x] Scan for already installed addons
