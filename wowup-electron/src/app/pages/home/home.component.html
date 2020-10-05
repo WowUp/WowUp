@@ -2,13 +2,13 @@
   <div class="tabs">
     <mat-tab-group mat-align-tabs="center" [backgroundColor]="'primary'" [disablePagination]="true"
       (selectedIndexChange)="onSelectedIndexChange($event)">
-      <mat-tab label="My Addons">
+      <mat-tab *ngIf="(warcraftService.installedClientTypes$ | async).length" label="My Addons">
         <app-my-addons></app-my-addons>
       </mat-tab>
-      <mat-tab label="Get Addons">
+      <mat-tab *ngIf="(warcraftService.installedClientTypes$ | async).length" label="Get Addons">
         <app-get-addons></app-get-addons>
       </mat-tab>
-      <mat-tab label="About">
+      <mat-tab *ngIf="(warcraftService.installedClientTypes$ | async).length" label="About">
         <app-about></app-about>
       </mat-tab>
       <mat-tab label="Options">
