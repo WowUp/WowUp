@@ -1,38 +1,42 @@
 <div class="tab-container d-flex flex-col"
   [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
   <div class="control-container">
-    <div class="left-container">
-      <div class="select-container ">
-        <mat-form-field>
-          <mat-label>{{'PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL' | translate}}</mat-label>
-          <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
-            [disabled]="enableControls === false">
-            <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
-              {{warcraftService.getClientDisplayName(clientType)}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+    <div class="select-container ">
+      <mat-form-field>
+        <mat-label>{{'PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL' | translate}}</mat-label>
+        <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
+          [disabled]="enableControls === false">
+          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
+            {{warcraftService.getClientDisplayName(clientType)}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="right-container">
       <div class="filter-container" *ngIf="selectedClient !== wowClientType.None">
         <mat-form-field>
-          <mat-label>Filter</mat-label>
-          <input matInput (keyup)="filterAddons($event)">
+          <mat-label>{{'PAGES.MY_ADDONS.FILTER_LABEL' | translate}}</mat-label>
+          <input matInput (keyup)="filterAddons()" [(ngModel)]="filter">
+          <button mat-button color="accent" *ngIf="filter" matSuffix mat-icon-button aria-label="Clear"
+            (click)="onClearFilter()">
+            <mat-icon>close</mat-icon>
+          </button>
         </mat-form-field>
       </div>
-    </div>
-    <div class="button-container">
-      <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
-        [disabled]="enableControls === false" (click)="onUpdateAll()" (contextmenu)="onUpdateAllContext($event)">
-        {{'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON' | translate}}
-      </button>
-      <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
-        [disabled]="enableControls === false" (click)="onRefresh()">
-        {{'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON' | translate}}
-      </button>
-      <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
-        [disabled]="enableControls === false" (click)="onReScan()">
-        {{'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON' | translate}}
-      </button>
+      <div class="button-container">
+        <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
+          [disabled]="enableControls === false" (click)="onUpdateAll()" (contextmenu)="onUpdateAllContext($event)">
+          {{'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON' | translate}}
+        </button>
+        <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
+          [disabled]="enableControls === false" (click)="onRefresh()">
+          {{'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON' | translate}}
+        </button>
+        <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
+          [disabled]="enableControls === false" (click)="onReScan()">
+          {{'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON' | translate}}
+        </button>
+      </div>
     </div>
   </div>
 

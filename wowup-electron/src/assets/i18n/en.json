@@ -29,6 +29,7 @@
       "CHECK_UPDATES_BUTTON": "Check Updates",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Check for latest addon updates",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "FILTER_LABEL": "Filter",
       "RESCAN_FOLDERS_BUTTON": "Re-Scan Folders",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan your client folder for installed addons",
       "UPDATE_ALL_BUTTON": "Update All",

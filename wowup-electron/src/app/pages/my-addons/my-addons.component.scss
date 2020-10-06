@@ -5,29 +5,29 @@
   flex-direction: row;
   padding: 0 1em 0 1em;
 
-  .left-container {
+  .select-container {
+    padding-top: 1em;
+    flex-grow: 1;
+  }
+
+  .right-container {
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
-
-    .select-container {
-      padding-top: 1em;
-      margin-right: 1em;
-    }
   
     .filter-container {
       padding-top: 1em;
     }
-  }
 
-  .button-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    button {
-      &:not(:last-child) {
-        margin-right: 0.5em;
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 1em;
+  
+      button {
+        &:not(:last-child) {
+          margin-right: 0.5em;
+        }
       }
     }
   }

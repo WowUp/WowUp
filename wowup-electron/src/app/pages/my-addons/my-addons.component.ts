@@ -1,7 +1,7 @@
-import { Component, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { WowClientType } from '../../models/warcraft/wow-client-type';
-import { debounceTime, filter, first, map, take, takeUntil, tap } from 'rxjs/operators';
-import { from, BehaviorSubject, Observable, fromEvent, Subscription, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { from, BehaviorSubject, Subscription, Subject } from 'rxjs';
 import { Addon } from 'app/entities/addon';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { AddonService } from 'app/services/addons/addon.service';
@@ -21,6 +21,7 @@ import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-di
 import { getEnumName } from 'app/utils/enum.utils';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { stringIncludes } from 'app/utils/string.utils';
 
 @Component({
   selector: 'app-my-addons',
@@ -38,13 +39,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private readonly _destroyed$ = new Subject<void>();
 
   private subscriptions: Subscription[] = [];
-  private sub: Subscription;
 
   public spinnerMessage = 'Loading...';
 
   contextMenuPosition = { x: '0px', y: '0px' };
 
   public dataSource = new MatTableDataSource<MyAddonsListItem>([]);
+  public filter = '';
 
   columns: ColumnState[] = [
     { name: 'addon.name', display: 'Addon', visible: true },
@@ -76,7 +77,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog
   ) {
 
-    this.addonService.addonInstalled$.subscribe((evt) => {
+    const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe((evt) => {
       console.log('UPDATE')
       let listItems: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
       const listItemIdx = listItems.findIndex(li => li.addon.id === evt.addon.id);
@@ -98,7 +99,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.addonService.addonRemoved$
+    const addonRemovedSubscription = this.addonService.addonRemoved$
       .subscribe((addonId) => {
         const addons: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
         const listItemIdx = addons.findIndex(li => li.addon.id === addonId);
@@ -109,23 +110,24 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         });
       })
 
-    this._displayAddonsSrc
-      .pipe(takeUntil(this._destroyed$))
+    const displayAddonSubscription = this._displayAddonsSrc
       .subscribe((items: MyAddonsListItem[]) => {
         this.dataSource.data = items;
         this.dataSource.sortingDataAccessor = _.get;
         this.dataSource.filterPredicate = (item: MyAddonsListItem, filter: string) => {
-          if (item.addon.name.trim().toLowerCase().indexOf(filter) >= 0) return true;
-          if (item.addon.latestVersion && item.addon.latestVersion.trim().toLowerCase().indexOf(filter) >= 0) return true;
-          if (item.addon.author && item.addon.author.trim().toLowerCase().indexOf(filter) >= 0) return true;
+          if (stringIncludes(item.addon.name, filter) || stringIncludes(item.addon.latestVersion, filter) || stringIncludes(item.addon.author, filter)) {
+            return true;
+          }
           return false;
         } 
         this.dataSource.sort = this.sort;
       });
+
+    this.subscriptions.concat(...[addonInstalledSubscription, addonRemovedSubscription, displayAddonSubscription]);
   }
 
   ngOnInit(): void {
-    this._sessionService.selectedClientType$
+    const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
         map(clientType => {
           this.selectedClient = clientType;
@@ -133,12 +135,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+
+    this.subscriptions.push(selectedClientSubscription);
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    this._destroyed$.next();
-    this._destroyed$.complete();
   }
 
   onRefresh() {
@@ -180,10 +182,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  filterAddons(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    console.log('filterValue:', filterValue);
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  filterAddons(): void {
+    this.dataSource.filter = this.filter.trim().toLowerCase();
+  }
+
+  onClearFilter(): void {
+    this.filter = '';
+    this.filterAddons();
   }
 
   async onUpdateAll() {
