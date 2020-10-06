@@ -130,7 +130,10 @@ export class TukUiAddonProvider implements AddonProvider {
           latestVersion: tukUiAddon.version,
           providerName: this.name,
           thumbnailUrl: tukUiAddon.screenshot_url,
-          updatedAt: new Date()
+          updatedAt: new Date(),
+          summary: tukUiAddon.small_desc,
+          downloadCount: Number.parseFloat(tukUiAddon.downloads),
+          screenshotUrls: [tukUiAddon.screenshot_url]
         }
       }
     }

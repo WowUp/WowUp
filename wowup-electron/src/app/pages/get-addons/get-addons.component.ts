@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { AddonModel } from "app/business-objects/my-addons-list-item";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
+import { Addon } from "app/entities/addon";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
@@ -113,15 +115,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.isBusy = false;
   }
 
-  openDetailDialog(addon: PotentialAddon) {
+  openDetailDialog(addon: PotentialAddon) : void  {
     const dialogRef = this._dialog.open(AddonDetailComponent, {
-      data: new AddonDetailModel(addon),
+      data:addon as Addon,
     });
 
     dialogRef.afterClosed().subscribe();
   }
 
-  private async loadPopularAddons(clientType: WowClientType) {
+  private loadPopularAddons(clientType: WowClientType) {
     if (clientType === WowClientType.None) {
       return;
     }

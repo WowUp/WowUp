@@ -77,11 +77,11 @@ export class AddonService {
   }
 
   public async installPotentialAddon(
-    potentialAddon: PotentialAddon,
+    potentialAddon: PotentialAddon | Addon,
     clientType: WowClientType,
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
-  ) {
-    var existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, clientType);
+  ) : Promise<void> {
+    const existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, clientType);
     if (existingAddon) {
       throw new Error('Addon already installed');
     }
@@ -96,7 +96,7 @@ export class AddonService {
     const clientTypeGroups = _.groupBy(autoUpdateAddons, addon => addon.clientType);
     let updateCt = 0;
 
-    for (let clientTypeStr in clientTypeGroups) {
+    for (const clientTypeStr in clientTypeGroups) {
       const clientType: WowClientType = parseInt(clientTypeStr, 10);
       // console.log('clientType', clientType, clientTypeGroups[clientType]);
 
@@ -120,15 +120,15 @@ export class AddonService {
         }
       }
     }
-    
+
     return updateCt;
   }
 
-  public canUpdateAddon(addon: Addon) {
+  public canUpdateAddon(addon: Addon) : boolean {
     return addon.installedVersion && addon.installedVersion !== addon.latestVersion;
   }
 
-  public getAutoUpdateEnabledAddons() {
+  public getAutoUpdateEnabledAddons() : Addon[] {
     return this._addonStorage.queryAll(addon => {
       return addon.isIgnored !== true && addon.autoUpdateEnabled;
     });

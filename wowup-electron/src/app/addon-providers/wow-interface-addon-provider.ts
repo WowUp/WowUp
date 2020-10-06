@@ -145,7 +145,10 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       latestVersion: response.version,
       name: response.title,
       providerName: this.name,
-      thumbnailUrl: this.getThumbnailUrl(response)
+      thumbnailUrl: this.getThumbnailUrl(response),
+      summary: response.description,
+      screenshotUrls: response.images?.map(img => img.imageUrl),
+      downloadCount: response.downloads
     };
   }
 

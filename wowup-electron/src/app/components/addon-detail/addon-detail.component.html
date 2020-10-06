@@ -3,38 +3,36 @@
     <img
       mat-card-avatar
       class="addon-header-thumbnail"
-      [src]="addonDetail.thumbnailUrl"
+      [src]="addon.thumbnailUrl"
     />
-    <h2 mat-dialog-title>{{ addonDetail.name }}</h2>
+    <h2 mat-dialog-title>{{ addon.name }}</h2>
     <button mat-icon-button [mat-dialog-close]="true">
       <mat-icon class="close-icon" color="accent">close</mat-icon>
     </button>
   </div>
   <div class="addon-detail-subtitle">
-    <div class="mat-subheading-1">By {{ addonDetail.author }}</div>
+    <div class="mat-subheading-1">By {{ addon.author }}</div>
     <app-addon-provider-badge
-      [providerName]="addonDetail.providerName"
+      [providerName]="addon.providerName"
     ></app-addon-provider-badge>
   </div>
   <mat-dialog-content>
     <div class="mat-caption addon-detail-summary">
-      {{ addonDetail.summary }}
+      {{ addon.summary }}
     </div>
-    <p>
-      {{ addonDetail.description }}
-    </p>
     <img mat-card-image [src]="defaultImageUrl" alt="Addon Picture" />
   </mat-dialog-content>
   <mat-dialog-actions class="dialog-buttons">
+    <a
+      appExternalLink
+      mat-stroked-button
+      color="primary"
+      [href]="addon.externalUrl"
+      >VIEW IN BROWSER</a
+    >
     <div class="btn-wrapper">
-      <a
-        appExternalLink
-        mat-stroked-button
-        color="primary"
-        [href]="addonDetail.externalUrl"
-        >VIEW IN BROWSER</a
-      >
-      <app-addon-install-button [addon]="addonDetail"> </app-addon-install-button>
+      <!-- update button -->
+      <app-addon-install-button [addon]="addon"> </app-addon-install-button>
     </div>
   </mat-dialog-actions>
 </div>

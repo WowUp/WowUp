@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
+import { Addon } from "app/entities/addon";
 
 @Component({
   selector: "app-addon-detail",
@@ -8,23 +8,19 @@ import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
   styleUrls: ["./addon-detail.component.scss"],
 })
 export class AddonDetailComponent implements OnInit {
-  addonDetail: AddonDetailModel;
+  addon: Addon;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: AddonDetailModel) {
-    this.addonDetail = this.data;
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Addon) {
+    this.addon = this.data;
   }
 
   get defaultImageUrl(): string {
-    return this.addonDetail?.screenshotUrls && this.addonDetail?.screenshotUrls[0]
-      ? this.addonDetail?.screenshotUrls[0]
-      : this.addonDetail?.thumbnailUrl
-      ? this.addonDetail?.thumbnailUrl
+    return this.addon?.screenshotUrls && this.addon?.screenshotUrls[0]
+      ? this.addon?.screenshotUrls[0]
+      : this.addon?.thumbnailUrl
+      ? this.addon?.thumbnailUrl
       : "";
   }
 
   ngOnInit(): void {}
-
-  installAddon() {}
-
-  openInBrowser() {}
 }

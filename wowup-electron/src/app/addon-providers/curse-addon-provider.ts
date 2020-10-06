@@ -34,7 +34,7 @@ export class CurseAddonProvider implements AddonProvider {
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _fileService: FileService
-  ) { }
+  ) {}
 
   async scan(
     clientType: WowClientType,
@@ -499,6 +499,9 @@ export class CurseAddonProvider implements AddonProvider {
       latestVersion: latestVersion.displayName,
       providerName: this.name,
       thumbnailUrl: this.getThumbnailUrl(scanResult.searchResult),
+      screenshotUrls: this.getScreenshotUrls(scanResult.searchResult),
+      downloadCount: scanResult.searchResult.downloadCount,
+      summary: scanResult.searchResult.summary,
     };
   }
 }

@@ -34,14 +34,14 @@
       <ng-container matColumnDef="addon">
         <th mat-header-cell *matHeaderCellDef> Addon </th>
         <td mat-cell *matCellDef="let element">
-          <app-my-addons-addon-cell [addon]="element"></app-my-addons-addon-cell>
+          <app-my-addons-addon-cell [addon]="element" (onViewDetails)="openDetailDialog($event)"></app-my-addons-addon-cell>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
         <td mat-cell *matCellDef="let element">
-          <div class="status-column">
+          <!-- <div class="status-column">
             <button *ngIf="element.needsInstall === true" mat-flat-button color="primary"
               (click)="onInstall()">Install</button>
             <button *ngIf="element.needsUpdate === true" mat-flat-button color="primary"
@@ -55,7 +55,10 @@
               <mat-progress-bar class="addon-progress" mode="determinate" [value]="element.installProgress">
               </mat-progress-bar>
             </div>
-          </div>
+          </div> -->
+
+
+          <app-addon-install-button [addon]="element.addon" [hideUninstall]="true"> </app-addon-install-button>
         </td>
       </ng-container>
 
@@ -90,7 +93,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
         (contextmenu)="onHeaderContext($event); $event.preventDefault();"></tr>
       <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns;"
-        [ngClass]="{'selected-row': row.selected}" (click)="onRowClicked($event, row, i)"
+        [ngClass]="{'selected-row': row.selected}" (click)="onRowClicked($event, row, i)" (dblclick)="openDetailDialog(row.addon)"
         (contextmenu)="onCellContext($event, row)"></tr>
     </table>
 
@@ -118,9 +121,9 @@
       Update
     </mat-checkbox>
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">Channel</button>
-    <button mat-menu-item (click)="onReInstallAddon(listItem.addon)">Re-Install</button>
+    <button mat-menu-item (click)="onReInstallAddonClick(listItem.addon)">Re-Install</button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="onRemoveAddon(listItem.addon)">Remove</button>
+    <button mat-menu-item (click)="onRemoveAddonClick(listItem.addon)">Remove</button>
     <mat-menu #addonChannels="matMenu" class="addon-context-menu">
       <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
         (change)="onSelectedAddonChannelChange($event, listItem.addon)">

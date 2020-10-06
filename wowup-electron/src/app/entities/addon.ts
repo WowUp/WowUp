@@ -21,4 +21,7 @@ export interface Addon {
   clientType: WowClientType;
   channelType: AddonChannelType;
   updatedAt?: Date;
+  downloadCount?: number;
+  summary?: string;
+  screenshotUrls?: string[];
 }
