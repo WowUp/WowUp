@@ -33,10 +33,6 @@
     "!**/.vscode/*",
     "!node_modules/@angular",
     "!native/",
-    "!dist/*.woff2",
-    "!dist/*.eot",
-    "!dist/*.ttf",
-    "!dist/*.woff",
     "!*.npmrc",
     "!*.eslintrc.json",
     "!binding.gyp",
@@ -44,8 +40,8 @@
     "!tsconfig*.json"
   ],
   "win": {
-    "icon": "dist/assets/icons",
-    "target": ["nsis", "portable"]
+    "icon": "electron-build/icon.ico",
+    "target": ["portable"]
   },
   "mac": {
     "icon": "dist/assets/icons",
