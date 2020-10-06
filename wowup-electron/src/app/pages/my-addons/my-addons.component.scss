@@ -10,14 +10,24 @@
     flex-grow: 1;
   }
 
-  .button-container {
+  .right-container {
     display: flex;
     flex-direction: row;
-    align-items: center;
+  
+    .filter-container {
+      padding-top: 1em;
+    }
 
-    button {
-      &:not(:last-child) {
-        margin-right: 0.5em;
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 1em;
+  
+      button {
+        &:not(:last-child) {
+          margin-right: 0.5em;
+        }
       }
     }
   }
