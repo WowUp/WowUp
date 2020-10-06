@@ -11,12 +11,10 @@
     <div class="window-control" (click)="electronService.minimizeWindow()">
       <img src="assets/chrome-minimize.svg" />
     </div>
-    <div class="window-control" *ngIf="(electronService.windowMaximized$ | async) === false"
-      (click)="electronService.maximizeWindow()">
+    <div class="window-control" *ngIf="isMaximized === false" (click)="electronService.maximizeWindow()">
       <img src="assets/chrome-maximize.svg" />
     </div>
-    <div class="window-control" *ngIf="(electronService.windowMaximized$ | async) === true"
-      (click)="electronService.unmaximizeWindow()">
+    <div class="window-control" *ngIf="isMaximized === true" (click)="electronService.unmaximizeWindow()">
       <img src="assets/chrome-restore.svg" />
     </div>
     <div class="window-control" (click)="onClickClose()">

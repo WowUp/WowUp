@@ -6,7 +6,6 @@ import { ipcRenderer, webFrame, remote, shell } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { BehaviorSubject } from 'rxjs';
-import { AppConfig } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root'
