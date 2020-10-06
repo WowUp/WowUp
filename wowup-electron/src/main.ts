@@ -7,6 +7,8 @@ import * as log from 'electron-log';
 import { remote } from 'electron';
 import { join } from 'path';
 
+import 'typeface-roboto/index.css'
+
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return join(remote.app.getPath('logs'), variables.fileName);
 }
