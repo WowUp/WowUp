@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectronService } from 'app/services/electron/electron.service';
 import { WowUpService } from 'app/services/wowup/wowup.service';
+import { AppConfig } from 'environments/environment';
 import { platform } from 'os'
 
 @Component({
@@ -14,6 +15,7 @@ export class TitlebarComponent implements OnInit {
   public isWindows = platform() === 'win32';
   public isLinux = platform() === 'linux';
   public userAgent = platform();
+  public isProd = AppConfig.production;
 
   constructor(
     public electronService: ElectronService,

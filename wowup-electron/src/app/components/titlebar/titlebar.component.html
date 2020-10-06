@@ -6,7 +6,7 @@
   <div class="title-container">
     <div>WowUp.io</div>
   </div>
-  <div class="window-control-container" *ngIf="electronService.isWin">
+  <div class="window-control-container" >
     <mat-icon *ngIf="isProd !== true" (click)="onClickDebug()">bug_report</mat-icon>
     <div class="window-control" (click)="electronService.minimizeWindow()">
       <img src="assets/chrome-minimize.svg" />

@@ -3,19 +3,26 @@
   "directories": {
     "output": "release/"
   },
-  "publish": [
-    "github"
-  ],
+  "publish": ["github"],
   "nodeGypRebuild": true,
   "files": [
     "**/*",
+    "**\\*",
     "build/Release/*.node",
+    "src/common/**/*.js",
     "!**/*.ts",
+    "!**/*.scss",
+    "!**/*.map",
     "!*.code-workspace",
     "!LICENSE.md",
     "!package.json",
     "!package-lock.json",
-    "!src/",
+    "!src/app/*",
+    "!src/assets/*",
+    "!src/environments/*",
+    "!src/*.html",
+    "!src/*.js",
+    "!src/*.json",
     "!e2e/",
     "!hooks/",
     "!angular.json",
@@ -23,27 +30,30 @@
     "!karma.conf.js",
     "!tsconfig.json",
     "!tslint.json",
-    "!.vscode/",
+    "!**/.vscode/*",
     "!node_modules/@angular",
-    "!node_modules\\@angular"
+    "!native/",
+    "!dist/*.woff2",
+    "!dist/*.eot",
+    "!dist/*.ttf",
+    "!dist/*.woff",
+    "!*.npmrc",
+    "!*.eslintrc.json",
+    "!binding.gyp",
+    "!angular.webpack.js",
+    "!tsconfig*.json"
   ],
   "win": {
     "icon": "dist/assets/icons",
-    "target": [
-      "portable"
-    ]
+    "target": ["nsis", "portable"]
   },
   "mac": {
     "icon": "dist/assets/icons",
     "category": "public.app-category.games",
-    "target": [
-      "default"
-    ]
+    "target": ["default"]
   },
   "linux": {
     "icon": "dist/assets/icons",
-    "target": [
-      "AppImage"
-    ]
+    "target": ["AppImage"]
   }
 }
