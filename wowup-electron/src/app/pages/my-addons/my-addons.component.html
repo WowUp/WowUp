@@ -1,16 +1,24 @@
 <div class="tab-container d-flex flex-col"
   [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
   <div class="control-container">
-    <div class="select-container ">
-      <mat-form-field>
-        <mat-label>{{'PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL' | translate}}</mat-label>
-        <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
-          [disabled]="enableControls === false">
-          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
-            {{warcraftService.getClientDisplayName(clientType)}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <div class="left-container">
+      <div class="select-container ">
+        <mat-form-field>
+          <mat-label>{{'PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL' | translate}}</mat-label>
+          <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
+            [disabled]="enableControls === false">
+            <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
+              {{warcraftService.getClientDisplayName(clientType)}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="filter-container" *ngIf="selectedClient !== wowClientType.None">
+        <mat-form-field>
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="filterAddons($event)">
+        </mat-form-field>
+      </div>
     </div>
     <div class="button-container">
       <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"

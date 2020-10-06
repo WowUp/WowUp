@@ -19,7 +19,7 @@ import { MatRadioChange } from '@angular/material/radio';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-dialog.component';
 import { getEnumName } from 'app/utils/enum.utils';
-import {MatTableDataSource} from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 
 @Component({
@@ -60,6 +60,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public selectedClient = WowClientType.None;
+  public wowClientType = WowClientType;
   public overlayRef: OverlayRef | null;
   public isBusy = true;
   public enableControls = true;
@@ -113,6 +114,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       .subscribe((items: MyAddonsListItem[]) => {
         this.dataSource.data = items;
         this.dataSource.sortingDataAccessor = _.get;
+        this.dataSource.filterPredicate = (item: MyAddonsListItem, filter: string) => {
+          if (item.addon.name.trim().toLowerCase().indexOf(filter) >= 0) return true;
+          if (item.addon.latestVersion && item.addon.latestVersion.trim().toLowerCase().indexOf(filter) >= 0) return true;
+          if (item.addon.author && item.addon.author.trim().toLowerCase().indexOf(filter) >= 0) return true;
+          return false;
+        } 
         this.dataSource.sort = this.sort;
       });
   }
@@ -161,7 +168,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     } else {
       listItems.forEach((item, i) => {
         if (i === index) {
-          item.selected = true;
+          item.selected = !item.selected;
         } else {
           item.selected = false;
         }
@@ -171,6 +178,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this._ngZone.run(() => {
       this._displayAddonsSrc.next(listItems);
     });
+  }
+
+  filterAddons(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    console.log('filterValue:', filterValue);
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   async onUpdateAll() {

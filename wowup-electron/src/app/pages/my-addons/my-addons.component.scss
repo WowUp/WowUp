@@ -5,9 +5,19 @@
   flex-direction: row;
   padding: 0 1em 0 1em;
 
-  .select-container {
-    padding-top: 1em;
+  .left-container {
+    display: flex;
+    flex-direction: row;
     flex-grow: 1;
+
+    .select-container {
+      padding-top: 1em;
+      margin-right: 1em;
+    }
+  
+    .filter-container {
+      padding-top: 1em;
+    }
   }
 
   .button-container {
