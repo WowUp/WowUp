@@ -1,5 +1,6 @@
 using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -421,6 +422,7 @@ namespace WowUp.WPF.ViewModels
 
             return wowLocations.Any(loc => !string.IsNullOrEmpty(loc));
         }
+
         void ShowTab(string header)
         {
             if (Application.Current?.MainWindow == null)
@@ -428,9 +430,10 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
-            TaskbarIconClickCommand.Execute(null);
+            OnTaskbarIconClick();
             SelectedTabIndex = TabItems.IndexOf(GetTabItemByHeader(header));
         }
+
         void ShowTab(TabItem item)
         {
             if (Application.Current?.MainWindow == null)
@@ -438,9 +441,10 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
-            TaskbarIconClickCommand.Execute(null);
+            OnTaskbarIconClick();
             SelectedTabIndex = TabItems.IndexOf(item);
         }
+
         TabItem GetTabItemByHeader(string header)
         {
             return TabItems.Where(x => Equals(x.Header, header)).FirstOrDefault();
@@ -448,34 +452,50 @@ namespace WowUp.WPF.ViewModels
 
         void ExecuteCommand(object argument)
         {
-            if (argument is TaskbarIconClickAction action)
+            TaskbarIconClickAction? action = argument as TaskbarIconClickAction?;
+            if(action == null)
             {
-                var tabItem = GetTabItemByHeader("My Addons");
+                return;
+            }
 
-                var content = tabItem.Content as FrameworkElement;
-                if (content == null)
-                    return;
+            var tabItem = GetTabItemByHeader("My Addons");
 
-                ShowTab(tabItem);
+            var content = tabItem.Content as FrameworkElement;
+            if (content == null)
+            {
+                return;
+            }
 
-                var vm = content.DataContext as AddonsViewViewModel;
-                if (vm == null)
-                    return;
+            ShowTab(tabItem);
 
-                switch (action) {
-                    case TaskbarIconClickAction.Check:
-                        if (vm.EnableRefresh)
-                            vm.LoadItemsCommand.Execute(null);
-                        break;
-                    case TaskbarIconClickAction.Update:
-                        if (vm.EnableUpdateAll)
-                            vm.UpdateAllCommand.Execute(null);
-                        break;
-                    case TaskbarIconClickAction.Rescan:
-                        if (vm.EnableRescan)
-                            vm.RescanCommand.Execute(null);
-                        break;
-                }
+            var vm = content.DataContext as AddonsViewViewModel;
+            if (vm == null)
+            {
+                return;
+            }
+
+            switch (action) {
+                case TaskbarIconClickAction.Check:
+                    if (vm.EnableRefresh)
+                    {
+                        vm.LoadItemsCommand.Execute(null);
+                    }
+                    break;
+                case TaskbarIconClickAction.Update:
+                    if (vm.EnableUpdateAll)
+                    {
+                        vm.UpdateAllCommand.Execute(null);
+                    }
+                    break;
+                case TaskbarIconClickAction.Rescan:
+                    if (vm.EnableRescan)
+                    {
+                        vm.RescanCommand.Execute(null);
+                    }
+                    break;
+                default:
+                    Log.Warning($"Invalid context menu action {action}");
+                    break;
             }
         }
     }
