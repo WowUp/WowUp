@@ -4,16 +4,16 @@
   <mat-form-field class="grow folder-input">
     <mat-label>{{clientTypeName}} Path</mat-label>
     <input matInput disabled [value]="clientLocation">
-    <mat-hint>The folder that contains the retail client folder "{{clientFolderName}}"</mat-hint>
+    <mat-hint>The folder that contains the {{clientTypeName | lowercase}} client folder "{{clientFolderName}}"</mat-hint>
   </mat-form-field>
   <button mat-flat-button color="primary" class="select-button" (click)="onSelectClientPath()">Select</button>
 </div>
 <div class="row">
   <div class="grow">
-    <p>Default Addon Channel</p>
+    <p>{{'PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_LABEL' | translate}}</p>
   </div>
   <mat-form-field class="light-select">
-    <mat-label>Addon Channel</mat-label>
+    <mat-label>{{'PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_SELECT_LABEL' | translate}}</mat-label>
     <mat-select [(value)]="selectedAddonChannelType" (selectionChange)="onDefaultAddonChannelChange($event)">
       <mat-option *ngFor="let channel of addonChannelInfos" [value]="channel.type">{{channel.name}}</mat-option>
     </mat-select>
@@ -21,8 +21,8 @@
 </div>
 <div class="row">
   <div class="grow">
-    <p>Auto Update</p>
-    <small class="hint">Newly installed addons will be set to auto update by default</small>
+    <p>{{'PAGES.OPTIONS.WOW.AUTO_UPDATE_LABEL' | translate}}</p>
+    <small class="hint">{{'PAGES.OPTIONS.WOW.AUTO_UPDATE_DESCRIPTION' | translate}}</small>
   </div>
   <mat-slide-toggle [(checked)]="clientAutoUpdate" (change)="onDefaultAutoUpdateChange($event)">
   </mat-slide-toggle>

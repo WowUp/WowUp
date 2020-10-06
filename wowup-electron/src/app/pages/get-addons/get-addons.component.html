@@ -2,7 +2,7 @@
   <div class="control-container">
     <div class="select-container ">
       <mat-form-field>
-        <mat-label>World of Warcraft</mat-label>
+        <mat-label>{{'PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL' | translate}}</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
           [disabled]="isBusy === true">
           <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
@@ -12,12 +12,17 @@
       </mat-form-field>
     </div>
     <div class="button-container">
-      <button mat-flat-button color="primary" (click)="onRefresh()">Refresh</button>
-      <button mat-flat-button color="primary" (click)="onInstallFromUrl()">Install from URL</button>
-      <mat-form-field class="example-form-field" >
-        <mat-label>Search</mat-label>
-        <input matInput type="text" [(ngModel)]="query" (keyup.enter)="onSearch()" >
-        <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear" (click)="onClearSearch()">
+      <button mat-flat-button color="primary" (click)="onRefresh()">
+        {{'PAGES.GET_ADDONS.REFRESH_BUTTON' | translate}}
+      </button>
+      <button mat-flat-button color="primary" (click)="onInstallFromUrl()">
+        {{'PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON' | translate}}
+      </button>
+      <mat-form-field class="example-form-field">
+        <mat-label>{{'PAGES.GET_ADDONS.SEARCH_LABEL' | translate}}</mat-label>
+        <input matInput type="text" [(ngModel)]="query" (keyup.enter)="onSearch()">
+        <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
+          (click)="onClearSearch()">
           <mat-icon>close</mat-icon>
         </button>
       </mat-form-field>
@@ -27,32 +32,40 @@
   <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
 
   <div class="table-container flex-grow-1" *ngIf="isBusy === false">
-    <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8" >
+    <table mat-table [dataSource]="displayAddons$ | async" class="mat-elevation-z8">
       <ng-container matColumnDef="addon">
-        <th mat-header-cell *matHeaderCellDef> Addon </th>
-        <td mat-cell *matCellDef="let element" >
-          <app-potential-addon-table-column [addon]="element" (onViewDetails)="openDetailDialog($event)"></app-potential-addon-table-column>
+        <th mat-header-cell *matHeaderCellDef>
+          {{'PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER' | translate}}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <app-potential-addon-table-column [addon]="element" (onViewDetails)="openDetailDialog($event)">
+          </app-potential-addon-table-column>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="provider">
-        <th mat-header-cell *matHeaderCellDef class="provider-column"> Provider </th>
+        <th mat-header-cell *matHeaderCellDef class="provider-column">
+          {{'PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER' | translate}}
+        </th>
         <td mat-cell *matCellDef="let element">
           {{element.providerName}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="author">
-        <th mat-header-cell *matHeaderCellDef class="author-column"> Author </th>
+        <th mat-header-cell *matHeaderCellDef class="author-column">
+          {{'PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER' | translate}}
+        </th>
         <td mat-cell *matCellDef="let element">
           {{element.author}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <th mat-header-cell *matHeaderCellDef>
+          {{'PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}}
+        </th>
         <td mat-cell *matCellDef="let element">
-          <!-- <app-potential-addon-status-column [addon]="element" ></app-potential-addon-status-column> -->
           <app-addon-install-button [addon]="element"> </app-addon-install-button>
         </td>
       </ng-container>

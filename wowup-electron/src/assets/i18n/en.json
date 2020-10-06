@@ -1,12 +1,122 @@
 {
   "PAGES": {
-      "HOME": {
-          "TITLE": "App works !",
-          "GO_TO_DETAIL": "Go to Detail"
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "Change Log",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Check out the website!"
+    },
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "REFRESH_BUTTON": "Refresh",
+      "INSTALL_FROM_URL_BUTTON": "Install from URL",
+      "SEARCH_LABEL": "Search",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "AUTHOR_COLUMN_HEADER": "Author",
+        "PROVIDER_COLUMN_HEADER": "Provider",
+        "STATUS_COLUMN_HEADER": "Status"
+      }
+    },
+    "HOME": {
+      "TITLE": "App works !",
+      "GO_TO_DETAIL": "Go to Detail",
+      "MY_ADDONS_TAB_TITLE": "My Addons",
+      "GET_ADDONS_TAB_TITLE": "Get Addons",
+      "ABOUT_TAB_TITLE": "About",
+      "OPTIONS_TAB_TITLE": "Options"
+    },
+    "MY_ADDONS": {
+      "CHECK_UPDATES_BUTTON": "Check Updates",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Check for latest addon updates",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "RESCAN_FOLDERS_BUTTON": "Re-Scan Folders",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan your client folder for installed addons",
+      "UPDATE_ALL_BUTTON": "Update All",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Update all addons for this client",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "ADDON_INSTALL_BUTTON": "Install",
+        "ADDON_UPDATE_BUTTON": "Update",
+        "AUTHOR_COLUMN_HEADER": "Author",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Auto update enabled",
+        "GAME_VERSION_COLUMN_HEADER": "Game Version",
+        "LATEST_VERSION_COLUMN_HEADER": "Latest Version",
+        "PROVIDER_COLUMN_HEADER": "Provider",
+        "STATUS_COLUMN_HEADER": "Status"
       },
-      "DETAIL": {
-        "TITLE": "Detail page !",
-        "BACK_TO_HOME": "Back to Home"
+      "ADDON_CONTEXT_MENU": {
+        "IGNORE_ADDON_BUTTON": "Ignore",
+        "AUTO_UPDATE_ADDON_BUTTON": "Auto Update",
+        "CHANNEL_SUBMENT_TITLE": "Channel",
+        "REINSTALL_ADDON_BUTTON": "Re-Install",
+        "REMOVE_ADDON_BUTTON": "Remove",
+        "STABLE_ADDON_CHANNEL": "Stable",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "ALPHA_ADDON_CHANNEL": "Alpha"
+      },
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Show Columns"
+      },
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Update Retail/Classic",
+        "UPDATE_ALL_CLIENTS_BUTTON": "Update All Clients"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION": "When closing the WowUp window, minimize to the system tray.",
+        "TELEMETRY_DESCRIPTION": "Help improve WowUp by sending anonymous install data and/or errors.",
+        "TELEMETRY_LABEL": "Telemetry",
+        "TITLE": "Application"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "Dump Debug Data",
+        "DEBUG_DATA_DESCRIPTION": "Log debug data to help with diagnosing potential issues. This can be found in your latest log file for the curious.",
+        "DEBUG_DATA_LABEL": "Debug Data",
+        "LOG_FILES_BUTTON": "Show Log Files",
+        "LOG_FILES_DESCRIPTION": "Open the folder that contains your last couple of log files.",
+        "LOG_FILES_LABEL": "Log Files",
+        "TITLE": "Debug"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "Newly installed addons will be set to auto update by default",
+        "AUTO_UPDATE_LABEL": "Auto Update",
+        "TITLE": "World of Warcraft",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Default Addon Channel",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",
+        "RESCAN_CLIENTS_BUTTON": "Re-Scan",
+        "RESCAN_CLIENTS_LABEL": "Rescan installed World of Warcraft products"
+      }
+    }
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "VIEW_IN_BROWSER_BUTTON": "View in browser"
+    },
+    "ALERT": {
+      "POSITIVE_BUTTON": "Okay"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "No",
+      "POSITIVE_BUTTON": "Yes"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "Addon URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",
+      "CLOSE_BUTTON": "Close",
+      "IMPORT_BUTTON": "Import",
+      "INSTALL_BUTTON": "Install",
+      "INSTALL_SUCCESS_LABEL": "Installed!",
+      "TITLE": "Install Addon URL",
+      "DESCRIPTION": "If you want to install an addon directly from a URL paste it below to get started.",
+      "SUPPORTED_SOURCES": "Supports WowInterface and GitHub*"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "Help me improve WowUp by sending anonymous app install data and/or errors?",
+      "NEGATIVE_BUTTON": "No Thanks",
+      "POSITIVE_BUTTON": "Sure!",
+      "TITLE": "WowUp Telemetry"
     }
   }
 }
