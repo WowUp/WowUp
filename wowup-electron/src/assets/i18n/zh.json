@@ -1,0 +1,122 @@
+{
+  "PAGES": {
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "更改日志",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "查看网站！"
+    },
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "REFRESH_BUTTON": "刷新",
+      "INSTALL_FROM_URL_BUTTON": "从 URL 安装",
+      "SEARCH_LABEL": "搜索",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "AUTHOR_COLUMN_HEADER": "作者",
+        "PROVIDER_COLUMN_HEADER": "提供商",
+        "STATUS_COLUMN_HEADER": "状态"
+      }
+    },
+    "HOME": {
+      "TITLE": "应用程序正常工作！",
+      "GO_TO_DETAIL": "转到详细信息",
+      "MY_ADDONS_TAB_TITLE": "我的附加组件",
+      "GET_ADDONS_TAB_TITLE": "获取 Addons",
+      "ABOUT_TAB_TITLE": "关于的",
+      "OPTIONS_TAB_TITLE": "备选方案"
+    },
+    "MY_ADDONS": {
+      "CHECK_UPDATES_BUTTON": "检查更新",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "检查最新的插件更新",
+      "CLIENT_TYPE_SELECT_LABEL": "战术世界",
+      "RESCAN_FOLDERS_BUTTON": "重新扫描文件夹",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "扫描已安装附加组件的客户端文件夹",
+      "UPDATE_ALL_BUTTON": "全部更新",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "更新此客户端的所有插件",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "ADDON_INSTALL_BUTTON": "安装",
+        "ADDON_UPDATE_BUTTON": "更新",
+        "AUTHOR_COLUMN_HEADER": "作者",
+        "AUTO_UPDATE_ICON_TOOLTIP": "自动更新已启用",
+        "GAME_VERSION_COLUMN_HEADER": "游戏版本",
+        "LATEST_VERSION_COLUMN_HEADER": "最新版本",
+        "PROVIDER_COLUMN_HEADER": "提供商",
+        "STATUS_COLUMN_HEADER": "状态"
+      },
+      "ADDON_CONTEXT_MENU": {
+        "IGNORE_ADDON_BUTTON": "忽略",
+        "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
+        "CHANNEL_SUBMENT_TITLE": "频道",
+        "REINSTALL_ADDON_BUTTON": "重新安装",
+        "REMOVE_ADDON_BUTTON": "删除",
+        "STABLE_ADDON_CHANNEL": "稳定",
+        "BETA_ADDON_CHANNEL": "测试版",
+        "ALPHA_ADDON_CHANNEL": "阿尔法"
+      },
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "显示列"
+      },
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "更新零售/经典",
+        "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客户端"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "MINIMIZE_ON_CLOSE_LABEL": "关闭时最小化",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION": "关闭WowUp窗口时，最小化到系统托盘。",
+        "TELEMETRY_DESCRIPTION": "通过匿名发送数据和/或安装错误来帮助改进WowUp。",
+        "TELEMETRY_LABEL": "遥测",
+        "TITLE": "程序"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "转储调试数据",
+        "DEBUG_DATA_DESCRIPTION": "记录调试数据以帮助诊断潜在的问题。这可以在您最新的日志文件中找到。",
+        "DEBUG_DATA_LABEL": "调试数据",
+        "LOG_FILES_BUTTON": "显示日志文件",
+        "LOG_FILES_DESCRIPTION": "打开包含您最后几个日志文件的文件夹。",
+        "LOG_FILES_LABEL": "日志文件",
+        "TITLE": "除错"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
+        "AUTO_UPDATE_LABEL": "自动更新",
+        "TITLE": "World of Warcraft",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "默认附加组件频道",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "附加组件频道",
+        "RESCAN_CLIENTS_BUTTON": "重新扫描",
+        "RESCAN_CLIENTS_LABEL": "重新扫描已安装的Warcraft产品世界"
+      }
+    }
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看"
+    },
+    "ALERT": {
+      "POSITIVE_BUTTON": "好的"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "否",
+      "POSITIVE_BUTTON": "是"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "Addon URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "例。 GitHub或WowInterface URL",
+      "CLOSE_BUTTON": "关闭",
+      "IMPORT_BUTTON": "导入",
+      "INSTALL_BUTTON": "安装",
+      "INSTALL_SUCCESS_LABEL": "已安装！",
+      "TITLE": "通过网址远程安装",
+      "DESCRIPTION": "如果您想直接从下面的 URL 粘贴中安装一个插件，就开始了。",
+      "SUPPORTED_SOURCES": "支持Wow界面和 GitHub*"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "通过发送匿名应用安装数据和/或错误来帮助我改进WowUp？",
+      "NEGATIVE_BUTTON": "不，谢谢！",
+      "POSITIVE_BUTTON": "当然！",
+      "TITLE": "WowUp遥测"
+    }
+  }
+}

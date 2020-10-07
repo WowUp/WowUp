@@ -30,6 +30,10 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
+  get locale(): string {
+    return this.remote.app.getLocale().split('-')[0];
+  }
+
   constructor() {
     // Conditional imports
     if (!this.isElectron) {
@@ -58,6 +62,7 @@ export class ElectronService {
     this.remote.getCurrentWindow().on('unmaximize', () => {
       this._windowMaximizedSrc.next(false);
     });
+
   }
 
   minimizeWindow() {

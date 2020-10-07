@@ -5,6 +5,10 @@
   flex-direction: row;
   align-items: center;
   position: relative;
+
+  .debug-button {
+    height: 22px;
+  }
 }
 .titlebar-mac {
   height: 22px;
