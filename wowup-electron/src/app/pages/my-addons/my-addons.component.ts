@@ -370,6 +370,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
           this.isBusy = false;
           this.enableControls = true;
           this._ngZone.run(() => {
+            this._sessionService.contextText = `${addons.length} addons`;
             this._displayAddonsSrc.next(this.formatAddons(addons));
           });
         },

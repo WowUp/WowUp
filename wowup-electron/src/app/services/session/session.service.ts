@@ -16,26 +16,32 @@ export class SessionService {
   private readonly _selectedClientTypeSrc = new BehaviorSubject(
     WowClientType.None
   );
-  private readonly _statusTextSrc = new BehaviorSubject("");
-  private readonly _selectedHomeTab = new BehaviorSubject(0);
+  private readonly _pageContextTextSrc = new BehaviorSubject(""); // right side bar text, context to the screen
+  private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
+  private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
 
   private _autoUpdateInterval?: number;
 
   public readonly selectedClientType$ = this._selectedClientTypeSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
-  public readonly selectedHomeTab$ = this._selectedHomeTab.asObservable();
+  public readonly selectedHomeTab$ = this._selectedHomeTabSrc.asObservable();
+  public readonly pageContextText$ = this._pageContextTextSrc.asObservable();
 
   constructor(
     private _addonService: AddonService,
-    private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService
   ) {
     this.loadInitialClientType().pipe(first()).subscribe();
   }
 
+  public set contextText(text: string){
+    this._pageContextTextSrc.next(text);
+  }
+
   public set selectedHomeTab(tabIndex: number) {
-    this._selectedHomeTab.next(tabIndex);
+    this._selectedHomeTabSrc.next(tabIndex);
+    this.contextText = '';
   }
 
   public set selectedClientType(clientType: WowClientType) {
