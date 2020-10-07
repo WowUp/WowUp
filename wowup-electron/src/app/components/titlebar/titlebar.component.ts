@@ -31,6 +31,10 @@ export class TitlebarComponent implements OnInit, OnDestroy {
       }
     );
 
+    if (this.electronService.remote.getCurrentWindow().isMaximized) {
+      this.isMaximized = true;
+    }
+
     this._subscriptions = [windowMaximizedSubscription];
   }
 

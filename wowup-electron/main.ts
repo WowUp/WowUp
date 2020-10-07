@@ -23,6 +23,7 @@ import * as rimraf from 'rimraf';
 import * as log from 'electron-log';
 import { autoUpdater } from "electron-updater"
 import * as Store from 'electron-store'
+import { WindowState } from './src/app/models/wowup/window-state';
 
 const isMac = process.platform === 'darwin';
 const isWin = process.platform === 'win32';
@@ -129,16 +130,67 @@ function createTray() {
   tray.setContextMenu(contextMenu)
 }
 
-function createWindow(): BrowserWindow {
+function windowStateManager(windowName: string, { width, height }: { width: number, height: number }) {
+  let window: BrowserWindow; // Hold a reference to the window
+  let windowState: WindowState;
 
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
+  function setState() {
+    let setDefaults = false;
+    windowState = preferenceStore.get(`${windowName}-window-state`) as WindowState;
+
+    if (!windowState) {
+      setDefaults = true;
+    } else {
+      log.info('found window state:', windowState);
+      const displays = screen.getAllDisplays();
+      const maxDisplay = displays.reduce((prev, current) => prev.bounds.x > current.bounds.x ? prev : current);
+
+      log.info('max display:', maxDisplay);
+
+      if (windowState.x > maxDisplay.bounds.width || windowState.y > maxDisplay.bounds.height) {
+        log.info('reset window state, bounds are too big');
+        setDefaults = true;
+      }
+    }
+
+    if (setDefaults) {
+      log.info('setting window defaults');
+      windowState = <WindowState>{ width, height };
+    }
+  }
+  
+  function saveState() {
+    if (!window.isMaximized()) {
+      windowState = { ...windowState, ...window.getBounds() };
+    }
+    windowState.isMaximized = window.isMaximized();
+    preferenceStore.set(`${windowName}-window-state`, windowState);
+  }
+
+  function monitorState(win: BrowserWindow) {
+    window = win;
+
+    win.on('resize', saveState);
+    win.on('close', saveState);
+  }
+
+  setState();
+
+  return({
+    ...windowState,
+    monitorState,
+  });
+}
+
+function createWindow(): BrowserWindow {
+  const mainWindowManager = windowStateManager('main', { width: 900, height: 600 });
 
   const windowOptions: BrowserWindowConstructorOptions = {
-    width: 900,
-    height: 600,
+    width: mainWindowManager.width,
+    height: mainWindowManager.height,
+    x: mainWindowManager.x,
+    y: mainWindowManager.y,
     backgroundColor: '#444444',
-    // frame: false,
     title: 'WowUp',
     titleBarStyle: 'hidden',
     webPreferences: {
@@ -149,7 +201,8 @@ function createWindow(): BrowserWindow {
       enableRemoteModule: true
     },
     minWidth: 900,
-    minHeight: 550
+    minHeight: 550,
+    show: false,
   };
 
   if (isWin) {
@@ -159,14 +212,23 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
+  mainWindowManager.monitorState(win);
+
   win.webContents.userAgent = USER_AGENT;
 
   win.once('ready-to-show', () => {
+    win.show();
     autoUpdater.checkForUpdatesAndNotify()
       .then((result) => {
         console.log('UPDATE', result)
       })
   });
+
+  win.on('show', () => {
+    if (mainWindowManager.isMaximized) {
+      win.maximize();
+    }
+  })
 
   if (isMac) {
     win.on('close', (e) => {
