@@ -293,3 +293,10 @@ img {
 .install-button {
   min-width: 110px !important;
 }
+
+// Fix issue with dynamically setting matSortActive
+// https://github.com/angular/components/issues/10242#issuecomment-535457992
+.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}

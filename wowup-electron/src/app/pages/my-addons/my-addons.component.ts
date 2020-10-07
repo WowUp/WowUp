@@ -58,6 +58,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public dataSource = new MatTableDataSource<MyAddonsListItem>([]);
   public filter = "";
+  public activeSortColumn = 'displayState';
 
   columns: ColumnState[] = [
     { name: "addon.name", display: "Addon", visible: true },
@@ -416,7 +417,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         updatedCt += 1;
         this.spinnerMessage = `Updating ${updatedCt}/${
           addons.length
-        }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
+          }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
 
         await this.addonService.installAddon(addon.id);
       }
@@ -445,7 +446,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         this.enableControls = true;
         this._ngZone.run(() => {
           this._sessionService.contextText = `${addons.length} addons`;
-          this._displayAddonsSrc.next(this.formatAddons(addons));
+          const formattedAddons = this.formatAddons(addons);
+          this.activeSortColumn = formattedAddons.filter(i => i.needsUpdate).length === 0 ? 'addon.name' : 'displayState';
+          this._displayAddonsSrc.next(formattedAddons);
         });
       },
       error: (err) => {
@@ -458,7 +461,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private formatAddons(addons: Addon[]): MyAddonsListItem[] {
     const listItems = addons.map((addon) => this.createAddonListItem(addon));
-
+    
     return this.sortListItems(listItems);
   }
 
