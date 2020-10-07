@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { remote } from 'electron'
 import { ChangeLog } from '../../models/wowup/change-log';
 
@@ -12,6 +12,8 @@ import { ElectronService } from 'app/services';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent implements OnInit {
+  
+  @Input('tabIndex') tabIndex: number;
 
   public version = '';
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;

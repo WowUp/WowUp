@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
@@ -23,6 +23,8 @@ import * as _ from 'lodash';
   styleUrls: ["./get-addons.component.scss"],
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
+  
+  @Input('tabIndex') tabIndex: number;
 
   @ViewChild(MatSort) sort: MatSort;
   
