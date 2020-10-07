@@ -151,6 +151,9 @@
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE' | translate}}
     </button>
+    <button mat-menu-item (click)="onShowfolder(listItem.addon)">
+      {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER' | translate}}
+    </button>
     <button mat-menu-item (click)="onReInstallAddon(listItem.addon)">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON' | translate}}
     </button>

@@ -48,6 +48,7 @@
         "IGNORE_ADDON_BUTTON": "忽略",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
         "CHANNEL_SUBMENT_TITLE": "频道",
+        "SHOW_FOLDER": "SHOW_FOLDER",
         "REINSTALL_ADDON_BUTTON": "重新安装",
         "REMOVE_ADDON_BUTTON": "删除",
         "STABLE_ADDON_CHANNEL": "稳定",

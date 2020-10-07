@@ -48,6 +48,7 @@
         "IGNORE_ADDON_BUTTON": "Ignorer",
         "AUTO_UPDATE_ADDON_BUTTON": "Mise à jour automatique",
         "CHANNEL_SUBMENT_TITLE": "Chaîne",
+        "SHOW_FOLDER": "SHOW_FOLDER",
         "REINSTALL_ADDON_BUTTON": "Réinstaller",
         "REMOVE_ADDON_BUTTON": "Retirer",
         "STABLE_ADDON_CHANNEL": "Écurie",

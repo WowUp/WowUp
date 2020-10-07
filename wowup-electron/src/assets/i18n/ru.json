@@ -48,6 +48,7 @@
         "IGNORE_ADDON_BUTTON": "Пропустить",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
         "CHANNEL_SUBMENT_TITLE": "Канал",
+        "SHOW_FOLDER": "SHOW_FOLDER",
         "REINSTALL_ADDON_BUTTON": "Переустановить",
         "REMOVE_ADDON_BUTTON": "Удалить",
         "STABLE_ADDON_CHANNEL": "Конюшня",

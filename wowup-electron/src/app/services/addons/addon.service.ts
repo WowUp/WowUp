@@ -361,6 +361,13 @@ export class AddonService {
     );
   }
 
+  public getFullInstallPath(addon: Addon) {
+    const addonFolderPath = this._warcraftService.getAddonFolderPath(
+      addon.clientType
+    );
+    return path.join(addonFolderPath, addon.folderName);
+  }
+
   public async removeAddon(addon: Addon) {
     const installedDirectories = addon.installedFolders.split(",");
 

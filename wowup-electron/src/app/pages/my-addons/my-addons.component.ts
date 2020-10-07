@@ -101,12 +101,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   constructor(
     private addonService: AddonService,
     private _sessionService: SessionService,
+    private _ngZone: NgZone,
+    private _dialog: MatDialog,
     public electronService: ElectronService,
     public overlay: Overlay,
     public viewContainerRef: ViewContainerRef,
-    public warcraftService: WarcraftService,
-    private _ngZone: NgZone,
-    private _dialog: MatDialog
+    public warcraftService: WarcraftService
   ) {
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(
       (evt) => {
@@ -318,6 +318,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   async onReInstallAddon(addon: Addon) {
     try {
       this.addonService.installAddon(addon.id);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  onShowfolder(addon: Addon) {
+    try {
+      const addonPath = this.addonService.getFullInstallPath(addon);
+      this.electronService.shell.openExternal(addonPath);
     } catch (err) {
       console.error(err);
     }

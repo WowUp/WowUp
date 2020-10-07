@@ -49,6 +49,7 @@
         "IGNORE_ADDON_BUTTON": "Ignore",
         "AUTO_UPDATE_ADDON_BUTTON": "Auto Update",
         "CHANNEL_SUBMENT_TITLE": "Channel",
+        "SHOW_FOLDER": "Show Folder",
         "REINSTALL_ADDON_BUTTON": "Re-Install",
         "REMOVE_ADDON_BUTTON": "Remove",
         "STABLE_ADDON_CHANNEL": "Stable",
