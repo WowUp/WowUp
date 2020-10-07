@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddonModel } from "app/business-objects/my-addons-list-item";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
@@ -14,10 +14,10 @@ import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
 import { BehaviorSubject, Subject, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import * as _ from 'lodash';
+import { filter, map } from "rxjs/operators";
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSort } from "@angular/material/sort";
+import * as _ from "lodash";
 
 @Component({
   selector: "app-get-addons",
@@ -25,10 +25,11 @@ import * as _ from 'lodash';
   styleUrls: ["./get-addons.component.scss"],
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
-
   @ViewChild(MatSort) sort: MatSort;
 
-  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>([]);
+  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>(
+    []
+  );
   private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
 
@@ -54,34 +55,42 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _sessionService: SessionService,
     private _dialog: MatDialog,
     public electronService: ElectronService,
-    public warcraftService: WarcraftService
-  ) { }
+    public warcraftService: WarcraftService,
+    private _ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
-    const selectedClientSubscription = this._sessionService.selectedClientType$.pipe(
-      map((clientType) => {
-        this.selectedClient = clientType;
-        this.loadPopularAddons(this.selectedClient);
-      })
-    ).subscribe();
+    const selectedClientSubscription = this._sessionService.selectedClientType$
+      .pipe(
+        map((clientType) => {
+          this.selectedClient = clientType;
+          this.loadPopularAddons(this.selectedClient);
+        })
+      )
+      .subscribe();
 
-    const addonRemovedSubscription = this._addonService.addonRemoved$.pipe(
-      map((event: string) => {
-        this.onRefresh();
-      })
-    ).subscribe();
 
-    const displayAddonSubscription = this._displayAddonsSrc
-      .subscribe((items: PotentialAddon[]) => {
+
+    const addonRemovedSubscription = this._addonService.addonRemoved$
+      .pipe(
+        map(() => {
+          this.onRefresh();
+        })
+      )
+      .subscribe();
+
+    const displayAddonSubscription = this._displayAddonsSrc.subscribe(
+      (items: PotentialAddon[]) => {
         this.dataSource.data = items;
         this.dataSource.sortingDataAccessor = _.get;
         this.dataSource.sort = this.sort;
-      });
+      }
+    );
 
     this.subscriptions = [
       selectedClientSubscription,
       addonRemovedSubscription,
-      displayAddonSubscription
+      displayAddonSubscription,
     ];
   }
 
@@ -128,9 +137,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.isBusy = false;
   }
 
-  openDetailDialog(addon: PotentialAddon) : void  {
+  openDetailDialog(addon: PotentialAddon): void {
     const dialogRef = this._dialog.open(AddonDetailComponent, {
-      data:addon as Addon,
+      data: addon as Addon,
     });
 
     dialogRef.afterClosed().subscribe();

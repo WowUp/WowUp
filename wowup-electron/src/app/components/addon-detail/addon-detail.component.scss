@@ -1,12 +1,18 @@
 .addon-detail-view {
-  width: 450px;
+  width: 35vw;
+  max-width: 500px;
   margin-top: 8px;
 
   .addon-detail-title,
   .addon-detail-subtitle {
     display: flex;
     justify-content: space-between;
+
+    h2 {
+      padding: 0 0.5rem;
+    }
   }
+
   .mat-icon-button .mat-button-wrapper,
   .close-icon {
     cursor: pointer !important;
@@ -21,10 +27,15 @@
     letter-spacing: 0.6px;
   }
   .dialog-buttons {
-    display:flex;
+    display: flex;
     .btn-wrapper {
       margin-left: auto;
     }
   }
 
+  .screenshot-container {
+    img {
+      max-height: 200px;
+    }
+  }
 }

@@ -20,12 +20,15 @@
     <div class="mat-caption addon-detail-summary">
       {{ addon.summary }}
     </div>
-    <img mat-card-image [src]="defaultImageUrl" alt="Addon Picture" />
+    <div class="screenshot-container">
+      <img [src]="defaultImageUrl" alt="Addon Picture" />
+    </div>
   </mat-dialog-content>
   <mat-dialog-actions class="dialog-buttons">
     <a
       appExternalLink
       mat-stroked-button
+      cdkFocusInitial
       color="primary"
       [href]="addon.externalUrl"
       >{{ "DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON" | translate }}</a

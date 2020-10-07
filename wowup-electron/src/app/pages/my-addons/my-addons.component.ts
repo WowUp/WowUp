@@ -29,8 +29,8 @@ import { stringIncludes } from "app/utils/string.utils";
 import { BehaviorSubject, from, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import * as _ from "lodash";
 import { TranslateService } from "@ngx-translate/core";
+import * as _ from "lodash";
 
 @Component({
   selector: "app-my-addons",
@@ -70,6 +70,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     return this.columns.filter((col) => col.visible).map((col) => col.name);
   }
 
+  public get selectedRows(): AddonModel[] {
+    return this._displayAddonsSrc.value.filter(x => x.selected);
+  }
+
   constructor(
     private addonService: AddonService,
     private _sessionService: SessionService,
@@ -83,9 +87,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const addonUpdatedSubscription = this.addonService.addonInstalled$.subscribe(
-      (evt: AddonUpdateEvent) => this.onAddonUpdated(evt)
-    );
     const addonRemovedSubscription = this.addonService.addonRemoved$.subscribe(
       (addonId: string) => this.onAddonRemoved(addonId)
     );
@@ -124,7 +125,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     );
 
     this.subscriptions = [
-      addonUpdatedSubscription,
       addonRemovedSubscription,
       selectedClientSubscription,
       displayAddonSubscription,

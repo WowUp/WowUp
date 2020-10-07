@@ -35,6 +35,13 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     return this.isInstalled && !this.hideUninstall;
   }
 
+  get shouldDisableInstallButton(): boolean {
+    return (
+      (!this.addonModel.needsInstall && !this.addonModel.needsUpdate) ||
+      this.addonModel.isInstalling
+    );
+  }
+
   constructor(
     private _addonService: AddonService,
     private _sessionService: SessionService,
@@ -51,21 +58,8 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     this.setButtonOptions();
 
     const addonUpdateSubscription = this._addonService.addonInstalled$
-      .pipe(
-        filter(
-          (x) =>
-            x.addon.externalId === this.addon.externalId && x.installState == 4
-        ),
-        map((event: AddonUpdateEvent) => {
-          const addonModel = new AddonModel(event.addon);
-          addonModel.updateInstallState(event.installState);
-          addonModel.setStatusText(event.installState);
-          addonModel.installProgress = event.progress;
-          this.addonModel = addonModel;
-          this.setButtonOptions();
-        })
-      )
-      .subscribe();
+      .pipe(filter((x) => x.addon.externalId === this.addon.externalId))
+      .subscribe((event) => this.onAddonUpdate(event));
     this._subscriptions = [addonUpdateSubscription];
   }
 
@@ -73,17 +67,39 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     this._subscriptions.forEach((x) => x.unsubscribe());
   }
 
+  onAddonUpdate(event: AddonUpdateEvent): void {
+    const addonModel = new AddonModel(event.addon);
+    addonModel.installProgress = event.progress;
+    addonModel.updateInstallState(event.installState);
+    addonModel.setStatusText(event.installState);
+    this.addonModel = addonModel;
+
+    if (event.installState === 4) {
+      this.setButtonOptions();
+    } else {
+      this.updateButtonOptions();
+    }
+  }
+
   setButtonOptions(): void {
     this.btnInstallOptions = this.getBaseBtnOptions();
     this.btnUninstallOptions = this.getUninstallBtnOptions();
-    if (!this.addonModel.needsInstall && !this.addonModel.needsUpdate) {
+
+    if (this.shouldDisableInstallButton) {
       this.btnInstallOptions.disabled = true;
-      this.btnInstallOptions.active = false;
     }
     if (!this.canUninstall) {
       this.btnUninstallOptions.disabled = true;
       this.btnUninstallOptions.active = false;
     }
+  }
+
+  updateButtonOptions(): void {
+    this.btnInstallOptions.active = this.addonModel.isInstalling;
+    this.btnInstallOptions.value = this.addonModel.installProgress;
+    this.btnInstallOptions.text = this.addonModel.isInstalling
+      ? this.getTranslatedStatusText()
+      : this.getTranslatedStateText();
   }
 
   onInstallUpdateClick(): void {
@@ -100,43 +116,23 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   private installAddon() {
-    this.btnInstallOptions.text = this._translate.instant(
-      "COMMON.ADDON_STATUS.INSTALLING"
-    );
     this._addonService.installPotentialAddon(
       this.addonModel.addon as PotentialAddon,
-      this._sessionService.selectedClientType,
-      (state, progress) => {
-        this.addonModel.updateInstallState(state);
-        this.addonModel.installProgress = progress;
-        this.btnInstallOptions.value = progress;
-      }
+      this._sessionService.selectedClientType
     );
   }
 
   private updateAddon() {
-    this.btnInstallOptions.text = this._translate.instant(
-      "COMMON.ADDON_STATUS.UPDATING"
-    );
-    this._addonService.installAddon(
-      this.addonModel.addon.id,
-      (state, progress) => {
-        console.log(
-          "AddonInstallButtonComponent -> updateAddon -> state",
-          state
-        );
-        this.addonModel.updateInstallState(state);
-        this.addonModel.installProgress = progress;
-        this.btnInstallOptions.value = progress;
-      }
-    );
+    this._addonService.installAddon(this.addonModel.addon.id);
   }
 
   private confirmRemoveAddon() {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title:  this._translate.instant('DIALOGS.REMOVE_ADDON.TITLE'),
-        message: this._translate.instant('DIALOGS.REMOVE_ADDON.MESSAGE', { addon: this.addon.name })
+        title: this._translate.instant("DIALOGS.REMOVE_ADDON.TITLE"),
+        message: this._translate.instant("DIALOGS.REMOVE_ADDON.MESSAGE", {
+          addon: this.addon.name,
+        }),
       },
     });
 
@@ -172,17 +168,19 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
 
   private getBaseBtnOptions(): MatProgressButtonOptions {
     return {
-      active: false,
-      text: this.getTranslatedStateText(),
+      active: this.addonModel.isInstalling,
+      disabled: this.shouldDisableInstallButton,
+      value: this.addonModel.installProgress,
+      text: this.addonModel.isInstalling
+        ? this.getTranslatedStatusText()
+        : this.getTranslatedStateText(),
+      mode: "determinate",
       buttonColor: "primary",
       barColor: "accent",
       customClass: "install-button",
       raised: true,
       stroked: false,
-      mode: "determinate",
-      disabled: false,
       fullWidth: false,
-      value: this.addonModel.installProgress,
     };
   }
 

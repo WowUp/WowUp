@@ -475,7 +475,7 @@ export class CurseAddonProvider implements AddonProvider {
     const latestFiles = this.getLatestFiles(
       scanResult.searchResult,
       clientType
-    );
+      );
     const latestVersion = latestFiles.find(
       (lf) => this.getChannelType(lf.releaseType) <= addonChannelType
     );

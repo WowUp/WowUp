@@ -128,9 +128,9 @@
   "COMMON": {
     "ADDON_STATUS": {
       "COMPLETE": "Complete",
-      "DOWNLOADING": "Downloading...",
-      "INSTALLING": "Installing...",
-      "UNINSTALLING": "Uninstalling...",
+      "DOWNLOADING": "Downloading",
+      "INSTALLING": "Installing",
+      "UNINSTALLING": "Uninstalling",
       "UPDATING": "Updating..."
     },
     "ADDON_STATE": {
