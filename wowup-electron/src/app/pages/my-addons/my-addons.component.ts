@@ -51,6 +51,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private readonly _destroyed$ = new Subject<void>();
 
   private subscriptions: Subscription[] = [];
+  private isSelectedTab: boolean = false;
 
   public spinnerMessage = "Loading...";
 
@@ -108,6 +109,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     public viewContainerRef: ViewContainerRef,
     public warcraftService: WarcraftService
   ) {
+    _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
+      this.isSelectedTab = tabIndex === this.tabIndex;
+      console.log("TAB CHANGE", tabIndex, this.tabIndex);
+      if (this.isSelectedTab) {
+        this.setPageContextText();
+      }
+    });
+
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(
       (evt) => {
         let listItems: MyAddonsListItem[] = [].concat(
@@ -174,15 +183,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       }
     );
 
-    const selectedTabSubscription = this._sessionService.selectedHomeTab$
-      .pipe(filter((tabIndex) => this.tabIndex === this.tabIndex))
-      .subscribe(() => this.setPageContextText());
-
     this.subscriptions.push(
       addonInstalledSubscription,
       addonRemovedSubscription,
-      displayAddonSubscription,
-      selectedTabSubscription
+      displayAddonSubscription
     );
   }
 
@@ -453,8 +457,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         this.isBusy = false;
         this.enableControls = true;
         this._ngZone.run(() => {
-          this._sessionService.contextText = `${addons.length} addons`;
           this._displayAddonsSrc.next(this.formatAddons(addons));
+          this.setPageContextText();
         });
       },
       error: (err) => {
@@ -493,7 +497,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._sessionService.contextText = `${this._displayAddonsSrc.value.length} addons`;
+    this._sessionService.setContextText(
+      this.tabIndex,
+      `${this._displayAddonsSrc.value.length} addons`
+    );
   }
 
   private getInstallStateText(installState: AddonInstallState) {
