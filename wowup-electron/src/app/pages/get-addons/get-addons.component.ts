@@ -1,23 +1,27 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { AddonModel } from "app/business-objects/my-addons-list-item";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
 import { Addon } from "app/entities/addon";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
-import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { ColumnState } from "app/models/wowup/column-state";
 import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { ElectronService } from "app/services";
 import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { BehaviorSubject, Subject, Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatSort } from "@angular/material/sort";
 import * as _ from "lodash";
+import { BehaviorSubject, Subject, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-get-addons",
@@ -25,6 +29,8 @@ import * as _ from "lodash";
   styleUrls: ["./get-addons.component.scss"],
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
+  @Input("tabIndex") tabIndex: number;
+
   @ViewChild(MatSort) sort: MatSort;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>(
@@ -68,8 +74,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-
-
 
     const addonRemovedSubscription = this._addonService.addonRemoved$
       .pipe(

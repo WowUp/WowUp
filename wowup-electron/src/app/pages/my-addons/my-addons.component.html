@@ -71,15 +71,15 @@
       </ng-container>
 
       <ng-container matColumnDef="addon.gameVersion">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+        <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER' | translate}}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td class="game-version-cell" mat-cell *matCellDef="let element">
           {{element.addon.gameVersion}}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="addon.provider">
+      <ng-container matColumnDef="addon.providerName">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{'PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER' | translate}}
         </th>

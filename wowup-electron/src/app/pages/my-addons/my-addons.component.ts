@@ -1,6 +1,7 @@
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
   Component,
+  Input,
   NgZone,
   OnDestroy,
   OnInit,
@@ -27,7 +28,7 @@ import { WarcraftService } from "app/services/warcraft/warcraft.service";
 import { getEnumName } from "app/utils/enum.utils";
 import { stringIncludes } from "app/utils/string.utils";
 import { BehaviorSubject, from, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { TranslateService } from "@ngx-translate/core";
 import * as _ from "lodash";
@@ -38,6 +39,8 @@ import * as _ from "lodash";
   styleUrls: ["./my-addons.component.scss"],
 })
 export class MyAddonsComponent implements OnInit, OnDestroy {
+  @Input("tabIndex") tabIndex: number;
+
   @ViewChild("addonContextMenuTrigger") contextMenu: MatMenuTrigger;
   @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
   @ViewChild("updateAllContextMenuTrigger")
@@ -51,13 +54,33 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public spinnerMessage = "Loading...";
   public contextMenuPosition = { x: "0px", y: "0px" };
   public columns: ColumnState[] = [
-    { name: 'addon.name', display: 'Addon', visible: true },
-    { name: 'addon.displayState', display: 'Status', visible: true },
-    { name: 'addon.latestVersion', display: 'Latest Version', visible: true, allowToggle: true },
-    { name: 'addon.gameVersion', display: 'Game Version', visible: true, allowToggle: true },
-    { name: 'addon.author', display: 'Author', visible: true, allowToggle: true },
-    { name: 'addon.provider', display: 'Provider', visible: true, allowToggle: true },
-  ]
+    { name: "addon.name", display: "Addon", visible: true },
+    { name: "addon.displayState", display: "Status", visible: true },
+    {
+      name: "addon.latestVersion",
+      display: "Latest Version",
+      visible: true,
+      allowToggle: true,
+    },
+    {
+      name: "addon.gameVersion",
+      display: "Game Version",
+      visible: true,
+      allowToggle: true,
+    },
+    {
+      name: "addon.author",
+      display: "Author",
+      visible: true,
+      allowToggle: true,
+    },
+    {
+      name: "addon.provider",
+      display: "Provider",
+      visible: true,
+      allowToggle: true,
+    },
+  ];
   public selectedClient = WowClientType.None;
   public wowClientType = WowClientType;
   public overlayRef: OverlayRef | null;
@@ -71,7 +94,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public get selectedRows(): AddonModel[] {
-    return this._displayAddonsSrc.value.filter(x => x.selected);
+    return this._displayAddonsSrc.value.filter((x) => x.selected);
   }
 
   constructor(
@@ -93,10 +116,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
         map((clientType) => {
-          console.log(
-            "MyAddonsComponent -> ngOnInit -> clientType",
-            clientType
-          );
           this.selectedClient = clientType;
           this.loadAddons(this.selectedClient);
         })
@@ -124,10 +143,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       }
     );
 
+    const selectedTabSubscription = this._sessionService.selectedHomeTab$
+      .pipe(filter((tabIndex) => this.tabIndex === tabIndex))
+      .subscribe(() => this.setPageContextText());
+
     this.subscriptions = [
       addonRemovedSubscription,
       selectedClientSubscription,
       displayAddonSubscription,
+      selectedTabSubscription,
     ];
   }
 
@@ -324,8 +348,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   onRemoveAddonClick(addon: Addon) {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title:  this._translate.instant('DIALOGS.REMOVE_ADDON.TITLE'),
-        message: this._translate.instant('DIALOGS.REMOVE_ADDON.MESSAGE', { addon: addon.name })
+        title: this._translate.instant("DIALOGS.REMOVE_ADDON.TITLE"),
+        message: this._translate.instant("DIALOGS.REMOVE_ADDON.MESSAGE", {
+          addon: addon.name,
+        }),
       },
     });
 
@@ -400,7 +426,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   private updateContextMenuPosition(event: MouseEvent) {
-    this.contextMenuPosition.x = event.clientX.toString + "px";
+    this.contextMenuPosition.x = event.clientX + "px";
     this.contextMenuPosition.y = event.clientY + "px";
   }
 
@@ -434,5 +460,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private sortListItems(listItems: AddonModel[]) {
     return _.orderBy(listItems, ["displayState", "addon.name"]);
+  }
+
+  private setPageContextText() {
+    if (!this._displayAddonsSrc.value?.length) {
+      return;
+    }
+
+    this._sessionService.contextText = `${this._displayAddonsSrc.value.length} addons`;
   }
 }
