@@ -306,7 +306,7 @@ export class AddonService {
       this.updateAddons(addons, newAddons);
     }
 
-    this.syncAddons(clientType, addons);
+    await this.syncAddons(clientType, addons);
 
     return addons;
   }

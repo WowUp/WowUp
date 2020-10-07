@@ -4,7 +4,7 @@ import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ElectronService } from 'app/services';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { WowUpService } from 'app/services/wowup/wowup.service';
-import { Preferences } from '../../../constants';
+import { telemetryEnabledKey } from '../../../constants';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'lodash';
 import * as path from 'path';
@@ -43,7 +43,7 @@ export class OptionsComponent implements OnInit, OnChanges {
     public electronService: ElectronService
   ) {
     _wowUpService.preferenceChange$
-      .pipe(filter(change => change.key === Preferences.telemetryEnabledKey))
+      .pipe(filter(change => change.key === telemetryEnabledKey))
       .subscribe(change => {
         this.telemetryEnabled = change.value === true.toString()
       })

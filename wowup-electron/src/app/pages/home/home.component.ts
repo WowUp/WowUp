@@ -1,23 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { SessionService } from 'app/services/session/session.service';
-import { WarcraftService } from 'app/services/warcraft/warcraft.service';
-import { WowUpService } from 'app/services/wowup/wowup.service';
-import { GetAddonsComponent } from '../get-addons/get-addons.component';
+import { Component, OnInit } from "@angular/core";
+import { SessionService } from "app/services/session/session.service";
+import { WarcraftService } from "app/services/warcraft/warcraft.service";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: "app-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
+  public selectedIndex = 0;
+  public hasWowClient = false;
 
   constructor(
-    private router: Router,
-    private wowup: WowUpService,
     private _sessionService: SessionService,
-    public warcraftService: WarcraftService
-  ) { }
+    private _warcraftService: WarcraftService
+  ) {
+    this._warcraftService.installedClientTypes$
+      .subscribe((clientTypes) => {
+        if(clientTypes === undefined){
+          this.hasWowClient = false;
+          this.selectedIndex = 3;
+        } else {
+          this.hasWowClient = clientTypes.length > 0;
+          this.selectedIndex = this.hasWowClient ? 0 : 3;
+        }
+      });
+  }
 
   ngOnInit(): void {
     this._sessionService.appLoaded();

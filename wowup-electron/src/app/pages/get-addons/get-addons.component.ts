@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddonModel } from "app/business-objects/my-addons-list-item";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
@@ -13,8 +13,11 @@ import { ElectronService } from "app/services";
 import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { BehaviorSubject, Subscription } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { BehaviorSubject, Subject, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import * as _ from 'lodash';
 
 @Component({
   selector: "app-get-addons",
@@ -22,13 +25,17 @@ import { map, tap } from "rxjs/operators";
   styleUrls: ["./get-addons.component.scss"],
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
-  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>(
-    []
-  );
+
+  @ViewChild(MatSort) sort: MatSort;
+  
+  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>([]);
+  private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
 
+  public dataSource = new MatTableDataSource<PotentialAddon>([]);
+
   columns: ColumnState[] = [
-    { name: "addon", display: "Addon", visible: true },
+    { name: "name", display: "Addon", visible: true },
     { name: "author", display: "Author", visible: true },
     { name: "provider", display: "Provider", visible: true },
     { name: "status", display: "Status", visible: true },
@@ -39,8 +46,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public query = "";
-  public displayAddons$ = this._displayAddonsSrc.asObservable();
-
   public isBusy = false;
   public selectedClient = WowClientType.None;
 
@@ -66,9 +71,17 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       })
     ).subscribe();
 
+    const displayAddonSubscription = this._displayAddonsSrc
+      .subscribe((items: PotentialAddon[]) => {
+        this.dataSource.data = items;
+        this.dataSource.sortingDataAccessor = _.get;
+        this.dataSource.sort = this.sort;
+      });
+
     this.subscriptions = [
       selectedClientSubscription,
-      addonRemovedSubscription
+      addonRemovedSubscription,
+      displayAddonSubscription
     ];
   }
 

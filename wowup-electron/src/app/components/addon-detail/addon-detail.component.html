@@ -28,10 +28,9 @@
       mat-stroked-button
       color="primary"
       [href]="addon.externalUrl"
-      >VIEW IN BROWSER</a
+      >{{ "DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON" | translate }}</a
     >
     <div class="btn-wrapper">
-      <!-- update button -->
       <app-addon-install-button [addon]="addon"> </app-addon-install-button>
     </div>
   </mat-dialog-actions>

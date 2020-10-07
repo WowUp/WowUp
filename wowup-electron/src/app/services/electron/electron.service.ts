@@ -6,7 +6,6 @@ import { ipcRenderer, webFrame, remote, shell } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { BehaviorSubject } from 'rxjs';
-import { AppConfig } from 'environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +28,10 @@ export class ElectronService {
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
+  }
+
+  get locale(): string {
+    return this.remote.app.getLocale().split('-')[0];
   }
 
   constructor() {
@@ -59,6 +62,7 @@ export class ElectronService {
     this.remote.getCurrentWindow().on('unmaximize', () => {
       this._windowMaximizedSrc.next(false);
     });
+
   }
 
   minimizeWindow() {

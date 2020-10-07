@@ -11,7 +11,6 @@ import { OptionsComponent } from "../options/options.component";
 import { GetAddonsComponent } from "../get-addons/get-addons.component";
 import { AboutComponent } from "../about/about.component";
 import { PotentialAddonTableColumnComponent } from "app/components/potential-addon-table-column/potential-addon-table-column.component";
-import { PotentialAddonStatusColumnComponent } from "app/components/potential-addon-status-column/potential-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "app/components/my-addons-addon-cell/my-addons-addon-cell.component";
 import { ProgressSpinnerComponent } from "app/components/progress-spinner/progress-spinner.component";
 import { DownloadCountPipe } from "app/pipes/download-count.pipe";
@@ -34,7 +33,6 @@ import { AddonInstallButtonComponent } from "app/components/addon-install-button
     GetAddonsComponent,
     OptionsComponent,
     MyAddonsAddonCellComponent,
-    PotentialAddonStatusColumnComponent,
     ProgressSpinnerComponent,
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,

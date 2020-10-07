@@ -10,6 +10,11 @@ footer {
     justify-content: space-between;
     align-items: center;
 
+
+    p {
+        margin: 0;
+    }
+
     a, img {
         height: 25px;
         -webkit-app-region: no-drag;
@@ -21,5 +26,11 @@ footer {
 
     div {
         font-size: 0.8em;
+    }
+
+    .patreon-link{
+        &:hover {
+            background-color: $dark-3;
+        }
     }
 }

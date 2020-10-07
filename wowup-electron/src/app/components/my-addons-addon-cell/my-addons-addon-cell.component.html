@@ -18,7 +18,9 @@
     </div>
   </div>
   <div>
-    <a class="addon-title" (click)="viewDetails()">{{ listItem.addon.name }}</a>
+    <a class="addon-title mat-subheading-2" (click)="viewDetails()">{{
+      listItem.addon.name
+    }}</a>
     <div class="addon-version">{{ listItem.addon.installedVersion }}</div>
   </div>
 </div>
