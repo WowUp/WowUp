@@ -75,6 +75,10 @@
     white-space: pre-wrap;
   }
 
+  .game-version-cell {
+    min-width: 110px;
+  }
+
   .status-column {
     display: flex;
     width: 130px;
