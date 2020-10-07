@@ -2,32 +2,28 @@ import { AddonProvider } from "./addon-provider";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { Addon } from "../entities/addon";
 import { HttpClient } from "@angular/common/http";
-import { CurseSearchResult } from "../models/curse/curse-search-result";
-import { map, mergeMap } from "rxjs/operators";
-import { CurseFile } from "../models/curse/curse-file";
+import { map } from "rxjs/operators";
 import * as _ from "lodash";
 import * as fp from "lodash/fp";
-import * as path from "path";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { from, Observable, of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { CurseReleaseType } from "../models/curse/curse-release-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { PotentialAddon } from "../models/wowup/potential-addon";
-import { CurseGetFeaturedResponse } from "../models/curse/curse-get-featured-response";
 import { CachingService } from "app/services/caching/caching-service";
 import { AddonFolder } from "app/models/wowup/addon-folder";
-import { FileService } from "app/services/files/file.service";
-import { CurseFolderScanner } from "./curse/curse-folder-scanner";
 import { ElectronService } from "app/services";
-import { CurseScanResult } from "../models/curse/curse-scan-result";
-import { CurseFingerprintsResponse } from "app/models/curse/curse-fingerprint-response";
-import { CurseMatch } from "app/models/curse/curse-match";
+import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import { v4 as uuidv4 } from "uuid";
-import * as async from "async";
-import { SessionService } from "app/services/session/session.service";
-import { Inject } from "@angular/core";
-import { Session } from "inspector";
+import { CURSE_GET_SCAN_RESULTS } from "common/constants";
+import { CurseGetScanResultsRequest } from "common/curse/curse-get-scan-results-request";
+import { CurseGetScanResultsResponse } from "common/curse/curse-get-scan-results-response";
+import { CurseMatch } from "common/curse/curse-match";
+import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
+import { CurseSearchResult } from "../models/curse/curse-search-result";
+import { CurseFile } from "common/curse/curse-file";
+import { CurseReleaseType } from "common/curse/curse-release-type";
+import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-response";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 
@@ -37,9 +33,7 @@ export class CurseAddonProvider implements AddonProvider {
   constructor(
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
-    private _electronService: ElectronService,
-    private _sessionService: SessionService,
-    private _fileService: FileService
+    private _electronService: ElectronService
   ) {}
 
   async scan(
@@ -60,12 +54,10 @@ export class CurseAddonProvider implements AddonProvider {
     console.log("mapAddonFolders");
 
     const addonIds = fp.flow(
-      fp.filter((sr: CurseScanResult) => !!sr.exactMatch),
-      fp.map((sr: CurseScanResult) => sr.exactMatch.id),
+      fp.filter((sr: AppCurseScanResult) => !!sr.exactMatch),
+      fp.map((sr: AppCurseScanResult) => sr.exactMatch.id),
       fp.uniq
     )(scanResults);
-
-    // console.log(_.sortBy(addonIds).join('\n'));
 
     var addonResults = await this.getAllIds(addonIds).toPromise();
 
@@ -98,7 +90,7 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   private async mapAddonFolders(
-    scanResults: CurseScanResult[],
+    scanResults: AppCurseScanResult[],
     clientType: WowClientType
   ) {
     const fingerprintResponse = await this.getAddonsByFingerprints(
@@ -130,7 +122,7 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   private hasMatchingFingerprint(
-    scanResult: CurseScanResult,
+    scanResult: AppCurseScanResult,
     exactMatch: CurseMatch
   ) {
     return exactMatch.file.modules.some(
@@ -165,30 +157,37 @@ export class CurseAddonProvider implements AddonProvider {
 
   private getScanResults = async (
     addonFolders: AddonFolder[]
-  ): Promise<CurseScanResult[]> => {
-    // const scanResults: CurseScanResult[] = [];
-
+  ): Promise<AppCurseScanResult[]> => {
     const t1 = Date.now();
 
-    // Scan addon folders in parallel for speed!?
-    const scanResults = await async.mapLimit<AddonFolder, CurseScanResult>(
-      addonFolders,
-      2,
-      async (folder, callback) => {
-        this._sessionService.statusText = `Scanning ${folder.name}`;
-        const scanResult = await new CurseFolderScanner(
-          this._electronService,
-          this._fileService
-        ).scanFolder(folder);
+    return new Promise((resolve, reject) => {
+      const eventHandler = (_evt: any, arg: CurseGetScanResultsResponse) => {
+        if (arg.error) {
+          return reject(arg.error);
+        }
 
-        callback(undefined, scanResult);
-      }
-    );
+        const appScanResults: AppCurseScanResult[] = arg.scanResults.map(
+          (scanResult) => {
+            const addonFolder = addonFolders.find(
+              (af) => af.path === scanResult.directory
+            );
 
-    console.log("scan delta", Date.now() - t1);
-    this._sessionService.statusText = "";
+            return Object.assign({}, scanResult, { addonFolder });
+          }
+        );
 
-    return scanResults;
+        console.log("scan delta", Date.now() - t1);
+        resolve(appScanResults);
+      };
+
+      const request: CurseGetScanResultsRequest = {
+        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
+        responseKey: uuidv4(),
+      };
+
+      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+      this._electronService.ipcRenderer.send(CURSE_GET_SCAN_RESULTS, request);
+    });
   };
 
   async getAll(
@@ -472,7 +471,7 @@ export class CurseAddonProvider implements AddonProvider {
   private getAddon(
     clientType: WowClientType,
     addonChannelType: AddonChannelType,
-    scanResult: CurseScanResult
+    scanResult: AppCurseScanResult
   ): Addon {
     const currentVersion = scanResult.exactMatch.file;
     const authors = scanResult.searchResult.authors

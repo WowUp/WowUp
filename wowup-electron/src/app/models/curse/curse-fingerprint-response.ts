@@ -1,4 +1,4 @@
-import { CurseMatch } from "./curse-match";
+import { CurseMatch } from "../../../common/curse/curse-match";
 
 export interface CurseFingerprintsResponse {
     isCacheBuild: boolean;

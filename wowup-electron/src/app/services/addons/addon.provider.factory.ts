@@ -38,9 +38,7 @@ export class AddonProviderFactory {
     return new CurseAddonProvider(
       this._httpClient,
       this._cachingService,
-      this._electronService,
-      this._sessionService,
-      this._fileService
+      this._electronService
     );
   }
 

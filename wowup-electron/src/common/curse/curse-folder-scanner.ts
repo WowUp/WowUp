@@ -1,22 +1,13 @@
 import * as path from "path";
 import * as fs from "fs";
 import * as _ from "lodash";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { ElectronService } from "app/services";
-import { CurseHashFileResponse } from "common/models/curse-hash-file-response";
-import { CurseHashFileRequest } from "common/models/curse-hash-file-request";
-import { CURSE_HASH_FILE_CHANNEL } from "common/constants";
-import { v4 as uuidv4 } from "uuid";
-import { CurseScanResult } from "../../models/curse/curse-scan-result";
 import * as async from "async";
-import { FileService } from "app/services/files/file.service";
+import { CurseScanResult } from "./curse-scan-result";
+import { readDirRecursive, readFile } from "../../../file.utils";
+
+const nativeAddon = require("../../../build/Release/addon.node");
 
 export class CurseFolderScanner {
-  constructor(
-    private _electronService: ElectronService,
-    private _fileService: FileService
-  ) {}
-
   private get tocFileCommentsRegex() {
     return /\s*#.*$/gm;
   }
@@ -41,35 +32,24 @@ export class CurseFolderScanner {
     return /<!--.*?-->/gs;
   }
 
-  async scanFolder(addonFolder: AddonFolder): Promise<CurseScanResult> {
-    const folderPath = addonFolder.path;
-
-    const files = await this._fileService.listAllFiles(folderPath);
+  async scanFolder(folderPath: string): Promise<CurseScanResult> {
+    const files = await readDirRecursive(folderPath);
     console.log("listAllFiles", folderPath, files.length);
 
     let matchingFiles = await this.getMatchingFiles(folderPath, files);
     matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
 
-    // console.log('matching files', matchingFiles.length)
-    // const fst = matchingFiles.map(f => f.toLowerCase()).join('\n');
-
     const individualFingerprints = await async.mapLimit<string, number>(
       matchingFiles,
       2,
       async (path, callback) => {
-        const normalizedFileHash = await this.computeNormalizedFileHash(path);
+        const normalizedFileHash = await this.getFileHash(path);
         callback(undefined, normalizedFileHash);
       }
     );
 
-    // const individualFingerprints: number[] = [];
-    // for (let path of matchingFiles) {
-    //   const normalizedFileHash = await this.computeNormalizedFileHash(path);
-    //   individualFingerprints.push(normalizedFileHash);
-    // }
-
     const hashConcat = _.orderBy(individualFingerprints).join("");
-    const fingerprint = await this.computeStringHash(hashConcat);
+    const fingerprint = this.getStringHash(hashConcat);
     console.log("fingerprint", fingerprint);
 
     return {
@@ -78,7 +58,6 @@ export class CurseFolderScanner {
       fingerprint,
       folderName: path.basename(folderPath),
       individualFingerprints,
-      addonFolder,
     };
   }
 
@@ -117,7 +96,7 @@ export class CurseFolderScanner {
 
     matchingFileList.push(fileInfo);
 
-    let input = await this._fileService.readFile(fileInfo);
+    let input = await readFile(fileInfo);
     input = this.removeComments(fileInfo, input);
 
     const inclusions = this.getFileInclusionMatches(fileInfo, input);
@@ -172,63 +151,103 @@ export class CurseFolderScanner {
     return matches;
   }
 
-  private computeNormalizedFileHash = (filePath: string) => {
-    return this.computeFileHash(filePath, true);
-  };
+  // private computeNormalizedFileHash = (filePath: string) => {
+  //   return this.computeFileHash(filePath, true);
+  // };
 
-  private computeFileHash = (
-    filePath: string,
-    normalizeWhitespace: boolean
-  ) => {
-    return this.computeHash(filePath, 0, normalizeWhitespace);
-  };
+  // private computeFileHash = (
+  //   filePath: string,
+  //   normalizeWhitespace: boolean
+  // ) => {
+  //   return this.getFileHash(filePath);
+  // };
 
-  private computeStringHash = (str: string): Promise<number> => {
+  // private computeStringHash = (str: string): Promise<number> => {
+  //   return new Promise((resolve, reject) => {
+  //     const eventHandler = (_evt: any, arg: CurseHashFileResponse) => {
+  //       if (arg.error) {
+  //         return reject(arg.error);
+  //       }
+
+  //       resolve(arg.fingerprint);
+  //     };
+
+  //     const request: CurseHashFileRequest = {
+  //       targetString: str,
+  //       targetStringEncoding: "ascii",
+  //       responseKey: uuidv4(),
+  //       normalizeWhitespace: false,
+  //       precomputedLength: 0,
+  //     };
+
+  //     this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+  //     this._electronService.ipcRenderer.send(CURSE_HASH_FILE_CHANNEL, request);
+  //   });
+  // };
+
+  // private computeHash = (
+  //   filePath: string,
+  //   precomputedLength: number = 0,
+  //   normalizeWhitespace: boolean = false
+  // ): Promise<number> => {
+  //   return new Promise((resolve, reject) => {
+  //     const eventHandler = (_evt: any, arg: CurseHashFileResponse) => {
+  //       if (arg.error) {
+  //         return reject(arg.error);
+  //       }
+
+  //       resolve(arg.fingerprint);
+  //     };
+
+  //     const request: CurseHashFileRequest = {
+  //       responseKey: uuidv4(),
+  //       filePath,
+  //       normalizeWhitespace,
+  //       precomputedLength,
+  //     };
+
+  //     this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+  //     this._electronService.ipcRenderer.send(CURSE_HASH_FILE_CHANNEL, request);
+  //   });
+  // };
+
+  private getStringHash(
+    targetString: string,
+    targetStringEncoding?: BufferEncoding
+  ): number {
+    try {
+      const strBuffer = Buffer.from(
+        targetString,
+        targetStringEncoding || "ascii"
+      );
+
+      const hash = nativeAddon.computeHash(strBuffer, strBuffer.length);
+
+      return hash;
+    } catch (err) {
+      console.error(err);
+      console.log(targetString, targetStringEncoding);
+      throw err;
+    }
+  }
+
+  private getFileHash(filePath: string): Promise<number> {
     return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: CurseHashFileResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
+      try {
+        fs.readFile(filePath, (err, buffer) => {
+          if (err) {
+            return reject(err);
+          }
 
-        resolve(arg.fingerprint);
-      };
+          const hash = nativeAddon.computeHash(buffer, buffer.length);
 
-      const request: CurseHashFileRequest = {
-        targetString: str,
-        targetStringEncoding: "ascii",
-        responseKey: uuidv4(),
-        normalizeWhitespace: false,
-        precomputedLength: 0,
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(CURSE_HASH_FILE_CHANNEL, request);
+          return resolve(hash);
+        });
+      } catch (err) {
+        console.error(err);
+        console.log(filePath);
+        return reject(err);
+      }
     });
-  };
-
-  private computeHash = (
-    filePath: string,
-    precomputedLength: number = 0,
-    normalizeWhitespace: boolean = false
-  ): Promise<number> => {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: CurseHashFileResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
-
-        resolve(arg.fingerprint);
-      };
-
-      const request: CurseHashFileRequest = {
-        responseKey: uuidv4(),
-        filePath,
-        normalizeWhitespace,
-        precomputedLength,
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(CURSE_HASH_FILE_CHANNEL, request);
-    });
-  };
+  }
 }
