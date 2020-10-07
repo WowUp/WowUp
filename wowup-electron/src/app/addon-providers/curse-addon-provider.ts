@@ -53,11 +53,11 @@ export class CurseAddonProvider implements AddonProvider {
 
     console.log("mapAddonFolders");
 
-    const addonIds = fp.flow(
-      fp.filter((sr: AppCurseScanResult) => !!sr.exactMatch),
-      fp.map((sr: AppCurseScanResult) => sr.exactMatch.id),
-      fp.uniq
-    )(scanResults);
+    const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
+    const matchedScanResultIds = matchedScanResults.map(
+      (sr) => sr.exactMatch.id
+    );
+    const addonIds = _.uniq(matchedScanResultIds);
 
     var addonResults = await this.getAllIds(addonIds).toPromise();
 
@@ -66,6 +66,7 @@ export class CurseAddonProvider implements AddonProvider {
         (sr) => sr.addonFolder.name === addonFolder.name
       );
       if (!scanResult.exactMatch) {
+        console.log("No search result match", scanResult.directory);
         continue;
       }
 
@@ -73,16 +74,21 @@ export class CurseAddonProvider implements AddonProvider {
         (addonResult) => addonResult.id === scanResult.exactMatch.id
       );
       if (!scanResult.searchResult) {
+        console.log("No search result match", scanResult.directory);
         continue;
       }
 
       try {
-        addonFolder.matchingAddon = this.getAddon(
+        const newAddon = this.getAddon(
           clientType,
           addonChannelType,
           scanResult
         );
+
+        addonFolder.matchingAddon = newAddon;
       } catch (err) {
+        console.error(scanResult);
+        console.error(err);
         // TODO
         // _analyticsService.Track(ex, $"Failed to create addon for result {scanResult.FolderScanner.Fingerprint}");
       }
@@ -93,6 +99,10 @@ export class CurseAddonProvider implements AddonProvider {
     scanResults: AppCurseScanResult[],
     clientType: WowClientType
   ) {
+    if (clientType === WowClientType.None) {
+      return;
+    }
+
     const fingerprintResponse = await this.getAddonsByFingerprints(
       scanResults.map((result) => result.fingerprint)
     ).toPromise();
@@ -113,7 +123,7 @@ export class CurseAddonProvider implements AddonProvider {
       if (!scanResult.exactMatch) {
         scanResult.exactMatch = fingerprintResponse.partialMatches.find(
           (partialMatch) =>
-            partialMatch.file.modules.some(
+            partialMatch.file?.modules?.some(
               (module) => module.fingerprint === scanResult.fingerprint
             )
         );
@@ -468,6 +478,18 @@ export class CurseAddonProvider implements AddonProvider {
     }
   }
 
+  private getWowUpChannel(releaseType: CurseReleaseType): AddonChannelType {
+    switch (releaseType) {
+      case CurseReleaseType.Alpha:
+        return AddonChannelType.Alpha;
+      case CurseReleaseType.Beta:
+        return AddonChannelType.Beta;
+      case CurseReleaseType.Release:
+      default:
+        return AddonChannelType.Stable;
+    }
+  }
+
   private getAddon(
     clientType: WowClientType,
     addonChannelType: AddonChannelType,
@@ -484,17 +506,25 @@ export class CurseAddonProvider implements AddonProvider {
       scanResult.searchResult,
       clientType
     );
-    const latestVersion = latestFiles.find(
+
+    let channelType = addonChannelType;
+    let latestVersion = latestFiles.find(
       (lf) => this.getChannelType(lf.releaseType) <= addonChannelType
     );
+
+    // If there were no releases that met the channel type restrictions
+    if (!latestVersion) {
+      latestVersion = _.first(latestFiles);
+      channelType = this.getWowUpChannel(latestVersion.releaseType);
+    }
 
     return {
       id: uuidv4(),
       author: authors,
       name: scanResult.searchResult.name,
-      channelType: addonChannelType,
+      channelType,
       autoUpdateEnabled: false,
-      clientType: clientType,
+      clientType,
       downloadUrl: latestVersion.downloadUrl,
       externalUrl: scanResult.searchResult.websiteUrl,
       externalId: scanResult.searchResult.id.toString(),

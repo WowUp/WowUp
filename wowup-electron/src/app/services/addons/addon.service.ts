@@ -513,6 +513,10 @@ export class AddonService {
   }
 
   private async scanAddons(clientType: WowClientType): Promise<Addon[]> {
+    if (clientType === WowClientType.None) {
+      return [];
+    }
+
     const addonFolders = await this._warcraftService.listAddons(clientType);
     for (let provider of this._addonProviders) {
       try {
@@ -539,7 +543,6 @@ export class AddonService {
     );
 
     console.log(Object.keys(matchedGroups));
-    console.log(matchedGroups["Curse2382"]);
 
     return Object.values(matchedGroups).map((value) => value[0].matchingAddon);
   }
