@@ -7,6 +7,7 @@ import { map, mergeMap } from "rxjs/operators";
 import { CurseFile } from "../models/curse/curse-file";
 import * as _ from "lodash";
 import * as fp from "lodash/fp";
+import * as path from "path";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { from, Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
@@ -23,6 +24,10 @@ import { CurseScanResult } from "../models/curse/curse-scan-result";
 import { CurseFingerprintsResponse } from "app/models/curse/curse-fingerprint-response";
 import { CurseMatch } from "app/models/curse/curse-match";
 import { v4 as uuidv4 } from "uuid";
+import * as async from "async";
+import { SessionService } from "app/services/session/session.service";
+import { Inject } from "@angular/core";
+import { Session } from "inspector";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 
@@ -33,8 +38,9 @@ export class CurseAddonProvider implements AddonProvider {
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
     private _electronService: ElectronService,
+    private _sessionService: SessionService,
     private _fileService: FileService
-  ) { }
+  ) {}
 
   async scan(
     clientType: WowClientType,
@@ -157,30 +163,33 @@ export class CurseAddonProvider implements AddonProvider {
     return this._httpClient.post<CurseSearchResult[]>(url, addonIds);
   }
 
-  private async getScanResults(
+  private getScanResults = async (
     addonFolders: AddonFolder[]
-  ): Promise<CurseScanResult[]> {
-    const scanResults: CurseScanResult[] = [];
+  ): Promise<CurseScanResult[]> => {
+    // const scanResults: CurseScanResult[] = [];
 
     const t1 = Date.now();
 
     // Scan addon folders in parallel for speed!?
-    for (let folder of addonFolders) {
-      const scanResult = await new CurseFolderScanner(
-        this._electronService,
-        this._fileService
-      ).scanFolder(folder);
-      scanResults.push(scanResult);
-    }
+    const scanResults = await async.mapLimit<AddonFolder, CurseScanResult>(
+      addonFolders,
+      2,
+      async (folder, callback) => {
+        this._sessionService.statusText = `Scanning ${folder.name}`;
+        const scanResult = await new CurseFolderScanner(
+          this._electronService,
+          this._fileService
+        ).scanFolder(folder);
+
+        callback(undefined, scanResult);
+      }
+    );
 
     console.log("scan delta", Date.now() - t1);
-
-    // const str = _.orderBy(scanResults, sr => sr.folderName.toLowerCase())
-    //   .map(sr => `${sr.fingerprint} ${sr.folderName}`).join('\n');
-    // console.log(str);
+    this._sessionService.statusText = "";
 
     return scanResults;
-  }
+  };
 
   async getAll(
     clientType: WowClientType,

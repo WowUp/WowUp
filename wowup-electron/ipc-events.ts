@@ -52,7 +52,6 @@ ipcMain.on(CURSE_HASH_FILE_CHANNEL, async (evt, arg: CurseHashFileRequest) => {
 });
 
 ipcMain.on(LIST_FILES_CHANNEL, async (evt, arg: ListFilesRequest) => {
-  console.log('list files', arg);
   const response: ListFilesResponse = {
     files: []
   };

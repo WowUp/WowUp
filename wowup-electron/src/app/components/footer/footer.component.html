@@ -2,7 +2,7 @@
     <a appExternalLink class="patreon-link" href="https://www.patreon.com/jliddev">
         <img class="patron-img" src="assets/Digital-Patreon-Wordmark_FieryCoral.png" />
     </a>
-    <p>{{sessionService.statusText$ | async}}</p>
+    <p class="flex-grow-1">{{sessionService.statusText$ | async}}</p>
     <div class="row">
         <p class="mr-3">{{sessionService.pageContextText$ | async}}</p>
         <p>v{{wowUpService.applicationVersion}}</p>
