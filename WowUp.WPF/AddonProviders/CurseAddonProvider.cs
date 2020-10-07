@@ -352,11 +352,13 @@ namespace WowUp.WPF.AddonProviders
                     if (scanResult.ExactMatch == null)
                     {
                         scanResult.ExactMatch = fingerprintResponse.PartialMatches
-                            .FirstOrDefault(partialMatch => partialMatch.File.Modules.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint));
+                            .FirstOrDefault(partialMatch =>
+                                partialMatch.File?.Modules?.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint)
+                                ?? false);
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "Failed to map addon folders");
                 Log.Error($"Fingerprints\n{string.Join(",", fingerprints)}");
