@@ -1,11 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 import { AddonModel } from "app/business-objects/my-addons-list-item";
 import { Addon } from "app/entities/addon";
+import { AddonDisplayState } from "app/models/wowup/addon-display-state";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
+import { getEnumName } from "app/utils/enum.utils";
 import { MatProgressButtonOptions } from "mat-progress-buttons";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
@@ -35,7 +38,8 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   constructor(
     private _addonService: AddonService,
     private _sessionService: SessionService,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    private _translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -96,7 +100,9 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   private installAddon() {
-    this.btnInstallOptions.text = "Installing...";
+    this.btnInstallOptions.text = this._translate.instant(
+      "COMMON.ADDON_STATUS.INSTALLING"
+    );
     this._addonService.installPotentialAddon(
       this.addonModel.addon as PotentialAddon,
       this._sessionService.selectedClientType,
@@ -109,10 +115,16 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   private updateAddon() {
-    this.btnInstallOptions.text = "Updating...";
+    this.btnInstallOptions.text = this._translate.instant(
+      "COMMON.ADDON_STATUS.UPDATING"
+    );
     this._addonService.installAddon(
       this.addonModel.addon.id,
       (state, progress) => {
+        console.log(
+          "AddonInstallButtonComponent -> updateAddon -> state",
+          state
+        );
         this.addonModel.updateInstallState(state);
         this.addonModel.installProgress = progress;
         this.btnInstallOptions.value = progress;
@@ -123,8 +135,8 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   private confirmRemoveAddon() {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: `Uninstall Addon?`,
-        message: `Are you sure you want to remove ${this.addon.name}?\nThis will remove all related folders from your World of Warcraft folder.`,
+        title:  this._translate.instant('DIALOGS.REMOVE_ADDON.TITLE'),
+        message: this._translate.instant('DIALOGS.REMOVE_ADDON.MESSAGE', { addon: this.addon.name })
       },
     });
 
@@ -133,32 +145,51 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
         return;
       }
       this.btnUninstallOptions.active = true;
-      this.btnUninstallOptions.text = "Uninstalling...";
+      this.btnUninstallOptions.text = this._translate.instant(
+        "COMMON.ADDON_STATUS.UNINSTALLING"
+      );
       this._addonService.removeAddon(this.addonModel.addon);
       // Parent component should listen to addon removed event and make changes.
     });
   }
 
+  private getTranslatedStatusText(): string {
+    const status = this.addonModel.statusText;
+    return this._translate.instant(
+      `COMMON.ADDON_STATUS.${status.toUpperCase()}`
+    );
+  }
+
+  private getTranslatedStateText(): string {
+    const state = this.addonModel.displayState;
+    return this._translate.instant(
+      `COMMON.ADDON_STATE.${getEnumName(
+        AddonDisplayState,
+        state
+      ).toUpperCase()}`
+    );
+  }
+
   private getBaseBtnOptions(): MatProgressButtonOptions {
     return {
       active: false,
-      text: this.addonModel.statusText,
+      text: this.getTranslatedStateText(),
       buttonColor: "primary",
       barColor: "accent",
       customClass: "install-button",
       raised: true,
       stroked: false,
       mode: "determinate",
-      value: this.addonModel.installProgress,
       disabled: false,
       fullWidth: false,
+      value: this.addonModel.installProgress,
     };
   }
 
   private getUninstallBtnOptions(): MatProgressButtonOptions {
     return {
       ...this.getBaseBtnOptions(),
-      text: "Uninstall",
+      text: this._translate.instant("COMMON.ADDON_STATE.UNINSTALL"),
       mode: "indeterminate",
       buttonColor: "warn",
       barColor: "primary",

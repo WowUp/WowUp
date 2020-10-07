@@ -84,7 +84,7 @@
           {{'PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          {{element.addon.providerName}}
+          <app-addon-provider-badge [providerName]="element.addon.providerName"></app-addon-provider-badge>
         </td>
       </ng-container>
 

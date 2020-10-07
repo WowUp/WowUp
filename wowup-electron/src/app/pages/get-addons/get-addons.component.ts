@@ -27,7 +27,7 @@ import * as _ from 'lodash';
 export class GetAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
-  
+
   private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>([]);
   private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
@@ -36,9 +36,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   columns: ColumnState[] = [
     { name: "name", display: "Addon", visible: true },
+    { name: "status", display: "Status", visible: true },
     { name: "author", display: "Author", visible: true },
     { name: "provider", display: "Provider", visible: true },
-    { name: "status", display: "Status", visible: true },
   ];
 
   public get displayedColumns(): string[] {

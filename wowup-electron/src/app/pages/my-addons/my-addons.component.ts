@@ -30,6 +30,7 @@ import { BehaviorSubject, from, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import * as _ from "lodash";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-my-addons",
@@ -54,8 +55,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     { name: 'addon.displayState', display: 'Status', visible: true },
     { name: 'addon.latestVersion', display: 'Latest Version', visible: true, allowToggle: true },
     { name: 'addon.gameVersion', display: 'Game Version', visible: true, allowToggle: true },
-    { name: 'addon.provider', display: 'Provider', visible: true, allowToggle: true },
     { name: 'addon.author', display: 'Author', visible: true, allowToggle: true },
+    { name: 'addon.provider', display: 'Provider', visible: true, allowToggle: true },
   ]
   public selectedClient = WowClientType.None;
   public wowClientType = WowClientType;
@@ -77,7 +78,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     public viewContainerRef: ViewContainerRef,
     public warcraftService: WarcraftService,
     private _ngZone: NgZone,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    private _translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -322,8 +324,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   onRemoveAddonClick(addon: Addon) {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: `Uninstall Addon?`,
-        message: `Are you sure you want to remove ${addon.name}?\nThis will remove all related folders from your World of Warcraft folder.`,
+        title:  this._translate.instant('DIALOGS.REMOVE_ADDON.TITLE'),
+        message: this._translate.instant('DIALOGS.REMOVE_ADDON.MESSAGE', { addon: addon.name })
       },
     });
 

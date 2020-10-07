@@ -118,6 +118,27 @@
       "NEGATIVE_BUTTON": "No Thanks",
       "POSITIVE_BUTTON": "Sure!",
       "TITLE": "WowUp Telemetry"
+    },
+    "REMOVE_ADDON": {
+      "TITLE": "Uninstall Addon?",
+      "MESSAGE": "Are you sure you want to remove {{addon}}?\nThis will remove all related folders from your World of Warcraft folder."
+
+    }
+  },
+  "COMMON": {
+    "ADDON_STATUS": {
+      "COMPLETE": "Complete",
+      "DOWNLOADING": "Downloading...",
+      "INSTALLING": "Installing...",
+      "UNINSTALLING": "Uninstalling...",
+      "UPDATING": "Updating..."
+    },
+    "ADDON_STATE": {
+      "UNINSTALL": "Uninstall",
+      "IGNORED": "Ignored",
+      "UPDATE": "Update",
+      "INSTALL": "Install",
+      "UPTODATE": "Up to date"
     }
   }
 }
