@@ -167,6 +167,10 @@ export class WarcraftService {
 
   public async listAddons(clientType: WowClientType) {
     const addonFolders: AddonFolder[] = [];
+    if (clientType === WowClientType.None) {
+      return addonFolders;
+    }
+
     const addonFolderPath = this.getAddonFolderPath(clientType);
 
     // Folder may not exist if no addons have been installed

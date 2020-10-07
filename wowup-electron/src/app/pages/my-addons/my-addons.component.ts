@@ -374,6 +374,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
           });
         },
         error: (err) => {
+          console.error(err);
           this.isBusy = false;
           this.enableControls = true;
         }
