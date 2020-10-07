@@ -1,4 +1,4 @@
-import { CurseSearchResult } from "app/models/curse/curse-search-result";
+import { CurseSearchResult } from "../../app/models/curse/curse-search-result";
 import { CurseMatch } from "./curse-match";
 
 export interface CurseScanResult {
