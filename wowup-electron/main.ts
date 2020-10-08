@@ -24,6 +24,9 @@ import * as log from 'electron-log';
 import { autoUpdater } from "electron-updater"
 import * as Store from 'electron-store'
 import { WindowState } from './src/app/models/wowup/window-state';
+import { isBetween } from './src/app/utils/number.utils';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 const isMac = process.platform === 'darwin';
 const isWin = process.platform === 'win32';
@@ -131,8 +134,9 @@ function createTray() {
 }
 
 function windowStateManager(windowName: string, { width, height }: { width: number, height: number }) {
-  let window: BrowserWindow; // Hold a reference to the window
+  let window: BrowserWindow;
   let windowState: WindowState;
+  const saveState$ = new Subject<void>();
 
   function setState() {
     let setDefaults = false;
@@ -144,11 +148,14 @@ function windowStateManager(windowName: string, { width, height }: { width: numb
       log.info('found window state:', windowState);
       const displays = screen.getAllDisplays();
       const maxDisplay = displays.reduce((prev, current) => prev.bounds.x > current.bounds.x ? prev : current);
+      const minDisplay = displays.reduce((prev, current) => prev.bounds.x < current.bounds.x ? prev : current);
 
+      log.info('min display:', minDisplay);
       log.info('max display:', maxDisplay);
 
-      if (windowState.x > maxDisplay.bounds.width || windowState.y > maxDisplay.bounds.height) {
-        log.info('reset window state, bounds are too big');
+      if (!isBetween(windowState.x, minDisplay.bounds.x, maxDisplay.bounds.width, true) ||
+        !isBetween(windowState.y, minDisplay.bounds.y, maxDisplay.bounds.height, true)) {
+        log.info('reset window state, bounds are outside displays');
         setDefaults = true;
       }
     }
@@ -158,21 +165,29 @@ function windowStateManager(windowName: string, { width, height }: { width: numb
       windowState = <WindowState>{ width, height };
     }
   }
-  
+
   function saveState() {
-    if (!window.isMaximized()) {
+    log.info('saving window state');
+    if (!window.isMaximized() && !window.isFullScreen()) {
       windowState = { ...windowState, ...window.getBounds() };
     }
     windowState.isMaximized = window.isMaximized();
+    windowState.isFullScreen = window.isFullScreen();
     preferenceStore.set(`${windowName}-window-state`, windowState);
   }
 
   function monitorState(win: BrowserWindow) {
     window = win;
 
-    win.on('resize', saveState);
     win.on('close', saveState);
+    win.on('resize', () => saveState$.next());
+    win.on('move', () => saveState$.next());
+    win.on('closed', () => saveState$.unsubscribe());
   }
+
+  saveState$
+    .pipe(debounceTime(500))
+    .subscribe(() => saveState());
 
   setState();
 
@@ -183,6 +198,8 @@ function windowStateManager(windowName: string, { width, height }: { width: numb
 }
 
 function createWindow(): BrowserWindow {
+  // Main object for managing window state
+  // Initialize with a window name and default size
   const mainWindowManager = windowStateManager('main', { width: 900, height: 600 });
 
   const windowOptions: BrowserWindowConstructorOptions = {
@@ -212,6 +229,7 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
+  // Keep track of window state
   mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
@@ -224,8 +242,10 @@ function createWindow(): BrowserWindow {
       })
   });
 
-  win.on('show', () => {
-    if (mainWindowManager.isMaximized) {
+  win.once('show', () => {
+    if (mainWindowManager.isFullScreen) {
+      win.setFullScreen(true);
+    } else if (mainWindowManager.isMaximized) {
       win.maximize();
     }
   })
