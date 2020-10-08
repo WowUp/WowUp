@@ -46,6 +46,7 @@ namespace WowUp.WPF.Services
         public event AddonEventHandler AddonInstalled;
         public event AddonEventHandler AddonUpdated;
         public event AddonStateEventHandler AddonStateChanged;
+        public event AddonListUpdatedEventHandler AddonListUpdated;
 
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
@@ -175,10 +176,10 @@ namespace WowUp.WPF.Services
                 {
                     var newAddons = await ScanAddons(clientType);
                     addons = UpdateAddons(addons, newAddons);
+                    AddonListUpdated?.Invoke(this, new EventArgs());
                 }
 
                 await SyncAddons(clientType, addons);
-
                 return addons;
             }
             catch(Exception ex)

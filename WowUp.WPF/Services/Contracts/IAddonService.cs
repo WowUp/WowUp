@@ -10,6 +10,7 @@ namespace WowUp.WPF.Services.Contracts
 {
     public delegate void AddonEventHandler(object sender, AddonEventArgs e);
     public delegate void AddonStateEventHandler(object sender, AddonStateEventArgs e);
+    public delegate void AddonListUpdatedEventHandler(object sender, EventArgs e);
 
     public interface IAddonService
     {
@@ -17,6 +18,7 @@ namespace WowUp.WPF.Services.Contracts
         event AddonEventHandler AddonInstalled;
         event AddonEventHandler AddonUpdated;
         event AddonStateEventHandler AddonStateChanged;
+        event AddonListUpdatedEventHandler AddonListUpdated;
 
         string BackupPath { get; }
 
