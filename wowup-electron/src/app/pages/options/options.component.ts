@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, NgZone, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ElectronService } from 'app/services';
@@ -20,6 +20,8 @@ import { MatSelectChange } from '@angular/material/select';
   styleUrls: ['./options.component.scss']
 })
 export class OptionsComponent implements OnInit, OnChanges {
+
+  @Input('tabIndex') tabIndex: number;
 
   public retailLocation = '';
   public classicLocation = '';

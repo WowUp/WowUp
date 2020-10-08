@@ -10,7 +10,7 @@ export interface CurseSearchResult {
   name: string;
   authors: CurseAuthor[];
   attachments: CurseAttachment[];
-  websiteUrl: string
+  websiteUrl: string;
   gameId: number;
   defaultFileId: number;
   downloadCount: number;
@@ -19,7 +19,7 @@ export interface CurseSearchResult {
   status: number;
   primaryCategoryId: number;
   categorySection: CurseCategorySection;
-  slug: string
+  slug: string;
   gameVersionLatestFiles: CurseGameVersionLatestFile[];
   isFeatured: boolean;
   popularityScore: number;

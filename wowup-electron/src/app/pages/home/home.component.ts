@@ -15,21 +15,18 @@ export class HomeComponent implements OnInit {
     private _sessionService: SessionService,
     private _warcraftService: WarcraftService
   ) {
-    this._warcraftService.installedClientTypes$
-      .subscribe((clientTypes) => {
-        if(clientTypes === undefined){
-          this.hasWowClient = false;
-          this.selectedIndex = 3;
-        } else {
-          this.hasWowClient = clientTypes.length > 0;
-          this.selectedIndex = this.hasWowClient ? 0 : 3;
-        }
-      });
+    this._warcraftService.installedClientTypes$.subscribe((clientTypes) => {
+      if (clientTypes === undefined) {
+        this.hasWowClient = false;
+        this.selectedIndex = 3;
+      } else {
+        this.hasWowClient = clientTypes.length > 0;
+        this.selectedIndex = this.hasWowClient ? 0 : 3;
+      }
+    });
   }
 
-  ngOnInit(): void {
-    this._sessionService.appLoaded();
-  }
+  ngOnInit(): void {}
 
   onSelectedIndexChange(index: number) {
     this._sessionService.selectedHomeTab = index;

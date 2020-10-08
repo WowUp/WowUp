@@ -43,7 +43,7 @@ import { AddonInstallButtonComponent } from "app/components/addon-install-button
     InstallFromUrlDialogComponent,
     AddonDetailComponent,
     AddonProviderBadgeComponent,
-    AddonInstallButtonComponent
+    AddonInstallButtonComponent,
   ],
   imports: [
     CommonModule,

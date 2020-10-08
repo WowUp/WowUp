@@ -48,7 +48,7 @@ export class MyAddonsListItem {
             return AddonDisplayState.Install;
         }
 
-        if (this.addon.installedVersion != this.addon.latestVersion) {
+        if (this.addon.installedVersion !== this.addon.latestVersion) {
             return AddonDisplayState.Update;
         }
 
@@ -65,7 +65,6 @@ export class MyAddonsListItem {
     }
 
     public onClicked() {
-        console.log(this.addon.name);
         this.selected = !this.selected;
     }
 
@@ -79,6 +78,7 @@ export class MyAddonsListItem {
             case AddonDisplayState.Install:
             case AddonDisplayState.Unknown:
             default:
+                console.log('Unhandled display state', this.displayState)
                 return '';
         }
     }

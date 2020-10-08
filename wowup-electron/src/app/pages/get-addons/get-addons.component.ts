@@ -1,10 +1,9 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
-import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { ColumnState } from "app/models/wowup/column-state";
 import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { ElectronService } from "app/services";
@@ -13,9 +12,9 @@ import { SessionService } from "app/services/session/session.service";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
 import { BehaviorSubject, Subject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import * as _ from 'lodash';
+import { MatTableDataSource } from "@angular/material/table";
+import { MatSort } from "@angular/material/sort";
+import * as _ from "lodash";
 
 @Component({
   selector: "app-get-addons",
@@ -23,12 +22,16 @@ import * as _ from 'lodash';
   styleUrls: ["./get-addons.component.scss"],
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
+  @Input("tabIndex") tabIndex: number;
 
   @ViewChild(MatSort) sort: MatSort;
-  
-  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>([]);
+
+  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>(
+    []
+  );
   private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
+  private isSelectedTab: boolean = false;
 
   public dataSource = new MatTableDataSource<PotentialAddon>([]);
 
@@ -53,33 +56,45 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     public electronService: ElectronService,
     public warcraftService: WarcraftService
-  ) { }
+  ) {
+    _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
+      this.isSelectedTab = tabIndex === this.tabIndex;
+      if (this.isSelectedTab) {
+        this.setPageContextText();
+      }
+    });
+  }
 
   ngOnInit(): void {
-    const selectedClientSubscription = this._sessionService.selectedClientType$.pipe(
-      map((clientType) => {
-        this.selectedClient = clientType;
-        this.loadPopularAddons(this.selectedClient);
-      })
-    ).subscribe();
+    const selectedClientSubscription = this._sessionService.selectedClientType$
+      .pipe(
+        map((clientType) => {
+          this.selectedClient = clientType;
+          this.loadPopularAddons(this.selectedClient);
+        })
+      )
+      .subscribe();
 
-    const addonRemovedSubscription = this._addonService.addonRemoved$.pipe(
-      map((event: string) => {
-        this.onRefresh();
-      })
-    ).subscribe();
+    const addonRemovedSubscription = this._addonService.addonRemoved$
+      .pipe(
+        map((event: string) => {
+          this.onRefresh();
+        })
+      )
+      .subscribe();
 
-    const displayAddonSubscription = this._displayAddonsSrc
-      .subscribe((items: PotentialAddon[]) => {
+    const displayAddonSubscription = this._displayAddonsSrc.subscribe(
+      (items: PotentialAddon[]) => {
         this.dataSource.data = items;
         this.dataSource.sortingDataAccessor = _.get;
         this.dataSource.sort = this.sort;
-      });
+      }
+    );
 
     this.subscriptions = [
       selectedClientSubscription,
       addonRemovedSubscription,
-      displayAddonSubscription
+      displayAddonSubscription,
     ];
   }
 
@@ -110,6 +125,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   async onSearch() {
     if (!this.query) {
       this.loadPopularAddons(this.selectedClient);
+      this.setPageContextText();
       return;
     }
 
@@ -124,6 +140,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.formatAddons(searchResults);
     this._displayAddonsSrc.next(searchResults);
     this.isBusy = false;
+    this.setPageContextText();
   }
 
   openDetailDialog(addon: PotentialAddon) {
@@ -170,5 +187,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         addon.thumbnailUrl = "assets/wowup_logo_512np.png";
       }
     });
+  }
+
+  private setPageContextText() {
+    const contextStr = this._displayAddonsSrc.value?.length
+      ? `${this._displayAddonsSrc.value.length} results`
+      : "";
+
+    this._sessionService.setContextText(this.tabIndex, contextStr);
   }
 }

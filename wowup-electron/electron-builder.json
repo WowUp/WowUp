@@ -41,7 +41,7 @@
   ],
   "win": {
     "icon": "electron-build/icon.ico",
-    "target": ["portable"]
+    "target": ["nsis", "portable"]
   },
   "mac": {
     "icon": "dist/assets/icons",

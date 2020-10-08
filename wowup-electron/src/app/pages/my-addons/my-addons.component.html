@@ -90,15 +90,15 @@
       </ng-container>
 
       <ng-container matColumnDef="addon.gameVersion">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+        <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER' | translate}}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td class="game-version-cell" mat-cell *matCellDef="let element">
           {{element.addon.gameVersion}}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="addon.provider">
+      <ng-container matColumnDef="addon.providerName">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{'PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER' | translate}}
         </th>
@@ -150,6 +150,9 @@
     </mat-checkbox>
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE' | translate}}
+    </button>
+    <button mat-menu-item (click)="onShowfolder(listItem.addon)">
+      {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER' | translate}}
     </button>
     <button mat-menu-item (click)="onReInstallAddon(listItem.addon)">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON' | translate}}

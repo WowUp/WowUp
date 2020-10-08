@@ -6,7 +6,10 @@
   <div class="title-container">
     <div>WowUp.io</div>
   </div>
-  <div class="window-control-container">
+  <div *ngIf="isMac" class="window-control-container">
+    <mat-icon class="debug-button" (click)="onClickDebug()">bug_report</mat-icon>
+  </div>
+  <div *ngIf="isWindows" class="window-control-container">
     <mat-icon (click)="onClickDebug()">bug_report</mat-icon>
     <div class="window-control" (click)="electronService.minimizeWindow()">
       <img src="assets/chrome-minimize.svg" />

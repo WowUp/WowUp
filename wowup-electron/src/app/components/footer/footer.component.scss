@@ -7,8 +7,12 @@ footer {
     height: 25px;
     padding: 0.25em 0.5em;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+
+
+    p {
+        margin: 0;
+    }
 
     a, img {
         height: 25px;
