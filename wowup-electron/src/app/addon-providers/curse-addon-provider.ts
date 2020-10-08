@@ -4,7 +4,6 @@ import { Addon } from "../entities/addon";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import * as _ from "lodash";
-import * as fp from "lodash/fp";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
@@ -20,7 +19,7 @@ import { CurseGetScanResultsRequest } from "common/curse/curse-get-scan-results-
 import { CurseGetScanResultsResponse } from "common/curse/curse-get-scan-results-response";
 import { CurseMatch } from "common/curse/curse-match";
 import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
-import { CurseSearchResult } from "../models/curse/curse-search-result";
+import { CurseSearchResult } from "../../common/curse/curse-search-result";
 import { CurseFile } from "common/curse/curse-file";
 import { CurseReleaseType } from "common/curse/curse-release-type";
 import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-response";

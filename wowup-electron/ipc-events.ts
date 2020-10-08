@@ -11,7 +11,7 @@ import {
   PATH_EXISTS_CHANNEL,
   CURSE_GET_SCAN_RESULTS,
 } from "./src/common/constants";
-import { CurseGetScanResultsRequest } from "./src/common/models/curse-get-scan-results-request";
+import { CurseGetScanResultsRequest } from "./src/common/curse/curse-get-scan-results-request";
 import { CurseGetScanResultsResponse } from "./src/common/curse/curse-get-scan-results-response";
 import { CurseHashFileRequest } from "./src/common/models/curse-hash-file-request";
 import { CurseHashFileResponse } from "./src/common/models/curse-hash-file-response";

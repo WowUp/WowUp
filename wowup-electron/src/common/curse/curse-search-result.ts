@@ -1,9 +1,9 @@
-import { CurseAuthor } from "../../../common/curse/curse-author";
-import { CurseAttachment } from "../../../common/curse/curse-attachment";
-import { CurseFile } from "../../../common/curse/curse-file";
-import { CurseCategory } from "../../../common/curse/curse-category";
-import { CurseCategorySection } from "../../../common/curse/curse-category-section";
-import { CurseGameVersionLatestFile } from "../../../common/curse/curse-game-version-latest-file";
+import { CurseAuthor } from "./curse-author";
+import { CurseAttachment } from "./curse-attachment";
+import { CurseFile } from "./curse-file";
+import { CurseCategory } from "./curse-category";
+import { CurseCategorySection } from "./curse-category-section";
+import { CurseGameVersionLatestFile } from "./curse-game-version-latest-file";
 
 export interface CurseSearchResult {
   id: number;
