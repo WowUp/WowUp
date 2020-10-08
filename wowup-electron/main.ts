@@ -43,8 +43,8 @@ import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
 import * as Store from "electron-store";
 import { readFile } from "./file.utils";
-import { WindowState } from './src/app/models/wowup/window-state';
-import { isBetween } from './src/app/utils/number.utils';
+import { WindowState } from './src/common/models/window-state';
+import { isBetween } from './src/common/utils/number.utils';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
