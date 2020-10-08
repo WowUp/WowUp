@@ -1,4 +1,4 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
+using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.ObjectModel;
@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WowUp.Common.Enums;
-using WowUp.Common.Services.Contracts;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
@@ -220,6 +219,7 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
+            Application.Current.MainWindow.ShowInTaskbar = true;
             Application.Current.MainWindow.Show();
             Application.Current.MainWindow.WindowState = WindowState.Normal;
             Application.Current.MainWindow.Activate();
@@ -256,6 +256,13 @@ namespace WowUp.WPF.ViewModels
 
         public void OnSourceInitialized(Window window)
         {
+            if (App.StartupOptions?.Minimized == true)
+            {
+                window.Hide();
+                window.ShowInTaskbar = false;
+                window.WindowState = WindowState.Minimized;
+            }
+
             var windowPref = _preferenceRepository.FindByKey(WindowPlacementKey);
             var windowStatePref = _preferenceRepository.FindByKey(WindowStateKey);
             if (windowPref == null)

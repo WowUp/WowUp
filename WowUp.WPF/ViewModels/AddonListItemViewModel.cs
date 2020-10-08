@@ -281,7 +281,7 @@ namespace WowUp.WPF.ViewModels
             _epicBrush = Application.Current.Resources["EpicBrush"] as SolidColorBrush;
         }
 
-        private void SetupDisplayState()
+        public void SetupDisplayState()
         {
             Name = _addon.Name;
             CurrentVersion = string.IsNullOrEmpty(_addon.InstalledVersion)

@@ -262,6 +262,25 @@
                           IsCheckable="True" 
                           IsChecked="{Binding MultiRowMenuAutoUpdateCheck}"
                           Command="{Binding AutoUpdateCheckedCommand}" />
+                        <MenuItem Header="Channel">
+                            <MenuItem Header="Stable" 
+                                      IsCheckable="True" 
+                                      IsChecked="{Binding MultiRowMenuStableChannelCheck}"
+                                      Command="{Binding StableChannelCheckedCommand}"></MenuItem>
+                            <MenuItem Header="Beta" 
+                                      IsCheckable="True" 
+                                      IsChecked="{Binding MultiRowMenuBetaChannelCheck}"
+                                      Command="{Binding BetaChannelCheckedCommand}"></MenuItem>
+                            <MenuItem Header="Alpha" 
+                                      IsCheckable="True" 
+                                      IsChecked="{Binding MultiRowMenuAlphaChannelCheck}"
+                                      Command="{Binding AlphaChannelCheckedCommand}"></MenuItem>
+                        </MenuItem>
+                        <MenuItem Header="Re-Install" 
+                                  Command="{Binding ReInstallAllCommand}"/>
+                        <Separator />
+                        <MenuItem Header="Remove"
+                                  Command="{Binding UninstallAllCommand}"/>
                     </ContextMenu>
                     <ContextMenu x:Key="RowMenu"
                                  Style="{StaticResource DarkMenu}"
