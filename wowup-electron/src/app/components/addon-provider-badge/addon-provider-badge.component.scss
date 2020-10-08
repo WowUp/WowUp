@@ -11,21 +11,22 @@
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
   transform: translateZ(0);
-  border: none;
+  border: 2px solid transparent;
   color: white;
+  background-color: #525252;
+  // background-color: #212121;
+  letter-spacing: .4px;
 
   &.curse {
-    background-color: #9147ff;
+    border-color: #9147ff;
   }
   &.github {
-    background-color: #24292e;
+    border-color: white;
   }
   &.wowinterface {
-    background-color: #002b47;
-    color: #da8911;
+    border-color: #da8911;
   }
   &.tukui {
-    background-color: #212121;
-    color: #e77403;
+    border-color: #e77403;
   }
 }

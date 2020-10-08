@@ -113,6 +113,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     const addonRemovedSubscription = this.addonService.addonRemoved$.subscribe(
       (addonId: string) => this.onAddonRemoved(addonId)
     );
+
+    const addonUpdatedSubscription = this.addonService.addonInstalled$.pipe(filter(evt => evt.installState === 4)).subscribe(
+      (event: AddonUpdateEvent) => this.onAddonUpdated(event)
+    );
+
     const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
         map((clientType) => {
@@ -121,6 +126,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+
 
     const displayAddonSubscription = this._displayAddonsSrc.subscribe(
       (items: AddonModel[]) => {
@@ -152,6 +158,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       selectedClientSubscription,
       displayAddonSubscription,
       selectedTabSubscription,
+      addonUpdatedSubscription
     ];
   }
 
@@ -284,7 +291,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   onAddonUpdated(event: AddonUpdateEvent): void {
-    console.log("MyAddonsComponent -> Update", event);
     let listItems: AddonModel[] = [...this._displayAddonsSrc.value];
     const listItemIdx = listItems.findIndex(
       (li) => li.addon.id === event.addon.id
@@ -300,7 +306,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       listItems[listItemIdx] = listItem;
     }
 
-    listItems = this.sortListItems(listItems);
 
     this._ngZone.run(() => {
       this._displayAddonsSrc.next(listItems);

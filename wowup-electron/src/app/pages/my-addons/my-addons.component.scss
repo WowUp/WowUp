@@ -81,20 +81,21 @@
 
   .status-column {
     display: flex;
-    width: 130px;
+    width: 100%;
     align-items: center;
+    padding: 0 0.5rem;
 
     .auto-update-icon {
       margin-left: 0.5em;
     }
 
-    .progress-text {
-      text-align: center;
-    }
+    // .progress-text {
+    //   text-align: center;
+    // }
 
-    .addon-progress {
-      width: 110px;
-    }
+    // .addon-progress {
+    //   width: 110px;
+    // }
   }
 
   .selected-row {

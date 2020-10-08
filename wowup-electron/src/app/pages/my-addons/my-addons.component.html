@@ -57,7 +57,11 @@
       <ng-container matColumnDef="addon.displayState">
         <th mat-header-cell *matHeaderCellDef> {{'PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}} </th>
         <td mat-cell *matCellDef="let element" style="padding:'.5rem'">
-          <app-addon-install-button [addon]="element.addon" [hideUninstall]="true"> </app-addon-install-button>
+          <div class="status-column">
+            <app-addon-install-button [addon]="element.addon" [hideUninstall]="true"> </app-addon-install-button>
+            <mat-icon *ngIf="element.addon.autoUpdateEnabled" class="auto-update-icon" matTooltip="Auto update enabled">
+              update</mat-icon>
+          </div>
         </td>
       </ng-container>
 
