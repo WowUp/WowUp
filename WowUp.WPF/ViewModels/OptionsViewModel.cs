@@ -200,18 +200,19 @@ namespace WowUp.WPF.ViewModels
             RescanFoldersCommand = new Command(() => OnRescanFolders());
             WowUpReleaseChannelChangedCommand = new Command(() => OnWowUpReleaseChannelChange(SelectedWowUpReleaseChannelType));
             DumpDebugDataCommand = new Command(() => DumpDebugData());
-            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType)); ;
+
+            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType));
             RetailPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.RetailPtr, SelectedRetailPtrAddonChannelType));
             ClassicAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Classic, SelectedClassicAddonChannelType));
             ClassicPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.ClassicPtr, SelectedClassicPtrAddonChannelType));
             BetaAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Beta, SelectedBetaAddonChannelType));
 
-            RetailAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Retail, RetailAutoUpdateAddons)); ;
-            RetailPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.RetailPtr, RetailPtrAutoUpdateAddons)); ;
-            ClassicAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons)); ;
-            ClassicPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons)); ;
-            BetaAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons)); ;
-
+            RetailAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Retail, RetailAutoUpdateAddons)); 
+            RetailPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.RetailPtr, RetailPtrAutoUpdateAddons)); 
+            ClassicAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons)); 
+            ClassicPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons)); 
+            BetaAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons)); 
+            
             AddonChannelNames = new ObservableCollection<AddonChannelType>
             {
                 AddonChannelType.Stable,
@@ -232,8 +233,9 @@ namespace WowUp.WPF.ViewModels
         {
             IsTelemetryEnabled = _analyticsService.IsTelemetryEnabled();
             CollapseToTrayEnabled = _wowUpService.GetCollapseToTray();
-            SelectedWowUpReleaseChannelType = _wowUpService.GetWowUpReleaseChannel();
             OnStartup = _wowUpService.GetRunOnStartup();
+            SelectedWowUpReleaseChannelType = _wowUpService.GetWowUpReleaseChannel();
+
             SelectedRetailAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Retail);
             SelectedRetailPtrAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.RetailPtr);
             SelectedClassicAddonChannelType = _wowUpService.GetClientAddonChannelType(WowClientType.Classic);
@@ -267,6 +269,7 @@ namespace WowUp.WPF.ViewModels
         {
             _wowUpService.SetCollapseToTray(CollapseToTrayEnabled);
         }
+
         private void OnRunStartupChanged()
         {
             _wowUpService.SetRunOnStartup(OnStartup);
@@ -321,13 +324,13 @@ namespace WowUp.WPF.ViewModels
             var curseAddonProvider = _serviceProvider.GetService<ICurseAddonProvider>();
 
             var clientTypes = _warcraftService.GetWowClientTypes();
-            foreach (var clientType in clientTypes)
+            foreach(var clientType in clientTypes)
             {
                 var addonFolders = await _warcraftService.ListAddons(clientType);
                 var scanResults = await curseAddonProvider.GetScanResults(addonFolders);
 
                 Log.Debug($"{clientType} ADDON CURSE FINGERPRINTS");
-                foreach (var scanResult in scanResults)
+                foreach(var scanResult in scanResults)
                 {
                     Log.Debug($"{scanResult.AddonFolder.Name}|{scanResult.FolderScanner.Fingerprint}");
                 }
