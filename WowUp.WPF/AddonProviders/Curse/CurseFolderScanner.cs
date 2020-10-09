@@ -54,7 +54,7 @@ namespace WowUp.WPF.AddonProviders.Curse
             {
                 var normalizedFileHash = CurseHash.ComputeNormalizedFileHash(path);
                 IndividualFingerprints.Add(normalizedFileHash);
-                //tuples.Add((normalizedFileHash, path));
+                //tuples.Add((normalizedFileHash, Path));
             }
 
             IndividualFingerprints.Sort();

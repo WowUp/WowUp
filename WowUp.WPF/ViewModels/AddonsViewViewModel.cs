@@ -5,17 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Ionic.Zlib;
 using WowUp.Common.Enums;
 using WowUp.Common.Extensions;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
+using WowUp.WPF.Views;
 
 namespace WowUp.WPF.ViewModels
 {
@@ -217,6 +220,12 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _multiRowMenuAlphaChannelCheck, value); }
         }
 
+        private bool _enableButtonBackupInterface;
+        public bool EnableButtonBackupInterface
+        {
+            get => _enableButtonBackupInterface;
+            set { SetProperty(ref _enableButtonBackupInterface, value); }
+        }
         public SearchInputViewModel SearchInputViewModel { get; set; }
 
         public Command LoadItemsCommand { get; set; }
@@ -235,6 +244,7 @@ namespace WowUp.WPF.ViewModels
         public Command ReInstallAllCommand { get; set; }
         public Command UninstallAllCommand { get; set; }
         public Command BackupCommand { get; set; }
+        public Command RestoreCommand { get; set; }
 
         public ContextMenu MultiRowMenu { get; set; }
         public ContextMenu RowMenu { get; set; }
@@ -309,7 +319,8 @@ namespace WowUp.WPF.ViewModels
             AlphaChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Alpha));
             ReInstallAllCommand = new Command(async () => await ReInstallAll());
             UninstallAllCommand = new Command(async () => await UninstallAll());
-            BackupCommand = new Command(() => BackupAddons());
+            BackupCommand = new Command(async () => await BackupInterface());
+            RestoreCommand = new Command(async () => await RestoreInterface());
 
             SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
             SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
@@ -321,7 +332,7 @@ namespace WowUp.WPF.ViewModels
             SelectedClientType = _sessionService.SelectedClientType;
 
             BusyText = string.Empty;
-
+            _enableButtonBackupInterface = true;
             SetClientNames();
 
             Initialize();
@@ -714,25 +725,63 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
-        private void BackupAddons()
+        private Task BackupInterface()
         {
-
-
-
-
-            string path = this._warcraftService.GetBackupLocation(_selectedClientType);
-
-            Task.Run(() =>
+            return Task.Run(() =>
             {
+                EnableButtonBackupInterface = false;
+                string path = _warcraftService.GetClientLocation(_selectedClientType);
+                string folder = _warcraftService.GetClientFolderName(_selectedClientType);
+                string dir = String.Format(@"{0}/{1}", path, folder);
+                string file = String.Format(@"{0}/backup.zip", _warcraftService.GetBackupLocation(_selectedClientType));
+
+                File.Delete(file);
                 using (ZipFile zip = new ZipFile())
                 {
-                    zip.AddDirectory(path + @"\Interface");
-                    zip.AddDirectory(path + @"\WTF");
-                    zip.Save(String.Format(@"{0}\Backup_User_Interface_WoWup\{1}.zip", path, DateTime.Now.ToString("dd_MM_yyyy_HH_mm")));
+                    zip.AddDirectory(dir + @"/Interface", "Interface");
+                    zip.AddDirectory(dir + @"/WTF", "WTF");
+                    zip.CompressionLevel = CompressionLevel.BestSpeed;
+                    zip.Save(file);
                 }
+                EnableButtonBackupInterface = true;
+                MessageBox.Show("Backup completed","WowUp.io");
             });
-
         }
+
+        public Task RestoreInterface()
+        {
+            return Task.Run(() =>
+            {
+                EnableButtonBackupInterface = false;
+                string path = _warcraftService.GetClientLocation(_selectedClientType);
+                string folder = _warcraftService.GetClientFolderName(_selectedClientType);
+                string dir = String.Format(@"{0}/{1}", path, folder);
+
+                if (Directory.Exists(dir + @"/Interface"))
+                {
+                    Directory.Delete(dir + @"/Interface", true);
+                }
+
+                if (Directory.Exists(dir + @"/WTF"))
+                {
+                    Directory.Delete(dir + @"/WTF", true);
+                }
+
+                string file = String.Format(@"{0}/backup.zip", _warcraftService.GetBackupLocation(_selectedClientType));
+
+                using (ZipFile zip = ZipFile.Read(file))
+                {
+                    foreach (var ZipEntry in zip)
+                    {
+                        ZipEntry.Extract(dir);
+                    }
+                }
+
+                MessageBox.Show(("Restore completed"));
+                EnableButtonBackupInterface = true;
+            });
+        }
+
 
         private List<AddonListItemViewModel> CreateListViewModels(IEnumerable<Addon> addons)
         {
@@ -798,6 +847,8 @@ namespace WowUp.WPF.ViewModels
                 EnableUpdateAll = DisplayAddons.Any(addon => addon.CanUpdate || addon.CanInstall);
             }
         }
+
+
 
         private void AddonUpdated(Addon addon)
         {

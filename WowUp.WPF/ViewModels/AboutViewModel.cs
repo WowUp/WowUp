@@ -48,7 +48,7 @@ namespace WowUp.WPF.ViewModels
 
         public string ReadResource(string name)
         {
-            // Determine path
+            // Determine Path
             var assembly = Assembly.GetExecutingAssembly();
             string resourcePath = name;
             // Format: "{Namespace}.{Folder}.{filename}.{Extension}"

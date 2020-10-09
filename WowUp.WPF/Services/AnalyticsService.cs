@@ -74,7 +74,7 @@ namespace WowUp.WPF.Services
 
             await TrackAppCenter($"{category}|{action}", new Dictionary<string, string>
             {
-                { "label", label ?? string.Empty }
+                { "Label", label ?? string.Empty }
             });
         }
 

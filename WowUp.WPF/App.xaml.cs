@@ -189,7 +189,7 @@ namespace WowUp.WPF
             {
                 if (!String.IsNullOrEmpty(path))
                 {
-                    DirectoryInfo directory = Directory.CreateDirectory(String.Format(@"{0}\Backup_User_Interface_WoWup", path));
+                    DirectoryInfo directory = Directory.CreateDirectory(path);
                 }
             });
         }

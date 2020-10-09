@@ -32,7 +32,9 @@ namespace WowUp.WPF.Services
         private const string RetailExecutableName = "Wow.exe";
         private const string RetailPtrExecutableName = "WowT.exe";
         private const string ClassicExecutableName = "WowClassic.exe";
-        private const string ClassicPtrExecutableName = "WowClassicT.exe";
+        private const string ClassicPtrExecutableName = "WowClassicT.exe"; 
+        
+        private const string BackupFolderName = "Backup_User_Interface_WoWup";
 
         // BLIZZARD STRINGS
         private const string BlizzardAgentFolderFormat = "ProgramData\\Battle.net\\Agent";
@@ -83,7 +85,7 @@ namespace WowUp.WPF.Services
                     continue;
                 }
 
-                // If the path that the user selected is valid, then move on.
+                // If the Path that the user selected is valid, then move on.
                 if (!string.IsNullOrEmpty(clientLocation) && IsClientFolder(clientType, clientLocation))
                 {
                     continue;
@@ -175,15 +177,15 @@ namespace WowUp.WPF.Services
                 switch (clientType)
                 {
                     case WowClientType.Retail:
-                        return preference.Value + @"/_retail_";
+                        return String.Format(@"{0}/{1}/{2}", preference.Value ,RetailFolderName, BackupFolderName);
                     case WowClientType.Classic:
-                        return preference.Value + @"/_classic_";
+                        return String.Format(@"{0}/{1}/{2}", preference.Value, ClassicFolderName, BackupFolderName);
                     case WowClientType.RetailPtr:
-                        return preference.Value + @"/_ptr_";
+                        return String.Format(@"{0}/{1}/{2}", preference.Value, RetailPtrFolderName,BackupFolderName);
                     case WowClientType.ClassicPtr:
-                        return preference.Value + @"/_classic_ptr_";
+                        return String.Format(@"{0}/{1}/{2}", preference.Value, ClassicPtrFolderName, BackupFolderName);
                     case WowClientType.Beta:
-                        return preference.Value + @"/_beta_";
+                        return String.Format(@"{0}/{1}/{2}", preference.Value, BetaFolderName, BackupFolderName);
                     case WowClientType.None:
                         return string.Empty;
                     default:
@@ -384,7 +386,7 @@ namespace WowUp.WPF.Services
                 }
             }
 
-            Log.Debug("No blizzard agent path was found");
+            Log.Debug("No blizzard agent Path was found");
             return string.Empty;
         }
 

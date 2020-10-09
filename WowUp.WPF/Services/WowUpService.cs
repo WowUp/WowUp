@@ -40,7 +40,7 @@ namespace WowUp.WPF.Services
         private readonly IWowUpApiService _wowUpApiService;
 
         /// <summary>
-        /// The full path to the running exe file
+        /// The full Path to the running exe file
         /// </summary>
         public static string ExecutablePath => Process.GetCurrentProcess().MainModule.FileName;
 

@@ -13,7 +13,6 @@ namespace WowUp.WPF.Views
     {
         private AddonsViewViewModel _viewModel;
 
-
         public AddonsView(AddonsViewViewModel viewModel)
         {
             DataContext = _viewModel = viewModel;
@@ -62,7 +61,13 @@ namespace WowUp.WPF.Views
 
         private void Backupbutton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+       
             _viewModel.BackupCommand.Execute(e);
+        }
+
+        private void Restorebutton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+           _viewModel.RestoreCommand.Execute(e);
         }
     }
 }
