@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
 using WowUp.WPF.AddonProviders;
 using WowUp.WPF.AddonProviders.Contracts;
@@ -36,6 +37,7 @@ namespace WowUp.WPF
         private readonly ServiceProvider _serviceProvider;
         private readonly IAnalyticsService _analyticsService;
         private readonly IWowUpService _wowUpService;
+        private readonly IWarcraftService _warcraftService;
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -69,13 +71,16 @@ namespace WowUp.WPF
 
             _serviceProvider = serviceCollection.BuildServiceProvider();
             _analyticsService = _serviceProvider.GetRequiredService<IAnalyticsService>();
+            _warcraftService = _serviceProvider.GetRequiredService<IWarcraftService>();
         }
         protected override void OnStartup(StartupEventArgs e)
         {
             HandleSingleInstance();
             MainWindow mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             mainWindow.WindowState = WindowState.Normal;
-            mainWindow.Hide();
+            mainWindow.Show();
+
+            CreateBackupFolderInterface();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -175,6 +180,18 @@ namespace WowUp.WPF
                     options => StartupOptions = options)
                 .WithNotParsed(
                     errors => Log.Error(string.Join("\r\n", errors.Select(x => x.ToString()).ToArray())));
+        }
+
+        private void CreateBackupFolderInterface()
+        {
+
+            _warcraftService.GetBackupLocations().ToList().ForEach(path =>
+            {
+                if (!String.IsNullOrEmpty(path))
+                {
+                    DirectoryInfo directory = Directory.CreateDirectory(String.Format(@"{0}\Backup_User_Interface_WoWup", path));
+                }
+            });
         }
     }
 }

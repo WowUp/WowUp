@@ -401,11 +401,19 @@ namespace WowUp.WPF.ViewModels
                 Style = tabStyle,
                 Content = _serviceProvider.GetService<OptionsView>()
             };
+            var backupTab = new TabItem
+            {
+                Name = "Backup",
+                Header = "Backup",
+                Style = tabStyle,
+                Content = _serviceProvider.GetService<BackupView>()
+            };
 
             TabItems.Add(addonsTab);
             TabItems.Add(getAddonsTab);
             TabItems.Add(aboutTab);
             TabItems.Add(optionsTab);
+            TabItems.Add(backupTab);
 
             _sessionService.SelectedTabType = (addonsTab.Content as UserControl).DataContext.GetType();
         }

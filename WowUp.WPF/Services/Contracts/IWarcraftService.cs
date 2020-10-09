@@ -16,8 +16,9 @@ namespace WowUp.WPF.Services.Contracts
         IList<InstalledProduct> ScanProducts();
         IList<string> GetWowClientNames();
         IList<WowClientType> GetWowClientTypes();
-
         string GetClientLocation(WowClientType clientType);
+        IList<string> GetBackupLocations();
+        string GetBackupLocation(WowClientType clientType);
         IList<string> GetClientLocations();
         bool IsClientFolder(WowClientType clientType, string folderPath);
         bool SetWowFolderPath(WowClientType clientType, string folderPath);

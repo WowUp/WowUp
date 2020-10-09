@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using WowUp.WPF.Extensions;
@@ -13,6 +12,7 @@ namespace WowUp.WPF.Views
     public partial class AddonsView : UserControl
     {
         private AddonsViewViewModel _viewModel;
+
 
         public AddonsView(AddonsViewViewModel viewModel)
         {
@@ -58,6 +58,11 @@ namespace WowUp.WPF.Views
         {
             var selectedItems = ((DataGrid)sender).SelectedItems.Cast<AddonListItemViewModel>();
             _viewModel.OnDataGridSelectionChange(selectedItems);
+        }
+
+        private void Backupbutton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            _viewModel.BackupCommand.Execute(e);
         }
     }
 }

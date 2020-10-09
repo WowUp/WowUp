@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Ionic.Zip;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using WowUp.Common.Enums;
+using WowUp.Common.Extensions;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
@@ -27,7 +29,7 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IAddonService _addonService;
         private readonly ISessionService _sessionService;
-        
+
         private List<Addon> _addons;
         private bool _disableUpdateLoad;
         private IEnumerable<AddonListItemViewModel> _selectedRows;
@@ -232,6 +234,7 @@ namespace WowUp.WPF.ViewModels
         public Command AlphaChannelCheckedCommand { get; set; }
         public Command ReInstallAllCommand { get; set; }
         public Command UninstallAllCommand { get; set; }
+        public Command BackupCommand { get; set; }
 
         public ContextMenu MultiRowMenu { get; set; }
         public ContextMenu RowMenu { get; set; }
@@ -271,7 +274,7 @@ namespace WowUp.WPF.ViewModels
             _addonService.AddonStateChanged += (sender, args) =>
             {
                 var addon = DisplayAddons.FirstOrDefault(listItem => listItem.Addon.Id == args.Addon.Id);
-                if(addon != null)
+                if (addon != null)
                 {
                     addon.OnInstallUpdate(args.AddonInstallState, args.Progress);
                 }
@@ -306,6 +309,7 @@ namespace WowUp.WPF.ViewModels
             AlphaChannelCheckedCommand = new Command(() => OnChangeAllChannelCommand(AddonChannelType.Alpha));
             ReInstallAllCommand = new Command(async () => await ReInstallAll());
             UninstallAllCommand = new Command(async () => await UninstallAll());
+            BackupCommand = new Command(() => BackupAddons());
 
             SearchInputViewModel = serviceProvider.GetService<SearchInputViewModel>();
             SearchInputViewModel.TextChanged += SearchInputViewModel_TextChanged;
@@ -380,8 +384,8 @@ namespace WowUp.WPF.ViewModels
             EnableRescan = true;
 
             await _analyticsService.TrackUserAction(
-                "Addons", 
-                "ReInstallBulk", 
+                "Addons",
+                "ReInstallBulk",
                 _selectedAddons.Count().ToString());
         }
 
@@ -536,9 +540,9 @@ namespace WowUp.WPF.ViewModels
             {
                 ClientTypeNames.Clear();
 
-                foreach(var clientType in _warcraftService.GetWowClientTypes())
+                foreach (var clientType in _warcraftService.GetWowClientTypes())
                 {
-                    if(clientType == WowClientType.None)
+                    if (clientType == WowClientType.None)
                     {
                         continue;
                     }
@@ -588,7 +592,7 @@ namespace WowUp.WPF.ViewModels
         public async Task UpdateAllClientAddons()
         {
             await UpdateAllWithSpinner(
-                WowClientType.Retail, 
+                WowClientType.Retail,
                 WowClientType.RetailPtr,
                 WowClientType.Classic,
                 WowClientType.ClassicPtr,
@@ -608,7 +612,7 @@ namespace WowUp.WPF.ViewModels
             {
                 var updatedCount = 0;
                 var allAddons = new List<Addon>();
-                foreach(var clientType in clientTypes)
+                foreach (var clientType in clientTypes)
                 {
                     allAddons.AddRange(await _addonService.GetAddons(clientType));
                 }
@@ -630,7 +634,7 @@ namespace WowUp.WPF.ViewModels
 
                 await LoadItems();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "Failed to update with spinner");
 
@@ -659,7 +663,7 @@ namespace WowUp.WPF.ViewModels
 
         private void FilterAddons(string filter)
         {
-            var filteredAddons = string.IsNullOrEmpty(filter) 
+            var filteredAddons = string.IsNullOrEmpty(filter)
                 ? _addons
                 : _addons.Where(addon => addon.Name.Contains(filter, StringComparison.OrdinalIgnoreCase));
 
@@ -708,6 +712,26 @@ namespace WowUp.WPF.ViewModels
                 EnableRefresh = true;
                 EnableRescan = true;
             }
+        }
+
+        private void BackupAddons()
+        {
+
+
+
+
+            string path = this._warcraftService.GetBackupLocation(_selectedClientType);
+
+            Task.Run(() =>
+            {
+                using (ZipFile zip = new ZipFile())
+                {
+                    zip.AddDirectory(path + @"\Interface");
+                    zip.AddDirectory(path + @"\WTF");
+                    zip.Save(String.Format(@"{0}\Backup_User_Interface_WoWup\{1}.zip", path, DateTime.Now.ToString("dd_MM_yyyy_HH_mm")));
+                }
+            });
+
         }
 
         private List<AddonListItemViewModel> CreateListViewModels(IEnumerable<Addon> addons)
@@ -808,7 +832,7 @@ namespace WowUp.WPF.ViewModels
 
         private void SetAddonCountContextText(int count)
         {
-            _sessionService.SetContextText(this, $"{count} addons");
+            _sessionService.SetContextText(this, $"{ count} addons");
         }
 
         private static void SortAddons(ObservableCollection<AddonListItemViewModel> addons)

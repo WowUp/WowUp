@@ -72,7 +72,7 @@ namespace WowUp.WPF.Services
                 var clientLocation = GetClientLocation(clientType);
                 var productLocation = GetProductLocation(clientType);
 
-                if(string.IsNullOrEmpty(clientLocation) && string.IsNullOrEmpty(productLocation))
+                if (string.IsNullOrEmpty(clientLocation) && string.IsNullOrEmpty(productLocation))
                 {
                     continue;
                 }
@@ -161,6 +161,39 @@ namespace WowUp.WPF.Services
             return clientTypes.Select(clientType => GetClientLocation(clientType)).ToList();
         }
 
+        public IList<string> GetBackupLocations()
+        {
+            var clientTypes = EnumExtensions.Values<WowClientType>();
+            return clientTypes.Select(clientType => GetBackupLocation(clientType)).ToList();
+
+        }
+        public string GetBackupLocation(WowClientType clientType)
+        {
+            var preference = GetClientLocationPreference(clientType);
+            if (preference != null && !String.IsNullOrEmpty(preference.Value) )
+            {
+                switch (clientType)
+                {
+                    case WowClientType.Retail:
+                        return preference.Value + @"/_retail_";
+                    case WowClientType.Classic:
+                        return preference.Value + @"/_classic_";
+                    case WowClientType.RetailPtr:
+                        return preference.Value + @"/_ptr_";
+                    case WowClientType.ClassicPtr:
+                        return preference.Value + @"/_classic_ptr_";
+                    case WowClientType.Beta:
+                        return preference.Value + @"/_beta_";
+                    case WowClientType.None:
+                        return string.Empty;
+                    default:
+                        return string.Empty;
+                }
+            }
+            return string.Empty;
+        }
+
+
         public IList<WowClientType> GetWowClientTypes()
         {
             IList<WowClientType> clients = new List<WowClientType>();
@@ -225,7 +258,7 @@ namespace WowUp.WPF.Services
 
         public async Task<IEnumerable<AddonFolder>> ListAddons(WowClientType clientType)
         {
-            if(clientType == WowClientType.None)
+            if (clientType == WowClientType.None)
             {
                 return new List<AddonFolder>();
             }
