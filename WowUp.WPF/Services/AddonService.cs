@@ -176,7 +176,7 @@ namespace WowUp.WPF.Services
                 {
                     var newAddons = await ScanAddons(clientType);
                     addons = UpdateAddons(addons, newAddons);
-                    AddonListUpdated?.Invoke(this, new EventArgs());
+                    AddonListUpdated?.Invoke(this, EventArgs.Empty);
                 }
 
                 await SyncAddons(clientType, addons);
