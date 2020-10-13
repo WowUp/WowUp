@@ -52,6 +52,7 @@ export class AddonService {
     private _addonProviderFactory: AddonProviderFactory
   ) {
     this._addonProviders = [
+      this._addonProviderFactory.createWowUpAddonProvider(),
       this._addonProviderFactory.createCurseAddonProvider(),
       this._addonProviderFactory.createTukUiAddonProvider(),
       this._addonProviderFactory.createWowInterfaceAddonProvider(),
@@ -388,8 +389,9 @@ export class AddonService {
     rescan = false
   ): Promise<Addon[]> {
     let addons = this._addonStorage.getAllForClientType(clientType);
-    if (rescan || !addons.length) {
+    if (rescan ) {
       const newAddons = await this.scanAddons(clientType);
+      console.log(newAddons)
       this.updateAddons(addons, newAddons);
     }
 
@@ -434,6 +436,9 @@ export class AddonService {
       existingAddon.thumbnailUrl = matchingAddon.thumbnailUrl;
       existingAddon.gameVersion = matchingAddon.gameVersion;
       existingAddon.author = matchingAddon.author;
+      existingAddon.patreonFundingLink = matchingAddon.patreonFundingLink;
+      existingAddon.githubFundingLink = matchingAddon.githubFundingLink;
+      existingAddon.customFundingLink = matchingAddon.customFundingLink;
     }
 
     this._addonStorage.removeAll(...removedAddons);

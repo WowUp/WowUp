@@ -56,4 +56,19 @@
   .addon-version {
     color: $white-2;
   }
+
+  .addon-funding {
+    a {
+      margin-right: 1em;
+      color: $white-1;
+    }
+    .funding-icon {
+      width: 15px;
+      height: 15px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
 }
