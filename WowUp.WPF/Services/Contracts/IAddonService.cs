@@ -56,5 +56,7 @@ namespace WowUp.WPF.Services.Contracts
             bool rescan = false);
 
         Task<int> ProcessAutoUpdates();
+
+        int GetAddonCount(WowClientType clientType);
     }
 }

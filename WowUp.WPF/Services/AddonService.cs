@@ -166,6 +166,11 @@ namespace WowUp.WPF.Services
             return addonResultsConcat.OrderByDescending(result => result.DownloadCount).ToList();
         }
 
+        public int GetAddonCount(WowClientType clientType)
+        {
+            return GetAllStoredAddons(clientType).Count;
+        }
+
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)
         {
             try

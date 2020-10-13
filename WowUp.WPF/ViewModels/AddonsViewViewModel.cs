@@ -27,6 +27,7 @@ namespace WowUp.WPF.ViewModels
         private readonly IWarcraftService _warcraftService;
         private readonly IAddonService _addonService;
         private readonly ISessionService _sessionService;
+        private readonly IWowUpService _wowupService;
         
         private List<Addon> _addons;
         private bool _disableUpdateLoad;
@@ -244,13 +245,15 @@ namespace WowUp.WPF.ViewModels
             IServiceProvider serviceProvider,
             IAddonService addonService,
             IWarcraftService warcraftService,
-            ISessionService sessionService)
+            ISessionService sessionService,
+            IWowUpService wowupService)
         {
             _addonService = addonService;
             _analyticsService = analyticsService;
             _warcraftService = warcraftService;
             _serviceProvider = serviceProvider;
             _sessionService = sessionService;
+            _wowupService = wowupService;
             _addons = new List<Addon>();
 
             _addonService.AddonInstalled += (sender, args) =>
@@ -550,6 +553,19 @@ namespace WowUp.WPF.ViewModels
 
         private async void Initialize()
         {
+            if (_wowupService.IsReScanRequired())
+            {
+                try
+                {
+                    await ReScan(false);
+                    _wowupService.SetRequiredReScanCompleted();
+                }
+                catch(Exception ex)
+                {
+                    Log.Error(ex, "Required rescan failed");
+                }
+            }
+
             await LoadItems();
         }
 
@@ -642,16 +658,19 @@ namespace WowUp.WPF.ViewModels
             }
         }
 
-        private async Task ReScan()
+        private async Task ReScan(bool promptUser = true)
         {
-            var messageBoxResult = MessageBox.Show(
-                "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.",
-                "Start re-scan?",
-                MessageBoxButton.YesNo);
-
-            if (messageBoxResult != MessageBoxResult.Yes)
+            if (promptUser)
             {
-                return;
+                var messageBoxResult = MessageBox.Show(
+                    "Doing a re-scan will reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.",
+                    "Start re-scan?",
+                    MessageBoxButton.YesNo);
+
+                if (messageBoxResult != MessageBoxResult.Yes)
+                {
+                    return;
+                }
             }
 
             await LoadItems(true);
