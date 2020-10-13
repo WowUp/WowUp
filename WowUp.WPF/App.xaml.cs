@@ -125,6 +125,7 @@ namespace WowUp.WPF
 
             services.AddSingleton<IAddonRepository, AddonRepository>();
             services.AddSingleton<IPreferenceRepository, PreferenceRepository>();
+            services.AddSingleton<IDependencyRepository, DependencyRepository>();
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)

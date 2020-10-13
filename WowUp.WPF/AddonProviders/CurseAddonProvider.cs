@@ -413,7 +413,12 @@ namespace WowUp.WPF.AddonProviders
                     DownloadUrl = lf.DownloadUrl,
                     Folders = GetFolderNames(lf),
                     GameVersion = GetGameVersion(lf),
-                    ReleaseDate = lf.FileDate
+                    ReleaseDate = lf.FileDate,
+                    Dependencies = lf.Dependencies.Select(dep => new AddonSearchResultDependency
+                    {
+                        AddonId = dep.AddonId,
+                        Type = dep.Type.AsAddonDependencyType()
+                    })
                 });
 
                 return new AddonSearchResult
