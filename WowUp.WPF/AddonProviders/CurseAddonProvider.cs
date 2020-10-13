@@ -266,43 +266,6 @@ namespace WowUp.WPF.AddonProviders
         private Addon GetAddon(
             WowClientType clientType,
             AddonChannelType addonChannelType,
-            AddonFolder addonFolder,
-            CurseSearchResult searchResult)
-        {
-            if (addonFolder == null || searchResult == null)
-            {
-                return null;
-            }
-
-            var currentVersion = addonFolder.Toc.Version;
-            var latestFile = GetLatestFiles(searchResult, clientType).First();
-            var authors = GetAuthor(searchResult);
-
-            return new Addon
-            {
-                Author = authors,
-                Name = searchResult.Name,
-                ChannelType = addonChannelType,
-                AutoUpdateEnabled = false,
-                ClientType = clientType,
-                DownloadUrl = latestFile.DownloadUrl,
-                ExternalUrl = searchResult.WebsiteUrl,
-                ExternalId = searchResult.Id.ToString(),
-                FolderName = addonFolder.Name,
-                GameVersion = latestFile.GameVersion.FirstOrDefault(),
-                InstalledAt = DateTime.Now,
-                InstalledFolders = string.Join(",", GetFolderNames(latestFile)),
-                InstalledVersion = currentVersion,
-                IsIgnored = false,
-                LatestVersion = latestFile.DisplayName,
-                ProviderName = Name,
-                ThumbnailUrl = GetThumbnailUrl(searchResult)
-            };
-        }
-
-        private Addon GetAddon(
-            WowClientType clientType,
-            AddonChannelType addonChannelType,
             CurseScanResult scanResult)
         {
             var currentVersion = scanResult.ExactMatch.File;
@@ -324,9 +287,9 @@ namespace WowUp.WPF.AddonProviders
                 GameVersion = currentVersion.GameVersion.FirstOrDefault(),
                 InstalledAt = DateTime.Now,
                 InstalledFolders = folderList,
-                InstalledVersion = currentVersion.DisplayName,
+                InstalledVersion = currentVersion.FileName,
                 IsIgnored = false,
-                LatestVersion = latestVersion.DisplayName,
+                LatestVersion = latestVersion.FileName,
                 ProviderName = Name,
                 ThumbnailUrl = GetThumbnailUrl(scanResult.SearchResult)
             };
@@ -409,7 +372,7 @@ namespace WowUp.WPF.AddonProviders
                 var searchResultFiles = latestFiles.Select(lf => new AddonSearchResultFile
                 {
                     ChannelType = GetChannelType(lf.ReleaseType),
-                    Version = lf.DisplayName,
+                    Version = lf.FileName,
                     DownloadUrl = lf.DownloadUrl,
                     Folders = GetFolderNames(lf),
                     GameVersion = GetGameVersion(lf),
