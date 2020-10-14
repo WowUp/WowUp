@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Polly;
 using Serilog;
 using System;
 using System.Collections.Concurrent;
@@ -31,6 +32,14 @@ namespace WowUp.WPF.AddonProviders
 
         private readonly ICacheService _cacheService;
         private readonly IAnalyticsService _analyticsService;
+
+        private readonly AsyncPolicy CircuitBreaker = Policy
+            .Handle<FlurlHttpException>()
+            .CircuitBreakerAsync(
+                2,
+                TimeSpan.FromMinutes(1),
+                (ex, ts) => { Log.Error(ex, "Curse CircuitBreaker broken"); },
+                () => { Log.Information("Curse CircuitBreaker reset"); });
 
         public string Name => "Curse";
 
@@ -119,11 +128,11 @@ namespace WowUp.WPF.AddonProviders
 
             return await _cacheService.GetCache(url, async () =>
             {
-                return await url
+                return await CircuitBreaker.ExecuteAsync(async () => await url
                     .WithHeaders(HttpUtilities.DefaultHeaders)
                     .WithTimeout(HttpTimeoutSeconds)
-                    .GetJsonAsync<CurseSearchResult>();
-            });
+                    .GetJsonAsync<CurseSearchResult>());
+            }, 5);
         }
 
         public async Task<IEnumerable<PotentialAddon>> Search(string query, WowClientType clientType)
@@ -492,11 +501,11 @@ namespace WowUp.WPF.AddonProviders
 
             try
             {
-                return await url
+                return await CircuitBreaker.ExecuteAsync(async () => await url
                     .WithHeaders(HttpUtilities.DefaultHeaders)
                     .WithTimeout(HttpTimeoutSeconds)
                     .PostJsonAsync(addonIds.Select(id => Convert.ToInt32(id)).ToArray())
-                    .ReceiveJson<List<CurseSearchResult>>();
+                    .ReceiveJson<List<CurseSearchResult>>());
             }
             catch (Exception ex)
             {
@@ -512,11 +521,11 @@ namespace WowUp.WPF.AddonProviders
 
             try
             {
-                return await url
+                return await CircuitBreaker.ExecuteAsync(async () => await url
                     .SetQueryParams(new { gameId = 1, searchFilter = query })
                     .WithTimeout(HttpTimeoutSeconds)
                     .WithHeaders(HttpUtilities.DefaultHeaders)
-                    .GetJsonAsync<IList<CurseSearchResult>>();
+                    .GetJsonAsync<IList<CurseSearchResult>>());
             }
             catch (Exception ex)
             {
@@ -542,12 +551,12 @@ namespace WowUp.WPF.AddonProviders
 
                 var response = await _cacheService.GetCache(url, async () =>
                 {
-                    return await url
+                    return await CircuitBreaker.ExecuteAsync(async () => await url
                         .WithHeaders(HttpUtilities.DefaultHeaders)
                         .WithTimeout(HttpTimeoutSeconds)
                         .PostJsonAsync(body)
-                        .ReceiveJson<CurseGetFeaturedResponse>();
-                });
+                        .ReceiveJson<CurseGetFeaturedResponse>());
+                }, 5);
 
                 return response.Popular.ToList();
             }
@@ -562,11 +571,11 @@ namespace WowUp.WPF.AddonProviders
         {
             var url = $"{ApiUrl}/fingerprint";
 
-            return await url
+            return await CircuitBreaker.ExecuteAsync(async () => await url
                 .WithHeaders(HttpUtilities.DefaultHeaders)
                 .WithTimeout(HttpTimeoutSeconds)
                 .PostJsonAsync(fingerprints)
-                .ReceiveJson<CurseFingerprintsResponse>();
+                .ReceiveJson<CurseFingerprintsResponse>());
         }
 
         private PotentialAddon GetPotentialAddon(CurseSearchResult searchResult)

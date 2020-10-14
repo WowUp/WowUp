@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.18.3",
+      "Description": "Add cuircuit breakers to reduce chaining failing calls onto apis."
+    },
+    {
       "Version": "1.18.2",
       "Description": "Add some shorter HTTP timeout times (4 seconds).\nAdd some feedback when scanning from a provider fails.\nFix a bug with CF sending empty current files."
     },

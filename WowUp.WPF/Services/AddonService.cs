@@ -159,11 +159,23 @@ namespace WowUp.WPF.Services
 
         public async Task<List<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
         {
-            var addonTasks = _providers.Select(p => p.GetFeaturedAddons(clientType));
-            var addonResults = await Task.WhenAll(addonTasks);
-            var addonResultsConcat = addonResults.SelectMany(res => res);
+            List<PotentialAddon> addonResults = new List<PotentialAddon>();
+            foreach (var provider in _providers)
+            {
+                try
+                {
+                    var result = await provider.GetFeaturedAddons(clientType);
+                    addonResults.AddRange(result);
+                }
+                catch(Exception ex)
+                {
+                    Log.Error(ex, $"Failed to get feature addons from {provider.Name}");
+                }
+            }
 
-            return addonResultsConcat.OrderByDescending(result => result.DownloadCount).ToList();
+            return addonResults
+                .OrderByDescending(result => result.DownloadCount)
+                .ToList();
         }
 
         public async Task<List<Addon>> GetAddons(WowClientType clientType, bool rescan = false)

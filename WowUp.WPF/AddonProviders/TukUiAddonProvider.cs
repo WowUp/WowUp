@@ -1,5 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Polly;
+using Polly.CircuitBreaker;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -27,6 +29,14 @@ namespace WowUp.WPF.AddonProviders
 
         private readonly ICacheService _cacheService;
         private readonly IAnalyticsService _analyticsService;
+
+        private readonly AsyncPolicy CircuitBreaker = Policy
+            .Handle<FlurlHttpException>()
+            .CircuitBreakerAsync(
+                2,
+                TimeSpan.FromMinutes(1),
+                (ex, ts) => { Log.Error(ex, "TukUI CircuitBreaker broken"); },
+                () => { Log.Information("TukUI CircuitBreaker reset"); });
 
         public string Name => "TukUI";
 
@@ -229,11 +239,12 @@ namespace WowUp.WPF.AddonProviders
                 {
                     var query = GetAddonsSuffix(clientType);
 
-                    var result = await ApiUrl
-                        .SetQueryParam(query, "all")
-                        .WithTimeout(HttpTimeoutSeconds)
-                        .WithHeaders(HttpUtilities.DefaultHeaders)
-                        .GetJsonAsync<List<TukUiAddon>>();
+                    var result = await CircuitBreaker.ExecuteAsync(async () =>
+                        await ApiUrl
+                            .SetQueryParam(query, "all")
+                            .WithTimeout(HttpTimeoutSeconds)
+                            .WithHeaders(HttpUtilities.DefaultHeaders)
+                            .GetJsonAsync<List<TukUiAddon>>());
 
                     if (clientType.IsRetail())
                     {
@@ -246,20 +257,20 @@ namespace WowUp.WPF.AddonProviders
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Failed to get all addons");
-                    return null;
+                    throw;
                 }
-            });
+            }, 5);
 
             return results ?? new List<TukUiAddon>();
         }
 
         private async Task<TukUiAddon> GetClientApiAddon(string addonName)
         {
-            return await ClientApiUrl
+            return await CircuitBreaker.ExecuteAsync(async () => await ClientApiUrl
                 .SetQueryParam("ui", addonName)
                 .WithTimeout(HttpTimeoutSeconds)
                 .WithHeaders(HttpUtilities.DefaultHeaders)
-                .GetJsonAsync<TukUiAddon>();
+                .GetJsonAsync<TukUiAddon>());
         }
 
         private async Task<TukUiAddon> GetElvUiRetailAddon()
