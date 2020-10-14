@@ -170,15 +170,17 @@ function windowStateManager(windowName: string, { width, height }: { width: numb
       setDefaults = true;
     } else {
       log.info('found window state:', windowState);
-      const displays = screen.getAllDisplays();
-      const maxDisplay = displays.reduce((prev, current) => prev.bounds.x > current.bounds.x ? prev : current);
-      const minDisplay = displays.reduce((prev, current) => prev.bounds.x < current.bounds.x ? prev : current);
 
-      log.info('min display:', minDisplay);
-      log.info('max display:', maxDisplay);
+      const valid = screen.getAllDisplays().some(display => {
+        return (
+          windowState.x >= display.bounds.x &&
+          windowState.y >= display.bounds.y &&
+          windowState.x + windowState.width <= display.bounds.x + display.bounds.width &&
+          windowState.y + windowState.height <= display.bounds.y + display.bounds.height
+        );
+      })
 
-      if (!isBetween(windowState.x, minDisplay.bounds.x, maxDisplay.bounds.width, true) ||
-        !isBetween(windowState.y, minDisplay.bounds.y, maxDisplay.bounds.height, true)) {
+      if (!valid) {
         log.info('reset window state, bounds are outside displays');
         setDefaults = true;
       }
