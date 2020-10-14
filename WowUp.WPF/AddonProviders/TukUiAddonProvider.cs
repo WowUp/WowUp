@@ -256,8 +256,8 @@ namespace WowUp.WPF.AddonProviders
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Failed to get all addons");
-                    throw;
+                    Log.Error(ex, "Failed to get all addons from TukUi");
+                    return new List<TukUiAddon>();
                 }
             }, 5);
 
