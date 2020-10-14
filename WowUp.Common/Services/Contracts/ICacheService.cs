@@ -5,6 +5,6 @@ namespace WowUp.Common.Services.Contracts
 {
     public interface ICacheService
     {
-        Task<T> GetCache<T>(string cacheKey, Func<Task<T>> fallbackAction, int ttlMinutes = 60);
+        Task<T> GetCache<T>(string cacheKey, Func<Task<T>> fallbackAction, int ttlMinutes = 10);
     }
 }
