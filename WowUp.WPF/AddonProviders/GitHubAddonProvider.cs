@@ -88,7 +88,8 @@ namespace WowUp.WPF.AddonProviders
                 Folders = new List<string> { name },
                 GameVersion = string.Empty,
                 Version = asset.Name,
-                ReleaseDate = asset.CreatedAt
+                ReleaseDate = asset.CreatedAt,
+                Dependencies = Enumerable.Empty<AddonSearchResultDependency>()
             };
 
             var searchResult = new AddonSearchResult

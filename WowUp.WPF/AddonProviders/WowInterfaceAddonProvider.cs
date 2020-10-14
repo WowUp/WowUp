@@ -207,7 +207,8 @@ namespace WowUp.WPF.AddonProviders
                     DownloadUrl = response.DownloadUri,
                     Folders = new[] { folderName },
                     GameVersion = string.Empty,
-                    ReleaseDate = DateTime.UtcNow
+                    ReleaseDate = DateTime.UtcNow,
+                    Dependencies = Enumerable.Empty<AddonSearchResultDependency>()
                 };
 
                 return new AddonSearchResult
