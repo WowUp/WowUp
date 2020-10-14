@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.18.4",
+      "Description": "Fix crash bug when searching and provider fails.\nAdd some feedback when searching a provider fails."
+    },
+    {
       "Version": "1.18.3",
       "Description": "Add cuircuit breakers to reduce chaining failing calls onto apis."
     },

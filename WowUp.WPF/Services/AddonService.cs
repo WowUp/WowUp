@@ -145,16 +145,32 @@ namespace WowUp.WPF.Services
                 .ToList();
         }
 
-        public async Task<List<PotentialAddon>> Search(string query, WowClientType clientType)
+        public async Task<List<PotentialAddon>> Search(
+            string query, 
+            WowClientType clientType,
+            Action<Exception> onProviderError)
         {
             var potentialAddons = new List<PotentialAddon>();
 
-            var searchTasks = _providers.Select(p => p.Search(query, clientType));
-            var searchResults = await Task.WhenAll(searchTasks);
+            List<PotentialAddon> searchResults = new List<PotentialAddon>();
+            foreach(var provider in _providers)
+            {
+                try
+                {
+                    var results = await provider.Search(query, clientType);
+                    searchResults.AddRange(results);
+                }
+                catch(Exception ex)
+                {
+                    var message = $"Failed to search provider {provider.Name}";
+                    Log.Error(ex, message);
+                    onProviderError?.Invoke(new Exception(message));
+                }
+            }
 
             await _analyticsService.TrackUserAction("Addons", "Search", $"{clientType}|{query}");
 
-            return searchResults.SelectMany(res => res).OrderByDescending(res => res.DownloadCount).ToList();
+            return searchResults.OrderByDescending(res => res.DownloadCount).ToList();
         }
 
         public async Task<List<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
