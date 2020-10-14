@@ -12,3 +12,4 @@ export const COPY_FILE_CHANNEL = "copy-file";
 export const CURSE_HASH_FILE_CHANNEL = "curse-hash-file";
 export const SHOW_DIRECTORY = "show-directory";
 export const CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
+export const WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";

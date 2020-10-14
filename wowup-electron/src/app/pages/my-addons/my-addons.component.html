@@ -28,11 +28,13 @@
           [disabled]="enableControls === false" (click)="onUpdateAll()" (contextmenu)="onUpdateAllContext($event)">
           {{'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON' | translate}}
         </button>
-        <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
+        <button mat-flat-button color="primary"
+          [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls === false" (click)="onRefresh()">
           {{'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON' | translate}}
         </button>
-        <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
+        <button mat-flat-button color="primary"
+          [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls === false" (click)="onReScan()">
           {{'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON' | translate}}
         </button>
@@ -48,14 +50,16 @@
   <div class="table-container flex-grow-1" [hidden]="isBusy === true">
     <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container matColumnDef="addon.name">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>{{'PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER' | translate}}</th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{'PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER' | translate}}</th>
         <td mat-cell *matCellDef="let element">
           <app-my-addons-addon-cell [addon]="element"></app-my-addons-addon-cell>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="displayState">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>{{'PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}}</th>
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{'PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}}</th>
         <td mat-cell *matCellDef="let element">
           <div class="status-column">
             <button *ngIf="element.needsInstall === true" mat-flat-button color="primary" (click)="onInstall()">
@@ -103,7 +107,14 @@
           {{'PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          {{element.addon.providerName}}
+          <div *ngIf="element.addon.providerName !== 'WowUp'">
+            {{element.addon.providerName}}
+          </div>
+          <div *ngIf="element.addon.providerName === 'WowUp'" class="addon-provider">
+            <div class="addon-provider-name">{{element.addon.providerSource}}</div>
+            <img class="provider-logo" [matTooltip]="'Sourced from ' + element.addon.providerName"
+              src="assets/icons/favicon.256x256.png">
+          </div>
         </td>
       </ng-container>
 
