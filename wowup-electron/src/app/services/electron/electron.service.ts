@@ -63,6 +63,7 @@ export class ElectronService {
       this._windowMaximizedSrc.next(false);
     });
 
+    this._windowMaximizedSrc.next(this.remote.getCurrentWindow().isMaximized());
   }
 
   minimizeWindow() {
