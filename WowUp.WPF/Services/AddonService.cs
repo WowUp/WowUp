@@ -173,7 +173,12 @@ namespace WowUp.WPF.Services
                 var addons = GetAllStoredAddons(clientType);
                 if (rescan || !addons.Any())
                 {
-                    var newAddons = await ScanAddons(clientType);
+                    var newAddons = await ScanAddons(
+                        clientType,
+                        ex =>
+                        {
+                            System.Windows.MessageBox.Show(ex.Message, "Error", System.Windows.MessageBoxButton.OK);
+                        });
                     addons = UpdateAddons(addons, newAddons);
                 }
 
@@ -184,6 +189,7 @@ namespace WowUp.WPF.Services
             catch(Exception ex)
             {
                 _analyticsService.Track(ex, $"Failed to get addons for client {clientType}");
+
                 return new List<Addon>();
             }
         }
@@ -611,7 +617,9 @@ namespace WowUp.WPF.Services
             _addonRepository.AddItems(addons);
         }
 
-        private async Task<List<Addon>> ScanAddons(WowClientType clientType)
+        private async Task<List<Addon>> ScanAddons(
+            WowClientType clientType, 
+            Action<Exception> onScanError)
         {
             var addonFolders = await _warcraftService.ListAddons(clientType);
 
@@ -627,6 +635,7 @@ namespace WowUp.WPF.Services
                 catch(Exception ex)
                 {
                     _analyticsService.Track(ex, $"Addon scan failed {provider.Name}");
+                    onScanError?.Invoke(new Exception($"Failed to scan from {provider.Name}"));
                 }
             }
 

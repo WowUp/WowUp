@@ -22,6 +22,7 @@ namespace WowUp.WPF.AddonProviders
     {
         private const string ApiUrl = "https://api.mmoui.com/v4/game/WOW";
         private const string AddonUrl = "https://www.wowinterface.com/downloads/info";
+        private const int HttpTimeoutSeconds = 4;
 
         private readonly IAnalyticsService _analyticsService;
         private readonly ICacheService _cacheService;
@@ -154,6 +155,7 @@ namespace WowUp.WPF.AddonProviders
             {
                 var results = await url
                    .WithHeaders(HttpUtilities.DefaultHeaders)
+                   .WithTimeout(HttpTimeoutSeconds)
                    .GetJsonAsync<List<AddonDetailsResponse>>();
 
                 return results.FirstOrDefault();

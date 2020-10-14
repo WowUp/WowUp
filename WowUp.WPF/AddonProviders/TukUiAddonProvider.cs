@@ -23,6 +23,7 @@ namespace WowUp.WPF.AddonProviders
     {
         private const string ApiUrl = "https://www.tukui.org/api.php";
         private const string ClientApiUrl = "https://www.tukui.org/client-api.php";
+        private const int HttpTimeoutSeconds = 4;
 
         private readonly ICacheService _cacheService;
         private readonly IAnalyticsService _analyticsService;
@@ -230,6 +231,7 @@ namespace WowUp.WPF.AddonProviders
 
                     var result = await ApiUrl
                         .SetQueryParam(query, "all")
+                        .WithTimeout(HttpTimeoutSeconds)
                         .WithHeaders(HttpUtilities.DefaultHeaders)
                         .GetJsonAsync<List<TukUiAddon>>();
 
@@ -255,6 +257,7 @@ namespace WowUp.WPF.AddonProviders
         {
             return await ClientApiUrl
                 .SetQueryParam("ui", addonName)
+                .WithTimeout(HttpTimeoutSeconds)
                 .WithHeaders(HttpUtilities.DefaultHeaders)
                 .GetJsonAsync<TukUiAddon>();
         }
