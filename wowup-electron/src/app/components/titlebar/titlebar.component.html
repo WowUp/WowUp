@@ -1,5 +1,5 @@
 <div class="titlebar bg-purple-1 text-light" [ngClass]="{'titlebar-mac': isMac, 'titlebar-windows': isWindows }">
-  <div class="titlebar-drag-region"></div>
+  <div class="titlebar-drag-region" (dblclick)="onDblClick()"></div>
   <div class="window-logo-container" *ngIf="electronService.isWin">
     <img src="assets/wowup_logo_512np.png" />
   </div>
