@@ -225,6 +225,13 @@ namespace WowUp.WPF.ViewModels
         {
             get => _enableButtonBackupInterface;
             set { SetProperty(ref _enableButtonBackupInterface, value); }
+        } 
+        
+        private bool _enableButtonRestoreInterface;
+        public bool EnableButtonRestoreInterface
+        {
+            get => _enableButtonRestoreInterface;
+            set { SetProperty(ref _enableButtonRestoreInterface, value); }
         }
         public SearchInputViewModel SearchInputViewModel { get; set; }
 
@@ -332,6 +339,7 @@ namespace WowUp.WPF.ViewModels
             SelectedClientType = _sessionService.SelectedClientType;
 
             BusyText = string.Empty;
+
             _enableButtonBackupInterface = true;
             SetClientNames();
 
@@ -565,7 +573,17 @@ namespace WowUp.WPF.ViewModels
 
         private async void Initialize()
         {
-            await LoadItems();
+            
+             string file = String.Format(@"{0}/backup.zip", _warcraftService.GetBackupLocation(_selectedClientType));
+             if (File.Exists((file)))
+             {
+                 _enableButtonRestoreInterface = true;
+            }
+             else
+             {
+                 _enableButtonRestoreInterface = false;
+            }
+             await LoadItems();
         }
 
         public async Task UpdateAll()
@@ -729,7 +747,9 @@ namespace WowUp.WPF.ViewModels
         {
             return Task.Run(() =>
             {
+                MessageBox.Show("Backup started"+Environment.NewLine+"This may take a time", "WowUp.io");
                 EnableButtonBackupInterface = false;
+                EnableButtonRestoreInterface = false;
                 string path = _warcraftService.GetClientLocation(_selectedClientType);
                 string folder = _warcraftService.GetClientFolderName(_selectedClientType);
                 string dir = String.Format(@"{0}/{1}", path, folder);
@@ -742,6 +762,8 @@ namespace WowUp.WPF.ViewModels
                     zip.AddDirectory(dir + @"/WTF", "WTF");
                     zip.CompressionLevel = CompressionLevel.BestSpeed;
                     zip.Save(file);
+                    EnableButtonRestoreInterface = true; 
+                    EnableButtonBackupInterface = true;
                 }
                 EnableButtonBackupInterface = true;
                 MessageBox.Show("Backup completed","WowUp.io");
@@ -752,7 +774,9 @@ namespace WowUp.WPF.ViewModels
         {
             return Task.Run(() =>
             {
+                MessageBox.Show("Restoration started" + Environment.NewLine + "This may take a time", "WowUp.io");
                 EnableButtonBackupInterface = false;
+                EnableButtonRestoreInterface = false;
                 string path = _warcraftService.GetClientLocation(_selectedClientType);
                 string folder = _warcraftService.GetClientFolderName(_selectedClientType);
                 string dir = String.Format(@"{0}/{1}", path, folder);
@@ -777,7 +801,8 @@ namespace WowUp.WPF.ViewModels
                     }
                 }
 
-                MessageBox.Show(("Restore completed"));
+                MessageBox.Show("Restore completed", "WowUp.io");
+                EnableButtonRestoreInterface = true;
                 EnableButtonBackupInterface = true;
             });
         }

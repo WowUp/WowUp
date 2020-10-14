@@ -227,7 +227,7 @@
                             ToolTip="Backup your addons folder and WTF folder">Backup Interface</Button>
                     <Button x:Name="Restorebutton" Click="Restorebutton_Click"
                              Margin="10, 0, 0, 0"
-                            IsEnabled="{Binding EnableButtonBackupInterface}"
+                            IsEnabled="{Binding EnableButtonRestoreInterface}"
                             Style="{StaticResource purpleButton}"
                             ToolTip="Select your backup to restore">Restore Interface</Button>
                     <vw:SearchInput Width="150" Margin="10 0 0 0" VerticalAlignment="Center" DataContext="{Binding SearchInputViewModel}"/>
