@@ -1,6 +1,10 @@
 <footer class="bg-dark-4 text-light-2">
-    <a appExternalLink class="patreon-link" href="https://www.patreon.com/jliddev">
+    <a appExternalLink class="patreon-link" href="https://www.patreon.com/jliddev"
+        matTooltip="Support WowUp on Patreon">
         <img class="patron-img" src="assets/Digital-Patreon-Wordmark_FieryCoral.png" />
+    </a>
+    <a appExternalLink class="discord-link" href="https://discord.gg/rk4F5aD" matTooltip="Chat with us on Discord">
+        <img class="discord-img" src="assets/images/discord_logo_small.png" />
     </a>
     <p class="flex-grow-1">{{sessionService.statusText$ | async}}</p>
     <div class="row">

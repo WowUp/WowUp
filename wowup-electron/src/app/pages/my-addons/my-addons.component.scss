@@ -100,6 +100,20 @@
   .selected-row {
     background: $dark-4;
   }
+
+  .addon-provider {
+    display: flex;
+    align-items: center;
+
+    .addon-provider-name {
+      margin-right: .25em;
+    }
+
+    .provider-logo {
+      width: 15px;
+      height: 15px;
+    }
+  }
 }
 
 .author-column {

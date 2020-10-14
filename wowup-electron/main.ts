@@ -43,6 +43,10 @@ import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
 import * as Store from "electron-store";
 import { readFile } from "./file.utils";
+import { WindowState } from './src/common/models/window-state';
+import { isBetween } from './src/common/utils/number.utils';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -62,37 +66,37 @@ autoUpdater.on("update-downloaded", () => {
 
 const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
   ? [
-      {
-        label: app.name,
-        submenu: [{ role: "quit" }],
-      },
-      {
-        label: "Edit",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-      {
-        label: "View",
-        submenu: [
-          { role: "reload" },
-          { role: "forceReload" },
-          { role: "toggleDevTools" },
-          { type: "separator" },
-          { role: "resetZoom" },
-          { role: "zoomIn" },
-          { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ]
+    {
+      label: app.name,
+      submenu: [{ role: "quit" }],
+    },
+    {
+      label: "Edit",
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "selectAll" },
+      ],
+    },
+    {
+      label: "View",
+      submenu: [
+        { role: "reload" },
+        { role: "forceReload" },
+        { role: "toggleDevTools" },
+        { type: "separator" },
+        { role: "resetZoom" },
+        { role: "zoomIn" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
+    },
+  ]
   : [];
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
@@ -153,17 +157,85 @@ function createTray() {
   tray.setContextMenu(contextMenu);
 }
 
+function windowStateManager(windowName: string, { width, height }: { width: number, height: number }) {
+  let window: BrowserWindow;
+  let windowState: WindowState;
+  const saveState$ = new Subject<void>();
+
+  function setState() {
+    let setDefaults = false;
+    windowState = preferenceStore.get(`${windowName}-window-state`) as WindowState;
+
+    if (!windowState) {
+      setDefaults = true;
+    } else {
+      log.info('found window state:', windowState);
+
+      const valid = screen.getAllDisplays().some(display => {
+        return (
+          windowState.x >= display.bounds.x &&
+          windowState.y >= display.bounds.y &&
+          windowState.x + windowState.width <= display.bounds.x + display.bounds.width &&
+          windowState.y + windowState.height <= display.bounds.y + display.bounds.height
+        );
+      })
+
+      if (!valid) {
+        log.info('reset window state, bounds are outside displays');
+        setDefaults = true;
+      }
+    }
+
+    if (setDefaults) {
+      log.info('setting window defaults');
+      windowState = <WindowState>{ width, height };
+    }
+  }
+
+  function saveState() {
+    log.info('saving window state');
+    if (!window.isMaximized() && !window.isFullScreen()) {
+      windowState = { ...windowState, ...window.getBounds() };
+    }
+    windowState.isMaximized = window.isMaximized();
+    windowState.isFullScreen = window.isFullScreen();
+    preferenceStore.set(`${windowName}-window-state`, windowState);
+  }
+
+  function monitorState(win: BrowserWindow) {
+    window = win;
+
+    win.on('close', saveState);
+    win.on('resize', () => saveState$.next());
+    win.on('move', () => saveState$.next());
+    win.on('closed', () => saveState$.unsubscribe());
+  }
+
+  saveState$
+    .pipe(debounceTime(500))
+    .subscribe(() => saveState());
+
+  setState();
+
+  return ({
+    ...windowState,
+    monitorState,
+  });
+}
+
 function createWindow(): BrowserWindow {
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
+  // Main object for managing window state
+  // Initialize with a window name and default size
+  const mainWindowManager = windowStateManager('main', { width: 900, height: 600 });
 
   const windowOptions: BrowserWindowConstructorOptions = {
-    width: 900,
-    height: 600,
-    backgroundColor: "#444444",
-    // frame: false,
-    title: "WowUp",
-    titleBarStyle: "hidden",
+    width: mainWindowManager.width,
+    height: mainWindowManager.height,
+    x: mainWindowManager.x,
+    y: mainWindowManager.y,
+    backgroundColor: '#444444',
+    title: 'WowUp',
+    titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -173,6 +245,7 @@ function createWindow(): BrowserWindow {
     },
     minWidth: 900,
     minHeight: 550,
+    show: false,
   };
 
   if (isWin) {
@@ -182,13 +255,26 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
+  // Keep track of window state
+  mainWindowManager.monitorState(win);
+
   win.webContents.userAgent = USER_AGENT;
 
-  win.once("ready-to-show", () => {
-    autoUpdater.checkForUpdatesAndNotify().then((result) => {
-      console.log("UPDATE", result);
-    });
+  win.once('ready-to-show', () => {
+    win.show();
+    autoUpdater.checkForUpdatesAndNotify()
+      .then((result) => {
+        console.log('UPDATE', result)
+      })
   });
+
+  win.once('show', () => {
+    if (mainWindowManager.isFullScreen) {
+      win.setFullScreen(true);
+    } else if (mainWindowManager.isMaximized) {
+      win.maximize();
+    }
+  })
 
   if (isMac) {
     win.on("close", (e) => {

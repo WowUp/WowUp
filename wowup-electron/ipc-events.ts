@@ -10,6 +10,7 @@ import {
   SHOW_DIRECTORY,
   PATH_EXISTS_CHANNEL,
   CURSE_GET_SCAN_RESULTS,
+  WOWUP_GET_SCAN_RESULTS,
 } from "./src/common/constants";
 import { CurseGetScanResultsRequest } from "./src/common/curse/curse-get-scan-results-request";
 import { CurseGetScanResultsResponse } from "./src/common/curse/curse-get-scan-results-response";
@@ -22,6 +23,11 @@ import { ValueRequest } from "./src/common/models/value-request";
 import { ValueResponse } from "./src/common/models/value-response";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
+
+import { WowUpGetScanResultsRequest } from "./src/common/wowup/wowup-get-scan-results-request";
+import { WowUpGetScanResultsResponse } from "./src/common/wowup/wowup-get-scan-results-response";
+import { WowUpFolderScanner } from "./src/common/wowup/wowup-folder-scanner";
+import { WowUpScanResult } from "./src/common/wowup/wowup-scan-result";
 
 const nativeAddon = require("./build/Release/addon.node");
 
@@ -129,6 +135,33 @@ ipcMain.on(
         2,
         async (folder, callback) => {
           const scanResult = await new CurseFolderScanner().scanFolder(folder);
+
+          callback(undefined, scanResult);
+        }
+      );
+
+      response.scanResults = scanResults;
+    } catch (err) {
+      response.error = err;
+    }
+
+    evt.reply(arg.responseKey, response);
+  }
+);
+
+ipcMain.on(
+  WOWUP_GET_SCAN_RESULTS,
+  async (evt, arg: WowUpGetScanResultsRequest) => {
+    const response: WowUpGetScanResultsResponse = {
+      scanResults: [],
+    };
+
+    try {
+      const scanResults = await async.mapLimit<string, WowUpScanResult>(
+        arg.filePaths,
+        2,
+        async (folder, callback) => {
+          const scanResult = await new WowUpFolderScanner(folder).scanFolder();
 
           callback(undefined, scanResult);
         }
