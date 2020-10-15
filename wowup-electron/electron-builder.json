@@ -3,6 +3,7 @@
   "directories": {
     "output": "release/"
   },
+  "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
   "files": [

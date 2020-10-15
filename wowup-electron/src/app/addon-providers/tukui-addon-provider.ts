@@ -15,6 +15,7 @@ import * as _ from 'lodash';
 import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from 'uuid';
+import * as CircuitBreaker from 'opossum';
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -24,12 +25,23 @@ export class TukUiAddonProvider implements AddonProvider {
 
   public readonly name = "TukUI";
 
+  private readonly _circuitBreaker: CircuitBreaker<[clientType: WowClientType], TukUiAddon[]>;
+
   constructor(
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _fileService: FileService
-  ) { }
+  ) {
+    this._circuitBreaker = new CircuitBreaker(
+      this.fetchApiResults,
+      {
+        resetTimeout: 60000
+      });
+
+    this._circuitBreaker.on('open', () => { console.log(`${this.name} circuit breaker open`); });
+    this._circuitBreaker.on('close', () => { console.log(`${this.name} circuit breaker close`); });
+  }
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     let results: AddonSearchResult[] = [];
@@ -180,8 +192,8 @@ export class TukUiAddonProvider implements AddonProvider {
     };
   }
 
-  private async getAllAddons(clientType: WowClientType): Promise<TukUiAddon[]> {
-    if(clientType === WowClientType.None){
+  private getAllAddons = async (clientType: WowClientType): Promise<TukUiAddon[]> => {
+    if (clientType === WowClientType.None) {
       return [];
     }
 
@@ -192,15 +204,7 @@ export class TukUiAddonProvider implements AddonProvider {
     }
 
     try {
-      const query = this.getAddonsSuffix(clientType);
-      const url = new URL(API_URL);
-      url.searchParams.append(query, 'all');
-
-      const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
-      if (this.isRetail(clientType)) {
-        addons.push(await this.getTukUiRetailAddon().toPromise());
-        addons.push(await this.getElvUiRetailAddon().toPromise());
-      }
+      const addons = await this._circuitBreaker.fire(clientType);
 
       console.log('CACHED')
       this._cachingService.set(cacheKey, addons, CACHE_TIME);
@@ -209,6 +213,20 @@ export class TukUiAddonProvider implements AddonProvider {
       console.error(err);
       return [];
     }
+  }
+
+  private fetchApiResults = async (clientType: WowClientType) => {
+    const query = this.getAddonsSuffix(clientType);
+    const url = new URL(API_URL);
+    url.searchParams.append(query, 'all');
+
+    const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
+    if (this.isRetail(clientType)) {
+      addons.push(await this.getTukUiRetailAddon().toPromise());
+      addons.push(await this.getElvUiRetailAddon().toPromise());
+    }
+
+    return addons;
   }
 
   private getTukUiRetailAddon() {

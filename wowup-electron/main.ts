@@ -55,6 +55,8 @@ const preferenceStore = new Store({ name: "preferences" });
 let appIsQuitting = false;
 
 autoUpdater.logger = log;
+autoUpdater.allowPrerelease = true;
+autoUpdater.channel = "alpha";
 autoUpdater.on("update-available", () => {
   log.info("AVAILABLE");
   win.webContents.send("update_available");
