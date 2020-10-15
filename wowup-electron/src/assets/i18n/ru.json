@@ -49,6 +49,7 @@
         "IGNORE_ADDON_BUTTON": "Пропускать",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
         "CHANNEL_SUBMENT_TITLE": "Тип выпуска",
+        "SHOW_FOLDER": "Показать папку",
         "REINSTALL_ADDON_BUTTON": "Переустановить",
         "REMOVE_ADDON_BUTTON": "Удалить",
         "STABLE_ADDON_CHANNEL": "Стабильная",
@@ -93,7 +94,7 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "VIEW_IN_BROWSER_BUTTON": "Просмотр в браузере"
+      "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "Окей"
@@ -104,7 +105,7 @@
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Ссылка на модификацию",
-      "ADDON_URL_INPUT_PLACEHOLDER": "Пример ссылки GitHub или WowInterface",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Например ссылки GitHub или WowInterface",
       "CLOSE_BUTTON": "Закрыть",
       "IMPORT_BUTTON": "Импорт",
       "INSTALL_BUTTON": "Установить",
