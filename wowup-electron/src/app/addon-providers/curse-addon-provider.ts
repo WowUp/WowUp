@@ -5,7 +5,7 @@ import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import * as _ from "lodash";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { Observable, of } from "rxjs";
+import { from, Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { PotentialAddon } from "../models/wowup/potential-addon";
@@ -23,17 +23,44 @@ import { CurseSearchResult } from "../../common/curse/curse-search-result";
 import { CurseFile } from "common/curse/curse-file";
 import { CurseReleaseType } from "common/curse/curse-release-type";
 import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-response";
+import * as CircuitBreaker from "opossum";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 
 export class CurseAddonProvider implements AddonProvider {
+  private readonly _circuitBreaker: CircuitBreaker<
+    [clientType: () => Promise<any>],
+    any
+  >;
+
+  private getCircuitBreaker<T>() {
+    return this._circuitBreaker as CircuitBreaker<
+      [clientType: () => Promise<T>],
+      T
+    >;
+  }
+
   public readonly name = "Curse";
 
   constructor(
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
     private _electronService: ElectronService
-  ) {}
+  ) {
+    this._circuitBreaker = new CircuitBreaker(
+      (action) => this.sendRequest(action),
+      {
+        resetTimeout: 60000,
+      }
+    );
+
+    this._circuitBreaker.on("open", () => {
+      console.log(`${this.name} circuit breaker open`);
+    });
+    this._circuitBreaker.on("close", () => {
+      console.log(`${this.name} circuit breaker close`);
+    });
+  }
 
   async scan(
     clientType: WowClientType,
@@ -58,7 +85,7 @@ export class CurseAddonProvider implements AddonProvider {
     );
     const addonIds = _.uniq(matchedScanResultIds);
 
-    var addonResults = await this.getAllIds(addonIds).toPromise();
+    var addonResults = await this.getAllIds(addonIds);
 
     for (let addonFolder of addonFolders) {
       var scanResult = scanResults.find(
@@ -100,7 +127,7 @@ export class CurseAddonProvider implements AddonProvider {
 
     const fingerprintResponse = await this.getAddonsByFingerprints(
       scanResults.map((result) => result.fingerprint)
-    ).toPromise();
+    );
 
     console.log(fingerprintResponse);
 
@@ -142,22 +169,36 @@ export class CurseAddonProvider implements AddonProvider {
     return gameVersionFlavor === this.getGameVersionFlavor(clientType);
   }
 
-  private getAddonsByFingerprints(
+  private async getAddonsByFingerprints(
     fingerprints: number[]
-  ): Observable<CurseFingerprintsResponse> {
+  ): Promise<CurseFingerprintsResponse> {
     const url = `${API_URL}/fingerprint`;
 
-    return this._httpClient.post<CurseFingerprintsResponse>(url, fingerprints);
+    return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
+      async () =>
+        await this._httpClient
+          .post<CurseFingerprintsResponse>(url, fingerprints)
+          .toPromise()
+    );
   }
 
-  private getAllIds(addonIds: number[]): Observable<CurseSearchResult[]> {
+  private async getAllIds(addonIds: number[]): Promise<CurseSearchResult[]> {
     if (!addonIds?.length) {
-      return of([]);
+      return [];
     }
 
     const url = `${API_URL}/addon`;
 
-    return this._httpClient.post<CurseSearchResult[]>(url, addonIds);
+    return await this.getCircuitBreaker<CurseSearchResult[]>().fire(
+      async () =>
+        await this._httpClient
+          .post<CurseSearchResult[]>(url, addonIds)
+          .toPromise()
+    );
+  }
+
+  private sendRequest<T>(action: () => Promise<T>): Promise<T> {
+    return action.call(this);
   }
 
   private getScanResults = async (
@@ -206,7 +247,7 @@ export class CurseAddonProvider implements AddonProvider {
     const addonResults: AddonSearchResult[] = [];
     const searchResults = await this.getAllIds(
       addonIds.map((id) => parseInt(id, 10))
-    ).toPromise();
+    );
 
     for (let result of searchResults) {
       const latestFiles = this.getLatestFiles(result, clientType);
@@ -224,7 +265,7 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
-    return this.getFeaturedAddonList().pipe(
+    return from(this.getFeaturedAddonList()).pipe(
       map((addons) => {
         return this.filterFeaturedAddons(addons, clientType);
       }),
@@ -259,7 +300,7 @@ export class CurseAddonProvider implements AddonProvider {
   ): Promise<PotentialAddon[]> {
     var searchResults: PotentialAddon[] = [];
 
-    var response = await this.getSearchResults(query).toPromise();
+    var response = await this.getSearchResults(query);
     for (let result of response) {
       var latestFiles = this.getLatestFiles(result, clientType);
       if (!latestFiles.length) {
@@ -288,12 +329,17 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  private getSearchResults(query: string): Observable<CurseSearchResult[]> {
+  private async getSearchResults(query: string): Promise<CurseSearchResult[]> {
     const url = new URL(`${API_URL}/addon/search`);
     url.searchParams.set("gameId", "1");
     url.searchParams.set("searchFilter", query);
 
-    return this._httpClient.get<CurseSearchResult[]>(url.toString());
+    return await this.getCircuitBreaker<CurseSearchResult[]>().fire(
+      async () =>
+        await this._httpClient
+          .get<CurseSearchResult[]>(url.toString())
+          .toPromise()
+    );
   }
 
   getById(
@@ -302,7 +348,12 @@ export class CurseAddonProvider implements AddonProvider {
   ): Observable<AddonSearchResult> {
     const url = `${API_URL}/addon/${addonId}`;
 
-    return this._httpClient.get<CurseSearchResult>(url).pipe(
+    return from(
+      this.getCircuitBreaker<CurseSearchResult>().fire(
+        async () =>
+          await this._httpClient.get<CurseSearchResult>(url).toPromise()
+      )
+    ).pipe(
       map((result) => {
         if (!result) {
           return null;
@@ -384,13 +435,13 @@ export class CurseAddonProvider implements AddonProvider {
     }
   }
 
-  private getFeaturedAddonList(): Observable<CurseSearchResult[]> {
+  private async getFeaturedAddonList(): Promise<CurseSearchResult[]> {
     const url = `${API_URL}/addon/featured`;
     const cachedResponse = this._cachingService.get<CurseGetFeaturedResponse>(
       url
     );
     if (cachedResponse) {
-      return of(cachedResponse.Popular);
+      return cachedResponse.Popular;
     }
 
     const body = {
@@ -400,17 +451,22 @@ export class CurseAddonProvider implements AddonProvider {
       updatedCount: 0,
     };
 
-    return this._httpClient.post<CurseGetFeaturedResponse>(url, body).pipe(
-      map((result) => {
-        if (!result) {
-          return [];
-        }
-
-        this._cachingService.set(url, result);
-
-        return result.Popular;
-      })
+    const result = await this.getCircuitBreaker<
+      CurseGetFeaturedResponse
+    >().fire(
+      async () =>
+        await this._httpClient
+          .post<CurseGetFeaturedResponse>(url, body)
+          .toPromise()
     );
+
+    if (!result) {
+      return [];
+    }
+
+    this._cachingService.set(url, result);
+
+    return result.Popular;
   }
 
   private getChannelType(releaseType: CurseReleaseType): AddonChannelType {

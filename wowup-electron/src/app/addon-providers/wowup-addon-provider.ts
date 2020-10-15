@@ -39,10 +39,12 @@ export class WowUpAddonProvider implements AddonProvider {
       .get<WowUpAddonRepresentation[]>(url.toString())
       .toPromise();
 
-    throw new Error("Method not implemented.");
+    // TODO
+    return [];
   }
 
   getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
+    // TODO
     return of([]);
   }
 
@@ -50,34 +52,39 @@ export class WowUpAddonProvider implements AddonProvider {
     query: string,
     clientType: WowClientType
   ): Promise<PotentialAddon[]> {
+    // TODO
     return [];
   }
 
-  searchByUrl(
+  async searchByUrl(
     addonUri: URL,
     clientType: WowClientType
   ): Promise<PotentialAddon> {
-    throw new Error("Method not implemented.");
+    // TODO
+    return undefined;
   }
 
-  searchByName(
+  async searchByName(
     addonName: string,
     folderName: string,
     clientType: WowClientType,
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
-    throw new Error("Method not implemented.");
+    // TODO
+    return [];
   }
 
   getById(
     addonId: string,
     clientType: WowClientType
   ): Observable<AddonSearchResult> {
-    throw new Error("Method not implemented.");
+    // TODO
+    return of(undefined);
   }
 
   isValidAddonUri(addonUri: URL): boolean {
-    throw new Error("Method not implemented.");
+    // TODO
+    return false;
   }
 
   onPostInstall(addon: Addon): void {
@@ -255,7 +262,7 @@ export class WowUpAddonProvider implements AddonProvider {
       thumbnailUrl: scanResult.exactMatch.image_url,
       patreonFundingLink: scanResult.exactMatch.patreon_funding_link,
       customFundingLink: scanResult.exactMatch.custom_funding_link,
-      githubFundingLink: scanResult.exactMatch.github_funding_link
+      githubFundingLink: scanResult.exactMatch.github_funding_link,
     };
   }
 }
