@@ -154,7 +154,6 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     addonId: string
   ): Promise<AddonDetailsResponse> => {
     console.debug('getAddonDetails');
-    throw new Error('test')
     const url = new URL(`${API_URL}/filedetails/${addonId}.json`);
 
     return this._httpClient

@@ -104,6 +104,8 @@ const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
 
+app.disableHardwareAcceleration(); // Try to improve font blur?
+
 const LOG_PATH = path.join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
 log.transports.file.resolvePath = (
