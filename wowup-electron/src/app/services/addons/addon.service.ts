@@ -389,10 +389,13 @@ export class AddonService {
     rescan = false
   ): Promise<Addon[]> {
     let addons = this._addonStorage.getAllForClientType(clientType);
-    if (rescan ) {
+    if (rescan) {
       const newAddons = await this.scanAddons(clientType);
-      console.log(newAddons)
-      this.updateAddons(addons, newAddons);
+      console.log(newAddons);
+
+      this._addonStorage.removeAllForClientType(clientType);
+      addons = this.updateAddons(addons, newAddons);
+      this._addonStorage.saveAll(addons);
     }
 
     await this.syncAddons(clientType, addons);
@@ -400,51 +403,34 @@ export class AddonService {
     return addons;
   }
 
-  private updateAddons(existingAddons: Addon[], newAddons: Addon[]): Addon[] {
-    const removedAddons = existingAddons.filter(
-      (existingAddon) =>
-        !newAddons.some((newAddon) => this.addonsMatch(existingAddon, newAddon))
-    );
-
-    const addedAddons = newAddons.filter(
-      (newAddon) =>
-        !existingAddons.some((existingAddon) =>
-          this.addonsMatch(existingAddon, newAddon)
-        )
-    );
-
-    _.remove(existingAddons, (addon) =>
-      removedAddons.some((removedAddon) => removedAddon.id === addon.id)
-    );
-
-    existingAddons.push(...addedAddons);
-
-    for (let existingAddon of existingAddons) {
-      var matchingAddon = newAddons.find((newAddon) =>
-        this.addonsMatch(newAddon, existingAddon)
+  private updateAddons(existingAddons: Addon[], newAddons: Addon[]) {
+    _.forEach(newAddons, (newAddon) => {
+      const existingAddon = _.find(
+        existingAddons,
+        (ea) =>
+          ea.externalId == newAddon.externalId &&
+          ea.providerName == newAddon.providerName
       );
-      if (!matchingAddon) {
-        continue;
+
+      if (!existingAddon) {
+        return;
       }
 
-      existingAddon.name = matchingAddon.name;
-      existingAddon.folderName = matchingAddon.folderName;
-      existingAddon.downloadUrl = matchingAddon.downloadUrl;
-      existingAddon.installedVersion = matchingAddon.installedVersion;
-      existingAddon.externalUrl = matchingAddon.externalUrl;
-      existingAddon.latestVersion = matchingAddon.latestVersion;
-      existingAddon.thumbnailUrl = matchingAddon.thumbnailUrl;
-      existingAddon.gameVersion = matchingAddon.gameVersion;
-      existingAddon.author = matchingAddon.author;
-      existingAddon.patreonFundingLink = matchingAddon.patreonFundingLink;
-      existingAddon.githubFundingLink = matchingAddon.githubFundingLink;
-      existingAddon.customFundingLink = matchingAddon.customFundingLink;
-    }
+      newAddon.name = existingAddon.name;
+      newAddon.folderName = existingAddon.folderName;
+      newAddon.downloadUrl = existingAddon.downloadUrl;
+      newAddon.installedVersion = existingAddon.installedVersion;
+      newAddon.externalUrl = existingAddon.externalUrl;
+      newAddon.latestVersion = existingAddon.latestVersion;
+      newAddon.thumbnailUrl = existingAddon.thumbnailUrl;
+      newAddon.gameVersion = existingAddon.gameVersion;
+      newAddon.author = existingAddon.author;
+      newAddon.patreonFundingLink = existingAddon.patreonFundingLink;
+      newAddon.githubFundingLink = existingAddon.githubFundingLink;
+      newAddon.customFundingLink = existingAddon.customFundingLink;
+    });
 
-    this._addonStorage.removeAll(...removedAddons);
-    this._addonStorage.setAll(existingAddons);
-
-    return existingAddons;
+    return newAddons;
   }
 
   private addonsMatch(addon1: Addon, addon2: Addon): boolean {

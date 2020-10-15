@@ -78,11 +78,7 @@ export class CurseAddonProvider implements AddonProvider {
       }
 
       try {
-        const newAddon = this.getAddon(
-          clientType,
-          addonChannelType,
-          scanResult
-        );
+        const newAddon = this.getAddon(clientType, scanResult);
 
         addonFolder.matchingAddon = newAddon;
       } catch (err) {
@@ -491,7 +487,6 @@ export class CurseAddonProvider implements AddonProvider {
 
   private getAddon(
     clientType: WowClientType,
-    addonChannelType: AddonChannelType,
     scanResult: AppCurseScanResult
   ): Addon {
     const currentVersion = scanResult.exactMatch.file;
@@ -506,15 +501,20 @@ export class CurseAddonProvider implements AddonProvider {
       clientType
     );
 
-    let channelType = addonChannelType;
-    let latestVersion = latestFiles.find(
-      (lf) => this.getChannelType(lf.releaseType) <= addonChannelType
+    let channelType = this.getChannelType(
+      scanResult.exactMatch.file.releaseType
     );
+    let latestVersion = latestFiles.find(
+      (lf) => this.getChannelType(lf.releaseType) <= channelType
+    );
+
+    console.log(scanResult.searchResult.name, channelType);
 
     // If there were no releases that met the channel type restrictions
     if (!latestVersion) {
       latestVersion = _.first(latestFiles);
       channelType = this.getWowUpChannel(latestVersion.releaseType);
+      console.warn("falling back to default channel");
     }
 
     return {
