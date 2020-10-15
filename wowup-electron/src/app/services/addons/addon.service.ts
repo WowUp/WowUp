@@ -408,18 +408,8 @@ export class AddonService {
         return;
       }
 
-      newAddon.name = existingAddon.name;
-      newAddon.folderName = existingAddon.folderName;
-      newAddon.downloadUrl = existingAddon.downloadUrl;
-      newAddon.installedVersion = existingAddon.installedVersion;
-      newAddon.externalUrl = existingAddon.externalUrl;
-      newAddon.latestVersion = existingAddon.latestVersion;
-      newAddon.thumbnailUrl = existingAddon.thumbnailUrl;
-      newAddon.gameVersion = existingAddon.gameVersion;
-      newAddon.author = existingAddon.author;
-      newAddon.patreonFundingLink = existingAddon.patreonFundingLink;
-      newAddon.githubFundingLink = existingAddon.githubFundingLink;
-      newAddon.customFundingLink = existingAddon.customFundingLink;
+      newAddon.autoUpdateEnabled = existingAddon.autoUpdateEnabled;
+      newAddon.isIgnored = existingAddon.isIgnored;
     });
 
     return newAddons;

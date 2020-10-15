@@ -125,11 +125,15 @@ export class CurseAddonProvider implements AddonProvider {
       return;
     }
 
+    scanResults.forEach(result => {
+      console.debug(result.folderName, result.fingerprint);
+    });
+
     const fingerprintResponse = await this.getAddonsByFingerprints(
       scanResults.map((result) => result.fingerprint)
     );
 
-    console.log(fingerprintResponse);
+    console.log('fingerprintResponse', fingerprintResponse);
 
     for (let scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
@@ -173,6 +177,8 @@ export class CurseAddonProvider implements AddonProvider {
     fingerprints: number[]
   ): Promise<CurseFingerprintsResponse> {
     const url = `${API_URL}/fingerprint`;
+
+    console.log(`Curse Fetching fingerprints`, JSON.stringify(fingerprints));
 
     return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
       async () =>
