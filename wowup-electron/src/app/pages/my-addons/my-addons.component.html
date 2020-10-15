@@ -189,6 +189,49 @@
   </ng-template>
 </mat-menu>
 
+<div style="visibility: hidden; position: fixed" #addonMultiContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="multiContextMenu">
+</div>
+<mat-menu #multiContextMenu="matMenu" class="addon-context-menu">
+  <ng-template matMenuContent let-listItems="listItems">
+    <div class="addon-context-menu-header">
+      {{ listItems.length + ' addons selected' }}
+    </div>
+    <mat-divider></mat-divider>
+    <mat-checkbox class="mat-menu-item" [checked]="isSelectedItemsProp(listItems, 'addon.isIgnored')"
+      (change)="onClickIgnoreAddons($event, listItems)">
+      {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON' | translate}}
+    </mat-checkbox>
+    <mat-checkbox class="mat-menu-item" [checked]="isSelectedItemsProp(listItems, 'addon.autoUpdateEnabled')"
+      (change)="onClickAutoUpdateAddons($event, listItems)">
+      {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON' | translate}}
+    </mat-checkbox>
+    <button mat-menu-item [matMenuTriggerFor]="addonChannels">
+      {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE' | translate}}
+    </button>
+    <button mat-menu-item (click)="onReInstallAddons(listItems)">
+      {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON' | translate}}
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="onRemoveAddons(listItems)">
+      {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON' | translate}}
+    </button>
+    <mat-menu #addonChannels="matMenu" class="addon-context-menu">
+      <mat-radio-group class="vertical-radio-group" (change)="onSelectedAddonsChannelChange($event, listItems)">
+        <mat-radio-button class="mat-menu-item" [value]="0">
+          {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL' | translate}}
+        </mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="1">
+          {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL' | translate}}
+        </mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="2">
+          {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL' | translate}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </mat-menu>
+  </ng-template>
+</mat-menu>
+
 <div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
 </div>
