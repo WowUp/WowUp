@@ -8,7 +8,7 @@ namespace WowUp.Common.Models.Curse
         Optional = 2,
         Required = 3,
         Tool = 4,
-        Incomplete = 5,
+        Incompatible = 5,
         Include = 6
     }
 
