@@ -1,15 +1,13 @@
-import { Injectable, Injector } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { Addon } from "../../entities/addon";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
-import { HttpClient } from "@angular/common/http";
 import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import * as path from "path";
 import * as fs from "fs";
-import { WowUpApiService } from "../wowup-api/wowup-api.service";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { AddonFolder } from "app/models/wowup/addon-folder";
@@ -18,17 +16,12 @@ import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
 import { forkJoin, Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
-import { CachingService } from "../caching/caching-service";
 import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { DownloadSevice } from "../download/download.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
-import { ElectronService } from "../electron/electron.service";
-import { TukUiAddonProvider } from "app/addon-providers/tukui-addon-provider";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
-import { WowInterfaceAddonProvider } from "app/addon-providers/wow-interface-addon-provider";
-import { GitHubAddonProvider } from "app/addon-providers/github-addon-provider";
 import { AddonProviderFactory } from "./addon.provider.factory";
 
 @Injectable({
@@ -52,7 +45,6 @@ export class AddonService {
     private _addonProviderFactory: AddonProviderFactory
   ) {
     this._addonProviders = [
-      this._addonProviderFactory.createWowUpAddonProvider(),
       this._addonProviderFactory.createCurseAddonProvider(),
       this._addonProviderFactory.createTukUiAddonProvider(),
       this._addonProviderFactory.createWowInterfaceAddonProvider(),

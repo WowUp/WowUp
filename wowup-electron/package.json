@@ -69,6 +69,7 @@
     "@types/node": "12.12.62",
     "@types/opossum": "4.1.1",
     "@types/rimraf": "3.0.0",
+    "@types/uuid": "8.3.0",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/eslint-plugin-tslint": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",
