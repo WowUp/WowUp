@@ -1,6 +1,10 @@
 {
     "ChangeLogs": [
       {
+        "Version": "2.0.0-alpha.9",
+        "Description": "Update Russian locale.\nTry to fix some font blurriness.\nRemove debug error in WowInterface provider."
+      },
+      {
         "Version": "2.0.0-alpha.8",
         "Description": "Localize most static text (by Pansa and Medok).\nImplemented addon detail view in my-addons (by Flippeey).\nWindow position/size/maximized state should now be restored when starting the app (by Chops).\nDouble clicking the titlebar on mac should perform the action set in your system settings (by Chops).\nAddon scanning is now much faster.\nWhen scanning addons, the matching channel type should be applied not the default.\nRe-scan is now less complicated and should prevent duplicates.\nAdd the 'Show Folder' button to the addon context menu.\nAdd http circuit breakers to the providers.\nFix issue with My Addons Provider column not sorting.\nPage context data on the footer.\nRemove the windows menu bar buttons for mac.\nAdd WowUp addon provider prototype"
       },
