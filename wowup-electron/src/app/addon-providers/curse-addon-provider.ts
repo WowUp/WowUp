@@ -26,6 +26,7 @@ import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-re
 import * as CircuitBreaker from "opossum";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
+const HUB_API_URL = "https://hub.dev.wowup.io";
 
 export class CurseAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<
@@ -125,15 +126,15 @@ export class CurseAddonProvider implements AddonProvider {
       return;
     }
 
-    scanResults.forEach(result => {
+    scanResults.forEach((result) => {
       console.debug(result.folderName, result.fingerprint);
     });
 
-    const fingerprintResponse = await this.getAddonsByFingerprints(
+    const fingerprintResponse = await this.getAddonsByFingerprintsW(
       scanResults.map((result) => result.fingerprint)
     );
 
-    console.log('fingerprintResponse', fingerprintResponse);
+    console.log("fingerprintResponse", fingerprintResponse);
 
     for (let scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
@@ -146,7 +147,7 @@ export class CurseAddonProvider implements AddonProvider {
       );
 
       // If the addon does not have an exact match, check the partial matches.
-      if (!scanResult.exactMatch) {
+      if (!scanResult.exactMatch && fingerprintResponse.partialMatches) {
         scanResult.exactMatch = fingerprintResponse.partialMatches.find(
           (partialMatch) =>
             partialMatch.file?.modules?.some(
@@ -171,6 +172,25 @@ export class CurseAddonProvider implements AddonProvider {
     clientType: WowClientType
   ) {
     return gameVersionFlavor === this.getGameVersionFlavor(clientType);
+  }
+
+  private async getAddonsByFingerprintsW(fingerprints: number[]) {
+    const url = `${HUB_API_URL}/curseforge/addons/fingerprint`;
+
+    console.log(`Wowup Fetching fingerprints`, JSON.stringify(fingerprints));
+
+    return await this._httpClient
+      .post<CurseFingerprintsResponse>(url, {
+        fingerprints,
+      })
+      .toPromise();
+
+    return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
+      async () =>
+        await this._httpClient
+          .post<CurseFingerprintsResponse>(url, fingerprints)
+          .toPromise()
+    );
   }
 
   private async getAddonsByFingerprints(
