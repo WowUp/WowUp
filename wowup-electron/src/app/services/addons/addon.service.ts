@@ -185,7 +185,7 @@ export class AddonService {
         this._wowUpService.applicationDownloadsFolderPath,
         uuidv4()
       );
-      
+
       unzippedDirectory = await this._downloadService.unzipFile(
         downloadedFilePath,
         unzipPath
@@ -364,7 +364,7 @@ export class AddonService {
   }
 
   public async removeAddon(addon: Addon) {
-    const installedDirectories = addon.installedFolders.split(",");
+    const installedDirectories = addon.installedFolders?.split(",") ?? [];
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(
       addon.clientType
