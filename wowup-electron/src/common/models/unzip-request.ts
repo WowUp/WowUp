@@ -1,4 +1,6 @@
-export interface UnzipRequest {
-    zipFilePath: string;
-    outputFolder: string;
+import { IpcRequest } from "./ipc-request";
+
+export interface UnzipRequest extends IpcRequest {
+  zipFilePath: string;
+  outputFolder: string;
 }

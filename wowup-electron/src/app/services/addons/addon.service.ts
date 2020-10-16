@@ -174,7 +174,7 @@ export class AddonService {
       );
 
       onUpdate?.call(this, AddonInstallState.Installing, 75);
-      
+
       this._addonInstalledSrc.next({
         addon,
         installState: AddonInstallState.Installing,
@@ -185,6 +185,7 @@ export class AddonService {
         this._wowUpService.applicationDownloadsFolderPath,
         uuidv4()
       );
+      
       unzippedDirectory = await this._downloadService.unzipFile(
         downloadedFilePath,
         unzipPath
