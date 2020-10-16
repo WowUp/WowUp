@@ -27,7 +27,10 @@ import {
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+  ENABLED_ADDON_PROVIDERS_KEY,
 } from "common/constants";
+import { AddonProviderFactory } from "../addons/addon.provider.factory";
+import { AddonProvider } from "../../addon-providers/addon-provider";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
 
@@ -62,7 +65,8 @@ export class WowUpService {
     private _electronService: ElectronService,
     private _fileService: FileService,
     private _cacheService: CachingService,
-    private _wowUpApiService: WowUpApiService
+    private _wowUpApiService: WowUpApiService,
+    private _addonProviderFactory: AddonProviderFactory
   ) {
     this.setDefaultPreferences();
 
@@ -116,6 +120,18 @@ export class WowUpService {
       releaseChannel
     );
   }
+
+  public get enabledAddonProviders() {
+    const preference = this._preferenceStorageService.findByKey(enabledAddonProvidersKey)
+    return preference.split(',');
+  }
+
+  public set enabledAddonProviders(value) {
+    const key = enabledAddonProvidersKey;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() })
+  }
+
 
   public get lastSelectedClientType(): WowClientType {
     const preference = this._preferenceStorageService.findByKey(
@@ -246,7 +262,7 @@ export class WowUpService {
 
   private setDefaultPreference(key: string, defaultValue: any) {
     let pref = this._preferenceStorageService.findByKey(key);
-    if (!pref) {
+    if (pref === null || pref === undefined) {
       this._preferenceStorageService.set(key, defaultValue.toString());
     }
   }
@@ -263,6 +279,10 @@ export class WowUpService {
     this.setDefaultPreference(
       WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
       this.getDefaultReleaseChannel()
+    );
+    this.setDefaultPreference(ENABLED_ADDON_PROVIDERS_KEY, this._addonProviderFactory
+      .getAll()
+      .map((addonProvider: AddonProvider) => addonProvider.name)
     );
     this.setDefaultClientPreferences();
   }

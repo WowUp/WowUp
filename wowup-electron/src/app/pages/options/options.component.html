@@ -16,6 +16,27 @@
           [clientType]="clientType"></app-wow-client-options>
       </mat-card-content>
     </mat-card>
+
+    <mat-card class="option-card">
+      <mat-card-header>
+        <mat-card-title>{{'PAGES.OPTIONS.ADDON_SOURCES.TITLE' | translate}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="grow">
+            <p>{{'PAGES.OPTIONS.ADDON_SOURCES.ENABLED_SOURCES.FIELD_LABEL' | translate}}</p>
+            <small class="hint">{{'PAGES.OPTIONS.ADDON_SOURCES.ENABLED_SOURCES.DESCRIPTION' | translate}}</small>
+          </div>
+          <mat-form-field>
+            <mat-label>{{'PAGES.OPTIONS.ADDON_SOURCES.ENABLED_SOURCES.INPUT_LABEL' | translate}}</mat-label>
+            <mat-select class="select" [(value)]="enabledAddonProviders" (selectionChange)="onEnabledProvidersChange($event)" multiple>
+              <mat-option *ngFor="let addonProvider of availableAddonProviders" [value]="addonProvider">{{addonProvider}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
     <mat-card class="option-card">
       <mat-card-header>
         <mat-card-title>{{'PAGES.OPTIONS.APPLICATION.TITLE' | translate}}</mat-card-title>

@@ -10,17 +10,17 @@ import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
-import { SessionService } from "../session/session.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AddonProviderFactory {
+  private _providers: AddonProvider[] = [];
+
   constructor(
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
-    private _sessionService: SessionService,
     private _fileService: FileService
   ) {}
 
@@ -67,5 +67,18 @@ export class AddonProviderFactory {
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
     return new WowUpAddonProvider(this._httpClient, this._electronService);
+  }
+
+  public getAll() : AddonProvider[] {
+    if (this._providers.length === 0) {
+      this._providers = [
+        this.createCurseAddonProvider(),
+        this.createTukUiAddonProvider(),
+        this.createWowInterfaceAddonProvider(),
+        this.createGitHubAddonProvider(),
+      ];
+    }
+
+    return this._providers;
   }
 }

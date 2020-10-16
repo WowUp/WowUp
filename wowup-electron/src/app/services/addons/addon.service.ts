@@ -56,12 +56,7 @@ export class AddonService {
     private _tocService: TocService,
     private _addonProviderFactory: AddonProviderFactory
   ) {
-    this._addonProviders = [
-      this._addonProviderFactory.createCurseAddonProvider(),
-      this._addonProviderFactory.createTukUiAddonProvider(),
-      this._addonProviderFactory.createWowInterfaceAddonProvider(),
-      this._addonProviderFactory.createGitHubAddonProvider(),
-    ];
+    this._addonProviders = _addonProviderFactory.getAll();
 
     this._installQueue
       .pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3))
@@ -78,7 +73,7 @@ export class AddonService {
     query: string,
     clientType: WowClientType
   ): Promise<AddonSearchResult[]> {
-    var searchTasks = this._addonProviders.map((p) =>
+    var searchTasks = this.getEnabledAddonProviders().map((p) =>
       p.searchByQuery(query, clientType)
     );
     var searchResults = await Promise.all(searchTasks);
@@ -520,7 +515,7 @@ export class AddonService {
 
   private async syncAddons(clientType: WowClientType, addons: Addon[]) {
     try {
-      for (let provider of this._addonProviders) {
+      for (let provider of this.getEnabledAddonProviders()) {
         await this.syncProviderAddons(clientType, addons, provider);
       }
 
@@ -597,6 +592,7 @@ export class AddonService {
     }
 
     const addonFolders = await this._warcraftService.listAddons(clientType);
+    // not using getEnabledAddonProviders() to ensure everything is still displayed
     for (let provider of this._addonProviders) {
       try {
         const validFolders = addonFolders.filter(
@@ -630,7 +626,7 @@ export class AddonService {
     clientType: WowClientType
   ): Observable<AddonSearchResult[]> {
     return forkJoin(
-      this._addonProviders.map((p) => p.getFeaturedAddons(clientType))
+      this.getEnabledAddonProviders().map((p) => p.getFeaturedAddons(clientType))
     ).pipe(
       map((results) => {
         return _.orderBy(results.flat(1), ["downloadCount"]).reverse();
@@ -643,7 +639,7 @@ export class AddonService {
   }
 
   private getProvider(providerName: string) {
-    return this._addonProviders.find(
+    return this.getEnabledAddonProviders().find(
       (provider) => provider.name === providerName
     );
   }
@@ -688,7 +684,7 @@ export class AddonService {
   }
 
   private getAddonProvider(addonUri: URL): AddonProvider {
-    return this._addonProviders.find((provider) =>
+    return this.getEnabledAddonProviders().find((provider) =>
       provider.isValidAddonUri(addonUri)
     );
   }
@@ -697,7 +693,7 @@ export class AddonService {
     addonFolder: AddonFolder,
     clientType: WowClientType
   ) {
-    const curseProvider = this._addonProviders.find(
+    const curseProvider = this.getEnabledAddonProviders().find(
       (p) => p instanceof CurseAddonProvider
     );
     const searchResult = await curseProvider
@@ -758,4 +754,10 @@ export class AddonService {
       screenshotUrls: searchResult.screenshotUrls
     };
   }
+
+  private getEnabledAddonProviders() {
+    let enabledAddonProviders = this._wowUpService.enabledAddonProviders;
+    return this._addonProviders
+      .filter((addonProvider: AddonProvider) => enabledAddonProviders.indexOf(addonProvider.name) !== -1);
+    }
 }

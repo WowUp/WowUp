@@ -81,6 +81,14 @@
         "USE_HARDWARE_ACCELERATION_LABEL" : "Enable Hardware Acceleration",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart."
       },
+      "ADDON_SOURCES": {
+        "TITLE": "Addon Sources",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "Enabled Addon Sources",
+          "DESCRIPTION": "Select which sources may be used to update and install your addons",
+          "INPUT_LABEL": "Sources"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debug Data",
         "DEBUG_DATA_DESCRIPTION": "Log debug data to help with diagnosing potential issues. This can be found in your latest log file for the curious.",

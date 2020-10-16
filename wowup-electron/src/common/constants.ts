@@ -25,3 +25,5 @@ export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY =
   "last_selected_client_type";
 export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY =
   "use_hardware_acceleration";
+export const ENABLED_ADDON_PROVIDERS_KEY = "enabled_addon_providers";
+

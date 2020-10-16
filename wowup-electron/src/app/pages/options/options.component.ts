@@ -21,6 +21,9 @@ import { AnalyticsService } from "app/services/analytics/analytics.service";
 import { AddonService } from "app/services/addons/addon.service";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
+import { AddonProvider } from "../../addon-providers/addon-provider";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
+
 
 @Component({
   selector: "app-options",
@@ -48,6 +51,8 @@ export class OptionsComponent implements OnInit, OnChanges {
       name: getEnumName(WowUpReleaseChannelType, type),
     })
   );
+  public enabledAddonProviders: string[];
+  public availableAddonProviders: string[];
 
   public get minimizeOnCloseDescription() {
     const key = this._electronService.isWin
@@ -65,12 +70,16 @@ export class OptionsComponent implements OnInit, OnChanges {
     public wowupService: WowUpService,
     private _dialog: MatDialog,
     private zone: NgZone,
+    private _addonProviderFactory: AddonProviderFactory,
     public electronService: ElectronService,
     private _translateService: TranslateService
   ) {
     _analyticsService.telemetryEnabled$.subscribe((enabled) => {
       this.telemetryEnabled = enabled;
     });
+
+    this.availableAddonProviders = _addonProviderFactory.getAll()
+      .map((addonProvider: AddonProvider) => addonProvider.name);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -130,6 +139,10 @@ export class OptionsComponent implements OnInit, OnChanges {
     });
   };
 
+  onEnabledProvidersChange = (evt: MatSelectChange) => {
+    this.wowupService.enabledAddonProviders = evt.value;
+  }
+
   onWowUpChannelChange(evt: MatSelectChange) {
     this.wowupService.wowUpReleaseChannel = evt.value;
   }
@@ -141,6 +154,7 @@ export class OptionsComponent implements OnInit, OnChanges {
   private loadData() {
     this.zone.run(() => {
       this.telemetryEnabled = this._analyticsService.telemetryEnabled;
+      this.enabledAddonProviders = this.wowupService.enabledAddonProviders;
       this.collapseToTray = this.wowupService.collapseToTray;
       this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
     });
