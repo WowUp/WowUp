@@ -226,6 +226,14 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Enabling hardware acceleration requires the application to restart.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration"
       },
+      "ADDON_SOURCES": {
+        "TITLE": "Addon Sources",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "Enabled Addon Sources",
+          "DESCRIPTION": "Select which sources may be used to update and install your addons",
+          "INPUT_LABEL": "Sources"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debug Data",
         "DEBUG_DATA_DESCRIPTION": "Log debug data to help with diagnosing potential issues. This can be found in your latest log file for the curious.",

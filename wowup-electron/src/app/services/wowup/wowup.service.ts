@@ -27,6 +27,7 @@ import {
   MY_ADDONS_SORT_ORDER,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
   GET_ADDONS_SORT_ORDER,
+  ENABLED_ADDON_PROVIDERS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -37,6 +38,8 @@ import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { AddonProviderFactory } from "../addons/addon.provider.factory";
+import { AddonProvider } from "../../addon-providers/addon-provider";
 
 const autoLaunch = require("auto-launch");
 
@@ -73,7 +76,8 @@ export class WowUpService {
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _addonProviderFactory: AddonProviderFactory,
   ) {
     this.setDefaultPreferences();
 
@@ -208,6 +212,18 @@ export class WowUpService {
     this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
   }
 
+  public get enabledAddonProviders() {
+    const preference = this._preferenceStorageService.findByKey(enabledAddonProvidersKey)
+    return preference.split(',');
+  }
+
+  public set enabledAddonProviders(value) {
+    const key = enabledAddonProvidersKey;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() })
+  }
+
+
   public get lastSelectedClientType(): WowClientType {
     const preference = this._preferenceStorageService.findByKey(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY);
     const value = parseInt(preference, 10);
@@ -319,7 +335,7 @@ export class WowUpService {
 
   private setDefaultPreference(key: string, defaultValue: any) {
     let pref = this._preferenceStorageService.findByKey(key);
-    if (!pref) {
+    if (pref === null || pref === undefined) {
       this._preferenceStorageService.set(key, defaultValue.toString());
     }
   }
@@ -334,6 +350,10 @@ export class WowUpService {
     this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, this.getDefaultReleaseChannel());
+    this.setDefaultPreference(ENABLED_ADDON_PROVIDERS_KEY, this._addonProviderFactory
+      .getAll()
+      .map((addonProvider: AddonProvider) => addonProvider.name)
+    );
     this.setDefaultClientPreferences();
   }
 

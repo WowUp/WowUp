@@ -45,3 +45,5 @@ export const APP_UPDATE_INSTALL = "app-update-install";
 export const APP_UPDATE_CHECK_FOR_UPDATE = "app-update-check-for-update";
 export const APP_UPDATE_CHECK_START = "app-update-check-start";
 export const APP_UPDATE_CHECK_END = "app-update-check-end";
+export const ENABLED_ADDON_PROVIDERS_KEY = "enabled_addon_providers";
+

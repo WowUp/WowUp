@@ -57,12 +57,7 @@ export class AddonService {
     private _tocService: TocService,
     private _addonProviderFactory: AddonProviderFactory
   ) {
-    this._addonProviders = [
-      this._addonProviderFactory.createCurseAddonProvider(),
-      this._addonProviderFactory.createTukUiAddonProvider(),
-      this._addonProviderFactory.createWowInterfaceAddonProvider(),
-      this._addonProviderFactory.createGitHubAddonProvider(),
-    ];
+    this._addonProviders = _addonProviderFactory.getAll();
 
     this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe((addonName) => {
       console.log("Install complete", addonName);
@@ -74,7 +69,7 @@ export class AddonService {
   }
 
   public async search(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    var searchTasks = this._addonProviders.map((p) => p.searchByQuery(query, clientType));
+    var searchTasks = this.getEnabledAddonProviders().map((p) => p.searchByQuery(query, clientType));
     var searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackUserAction("addons", "search", `${clientType}|${query}`);
@@ -506,7 +501,7 @@ export class AddonService {
 
   private async syncAddons(clientType: WowClientType, addons: Addon[]) {
     try {
-      for (let provider of this._addonProviders) {
+      for (let provider of this.getEnabledAddonProviders()) {
         await this.syncProviderAddons(clientType, addons, provider);
       }
 
@@ -564,6 +559,7 @@ export class AddonService {
     }
 
     const addonFolders = await this._warcraftService.listAddons(clientType);
+    // not using getEnabledAddonProviders() to ensure everything is still displayed
     for (let provider of this._addonProviders) {
       try {
         const validFolders = addonFolders.filter((af) => !af.matchingAddon && af.toc);
@@ -585,7 +581,7 @@ export class AddonService {
   }
 
   public getFeaturedAddons(clientType: WowClientType): Observable<AddonSearchResult[]> {
-    return forkJoin(this._addonProviders.map((p) => p.getFeaturedAddons(clientType))).pipe(
+    return forkJoin(this.getEnabledAddonProviders().map((p) => p.getFeaturedAddons(clientType))).pipe(
       map((results) => {
         return _.orderBy(results.flat(1), ["downloadCount"]).reverse();
       })
@@ -601,7 +597,7 @@ export class AddonService {
   }
 
   private getProvider(providerName: string) {
-    return this._addonProviders.find((provider) => provider.name === providerName);
+    return this.getEnabledAddonProviders().find((provider) => provider.name === providerName);
   }
 
   private getAllStoredAddons(clientType: WowClientType) {
@@ -644,11 +640,11 @@ export class AddonService {
   }
 
   private getAddonProvider(addonUri: URL): AddonProvider {
-    return this._addonProviders.find((provider) => provider.isValidAddonUri(addonUri));
+    return this.getEnabledAddonProviders().find((provider) => provider.isValidAddonUri(addonUri));
   }
 
   private async getCurseAddonById(addonFolder: AddonFolder, clientType: WowClientType) {
-    const curseProvider = this._addonProviders.find((p) => p instanceof CurseAddonProvider);
+    const curseProvider = this.getEnabledAddonProviders().find((p) => p instanceof CurseAddonProvider);
     const searchResult = await curseProvider.getById(addonFolder.toc.curseProjectId, clientType).toPromise();
     const latestFile = this.getLatestFile(searchResult, AddonChannelType.Stable);
     return this.createAddon(addonFolder.name, searchResult, latestFile, clientType);
@@ -700,4 +696,9 @@ export class AddonService {
       type: dependency.type,
     };
   };
+
+  private getEnabledAddonProviders() {
+    let enabledAddonProviders = this._wowUpService.enabledAddonProviders;
+    return this._addonProviders.filter((addonProvider: AddonProvider) => enabledAddonProviders.indexOf(addonProvider.name) !== -1);
+  }
 }
