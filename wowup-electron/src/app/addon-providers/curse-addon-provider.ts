@@ -46,8 +46,7 @@ export class CurseAddonProvider implements AddonProvider {
   constructor(
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
-    private _electronService: ElectronService,
-    private _wowUpService: WowUpService,
+    private _electronService: ElectronService
   ) {
     this._circuitBreaker = new CircuitBreaker(
       (action) => this.sendRequest(action),
@@ -272,13 +271,14 @@ export class CurseAddonProvider implements AddonProvider {
     return addonResults;
   }
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
+  getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Observable<PotentialAddon[]> {
+    channelType = typeof channelType === 'undefined' ? AddonChannelType.Stable : channelType;
     return from(this.getFeaturedAddonList()).pipe(
       map((addons) => {
         return this.filterFeaturedAddons(addons, clientType);
       }),
       map((filteredAddons) => {
-        return filteredAddons.map((addon) => this.getPotentialAddon(addon, clientType));
+        return filteredAddons.map((addon) => this.getPotentialAddon(addon, clientType, channelType));
       })
     );
   }
@@ -304,8 +304,10 @@ export class CurseAddonProvider implements AddonProvider {
 
   async searchByQuery(
     query: string,
-    clientType: WowClientType
+    clientType: WowClientType,
+    channelType?: AddonChannelType
   ): Promise<PotentialAddon[]> {
+    channelType = typeof channelType === 'undefined' ? AddonChannelType.Stable : channelType;
     var searchResults: PotentialAddon[] = [];
 
     var response = await this.getSearchResults(query);
@@ -315,7 +317,7 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getPotentialAddon(result, clientType));
+      searchResults.push(this.getPotentialAddon(result, clientType, channelType));
     }
 
     return searchResults;
@@ -389,12 +391,12 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  private getPotentialAddon(result: CurseSearchResult, clientType: WowClientType): PotentialAddon {
+  private getPotentialAddon(result: CurseSearchResult, clientType: WowClientType, channelType: AddonChannelType): PotentialAddon {
     const clientTypeStr = this.getGameVersionFlavor(clientType);
     let latestFile = _.orderBy(result.latestFiles, 'id', 'desc')
       .find(file =>
         file.gameVersionFlavor === clientTypeStr &&
-        this.getChannelType(file.releaseType) === this._wowUpService.getDefaultAddonChannel(clientType)
+        this.getChannelType(file.releaseType) === channelType
       );
     if (!latestFile) {
       latestFile = _.first(result.latestFiles);

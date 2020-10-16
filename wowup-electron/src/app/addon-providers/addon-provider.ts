@@ -12,9 +12,9 @@ export interface AddonProvider {
 
   getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]>;
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]>;
+  getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Observable<PotentialAddon[]>;
 
-  searchByQuery(query: string, clientType: WowClientType): Promise<PotentialAddon[]>;
+  searchByQuery(query: string, clientType: WowClientType, channelType?: AddonChannelType): Promise<PotentialAddon[]>;
 
   searchByUrl(addonUri: URL, clientType: WowClientType): Promise<PotentialAddon>;
 

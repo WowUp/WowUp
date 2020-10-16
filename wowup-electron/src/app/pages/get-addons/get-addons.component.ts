@@ -15,6 +15,7 @@ import { map } from "rxjs/operators";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import * as _ from "lodash";
+import { WowUpService } from "app/services/wowup/wowup.service";
 
 @Component({
   selector: "app-get-addons",
@@ -55,6 +56,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _addonService: AddonService,
     private _sessionService: SessionService,
     private _dialog: MatDialog,
+    private _wowUpService: WowUpService,
     public electronService: ElectronService,
     public warcraftService: WarcraftService
   ) {
@@ -134,7 +136,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     let searchResults = await this._addonService.search(
       this.query,
-      this.selectedClient
+      this.selectedClient,
+      this._wowUpService.getDefaultAddonChannel(this.selectedClient)
     );
 
     searchResults = this.filterInstalledAddons(searchResults);
@@ -159,7 +162,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this.isBusy = true;
 
-    this._addonService.getFeaturedAddons(clientType).subscribe({
+    this._addonService.getFeaturedAddons(clientType, this._wowUpService.getDefaultAddonChannel(clientType)).subscribe({
       next: (addons) => {
         addons = this.filterInstalledAddons(addons);
         this.formatAddons(addons);
