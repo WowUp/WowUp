@@ -93,6 +93,7 @@ export class AddonService {
       clientType
     ).toPromise();
     this._addonStorage.set(addon.id, addon);
+
     await this.installAddon(addon.id, onUpdate);
   }
 
@@ -166,7 +167,6 @@ export class AddonService {
 
     let downloadedFilePath = "";
     let unzippedDirectory = "";
-    let downloadedThumbnail = "";
     try {
       downloadedFilePath = await this._downloadService.downloadZipFile(
         addon.downloadUrl,
@@ -174,6 +174,7 @@ export class AddonService {
       );
 
       onUpdate?.call(this, AddonInstallState.Installing, 75);
+
       this._addonInstalledSrc.next({
         addon,
         installState: AddonInstallState.Installing,
@@ -184,6 +185,7 @@ export class AddonService {
         this._wowUpService.applicationDownloadsFolderPath,
         uuidv4()
       );
+
       unzippedDirectory = await this._downloadService.unzipFile(
         downloadedFilePath,
         unzipPath
@@ -362,7 +364,7 @@ export class AddonService {
   }
 
   public async removeAddon(addon: Addon) {
-    const installedDirectories = addon.installedFolders.split(",");
+    const installedDirectories = addon.installedFolders?.split(",") ?? [];
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(
       addon.clientType
