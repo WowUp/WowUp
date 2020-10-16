@@ -14,7 +14,8 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Autore",
         "PROVIDER_COLUMN_HEADER": "Provveditore",
-        "STATUS_COLUMN_HEADER": "Stato"
+        "STATUS_COLUMN_HEADER": "Stato",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
       }
     },
     "HOME": {

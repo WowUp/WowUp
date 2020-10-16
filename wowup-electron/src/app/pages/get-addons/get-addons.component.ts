@@ -37,8 +37,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   columns: ColumnState[] = [
     { name: "name", display: "Addon", visible: true },
+    { name: "downloadCount", display: "Downloads", visible: true },
     { name: "author", display: "Author", visible: true },
-    { name: "provider", display: "Provider", visible: true },
+    { name: "providerName", display: "Provider", visible: true },
     { name: "status", display: "Status", visible: true },
   ];
 

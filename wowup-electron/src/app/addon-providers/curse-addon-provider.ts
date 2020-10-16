@@ -24,6 +24,7 @@ import { CurseFile } from "common/curse/curse-file";
 import { CurseReleaseType } from "common/curse/curse-release-type";
 import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-response";
 import * as CircuitBreaker from "opossum";
+import { WowUpService } from "app/services/wowup/wowup.service";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 
@@ -45,7 +46,8 @@ export class CurseAddonProvider implements AddonProvider {
   constructor(
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
-    private _electronService: ElectronService
+    private _electronService: ElectronService,
+    private _wowUpService: WowUpService,
   ) {
     this._circuitBreaker = new CircuitBreaker(
       (action) => this.sendRequest(action),
@@ -276,7 +278,7 @@ export class CurseAddonProvider implements AddonProvider {
         return this.filterFeaturedAddons(addons, clientType);
       }),
       map((filteredAddons) => {
-        return filteredAddons.map((addon) => this.getPotentialAddon(addon));
+        return filteredAddons.map((addon) => this.getPotentialAddon(addon, clientType));
       })
     );
   }
@@ -313,7 +315,7 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getPotentialAddon(result));
+      searchResults.push(this.getPotentialAddon(result, clientType));
     }
 
     return searchResults;
@@ -387,7 +389,17 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  private getPotentialAddon(result: CurseSearchResult): PotentialAddon {
+  private getPotentialAddon(result: CurseSearchResult, clientType: WowClientType): PotentialAddon {
+    const clientTypeStr = this.getGameVersionFlavor(clientType);
+    let latestFile = _.orderBy(result.latestFiles, 'id', 'desc')
+      .find(file =>
+        file.gameVersionFlavor === clientTypeStr &&
+        this.getChannelType(file.releaseType) === this._wowUpService.getDefaultAddonChannel(clientType)
+      );
+    if (!latestFile) {
+      latestFile = _.first(result.latestFiles);
+    }
+
     return {
       author: this.getAuthor(result),
       downloadCount: result.downloadCount,
@@ -398,6 +410,7 @@ export class CurseAddonProvider implements AddonProvider {
       thumbnailUrl: this.getThumbnailUrl(result),
       summary: result.summary,
       screenshotUrls: this.getScreenshotUrls(result),
+      version: latestFile.displayName
     };
   }
 

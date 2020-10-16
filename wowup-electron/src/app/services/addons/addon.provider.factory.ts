@@ -11,6 +11,7 @@ import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { SessionService } from "../session/session.service";
+import { WowUpService } from "../wowup/wowup.service";
 
 @Injectable({
   providedIn: "root",
@@ -21,7 +22,8 @@ export class AddonProviderFactory {
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
     private _sessionService: SessionService,
-    private _fileService: FileService
+    private _fileService: FileService,
+    private _wowUpService: WowUpService,
   ) {}
 
   public getAddonProvider<T extends object>(providerType: T & AddonProvider) {
@@ -39,7 +41,8 @@ export class AddonProviderFactory {
     return new CurseAddonProvider(
       this._httpClient,
       this._cachingService,
-      this._electronService
+      this._electronService,
+      this._wowUpService
     );
   }
 

@@ -14,7 +14,8 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "作者",
         "PROVIDER_COLUMN_HEADER": "提供商",
-        "STATUS_COLUMN_HEADER": "状态"
+        "STATUS_COLUMN_HEADER": "状态",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
       }
     },
     "HOME": {
