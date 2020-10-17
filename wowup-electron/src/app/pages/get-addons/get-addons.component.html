@@ -82,9 +82,7 @@
           {{'PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          <app-addon-install-button [addon]="element" appUserActionTracker category="GetAddons" action="Install"
-            [label]="element.name">
-          </app-addon-install-button>
+          <app-get-addon-status-column [listItem]="element" ></app-get-addon-status-column>
         </td>
       </ng-container>
 

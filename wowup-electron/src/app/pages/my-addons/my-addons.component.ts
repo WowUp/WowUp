@@ -17,7 +17,7 @@ import { SessionService } from "app/services/session/session.service";
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { ColumnState } from "app/models/wowup/column-state";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { MyAddonsListItem } from "app/business-objects/my-addons-list-item";
+import { AddonViewModel } from "app/business-objects/my-addon-list-item";
 import * as _ from "lodash";
 import { ElectronService } from "app/services";
 import { AddonDisplayState } from "app/models/wowup/addon-display-state";
@@ -30,6 +30,8 @@ import { getEnumName } from "app/utils/enum.utils";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import { stringIncludes } from "app/utils/string.utils";
+import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
+import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 
 @Component({
   selector: "app-my-addons",
@@ -45,7 +47,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   updateAllContextMenu: MatMenuTrigger;
   @ViewChild(MatSort) sort: MatSort;
 
-  private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>(
+  private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>(
     []
   );
   private readonly _destroyed$ = new Subject<void>();
@@ -57,7 +59,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   contextMenuPosition = { x: "0px", y: "0px" };
 
-  public dataSource = new MatTableDataSource<MyAddonsListItem>([]);
+  public dataSource = new MatTableDataSource<AddonViewModel>([]);
   public filter = "";
 
   columns: ColumnState[] = [
@@ -118,7 +120,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(
       (evt) => {
-        let listItems: MyAddonsListItem[] = [].concat(
+        let listItems: AddonViewModel[] = [].concat(
           this._displayAddonsSrc.value
         );
 
@@ -136,7 +138,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         if (listItemIdx === -1) {
           listItems.push(listItem);
         } else {
-          listItems[listItemIdx] = listItem;
+          return;
+          // listItems[listItemIdx] = listItem;
         }
 
         listItems = this.sortListItems(listItems);
@@ -149,7 +152,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     const addonRemovedSubscription = this.addonService.addonRemoved$.subscribe(
       (addonId) => {
-        const addons: MyAddonsListItem[] = [].concat(
+        const addons: AddonViewModel[] = [].concat(
           this._displayAddonsSrc.value
         );
         const listItemIdx = addons.findIndex((li) => li.addon.id === addonId);
@@ -162,11 +165,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     );
 
     const displayAddonSubscription = this._displayAddonsSrc.subscribe(
-      (items: MyAddonsListItem[]) => {
+      (items: AddonViewModel[]) => {
         this.dataSource.data = items;
         this.dataSource.sortingDataAccessor = _.get;
         this.dataSource.filterPredicate = (
-          item: MyAddonsListItem,
+          item: AddonViewModel,
           filter: string
         ) => {
           if (
@@ -212,7 +215,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.loadAddons(this.selectedClient);
   }
 
-  onRowClicked(event: MouseEvent, row: MyAddonsListItem, index: number) {
+  onRowClicked(event: MouseEvent, row: AddonViewModel, index: number) {
     console.log(row.displayState);
     console.log("index clicked: " + index);
 
@@ -221,7 +224,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let listItems: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
+    let listItems: AddonViewModel[] = [].concat(this._displayAddonsSrc.value);
 
     if (event.shiftKey) {
       const startIdx = listItems.findIndex((item) => item.selected);
@@ -245,6 +248,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this._ngZone.run(() => {
       this._displayAddonsSrc.next(listItems);
     });
+  }
+
+  openDetailDialog(addon: AddonViewModel) {
+    const dialogRef = this._dialog.open(AddonDetailComponent, {
+      data: addon,
+    });
+
+    dialogRef.afterClosed().subscribe();
   }
 
   filterAddons(): void {
@@ -304,7 +315,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.columnContextMenu.openMenu();
   }
 
-  onCellContext(event: MouseEvent, listItem: MyAddonsListItem) {
+  onCellContext(event: MouseEvent, listItem: AddonViewModel) {
     event.preventDefault();
     this.updateContextMenuPosition(event);
     this.contextMenu.menuData = { listItem: listItem };
@@ -335,7 +346,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onUpdateAddon(listItem: MyAddonsListItem) {
+  onUpdateAddon(listItem: AddonViewModel) {
     listItem.isInstalling = true;
 
     this.addonService.installAddon(listItem.addon.id);
@@ -388,7 +399,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   onInstall() {}
 
-  onClickIgnoreAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
+  onClickIgnoreAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
     listItem.addon.isIgnored = evt.checked;
     listItem.statusText = listItem.getStateText();
     this.addonService.saveAddon(listItem.addon);
@@ -418,7 +429,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
       // Only care about the ones that need to be updated/installed
       addons = addons
-        .map((addon) => new MyAddonsListItem(addon))
+        .map((addon) => new AddonViewModel(addon))
         .filter((listItem) => listItem.needsUpdate || listItem.needsInstall)
         .map((listItem) => listItem.addon);
 
@@ -468,18 +479,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private formatAddons(addons: Addon[]): MyAddonsListItem[] {
+  private formatAddons(addons: Addon[]): AddonViewModel[] {
     const listItems = addons.map((addon) => this.createAddonListItem(addon));
 
     return this.sortListItems(listItems);
   }
 
-  private sortListItems(listItems: MyAddonsListItem[]) {
+  private sortListItems(listItems: AddonViewModel[]) {
     return _.orderBy(listItems, ["displayState", "addon.name"]);
   }
 
   private createAddonListItem(addon: Addon) {
-    const listItem = new MyAddonsListItem(addon);
+    const listItem = new AddonViewModel(addon);
 
     if (!listItem.addon.thumbnailUrl) {
       listItem.addon.thumbnailUrl = "assets/wowup_logo_512np.png";

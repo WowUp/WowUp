@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { PotentialAddon } from "../models/wowup/potential-addon";
 import { AddonProvider, AddonProviderType } from "./addon-provider";
 import { WowUpAddonRepresentation } from "../models/wowup-api/wowup-addon.representation";
 import { AddonFolder } from "app/models/wowup/addon-folder";
@@ -43,15 +42,17 @@ export class WowUpAddonProvider implements AddonProvider {
     return [];
   }
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
+  public async getFeaturedAddons(
+    clientType: WowClientType
+  ): Promise<AddonSearchResult[]> {
     // TODO
-    return of([]);
+    return [];
   }
 
   async searchByQuery(
     query: string,
     clientType: WowClientType
-  ): Promise<PotentialAddon[]> {
+  ): Promise<AddonSearchResult[]> {
     // TODO
     return [];
   }
@@ -59,7 +60,7 @@ export class WowUpAddonProvider implements AddonProvider {
   async searchByUrl(
     addonUri: URL,
     clientType: WowClientType
-  ): Promise<PotentialAddon> {
+  ): Promise<AddonSearchResult> {
     // TODO
     return undefined;
   }

@@ -5,7 +5,6 @@ import { InstallFromUrlDialogComponent } from "app/components/install-from-url-d
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
 import { ColumnState } from "app/models/wowup/column-state";
-import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { ElectronService } from "app/services";
 import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
@@ -15,10 +14,10 @@ import { filter, map } from "rxjs/operators";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import * as _ from "lodash";
-import { WowUpService } from "app/services/wowup/wowup.service";
-import { defaultChannelKeySuffix } from "../../../constants";
-import { getEnumName } from "app/utils/enum.utils";
+import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
+import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
+import { WowUpService } from "app/services/wowup/wowup.service";
 
 @Component({
   selector: "app-get-addons",
@@ -30,16 +29,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>(
+  private readonly _displayAddonsSrc = new BehaviorSubject<GetAddonListItem[]>(
     []
   );
   private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
-  private channelType: AddonChannelType = AddonChannelType.Stable;
-  private channelTypeKey: string = '';
+  private channelTypeKey: string = "";
 
-  public dataSource = new MatTableDataSource<PotentialAddon>([]);
+  public dataSource = new MatTableDataSource<GetAddonListItem>([]);
 
   columns: ColumnState[] = [
     { name: "name", display: "Addon", visible: true },
@@ -78,8 +76,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       .pipe(
         map((clientType) => {
           this.selectedClient = clientType;
-          this.channelType = this._wowUpService.getDefaultAddonChannel(this.selectedClient);
-          this.channelTypeKey = `${getEnumName(WowClientType, this.selectedClient)}${defaultChannelKeySuffix}`.toLowerCase();
           this.loadPopularAddons(this.selectedClient);
         })
       )
@@ -94,7 +90,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       .subscribe();
 
     const displayAddonSubscription = this._displayAddonsSrc.subscribe(
-      (items: PotentialAddon[]) => {
+      (items: GetAddonListItem[]) => {
         this.dataSource.data = items;
         this.dataSource.sortingDataAccessor = _.get;
         this.dataSource.sort = this.sort;
@@ -102,9 +98,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     );
 
     const channelTypeSubscription = this._wowUpService.preferenceChange$
-      .pipe(filter(change => change.key === this.channelTypeKey))
-      .subscribe(change => {
-        this.channelType = parseInt(change.value, 10) as AddonChannelType;
+      .pipe(filter((change) => change.key === this.channelTypeKey))
+      .subscribe((change) => {
         this.onSearch();
       });
 
@@ -112,7 +107,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       selectedClientSubscription,
       addonRemovedSubscription,
       displayAddonSubscription,
-      channelTypeSubscription
+      channelTypeSubscription,
     ];
   }
 
@@ -151,20 +146,19 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     let searchResults = await this._addonService.search(
       this.query,
-      this.selectedClient,
-      this.channelType
+      this.selectedClient
     );
 
-    searchResults = this.filterInstalledAddons(searchResults);
-    this.formatAddons(searchResults);
-    this._displayAddonsSrc.next(searchResults);
+    this._displayAddonsSrc.next(
+      this.formatAddons(this.filterInstalledAddons(searchResults))
+    );
     this.isBusy = false;
     this.setPageContextText();
   }
 
-  openDetailDialog(addon: PotentialAddon) {
+  openDetailDialog(addon: AddonSearchResult) {
     const dialogRef = this._dialog.open(AddonDetailComponent, {
-      data: new AddonDetailModel(addon),
+      data: addon,
     });
 
     dialogRef.afterClosed().subscribe();
@@ -177,11 +171,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this.isBusy = true;
 
-    this._addonService.getFeaturedAddons(clientType, this.channelType).subscribe({
+    this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
-        addons = this.filterInstalledAddons(addons);
-        this.formatAddons(addons);
-        this._displayAddonsSrc.next(addons);
+        console.log('FEAT', addons)
+        const listItems = this.formatAddons(this.filterInstalledAddons(addons));
+        this._displayAddonsSrc.next(listItems);
         this.isBusy = false;
       },
       error: (err) => {
@@ -190,7 +184,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private filterInstalledAddons(addons: PotentialAddon[]) {
+  private filterInstalledAddons(addons: AddonSearchResult[]) {
     return addons.filter(
       (addon) =>
         !this._addonService.isInstalled(
@@ -200,12 +194,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private formatAddons(addons: PotentialAddon[]) {
+  private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
     addons.forEach((addon) => {
       if (!addon.thumbnailUrl) {
         addon.thumbnailUrl = "assets/wowup_logo_512np.png";
       }
     });
+
+    return addons.map((addon) => new GetAddonListItem(addon));
   }
 
   private setPageContextText() {

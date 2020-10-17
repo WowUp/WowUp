@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { PotentialAddon } from "app/models/wowup/potential-addon";
+import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
+import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 
 @Component({
   selector: "app-potential-addon-table-column",
@@ -7,15 +8,15 @@ import { PotentialAddon } from "app/models/wowup/potential-addon";
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
 export class PotentialAddonTableColumnComponent implements OnInit {
-  @Input("addon") addon: PotentialAddon;
+  @Input("addon") addon: GetAddonListItem;
 
-  @Output() onViewDetails: EventEmitter<PotentialAddon> = new EventEmitter();
+  @Output() onViewDetails: EventEmitter<AddonSearchResult> = new EventEmitter();
 
   constructor() {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   viewDetails() {
-    this.onViewDetails.emit(this.addon);
+    this.onViewDetails.emit(this.addon.searchResult);
   }
 }

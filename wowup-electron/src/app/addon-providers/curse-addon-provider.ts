@@ -8,7 +8,6 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { from, Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { PotentialAddon } from "../models/wowup/potential-addon";
 import { CachingService } from "app/services/caching/caching-service";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { ElectronService } from "app/services";
@@ -288,16 +287,15 @@ export class CurseAddonProvider implements AddonProvider {
     return addonResults;
   }
 
-  getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Observable<PotentialAddon[]> {
-    channelType = typeof channelType === 'undefined' ? AddonChannelType.Stable : channelType;
-    return from(this.getFeaturedAddonList()).pipe(
-      map((addons) => {
-        return this.filterFeaturedAddons(addons, clientType);
-      }),
-      map((filteredAddons) => {
-        return filteredAddons.map((addon) => this.getPotentialAddon(addon, clientType, channelType));
-      })
-    );
+  public async getFeaturedAddons(
+    clientType: WowClientType
+  ): Promise<AddonSearchResult[]> {
+    const addons = await this.getFeaturedAddonList();
+    const filteredAddons = this.filterFeaturedAddons(addons, clientType);
+    return filteredAddons.map((addon) => {
+      const latestFiles = this.getLatestFiles(addon, clientType);
+      return this.getAddonSearchResult(addon, latestFiles);
+    });
   }
 
   private filterFeaturedAddons(
@@ -323,9 +321,9 @@ export class CurseAddonProvider implements AddonProvider {
     query: string,
     clientType: WowClientType,
     channelType?: AddonChannelType
-  ): Promise<PotentialAddon[]> {
-    channelType = typeof channelType === 'undefined' ? AddonChannelType.Stable : channelType;
-    var searchResults: PotentialAddon[] = [];
+  ): Promise<AddonSearchResult[]> {
+    channelType = channelType || AddonChannelType.Stable;
+    var searchResults: AddonSearchResult[] = [];
 
     var response = await this.getSearchResults(query);
     for (let result of response) {
@@ -334,7 +332,7 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getPotentialAddon(result, clientType, channelType));
+      searchResults.push(this.getAddonSearchResult(result));
     }
 
     return searchResults;
@@ -343,7 +341,7 @@ export class CurseAddonProvider implements AddonProvider {
   searchByUrl(
     addonUri: URL,
     clientType: WowClientType
-  ): Promise<PotentialAddon> {
+  ): Promise<AddonSearchResult> {
     throw new Error("Method not implemented.");
   }
 
@@ -408,34 +406,33 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  private getPotentialAddon(result: CurseSearchResult, clientType: WowClientType, channelType: AddonChannelType): PotentialAddon {
-    const clientTypeStr = this.getGameVersionFlavor(clientType);
-    let latestFile = _.orderBy(result.latestFiles, 'id', 'desc')
-      .find(file =>
-        file.gameVersionFlavor === clientTypeStr &&
-        this.getChannelType(file.releaseType) === channelType
-      );
-    if (!latestFile) {
-      latestFile = _.first(result.latestFiles);
-    }
+  // private getPotentialAddon(result: CurseSearchResult, clientType: WowClientType, channelType: AddonChannelType): PotentialAddon {
+  //   const clientTypeStr = this.getGameVersionFlavor(clientType);
+  //   let latestFile = _.orderBy(result.latestFiles, 'id', 'desc')
+  //     .find(file =>
+  //       file.gameVersionFlavor === clientTypeStr &&
+  //       this.getChannelType(file.releaseType) === channelType
+  //     );
+  //   if (!latestFile) {
+  //     latestFile = _.first(result.latestFiles);
+  //   }
 
-    return {
-      author: this.getAuthor(result),
-      downloadCount: result.downloadCount,
-      externalId: result.id.toString(),
-      externalUrl: result.websiteUrl,
-      name: result.name,
-      providerName: this.name,
-      thumbnailUrl: this.getThumbnailUrl(result),
-      summary: result.summary,
-      screenshotUrls: this.getScreenshotUrls(result),
-      version: latestFile.displayName
-    };
-  }
+  //   return {
+  //     author: this.getAuthor(result),
+  //     downloadCount: result.downloadCount,
+  //     externalId: result.id.toString(),
+  //     externalUrl: result.websiteUrl,
+  //     name: result.name,
+  //     providerName: this.name,
+  //     thumbnailUrl: this.getThumbnailUrl(result),
+  //     summary: result.summary,
+  //     screenshotUrls: this.getScreenshotUrls(result),
+  //   };
+  // }
 
   private getAddonSearchResult(
     result: CurseSearchResult,
-    latestFiles: CurseFile[]
+    latestFiles: CurseFile[] = []
   ): AddonSearchResult {
     try {
       const thumbnailUrl = this.getThumbnailUrl(result);
@@ -463,7 +460,8 @@ export class CurseAddonProvider implements AddonProvider {
         thumbnailUrl,
         externalUrl: result.websiteUrl,
         providerName: this.name,
-        files: searchResultFiles,
+        files: _.orderBy(searchResultFiles, f => f.channelType).reverse(),
+        downloadCount: result.downloadCount,
       };
 
       return searchResult;
@@ -584,12 +582,15 @@ export class CurseAddonProvider implements AddonProvider {
     scanResult: AppCurseScanResult
   ): Addon {
     const currentVersion = scanResult.exactMatch.file;
+
     const authors = scanResult.searchResult.authors
       .map((author) => author.name)
       .join(", ");
+
     const folderList = scanResult.exactMatch.file.modules
       .map((module) => module.foldername)
       .join(",");
+
     const latestFiles = this.getLatestFiles(
       scanResult.searchResult,
       clientType
@@ -630,6 +631,9 @@ export class CurseAddonProvider implements AddonProvider {
       latestVersion: latestVersion.displayName,
       providerName: this.name,
       thumbnailUrl: this.getThumbnailUrl(scanResult.searchResult),
+      screenshotUrls: this.getScreenshotUrls(scanResult.searchResult),
+      downloadCount: scanResult.searchResult.downloadCount,
+      summary: scanResult.searchResult.summary,
     };
   }
 }

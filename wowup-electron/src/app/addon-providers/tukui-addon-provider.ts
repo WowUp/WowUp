@@ -5,7 +5,6 @@ import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { CachingService } from "app/services/caching/caching-service";
 import { ElectronService } from "app/services/electron/electron.service";
 import { FileService } from "app/services/files/file.service";
@@ -65,18 +64,17 @@ export class TukUiAddonProvider implements AddonProvider {
     return results;
   }
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
-    return from(this.getAllAddons(clientType)).pipe(
-      map((tukUiAddons) => {
-        return tukUiAddons.map((addon) => this.toPotentialAddon(addon));
-      })
-    );
+  public async getFeaturedAddons(
+    clientType: WowClientType
+  ): Promise<AddonSearchResult[]> {
+    const tukUiAddons = await this.getAllAddons(clientType);
+    return tukUiAddons.map((addon) => this.toSearchResult(addon));
   }
 
   async searchByQuery(
     query: string,
     clientType: WowClientType
-  ): Promise<PotentialAddon[]> {
+  ): Promise<AddonSearchResult[]> {
     const addons = await this.getAllAddons(clientType);
     const canonQuery = query.toLowerCase();
     let similarAddons = _.filter(
@@ -85,13 +83,13 @@ export class TukUiAddonProvider implements AddonProvider {
     );
     similarAddons = _.orderBy(similarAddons, ["downloads"]);
 
-    return _.map(similarAddons, (addon) => this.toPotentialAddon(addon));
+    return _.map(similarAddons, (addon) => this.toSearchResult(addon));
   }
 
   searchByUrl(
     addonUri: URL,
     clientType: WowClientType
-  ): Promise<PotentialAddon> {
+  ): Promise<AddonSearchResult> {
     throw new Error("Method not implemented.");
   }
 
@@ -175,6 +173,9 @@ export class TukUiAddonProvider implements AddonProvider {
           providerName: this.name,
           thumbnailUrl: tukUiAddon.screenshot_url,
           updatedAt: new Date(),
+          summary: tukUiAddon.small_desc,
+          downloadCount: Number.parseFloat(tukUiAddon.downloads),
+          screenshotUrls: [tukUiAddon.screenshot_url],
         };
       }
     }
@@ -187,23 +188,9 @@ export class TukUiAddonProvider implements AddonProvider {
     );
   }
 
-  private toPotentialAddon(addon: TukUiAddon): PotentialAddon {
-    return {
-      author: addon.author,
-      downloadCount: parseInt(addon.downloads, 10),
-      externalId: addon.id,
-      externalUrl: addon.web_url,
-      name: addon.name,
-      providerName: this.name,
-      thumbnailUrl: addon.screenshot_url,
-      summary: addon.small_desc,
-      version: addon.version
-    };
-  }
-
   private toSearchResult(
     addon: TukUiAddon,
-    folderName: string
+    folderName?: string
   ): AddonSearchResult | undefined {
     if (!addon) {
       return undefined;
@@ -211,7 +198,7 @@ export class TukUiAddonProvider implements AddonProvider {
 
     var latestFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
-      folders: [folderName],
+      folders: folderName ? [folderName] : [],
       downloadUrl: addon.url,
       gameVersion: addon.patch,
       version: addon.version,
@@ -225,6 +212,7 @@ export class TukUiAddonProvider implements AddonProvider {
       thumbnailUrl: addon.screenshot_url,
       externalUrl: addon.web_url,
       providerName: this.name,
+      downloadCount: parseInt(addon.downloads, 10),
       files: [latestFile],
     };
   }

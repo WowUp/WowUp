@@ -5,7 +5,6 @@ import { AddonDetailsResponse } from "app/models/wow-interface/addon-details-res
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { ElectronService } from "app/services";
 import { CachingService } from "app/services/caching/caching-service";
 import { FileService } from "app/services/files/file.service";
@@ -64,21 +63,23 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     return searchResults;
   }
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
-    return of([]);
+  public async getFeaturedAddons(
+    clientType: WowClientType
+  ): Promise<AddonSearchResult[]> {
+    return [];
   }
 
   async searchByQuery(
     query: string,
     clientType: WowClientType
-  ): Promise<PotentialAddon[]> {
+  ): Promise<AddonSearchResult[]> {
     return [];
   }
 
   async searchByUrl(
     addonUri: URL,
     clientType: WowClientType
-  ): Promise<PotentialAddon> {
+  ): Promise<AddonSearchResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
       throw new Error(`Addon ID not found ${addonUri}`);
@@ -89,7 +90,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       throw new Error(`Bad addon api response ${addonUri}`);
     }
 
-    return this.toPotentialAddon(addon);
+    return this.toAddonSearchResult(addon);
   }
 
   searchByName(
@@ -153,7 +154,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   private getAddonDetails = (
     addonId: string
   ): Promise<AddonDetailsResponse> => {
-    console.debug('getAddonDetails');
+    console.debug("getAddonDetails");
     const url = new URL(`${API_URL}/filedetails/${addonId}.json`);
 
     return this._httpClient
@@ -195,31 +196,22 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       name: response.title,
       providerName: this.name,
       thumbnailUrl: this.getThumbnailUrl(response),
-    };
-  }
-
-  private toPotentialAddon(response: AddonDetailsResponse): PotentialAddon {
-    return {
-      providerName: this.name,
-      name: response.title,
+      summary: response.description,
+      screenshotUrls: response.images?.map((img) => img.imageUrl),
       downloadCount: response.downloads,
-      thumbnailUrl: this.getThumbnailUrl(response),
-      externalId: response.id.toString(),
-      externalUrl: this.getAddonUrl(response),
-      author: response.author,
     };
   }
 
   private toAddonSearchResult(
     response: AddonDetailsResponse,
-    folderName: string
+    folderName?: string
   ): AddonSearchResult {
     try {
       var searchResultFile: AddonSearchResultFile = {
         channelType: AddonChannelType.Stable,
         version: response.version,
         downloadUrl: response.downloadUri,
-        folders: [folderName],
+        folders: folderName ? [folderName] : [],
         gameVersion: "",
         releaseDate: new Date(),
       };
@@ -231,6 +223,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         thumbnailUrl: this.getThumbnailUrl(response),
         externalUrl: this.getAddonUrl(response),
         providerName: this.name,
+        downloadCount: response.downloads,
         files: [searchResultFile],
       };
     } catch (err) {
