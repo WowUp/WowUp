@@ -51,6 +51,18 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     return this.columns.filter((col) => col.visible).map((col) => col.name);
   }
 
+  public get defaultAddonChannelKey() {
+    return this._wowUpService.getClientDefaultAddonChannelKey(
+      this._sessionService.selectedClientType
+    );
+  }
+
+  public get defaultAddonChannel() {
+    return this._wowUpService.getDefaultAddonChannel(
+      this._sessionService.selectedClientType
+    );
+  }
+
   public query = "";
   public isBusy = false;
   public selectedClient = WowClientType.None;
@@ -98,7 +110,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     );
 
     const channelTypeSubscription = this._wowUpService.preferenceChange$
-      .pipe(filter((change) => change.key === this.channelTypeKey))
+      .pipe(filter((change) => change.key === this.defaultAddonChannelKey))
       .subscribe((change) => {
         this.onSearch();
       });
@@ -173,7 +185,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
-        console.log('FEAT', addons)
+        console.log("FEAT", addons);
         const listItems = this.formatAddons(this.filterInstalledAddons(addons));
         this._displayAddonsSrc.next(listItems);
         this.isBusy = false;

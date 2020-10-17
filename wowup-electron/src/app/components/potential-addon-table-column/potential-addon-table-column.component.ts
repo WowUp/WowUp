@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from "@angular/core";
 import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
@@ -10,25 +18,31 @@ import { WowUpService } from "app/services/wowup/wowup.service";
   templateUrl: "./potential-addon-table-column.component.html",
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
-export class PotentialAddonTableColumnComponent implements OnInit {
+export class PotentialAddonTableColumnComponent implements OnInit, OnChanges {
   @Input("addon") addon: GetAddonListItem;
+  @Input() channel: AddonChannelType;
 
   @Output() onViewDetails: EventEmitter<AddonSearchResult> = new EventEmitter();
 
-  public get addonVersion() {
-    const defaultChannel = this._wowupService.getDefaultAddonChannel(
-      this._sessionService.selectedClientType
-    );
-    const latestFile = this.addon.getLatestFile(defaultChannel);
-    return latestFile?.version;
-  }
+  public addonVersion: string = "";
 
   constructor(
     private _sessionService: SessionService,
     private _wowupService: WowUpService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.channel) {
+      const latestFile = this.addon.getLatestFile(this.channel);
+      this.addonVersion = latestFile?.version;
+    }
+  }
+
+  ngOnInit(): void {
+    // this._defaultChannel = this._wowupService.getDefaultAddonChannel(
+    //   this._sessionService.selectedClientType
+    // );
+  }
 
   viewDetails() {
     this.onViewDetails.emit(this.addon.searchResult);
