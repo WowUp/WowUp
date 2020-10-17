@@ -38,7 +38,8 @@
   <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
 
   <div class="table-container flex-grow-1" [hidden]="isBusy === true">
-    <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
+    <table mat-table matSort [dataSource]="dataSource" matSortActive="downloadCount" matSortDirection="desc"
+      class="mat-elevation-z8">
       <ng-container matColumnDef="name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER' | translate}}
@@ -49,7 +50,16 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="provider">
+      <ng-container matColumnDef="downloadCount">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{'PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER' | translate}}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{element.downloadCount | downloadCount}}
+        </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="providerName">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{'PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER' | translate}}
         </th>

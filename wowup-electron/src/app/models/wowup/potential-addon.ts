@@ -9,4 +9,5 @@ export interface PotentialAddon {
   downloadCount: number;
   summary?: string;
   screenshotUrls?: string[];
+  version?: string;
 }

@@ -288,13 +288,14 @@ export class CurseAddonProvider implements AddonProvider {
     return addonResults;
   }
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
+  getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Observable<PotentialAddon[]> {
+    channelType = typeof channelType === 'undefined' ? AddonChannelType.Stable : channelType;
     return from(this.getFeaturedAddonList()).pipe(
       map((addons) => {
         return this.filterFeaturedAddons(addons, clientType);
       }),
       map((filteredAddons) => {
-        return filteredAddons.map((addon) => this.getPotentialAddon(addon));
+        return filteredAddons.map((addon) => this.getPotentialAddon(addon, clientType, channelType));
       })
     );
   }
@@ -320,8 +321,10 @@ export class CurseAddonProvider implements AddonProvider {
 
   async searchByQuery(
     query: string,
-    clientType: WowClientType
+    clientType: WowClientType,
+    channelType?: AddonChannelType
   ): Promise<PotentialAddon[]> {
+    channelType = typeof channelType === 'undefined' ? AddonChannelType.Stable : channelType;
     var searchResults: PotentialAddon[] = [];
 
     var response = await this.getSearchResults(query);
@@ -331,7 +334,7 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getPotentialAddon(result));
+      searchResults.push(this.getPotentialAddon(result, clientType, channelType));
     }
 
     return searchResults;
@@ -405,7 +408,17 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  private getPotentialAddon(result: CurseSearchResult): PotentialAddon {
+  private getPotentialAddon(result: CurseSearchResult, clientType: WowClientType, channelType: AddonChannelType): PotentialAddon {
+    const clientTypeStr = this.getGameVersionFlavor(clientType);
+    let latestFile = _.orderBy(result.latestFiles, 'id', 'desc')
+      .find(file =>
+        file.gameVersionFlavor === clientTypeStr &&
+        this.getChannelType(file.releaseType) === channelType
+      );
+    if (!latestFile) {
+      latestFile = _.first(result.latestFiles);
+    }
+
     return {
       author: this.getAuthor(result),
       downloadCount: result.downloadCount,
@@ -416,6 +429,7 @@ export class CurseAddonProvider implements AddonProvider {
       thumbnailUrl: this.getThumbnailUrl(result),
       summary: result.summary,
       screenshotUrls: this.getScreenshotUrls(result),
+      version: latestFile.displayName
     };
   }
 

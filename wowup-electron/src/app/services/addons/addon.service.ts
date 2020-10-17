@@ -60,10 +60,11 @@ export class AddonService {
 
   public async search(
     query: string,
-    clientType: WowClientType
+    clientType: WowClientType,
+    channelType: AddonChannelType
   ): Promise<PotentialAddon[]> {
     var searchTasks = this._addonProviders.map((p) =>
-      p.searchByQuery(query, clientType)
+      p.searchByQuery(query, clientType, channelType)
     );
     var searchResults = await Promise.all(searchTasks);
 
@@ -558,10 +559,11 @@ export class AddonService {
   }
 
   public getFeaturedAddons(
-    clientType: WowClientType
+    clientType: WowClientType,
+    channelType: AddonChannelType,
   ): Observable<PotentialAddon[]> {
     return forkJoin(
-      this._addonProviders.map((p) => p.getFeaturedAddons(clientType))
+      this._addonProviders.map((p) => p.getFeaturedAddons(clientType, channelType))
     ).pipe(
       map((results) => {
         return _.orderBy(results.flat(1), ["downloadCount"]).reverse();
