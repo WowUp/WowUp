@@ -24,7 +24,6 @@ import {
   defaultAutoUpdateKeySuffix,
   defaultChannelKeySuffix,
   lastSelectedWowClientTypeKey,
-  telemetryEnabledKey,
   wowupReleaseChannelKey
 } from "../../../constants";
 
@@ -71,17 +70,6 @@ export class WowUpService {
 
   public set collapseToTray(value: boolean) {
     const key = collapseToTrayKey;
-    this._preferenceStorageService.set(key, value);
-    this._preferenceChangeSrc.next({ key, value: value.toString() })
-  }
-
-  public get telemetryEnabled() {
-    const preference = this._preferenceStorageService.findByKey(telemetryEnabledKey);
-    return preference === 'true';
-  }
-
-  public set telemetryEnabled(value: boolean) {
-    const key = telemetryEnabledKey;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() })
   }

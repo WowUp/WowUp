@@ -37,7 +37,7 @@ export class AppComponent implements AfterViewInit {
     if (this._analyticsService.shouldPromptTelemetry) {
       this.openDialog();
     } else {
-      // TODO track startup
+      this._analyticsService.trackStartup();
     }
 
     this.onAutoUpdateInterval();
@@ -53,7 +53,10 @@ export class AppComponent implements AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this._wowUpService.telemetryEnabled = result;
+      this._analyticsService.telemetryEnabled = result;
+      if (result) {
+        this._analyticsService.trackStartup();
+      }
     });
   }
 

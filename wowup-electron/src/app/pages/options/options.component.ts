@@ -4,7 +4,6 @@ import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ElectronService } from 'app/services';
 import { WarcraftService } from 'app/services/warcraft/warcraft.service';
 import { WowUpService } from 'app/services/wowup/wowup.service';
-import { telemetryEnabledKey } from '../../../constants';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'lodash';
 import * as path from 'path';
@@ -13,6 +12,7 @@ import { AlertDialogComponent } from 'app/components/alert-dialog/alert-dialog.c
 import { getEnumList, getEnumName } from 'app/utils/enum.utils';
 import { WowUpReleaseChannelType } from 'app/models/wowup/wowup-release-channel-type';
 import { MatSelectChange } from '@angular/material/select';
+import { AnalyticsService } from 'app/services/analytics/analytics.service';
 
 @Component({
   selector: 'app-options',
@@ -36,6 +36,7 @@ export class OptionsComponent implements OnInit, OnChanges {
     .map((type: WowUpReleaseChannelType) => ({ type, name: getEnumName(WowUpReleaseChannelType, type) }));
 
   constructor(
+    private _analyticsService: AnalyticsService,
     private warcraft: WarcraftService,
     private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
@@ -44,10 +45,9 @@ export class OptionsComponent implements OnInit, OnChanges {
     private zone: NgZone,
     public electronService: ElectronService
   ) {
-    _wowUpService.preferenceChange$
-      .pipe(filter(change => change.key === telemetryEnabledKey))
-      .subscribe(change => {
-        this.telemetryEnabled = change.value === true.toString()
+    _analyticsService.telemetryEnabled$
+      .subscribe(enabled => {
+        this.telemetryEnabled = enabled;
       })
   }
 
@@ -71,7 +71,7 @@ export class OptionsComponent implements OnInit, OnChanges {
   }
 
   onTelemetryChange = (evt: MatSlideToggleChange) => {
-    this._wowUpService.telemetryEnabled = evt.checked;
+    this._analyticsService.telemetryEnabled = evt.checked;
   }
 
   onCollapseChange = (evt: MatSlideToggleChange) => {
@@ -155,7 +155,7 @@ export class OptionsComponent implements OnInit, OnChanges {
 
   private loadData() {
     this.zone.run(() => {
-      this.telemetryEnabled = this._wowUpService.telemetryEnabled;
+      this.telemetryEnabled = this._analyticsService.telemetryEnabled;
       this.collapseToTray = this._wowUpService.collapseToTray;
       this.retailLocation = this.warcraft.getClientLocation(WowClientType.Retail);
       this.classicLocation = this.warcraft.getClientLocation(WowClientType.Classic);
