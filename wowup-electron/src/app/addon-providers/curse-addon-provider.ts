@@ -579,8 +579,6 @@ export class CurseAddonProvider implements AddonProvider {
       (lf) => this.getChannelType(lf.releaseType) <= channelType
     );
 
-    console.log(scanResult.searchResult.name, channelType);
-
     // If there were no releases that met the channel type restrictions
     if (!latestVersion) {
       latestVersion = _.first(latestFiles);
