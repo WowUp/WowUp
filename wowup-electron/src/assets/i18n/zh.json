@@ -226,6 +226,14 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
         "USE_HARDWARE_ACCELERATION_LABEL": "TEXT_ELEMENT"
       },
+      "ADDON_SOURCES": {
+        "TITLE": "TEXT_ELEMENT",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "TEXT_ELEMENT",
+          "DESCRIPTION": "TEXT_ELEMENT",
+          "INPUT_LABEL": "TEXT_ELEMENT"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "转储调试数据",
         "DEBUG_DATA_DESCRIPTION": "记录调试数据以帮助诊断潜在的问题。这可以在您最新的日志文件中找到。",

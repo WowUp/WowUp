@@ -226,6 +226,14 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Bei Aktivierung der Hardwarebeschleunigung benötigt die App einen Neustart.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Hardwarebeschleunigung aktivieren"
       },
+      "ADDON_SOURCES": {
+        "TITLE": "TEXT_ELEMENT",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "TEXT_ELEMENT",
+          "DESCRIPTION": "TEXT_ELEMENT",
+          "INPUT_LABEL": "TEXT_ELEMENT"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten dumpen",
         "DEBUG_DATA_DESCRIPTION": "Protokollieren Sie Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies finden Sie in Ihrer aktuellen Protokolldatei (für Neugierige).",
