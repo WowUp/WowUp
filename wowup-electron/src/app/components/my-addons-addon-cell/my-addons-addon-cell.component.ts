@@ -10,13 +10,13 @@ import { AddonViewModel } from "app/business-objects/my-addon-list-item";
 export class MyAddonsAddonCellComponent implements OnInit {
   @Input("addon") listItem: AddonViewModel;
 
-  @Output() onViewDetails: EventEmitter<Addon> = new EventEmitter();
+  @Output() onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
 
   constructor() {}
 
   ngOnInit(): void {}
 
   viewDetails() {
-    this.onViewDetails.emit(this.listItem.addon);
+    this.onViewDetails.emit(this.listItem);
   }
 }

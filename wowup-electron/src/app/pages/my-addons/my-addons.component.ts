@@ -250,9 +250,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDetailDialog(addon: AddonViewModel) {
+  openDetailDialog(listItem: AddonViewModel) {
     const dialogRef = this._dialog.open(AddonDetailComponent, {
-      data: addon,
+      data: listItem.addon,
     });
 
     dialogRef.afterClosed().subscribe();
