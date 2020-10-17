@@ -185,7 +185,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
-        console.log("FEAT", addons);
         const listItems = this.formatAddons(this.filterInstalledAddons(addons));
         this._displayAddonsSrc.next(listItems);
         this.isBusy = false;
