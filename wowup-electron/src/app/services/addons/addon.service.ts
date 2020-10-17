@@ -697,7 +697,7 @@ export class AddonService {
     };
   };
 
-  private getEnabledAddonProviders() {
+  public getEnabledAddonProviders() {
     let enabledAddonProviders = this._wowUpService.enabledAddonProviders;
     return this._addonProviders.filter((addonProvider: AddonProvider) => enabledAddonProviders.indexOf(addonProvider.name) !== -1);
   }
