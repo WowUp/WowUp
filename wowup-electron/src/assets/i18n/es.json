@@ -80,6 +80,14 @@
         "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
       },
+      "ADDON_SOURCES": {
+        "TITLE": "TEXT_ELEMENT",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "TEXT_ELEMENT",
+          "DESCRIPTION": "TEXT_ELEMENT",
+          "INPUT_LABEL": "TEXT_ELEMENT"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Eliminar registro de depuración de datos",
         "DEBUG_DATA_DESCRIPTION": "Registra datos de depuración y ayuda a diagnosticar problemas potenciales. Solo por curiosidad, esto se puede encontrar en su último archivo de registro.",

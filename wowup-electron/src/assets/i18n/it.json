@@ -80,6 +80,14 @@
         "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
       },
+      "ADDON_SOURCES": {
+        "TITLE": "TEXT_ELEMENT",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "TEXT_ELEMENT",
+          "DESCRIPTION": "TEXT_ELEMENT",
+          "INPUT_LABEL": "TEXT_ELEMENT"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
         "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questo può essere trovato nel tuo ultimo file di log per i curiosi.",

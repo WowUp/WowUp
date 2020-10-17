@@ -80,6 +80,14 @@
         "USE_HARDWARE_ACCELERATION_LABEL" : "Hardwarebeschleunigung aktivieren",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Das Deaktivieren der Hardwarebeschleunigung kann FPS Probleme und Probleme beim Rendern beheben. Eine Änderung dieser Einstellung benötigt einen Neustart der App."
       },
+      "ADDON_SOURCES": {
+        "TITLE": "TEXT_ELEMENT",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "TEXT_ELEMENT",
+          "DESCRIPTION": "TEXT_ELEMENT",
+          "INPUT_LABEL": "TEXT_ELEMENT"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten dumpen",
         "DEBUG_DATA_DESCRIPTION": "Protokollieren Sie Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies finden Sie in Ihrer aktuellen Protokolldatei (für Neugierige).",

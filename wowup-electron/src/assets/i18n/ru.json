@@ -81,6 +81,14 @@
         "USE_HARDWARE_ACCELERATION_LABEL" : "Включить аппаратное ускорение",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения."
       },
+      "ADDON_SOURCES": {
+        "TITLE": "TEXT_ELEMENT",
+        "ENABLED_SOURCES": {
+          "FIELD_LABEL": "TEXT_ELEMENT",
+          "DESCRIPTION": "TEXT_ELEMENT",
+          "INPUT_LABEL": "TEXT_ELEMENT"
+        }
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
         "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Его можно найти в последнем лог-файле, если необходимо.",
