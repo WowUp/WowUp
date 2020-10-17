@@ -242,6 +242,24 @@ export class AddonService {
     });
   }
 
+  public async logDebugData() {
+    const curseProvider = this._addonProviders.find(
+      (p) => p.name === "Curse"
+    ) as CurseAddonProvider;
+
+    const clientTypes = await this._warcraftService.getWowClientTypes();
+    for (let clientType of clientTypes) {
+      const addonFolders = await this._warcraftService.listAddons(clientType);
+      const scanResults = await curseProvider.getScanResults(addonFolders);
+      const map = {};
+
+      scanResults.forEach((sr) => (map[sr.folderName] = sr.fingerprint));
+
+      console.log(`clientType ${this._warcraftService.getClientDisplayName(clientType)} addon fingerprints`);
+      console.log(map);
+    }
+  }
+
   private async getLatestGameVersion(
     baseDir: string,
     installedFolders: string[]

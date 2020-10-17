@@ -63,7 +63,7 @@ export class CurseAddonProvider implements AddonProvider {
     });
   }
 
-  async scan(
+  public async scan(
     clientType: WowClientType,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
@@ -112,11 +112,44 @@ export class CurseAddonProvider implements AddonProvider {
       } catch (err) {
         console.error(scanResult);
         console.error(err);
-        // TODO
-        // _analyticsService.Track(ex, $"Failed to create addon for result {scanResult.FolderScanner.Fingerprint}");
       }
     }
   }
+
+  public getScanResults = async (
+    addonFolders: AddonFolder[]
+  ): Promise<AppCurseScanResult[]> => {
+    const t1 = Date.now();
+
+    return new Promise((resolve, reject) => {
+      const eventHandler = (_evt: any, arg: CurseGetScanResultsResponse) => {
+        if (arg.error) {
+          return reject(arg.error);
+        }
+
+        const appScanResults: AppCurseScanResult[] = arg.scanResults.map(
+          (scanResult) => {
+            const addonFolder = addonFolders.find(
+              (af) => af.path === scanResult.directory
+            );
+
+            return Object.assign({}, scanResult, { addonFolder });
+          }
+        );
+
+        console.log("scan delta", Date.now() - t1);
+        resolve(appScanResults);
+      };
+
+      const request: CurseGetScanResultsRequest = {
+        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
+        responseKey: uuidv4(),
+      };
+
+      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+      this._electronService.ipcRenderer.send(CURSE_GET_SCAN_RESULTS, request);
+    });
+  };
 
   private async mapAddonFolders(
     scanResults: AppCurseScanResult[],
@@ -226,41 +259,6 @@ export class CurseAddonProvider implements AddonProvider {
   private sendRequest<T>(action: () => Promise<T>): Promise<T> {
     return action.call(this);
   }
-
-  private getScanResults = async (
-    addonFolders: AddonFolder[]
-  ): Promise<AppCurseScanResult[]> => {
-    const t1 = Date.now();
-
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: CurseGetScanResultsResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
-
-        const appScanResults: AppCurseScanResult[] = arg.scanResults.map(
-          (scanResult) => {
-            const addonFolder = addonFolders.find(
-              (af) => af.path === scanResult.directory
-            );
-
-            return Object.assign({}, scanResult, { addonFolder });
-          }
-        );
-
-        console.log("scan delta", Date.now() - t1);
-        resolve(appScanResults);
-      };
-
-      const request: CurseGetScanResultsRequest = {
-        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(CURSE_GET_SCAN_RESULTS, request);
-    });
-  };
 
   async getAll(
     clientType: WowClientType,
