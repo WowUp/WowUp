@@ -11,11 +11,14 @@ import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
 import { BehaviorSubject, Subject, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import * as _ from "lodash";
 import { WowUpService } from "app/services/wowup/wowup.service";
+import { defaultChannelKeySuffix } from "../../../constants";
+import { getEnumName } from "app/utils/enum.utils";
+import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-get-addons",
@@ -33,6 +36,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
+  private channelType: AddonChannelType = AddonChannelType.Stable;
+  private channelTypeKey: string = '';
 
   public dataSource = new MatTableDataSource<PotentialAddon>([]);
 
@@ -73,6 +78,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       .pipe(
         map((clientType) => {
           this.selectedClient = clientType;
+          this.channelType = this._wowUpService.getDefaultAddonChannel(this.selectedClient);
+          this.channelTypeKey = `${getEnumName(WowClientType, this.selectedClient)}${defaultChannelKeySuffix}`.toLowerCase();
           this.loadPopularAddons(this.selectedClient);
         })
       )
@@ -94,10 +101,18 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       }
     );
 
+    const channelTypeSubscription = this._wowUpService.preferenceChange$
+      .pipe(filter(change => change.key === this.channelTypeKey))
+      .subscribe(change => {
+        this.channelType = parseInt(change.value, 10) as AddonChannelType;
+        this.onSearch();
+      });
+
     this.subscriptions = [
       selectedClientSubscription,
       addonRemovedSubscription,
       displayAddonSubscription,
+      channelTypeSubscription
     ];
   }
 
@@ -137,7 +152,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     let searchResults = await this._addonService.search(
       this.query,
       this.selectedClient,
-      this._wowUpService.getDefaultAddonChannel(this.selectedClient)
+      this.channelType
     );
 
     searchResults = this.filterInstalledAddons(searchResults);
@@ -162,7 +177,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this.isBusy = true;
 
-    this._addonService.getFeaturedAddons(clientType, this._wowUpService.getDefaultAddonChannel(clientType)).subscribe({
+    this._addonService.getFeaturedAddons(clientType, this.channelType).subscribe({
       next: (addons) => {
         addons = this.filterInstalledAddons(addons);
         this.formatAddons(addons);

@@ -116,6 +116,7 @@ export class WowUpService {
   public setDefaultAddonChannel(clientType: WowClientType, channelType: AddonChannelType) {
     const key = this.getClientDefaultAddonChannelKey(clientType);
     this._preferenceStorageService.set(key, channelType);
+    this._preferenceChangeSrc.next({ key, value: channelType.toString() })
   }
 
   public getDefaultAutoUpdate(clientType: WowClientType): boolean {

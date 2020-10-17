@@ -24,7 +24,6 @@ import { CurseFile } from "common/curse/curse-file";
 import { CurseReleaseType } from "common/curse/curse-release-type";
 import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-response";
 import * as CircuitBreaker from "opossum";
-import { WowUpService } from "app/services/wowup/wowup.service";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const HUB_API_URL = "https://hub.dev.wowup.io";
