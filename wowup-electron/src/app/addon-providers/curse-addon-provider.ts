@@ -406,30 +406,6 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  // private getPotentialAddon(result: CurseSearchResult, clientType: WowClientType, channelType: AddonChannelType): PotentialAddon {
-  //   const clientTypeStr = this.getGameVersionFlavor(clientType);
-  //   let latestFile = _.orderBy(result.latestFiles, 'id', 'desc')
-  //     .find(file =>
-  //       file.gameVersionFlavor === clientTypeStr &&
-  //       this.getChannelType(file.releaseType) === channelType
-  //     );
-  //   if (!latestFile) {
-  //     latestFile = _.first(result.latestFiles);
-  //   }
-
-  //   return {
-  //     author: this.getAuthor(result),
-  //     downloadCount: result.downloadCount,
-  //     externalId: result.id.toString(),
-  //     externalUrl: result.websiteUrl,
-  //     name: result.name,
-  //     providerName: this.name,
-  //     thumbnailUrl: this.getThumbnailUrl(result),
-  //     summary: result.summary,
-  //     screenshotUrls: this.getScreenshotUrls(result),
-  //   };
-  // }
-
   private getAddonSearchResult(
     result: CurseSearchResult,
     latestFiles: CurseFile[] = []

@@ -1,4 +1,7 @@
+import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
+import * as _ from "lodash";
 
 export class GetAddonListItem {
   public readonly searchResult: AddonSearchResult;
@@ -25,5 +28,9 @@ export class GetAddonListItem {
 
   constructor(searchResult: AddonSearchResult) {
     this.searchResult = searchResult;
+  }
+
+  public getLatestFile(channel: AddonChannelType): AddonSearchResultFile {
+    return _.find(this.searchResult.files, (f) => f.channelType <= channel);
   }
 }
