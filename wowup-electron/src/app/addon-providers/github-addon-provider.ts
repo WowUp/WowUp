@@ -31,7 +31,7 @@ export class GitHubAddonProvider implements AddonProvider {
     async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
         var searchResults: AddonSearchResult[] = []
 
-        for (let addonId in addonIds) {
+        for (let addonId of addonIds) {
             var result = await this.getById(addonId, clientType).toPromise();
             if (result == null) {
                 continue;
@@ -74,7 +74,7 @@ export class GitHubAddonProvider implements AddonProvider {
             author: author,
             downloadCount: asset.download_count,
             externalId: repoPath,
-            externalUrl: latestRelease.url,
+            externalUrl: repository.html_url,
             name: repository.name,
             providerName: this.name,
             thumbnailUrl: authorImageUrl
@@ -124,7 +124,7 @@ export class GitHubAddonProvider implements AddonProvider {
                     var searchResult: AddonSearchResult = {
                         author: author,
                         externalId: addonId,
-                        externalUrl: asset.url,
+                        externalUrl: repository.html_url,
                         files: [searchResultFile],
                         name: addonName,
                         providerName: this.name,
@@ -203,7 +203,6 @@ export class GitHubAddonProvider implements AddonProvider {
 
     private getReleases(repositoryPath: string): Observable<GitHubRelease[]> {
         const url = `${API_URL}${repositoryPath}/releases`;
-
         return this._httpClient.get<GitHubRelease[]>(url.toString());
     }
 

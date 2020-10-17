@@ -23,6 +23,7 @@ import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import { AnalyticsService } from "../analytics/analytics.service";
 
 @Injectable({
   providedIn: "root",
@@ -37,6 +38,7 @@ export class AddonService {
 
   constructor(
     private _addonStorage: AddonStorageService,
+    private _analyticsService: AnalyticsService,
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService,
     private _downloadService: DownloadSevice,
@@ -65,7 +67,12 @@ export class AddonService {
     );
     var searchResults = await Promise.all(searchTasks);
 
-    // await _analyticsService.TrackUserAction("Addons", "Search", $"{clientType}|{query}");
+    await this._analyticsService.trackUserAction(
+      "Addons",
+      "Search",
+      `${clientType}|${query}`
+    );
+
     const flatResults = searchResults.flat(1);
 
     return _.orderBy(flatResults, "downloadCount").reverse();
@@ -93,6 +100,7 @@ export class AddonService {
       clientType
     ).toPromise();
     this._addonStorage.set(addon.id, addon);
+
     await this.installAddon(addon.id, onUpdate);
   }
 
@@ -106,7 +114,6 @@ export class AddonService {
 
     for (let clientTypeStr in clientTypeGroups) {
       const clientType: WowClientType = parseInt(clientTypeStr, 10);
-      // console.log('clientType', clientType, clientTypeGroups[clientType]);
 
       const synced = await this.syncAddons(
         clientType,
@@ -125,7 +132,7 @@ export class AddonService {
           await this.installAddon(addon.id);
           updateCt += 1;
         } catch (err) {
-          // _analyticsService.Track(ex, "Failed to install addon");
+          console.error(err);
         }
       }
     }
@@ -166,7 +173,6 @@ export class AddonService {
 
     let downloadedFilePath = "";
     let unzippedDirectory = "";
-    let downloadedThumbnail = "";
     try {
       downloadedFilePath = await this._downloadService.downloadZipFile(
         addon.downloadUrl,
@@ -174,6 +180,7 @@ export class AddonService {
       );
 
       onUpdate?.call(this, AddonInstallState.Installing, 75);
+
       this._addonInstalledSrc.next({
         addon,
         installState: AddonInstallState.Installing,
@@ -184,6 +191,7 @@ export class AddonService {
         this._wowUpService.applicationDownloadsFolderPath,
         uuidv4()
       );
+
       unzippedDirectory = await this._downloadService.unzipFile(
         downloadedFilePath,
         unzipPath
@@ -207,7 +215,11 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      // await _analyticsService.TrackUserAction("Addons", "InstallById", $"{addon.ClientType}|{addon.Name}");
+      await this._analyticsService.trackUserAction(
+        "Addons",
+        "InstallById",
+        `${addon.clientType}|${addon.name}`
+      );
     } catch (err) {
       console.error(err);
 
@@ -228,6 +240,24 @@ export class AddonService {
       installState: AddonInstallState.Complete,
       progress: 100,
     });
+  }
+
+  public async logDebugData() {
+    const curseProvider = this._addonProviders.find(
+      (p) => p.name === "Curse"
+    ) as CurseAddonProvider;
+
+    const clientTypes = await this._warcraftService.getWowClientTypes();
+    for (let clientType of clientTypes) {
+      const addonFolders = await this._warcraftService.listAddons(clientType);
+      const scanResults = await curseProvider.getScanResults(addonFolders);
+      const map = {};
+
+      scanResults.forEach((sr) => (map[sr.folderName] = sr.fingerprint));
+
+      console.log(`clientType ${this._warcraftService.getClientDisplayName(clientType)} addon fingerprints`);
+      console.log(map);
+    }
   }
 
   private async getLatestGameVersion(
@@ -362,7 +392,7 @@ export class AddonService {
   }
 
   public async removeAddon(addon: Addon) {
-    const installedDirectories = addon.installedFolders.split(",");
+    const installedDirectories = addon.installedFolders?.split(",") ?? [];
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(
       addon.clientType
