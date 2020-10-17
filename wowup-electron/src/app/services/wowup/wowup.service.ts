@@ -132,7 +132,6 @@ export class WowUpService {
     this._preferenceChangeSrc.next({ key, value: value.toString() })
   }
 
-
   public get lastSelectedClientType(): WowClientType {
     const preference = this._preferenceStorageService.findByKey(
       LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY
