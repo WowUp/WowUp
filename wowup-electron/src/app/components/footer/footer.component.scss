@@ -37,6 +37,8 @@ footer {
     }
 
     .discord-link {
+        padding: 0 0.25em;
+
         &:hover {
             background-color: $dark-3;
         }
