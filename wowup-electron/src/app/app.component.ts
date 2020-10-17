@@ -6,6 +6,7 @@ import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetr
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
+import { FileService } from "./services/files/file.service";
 import { WarcraftService } from "./services/warcraft/warcraft.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 
@@ -21,7 +22,8 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     private _analyticsService: AnalyticsService,
-    private electronService: ElectronService,
+    private _electronService: ElectronService,
+    private _fileService: FileService,
     private translate: TranslateService,
     private warcraft: WarcraftService,
     private _wowUpService: WowUpService,
@@ -30,7 +32,7 @@ export class AppComponent implements AfterViewInit {
   ) {
     this.translate.setDefaultLang("en");
 
-    this.translate.use(this.electronService.locale);
+    this.translate.use(this._electronService.locale);
   }
 
   ngAfterViewInit(): void {
@@ -63,5 +65,18 @@ export class AppComponent implements AfterViewInit {
   private onAutoUpdateInterval = async () => {
     console.log("Auto update");
     const updateCount = await this._addonService.processAutoUpdates();
+
+    if (updateCount === 0) {
+      return;
+    }
+    
+    const iconPath = await this._fileService.getAssetFilePath(
+      "wowup_logo_512np.png"
+    );
+
+    this._electronService.showNotification("Auto Updates", {
+      body: `Automatically updated ${updateCount} addons.`,
+      icon: iconPath,
+    });
   };
 }

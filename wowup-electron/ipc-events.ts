@@ -1,6 +1,7 @@
 import { ipcMain, shell } from "electron";
 import * as fs from "fs";
 import * as async from "async";
+import * as path from "path";
 import * as admZip from "adm-zip";
 import { ncp } from "ncp";
 import * as rimraf from "rimraf";
@@ -20,6 +21,7 @@ import {
   DELETE_DIRECTORY_CHANNEL,
   RENAME_DIRECTORY_CHANNEL,
   READ_FILE_CHANNEL,
+  GET_ASSET_FILE_PATH,
 } from "./src/common/constants";
 import { CurseGetScanResultsRequest } from "./src/common/curse/curse-get-scan-results-request";
 import { CurseGetScanResultsResponse } from "./src/common/curse/curse-get-scan-results-response";
@@ -51,6 +53,13 @@ const nativeAddon = require("./build/Release/addon.node");
 ipcMain.on(SHOW_DIRECTORY, async (evt, arg: ShowDirectoryRequest) => {
   const result = await shell.openPath(arg.sourceDir);
   evt.reply(arg.responseKey, true);
+});
+
+ipcMain.on(GET_ASSET_FILE_PATH, async (evt, arg: ValueRequest<string>) => {
+  const response: ValueResponse<string> = {
+    value: path.join(__dirname, "assets", arg.value),
+  };
+  evt.reply(arg.responseKey, response);
 });
 
 ipcMain.on(CURSE_HASH_FILE_CHANNEL, async (evt, arg: CurseHashFileRequest) => {

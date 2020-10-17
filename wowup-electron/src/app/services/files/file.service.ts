@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import {
   COPY_DIRECTORY_CHANNEL,
   DELETE_DIRECTORY_CHANNEL,
+  GET_ASSET_FILE_PATH,
   LIST_DIRECTORIES_CHANNEL,
   LIST_FILES_CHANNEL,
   PATH_EXISTS_CHANNEL,
@@ -28,6 +29,13 @@ import { ValueResponse } from "common/models/value-response";
 })
 export class FileService {
   constructor(private _electronService: ElectronService) {}
+
+  public async getAssetFilePath(fileName: string) {
+    return await this._electronService.sendIpcValueMessage<string, string>(
+      GET_ASSET_FILE_PATH,
+      fileName
+    );
+  }
 
   public showDirectory(sourceDir: string) {
     return new Promise((resolve, reject) => {

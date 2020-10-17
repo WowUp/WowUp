@@ -21,6 +21,7 @@ import { WowUpReleaseChannelType } from "app/models/wowup/wowup-release-channel-
 import { MatSelectChange } from "@angular/material/select";
 import { AnalyticsService } from "app/services/analytics/analytics.service";
 import { AddonService } from "app/services/addons/addon.service";
+import { GET_ASSET_FILE_PATH } from "common/constants";
 
 @Component({
   selector: "app-options",
@@ -44,12 +45,12 @@ export class OptionsComponent implements OnInit, OnChanges {
   public wowUpReleaseChannels: {
     type: WowUpReleaseChannelType;
     name: string;
-  }[] = getEnumList(
-    WowUpReleaseChannelType
-  ).map((type: WowUpReleaseChannelType) => ({
-    type,
-    name: getEnumName(WowUpReleaseChannelType, type),
-  }));
+  }[] = getEnumList(WowUpReleaseChannelType).map(
+    (type: WowUpReleaseChannelType) => ({
+      type,
+      name: getEnumName(WowUpReleaseChannelType, type),
+    })
+  );
 
   constructor(
     private _addonService: AddonService,
