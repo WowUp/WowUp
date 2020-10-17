@@ -23,6 +23,7 @@ import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import { AnalyticsService } from "../analytics/analytics.service";
 
 @Injectable({
   providedIn: "root",
@@ -37,6 +38,7 @@ export class AddonService {
 
   constructor(
     private _addonStorage: AddonStorageService,
+    private _analyticsService: AnalyticsService,
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService,
     private _downloadService: DownloadSevice,
@@ -65,7 +67,12 @@ export class AddonService {
     );
     var searchResults = await Promise.all(searchTasks);
 
-    // await _analyticsService.TrackUserAction("Addons", "Search", $"{clientType}|{query}");
+    await this._analyticsService.trackUserAction(
+      "Addons",
+      "Search",
+      `${clientType}|${query}`
+    );
+
     const flatResults = searchResults.flat(1);
 
     return _.orderBy(flatResults, "downloadCount").reverse();
@@ -107,7 +114,6 @@ export class AddonService {
 
     for (let clientTypeStr in clientTypeGroups) {
       const clientType: WowClientType = parseInt(clientTypeStr, 10);
-      // console.log('clientType', clientType, clientTypeGroups[clientType]);
 
       const synced = await this.syncAddons(
         clientType,
@@ -126,7 +132,7 @@ export class AddonService {
           await this.installAddon(addon.id);
           updateCt += 1;
         } catch (err) {
-          // _analyticsService.Track(ex, "Failed to install addon");
+          console.error(err);
         }
       }
     }
@@ -209,7 +215,11 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      // await _analyticsService.TrackUserAction("Addons", "InstallById", $"{addon.ClientType}|{addon.Name}");
+      await this._analyticsService.trackUserAction(
+        "Addons",
+        "InstallById",
+        `${addon.clientType}|${addon.name}`
+      );
     } catch (err) {
       console.error(err);
 

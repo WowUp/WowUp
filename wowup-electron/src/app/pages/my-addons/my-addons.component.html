@@ -157,36 +157,44 @@
     </div>
     <mat-divider></mat-divider>
     <mat-checkbox class="mat-menu-item" [checked]="listItem.addon.isIgnored"
-      (change)="onClickIgnoreAddon($event, listItem)">
+      (change)="onClickIgnoreAddon($event, listItem)" appUserActionTracker category="MyAddons" action="IgnoreAddon"
+      [label]="listItem.addon.name">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON' | translate}}
     </mat-checkbox>
     <mat-checkbox *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item"
-      [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem.addon)">
+      [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem.addon)"
+      appUserActionTracker category="MyAddons" action="AutoUpdateAddon" [label]="listItem.addon.name">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON' | translate}}
     </mat-checkbox>
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE' | translate}}
     </button>
-    <button mat-menu-item (click)="onShowfolder(listItem.addon)">
+    <button mat-menu-item (click)="onShowfolder(listItem.addon)" appUserActionTracker category="MyAddons"
+      action="ShowAddonFolder" [label]="listItem.addon.name">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER' | translate}}
     </button>
-    <button mat-menu-item (click)="onReInstallAddon(listItem.addon)">
+    <button mat-menu-item (click)="onReInstallAddon(listItem.addon)" appUserActionTracker category="MyAddons"
+      action="ReInstallAddon" [label]="listItem.addon.name">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON' | translate}}
     </button>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="onRemoveAddon(listItem.addon)">
+    <button mat-menu-item (click)="onRemoveAddon(listItem.addon)" appUserActionTracker category="MyAddons"
+      action="RemoveAddon" [label]="listItem.addon.name">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON' | translate}}
     </button>
     <mat-menu #addonChannels="matMenu" class="addon-context-menu">
       <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
         (change)="onSelectedAddonChannelChange($event, listItem.addon)">
-        <mat-radio-button class="mat-menu-item" [value]="0">
+        <mat-radio-button class="mat-menu-item" [value]="0" appUserActionTracker category="MyAddons"
+          action="SetStableAddonChannel" [label]="listItem.addon.name">
           {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL' | translate}}
         </mat-radio-button>
-        <mat-radio-button class="mat-menu-item" [value]="1">
+        <mat-radio-button class="mat-menu-item" [value]="1" appUserActionTracker category="MyAddons"
+          action="SetBetaAddonChannel" [label]="listItem.addon.name">
           {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL' | translate}}
         </mat-radio-button>
-        <mat-radio-button class="mat-menu-item" [value]="2">
+        <mat-radio-button class="mat-menu-item" [value]="2" appUserActionTracker category="MyAddons"
+          action="SetAlphaAddonChannel" [label]="listItem.addon.name">
           {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL' | translate}}
         </mat-radio-button>
       </mat-radio-group>
@@ -217,10 +225,12 @@
 </div>
 <mat-menu #updateAllContextMenu="matMenu" class="addon-context-menu">
   <ng-template matMenuContent let-columns="columns">
-    <button mat-menu-item (click)="onUpdateAllRetailClassic()">
+    <button mat-menu-item (click)="onUpdateAllRetailClassic()" appUserActionTracker category="MyAddons"
+      action="UpdateAllClassicRetail">
       {{'PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_RETAIL_CLASSIC_BUTTON' | translate}}
     </button>
-    <button mat-menu-item (click)="onUpdateAllClients()">
+    <button mat-menu-item (click)="onUpdateAllClients()" appUserActionTracker category="MyAddons"
+      action="UpdateAllClients">
       {{'PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_ALL_CLIENTS_BUTTON' | translate}}
     </button>
   </ng-template>

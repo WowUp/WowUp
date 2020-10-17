@@ -31,7 +31,9 @@ export class AnalyticsService {
   }
 
   public get telemetryEnabled() {
-    const preference = this._preferenceStorageService.findByKey(this.telemetryEnabledKey);
+    const preference = this._preferenceStorageService.findByKey(
+      this.telemetryEnabledKey
+    );
     return preference === true.toString();
   }
 
@@ -48,7 +50,7 @@ export class AnalyticsService {
     this._appVersion = _electronService.remote.app.getVersion();
     this._installId = this.loadInstallId();
     this._telemetryEnabledSrc.next(this.telemetryEnabled);
-    console.log('installId', this._installId);
+    console.log("installId", this._installId);
   }
 
   public async trackStartup() {
@@ -58,8 +60,12 @@ export class AnalyticsService {
     });
   }
 
-  public async trackUserAction(category: string, action: string, label: string = null) {
-    await this.track(params => {
+  public async trackUserAction(
+    category: string,
+    action: string,
+    label: string = null
+  ) {
+    await this.track((params) => {
       params.set("t", "event");
       params.set("ec", category);
       params.set("ea", action);
@@ -76,12 +82,12 @@ export class AnalyticsService {
 
     try {
       let params = new URLSearchParams();
-      params.set('v', '1');
-      params.set('tid', AppConfig.googleAnalyticsId);
-      params.set('cid', this._installId);
-      params.set('ua', window.navigator.userAgent);
-      params.set('an', "WowUp Client");
-      params.set('av', this._appVersion);
+      params.set("v", "1");
+      params.set("tid", AppConfig.googleAnalyticsId);
+      params.set("cid", this._installId);
+      params.set("ua", window.navigator.userAgent);
+      params.set("an", "WowUp Client");
+      params.set("av", this._appVersion);
 
       action?.call(this, params);
 
@@ -92,18 +98,20 @@ export class AnalyticsService {
           fullUrl,
           {},
           {
-            responseType: 'text'
+            responseType: "text",
           }
         )
         .toPromise();
     } catch (e) {
       // eat
-      console.error(e)
+      console.error(e);
     }
   }
 
   private loadInstallId() {
-    let installId = this._preferenceStorageService.findByKey(this.installIdPreferenceKey);
+    let installId = this._preferenceStorageService.findByKey(
+      this.installIdPreferenceKey
+    );
     if (installId) {
       return installId;
     }

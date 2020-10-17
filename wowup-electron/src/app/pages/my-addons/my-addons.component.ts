@@ -111,7 +111,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this.isSelectedTab = tabIndex === this.tabIndex;
-      console.log("TAB CHANGE", tabIndex, this.tabIndex);
       if (this.isSelectedTab) {
         this.setPageContextText();
       }
