@@ -1,6 +1,10 @@
 {
     "ChangeLogs": [
       {
+        "Version": "2.0.0-alpha.11",
+        "Description": "Add version label to the 'Get Addons' page.\nUpdates to the addon detail page (by Flippey).\nRussian local updates (by Medok).\nAdd the system notification for auto updates.\nFix some column spacing.\nTelemetry for user actions added.\nFix a bug not allowing users to uninstall an addon with no 'installed folders'.\nHopefully less issues with installing multiple addons at once.\nFix some errors related to addons imported from GitHub."
+      },
+      {
         "Version": "2.0.0-alpha.10",
         "Description": "Temporary CF fingerprint endpoint patch."
       },
