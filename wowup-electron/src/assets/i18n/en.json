@@ -120,5 +120,23 @@
       "POSITIVE_BUTTON": "Sure!",
       "TITLE": "WowUp Telemetry"
     }
+  },
+  "COMMON": {
+    "ADDON_STATUS": {
+      "BACKINGUP": "Backing Up",
+      "COMPLETE": "Installed",
+      "DOWNLOADING": "Downloading",
+      "INSTALLING": "Installing",
+      "PENDING": "Pending",
+      "UNINSTALLING": "Uninstalling",
+      "UPDATING": "Updating..."
+    },
+    "ADDON_STATE": {
+      "UNINSTALL": "Uninstall",
+      "IGNORED": "Ignored",
+      "UPDATE": "Update",
+      "INSTALL": "Install",
+      "UPTODATE": "Up to date"
+    }
   }
 }

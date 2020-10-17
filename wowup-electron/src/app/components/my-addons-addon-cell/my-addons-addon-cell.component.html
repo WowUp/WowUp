@@ -7,8 +7,7 @@
       {{listItem.isAlphaChannel ? 'Alpha': 'Beta'}}</div>
   </div>
   <div>
-    <a appExternalLink class="addon-title mat-subheading-2"
-      [href]="listItem.addon.externalUrl">{{listItem.addon.name}}</a>
+    <a class="addon-title mat-subheading-2" (click)="viewDetails()">{{listItem.addon.name}}</a>
     <div class="addon-funding">
       <a *ngIf="listItem.addon.patreonFundingLink" appExternalLink [href]="listItem.addon.patreonFundingLink"
         matTooltip="Support the author on Patreon">

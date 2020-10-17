@@ -8,7 +8,6 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { from, Observable, of } from "rxjs";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { PotentialAddon } from "../models/wowup/potential-addon";
 import { CachingService } from "app/services/caching/caching-service";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { ElectronService } from "app/services";
@@ -288,15 +287,12 @@ export class CurseAddonProvider implements AddonProvider {
     return addonResults;
   }
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
-    return from(this.getFeaturedAddonList()).pipe(
-      map((addons) => {
-        return this.filterFeaturedAddons(addons, clientType);
-      }),
-      map((filteredAddons) => {
-        return filteredAddons.map((addon) => this.getPotentialAddon(addon));
-      })
-    );
+  public async getFeaturedAddons(
+    clientType: WowClientType
+  ): Promise<AddonSearchResult[]> {
+    const addons = await this.getFeaturedAddonList();
+    const filteredAddons = this.filterFeaturedAddons(addons, clientType);
+    return filteredAddons.map((addon) => this.getAddonSearchResult(addon));
   }
 
   private filterFeaturedAddons(
@@ -321,8 +317,8 @@ export class CurseAddonProvider implements AddonProvider {
   async searchByQuery(
     query: string,
     clientType: WowClientType
-  ): Promise<PotentialAddon[]> {
-    var searchResults: PotentialAddon[] = [];
+  ): Promise<AddonSearchResult[]> {
+    var searchResults: AddonSearchResult[] = [];
 
     var response = await this.getSearchResults(query);
     for (let result of response) {
@@ -331,7 +327,7 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getPotentialAddon(result));
+      searchResults.push(this.getAddonSearchResult(result));
     }
 
     return searchResults;
@@ -340,7 +336,7 @@ export class CurseAddonProvider implements AddonProvider {
   searchByUrl(
     addonUri: URL,
     clientType: WowClientType
-  ): Promise<PotentialAddon> {
+  ): Promise<AddonSearchResult> {
     throw new Error("Method not implemented.");
   }
 
@@ -405,23 +401,9 @@ export class CurseAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  private getPotentialAddon(result: CurseSearchResult): PotentialAddon {
-    return {
-      author: this.getAuthor(result),
-      downloadCount: result.downloadCount,
-      externalId: result.id.toString(),
-      externalUrl: result.websiteUrl,
-      name: result.name,
-      providerName: this.name,
-      thumbnailUrl: this.getThumbnailUrl(result),
-      summary: result.summary,
-      screenshotUrls: this.getScreenshotUrls(result),
-    };
-  }
-
   private getAddonSearchResult(
     result: CurseSearchResult,
-    latestFiles: CurseFile[]
+    latestFiles: CurseFile[] = []
   ): AddonSearchResult {
     try {
       const thumbnailUrl = this.getThumbnailUrl(result);
@@ -450,6 +432,7 @@ export class CurseAddonProvider implements AddonProvider {
         externalUrl: result.websiteUrl,
         providerName: this.name,
         files: searchResultFiles,
+        downloadCount: result.downloadCount,
       };
 
       return searchResult;
@@ -570,12 +553,15 @@ export class CurseAddonProvider implements AddonProvider {
     scanResult: AppCurseScanResult
   ): Addon {
     const currentVersion = scanResult.exactMatch.file;
+
     const authors = scanResult.searchResult.authors
       .map((author) => author.name)
       .join(", ");
+
     const folderList = scanResult.exactMatch.file.modules
       .map((module) => module.foldername)
       .join(",");
+
     const latestFiles = this.getLatestFiles(
       scanResult.searchResult,
       clientType
@@ -616,6 +602,9 @@ export class CurseAddonProvider implements AddonProvider {
       latestVersion: latestVersion.displayName,
       providerName: this.name,
       thumbnailUrl: this.getThumbnailUrl(scanResult.searchResult),
+      screenshotUrls: this.getScreenshotUrls(scanResult.searchResult),
+      downloadCount: scanResult.searchResult.downloadCount,
+      summary: scanResult.searchResult.summary,
     };
   }
 }

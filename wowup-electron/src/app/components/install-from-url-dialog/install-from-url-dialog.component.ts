@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { PotentialAddon } from "app/models/wowup/potential-addon";
+import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
 import { from, Subscription } from "rxjs";
@@ -18,7 +18,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
   public showInstallButton = false;
   public showInstallSuccess = false;
   public query = "";
-  public addon?: PotentialAddon;
+  public addon?: AddonSearchResult;
 
   private _installSubscription?: Subscription;
 

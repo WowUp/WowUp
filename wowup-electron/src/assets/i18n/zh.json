@@ -119,5 +119,21 @@
       "POSITIVE_BUTTON": "当然！",
       "TITLE": "WowUp遥测"
     }
+  },
+  "COMMON": {
+    "ADDON_STATUS": {
+      "COMPLETE": "COMPLETE",
+      "DOWNLOADING": "DOWNLOADING",
+      "INSTALLING": "INSTALLING",
+      "UNINSTALLING": "UNINSTALLING",
+      "UPDATING": "UPDATING"
+    },
+    "ADDON_STATE": {
+      "UNINSTALL": "UNINSTALL",
+      "IGNORED": "IGNORED",
+      "UPDATE": "UPDATE",
+      "INSTALL": "INSTALL",
+      "UPTODATE": "UPTODATE"
+    }
   }
 }

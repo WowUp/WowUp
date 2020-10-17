@@ -1,19 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Addon } from 'app/entities/addon';
-import { MyAddonsListItem } from 'app/business-objects/my-addons-list-item';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Addon } from "app/entities/addon";
+import { AddonViewModel } from "app/business-objects/my-addon-list-item";
 
 @Component({
-  selector: 'app-my-addons-addon-cell',
-  templateUrl: './my-addons-addon-cell.component.html',
-  styleUrls: ['./my-addons-addon-cell.component.scss']
+  selector: "app-my-addons-addon-cell",
+  templateUrl: "./my-addons-addon-cell.component.html",
+  styleUrls: ["./my-addons-addon-cell.component.scss"],
 })
 export class MyAddonsAddonCellComponent implements OnInit {
+  @Input("addon") listItem: AddonViewModel;
 
-  @Input('addon') listItem: MyAddonsListItem;
+  @Output() onViewDetails: EventEmitter<Addon> = new EventEmitter();
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  viewDetails() {
+    this.onViewDetails.emit(this.listItem.addon);
   }
-
 }

@@ -9,7 +9,6 @@ import { v4 as uuidv4 } from "uuid";
 import * as path from "path";
 import * as fs from "fs";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { PotentialAddon } from "app/models/wowup/potential-addon";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
@@ -61,7 +60,7 @@ export class AddonService {
   public async search(
     query: string,
     clientType: WowClientType
-  ): Promise<PotentialAddon[]> {
+  ): Promise<AddonSearchResult[]> {
     var searchTasks = this._addonProviders.map((p) =>
       p.searchByQuery(query, clientType)
     );
@@ -79,7 +78,7 @@ export class AddonService {
   }
 
   public async installPotentialAddon(
-    potentialAddon: PotentialAddon,
+    potentialAddon: AddonSearchResult,
     clientType: WowClientType,
     onUpdate: (
       installState: AddonInstallState,
@@ -559,7 +558,7 @@ export class AddonService {
 
   public getFeaturedAddons(
     clientType: WowClientType
-  ): Observable<PotentialAddon[]> {
+  ): Observable<AddonSearchResult[]> {
     return forkJoin(
       this._addonProviders.map((p) => p.getFeaturedAddons(clientType))
     ).pipe(

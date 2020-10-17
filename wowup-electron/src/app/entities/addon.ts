@@ -25,4 +25,7 @@ export interface Addon {
   patreonFundingLink?: string;
   githubFundingLink?: string;
   customFundingLink?: string;
+  downloadCount?: number;
+  summary?: string;
+  screenshotUrls?: string[];
 }
