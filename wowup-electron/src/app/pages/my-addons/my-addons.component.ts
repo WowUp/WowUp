@@ -8,7 +8,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { filter, map } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { from, BehaviorSubject, Subscription, Subject } from "rxjs";
 import { Addon } from "app/entities/addon";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
@@ -53,6 +53,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
+  private sortedListItems: MyAddonsListItem[] = [];
 
   public spinnerMessage = "Loading...";
 
@@ -112,7 +113,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this.isSelectedTab = tabIndex === this.tabIndex;
-      console.log("TAB CHANGE", tabIndex, this.tabIndex);
       if (this.isSelectedTab) {
         this.setPageContextText();
       }
@@ -172,10 +172,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       }
     );
 
+    const dataSourceSortSubscription = this.dataSource
+      .connect()
+      .subscribe((sortedListItems) => {
+        this.sortedListItems = sortedListItems;
+      });
+
     this.subscriptions.push(
       addonInstalledSubscription,
       addonRemovedSubscription,
-      displayAddonSubscription
+      displayAddonSubscription,
+      dataSourceSortSubscription
     );
   }
 
@@ -203,45 +210,31 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   onRowClicked(event: MouseEvent, row: MyAddonsListItem, index: number) {
-    console.log(row.displayState);
-    console.log("index clicked: " + index);
+    console.log("index clicked: " + index, row.addon.name);
 
     if (event.ctrlKey) {
       row.selected = !row.selected;
       return;
     }
 
-    let dataSource: MyAddonsListItem[] = [].concat(this.dataSource.data);
-    let listItems: MyAddonsListItem[] = this.sortListItems([].concat(dataSource.filter(item => this.filterListItem(item, this.filter))), this.dataSource.sort);
-    
     if (event.shiftKey) {
-      const startIdx = listItems.findIndex((item) => item.selected);
-      listItems.forEach((item, i) => {
+      const startIdx = this.sortedListItems.findIndex((item) => item.selected);
+      this.sortedListItems.forEach((item, i) => {
         if (i >= startIdx && i <= index) {
           item.selected = true;
         } else {
           item.selected = false;
         }
       });
-    } else {
-      listItems.forEach((item, i) => {
-        if (i === index) {
-          item.selected = !item.selected;
-        } else {
-          item.selected = false;
-        }
-      });
+      return;
     }
-    
-    dataSource.forEach(listItem => {
-      const item = listItems.find(i => i.addon.id === listItem.addon.id);
-      if (item) {
-        listItem = item;
-      }
-    })
 
-    this._ngZone.run(() => {
-      this._displayAddonsSrc.next(dataSource);
+    this.sortedListItems.forEach((item, i) => {
+      if (item.addon.id === row.addon.id) {
+        item.selected = !item.selected;
+      } else {
+        item.selected = false;
+      }
     });
   }
 
@@ -306,7 +299,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     event.preventDefault();
     this.updateContextMenuPosition(event);
 
-    const selectedItems = this._displayAddonsSrc.value.filter(item => item.selected);
+    const selectedItems = this._displayAddonsSrc.value.filter(
+      (item) => item.selected
+    );
     if (selectedItems.length > 1) {
       this.multiContextMenu.menuData = { listItems: selectedItems };
       this.multiContextMenu.menu.focusFirstItem("mouse");
@@ -324,12 +319,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.updateAllContextMenu.openMenu();
   }
 
-  async onReInstallAddon(addon: Addon) {
-    try {
-      this.addonService.installAddon(addon.id);
-    } catch (err) {
-      console.error(err);
-    }
+  async onReInstallAddon(listItems: MyAddonsListItem) {
+    await this.onReInstallAddons([listItems]);
   }
 
   async onReInstallAddons(listItems: MyAddonsListItem[]) {
@@ -403,14 +394,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   onRemoveAddons(listItems: MyAddonsListItem[]) {
-    let message = '';
+    let message = "";
     if (listItems.length > 3) {
-      message = `Are you sure you want to remove the selected ${listItems.length} addons?`
+      message = `Are you sure you want to remove the selected ${listItems.length} addons?`;
     } else {
-      message = 'Are you sure you want to remove the following addons?';
-      listItems.forEach(listItem => message = `${message}\n\t• ${listItem.addon.name}`);
+      message = "Are you sure you want to remove the following addons?";
+      listItems.forEach(
+        (listItem) => (message = `${message}\n\t• ${listItem.addon.name}`)
+      );
     }
-    message += '\nThis will remove all related folders from your World of Warcraft folder.';
+    message +=
+      "\nThis will remove all related folders from your World of Warcraft folder.";
 
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
@@ -434,18 +428,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   onInstall() {}
 
   onClickIgnoreAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
-    listItem.addon.isIgnored = evt.checked;
-    if (evt.checked) {
-      listItem.addon.autoUpdateEnabled = false;
-    }
-    listItem.statusText = listItem.getStateText();
-    this.addonService.saveAddon(listItem.addon);
-
-    this.sortTable(this.dataSource);
+    this.onClickIgnoreAddons(evt, [listItem]);
   }
 
   onClickIgnoreAddons(evt: MatCheckboxChange, listItems: MyAddonsListItem[]) {
-    listItems.forEach(listItem => {
+    listItems.forEach((listItem) => {
       listItem.addon.isIgnored = evt.checked;
       if (evt.checked) {
         listItem.addon.autoUpdateEnabled = false;
@@ -454,21 +441,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       this.addonService.saveAddon(listItem.addon);
     });
 
-    this.sortTable(this.dataSource);
-  }
-
-  onClickAutoUpdateAddon(evt: MatCheckboxChange, addon: Addon) {
-    addon.autoUpdateEnabled = evt.checked;
-    if (evt.checked) {
-      addon.isIgnored = false;
+    if (!this.sort.active) {
+      this.sortTable(this.dataSource);
     }
-    this.addonService.saveAddon(addon);
-
-    this.sortTable(this.dataSource);
   }
 
-  onClickAutoUpdateAddons(evt: MatCheckboxChange, listItems: MyAddonsListItem[]) {
-    listItems.forEach(listItem => {
+  onClickAutoUpdateAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
+    this.onClickAutoUpdateAddons(evt, [listItem]);
+  }
+
+  onClickAutoUpdateAddons(
+    evt: MatCheckboxChange,
+    listItems: MyAddonsListItem[]
+  ) {
+    listItems.forEach((listItem) => {
       listItem.addon.autoUpdateEnabled = evt.checked;
       if (evt.checked) {
         listItem.addon.isIgnored = false;
@@ -476,17 +462,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       this.addonService.saveAddon(listItem.addon);
     });
 
-    this.sortTable(this.dataSource);
+    if (!this.sort.active) {
+      this.sortTable(this.dataSource);
+    }
   }
 
-  onSelectedAddonChannelChange(evt: MatRadioChange, addon: Addon) {
-    addon.channelType = evt.value;
-    this.addonService.saveAddon(addon);
-    this.loadAddons(this.selectedClient);
+  onSelectedAddonChannelChange(
+    evt: MatRadioChange,
+    listItem: MyAddonsListItem
+  ) {
+    this.onSelectedAddonsChannelChange(evt, [listItem]);
   }
 
-  onSelectedAddonsChannelChange(evt: MatRadioChange, listItems: MyAddonsListItem[]) {
-    listItems.forEach(listItem => {
+  onSelectedAddonsChannelChange(
+    evt: MatRadioChange,
+    listItems: MyAddonsListItem[]
+  ) {
+    listItems.forEach((listItem) => {
       listItem.addon.channelType = evt.value;
       this.addonService.saveAddon(listItem.addon);
     });
@@ -498,7 +490,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   private sortTable(dataSource: MatTableDataSource<MyAddonsListItem>) {
-    this.dataSource.data = this.sortListItems(dataSource.data, dataSource.sort)
+    this.dataSource.data = this.sortListItems(dataSource.data, dataSource.sort);
   }
 
   private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
@@ -571,10 +563,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   private sortListItems(listItems: MyAddonsListItem[], sort?: MatSort) {
-    if (!sort || !sort.active || sort.direction === '') {
+    if (!sort || !sort.active || sort.direction === "") {
       return _.orderBy(listItems, ["displayState", "addon.name"]);
     }
-    return _.orderBy(listItems, [(listItem) => _.get(listItem, sort.active, '')], [sort.direction === 'asc' ? 'asc' : 'desc']);
+    return _.orderBy(
+      listItems,
+      [(listItem) => _.get(listItem, sort.active, "")],
+      [sort.direction === "asc" ? "asc" : "desc"]
+    );
   }
 
   private filterListItem(item: MyAddonsListItem, filter: string) {

@@ -156,7 +156,7 @@
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON' | translate}}
     </mat-checkbox>
     <mat-checkbox *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item"
-      [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem.addon)">
+      [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem)">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON' | translate}}
     </mat-checkbox>
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">
@@ -165,7 +165,7 @@
     <button mat-menu-item (click)="onShowfolder(listItem.addon)">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER' | translate}}
     </button>
-    <button mat-menu-item (click)="onReInstallAddon(listItem.addon)">
+    <button mat-menu-item (click)="onReInstallAddon(listItem)">
       {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON' | translate}}
     </button>
     <mat-divider></mat-divider>
@@ -174,7 +174,7 @@
     </button>
     <mat-menu #addonChannels="matMenu" class="addon-context-menu">
       <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
-        (change)="onSelectedAddonChannelChange($event, listItem.addon)">
+        (change)="onSelectedAddonChannelChange($event, listItem)">
         <mat-radio-button class="mat-menu-item" [value]="0">
           {{'PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL' | translate}}
         </mat-radio-button>
