@@ -15,13 +15,19 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   @Input() listItem: AddonViewModel;
 
   private readonly _buttonOptionsSrc: BehaviorSubject<MatProgressButtonOptions>;
-  private installState: AddonInstallState = AddonInstallState.Unknown;
-  private installProgress: number = 0;
 
   public readonly buttonOptions$: Observable<MatProgressButtonOptions>;
 
   public get showStatusText() {
     return this.listItem?.isUpToDate || this.listItem?.isIgnored;
+  }
+
+  public get installProgress() {
+    return this.listItem?.installProgress || 0;
+  }
+
+  public get installState() {
+    return this.listItem?.installState || AddonInstallState.Unknown;
   }
 
   public get buttonText() {
@@ -77,6 +83,10 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
       );
     }
 
+    if (this.listItem?.isUpToDate) {
+      return this._translate.instant("COMMON.ADDON_STATE.UPTODATE");
+    }
+
     return this.listItem?.statusText;
   }
 
@@ -91,7 +101,7 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
     installState: AddonInstallState,
     progress: number
   ) => {
-    this.installState = installState;
+    this.listItem.installState = installState;
     this.installProgress = progress;
 
     console.log(this.getButtonOptions());

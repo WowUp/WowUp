@@ -136,13 +136,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
           evt.installState === AddonInstallState.Downloading;
         listItem.statusText = this.getInstallStateText(evt.installState);
         listItem.installProgress = evt.progress;
+        listItem.installState = evt.installState;
 
-        if (listItemIdx === -1) {
-          listItems.push(listItem);
-        } else {
+        if (listItemIdx !== -1) {
+          listItems[listItemIdx].isInstalling = listItem.isInstalling;
+          listItems[listItemIdx].statusText = listItem.statusText;
+          listItems[listItemIdx].installProgress = evt.progress;
+          listItems[listItemIdx].installState = evt.installState;
           return;
-          // listItems[listItemIdx] = listItem;
         }
+
+        listItems.push(listItem);
 
         listItems = this.sortListItems(listItems);
 
@@ -265,7 +269,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe();
-
   }
 
   filterAddons(): void {
@@ -480,10 +483,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.onClickAutoUpdateAddons(evt, [listItem]);
   }
 
-  onClickAutoUpdateAddons(
-    evt: MatCheckboxChange,
-    listItems: AddonViewModel[]
-  ) {
+  onClickAutoUpdateAddons(evt: MatCheckboxChange, listItems: AddonViewModel[]) {
     listItems.forEach((listItem) => {
       listItem.addon.autoUpdateEnabled = evt.checked;
       if (evt.checked) {
@@ -497,10 +497,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectedAddonChannelChange(
-    evt: MatRadioChange,
-    listItem: AddonViewModel
-  ) {
+  onSelectedAddonChannelChange(evt: MatRadioChange, listItem: AddonViewModel) {
     this.onSelectedAddonsChannelChange(evt, [listItem]);
   }
 

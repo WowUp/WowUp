@@ -11,7 +11,7 @@ import { SessionService } from "app/services/session/session.service";
 import { getEnumName } from "app/utils/enum.utils";
 import { MatProgressButtonOptions } from "mat-progress-buttons";
 import { Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { filter } from "rxjs/operators";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
 @Component({
@@ -70,8 +70,6 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   onAddonUpdate(event: AddonUpdateEvent): void {
     const addonModel = new AddonViewModel(event.addon);
     addonModel.installProgress = event.progress;
-    // addonModel.updateInstallState(event.installState);
-    // addonModel.setStatusText(event.installState);
     this.addonModel = addonModel;
 
     if (event.installState === 4) {
