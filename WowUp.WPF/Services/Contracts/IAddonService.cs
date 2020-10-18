@@ -27,7 +27,8 @@ namespace WowUp.WPF.Services.Contracts
 
         Task<List<PotentialAddon>> Search(
             string query,
-            WowClientType clientType);
+            WowClientType clientType,
+            Action<Exception> onProviderError);
 
         bool IsInstalled(
             string externalId,
