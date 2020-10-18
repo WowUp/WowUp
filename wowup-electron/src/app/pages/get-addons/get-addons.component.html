@@ -38,8 +38,7 @@
   <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
 
   <div class="table-container flex-grow-1" [hidden]="isBusy === true">
-    <table mat-table matSort [dataSource]="dataSource" matSortActive="downloadCount" matSortDirection="desc"
-      class="mat-elevation-z8">
+    <table mat-table matSort [dataSource]="dataSource" matSortActive="downloadCount" matSortDirection="desc" class="mat-elevation-z8">
       <ng-container matColumnDef="name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER' | translate}}

@@ -455,7 +455,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onInstall() { }
+  onInstall() {}
 
   onClickIgnoreAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
     this.onClickIgnoreAddons(evt, [listItem]);
@@ -544,8 +544,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
       for (let addon of addons) {
         updatedCt += 1;
-        this.spinnerMessage = `Updating ${updatedCt}/${addons.length
-          }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
+        this.spinnerMessage = `Updating ${updatedCt}/${
+          addons.length
+        }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
 
         await this.addonService.installAddon(addon.id);
       }
