@@ -7,8 +7,8 @@
       {{listItem.isAlphaChannel ? 'Alpha': 'Beta'}}</div>
   </div>
   <div>
-    <a appExternalLink class="addon-title mat-subheading-2"
-      [href]="listItem.addon.externalUrl">{{listItem.addon.name}}</a>
+    <a class="addon-title mat-subheading-2" (click)="viewDetails()"
+      [ngClass]="{ 'ignored': listItem.isIgnored }">{{listItem.addon.name}}</a>
     <div class="addon-funding">
       <a *ngIf="listItem.addon.patreonFundingLink" appExternalLink [href]="listItem.addon.patreonFundingLink"
         matTooltip="Support the author on Patreon">
@@ -23,6 +23,6 @@
         <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
       </a>
     </div>
-    <div class="addon-version">{{listItem.addon.installedVersion}}</div>
+    <div class="addon-version" [ngClass]="{ 'ignored': listItem.isIgnored }">{{listItem.addon.installedVersion}}</div>
   </div>
 </div>

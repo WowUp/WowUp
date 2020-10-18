@@ -7,7 +7,8 @@
       <mat-card-content>
         <div class="row">
           <div class="grow">{{'PAGES.OPTIONS.WOW.RESCAN_CLIENTS_LABEL' | translate}}</div>
-          <button mat-flat-button color="primary" (click)="onReScan()">
+          <button mat-flat-button color="primary" (click)="onReScan()" appUserActionTracker category="Options"
+            action="ScanInstalls">
             {{'PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON' | translate}}
           </button>
         </div>
@@ -45,7 +46,8 @@
             <p>{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL' | translate}}</p>
             <small class="hint">{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION' | translate}}</small>
           </div>
-          <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)">
+          <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" appUserActionTracker
+            category="Options" action="CollapseToTray" [label]="collapseToTray">
           </mat-slide-toggle>
         </div>
       </mat-card-content>
@@ -60,7 +62,8 @@
             <p>{{'PAGES.OPTIONS.DEBUG.LOG_FILES_LABEL' | translate}}</p>
             <small class="hint">{{'PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION' | translate}}</small>
           </div>
-          <button mat-flat-button color="primary" (click)="onShowLogs()">
+          <button mat-flat-button color="primary" (click)="onShowLogs()" appUserActionTracker category="Options"
+            action="ShowLogFiles">
             {{'PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON' | translate}}
           </button>
         </div>
@@ -69,7 +72,8 @@
             <p>{{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_LABEL' | translate}}</p>
             <small class="hint">{{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION' | translate}}</small>
           </div>
-          <button mat-flat-button color="primary" (click)="onShowLogs()">
+          <button mat-flat-button color="primary" (click)="onLogDebugData()" appUserActionTracker category="Options"
+            action="LogDebugData">
             {{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON' | translate}}
           </button>
         </div>

@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { PotentialAddon } from "../models/wowup/potential-addon";
 import { AddonProvider, AddonProviderType } from "./addon-provider";
 import { WowUpAddonRepresentation } from "../models/wowup-api/wowup-addon.representation";
 import { AddonFolder } from "app/models/wowup/addon-folder";
@@ -39,45 +38,54 @@ export class WowUpAddonProvider implements AddonProvider {
       .get<WowUpAddonRepresentation[]>(url.toString())
       .toPromise();
 
-    throw new Error("Method not implemented.");
+    // TODO
+    return [];
   }
 
-  getFeaturedAddons(clientType: WowClientType): Observable<PotentialAddon[]> {
-    return of([]);
+  public async getFeaturedAddons(
+    clientType: WowClientType
+  ): Promise<AddonSearchResult[]> {
+    // TODO
+    return [];
   }
 
   async searchByQuery(
     query: string,
     clientType: WowClientType
-  ): Promise<PotentialAddon[]> {
+  ): Promise<AddonSearchResult[]> {
+    // TODO
     return [];
   }
 
-  searchByUrl(
+  async searchByUrl(
     addonUri: URL,
     clientType: WowClientType
-  ): Promise<PotentialAddon> {
-    throw new Error("Method not implemented.");
+  ): Promise<AddonSearchResult> {
+    // TODO
+    return undefined;
   }
 
-  searchByName(
+  async searchByName(
     addonName: string,
     folderName: string,
     clientType: WowClientType,
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
-    throw new Error("Method not implemented.");
+    // TODO
+    return [];
   }
 
   getById(
     addonId: string,
     clientType: WowClientType
   ): Observable<AddonSearchResult> {
-    throw new Error("Method not implemented.");
+    // TODO
+    return of(undefined);
   }
 
   isValidAddonUri(addonUri: URL): boolean {
-    throw new Error("Method not implemented.");
+    // TODO
+    return false;
   }
 
   onPostInstall(addon: Addon): void {
@@ -255,7 +263,7 @@ export class WowUpAddonProvider implements AddonProvider {
       thumbnailUrl: scanResult.exactMatch.image_url,
       patreonFundingLink: scanResult.exactMatch.patreon_funding_link,
       customFundingLink: scanResult.exactMatch.custom_funding_link,
-      githubFundingLink: scanResult.exactMatch.github_funding_link
+      githubFundingLink: scanResult.exactMatch.github_funding_link,
     };
   }
 }

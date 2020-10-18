@@ -64,15 +64,20 @@
   }
 
   .addon-title {
-    font-weight: bold;
+    font-weight: 400;
     font-size: 1.1em;
     word-break: break-all;
     white-space: pre-wrap;
+  }
+
+  .cell-padding {
+    padding-right: 1em;
   }
 }
 
 .author-column {
   width: 100px;
+  padding-right: 1em;
 }
 .provider-column {
   min-width: 60px;

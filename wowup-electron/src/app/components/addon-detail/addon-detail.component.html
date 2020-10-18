@@ -1,30 +1,40 @@
 <div class="addon-detail-view">
   <div class="addon-detail-title">
-    <img mat-card-avatar class="addon-header-thumbnail" [src]="addonDetail.thumbnailUrl" />
-    <h2 mat-dialog-title>{{ addonDetail.name }}</h2>
+    <img
+      mat-card-avatar
+      class="addon-header-thumbnail"
+      [src]="addon.thumbnailUrl"
+    />
+    <h2 mat-dialog-title>{{ addon.name }}</h2>
     <button mat-icon-button [mat-dialog-close]="true">
       <mat-icon class="close-icon" color="accent">close</mat-icon>
     </button>
   </div>
   <div class="addon-detail-subtitle">
-    <div class="mat-subheading-1">By {{ addonDetail.author }}</div>
-    <app-addon-provider-badge [providerName]="addonDetail.providerName"></app-addon-provider-badge>
+    <div class="mat-subheading-1">By {{ addon.author }}</div>
+    <app-addon-provider-badge
+      [providerName]="addon.providerName"
+    ></app-addon-provider-badge>
   </div>
   <mat-dialog-content>
     <div class="mat-caption addon-detail-summary">
-      {{ addonDetail.summary }}
+      {{ addon.summary }}
     </div>
-    <p>
-      {{ addonDetail.description }}
-    </p>
-    <img mat-card-image [src]="defaultImageUrl" alt="Addon Picture" />
+    <div class="screenshot-container">
+      <img [src]="defaultImageUrl" alt="Addon Picture" />
+    </div>
   </mat-dialog-content>
   <mat-dialog-actions class="dialog-buttons">
+    <a
+      appExternalLink
+      mat-stroked-button
+      cdkFocusInitial
+      color="primary"
+      [href]="addon.externalUrl"
+      >{{ "DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON" | translate }}</a
+    >
     <div class="btn-wrapper">
-      <a appExternalLink mat-stroked-button color="primary" [href]="addonDetail.externalUrl">
-        {{'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate}}
-      </a>
-      <app-addon-install-button [addon]="addonDetail"> </app-addon-install-button>
+      <app-addon-install-button [addon]="addon"> </app-addon-install-button>
     </div>
   </mat-dialog-actions>
 </div>

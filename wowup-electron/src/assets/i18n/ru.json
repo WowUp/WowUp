@@ -3,55 +3,57 @@
     "ABOUT": {
       "CHANGE_LOG_SECTION_LABEL": "Журнал изменений",
       "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "Посмотрите на сайт!"
+      "WEBSITE_LINK_LABEL": "Посетите наш сайт!"
     },
     "GET_ADDONS": {
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "REFRESH_BUTTON": "Обновить",
-      "INSTALL_FROM_URL_BUTTON": "Установить из URL",
+      "INSTALL_FROM_URL_BUTTON": "Установить по ссылке",
       "SEARCH_LABEL": "Искать",
       "TABLE": {
-        "ADDON_COLUMN_HEADER": "Addon",
+        "ADDON_COLUMN_HEADER": "Модификация",
         "AUTHOR_COLUMN_HEADER": "Автор",
-        "PROVIDER_COLUMN_HEADER": "Поставщик",
-        "STATUS_COLUMN_HEADER": "Статус"
+        "PROVIDER_COLUMN_HEADER": "Источник",
+        "STATUS_COLUMN_HEADER": "Статус",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
       }
     },
     "HOME": {
       "TITLE": "Приложение работает !",
       "GO_TO_DETAIL": "Детали",
-      "MY_ADDONS_TAB_TITLE": "Мои аддоны",
-      "GET_ADDONS_TAB_TITLE": "Получить аддоны",
+      "MY_ADDONS_TAB_TITLE": "Мои модификации",
+      "GET_ADDONS_TAB_TITLE": "Получить модификации",
       "ABOUT_TAB_TITLE": "О программе",
-      "OPTIONS_TAB_TITLE": "Варианты"
+      "OPTIONS_TAB_TITLE": "Настройки"
     },
     "MY_ADDONS": {
       "CHECK_UPDATES_BUTTON": "Проверить обновления",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Проверить наличие последних обновлений аддона",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Проверить наличие последних обновлений модификации",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "RESCAN_FOLDERS_BUTTON": "Пересканировать папки",
-      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование клиентской папки для установленных аддонов",
-      "UPDATE_ALL_BUTTON": "Обновить все",
-      "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все аддоны для этого клиента",
+      "FILTER_LABEL": "Фильтр",
+      "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
+      "UPDATE_ALL_BUTTON": "Обновить всё",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "TABLE": {
-        "ADDON_COLUMN_HEADER": "Addon",
+        "ADDON_COLUMN_HEADER": "Модификация",
         "ADDON_INSTALL_BUTTON": "Установить",
         "ADDON_UPDATE_BUTTON": "Обновить",
         "AUTHOR_COLUMN_HEADER": "Автор",
         "AUTO_UPDATE_ICON_TOOLTIP": "Автообновление включено",
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
-        "PROVIDER_COLUMN_HEADER": "Поставщик",
+        "PROVIDER_COLUMN_HEADER": "Источник",
         "STATUS_COLUMN_HEADER": "Статус"
       },
       "ADDON_CONTEXT_MENU": {
-        "IGNORE_ADDON_BUTTON": "Пропустить",
+        "IGNORE_ADDON_BUTTON": "Пропускать",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
-        "CHANNEL_SUBMENT_TITLE": "Канал",
-        "SHOW_FOLDER": "SHOW_FOLDER",
+        "CHANNEL_SUBMENT_TITLE": "Тип выпуска",
+        "SHOW_FOLDER": "Показать папку",
         "REINSTALL_ADDON_BUTTON": "Переустановить",
         "REMOVE_ADDON_BUTTON": "Удалить",
-        "STABLE_ADDON_CHANNEL": "Конюшня",
+        "STABLE_ADDON_CHANNEL": "Стабильная",
         "BETA_ADDON_CHANNEL": "Бета",
         "ALPHA_ADDON_CHANNEL": "Альфа"
       },
@@ -59,41 +61,41 @@
         "TITLE": "Показать колонки"
       },
       "UPDATE_ALL_CONTEXT_MENU": {
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Retail/Classic",
-        "UPDATE_ALL_CLIENTS_BUTTON": "Обновить всех клиентов"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущую/Classic",
+        "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты"
       }
     },
     "OPTIONS": {
       "APPLICATION": {
-        "MINIMIZE_ON_CLOSE_LABEL": "Свернуть при закрытии",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "При закрытии окна WowUp сворачиваем в системный трей.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Свернуть в трей при закрытии",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION": "При закрытии окна WowUp сворачивается в системный трей.",
         "TELEMETRY_DESCRIPTION": "Помогите улучшить WowUp, отправив анонимные данные об установке и/или ошибках.",
         "TELEMETRY_LABEL": "Телеметрия",
         "TITLE": "Приложение"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
-        "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Это можно найти в последнем файле журнала для любопытства.",
+        "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Его можно найти в последнем лог-файле, если необходимо.",
         "DEBUG_DATA_LABEL": "Отладка данных",
         "LOG_FILES_BUTTON": "Показать лог-файлы",
-        "LOG_FILES_DESCRIPTION": "Откройте папку, содержащую последние несколько лог файлов.",
+        "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую последние несколько лог-файлов.",
         "LOG_FILES_LABEL": "Файлы логов",
-        "TITLE": "Debug"
+        "TITLE": "Отладка"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Новые установленные дополнения будут автоматически обновляться по умолчанию",
+        "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",
         "AUTO_UPDATE_LABEL": "Автообновление",
         "TITLE": "World of Warcraft",
-        "DEFAULT_ADDON_CHANNEL_LABEL": "Канал аддона по умолчанию",
-        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Канал дополнения",
-        "RESCAN_CLIENTS_BUTTON": "Пересканировать",
-        "RESCAN_CLIENTS_LABEL": "Пересканируйте установленные продукты World of Warcraft"
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Тип выпуска модификации",
+        "RESCAN_CLIENTS_BUTTON": "Повторное сканирование",
+        "RESCAN_CLIENTS_LABEL": "Повторно найти установленные продукты World of Warcraft"
       }
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "VIEW_IN_BROWSER_BUTTON": "Просмотр в браузере"
+      "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "Окей"
@@ -103,21 +105,37 @@
       "POSITIVE_BUTTON": "Да"
     },
     "INSTALL_FROM_URL": {
-      "ADDON_URL_INPUT_LABEL": "Addon URL",
-      "ADDON_URL_INPUT_PLACEHOLDER": "Пример URL-адреса GitHub или WowInterface",
+      "ADDON_URL_INPUT_LABEL": "Ссылка на модификацию",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Например ссылки GitHub или WowInterface",
       "CLOSE_BUTTON": "Закрыть",
       "IMPORT_BUTTON": "Импорт",
       "INSTALL_BUTTON": "Установить",
       "INSTALL_SUCCESS_LABEL": "Установлено!",
-      "TITLE": "Install Addon URL",
-      "DESCRIPTION": "Если вы хотите установить аддон непосредственно с URL, вставьте его ниже, чтобы начать.",
-      "SUPPORTED_SOURCES": "Поддерживает WowInterface и GitHub*"
+      "TITLE": "Ссылка на установку модификации",
+      "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
+      "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub*"
     },
     "TELEMETRY": {
-      "DESCRIPTION": "Помогите мне улучшить WowUp, отправив анонимные данные и/или ошибки в приложении?",
+      "DESCRIPTION": "Хотите помочь мне улучшить WowUp, анонимно отправляя данные об установке и ошибках?",
       "NEGATIVE_BUTTON": "Нет, спасибо",
       "POSITIVE_BUTTON": "Конечно!",
-      "TITLE": "WowUp Телеметрия"
+      "TITLE": "Телеметрия WowUp"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATUS": {
+      "COMPLETE": "COMPLETE",
+      "DOWNLOADING": "DOWNLOADING",
+      "INSTALLING": "INSTALLING",
+      "UNINSTALLING": "UNINSTALLING",
+      "UPDATING": "UPDATING"
+    },
+    "ADDON_STATE": {
+      "UNINSTALL": "UNINSTALL",
+      "IGNORED": "IGNORED",
+      "UPDATE": "UPDATE",
+      "INSTALL": "INSTALL",
+      "UPTODATE": "UPTODATE"
     }
   }
 }

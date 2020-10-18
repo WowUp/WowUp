@@ -24,8 +24,7 @@ img:not([draggable="true"]) {
 
 a[href^="http://"],
 a[href^="https://"],
-a[href^="ftp://"]
-{
+a[href^="ftp://"] {
   -webkit-user-drag: auto;
   user-drag: auto;
   /* Technically not supported in Electron yet */
@@ -59,9 +58,11 @@ img {
 .mr-1 {
   margin-right: .25em !important;
 }
+
 .mr-2 {
   margin-right: .5em !important;
 }
+
 .mr-3 {
   margin-right: 1em !important;
 }
@@ -70,14 +71,29 @@ img {
   -webkit-app-region: no-drag;
 }
 
-.pointer:hover {
-  cursor: pointer;
+.pointer {
+  pointer-events: all !important;
+
+  &:hover {
+    cursor: pointer !important;
+  }
+}
+
+.mat-tab-label,
+.mat-tab-label-content,
+.mat-select-value,
+.mat-form-field-infix,
+.mat-button-wrapper span {
+  &:hover {
+    cursor: pointer !important;
+  }
 }
 
 .mat-slide-toggle-thumb,
 .mat-slide-toggle-bar,
 .mat-button-wrapper {
   -webkit-app-region: no-drag;
+
   &:hover {
     cursor: pointer;
   }
@@ -215,7 +231,7 @@ img {
 
     .addon-name {
       font-size: 1em;
-      font-weight: bold;
+      // font-weight: bold;
     }
 
     .addon-version {
@@ -291,5 +307,5 @@ img {
 }
 
 .install-button {
-  min-width: 110px !important;
+  min-width: 120px !important;
 }

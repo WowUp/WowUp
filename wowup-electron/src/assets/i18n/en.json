@@ -14,7 +14,8 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Author",
         "PROVIDER_COLUMN_HEADER": "Provider",
-        "STATUS_COLUMN_HEADER": "Status"
+        "STATUS_COLUMN_HEADER": "Status",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Downloads"
       }
     },
     "HOME": {
@@ -119,6 +120,24 @@
       "NEGATIVE_BUTTON": "No Thanks",
       "POSITIVE_BUTTON": "Sure!",
       "TITLE": "WowUp Telemetry"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATUS": {
+      "BACKINGUP": "Backing Up",
+      "COMPLETE": "Installed",
+      "DOWNLOADING": "Downloading",
+      "INSTALLING": "Installing",
+      "PENDING": "Pending",
+      "UNINSTALLING": "Uninstalling",
+      "UPDATING": "Updating..."
+    },
+    "ADDON_STATE": {
+      "UNINSTALL": "Uninstall",
+      "IGNORED": "Ignored",
+      "UPDATE": "Update",
+      "INSTALL": "Install",
+      "UPTODATE": "Up to date"
     }
   }
 }
