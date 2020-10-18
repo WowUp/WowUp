@@ -115,9 +115,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
         (contextmenu)="onHeaderContext($event); $event.preventDefault();"></tr>
 
-      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns;"
+      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns;" tabindex="0"
         [ngClass]="{'selected-row': row.selected}" (click)="onRowClicked($event, row, i)"
-        (dblclick)="openDetailDialog(row)" (contextmenu)="onCellContext($event, row)"></tr>
+        (dblclick)="openDetailDialog(row)" (contextmenu)="onCellContext($event, row)"
+        (keydown.control.a)="selectAllRows($event)" (keydown.meta.a)="selectAllRows($event)"></tr>
     </table>
 
   </div>

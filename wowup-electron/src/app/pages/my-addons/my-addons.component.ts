@@ -216,7 +216,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     console.log(row.displayState);
     console.log("index clicked: " + index);
 
-    if (event.ctrlKey) {
+    if (
+      (event.ctrlKey && !this.electronService.isMac) ||
+      (event.metaKey && this.electronService.isMac)
+    ) {
       row.selected = !row.selected;
       return;
     }
@@ -242,12 +245,27 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
+  selectAllRows(event: KeyboardEvent) {
+    event.preventDefault();
+    if (
+      (event.ctrlKey && this.electronService.isMac) ||
+      (event.metaKey && !this.electronService.isMac)
+    ) {
+      return;
+    }
+
+    this.sortedListItems.forEach((item) => {
+      item.selected = true;
+    });
+  }
+
   openDetailDialog(listItem: AddonViewModel) {
     const dialogRef = this._dialog.open(AddonDetailComponent, {
       data: listItem.addon,
     });
 
     dialogRef.afterClosed().subscribe();
+
   }
 
   filterAddons(): void {
