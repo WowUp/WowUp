@@ -20,6 +20,10 @@ export class AddonViewModel {
     return !this.isInstalling && this.displayState === AddonDisplayState.Update;
   }
 
+  get isAutoUpdate() {
+    return this.addon.autoUpdateEnabled;
+  }
+
   get isUpToDate() {
     return (
       !this.isInstalling && this.displayState === AddonDisplayState.UpToDate

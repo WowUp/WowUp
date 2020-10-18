@@ -20,6 +20,10 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
 
   public readonly buttonOptions$: Observable<MatProgressButtonOptions>;
 
+  public get showStatusText() {
+    return this.listItem?.isUpToDate || this.listItem?.isIgnored;
+  }
+
   public get buttonText() {
     if (this.installState !== AddonInstallState.Unknown) {
       return this.getInstallStateText(this.installState);

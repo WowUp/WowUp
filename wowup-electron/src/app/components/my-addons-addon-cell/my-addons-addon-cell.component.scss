@@ -51,6 +51,10 @@
       text-decoration: underline;
       color: $white-2;
     }
+
+    &.ignored {
+      color: $white-4;
+    }
   }
 
   .addon-version {
