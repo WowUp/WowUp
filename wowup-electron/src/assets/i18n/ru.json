@@ -124,18 +124,20 @@
   },
   "COMMON": {
     "ADDON_STATUS": {
-      "COMPLETE": "COMPLETE",
-      "DOWNLOADING": "DOWNLOADING",
-      "INSTALLING": "INSTALLING",
-      "UNINSTALLING": "UNINSTALLING",
-      "UPDATING": "UPDATING"
+      "BACKINGUP": "Резервное копирование",
+      "COMPLETE": "Установлена",
+      "DOWNLOADING": "Загружается",
+      "INSTALLING": "Устанавливается",
+      "PENDING": "В ожидании",
+      "UNINSTALLING": "Удаляется",
+      "UPDATING": "Обновляется..."
     },
     "ADDON_STATE": {
-      "UNINSTALL": "UNINSTALL",
-      "IGNORED": "IGNORED",
-      "UPDATE": "UPDATE",
-      "INSTALL": "INSTALL",
-      "UPTODATE": "UPTODATE"
+      "UNINSTALL": "Удалить",
+      "IGNORED": "Игнорируется",
+      "UPDATE": "Обновить",
+      "INSTALL": "Установить",
+      "UPTODATE": "Актуальная"
     }
   }
 }
