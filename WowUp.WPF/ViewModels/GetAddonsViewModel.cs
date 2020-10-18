@@ -78,6 +78,11 @@ namespace WowUp.WPF.ViewModels
                 OnRefresh();
             };
 
+            _addonService.AddonListUpdated += (sender, args) =>
+            {
+                OnRefresh();
+            }; 
+
             _sessionService.SessionChanged += (sender, args) =>
             {
                 SelectedClientType = args.SessionState.SelectedClientType;
