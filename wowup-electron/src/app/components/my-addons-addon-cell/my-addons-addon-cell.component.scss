@@ -27,7 +27,7 @@
     .channel {
       background: $dark-4;
       text-align: center;
-      font-weight: bold;
+      font-weight: 400;
       font-size: 0.8em;
 
       &.beta {
@@ -51,9 +51,28 @@
       text-decoration: underline;
       color: $white-2;
     }
+
+    &.ignored {
+      color: $white-4;
+    }
   }
 
   .addon-version {
     color: $white-2;
+  }
+
+  .addon-funding {
+    a {
+      margin-right: 1em;
+      color: $white-1;
+    }
+    .funding-icon {
+      width: 15px;
+      height: 15px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

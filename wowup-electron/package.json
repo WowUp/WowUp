@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.0.0-alpha.7",
+  "version": "2.0.0-alpha.11",
   "description": "Word of Warcraft addon updater",
   "homepage": "https://github.com/maximegris/angular-electron",
   "author": {
@@ -67,7 +67,9 @@
     "@types/mocha": "8.0.3",
     "@types/ncp": "2.0.4",
     "@types/node": "12.12.62",
+    "@types/opossum": "4.1.1",
     "@types/rimraf": "3.0.0",
+    "@types/uuid": "8.3.0",
     "@typescript-eslint/eslint-plugin": "4.3.0",
     "@typescript-eslint/eslint-plugin-tslint": "4.3.0",
     "@typescript-eslint/parser": "4.3.0",
@@ -92,7 +94,6 @@
     "node-gyp": "7.1.0",
     "npm-run-all": "4.1.5",
     "protractor": "~7.0.0",
-    "rxjs": "6.6.3",
     "spectron": "12.0.0",
     "ts-node": "9.0.0",
     "tslib": "2.0.1",
@@ -123,9 +124,11 @@
     "ncp": "2.0.0",
     "node-cache": "5.1.2",
     "node-disk-info": "1.1.0",
+    "opossum": "5.0.1",
     "protobufjs": "6.10.1",
     "rimraf": "3.0.2",
     "rollbar": "2.19.3",
+    "rxjs": "6.6.3",
     "uuid": "8.3.1"
   }
 }

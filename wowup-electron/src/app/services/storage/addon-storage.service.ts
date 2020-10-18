@@ -33,7 +33,7 @@ export class AddonStorageService {
     return addons;
   }
 
-  public setAll(addons: Addon[]) {
+  public saveAll(addons: Addon[]) {
     addons.forEach(addon => this.set(addon.id, addon));
   }
 
@@ -53,7 +53,7 @@ export class AddonStorageService {
     this._store.delete(addon.id);
   }
 
-  public removeForClientType(clientType: WowClientType) {
+  public removeAllForClientType(clientType: WowClientType) {
     const addons = this.getAllForClientType(clientType);
     addons.forEach(addon => this._store.delete(addon.id));
   }

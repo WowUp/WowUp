@@ -12,37 +12,19 @@ import {
 } from "electron";
 import * as path from "path";
 import * as url from "url";
-import * as fs from "fs";
 import { release, arch } from "os";
 import * as electronDl from "electron-dl";
-import * as admZip from "adm-zip";
 import { DownloadRequest } from "./src/common/models/download-request";
 import { DownloadStatus } from "./src/common/models/download-status";
 import { DownloadStatusType } from "./src/common/models/download-status-type";
-import { UnzipStatus } from "./src/common/models/unzip-status";
-import {
-  DOWNLOAD_FILE_CHANNEL,
-  UNZIP_FILE_CHANNEL,
-  COPY_FILE_CHANNEL,
-  COPY_DIRECTORY_CHANNEL,
-  DELETE_DIRECTORY_CHANNEL,
-  RENAME_DIRECTORY_CHANNEL,
-  READ_FILE_CHANNEL,
-} from "./src/common/constants";
-import { UnzipStatusType } from "./src/common/models/unzip-status-type";
-import { UnzipRequest } from "./src/common/models/unzip-request";
-import { CopyFileRequest } from "./src/common/models/copy-file-request";
-import { CopyDirectoryRequest } from "./src/common/models/copy-directory-request";
-import { DeleteDirectoryRequest } from "./src/common/models/delete-directory-request";
-import { ReadFileRequest } from "./src/common/models/read-file-request";
-import { ReadFileResponse } from "./src/common/models/read-file-response";
+import { DOWNLOAD_FILE_CHANNEL } from "./src/common/constants";
 import "./ipc-events";
-import { ncp } from "ncp";
-import * as rimraf from "rimraf";
 import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
 import * as Store from "electron-store";
-import { readFile } from "./file.utils";
+import { WindowState } from "./src/common/models/window-state";
+import { Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -51,6 +33,8 @@ const preferenceStore = new Store({ name: "preferences" });
 let appIsQuitting = false;
 
 autoUpdater.logger = log;
+autoUpdater.allowPrerelease = true;
+autoUpdater.channel = "alpha";
 autoUpdater.on("update-available", () => {
   log.info("AVAILABLE");
   win.webContents.send("update_available");
@@ -97,6 +81,8 @@ const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
+
+app.disableHardwareAcceleration(); // Try to improve font blur?
 
 const LOG_PATH = path.join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
@@ -153,15 +139,91 @@ function createTray() {
   tray.setContextMenu(contextMenu);
 }
 
-function createWindow(): BrowserWindow {
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
+function windowStateManager(
+  windowName: string,
+  { width, height }: { width: number; height: number }
+) {
+  let window: BrowserWindow;
+  let windowState: WindowState;
+  const saveState$ = new Subject<void>();
 
-  const windowOptions: BrowserWindowConstructorOptions = {
+  function setState() {
+    let setDefaults = false;
+    windowState = preferenceStore.get(
+      `${windowName}-window-state`
+    ) as WindowState;
+
+    if (!windowState) {
+      setDefaults = true;
+    } else {
+      log.info("found window state:", windowState);
+
+      const valid = screen.getAllDisplays().some((display) => {
+        return (
+          windowState.x >= display.bounds.x &&
+          windowState.y >= display.bounds.y &&
+          windowState.x + windowState.width <=
+            display.bounds.x + display.bounds.width &&
+          windowState.y + windowState.height <=
+            display.bounds.y + display.bounds.height
+        );
+      });
+
+      if (!valid) {
+        log.info("reset window state, bounds are outside displays");
+        setDefaults = true;
+      }
+    }
+
+    if (setDefaults) {
+      log.info("setting window defaults");
+      windowState = <WindowState>{ width, height };
+    }
+  }
+
+  function saveState() {
+    log.info("saving window state");
+    if (!window.isMaximized() && !window.isFullScreen()) {
+      windowState = { ...windowState, ...window.getBounds() };
+    }
+    windowState.isMaximized = window.isMaximized();
+    windowState.isFullScreen = window.isFullScreen();
+    preferenceStore.set(`${windowName}-window-state`, windowState);
+  }
+
+  function monitorState(win: BrowserWindow) {
+    window = win;
+
+    win.on("close", saveState);
+    win.on("resize", () => saveState$.next());
+    win.on("move", () => saveState$.next());
+    win.on("closed", () => saveState$.unsubscribe());
+  }
+
+  saveState$.pipe(debounceTime(500)).subscribe(() => saveState());
+
+  setState();
+
+  return {
+    ...windowState,
+    monitorState,
+  };
+}
+
+function createWindow(): BrowserWindow {
+  // Main object for managing window state
+  // Initialize with a window name and default size
+  const mainWindowManager = windowStateManager("main", {
     width: 900,
     height: 600,
+  });
+
+  const windowOptions: BrowserWindowConstructorOptions = {
+    width: mainWindowManager.width,
+    height: mainWindowManager.height,
+    x: mainWindowManager.x,
+    y: mainWindowManager.y,
     backgroundColor: "#444444",
-    // frame: false,
     title: "WowUp",
     titleBarStyle: "hidden",
     webPreferences: {
@@ -173,6 +235,7 @@ function createWindow(): BrowserWindow {
     },
     minWidth: 900,
     minHeight: 550,
+    show: false,
   };
 
   if (isWin) {
@@ -182,12 +245,24 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
+  // Keep track of window state
+  mainWindowManager.monitorState(win);
+
   win.webContents.userAgent = USER_AGENT;
 
   win.once("ready-to-show", () => {
+    win.show();
     autoUpdater.checkForUpdatesAndNotify().then((result) => {
       console.log("UPDATE", result);
     });
+  });
+
+  win.once("show", () => {
+    if (mainWindowManager.isFullScreen) {
+      win.setFullScreen(true);
+    } else if (mainWindowManager.isMaximized) {
+      win.maximize();
+    }
   });
 
   if (isMac) {
@@ -293,84 +368,26 @@ ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
     const download = await electronDl.download(win, arg.url, {
       directory: arg.outputFolder,
       onProgress: (progress) => {
-        win.webContents.send(arg.url, {
+        const progressStatus: DownloadStatus = {
           type: DownloadStatusType.Progress,
           progress: parseFloat((progress.percent * 100.0).toFixed(2)),
-        } as DownloadStatus);
+        };
+
+        win.webContents.send(arg.responseKey, progressStatus);
       },
     });
 
-    win.webContents.send(arg.url, {
+    const status: DownloadStatus = {
       type: DownloadStatusType.Complete,
       savePath: download.getSavePath(),
-    } as DownloadStatus);
+    };
+    win.webContents.send(arg.responseKey, status);
   } catch (err) {
     console.error(err);
-    win.webContents.send(arg.url, {
+    const status: DownloadStatus = {
       type: DownloadStatusType.Error,
       error: err,
-    } as DownloadStatus);
-  }
-});
-
-ipcMain.on(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
-  const zipFilePath = arg.zipFilePath;
-  const outputFolder = arg.outputFolder;
-
-  const zip = new admZip(zipFilePath);
-  zip.extractAllToAsync(outputFolder, true, (err) => {
-    const status: UnzipStatus = {
-      type: UnzipStatusType.Complete,
-      outputFolder,
     };
-
-    if (err) {
-      status.type = UnzipStatusType.Error;
-      status.error = err;
-    }
-
-    win.webContents.send(zipFilePath, status);
-  });
-});
-
-ipcMain.on(COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest) => {
-  console.log("Copy File", arg);
-  fs.copyFile(arg.sourceFilePath, arg.destinationFilePath, (err) => {
-    win.webContents.send(arg.destinationFilePath, { error: err });
-  });
-});
-
-ipcMain.on(COPY_DIRECTORY_CHANNEL, async (evt, arg: CopyDirectoryRequest) => {
-  console.log("Copy Dir", arg);
-  ncp(arg.sourcePath, arg.destinationPath, (err) => {
-    win.webContents.send(arg.destinationPath, err);
-  });
-});
-
-ipcMain.on(
-  DELETE_DIRECTORY_CHANNEL,
-  async (evt, arg: DeleteDirectoryRequest) => {
-    console.log("Delete Dir", arg);
-    rimraf(arg.sourcePath, (err) => {
-      win.webContents.send(arg.sourcePath, err);
-    });
+    win.webContents.send(arg.responseKey, status);
   }
-);
-
-ipcMain.on(RENAME_DIRECTORY_CHANNEL, async (evt, arg: CopyDirectoryRequest) => {
-  console.log("Rename Dir", arg);
-  fs.rename(arg.sourcePath, arg.destinationPath, (err) => {
-    win.webContents.send(arg.destinationPath, err);
-  });
-});
-
-ipcMain.on(READ_FILE_CHANNEL, async (evt, arg: ReadFileRequest) => {
-  // console.log('Read File', arg);
-  const response: ReadFileResponse = { data: "" };
-  try {
-    response.data = await readFile(arg.sourcePath);
-  } catch (err) {
-    response.error = err;
-  }
-  win.webContents.send(arg.sourcePath, response);
 });

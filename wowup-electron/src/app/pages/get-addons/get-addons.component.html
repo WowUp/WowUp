@@ -23,10 +23,12 @@
         </mat-form-field>
       </div>
       <div class="button-container">
-        <button mat-flat-button color="primary" (click)="onRefresh()">
+        <button mat-flat-button color="primary" (click)="onRefresh()" appUserActionTracker category="GetAddons"
+          action="Refresh">
           {{'PAGES.GET_ADDONS.REFRESH_BUTTON' | translate}}
         </button>
-        <button mat-flat-button color="primary" (click)="onInstallFromUrl()">
+        <button mat-flat-button color="primary" (click)="onInstallFromUrl()" appUserActionTracker category="GetAddons"
+          action="InstallFromUrl">
           {{'PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON' | translate}}
         </button>
       </div>
@@ -36,18 +38,28 @@
   <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
 
   <div class="table-container flex-grow-1" [hidden]="isBusy === true">
-    <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
+    <table mat-table matSort [dataSource]="dataSource" matSortActive="downloadCount" matSortDirection="desc"
+      class="mat-elevation-z8">
       <ng-container matColumnDef="name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          <app-potential-addon-table-column [addon]="element" (onViewDetails)="openDetailDialog($event)">
+          <app-potential-addon-table-column [addon]="element" [channel]="defaultAddonChannel" (onViewDetails)="openDetailDialog($event)">
           </app-potential-addon-table-column>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="provider">
+      <ng-container matColumnDef="downloadCount">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{'PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER' | translate}}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{element.downloadCount | downloadCount}}
+        </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="providerName">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{'PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER' | translate}}
         </th>
@@ -60,7 +72,7 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="author-column">
           {{'PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER' | translate}}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" class="cell-padding">
           {{element.author}}
         </td>
       </ng-container>
@@ -70,7 +82,7 @@
           {{'PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          <app-addon-install-button [addon]="element"> </app-addon-install-button>
+          <app-get-addon-status-column [listItem]="element" ></app-get-addon-status-column>
         </td>
       </ng-container>
 

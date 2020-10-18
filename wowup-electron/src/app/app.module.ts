@@ -10,7 +10,7 @@ import {
   HTTP_INTERCEPTORS,
 } from "@angular/common/http";
 import { SharedModule } from "./shared/shared.module";
-
+import { ErrorHandlerIntercepter } from './interceptors/error-handler-intercepter';
 import { AppRoutingModule } from "./app-routing.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
@@ -28,6 +28,8 @@ import { AnalyticsService } from "./services/analytics/analytics.service";
 import { DirectiveModule } from "./directive.module";
 import { MatModule } from "./mat-module";
 import { MatProgressButtonsModule } from "mat-progress-buttons";
+import { ElectronService } from "./services";
+import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -61,8 +63,8 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       useClass: DefaultHeadersInterceptor,
       multi: true,
     },
-    { provide: ErrorHandler, useClass: AnalyticsService },
+    { provide: ErrorHandler, useClass: ErrorHandlerIntercepter, deps: [AnalyticsService] },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

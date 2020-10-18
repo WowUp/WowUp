@@ -14,7 +14,8 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Autore",
         "PROVIDER_COLUMN_HEADER": "Provveditore",
-        "STATUS_COLUMN_HEADER": "Stato"
+        "STATUS_COLUMN_HEADER": "Stato",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
       }
     },
     "HOME": {
@@ -48,6 +49,7 @@
         "IGNORE_ADDON_BUTTON": "Ignora",
         "AUTO_UPDATE_ADDON_BUTTON": "Aggiornamento Automatico",
         "CHANNEL_SUBMENT_TITLE": "Canale",
+        "SHOW_FOLDER": "SHOW_FOLDER",
         "REINSTALL_ADDON_BUTTON": "Reinstalla",
         "REMOVE_ADDON_BUTTON": "Rimuovi",
         "STABLE_ADDON_CHANNEL": "Stabile",
@@ -117,6 +119,22 @@
       "NEGATIVE_BUTTON": "No Grazie",
       "POSITIVE_BUTTON": "Certo!",
       "TITLE": "Telemetria WowUp"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATUS": {
+      "COMPLETE": "COMPLETE",
+      "DOWNLOADING": "DOWNLOADING",
+      "INSTALLING": "INSTALLING",
+      "UNINSTALLING": "UNINSTALLING",
+      "UPDATING": "UPDATING"
+    },
+    "ADDON_STATE": {
+      "UNINSTALL": "UNINSTALL",
+      "IGNORED": "IGNORED",
+      "UPDATE": "UPDATE",
+      "INSTALL": "INSTALL",
+      "UPTODATE": "UPTODATE"
     }
   }
 }

@@ -8,7 +8,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { filter, map } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { from, BehaviorSubject, Subscription, Subject } from "rxjs";
 import { Addon } from "app/entities/addon";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
@@ -17,7 +17,7 @@ import { SessionService } from "app/services/session/session.service";
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { ColumnState } from "app/models/wowup/column-state";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { MyAddonsListItem } from "app/business-objects/my-addons-list-item";
+import { AddonViewModel } from "app/business-objects/my-addon-list-item";
 import * as _ from "lodash";
 import { ElectronService } from "app/services";
 import { AddonDisplayState } from "app/models/wowup/addon-display-state";
@@ -30,6 +30,8 @@ import { getEnumName } from "app/utils/enum.utils";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import { stringIncludes } from "app/utils/string.utils";
+import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
+import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 
 @Component({
   selector: "app-my-addons",
@@ -40,25 +42,27 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
 
   @ViewChild("addonContextMenuTrigger") contextMenu: MatMenuTrigger;
+  @ViewChild("addonMultiContextMenuTrigger") multiContextMenu: MatMenuTrigger;
   @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
   @ViewChild("updateAllContextMenuTrigger")
   updateAllContextMenu: MatMenuTrigger;
   @ViewChild(MatSort) sort: MatSort;
 
-  private readonly _displayAddonsSrc = new BehaviorSubject<MyAddonsListItem[]>(
+  private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>(
     []
   );
   private readonly _destroyed$ = new Subject<void>();
 
   private subscriptions: Subscription[] = [];
+  private isSelectedTab: boolean = false;
+  private sortedListItems: AddonViewModel[] = [];
 
   public spinnerMessage = "Loading...";
 
   contextMenuPosition = { x: "0px", y: "0px" };
 
-  public dataSource = new MatTableDataSource<MyAddonsListItem>([]);
+  public dataSource = new MatTableDataSource<AddonViewModel>([]);
   public filter = "";
-  public activeSortColumn = 'displayState';
 
   columns: ColumnState[] = [
     { name: "addon.name", display: "Addon", visible: true },
@@ -102,16 +106,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   constructor(
     private addonService: AddonService,
     private _sessionService: SessionService,
+    private _ngZone: NgZone,
+    private _dialog: MatDialog,
     public electronService: ElectronService,
     public overlay: Overlay,
     public viewContainerRef: ViewContainerRef,
-    public warcraftService: WarcraftService,
-    private _ngZone: NgZone,
-    private _dialog: MatDialog
+    public warcraftService: WarcraftService
   ) {
+    _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
+      this.isSelectedTab = tabIndex === this.tabIndex;
+      if (this.isSelectedTab) {
+        this.setPageContextText();
+      }
+    });
+
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(
       (evt) => {
-        let listItems: MyAddonsListItem[] = [].concat(
+        let listItems: AddonViewModel[] = [].concat(
           this._displayAddonsSrc.value
         );
 
@@ -129,7 +140,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         if (listItemIdx === -1) {
           listItems.push(listItem);
         } else {
-          listItems[listItemIdx] = listItem;
+          return;
+          // listItems[listItemIdx] = listItem;
         }
 
         listItems = this.sortListItems(listItems);
@@ -142,7 +154,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     const addonRemovedSubscription = this.addonService.addonRemoved$.subscribe(
       (addonId) => {
-        const addons: MyAddonsListItem[] = [].concat(
+        const addons: AddonViewModel[] = [].concat(
           this._displayAddonsSrc.value
         );
         const listItemIdx = addons.findIndex((li) => li.addon.id === addonId);
@@ -155,35 +167,25 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     );
 
     const displayAddonSubscription = this._displayAddonsSrc.subscribe(
-      (items: MyAddonsListItem[]) => {
+      (items: AddonViewModel[]) => {
         this.dataSource.data = items;
         this.dataSource.sortingDataAccessor = _.get;
-        this.dataSource.filterPredicate = (
-          item: MyAddonsListItem,
-          filter: string
-        ) => {
-          if (
-            stringIncludes(item.addon.name, filter) ||
-            stringIncludes(item.addon.latestVersion, filter) ||
-            stringIncludes(item.addon.author, filter)
-          ) {
-            return true;
-          }
-          return false;
-        };
+        this.dataSource.filterPredicate = this.filterListItem;
         this.dataSource.sort = this.sort;
       }
     );
 
-    const selectedTabSubscription = this._sessionService.selectedHomeTab$
-      .pipe(filter((tabIndex) => this.tabIndex === this.tabIndex))
-      .subscribe(() => this.setPageContextText());
+    const dataSourceSortSubscription = this.dataSource
+      .connect()
+      .subscribe((sortedListItems) => {
+        this.sortedListItems = sortedListItems;
+      });
 
     this.subscriptions.push(
       addonInstalledSubscription,
       addonRemovedSubscription,
       displayAddonSubscription,
-      selectedTabSubscription
+      dataSourceSortSubscription
     );
   }
 
@@ -210,39 +212,60 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.loadAddons(this.selectedClient);
   }
 
-  onRowClicked(event: MouseEvent, row: MyAddonsListItem, index: number) {
+  onRowClicked(event: MouseEvent, row: AddonViewModel, index: number) {
     console.log(row.displayState);
     console.log("index clicked: " + index);
 
-    if (event.ctrlKey) {
+    if (
+      (event.ctrlKey && !this.electronService.isMac) ||
+      (event.metaKey && this.electronService.isMac)
+    ) {
       row.selected = !row.selected;
       return;
     }
 
-    let listItems: MyAddonsListItem[] = [].concat(this._displayAddonsSrc.value);
-
     if (event.shiftKey) {
-      const startIdx = listItems.findIndex((item) => item.selected);
-      listItems.forEach((item, i) => {
+      const startIdx = this.sortedListItems.findIndex((item) => item.selected);
+      this.sortedListItems.forEach((item, i) => {
         if (i >= startIdx && i <= index) {
           item.selected = true;
         } else {
           item.selected = false;
         }
       });
-    } else {
-      listItems.forEach((item, i) => {
-        if (i === index) {
-          item.selected = !item.selected;
-        } else {
-          item.selected = false;
-        }
-      });
+      return;
     }
 
-    this._ngZone.run(() => {
-      this._displayAddonsSrc.next(listItems);
+    this.sortedListItems.forEach((item, i) => {
+      if (item.addon.id === row.addon.id) {
+        item.selected = !item.selected;
+      } else {
+        item.selected = false;
+      }
     });
+  }
+
+  selectAllRows(event: KeyboardEvent) {
+    event.preventDefault();
+    if (
+      (event.ctrlKey && this.electronService.isMac) ||
+      (event.metaKey && !this.electronService.isMac)
+    ) {
+      return;
+    }
+
+    this.sortedListItems.forEach((item) => {
+      item.selected = true;
+    });
+  }
+
+  openDetailDialog(listItem: AddonViewModel) {
+    const dialogRef = this._dialog.open(AddonDetailComponent, {
+      data: listItem.addon,
+    });
+
+    dialogRef.afterClosed().subscribe();
+
   }
 
   filterAddons(): void {
@@ -302,12 +325,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.columnContextMenu.openMenu();
   }
 
-  onCellContext(event: MouseEvent, listItem: MyAddonsListItem) {
+  onCellContext(event: MouseEvent, listItem: AddonViewModel) {
     event.preventDefault();
     this.updateContextMenuPosition(event);
-    this.contextMenu.menuData = { listItem: listItem };
-    this.contextMenu.menu.focusFirstItem("mouse");
-    this.contextMenu.openMenu();
+
+    const selectedItems = this._displayAddonsSrc.value.filter(
+      (item) => item.selected
+    );
+    if (selectedItems.length > 1) {
+      this.multiContextMenu.menuData = { listItems: selectedItems };
+      this.multiContextMenu.menu.focusFirstItem("mouse");
+      this.multiContextMenu.openMenu();
+    } else {
+      this.contextMenu.menuData = { listItem: listItem };
+      this.contextMenu.menu.focusFirstItem("mouse");
+      this.contextMenu.openMenu();
+    }
   }
 
   onUpdateAllContext(event: MouseEvent) {
@@ -316,15 +349,30 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.updateAllContextMenu.openMenu();
   }
 
-  async onReInstallAddon(addon: Addon) {
+  async onReInstallAddon(listItems: AddonViewModel) {
+    await this.onReInstallAddons([listItems]);
+  }
+
+  async onReInstallAddons(listItems: AddonViewModel[]) {
+    for (let listItem of listItems) {
+      try {
+        await this.addonService.installAddon(listItem.addon.id);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+
+  onShowfolder(addon: Addon) {
     try {
-      this.addonService.installAddon(addon.id);
+      const addonPath = this.addonService.getFullInstallPath(addon);
+      this.electronService.shell.openExternal(addonPath);
     } catch (err) {
       console.error(err);
     }
   }
 
-  onUpdateAddon(listItem: MyAddonsListItem) {
+  onUpdateAddon(listItem: AddonViewModel) {
     listItem.isInstalling = true;
 
     this.addonService.installAddon(listItem.addon.id);
@@ -375,23 +423,104 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onInstall() {}
+  onRemoveAddons(listItems: AddonViewModel[]) {
+    let message = "";
+    if (listItems.length > 3) {
+      message = `Are you sure you want to remove the selected ${listItems.length} addons?`;
+    } else {
+      message = "Are you sure you want to remove the following addons?";
+      listItems.forEach(
+        (listItem) => (message = `${message}\n\t• ${listItem.addon.name}`)
+      );
+    }
+    message +=
+      "\nThis will remove all related folders from your World of Warcraft folder.";
 
-  onClickIgnoreAddon(evt: MatCheckboxChange, listItem: MyAddonsListItem) {
-    listItem.addon.isIgnored = evt.checked;
-    listItem.statusText = listItem.getStateText();
-    this.addonService.saveAddon(listItem.addon);
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: `Uninstall Addons?`,
+        message: message,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      console.log("The dialog was closed", result);
+      if (!result) {
+        return;
+      }
+
+      for (let listItem of listItems) {
+        await this.addonService.removeAddon(listItem.addon);
+      }
+    });
   }
 
-  onClickAutoUpdateAddon(evt: MatCheckboxChange, addon: Addon) {
-    addon.autoUpdateEnabled = evt.checked;
-    this.addonService.saveAddon(addon);
+  onInstall() { }
+
+  onClickIgnoreAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
+    this.onClickIgnoreAddons(evt, [listItem]);
   }
 
-  onSelectedAddonChannelChange(evt: MatRadioChange, addon: Addon) {
-    addon.channelType = evt.value;
-    this.addonService.saveAddon(addon);
+  onClickIgnoreAddons(evt: MatCheckboxChange, listItems: AddonViewModel[]) {
+    listItems.forEach((listItem) => {
+      listItem.addon.isIgnored = evt.checked;
+      if (evt.checked) {
+        listItem.addon.autoUpdateEnabled = false;
+      }
+      listItem.statusText = listItem.getStateText();
+      this.addonService.saveAddon(listItem.addon);
+    });
+
+    if (!this.sort.active) {
+      this.sortTable(this.dataSource);
+    }
+  }
+
+  onClickAutoUpdateAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
+    this.onClickAutoUpdateAddons(evt, [listItem]);
+  }
+
+  onClickAutoUpdateAddons(
+    evt: MatCheckboxChange,
+    listItems: AddonViewModel[]
+  ) {
+    listItems.forEach((listItem) => {
+      listItem.addon.autoUpdateEnabled = evt.checked;
+      if (evt.checked) {
+        listItem.addon.isIgnored = false;
+      }
+      this.addonService.saveAddon(listItem.addon);
+    });
+
+    if (!this.sort.active) {
+      this.sortTable(this.dataSource);
+    }
+  }
+
+  onSelectedAddonChannelChange(
+    evt: MatRadioChange,
+    listItem: AddonViewModel
+  ) {
+    this.onSelectedAddonsChannelChange(evt, [listItem]);
+  }
+
+  onSelectedAddonsChannelChange(
+    evt: MatRadioChange,
+    listItems: AddonViewModel[]
+  ) {
+    listItems.forEach((listItem) => {
+      listItem.addon.channelType = evt.value;
+      this.addonService.saveAddon(listItem.addon);
+    });
     this.loadAddons(this.selectedClient);
+  }
+
+  isSelectedItemsProp(listItems: AddonViewModel[], prop: string) {
+    return _.some(listItems, prop);
+  }
+
+  private sortTable(dataSource: MatTableDataSource<AddonViewModel>) {
+    this.dataSource.data = this.sortListItems(dataSource.data, dataSource.sort);
   }
 
   private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
@@ -407,7 +536,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
       // Only care about the ones that need to be updated/installed
       addons = addons
-        .map((addon) => new MyAddonsListItem(addon))
+        .map((addon) => new AddonViewModel(addon))
         .filter((listItem) => listItem.needsUpdate || listItem.needsInstall)
         .map((listItem) => listItem.addon);
 
@@ -415,8 +544,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
       for (let addon of addons) {
         updatedCt += 1;
-        this.spinnerMessage = `Updating ${updatedCt}/${
-          addons.length
+        this.spinnerMessage = `Updating ${updatedCt}/${addons.length
           }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
 
         await this.addonService.installAddon(addon.id);
@@ -445,10 +573,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         this.isBusy = false;
         this.enableControls = true;
         this._ngZone.run(() => {
-          this._sessionService.contextText = `${addons.length} addons`;
-          const formattedAddons = this.formatAddons(addons);
-          this.activeSortColumn = formattedAddons.filter(i => i.needsUpdate).length === 0 ? 'addon.name' : 'displayState';
-          this._displayAddonsSrc.next(formattedAddons);
+          this._displayAddonsSrc.next(this.formatAddons(addons));
+          this.setPageContextText();
         });
       },
       error: (err) => {
@@ -459,18 +585,36 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private formatAddons(addons: Addon[]): MyAddonsListItem[] {
+  private formatAddons(addons: Addon[]): AddonViewModel[] {
     const listItems = addons.map((addon) => this.createAddonListItem(addon));
-    
+
     return this.sortListItems(listItems);
   }
 
-  private sortListItems(listItems: MyAddonsListItem[]) {
-    return _.orderBy(listItems, ["displayState", "addon.name"]);
+  private sortListItems(listItems: AddonViewModel[], sort?: MatSort) {
+    if (!sort || !sort.active || sort.direction === "") {
+      return _.orderBy(listItems, ["displayState", "addon.name"]);
+    }
+    return _.orderBy(
+      listItems,
+      [(listItem) => _.get(listItem, sort.active, "")],
+      [sort.direction === "asc" ? "asc" : "desc"]
+    );
+  }
+
+  private filterListItem(item: AddonViewModel, filter: string) {
+    if (
+      stringIncludes(item.addon.name, filter) ||
+      stringIncludes(item.addon.latestVersion, filter) ||
+      stringIncludes(item.addon.author, filter)
+    ) {
+      return true;
+    }
+    return false;
   }
 
   private createAddonListItem(addon: Addon) {
-    const listItem = new MyAddonsListItem(addon);
+    const listItem = new AddonViewModel(addon);
 
     if (!listItem.addon.thumbnailUrl) {
       listItem.addon.thumbnailUrl = "assets/wowup_logo_512np.png";
@@ -487,7 +631,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._sessionService.contextText = `${this._displayAddonsSrc.value.length} addons`;
+    this._sessionService.setContextText(
+      this.tabIndex,
+      `${this._displayAddonsSrc.value.length} addons`
+    );
   }
 
   private getInstallStateText(installState: AddonInstallState) {

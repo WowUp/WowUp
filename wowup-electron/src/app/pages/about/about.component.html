@@ -6,7 +6,7 @@
       <h2>{{'PAGES.ABOUT.TITLE' | translate}}</h2>
       <div class="version">v{{version}}</div>
       <div class="link-container">
-        <a appExternalLink href="https://wowup.io">
+        <a appExternalLink href="https://wowup.io" appUserActionTracker category="About" action="ViewWebsite">
           {{'PAGES.ABOUT.WEBSITE_LINK_LABEL' | translate}}
         </a>
       </div>
@@ -17,7 +17,7 @@
       </h2>
       <ul class="change-log-list">
         <li class="changelog" *ngFor="let cl of changeLogs">
-          <div class="version">{{cl.Version}}</div>
+          <div class="version mat-subheading-2">{{cl.Version}}</div>
           <pre class="description">{{cl.Description}}</pre>
         </li>
       </ul>

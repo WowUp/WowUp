@@ -11,6 +11,7 @@ export interface Addon {
   installedAt?: Date;
   externalId?: string;
   providerName?: string;
+  providerSource?: string;
   externalUrl?: string;
   thumbnailUrl?: string;
   gameVersion?: string;
@@ -21,4 +22,10 @@ export interface Addon {
   clientType: WowClientType;
   channelType: AddonChannelType;
   updatedAt?: Date;
+  patreonFundingLink?: string;
+  githubFundingLink?: string;
+  customFundingLink?: string;
+  downloadCount?: number;
+  summary?: string;
+  screenshotUrls?: string[];
 }

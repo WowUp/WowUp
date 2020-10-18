@@ -28,7 +28,11 @@ export class SessionService {
     this.loadInitialClientType().pipe(first()).subscribe();
   }
 
-  public set contextText(text: string) {
+  public setContextText(tabIndex: number, text: string) {
+    if (tabIndex !== this._selectedHomeTabSrc.value) {
+      return;
+    }
+
     this._pageContextTextSrc.next(text);
   }
 
@@ -37,8 +41,8 @@ export class SessionService {
   }
 
   public set selectedHomeTab(tabIndex: number) {
+    this._pageContextTextSrc.next("");
     this._selectedHomeTabSrc.next(tabIndex);
-    this.contextText = "";
   }
 
   public set selectedClientType(clientType: WowClientType) {

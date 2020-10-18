@@ -1,13 +1,13 @@
 <div class="titlebar bg-purple-1 text-light" [ngClass]="{'titlebar-mac': isMac, 'titlebar-windows': isWindows }">
-  <div class="titlebar-drag-region"></div>
+  <div class="titlebar-drag-region" (dblclick)="onDblClick()"></div>
   <div class="window-logo-container" *ngIf="electronService.isWin">
     <img src="assets/wowup_logo_512np.png" />
   </div>
   <div class="title-container">
     <div>WowUp.io</div>
   </div>
-  <div *ngIf="isMac" class="window-control-container">
-    <mat-icon class="debug-button" (click)="onClickDebug()">bug_report</mat-icon>
+  <div *ngIf="isMac" class="window-control-container pointer">
+    <mat-icon class="debug-button pointer" (click)="onClickDebug()">bug_report</mat-icon>
   </div>
   <div *ngIf="isWindows" class="window-control-container">
     <mat-icon (click)="onClickDebug()">bug_report</mat-icon>

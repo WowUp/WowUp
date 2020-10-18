@@ -40,7 +40,8 @@
     <button mat-button (click)="onClose()">
         {{'DIALOGS.INSTALL_FROM_URL.CLOSE_BUTTON' | translate}}
     </button>
-    <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()">
+    <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()" appUserActionTracker
+        category="InstallFromUrl" action="ImportUrl" [label]="query">
         {{'DIALOGS.INSTALL_FROM_URL.IMPORT_BUTTON' | translate}}
     </button>
 </div>

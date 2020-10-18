@@ -1,14 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
+import { v4 as uuidv4 } from "uuid";
 
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import { ipcRenderer, webFrame, remote, shell } from 'electron';
-import * as childProcess from 'child_process';
-import * as fs from 'fs';
-import { BehaviorSubject } from 'rxjs';
+import { ipcRenderer, webFrame, remote, shell } from "electron";
+import * as childProcess from "child_process";
+import * as fs from "fs";
+import { BehaviorSubject } from "rxjs";
+import { ValueResponse } from "common/models/value-response";
+import { ValueRequest } from "common/models/value-request";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
@@ -31,7 +34,7 @@ export class ElectronService {
   }
 
   get locale(): string {
-    return this.remote.app.getLocale().split('-')[0];
+    return this.remote.app.getLocale().split("-")[0];
   }
 
   constructor() {
@@ -39,30 +42,31 @@ export class ElectronService {
     if (!this.isElectron) {
       return;
     }
-    this.ipcRenderer = window.require('electron').ipcRenderer;
-    this.webFrame = window.require('electron').webFrame;
-    this.remote = window.require('electron').remote;
-    this.shell = window.require('electron').shell;
+    this.ipcRenderer = window.require("electron").ipcRenderer;
+    this.webFrame = window.require("electron").webFrame;
+    this.remote = window.require("electron").remote;
+    this.shell = window.require("electron").shell;
 
-    this.childProcess = window.require('child_process');
-    this.fs = window.require('fs');
+    this.childProcess = window.require("child_process");
+    this.fs = window.require("fs");
 
-    this.remote.getCurrentWindow().on('minimize', () => {
+    this.remote.getCurrentWindow().on("minimize", () => {
       this._windowMinimizedSrc.next(true);
     });
 
-    this.remote.getCurrentWindow().on('restore', () => {
+    this.remote.getCurrentWindow().on("restore", () => {
       this._windowMinimizedSrc.next(false);
     });
 
-    this.remote.getCurrentWindow().on('maximize', () => {
+    this.remote.getCurrentWindow().on("maximize", () => {
       this._windowMaximizedSrc.next(true);
     });
 
-    this.remote.getCurrentWindow().on('unmaximize', () => {
+    this.remote.getCurrentWindow().on("unmaximize", () => {
       this._windowMaximizedSrc.next(false);
     });
 
+    this._windowMaximizedSrc.next(this.remote.getCurrentWindow().isMaximized());
   }
 
   minimizeWindow() {
@@ -84,5 +88,32 @@ export class ElectronService {
   closeWindow() {
     this.remote.getCurrentWindow().close();
     this.remote.app.quit();
+  }
+
+  public showNotification(title: string, options?: NotificationOptions) {
+    const myNotification = new Notification(title, options);
+  }
+
+  public sendIpcValueMessage<TIN, TOUT>(
+    channel: string,
+    value: TIN
+  ): Promise<TOUT> {
+    return new Promise((resolve, reject) => {
+      const eventHandler = (_evt: any, arg: ValueResponse<TOUT>) => {
+        if (arg.error) {
+          return reject(arg.error);
+        }
+
+        resolve(arg.value);
+      };
+
+      const request: ValueRequest<TIN> = {
+        value,
+        responseKey: uuidv4(),
+      };
+
+      this.ipcRenderer.once(request.responseKey, eventHandler);
+      this.ipcRenderer.send(channel, request);
+    });
   }
 }

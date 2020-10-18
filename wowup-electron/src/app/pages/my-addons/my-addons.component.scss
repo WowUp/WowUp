@@ -69,7 +69,7 @@
   }
 
   .addon-title {
-    font-weight: bold;
+    font-weight: 400;
     font-size: 1.1em;
     word-break: break-all;
     white-space: pre-wrap;
@@ -80,9 +80,9 @@
   }
 
   .status-column {
-    display: flex;
+    // display: flex;
     width: 130px;
-    align-items: center;
+    // align-items: center;
 
     .auto-update-icon {
       margin-left: 0.5em;
@@ -99,6 +99,24 @@
 
   .selected-row {
     background: $dark-4;
+  }
+
+  .addon-provider {
+    display: flex;
+    align-items: center;
+
+    .addon-provider-name {
+      margin-right: .25em;
+    }
+
+    .provider-logo {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .cell-padding {
+    padding-right: 1em;
   }
 }
 

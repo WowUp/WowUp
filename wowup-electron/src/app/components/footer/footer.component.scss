@@ -1,8 +1,6 @@
 @import "../../../variables.scss";
 
-.patron-img {
-    height: 25px;
-}
+
 footer {
     height: 25px;
     padding: 0.25em 0.5em;
@@ -28,8 +26,25 @@ footer {
     }
 
     .patreon-link{
+        margin-right: 1em;
         &:hover {
             background-color: $dark-3;
+        }
+
+        .patron-img {
+            height: 25px;
+        }
+    }
+
+    .discord-link {
+        padding: 0 0.25em;
+
+        &:hover {
+            background-color: $dark-3;
+        }
+
+        .discord-img {
+            height: 25px;
         }
     }
 }
