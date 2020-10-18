@@ -102,7 +102,7 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
     progress: number
   ) => {
     this.listItem.installState = installState;
-    this.installProgress = progress;
+    this.listItem.installProgress = progress;
 
     console.log(this.getButtonOptions());
     this._buttonOptionsSrc.next(this.getButtonOptions());
