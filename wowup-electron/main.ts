@@ -25,6 +25,10 @@ import * as Store from "electron-store";
 import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import {
+  collapseToTrayKey,
+  useHardwareAccelerationKey,
+} from "./src/constants";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -93,8 +97,6 @@ const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
 
-app.disableHardwareAcceleration(); // Try to improve font blur?
-
 const LOG_PATH = path.join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
 log.transports.file.resolvePath = (
@@ -105,6 +107,13 @@ log.transports.file.resolvePath = (
   return path.join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
+
+if (!preferenceStore.get(useHardwareAccelerationKey)) {
+  log.info('Hardware acceleration disabled');
+  app.disableHardwareAcceleration();
+} else {
+  log.info('Hardware acceleration enabled');
+}
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 electronDl();
@@ -285,7 +294,7 @@ function createWindow(): BrowserWindow {
       e.preventDefault();
       win.hide();
 
-      if (preferenceStore.get("collapse_to_tray") === true) {
+      if (preferenceStore.get(collapseToTrayKey) === true) {
         app.dock.hide();
       }
     });

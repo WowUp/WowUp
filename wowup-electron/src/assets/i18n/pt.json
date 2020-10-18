@@ -73,7 +73,12 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Ajude a melhorar o WowUp enviando dados e/ou erros de instalação anônimamente.",
         "TELEMETRY_LABEL": "Telemetria",
-        "TITLE": "Aplicativo"
+        "TITLE": "Aplicativo",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Esvaziar log de depuração de dados",
@@ -141,4 +146,3 @@
     }
   }
 }
-  

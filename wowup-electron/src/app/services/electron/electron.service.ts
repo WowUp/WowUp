@@ -130,6 +130,11 @@ export class ElectronService {
     this.remote.getCurrentWindow().hide();
   }
 
+  restartApplication() {
+    this.remote.app.relaunch();
+    this.remote.app.quit();
+  }
+
   closeWindow() {
     this.remote.getCurrentWindow().close();
     this.remote.app.quit();
