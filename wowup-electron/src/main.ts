@@ -48,3 +48,46 @@ document.addEventListener('click', (evt: any) => {
 // Disable file drop
 document.addEventListener('dragover', event => event.preventDefault());
 document.addEventListener('drop', event => event.preventDefault());
+
+const BrowserWindow = remote.BrowserWindow;
+
+for (let window of BrowserWindow.getAllWindows()) {
+  window.webContents
+    .setVisualZoomLevelLimits(1, 3)
+    .then(() => console.log('Zoom levels have been set between 100% and 300%'))
+    .catch((err) => console.log(err));
+
+  window.webContents.on('zoom-changed', (event, zoomDirection) => {
+    let currentZoom = window.webContents.getZoomFactor();
+    if (zoomDirection === 'in') {
+      // setting the zoomFactor comes at a cost, this early return greatly improves performance
+      if (Math.round(currentZoom * 100) == 300) {
+        return;
+      }
+
+      if (currentZoom > 3.0) {
+        window.webContents.zoomFactor = 3.0;
+
+        return;
+      }
+
+      window.webContents.zoomFactor = currentZoom + 0.2;
+
+      return;
+    }
+    if (zoomDirection === 'out') {
+      // setting the zoomFactor comes at a cost, this early return greatly improves performance
+      if (Math.round(currentZoom * 100) == 100) {
+        return;
+      }
+
+      if (currentZoom < 1.0) {
+        window.webContents.zoomFactor = 1.0;
+
+        return;
+      }
+
+      window.webContents.zoomFactor = currentZoom - 0.2;
+    }
+  });
+}
