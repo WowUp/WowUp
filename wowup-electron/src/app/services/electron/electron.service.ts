@@ -42,6 +42,7 @@ export class ElectronService {
     if (!this.isElectron) {
       return;
     }
+
     this.ipcRenderer = window.require("electron").ipcRenderer;
     this.webFrame = window.require("electron").webFrame;
     this.remote = window.require("electron").remote;
@@ -50,23 +51,66 @@ export class ElectronService {
     this.childProcess = window.require("child_process");
     this.fs = window.require("fs");
 
-    this.remote.getCurrentWindow().on("minimize", () => {
+    const currentWindow = this.remote.getCurrentWindow();
+
+    currentWindow.on("minimize", () => {
       this._windowMinimizedSrc.next(true);
     });
 
-    this.remote.getCurrentWindow().on("restore", () => {
+    currentWindow.on("restore", () => {
       this._windowMinimizedSrc.next(false);
     });
 
-    this.remote.getCurrentWindow().on("maximize", () => {
+    currentWindow.on("maximize", () => {
       this._windowMaximizedSrc.next(true);
     });
 
-    this.remote.getCurrentWindow().on("unmaximize", () => {
+    currentWindow.on("unmaximize", () => {
       this._windowMaximizedSrc.next(false);
     });
 
-    this._windowMaximizedSrc.next(this.remote.getCurrentWindow().isMaximized());
+    this._windowMaximizedSrc.next(currentWindow.isMaximized());
+
+    currentWindow.webContents
+      .setVisualZoomLevelLimits(1, 3)
+      .then(() =>
+        console.log("Zoom levels have been set between 100% and 300%")
+      )
+      .catch((err) => console.log(err));
+
+    currentWindow.webContents.on("zoom-changed", (event, zoomDirection) => {
+      let currentZoom = currentWindow.webContents.getZoomFactor();
+      if (zoomDirection === "in") {
+        // setting the zoomFactor comes at a cost, this early return greatly improves performance
+        if (Math.round(currentZoom * 100) == 300) {
+          return;
+        }
+
+        if (currentZoom > 3.0) {
+          currentWindow.webContents.zoomFactor = 3.0;
+
+          return;
+        }
+
+        currentWindow.webContents.zoomFactor = currentZoom + 0.2;
+
+        return;
+      }
+      if (zoomDirection === "out") {
+        // setting the zoomFactor comes at a cost, this early return greatly improves performance
+        if (Math.round(currentZoom * 100) == 100) {
+          return;
+        }
+
+        if (currentZoom < 1.0) {
+          currentWindow.webContents.zoomFactor = 1.0;
+
+          return;
+        }
+
+        currentWindow.webContents.zoomFactor = currentZoom - 0.2;
+      }
+    });
   }
 
   minimizeWindow() {

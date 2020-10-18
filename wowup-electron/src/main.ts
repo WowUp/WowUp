@@ -48,3 +48,4 @@ document.addEventListener('click', (evt: any) => {
 // Disable file drop
 document.addEventListener('dragover', event => event.preventDefault());
 document.addEventListener('drop', event => event.preventDefault());
+

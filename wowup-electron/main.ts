@@ -70,14 +70,25 @@ const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
           { role: "toggleDevTools" },
           { type: "separator" },
           { role: "resetZoom" },
-          { role: "zoomIn" },
+          { role: "zoomIn", accelerator: "CommandOrControl+=" },
           { role: "zoomOut" },
           { type: "separator" },
           { role: "togglefullscreen" },
         ],
       },
     ]
-  : [];
+  : [
+      {
+        label: "View",
+        submenu: [
+          { role: "resetZoom" },
+          { role: "zoomIn", accelerator: "CommandOrControl+=" },
+          { role: "zoomOut" },
+          { type: "separator" },
+          { role: "togglefullscreen" },
+        ],
+      },
+    ];
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
