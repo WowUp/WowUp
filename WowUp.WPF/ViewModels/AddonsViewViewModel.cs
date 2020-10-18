@@ -400,6 +400,16 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
+            var uninstallDependencies = false;
+            if(_selectedAddons.Any(addon => addon.Dependencies != null && addon.Dependencies.Any())){
+                messageBoxResult = MessageBox.Show(
+                    $"Some of the selected addons have dependencies, do you want to uninstall the dependency addons?",
+                    "Uninstall Addon Dependencies?",
+                    MessageBoxButton.YesNo);
+
+                uninstallDependencies = messageBoxResult == MessageBoxResult.Yes;
+            }
+
             IsBusy = true;
             EnableUpdateAll = false;
             EnableRefresh = false;
@@ -409,7 +419,7 @@ namespace WowUp.WPF.ViewModels
             {
                 try
                 {
-                    await _addonService.UninstallAddon(addon);
+                    await _addonService.UninstallAddon(addon, uninstallDependencies);
                 }
                 catch (Exception ex)
                 {

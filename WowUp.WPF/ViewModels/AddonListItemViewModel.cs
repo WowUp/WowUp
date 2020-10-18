@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -377,9 +378,20 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
+            var uninstallDependencies = false;
+            if (_addonService.HasDependencies(Addon))
+            {
+                messageBoxResult = MessageBox.Show(
+                    $"{Addon.Name} has {_addonService.GetDependencyCount(Addon)} dependencies, do you want to remove them as well?",
+                    "Uninstall Addon Dependencies?",
+                    MessageBoxButton.YesNo);
+
+                uninstallDependencies = messageBoxResult == MessageBoxResult.Yes;
+            }
+
             try
             {
-                await _addonService.UninstallAddon(Addon);
+                await _addonService.UninstallAddon(Addon, uninstallDependencies);
             }
             catch (Exception ex)
             {

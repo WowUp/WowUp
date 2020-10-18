@@ -97,5 +97,14 @@ namespace WowUp.WPF.Repositories
 
             return true;
         }
+
+        public bool RemoveAll()
+        {
+            lock (_collisionLock)
+            {
+                _database.Execute("DELETE FROM AddonDependencies");
+            }
+            return true;
+        }
     }
 }

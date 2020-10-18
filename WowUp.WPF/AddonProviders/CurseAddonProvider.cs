@@ -274,6 +274,12 @@ namespace WowUp.WPF.AddonProviders
             return scanResults.ToList();
         }
 
+        private IEnumerable<CurseDependency> GetRequiredDependencies(CurseFile file)
+        {
+            return file.Dependencies
+                    .Where(dep => dep.Type.AsAddonDependencyType() == AddonDependencyType.Required);
+        }
+
         private Addon GetAddon(
             WowClientType clientType,
             AddonChannelType addonChannelType,

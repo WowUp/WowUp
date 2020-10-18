@@ -50,7 +50,7 @@ namespace WowUp.WPF.Services.Contracts
             int addonId,
             Action<AddonInstallState, decimal> onUpdate = null);
 
-        Task UninstallAddon(Addon addon);
+        Task UninstallAddon(Addon addon, bool uninstallDependencies);
 
         Task<List<Addon>> GetAddons(
             WowClientType clientType,
@@ -59,5 +59,12 @@ namespace WowUp.WPF.Services.Contracts
         Task<int> ProcessAutoUpdates();
 
         int GetAddonCount(WowClientType clientType);
+
+        // Dependencies
+        IEnumerable<AddonDependency> GetDependencies(Addon addon);
+
+        bool HasDependencies(Addon addon);
+
+        int GetDependencyCount(Addon addon);
     }
 }

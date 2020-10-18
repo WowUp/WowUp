@@ -8,5 +8,7 @@ namespace WowUp.WPF.Repositories.Contracts
         IEnumerable<AddonDependency> GetAddonDependencies(Addon addon);
 
         IEnumerable<AddonDependency> GetDependentAddons(Addon addon);
+
+        bool RemoveAll();
     }
 }

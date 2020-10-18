@@ -232,6 +232,9 @@ namespace WowUp.WPF.Services
 
         private List<Addon> UpdateAddons(List<Addon> existingAddons, List<Addon> newAddons)
         {
+            // Clear the dependency table, since rebuilding it is extra complicated.
+            _dependencyRepository.RemoveAll();
+
             var removedAddons = existingAddons
                 .Where(existingAddon => !newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
                 .ToList();
@@ -369,7 +372,7 @@ namespace WowUp.WPF.Services
             return await provider.Search(addonUri, clientType);
         }
 
-        public async Task UninstallAddon(Addon addon)
+        public async Task UninstallAddon(Addon addon, bool uninstallDependencies)
         {
             var installedDirectories = addon.GetInstalledDirectories();
             var addonFolder = _warcraftService.GetAddonFolderPath(addon.ClientType);
@@ -382,21 +385,44 @@ namespace WowUp.WPF.Services
                 await FileUtilities.DeleteDirectory(addonDirectory);
             }
 
-            await UninstallDependencies(addon);
+            if (uninstallDependencies)
+            {
+                await UninstallDependencies(addon);
+            }
 
             _addonRepository.DeleteItem(addon);
 
             AddonUninstalled?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Uninstalled));
         }
 
+        public IEnumerable<AddonDependency> GetDependencies(Addon addon)
+        {
+            return _dependencyRepository.GetAddonDependencies(addon);
+        }
+
+        public bool HasDependencies(Addon addon)
+        {
+            return GetDependencies(addon).Any();
+        }
+
+        public int GetDependencyCount(Addon addon)
+        {
+            return GetDependencies(addon).Count();
+        }
+
         public async Task UninstallDependencies(Addon addon)
         {
-            var addonDependencies = _dependencyRepository.GetAddonDependencies(addon);
+            var addonDependencies = GetDependencies(addon);
             foreach (var dependency in addonDependencies)
             {
                 var dependencyAddon = GetAddon(dependency.DependencyId);
-                if (dependencyAddon != null && _dependencyRepository.GetDependentAddons(dependencyAddon).All(dep => dep.AddonId == addon.Id)) 
-                    await UninstallAddon(dependencyAddon);
+                if (dependencyAddon != null && 
+                    _dependencyRepository
+                        .GetDependentAddons(dependencyAddon)
+                        .All(dep => dep.AddonId == addon.Id))
+                {
+                    await UninstallAddon(dependencyAddon, true);
+                }
                 _dependencyRepository.DeleteItem(dependency);
             }
             _dependencyRepository.DeleteItems(_dependencyRepository.GetDependentAddons(addon));
