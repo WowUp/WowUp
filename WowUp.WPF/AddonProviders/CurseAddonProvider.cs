@@ -26,6 +26,7 @@ namespace WowUp.WPF.AddonProviders
     public class CurseAddonProvider : ICurseAddonProvider
     {
         private const string ApiUrl = "https://addons-ecs.forgesvc.net/api/v2";
+        private const string HubApiUrl = "https://hub.dev.wowup.io";
         private const string ClassicGameVersionFlavor = "wow_classic";
         private const string RetailGameVersionFlavor = "wow_retail";
         private const int HttpTimeoutSeconds = 4;
@@ -318,7 +319,7 @@ namespace WowUp.WPF.AddonProviders
 
             try
             {
-                var fingerprintResponse = await GetAddonsByFingerprints(fingerprints);
+                var fingerprintResponse = await GetAddonsByFingerprintsW(fingerprints);
 
                 foreach (var scanResult in scanResults)
                 {
@@ -540,6 +541,22 @@ namespace WowUp.WPF.AddonProviders
                 _analyticsService.Track(ex, "GetSearchResults");
                 return new List<CurseSearchResult>();
             }
+        }
+
+        private async Task<CurseFingerprintsResponse> GetAddonsByFingerprintsW(IEnumerable<long> fingerprints)
+        {
+            var url = $"{HubApiUrl}/curseforge/addons/fingerprint";
+
+            Log.Information($"Wowup Fetching fingerprints {string.Join(',', fingerprints)}");
+
+            return await CircuitBreaker.ExecuteAsync(async () => await url
+                .WithHeaders(HttpUtilities.DefaultHeaders)
+                .WithTimeout(HttpTimeoutSeconds)
+                .PostJsonAsync(new
+                {
+                    fingerprints
+                })
+                .ReceiveJson<CurseFingerprintsResponse>());
         }
 
         private async Task<CurseFingerprintsResponse> GetAddonsByFingerprints(IEnumerable<long> fingerprints)
