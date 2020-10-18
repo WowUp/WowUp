@@ -331,7 +331,7 @@ namespace WowUp.WPF.AddonProviders
                             HasMatchingFingerprint(scanResult, exactMatch));
 
                     // If the addon does not have an exact match, check the partial matches.
-                    if (scanResult.ExactMatch == null)
+                    if (scanResult.ExactMatch == null && fingerprintResponse.PartialMatches != null)
                     {
                         scanResult.ExactMatch = fingerprintResponse.PartialMatches
                             .FirstOrDefault(partialMatch =>

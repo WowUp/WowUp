@@ -236,45 +236,24 @@ namespace WowUp.WPF.Services
             // Clear the dependency table, since rebuilding it is extra complicated.
             _dependencyRepository.RemoveAll();
 
-            var removedAddons = existingAddons
-                .Where(existingAddon => !newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
-                .ToList();
-
-            var addedAddons = newAddons
-                .Where(newAddon => !existingAddons.Any(existingAddon => existingAddon.Matches(newAddon)))
-                .ToList();
-
-            var currentAddons = existingAddons
-                .Where(existingAddon => newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
-                .ToList();
-
-            existingAddons.RemoveAll(addon => removedAddons.Any(removedAddon => removedAddon.Id == addon.Id));
-            existingAddons.AddRange(addedAddons);
-
-            foreach (var existingAddon in existingAddons)
+            foreach(var newAddon in newAddons)
             {
-                var matchingAddon = newAddons.FirstOrDefault(newAddon => newAddon.Matches(existingAddon));
-                if(matchingAddon == default)
+                var existingAddon = existingAddons
+                    .FirstOrDefault(ea => ea.ExternalId == newAddon.ExternalId && ea.ProviderName == newAddon.ProviderName);
+
+                if(existingAddon == null)
                 {
                     continue;
                 }
 
-                existingAddon.Name = matchingAddon.Name;
-                existingAddon.FolderName = matchingAddon.FolderName;
-                existingAddon.DownloadUrl = matchingAddon.DownloadUrl;
-                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
-                existingAddon.ExternalUrl = matchingAddon.ExternalUrl;
-                existingAddon.LatestVersion = matchingAddon.LatestVersion;
-                existingAddon.ThumbnailUrl = matchingAddon.ThumbnailUrl;
-                existingAddon.GameVersion = matchingAddon.GameVersion;
-                existingAddon.Author = matchingAddon.Author;
-                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
+                newAddon.AutoUpdateEnabled = existingAddon.AutoUpdateEnabled;
+                newAddon.IsIgnored= existingAddon.IsIgnored;
             }
 
-            _addonRepository.DeleteItems(removedAddons);
-            _addonRepository.SaveItems(existingAddons);
+            _addonRepository.DeleteItems(existingAddons);
+            _addonRepository.SaveItems(newAddons);
 
-            return existingAddons;
+            return newAddons;
         }
 
         private async Task<bool> SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
