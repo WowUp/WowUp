@@ -50,7 +50,7 @@ namespace WowUp.WPF.Utilities
                 File.WriteAllText(testPath, string.Empty);
                 return true;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return false;
             }
