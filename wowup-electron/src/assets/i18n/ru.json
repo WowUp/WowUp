@@ -15,7 +15,7 @@
         "AUTHOR_COLUMN_HEADER": "Автор",
         "PROVIDER_COLUMN_HEADER": "Источник",
         "STATUS_COLUMN_HEADER": "Статус",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Кол-во загрузок"
       }
     },
     "HOME": {
