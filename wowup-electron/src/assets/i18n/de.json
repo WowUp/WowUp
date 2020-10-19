@@ -3,7 +3,7 @@
     "ABOUT": {
       "CHANGE_LOG_SECTION_LABEL": "Log ändern",
       "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "Schau dir die Webseite an!"
+      "WEBSITE_LINK_LABEL": "Schau Dir die Webseite an!"
     },
     "GET_ADDONS": {
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
@@ -28,7 +28,7 @@
     },
     "MY_ADDONS": {
       "CHECK_UPDATES_BUTTON": "Updates prüfen",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Nach neuesten Addon-Updates suchen",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Nach neuen Addon-Updates suchen",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannen Sie Ihren Client-Ordner nach installierten Addons",
@@ -49,10 +49,10 @@
         "IGNORE_ADDON_BUTTON": "Ignorieren",
         "AUTO_UPDATE_ADDON_BUTTON": "Automatisches Aktualisieren",
         "CHANNEL_SUBMENT_TITLE": "Kanal",
-        "SHOW_FOLDER": "SHOW_FOLDER",
+        "SHOW_FOLDER": "Dateiordner anzeigen",
         "REINSTALL_ADDON_BUTTON": "Neu installieren",
         "REMOVE_ADDON_BUTTON": "Entfernen",
-        "STABLE_ADDON_CHANNEL": "Stall",
+        "STABLE_ADDON_CHANNEL": "Stable",
         "BETA_ADDON_CHANNEL": "Beta",
         "ALPHA_ADDON_CHANNEL": "Alpha"
       },
@@ -68,8 +68,8 @@
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
-        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren bei Schliessen",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schließen",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf den Systembereich minimieren.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Helfen Sie WowUp zu verbessern, indem Sie anonyme Installationsdaten und/oder Fehler senden.",
         "TELEMETRY_LABEL": "Telemetrie",
@@ -77,7 +77,7 @@
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten dumpen",
-        "DEBUG_DATA_DESCRIPTION": "Protokollieren Sie Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies finden Sie in Ihrer aktuellen Protokolldatei für Neugierde.",
+        "DEBUG_DATA_DESCRIPTION": "Protokollieren Sie Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies finden Sie in Ihrer aktuellen Protokolldatei (für Neugierige).",
         "DEBUG_DATA_LABEL": "Debug-Daten",
         "LOG_FILES_BUTTON": "Log-Dateien anzeigen",
         "LOG_FILES_DESCRIPTION": "Öffnen Sie den Ordner, der Ihre letzten Logdateien enthält.",
@@ -108,14 +108,14 @@
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon URL",
-      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub oder WowInterface URL",
       "CLOSE_BUTTON": "Schließen",
       "IMPORT_BUTTON": "Importieren",
       "INSTALL_BUTTON": "Installieren",
       "INSTALL_SUCCESS_LABEL": "Installiert!",
-      "TITLE": "Installieren Sie die Addon-URL",
-      "DESCRIPTION": "Wenn Sie ein Addon direkt von einer URL installieren möchten, fügen Sie es unten ein, um loszulegen.",
-      "SUPPORTED_SOURCES": "Unterstützt WowInterface und GitHub*"
+      "TITLE": "Installation eines Addons über eine externe URL",
+      "DESCRIPTION": "Wenn Sie ein Addon direkt von einer URL installieren möchten, fügen Sie es unten in der Zeile ein.",
+      "SUPPORTED_SOURCES": "Unterstützt wird WowInterface und GitHub*"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Hilf mir, WowUp zu verbessern, indem du anonyme Installationsdateien und/oder Fehler schickst?",
@@ -126,18 +126,18 @@
   },
   "COMMON": {
     "ADDON_STATUS": {
-      "COMPLETE": "COMPLETE",
-      "DOWNLOADING": "DOWNLOADING",
-      "INSTALLING": "INSTALLING",
-      "UNINSTALLING": "UNINSTALLING",
-      "UPDATING": "UPDATING"
+      "COMPLETE": "Vollständig",
+      "DOWNLOADING": "Herunterladen",
+      "INSTALLING": "Installiere",
+      "UNINSTALLING": "Deinstalliere",
+      "UPDATING": "Aktualisiere"
     },
     "ADDON_STATE": {
-      "UNINSTALL": "UNINSTALL",
-      "IGNORED": "IGNORED",
-      "UPDATE": "UPDATE",
-      "INSTALL": "INSTALL",
-      "UPTODATE": "UPTODATE"
+      "UNINSTALL": "Deinstalliert",
+      "IGNORED": "Ignoriert",
+      "UPDATE": "Aktualisiert",
+      "INSTALL": "Installiert",
+      "UPTODATE": "Aktuell"
     }
   }
 }
