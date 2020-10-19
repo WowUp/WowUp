@@ -108,11 +108,11 @@ log.transports.file.resolvePath = (
 };
 log.info("Main starting");
 
-if (!preferenceStore.get(useHardwareAccelerationKey)) {
-  log.info('Hardware acceleration disabled');
+if (preferenceStore.get(useHardwareAccelerationKey) === "false") {
+  log.info("Hardware acceleration disabled");
   app.disableHardwareAcceleration();
 } else {
-  log.info('Hardware acceleration enabled');
+  log.info("Hardware acceleration enabled");
 }
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
@@ -294,7 +294,7 @@ function createWindow(): BrowserWindow {
       e.preventDefault();
       win.hide();
 
-      if (preferenceStore.get(collapseToTrayKey) === true) {
+      if (preferenceStore.get(collapseToTrayKey) === "true") {
         app.dock.hide();
       }
     });
