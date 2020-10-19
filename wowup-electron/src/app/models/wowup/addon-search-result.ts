@@ -12,4 +12,5 @@ export interface AddonSearchResult {
   screenshotUrls?: string[];
   summary?: string;
   thumbnailUrl: string;
+  releasedAt?: Date;
 }

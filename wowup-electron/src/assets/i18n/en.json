@@ -15,7 +15,8 @@
         "AUTHOR_COLUMN_HEADER": "Author",
         "PROVIDER_COLUMN_HEADER": "Provider",
         "STATUS_COLUMN_HEADER": "Status",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "Downloads"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Downloads",
+        "RELEASED_AT_COLUMN_HEADER": "Released At"
       }
     },
     "HOME": {
@@ -44,7 +45,8 @@
         "GAME_VERSION_COLUMN_HEADER": "Game Version",
         "LATEST_VERSION_COLUMN_HEADER": "Latest Version",
         "PROVIDER_COLUMN_HEADER": "Provider",
-        "STATUS_COLUMN_HEADER": "Status"
+        "STATUS_COLUMN_HEADER": "Status",
+        "RELEASED_AT_COLUMN_HEADER": "Released At"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Ignore",

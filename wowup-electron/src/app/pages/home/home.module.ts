@@ -15,6 +15,7 @@ import { MyAddonsAddonCellComponent } from "app/components/my-addons-addon-cell/
 import { ProgressSpinnerComponent } from "app/components/progress-spinner/progress-spinner.component";
 import { DownloadCountPipe } from "app/pipes/download-count.pipe";
 import { InterfaceFormatPipe } from "app/pipes/interface-format.pipe";
+import { GetAddonListItemFilePropPipe } from "app/pipes/get-addon-list-item-file-prop.pipe";
 import { TelemetryDialogComponent } from "app/components/telemetry-dialog/telemetry-dialog.component";
 import { ConfirmDialogComponent } from "app/components/confirm-dialog/confirm-dialog.component";
 import { AlertDialogComponent } from "app/components/alert-dialog/alert-dialog.component";
@@ -40,6 +41,7 @@ import { MyAddonStatusColumnComponent } from "app/components/my-addon-status-col
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,
     InterfaceFormatPipe,
+    GetAddonListItemFilePropPipe,
     TelemetryDialogComponent,
     ConfirmDialogComponent,
     AlertDialogComponent,

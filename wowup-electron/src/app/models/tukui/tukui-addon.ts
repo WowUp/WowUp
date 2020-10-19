@@ -8,7 +8,7 @@ export interface TukUiAddon {
     url: string;
     category: string;
     downloads: string;
-    lastUpdate: string;
+    lastupdate: string;
     patch: string;
     web_url: string;
     last_download: string;

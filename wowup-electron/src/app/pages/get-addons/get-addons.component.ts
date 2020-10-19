@@ -16,7 +16,6 @@ import { MatSort } from "@angular/material/sort";
 import * as _ from "lodash";
 import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { WowUpService } from "app/services/wowup/wowup.service";
 
 @Component({
@@ -35,13 +34,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
-  private channelTypeKey: string = "";
 
   public dataSource = new MatTableDataSource<GetAddonListItem>([]);
 
   columns: ColumnState[] = [
     { name: "name", display: "Addon", visible: true },
     { name: "downloadCount", display: "Downloads", visible: true },
+    { name: "releasedAt", display: "Released At", visible: true },
     { name: "author", display: "Author", visible: true },
     { name: "providerName", display: "Provider", visible: true },
     { name: "status", display: "Status", visible: true },
@@ -104,7 +103,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     const displayAddonSubscription = this._displayAddonsSrc.subscribe(
       (items: GetAddonListItem[]) => {
         this.dataSource.data = items;
-        this.dataSource.sortingDataAccessor = _.get;
+        this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
+          if (prop === 'releasedAt') {
+            return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
+          }
+          return _.get(item, prop);
+        }
         this.dataSource.sort = this.sort;
       }
     );

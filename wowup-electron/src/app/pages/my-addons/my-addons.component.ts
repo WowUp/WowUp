@@ -74,6 +74,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       allowToggle: true,
     },
     {
+      name: "addon.releasedAt",
+      display: "Released At",
+      visible: true,
+      allowToggle: true,
+    },
+    {
       name: "addon.gameVersion",
       display: "Game Version",
       visible: true,

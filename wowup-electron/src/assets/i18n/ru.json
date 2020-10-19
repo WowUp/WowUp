@@ -15,7 +15,8 @@
         "AUTHOR_COLUMN_HEADER": "Автор",
         "PROVIDER_COLUMN_HEADER": "Источник",
         "STATUS_COLUMN_HEADER": "Статус",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "Кол-во загрузок"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Кол-во загрузок",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       }
     },
     "HOME": {
@@ -44,7 +45,8 @@
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "STATUS_COLUMN_HEADER": "Статус"
+        "STATUS_COLUMN_HEADER": "Статус",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Пропускать",

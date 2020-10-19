@@ -609,6 +609,7 @@ export class CurseAddonProvider implements AddonProvider {
       screenshotUrls: this.getScreenshotUrls(scanResult.searchResult),
       downloadCount: scanResult.searchResult.downloadCount,
       summary: scanResult.searchResult.summary,
+      releasedAt: new Date(latestVersion.fileDate),
     };
   }
 }
