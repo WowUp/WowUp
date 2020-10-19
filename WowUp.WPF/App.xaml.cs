@@ -98,11 +98,13 @@ namespace WowUp.WPF
             services.AddTransient<OptionsViewModel>();
             services.AddTransient<PotentialAddonListItemViewModel>();
             services.AddTransient<SearchInputViewModel>();
+            services.AddTransient<ImportInProgressViewModel>();
 
             services.AddTransient<AboutView>();
             services.AddTransient<AddonsView>();
             services.AddTransient<GetAddonsView>();
             services.AddTransient<InstallUrlWindow>();
+            services.AddTransient<ImportInProgressView>();
             services.AddTransient<OptionsView>();
 
             services.AddTransient<ICurseAddonProvider, CurseAddonProvider>();

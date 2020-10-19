@@ -1,0 +1,109 @@
+﻿<Window x:Class="WowUp.WPF.Views.ImportInProgressView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WowUp.WPF.Views"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        mc:Ignorable="d"
+        Title="Import Addons" 
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="{StaticResource Purple1}"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        MaxWidth="600"
+        WindowStartupLocation="CenterOwner"
+        >
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32"
+                      CornerRadius="0"
+                      GlassFrameThickness="0"
+                      ResizeBorderThickness="4" />
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <ResourceDictionary >
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border BorderBrush="{StaticResource Purple1}" BorderThickness="1">
+        <Grid Background="{StaticResource Dark3}" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <!--TOOLBAR-->
+            <Grid Grid.Row="0"  Background="{StaticResource Purple1}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Padding="10, 0" >
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Assets/wowup_logo_512np.png" Margin="0, 0, 10, 0" Height="40" 
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="{Binding Title}"
+                                   Foreground="White" 
+                                   VerticalAlignment="Center" 
+                                   FontSize="15"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="CloseButton" 
+                            IsCancel="True"
+                            Click="CloseClicked"
+                            Style="{StaticResource TitleBarCloseButtonStyle}"
+                            IsEnabled="{Binding EnableCloseButton}">
+                        <Path Width="46"
+                              Height="32"
+                              Data="M 18,11 27,20 M 18,20 27,11"
+                              Stroke="{Binding Path=Foreground,
+							     RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
+                              StrokeThickness="1" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <!--END TOOLBAR-->
+            <!--CONTENT-->
+            <Border Grid.Row="5" Padding="10" Background="{StaticResource Dark3}">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!-- Accept or Cancel -->
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Margin="0 0 0 10">
+                            Addons are being imported. Please wait until its finished.
+                            <LineBreak />
+                            Depending on the number of addons, this could take a while
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Margin="0 10 0 0" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilty}}">
+                        <Image gif:ImageBehavior.AnimatedSource="../Assets/activity.gif" Height="40"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Text="Loading..." FontStyle="Italic" HorizontalAlignment="Center" />
+                        <TextBlock Text="{Binding Input}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Row="2" Margin="0 10 0 0">
+                        <TextBox IsReadOnly="True" Text="{Binding ProgressText}" TextChanged="ProgressTextBox_OnTextChanged" Name="ProgressTextBox" MinLines="7" MaxLines="7" Height="200" VerticalScrollBarVisibility="Auto"></TextBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 10 0 0">
+                        <Button x:Name="CancelButton" IsCancel="True" 
+                                IsEnabled="{Binding EnableCloseButton}"
+                                Width="80"  Style="{StaticResource PurpleButtonInverse}"
+                                Click="CloseClicked" >Close</Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <!--END CONTENT-->
+        </Grid>
+    </Border>
+</Window>
