@@ -22,6 +22,7 @@ import {
   RENAME_DIRECTORY_CHANNEL,
   READ_FILE_CHANNEL,
   GET_ASSET_FILE_PATH,
+  DELETE_FILE_CHANNEL,
 } from "./src/common/constants";
 import { CurseGetScanResultsRequest } from "./src/common/curse/curse-get-scan-results-request";
 import { CurseGetScanResultsResponse } from "./src/common/curse/curse-get-scan-results-response";
@@ -132,13 +133,10 @@ ipcMain.on(LIST_DIRECTORIES_CHANNEL, (evt, arg: ValueRequest<string>) => {
 ipcMain.on(PATH_EXISTS_CHANNEL, (evt, arg: ValueRequest<string>) => {
   const response: ValueResponse<boolean> = { value: false };
 
-  fs.open(arg.value, "r", (err, fid) => {
+  fs.access(arg.value, (err) => {
     if (err) {
-      if (err.code === "ENOENT") {
-        response.value = false;
-      } else {
-        response.error = err;
-      }
+      console.error(err);
+      response.value = true;
     } else {
       response.value = true;
     }
@@ -240,6 +238,22 @@ ipcMain.on(DELETE_DIRECTORY_CHANNEL, (evt, arg: DeleteDirectoryRequest) => {
   console.log("Delete Dir", arg);
   rimraf(arg.sourcePath, (err) => {
     evt.reply(arg.responseKey, err);
+  });
+});
+
+ipcMain.on(DELETE_FILE_CHANNEL, (evt, arg: ValueRequest<string>) => {
+  console.log("Delete File", arg);
+  const response: ValueResponse<boolean> = {
+    value: false,
+  };
+  fs.unlink(arg.value, (err) => {
+    if (err) {
+      response.error = err;
+    } else {
+      response.value = true;
+    }
+
+    evt.reply(arg.responseKey, response);
   });
 });
 

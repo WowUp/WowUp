@@ -68,6 +68,8 @@ export class WowUpService {
     this.applicationVersion = _electronService.remote.app.getVersion();
     this.isBetaBuild =
       this.applicationVersion.toLowerCase().indexOf("beta") != -1;
+
+    this.cleanupDownloads();
   }
 
   public get updaterExists() {
@@ -307,5 +309,29 @@ export class WowUpService {
     return this.isBetaBuild
       ? WowUpReleaseChannelType.Beta
       : WowUpReleaseChannelType.Stable;
+  }
+
+  /**
+   * Clean up lost downloads in the download folder
+   */
+  private async cleanupDownloads() {
+    const downloadFiles = this._fileService.listEntries(
+      this.applicationDownloadsFolderPath,
+      "*"
+    );
+
+    for (let entry of downloadFiles) {
+      const path = join(this.applicationDownloadsFolderPath, entry.name);
+      try {
+        if (entry.isDirectory()) {
+          await this._fileService.deleteDirectory(path);
+        } else {
+          await this._fileService.deleteFile(path);
+        }
+      } catch (e) {
+        console.error("Failed to delete download entry", path);
+        console.error(e);
+      }
+    }
   }
 }
