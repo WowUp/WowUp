@@ -1,6 +1,7 @@
 .addon-detail-view {
   width: 35vw;
-  max-width: 500px;
+  min-width: 380px;
+  max-width: 600px;
   margin-top: 8px;
 
   .addon-detail-title,
