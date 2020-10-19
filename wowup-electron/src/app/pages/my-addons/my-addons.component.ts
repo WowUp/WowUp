@@ -139,16 +139,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         listItem.installState = evt.installState;
 
         if (listItemIdx !== -1) {
-          listItems[listItemIdx].isInstalling = listItem.isInstalling;
-          listItems[listItemIdx].statusText = listItem.statusText;
-          listItems[listItemIdx].installProgress = evt.progress;
-          listItems[listItemIdx].installState = evt.installState;
-          return;
+          listItems[listItemIdx] = listItem;
+        } else {
+          listItems.push(listItem);
+          listItems = this.sortListItems(listItems);
         }
-
-        listItems.push(listItem);
-
-        listItems = this.sortListItems(listItems);
 
         this._ngZone.run(() => {
           this._displayAddonsSrc.next(listItems);
