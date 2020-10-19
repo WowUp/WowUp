@@ -34,20 +34,34 @@
             </mat-select>
           </mat-form-field>
         </div> -->
-        <div class="row hover">
+        <div class="row ">
           <div class="grow">
             <p>{{'PAGES.OPTIONS.APPLICATION.TELEMETRY_LABEL' | translate}}</p>
             <small class="hint">{{'PAGES.OPTIONS.APPLICATION.TELEMETRY_DESCRIPTION' | translate}}</small>
           </div>
           <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
         </div>
-        <div class="row hover">
+        <div class="row ">
           <div class="grow">
             <p>{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL' | translate}}</p>
             <small class="hint">{{minimizeOnCloseDescription}}</small>
           </div>
           <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" appUserActionTracker
             category="Options" action="CollapseToTray" [label]="collapseToTray">
+          </mat-slide-toggle>
+        </div>
+        <div class="row ">
+          <div class="grow">
+            <p>
+              {{'PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL' | translate}}
+            </p>
+            <small class="hint">
+              {{'PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION' | translate}}
+            </small>
+          </div>
+          <mat-slide-toggle [checked]="wowupService.enableSystemNotifications" (change)="onEnableSystemNotifications($event)"
+            appUserActionTracker category="Options" action="EnableSystemNotifications"
+            [label]="wowupService.enableSystemNotifications">
           </mat-slide-toggle>
         </div>
       </mat-card-content>

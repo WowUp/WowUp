@@ -23,6 +23,7 @@ import {
   collapseToTrayKey,
   defaultAutoUpdateKeySuffix,
   defaultChannelKeySuffix,
+  ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   lastSelectedWowClientTypeKey,
   wowupReleaseChannelKey,
 } from "../../../constants";
@@ -109,6 +110,21 @@ export class WowUpService {
     this._preferenceStorageService.set(
       lastSelectedWowClientTypeKey,
       clientType
+    );
+  }
+
+  public get enableSystemNotifications() {
+    return (
+      this._preferenceStorageService.findByKey(
+        ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY
+      ) === true.toString()
+    );
+  }
+
+  public set enableSystemNotifications(enabled: boolean) {
+    this._preferenceStorageService.set(
+      ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
+      enabled
     );
   }
 
@@ -265,6 +281,7 @@ export class WowUpService {
   }
 
   private setDefaultPreferences() {
+    this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(collapseToTrayKey, true);
     this.setDefaultPreference(
       wowupReleaseChannelKey,

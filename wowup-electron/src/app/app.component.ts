@@ -69,14 +69,16 @@ export class AppComponent implements AfterViewInit {
     if (updateCount === 0) {
       return;
     }
-    
+
     const iconPath = await this._fileService.getAssetFilePath(
       "wowup_logo_512np.png"
     );
 
-    this._electronService.showNotification("Auto Updates", {
-      body: `Automatically updated ${updateCount} addons.`,
-      icon: iconPath,
-    });
+    if (this._wowUpService.enableSystemNotifications) {
+      this._electronService.showNotification("Auto Updates", {
+        body: `Automatically updated ${updateCount} addons.`,
+        icon: iconPath,
+      });
+    }
   };
 }
