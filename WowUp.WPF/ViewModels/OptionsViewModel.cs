@@ -31,6 +31,7 @@ namespace WowUp.WPF.ViewModels
         private readonly IWowUpService _wowUpService;
 
         private string _wowRetailLocation;
+
         public string WowRetailLocation
         {
             get => _wowRetailLocation;
@@ -38,6 +39,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private string _wowRetailPtrLocation;
+
         public string WowRetailPtrLocation
         {
             get => _wowRetailPtrLocation;
@@ -45,6 +47,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private string _wowClassicLocation;
+
         public string WowClassicLocation
         {
             get => _wowClassicLocation;
@@ -52,6 +55,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private string _wowClassicPtrLocation;
+
         public string WowClassicPtrLocation
         {
             get => _wowClassicPtrLocation;
@@ -59,6 +63,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private string _wowBetaLocation;
+
         public string WowBetaLocation
         {
             get => _wowBetaLocation;
@@ -66,6 +71,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _isTelemetryEnabled;
+
         public bool IsTelemetryEnabled
         {
             get => _isTelemetryEnabled;
@@ -73,6 +79,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _collapseToTrayEnabled;
+
         public bool CollapseToTrayEnabled
         {
             get => _collapseToTrayEnabled;
@@ -80,6 +87,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private AddonChannelType _selectedRetailAddonChannelType;
+
         public AddonChannelType SelectedRetailAddonChannelType
         {
             get => _selectedRetailAddonChannelType;
@@ -87,6 +95,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private AddonChannelType _selectedRetailPtrAddonChannelType;
+
         public AddonChannelType SelectedRetailPtrAddonChannelType
         {
             get => _selectedRetailPtrAddonChannelType;
@@ -94,6 +103,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private AddonChannelType _selectedClassicAddonChannelType;
+
         public AddonChannelType SelectedClassicAddonChannelType
         {
             get => _selectedClassicAddonChannelType;
@@ -101,6 +111,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private AddonChannelType _selectedClassicPtrAddonChannelType;
+
         public AddonChannelType SelectedClassicPtrAddonChannelType
         {
             get => _selectedClassicPtrAddonChannelType;
@@ -108,6 +119,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private AddonChannelType _selectedBetaAddonChannelType;
+
         public AddonChannelType SelectedBetaAddonChannelType
         {
             get => _selectedBetaAddonChannelType;
@@ -115,6 +127,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private WowUpReleaseChannelType _selectedWowUpReleaseChannelType;
+
         public WowUpReleaseChannelType SelectedWowUpReleaseChannelType
         {
             get => _selectedWowUpReleaseChannelType;
@@ -122,6 +135,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _retailAutoUpdateAddons;
+
         public bool RetailAutoUpdateAddons
         {
             get => _retailAutoUpdateAddons;
@@ -129,6 +143,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _retailPtrAutoUpdateAddons;
+
         public bool RetailPtrAutoUpdateAddons
         {
             get => _retailPtrAutoUpdateAddons;
@@ -136,6 +151,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _classicAutoUpdateAddons;
+
         public bool ClassicAutoUpdateAddons
         {
             get => _classicAutoUpdateAddons;
@@ -143,6 +159,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _classicPtrAutoUpdateAddons;
+
         public bool ClassicPtrAutoUpdateAddons
         {
             get => _classicPtrAutoUpdateAddons;
@@ -150,6 +167,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         private bool _betaAutoUpdateAddons;
+
         public bool BetaAutoUpdateAddons
         {
             get => _betaAutoUpdateAddons;
@@ -207,22 +225,33 @@ namespace WowUp.WPF.ViewModels
             SetClassicLocationCommand = new Command(() => OnSetLocation(WowClientType.Classic));
             SetClassicPtrLocationCommand = new Command(() => OnSetLocation(WowClientType.ClassicPtr));
             RescanFoldersCommand = new Command(() => OnRescanFolders());
-            WowUpReleaseChannelChangedCommand = new Command(() => OnWowUpReleaseChannelChange(SelectedWowUpReleaseChannelType));
+            WowUpReleaseChannelChangedCommand =
+                new Command(() => OnWowUpReleaseChannelChange(SelectedWowUpReleaseChannelType));
             DumpDebugDataCommand = new Command(() => DumpDebugData());
             ExportAddonListCommand = new Command((parameter) => ExportAddonList(parameter));
             ImportAddonListCommand = new Command((parameter) => ImportAddonList(parameter));
 
-            RetailAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType));
-            RetailPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.RetailPtr, SelectedRetailPtrAddonChannelType));
-            ClassicAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Classic, SelectedClassicAddonChannelType));
-            ClassicPtrAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.ClassicPtr, SelectedClassicPtrAddonChannelType));
-            BetaAddonChannelChangeCommand = new Command(() => OnAddonChannelChange(WowClientType.Beta, SelectedBetaAddonChannelType));
+            RetailAddonChannelChangeCommand = new Command(() =>
+                OnAddonChannelChange(WowClientType.Retail, SelectedRetailAddonChannelType));
+            RetailPtrAddonChannelChangeCommand = new Command(() =>
+                OnAddonChannelChange(WowClientType.RetailPtr, SelectedRetailPtrAddonChannelType));
+            ClassicAddonChannelChangeCommand = new Command(() =>
+                OnAddonChannelChange(WowClientType.Classic, SelectedClassicAddonChannelType));
+            ClassicPtrAddonChannelChangeCommand = new Command(() =>
+                OnAddonChannelChange(WowClientType.ClassicPtr, SelectedClassicPtrAddonChannelType));
+            BetaAddonChannelChangeCommand =
+                new Command(() => OnAddonChannelChange(WowClientType.Beta, SelectedBetaAddonChannelType));
 
-            RetailAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Retail, RetailAutoUpdateAddons));
-            RetailPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.RetailPtr, RetailPtrAutoUpdateAddons));
-            ClassicAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons));
-            ClassicPtrAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons));
-            BetaAutoUpdateChangeCommand = new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons));
+            RetailAutoUpdateChangeCommand =
+                new Command(() => OnAddonAutoUpdateChange(WowClientType.Retail, RetailAutoUpdateAddons));
+            RetailPtrAutoUpdateChangeCommand = new Command(() =>
+                OnAddonAutoUpdateChange(WowClientType.RetailPtr, RetailPtrAutoUpdateAddons));
+            ClassicAutoUpdateChangeCommand =
+                new Command(() => OnAddonAutoUpdateChange(WowClientType.Classic, ClassicAutoUpdateAddons));
+            ClassicPtrAutoUpdateChangeCommand = new Command(() =>
+                OnAddonAutoUpdateChange(WowClientType.ClassicPtr, ClassicPtrAutoUpdateAddons));
+            BetaAutoUpdateChangeCommand =
+                new Command(() => OnAddonAutoUpdateChange(WowClientType.Beta, BetaAutoUpdateAddons));
 
             AddonChannelNames = new ObservableCollection<AddonChannelType>
             {
@@ -399,6 +428,10 @@ namespace WowUp.WPF.ViewModels
 
             dlg.Show();
 
+            var alreadyInstalled = 0;
+            var addonNotFound = 0;
+            var invalidUrls = 0;
+            var others = 0;
             foreach (var addon in AddonList)
             {
 
@@ -406,21 +439,60 @@ namespace WowUp.WPF.ViewModels
                 string addonUrl = addon.Split(";")[0];
 
                 progressView.ProgressText += $"Importing \"{addonName}\" using \"{addonUrl}\"" + Environment.NewLine;
-                var potentialAddon = await ImportUrl(addonUrl,addonName, clientType, progressView);
+                PotentialAddon potentialAddon = null;
 
-                if(potentialAddon != null)
+                try
                 {
-                    await _addonService.InstallAddon(potentialAddon, clientType);
-                    progressView.ProgressText += $"Import of \"{addonName}\" was successful" + Environment.NewLine;
+                    potentialAddon = await ImportUrl(addonUrl, addonName, clientType, progressView);
                 }
+                catch (AddonNotFoundException)
+                {
+                    addonNotFound++;
+                    progressView.ProgressText += $"Addon \"{addonName}\" could not be found" + Environment.NewLine;
+                }
+                catch (AddonAlreadyInstalledException)
+                {
+                    alreadyInstalled++;
+                    progressView.ProgressText += $"Addon \"{addonName}\" is already installed" + Environment.NewLine;
+                }
+                catch (InvalidUrlException)
+                {
+                    invalidUrls++;
+                    progressView.ProgressText += $"Invalid Url: \"{addonUrl}\"" + Environment.NewLine;
+                }
+                catch (RateLimitExceededException)
+                {
+                    others++;
+                    progressView.ProgressText +=
+                        $"Rate limit exceeded, please wait a while and try again." + Environment.NewLine;
+                }
+                catch (Exception ex)
+                {
+                    others++;
+                    Log.Error(ex, "Failed to install addon");
+                    progressView.ProgressText += $"Failed to install \"{addonName}\"" + Environment.NewLine;
+                }
+
+                if (potentialAddon == null)
+                {
+                    continue;
+                }
+
+                await _addonService.InstallAddon(potentialAddon, clientType);
+                progressView.ProgressText += $"Import of \"{addonName}\" was successful" + Environment.NewLine;
             }
 
             progressView.ProgressText += $"Import finished" + Environment.NewLine;
+            progressView.ProgressText += $"Result: Tried to import {AddonList.Count} Addons" + Environment.NewLine;
+            progressView.ProgressText += $"Result: {alreadyInstalled} Addons are already installed" + Environment.NewLine;
+            progressView.ProgressText += $"Result: {addonNotFound} Addons could not be found" + Environment.NewLine;
+            progressView.ProgressText += $"Result: {invalidUrls} Invalid Urls" + Environment.NewLine;
+            progressView.ProgressText += $"Result: {others} Other error" + Environment.NewLine;
             progressView.EnableCloseButton = true;
-
 
             IsBusy = false;
         }
+
 
         private async Task<PotentialAddon> ImportUrl(string addonUrl, string addonName, WowClientType clientType, ImportInProgressViewModel progressView)
         {
@@ -431,44 +503,21 @@ namespace WowUp.WPF.ViewModels
 
             Uri uri = new Uri(addonUrl);
 
-            try
-            {
-                //await _analyticsService.TrackUserAction("Addons", "ImportAddonUrl", $"{clientType}|{addonUrl}");
+            //await _analyticsService.TrackUserAction("Addons", "ImportAddonUrl", $"{clientType}|{addonUrl}");
 
-                var ImportedAddon = await _addonService.GetAddonByUri(uri, clientType);
+            var ImportedAddon = await _addonService.GetAddonByUri(uri, clientType);
 
-                if (ImportedAddon == null)
-                {
-                    throw new AddonNotFoundException();
-                }
-                if(_addonService.IsInstalled(ImportedAddon.ExternalId, clientType))
-                    throw  new AddonAlreadyInstalledException();
-
-                return ImportedAddon;
-            }
-            catch (AddonNotFoundException)
+            if (ImportedAddon == null)
             {
-                progressView.ProgressText += $"Addon \"{addonName}\" could not be found" + Environment.NewLine;
-            }
-            catch (AddonAlreadyInstalledException)
-            {
-                progressView.ProgressText += $"Addon \"{addonName}\" is already installed" + Environment.NewLine;
-            }
-            catch (InvalidUrlException)
-            {
-                progressView.ProgressText += $"Invalid Url: \"{addonUrl}\"" + Environment.NewLine;
-            }
-            catch (RateLimitExceededException)
-            {
-                progressView.ProgressText += $"Rate limit exceeded, please wait a while and try again." + Environment.NewLine;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Failed to install addon");
-                progressView.ProgressText += $"Failed to install \"{addonName}\"" + Environment.NewLine;
+                throw new AddonNotFoundException();
             }
 
-            return null;
+            if (_addonService.IsInstalled(ImportedAddon.ExternalId, clientType))
+                throw new AddonAlreadyInstalledException();
+
+            return ImportedAddon;
+
+
         }
 
     }
