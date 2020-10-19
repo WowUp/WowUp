@@ -15,7 +15,7 @@
         "AUTHOR_COLUMN_HEADER": "Autor",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "STATUS_COLUMN_HEADER": "Status",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Anzahl Downloads"
       }
     },
     "HOME": {
