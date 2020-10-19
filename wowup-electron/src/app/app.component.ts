@@ -20,6 +20,8 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 export class AppComponent implements AfterViewInit {
   private _autoUpdateInterval?: number;
 
+  public showTitleBar: boolean = true;
+
   constructor(
     private _analyticsService: AnalyticsService,
     private _electronService: ElectronService,
@@ -33,6 +35,8 @@ export class AppComponent implements AfterViewInit {
     this.translate.setDefaultLang("en");
 
     this.translate.use(this._electronService.locale);
+
+    this.showTitleBar = !this._electronService.isLinux;
   }
 
   ngAfterViewInit(): void {

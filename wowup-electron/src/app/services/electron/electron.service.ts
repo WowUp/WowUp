@@ -28,6 +28,7 @@ export class ElectronService {
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
+  public readonly isLinux = process.platform === "linux";
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
