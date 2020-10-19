@@ -22,6 +22,7 @@ import { MatSelectChange } from "@angular/material/select";
 import { AnalyticsService } from "app/services/analytics/analytics.service";
 import { AddonService } from "app/services/addons/addon.service";
 import { GET_ASSET_FILE_PATH } from "common/constants";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-options",
@@ -42,6 +43,7 @@ export class OptionsComponent implements OnInit, OnChanges {
     (clientType) => clientType !== WowClientType.None
   ) as WowClientType[];
   public wowUpReleaseChannel: WowUpReleaseChannelType;
+
   public wowUpReleaseChannels: {
     type: WowUpReleaseChannelType;
     name: string;
@@ -52,6 +54,14 @@ export class OptionsComponent implements OnInit, OnChanges {
     })
   );
 
+  public get minimizeOnCloseDescription() {
+    const key = this._electronService.isWin
+      ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
+      : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
+      
+    return this._translateService.instant(key);
+  }
+
   constructor(
     private _addonService: AddonService,
     private _analyticsService: AnalyticsService,
@@ -61,7 +71,8 @@ export class OptionsComponent implements OnInit, OnChanges {
     private _wowUpService: WowUpService,
     private _dialog: MatDialog,
     private zone: NgZone,
-    public electronService: ElectronService
+    public electronService: ElectronService,
+    private _translateService: TranslateService
   ) {
     _analyticsService.telemetryEnabled$.subscribe((enabled) => {
       this.telemetryEnabled = enabled;

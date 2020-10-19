@@ -68,7 +68,8 @@
     "OPTIONS": {
       "APPLICATION": {
         "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "When closing the WowUp window, minimize to the system tray.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
         "TELEMETRY_DESCRIPTION": "Help improve WowUp by sending anonymous install data and/or errors.",
         "TELEMETRY_LABEL": "Telemetry",
         "TITLE": "Application"

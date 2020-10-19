@@ -67,7 +67,8 @@
     "OPTIONS": {
       "APPLICATION": {
         "MINIMIZE_ON_CLOSE_LABEL": "关闭时最小化",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "关闭WowUp窗口时，最小化到系统托盘。",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "关闭WowUp窗口时，最小化到系统托盘。",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "通过匿名发送数据和/或安装错误来帮助改进WowUp。",
         "TELEMETRY_LABEL": "遥测",
         "TITLE": "程序"

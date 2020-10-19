@@ -67,7 +67,8 @@
     "OPTIONS": {
       "APPLICATION": {
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren bei Schliessen",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Helfen Sie WowUp zu verbessern, indem Sie anonyme Installationsdaten und/oder Fehler senden.",
         "TELEMETRY_LABEL": "Telemetrie",
         "TITLE": "Applikation"

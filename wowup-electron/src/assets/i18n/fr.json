@@ -67,7 +67,8 @@
     "OPTIONS": {
       "APPLICATION": {
         "MINIMIZE_ON_CLOSE_LABEL": "Minimiser à la fermeture",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "Lorsque vous fermez la fenêtre WowUp, minimisez dans la barre d'état système.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Lorsque vous fermez la fenêtre WowUp, minimisez dans la barre d'état système.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Aidez à améliorer WowUp en envoyant des données d'installation et/ou des erreurs anonymes.",
         "TELEMETRY_LABEL": "Télémétrie",
         "TITLE": "Application"

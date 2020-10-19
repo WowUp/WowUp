@@ -44,7 +44,7 @@
         <div class="row hover">
           <div class="grow">
             <p>{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION' | translate}}</small>
+            <small class="hint">{{minimizeOnCloseDescription}}</small>
           </div>
           <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" appUserActionTracker
             category="Options" action="CollapseToTray" [label]="collapseToTray">

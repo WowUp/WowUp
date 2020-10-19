@@ -67,7 +67,8 @@
     "OPTIONS": {
       "APPLICATION": {
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizar ao Fechar",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "Ao fechar a janela do WowUp, minimize para a bandeja do sistema.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Ao fechar a janela do WowUp, minimize para a bandeja do sistema.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Ajude a melhorar o WowUp enviando dados e/ou erros de instalação anônimamente.",
         "TELEMETRY_LABEL": "Telemetria",
         "TITLE": "Aplicativo"
