@@ -14,6 +14,9 @@ using WowUp.WPF.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using Serilog;
+using WowUp.Common.Exceptions;
+using WowUp.Common.Extensions;
+using WowUp.Common.Models;
 using WowUp.WPF.Services;
 using WowUp.WPF.Views;
 
@@ -357,7 +360,7 @@ namespace WowUp.WPF.ViewModels
 
             foreach (var addon in addons)
             {
-                sb.AppendLine(addon.Name);
+                sb.AppendLine(addon.ExternalUrl + ";" + addon.Name.Replace(";", ""));
             }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -398,42 +401,17 @@ namespace WowUp.WPF.ViewModels
 
             foreach (var addon in AddonList)
             {
-                progressView.ProgressText += $"Importing \"{ addon}\"" + Environment.NewLine;
-                var searchResults = await _addonService.Search(
-                    addon,
-                    clientType,
-                    (ex) =>
-                    {
-                        MessageBox.Show(
-                            ex.Message,
-                            "Error",
-                            MessageBoxButton.OK);
-                    });
-                if (searchResults.Count > 1)
+
+                string addonName = addon.Split(";")[1];
+                string addonUrl = addon.Split(";")[0];
+
+                progressView.ProgressText += $"Importing \"{addonName}\" using \"{addonUrl}\"" + Environment.NewLine;
+                var potentialAddon = await ImportUrl(addonUrl,addonName, clientType, progressView);
+
+                if(potentialAddon != null)
                 {
-                    progressView.ProgressText += @$"Searching returned multiple addons. PLease install manually" + Environment.NewLine;
-                    continue;
-                }
-
-                var result = searchResults.FirstOrDefault();
-
-                if (result != null)
-                {
-                    if (_addonService.IsInstalled(result.ExternalId, clientType))
-                    {
-                        progressView.ProgressText += $"Addon \"{addon}\" is already installed" + Environment.NewLine;
-                        continue;
-                    }
-
-                    var viewModel = _serviceProvider.GetService<PotentialAddonListItemViewModel>();
-                    viewModel.ClientType = clientType;
-                    viewModel.Addon = result;
-
-                    if (!viewModel.IsInstalled)
-                    {
-                        await _addonService.InstallAddon(viewModel.Addon, viewModel.ClientType);
-                        progressView.ProgressText += $"Import of \"{addon}\" was successful" + Environment.NewLine;
-                    }
+                    await _addonService.InstallAddon(potentialAddon, clientType);
+                    progressView.ProgressText += $"Import of \"{addonName}\" was successful" + Environment.NewLine;
                 }
             }
 
@@ -444,6 +422,54 @@ namespace WowUp.WPF.ViewModels
             IsBusy = false;
         }
 
+        private async Task<PotentialAddon> ImportUrl(string addonUrl, string addonName, WowClientType clientType, ImportInProgressViewModel progressView)
+        {
+            if (string.IsNullOrEmpty(addonUrl))
+            {
+                return null;
+            }
+
+            Uri uri = new Uri(addonUrl);
+
+            try
+            {
+                //await _analyticsService.TrackUserAction("Addons", "ImportAddonUrl", $"{clientType}|{addonUrl}");
+
+                var ImportedAddon = await _addonService.GetAddonByUri(uri, clientType);
+
+                if (ImportedAddon == null)
+                {
+                    throw new AddonNotFoundException();
+                }
+                if(_addonService.IsInstalled(ImportedAddon.ExternalId, clientType))
+                    throw  new AddonAlreadyInstalledException();
+
+                return ImportedAddon;
+            }
+            catch (AddonNotFoundException)
+            {
+                progressView.ProgressText += $"Addon \"{addonName}\" could not be found" + Environment.NewLine;
+            }
+            catch (AddonAlreadyInstalledException)
+            {
+                progressView.ProgressText += $"Addon \"{addonName}\" is already installed" + Environment.NewLine;
+            }
+            catch (InvalidUrlException)
+            {
+                progressView.ProgressText += $"Invalid Url: \"{addonUrl}\"" + Environment.NewLine;
+            }
+            catch (RateLimitExceededException)
+            {
+                progressView.ProgressText += $"Rate limit exceeded, please wait a while and try again." + Environment.NewLine;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to install addon");
+                progressView.ProgressText += $"Failed to install \"{addonName}\"" + Environment.NewLine;
+            }
+
+            return null;
+        }
 
     }
 }
