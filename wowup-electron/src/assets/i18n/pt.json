@@ -15,7 +15,8 @@
         "AUTHOR_COLUMN_HEADER": "Autor",
         "PROVIDER_COLUMN_HEADER": "Provedor",
         "STATUS_COLUMN_HEADER": "Estado",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "DOWNLOAD_COUNT_COLUMN_HEADER",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       }
     },
     "HOME": {
@@ -43,7 +44,8 @@
         "GAME_VERSION_COLUMN_HEADER": "Versão do Jogo",
         "LATEST_VERSION_COLUMN_HEADER": "Ultima versão",
         "PROVIDER_COLUMN_HEADER": "Provedor",
-        "STATUS_COLUMN_HEADER": "Estado"
+        "STATUS_COLUMN_HEADER": "Estado",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Ignorar",
@@ -73,7 +75,12 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Ajude a melhorar o WowUp enviando dados e/ou erros de instalação anônimamente.",
         "TELEMETRY_LABEL": "Telemetria",
-        "TITLE": "Aplicativo"
+        "TITLE": "Aplicativo",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Esvaziar log de depuração de dados",
