@@ -14,10 +14,6 @@ import * as path from "path";
 import * as url from "url";
 import { release, arch } from "os";
 import * as electronDl from "electron-dl";
-import { DownloadRequest } from "./src/common/models/download-request";
-import { DownloadStatus } from "./src/common/models/download-status";
-import { DownloadStatusType } from "./src/common/models/download-status-type";
-import { DOWNLOAD_FILE_CHANNEL } from "./src/common/constants";
 import "./ipc-events";
 import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
@@ -25,6 +21,11 @@ import * as Store from "electron-store";
 import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { IpcHandler } from "./ipc-events";
+import {
+  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+} from "./src/common/constants";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -93,8 +94,6 @@ const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
 
-app.disableHardwareAcceleration(); // Try to improve font blur?
-
 const LOG_PATH = path.join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
 log.transports.file.resolvePath = (
@@ -106,6 +105,13 @@ log.transports.file.resolvePath = (
 };
 log.info("Main starting");
 
+if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
+  log.info("Hardware acceleration disabled");
+  app.disableHardwareAcceleration();
+} else {
+  log.info("Hardware acceleration enabled");
+}
+
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 electronDl();
 
@@ -114,6 +120,7 @@ log.info("USER_AGENT", USER_AGENT);
 
 let win: BrowserWindow = null;
 let tray: Tray = null;
+let ipcHandler: IpcHandler;
 
 const args = process.argv.slice(1),
   serve = args.some((val) => val === "--serve");
@@ -255,6 +262,7 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
+  ipcHandler = new IpcHandler(win);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
@@ -285,7 +293,7 @@ function createWindow(): BrowserWindow {
       e.preventDefault();
       win.hide();
 
-      if (preferenceStore.get("collapse_to_tray") === true) {
+      if (preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) === "true") {
         app.dock.hide();
       }
     });
@@ -389,32 +397,3 @@ try {
   // Catch Error
   // throw e;
 }
-
-ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
-  try {
-    const download = await electronDl.download(win, arg.url, {
-      directory: arg.outputFolder,
-      onProgress: (progress) => {
-        const progressStatus: DownloadStatus = {
-          type: DownloadStatusType.Progress,
-          progress: parseFloat((progress.percent * 100.0).toFixed(2)),
-        };
-
-        win.webContents.send(arg.responseKey, progressStatus);
-      },
-    });
-
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Complete,
-      savePath: download.getSavePath(),
-    };
-    win.webContents.send(arg.responseKey, status);
-  } catch (err) {
-    console.error(err);
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Error,
-      error: err,
-    };
-    win.webContents.send(arg.responseKey, status);
-  }
-});

@@ -199,6 +199,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       summary: response.description,
       screenshotUrls: response.images?.map((img) => img.imageUrl),
       downloadCount: response.downloads,
+      releasedAt: new Date(response.lastUpdate),
     };
   }
 
@@ -213,7 +214,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         downloadUrl: response.downloadUri,
         folders: folderName ? [folderName] : [],
         gameVersion: "",
-        releaseDate: new Date(),
+        releaseDate: new Date(response.lastUpdate),
       };
 
       return {
