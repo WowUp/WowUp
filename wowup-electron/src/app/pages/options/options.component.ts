@@ -5,6 +5,7 @@ import {
   OnChanges,
   SimpleChanges,
   Input,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
@@ -27,6 +28,7 @@ import { TranslateService } from "@ngx-translate/core";
   selector: "app-options",
   templateUrl: "./options.component.html",
   styleUrls: ["./options.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsComponent implements OnInit, OnChanges {
   @Input("tabIndex") tabIndex: number;

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   Input,
   NgZone,
@@ -37,6 +38,7 @@ import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.c
   selector: "app-my-addons",
   templateUrl: "./my-addons.component.html",
   styleUrls: ["./my-addons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
