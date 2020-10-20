@@ -31,6 +31,7 @@ interface InstallQueueItem {
     installState: AddonInstallState,
     progress: number
   ) => void | undefined;
+  completion: any;
 }
 
 @Injectable({
@@ -167,19 +168,38 @@ export class AddonService {
     });
   }
 
-  public async installAddon(
+  public installAddon(
     addonId: string,
     onUpdate: (
       installState: AddonInstallState,
       progress: number
     ) => void = undefined
-  ) {
+  ): Promise<void> {
+    const addon = this.getAddonById(addonId);
+    if (addon == null || !addon.downloadUrl) {
+      throw new Error("Addon not found or invalid");
+    }
+
     onUpdate?.call(this, AddonInstallState.Pending, 0);
+    this._addonInstalledSrc.next({
+      addon,
+      installState: AddonInstallState.Pending,
+      progress: 0,
+    });
+
+    // create a ref for resolving or rejecting once the queue grabs this.
+    let completion = { resolve: undefined, reject: undefined };
+    const promise = new Promise<void>((resolve, reject) => {
+      completion = { resolve, reject };
+    });
 
     this._installQueue.next({
       addonId,
       onUpdate,
+      completion,
     });
+
+    return promise;
   }
 
   private processInstallQueue = async (
@@ -253,10 +273,11 @@ export class AddonService {
         "InstallById",
         `${addon.clientType}|${addon.name}`
       );
+
+      queueItem.completion.resolve();
     } catch (err) {
       console.error(err);
-
-      // TODO track error
+      queueItem.completion.reject(err);
     } finally {
       const unzippedDirectoryExists = await this._fileService.pathExists(
         unzippedDirectory
