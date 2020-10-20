@@ -1,10 +1,10 @@
 import { BrowserWindow, ipcMain, shell } from "electron";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as async from "async";
 import * as path from "path";
 import * as admZip from "adm-zip";
-import { ncp } from "ncp";
 import * as rimraf from "rimraf";
+import { readdir } from "fs";
 
 import { readDirRecursive, readFile } from "./file.utils";
 import {
@@ -133,7 +133,7 @@ export class IpcHandler {
       console.log(LIST_DIRECTORIES_CHANNEL, arg);
       const response: ValueResponse<string[]> = { value: [] };
 
-      fs.readdir(arg.value, { withFileTypes: true }, (err, files) => {
+      readdir(arg.value, { withFileTypes: true }, (err, files) => {
         if (err) {
           response.error = err;
         } else {
@@ -247,25 +247,20 @@ export class IpcHandler {
       });
     });
 
-    ipcMain.on(COPY_DIRECTORY_CHANNEL, (evt, arg: CopyDirectoryRequest) => {
+    ipcMain.handle(COPY_DIRECTORY_CHANNEL, async (evt, arg: CopyDirectoryRequest) => {
       console.log("Copy Dir", arg);
-      const response: IpcResponse = {};
+      
+      await fs.ensureDir(arg.destinationPath);
+      await fs.copy(arg.sourcePath, arg.destinationPath, { recursive: true });
 
-      ncp(arg.sourcePath, arg.destinationPath, (err) => {
-        if (err) {
-          console.error(err);
-          response.error = err[0];
-        }
-
-        setTimeout(() => evt.reply(arg.responseKey, response), 500);
-      });
+      return arg.destinationPath;
     });
 
     ipcMain.on(DELETE_DIRECTORY_CHANNEL, (evt, arg: DeleteDirectoryRequest) => {
       console.log("Delete Dir", arg);
       const response: IpcResponse = {};
 
-      rimraf(arg.sourcePath, (err) => {
+      fs.remove(arg.sourcePath, (err) => {
         if (err) {
           console.error(err);
           response.error = err;

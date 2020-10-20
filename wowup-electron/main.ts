@@ -26,6 +26,8 @@ import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { IpcHandler } from "./ipc-events";
+import * as fs from 'fs';
+import axios from 'axios';
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -47,49 +49,49 @@ autoUpdater.on("update-downloaded", () => {
 
 const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
   ? [
-      {
-        label: app.name,
-        submenu: [{ role: "quit" }],
-      },
-      {
-        label: "Edit",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-      {
-        label: "View",
-        submenu: [
-          { role: "reload" },
-          { role: "forceReload" },
-          { role: "toggleDevTools" },
-          { type: "separator" },
-          { role: "resetZoom" },
-          { role: "zoomIn", accelerator: "CommandOrControl+=" },
-          { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ]
+    {
+      label: app.name,
+      submenu: [{ role: "quit" }],
+    },
+    {
+      label: "Edit",
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "selectAll" },
+      ],
+    },
+    {
+      label: "View",
+      submenu: [
+        { role: "reload" },
+        { role: "forceReload" },
+        { role: "toggleDevTools" },
+        { type: "separator" },
+        { role: "resetZoom" },
+        { role: "zoomIn", accelerator: "CommandOrControl+=" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
+    },
+  ]
   : [
-      {
-        label: "View",
-        submenu: [
-          { role: "resetZoom" },
-          { role: "zoomIn", accelerator: "CommandOrControl+=" },
-          { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ];
+    {
+      label: "View",
+      submenu: [
+        { role: "resetZoom" },
+        { role: "zoomIn", accelerator: "CommandOrControl+=" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
+    },
+  ];
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
@@ -176,9 +178,9 @@ function windowStateManager(
           windowState.x >= display.bounds.x &&
           windowState.y >= display.bounds.y &&
           windowState.x + windowState.width <=
-            display.bounds.x + display.bounds.width &&
+          display.bounds.x + display.bounds.width &&
           windowState.y + windowState.height <=
-            display.bounds.y + display.bounds.height
+          display.bounds.y + display.bounds.height
         );
       });
 
@@ -395,21 +397,45 @@ try {
 
 ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
   try {
-    const download = await electronDl.download(win, arg.url, {
-      directory: arg.outputFolder,
-      onProgress: (progress) => {
-        const progressStatus: DownloadStatus = {
-          type: DownloadStatusType.Progress,
-          progress: parseFloat((progress.percent * 100.0).toFixed(2)),
-        };
+    const savePath = path.join(arg.outputFolder, './octocat.zip');
 
-        win.webContents.send(arg.responseKey, progressStatus);
-      },
+    const { data, headers } = await axios({
+      url: arg.url,
+      method: 'GET',
+      responseType: 'stream'
     });
+
+    const totalLength = headers['content-length'];
+    console.log('Starting download');
+
+    data.on('data', (chunk) => {
+      console.log('DLPROG', arg.responseKey);
+    })
+
+    const writer = fs.createWriteStream(savePath);
+    data.pipe(writer);
+
+    await new Promise((resolve, reject) => {
+      writer.on('finish', resolve)
+      writer.on('error', reject)
+    })
+
+    // const download = await electronDl.download(win, arg.url, {
+    //   directory: arg.outputFolder,
+    //   onProgress: (progress) => {
+    //     console.log('DLPROG', arg.responseKey, progress);
+    //     const progressStatus: DownloadStatus = {
+    //       type: DownloadStatusType.Progress,
+    //       progress: parseFloat((progress.percent * 100.0).toFixed(2)),
+    //     };
+
+    //     win.webContents.send(arg.responseKey, progressStatus);
+    //   },
+    // });
 
     const status: DownloadStatus = {
       type: DownloadStatusType.Complete,
-      savePath: download.getSavePath(),
+      savePath
     };
     win.webContents.send(arg.responseKey, status);
   } catch (err) {

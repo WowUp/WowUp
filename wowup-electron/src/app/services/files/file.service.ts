@@ -35,7 +35,7 @@ import { IpcResponse } from "common/models/ipc-response";
   providedIn: "root",
 })
 export class FileService {
-  constructor(private _electronService: ElectronService) {}
+  constructor(private _electronService: ElectronService) { }
 
   public async getAssetFilePath(fileName: string) {
     return await this._electronService.sendIpcValueMessage<string, string>(
@@ -130,12 +130,16 @@ export class FileService {
       responseKey: uuidv4(),
     };
 
-    const response = await this._electronService.sendIPCMessage<
-      CopyDirectoryRequest,
-      IpcResponse
-    >(COPY_DIRECTORY_CHANNEL, request);
-
+    const result = await this._electronService.ipcRenderer.invoke(COPY_DIRECTORY_CHANNEL, request);
+    console.log('RES', result);
     return destinationPath;
+
+    // const response = await this._electronService.sendIPCMessage<
+    //   CopyDirectoryRequest,
+    //   IpcResponse
+    // >(COPY_DIRECTORY_CHANNEL, request);
+
+    // return destinationPath;
   }
 
   public renameDirectory(sourcePath: string, destinationPath: string) {
@@ -157,6 +161,12 @@ export class FileService {
       this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
       this._electronService.ipcRenderer.send(RENAME_DIRECTORY_CHANNEL, request);
     });
+  }
+
+  public async deleteIfExists(filePath: string) {
+    if (await this.pathExists(filePath)) {
+      await this.deleteDirectory(filePath);
+    }
   }
 
   public readFile(sourcePath: string): Promise<string> {

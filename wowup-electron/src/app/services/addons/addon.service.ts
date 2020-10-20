@@ -344,6 +344,10 @@ export class AddonService {
       );
 
       try {
+        // If the backup dir exists for some reason, kill it.
+        console.log("DELETE BKUP", unzipBackupLocation);
+        await this._fileService.deleteIfExists(unzipBackupLocation);
+
         // If the user already has the addon installed, create a temporary backup
         if (await this._fileService.pathExists(unzipLocation)) {
           console.log("BACKING UP", unzipLocation);
@@ -359,10 +363,8 @@ export class AddonService {
         await this._fileService.copyDirectory(unzippedFilePath, unzipLocation);
 
         // If the copy succeeds, delete the backup
-        if (fs.existsSync(unzipBackupLocation)) {
-          console.log("DELETE BKUP", unzipLocation);
-          await this._fileService.deleteDirectory(unzipBackupLocation);
-        }
+        console.log("DELETE BKUP", unzipBackupLocation);
+        await this._fileService.deleteIfExists(unzipBackupLocation);
       } catch (err) {
         console.error(`Failed to copy addon directory ${unzipLocation}`);
         console.error(err);
