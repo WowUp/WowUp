@@ -46,7 +46,7 @@
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
         "STATUS_COLUMN_HEADER": "Статус",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена в"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Пропускать",
