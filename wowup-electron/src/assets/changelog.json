@@ -1,6 +1,10 @@
 {
     "ChangeLogs": [
       {
+        "Version": "2.0.0-alpha.14",
+        "Description": "Attempt to lower background CPU usage to 0\nAdd translation logic for download counts (flippey)\nMore locale updates\nInstall from URL now supports WowInterface download links\nFix an issue with WoW install locations not showing up correctly on first run (chops)\nFix website link on About page to show the cursor"
+      },
+      {
         "Version": "2.0.0-alpha.13",
         "Description": "UI Updates to details popup (Flippey).\nLocale updates. (Oleksandr, McBurn, Morten)\nAdd a hardware acceleration toggle (Linaori).\nAdd 'Released At' column to 'My Addons' page. (Chops)\nAdd some basic Linux support.\nAdd a standardized format for game version.\nAdd a toggle to turn off system notifications after an auto update.\nAdd a single instance lock so you can only launch the app once.\nFix an issue with game version column appearing blank.\nFix an issue where update all did not visual update.\nFix an issue where 'Up to Date' appeared as a greyed out button.\nFix an issue with downloaded files/folders not being cleaned up.\nFix issues with file operations erroring when perfoming multiple downloads."
       },
