@@ -144,11 +144,21 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     }
   }
 
+  //https://www.wowinterface.com/downloads/download25538-Aardvark
   private getAddonId(addonUri: URL): string {
-    const regex = /\/info(\d+)/i;
-    const match = regex.exec(addonUri.pathname);
+    const downloadUrlregex = /\/download(\d+)/i;
+    const downloadUrlMatch = downloadUrlregex.exec(addonUri.pathname);
+    if (downloadUrlMatch) {
+      return downloadUrlMatch[1];
+    }
 
-    return match[1];
+    const infoUrlRegex = /\/info(\d+)/i;
+    const infoUrlMatch = infoUrlRegex.exec(addonUri.pathname);
+    if (infoUrlMatch) {
+      return infoUrlMatch[1];
+    }
+
+    throw new Error(`Unhandled URL: ${addonUri}`);
   }
 
   private getAddonDetails = (
