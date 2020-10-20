@@ -106,8 +106,8 @@
   },
   "dependencies": {
     "@angular/animations": "~10.1.4",
-    "@angular/cdk": "10.2.3",
-    "@angular/material": "10.2.3",
+    "@angular/cdk": "10.2.5",
+    "@angular/material": "10.2.5",
     "@types/lodash": "4.14.161",
     "adm-zip": "0.4.16",
     "async": "3.2.0",
