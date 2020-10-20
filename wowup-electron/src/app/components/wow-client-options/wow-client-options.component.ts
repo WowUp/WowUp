@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ElectronService } from 'app/services';
@@ -36,12 +36,14 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
-    private _wowupService: WowUpService
+    private _wowupService: WowUpService,
+    private _cdRef: ChangeDetectorRef
   ) {
     const warcraftProductSubscription = this._warcraftService.products$.subscribe(products => {
       const product = products.find(p => p.clientType === this.clientType);
       if (product) {
         this.clientLocation = product.location;
+        this._cdRef.detectChanges();
       }
     });
 
