@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { ElectronService } from 'app/services';
@@ -11,15 +11,18 @@ import { AddonChannelType } from 'app/models/wowup/addon-channel-type';
 import { WowUpService } from 'app/services/wowup/wowup.service';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-wow-client-options',
   templateUrl: './wow-client-options.component.html',
   styleUrls: ['./wow-client-options.component.scss']
 })
-export class WowClientOptionsComponent implements OnInit {
+export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   @Input('clientType') clientType: WowClientType;
+
+  private subscriptions: Subscription[] = [];
 
   public clientTypeName: string;
   public clientFolderName: string;
@@ -34,7 +37,16 @@ export class WowClientOptionsComponent implements OnInit {
     private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService
-  ) { }
+  ) {
+    const warcraftProductSubscription = this._warcraftService.products$.subscribe(products => {
+      const product = products.find(p => p.clientType === this.clientType);
+      if (product) {
+        this.clientLocation = product.location;
+      }
+    });
+
+    this.subscriptions.push(warcraftProductSubscription);
+  }
 
   ngOnInit(): void {
     this.selectedAddonChannelType = this._wowupService.getDefaultAddonChannel(this.clientType);
@@ -42,6 +54,10 @@ export class WowClientOptionsComponent implements OnInit {
     this.clientTypeName = getEnumName(WowClientType, this.clientType);
     this.clientFolderName = this._warcraftService.getClientFolderName(this.clientType);
     this.clientLocation = this._warcraftService.getClientLocation(this.clientType);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   onDefaultAddonChannelChange(evt: MatSelectChange) {
