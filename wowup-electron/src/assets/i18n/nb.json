@@ -15,7 +15,8 @@
         "AUTHOR_COLUMN_HEADER": "Forfatter",
         "PROVIDER_COLUMN_HEADER": "Leverandør",
         "STATUS_COLUMN_HEADER": "Status",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "Nedlastinger"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Nedlastinger",
+        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato"
       }
     },
     "HOME": {
@@ -44,7 +45,8 @@
         "GAME_VERSION_COLUMN_HEADER": "Spillversjon",
         "LATEST_VERSION_COLUMN_HEADER": "Siste Versjon",
         "PROVIDER_COLUMN_HEADER": "Leverandør",
-        "STATUS_COLUMN_HEADER": "Status"
+        "STATUS_COLUMN_HEADER": "Status",
+        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Ignorer",
@@ -74,7 +76,12 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Når WowUp-vinduet lukkes, minimer til oppgavelinjens varselområde.",
         "TELEMETRY_DESCRIPTION": "Hjelp til med å forbedre WowUp ved å sende anonyme data og feilmeldinger.",
         "TELEMETRY_LABEL": "Telemetri",
-        "TITLE": "Applikasjon"
+        "TITLE": "Applikasjon",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "Vil du restarte?",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "Aktivering av maskinvareakselerasjon krever at du restarter programmet.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "Deaktivering av maskinvareakselerasjon krever at du restarter programmet.",
+        "USE_HARDWARE_ACCELERATION_LABEL" : "Aktiver Maskinvareakselerasjon",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Deaktivering av maskinvareakselerasjon kan løse FPS-problemer og andre renderproblemer i appen. Denne endringen krever en restart"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debugdata",
