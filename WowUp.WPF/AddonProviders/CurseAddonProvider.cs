@@ -164,7 +164,9 @@ namespace WowUp.WPF.AddonProviders
         public async Task<PotentialAddon> Search(Uri addonUri, WowClientType clientType)
         {
             var addonSlug = addonUri.LocalPath.Split('/').Last();
-            var response = await GetSearchResults(addonSlug);
+
+            var searchword = addonSlug.Split("-")[0];
+            var response = await GetSearchResults(searchword);
             var result = response.FirstOrDefault(res => res.Slug == addonSlug);
             if (result == null)
             {

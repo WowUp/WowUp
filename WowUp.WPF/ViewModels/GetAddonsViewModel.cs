@@ -166,7 +166,16 @@ namespace WowUp.WPF.ViewModels
 
             IsBusy = true;
 
-            var searchResults = await _addonService.Search(text, SelectedClientType);
+            var searchResults = await _addonService.Search(
+                text, 
+                SelectedClientType,
+                (ex) =>
+                {
+                    MessageBox.Show(
+                        ex.Message, 
+                        "Error", 
+                        MessageBoxButton.OK);
+                });
 
             lock (DisplayAddonsLock)
             {

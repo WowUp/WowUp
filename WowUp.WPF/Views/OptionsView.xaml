@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:WowUp.WPF.Views"
+             xmlns:enums="clr-namespace:WowUp.Common.Enums;assembly=WowUp.Common"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -54,6 +55,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBox Grid.Column="0" Grid.Row="0" 
                                  Margin="0 0 10 0" Text="{Binding WowRetailLocation}" IsEnabled="False" FontSize="14"/>
@@ -68,6 +70,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
@@ -88,7 +91,6 @@
                                     </i:Interaction.Triggers>
                                 </ComboBox>
                             </StackPanel>
-                            <!--DEFAULT AUTO UPDATE-->
                             <Label Grid.Column="0" Grid.Row="1" FontWeight="Bold"  HorizontalAlignment="Right">Auto Update</Label>
                             <StackPanel Grid.Column="1" Grid.Row="1" Margin="0 0 0 0" VerticalAlignment="Center" Orientation="Horizontal">
                                 <CheckBox IsChecked="{Binding RetailAutoUpdateAddons, Mode=TwoWay}"
@@ -97,6 +99,15 @@
                                 </CheckBox>
                                 <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="2" Margin="0 0 0 10"  Orientation="Horizontal" >
+                                <Button Margin="0,0,10,0" Command="{Binding ExportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Export Addon List</Button>
+                                <Button Margin="0,0,10,0" Command="{Binding ImportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Import Addon List</Button>
+                            </StackPanel>
+
                         </Grid>
                     </Grid>
                     <!--RETAIL PTR LOCATION-->
@@ -121,6 +132,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
@@ -150,6 +162,15 @@
                                 </CheckBox>
                                 <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="2" Margin="0 0 0 10"  Orientation="Horizontal" >
+                                <Button Margin="0,0,10,0" Command="{Binding ExportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Export Addon List</Button>
+                                <Button Margin="0,0,10,0" Command="{Binding ImportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Import Addon List</Button>
+                            </StackPanel>
+
                         </Grid>
                     </Grid>
                     <!--CLASSIC LOCATION-->
@@ -174,6 +195,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
@@ -203,6 +225,15 @@
                                 </CheckBox>
                                 <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="2" Margin="0 0 0 10"  Orientation="Horizontal" >
+                                <Button Margin="0,0,10,0" Command="{Binding ExportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Export Addon List</Button>
+                                <Button Margin="0,0,10,0" Command="{Binding ImportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Import Addon List</Button>
+                            </StackPanel>
+
                         </Grid>
                     </Grid>
                     <!--CLASSIC PTR LOCATION-->
@@ -227,6 +258,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
@@ -256,6 +288,15 @@
                                 </CheckBox>
                                 <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="2" Margin="0 0 0 10"  Orientation="Horizontal" >
+                                <Button Margin="0,0,10,0" Command="{Binding ExportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Export Addon List</Button>
+                                <Button Margin="0,0,10,0" Command="{Binding ImportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Import Addon List</Button>
+                            </StackPanel>
+
                         </Grid>
                     </Grid>
                     <!--BETA LOCATION-->
@@ -279,6 +320,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
@@ -308,6 +350,15 @@
                                 </CheckBox>
                                 <Label VerticalAlignment="Top">Newly installed addons will be set to auto update by default</Label>
                             </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="2" Margin="0 0 0 10"  Orientation="Horizontal" >
+                                <Button Margin="0,0,10,0" Command="{Binding ExportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Export Addon List</Button>
+                                <Button Margin="0,0,10,0" Command="{Binding ImportAddonListCommand}" 
+                                        CommandParameter="{x:Static enums:WowClientType.Retail}"
+                                        Style="{StaticResource purpleButton}">Import Addon List</Button>
+                            </StackPanel>
+
                         </Grid>
                     </Grid>
                 </Grid>
