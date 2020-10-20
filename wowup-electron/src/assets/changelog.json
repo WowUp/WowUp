@@ -1,6 +1,10 @@
 {
     "ChangeLogs": [
       {
+        "Version": "2.0.0-alpha.12",
+        "Description": "UI Updates to details popup (Flippey).\nLocale updates. (Oleksandr, McBurn, Morten)\nAdd a hardware acceleration toggle (Linaori).\nAdd 'Released At' column to 'My Addons' page. (Chops)\nAdd some basic Linux support.\nAdd a standardized format for game version.\nAdd a toggle to turn off system notifications after an auto update.\nAdd a single instance lock so you can only launch the app once.\nFix an issue with game version column appearing blank.\nFix an issue where update all did not visual update.\nFix an issue where 'Up to Date' appeared as a greyed out button.\nFix an issue with downloaded files/folders not being cleaned up.\nFix issues with file operations erroring when perfoming multiple downloads."
+      },
+      {
         "Version": "2.0.0-alpha.11",
         "Description": "Add zoom support shortcuts and ctrl + scrollwheel (by Linaori).\nAdd version label to the 'Get Addons' page (by Chops).\nUpdates to the addon detail page (by Flippey).\nRussian local updates (by Medok).\nAdd the system notification for auto updates.\nFix some column spacing.\nTelemetry for user actions added.\nFix a bug not allowing users to uninstall an addon with no 'installed folders'.\nHopefully less issues with installing multiple addons at once.\nFix some errors related to addons imported from GitHub."
       },
