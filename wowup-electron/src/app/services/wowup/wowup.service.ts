@@ -26,6 +26,7 @@ import {
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   lastSelectedWowClientTypeKey,
   wowupReleaseChannelKey,
+  useHardwareAccelerationKey,
 } from "../../../constants";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
@@ -85,6 +86,19 @@ export class WowUpService {
 
   public set collapseToTray(value: boolean) {
     const key = collapseToTrayKey;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public get useHardwareAcceleration() {
+    const preference = this._preferenceStorageService.findByKey(
+      useHardwareAccelerationKey
+    );
+    return preference === "true";
+  }
+
+  public set useHardwareAcceleration(value: boolean) {
+    const key = useHardwareAccelerationKey;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
@@ -242,6 +256,7 @@ export class WowUpService {
   private setDefaultPreferences() {
     this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(collapseToTrayKey, true);
+    this.setDefaultPreference(useHardwareAccelerationKey, true);
     this.setDefaultPreference(
       wowupReleaseChannelKey,
       this.getDefaultReleaseChannel()

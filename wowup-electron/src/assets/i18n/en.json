@@ -74,7 +74,12 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
         "TELEMETRY_DESCRIPTION": "Help improve WowUp by sending anonymous install data and/or errors.",
         "TELEMETRY_LABEL": "Telemetry",
-        "TITLE": "Application"
+        "TITLE": "Application",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "Do you want to restart?",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "Enabling hardware acceleration requires the application to restart.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "Disabling hardware acceleration requires the application to restart.",
+        "USE_HARDWARE_ACCELERATION_LABEL" : "Enable Hardware Acceleration",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debug Data",
