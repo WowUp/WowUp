@@ -1,4 +1,13 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
@@ -22,16 +31,13 @@ import { WowUpService } from "app/services/wowup/wowup.service";
   selector: "app-get-addons",
   templateUrl: "./get-addons.component.html",
   styleUrls: ["./get-addons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
 
   @ViewChild(MatSort) sort: MatSort;
 
-  private readonly _displayAddonsSrc = new BehaviorSubject<GetAddonListItem[]>(
-    []
-  );
-  private readonly _destroyed$ = new Subject<void>();
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
 
@@ -72,7 +78,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _wowUpService: WowUpService,
     public electronService: ElectronService,
-    public warcraftService: WarcraftService
+    public warcraftService: WarcraftService,
+    private _cdRef: ChangeDetectorRef
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this.isSelectedTab = tabIndex === this.tabIndex;
@@ -91,7 +98,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-
     const addonRemovedSubscription = this._addonService.addonRemoved$
       .pipe(
         map((event: string) => {
@@ -100,35 +106,40 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       )
       .subscribe();
 
-    const displayAddonSubscription = this._displayAddonsSrc.subscribe(
-      (items: GetAddonListItem[]) => {
-        this.dataSource.data = items;
-        this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
-          if (prop === 'releasedAt') {
-            return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
-          }
-          return _.get(item, prop);
-        }
-        this.dataSource.sort = this.sort;
-      }
-    );
-
     const channelTypeSubscription = this._wowUpService.preferenceChange$
       .pipe(filter((change) => change.key === this.defaultAddonChannelKey))
       .subscribe((change) => {
         this.onSearch();
       });
 
-    this.subscriptions = [
-      selectedClientSubscription,
-      addonRemovedSubscription,
-      displayAddonSubscription,
-      channelTypeSubscription,
-    ];
+    this._addonService.addonInstalled$.subscribe(() => {
+      this._cdRef.detectChanges();
+    });
+
+    // this.subscriptions = [
+    //   selectedClientSubscription,
+    //   addonRemovedSubscription,
+    //   displayAddonSubscription,
+    //   channelTypeSubscription,
+    // ];
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  private setDataSource(items: GetAddonListItem[]) {
+    this.dataSource.data = items;
+    this.dataSource.sortingDataAccessor = (
+      item: GetAddonListItem,
+      prop: string
+    ) => {
+      if (prop === "releasedAt") {
+        return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
+      }
+      return _.get(item, prop);
+    };
+    this.dataSource.sort = this.sort;
   }
 
   onInstallFromUrl() {
@@ -165,7 +176,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.selectedClient
     );
 
-    this._displayAddonsSrc.next(
+    this.setDataSource(
       this.formatAddons(this.filterInstalledAddons(searchResults))
     );
     this.isBusy = false;
@@ -190,7 +201,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
         const listItems = this.formatAddons(this.filterInstalledAddons(addons));
-        this._displayAddonsSrc.next(listItems);
+        this.setDataSource(listItems);
         this.isBusy = false;
       },
       error: (err) => {
@@ -220,9 +231,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private setPageContextText() {
-    const contextStr = this._displayAddonsSrc.value?.length
-      ? `${this._displayAddonsSrc.value.length} results`
-      : "";
+    const length = this.dataSource.data?.length;
+    const contextStr = length ? `${length} results` : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);
   }

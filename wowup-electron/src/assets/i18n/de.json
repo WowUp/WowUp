@@ -147,6 +147,11 @@
       "UPDATE": "Aktualisieren",
       "INSTALL": "Installieren",
       "UPTODATE": "Aktuell"
+    },
+    "DOWNLOAD_COUNT": {
+      "BILLION": "",
+      "MILLION": "",
+      "THOUSAND": ""
     }
   }
 }

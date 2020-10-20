@@ -1,4 +1,8 @@
-import { AfterViewInit, Component } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { AppConfig } from "../environments/environment";
@@ -16,6 +20,7 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements AfterViewInit {
   private _autoUpdateInterval?: number;
@@ -47,10 +52,10 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    this._autoUpdateInterval = window.setInterval(
-      this.onAutoUpdateInterval,
-      AUTO_UPDATE_PERIOD_MS
-    );
+    // this._autoUpdateInterval = window.setInterval(
+    //   this.onAutoUpdateInterval,
+    //   AUTO_UPDATE_PERIOD_MS
+    // );
   }
 
   openDialog(): void {

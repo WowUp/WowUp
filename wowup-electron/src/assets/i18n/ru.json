@@ -16,7 +16,7 @@
         "PROVIDER_COLUMN_HEADER": "Источник",
         "STATUS_COLUMN_HEADER": "Статус",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Загрузок",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена в"
       }
     },
     "HOME": {
@@ -77,11 +77,11 @@
         "TELEMETRY_DESCRIPTION": "Помогите улучшить WowUp, отправив анонимные данные об установке и/или ошибках.",
         "TELEMETRY_LABEL": "Телеметрия",
         "TITLE": "Приложение",
-        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "Хотите перезапустить приложение?",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "Для включения аппаратного ускорения нужен перезапуск приложения.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "Для отключения аппаратного ускорения нужен перезапуск приложения.",
+        "USE_HARDWARE_ACCELERATION_LABEL" : "Включить аппаратное ускорение",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
@@ -148,6 +148,11 @@
       "UPDATE": "Обновить",
       "INSTALL": "Установить",
       "UPTODATE": "Актуальная"
+    },
+    "DOWNLOAD_COUNT": {
+      "BILLION": "млрд.",
+      "MILLION": "млн.",
+      "THOUSAND": "тыс."
     }
   }
 }

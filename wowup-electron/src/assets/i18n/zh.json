@@ -145,6 +145,11 @@
       "UPDATE": "UPDATE",
       "INSTALL": "INSTALL",
       "UPTODATE": "UPTODATE"
+    },
+    "DOWNLOAD_COUNT": {
+      "BILLION": "",
+      "MILLION": "",
+      "THOUSAND": ""
     }
   }
 }

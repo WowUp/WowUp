@@ -1,24 +1,13 @@
 <div class="row">
-  <mat-bar-button
-    *ngIf="showStatusText === false"
-    (btnClick)="onInstallUpdateClick()"
-    [options]="buttonOptions$ | async"
-    class="install-button"
-  >
-  </mat-bar-button>
-  <!-- <app-addon-install-button [addon]="listItem.addon" [hideUninstall]="true"> </app-addon-install-button> -->
-  <div
-    *ngIf="showStatusText === true"
-    class="status-text"
-    [ngClass]="{ ignored: listItem.isIgnored }"
-  >
+  <app-progress-button *ngIf="showStatusText === false" [value]="installProgress" [showProgress]="isButtonActive"
+    [disable]="isButtonDisabled" (btnClick)="onInstallUpdateClick()">
+    {{buttonText}}
+  </app-progress-button>
+  <div *ngIf="showStatusText === true" class="status-text" [ngClass]="{ ignored: listItem.isIgnored }">
     {{ getStatusText() }}
   </div>
-  <mat-icon
-    *ngIf="this.listItem.isAutoUpdate === true"
-    class="auto-update-icon"
-    [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate"
-  >
+  <mat-icon *ngIf="this.listItem.isAutoUpdate === true" class="auto-update-icon"
+    [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate">
     update
   </mat-icon>
 </div>

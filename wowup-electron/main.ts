@@ -6,7 +6,6 @@ import {
   Tray,
   Menu,
   nativeImage,
-  ipcMain,
   MenuItem,
   MenuItemConstructorOptions,
 } from "electron";
@@ -98,7 +97,7 @@ const LOG_PATH = path.join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
 log.transports.file.resolvePath = (
   variables: log.PathVariables,
-  message?: log.LogMessage
+  _message?: log.LogMessage
 ) => {
   console.log("RES", path.join(LOG_PATH, variables.fileName));
   return path.join(LOG_PATH, variables.fileName);
@@ -147,7 +146,7 @@ function createTray() {
   ]);
 
   if (isWin) {
-    tray.on("click", function (event) {
+    tray.on("click", () => {
       console.log("SHOW");
       win.show();
     });
