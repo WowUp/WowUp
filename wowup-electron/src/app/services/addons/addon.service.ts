@@ -422,7 +422,7 @@ export class AddonService {
     rescan = false
   ): Promise<Addon[]> {
     let addons = this._addonStorage.getAllForClientType(clientType);
-    if (rescan) {
+    if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
       console.log(newAddons);
 

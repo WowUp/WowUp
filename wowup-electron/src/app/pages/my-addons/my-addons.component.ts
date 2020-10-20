@@ -30,7 +30,6 @@ import { getEnumName } from "app/utils/enum.utils";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import { stringIncludes } from "app/utils/string.utils";
-import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 
 @Component({
@@ -51,7 +50,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>(
     []
   );
-  private readonly _destroyed$ = new Subject<void>();
 
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
@@ -203,8 +201,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
-    this._destroyed$.next();
-    this._destroyed$.complete();
   }
 
   onRefresh() {
