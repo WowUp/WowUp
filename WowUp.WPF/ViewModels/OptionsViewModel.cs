@@ -432,6 +432,7 @@ namespace WowUp.WPF.ViewModels
             var addonNotFound = 0;
             var invalidUrls = 0;
             var others = 0;
+            var NotSupported = 0;
             foreach (var addon in AddonList)
             {
 
@@ -468,9 +469,19 @@ namespace WowUp.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    others++;
+                    if (addonUrl.Contains("tukui.com"))
+                    {
+                        NotSupported++;
+                        progressView.ProgressText += $"Import of a TukUi addon is not yet supported: \"{addonName}\"" + Environment.NewLine;
+
+                    }
+                    else
+                    {
+                        others++;
+                        progressView.ProgressText += $"Failed to install \"{addonName}\"" + Environment.NewLine;
+                    }
+
                     Log.Error(ex, "Failed to install addon");
-                    progressView.ProgressText += $"Failed to install \"{addonName}\"" + Environment.NewLine;
                 }
 
                 if (potentialAddon == null)
@@ -483,11 +494,24 @@ namespace WowUp.WPF.ViewModels
             }
 
             progressView.ProgressText += $"Import finished" + Environment.NewLine;
+
             progressView.ProgressText += $"Result: Tried to import {AddonList.Count} Addons" + Environment.NewLine;
-            progressView.ProgressText += $"Result: {alreadyInstalled} Addons are already installed" + Environment.NewLine;
-            progressView.ProgressText += $"Result: {addonNotFound} Addons could not be found" + Environment.NewLine;
-            progressView.ProgressText += $"Result: {invalidUrls} Invalid Urls" + Environment.NewLine;
-            progressView.ProgressText += $"Result: {others} Other error" + Environment.NewLine;
+
+            if (alreadyInstalled > 0)
+                progressView.ProgressText += $"Result: {alreadyInstalled} Addons are already installed" + Environment.NewLine;
+            if (addonNotFound > 0)
+                progressView.ProgressText += $"Result: {addonNotFound} Addons could not be found" + Environment.NewLine;
+            if (invalidUrls > 0)
+                progressView.ProgressText += $"Result: {invalidUrls} Invalid Urls" + Environment.NewLine;
+            if (others > 0)
+                progressView.ProgressText += $"Result: {others} Other error" + Environment.NewLine;
+            if (NotSupported > 0)
+                progressView.ProgressText += $"Result: {NotSupported} Addons are not supported" + Environment.NewLine;
+
+            progressView.ProgressText += $"Result: {AddonList.Count - alreadyInstalled - addonNotFound - invalidUrls - others - NotSupported} Addons successfully installed" + Environment.NewLine;
+
+
+
             progressView.EnableCloseButton = true;
 
             IsBusy = false;
