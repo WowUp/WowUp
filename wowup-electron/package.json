@@ -121,7 +121,6 @@
     "fs-extra": "9.0.1",
     "globrex": "0.1.2",
     "lodash": "4.17.20",
-    "mat-progress-buttons": "9.1.1",
     "node-cache": "5.1.2",
     "node-disk-info": "1.1.0",
     "opossum": "5.0.1",

@@ -1,6 +1,4 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { MatProgressButtonOptions } from "mat-progress-buttons";
-import { BehaviorSubject, Observable } from "rxjs";
 import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { AddonViewModel } from "app/business-objects/my-addon-list-item";
 import { AddonService } from "app/services/addons/addon.service";
@@ -13,10 +11,6 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   @Input() listItem: AddonViewModel;
-
-  private readonly _buttonOptionsSrc: BehaviorSubject<MatProgressButtonOptions>;
-
-  public readonly buttonOptions$: Observable<MatProgressButtonOptions>;
 
   public get showStatusText() {
     return this.listItem?.isUpToDate || this.listItem?.isIgnored;
@@ -42,29 +36,17 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   }
 
   public get isButtonDisabled() {
-    return (
-      this.listItem?.isUpToDate ||
-      this.listItem?.installState === AddonInstallState.Complete
-    );
+    return this.isButtonActive;
   }
 
   constructor(
     private _addonService: AddonService,
     private _translate: TranslateService
-  ) {
-    this._buttonOptionsSrc = new BehaviorSubject<MatProgressButtonOptions>(
-      this.getButtonOptions()
-    );
-    this.buttonOptions$ = this._buttonOptionsSrc.asObservable();
-  }
+  ) {}
 
-  ngOnInit(): void {
-    this._buttonOptionsSrc.next(this.getButtonOptions());
-  }
+  ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-    this._buttonOptionsSrc.complete();
-  }
+  ngOnDestroy(): void {}
 
   public getStatusText() {
     if (this.listItem?.needsInstall) {
@@ -87,7 +69,6 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   }
 
   public onInstallUpdateClick() {
-    console.log("CLICK", this.listItem.addon.name);
     this._addonService.installAddon(
       this.listItem.addon.id,
       this.onInstallUpdate
@@ -100,8 +81,6 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   ) => {
     this.listItem.installState = installState;
     this.listItem.installProgress = progress;
-
-    this._buttonOptionsSrc.next(this.getButtonOptions());
   };
 
   private getInstallStateText(installState: AddonInstallState) {
@@ -119,22 +98,5 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
       default:
         return "";
     }
-  }
-
-  private getButtonOptions(): MatProgressButtonOptions {
-    return {
-      active: this.isButtonActive,
-      disabled: this.isButtonDisabled,
-      value: this.installProgress,
-      text: this.buttonText,
-      mode: "determinate",
-      buttonColor: "primary",
-      barColor: "accent",
-      customClass: "install-button",
-      raised: false,
-      flat: true,
-      stroked: false,
-      fullWidth: false,
-    };
   }
 }

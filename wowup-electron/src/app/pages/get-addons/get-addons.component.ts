@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -76,7 +78,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _wowUpService: WowUpService,
     public electronService: ElectronService,
-    public warcraftService: WarcraftService
+    public warcraftService: WarcraftService,
+    private _cdRef: ChangeDetectorRef
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this.isSelectedTab = tabIndex === this.tabIndex;
@@ -102,12 +105,16 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-      
+
     const channelTypeSubscription = this._wowUpService.preferenceChange$
       .pipe(filter((change) => change.key === this.defaultAddonChannelKey))
       .subscribe((change) => {
         this.onSearch();
       });
+
+    this._addonService.addonInstalled$.subscribe(() => {
+      this._cdRef.detectChanges();
+    });
 
     // this.subscriptions = [
     //   selectedClientSubscription,
