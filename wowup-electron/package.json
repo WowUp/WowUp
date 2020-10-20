@@ -99,7 +99,7 @@
     "typescript": "~4.0.2",
     "wait-on": "5.0.1",
     "webdriver-manager": "12.1.7",
-    "zone.js": "0.11.1"
+    "zone.js": "0.11.2"
   },
   "engines": {
     "node": ">=10.13.0"
