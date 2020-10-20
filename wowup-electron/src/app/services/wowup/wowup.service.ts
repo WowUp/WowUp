@@ -20,14 +20,14 @@ import { DownloadSevice } from "../download/download.service";
 import { PreferenceChange } from "app/models/wowup/preference-change";
 import { FileService } from "../files/file.service";
 import {
-  collapseToTrayKey,
-  defaultAutoUpdateKeySuffix,
-  defaultChannelKeySuffix,
+  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
+  DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
-  lastSelectedWowClientTypeKey,
-  wowupReleaseChannelKey,
-  useHardwareAccelerationKey,
-} from "../../../constants";
+  LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
+  WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+} from "common/constants";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
 
@@ -79,44 +79,44 @@ export class WowUpService {
 
   public get collapseToTray() {
     const preference = this._preferenceStorageService.findByKey(
-      collapseToTrayKey
+      COLLAPSE_TO_TRAY_PREFERENCE_KEY
     );
     return preference === "true";
   }
 
   public set collapseToTray(value: boolean) {
-    const key = collapseToTrayKey;
+    const key = COLLAPSE_TO_TRAY_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
   public get useHardwareAcceleration() {
     const preference = this._preferenceStorageService.findByKey(
-      useHardwareAccelerationKey
+      USE_HARDWARE_ACCELERATION_PREFERENCE_KEY
     );
     return preference === "true";
   }
 
   public set useHardwareAcceleration(value: boolean) {
-    const key = useHardwareAccelerationKey;
+    const key = USE_HARDWARE_ACCELERATION_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
   public get wowUpReleaseChannel() {
     const preference = this._preferenceStorageService.findByKey(
-      wowupReleaseChannelKey
+      WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY
     );
     return parseInt(preference, 10) as WowUpReleaseChannelType;
   }
 
   public set wowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType) {
-    this._preferenceStorageService.set(wowupReleaseChannelKey, releaseChannel);
+    this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
   }
 
   public get lastSelectedClientType(): WowClientType {
     const preference = this._preferenceStorageService.findByKey(
-      lastSelectedWowClientTypeKey
+      LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY
     );
     const value = parseInt(preference, 10);
     return isNaN(value) ? WowClientType.None : (value as WowClientType);
@@ -124,7 +124,7 @@ export class WowUpService {
 
   public set lastSelectedClientType(clientType: WowClientType) {
     this._preferenceStorageService.set(
-      lastSelectedWowClientTypeKey,
+      LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
       clientType
     );
   }
@@ -146,7 +146,7 @@ export class WowUpService {
 
   public getClientDefaultAddonChannelKey(clientType: WowClientType) {
     const typeName = getEnumName(WowClientType, clientType);
-    return `${typeName}${defaultChannelKeySuffix}`.toLowerCase();
+    return `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
   }
 
   public getDefaultAddonChannel(clientType: WowClientType): AddonChannelType {
@@ -250,15 +250,15 @@ export class WowUpService {
 
   private getClientDefaultAutoUpdateKey(clientType: WowClientType): string {
     const typeName = getEnumName(WowClientType, clientType);
-    return `${typeName}${defaultAutoUpdateKeySuffix}`.toLowerCase();
+    return `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
   }
 
   private setDefaultPreferences() {
     this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
-    this.setDefaultPreference(collapseToTrayKey, true);
-    this.setDefaultPreference(useHardwareAccelerationKey, true);
+    this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
+    this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
     this.setDefaultPreference(
-      wowupReleaseChannelKey,
+      WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
       this.getDefaultReleaseChannel()
     );
     this.setDefaultClientPreferences();

@@ -14,8 +14,6 @@ import { ElectronService } from "app/services";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import { v4 as uuidv4 } from "uuid";
 import { CURSE_GET_SCAN_RESULTS } from "common/constants";
-import { CurseGetScanResultsRequest } from "common/curse/curse-get-scan-results-request";
-import { CurseGetScanResultsResponse } from "common/curse/curse-get-scan-results-response";
 import { CurseMatch } from "common/curse/curse-match";
 import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
 import { CurseSearchResult } from "../../common/curse/curse-search-result";

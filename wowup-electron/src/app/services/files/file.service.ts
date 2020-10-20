@@ -12,12 +12,9 @@ import {
 import { ElectronService } from "../electron/electron.service";
 import * as fs from "fs";
 import * as globrex from "globrex";
-import { ListFilesResponse } from "common/models/list-files-response";
-import { ListFilesRequest } from "common/models/list-files-request";
 import { v4 as uuidv4 } from "uuid";
 import { CopyFileRequest } from "common/models/copy-file-request";
 import { UnzipRequest } from "common/models/unzip-request";
-import { UnzipStatus } from "common/models/unzip-status";
 
 @Injectable({
   providedIn: "root",

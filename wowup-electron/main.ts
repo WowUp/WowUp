@@ -23,9 +23,9 @@ import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { IpcHandler } from "./ipc-events";
 import {
-  collapseToTrayKey,
-  useHardwareAccelerationKey,
-} from "./src/constants";
+  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+} from "./src/common/constants";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -47,49 +47,49 @@ autoUpdater.on("update-downloaded", () => {
 
 const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
   ? [
-    {
-      label: app.name,
-      submenu: [{ role: "quit" }],
-    },
-    {
-      label: "Edit",
-      submenu: [
-        { role: "undo" },
-        { role: "redo" },
-        { type: "separator" },
-        { role: "cut" },
-        { role: "copy" },
-        { role: "paste" },
-        { role: "selectAll" },
-      ],
-    },
-    {
-      label: "View",
-      submenu: [
-        { role: "reload" },
-        { role: "forceReload" },
-        { role: "toggleDevTools" },
-        { type: "separator" },
-        { role: "resetZoom" },
-        { role: "zoomIn", accelerator: "CommandOrControl+=" },
-        { role: "zoomOut" },
-        { type: "separator" },
-        { role: "togglefullscreen" },
-      ],
-    },
-  ]
+      {
+        label: app.name,
+        submenu: [{ role: "quit" }],
+      },
+      {
+        label: "Edit",
+        submenu: [
+          { role: "undo" },
+          { role: "redo" },
+          { type: "separator" },
+          { role: "cut" },
+          { role: "copy" },
+          { role: "paste" },
+          { role: "selectAll" },
+        ],
+      },
+      {
+        label: "View",
+        submenu: [
+          { role: "reload" },
+          { role: "forceReload" },
+          { role: "toggleDevTools" },
+          { type: "separator" },
+          { role: "resetZoom" },
+          { role: "zoomIn", accelerator: "CommandOrControl+=" },
+          { role: "zoomOut" },
+          { type: "separator" },
+          { role: "togglefullscreen" },
+        ],
+      },
+    ]
   : [
-    {
-      label: "View",
-      submenu: [
-        { role: "resetZoom" },
-        { role: "zoomIn", accelerator: "CommandOrControl+=" },
-        { role: "zoomOut" },
-        { type: "separator" },
-        { role: "togglefullscreen" },
-      ],
-    },
-  ];
+      {
+        label: "View",
+        submenu: [
+          { role: "resetZoom" },
+          { role: "zoomIn", accelerator: "CommandOrControl+=" },
+          { role: "zoomOut" },
+          { type: "separator" },
+          { role: "togglefullscreen" },
+        ],
+      },
+    ];
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
@@ -105,7 +105,7 @@ log.transports.file.resolvePath = (
 };
 log.info("Main starting");
 
-if (preferenceStore.get(useHardwareAccelerationKey) === "false") {
+if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
   log.info("Hardware acceleration disabled");
   app.disableHardwareAcceleration();
 } else {
@@ -181,9 +181,9 @@ function windowStateManager(
           windowState.x >= display.bounds.x &&
           windowState.y >= display.bounds.y &&
           windowState.x + windowState.width <=
-          display.bounds.x + display.bounds.width &&
+            display.bounds.x + display.bounds.width &&
           windowState.y + windowState.height <=
-          display.bounds.y + display.bounds.height
+            display.bounds.y + display.bounds.height
         );
       });
 
@@ -293,7 +293,7 @@ function createWindow(): BrowserWindow {
       e.preventDefault();
       win.hide();
 
-      if (preferenceStore.get(collapseToTrayKey) === "true") {
+      if (preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) === "true") {
         app.dock.hide();
       }
     });
@@ -397,4 +397,3 @@ try {
   // Catch Error
   // throw e;
 }
-
