@@ -36,6 +36,7 @@ namespace WowUp.WPF.Services
         protected readonly IEnumerable<IAddonProvider> _providers = new List<IAddonProvider>();
 
         protected readonly IAddonRepository _addonRepository;
+        protected readonly IDependencyRepository _dependencyRepository;
 
         protected readonly IAnalyticsService _analyticsService;
         protected readonly IDownloadService _downloadService;
@@ -46,6 +47,7 @@ namespace WowUp.WPF.Services
         public event AddonEventHandler AddonInstalled;
         public event AddonEventHandler AddonUpdated;
         public event AddonStateEventHandler AddonStateChanged;
+        public event AddonListUpdatedEventHandler AddonListUpdated;
 
         public string BackupPath => Path.Combine(FileUtilities.AppDataPath, BackupFolder);
 
@@ -57,7 +59,8 @@ namespace WowUp.WPF.Services
             IAnalyticsService analyticsService,
             IDownloadService downloadSevice,
             IWarcraftService warcraftService,
-            IWowUpService wowUpService)
+            IWowUpService wowUpService,
+            IDependencyRepository dependencyRepository)
         {
             _addonRepository = addonRepository;
 
@@ -65,6 +68,7 @@ namespace WowUp.WPF.Services
             _downloadService = downloadSevice;
             _warcraftService = warcraftService;
             _wowUpService = wowUpService;
+            _dependencyRepository = dependencyRepository;
 
             _providers = new List<IAddonProvider>
             {
@@ -213,10 +217,10 @@ namespace WowUp.WPF.Services
                             System.Windows.MessageBox.Show(ex.Message, "Error", System.Windows.MessageBoxButton.OK);
                         });
                     addons = UpdateAddons(addons, newAddons);
+                    AddonListUpdated?.Invoke(this, EventArgs.Empty);
                 }
 
                 await SyncAddons(clientType, addons);
-
                 return addons;
             }
             catch(Exception ex)
@@ -229,45 +233,27 @@ namespace WowUp.WPF.Services
 
         private List<Addon> UpdateAddons(List<Addon> existingAddons, List<Addon> newAddons)
         {
-            var removedAddons = existingAddons
-                .Where(existingAddon => !newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
-                .ToList();
+            // Clear the dependency table, since rebuilding it is extra complicated.
+            _dependencyRepository.RemoveAll();
 
-            var addedAddons = newAddons
-                .Where(newAddon => !existingAddons.Any(existingAddon => existingAddon.Matches(newAddon)))
-                .ToList();
-
-            var currentAddons = existingAddons
-                .Where(existingAddon => newAddons.Any(newAddon => existingAddon.Matches(newAddon)))
-                .ToList();
-
-            existingAddons.RemoveAll(addon => removedAddons.Any(removedAddon => removedAddon.Id == addon.Id));
-            existingAddons.AddRange(addedAddons);
-
-            foreach (var existingAddon in existingAddons)
+            foreach(var newAddon in newAddons)
             {
-                var matchingAddon = newAddons.FirstOrDefault(newAddon => newAddon.Matches(existingAddon));
-                if(matchingAddon == default)
+                var existingAddon = existingAddons
+                    .FirstOrDefault(ea => ea.ExternalId == newAddon.ExternalId && ea.ProviderName == newAddon.ProviderName);
+
+                if(existingAddon == null)
                 {
                     continue;
                 }
 
-                existingAddon.Name = matchingAddon.Name;
-                existingAddon.FolderName = matchingAddon.FolderName;
-                existingAddon.DownloadUrl = matchingAddon.DownloadUrl;
-                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
-                existingAddon.ExternalUrl = matchingAddon.ExternalUrl;
-                existingAddon.LatestVersion = matchingAddon.LatestVersion;
-                existingAddon.ThumbnailUrl = matchingAddon.ThumbnailUrl;
-                existingAddon.GameVersion = matchingAddon.GameVersion;
-                existingAddon.Author = matchingAddon.Author;
-                existingAddon.InstalledVersion = matchingAddon.InstalledVersion;
+                newAddon.AutoUpdateEnabled = existingAddon.AutoUpdateEnabled;
+                newAddon.IsIgnored= existingAddon.IsIgnored;
             }
 
-            _addonRepository.DeleteItems(removedAddons);
-            _addonRepository.SaveItems(existingAddons);
+            _addonRepository.DeleteItems(existingAddons);
+            _addonRepository.SaveItems(newAddons);
 
-            return existingAddons;
+            return newAddons;
         }
 
         private async Task<bool> SyncAddons(WowClientType clientType, IEnumerable<Addon> addons)
@@ -366,7 +352,7 @@ namespace WowUp.WPF.Services
             return await provider.Search(addonUri, clientType);
         }
 
-        public async Task UninstallAddon(Addon addon)
+        public async Task UninstallAddon(Addon addon, bool uninstallDependencies)
         {
             var installedDirectories = addon.GetInstalledDirectories();
             var addonFolder = _warcraftService.GetAddonFolderPath(addon.ClientType);
@@ -379,9 +365,47 @@ namespace WowUp.WPF.Services
                 await FileUtilities.DeleteDirectory(addonDirectory);
             }
 
+            if (uninstallDependencies)
+            {
+                await UninstallDependencies(addon);
+            }
+
             _addonRepository.DeleteItem(addon);
 
             AddonUninstalled?.Invoke(this, new AddonEventArgs(addon, AddonChangeType.Uninstalled));
+        }
+
+        public IEnumerable<AddonDependency> GetDependencies(Addon addon)
+        {
+            return _dependencyRepository.GetAddonDependencies(addon);
+        }
+
+        public bool HasDependencies(Addon addon)
+        {
+            return GetDependencies(addon).Any();
+        }
+
+        public int GetDependencyCount(Addon addon)
+        {
+            return GetDependencies(addon).Count();
+        }
+
+        public async Task UninstallDependencies(Addon addon)
+        {
+            var addonDependencies = GetDependencies(addon);
+            foreach (var dependency in addonDependencies)
+            {
+                var dependencyAddon = GetAddon(dependency.DependencyId);
+                if (dependencyAddon != null && 
+                    _dependencyRepository
+                        .GetDependentAddons(dependencyAddon)
+                        .All(dep => dep.AddonId == addon.Id))
+                {
+                    await UninstallAddon(dependencyAddon, true);
+                }
+                _dependencyRepository.DeleteItem(dependency);
+            }
+            _dependencyRepository.DeleteItems(_dependencyRepository.GetDependentAddons(addon));
         }
 
         private void RemoveThumbnail(Addon addon)
@@ -396,7 +420,8 @@ namespace WowUp.WPF.Services
         public async Task<Addon> GetAddon(
             string externalId,
             string providerName,
-            WowClientType clientType)
+            WowClientType clientType,
+            List<Addon> addonDependencies = null)
         {
             var targetAddonChannel = _wowUpService.GetClientAddonChannelType(clientType);
             var provider = GetProvider(providerName);
@@ -408,7 +433,14 @@ namespace WowUp.WPF.Services
                 targetAddonChannel = latestFile.ChannelType;
             }
 
-            return CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType, targetAddonChannel);
+            foreach (var dependency in latestFile.Dependencies.Where(dep => dep.Type == AddonDependencyType.Required))
+            {
+                addonDependencies ??= new List<Addon>();
+                var resolvedDependency = await GetAddon(dependency.AddonId.ToString(), providerName, clientType, addonDependencies);
+                addonDependencies.Add(resolvedDependency);
+            }
+
+            return CreateAddon(latestFile.Folders.FirstOrDefault(), searchResult, latestFile, clientType, targetAddonChannel, addonDependencies);
         }
 
         private IAddonProvider GetProvider(string providerName)
@@ -428,10 +460,37 @@ namespace WowUp.WPF.Services
             }
 
             var addon = await GetAddon(potentialAddon.ExternalId, potentialAddon.ProviderName, clientType);
-
+            
             _addonRepository.SaveItem(addon);
 
+            await InstallDependencies(addon);
             await InstallAddon(addon.Id, onUpdate);
+        }
+
+        public async Task InstallDependencies(Addon addon)
+        {
+            if (addon.Dependencies == null)
+                return;
+
+            var dependencyList = new List<AddonDependency>();
+            foreach (var dependency in addon.Dependencies)
+            {
+                var installed = _addonRepository.GetByExternalId(dependency.ExternalId, addon.ClientType);
+                if (installed == null || installed.ProviderName != dependency.ProviderName)
+                {
+                    _addonRepository.SaveItem(dependency);
+                    await InstallAddon(dependency.Id);
+                }
+
+                dependencyList.Add(new AddonDependency
+                {
+                    DependencyId = installed?.Id ?? dependency.Id,
+                    AddonId = addon.Id,
+                    Type = AddonDependencyType.Required
+                });
+            }
+
+            _dependencyRepository.SaveItems(dependencyList);
         }
 
         private void SendAddonStateChange(
@@ -738,7 +797,8 @@ namespace WowUp.WPF.Services
             AddonSearchResult searchResult,
             AddonSearchResultFile latestFile,
             WowClientType clientType,
-            AddonChannelType? channelType = null)
+            AddonChannelType? channelType = null,
+            IEnumerable<Addon> dependencies = null)
         {
             if (latestFile == null)
             {
@@ -759,7 +819,8 @@ namespace WowUp.WPF.Services
                 ExternalUrl = searchResult.ExternalUrl,
                 ProviderName = searchResult.ProviderName,
                 ChannelType = channelType ?? _wowUpService.GetClientAddonChannelType(clientType),
-                AutoUpdateEnabled = _wowUpService.GetClientDefaultAutoUpdate(clientType)
+                AutoUpdateEnabled = _wowUpService.GetClientDefaultAutoUpdate(clientType),
+                Dependencies =  dependencies
             };
         }
     }

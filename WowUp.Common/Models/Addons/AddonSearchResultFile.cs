@@ -12,5 +12,6 @@ namespace WowUp.Common.Models.Addons
         public string GameVersion { get; set; }
         public string DownloadUrl { get; set; }
         public DateTime ReleaseDate { get; set; }
+        public IEnumerable<AddonSearchResultDependency> Dependencies { get; set; }
     }
 }

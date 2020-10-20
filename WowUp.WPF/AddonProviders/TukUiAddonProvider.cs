@@ -214,7 +214,8 @@ namespace WowUp.WPF.AddonProviders
                 DownloadUrl = addon.Url,
                 GameVersion = addon.Patch,
                 Version = addon.Version,
-                ReleaseDate = addon.LastUpdate
+                ReleaseDate = addon.LastUpdate,
+                Dependencies = Enumerable.Empty<AddonSearchResultDependency>()
             };
 
             return new AddonSearchResult

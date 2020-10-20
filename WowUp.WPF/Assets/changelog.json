@@ -2,7 +2,11 @@
   "ChangeLogs": [
     {
       "Version": "1.19.0",
-      "Description": ""
+      "Description": "Support for installing addon dependencies (By Shaydera).\nImplemented a new event which fires after a rescan or the first start scan, which will cause a refresh on the 'Get Addons' Tab (By Shaydera).\nTry out the WowUp custom fingerprint service.\nFix an issue with partial curse matches with no files or modules causing the whole curse scan to fail."
+    },
+    {
+      "Version": "1.18.4",
+      "Description": "Fix crash bug when searching and provider fails.\nAdd some feedback when searching a provider fails."
     },
     {
       "Version": "1.18.3",
