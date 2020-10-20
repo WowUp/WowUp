@@ -150,9 +150,9 @@
       "UPTODATE": "Актуальная"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "",
-      "MILLION": "",
-      "THOUSAND": ""
+      "BILLION": "млрд.",
+      "MILLION": "млн.",
+      "THOUSAND": "тыс."
     }
   }
 }
