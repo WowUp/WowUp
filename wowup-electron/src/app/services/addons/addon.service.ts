@@ -8,6 +8,7 @@ import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import * as path from "path";
 import * as fs from "fs";
+import * as slug from "slug";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
@@ -62,9 +63,9 @@ export class AddonService {
     ];
 
     this._installQueue
-      .pipe(mergeMap((item) => from(this.processInstallQueue(item)), 2))
-      .subscribe(() => {
-        console.log("INSTALL DONE");
+      .pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3))
+      .subscribe((addonName) => {
+        console.log("INSTALL DONE", addonName);
       });
   }
 
@@ -181,7 +182,9 @@ export class AddonService {
     });
   }
 
-  private processInstallQueue = async (queueItem: InstallQueueItem) => {
+  private processInstallQueue = async (
+    queueItem: InstallQueueItem
+  ): Promise<string> => {
     const addonId = queueItem.addonId;
     const onUpdate = queueItem.onUpdate;
 
@@ -189,6 +192,8 @@ export class AddonService {
     if (addon == null || !addon.downloadUrl) {
       throw new Error("Addon not found or invalid");
     }
+
+    const downloadFileName = `${slug(addon.name)}.zip`;
 
     console.log("installAddon", addon.name);
 
@@ -204,6 +209,7 @@ export class AddonService {
     try {
       downloadedFilePath = await this._downloadService.downloadZipFile(
         addon.downloadUrl,
+        downloadFileName,
         this._wowUpService.applicationDownloadsFolderPath
       );
 
@@ -261,11 +267,11 @@ export class AddonService {
       );
 
       if (unzippedDirectoryExists) {
-        await this._fileService.deleteDirectory(unzippedDirectory);
+        await this._fileService.remove(unzippedDirectory);
       }
 
       if (downloadedFilePathExists) {
-        await this._fileService.deleteFile(downloadedFilePath);
+        await this._fileService.remove(downloadedFilePath);
       }
     }
 
@@ -275,6 +281,8 @@ export class AddonService {
       installState: AddonInstallState.Complete,
       progress: 100,
     });
+
+    return addon.name;
   };
 
   public async logDebugData() {
@@ -351,16 +359,13 @@ export class AddonService {
         // If the user already has the addon installed, create a temporary backup
         if (await this._fileService.pathExists(unzipLocation)) {
           console.log("BACKING UP", unzipLocation);
-          await this._fileService.copyDirectory(
-            unzipLocation,
-            unzipBackupLocation
-          );
-          await this._fileService.deleteDirectory(unzipLocation);
+          await this._fileService.copy(unzipLocation, unzipBackupLocation);
+          await this._fileService.remove(unzipLocation);
         }
 
         // Copy contents from unzipped new directory to existing addon folder location
         console.log("COPY", unzipLocation);
-        await this._fileService.copyDirectory(unzippedFilePath, unzipLocation);
+        await this._fileService.copy(unzippedFilePath, unzipLocation);
 
         // If the copy succeeds, delete the backup
         console.log("DELETE BKUP", unzipBackupLocation);
@@ -373,15 +378,12 @@ export class AddonService {
         if (fs.existsSync(unzipBackupLocation)) {
           // If the new addon folder was already created delete it
           if (fs.existsSync(unzipLocation)) {
-            await this._fileService.deleteDirectory(unzipLocation);
+            await this._fileService.remove(unzipLocation);
           }
 
           // Move the backup folder into the original location
           console.log(`Attempting to roll back ${unzipBackupLocation}`);
-          await this._fileService.copyDirectory(
-            unzipBackupLocation,
-            unzipLocation
-          );
+          await this._fileService.copy(unzipBackupLocation, unzipLocation);
         }
 
         throw err;
@@ -441,7 +443,7 @@ export class AddonService {
     );
     for (let directory of installedDirectories) {
       const addonDirectory = path.join(addonFolderPath, directory);
-      await this._fileService.deleteDirectory(addonDirectory);
+      await this._fileService.remove(addonDirectory);
     }
 
     this._addonStorage.remove(addon);

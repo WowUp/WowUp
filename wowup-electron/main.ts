@@ -14,10 +14,6 @@ import * as path from "path";
 import * as url from "url";
 import { release, arch } from "os";
 import * as electronDl from "electron-dl";
-import { DownloadRequest } from "./src/common/models/download-request";
-import { DownloadStatus } from "./src/common/models/download-status";
-import { DownloadStatusType } from "./src/common/models/download-status-type";
-import { DOWNLOAD_FILE_CHANNEL } from "./src/common/constants";
 import "./ipc-events";
 import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
@@ -26,8 +22,6 @@ import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { IpcHandler } from "./ipc-events";
-import * as fs from 'fs';
-import axios from 'axios';
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -395,55 +389,3 @@ try {
   // throw e;
 }
 
-ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
-  try {
-    const savePath = path.join(arg.outputFolder, './octocat.zip');
-
-    const { data, headers } = await axios({
-      url: arg.url,
-      method: 'GET',
-      responseType: 'stream'
-    });
-
-    const totalLength = headers['content-length'];
-    console.log('Starting download');
-
-    data.on('data', (chunk) => {
-      console.log('DLPROG', arg.responseKey);
-    })
-
-    const writer = fs.createWriteStream(savePath);
-    data.pipe(writer);
-
-    await new Promise((resolve, reject) => {
-      writer.on('finish', resolve)
-      writer.on('error', reject)
-    })
-
-    // const download = await electronDl.download(win, arg.url, {
-    //   directory: arg.outputFolder,
-    //   onProgress: (progress) => {
-    //     console.log('DLPROG', arg.responseKey, progress);
-    //     const progressStatus: DownloadStatus = {
-    //       type: DownloadStatusType.Progress,
-    //       progress: parseFloat((progress.percent * 100.0).toFixed(2)),
-    //     };
-
-    //     win.webContents.send(arg.responseKey, progressStatus);
-    //   },
-    // });
-
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Complete,
-      savePath
-    };
-    win.webContents.send(arg.responseKey, status);
-  } catch (err) {
-    console.error(err);
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Error,
-      error: err,
-    };
-    win.webContents.send(arg.responseKey, status);
-  }
-});

@@ -1,7 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  DOWNLOAD_FILE_CHANNEL,
-} from "common/constants";
+import { DOWNLOAD_FILE_CHANNEL } from "common/constants";
 import { v4 as uuidv4 } from "uuid";
 import { DownloadRequest } from "common/models/download-request";
 import { DownloadStatus } from "common/models/download-status";
@@ -16,12 +14,14 @@ export class DownloadSevice {
 
   public downloadZipFile(
     url: string,
+    fileName: string,
     outputFolder: string,
     onProgress?: (progress: number) => void
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       const request: DownloadRequest = {
         url,
+        fileName,
         outputFolder,
         responseKey: uuidv4(),
       };

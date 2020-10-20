@@ -227,49 +227,6 @@ export class WowUpService {
     // TODO
   }
 
-  public checkUpdaterApp(
-    onProgress?: (progress: number) => void
-  ): Observable<void> {
-    if (this.updaterExists) {
-      return of(undefined);
-    } else {
-      return this.installUpdater(onProgress);
-    }
-  }
-
-  private installUpdater(
-    onProgress?: (progress: number) => void
-  ): Observable<void> {
-    return this.getLatestUpdaterVersion().pipe(
-      switchMap((response) =>
-        from(
-          this._downloadService.downloadZipFile(
-            response.url,
-            this.applicationDownloadsFolderPath,
-            onProgress
-          )
-        )
-      ),
-      switchMap((downloadedPath) => {
-        const unzipPath = join(this.applicationDownloadsFolderPath, uuidv4());
-        return from(this._fileService.unzipFile(downloadedPath, unzipPath));
-      }),
-      switchMap((unzippedDir) => {
-        console.log(unzippedDir);
-        const newUpdaterPath = join(unzippedDir, this.updaterName);
-        return from(
-          this._fileService.copyFile(
-            newUpdaterPath,
-            this.applicationUpdaterPath
-          )
-        );
-      }),
-      map(() => {
-        console.log("DOWNLOAD COMPLETE");
-      })
-    );
-  }
-
   private setDefaultPreference(key: string, defaultValue: any) {
     let pref = this._preferenceStorageService.findByKey(key);
     if (!pref) {
@@ -323,11 +280,7 @@ export class WowUpService {
     for (let entry of downloadFiles) {
       const path = join(this.applicationDownloadsFolderPath, entry.name);
       try {
-        if (entry.isDirectory()) {
-          await this._fileService.deleteDirectory(path);
-        } else {
-          await this._fileService.deleteFile(path);
-        }
+        await this._fileService.remove(path);
       } catch (e) {
         console.error("Failed to delete download entry", path);
         console.error(e);
