@@ -252,13 +252,13 @@ export class WowUpService {
       ),
       switchMap((downloadedPath) => {
         const unzipPath = join(this.applicationDownloadsFolderPath, uuidv4());
-        return from(this._downloadService.unzipFile(downloadedPath, unzipPath));
+        return from(this._fileService.unzipFile(downloadedPath, unzipPath));
       }),
       switchMap((unzippedDir) => {
         console.log(unzippedDir);
         const newUpdaterPath = join(unzippedDir, this.updaterName);
         return from(
-          this._downloadService.copyFile(
+          this._fileService.copyFile(
             newUpdaterPath,
             this.applicationUpdaterPath
           )

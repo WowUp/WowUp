@@ -1,4 +1,4 @@
-import { ipcMain, shell } from "electron";
+import { BrowserWindow, ipcMain, shell } from "electron";
 import * as fs from "fs";
 import * as async from "async";
 import * as path from "path";
@@ -48,229 +48,263 @@ import { CopyDirectoryRequest } from "./src/common/models/copy-directory-request
 import { DeleteDirectoryRequest } from "./src/common/models/delete-directory-request";
 import { ReadFileRequest } from "./src/common/models/read-file-request";
 import { ReadFileResponse } from "./src/common/models/read-file-response";
+import { IpcResponse } from "./src/common/models/ipc-response";
 
 const nativeAddon = require("./build/Release/addon.node");
 
-ipcMain.on(SHOW_DIRECTORY, async (evt, arg: ShowDirectoryRequest) => {
-  const result = await shell.openPath(arg.sourceDir);
-  evt.reply(arg.responseKey, true);
-});
+export class IpcHandler {
+  private _window: BrowserWindow;
 
-ipcMain.on(GET_ASSET_FILE_PATH, async (evt, arg: ValueRequest<string>) => {
-  const response: ValueResponse<string> = {
-    value: path.join(__dirname, "assets", arg.value),
-  };
-  evt.reply(arg.responseKey, response);
-});
+  constructor(window: BrowserWindow) {
+    this._window = window;
+    this.initializeHandlers();
+  }
 
-ipcMain.on(CURSE_HASH_FILE_CHANNEL, async (evt, arg: CurseHashFileRequest) => {
-  // console.log(CURSE_HASH_FILE_CHANNEL, arg);
+  private initializeHandlers() {
+    ipcMain.on(SHOW_DIRECTORY, async (evt, arg: ShowDirectoryRequest) => {
+      console.log("SHOW DIR");
+      const result = await shell.openPath(arg.sourceDir);
+      evt.reply(arg.responseKey, true);
+    });
 
-  const response: CurseHashFileResponse = {
-    fingerprint: 0,
-  };
-
-  try {
-    if (arg.targetString !== undefined) {
-      const strBuffer = Buffer.from(
-        arg.targetString,
-        arg.targetStringEncoding || "ascii"
-      );
-      const hash = nativeAddon.computeHash(strBuffer, strBuffer.length);
-      response.fingerprint = hash;
+    ipcMain.on(GET_ASSET_FILE_PATH, async (evt, arg: ValueRequest<string>) => {
+      const response: ValueResponse<string> = {
+        value: path.join(__dirname, "assets", arg.value),
+      };
       evt.reply(arg.responseKey, response);
-    } else {
-      fs.readFile(arg.filePath, (err, buffer) => {
-        if (err) {
+    });
+
+    ipcMain.on(
+      CURSE_HASH_FILE_CHANNEL,
+      async (evt, arg: CurseHashFileRequest) => {
+        console.log(CURSE_HASH_FILE_CHANNEL, arg);
+
+        const response: CurseHashFileResponse = {
+          fingerprint: 0,
+        };
+
+        try {
+          if (arg.targetString !== undefined) {
+            const strBuffer = Buffer.from(
+              arg.targetString,
+              arg.targetStringEncoding || "ascii"
+            );
+            const hash = nativeAddon.computeHash(strBuffer, strBuffer.length);
+            response.fingerprint = hash;
+            evt.reply(arg.responseKey, response);
+          } else {
+            fs.readFile(arg.filePath, (err, buffer) => {
+              if (err) {
+                response.error = err;
+                evt.reply(arg.responseKey, response);
+                return;
+              }
+
+              const hash = nativeAddon.computeHash(buffer, buffer.length);
+              response.fingerprint = hash;
+              evt.reply(arg.responseKey, response);
+            });
+          }
+        } catch (err) {
+          console.error(err);
+          console.log(arg);
           response.error = err;
           evt.reply(arg.responseKey, response);
-          return;
+        }
+      }
+    );
+
+    ipcMain.on(LIST_FILES_CHANNEL, async (evt, arg: ListFilesRequest) => {
+      console.log(LIST_FILES_CHANNEL, arg);
+      const response: ListFilesResponse = {
+        files: [],
+      };
+
+      try {
+        response.files = await readDirRecursive(arg.sourcePath);
+      } catch (err) {
+        response.error = err;
+      }
+
+      evt.reply(arg.responseKey, response);
+    });
+
+    ipcMain.on(LIST_DIRECTORIES_CHANNEL, (evt, arg: ValueRequest<string>) => {
+      console.log(LIST_DIRECTORIES_CHANNEL, arg);
+      const response: ValueResponse<string[]> = { value: [] };
+
+      fs.readdir(arg.value, { withFileTypes: true }, (err, files) => {
+        if (err) {
+          response.error = err;
+        } else {
+          response.value = files
+            .filter((file) => file.isDirectory())
+            .map((file) => file.name);
         }
 
-        const hash = nativeAddon.computeHash(buffer, buffer.length);
-        response.fingerprint = hash;
         evt.reply(arg.responseKey, response);
       });
-    }
-  } catch (err) {
-    console.error(err);
-    console.log(arg);
-    response.error = err;
-    evt.reply(arg.responseKey, response);
-  }
-});
+    });
 
-ipcMain.on(LIST_FILES_CHANNEL, async (evt, arg: ListFilesRequest) => {
-  const response: ListFilesResponse = {
-    files: [],
-  };
+    ipcMain.on(PATH_EXISTS_CHANNEL, (evt, arg: ValueRequest<string>) => {
+      console.log(PATH_EXISTS_CHANNEL, arg);
+      const response: ValueResponse<boolean> = { value: false };
 
-  try {
-    response.files = await readDirRecursive(arg.sourcePath);
-  } catch (err) {
-    response.error = err;
-  }
-
-  evt.reply(arg.responseKey, response);
-});
-
-ipcMain.on(LIST_DIRECTORIES_CHANNEL, (evt, arg: ValueRequest<string>) => {
-  const response: ValueResponse<string[]> = { value: [] };
-
-  fs.readdir(arg.value, { withFileTypes: true }, (err, files) => {
-    if (err) {
-      response.error = err;
-    } else {
-      response.value = files
-        .filter((file) => file.isDirectory())
-        .map((file) => file.name);
-    }
-
-    evt.reply(arg.responseKey, response);
-  });
-});
-
-ipcMain.on(PATH_EXISTS_CHANNEL, (evt, arg: ValueRequest<string>) => {
-  const response: ValueResponse<boolean> = { value: false };
-
-  fs.access(arg.value, (err) => {
-    if (err) {
-      console.error(err);
-      response.value = true;
-    } else {
-      response.value = true;
-    }
-
-    evt.reply(arg.responseKey, response);
-  });
-});
-
-ipcMain.on(
-  CURSE_GET_SCAN_RESULTS,
-  async (evt, arg: CurseGetScanResultsRequest) => {
-    const response: CurseGetScanResultsResponse = {
-      scanResults: [],
-    };
-
-    try {
-      // Scan addon folders in parallel for speed!?
-      const scanResults = await async.mapLimit<string, CurseScanResult>(
-        arg.filePaths,
-        2,
-        async (folder, callback) => {
-          const scanResult = await new CurseFolderScanner().scanFolder(folder);
-
-          callback(undefined, scanResult);
+      fs.access(arg.value, (err) => {
+        if (err) {
+          console.error(err);
+          response.value = false;
+        } else {
+          response.value = true;
         }
-      );
 
-      response.scanResults = scanResults;
-    } catch (err) {
-      response.error = err;
-    }
+        evt.reply(arg.responseKey, response);
+      });
+    });
 
-    evt.reply(arg.responseKey, response);
-  }
-);
+    ipcMain.on(
+      CURSE_GET_SCAN_RESULTS,
+      async (evt, arg: CurseGetScanResultsRequest) => {
+        console.log(CURSE_GET_SCAN_RESULTS, arg);
+        const response: CurseGetScanResultsResponse = {
+          scanResults: [],
+        };
 
-ipcMain.on(
-  WOWUP_GET_SCAN_RESULTS,
-  async (evt, arg: WowUpGetScanResultsRequest) => {
-    const response: WowUpGetScanResultsResponse = {
-      scanResults: [],
-    };
+        try {
+          // Scan addon folders in parallel for speed!?
+          const scanResults = await async.mapLimit<string, CurseScanResult>(
+            arg.filePaths,
+            2,
+            async (folder, callback) => {
+              const scanResult = await new CurseFolderScanner().scanFolder(
+                folder
+              );
 
-    try {
-      const scanResults = await async.mapLimit<string, WowUpScanResult>(
-        arg.filePaths,
-        2,
-        async (folder, callback) => {
-          const scanResult = await new WowUpFolderScanner(folder).scanFolder();
+              callback(undefined, scanResult);
+            }
+          );
 
-          callback(undefined, scanResult);
+          response.scanResults = scanResults;
+        } catch (err) {
+          response.error = err;
         }
-      );
 
-      response.scanResults = scanResults;
-    } catch (err) {
-      response.error = err;
-    }
+        evt.reply(arg.responseKey, response);
+      }
+    );
 
-    evt.reply(arg.responseKey, response);
+    ipcMain.on(
+      WOWUP_GET_SCAN_RESULTS,
+      async (evt, arg: WowUpGetScanResultsRequest) => {
+        console.log(WOWUP_GET_SCAN_RESULTS, arg);
+        const response: WowUpGetScanResultsResponse = {
+          scanResults: [],
+        };
+
+        try {
+          const scanResults = await async.mapLimit<string, WowUpScanResult>(
+            arg.filePaths,
+            2,
+            async (folder, callback) => {
+              const scanResult = await new WowUpFolderScanner(
+                folder
+              ).scanFolder();
+
+              callback(undefined, scanResult);
+            }
+          );
+
+          response.scanResults = scanResults;
+        } catch (err) {
+          response.error = err;
+        }
+
+        evt.reply(arg.responseKey, response);
+      }
+    );
+
+    ipcMain.on(UNZIP_FILE_CHANNEL, (evt, arg: UnzipRequest) => {
+      console.log(UNZIP_FILE_CHANNEL, arg);
+      const zipFilePath = arg.zipFilePath;
+      const outputFolder = arg.outputFolder;
+      const response: UnzipStatus = {
+        outputFolder,
+      };
+
+      const zip = new admZip(zipFilePath);
+      zip.extractAllToAsync(outputFolder, true, (err) => {
+        if (err) {
+          response.error = err;
+        }
+        evt.reply(arg.responseKey, response);
+      });
+    });
+
+    ipcMain.on(COPY_FILE_CHANNEL, (evt, arg: CopyFileRequest) => {
+      console.log("Copy File", arg);
+      fs.copyFile(arg.sourceFilePath, arg.destinationFilePath, (err) => {
+        evt.reply(arg.responseKey, { error: err });
+      });
+    });
+
+    ipcMain.on(COPY_DIRECTORY_CHANNEL, (evt, arg: CopyDirectoryRequest) => {
+      console.log("Copy Dir", arg);
+      const response: IpcResponse = {};
+
+      ncp(arg.sourcePath, arg.destinationPath, (err) => {
+        if (err) {
+          console.error(err);
+          response.error = err[0];
+        }
+
+        setTimeout(() => evt.reply(arg.responseKey, response), 500);
+      });
+    });
+
+    ipcMain.on(DELETE_DIRECTORY_CHANNEL, (evt, arg: DeleteDirectoryRequest) => {
+      console.log("Delete Dir", arg);
+      const response: IpcResponse = {};
+
+      rimraf(arg.sourcePath, (err) => {
+        if (err) {
+          console.error(err);
+          response.error = err;
+        }
+        evt.reply(arg.responseKey, response);
+      });
+    });
+
+    ipcMain.on(DELETE_FILE_CHANNEL, (evt, arg: ValueRequest<string>) => {
+      console.log("Delete File", arg);
+      const response: ValueResponse<boolean> = {
+        value: false,
+      };
+      fs.unlink(arg.value, (err) => {
+        if (err) {
+          response.error = err;
+        } else {
+          response.value = true;
+        }
+
+        evt.reply(arg.responseKey, response);
+      });
+    });
+
+    ipcMain.on(RENAME_DIRECTORY_CHANNEL, (evt, arg: CopyDirectoryRequest) => {
+      console.log("Rename Dir", arg);
+      fs.rename(arg.sourcePath, arg.destinationPath, (err) => {
+        evt.reply(arg.responseKey, err);
+      });
+    });
+
+    ipcMain.on(READ_FILE_CHANNEL, async (evt, arg: ReadFileRequest) => {
+      const response: ReadFileResponse = { data: "" };
+      try {
+        response.data = await readFile(arg.sourcePath);
+      } catch (err) {
+        response.error = err;
+      }
+      evt.reply(arg.responseKey, response);
+    });
   }
-);
-
-ipcMain.on(UNZIP_FILE_CHANNEL, (evt, arg: UnzipRequest) => {
-  const zipFilePath = arg.zipFilePath;
-  const outputFolder = arg.outputFolder;
-
-  const zip = new admZip(zipFilePath);
-  zip.extractAllToAsync(outputFolder, true, (err) => {
-    const status: UnzipStatus = {
-      type: UnzipStatusType.Complete,
-      outputFolder,
-    };
-
-    if (err) {
-      status.type = UnzipStatusType.Error;
-      status.error = err;
-    }
-
-    evt.reply(arg.responseKey, status);
-  });
-});
-
-ipcMain.on(COPY_FILE_CHANNEL, (evt, arg: CopyFileRequest) => {
-  console.log("Copy File", arg);
-  fs.copyFile(arg.sourceFilePath, arg.destinationFilePath, (err) => {
-    evt.reply(arg.responseKey, { error: err });
-  });
-});
-
-ipcMain.on(COPY_DIRECTORY_CHANNEL, (evt, arg: CopyDirectoryRequest) => {
-  console.log("Copy Dir", arg);
-  ncp(arg.sourcePath, arg.destinationPath, (err) => {
-    evt.reply(arg.responseKey, err);
-  });
-});
-
-ipcMain.on(DELETE_DIRECTORY_CHANNEL, (evt, arg: DeleteDirectoryRequest) => {
-  console.log("Delete Dir", arg);
-  rimraf(arg.sourcePath, (err) => {
-    evt.reply(arg.responseKey, err);
-  });
-});
-
-ipcMain.on(DELETE_FILE_CHANNEL, (evt, arg: ValueRequest<string>) => {
-  console.log("Delete File", arg);
-  const response: ValueResponse<boolean> = {
-    value: false,
-  };
-  fs.unlink(arg.value, (err) => {
-    if (err) {
-      response.error = err;
-    } else {
-      response.value = true;
-    }
-
-    evt.reply(arg.responseKey, response);
-  });
-});
-
-ipcMain.on(RENAME_DIRECTORY_CHANNEL, (evt, arg: CopyDirectoryRequest) => {
-  console.log("Rename Dir", arg);
-  fs.rename(arg.sourcePath, arg.destinationPath, (err) => {
-    evt.reply(arg.responseKey, err);
-  });
-});
-
-ipcMain.on(READ_FILE_CHANNEL, async (evt, arg: ReadFileRequest) => {
-  // console.log('Read File', arg);
-  const response: ReadFileResponse = { data: "" };
-  try {
-    response.data = await readFile(arg.sourcePath);
-  } catch (err) {
-    response.error = err;
-  }
-  evt.reply(arg.responseKey, response);
-});
+}

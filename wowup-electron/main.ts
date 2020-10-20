@@ -25,6 +25,7 @@ import * as Store from "electron-store";
 import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { IpcHandler } from "./ipc-events";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -114,6 +115,7 @@ log.info("USER_AGENT", USER_AGENT);
 
 let win: BrowserWindow = null;
 let tray: Tray = null;
+let ipcHandler: IpcHandler;
 
 const args = process.argv.slice(1),
   serve = args.some((val) => val === "--serve");
@@ -255,6 +257,7 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
+  ipcHandler = new IpcHandler(win);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
