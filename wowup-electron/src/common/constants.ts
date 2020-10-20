@@ -1,5 +1,6 @@
 export const DOWNLOAD_FILE_CHANNEL = "download-file";
 export const COPY_DIRECTORY_CHANNEL = "copy-directory";
+export const CREATE_DIRECTORY_CHANNEL = "create-directory";
 export const DELETE_DIRECTORY_CHANNEL = "delete-directory";
 export const STAT_DIRECTORY_CHANNEL = "stat-directory";
 export const LIST_DIRECTORIES_CHANNEL = "list-directories";

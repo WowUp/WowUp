@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import {
   COPY_FILE_CHANNEL,
+  CREATE_DIRECTORY_CHANNEL,
   DELETE_DIRECTORY_CHANNEL,
   GET_ASSET_FILE_PATH,
   LIST_DIRECTORIES_CHANNEL,
@@ -26,6 +27,13 @@ export class FileService {
     return await this._electronService.ipcRenderer.invoke(
       GET_ASSET_FILE_PATH,
       fileName
+    );
+  }
+
+  public async createDirectory(directoryPath: string) {
+    return await this._electronService.ipcRenderer.invoke(
+      CREATE_DIRECTORY_CHANNEL,
+      directoryPath
     );
   }
 

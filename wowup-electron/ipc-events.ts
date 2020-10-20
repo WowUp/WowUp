@@ -18,6 +18,7 @@ import {
   READ_FILE_CHANNEL,
   GET_ASSET_FILE_PATH,
   DOWNLOAD_FILE_CHANNEL,
+  CREATE_DIRECTORY_CHANNEL,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -52,6 +53,14 @@ export class IpcHandler {
     ipcMain.handle(GET_ASSET_FILE_PATH, async (evt, fileName: string) => {
       return path.join(__dirname, "assets", fileName);
     });
+
+    ipcMain.handle(
+      CREATE_DIRECTORY_CHANNEL,
+      async (evt, directoryPath: string): Promise<boolean> => {
+        await fs.ensureDir(directoryPath);
+        return true;
+      }
+    );
 
     ipcMain.handle(LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
       console.log(LIST_DIRECTORIES_CHANNEL, filePath);
