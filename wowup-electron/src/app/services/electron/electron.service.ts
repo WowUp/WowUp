@@ -9,6 +9,8 @@ import * as fs from "fs";
 import { BehaviorSubject } from "rxjs";
 import { ValueResponse } from "common/models/value-response";
 import { ValueRequest } from "common/models/value-request";
+import { IpcRequest } from "common/models/ipc-request";
+import { IpcResponse } from "common/models/ipc-response";
 
 @Injectable({
   providedIn: "root",
@@ -139,25 +141,34 @@ export class ElectronService {
     const myNotification = new Notification(title, options);
   }
 
-  public sendIpcValueMessage<TIN, TOUT>(
+  public async sendIpcValueMessage<TIN, TOUT>(
     channel: string,
     value: TIN
   ): Promise<TOUT> {
+    const request: ValueRequest<TIN> = {
+      value,
+      responseKey: uuidv4(),
+    };
+
+    const response = await this.sendIPCMessage<
+      ValueRequest<TIN>,
+      ValueResponse<TOUT>
+    >(channel, request);
+
+    return response.value;
+  }
+
+  public sendIPCMessage<TIN extends IpcRequest, TOUT extends IpcResponse>(
+    channel: string,
+    request: TIN
+  ): Promise<TOUT> {
     return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: ValueResponse<TOUT>) => {
+      this.ipcRenderer.once(request.responseKey, (_evt: any, arg: TOUT) => {
         if (arg.error) {
           return reject(arg.error);
         }
-
-        resolve(arg.value);
-      };
-
-      const request: ValueRequest<TIN> = {
-        value,
-        responseKey: uuidv4(),
-      };
-
-      this.ipcRenderer.once(request.responseKey, eventHandler);
+        resolve(arg);
+      });
       this.ipcRenderer.send(channel, request);
     });
   }

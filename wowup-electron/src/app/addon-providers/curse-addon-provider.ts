@@ -23,6 +23,7 @@ import { CurseFile } from "common/curse/curse-file";
 import { CurseReleaseType } from "common/curse/curse-release-type";
 import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-response";
 import * as CircuitBreaker from "opossum";
+import { CurseScanResult } from "common/curse/curse-scan-result";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const HUB_API_URL = "https://hub.dev.wowup.io";
@@ -118,34 +119,24 @@ export class CurseAddonProvider implements AddonProvider {
   ): Promise<AppCurseScanResult[]> => {
     const t1 = Date.now();
 
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: CurseGetScanResultsResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
+    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
+    const scanResults: CurseScanResult[] = await this._electronService.ipcRenderer.invoke(
+      CURSE_GET_SCAN_RESULTS,
+      filePaths
+    );
 
-        const appScanResults: AppCurseScanResult[] = arg.scanResults.map(
-          (scanResult) => {
-            const addonFolder = addonFolders.find(
-              (af) => af.path === scanResult.directory
-            );
-
-            return Object.assign({}, scanResult, { addonFolder });
-          }
+    const appScanResults: AppCurseScanResult[] = scanResults.map(
+      (scanResult) => {
+        const addonFolder = addonFolders.find(
+          (af) => af.path === scanResult.directory
         );
 
-        console.log("scan delta", Date.now() - t1);
-        resolve(appScanResults);
-      };
+        return Object.assign({}, scanResult, { addonFolder });
+      }
+    );
 
-      const request: CurseGetScanResultsRequest = {
-        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(CURSE_GET_SCAN_RESULTS, request);
-    });
+    console.log("scan delta", Date.now() - t1);
+    return appScanResults;
   };
 
   private async mapAddonFolders(
