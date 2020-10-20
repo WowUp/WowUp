@@ -145,6 +145,11 @@
       "NEGATIVE_BUTTON": "Não obrigado",
       "POSITIVE_BUTTON": "Claro!",
       "TITLE": "Telemetria do WowUp"
+    },
+    "DOWNLOAD_COUNT": {
+      "BILLION": "",
+      "MILLION": "",
+      "THOUSAND": ""
     }
   }
 }

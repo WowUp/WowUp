@@ -148,6 +148,11 @@
       "UPDATE": "Обновить",
       "INSTALL": "Установить",
       "UPTODATE": "Актуальная"
+    },
+    "DOWNLOAD_COUNT": {
+      "BILLION": "",
+      "MILLION": "",
+      "THOUSAND": ""
     }
   }
 }
