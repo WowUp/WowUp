@@ -78,6 +78,15 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="addon.releasedAt">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{'PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER' | translate}}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding">
+          {{element.addon.releasedAt | date:'short'}}
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="addon.gameVersion">
         <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER' | translate}}

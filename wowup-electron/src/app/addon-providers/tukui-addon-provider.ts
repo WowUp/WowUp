@@ -176,6 +176,7 @@ export class TukUiAddonProvider implements AddonProvider {
           summary: tukUiAddon.small_desc,
           downloadCount: Number.parseFloat(tukUiAddon.downloads),
           screenshotUrls: [tukUiAddon.screenshot_url],
+          releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
         };
       }
     }
@@ -195,14 +196,14 @@ export class TukUiAddonProvider implements AddonProvider {
     if (!addon) {
       return undefined;
     }
-
+    
     var latestFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
       folders: folderName ? [folderName] : [],
       downloadUrl: addon.url,
       gameVersion: addon.patch,
       version: addon.version,
-      releaseDate: new Date(addon.lastUpdate),
+      releaseDate: new Date(`${addon.lastupdate} UTC`),
     };
 
     return {

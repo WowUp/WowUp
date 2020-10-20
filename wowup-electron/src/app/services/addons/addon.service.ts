@@ -557,12 +557,16 @@ export class AddonService {
       if (
         !result ||
         !latestFile ||
-        latestFile.version === addon.latestVersion
+        (
+          latestFile.version === addon.latestVersion &&
+          latestFile.releaseDate === addon.releasedAt
+        )
       ) {
         continue;
       }
 
       addon.latestVersion = latestFile.version;
+      addon.releasedAt = latestFile.releaseDate;
       addon.downloadUrl = latestFile.downloadUrl;
       addon.name = result.name;
       addon.author = result.author;
@@ -749,6 +753,7 @@ export class AddonService {
       channelType: this._wowUpService.getDefaultAddonChannel(clientType),
       isIgnored: false,
       autoUpdateEnabled: this._wowUpService.getDefaultAutoUpdate(clientType),
+      releasedAt: latestFile.releaseDate,
     };
   }
 }

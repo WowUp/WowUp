@@ -15,7 +15,8 @@
         "AUTHOR_COLUMN_HEADER": "Auteur",
         "PROVIDER_COLUMN_HEADER": "Fournisseur",
         "STATUS_COLUMN_HEADER": "Statut",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "DOWNLOAD_COUNT_COLUMN_HEADER",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       }
     },
     "HOME": {
@@ -43,7 +44,8 @@
         "GAME_VERSION_COLUMN_HEADER": "Version du jeu",
         "LATEST_VERSION_COLUMN_HEADER": "Dernière version",
         "PROVIDER_COLUMN_HEADER": "Fournisseur",
-        "STATUS_COLUMN_HEADER": "Statut"
+        "STATUS_COLUMN_HEADER": "Statut",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Ignorer",
