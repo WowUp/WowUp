@@ -31,6 +31,11 @@ a[href^="ftp://"]
   /* Technically not supported in Electron yet */
 }
 
+.selectable {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
 html {
   background-color: $dark-3;
   overflow: hidden;
