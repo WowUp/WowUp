@@ -20,9 +20,12 @@ export class DownloadCountPipe implements PipeTransform {
       suffix = "thousand";
       downloadCount /= 1000.0;
     }
-    const translatedString: string = this.translateService.instant(
-      "COMMON.DOWNLOAD_COUNT." + suffix.toUpperCase()
-    );
+    const translatedString: string = suffix
+      ? this.translateService.instant(
+          "COMMON.DOWNLOAD_COUNT." + suffix.toUpperCase()
+        )
+      : "";
+      
     return `${downloadCount.toFixed(0)} ${translatedString}`;
   }
 }
