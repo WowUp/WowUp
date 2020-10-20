@@ -14,10 +14,6 @@ import * as path from "path";
 import * as url from "url";
 import { release, arch } from "os";
 import * as electronDl from "electron-dl";
-import { DownloadRequest } from "./src/common/models/download-request";
-import { DownloadStatus } from "./src/common/models/download-status";
-import { DownloadStatusType } from "./src/common/models/download-status-type";
-import { DOWNLOAD_FILE_CHANNEL } from "./src/common/constants";
 import "./ipc-events";
 import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
@@ -25,6 +21,7 @@ import * as Store from "electron-store";
 import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { IpcHandler } from "./ipc-events";
 import {
   collapseToTrayKey,
   useHardwareAccelerationKey,
@@ -50,49 +47,49 @@ autoUpdater.on("update-downloaded", () => {
 
 const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
   ? [
-      {
-        label: app.name,
-        submenu: [{ role: "quit" }],
-      },
-      {
-        label: "Edit",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-      {
-        label: "View",
-        submenu: [
-          { role: "reload" },
-          { role: "forceReload" },
-          { role: "toggleDevTools" },
-          { type: "separator" },
-          { role: "resetZoom" },
-          { role: "zoomIn", accelerator: "CommandOrControl+=" },
-          { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ]
+    {
+      label: app.name,
+      submenu: [{ role: "quit" }],
+    },
+    {
+      label: "Edit",
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "selectAll" },
+      ],
+    },
+    {
+      label: "View",
+      submenu: [
+        { role: "reload" },
+        { role: "forceReload" },
+        { role: "toggleDevTools" },
+        { type: "separator" },
+        { role: "resetZoom" },
+        { role: "zoomIn", accelerator: "CommandOrControl+=" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
+    },
+  ]
   : [
-      {
-        label: "View",
-        submenu: [
-          { role: "resetZoom" },
-          { role: "zoomIn", accelerator: "CommandOrControl+=" },
-          { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ];
+    {
+      label: "View",
+      submenu: [
+        { role: "resetZoom" },
+        { role: "zoomIn", accelerator: "CommandOrControl+=" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
+    },
+  ];
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
@@ -123,6 +120,7 @@ log.info("USER_AGENT", USER_AGENT);
 
 let win: BrowserWindow = null;
 let tray: Tray = null;
+let ipcHandler: IpcHandler;
 
 const args = process.argv.slice(1),
   serve = args.some((val) => val === "--serve");
@@ -183,9 +181,9 @@ function windowStateManager(
           windowState.x >= display.bounds.x &&
           windowState.y >= display.bounds.y &&
           windowState.x + windowState.width <=
-            display.bounds.x + display.bounds.width &&
+          display.bounds.x + display.bounds.width &&
           windowState.y + windowState.height <=
-            display.bounds.y + display.bounds.height
+          display.bounds.y + display.bounds.height
         );
       });
 
@@ -264,6 +262,7 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
+  ipcHandler = new IpcHandler(win);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
@@ -399,31 +398,3 @@ try {
   // throw e;
 }
 
-ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
-  try {
-    const download = await electronDl.download(win, arg.url, {
-      directory: arg.outputFolder,
-      onProgress: (progress) => {
-        const progressStatus: DownloadStatus = {
-          type: DownloadStatusType.Progress,
-          progress: parseFloat((progress.percent * 100.0).toFixed(2)),
-        };
-
-        win.webContents.send(arg.responseKey, progressStatus);
-      },
-    });
-
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Complete,
-      savePath: download.getSavePath(),
-    };
-    win.webContents.send(arg.responseKey, status);
-  } catch (err) {
-    console.error(err);
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Error,
-      error: err,
-    };
-    win.webContents.send(arg.responseKey, status);
-  }
-});

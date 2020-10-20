@@ -69,6 +69,8 @@ export class WowUpService {
     this.applicationVersion = _electronService.remote.app.getVersion();
     this.isBetaBuild =
       this.applicationVersion.toLowerCase().indexOf("beta") != -1;
+
+    this.cleanupDownloads();
   }
 
   public get updaterExists() {
@@ -239,49 +241,6 @@ export class WowUpService {
     // TODO
   }
 
-  public checkUpdaterApp(
-    onProgress?: (progress: number) => void
-  ): Observable<void> {
-    if (this.updaterExists) {
-      return of(undefined);
-    } else {
-      return this.installUpdater(onProgress);
-    }
-  }
-
-  private installUpdater(
-    onProgress?: (progress: number) => void
-  ): Observable<void> {
-    return this.getLatestUpdaterVersion().pipe(
-      switchMap((response) =>
-        from(
-          this._downloadService.downloadZipFile(
-            response.url,
-            this.applicationDownloadsFolderPath,
-            onProgress
-          )
-        )
-      ),
-      switchMap((downloadedPath) => {
-        const unzipPath = join(this.applicationDownloadsFolderPath, uuidv4());
-        return from(this._downloadService.unzipFile(downloadedPath, unzipPath));
-      }),
-      switchMap((unzippedDir) => {
-        console.log(unzippedDir);
-        const newUpdaterPath = join(unzippedDir, this.updaterName);
-        return from(
-          this._downloadService.copyFile(
-            newUpdaterPath,
-            this.applicationUpdaterPath
-          )
-        );
-      }),
-      map(() => {
-        console.log("DOWNLOAD COMPLETE");
-      })
-    );
-  }
-
   private setDefaultPreference(key: string, defaultValue: any) {
     let pref = this._preferenceStorageService.findByKey(key);
     if (!pref) {
@@ -322,5 +281,25 @@ export class WowUpService {
     return this.isBetaBuild
       ? WowUpReleaseChannelType.Beta
       : WowUpReleaseChannelType.Stable;
+  }
+
+  /**
+   * Clean up lost downloads in the download folder
+   */
+  private async cleanupDownloads() {
+    const downloadFiles = this._fileService.listEntries(
+      this.applicationDownloadsFolderPath,
+      "*"
+    );
+
+    for (let entry of downloadFiles) {
+      const path = join(this.applicationDownloadsFolderPath, entry.name);
+      try {
+        await this._fileService.remove(path);
+      } catch (e) {
+        console.error("Failed to delete download entry", path);
+        console.error(e);
+      }
+    }
   }
 }

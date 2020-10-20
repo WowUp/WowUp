@@ -1,28 +1,23 @@
 import { Injectable } from "@angular/core";
 import {
-  COPY_DIRECTORY_CHANNEL,
+  COPY_FILE_CHANNEL,
   DELETE_DIRECTORY_CHANNEL,
   GET_ASSET_FILE_PATH,
   LIST_DIRECTORIES_CHANNEL,
-  LIST_FILES_CHANNEL,
   PATH_EXISTS_CHANNEL,
   READ_FILE_CHANNEL,
-  RENAME_DIRECTORY_CHANNEL,
   SHOW_DIRECTORY,
+  UNZIP_FILE_CHANNEL,
 } from "common/constants";
-import { CopyDirectoryRequest } from "common/models/copy-directory-request";
-import { DeleteDirectoryRequest } from "common/models/delete-directory-request";
 import { ElectronService } from "../electron/electron.service";
 import * as fs from "fs";
 import * as globrex from "globrex";
-import { ReadFileResponse } from "common/models/read-file-response";
-import { ReadFileRequest } from "common/models/read-file-request";
 import { ListFilesResponse } from "common/models/list-files-response";
 import { ListFilesRequest } from "common/models/list-files-request";
-import { ShowDirectoryRequest } from "common/models/show-directory-request";
 import { v4 as uuidv4 } from "uuid";
-import { ValueRequest } from "common/models/value-request";
-import { ValueResponse } from "common/models/value-response";
+import { CopyFileRequest } from "common/models/copy-file-request";
+import { UnzipRequest } from "common/models/unzip-request";
+import { UnzipStatus } from "common/models/unzip-status";
 
 @Injectable({
   providedIn: "root",
@@ -31,146 +26,88 @@ export class FileService {
   constructor(private _electronService: ElectronService) {}
 
   public async getAssetFilePath(fileName: string) {
-    return await this._electronService.sendIpcValueMessage<string, string>(
+    return await this._electronService.ipcRenderer.invoke(
       GET_ASSET_FILE_PATH,
       fileName
     );
   }
 
-  public showDirectory(sourceDir: string) {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: boolean) => {
-        resolve(arg);
-      };
-
-      const request: ShowDirectoryRequest = {
-        sourceDir,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(SHOW_DIRECTORY, request);
-    });
+  public async showDirectory(sourceDir: string) {
+    return await this._electronService.ipcRenderer.invoke(
+      SHOW_DIRECTORY,
+      sourceDir
+    );
   }
 
-  public pathExists(sourcePath: string) {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: ValueResponse<boolean>) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
-        resolve(arg.value);
-      };
+  public async pathExists(sourcePath: string): Promise<boolean> {
+    if (!sourcePath) {
+      return Promise.resolve(false);
+    }
 
-      const request: ValueRequest<string> = {
-        value: sourcePath,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(PATH_EXISTS_CHANNEL, request);
-    });
+    return await this._electronService.ipcRenderer.invoke(
+      PATH_EXISTS_CHANNEL,
+      sourcePath
+    );
   }
 
-  public deleteDirectory(sourcePath: string) {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: Error) => {
-        if (arg) {
-          return reject(arg);
-        }
-        resolve(sourcePath);
-      };
+  /**
+   * Delete a file or directory
+   */
+  public async remove(sourcePath: string): Promise<boolean> {
+    if (!sourcePath) {
+      throw new Error("remove sourcePath required");
+    }
 
-      const request: DeleteDirectoryRequest = {
-        sourcePath,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(DELETE_DIRECTORY_CHANNEL, request);
-    });
+    return await this._electronService.ipcRenderer.invoke(
+      DELETE_DIRECTORY_CHANNEL,
+      sourcePath
+    );
   }
 
-  public copyDirectory(sourcePath: string, destinationPath: string) {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: Error) => {
-        if (arg) {
-          return reject(arg);
-        }
+  /**
+   * Copy a file or folder
+   */
+  public async copy(
+    sourceFilePath: string,
+    destinationFilePath: string
+  ): Promise<string> {
+    const request: CopyFileRequest = {
+      destinationFilePath,
+      sourceFilePath,
+      responseKey: uuidv4(),
+    };
 
-        resolve(destinationPath);
-      };
+    await this._electronService.ipcRenderer.invoke(COPY_FILE_CHANNEL, request);
 
-      const request: CopyDirectoryRequest = {
-        sourcePath,
-        destinationPath,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(COPY_DIRECTORY_CHANNEL, request);
-    });
+    return destinationFilePath;
   }
 
-  public renameDirectory(sourcePath: string, destinationPath: string) {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: Error) => {
-        if (arg) {
-          return reject(arg);
-        }
-
-        resolve(destinationPath);
-      };
-
-      const request: CopyDirectoryRequest = {
-        sourcePath,
-        destinationPath,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(RENAME_DIRECTORY_CHANNEL, request);
-    });
+  public async deleteIfExists(filePath: string) {
+    if (await this.pathExists(filePath)) {
+      await this.remove(filePath);
+    }
   }
 
-  public readFile(sourcePath: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: ReadFileResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
-
-        resolve(arg.data);
-      };
-
-      const request: ReadFileRequest = {
-        sourcePath,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(READ_FILE_CHANNEL, request);
-    });
+  public async readFile(sourcePath: string): Promise<string> {
+    return await this._electronService.ipcRenderer.invoke(
+      READ_FILE_CHANNEL,
+      sourcePath
+    );
   }
 
-  public listDirectories(sourcePath: string): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: ValueResponse<string[]>) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
+  public async listDirectories(sourcePath: string): Promise<string[]> {
+    return await this._electronService.ipcRenderer.invoke(
+      LIST_DIRECTORIES_CHANNEL,
+      sourcePath
+    );
+  }
 
-        resolve(arg.value);
-      };
+  public listEntries(sourcePath: string, filter: string) {
+    const globFilter = globrex(filter);
 
-      const request: ValueRequest<string> = {
-        value: sourcePath,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(LIST_DIRECTORIES_CHANNEL, request);
-    });
+    return fs
+      .readdirSync(sourcePath, { withFileTypes: true })
+      .filter((entry) => !!globFilter.regex.test(entry.name));
   }
 
   public listFiles(sourcePath: string, filter: string) {
@@ -182,27 +119,21 @@ export class FileService {
       .map((entry) => entry.name);
   }
 
-  public listAllFiles(
-    sourcePath: string,
-    recursive: boolean = true
-  ): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: ListFilesResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
+  public async unzipFile(
+    zipFilePath: string,
+    outputFolder: string
+  ): Promise<string> {
+    console.log("unzipFile", zipFilePath);
 
-        resolve(arg.files);
-      };
+    const request: UnzipRequest = {
+      outputFolder,
+      zipFilePath,
+      responseKey: uuidv4(),
+    };
 
-      const request: ListFilesRequest = {
-        sourcePath,
-        recursive,
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(LIST_FILES_CHANNEL, request);
-    });
+    return await this._electronService.ipcRenderer.invoke(
+      UNZIP_FILE_CHANNEL,
+      request
+    );
   }
 }
