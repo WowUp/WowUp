@@ -24,7 +24,8 @@ img:not([draggable="true"]) {
 
 a[href^="http://"],
 a[href^="https://"],
-a[href^="ftp://"] {
+a[href^="ftp://"]
+{
   -webkit-user-drag: auto;
   user-drag: auto;
   /* Technically not supported in Electron yet */
@@ -56,11 +57,11 @@ img {
 }
 
 .mr-1 {
-  margin-right: .25em !important;
+  margin-right: 0.25em !important;
 }
 
 .mr-2 {
-  margin-right: .5em !important;
+  margin-right: 0.5em !important;
 }
 
 .mr-3 {
@@ -82,8 +83,31 @@ img {
 .mat-tab-label,
 .mat-tab-label-content,
 .mat-select-value,
-.mat-form-field-infix,
-.mat-button-wrapper span {
+.mat-form-field-infix {
+  &:hover {
+    cursor: pointer !important;
+  }
+}
+
+.mat-flat-button {
+  &:hover {
+    cursor: default !important;
+  }
+
+  &:not(.mat-button-disabled) {
+    &:hover {
+      cursor: pointer !important;
+    }
+  }
+
+  // Prevent clicking thru the button via the text
+  .mat-button-wrapper {
+    pointer-events: none;
+  }
+}
+
+.mat-slide-toggle-thumb,
+.mat-slide-toggle-bar {
   &:hover {
     cursor: pointer !important;
   }
@@ -93,10 +117,6 @@ img {
 .mat-slide-toggle-bar,
 .mat-button-wrapper {
   -webkit-app-region: no-drag;
-
-  &:hover {
-    cursor: pointer;
-  }
 }
 
 .bg-dark-3 {
@@ -303,9 +323,35 @@ img {
   // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   background: rgb(107, 105, 214);
-  background: linear-gradient(146deg, rgba(107, 105, 214, 1) 0%, rgba(80, 79, 161, 1) 100%);
+  background: linear-gradient(
+    146deg,
+    rgba(107, 105, 214, 1) 0%,
+    rgba(80, 79, 161, 1) 100%
+  );
 }
 
 .install-button {
   min-width: 120px !important;
+}
+
+.progress-button {
+  position: relative;
+  overflow: hidden;
+  min-width: 120px !important;
+
+  .progress-bar {
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    width: 100%;
+    left: 0;
+    position: absolute;
+  }
+
+  .mat-progress-bar-buffer {
+    background: $white-4 !important;
+  }
+
+  .mat-progress-bar-fill::after {
+    background: $blue-1 !important;
+  }
 }

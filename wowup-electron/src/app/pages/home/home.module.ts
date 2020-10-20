@@ -15,6 +15,7 @@ import { MyAddonsAddonCellComponent } from "app/components/my-addons-addon-cell/
 import { ProgressSpinnerComponent } from "app/components/progress-spinner/progress-spinner.component";
 import { DownloadCountPipe } from "app/pipes/download-count.pipe";
 import { InterfaceFormatPipe } from "app/pipes/interface-format.pipe";
+import { GetAddonListItemFilePropPipe } from "app/pipes/get-addon-list-item-file-prop.pipe";
 import { TelemetryDialogComponent } from "app/components/telemetry-dialog/telemetry-dialog.component";
 import { ConfirmDialogComponent } from "app/components/confirm-dialog/confirm-dialog.component";
 import { AlertDialogComponent } from "app/components/alert-dialog/alert-dialog.component";
@@ -23,10 +24,10 @@ import { DirectiveModule } from "app/directive.module";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
 import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
 import { AddonProviderBadgeComponent } from "app/components/addon-provider-badge/addon-provider-badge.component";
-import { MatProgressButtonsModule } from "mat-progress-buttons";
 import { AddonInstallButtonComponent } from "app/components/addon-install-button/addon-install-button.component";
 import { GetAddonStatusColumnComponent } from "app/components/get-addon-status-column/get-addon-status-column.component";
 import { MyAddonStatusColumnComponent } from "app/components/my-addon-status-column/my-addon-status-column.component";
+import { ProgressButtonComponent } from "app/components/progress-button/progress-button.component";
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { MyAddonStatusColumnComponent } from "app/components/my-addon-status-col
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,
     InterfaceFormatPipe,
+    GetAddonListItemFilePropPipe,
     TelemetryDialogComponent,
     ConfirmDialogComponent,
     AlertDialogComponent,
@@ -50,6 +52,7 @@ import { MyAddonStatusColumnComponent } from "app/components/my-addon-status-col
     AddonInstallButtonComponent,
     GetAddonStatusColumnComponent,
     MyAddonStatusColumnComponent,
+    ProgressButtonComponent,
   ],
   imports: [
     CommonModule,
@@ -57,7 +60,6 @@ import { MyAddonStatusColumnComponent } from "app/components/my-addon-status-col
     HomeRoutingModule,
     MatModule,
     DirectiveModule,
-    MatProgressButtonsModule,
   ],
 })
 export class HomeModule {}

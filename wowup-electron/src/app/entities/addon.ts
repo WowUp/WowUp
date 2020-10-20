@@ -28,4 +28,5 @@ export interface Addon {
   downloadCount?: number;
   summary?: string;
   screenshotUrls?: string[];
+  releasedAt?: Date;
 }
