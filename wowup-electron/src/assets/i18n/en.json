@@ -67,8 +67,11 @@
     },
     "OPTIONS": {
       "APPLICATION": {
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable/Disable various system notification popups, such as auto updated addons.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "When closing the WowUp window, minimize to the system tray.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
         "TELEMETRY_DESCRIPTION": "Help improve WowUp by sending anonymous install data and/or errors.",
         "TELEMETRY_LABEL": "Telemetry",
         "TITLE": "Application"

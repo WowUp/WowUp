@@ -331,6 +331,22 @@ function createWindow(): BrowserWindow {
 }
 
 try {
+  // Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
+  const singleInstanceLock = app.requestSingleInstanceLock();
+  if (!singleInstanceLock) {
+    app.quit();
+  } else {
+    app.on("second-instance", (event, commandLine, workingDirectory) => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (win) {
+        if (win.isMinimized()) {
+          win.restore();
+        }
+        win.focus();
+      }
+    });
+  }
+
   app.allowRendererProcessReuse = true;
 
   // This method will be called when Electron has finished

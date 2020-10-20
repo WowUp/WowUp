@@ -83,7 +83,7 @@
           {{'PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER' | translate}}
         </th>
         <td class="game-version-cell" mat-cell *matCellDef="let element">
-          {{element.addon.gameVersion}}
+          {{element.addon.gameVersion | interfaceFormat}}
         </td>
       </ng-container>
 

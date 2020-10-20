@@ -1,14 +1,16 @@
 import { Addon } from "app/entities/addon";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
+import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { AddonDisplayState } from "../models/wowup/addon-display-state";
 
 export class AddonViewModel {
   public readonly addon: Addon;
 
-  isInstalling: boolean = false;
-  installProgress: number = 0;
-  statusText: string = "";
-  selected: boolean = false;
+  public installState: AddonInstallState = AddonInstallState.Unknown;
+  public isInstalling: boolean = false;
+  public installProgress: number = 0;
+  public statusText: string = "";
+  public selected: boolean = false;
 
   get needsInstall() {
     return (

@@ -66,8 +66,11 @@
     },
     "OPTIONS": {
       "APPLICATION": {
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizza alla chiusura",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION": "Quando si chiude la finestra WowUp minimizzare nel vassoio di sistema.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Quando si chiude la finestra WowUp minimizzare nel vassoio di sistema.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Aiuta a migliorare WowUp inviando dati di installazione e/o errori anonimi.",
         "TELEMETRY_LABEL": "Telemetria",
         "TITLE": "Applicazione"

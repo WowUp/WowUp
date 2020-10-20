@@ -22,6 +22,7 @@ import { MatSelectChange } from "@angular/material/select";
 import { AnalyticsService } from "app/services/analytics/analytics.service";
 import { AddonService } from "app/services/addons/addon.service";
 import { GET_ASSET_FILE_PATH } from "common/constants";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-options",
@@ -42,6 +43,7 @@ export class OptionsComponent implements OnInit, OnChanges {
     (clientType) => clientType !== WowClientType.None
   ) as WowClientType[];
   public wowUpReleaseChannel: WowUpReleaseChannelType;
+
   public wowUpReleaseChannels: {
     type: WowUpReleaseChannelType;
     name: string;
@@ -52,16 +54,25 @@ export class OptionsComponent implements OnInit, OnChanges {
     })
   );
 
+  public get minimizeOnCloseDescription() {
+    const key = this._electronService.isWin
+      ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
+      : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
+
+    return this._translateService.instant(key);
+  }
+
   constructor(
     private _addonService: AddonService,
     private _analyticsService: AnalyticsService,
     private warcraft: WarcraftService,
     private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
-    private _wowUpService: WowUpService,
+    public wowupService: WowUpService,
     private _dialog: MatDialog,
     private zone: NgZone,
-    public electronService: ElectronService
+    public electronService: ElectronService,
+    private _translateService: TranslateService
   ) {
     _analyticsService.telemetryEnabled$.subscribe((enabled) => {
       this.telemetryEnabled = enabled;
@@ -73,13 +84,13 @@ export class OptionsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.wowUpReleaseChannel = this._wowUpService.wowUpReleaseChannel;
+    this.wowUpReleaseChannel = this.wowupService.wowUpReleaseChannel;
 
     this.loadData();
   }
 
   onShowLogs = () => {
-    this._wowUpService.showLogsFolder();
+    this.wowupService.showLogsFolder();
   };
 
   onReScan = () => {
@@ -92,11 +103,15 @@ export class OptionsComponent implements OnInit, OnChanges {
   };
 
   onCollapseChange = (evt: MatSlideToggleChange) => {
-    this._wowUpService.collapseToTray = evt.checked;
+    this.wowupService.collapseToTray = evt.checked;
   };
 
+  onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
+    this.wowupService.enableSystemNotifications = evt.checked;
+  }
+
   onWowUpChannelChange(evt: MatSelectChange) {
-    this._wowUpService.wowUpReleaseChannel = evt.value;
+    this.wowupService.wowUpReleaseChannel = evt.value;
   }
 
   async onLogDebugData() {
@@ -196,7 +211,7 @@ export class OptionsComponent implements OnInit, OnChanges {
   private loadData() {
     this.zone.run(() => {
       this.telemetryEnabled = this._analyticsService.telemetryEnabled;
-      this.collapseToTray = this._wowUpService.collapseToTray;
+      this.collapseToTray = this.wowupService.collapseToTray;
       this.retailLocation = this.warcraft.getClientLocation(
         WowClientType.Retail
       );

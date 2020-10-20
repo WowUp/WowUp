@@ -10,8 +10,8 @@ import * as fs from "fs";
 import { map, filter, delay, switchMap } from "rxjs/operators";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { StorageService } from "../storage/storage.service";
-import log from "electron-log";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
+import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { AddonFolder } from "app/models/wowup/addon-folder";
 import { ElectronService } from "..";
 import { TocService } from "../toc/toc.service";
@@ -372,6 +372,10 @@ export class WarcraftService {
 
     if (this._electronService.isMac) {
       return new WarcraftServiceMac();
+    }
+
+    if(this._electronService.isLinux){
+      return new WarcraftServiceLinux();
     }
 
     throw new Error("No warcraft service implementation found");

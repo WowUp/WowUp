@@ -20,6 +20,8 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 export class AppComponent implements AfterViewInit {
   private _autoUpdateInterval?: number;
 
+  public showTitleBar: boolean = true;
+
   constructor(
     private _analyticsService: AnalyticsService,
     private _electronService: ElectronService,
@@ -33,6 +35,8 @@ export class AppComponent implements AfterViewInit {
     this.translate.setDefaultLang("en");
 
     this.translate.use(this._electronService.locale);
+
+    this.showTitleBar = !this._electronService.isLinux;
   }
 
   ngAfterViewInit(): void {
@@ -69,14 +73,16 @@ export class AppComponent implements AfterViewInit {
     if (updateCount === 0) {
       return;
     }
-    
+
     const iconPath = await this._fileService.getAssetFilePath(
       "wowup_logo_512np.png"
     );
 
-    this._electronService.showNotification("Auto Updates", {
-      body: `Automatically updated ${updateCount} addons.`,
-      icon: iconPath,
-    });
+    if (this._wowUpService.enableSystemNotifications) {
+      this._electronService.showNotification("Auto Updates", {
+        body: `Automatically updated ${updateCount} addons.`,
+        icon: iconPath,
+      });
+    }
   };
 }

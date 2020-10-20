@@ -92,7 +92,6 @@ export class CurseAddonProvider implements AddonProvider {
         (sr) => sr.addonFolder.name === addonFolder.name
       );
       if (!scanResult.exactMatch) {
-        console.log("No search result match", scanResult.directory);
         continue;
       }
 
@@ -100,7 +99,6 @@ export class CurseAddonProvider implements AddonProvider {
         (addonResult) => addonResult.id === scanResult.exactMatch.id
       );
       if (!scanResult.searchResult) {
-        console.log("No search result match", scanResult.directory);
         continue;
       }
 
@@ -436,7 +434,7 @@ export class CurseAddonProvider implements AddonProvider {
         thumbnailUrl,
         externalUrl: result.websiteUrl,
         providerName: this.name,
-        files: _.orderBy(searchResultFiles, f => f.channelType).reverse(),
+        files: _.orderBy(searchResultFiles, (f) => f.channelType).reverse(),
         downloadCount: result.downloadCount,
       };
 
@@ -572,6 +570,9 @@ export class CurseAddonProvider implements AddonProvider {
       clientType
     );
 
+    const gameVersion =
+      currentVersion.gameVersion[0] || scanResult.addonFolder.toc.interface;
+
     let channelType = this.getChannelType(
       scanResult.exactMatch.file.releaseType
     );
@@ -597,7 +598,7 @@ export class CurseAddonProvider implements AddonProvider {
       externalUrl: scanResult.searchResult.websiteUrl,
       externalId: scanResult.searchResult.id.toString(),
       folderName: scanResult.addonFolder.name,
-      gameVersion: currentVersion.gameVersion[0],
+      gameVersion: gameVersion,
       installedAt: new Date(),
       installedFolders: folderList,
       installedVersion: currentVersion.displayName,

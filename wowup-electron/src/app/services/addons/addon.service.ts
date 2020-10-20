@@ -224,12 +224,20 @@ export class AddonService {
 
       // TODO track error
     } finally {
-      if (fs.existsSync(unzippedDirectory)) {
+      const unzippedDirectoryExists = await this._fileService.pathExists(
+        unzippedDirectory
+      );
+
+      const downloadedFilePathExists = await this._fileService.pathExists(
+        downloadedFilePath
+      );
+
+      if (unzippedDirectoryExists) {
         await this._fileService.deleteDirectory(unzippedDirectory);
       }
 
-      if (fs.existsSync(downloadedFilePath)) {
-        fs.unlinkSync(downloadedFilePath);
+      if (downloadedFilePathExists) {
+        await this._fileService.deleteFile(downloadedFilePath);
       }
     }
 

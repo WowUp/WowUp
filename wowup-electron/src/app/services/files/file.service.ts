@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import {
   COPY_DIRECTORY_CHANNEL,
   DELETE_DIRECTORY_CHANNEL,
+  DELETE_FILE_CHANNEL,
   GET_ASSET_FILE_PATH,
   LIST_DIRECTORIES_CHANNEL,
   LIST_FILES_CHANNEL,
@@ -53,7 +54,11 @@ export class FileService {
     });
   }
 
-  public pathExists(sourcePath: string) {
+  public pathExists(sourcePath: string): Promise<boolean> {
+    if (!sourcePath) {
+      return Promise.resolve(false);
+    }
+
     return new Promise((resolve, reject) => {
       const eventHandler = (_evt: any, arg: ValueResponse<boolean>) => {
         if (arg.error) {
@@ -88,6 +93,25 @@ export class FileService {
 
       this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
       this._electronService.ipcRenderer.send(DELETE_DIRECTORY_CHANNEL, request);
+    });
+  }
+
+  public deleteFile(sourcePath: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const eventHandler = (_evt: any, arg: ValueResponse<boolean>) => {
+        if (arg.error) {
+          return reject(arg.error);
+        }
+        resolve(arg.value);
+      };
+
+      const request: ValueRequest<string> = {
+        value: sourcePath,
+        responseKey: uuidv4(),
+      };
+
+      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
+      this._electronService.ipcRenderer.send(DELETE_FILE_CHANNEL, request);
     });
   }
 
@@ -171,6 +195,14 @@ export class FileService {
       this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
       this._electronService.ipcRenderer.send(LIST_DIRECTORIES_CHANNEL, request);
     });
+  }
+
+  public listEntries(sourcePath: string, filter: string) {
+    const globFilter = globrex(filter);
+
+    return fs
+      .readdirSync(sourcePath, { withFileTypes: true })
+      .filter((entry) => !!globFilter.regex.test(entry.name));
   }
 
   public listFiles(sourcePath: string, filter: string) {

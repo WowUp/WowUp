@@ -23,6 +23,7 @@ import {
   collapseToTrayKey,
   defaultAutoUpdateKeySuffix,
   defaultChannelKeySuffix,
+  ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   lastSelectedWowClientTypeKey,
   wowupReleaseChannelKey,
 } from "../../../constants";
@@ -67,6 +68,8 @@ export class WowUpService {
     this.applicationVersion = _electronService.remote.app.getVersion();
     this.isBetaBuild =
       this.applicationVersion.toLowerCase().indexOf("beta") != -1;
+
+    this.cleanupDownloads();
   }
 
   public get updaterExists() {
@@ -109,6 +112,21 @@ export class WowUpService {
     this._preferenceStorageService.set(
       lastSelectedWowClientTypeKey,
       clientType
+    );
+  }
+
+  public get enableSystemNotifications() {
+    return (
+      this._preferenceStorageService.findByKey(
+        ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY
+      ) === true.toString()
+    );
+  }
+
+  public set enableSystemNotifications(enabled: boolean) {
+    this._preferenceStorageService.set(
+      ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
+      enabled
     );
   }
 
@@ -265,6 +283,7 @@ export class WowUpService {
   }
 
   private setDefaultPreferences() {
+    this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(collapseToTrayKey, true);
     this.setDefaultPreference(
       wowupReleaseChannelKey,
@@ -290,5 +309,29 @@ export class WowUpService {
     return this.isBetaBuild
       ? WowUpReleaseChannelType.Beta
       : WowUpReleaseChannelType.Stable;
+  }
+
+  /**
+   * Clean up lost downloads in the download folder
+   */
+  private async cleanupDownloads() {
+    const downloadFiles = this._fileService.listEntries(
+      this.applicationDownloadsFolderPath,
+      "*"
+    );
+
+    for (let entry of downloadFiles) {
+      const path = join(this.applicationDownloadsFolderPath, entry.name);
+      try {
+        if (entry.isDirectory()) {
+          await this._fileService.deleteDirectory(path);
+        } else {
+          await this._fileService.deleteFile(path);
+        }
+      } catch (e) {
+        console.error("Failed to delete download entry", path);
+        console.error(e);
+      }
+    }
   }
 }
