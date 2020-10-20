@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   Input,
   NgZone,
@@ -36,6 +37,7 @@ import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.c
   selector: "app-my-addons",
   templateUrl: "./my-addons.component.html",
   styleUrls: ["./my-addons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
@@ -68,6 +70,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     {
       name: "addon.latestVersion",
       display: "Latest Version",
+      visible: true,
+      allowToggle: true,
+    },
+    {
+      name: "addon.releasedAt",
+      display: "Released At",
       visible: true,
       allowToggle: true,
     },
@@ -282,9 +290,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
           listItem.displayState === AddonDisplayState.Update
       );
 
-      for (let listItem of listItems) {
-        await this.addonService.installAddon(listItem.addon.id);
-      }
+      await Promise.all(
+        listItems.map(async (listItem) => {
+          try {
+            this.addonService.installAddon(listItem.addon.id);
+          } catch (e) {
+            console.error("Failed to install", e);
+          }
+        })
+      );
     } catch (err) {
       console.error(err);
     }

@@ -15,12 +15,11 @@
         "AUTHOR_COLUMN_HEADER": "Autore",
         "PROVIDER_COLUMN_HEADER": "Provveditore",
         "STATUS_COLUMN_HEADER": "Stato",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "TEXT_ELEMENT"
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "DOWNLOAD_COUNT_COLUMN_HEADER",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       }
     },
     "HOME": {
-      "TITLE": "L'app funziona !",
-      "GO_TO_DETAIL": "Vai ai dettagli",
       "MY_ADDONS_TAB_TITLE": "I Miei Addons",
       "GET_ADDONS_TAB_TITLE": "Ottieni Addons",
       "ABOUT_TAB_TITLE": "Informazioni",
@@ -43,7 +42,8 @@
         "GAME_VERSION_COLUMN_HEADER": "Versione Del Gioco",
         "LATEST_VERSION_COLUMN_HEADER": "Ultima Versione",
         "PROVIDER_COLUMN_HEADER": "Provveditore",
-        "STATUS_COLUMN_HEADER": "Stato"
+        "STATUS_COLUMN_HEADER": "Stato",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Ignora",
@@ -73,7 +73,12 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
         "TELEMETRY_DESCRIPTION": "Aiuta a migliorare WowUp inviando dati di installazione e/o errori anonimi.",
         "TELEMETRY_LABEL": "Telemetria",
-        "TITLE": "Applicazione"
+        "TITLE": "Applicazione",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
@@ -138,6 +143,11 @@
       "UPDATE": "UPDATE",
       "INSTALL": "INSTALL",
       "UPTODATE": "UPTODATE"
+    },
+    "DOWNLOAD_COUNT": {
+      "BILLION": "",
+      "MILLION": "",
+      "THOUSAND": ""
     }
   }
 }

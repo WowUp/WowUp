@@ -5,11 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonProvider, AddonProviderType } from "./addon-provider";
+import { AddonProvider } from "./addon-provider";
 import { WowUpAddonRepresentation } from "../models/wowup-api/wowup-addon.representation";
 import { AddonFolder } from "app/models/wowup/addon-folder";
-import { WowUpGetScanResultsRequest } from "common/wowup/wowup-get-scan-results-request";
-import { WowUpGetScanResultsResponse } from "common/wowup/wowup-get-scan-results-response";
 import { ElectronService } from "app/services";
 import { WOWUP_GET_SCAN_RESULTS } from "common/constants";
 import { WowUpScanResult } from "common/wowup/wowup-scan-result";
@@ -204,25 +202,17 @@ export class WowUpAddonProvider implements AddonProvider {
   ): Promise<AppWowUpScanResult[]> => {
     const t1 = Date.now();
 
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: WowUpGetScanResultsResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
+    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
-        console.log("scan delta", Date.now() - t1);
-        console.log("WowUpGetScanResultsResponse", arg);
-        resolve(arg.scanResults);
-      };
+    const scanResults: AppWowUpScanResult[] = await this._electronService.ipcRenderer.invoke(
+      WOWUP_GET_SCAN_RESULTS,
+      filePaths
+    );
 
-      const request: WowUpGetScanResultsRequest = {
-        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
-        responseKey: uuidv4(),
-      };
+    console.log("scan delta", Date.now() - t1);
+    console.log("WowUpGetScanResultsResponse", scanResults);
 
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(WOWUP_GET_SCAN_RESULTS, request);
-    });
+    return scanResults;
   };
 
   private getAddon(

@@ -27,9 +27,6 @@ import { DefaultHeadersInterceptor } from "./interceptors/default-headers.interc
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { DirectiveModule } from "./directive.module";
 import { MatModule } from "./mat-module";
-import { MatProgressButtonsModule } from "mat-progress-buttons";
-import { ElectronService } from "./services";
-import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -46,7 +43,6 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HomeModule,
     AppRoutingModule,
     DirectiveModule,
-    MatProgressButtonsModule.forRoot(),
     MatModule,
     TranslateModule.forRoot({
       loader: {
