@@ -1,7 +1,7 @@
 {
   "PAGES": {
     "ABOUT": {
-      "CHANGE_LOG_SECTION_LABEL": "Log ändern",
+      "CHANGE_LOG_SECTION_LABEL": "Changelog / Änderungen",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Schau Dir die Webseite an!"
     },
@@ -16,15 +16,15 @@
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "STATUS_COLUMN_HEADER": "Status",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Anzahl Downloads",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
+        "RELEASED_AT_COLUMN_HEADER": "Erscheinungsdatum"
       }
     },
     "HOME": {
       "TITLE": "App funktioniert !",
       "GO_TO_DETAIL": "Zum Detail gehen",
       "MY_ADDONS_TAB_TITLE": "Meine Addons",
-      "GET_ADDONS_TAB_TITLE": "Addons abrufen",
-      "ABOUT_TAB_TITLE": "Über",
+      "GET_ADDONS_TAB_TITLE": "Addons installieren",
+      "ABOUT_TAB_TITLE": "Infos",
       "OPTIONS_TAB_TITLE": "Optionen"
     },
     "MY_ADDONS": {
@@ -42,10 +42,10 @@
         "AUTHOR_COLUMN_HEADER": "Autor",
         "AUTO_UPDATE_ICON_TOOLTIP": "Auto-Update aktiviert",
         "GAME_VERSION_COLUMN_HEADER": "Spielversion",
-        "LATEST_VERSION_COLUMN_HEADER": "Neueste Version",
+        "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "STATUS_COLUMN_HEADER": "Status",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
+        "RELEASED_AT_COLUMN_HEADER": "Erscheinungsdatum"
       },
       "ADDON_CONTEXT_MENU": {
         "IGNORE_ADDON_BUTTON": "Ignorieren",
@@ -70,17 +70,17 @@
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren / Deaktivieren verschiedener Systembenachrichtigungen",
-        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren bei Schliessen",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schliessen",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
         "TELEMETRY_DESCRIPTION": "Helfen Sie WowUp zu verbessern, indem Sie anonyme Installationsdaten und/oder Fehler senden.",
         "TELEMETRY_LABEL": "Telemetrie",
         "TITLE": "Applikation",
-        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "Neustart der App?",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "Bei Aktivierung der Hardwarebeschleunigung benötigt die App einen Neustart.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "Bei Deaktivierung der Hardwarebeschleunigung benötigt die App einen Neustart.",
+        "USE_HARDWARE_ACCELERATION_LABEL" : "Hardwarebeschleunigung aktivieren",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Das Deaktivieren der Hardwarebeschleunigung kann FPS Probleme und Probleme beim Rendern beheben. Eine Änderung dieser Einstellung benötigt einen Neustart der App."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten dumpen",
@@ -133,17 +133,19 @@
   },
   "COMMON": {
     "ADDON_STATUS": {
+      "BACKINGUP": "Backing Up",
       "COMPLETE": "Vollständig",
       "DOWNLOADING": "Herunterladen",
       "INSTALLING": "Installiere",
+      "PENDING": "Pending",
       "UNINSTALLING": "Deinstalliere",
-      "UPDATING": "Aktualisiere"
+      "UPDATING": "Aktualisiere..."
     },
     "ADDON_STATE": {
-      "UNINSTALL": "Deinstalliert",
-      "IGNORED": "Ignoriert",
-      "UPDATE": "Aktualisiert",
-      "INSTALL": "Installiert",
+      "UNINSTALL": "Deinstallieren",
+      "IGNORED": "Ignorieren",
+      "UPDATE": "Aktualisieren",
+      "INSTALL": "Installieren",
       "UPTODATE": "Aktuell"
     }
   }
