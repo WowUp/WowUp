@@ -151,66 +151,6 @@ export class CurseFolderScanner {
     return matches;
   }
 
-  // private computeNormalizedFileHash = (filePath: string) => {
-  //   return this.computeFileHash(filePath, true);
-  // };
-
-  // private computeFileHash = (
-  //   filePath: string,
-  //   normalizeWhitespace: boolean
-  // ) => {
-  //   return this.getFileHash(filePath);
-  // };
-
-  // private computeStringHash = (str: string): Promise<number> => {
-  //   return new Promise((resolve, reject) => {
-  //     const eventHandler = (_evt: any, arg: CurseHashFileResponse) => {
-  //       if (arg.error) {
-  //         return reject(arg.error);
-  //       }
-
-  //       resolve(arg.fingerprint);
-  //     };
-
-  //     const request: CurseHashFileRequest = {
-  //       targetString: str,
-  //       targetStringEncoding: "ascii",
-  //       responseKey: uuidv4(),
-  //       normalizeWhitespace: false,
-  //       precomputedLength: 0,
-  //     };
-
-  //     this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-  //     this._electronService.ipcRenderer.send(CURSE_HASH_FILE_CHANNEL, request);
-  //   });
-  // };
-
-  // private computeHash = (
-  //   filePath: string,
-  //   precomputedLength: number = 0,
-  //   normalizeWhitespace: boolean = false
-  // ): Promise<number> => {
-  //   return new Promise((resolve, reject) => {
-  //     const eventHandler = (_evt: any, arg: CurseHashFileResponse) => {
-  //       if (arg.error) {
-  //         return reject(arg.error);
-  //       }
-
-  //       resolve(arg.fingerprint);
-  //     };
-
-  //     const request: CurseHashFileRequest = {
-  //       responseKey: uuidv4(),
-  //       filePath,
-  //       normalizeWhitespace,
-  //       precomputedLength,
-  //     };
-
-  //     this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-  //     this._electronService.ipcRenderer.send(CURSE_HASH_FILE_CHANNEL, request);
-  //   });
-  // };
-
   private getStringHash(
     targetString: string,
     targetStringEncoding?: BufferEncoding

@@ -204,25 +204,17 @@ export class WowUpAddonProvider implements AddonProvider {
   ): Promise<AppWowUpScanResult[]> => {
     const t1 = Date.now();
 
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: WowUpGetScanResultsResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
+    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
-        console.log("scan delta", Date.now() - t1);
-        console.log("WowUpGetScanResultsResponse", arg);
-        resolve(arg.scanResults);
-      };
+    const scanResults: AppWowUpScanResult[] = await this._electronService.ipcRenderer.invoke(
+      WOWUP_GET_SCAN_RESULTS,
+      filePaths
+    );
 
-      const request: WowUpGetScanResultsRequest = {
-        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
-        responseKey: uuidv4(),
-      };
+    console.log("scan delta", Date.now() - t1);
+    console.log("WowUpGetScanResultsResponse", scanResults);
 
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(WOWUP_GET_SCAN_RESULTS, request);
-    });
+    return scanResults;
   };
 
   private getAddon(

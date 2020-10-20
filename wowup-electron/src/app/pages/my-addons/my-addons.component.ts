@@ -292,9 +292,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
           listItem.displayState === AddonDisplayState.Update
       );
 
-      for (let listItem of listItems) {
-        await this.addonService.installAddon(listItem.addon.id);
-      }
+      await Promise.all(
+        listItems.map(async (listItem) => {
+          try {
+            this.addonService.installAddon(listItem.addon.id);
+          } catch (e) {
+            console.error("Failed to install", e);
+          }
+        })
+      );
     } catch (err) {
       console.error(err);
     }
