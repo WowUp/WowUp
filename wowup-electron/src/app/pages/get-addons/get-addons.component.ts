@@ -40,8 +40,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  private subscriptions: Subscription[] = [];
-  private isSelectedTab: boolean = false;
+  private _subscriptions: Subscription[] = [];
+  private _isSelectedTab: boolean = false;
 
   public dataSource = new MatTableDataSource<GetAddonListItem>([]);
 
@@ -84,8 +84,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _cdRef: ChangeDetectorRef
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
-      this.isSelectedTab = tabIndex === this.tabIndex;
-      if (this.isSelectedTab) {
+      this._isSelectedTab = tabIndex === this.tabIndex;
+      if (this._isSelectedTab) {
         this.setPageContextText();
       }
     });
@@ -114,20 +114,20 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         this.onSearch();
       });
 
-    this._addonService.addonInstalled$.subscribe(() => {
-      this._cdRef.detectChanges();
-    });
-
-    // this.subscriptions = [
-    //   selectedClientSubscription,
-    //   addonRemovedSubscription,
-    //   displayAddonSubscription,
-    //   channelTypeSubscription,
-    // ];
+    this._subscriptions = [
+      selectedClientSubscription,
+      addonRemovedSubscription,
+      channelTypeSubscription,
+    ];
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions = [];
+  }
+
+  onStatusColumnUpdated() {
+    this._cdRef.detectChanges();
   }
 
   private setDataSource(items: GetAddonListItem[]) {

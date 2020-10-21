@@ -1,15 +1,16 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { AddonViewModel } from "app/business-objects/my-addon-list-item";
 import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { AddonService } from "app/services/addons/addon.service";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-addon-update-button",
   templateUrl: "./addon-update-button.component.html",
   styleUrls: ["./addon-update-button.component.scss"],
 })
-export class AddonUpdateButtonComponent implements OnInit {
+export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   @Input() listItem: AddonViewModel;
 
   constructor(
@@ -17,7 +18,12 @@ export class AddonUpdateButtonComponent implements OnInit {
     private _translateService: TranslateService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+   
+  }
+    
+  ngOnDestroy(): void {
+  }
 
   public get installProgress() {
     return this.listItem?.installProgress || 0;
