@@ -1,9 +1,9 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.0.0-alpha.14",
+  "version": "2.0.0-alpha.15",
   "description": "Word of Warcraft addon updater",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "homepage": "https://wowup.io",
   "author": {
     "name": "Jliddev",
     "email": "jliddev@gmail.com"

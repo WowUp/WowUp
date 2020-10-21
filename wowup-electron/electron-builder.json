@@ -1,5 +1,6 @@
 {
   "productName": "WowUp",
+  "appId": "io.wowup.jliddev",
   "directories": {
     "output": "release/"
   },
