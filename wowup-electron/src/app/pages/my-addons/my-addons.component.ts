@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   NgZone,
@@ -117,6 +118,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     private _sessionService: SessionService,
     private _ngZone: NgZone,
     private _dialog: MatDialog,
+    private _cdRef: ChangeDetectorRef,
     public electronService: ElectronService,
     public overlay: Overlay,
     public viewContainerRef: ViewContainerRef,
@@ -197,7 +199,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
         map((clientType) => {
@@ -210,15 +212,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(selectedClientSubscription);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onRefresh() {
+  public onRefresh() {
     this.loadAddons(this.selectedClient);
   }
 
-  onRowClicked(event: MouseEvent, row: AddonViewModel, index: number) {
+  public onRowClicked(event: MouseEvent, row: AddonViewModel, index: number) {
     console.log(row.displayState);
     console.log("index clicked: " + index);
 
@@ -251,7 +253,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectAllRows(event: KeyboardEvent) {
+  public selectAllRows(event: KeyboardEvent) {
     event.preventDefault();
     if (
       (event.ctrlKey && this.electronService.isMac) ||
@@ -265,7 +267,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDetailDialog(listItem: AddonViewModel) {
+  public openDetailDialog(listItem: AddonViewModel) {
     const data: AddonDetailModel = {
       listItem,
     };
@@ -277,16 +279,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe();
   }
 
-  filterAddons(): void {
+  public filterAddons(): void {
     this.dataSource.filter = this.filter.trim().toLowerCase();
   }
 
-  onClearFilter(): void {
+  public onClearFilter(): void {
     this.filter = "";
     this.filterAddons();
   }
 
-  async onUpdateAll() {
+  public async onUpdateAll() {
     this.enableControls = false;
 
     try {
@@ -313,14 +315,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.enableControls = true;
   }
 
-  async onUpdateAllRetailClassic() {
+  public async onUpdateAllRetailClassic() {
     await this.updateAllWithSpinner(
       WowClientType.Retail,
       WowClientType.Classic
     );
   }
 
-  async onUpdateAllClients() {
+  public async onUpdateAllClients() {
     await this.updateAllWithSpinner(
       WowClientType.Retail,
       WowClientType.RetailPtr,
@@ -330,7 +332,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     );
   }
 
-  onHeaderContext(event: MouseEvent) {
+  public onHeaderContext(event: MouseEvent) {
     event.preventDefault();
     this.updateContextMenuPosition(event);
     this.columnContextMenu.menuData = {
@@ -340,7 +342,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.columnContextMenu.openMenu();
   }
 
-  onCellContext(event: MouseEvent, listItem: AddonViewModel) {
+  public onCellContext(event: MouseEvent, listItem: AddonViewModel) {
     event.preventDefault();
     this.updateContextMenuPosition(event);
 
@@ -358,17 +360,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onUpdateAllContext(event: MouseEvent) {
+  public onUpdateAllContext(event: MouseEvent) {
     event.preventDefault();
     this.updateContextMenuPosition(event);
     this.updateAllContextMenu.openMenu();
   }
 
-  async onReInstallAddon(listItems: AddonViewModel) {
+  public async onReInstallAddon(listItems: AddonViewModel) {
     await this.onReInstallAddons([listItems]);
   }
 
-  async onReInstallAddons(listItems: AddonViewModel[]) {
+  public async onReInstallAddons(listItems: AddonViewModel[]) {
     for (let listItem of listItems) {
       try {
         await this.addonService.installAddon(listItem.addon.id);
@@ -378,7 +380,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onShowfolder(addon: Addon) {
+  public onShowfolder(addon: Addon) {
     try {
       const addonPath = this.addonService.getFullInstallPath(addon);
       this.electronService.shell.openExternal(addonPath);
@@ -387,7 +389,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onUpdateAddon(listItem: AddonViewModel) {
+  public onUpdateAddon(listItem: AddonViewModel) {
     listItem.isInstalling = true;
 
     this.addonService.installAddon(listItem.addon.id);
@@ -400,7 +402,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     col.visible = event.checked;
   }
 
-  onReScan() {
+  public onReScan() {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: `Start re-scan?`,
@@ -416,11 +418,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClientChange() {
+  public onClientChange() {
     this._sessionService.selectedClientType = this.selectedClient;
   }
 
-  onRemoveAddon(addon: Addon) {
+  public onRemoveAddon(addon: Addon) {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: `Uninstall Addon?`,
@@ -438,7 +440,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRemoveAddons(listItems: AddonViewModel[]) {
+  public onRemoveAddons(listItems: AddonViewModel[]) {
     let message = "";
     if (listItems.length > 3) {
       message = `Are you sure you want to remove the selected ${listItems.length} addons?`;
@@ -470,13 +472,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onInstall() {}
+  public onInstall() {}
 
-  onClickIgnoreAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
+  public onClickIgnoreAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
     this.onClickIgnoreAddons(evt, [listItem]);
   }
 
-  onClickIgnoreAddons(evt: MatCheckboxChange, listItems: AddonViewModel[]) {
+  public onClickIgnoreAddons(
+    evt: MatCheckboxChange,
+    listItems: AddonViewModel[]
+  ) {
     listItems.forEach((listItem) => {
       listItem.addon.isIgnored = evt.checked;
       if (evt.checked) {
@@ -491,11 +496,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClickAutoUpdateAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
+  public onClickAutoUpdateAddon(
+    evt: MatCheckboxChange,
+    listItem: AddonViewModel
+  ) {
     this.onClickAutoUpdateAddons(evt, [listItem]);
   }
 
-  onClickAutoUpdateAddons(evt: MatCheckboxChange, listItems: AddonViewModel[]) {
+  public onClickAutoUpdateAddons(
+    evt: MatCheckboxChange,
+    listItems: AddonViewModel[]
+  ) {
     listItems.forEach((listItem) => {
       listItem.addon.autoUpdateEnabled = evt.checked;
       if (evt.checked) {
@@ -509,11 +520,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSelectedAddonChannelChange(evt: MatRadioChange, listItem: AddonViewModel) {
+  public onSelectedAddonChannelChange(
+    evt: MatRadioChange,
+    listItem: AddonViewModel
+  ) {
     this.onSelectedAddonsChannelChange(evt, [listItem]);
   }
 
-  onSelectedAddonsChannelChange(
+  public onSelectedAddonsChannelChange(
     evt: MatRadioChange,
     listItems: AddonViewModel[]
   ) {
@@ -524,7 +538,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.loadAddons(this.selectedClient);
   }
 
-  isSelectedItemsProp(listItems: AddonViewModel[], prop: string) {
+  public isSelectedItemsProp(listItems: AddonViewModel[], prop: string) {
     return _.some(listItems, prop);
   }
 
@@ -575,6 +589,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private loadAddons(clientType: WowClientType, rescan = false) {
     this.isBusy = true;
     this.enableControls = false;
+    this._cdRef.detectChanges();
 
     console.log("Load-addons", clientType);
 

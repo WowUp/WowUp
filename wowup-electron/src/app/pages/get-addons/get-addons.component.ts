@@ -79,9 +79,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _sessionService: SessionService,
     private _dialog: MatDialog,
     private _wowUpService: WowUpService,
+    private _cdRef: ChangeDetectorRef,
     public electronService: ElectronService,
-    public warcraftService: WarcraftService,
-    private _cdRef: ChangeDetectorRef
+    public warcraftService: WarcraftService
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this._isSelectedTab = tabIndex === this.tabIndex;
