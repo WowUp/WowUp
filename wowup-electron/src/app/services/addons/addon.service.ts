@@ -754,6 +754,8 @@ export class AddonService {
       isIgnored: false,
       autoUpdateEnabled: this._wowUpService.getDefaultAutoUpdate(clientType),
       releasedAt: latestFile.releaseDate,
+      summary: searchResult.summary,
+      screenshotUrls: searchResult.screenshotUrls
     };
   }
 }
