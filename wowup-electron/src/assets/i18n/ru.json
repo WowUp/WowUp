@@ -82,11 +82,11 @@
         "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения."
       },
       "ADDON_SOURCES": {
-        "TITLE": "TEXT_ELEMENT",
+        "TITLE": "Источники модификаций",
         "ENABLED_SOURCES": {
-          "FIELD_LABEL": "TEXT_ELEMENT",
-          "DESCRIPTION": "TEXT_ELEMENT",
-          "INPUT_LABEL": "TEXT_ELEMENT"
+          "FIELD_LABEL": "Включенные источники модификаций",
+          "DESCRIPTION": "Выберите желаемые источники для установки и обновления ваших модификаций.",
+          "INPUT_LABEL": "Источники"
         }
       },
       "DEBUG": {
