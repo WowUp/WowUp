@@ -305,7 +305,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     }
 
     if (this._addonService.getEnabledAddonProviders().length === 0) {
-      this._displayAddonsSrc.next([]);
+      this.setDataSource([]);
       return;
     }
 

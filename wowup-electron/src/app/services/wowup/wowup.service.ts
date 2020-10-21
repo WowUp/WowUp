@@ -213,12 +213,12 @@ export class WowUpService {
   }
 
   public get enabledAddonProviders() {
-    const preference = this._preferenceStorageService.findByKey(enabledAddonProvidersKey)
+    const preference = this._preferenceStorageService.findByKey(ENABLED_ADDON_PROVIDERS_KEY)
     return preference.split(',');
   }
 
   public set enabledAddonProviders(value) {
-    const key = enabledAddonProvidersKey;
+    const key = ENABLED_ADDON_PROVIDERS_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() })
   }
