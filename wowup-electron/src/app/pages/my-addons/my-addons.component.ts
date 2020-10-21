@@ -31,7 +31,10 @@ import { getEnumName } from "app/utils/enum.utils";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import { stringIncludes } from "app/utils/string.utils";
-import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
+import {
+  AddonDetailComponent,
+  AddonDetailModel,
+} from "app/components/addon-detail/addon-detail.component";
 
 @Component({
   selector: "app-my-addons",
@@ -263,8 +266,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   openDetailDialog(listItem: AddonViewModel) {
+    const data: AddonDetailModel = {
+      listItem,
+    };
+
     const dialogRef = this._dialog.open(AddonDetailComponent, {
-      data: listItem.addon,
+      data,
     });
 
     dialogRef.afterClosed().subscribe();

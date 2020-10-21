@@ -9,10 +9,12 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { AddonDetailComponent } from "app/components/addon-detail/addon-detail.component";
+import {
+  AddonDetailComponent,
+  AddonDetailModel,
+} from "app/components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonDetailModel } from "app/models/wowup/addon-detail.model";
 import { ColumnState } from "app/models/wowup/column-state";
 import { ElectronService } from "app/services";
 import { AddonService } from "app/services/addons/addon.service";
@@ -183,9 +185,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.setPageContextText();
   }
 
-  openDetailDialog(addon: AddonSearchResult) {
+  openDetailDialog(listItem: GetAddonListItem) {
+    const data: AddonDetailModel = {
+      searchResult: listItem.searchResult,
+    };
+
     const dialogRef = this._dialog.open(AddonDetailComponent, {
-      data: addon,
+      data,
     });
 
     dialogRef.afterClosed().subscribe();

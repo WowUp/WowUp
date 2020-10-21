@@ -4,7 +4,7 @@ import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { AddonDisplayState } from "../models/wowup/addon-display-state";
 
 export class AddonViewModel {
-  public readonly addon: Addon;
+  public addon: Addon;
 
   public installState: AddonInstallState = AddonInstallState.Unknown;
   public isInstalling: boolean = false;

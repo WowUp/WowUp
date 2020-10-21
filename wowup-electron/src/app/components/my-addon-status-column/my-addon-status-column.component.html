@@ -1,8 +1,5 @@
 <div class="row">
-  <app-progress-button *ngIf="showStatusText === false" [value]="installProgress" [showProgress]="isButtonActive"
-    [disable]="isButtonDisabled" (btnClick)="onInstallUpdateClick()">
-    {{buttonText}}
-  </app-progress-button>
+  <app-addon-update-button *ngIf="showStatusText === false" [listItem]="listItem"></app-addon-update-button>
   <div *ngIf="showStatusText === true" class="status-text" [ngClass]="{ ignored: listItem.isIgnored }">
     {{ getStatusText() }}
   </div>

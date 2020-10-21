@@ -425,6 +425,7 @@ export class CurseAddonProvider implements AddonProvider {
         providerName: this.name,
         files: _.orderBy(searchResultFiles, (f) => f.channelType).reverse(),
         downloadCount: result.downloadCount,
+        summary: result.summary
       };
 
       return searchResult;

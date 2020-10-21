@@ -236,6 +236,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         providerName: this.name,
         downloadCount: response.downloads,
         files: [searchResultFile],
+        summary: response.description.substr(0, 100),
       };
     } catch (err) {
       console.error("Failed to create addon search result", err);
