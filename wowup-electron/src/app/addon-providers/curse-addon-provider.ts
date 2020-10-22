@@ -319,7 +319,7 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getAddonSearchResult(result));
+      searchResults.push(this.getAddonSearchResult(result, latestFiles));
     }
 
     return searchResults;
