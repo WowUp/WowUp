@@ -15,8 +15,9 @@ import { AppRoutingModule } from "./app-routing.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 // NG Translate
-import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateModule, TranslateLoader, TranslateCompiler } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
 
 import { HomeModule } from "./pages/home/home.module";
 
@@ -50,6 +51,10 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
         useFactory: httpLoaderFactory,
         deps: [HttpClient],
       },
+      compiler: {
+        provide: TranslateCompiler,
+        useClass: TranslateMessageFormatCompiler
+      }
     }),
     BrowserAnimationsModule,
   ],

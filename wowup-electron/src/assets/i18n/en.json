@@ -151,6 +151,12 @@
       "BILLION": "billion",
       "MILLION": "million",
       "THOUSAND": "thousand"
+    },
+    "DATES": {
+      "JUST_NOW": "Just now",
+      "YESTERDAY": "Yesterday",
+      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
+      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago"
     }
   }
 }

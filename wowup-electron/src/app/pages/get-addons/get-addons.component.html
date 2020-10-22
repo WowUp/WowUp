@@ -65,7 +65,13 @@
           {{'PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          {{element | getAddonListItemFileProp:'releaseDate':defaultAddonChannel | date:'short'}}
+          <ng-template let-releasedAt
+            [ngTemplateOutletContext]="{ $implicit: element | getAddonListItemFileProp:'releaseDate':defaultAddonChannel }"
+            [ngTemplateOutlet]="t" #t>
+            <div [matTooltip]="releasedAt | date:'short'" matTooltipPosition="above" matTooltipShowDelay="500">
+              {{releasedAt | relativeDuration}}
+            </div>
+          </ng-template>
         </td>
       </ng-container>
 
