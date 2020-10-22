@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 
 @Component({
@@ -8,4 +8,10 @@ import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 })
 export class GetAddonStatusColumnComponent {
   @Input() addonSearchResult: AddonSearchResult;
+
+  @Output() onInstallViewUpdated: EventEmitter<boolean> = new EventEmitter();
+
+  onInstallButtonUpdated() {
+    this.onInstallViewUpdated.emit(true);
+  }
 }

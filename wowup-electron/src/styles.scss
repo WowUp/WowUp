@@ -94,6 +94,7 @@ img {
   }
 }
 
+.mat-button,
 .mat-stroked-button,
 .mat-flat-button {
   &:hover {
@@ -203,6 +204,10 @@ img {
   flex-grow: 1;
 }
 
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -211,8 +216,16 @@ img {
     align-items: center;
   }
 
+  &.align-items-start {
+    align-items: flex-start;
+  }
+
   &.justify-content-center {
     justify-content: center;
+  }
+
+  &.justify-content-end {
+    justify-content: flex-end;
   }
 }
 

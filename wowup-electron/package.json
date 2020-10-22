@@ -1,9 +1,9 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.0.0-alpha.14",
+  "version": "2.0.0-alpha.15",
   "description": "Word of Warcraft addon updater",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "homepage": "https://wowup.io",
   "author": {
     "name": "Jliddev",
     "email": "jliddev@gmail.com"
@@ -118,6 +118,7 @@
     "electron-log": "4.2.4",
     "electron-store": "6.0.1",
     "electron-updater": "4.3.5",
+    "firebase": "7.24.0",
     "fs-extra": "9.0.1",
     "globrex": "0.1.2",
     "lodash": "4.17.20",

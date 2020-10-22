@@ -70,7 +70,7 @@ export class WowUpService {
     this.isBetaBuild =
       this.applicationVersion.toLowerCase().indexOf("beta") != -1;
 
-    this.cleanupDownloads();
+    this.createDownloadDirectory().then(() => this.cleanupDownloads());
   }
 
   public get updaterExists() {
@@ -111,7 +111,10 @@ export class WowUpService {
   }
 
   public set wowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType) {
-    this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
+    this._preferenceStorageService.set(
+      WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
+      releaseChannel
+    );
   }
 
   public get lastSelectedClientType(): WowClientType {
@@ -301,5 +304,11 @@ export class WowUpService {
         console.error(e);
       }
     }
+  }
+
+  private async createDownloadDirectory() {
+    await this._fileService.createDirectory(
+      this.applicationDownloadsFolderPath
+    );
   }
 }

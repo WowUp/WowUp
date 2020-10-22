@@ -215,6 +215,7 @@ export class TukUiAddonProvider implements AddonProvider {
       providerName: this.name,
       downloadCount: parseInt(addon.downloads, 10),
       files: [latestFile],
+      summary: addon.small_desc
     };
   }
 

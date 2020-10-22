@@ -24,6 +24,7 @@ import { TocService } from "../toc/toc.service";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AnalyticsService } from "../analytics/analytics.service";
+import { getEnumName } from "app/utils/enum.utils";
 
 interface InstallQueueItem {
   addonId: string;
@@ -84,8 +85,8 @@ export class AddonService {
     var searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackUserAction(
-      "Addons",
-      "Search",
+      "addons",
+      "search",
       `${clientType}|${query}`
     );
 
@@ -268,10 +269,13 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      await this._analyticsService.trackUserAction(
-        "Addons",
-        "InstallById",
-        `${addon.clientType}|${addon.name}`
+      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${
+        addon.providerName
+      }|${addon.externalId}|${addon.name}`;
+      this._analyticsService.trackUserAction(
+        "addons",
+        "install_by_id",
+        actionLabel
       );
 
       queueItem.completion.resolve();
@@ -557,10 +561,8 @@ export class AddonService {
       if (
         !result ||
         !latestFile ||
-        (
-          latestFile.version === addon.latestVersion &&
-          latestFile.releaseDate === addon.releasedAt
-        )
+        (latestFile.version === addon.latestVersion &&
+          latestFile.releaseDate === addon.releasedAt)
       ) {
         continue;
       }
@@ -754,6 +756,8 @@ export class AddonService {
       isIgnored: false,
       autoUpdateEnabled: this._wowUpService.getDefaultAutoUpdate(clientType),
       releasedAt: latestFile.releaseDate,
+      summary: searchResult.summary,
+      screenshotUrls: searchResult.screenshotUrls,
     };
   }
 }

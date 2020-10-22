@@ -29,6 +29,7 @@ import { AddonInstallButtonComponent } from "app/components/addon-install-button
 import { GetAddonStatusColumnComponent } from "app/components/get-addon-status-column/get-addon-status-column.component";
 import { MyAddonStatusColumnComponent } from "app/components/my-addon-status-column/my-addon-status-column.component";
 import { ProgressButtonComponent } from "app/components/progress-button/progress-button.component";
+import { AddonUpdateButtonComponent } from "app/components/addon-update-button/addon-update-button.component";
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ProgressButtonComponent } from "app/components/progress-button/progress
     GetAddonStatusColumnComponent,
     MyAddonStatusColumnComponent,
     ProgressButtonComponent,
+    AddonUpdateButtonComponent,
   ],
   imports: [
     CommonModule,

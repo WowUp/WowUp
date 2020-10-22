@@ -1,17 +1,31 @@
-import { Component, Input } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { AddonService } from "app/services/addons/addon.service";
 import { SessionService } from "app/services/session/session.service";
+import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-addon-install-button",
   templateUrl: "./addon-install-button.component.html",
   styleUrls: ["./addon-install-button.component.scss"],
 })
-export class AddonInstallButtonComponent {
+export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   @Input() addonSearchResult: AddonSearchResult;
+
+  @Output() onViewUpdated: EventEmitter<boolean> = new EventEmitter();
+
+  private _subscriptions: Subscription[] = [];
 
   public disableButton = false;
   public showProgress = false;
@@ -23,6 +37,36 @@ export class AddonInstallButtonComponent {
     private _sessionService: SessionService,
     private _translate: TranslateService
   ) {}
+
+  ngOnInit(): void {
+    this.disableButton = this._addonService.isInstalled(
+      this.addonSearchResult.externalId,
+      this._sessionService.selectedClientType
+    );
+
+    const addonInstalledSub = this._addonService.addonInstalled$
+      .pipe(
+        filter(
+          (evt) =>
+            evt.addon.externalId === this.addonSearchResult.externalId &&
+            evt.addon.providerName === this.addonSearchResult.providerName
+        )
+      )
+      .subscribe((evt) => {
+        this.showProgress = this.getIsButtonActive(evt.installState);
+        this.disableButton = this.getIsButtonDisabled(evt.installState);
+        this.progressValue = evt.progress;
+        this.buttonText = this.getButtonText(evt.installState);
+        this.onViewUpdated.emit(true);
+      });
+
+    this._subscriptions.push(addonInstalledSub);
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions = [];
+  }
 
   public getIsButtonActive(installState: AddonInstallState) {
     return (
@@ -61,21 +105,10 @@ export class AddonInstallButtonComponent {
     return this._translate.instant("COMMON.ADDON_STATE.INSTALL");
   }
 
-  public onInstallUpdateClick() {
-    this._addonService.installPotentialAddon(
+  public async onInstallUpdateClick() {
+    await this._addonService.installPotentialAddon(
       this.addonSearchResult,
-      this._sessionService.selectedClientType,
-      this.onInstallUpdate
+      this._sessionService.selectedClientType
     );
   }
-
-  private onInstallUpdate = (
-    installState: AddonInstallState,
-    progress: number
-  ) => {
-    this.showProgress = this.getIsButtonActive(installState);
-    this.disableButton = this.getIsButtonDisabled(installState);
-    this.progressValue = progress;
-    this.buttonText = this.getButtonText(installState);
-  };
 }

@@ -104,6 +104,8 @@ log.transports.file.resolvePath = (
 };
 log.info("Main starting");
 
+app.setAppUserModelId("io.wowup.jliddev");
+
 if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
   log.info("Hardware acceleration disabled");
   app.disableHardwareAcceleration();
