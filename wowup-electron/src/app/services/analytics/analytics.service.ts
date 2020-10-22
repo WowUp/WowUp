@@ -1,10 +1,12 @@
-import { ErrorHandler, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { v4 as uuidv4 } from "uuid";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { AppConfig } from "environments/environment";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { ElectronService } from "../electron/electron.service";
 import { BehaviorSubject } from "rxjs";
+import * as firebase from "firebase/app";
+import "firebase/analytics";
 
 @Injectable({
   providedIn: "root",
@@ -16,12 +18,31 @@ export class AnalyticsService {
   private readonly _appVersion: string;
   private readonly _telemetryEnabledSrc = new BehaviorSubject(false);
 
+  private _firebaseApp?: firebase.app.App;
+  private _firebaseAnalytics?: firebase.analytics.Analytics;
+
   public readonly telemetryPromptUsedKey = "telemetry_prompt_sent";
   public readonly telemetryEnabledKey = "telemetry_enabled";
   public readonly telemetryEnabled$ = this._telemetryEnabledSrc.asObservable();
 
   private get installId() {
     return this._installId;
+  }
+
+  private startFirebase() {
+    if (this._firebaseApp) {
+      return;
+    }
+
+    console.log("Firebase setup");
+
+    this._firebaseApp = firebase.initializeApp(AppConfig.firebaseConfig);
+    this._firebaseAnalytics = firebase.analytics(this._firebaseApp);
+    this._firebaseAnalytics.setUserId(this.installId);
+  }
+
+  private setFirebaseAnalyticsEnabled(enabled: boolean) {
+    this._firebaseAnalytics?.setAnalyticsCollectionEnabled(enabled);
   }
 
   public get shouldPromptTelemetry() {
@@ -34,7 +55,14 @@ export class AnalyticsService {
     const preference = this._preferenceStorageService.findByKey(
       this.telemetryEnabledKey
     );
-    return preference === true.toString();
+    const isEnabled = preference === true.toString();
+
+    this.setFirebaseAnalyticsEnabled(isEnabled);
+    if (isEnabled) {
+      this.startFirebase();
+    }
+
+    return isEnabled;
   }
 
   public set telemetryEnabled(value: boolean) {
@@ -44,69 +72,69 @@ export class AnalyticsService {
 
   constructor(
     private _electronService: ElectronService,
-    private _httpClient: HttpClient,
     private _preferenceStorageService: PreferenceStorageService
   ) {
-    this._appVersion = _electronService.remote.app.getVersion();
+    this._appVersion = this._electronService.remote.app.getVersion();
     this._installId = this.loadInstallId();
     this._telemetryEnabledSrc.next(this.telemetryEnabled);
-    console.log("installId", this._installId);
   }
 
-  public async trackStartup() {
-    await this.track((params) => {
-      params.set("t", "pageview");
-      params.set("dp", "app/startup");
-    });
+  public trackStartup() {
+    this._firebaseAnalytics.logEvent("app_startup");
   }
 
-  public async trackUserAction(
+  public trackUserAction(
     category: string,
     action: string,
     label: string = null
   ) {
-    await this.track((params) => {
-      params.set("t", "event");
-      params.set("ec", category);
-      params.set("ea", action);
-      params.set("el", label);
+    this.trackEvent(category, {
+      [action]: label,
     });
   }
 
-  private async track(action: (params: HttpParams) => void = undefined) {
+  private trackEvent(eventName: string, params: { [key: string]: any }) {
     if (!this.telemetryEnabled) {
       return;
     }
 
-    var url = `${this.analyticsUrl}/collect`;
-
-    try {
-      let params = new URLSearchParams();
-      params.set("v", "1");
-      params.set("tid", AppConfig.googleAnalyticsId);
-      params.set("cid", this._installId);
-      params.set("ua", window.navigator.userAgent);
-      params.set("an", "WowUp Client");
-      params.set("av", this._appVersion);
-
-      action?.call(this, params);
-
-      const fullUrl = `${url}?${params}`;
-
-      const response = await this._httpClient
-        .post(
-          fullUrl,
-          {},
-          {
-            responseType: "text",
-          }
-        )
-        .toPromise();
-    } catch (e) {
-      // eat
-      console.error(e);
-    }
+    this._firebaseAnalytics.logEvent(eventName, params);
   }
+
+  // private async track(action: (params: HttpParams) => void = undefined) {
+  //   if (!this.telemetryEnabled) {
+  //     return;
+  //   }
+
+  //   var url = `${this.analyticsUrl}/collect`;
+
+  //   try {
+  //     let params = new URLSearchParams();
+  //     params.set("v", "1");
+  //     params.set("tid", AppConfig.googleAnalyticsId);
+  //     params.set("cid", this._installId);
+  //     params.set("ua", window.navigator.userAgent);
+  //     params.set("an", "WowUp Client");
+  //     params.set("av", this._appVersion);
+
+  //     action?.call(this, params);
+
+  //     const fullUrl = `${url}?${params}`;
+
+  //     const response = await this._httpClient
+  //       .post(
+  //         fullUrl,
+  //         {},
+  //         {
+  //           responseType: "text",
+  //         }
+  //       )
+  //       .toPromise();
+  //   } catch (e) {
+  //     // eat
+  //     console.error(e);
+  //   }
+  // }
 
   private loadInstallId() {
     let installId = this._preferenceStorageService.findByKey(

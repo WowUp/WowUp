@@ -1,9 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { AddonViewModel } from "app/business-objects/my-addon-list-item";
+import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { AddonService } from "app/services/addons/addon.service";
-import { filter } from "rxjs/operators";
+import { AnalyticsService } from "app/services/analytics/analytics.service";
+import { getEnumName } from "app/utils/enum.utils";
 
 @Component({
   selector: "app-addon-update-button",
@@ -15,14 +17,18 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
 
   constructor(
     private _addonService: AddonService,
+    private _analyticsService: AnalyticsService,
     private _translateService: TranslateService
   ) {}
 
-  ngOnInit(): void {
-   
-  }
-    
-  ngOnDestroy(): void {
+  ngOnInit(): void {}
+
+  ngOnDestroy(): void {}
+
+  public get actionLabel() {
+    return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${
+      this.listItem?.addon.providerName
+    }|${this.listItem?.addon.externalId}|${this.listItem?.addon.name}`;
   }
 
   public get installProgress() {
@@ -39,7 +45,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   public get isButtonDisabled() {
     return (
       this.listItem?.isUpToDate ||
-      this.listItem?.installState < AddonInstallState.Unknown 
+      this.listItem?.installState < AddonInstallState.Unknown
     );
   }
 
@@ -52,6 +58,12 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public onInstallUpdateClick() {
+    this._analyticsService.trackUserAction(
+      "addons",
+      "update_addon",
+      this.actionLabel
+    );
+
     this._addonService.installAddon(
       this.listItem.addon.id,
       this.onInstallUpdate

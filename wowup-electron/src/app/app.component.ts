@@ -52,10 +52,10 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    // this._autoUpdateInterval = window.setInterval(
-    //   this.onAutoUpdateInterval,
-    //   AUTO_UPDATE_PERIOD_MS
-    // );
+    this._autoUpdateInterval = window.setInterval(
+      this.onAutoUpdateInterval,
+      AUTO_UPDATE_PERIOD_MS
+    );
   }
 
   openDialog(): void {

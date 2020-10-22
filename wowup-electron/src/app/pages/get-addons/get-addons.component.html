@@ -64,8 +64,10 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER' | translate}}
         </th>
-        <td mat-cell *matCellDef="let element">
-          {{element | getAddonListItemFileProp:'releaseDate':defaultAddonChannel | date:'short'}}
+        <td mat-cell *matCellDef="let element" >
+          <div matTooltip="TEST">
+            {{element | getAddonListItemFileProp:'releaseDate':defaultAddonChannel | date:'short'}}
+          </div>
         </td>
       </ng-container>
 
