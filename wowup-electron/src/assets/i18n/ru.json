@@ -1,7 +1,7 @@
 {
   "APP": {
-    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} addons.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates"
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления"
   },
   "COMMON": {
     "ADDON_STATE": {
@@ -51,7 +51,7 @@
       "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
       "IMPORT_BUTTON": "Импорт",
       "INSTALL_BUTTON": "Установить",
-      "INSTALL_SUCCESS_LABEL": "Установлено!",
+      "INSTALL_SUCCESS_LABEL": "Установлена!",
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub*",
       "TITLE": "Ссылка на установку модификации"
     },
@@ -136,11 +136,11 @@
         "STATUS_COLUMN_HEADER": "Статус"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
-        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
-        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
-        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
-        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
+        "CONFIRMATION_ACTION_EXPLANATION": "Это действие удалит все относящиеся папки модификации из вашей папки World of Warcraft.",
+        "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации}}?",
+        "CONFIRMATION_MORE_THAN_THREE": "Вы действительно хотите удалить выбранные {count} {count, plural, few{модификации} other{модификаций}}?",
+        "CONFIRMATION_ONE": "Вы действительно хотите удалить {addonName}?",
+        "TITLE": "Удалить {count, plural, {count, plural, one{модификацию} other{модификаций}}}?"
       },
       "UPDATE_ALL_BUTTON": "Обновить всё",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
