@@ -104,6 +104,8 @@
       "FILTER_LABEL": "Фильтр",
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Модификация",
         "ADDON_INSTALL_BUTTON": "Установить",

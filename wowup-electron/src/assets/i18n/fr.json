@@ -104,6 +104,8 @@
       "FILTER_LABEL": "Filter",
       "RESCAN_FOLDERS_BUTTON": "Re-scanner les dossiers",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannez votre dossier client pour trouver des extensions installées",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installer",

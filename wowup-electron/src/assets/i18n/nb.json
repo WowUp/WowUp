@@ -104,6 +104,8 @@
       "FILTER_LABEL": "Filter",
       "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Utvidelse",
         "ADDON_INSTALL_BUTTON": "Installer",

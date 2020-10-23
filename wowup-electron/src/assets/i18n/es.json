@@ -104,6 +104,8 @@
       "FILTER_LABEL": "Filter",
       "RESCAN_FOLDERS_BUTTON": "Volver a escanear carpetas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Busca por addons instalados",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Instalar",

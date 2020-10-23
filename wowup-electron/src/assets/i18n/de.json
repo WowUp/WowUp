@@ -104,6 +104,8 @@
       "FILTER_LABEL": "Filter",
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannen Sie Ihren Client-Ordner nach installierten Addons",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installieren",

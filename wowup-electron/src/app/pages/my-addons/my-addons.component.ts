@@ -7,7 +7,6 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewContainerRef,
 } from "@angular/core";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { map } from "rxjs/operators";
@@ -36,6 +35,7 @@ import {
   AddonDetailComponent,
   AddonDetailModel,
 } from "app/components/addon-detail/addon-detail.component";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-my-addons",
@@ -119,9 +119,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     private _ngZone: NgZone,
     private _dialog: MatDialog,
     private _cdRef: ChangeDetectorRef,
+    private _translateService: TranslateService,
     public electronService: ElectronService,
     public overlay: Overlay,
-    public viewContainerRef: ViewContainerRef,
     public warcraftService: WarcraftService
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
@@ -405,8 +405,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onReScan() {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: `Start re-scan?`,
-        message: `Doing a re-scan may reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.`,
+        title: this._translateService.instant('PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE'),
+        message: this._translateService.instant('PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION'),
       },
     });
 
