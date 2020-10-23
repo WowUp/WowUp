@@ -61,7 +61,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private isSelectedTab: boolean = false;
   private sortedListItems: AddonViewModel[] = [];
 
-  public spinnerMessage = "Loading...";
+  public spinnerMessage = "";
 
   contextMenuPosition = { x: "0px", y: "0px" };
 
@@ -217,6 +217,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRefresh() {
+    this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.LOADING');
     this.loadAddons(this.selectedClient);
   }
 
@@ -548,7 +549,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
     this.isBusy = true;
-    this.spinnerMessage = "Gathering addons...";
+    this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS')
 
     try {
       let updatedCt = 0;
@@ -563,13 +564,25 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         .filter((listItem) => listItem.needsUpdate || listItem.needsInstall)
         .map((listItem) => listItem.addon);
 
-      this.spinnerMessage = `Updating ${updatedCt}/${addons.length}`;
+      if (addons.length === 0) {
+        this.loadAddons(this.selectedClient);
+        return;
+      }
+
+      this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.UPDATING', {
+        updateCount : updatedCt,
+        addonCount : addons.length,
+      });
 
       for (let addon of addons) {
         updatedCt += 1;
-        this.spinnerMessage = `Updating ${updatedCt}/${
-          addons.length
-        }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
+
+        this.spinnerMessage = this._translateService.instant('PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME', {
+          updateCount : updatedCt,
+          addonCount : addons.length,
+          clientType : getEnumName(WowClientType, addon.clientType),
+          addonName : addon.name,
+        });
 
         await this.addonService.installAddon(addon.id);
       }

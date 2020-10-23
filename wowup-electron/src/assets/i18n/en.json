@@ -104,8 +104,14 @@
       "FILTER_LABEL": "Filter",
       "RESCAN_FOLDERS_BUTTON": "Re-Scan Folders",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan your client folder for installed addons",
-      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start re-scan?",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Doing a re-scan may reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start re-scan?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Gathering addons...",
+        "LOADING": "Loading...",
+        "UPDATING": "Updating {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Updating {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Install",
