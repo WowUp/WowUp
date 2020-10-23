@@ -102,6 +102,9 @@
         "TITLE": "Vis Kolonner"
       },
       "FILTER_LABEL": "Filter",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}"
+      },
       "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",

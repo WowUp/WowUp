@@ -102,6 +102,9 @@
         "TITLE": "Exibir Colunas"
       },
       "FILTER_LABEL": "Filter",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}"
+      },
       "RESCAN_FOLDERS_BUTTON": "Re-escanear pastas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Procura por Addons instalados",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",

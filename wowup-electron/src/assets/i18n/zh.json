@@ -102,6 +102,9 @@
         "TITLE": "显示列"
       },
       "FILTER_LABEL": "Filter",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}"
+      },
       "RESCAN_FOLDERS_BUTTON": "重新扫描文件夹",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "扫描已安装附加组件的客户端文件夹",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",

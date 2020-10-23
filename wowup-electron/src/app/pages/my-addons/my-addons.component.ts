@@ -668,7 +668,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     this._sessionService.setContextText(
       this.tabIndex,
-      `${this._displayAddonsSrc.value.length} addons`
+      this._translateService.instant(
+        'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED',
+        {count: this._displayAddonsSrc.value.length
+      })
     );
   }
 
