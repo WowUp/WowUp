@@ -109,6 +109,8 @@
       "FILTER_LABEL": "Фильтр",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
+        "JOIN_DISCORD": "Chat with us on Discord",
+        "PATREON_SUPPORT": "Support WowUp on Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, one{результат} few{результата} other{результатов}}"
       },
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
