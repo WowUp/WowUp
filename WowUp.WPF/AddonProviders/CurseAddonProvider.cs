@@ -172,14 +172,6 @@ namespace WowUp.WPF.AddonProviders
 
             if (result == null)
             {
-                //Try again with an even broader query
-                response = await GetSearchResults(searchWord[0].ToString());
-                result = response.FirstOrDefault(res => res.Slug == addonSlug);
-            }
-
-            if (result == null)
-            {
-                //If still not found, abort
                 return null;
             }
 
