@@ -32,3 +32,15 @@
     category="Options" [action]="clientTypeName + 'DefaultAutoUpdate'" [label]="clientAutoUpdate">
   </mat-slide-toggle>
 </div>
+<div class="row">
+  <div class="grow">
+    <p>{{'PAGES.OPTIONS.WOW.BACKUP_LABEL' | translate}}</p>
+    <small class="hint">{{'PAGES.OPTIONS.WOW.BACKUP_LABEL_DESCRIPTION' | translate}}</small>
+  </div>
+  <button mat-flat-button color="primary" class="select-button" (click)="onCreateBackup()" appUserActionTracker
+    category="Options"
+    [action]="clientTypeName + 'SelectPath'">{{'PAGES.OPTIONS.WOW.BACKUP_BUTTON' | translate}}</button>
+  <button mat-flat-button color="primary" class="select-button" (click)="onCreateBackup()" appUserActionTracker
+    category="Options"
+    [action]="clientTypeName + 'SelectPath'">{{'PAGES.OPTIONS.WOW.RESTORE_BUTTON' | translate}}</button>
+</div>
