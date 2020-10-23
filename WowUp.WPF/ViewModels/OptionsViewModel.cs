@@ -13,6 +13,7 @@ using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
+using System.Text.Json;
 using Serilog;
 using WowUp.Common.Exceptions;
 using WowUp.Common.Extensions;
@@ -385,16 +386,27 @@ namespace WowUp.WPF.ViewModels
             var clientType = (WowClientType)parameter;
 
             var addons = await _addonService.GetAddons(clientType);
-            var sb = new StringBuilder();
+            var exportList = new List<ExportListItem>();
 
             foreach (var addon in addons)
             {
-                sb.AppendLine(addon.ExternalUrl + ";" + addon.Name.Replace(";", ""));
+                var eli = new ExportListItem
+                {
+                    ExternalUrl = addon.ExternalUrl,
+                    Name = addon.Name
+                };
+                exportList.Add(eli);
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Json file | *.json",
+                FileName = clientType.GetDisplayName().ToLower() + "_addons.json",
+                DefaultExt = ".json"
+            };
+
             if (saveFileDialog.ShowDialog() == true)
-                File.WriteAllText(Path.ChangeExtension(saveFileDialog.FileName, ".txt"), sb.ToString());
+                await File.WriteAllTextAsync(Path.ChangeExtension(saveFileDialog.FileName, ".json"), JsonSerializer.Serialize(exportList));
 
             IsBusy = false;
         }
@@ -409,11 +421,15 @@ namespace WowUp.WPF.ViewModels
 
             var clientType = (WowClientType)parameter;
 
-            var openFileDialog = new OpenFileDialog();
-            List<string> AddonList = new List<string>();
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Json file | *.json"
+            };
+
+            var addonList = new List<ExportListItem>();
 
             if (openFileDialog.ShowDialog() == true)
-                AddonList = File.ReadAllLines(openFileDialog.FileName).ToList();
+                addonList = JsonSerializer.Deserialize<List<ExportListItem>>(await File.ReadAllTextAsync(openFileDialog.FileName));
 
             // Instantiate the dialog box
             var dlg = _serviceProvider.GetService<ImportInProgressView>();
@@ -433,33 +449,30 @@ namespace WowUp.WPF.ViewModels
             var invalidUrls = 0;
             var others = 0;
             var NotSupported = 0;
-            foreach (var addon in AddonList)
+            foreach (var addon in addonList)
             {
 
-                string addonName = addon.Split(";")[1];
-                string addonUrl = addon.Split(";")[0];
-
-                progressView.ProgressText += $"Importing \"{addonName}\" using \"{addonUrl}\"" + Environment.NewLine;
+                progressView.ProgressText += $"Importing \"{addon.Name}\" using \"{addon.ExternalUrl}\"" + Environment.NewLine;
                 PotentialAddon potentialAddon = null;
 
                 try
                 {
-                    potentialAddon = await ImportUrl(addonUrl, addonName, clientType, progressView);
+                    potentialAddon = await ImportUrl(addon.ExternalUrl, addon.Name, clientType, progressView);
                 }
                 catch (AddonNotFoundException)
                 {
                     addonNotFound++;
-                    progressView.ProgressText += $"Addon \"{addonName}\" could not be found" + Environment.NewLine;
+                    progressView.ProgressText += $"Addon \"{addon.Name}\" could not be found" + Environment.NewLine;
                 }
                 catch (AddonAlreadyInstalledException)
                 {
                     alreadyInstalled++;
-                    progressView.ProgressText += $"Addon \"{addonName}\" is already installed" + Environment.NewLine;
+                    progressView.ProgressText += $"Addon \"{addon.Name}\" is already installed" + Environment.NewLine;
                 }
                 catch (InvalidUrlException)
                 {
                     invalidUrls++;
-                    progressView.ProgressText += $"Invalid Url: \"{addonUrl}\"" + Environment.NewLine;
+                    progressView.ProgressText += $"Invalid Url: \"{addon.ExternalUrl}\"" + Environment.NewLine;
                 }
                 catch (RateLimitExceededException)
                 {
@@ -469,16 +482,16 @@ namespace WowUp.WPF.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    if (addonUrl.Contains("tukui.com"))
+                    if (addon.ExternalUrl.Contains("tukui.com"))
                     {
                         NotSupported++;
-                        progressView.ProgressText += $"Import of a TukUi addon is not yet supported: \"{addonName}\"" + Environment.NewLine;
+                        progressView.ProgressText += $"Import of a TukUi addon is not yet supported: \"{addon.Name}\"" + Environment.NewLine;
 
                     }
                     else
                     {
                         others++;
-                        progressView.ProgressText += $"Failed to install \"{addonName}\"" + Environment.NewLine;
+                        progressView.ProgressText += $"Failed to install \"{addon.Name}\"" + Environment.NewLine;
                     }
 
                     Log.Error(ex, "Failed to install addon");
@@ -490,12 +503,12 @@ namespace WowUp.WPF.ViewModels
                 }
 
                 await _addonService.InstallAddon(potentialAddon, clientType);
-                progressView.ProgressText += $"Import of \"{addonName}\" was successful" + Environment.NewLine;
+                progressView.ProgressText += $"Import of \"{addon.Name}\" was successful" + Environment.NewLine;
             }
 
             progressView.ProgressText += $"Import finished" + Environment.NewLine;
 
-            progressView.ProgressText += $"Result: Tried to import {AddonList.Count} Addons" + Environment.NewLine;
+            progressView.ProgressText += $"Result: Tried to import {addonList.Count} Addons" + Environment.NewLine;
 
             if (alreadyInstalled > 0)
                 progressView.ProgressText += $"Result: {alreadyInstalled} Addons are already installed" + Environment.NewLine;
@@ -508,7 +521,7 @@ namespace WowUp.WPF.ViewModels
             if (NotSupported > 0)
                 progressView.ProgressText += $"Result: {NotSupported} Addons are not supported" + Environment.NewLine;
 
-            progressView.ProgressText += $"Result: {AddonList.Count - alreadyInstalled - addonNotFound - invalidUrls - others - NotSupported} Addons successfully installed" + Environment.NewLine;
+            progressView.ProgressText += $"Result: {addonList.Count - alreadyInstalled - addonNotFound - invalidUrls - others - NotSupported} Addons successfully installed" + Environment.NewLine;
 
 
 
