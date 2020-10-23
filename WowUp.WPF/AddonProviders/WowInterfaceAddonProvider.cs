@@ -83,6 +83,7 @@ namespace WowUp.WPF.AddonProviders
             }
         }
 
+
         public async Task<IList<AddonSearchResult>> GetAll(WowClientType clientType, IEnumerable<string> addonIds)
         {
             var searchResults = new List<AddonSearchResult>();
@@ -149,6 +150,11 @@ namespace WowUp.WPF.AddonProviders
             }
 
             return ToPotentialAddon(addon);
+        }
+
+        public async Task<PotentialAddon> Search(Uri addonUri, string addonName, WowClientType clientType)
+        {
+            return await Search(addonUri, clientType);
         }
 
         public Task<IEnumerable<AddonSearchResult>> Search(string addonName, string folderName, WowClientType clientType, string nameOverride = null)

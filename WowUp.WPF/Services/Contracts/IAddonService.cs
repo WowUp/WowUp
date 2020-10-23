@@ -43,6 +43,12 @@ namespace WowUp.WPF.Services.Contracts
             WowClientType clientType,
             Action<AddonInstallState, decimal> onUpdate = null);
 
+        Task<PotentialAddon> GetAddonByUri(
+            Uri addonUri,
+            string addonName,
+            WowClientType clientType,
+            Action<AddonInstallState, decimal> onUpdate = null);
+
         Task InstallAddon(
             PotentialAddon addon,
             WowClientType clientType,

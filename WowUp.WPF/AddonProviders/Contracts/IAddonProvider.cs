@@ -23,6 +23,11 @@ namespace WowUp.WPF.AddonProviders.Contracts
             Uri addonUri,
             WowClientType clientType);
 
+        Task<PotentialAddon> Search(
+            Uri addonUri,
+            string addonName,
+            WowClientType clientType);
+
         Task<IList<AddonSearchResult>> GetAll(
             WowClientType clientType,
             IEnumerable<string> addonIds);

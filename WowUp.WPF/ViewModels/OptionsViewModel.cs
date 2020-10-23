@@ -538,11 +538,9 @@ namespace WowUp.WPF.ViewModels
                 return null;
             }
 
-            Uri uri = new Uri(addonUrl);
+            var uri = new Uri(addonUrl);
 
-            //await _analyticsService.TrackUserAction("Addons", "ImportAddonUrl", $"{clientType}|{addonUrl}");
-
-            var ImportedAddon = await _addonService.GetAddonByUri(uri, clientType);
+            var ImportedAddon = await _addonService.GetAddonByUri(uri, addonName, clientType);
 
             if (ImportedAddon == null)
             {

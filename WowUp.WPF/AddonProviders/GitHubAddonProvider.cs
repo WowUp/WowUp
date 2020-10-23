@@ -168,6 +168,11 @@ namespace WowUp.WPF.AddonProviders
             return potentialAddon;
         }
 
+        public async Task<PotentialAddon> Search(Uri addonUri, string addonName, WowClientType clientType)
+        {
+            return await Search(addonUri, clientType);
+        }
+
         private async Task<IEnumerable<GitHubRelease>> GetReleases(string repositoryPath)
         {
             var url = string.Format(ReleasesUrlFormat, repositoryPath);

@@ -129,6 +129,11 @@ namespace WowUp.WPF.AddonProviders
             throw new NotImplementedException();
         }
 
+        public async Task<PotentialAddon> Search(Uri addonUri, string addonName, WowClientType clientType)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IList<PotentialAddon>> GetFeaturedAddons(WowClientType clientType)
         {
             var addons = await GetAllAddons(clientType);

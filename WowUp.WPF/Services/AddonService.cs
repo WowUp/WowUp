@@ -98,7 +98,7 @@ namespace WowUp.WPF.Services
 
             foreach (var clientTypeGroup in clientTypeGroups)
             {
-                if(!await SyncAddons(clientTypeGroup.Key, clientTypeGroup))
+                if (!await SyncAddons(clientTypeGroup.Key, clientTypeGroup))
                 {
                     continue;
                 }
@@ -115,7 +115,7 @@ namespace WowUp.WPF.Services
                         await InstallAddon(addon.Id);
                         updateCt += 1;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         _analyticsService.Track(ex, "Failed to install addon");
                     }
@@ -150,21 +150,21 @@ namespace WowUp.WPF.Services
         }
 
         public async Task<List<PotentialAddon>> Search(
-            string query, 
+            string query,
             WowClientType clientType,
             Action<Exception> onProviderError)
         {
             var potentialAddons = new List<PotentialAddon>();
 
             List<PotentialAddon> searchResults = new List<PotentialAddon>();
-            foreach(var provider in _providers)
+            foreach (var provider in _providers)
             {
                 try
                 {
                     var results = await provider.Search(query, clientType);
                     searchResults.AddRange(results);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     var message = $"Failed to search provider {provider.Name}";
                     Log.Error(ex, message);
@@ -187,7 +187,7 @@ namespace WowUp.WPF.Services
                     var result = await provider.GetFeaturedAddons(clientType);
                     addonResults.AddRange(result);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log.Error(ex, $"Failed to get feature addons from {provider.Name}");
                 }
@@ -223,7 +223,7 @@ namespace WowUp.WPF.Services
                 await SyncAddons(clientType, addons);
                 return addons;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _analyticsService.Track(ex, $"Failed to get addons for client {clientType}");
 
@@ -236,18 +236,18 @@ namespace WowUp.WPF.Services
             // Clear the dependency table, since rebuilding it is extra complicated.
             _dependencyRepository.RemoveAll();
 
-            foreach(var newAddon in newAddons)
+            foreach (var newAddon in newAddons)
             {
                 var existingAddon = existingAddons
                     .FirstOrDefault(ea => ea.ExternalId == newAddon.ExternalId && ea.ProviderName == newAddon.ProviderName);
 
-                if(existingAddon == null)
+                if (existingAddon == null)
                 {
                     continue;
                 }
 
                 newAddon.AutoUpdateEnabled = existingAddon.AutoUpdateEnabled;
-                newAddon.IsIgnored= existingAddon.IsIgnored;
+                newAddon.IsIgnored = existingAddon.IsIgnored;
             }
 
             _addonRepository.DeleteItems(existingAddons);
@@ -275,7 +275,7 @@ namespace WowUp.WPF.Services
         }
 
         private async Task SyncAddons(
-            WowClientType clientType, 
+            WowClientType clientType,
             IEnumerable<Addon> addons,
             IAddonProvider provider)
         {
@@ -294,7 +294,7 @@ namespace WowUp.WPF.Services
 
                 if (result == null || latestFile == null || latestFile.Version == addon.LatestVersion)
                 {
-                    if(addon.ThumbnailUrl != result.ThumbnailUrl)
+                    if (addon.ThumbnailUrl != result.ThumbnailUrl)
                     {
                         addon.ThumbnailUrl = result.ThumbnailUrl;
                         _addonRepository.UpdateItem(addon);
@@ -352,6 +352,17 @@ namespace WowUp.WPF.Services
             return await provider.Search(addonUri, clientType);
         }
 
+        public async Task<PotentialAddon> GetAddonByUri(
+            Uri addonUri,
+            string addonName,
+            WowClientType clientType,
+            Action<AddonInstallState, decimal> onUpdate = null)
+        {
+            var provider = GetAddonProvider(addonUri);
+
+            return await provider.Search(addonUri, addonName, clientType);
+        }
+
         public async Task UninstallAddon(Addon addon, bool uninstallDependencies)
         {
             var installedDirectories = addon.GetInstalledDirectories();
@@ -396,7 +407,7 @@ namespace WowUp.WPF.Services
             foreach (var dependency in addonDependencies)
             {
                 var dependencyAddon = GetAddon(dependency.DependencyId);
-                if (dependencyAddon != null && 
+                if (dependencyAddon != null &&
                     _dependencyRepository
                         .GetDependentAddons(dependencyAddon)
                         .All(dep => dep.AddonId == addon.Id))
@@ -460,7 +471,7 @@ namespace WowUp.WPF.Services
             }
 
             var addon = await GetAddon(potentialAddon.ExternalId, potentialAddon.ProviderName, clientType);
-            
+
             _addonRepository.SaveItem(addon);
 
             await InstallDependencies(addon);
@@ -494,8 +505,8 @@ namespace WowUp.WPF.Services
         }
 
         private void SendAddonStateChange(
-            Addon addon, 
-            AddonInstallState addonInstallState, 
+            Addon addon,
+            AddonInstallState addonInstallState,
             decimal progress)
         {
             AddonStateChanged?.Invoke(this, new AddonStateEventArgs
@@ -602,7 +613,7 @@ namespace WowUp.WPF.Services
 
                 image.Save(addon.GetThumbnailCachePath());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _analyticsService.Track(ex, $"Failed to download thumbnail {addon.Name}");
             }
@@ -710,7 +721,7 @@ namespace WowUp.WPF.Services
         }
 
         private async Task<List<Addon>> ScanAddons(
-            WowClientType clientType, 
+            WowClientType clientType,
             Action<Exception> onScanError)
         {
             var addonFolders = await _warcraftService.ListAddons(clientType);
@@ -724,7 +735,7 @@ namespace WowUp.WPF.Services
                         _wowUpService.GetClientAddonChannelType(clientType),
                         addonFolders.Where(af => af.MatchingAddon == null && af.Toc != null));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _analyticsService.Track(ex, $"Addon scan failed {provider.Name}");
                     onScanError?.Invoke(new Exception($"Failed to scan from {provider.Name}"));
@@ -820,7 +831,7 @@ namespace WowUp.WPF.Services
                 ProviderName = searchResult.ProviderName,
                 ChannelType = channelType ?? _wowUpService.GetClientAddonChannelType(clientType),
                 AutoUpdateEnabled = _wowUpService.GetClientDefaultAutoUpdate(clientType),
-                Dependencies =  dependencies
+                Dependencies = dependencies
             };
         }
     }

@@ -167,7 +167,23 @@ namespace WowUp.WPF.AddonProviders
             var addonSlug = addonUri.LocalPath.Split('/').Last();
 
             var searchWord = addonSlug.Split("-")[0];
-            var response = await GetSearchResults(searchWord);
+
+            return await SearchPotentialAddon(searchWord, clientType, addonSlug);
+        }
+
+        public async Task<PotentialAddon> Search(Uri addonUri, string addonName, WowClientType clientType)
+        {
+            if (string.IsNullOrWhiteSpace(addonName))
+                return await Search(addonUri, clientType);
+
+            var addonSlug = addonUri.LocalPath.Split('/').Last();
+
+            return await SearchPotentialAddon(addonName, clientType, addonSlug);
+        }
+
+        private async Task<PotentialAddon> SearchPotentialAddon(string query, WowClientType clientType, string addonSlug)
+        {
+            var response = await GetSearchResults(query);
             var result = response.FirstOrDefault(res => res.Slug == addonSlug);
 
             if (result == null)
@@ -183,6 +199,7 @@ namespace WowUp.WPF.AddonProviders
 
             return GetPotentialAddon(result);
         }
+
 
         public async Task<IEnumerable<AddonSearchResult>> Search(
             string addonName,
