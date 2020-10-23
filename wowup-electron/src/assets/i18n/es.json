@@ -103,7 +103,8 @@
       },
       "FILTER_LABEL": "Filter",
       "PAGE_CONTEXT_FOOTER": {
-        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}"
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}"
       },
       "RESCAN_FOLDERS_BUTTON": "Volver a escanear carpetas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Busca por addons instalados",
