@@ -112,8 +112,8 @@
       "SPINNER": {
         "GATHERING_ADDONS": "Сбор модификаций...",
         "LOADING": "Загрузка...",
-        "UPDATING": "Обновлено {updateCount}/{addonCount}",
-        "UPDATING_WITH_ADDON_NAME": "Обновлено {updateCount}/{addonCount}\n{clientType}: {addonName}"
+        "UPDATING": "Обновлено {updateCount} из {addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Обновлено {updateCount} из {addonCount}\n{clientType}: {addonName}"
       },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Модификация",
