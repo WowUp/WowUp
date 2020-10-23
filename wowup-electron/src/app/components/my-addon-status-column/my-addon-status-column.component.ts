@@ -1,4 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { AddonViewModel } from "app/business-objects/my-addon-list-item";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -10,11 +18,16 @@ import { TranslateService } from "@ngx-translate/core";
 export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   @Input() listItem: AddonViewModel;
 
+  @Output() onViewUpdated: EventEmitter<boolean> = new EventEmitter();
+
   public get showStatusText() {
     return this.listItem?.isUpToDate || this.listItem?.isIgnored;
   }
 
-  constructor(private _translateService: TranslateService) {}
+  constructor(
+    private _translateService: TranslateService,
+    private _ngzone: NgZone
+  ) {}
 
   ngOnInit(): void {}
 
@@ -26,5 +39,11 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
     }
 
     return this.listItem?.statusText;
+  }
+
+  public onUpdateButtonUpdated() {
+    this._ngzone.run(() => {
+      this.onViewUpdated.emit();
+    });
   }
 }
