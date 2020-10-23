@@ -129,6 +129,13 @@
         "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
         "STATUS_COLUMN_HEADER": "Estado"
       },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
+        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
+        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
+        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
+        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
+      },
       "UPDATE_ALL_BUTTON": "Actualizar todos",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Atualizar todos os Addons",
       "UPDATE_ALL_CONTEXT_MENU": {

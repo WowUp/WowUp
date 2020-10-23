@@ -129,6 +129,13 @@
         "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
         "STATUS_COLUMN_HEADER": "状态"
       },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
+        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
+        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
+        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
+        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
+      },
       "UPDATE_ALL_BUTTON": "全部更新",
       "UPDATE_ALL_BUTTON_TOOLTIP": "更新此客户端的所有插件",
       "UPDATE_ALL_CONTEXT_MENU": {

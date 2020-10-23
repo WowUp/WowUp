@@ -237,7 +237,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private setPageContextText() {
     const length = this.dataSource.data?.length;
-    const contextStr = length ? this._translateService.instant('PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS', {count: length}) : "";
+    const contextStr = length ? this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS", {count: length}) : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);
   }
