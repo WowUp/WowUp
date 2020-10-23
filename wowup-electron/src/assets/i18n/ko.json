@@ -23,9 +23,9 @@
       "YESTERDAY": "Yesterday"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "billion",
-      "MILLION": "million",
-      "THOUSAND": "thousand"
+      "BILLION": "{count} billion",
+      "MILLION": "{count} million",
+      "THOUSAND": "{count} thousand"
     }
   },
   "DIALOGS": {
