@@ -122,6 +122,11 @@
 
 .author-column {
   width: 100px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
 }
 .provider-column {
   min-width: 60px;

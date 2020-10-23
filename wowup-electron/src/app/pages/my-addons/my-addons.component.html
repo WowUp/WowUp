@@ -114,11 +114,15 @@
       </ng-container>
 
       <ng-container matColumnDef="addon.author">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef class="author-column">
-          {{'PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER' | translate}}
+        <th mat-header-cell mat-sort-header *matHeaderCellDef >
+          <div class="author-column">
+            {{'PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER' | translate}}
+          </div>
         </th>
-        <td mat-cell *matCellDef="let element" class="author-column">
-          {{element.addon.author}}
+        <td mat-cell *matCellDef="let element" >
+          <div class="author-column">
+            {{element.addon.author}}
+          </div>
         </td>
       </ng-container>
 
