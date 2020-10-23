@@ -25,3 +25,7 @@ export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY =
   "last_selected_client_type";
 export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY =
   "use_hardware_acceleration";
+
+// ERRORS
+export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
+export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
