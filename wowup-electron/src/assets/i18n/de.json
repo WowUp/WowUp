@@ -177,8 +177,11 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf Auto-Update gesetzt",
         "AUTO_UPDATE_LABEL": "Auto-Update",
+        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard-Addon-Kanal",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon-Kanal",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
         "RESCAN_CLIENTS_BUTTON": "Neu scannen",
         "RESCAN_CLIENTS_LABEL": "Installierte World of Warcraft Produkte erneut durchsuchen",
         "TITLE": "World of Warcraft"

@@ -177,8 +177,11 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
         "AUTO_UPDATE_LABEL": "自动更新",
+        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "默认附加组件频道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "附加组件频道",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
         "RESCAN_CLIENTS_BUTTON": "重新扫描",
         "RESCAN_CLIENTS_LABEL": "重新扫描已安装的Warcraft产品世界",
         "TITLE": "World of Warcraft"
