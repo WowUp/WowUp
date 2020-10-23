@@ -1,5 +1,5 @@
 <div class="row">
-  <app-addon-update-button *ngIf="showStatusText === false" [listItem]="listItem" (onViewUpdated)="onUpdateButtonUpdated()"></app-addon-update-button>
+  <app-addon-update-button *ngIf="showStatusText === false" [listItem]="listItem"></app-addon-update-button>
   <div *ngIf="showStatusText === true" class="status-text" [ngClass]="{ ignored: listItem.isIgnored }">
     {{ getStatusText() }}
   </div>

@@ -46,7 +46,10 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     this._subscriptions.push(addonInstalledSub);
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions = [];
+  }
 
   public get actionLabel() {
     return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${

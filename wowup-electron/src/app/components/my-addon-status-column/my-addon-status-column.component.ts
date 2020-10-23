@@ -29,7 +29,8 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
     private _ngzone: NgZone
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   ngOnDestroy(): void {}
 

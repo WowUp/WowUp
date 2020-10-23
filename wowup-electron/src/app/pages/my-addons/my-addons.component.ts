@@ -133,28 +133,28 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(
       (evt) => {
-        // let listItems: AddonViewModel[] = [].concat(
-        //   this._displayAddonsSrc.value
-        // );
-        // const listItemIdx = listItems.findIndex(
-        //   (li) => li.addon.id === evt.addon.id
-        // );
-        // const listItem = this.createAddonListItem(evt.addon);
-        // listItem.isInstalling =
-        //   evt.installState === AddonInstallState.Installing ||
-        //   evt.installState === AddonInstallState.Downloading;
-        // listItem.statusText = this.getInstallStateText(evt.installState);
-        // listItem.installProgress = evt.progress;
-        // listItem.installState = evt.installState;
-        // if (listItemIdx !== -1) {
-        //   listItems[listItemIdx] = listItem;
-        // } else {
-        //   listItems.push(listItem);
-        //   listItems = this.sortListItems(listItems);
-        // }
-        // this._ngZone.run(() => {
-        //   this._displayAddonsSrc.next(listItems);
-        // });
+        let listItems: AddonViewModel[] = [].concat(
+          this._displayAddonsSrc.value
+        );
+        const listItemIdx = listItems.findIndex(
+          (li) => li.addon.id === evt.addon.id
+        );
+        const listItem = this.createAddonListItem(evt.addon);
+        listItem.isInstalling =
+          evt.installState === AddonInstallState.Installing ||
+          evt.installState === AddonInstallState.Downloading;
+        listItem.statusText = this.getInstallStateText(evt.installState);
+        listItem.installProgress = evt.progress;
+        listItem.installState = evt.installState;
+        if (listItemIdx !== -1) {
+          listItems[listItemIdx] = listItem;
+        } else {
+          listItems.push(listItem);
+          listItems = this.sortListItems(listItems);
+        }
+        this._ngZone.run(() => {
+          this._displayAddonsSrc.next(listItems);
+        });
       }
     );
 
