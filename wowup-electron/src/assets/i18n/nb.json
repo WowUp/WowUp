@@ -67,7 +67,7 @@
     },
     "OPTIONS": {
       "APPLICATION": {
-        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver systemvarsler",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver Systemvarsler",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukking",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
@@ -146,6 +146,11 @@
       "UPDATE": "Oppdater",
       "INSTALL": "Installer",
       "UPTODATE": "Oppdatert"
+    },
+    "DOWNLOAD_COUNT": {
+      "BILLION": "milliarder",
+      "MILLION": "millioner",
+      "THOUSAND": "tusen"
     }
   }
 }
