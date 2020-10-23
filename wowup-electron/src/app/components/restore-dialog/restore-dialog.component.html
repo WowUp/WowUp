@@ -1,0 +1,29 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z0">
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="Date">
+    <th mat-header-cell *matHeaderCellDef> Date </th>
+    <td mat-cell *matCellDef="let element"> {{element}} </td>
+  </ng-container>
+  <ng-container matColumnDef="Restore">
+    <th mat-header-cell *matHeaderCellDef> </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-flat-button color="primary" class="select-button" appUserActionTracker category="Options"
+        [action]=" + 'Restore archive'">restore</button>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Delete">
+    <th mat-header-cell *matHeaderCellDef> </th>
+    <td mat-cell *matCellDef="let element; let i=index">
+      <button mat-flat-button color="primary" class="select-button" appUserActionTracker category="Options"
+        [action]=" + 'Delete archive'" (click)="deleteArchive(i)">delete</button>
+    </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

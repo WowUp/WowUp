@@ -35,8 +35,6 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   public addonChannelInfos: { type: AddonChannelType, name: string }[] = getEnumList( AddonChannelType )
     .map( ( type: AddonChannelType ) => ( { type: type, name: getEnumName( AddonChannelType, type ) } ) );
   public clientAutoUpdate: boolean;
-
-
   public disabledBackup: boolean;
   public disabledRestore: boolean;
 
@@ -107,15 +105,15 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       fs.mkdirSync( this._pathBackup )
     };
 
-
+    this.disabledRestore = true;
     this._snackBar.open( "PAGES.OPTIONS.WOW.BACKUP_STARTED" );
 
 
     setTimeout( () => {
       const zip = new AdmZip();
-      zip.addLocalFolder( `${this._fullPath}/WTF`, 'WTF' );
-      zip.addLocalFolder( `${this._fullPath}/Interface`, 'Interface' );
-      zip.writeZip( `${this._pathBackup}/backup_${Date.now()}.zip` );
+      /*   zip.addLocalFolder( `${this._fullPath}/WTF`, 'WTF' );
+        zip.addLocalFolder( `${this._fullPath}/Interface`, 'Interface' ); */
+      zip.writeZip( `${this._pathBackup}/${Date.now()}.zip` );
       this.disabledRestore = false;
       this._snackBar.dismiss();
       this._cd.detectChanges()
@@ -128,7 +126,12 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     if ( !fs.existsSync( this._pathBackup ) ) {
       return
     };
-    this._dialog.open( RestoreDialogComponent )
+
+
+    this._dialog.open( RestoreDialogComponent, {
+      minWidth: 450,
+      data: this._pathBackup
+    } );
   }
 
   private async selectWowClientPath( clientType: WowClientType ): Promise<string> {

@@ -30,6 +30,7 @@ import { GetAddonStatusColumnComponent } from "app/components/get-addon-status-c
 import { MyAddonStatusColumnComponent } from "app/components/my-addon-status-column/my-addon-status-column.component";
 import { ProgressButtonComponent } from "app/components/progress-button/progress-button.component";
 import { AddonUpdateButtonComponent } from "app/components/addon-update-button/addon-update-button.component";
+import { RestoreDialogComponent } from '../../components/restore-dialog/restore-dialog.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { AddonUpdateButtonComponent } from "app/components/addon-update-button/a
     MyAddonStatusColumnComponent,
     ProgressButtonComponent,
     AddonUpdateButtonComponent,
+    RestoreDialogComponent,
   ],
   imports: [
     CommonModule,
