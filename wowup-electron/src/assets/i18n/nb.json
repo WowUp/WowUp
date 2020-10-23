@@ -17,20 +17,20 @@
       "UPDATING": "Oppdaterer..."
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
+      "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
+      "JUST_NOW": "Akkurat nå",
+      "YESTERDAY": "I går"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} billion",
-      "MILLION": "{count} million",
-      "THOUSAND": "{count} thousand"
+      "BILLION": "{count} milliarder",
+      "MILLION": "{count} millioner",
+      "THOUSAND": "{count] tusen"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "BY_AUTHOR": "By {authorName}",
+      "BY_AUTHOR": "Av {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser"
     },
     "ALERT": {
@@ -104,18 +104,18 @@
       },
       "FILTER_LABEL": "Filter",
       "PAGE_CONTEXT_FOOTER": {
-        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
-        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}"
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultater}}"
       },
       "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
-      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Ved å skanne på nytt kan utvidelsesinformasjonen bli resatt imens vi prøver å finne ut av hva du har installert. Dette kan ta et øyeblikk.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start skanningen?",
       "SPINNER": {
-        "GATHERING_ADDONS": "Gathering addons...",
-        "LOADING": "Loading...",
-        "UPDATING": "Updating {updateCount}/{addonCount}",
-        "UPDATING_WITH_ADDON_NAME": "Updating {updateCount}/{addonCount}\n{clientType}: {addonName}"
+        "GATHERING_ADDONS": "Samler utvidelser...",
+        "LOADING": "Laster...",
+        "UPDATING": "Oppdaterer {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Oppdaterer {updateCount}/{addonCount}\n{clientType}: {addonName}"
       },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Utvidelse",
