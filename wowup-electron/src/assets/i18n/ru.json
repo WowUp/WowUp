@@ -17,15 +17,15 @@
       "UPDATING": "Обновляется..."
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
+      "HOURS_AGO": "{count} {count, plural, one{час} few{часа} other{часов}} назад",
+      "JUST_NOW": "Только что",
+      "YESTERDAY": "Вчера"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} млрд.",
-      "MILLION": "{count} млн.",
-      "THOUSAND": "{count} тыс."
+      "BILLION": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}",
+      "MILLION": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "THOUSAND": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}"
     }
   },
   "DIALOGS": {
@@ -73,7 +73,7 @@
         "AUTHOR_COLUMN_HEADER": "Автор",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Загрузок",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "RELEASED_AT_COLUMN_HEADER": "Выпущена в",
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
         "STATUS_COLUMN_HEADER": "Статус"
       }
     },
@@ -103,18 +103,17 @@
       },
       "FILTER_LABEL": "Фильтр",
       "PAGE_CONTEXT_FOOTER": {
-        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
-        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}"
+        "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}"
       },
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
-      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может сбросить информацию о модификации и попытаться угадать, что вы установили. Эта процедура займёт немного времени.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Начать повторное сканирование?",
       "SPINNER": {
-        "GATHERING_ADDONS": "Gathering addons...",
-        "LOADING": "Loading...",
-        "UPDATING": "Updating {updateCount}/{addonCount}",
-        "UPDATING_WITH_ADDON_NAME": "Updating {updateCount}/{addonCount}\n{clientType}: {addonName}"
+        "GATHERING_ADDONS": "Сбор модификаций...",
+        "LOADING": "Загрузка...",
+        "UPDATING": "Обновлено {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Обновлено {updateCount}/{addonCount}\n{clientType}: {addonName}"
       },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Модификация",
@@ -125,14 +124,14 @@
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "RELEASED_AT_COLUMN_HEADER": "Выпущена в",
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
         "STATUS_COLUMN_HEADER": "Статус"
       },
       "UPDATE_ALL_BUTTON": "Обновить всё",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущую/Classic"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущий/Classic"
       }
     },
     "OPTIONS": {
