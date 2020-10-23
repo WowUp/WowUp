@@ -17,10 +17,10 @@
       "UPDATING": "Обновляется..."
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "{count} {count, plural, =1{день} =2{дня} =3{дня} =4{дня} other{дней}} назад",
+      "HOURS_AGO": "{count} {count, plural, =1{час} =2{часа} =3{часа} =4{часа} =21{час} =22{часа} =23{часа} other{часов}} назад",
+      "JUST_NOW": "Только что",
+      "YESTERDAY": "Вчера"
     },
     "DOWNLOAD_COUNT": {
       "BILLION": "млрд.",
@@ -73,7 +73,7 @@
         "AUTHOR_COLUMN_HEADER": "Автор",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Загрузок",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "RELEASED_AT_COLUMN_HEADER": "Выпущена в",
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
         "STATUS_COLUMN_HEADER": "Статус"
       }
     },
@@ -113,7 +113,7 @@
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "RELEASED_AT_COLUMN_HEADER": "Выпущена в",
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
         "STATUS_COLUMN_HEADER": "Статус"
       },
       "UPDATE_ALL_BUTTON": "Обновить всё",
