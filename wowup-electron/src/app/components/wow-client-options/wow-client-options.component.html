@@ -38,10 +38,10 @@
     <small class="hint">{{'PAGES.OPTIONS.WOW.BACKUP_LABEL_DESCRIPTION' | translate}}</small>
   </div>
   <button mat-flat-button color="primary" class="select-button" (click)="onCreateBackup()" appUserActionTracker
-    category="Options"
-    [action]="clientTypeName + 'SelectPath'">{{'PAGES.OPTIONS.WOW.BACKUP_BUTTON' | translate}}</button>
-    &nbsp;
-    <button mat-flat-button color="primary" class="select-button" (click)="onCreateBackup()" appUserActionTracker
-    category="Options"
-    [action]="clientTypeName + 'SelectPath'">{{'PAGES.OPTIONS.WOW.RESTORE_BUTTON' | translate}}</button>
+    category="Options" [action]="clientTypeName + 'Backup'"
+    [disabled]="disabledBackup">{{'PAGES.OPTIONS.WOW.BACKUP_BUTTON' | translate}}</button>
+  &nbsp;
+  <button mat-flat-button color="primary" class="select-button" (click)="onGetBackups()" appUserActionTracker
+    category="Options" [action]="clientTypeName + 'Restore'"
+    [disabled]="disabledRestore">{{'PAGES.OPTIONS.WOW.RESTORE_BUTTON' | translate}}</button>
 </div>
