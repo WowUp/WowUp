@@ -166,11 +166,20 @@ namespace WowUp.WPF.AddonProviders
         {
             var addonSlug = addonUri.LocalPath.Split('/').Last();
 
-            var searchword = addonSlug.Split("-")[0];
-            var response = await GetSearchResults(searchword);
+            var searchWord = addonSlug.Split("-")[0];
+            var response = await GetSearchResults(searchWord);
             var result = response.FirstOrDefault(res => res.Slug == addonSlug);
+
             if (result == null)
             {
+                //Try again with an even broader query
+                response = await GetSearchResults(searchWord[0].ToString());
+                result = response.FirstOrDefault(res => res.Slug == addonSlug);
+            }
+
+            if (result == null)
+            {
+                //If still not found, abort
                 return null;
             }
 
@@ -398,7 +407,7 @@ namespace WowUp.WPF.AddonProviders
                     Folders = GetFolderNames(lf),
                     GameVersion = GetGameVersion(lf),
                     ReleaseDate = lf.FileDate,
-                    Dependencies = lf.Dependencies != null ? 
+                    Dependencies = lf.Dependencies != null ?
                         lf.Dependencies.Select(dep => new AddonSearchResultDependency
                         {
                             AddonId = dep.AddonId,
