@@ -1,104 +1,31 @@
 {
-  "PAGES": {
-    "ABOUT": {
-      "CHANGE_LOG_SECTION_LABEL": "Endringslogg",
-      "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "Besøk nettsiden!"
+  "COMMON": {
+    "ADDON_STATE": {
+      "IGNORED": "Ignorert",
+      "INSTALL": "Installer",
+      "UNINSTALL": "Avinstaller",
+      "UPDATE": "Oppdater",
+      "UPTODATE": "Oppdatert"
     },
-    "GET_ADDONS": {
-      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "REFRESH_BUTTON": "Oppdater",
-      "INSTALL_FROM_URL_BUTTON": "Installer fra URL",
-      "SEARCH_LABEL": "Søk",
-      "TABLE": {
-        "ADDON_COLUMN_HEADER": "Utvidelse",
-        "AUTHOR_COLUMN_HEADER": "Forfatter",
-        "PROVIDER_COLUMN_HEADER": "Leverandør",
-        "STATUS_COLUMN_HEADER": "Status",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "Nedlastinger",
-        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato"
-      }
+    "ADDON_STATUS": {
+      "BACKINGUP": "Sikkerhetskopierer",
+      "COMPLETE": "Installert",
+      "DOWNLOADING": "Laster Ned",
+      "INSTALLING": "Installerer",
+      "PENDING": "Venter",
+      "UNINSTALLING": "Avinstallerer",
+      "UPDATING": "Oppdaterer..."
     },
-    "HOME": {
-      "MY_ADDONS_TAB_TITLE": "Mine Utvidelser",
-      "GET_ADDONS_TAB_TITLE": "Få Utvidelser",
-      "ABOUT_TAB_TITLE": "Om",
-      "OPTIONS_TAB_TITLE": "Alternativer"
+    "DATES": {
+      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
+      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
+      "JUST_NOW": "Just now",
+      "YESTERDAY": "Yesterday"
     },
-    "MY_ADDONS": {
-      "CHECK_UPDATES_BUTTON": "Finn Oppdateringer",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Finn de siste oppdateringene til utvidelsene dine",
-      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "FILTER_LABEL": "Filter",
-      "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
-      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
-      "UPDATE_ALL_BUTTON": "Oppdater Alle",
-      "UPDATE_ALL_BUTTON_TOOLTIP": "Oppdater alle utvidelser for denne klienten",
-      "TABLE": {
-        "ADDON_COLUMN_HEADER": "Utvidelse",
-        "ADDON_INSTALL_BUTTON": "Installer",
-        "ADDON_UPDATE_BUTTON": "Oppdater",
-        "AUTHOR_COLUMN_HEADER": "Forfatter",
-        "AUTO_UPDATE_ICON_TOOLTIP": "Automatisk oppdatering aktivert",
-        "GAME_VERSION_COLUMN_HEADER": "Spillversjon",
-        "LATEST_VERSION_COLUMN_HEADER": "Siste Versjon",
-        "PROVIDER_COLUMN_HEADER": "Leverandør",
-        "STATUS_COLUMN_HEADER": "Status",
-        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato"
-      },
-      "ADDON_CONTEXT_MENU": {
-        "IGNORE_ADDON_BUTTON": "Ignorer",
-        "AUTO_UPDATE_ADDON_BUTTON": "Oppdater Automatisk",
-        "CHANNEL_SUBMENT_TITLE": "Kanal",
-        "SHOW_FOLDER": "Vis Mappe",
-        "REINSTALL_ADDON_BUTTON": "Re-Installer",
-        "REMOVE_ADDON_BUTTON": "Fjern",
-        "STABLE_ADDON_CHANNEL": "Stable",
-        "BETA_ADDON_CHANNEL": "Beta",
-        "ALPHA_ADDON_CHANNEL": "Alpha"
-      },
-      "COLUMNS_CONTEXT_MENU": {
-        "TITLE": "Vis Kolonner"
-      },
-      "UPDATE_ALL_CONTEXT_MENU": {
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Oppdater Retail/Classic",
-        "UPDATE_ALL_CLIENTS_BUTTON": "Oppdater Alle Klienter"
-      }
-    },
-    "OPTIONS": {
-      "APPLICATION": {
-        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver Systemvarsler",
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
-        "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukking",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Når WowUp-vinduet lukkes, minimer til oppgavelinjens varselområde.",
-        "TELEMETRY_DESCRIPTION": "Hjelp til med å forbedre WowUp ved å sende anonyme data og feilmeldinger.",
-        "TELEMETRY_LABEL": "Telemetri",
-        "TITLE": "Applikasjon",
-        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "Vil du restarte?",
-        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "Aktivering av maskinvareakselerasjon krever at du restarter programmet.",
-        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "Deaktivering av maskinvareakselerasjon krever at du restarter programmet.",
-        "USE_HARDWARE_ACCELERATION_LABEL" : "Aktiver Maskinvareakselerasjon",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Deaktivering av maskinvareakselerasjon kan løse FPS-problemer og andre renderproblemer i appen. Denne endringen krever en restart"
-      },
-      "DEBUG": {
-        "DEBUG_DATA_BUTTON": "Dump Debugdata",
-        "DEBUG_DATA_DESCRIPTION": "Loggfør debugdata for å hjelpe til med å diagnotisere eventuelle problemer. Hvis du er nyskgjerrig kan du finne dette i din siste loggfil.",
-        "DEBUG_DATA_LABEL": "Debugdata",
-        "LOG_FILES_BUTTON": "Vis Loggfiler",
-        "LOG_FILES_DESCRIPTION": "Åpne mappen som inneholder dine siste loggfiler.",
-        "LOG_FILES_LABEL": "Loggfiler",
-        "TITLE": "Debug"
-      },
-      "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
-        "AUTO_UPDATE_LABEL": "Automatisk Oppdatering",
-        "TITLE": "World of Warcraft",
-        "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",
-        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanal for Utvidelser",
-        "RESCAN_CLIENTS_BUTTON": "Skann Igjen",
-        "RESCAN_CLIENTS_LABEL": "Skann installerte World of Warcraft produkter på nytt"
-      }
+    "DOWNLOAD_COUNT": {
+      "BILLION": "billion",
+      "MILLION": "million",
+      "THOUSAND": "thousand"
     }
   },
   "DIALOGS": {
@@ -116,12 +43,12 @@
       "ADDON_URL_INPUT_LABEL": "Utvidelsens URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub eller WowInterface URL",
       "CLOSE_BUTTON": "Lukk",
+      "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
       "IMPORT_BUTTON": "Importer",
       "INSTALL_BUTTON": "Installer",
       "INSTALL_SUCCESS_LABEL": "Installert!",
-      "TITLE": "Installer Utvidelse fra URL",
-      "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
-      "SUPPORTED_SOURCES": "Støtter WowInterface og GitHub*"
+      "SUPPORTED_SOURCES": "Støtter WowInterface og GitHub*",
+      "TITLE": "Installer Utvidelse fra URL"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Hjelp meg med å forbedre WowUp ved å sende anyonyme data og feilmeldinger?",
@@ -130,27 +57,106 @@
       "TITLE": "WowUp Telemetri"
     }
   },
-  "COMMON": {
-    "ADDON_STATUS": {
-      "BACKINGUP": "Sikkerhetskopierer",
-      "COMPLETE": "Installert",
-      "DOWNLOADING": "Laster Ned",
-      "INSTALLING": "Installerer",
-      "PENDING": "Venter",
-      "UNINSTALLING": "Avinstallerer",
-      "UPDATING": "Oppdaterer..."
+  "PAGES": {
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "Endringslogg",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Besøk nettsiden!"
     },
-    "ADDON_STATE": {
-      "UNINSTALL": "Avinstaller",
-      "IGNORED": "Ignorert",
-      "UPDATE": "Oppdater",
-      "INSTALL": "Installer",
-      "UPTODATE": "Oppdatert"
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Installer fra URL",
+      "REFRESH_BUTTON": "Oppdater",
+      "SEARCH_LABEL": "Søk",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Utvidelse",
+        "AUTHOR_COLUMN_HEADER": "Forfatter",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Nedlastinger",
+        "PROVIDER_COLUMN_HEADER": "Leverandør",
+        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
+        "STATUS_COLUMN_HEADER": "Status"
+      }
     },
-    "DOWNLOAD_COUNT": {
-      "BILLION": "milliarder",
-      "MILLION": "millioner",
-      "THOUSAND": "tusen"
+    "HOME": {
+      "ABOUT_TAB_TITLE": "Om",
+      "GET_ADDONS_TAB_TITLE": "Få Utvidelser",
+      "MY_ADDONS_TAB_TITLE": "Mine Utvidelser",
+      "OPTIONS_TAB_TITLE": "Alternativer"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ALPHA_ADDON_CHANNEL": "Alpha",
+        "AUTO_UPDATE_ADDON_BUTTON": "Oppdater Automatisk",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENT_TITLE": "Kanal",
+        "IGNORE_ADDON_BUTTON": "Ignorer",
+        "REINSTALL_ADDON_BUTTON": "Re-Installer",
+        "REMOVE_ADDON_BUTTON": "Fjern",
+        "SHOW_FOLDER": "Vis Mappe",
+        "STABLE_ADDON_CHANNEL": "Stable"
+      },
+      "CHECK_UPDATES_BUTTON": "Finn Oppdateringer",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Finn de siste oppdateringene til utvidelsene dine",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Vis Kolonner"
+      },
+      "FILTER_LABEL": "Filter",
+      "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Utvidelse",
+        "ADDON_INSTALL_BUTTON": "Installer",
+        "ADDON_UPDATE_BUTTON": "Oppdater",
+        "AUTHOR_COLUMN_HEADER": "Forfatter",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Automatisk oppdatering aktivert",
+        "GAME_VERSION_COLUMN_HEADER": "Spillversjon",
+        "LATEST_VERSION_COLUMN_HEADER": "Siste Versjon",
+        "PROVIDER_COLUMN_HEADER": "Leverandør",
+        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
+        "STATUS_COLUMN_HEADER": "Status"
+      },
+      "UPDATE_ALL_BUTTON": "Oppdater Alle",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Oppdater alle utvidelser for denne klienten",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Oppdater Alle Klienter",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Oppdater Retail/Classic"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver systemvarsler",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Når WowUp-vinduet lukkes, minimer til oppgavelinjens varselområde.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukking",
+        "TELEMETRY_DESCRIPTION": "Hjelp til med å forbedre WowUp ved å sende anonyme data og feilmeldinger.",
+        "TELEMETRY_LABEL": "Telemetri",
+        "TITLE": "Applikasjon",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vil du restarte?",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Deaktivering av maskinvareakselerasjon kan løse FPS-problemer og andre renderproblemer i appen. Denne endringen krever en restart",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Deaktivering av maskinvareakselerasjon krever at du restarter programmet.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Aktivering av maskinvareakselerasjon krever at du restarter programmet.",
+        "USE_HARDWARE_ACCELERATION_LABEL": "Aktiver Maskinvareakselerasjon"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "Dump Debugdata",
+        "DEBUG_DATA_DESCRIPTION": "Loggfør debugdata for å hjelpe til med å diagnotisere eventuelle problemer. Hvis du er nyskgjerrig kan du finne dette i din siste loggfil.",
+        "DEBUG_DATA_LABEL": "Debugdata",
+        "LOG_FILES_BUTTON": "Vis Loggfiler",
+        "LOG_FILES_DESCRIPTION": "Åpne mappen som inneholder dine siste loggfiler.",
+        "LOG_FILES_LABEL": "Loggfiler",
+        "TITLE": "Debug"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
+        "AUTO_UPDATE_LABEL": "Automatisk Oppdatering",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanal for Utvidelser",
+        "RESCAN_CLIENTS_BUTTON": "Skann Igjen",
+        "RESCAN_CLIENTS_LABEL": "Skann installerte World of Warcraft produkter på nytt",
+        "TITLE": "World of Warcraft"
+      }
     }
   }
 }

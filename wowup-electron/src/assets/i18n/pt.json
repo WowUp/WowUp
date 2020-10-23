@@ -1,119 +1,31 @@
 {
-  "PAGES": {
-    "ABOUT": {
-      "CHANGE_LOG_SECTION_LABEL": "Registro de Alterações",
-      "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "Conheça o nosso site!"
+  "COMMON": {
+    "ADDON_STATE": {
+      "IGNORED": "Ignored",
+      "INSTALL": "Install",
+      "UNINSTALL": "Uninstall",
+      "UPDATE": "Update",
+      "UPTODATE": "Up to date"
     },
-    "GET_ADDONS": {
-      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "REFRESH_BUTTON": "Atualizar",
-      "INSTALL_FROM_URL_BUTTON": "Instalar pela URL",
-      "SEARCH_LABEL": "Procurar",
-      "TABLE": {
-        "ADDON_COLUMN_HEADER": "Addon",
-        "AUTHOR_COLUMN_HEADER": "Autor",
-        "PROVIDER_COLUMN_HEADER": "Provedor",
-        "STATUS_COLUMN_HEADER": "Estado",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "DOWNLOAD_COUNT_COLUMN_HEADER",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
-      }
+    "ADDON_STATUS": {
+      "BACKINGUP": "Backing Up",
+      "COMPLETE": "Installed",
+      "DOWNLOADING": "Downloading",
+      "INSTALLING": "Installing",
+      "PENDING": "Pending",
+      "UNINSTALLING": "Uninstalling",
+      "UPDATING": "Updating..."
     },
-    "HOME": {
-      "MY_ADDONS_TAB_TITLE": "Meus Addons",
-      "GET_ADDONS_TAB_TITLE": "Obtenha Addons",
-      "ABOUT_TAB_TITLE": "Sobre",
-      "OPTIONS_TAB_TITLE": "Opções"
+    "DATES": {
+      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
+      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
+      "JUST_NOW": "Just now",
+      "YESTERDAY": "Yesterday"
     },
-    "MY_ADDONS": {
-      "CHECK_UPDATES_BUTTON": "Verificar Atualizações",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Verificar atualizações recentes",
-      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "RESCAN_FOLDERS_BUTTON": "Re-escanear pastas",
-      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Procura por Addons instalados",
-      "UPDATE_ALL_BUTTON": "Actualizar todos",
-      "UPDATE_ALL_BUTTON_TOOLTIP": "Atualizar todos os Addons",
-      "TABLE": {
-        "ADDON_COLUMN_HEADER": "Addon",
-        "ADDON_INSTALL_BUTTON": "Instalar",
-        "ADDON_UPDATE_BUTTON": "Atualizar",
-        "AUTHOR_COLUMN_HEADER": "Autor",
-        "AUTO_UPDATE_ICON_TOOLTIP": "Atualização automática habilitada",
-        "GAME_VERSION_COLUMN_HEADER": "Versão do Jogo",
-        "LATEST_VERSION_COLUMN_HEADER": "Ultima versão",
-        "PROVIDER_COLUMN_HEADER": "Provedor",
-        "STATUS_COLUMN_HEADER": "Estado",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER"
-      },
-      "ADDON_CONTEXT_MENU": {
-        "IGNORE_ADDON_BUTTON": "Ignorar",
-        "AUTO_UPDATE_ADDON_BUTTON": "Atualização Automática",
-        "CHANNEL_SUBMENT_TITLE": "Canal",
-      "SHOW_FOLDER": "SHOW_FOLDER",
-      "REINSTALL_ADDON_BUTTON": "Reinstalar",
-        "REMOVE_ADDON_BUTTON": "Remover",
-        "STABLE_ADDON_CHANNEL": "Estável",
-        "BETA_ADDON_CHANNEL": "Beta",
-        "ALPHA_ADDON_CHANNEL": "Alfa"
-      },
-      "COLUMNS_CONTEXT_MENU": {
-        "TITLE": "Exibir Colunas"
-      },
-      "UPDATE_ALL_CONTEXT_MENU": {
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Atualizar Retail/Clássico",
-        "UPDATE_ALL_CLIENTS_BUTTON": "Atualizar todos os clientes"
-      }
-    },
-    "OPTIONS": {
-      "APPLICATION": {
-        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
-        "MINIMIZE_ON_CLOSE_LABEL": "Minimizar ao Fechar",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Ao fechar a janela do WowUp, minimize para a bandeja do sistema.",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
-        "TELEMETRY_DESCRIPTION": "Ajude a melhorar o WowUp enviando dados e/ou erros de instalação anônimamente.",
-        "TELEMETRY_LABEL": "Telemetria",
-        "TITLE": "Aplicativo",
-        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_LABEL" : "TEXT_ELEMENT",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "TEXT_ELEMENT"
-      },
-      "DEBUG": {
-        "DEBUG_DATA_BUTTON": "Esvaziar log de depuração de dados",
-        "DEBUG_DATA_DESCRIPTION": "Registra os dados de depuração e ajuda a diagnosticar problemas potenciais. Apenas por o curiosidade, isso pode ser encontrado em seu último arquivo de registro.",
-        "DEBUG_DATA_LABEL": "Depurar Dados",
-        "LOG_FILES_BUTTON": "Mostrar Arquivos de Registro",
-        "LOG_FILES_DESCRIPTION": "Abre a pasta que contém seus últimos arquivos de registro.",
-        "LOG_FILES_LABEL": "Arquivos de Registro",
-        "TITLE": "Depurar"
-      },
-      "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Addons recém-instalados serão definidos para atualizar automáticamente por padrão",
-        "AUTO_UPDATE_LABEL": "Atualização Automática",
-        "TITLE": "World of Warcraft",
-        "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addon Padrão",
-        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal de Addon",
-        "RESCAN_CLIENTS_BUTTON": "Re-escanear",
-        "RESCAN_CLIENTS_LABEL": "Reescanear World of Warcraft instalados"
-      }
-    },
-    "COMMON": {
-      "ADDON_STATUS": {
-        "COMPLETE": "COMPLETE",
-        "DOWNLOADING": "DOWNLOADING",
-        "INSTALLING": "INSTALLING",
-        "UNINSTALLING": "UNINSTALLING",
-        "UPDATING": "UPDATING"
-      },
-      "ADDON_STATE": {
-        "UNINSTALL": "UNINSTALL",
-        "IGNORED": "IGNORED",
-        "UPDATE": "UPDATE",
-        "INSTALL": "INSTALL",
-        "UPTODATE": "UPTODATE"
-      }
+    "DOWNLOAD_COUNT": {
+      "BILLION": "billion",
+      "MILLION": "million",
+      "THOUSAND": "thousand"
     }
   },
   "DIALOGS": {
@@ -131,23 +43,120 @@
       "ADDON_URL_INPUT_LABEL": "Addon URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub ou WowInterface URL",
       "CLOSE_BUTTON": "Fechar",
+      "DESCRIPTION": "Se você deseja instalar um addon diretamente de uma URL, cole-a abaixo para iniciar.",
       "IMPORT_BUTTON": "Importar",
       "INSTALL_BUTTON": "Instalar",
       "INSTALL_SUCCESS_LABEL": "Instalado!",
-      "TITLE": "Instalar Addon pela URL",
-      "DESCRIPTION": "Se você deseja instalar um addon diretamente de uma URL, cole-a abaixo para iniciar.",
-      "SUPPORTED_SOURCES": "Suporta WowInterface e GitHub*"
+      "SUPPORTED_SOURCES": "Suporta WowInterface e GitHub*",
+      "TITLE": "Instalar Addon pela URL"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Ajude-nos a melhorar o WowUp enviando dados e/ou erros de instalação do aplicativo anônimamente?",
       "NEGATIVE_BUTTON": "Não obrigado",
       "POSITIVE_BUTTON": "Claro!",
       "TITLE": "Telemetria do WowUp"
+    }
+  },
+  "PAGES": {
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "Registro de Alterações",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Conheça o nosso site!"
     },
-    "DOWNLOAD_COUNT": {
-      "BILLION": "",
-      "MILLION": "",
-      "THOUSAND": ""
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Instalar pela URL",
+      "REFRESH_BUTTON": "Atualizar",
+      "SEARCH_LABEL": "Procurar",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "AUTHOR_COLUMN_HEADER": "Autor",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "DOWNLOAD_COUNT_COLUMN_HEADER",
+        "PROVIDER_COLUMN_HEADER": "Provedor",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
+        "STATUS_COLUMN_HEADER": "Estado"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "Sobre",
+      "GET_ADDONS_TAB_TITLE": "Obtenha Addons",
+      "MY_ADDONS_TAB_TITLE": "Meus Addons",
+      "OPTIONS_TAB_TITLE": "Opções"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ALPHA_ADDON_CHANNEL": "Alfa",
+        "AUTO_UPDATE_ADDON_BUTTON": "Atualização Automática",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENT_TITLE": "Canal",
+        "IGNORE_ADDON_BUTTON": "Ignorar",
+        "REINSTALL_ADDON_BUTTON": "Reinstalar",
+        "REMOVE_ADDON_BUTTON": "Remover",
+        "SHOW_FOLDER": "SHOW_FOLDER",
+        "STABLE_ADDON_CHANNEL": "Estável"
+      },
+      "CHECK_UPDATES_BUTTON": "Verificar Atualizações",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Verificar atualizações recentes",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Exibir Colunas"
+      },
+      "FILTER_LABEL": "Filter",
+      "RESCAN_FOLDERS_BUTTON": "Re-escanear pastas",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Procura por Addons instalados",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "ADDON_INSTALL_BUTTON": "Instalar",
+        "ADDON_UPDATE_BUTTON": "Atualizar",
+        "AUTHOR_COLUMN_HEADER": "Autor",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Atualização automática habilitada",
+        "GAME_VERSION_COLUMN_HEADER": "Versão do Jogo",
+        "LATEST_VERSION_COLUMN_HEADER": "Ultima versão",
+        "PROVIDER_COLUMN_HEADER": "Provedor",
+        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
+        "STATUS_COLUMN_HEADER": "Estado"
+      },
+      "UPDATE_ALL_BUTTON": "Actualizar todos",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Atualizar todos os Addons",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Atualizar todos os clientes",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Atualizar Retail/Clássico"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Ao fechar a janela do WowUp, minimize para a bandeja do sistema.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimizar ao Fechar",
+        "TELEMETRY_DESCRIPTION": "Ajude a melhorar o WowUp enviando dados e/ou erros de instalação anônimamente.",
+        "TELEMETRY_LABEL": "Telemetria",
+        "TITLE": "Aplicativo",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
+        "USE_HARDWARE_ACCELERATION_LABEL": "TEXT_ELEMENT"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "Esvaziar log de depuração de dados",
+        "DEBUG_DATA_DESCRIPTION": "Registra os dados de depuração e ajuda a diagnosticar problemas potenciais. Apenas por o curiosidade, isso pode ser encontrado em seu último arquivo de registro.",
+        "DEBUG_DATA_LABEL": "Depurar Dados",
+        "LOG_FILES_BUTTON": "Mostrar Arquivos de Registro",
+        "LOG_FILES_DESCRIPTION": "Abre a pasta que contém seus últimos arquivos de registro.",
+        "LOG_FILES_LABEL": "Arquivos de Registro",
+        "TITLE": "Depurar"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "Addons recém-instalados serão definidos para atualizar automáticamente por padrão",
+        "AUTO_UPDATE_LABEL": "Atualização Automática",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addon Padrão",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal de Addon",
+        "RESCAN_CLIENTS_BUTTON": "Re-escanear",
+        "RESCAN_CLIENTS_LABEL": "Reescanear World of Warcraft instalados",
+        "TITLE": "World of Warcraft"
+      }
     }
   }
 }

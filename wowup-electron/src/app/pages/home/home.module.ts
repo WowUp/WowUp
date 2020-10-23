@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 
 import { HomeRoutingModule } from "./home-routing.module";
 
@@ -16,6 +16,7 @@ import { ProgressSpinnerComponent } from "app/components/progress-spinner/progre
 import { DownloadCountPipe } from "app/pipes/download-count.pipe";
 import { InterfaceFormatPipe } from "app/pipes/interface-format.pipe";
 import { GetAddonListItemFilePropPipe } from "app/pipes/get-addon-list-item-file-prop.pipe";
+import { RelativeDurationPipe } from "app/pipes/relative-duration-pipe";
 import { TelemetryDialogComponent } from "app/components/telemetry-dialog/telemetry-dialog.component";
 import { ConfirmDialogComponent } from "app/components/confirm-dialog/confirm-dialog.component";
 import { AlertDialogComponent } from "app/components/alert-dialog/alert-dialog.component";
@@ -43,6 +44,7 @@ import { AddonUpdateButtonComponent } from "app/components/addon-update-button/a
     DownloadCountPipe,
     InterfaceFormatPipe,
     GetAddonListItemFilePropPipe,
+    RelativeDurationPipe,
     TelemetryDialogComponent,
     ConfirmDialogComponent,
     AlertDialogComponent,
@@ -63,5 +65,8 @@ import { AddonUpdateButtonComponent } from "app/components/addon-update-button/a
     MatModule,
     DirectiveModule,
   ],
+  providers: [
+    DatePipe
+  ]
 })
 export class HomeModule {}
