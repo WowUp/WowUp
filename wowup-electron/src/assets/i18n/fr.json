@@ -61,7 +61,7 @@
     "ABOUT": {
       "CHANGE_LOG_SECTION_LABEL": "Journal des modifications",
       "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "Découvrez le site web!"
+      "WEBSITE_LINK_LABEL": "Découvrez le site web !"
     },
     "GET_ADDONS": {
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
@@ -146,7 +146,7 @@
         "LOG_FILES_BUTTON": "Afficher les fichiers de log",
         "LOG_FILES_DESCRIPTION": "Ouvrez le dossier qui contient vos derniers fichiers journaux.",
         "LOG_FILES_LABEL": "Fichiers de log",
-        "TITLE": "Debug"
+        "TITLE": "Déboguage"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Les extensions nouvellement installées seront mises à jour automatiquement par défaut",
