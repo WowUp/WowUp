@@ -30,6 +30,7 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "BY_AUTHOR": "By {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser"
     },
     "ALERT": {
