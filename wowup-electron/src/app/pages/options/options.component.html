@@ -1,4 +1,4 @@
-<div class="tab-container" [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
+<div class="tab-container" [ngClass]="[ electronService.isWin ?'windows' :'mac']">
   <div class="options">
     <mat-card class="option-card">
       <mat-card-header>
@@ -46,18 +46,19 @@
               {{'PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION' | translate}}
             </small>
           </div>
-          <mat-slide-toggle [checked]="wowupService.enableSystemNotifications" (change)="onEnableSystemNotifications($event)"
-            appUserActionTracker category="Options" action="EnableSystemNotifications"
-            [label]="wowupService.enableSystemNotifications">
+          <mat-slide-toggle [checked]="wowupService.enableSystemNotifications"
+            (change)="onEnableSystemNotifications($event)" appUserActionTracker category="Options"
+            action="EnableSystemNotifications" [label]="wowupService.enableSystemNotifications">
           </mat-slide-toggle>
         </div>
         <div class="row hover">
           <div class="grow">
             <p>{{'PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DESCRIPTION' | translate}}</small>
+            <small
+              class="hint">{{'PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DESCRIPTION' | translate}}</small>
           </div>
-          <mat-slide-toggle [(checked)]="useHardwareAcceleration" (change)="onUseHardwareAccelerationChange($event)" appUserActionTracker
-            category="Options" action="UseHardwareAcceleration" [label]="useHardwareAcceleration">
+          <mat-slide-toggle [(checked)]="useHardwareAcceleration" (change)="onUseHardwareAccelerationChange($event)"
+            appUserActionTracker category="Options" action="UseHardwareAcceleration" [label]="useHardwareAcceleration">
           </mat-slide-toggle>
         </div>
       </mat-card-content>
