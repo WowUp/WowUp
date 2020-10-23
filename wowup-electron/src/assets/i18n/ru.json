@@ -30,7 +30,7 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "BY_AUTHOR": "By {authorName}",
+      "BY_AUTHOR": "От {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере"
     },
     "ALERT": {
@@ -105,7 +105,7 @@
       "FILTER_LABEL": "Фильтр",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
-        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}"
+        "SEARCH_RESULTS": "{count} {count, plural, one{результат} few{результата} other{результатов}}"
       },
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
