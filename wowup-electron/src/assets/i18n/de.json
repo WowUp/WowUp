@@ -135,7 +135,7 @@
       "COMPLETE": "Vollständig",
       "DOWNLOADING": "Herunterladen",
       "INSTALLING": "Installiere",
-      "PENDING": "Pending",
+      "PENDING": "Ausstehend",
       "UNINSTALLING": "Deinstalliere",
       "UPDATING": "Aktualisiere..."
     },
@@ -147,9 +147,9 @@
       "UPTODATE": "Aktuell"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "",
-      "MILLION": "",
-      "THOUSAND": ""
+      "BILLION": "Billionen",
+      "MILLION": "Millionen",
+      "THOUSAND": "Tausend"
     }
   }
 }
