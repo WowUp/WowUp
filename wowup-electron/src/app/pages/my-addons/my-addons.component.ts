@@ -674,18 +674,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private getInstallStateText(installState: AddonInstallState) {
     switch (installState) {
-      case AddonInstallState.Pending:
-        return "Pending";
-      case AddonInstallState.Downloading:
-        return "Downloading";
       case AddonInstallState.BackingUp:
-        return "BackingUp";
-      case AddonInstallState.Installing:
-        return "Installing";
+        return this._translateService.instant("COMMON.ADDON_STATUS.BACKINGUP");
       case AddonInstallState.Complete:
-        return "Complete";
+        return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
+      case AddonInstallState.Downloading:
+        return this._translateService.instant("COMMON.ADDON_STATUS.DOWNLOADING");
+      case AddonInstallState.Installing:
+        return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
+      case AddonInstallState.Pending:
+        return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
       default:
-        return "Unknown";
+        return "";
     }
   }
 }
