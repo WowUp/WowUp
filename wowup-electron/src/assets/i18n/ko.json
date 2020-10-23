@@ -1,4 +1,8 @@
 {
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} addons.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates"
+  },
   "COMMON": {
     "ADDON_STATE": {
       "IGNORED": "Ignored",
