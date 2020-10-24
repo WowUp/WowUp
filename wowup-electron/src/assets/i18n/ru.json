@@ -79,7 +79,11 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "Для включения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "Для отключения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_LABEL" : "Включить аппаратное ускорение",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения."
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
+        "START_WITH_SYSTEM_LABEL" : "Запускать WowUp вместе с ОС",
+        "START_WITH_SYSTEM_DESCRIPTION" : "WowUp будет запущен сразу после загрузки операционной системы",
+        "START_MINIMIZED_LABEL" : "Запускать WowUp свернутым",
+        "START_MINIMIZED_DESCRIPTION" : "WowUp будет запущен в свернутом виде со стартом системы"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",

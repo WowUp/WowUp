@@ -111,6 +111,7 @@
     "@types/lodash": "4.14.162",
     "adm-zip": "0.4.16",
     "async": "3.2.0",
+    "auto-launch": "5.0.5",
     "axios": "0.20.0",
     "compare-versions": "3.6.0",
     "conf": "7.1.2",

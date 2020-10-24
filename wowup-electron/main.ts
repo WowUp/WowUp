@@ -271,7 +271,9 @@ function createWindow(): BrowserWindow {
   win.webContents.userAgent = USER_AGENT;
 
   win.once("ready-to-show", () => {
-    win.show();
+    var startMinimized = (process.argv || []).indexOf('--hidden') !== -1;
+    if (!startMinimized)
+      win.show();
     autoUpdater.checkForUpdatesAndNotify().then((result) => {
       console.log("UPDATE", result);
     });

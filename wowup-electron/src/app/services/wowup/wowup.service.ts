@@ -27,9 +27,12 @@ import {
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+  START_WITH_SYSTEM_PREFERENCE_KEY,
+  START_MINIMIZED_PREFERENCE_KEY
 } from "common/constants";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
+var autoLaunch = require('auto-launch');
 
 @Injectable({
   providedIn: "root",
@@ -101,6 +104,36 @@ export class WowUpService {
     const key = USE_HARDWARE_ACCELERATION_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public get startWithSystem() {
+    const preference = this._preferenceStorageService.findByKey(
+      START_WITH_SYSTEM_PREFERENCE_KEY
+    );
+    return preference === "true";
+  }
+
+  public set startWithSystem(value: boolean) {
+    const key = START_WITH_SYSTEM_PREFERENCE_KEY;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+
+    this.setAutoStartup();
+  }
+
+  public get startMinimized() {
+    const preference = this._preferenceStorageService.findByKey(
+      START_MINIMIZED_PREFERENCE_KEY
+    );
+    return preference === "true";
+  }
+
+  public set startMinimized(value: boolean){
+    const key = START_MINIMIZED_PREFERENCE_KEY;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+
+    this.setAutoStartup();
   }
 
   public get wowUpReleaseChannel() {
@@ -310,5 +343,17 @@ export class WowUpService {
     await this._fileService.createDirectory(
       this.applicationDownloadsFolderPath
     );
+  }
+
+  private setAutoStartup() {
+    var autoLauncher = new autoLaunch({
+      name: 'WowUp',
+      isHidden: this.startMinimized
+    });
+
+    if (this.startWithSystem)
+      autoLauncher.enable();
+    else
+      autoLauncher.disable();
   }
 }

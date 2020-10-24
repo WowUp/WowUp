@@ -79,7 +79,11 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION" : "Enabling hardware acceleration requires the application to restart.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION" : "Disabling hardware acceleration requires the application to restart.",
         "USE_HARDWARE_ACCELERATION_LABEL" : "Enable Hardware Acceleration",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart."
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION" : "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart.",
+        "START_WITH_SYSTEM_LABEL" : "Start WowUp with system",
+        "START_WITH_SYSTEM_DESCRIPTION" : "WowUp will start immediately after your operational ssytem is loaded",
+        "START_MINIMIZED_LABEL" : "Start WowUp minimized",
+        "START_MINIMIZED_DESCRIPTION" : "WowUp will start minimized on system startup"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debug Data",
