@@ -8,24 +8,24 @@
       "UPTODATE": "Aktuell"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Backing Up",
+      "BACKINGUP": "Sichern",
       "COMPLETE": "Vollständig",
       "DOWNLOADING": "Herunterladen",
       "INSTALLING": "Installiere",
-      "PENDING": "Pending",
+      "PENDING": "Ausstehend",
       "UNINSTALLING": "Deinstalliere",
       "UPDATING": "Aktualisiere..."
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "{count} {count, plural, one{Tag} other{Tage}} her",
+      "HOURS_AGO": "{count} {count, plural, one{Stunde} other{Stunden}} her",
+      "JUST_NOW": "Gerade eben",
+      "YESTERDAY": "Gestern"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "billion",
-      "MILLION": "million",
-      "THOUSAND": "thousand"
+      "BILLION": "billionen",
+      "MILLION": "millionen",
+      "THOUSAND": "tausend"
     }
   },
   "DIALOGS": {
