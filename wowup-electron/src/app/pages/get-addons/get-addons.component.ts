@@ -114,10 +114,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         this.onSearch();
       });
 
+    const dataSourceSub = this.dataSource.connect().subscribe((data) => {
+      this.setPageContextText();
+    });
+
     this._subscriptions = [
       selectedClientSubscription,
       addonRemovedSubscription,
       channelTypeSubscription,
+      dataSourceSub,
     ];
   }
 
@@ -166,8 +171,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   async onSearch() {
     if (!this.query) {
-      this.loadPopularAddons(this.selectedClient);
-      this.setPageContextText();
+      await this.loadPopularAddons(this.selectedClient);
       return;
     }
 
@@ -182,7 +186,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.formatAddons(this.filterInstalledAddons(searchResults))
     );
     this.isBusy = false;
-    this.setPageContextText();
   }
 
   openDetailDialog(listItem: GetAddonListItem) {
