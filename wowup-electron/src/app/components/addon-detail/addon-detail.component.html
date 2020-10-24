@@ -9,7 +9,9 @@
 
   <div mat-dialog-content>
     <div class="row">
-      <div class="mat-subheading-1 flex-grow-1">By {{ subtitle }}</div>
+      <div class="mat-subheading-1 flex-grow-1" translate [translateParams]="{authorName: subtitle}">
+        DIALOGS.ADDON_DETAILS.BY_AUTHOR
+      </div>
       <app-addon-provider-badge [providerName]="provider" class="flex-shrink-0"></app-addon-provider-badge>
     </div>
     <div class="mat-caption addon-detail-summary">

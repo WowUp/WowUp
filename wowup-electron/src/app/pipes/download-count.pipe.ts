@@ -11,21 +11,20 @@ export class DownloadCountPipe implements PipeTransform {
     let suffix = "";
     let downloadCount = value;
     if (downloadCount >= 1000000000) {
-      suffix = "billion";
+      suffix = "BILLION";
       downloadCount /= 1000000000.0;
     } else if (downloadCount >= 1000000) {
-      suffix = "million";
+      suffix = "MILLION";
       downloadCount /= 1000000.0;
     } else if (downloadCount >= 1000) {
-      suffix = "thousand";
+      suffix = "THOUSAND";
       downloadCount /= 1000.0;
     }
-    const translatedString: string = suffix
+    return suffix
       ? this.translateService.instant(
-          "COMMON.DOWNLOAD_COUNT." + suffix.toUpperCase()
+          "COMMON.DOWNLOAD_COUNT." + suffix,
+          {count: downloadCount.toFixed(0)}
         )
       : "";
-      
-    return `${downloadCount.toFixed(0)} ${translatedString}`;
   }
 }

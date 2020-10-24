@@ -5,7 +5,6 @@ import {
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import { AppConfig } from "../environments/environment";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -35,7 +34,7 @@ export class AppComponent implements AfterViewInit {
     private warcraft: WarcraftService,
     private _wowUpService: WowUpService,
     private _dialog: MatDialog,
-    private _addonService: AddonService
+    private _addonService: AddonService,
   ) {
     this.translate.setDefaultLang("en");
 
@@ -84,10 +83,13 @@ export class AppComponent implements AfterViewInit {
     );
 
     if (this._wowUpService.enableSystemNotifications) {
-      this._electronService.showNotification("Auto Updates", {
-        body: `Automatically updated ${updateCount} addons.`,
-        icon: iconPath,
-      });
+      this._electronService.showNotification(
+        this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_TITLE"),
+        {
+          body: this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_BODY", {count: updateCount}),
+          icon: iconPath,
+        }
+      );
     }
   };
 }
