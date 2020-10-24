@@ -65,7 +65,13 @@
           {{'PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          {{element | getAddonListItemFileProp:'releaseDate':defaultAddonChannel | date:'short'}}
+          <ng-template let-releasedAt
+            [ngTemplateOutletContext]="{ $implicit: element | getAddonListItemFileProp:'releaseDate':defaultAddonChannel }"
+            [ngTemplateOutlet]="t" #t>
+            <div [matTooltip]="releasedAt | date:'short'" matTooltipPosition="above" matTooltipShowDelay="500">
+              {{releasedAt | relativeDuration}}
+            </div>
+          </ng-template>
         </td>
       </ng-container>
 
@@ -79,11 +85,15 @@
       </ng-container>
 
       <ng-container matColumnDef="author">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef class="author-column">
-          {{'PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER' | translate}}
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          <div  class="author-column">
+            {{'PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER' | translate}}
+          </div>
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding">
-          {{element.author}}
+          <div class="author-column">
+            {{element.author}}
+          </div>
         </td>
       </ng-container>
 
@@ -92,7 +102,8 @@
           {{'PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element">
-          <app-get-addon-status-column [addonSearchResult]="element.searchResult" (onInstallViewUpdated)="onStatusColumnUpdated()"></app-get-addon-status-column>
+          <app-get-addon-status-column [addonSearchResult]="element.searchResult"
+            (onInstallViewUpdated)="onStatusColumnUpdated()"></app-get-addon-status-column>
         </td>
       </ng-container>
 

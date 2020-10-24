@@ -12,6 +12,7 @@ import { AddonInstallState } from "app/models/wowup/addon-install-state";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { AddonService } from "app/services/addons/addon.service";
 import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -35,14 +36,22 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
     console.log(this.model);
 
     this._subscriptions.push(
-      this._addonService.addonInstalled$.subscribe((evt) => {
-        if (this.model.listItem) {
-          this.model.listItem.addon = evt.addon;
-          this.model.listItem.installState = evt.installState;
-        }
+      this._addonService.addonInstalled$
+        .pipe(
+          filter(
+            (evt) =>
+              evt.addon.id === this.model.listItem?.addon.id ||
+              evt.addon.externalId === this.model.searchResult?.externalId
+          )
+        )
+        .subscribe((evt) => {
+          if (this.model.listItem) {
+            this.model.listItem.addon = evt.addon;
+            this.model.listItem.installState = evt.installState;
+          }
 
-        this._cdRef.detectChanges();
-      })
+          this._cdRef.detectChanges();
+        })
     );
   }
 

@@ -5,11 +5,11 @@ import { Pipe, PipeTransform } from "@angular/core";
 })
 export class InterfaceFormatPipe implements PipeTransform {
   transform(value: string, ...args: unknown[]): string {
-    if (value.indexOf(".") !== -1) {
+    if (!value) {
       return value;
     }
 
-    if (!value) {
+    if (value.indexOf(".") !== -1) {
       return value;
     }
 

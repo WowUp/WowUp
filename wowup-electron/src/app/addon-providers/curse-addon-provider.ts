@@ -13,7 +13,11 @@ import { AddonFolder } from "app/models/wowup/addon-folder";
 import { ElectronService } from "app/services";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import { v4 as uuidv4 } from "uuid";
-import { CURSE_GET_SCAN_RESULTS } from "common/constants";
+import {
+  CURSE_GET_SCAN_RESULTS,
+  NO_LATEST_SEARCH_RESULT_FILES_ERROR,
+  NO_SEARCH_RESULTS_ERROR,
+} from "common/constants";
 import { CurseMatch } from "common/curse/curse-match";
 import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
 import { CurseSearchResult } from "../../common/curse/curse-search-result";
@@ -204,12 +208,13 @@ export class CurseAddonProvider implements AddonProvider {
       })
       .toPromise();
 
-    return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
-      async () =>
-        await this._httpClient
-          .post<CurseFingerprintsResponse>(url, fingerprints)
-          .toPromise()
-    );
+    // If CurseForge API is ever fixed, put this back.
+    // return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
+    //   async () =>
+    //     await this._httpClient
+    //       .post<CurseFingerprintsResponse>(url, fingerprints)
+    //       .toPromise()
+    // );
   }
 
   private async getAddonsByFingerprints(
@@ -319,17 +324,22 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getAddonSearchResult(result));
+      searchResults.push(this.getAddonSearchResult(result, latestFiles));
     }
 
     return searchResults;
   }
 
-  searchByUrl(
+  async searchByUrl(
     addonUri: URL,
     clientType: WowClientType
   ): Promise<AddonSearchResult> {
-    throw new Error("Method not implemented.");
+    const slugRegex = /\/addons\/(.*?)(\/|$)/gi;
+    const slugMatch = slugRegex.exec(addonUri.pathname);
+    if (!slugMatch) {
+      return null;
+    }
+    return await this.searchBySlug(slugMatch[1], clientType);
   }
 
   searchByName(
@@ -339,6 +349,26 @@ export class CurseAddonProvider implements AddonProvider {
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
     throw new Error("Method not implemented.");
+  }
+
+  private async searchBySlug(slug: string, clientType: WowClientType) {
+    const searchWord = _.first(slug.split("-"));
+    const response = await this.getSearchResults(searchWord);
+
+    console.log("slug", slug);
+    console.log("searchWord", searchWord);
+
+    const match = _.find(response, (res) => res.slug === slug);
+    if (!match) {
+      throw new Error(NO_SEARCH_RESULTS_ERROR);
+    }
+
+    const latestFiles = this.getLatestFiles(match, clientType);
+    if (!latestFiles?.length) {
+      throw new Error(NO_LATEST_SEARCH_RESULT_FILES_ERROR);
+    }
+
+    return this.getAddonSearchResult(match, latestFiles);
   }
 
   private async getSearchResults(query: string): Promise<CurseSearchResult[]> {
@@ -425,7 +455,7 @@ export class CurseAddonProvider implements AddonProvider {
         providerName: this.name,
         files: _.orderBy(searchResultFiles, (f) => f.channelType).reverse(),
         downloadCount: result.downloadCount,
-        summary: result.summary
+        summary: result.summary,
       };
 
       return searchResult;

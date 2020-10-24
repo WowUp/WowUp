@@ -27,3 +27,5 @@ export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY =
   "use_hardware_acceleration";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized"
+export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
+export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
