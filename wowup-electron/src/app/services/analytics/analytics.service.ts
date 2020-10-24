@@ -80,6 +80,10 @@ export class AnalyticsService {
   }
 
   public trackStartup() {
+    if (!this.telemetryEnabled) {
+      return;
+    }
+
     this._firebaseAnalytics.logEvent("app_startup");
   }
 
