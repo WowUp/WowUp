@@ -185,6 +185,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       .connect()
       .subscribe((sortedListItems) => {
         this.sortedListItems = sortedListItems;
+        this.setPageContextText();
       });
 
     this.subscriptions.push(
