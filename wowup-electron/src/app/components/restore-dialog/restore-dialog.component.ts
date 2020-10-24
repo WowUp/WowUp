@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import * as AdmZip from "adm-zip";
 import * as fs from 'fs';
 import * as moment from 'moment';
-
+import * as rimraf from 'rimraf';
 @Component( {
   selector: 'app-restore-dialog',
   templateUrl: './restore-dialog.component.html',
@@ -13,12 +14,12 @@ export class RestoreDialogComponent implements OnInit {
   displayedColumns: string[] = ['Date', 'Restore', 'Delete'];
   dataSource: string[];
 
-  private _fullPath: string;
+
   private _archives: string[];
   constructor( public dialogRef: MatDialogRef<RestoreDialogComponent>,
-    @Inject( MAT_DIALOG_DATA ) public data: string, private _snackBar: MatSnackBar, ) {
-    this._fullPath = this.data;
-    this._archives = fs.readdirSync( this.data );
+    @Inject( MAT_DIALOG_DATA ) public data: { pathBackup: string, fullPath: string }, private _snackBar: MatSnackBar, ) {
+
+    this._archives = fs.readdirSync( this.data.pathBackup );
   }
 
   ngOnInit(): void {
@@ -26,10 +27,33 @@ export class RestoreDialogComponent implements OnInit {
   }
 
   deleteArchive( index: number ) {
-    fs.unlinkSync( `${this._fullPath}/${this._archives[index]}` );
+    fs.unlinkSync( `${this.data.pathBackup}/${this._archives[index]}` );
     this._archives.splice( index, 1 );
     this.dataSource = this._setDataSource();
     this._snackBar.open( "PAGES.OPTIONS.WOW.BACKUP_REMOVED", "", { duration: 2000 } );
+  }
+
+  restoreBackup( index: number ) {
+    rimraf.sync( `${this.data.fullPath}/WTF.old` );
+    rimraf.sync( `${this.data.fullPath}/Interface.old` );
+    try {
+      fs.renameSync( `${this.data.fullPath}/WTF`, `${this.data.fullPath}/WTF.old` );
+      fs.renameSync( `${this.data.fullPath}/Interface`, `${this.data.fullPath}/Interface.old` );
+      this._snackBar.open( "PAGES.OPTIONS.WOW.RESTORE_STARTED" );
+
+      setTimeout( () => {
+        const zip = new AdmZip( `${this.data.pathBackup}/${this._archives[index]}` );
+        zip.extractAllTo( this.data.fullPath );
+        this._snackBar.dismiss();
+
+        rimraf.sync( `${this.data.fullPath}/WTF.old` );
+        rimraf.sync( `${this.data.fullPath}/Interface.old` );
+      }, 1000 );
+
+    } catch {
+      fs.renameSync( `${this.data.fullPath}/WTF.old`, `${this.data.fullPath}/WTF` );
+      fs.renameSync( `${this.data.fullPath}/Interface.old`, `${this.data.fullPath}/Interface` );
+    }
   }
 
   private _setDataSource() {
