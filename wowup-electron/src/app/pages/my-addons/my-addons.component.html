@@ -69,6 +69,16 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="addon.installedAt">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{'PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER' | translate}}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding" [matTooltip]="element.addon.installedAt | date:'short'"
+            matTooltipPosition="above" matTooltipShowDelay="500">
+          {{element.addon.installedAt | relativeDuration}}
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="addon.latestVersion">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER' | translate}}

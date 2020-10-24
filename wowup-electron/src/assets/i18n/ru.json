@@ -133,7 +133,8 @@
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
         "RELEASED_AT_COLUMN_HEADER": "Выпущена",
-        "STATUS_COLUMN_HEADER": "Статус"
+        "STATUS_COLUMN_HEADER": "Статус",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Это действие удалит все относящиеся папки модификации из вашей папки World of Warcraft.",
