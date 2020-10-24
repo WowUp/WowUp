@@ -641,9 +641,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private createAddonListItem(addon: Addon) {
     const listItem = new AddonViewModel(addon);
 
-    if (!listItem.addon.thumbnailUrl) {
-      listItem.addon.thumbnailUrl = "assets/images/wowup-placeholder.png";
-    }
     if (!listItem.addon.installedVersion) {
       listItem.addon.installedVersion = "None";
     }

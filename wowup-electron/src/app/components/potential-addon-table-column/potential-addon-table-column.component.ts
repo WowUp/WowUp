@@ -26,6 +26,14 @@ export class PotentialAddonTableColumnComponent implements OnInit, OnChanges {
 
   public addonVersion: string = "";
 
+  public get hasThumbnail() {
+    return !!this.addon.thumbnailUrl;
+  }
+
+  public get thumbnailLetter() {
+    return this.addon.name.charAt(0).toUpperCase();
+  }
+
   constructor(
     private _sessionService: SessionService,
     private _wowupService: WowUpService

@@ -11,6 +11,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     margin-right: 11px;
     flex-shrink: 0;
     background-size: contain;
@@ -19,6 +20,12 @@
 
     .addon-logo {
       width: 100%;
+    }
+
+    .addon-logo-letter {
+      color: $white-4;
+      font-size: 2em;
+      font-weight: 400;
     }
   }
 
@@ -33,7 +40,7 @@
       color: $white-2;
     }
   }
-  
+
   .addon-version {
     color: $white-2;
   }
