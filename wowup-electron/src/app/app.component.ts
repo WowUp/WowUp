@@ -5,7 +5,10 @@ import {
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
+import { from, of } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 import { AppConfig } from "../environments/environment";
+import { ConfirmDialogComponent } from "./components/confirm-dialog/confirm-dialog.component";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -45,30 +48,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this._analyticsService.shouldPromptTelemetry) {
-      this.openDialog();
-    } else {
-      this._analyticsService.trackStartup();
-    }
-
     this.onAutoUpdateInterval();
     this._autoUpdateInterval = window.setInterval(
       this.onAutoUpdateInterval,
       AUTO_UPDATE_PERIOD_MS
     );
-  }
-
-  openDialog(): void {
-    const dialogRef = this._dialog.open(TelemetryDialogComponent, {
-      disableClose: true,
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      this._analyticsService.telemetryEnabled = result;
-      if (result) {
-        this._analyticsService.trackStartup();
-      }
-    });
   }
 
   private onAutoUpdateInterval = async () => {

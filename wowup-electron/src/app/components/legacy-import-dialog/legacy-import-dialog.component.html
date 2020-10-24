@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>{{'DIALOGS.LEGACY_IMPORT.TITLE' | translate }}</h2>
+<mat-dialog-content class="mat-typography">
+  <pre *ngIf="busy === false && success === false"
+    class="message">{{'DIALOGS.LEGACY_IMPORT.MESSAGE' | translate }}</pre>
+  <app-progress-spinner *ngIf="busy === true && success === false"
+    [message]="'DIALOGS.LEGACY_IMPORT.LOADING_MESSAGE' | translate">
+  </app-progress-spinner>
+  <div *ngIf="success === true" class="row justify-content-center align-items-center">
+    <div class="mat-headline success-label  mr-2">{{'DIALOGS.LEGACY_IMPORT.IMPORT_SUCCESS' | translate}}</div>
+    <img src="assets/images/checkbox-marked-circle-green.svg" class="filter-green icon-2x" />
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button color="primary" [disabled]="busy === true || success === true" (click)="onNegative()">
+    {{'DIALOGS.CONFIRM.NEGATIVE_BUTTON' | translate}}
+  </button>
+  <button mat-raised-button cdkFocusInitial color="primary" [disabled]="busy === true || success === true" (click)="onPositive()">
+    {{'DIALOGS.CONFIRM.POSITIVE_BUTTON' | translate}}
+  </button>
+</mat-dialog-actions>

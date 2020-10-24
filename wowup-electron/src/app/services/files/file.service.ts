@@ -7,6 +7,7 @@ import {
   LIST_DIRECTORIES_CHANNEL,
   PATH_EXISTS_CHANNEL,
   READ_FILE_CHANNEL,
+  READ_SQL_DATABASE_CHANNEL,
   SHOW_DIRECTORY,
   UNZIP_FILE_CHANNEL,
 } from "common/constants";
@@ -24,24 +25,15 @@ export class FileService {
   constructor(private _electronService: ElectronService) {}
 
   public async getAssetFilePath(fileName: string) {
-    return await this._electronService.ipcRenderer.invoke(
-      GET_ASSET_FILE_PATH,
-      fileName
-    );
+    return await this.invoke(GET_ASSET_FILE_PATH, fileName);
   }
 
   public async createDirectory(directoryPath: string) {
-    return await this._electronService.ipcRenderer.invoke(
-      CREATE_DIRECTORY_CHANNEL,
-      directoryPath
-    );
+    return await this.invoke(CREATE_DIRECTORY_CHANNEL, directoryPath);
   }
 
   public async showDirectory(sourceDir: string) {
-    return await this._electronService.ipcRenderer.invoke(
-      SHOW_DIRECTORY,
-      sourceDir
-    );
+    return await this.invoke(SHOW_DIRECTORY, sourceDir);
   }
 
   public async pathExists(sourcePath: string): Promise<boolean> {
@@ -49,10 +41,7 @@ export class FileService {
       return Promise.resolve(false);
     }
 
-    return await this._electronService.ipcRenderer.invoke(
-      PATH_EXISTS_CHANNEL,
-      sourcePath
-    );
+    return await this.invoke(PATH_EXISTS_CHANNEL, sourcePath);
   }
 
   /**
@@ -63,10 +52,7 @@ export class FileService {
       throw new Error("remove sourcePath required");
     }
 
-    return await this._electronService.ipcRenderer.invoke(
-      DELETE_DIRECTORY_CHANNEL,
-      sourcePath
-    );
+    return await this.invoke(DELETE_DIRECTORY_CHANNEL, sourcePath);
   }
 
   /**
@@ -82,7 +68,7 @@ export class FileService {
       responseKey: uuidv4(),
     };
 
-    await this._electronService.ipcRenderer.invoke(COPY_FILE_CHANNEL, request);
+    await this.invoke(COPY_FILE_CHANNEL, request);
 
     return destinationFilePath;
   }
@@ -94,17 +80,11 @@ export class FileService {
   }
 
   public async readFile(sourcePath: string): Promise<string> {
-    return await this._electronService.ipcRenderer.invoke(
-      READ_FILE_CHANNEL,
-      sourcePath
-    );
+    return await this.invoke(READ_FILE_CHANNEL, sourcePath);
   }
 
   public async listDirectories(sourcePath: string): Promise<string[]> {
-    return await this._electronService.ipcRenderer.invoke(
-      LIST_DIRECTORIES_CHANNEL,
-      sourcePath
-    );
+    return await this.invoke(LIST_DIRECTORIES_CHANNEL, sourcePath);
   }
 
   public listEntries(sourcePath: string, filter: string) {
@@ -136,9 +116,10 @@ export class FileService {
       responseKey: uuidv4(),
     };
 
-    return await this._electronService.ipcRenderer.invoke(
-      UNZIP_FILE_CHANNEL,
-      request
-    );
+    return await this.invoke(UNZIP_FILE_CHANNEL, request);
+  }
+
+  private invoke(channel: string, ...args: any[]): Promise<any> {
+    return this._electronService.ipcRenderer.invoke(channel, ...args);
   }
 }

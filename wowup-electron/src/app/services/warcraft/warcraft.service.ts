@@ -7,6 +7,7 @@ import { InstalledProduct } from "app/models/warcraft/installed-product";
 import { from, BehaviorSubject } from "rxjs";
 import * as path from "path";
 import * as fs from "fs";
+import * as _ from "lodash";
 import { map, filter, delay, switchMap } from "rxjs/operators";
 import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
@@ -17,6 +18,7 @@ import { TocService } from "../toc/toc.service";
 import { getEnumList, getEnumName } from "app/utils/enum.utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { LegacyPreference } from "common/wowup/legacy-database";
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = "_retail_";
@@ -100,9 +102,7 @@ export class WarcraftService {
   public async getWowClientTypes() {
     const clients: WowClientType[] = [];
 
-    const clientTypes = getEnumList<WowClientType>(WowClientType).filter(
-      (clientType) => clientType !== WowClientType.None
-    );
+    const clientTypes = this.getUsableClientTypes();
 
     for (let clientType of clientTypes) {
       const clientLocation = this.getClientLocation(clientType);
@@ -133,9 +133,7 @@ export class WarcraftService {
     const installedProducts = this.decodeProducts(this._productDbPath);
     this._productsSrc.next(installedProducts);
 
-    const clientTypes = getEnumList<WowClientType>(WowClientType).filter(
-      (clientType) => clientType !== WowClientType.None
-    );
+    const clientTypes = this.getUsableClientTypes();
 
     for (const clientType of clientTypes) {
       const clientLocation = this.getClientLocation(clientType);
@@ -252,6 +250,35 @@ export class WarcraftService {
       .subscribe();
 
     return true;
+  }
+
+  public importLegacyPreferences(legacyPreferences: LegacyPreference[]) {
+    const clientTypes = this.getUsableClientTypes();
+
+    clientTypes.forEach((clientType) => {
+      const preferenceKey = this.getClientLocationKey(clientType);
+      const legacyPreference = _.find(
+        legacyPreferences,
+        (lp) => lp.Key === preferenceKey
+      );
+
+      if (!legacyPreference) {
+        return;
+      }
+
+      console.debug(
+        `Setting ${getEnumName(WowClientType, clientType)}=${
+          legacyPreference.Value
+        }`
+      );
+      this.setClientLocation(clientType, legacyPreference.Value);
+    });
+  }
+
+  public getUsableClientTypes() {
+    return getEnumList<WowClientType>(WowClientType).filter(
+      (clientType) => clientType !== WowClientType.None
+    );
   }
 
   private isClientFolder(clientType: WowClientType, folderPath: string) {
@@ -374,7 +401,7 @@ export class WarcraftService {
       return new WarcraftServiceMac();
     }
 
-    if(this._electronService.isLinux){
+    if (this._electronService.isLinux) {
       return new WarcraftServiceLinux();
     }
 

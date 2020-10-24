@@ -39,6 +39,12 @@
       "NEGATIVE_BUTTON": "No",
       "POSITIVE_BUTTON": "Yes"
     },
+    "LEGACY_IMPORT": {
+      "TITLE": "Import WowUp Settings",
+      "MESSAGE": "We detected an older version of WowUp, would you like to import your settings?",
+      "LOADING_MESSAGE": "Importing legacy settings...",
+      "IMPORT_SUCCESS": "Import successful!"
+    },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",

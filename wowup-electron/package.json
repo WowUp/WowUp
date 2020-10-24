@@ -19,6 +19,10 @@
     "type": "git",
     "url": "https://github.com/jliddev/WowUp.git"
   },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2
+  },
   "scripts": {
     "postinstall": "electron-builder install-app-deps && npm run i18n",
     "ng": "ng",
@@ -70,6 +74,7 @@
     "@types/node": "14.14.0",
     "@types/opossum": "4.1.1",
     "@types/slug": "0.9.1",
+    "@types/sql.js": "1.0.3",
     "@types/uuid": "8.3.0",
     "@typescript-eslint/eslint-plugin": "4.5.0",
     "@typescript-eslint/eslint-plugin-tslint": "4.5.0",
@@ -134,6 +139,7 @@
     "rollbar": "2.19.4",
     "rxjs": "6.6.3",
     "slug": "3.5.1",
+    "sql.js": "1.4.0",
     "uuid": "8.3.1"
   }
 }

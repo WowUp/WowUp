@@ -374,3 +374,16 @@ img {
     background: $blue-1 !important;
   }
 }
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+.icon-2x {
+  width: 48px;
+  height: 48px;
+}
+
+.filter-green {
+  filter: invert(23%) sepia(99%) saturate(1821%) hue-rotate(104deg) brightness(96%) contrast(106%);
+}

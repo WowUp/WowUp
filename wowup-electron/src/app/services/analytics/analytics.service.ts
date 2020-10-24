@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 import { v4 as uuidv4 } from "uuid";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { AppConfig } from "environments/environment";
-import { HttpClient, HttpParams } from "@angular/common/http";
 import { ElectronService } from "../electron/electron.service";
 import { BehaviorSubject } from "rxjs";
 import * as firebase from "firebase/app";
 import "firebase/analytics";
+import { TELEMETRY_ENABLED_PREFERENCE_KEY } from "common/constants";
 
 @Injectable({
   providedIn: "root",
@@ -21,8 +21,6 @@ export class AnalyticsService {
   private _firebaseApp?: firebase.app.App;
   private _firebaseAnalytics?: firebase.analytics.Analytics;
 
-  public readonly telemetryPromptUsedKey = "telemetry_prompt_sent";
-  public readonly telemetryEnabledKey = "telemetry_enabled";
   public readonly telemetryEnabled$ = this._telemetryEnabledSrc.asObservable();
 
   private get installId() {
@@ -47,13 +45,14 @@ export class AnalyticsService {
 
   public get shouldPromptTelemetry() {
     return (
-      this._preferenceStorageService.get(this.telemetryEnabledKey) === undefined
+      this._preferenceStorageService.get(TELEMETRY_ENABLED_PREFERENCE_KEY) ===
+      undefined
     );
   }
 
   public get telemetryEnabled() {
     const preference = this._preferenceStorageService.findByKey(
-      this.telemetryEnabledKey
+      TELEMETRY_ENABLED_PREFERENCE_KEY
     );
     const isEnabled = preference === true.toString();
 
@@ -66,7 +65,7 @@ export class AnalyticsService {
   }
 
   public set telemetryEnabled(value: boolean) {
-    this._preferenceStorageService.set(this.telemetryEnabledKey, value);
+    this._preferenceStorageService.set(TELEMETRY_ENABLED_PREFERENCE_KEY, value);
     this._telemetryEnabledSrc.next(value);
   }
 

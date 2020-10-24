@@ -25,6 +25,7 @@ import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { getEnumName } from "app/utils/enum.utils";
+import { LegacyAddon, LegacyDatabaseData } from "common/wowup/legacy-database";
 
 interface InstallQueueItem {
   addonId: string;
@@ -67,7 +68,7 @@ export class AddonService {
     this._installQueue
       .pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3))
       .subscribe((addonName) => {
-        console.log("INSTALL DONE", addonName);
+        console.debug("INSTALL DONE", addonName);
       });
   }
 
@@ -492,6 +493,52 @@ export class AddonService {
     await this.syncAddons(clientType, addons);
 
     return addons;
+  }
+
+  public async importLegacyAddons(legacyAddons: LegacyAddon[]) {
+    const installedClientTypes = await this._warcraftService.getWowClientTypes();
+
+    for (let clientType of installedClientTypes) {
+      try {
+        console.debug(
+          `Importing legacy addons for: ${getEnumName(
+            WowClientType,
+            clientType
+          )}`
+        );
+
+        const addons = await this.scanAddons(clientType);
+        this.mapLegacyAddons(
+          addons,
+          _.filter(legacyAddons, (la) => la.ClientType === clientType)
+        );
+
+        this._addonStorage.removeAllForClientType(clientType);
+        this._addonStorage.saveAll(addons);
+      } catch (e) {
+        console.error("Failed to import legacy data", e);
+      }
+    }
+  }
+
+  private mapLegacyAddons(addons: Addon[], legacyAddons: LegacyAddon[]) {
+    addons.forEach((addon) => {
+      const legacyAddon = _.find(
+        legacyAddons,
+        (la) =>
+          la.ExternalId === addon.externalId &&
+          la.ProviderName === addon.providerName
+      );
+
+      if (!legacyAddon) {
+        return;
+      }
+
+      console.debug(`Mapping legacy addon data => ${addon.name}`);
+      addon.autoUpdateEnabled = legacyAddon.AutoUpdateEnabled === 1;
+      addon.isIgnored = legacyAddon.IsIgnored === 1;
+      addon.channelType = legacyAddon.ChannelType;
+    });
   }
 
   private updateAddons(existingAddons: Addon[], newAddons: Addon[]) {

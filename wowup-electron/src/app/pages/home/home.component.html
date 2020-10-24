@@ -1,5 +1,5 @@
 <div class="page-container">
-  <div class="tabs">
+  <div class="tabs" *ngIf="loadTabs">
     <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [backgroundColor]="'primary'"
       [disablePagination]="true" [(selectedIndex)]="selectedIndex"
       (selectedIndexChange)="onSelectedIndexChange($event)">

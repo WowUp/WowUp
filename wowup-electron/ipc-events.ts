@@ -1,10 +1,12 @@
 import { BrowserWindow, ipcMain, shell } from "electron";
 import * as fs from "fs-extra";
+import * as fso from "fs";
 import * as async from "async";
 import * as path from "path";
 import * as admZip from "adm-zip";
 import { readdir } from "fs";
 import axios from "axios";
+import initSqlJs from "sql.js";
 
 import {
   LIST_DIRECTORIES_CHANNEL,
@@ -19,6 +21,7 @@ import {
   GET_ASSET_FILE_PATH,
   DOWNLOAD_FILE_CHANNEL,
   CREATE_DIRECTORY_CHANNEL,
+  READ_SQL_DATABASE_CHANNEL,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -30,6 +33,7 @@ import { CopyFileRequest } from "./src/common/models/copy-file-request";
 import { DownloadStatus } from "./src/common/models/download-status";
 import { DownloadStatusType } from "./src/common/models/download-status-type";
 import { DownloadRequest } from "./src/common/models/download-request";
+import { LegacyDatabaseDataRaw } from "./src/common/wowup/legacy-database";
 
 const nativeAddon = require("./build/Release/addon.node");
 
@@ -164,6 +168,24 @@ export class IpcHandler {
 
     ipcMain.handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
       return await fs.readFile(filePath, { encoding: "utf-8" });
+    });
+
+    ipcMain.handle(READ_SQL_DATABASE_CHANNEL, async (evt, filePath: string) => {
+      const SQL = await initSqlJs();
+      console.log(READ_SQL_DATABASE_CHANNEL, filePath);
+      const dbBuffer = fso.readFileSync(filePath);
+      const db = new SQL.Database(dbBuffer);
+
+      const addons = db.exec("SELECT * FROM Addons");
+      const preferences = db.exec("SELECT * FROM Preferences");
+
+      db.close();
+
+      const response: LegacyDatabaseDataRaw = {
+        addons,
+        preferences,
+      };
+      return response;
     });
 
     ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
