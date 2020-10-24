@@ -232,7 +232,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
     addons.forEach((addon) => {
       if (!addon.thumbnailUrl) {
-        addon.thumbnailUrl = "assets/wowup_logo_512np.png";
+        addon.thumbnailUrl = "assets/images/wowup-placeholder.png";
       }
     });
 
