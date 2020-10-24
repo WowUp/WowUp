@@ -112,8 +112,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
     setTimeout( () => {
       const zip = new AdmZip();
-      /*    zip.addLocalFolder( `${this._fullPath}/WTF`, 'WTF' );
-         zip.addLocalFolder( `${this._fullPath}/Interface`, 'Interface' ); */
+      zip.addLocalFolder( `${this._fullPath}/WTF`, 'WTF' );
+      zip.addLocalFolder( `${this._fullPath}/Interface`, 'Interface' );
       zip.writeZip( `${this._pathBackup}/${Date.now()}.zip` );
       this.disabledRestore = false;
       this._snackBar.dismiss();
