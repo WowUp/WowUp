@@ -157,11 +157,14 @@
         "RESCAN_CLIENTS_LABEL": "Rescanner les produits de World of Warcraft installés",
         "TITLE": "World of Warcraft",
         "BACKUP_BUTTON": "Sauvgarder",
-        "RESTORE_BUTTON": "Restaurer"
+        "RESTORE_BUTTON": "Restaurer",
+        "BACKUP_STARTED": "Sauvegarde en cours. Cela peut prendre du temps..."
       },
       "RESTORE": {
         "RESTORE_ARCHIVE_BUTTON": "Restaurer",
-        "DELETE_ARCHIVE_BUTTON": "Supprimer"
+        "DELETE_ARCHIVE_BUTTON": "Supprimer",
+        "BACKUP_REMOVED": "Sauvegarde supprimé",
+        "RESTORE_STARTED": "Sauvegarde restauré"
       }
     }
   }

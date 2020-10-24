@@ -30,7 +30,7 @@ export class RestoreDialogComponent implements OnInit {
     fs.unlinkSync( `${this.data.pathBackup}/${this._archives[index]}` );
     this._archives.splice( index, 1 );
     this.dataSource = this._setDataSource();
-    this._snackBar.open( "PAGES.OPTIONS.WOW.BACKUP_REMOVED", "", { duration: 2000 } );
+    this._snackBar.open( "PAGES.OPTIONS.RESTORE.BACKUP_REMOVED", "", { duration: 2000 } );
   }
 
   restoreBackup( index: number ) {
@@ -39,7 +39,7 @@ export class RestoreDialogComponent implements OnInit {
     try {
       fs.renameSync( `${this.data.fullPath}/WTF`, `${this.data.fullPath}/WTF.old` );
       fs.renameSync( `${this.data.fullPath}/Interface`, `${this.data.fullPath}/Interface.old` );
-      this._snackBar.open( "PAGES.OPTIONS.WOW.RESTORE_STARTED" );
+      this._snackBar.open( "PAGES.OPTIONS.RESTORE.RESTORE_STARTED" );
 
       setTimeout( () => {
         const zip = new AdmZip( `${this.data.pathBackup}/${this._archives[index]}` );
