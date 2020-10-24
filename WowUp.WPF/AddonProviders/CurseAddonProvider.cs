@@ -335,8 +335,9 @@ namespace WowUp.WPF.AddonProviders
                     {
                         scanResult.ExactMatch = fingerprintResponse.PartialMatches
                             .FirstOrDefault(partialMatch =>
-                                partialMatch.File?.Modules?.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint)
-                                ?? false);
+                                IsClientType(partialMatch.File.GameVersionFlavor, clientType) &&
+                                (partialMatch.File?.Modules?.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint)
+                                ?? false));
                     }
                 }
             }
