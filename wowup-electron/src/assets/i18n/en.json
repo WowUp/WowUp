@@ -155,7 +155,13 @@
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",
         "RESCAN_CLIENTS_BUTTON": "Re-Scan",
         "RESCAN_CLIENTS_LABEL": "Rescan installed World of Warcraft products",
-        "TITLE": "World of Warcraft"
+        "TITLE": "World of Warcraft",
+        "BACKUP_BUTTON": "Backup",
+        "RESTORE_BUTTON": "Restore"
+      },
+      "RESTORE": {
+        "RESTORE_ARCHIVE_BUTTON": "Restore",
+        "DELETE_ARCHIVE_BUTTON": "Remove"
       }
     }
   }
