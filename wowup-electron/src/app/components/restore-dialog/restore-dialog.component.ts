@@ -60,7 +60,7 @@ export class RestoreDialogComponent implements OnInit {
   }
 
   private _setDataSource() {
-    return this._archives.map(arch => arch.split('.')[0]).map((date) => moment(new Date(parseInt(date))).format('L LT'));
+    return this._archives.map(arch => parseInt(arch.split('.')[0])).sort((a, b) => b - a).map((date) => moment(new Date(date)).format('L LT'));
   }
 
 }

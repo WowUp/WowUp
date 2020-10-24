@@ -131,7 +131,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
 
     this._dialog.open(RestoreDialogComponent, {
-      minWidth: 450,
+      width: '450px',
+      maxHeight:450,
       data: { pathBackup: this._pathBackup, fullPath: this._fullPath }
     });
   }
