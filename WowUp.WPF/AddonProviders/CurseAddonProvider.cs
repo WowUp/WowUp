@@ -26,7 +26,7 @@ namespace WowUp.WPF.AddonProviders
     public class CurseAddonProvider : ICurseAddonProvider
     {
         private const string ApiUrl = "https://addons-ecs.forgesvc.net/api/v2";
-        private const string HubApiUrl = "https://hub.dev.wowup.io";
+        private const string HubApiUrl = "https://hub.wowup.io";
         private const string ClassicGameVersionFlavor = "wow_classic";
         private const string RetailGameVersionFlavor = "wow_retail";
         private const int HttpTimeoutSeconds = 4;
