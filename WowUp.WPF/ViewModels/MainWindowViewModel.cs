@@ -5,7 +5,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using WowUp.Common.Services.Contracts;
+using System.Windows.Input;
+using WowUp.WPF.Commands;
 using WowUp.WPF.Entities;
 using WowUp.WPF.Extensions;
 using WowUp.WPF.Repositories.Contracts;
@@ -27,10 +28,13 @@ namespace WowUp.WPF.ViewModels
         private readonly IAnalyticsService _analyticsService;
         private readonly ISessionService _sessionService;
 
-        public Command SelectWowCommand { get; set; }
-        public Command CloseWindowCommand { get; set; }
-        public Command TaskbarIconCloseCommand { get; set; }
-        public Command TaskbarIconClickCommand { get; set; }
+        public ICommand MinimizeCommand { get; set; }
+        public ICommand MaximizeRestoreCommand { get; set; }
+        public ICommand SelectWowCommand { get; set; }
+        public ICommand CloseWindowCommand { get; set; }
+        public ICommand TaskbarIconCloseCommand { get; set; }
+        public ICommand TaskbarIconClickCommand { get; set; }
+        public ICommand PatreonLinkCommand { get; set; }
 
         private TaskbarIcon _taskbarIcon;
         public TaskbarIcon TaskbarIcon
@@ -136,10 +140,13 @@ namespace WowUp.WPF.ViewModels
             _warcraftService = warcraftService;
             _wowUpService = wowUpService;
 
+            MinimizeCommand = new Command(() => OnMinimizeCommand());
+            MaximizeRestoreCommand = new Command(() => OnMaximizeRestoreCommand());
             SelectWowCommand = new Command(() => { });
             CloseWindowCommand = new Command(() => OnCloseWindow());
             TaskbarIconCloseCommand = new Command(() => OnTaskbarIconClose());
             TaskbarIconClickCommand = new Command(() => OnTaskbarIconClick());
+            PatreonLinkCommand = new UrlCommand();
 
             ApplicationUpdateControlViewModel = serviceProvider.GetService<ApplicationUpdateControlViewModel>();
 
@@ -272,6 +279,26 @@ namespace WowUp.WPF.ViewModels
         private void SessionService_SessionChanged(object sender, Common.Models.Events.SessionEventArgs e)
         {
             StatusText = e.SessionState.StatusText;
+        }
+
+        private void OnMinimizeCommand()
+        {
+            Application.Current.Dispatcher.Invoke(() => { Application.Current.MainWindow.WindowState = WindowState.Minimized; });
+        }
+
+        private void OnMaximizeRestoreCommand()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (Application.Current.MainWindow.WindowState == WindowState.Maximized)
+                {
+                    Application.Current.MainWindow.WindowState = WindowState.Normal;
+                }
+                else
+                {
+                    Application.Current.MainWindow.WindowState = WindowState.Maximized;
+                }
+            });
         }
 
         private void OnCloseWindow()

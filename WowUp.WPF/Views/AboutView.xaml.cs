@@ -17,11 +17,5 @@ namespace WowUp.WPF.Views
 
             InitializeComponent();
         }
-
-        private void WowupLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            e.Uri.AbsoluteUri.OpenUrlInBrowser();
-            e.Handled = true;
-        }
     }
 }

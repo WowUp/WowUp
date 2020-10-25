@@ -48,7 +48,6 @@
                                     Style="{StaticResource labelAddonName}" >
                             <Hyperlink x:Name="AddonLink"
                                         Style="{StaticResource HyperlinkStyle}"
-                                        NavigateUri="{Binding ExternalUrl}"
                                         Command="{Binding OpenLinkCommand}">
                                 <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
                             </Hyperlink>    
@@ -197,8 +196,9 @@
             </Border>
             <Border Grid.Column="1" Padding="10">
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0" Click="UpdateAllButton_Click" 
+                    <Button x:Name="UpdateAllButton" Margin="0, 0, 10, 0"
                             IsEnabled="{Binding EnableUpdateAll}"
+                            Command="{Binding UpdateAllCommand}"
                             Style="{StaticResource purpleButton}"
                             ToolTip="Update all addons for this client">
                         <Button.ContextMenu>
@@ -211,12 +211,14 @@
                         </Button.ContextMenu>
                         Update All
                     </Button>
-                    <Button x:Name="RefreshButton" Margin="0, 0, 10, 0" Click="RefreshButton_Click"
+                    <Button x:Name="RefreshButton" Margin="0, 0, 10, 0"
                             IsEnabled="{Binding EnableRefresh}"
+                            Command="{Binding RefreshCommand}"
                             Style="{StaticResource purpleButton}"
                             ToolTip="Check for latest addon updates">Check Updates</Button>
-                    <Button x:Name="RescanButton" Click="RescanButton_Click"
+                    <Button x:Name="RescanButton"
                             IsEnabled="{Binding EnableRescan}"
+                            Command="{Binding RescanCommand}"
                             Style="{StaticResource purpleButton}"
                             ToolTip="Scan your client folder for installed addons">Re-Scan Folders</Button>
                     <vw:SearchInput Width="150" Margin="10 0 0 0" VerticalAlignment="Center" DataContext="{Binding SearchInputViewModel}"/>

@@ -116,23 +116,6 @@ namespace WowUp.WPF
             Marshal.StructureToPtr(mmi, lParam, true);
         }
 
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
-
-        private void MaximizeRestoreButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-            }
-        }
-
         private void Window_StateChanged(object sender, EventArgs e)
         {
             _viewModel.SetRestoreMaximizeVisibility(WindowState);
@@ -158,12 +141,6 @@ namespace WowUp.WPF
             {
                 return;
             }
-        }
-
-        private void PatreonLink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            e.Uri.AbsoluteUri.OpenUrlInBrowser();
-            e.Handled = true;
         }
 
         private void ShowFromBackground()

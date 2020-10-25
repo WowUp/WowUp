@@ -45,7 +45,7 @@
                 <TextBlock HorizontalAlignment="Center" Text="{Binding Version}" Style="{StaticResource VersionStyle}" />
                 <TextBlock HorizontalAlignment="Center" FontSize="16" Margin="0, 10, 0, 0">
                 <Hyperlink x:Name="WowupLink" Style="{StaticResource HyperlinkStyle}" 
-                           NavigateUri="https://wowup.io" RequestNavigate="WowupLink_RequestNavigate">
+                           Command="{Binding WowupLinkCommand}" CommandParameter="https://wowup.io">
                     Check out the website!
                 </Hyperlink>
                 </TextBlock>

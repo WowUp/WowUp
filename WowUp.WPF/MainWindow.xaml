@@ -64,7 +64,7 @@
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button
                             x:Name="MinimizeButton"
-                            Click="MinimizeButton_Click"
+                            Command="{Binding MinimizeCommand}"
                             RenderOptions.EdgeMode="Aliased"
                             Style="{StaticResource TitleBarButtonStyle}">
                         <Path Width="46"
@@ -75,7 +75,7 @@
                               StrokeThickness="1" />
                     </Button>
                     <Button x:Name="MaximizeButton"
-                        Click="MaximizeRestoreButton_Click"
+                        Command="{Binding MaximizeRestoreCommand}"
                         Visibility="{Binding MaximizeVisibility}"
                         Style="{StaticResource TitleBarButtonStyle}">
                         <Path Width="46"
@@ -86,7 +86,7 @@
                           StrokeThickness="1" />
                     </Button>
                     <Button x:Name="RestoreButton"
-                        Click="MaximizeRestoreButton_Click"
+                        Command="{Binding MaximizeRestoreCommand}"
                         Visibility="{Binding RestoreVisibility}"
                         Style="{StaticResource TitleBarButtonStyle}">
                         <Path Width="46"
@@ -143,7 +143,7 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0" Margin="0 0" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Hyperlink x:Name="PatreonLink" NavigateUri="https://www.patreon.com/jliddev" TextDecorations="None" RequestNavigate="PatreonLink_RequestNavigate">
+                        <Hyperlink x:Name="PatreonLink" TextDecorations="None" Command="{Binding PatreonLinkCommand}" CommandParameter="https://www.patreon.com/jliddev">
                             <Image Source="/Assets/patron.png" Height="25"  />
                         </Hyperlink>
                     </TextBlock>

@@ -2,7 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Input;
 using WowUp.Common.Models;
+using WowUp.WPF.Commands;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -19,6 +21,8 @@ namespace WowUp.WPF.ViewModels
             set { SetProperty(ref _version, value); }
         }
 
+        public ICommand WowupLinkCommand { get; set; }
+
         public ObservableCollection<ChangeLog> ChangeLogs { get; set; }
 
         public AboutViewModel(IWowUpService wowUpService)
@@ -26,6 +30,7 @@ namespace WowUp.WPF.ViewModels
             _wowUpService = wowUpService;
 
             ChangeLogs = new ObservableCollection<ChangeLog>();
+            WowupLinkCommand = new UrlCommand();
 
             InitializeView();
         }
