@@ -82,8 +82,7 @@ let win: BrowserWindow = null;
 let tray: Tray = null;
 let ipcHandler: IpcHandler;
 
-const args = process.argv.slice(1),
-  serve = args.some((val) => val === "--serve");
+const argv = require('minimist')(process.argv.slice(1), { 'boolean': ['serve','hidden'] });
 
 function createTray() {
   console.log("TRAY");
@@ -207,7 +206,7 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
-      allowRunningInsecureContent: serve ? true : false,
+      allowRunningInsecureContent: argv.serve ? true : false,
       webSecurity: false,
       enableRemoteModule: true,
     },
@@ -230,8 +229,7 @@ function createWindow(): BrowserWindow {
   win.webContents.userAgent = USER_AGENT;
 
   win.once("ready-to-show", () => {
-    var startMinimized = (process.argv || []).indexOf('--hidden') !== -1;
-    if (!startMinimized)
+    if (!argv.hidden)
       win.show();
     autoUpdater.checkForUpdatesAndNotify().then((result) => {
       console.log("UPDATE", result);
@@ -265,7 +263,7 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
-  if (serve) {
+  if (argv.serve) {
     require("electron-reload")(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`),
     });

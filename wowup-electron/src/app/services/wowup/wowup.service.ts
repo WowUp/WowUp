@@ -32,6 +32,9 @@ import {
 } from "common/constants";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
+const isMac = process.platform === "darwin";
+const isWin = process.platform === "win32";
+const isLinux = process.platform === "linux";
 var autoLaunch = require('auto-launch');
 
 @Injectable({
@@ -346,14 +349,23 @@ export class WowUpService {
   }
 
   private setAutoStartup() {
-    var autoLauncher = new autoLaunch({
-      name: 'WowUp',
-      isHidden: this.startMinimized
-    });
-
-    if (this.startWithSystem)
-      autoLauncher.enable();
-    else
-      autoLauncher.disable();
+    if (isLinux) {
+      var autoLauncher = new autoLaunch({
+        name: 'WowUp',
+        isHidden: this.startMinimized
+      });
+  
+      if (this.startWithSystem)
+        autoLauncher.enable();
+      else
+        autoLauncher.disable();
+    }
+    else {
+      remote.app.setLoginItemSettings({
+        openAtLogin: this.startWithSystem,
+        openAsHidden: isMac ? this.startMinimized : false,
+        args: isWin ? this.startMinimized ? ['--hidden'] : [] : []
+      });
+    }
   }
 }
