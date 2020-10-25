@@ -27,7 +27,6 @@ export class TitlebarComponent implements OnInit, OnDestroy {
   ) {
     const windowMaximizedSubscription = this.electronService.windowMaximized$.subscribe(
       (maximized) => {
-        console.log('subscription maximized:', maximized);
         this._ngZone.run(() => (this.isMaximized = maximized));
       }
     );

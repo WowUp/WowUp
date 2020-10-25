@@ -102,7 +102,7 @@ export class WowUpAddonProvider implements AddonProvider {
 
     const scanResults = await this.getScanResults(addonFolders);
 
-    console.log("ScanResults", scanResults.length);
+    console.debug("ScanResults", scanResults.length);
 
     const fingerprintResponse = await this.getAddonsByFingerprints(
       scanResults.map((result) => result.fingerprint)

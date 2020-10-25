@@ -34,8 +34,6 @@ export class AnalyticsService {
       return;
     }
 
-    console.log("Firebase setup");
-
     this._firebaseApp = firebase.initializeApp(AppConfig.firebaseConfig);
     this._firebaseAnalytics = firebase.analytics(this._firebaseApp);
     this._firebaseAnalytics.setUserId(this.installId);

@@ -266,6 +266,16 @@ img {
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .thumbnail-letter {
+        color: $white-4;
+        font-size: 1.5em;
+        font-weight: 400;
+      }
     }
 
     .addon-name {

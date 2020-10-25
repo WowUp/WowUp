@@ -33,8 +33,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef
   ) {
-    console.log(this.model);
-
     this._subscriptions.push(
       this._addonService.addonInstalled$
         .pipe(

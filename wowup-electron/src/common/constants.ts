@@ -28,4 +28,14 @@ export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY =
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized"
 export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
-export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
+export const NO_LATEST_SEARCH_RESULT_FILES_ERROR =
+  "NO_LATEST_SEARCH_RESULT_FILES";
+
+// APP UPDATER
+export const APP_UPDATE_ERROR = "app-update-error";
+export const APP_UPDATE_DOWNLOADED = "app-update-downloaded";
+export const APP_UPDATE_NOT_AVAILABLE = "app-update-not-available";
+export const APP_UPDATE_AVAILABLE = "app-update-available";
+export const APP_UPDATE_START_DOWNLOAD = "app-update-start-download";
+export const APP_UPDATE_INSTALL = "app-update-install";
+export const APP_UPDATE_CHECK_FOR_UPDATE = "app-update-check-for-update";

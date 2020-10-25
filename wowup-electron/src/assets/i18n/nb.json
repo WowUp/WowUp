@@ -1,4 +1,8 @@
 {
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates"
+  },
   "COMMON": {
     "ADDON_STATE": {
       "IGNORED": "Ignorert",
@@ -17,19 +21,20 @@
       "UPDATING": "Oppdaterer..."
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
+      "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
+      "JUST_NOW": "Akkurat nå",
+      "YESTERDAY": "I går"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "billion",
-      "MILLION": "million",
-      "THOUSAND": "thousand"
+      "BILLION": "{count} milliarder",
+      "MILLION": "{count} millioner",
+      "THOUSAND": "{count] tusen"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "BY_AUTHOR": "Av {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser"
     },
     "ALERT": {
@@ -102,8 +107,22 @@
         "TITLE": "Vis Kolonner"
       },
       "FILTER_LABEL": "Filter",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
+        "JOIN_DISCORD": "Chat with us on Discord",
+        "PATREON_SUPPORT": "Support WowUp on Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultater}}"
+      },
       "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Ved å skanne på nytt kan utvidelsesinformasjonen bli resatt imens vi prøver å finne ut av hva du har installert. Dette kan ta et øyeblikk.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start skanningen?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Samler utvidelser...",
+        "LOADING": "Laster...",
+        "UPDATING": "Oppdaterer {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Oppdaterer {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Utvidelse",
         "ADDON_INSTALL_BUTTON": "Installer",
@@ -115,6 +134,13 @@
         "PROVIDER_COLUMN_HEADER": "Leverandør",
         "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
         "STATUS_COLUMN_HEADER": "Status"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
+        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
+        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
+        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
+        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Oppdater Alle",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Oppdater alle utvidelser for denne klienten",
@@ -155,8 +181,11 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
         "AUTO_UPDATE_LABEL": "Automatisk Oppdatering",
+        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanal for Utvidelser",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
         "RESCAN_CLIENTS_BUTTON": "Skann Igjen",
         "RESCAN_CLIENTS_LABEL": "Skann installerte World of Warcraft produkter på nytt",
         "TITLE": "World of Warcraft"
