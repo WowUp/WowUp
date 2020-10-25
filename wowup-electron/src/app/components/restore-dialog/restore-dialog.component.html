@@ -12,16 +12,16 @@
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let element;let i=index">
       <button mat-flat-button color="primary" class="select-button" appUserActionTracker category="Options"
-        [action]=" + 'Restore archive'"
-        (click)="restoreBackup(i)">{{'PAGES.OPTIONS.RESTORE.RESTORE_ARCHIVE_BUTTON' | translate}}</button>
+        [action]=" + 'Restore archive'" [disabled]="disabledRestore"
+        (click)="onRestoreBackup(i)">{{'PAGES.OPTIONS.RESTORE.RESTORE_ARCHIVE_BUTTON' | translate}}</button>
     </td>
   </ng-container>
   <ng-container matColumnDef="Delete">
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let element; let i=index">
       <button mat-flat-button color="primary" class="select-button" appUserActionTracker category="Options"
-        [action]=" + 'Delete archive'"
-        (click)="deleteArchive(i)">{{'PAGES.OPTIONS.RESTORE.DELETE_ARCHIVE_BUTTON' | translate}}</button>
+        [action]=" + 'Delete archive'" [disabled]="disabledRemove"
+        (click)="onDeleteArchive(i)">{{'PAGES.OPTIONS.RESTORE.DELETE_ARCHIVE_BUTTON' | translate}}</button>
     </td>
   </ng-container>
 

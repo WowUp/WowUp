@@ -4,7 +4,6 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import * as AdmZip from "adm-zip";
 import { WowClientType } from 'app/models/warcraft/wow-client-type';
 import { AddonChannelType } from 'app/models/wowup/addon-channel-type';
 import { ElectronService } from 'app/services';
@@ -16,6 +15,7 @@ import * as _ from 'lodash';
 import { isEmpty } from 'lodash';
 import * as path from 'path';
 import { Subscription } from 'rxjs';
+import { UserBackupService } from '../../services/user-backup/user-backup.service';
 import { AlertDialogComponent } from '../alert-dialog/alert-dialog.component';
 import { RestoreDialogComponent } from '../restore-dialog/restore-dialog.component';
 @Component( {
@@ -50,6 +50,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _cdRef: ChangeDetectorRef,
     private _snackBar: MatSnackBar,
     private _translate: TranslateService,
+    private _userBackupService: UserBackupService
   ) {
     const warcraftProductSubscription = this._warcraftService.products$.subscribe( products => {
       const product = products.find( p => p.clientType === this.clientType );
@@ -77,7 +78,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       this._fullPath = `${this.clientLocation}/${this.clientFolderName}`;
       this._pathBackup = `${this._fullPath}/WowUp_backup`;
       this.disabledBackup = false;
-      this.disabledRestore = this._checkPresenceBackups();
+      this.disabledRestore = this._userBackupService.checkPresenceBackups( this._pathBackup );
     }
   }
 
@@ -101,40 +102,30 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onCreateBackup() {
-    if ( !fs.existsSync( this._pathBackup ) ) {
-      fs.mkdirSync( this._pathBackup )
-    };
-
+  onCreateBackup() {
     this.disabledRestore = true;
+    this.disabledBackup = true;
     this._snackBar.open( this._translate.instant( "PAGES.OPTIONS.WOW.BACKUP_STARTED" ) );
-
-
-    setTimeout( () => {
-      const zip = new AdmZip();
-      zip.addLocalFolder( `${this._fullPath}/WTF`, 'WTF' );
-      zip.addLocalFolder( `${this._fullPath}/Interface`, 'Interface' );
-      zip.writeZip( `${this._pathBackup}/${Date.now()}.zip` );
+    setTimeout( async () => {
+      this._userBackupService.onCreateBackup( this._fullPath, this._pathBackup );
       this.disabledRestore = false;
+      this.disabledBackup = false;
       this._snackBar.dismiss();
       this._cdRef.detectChanges();
     }, 1000 );
-
-
   }
 
-  onGetBackups() {
+  onRestoreBackups() {
     if ( !fs.existsSync( this._pathBackup ) ) {
       return
     };
-
 
     this._dialog.open( RestoreDialogComponent, {
       width: '450px',
       maxHeight: 450,
       data: { pathBackup: this._pathBackup, fullPath: this._fullPath }
     } ).afterClosed().subscribe( () => {
-      this.disabledRestore = this._checkPresenceBackups();
+      this.disabledRestore = this._userBackupService.checkPresenceBackups( this._pathBackup );
       this._cdRef.detectChanges();
     } )
   }
@@ -174,9 +165,4 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
     return '';
   }
-
-  private _checkPresenceBackups() {
-    return !fs.existsSync( this._pathBackup ) || fs.readdirSync( this._pathBackup ).length === 0;
-  }
-
 }
