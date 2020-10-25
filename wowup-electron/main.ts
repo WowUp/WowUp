@@ -71,10 +71,6 @@ electronDl();
 const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
 
-let win: BrowserWindow = null;
-let tray: Tray = null;
-let ipcHandler: IpcHandler;
-
 const argv = require('minimist')(process.argv.slice(1), { 'boolean': ['serve','hidden'] });
 
 function createTray() {
