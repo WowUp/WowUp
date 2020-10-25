@@ -507,6 +507,7 @@ export class AddonService {
 
       newAddon.autoUpdateEnabled = existingAddon.autoUpdateEnabled;
       newAddon.isIgnored = existingAddon.isIgnored;
+      newAddon.installedAt = existingAddon.installedAt;
     });
 
     return newAddons;
