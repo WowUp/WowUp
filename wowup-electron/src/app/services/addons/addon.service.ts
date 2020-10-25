@@ -67,7 +67,7 @@ export class AddonService {
     this._installQueue
       .pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3))
       .subscribe((addonName) => {
-        console.log("INSTALL DONE", addonName);
+        console.log("Install complete", addonName);
       });
   }
 
@@ -215,8 +215,6 @@ export class AddonService {
     }
 
     const downloadFileName = `${slug(addon.name)}.zip`;
-
-    console.log("installAddon", addon.name);
 
     onUpdate?.call(this, AddonInstallState.Downloading, 25);
     this._addonInstalledSrc.next({
@@ -437,7 +435,7 @@ export class AddonService {
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType).pipe(
       map((searchResult) => {
-        console.log("SEARCH RES", searchResult);
+        console.debug("SEARCH RES", searchResult);
         let latestFile = this.getLatestFile(searchResult, targetAddonChannel);
         if (!latestFile) {
           latestFile = searchResult.files[0];
@@ -482,7 +480,7 @@ export class AddonService {
     let addons = this._addonStorage.getAllForClientType(clientType);
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
-      console.log(newAddons);
+      console.debug('newAddons', newAddons);
 
       this._addonStorage.removeAllForClientType(clientType);
       addons = this.updateAddons(addons, newAddons);
@@ -509,6 +507,7 @@ export class AddonService {
 
       newAddon.autoUpdateEnabled = existingAddon.autoUpdateEnabled;
       newAddon.isIgnored = existingAddon.isIgnored;
+      newAddon.installedAt = existingAddon.installedAt;
     });
 
     return newAddons;
@@ -610,7 +609,7 @@ export class AddonService {
           validFolders
         );
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
 

@@ -28,6 +28,7 @@ import * as _ from "lodash";
 import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
 import { WowUpService } from "app/services/wowup/wowup.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-get-addons",
@@ -80,6 +81,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _wowUpService: WowUpService,
     private _cdRef: ChangeDetectorRef,
+    private _translateService: TranslateService,
     public electronService: ElectronService,
     public warcraftService: WarcraftService
   ) {
@@ -230,18 +232,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
-    addons.forEach((addon) => {
-      if (!addon.thumbnailUrl) {
-        addon.thumbnailUrl = "assets/wowup_logo_512np.png";
-      }
-    });
-
     return addons.map((addon) => new GetAddonListItem(addon));
   }
 
   private setPageContextText() {
     const length = this.dataSource.data?.length;
-    const contextStr = length ? `${length} results` : "";
+    const contextStr = length ? this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS", {count: length}) : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);
   }

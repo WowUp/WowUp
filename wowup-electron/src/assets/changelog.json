@@ -1,8 +1,12 @@
 {
     "ChangeLogs": [
       {
+        "Version": "2.0.0-alpha.15",
+        "Description": "Add the ability to translate plurals (Chops)\nAdd the alpha/beta indicator for user's default install channel to the 'Get Addons' tab (Chops)\nAdd new column to show the last updated time of an Addon (Linaori)\nAdd support for installing vir URL from CurseForge\nShow the release date in a more user friendly way (Chops)\nMore text items are now translated with updated locales (Linaori)\nNew placehold thumbnail for Addons\nAddon author list now limited to 3 rows\nSwitch to a new analytics provider.\nFix issue with addon count not changing when deleting an addon.\nSeveral fixes for linux support"
+      },
+      {
         "Version": "2.0.0-alpha.14",
-        "Description": "Attempt to lower background CPU usage to 0\nAdd translation logic for download counts (flippey)\nMore locale updates\nInstall from URL now supports WowInterface download links\nUpdate issues with details dialog.\nFix an issue with WoW install locations not showing up correctly on first run (chops)\nFix an issue with downloads folder not being created\nFix website link on About page to show the cursor"
+        "Description": "Attempt to lower background CPU usage to 0\nAdd translation logic for download counts (flippey)\nMore locale updates\nInstall from URL now supports WowInterface download links\nUpdate issues with details dialog.\nFix an issue with WoW install locations not showing up correctly on first run (chops)\nFix an issue with downloads folder not being created\nFix website link on About page to show the cursor\nFix an issue where the details panel would change if another addon was updating.\nFix an issue where an addon row would duplicate with the details dialog open."
       },
       {
         "Version": "2.0.0-alpha.13",

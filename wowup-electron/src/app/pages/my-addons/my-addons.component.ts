@@ -7,7 +7,6 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewContainerRef,
 } from "@angular/core";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { map } from "rxjs/operators";
@@ -36,6 +35,7 @@ import {
   AddonDetailComponent,
   AddonDetailModel,
 } from "app/components/addon-detail/addon-detail.component";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-my-addons",
@@ -61,7 +61,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private isSelectedTab: boolean = false;
   private sortedListItems: AddonViewModel[] = [];
 
-  public spinnerMessage = "Loading...";
+  public spinnerMessage = "";
 
   contextMenuPosition = { x: "0px", y: "0px" };
 
@@ -71,6 +71,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   columns: ColumnState[] = [
     { name: "addon.name", display: "Addon", visible: true },
     { name: "displayState", display: "Status", visible: true },
+    {
+      name: "addon.installedAt",
+      display: "Updated At",
+      visible: true,
+      allowToggle: true,
+    },
     {
       name: "addon.latestVersion",
       display: "Latest Version",
@@ -119,9 +125,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     private _ngZone: NgZone,
     private _dialog: MatDialog,
     private _cdRef: ChangeDetectorRef,
+    private _translateService: TranslateService,
     public electronService: ElectronService,
     public overlay: Overlay,
-    public viewContainerRef: ViewContainerRef,
     public warcraftService: WarcraftService
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
@@ -185,6 +191,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       .connect()
       .subscribe((sortedListItems) => {
         this.sortedListItems = sortedListItems;
+        this.setPageContextText();
       });
 
     this.subscriptions.push(
@@ -217,13 +224,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRefresh() {
+    this.spinnerMessage = this._translateService.instant(
+      "PAGES.MY_ADDONS.SPINNER.LOADING"
+    );
     this.loadAddons(this.selectedClient);
   }
 
   public onRowClicked(event: MouseEvent, row: AddonViewModel, index: number) {
-    console.log(row.displayState);
-    console.log("index clicked: " + index);
-
     if (
       (event.ctrlKey && !this.electronService.isMac) ||
       (event.metaKey && this.electronService.isMac)
@@ -396,8 +403,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
-    console.log(event, column);
-
     const col = this.columns.find((col) => col.name === column.name);
     col.visible = event.checked;
   }
@@ -405,8 +410,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onReScan() {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: `Start re-scan?`,
-        message: `Doing a re-scan may reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.`,
+        title: this._translateService.instant(
+          "PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE"
+        ),
+        message: this._translateService.instant(
+          "PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION"
+        ),
       },
     });
 
@@ -425,8 +434,19 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onRemoveAddon(addon: Addon) {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: `Uninstall Addon?`,
-        message: `Are you sure you want to remove ${addon.name}?\nThis will remove all related folders from your World of Warcraft folder.`,
+        title: this._translateService.instant(
+          "PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE",
+          { count: 1 }
+        ),
+        message:
+          this._translateService.instant(
+            "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE",
+            { addonName: addon.name }
+          ) +
+          "\n" +
+          this._translateService.instant(
+            "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+          ),
       },
     });
 
@@ -443,19 +463,31 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onRemoveAddons(listItems: AddonViewModel[]) {
     let message = "";
     if (listItems.length > 3) {
-      message = `Are you sure you want to remove the selected ${listItems.length} addons?`;
+      message = this._translateService.instant(
+        "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_MORE_THAN_THREE",
+        { count: listItems.length }
+      );
     } else {
-      message = "Are you sure you want to remove the following addons?";
+      message = this._translateService.instant(
+        "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_LESS_THAN_THREE",
+        { count: listItems.length }
+      );
       listItems.forEach(
         (listItem) => (message = `${message}\n\t• ${listItem.addon.name}`)
       );
     }
     message +=
-      "\nThis will remove all related folders from your World of Warcraft folder.";
+      "\n" +
+      this._translateService.instant(
+        "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+      );
 
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: `Uninstall Addons?`,
+        title: this._translateService.instant(
+          "PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE",
+          { count: listItems.length }
+        ),
         message: message,
       },
     });
@@ -548,7 +580,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
     this.isBusy = true;
-    this.spinnerMessage = "Gathering addons...";
+    this.spinnerMessage = this._translateService.instant(
+      "PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS"
+    );
 
     try {
       let updatedCt = 0;
@@ -563,13 +597,31 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         .filter((listItem) => listItem.needsUpdate || listItem.needsInstall)
         .map((listItem) => listItem.addon);
 
-      this.spinnerMessage = `Updating ${updatedCt}/${addons.length}`;
+      if (addons.length === 0) {
+        this.loadAddons(this.selectedClient);
+        return;
+      }
+
+      this.spinnerMessage = this._translateService.instant(
+        "PAGES.MY_ADDONS.SPINNER.UPDATING",
+        {
+          updateCount: updatedCt,
+          addonCount: addons.length,
+        }
+      );
 
       for (let addon of addons) {
         updatedCt += 1;
-        this.spinnerMessage = `Updating ${updatedCt}/${
-          addons.length
-        }\n${getEnumName(WowClientType, addon.clientType)}: ${addon.name}`;
+
+        this.spinnerMessage = this._translateService.instant(
+          "PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME",
+          {
+            updateCount: updatedCt,
+            addonCount: addons.length,
+            clientType: getEnumName(WowClientType, addon.clientType),
+            addonName: addon.name,
+          }
+        );
 
         await this.addonService.installAddon(addon.id);
       }
@@ -641,9 +693,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private createAddonListItem(addon: Addon) {
     const listItem = new AddonViewModel(addon);
 
-    if (!listItem.addon.thumbnailUrl) {
-      listItem.addon.thumbnailUrl = "assets/wowup_logo_512np.png";
-    }
     if (!listItem.addon.installedVersion) {
       listItem.addon.installedVersion = "None";
     }
@@ -658,24 +707,29 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     this._sessionService.setContextText(
       this.tabIndex,
-      `${this._displayAddonsSrc.value.length} addons`
+      this._translateService.instant(
+        "PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED",
+        { count: this._displayAddonsSrc.value.length }
+      )
     );
   }
 
   private getInstallStateText(installState: AddonInstallState) {
     switch (installState) {
-      case AddonInstallState.Pending:
-        return "Pending";
-      case AddonInstallState.Downloading:
-        return "Downloading";
       case AddonInstallState.BackingUp:
-        return "BackingUp";
-      case AddonInstallState.Installing:
-        return "Installing";
+        return this._translateService.instant("COMMON.ADDON_STATUS.BACKINGUP");
       case AddonInstallState.Complete:
-        return "Complete";
+        return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
+      case AddonInstallState.Downloading:
+        return this._translateService.instant(
+          "COMMON.ADDON_STATUS.DOWNLOADING"
+        );
+      case AddonInstallState.Installing:
+        return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
+      case AddonInstallState.Pending:
+        return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
       default:
-        return "Unknown";
+        return "";
     }
   }
 }

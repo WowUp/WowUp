@@ -13,7 +13,7 @@
   .right-container {
     display: flex;
     flex-direction: row;
-  
+
     .filter-container {
       padding-top: 1em;
     }
@@ -23,7 +23,7 @@
       flex-direction: row;
       align-items: center;
       margin-left: 1em;
-  
+
       button {
         &:not(:last-child) {
           margin-right: 0.5em;
@@ -79,6 +79,10 @@
     min-width: 110px;
   }
 
+  .installed-at-cell, .released-at-cell {
+    min-width: 100px;
+  }
+
   .status-column {
     // display: flex;
     width: 130px;
@@ -129,7 +133,7 @@
   text-align: left;
 }
 .provider-column {
-  min-width: 60px;
+  min-width: 70px;
 }
 
 .column-menu {

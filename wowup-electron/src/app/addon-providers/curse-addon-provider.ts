@@ -76,11 +76,11 @@ export class CurseAddonProvider implements AddonProvider {
 
     const scanResults = await this.getScanResults(addonFolders);
 
-    console.log("ScanResults", scanResults.length);
+    console.debug("ScanResults", scanResults.length);
 
     await this.mapAddonFolders(scanResults, clientType);
 
-    console.log("mapAddonFolders");
+    console.debug("mapAddonFolders");
 
     const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
     const matchedScanResultIds = matchedScanResults.map(
@@ -119,8 +119,6 @@ export class CurseAddonProvider implements AddonProvider {
   public getScanResults = async (
     addonFolders: AddonFolder[]
   ): Promise<AppCurseScanResult[]> => {
-    const t1 = Date.now();
-
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
     const scanResults: CurseScanResult[] = await this._electronService.ipcRenderer.invoke(
       CURSE_GET_SCAN_RESULTS,
@@ -137,7 +135,6 @@ export class CurseAddonProvider implements AddonProvider {
       }
     );
 
-    console.log("scan delta", Date.now() - t1);
     return appScanResults;
   };
 
@@ -156,8 +153,6 @@ export class CurseAddonProvider implements AddonProvider {
     const fingerprintResponse = await this.getAddonsByFingerprintsW(
       scanResults.map((result) => result.fingerprint)
     );
-
-    console.log("fingerprintResponse", fingerprintResponse);
 
     for (let scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
@@ -354,9 +349,6 @@ export class CurseAddonProvider implements AddonProvider {
   private async searchBySlug(slug: string, clientType: WowClientType) {
     const searchWord = _.first(slug.split("-"));
     const response = await this.getSearchResults(searchWord);
-
-    console.log("slug", slug);
-    console.log("searchWord", searchWord);
 
     const match = _.find(response, (res) => res.slug === slug);
     if (!match) {

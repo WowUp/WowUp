@@ -87,7 +87,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
         this._sessionService.selectedClientType
       );
 
-      console.log(importedAddon);
+      console.debug(importedAddon);
       if (!importedAddon) {
         throw new Error("Addon not found");
       }
@@ -107,7 +107,8 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
       let message = err.message;
       if (err instanceof HttpErrorResponse) {
         message = `No addon was found.`;
-      } else if (err.code && err.code === "EOPENBREAKER") { // Provider circuit breaker is open
+      } else if (err.code && err.code === "EOPENBREAKER") {
+        // Provider circuit breaker is open
         message = `Cannot connect to API, please wait a bit and try again.`;
       }
 

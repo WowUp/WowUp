@@ -1,4 +1,8 @@
 {
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления"
+  },
   "COMMON": {
     "ADDON_STATE": {
       "IGNORED": "Игнорируется",
@@ -17,19 +21,20 @@
       "UPDATING": "Обновляется..."
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
+      "HOURS_AGO": "{count} {count, plural, one{час} few{часа} other{часов}} назад",
+      "JUST_NOW": "Только что",
+      "YESTERDAY": "Вчера"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "млрд.",
-      "MILLION": "млн.",
-      "THOUSAND": "тыс."
+      "BILLION": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}",
+      "MILLION": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "THOUSAND": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "BY_AUTHOR": "От {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере"
     },
     "ALERT": {
@@ -46,7 +51,7 @@
       "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
       "IMPORT_BUTTON": "Импорт",
       "INSTALL_BUTTON": "Установить",
-      "INSTALL_SUCCESS_LABEL": "Установлено!",
+      "INSTALL_SUCCESS_LABEL": "Установлена!",
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub*",
       "TITLE": "Ссылка на установку модификации"
     },
@@ -73,7 +78,7 @@
         "AUTHOR_COLUMN_HEADER": "Автор",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Загрузок",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "RELEASED_AT_COLUMN_HEADER": "Выпущена в",
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
         "STATUS_COLUMN_HEADER": "Статус"
       }
     },
@@ -102,8 +107,22 @@
         "TITLE": "Показать колонки"
       },
       "FILTER_LABEL": "Фильтр",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
+        "JOIN_DISCORD": "Общайтесь с нами в Discord",
+        "PATREON_SUPPORT": "Поддержите WowUp на Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, one{результат} few{результата} other{результатов}}"
+      },
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может сбросить информацию о модификации и попытаться угадать, что вы установили. Эта процедура займёт немного времени.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Начать повторное сканирование?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Сбор модификаций...",
+        "LOADING": "Загрузка...",
+        "UPDATING": "Обновлено {updateCount} из {addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Обновлено {updateCount} из {addonCount}\n{clientType}: {addonName}"
+      },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Модификация",
         "ADDON_INSTALL_BUTTON": "Установить",
@@ -113,14 +132,22 @@
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "RELEASED_AT_COLUMN_HEADER": "Выпущена в",
-        "STATUS_COLUMN_HEADER": "Статус"
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
+        "STATUS_COLUMN_HEADER": "Статус",
+        "UPDATED_AT_COLUMN_HEADER": "Обновлена"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "Это действие удалит все относящиеся папки модификации из вашей папки World of Warcraft.",
+        "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации}}?",
+        "CONFIRMATION_MORE_THAN_THREE": "Вы действительно хотите удалить выбранные {count} {count, plural, few{модификации} other{модификаций}}?",
+        "CONFIRMATION_ONE": "Вы действительно хотите удалить {addonName}?",
+        "TITLE": "Удалить {count, plural, {count, plural, one{модификацию} other{модификаций}}}?"
       },
       "UPDATE_ALL_BUTTON": "Обновить всё",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущую/Classic"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущий/Classic"
       }
     },
     "OPTIONS": {
@@ -151,8 +178,11 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",
         "AUTO_UPDATE_LABEL": "Автообновление",
+        "CLIENT_TYPE_INPUT_HINT": "Папка которая содержит папку клиента {clientTypeName} – \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "Путь для {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Тип выпуска модификации",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
         "RESCAN_CLIENTS_BUTTON": "Повторное сканирование",
         "RESCAN_CLIENTS_LABEL": "Повторно найти установленные продукты World of Warcraft",
         "TITLE": "World of Warcraft"

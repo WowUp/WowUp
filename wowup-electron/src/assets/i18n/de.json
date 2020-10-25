@@ -1,4 +1,8 @@
 {
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates"
+  },
   "COMMON": {
     "ADDON_STATE": {
       "IGNORED": "Ignorieren",
@@ -8,28 +12,29 @@
       "UPTODATE": "Aktuell"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Backing Up",
+      "BACKINGUP": "Sichern",
       "COMPLETE": "Vollständig",
       "DOWNLOADING": "Herunterladen",
       "INSTALLING": "Installiere",
-      "PENDING": "Pending",
+      "PENDING": "Ausstehend",
       "UNINSTALLING": "Deinstalliere",
       "UPDATING": "Aktualisiere..."
     },
     "DATES": {
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "{count} {count, plural, one{Tag} other{Tage}} her",
+      "HOURS_AGO": "{count} {count, plural, one{Stunde} other{Stunden}} her",
+      "JUST_NOW": "Gerade eben",
+      "YESTERDAY": "Gestern"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "billion",
-      "MILLION": "million",
-      "THOUSAND": "thousand"
+      "BILLION": "{count} billionen",
+      "MILLION": "{count} millionen",
+      "THOUSAND": "{count} tausend"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "BY_AUTHOR": "By {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen"
     },
     "ALERT": {
@@ -102,8 +107,22 @@
         "TITLE": "Spalten anzeigen"
       },
       "FILTER_LABEL": "Filter",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
+        "JOIN_DISCORD": "Chat with us on Discord",
+        "PATREON_SUPPORT": "Support WowUp on Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}"
+      },
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannen Sie Ihren Client-Ordner nach installierten Addons",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Gathering addons...",
+        "LOADING": "Loading...",
+        "UPDATING": "Updating {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Updating {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installieren",
@@ -114,7 +133,15 @@
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "RELEASED_AT_COLUMN_HEADER": "Erscheinungsdatum",
-        "STATUS_COLUMN_HEADER": "Status"
+        "STATUS_COLUMN_HEADER": "Status",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
+        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
+        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
+        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
+        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Alle aktualisieren",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Alle Addons für diesen Client aktualisieren",
@@ -151,8 +178,11 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf Auto-Update gesetzt",
         "AUTO_UPDATE_LABEL": "Auto-Update",
+        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard-Addon-Kanal",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon-Kanal",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
         "RESCAN_CLIENTS_BUTTON": "Neu scannen",
         "RESCAN_CLIENTS_LABEL": "Installierte World of Warcraft Produkte erneut durchsuchen",
         "TITLE": "World of Warcraft"

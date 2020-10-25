@@ -34,8 +34,6 @@ export class AnalyticsService {
       return;
     }
 
-    console.log("Firebase setup");
-
     this._firebaseApp = firebase.initializeApp(AppConfig.firebaseConfig);
     this._firebaseAnalytics = firebase.analytics(this._firebaseApp);
     this._firebaseAnalytics.setUserId(this.installId);
@@ -80,6 +78,10 @@ export class AnalyticsService {
   }
 
   public trackStartup() {
+    if (!this.telemetryEnabled) {
+      return;
+    }
+
     this._firebaseAnalytics.logEvent("app_startup");
   }
 

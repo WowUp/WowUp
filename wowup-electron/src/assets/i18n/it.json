@@ -1,4 +1,8 @@
 {
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates"
+  },
   "COMMON": {
     "ADDON_STATE": {
       "IGNORED": "IGNORED",
@@ -23,13 +27,14 @@
       "YESTERDAY": "Yesterday"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "billion",
-      "MILLION": "million",
-      "THOUSAND": "thousand"
+      "BILLION": "{count} billion",
+      "MILLION": "{count} million",
+      "THOUSAND": "{count} thousand"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "BY_AUTHOR": "By {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser"
     },
     "ALERT": {
@@ -102,8 +107,22 @@
         "TITLE": "Mostra Colonne"
       },
       "FILTER_LABEL": "Filter",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
+        "JOIN_DISCORD": "Chat with us on Discord",
+        "PATREON_SUPPORT": "Support WowUp on Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}"
+      },
       "RESCAN_FOLDERS_BUTTON": "Ri-Scansiona Cartelle",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scansiona la cartella client per gli addons installati",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Gathering addons...",
+        "LOADING": "Loading...",
+        "UPDATING": "Updating {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Updating {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installa",
@@ -114,7 +133,15 @@
         "LATEST_VERSION_COLUMN_HEADER": "Ultima Versione",
         "PROVIDER_COLUMN_HEADER": "Provveditore",
         "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
-        "STATUS_COLUMN_HEADER": "Stato"
+        "STATUS_COLUMN_HEADER": "Stato",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
+        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
+        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
+        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
+        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Aggiorna Tutto",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Aggiorna tutti gli addons per questo client",
@@ -151,8 +178,11 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Gli addons di nuova installazione saranno impostati per l'aggiornamento automatico di default",
         "AUTO_UPDATE_LABEL": "Aggiornamento Automatico",
+        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canale Addon Predefinito",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canale Addon",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
         "RESCAN_CLIENTS_BUTTON": "Riscansiona",
         "RESCAN_CLIENTS_LABEL": "Rescan i prodotti World of Warcraft installati",
         "TITLE": "World of Warcraft"

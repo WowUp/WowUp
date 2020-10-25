@@ -68,7 +68,8 @@ import { RestoreDialogComponent } from '../../components/restore-dialog/restore-
     DirectiveModule,
   ],
   providers: [
-    DatePipe
+    DatePipe,
+    GetAddonListItemFilePropPipe,
   ]
 })
 export class HomeModule {}

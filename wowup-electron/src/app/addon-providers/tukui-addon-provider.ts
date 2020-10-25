@@ -235,7 +235,6 @@ export class TukUiAddonProvider implements AddonProvider {
     try {
       const addons = await this._circuitBreaker.fire(clientType);
 
-      console.log("CACHED");
       this._cachingService.set(cacheKey, addons, CACHE_TIME);
       return addons;
     } catch (err) {

@@ -65,7 +65,17 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER' | translate}}</th>
         <td mat-cell *matCellDef="let element" class="status-column cell-padding">
-          <app-my-addon-status-column [listItem]="element" ></app-my-addon-status-column>
+          <app-my-addon-status-column [listItem]="element"></app-my-addon-status-column>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="addon.installedAt">
+        <th class="installed-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{'PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER' | translate}}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding" [matTooltip]="element.addon.installedAt | date:'short'"
+            matTooltipPosition="above" matTooltipShowDelay="500">
+          {{element.addon.installedAt | relativeDuration}}
         </td>
       </ng-container>
 
@@ -79,11 +89,11 @@
       </ng-container>
 
       <ng-container matColumnDef="addon.releasedAt">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+        <th class="released-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER' | translate}}
         </th>
-        <td mat-cell *matCellDef="let element" class="cell-padding" [matTooltip]="element.addon.releasedAt | date:'short'"
-          matTooltipPosition="above" matTooltipShowDelay="500">
+        <td mat-cell *matCellDef="let element" class="cell-padding"
+          [matTooltip]="element.addon.releasedAt | date:'short'" matTooltipPosition="above" matTooltipShowDelay="500">
           {{element.addon.releasedAt | relativeDuration}}
         </td>
       </ng-container>
@@ -114,12 +124,12 @@
       </ng-container>
 
       <ng-container matColumnDef="addon.author">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef >
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
           <div class="author-column">
             {{'PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER' | translate}}
           </div>
         </th>
-        <td mat-cell *matCellDef="let element" >
+        <td mat-cell *matCellDef="let element">
           <div class="author-column">
             {{element.addon.author}}
           </div>
@@ -144,7 +154,14 @@
 <mat-menu #contextMenu="matMenu" class="addon-context-menu">
   <ng-template matMenuContent let-listItem="listItem">
     <div class="addon-context-menu-header">
-      <div class="thumbnail" [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"></div>
+      <div *ngIf="listItem.hasThumbnail === true" class="thumbnail"
+        [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'">
+      </div>
+      <div *ngIf="listItem.hasThumbnail === false" class="thumbnail">
+        <div class="thumbnail-letter">
+          {{listItem.thumbnailLetter}}
+        </div>
+      </div>
       <div>
         <div class="addon-name">{{listItem.addon.name}}</div>
         <div class="addon-version">{{listItem.addon.latestVersion}}</div>
