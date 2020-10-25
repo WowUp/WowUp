@@ -12,6 +12,14 @@ export class AddonViewModel {
   public statusText: string = "";
   public selected: boolean = false;
 
+  get hasThumbnail() {
+    return !!this.addon.thumbnailUrl;
+  }
+
+  get thumbnailLetter() {
+    return this.addon.name.charAt(0).toUpperCase();
+  }
+
   get needsInstall() {
     return (
       !this.isInstalling && this.displayState === AddonDisplayState.Install

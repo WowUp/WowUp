@@ -34,6 +34,14 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     return this._latestChannelType === AddonChannelType.Alpha;
   }
 
+  public get hasThumbnail() {
+    return !!this.addon.thumbnailUrl;
+  }
+
+  public get thumbnailLetter() {
+    return this.addon.name.charAt(0).toUpperCase();
+  }
+
   constructor(
     private _getAddonListItemFileProp: GetAddonListItemFilePropPipe
   ) {}

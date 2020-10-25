@@ -2,13 +2,14 @@
 <div class="title">{{clientTypeName}}</div>
 <div class="row">
   <mat-form-field class="grow folder-input">
-    <mat-label>{{clientTypeName}} Path</mat-label>
+    <mat-label>{{'PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL' | translate:{clientTypeName: clientTypeName} }}</mat-label>
     <input matInput disabled [value]="clientLocation">
-    <mat-hint>The folder that contains the {{clientTypeName | lowercase}} client folder "{{clientFolderName}}"
+    <mat-hint>
+      {{'PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT' | translate:{clientTypeName: clientTypeName.toLowerCase(), clientFolderName: clientFolderName} }}
     </mat-hint>
   </mat-form-field>
   <button mat-flat-button color="primary" class="select-button" (click)="onSelectClientPath()" appUserActionTracker
-    category="Options" [action]="clientTypeName + 'SelectPath'">Select</button>
+    category="Options" [action]="clientTypeName + 'SelectPath'">{{'PAGES.OPTIONS.WOW.OPEN_WOW_DIRECTORY_SELECT_BUTTON' | translate}}</button>
 </div>
 <div class="row">
   <div class="grow">

@@ -38,6 +38,12 @@
         color: $epic-color;
       }
     }
+
+    .addon-logo-letter {
+      color: $white-4;
+      font-size: 2em;
+      font-weight: 400;
+    }
   }
 
   .addon-title {
@@ -51,7 +57,7 @@
       color: $white-2;
     }
   }
-  
+
   .addon-version {
     color: $white-2;
   }
