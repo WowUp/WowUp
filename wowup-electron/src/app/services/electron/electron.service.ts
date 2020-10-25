@@ -177,4 +177,8 @@ export class ElectronService {
       this.ipcRenderer.send(channel, request);
     });
   }
+
+  public async invoke(channel: string, ...args: any[]): Promise<any> {
+    return await this.ipcRenderer.invoke(channel, ...args);
+  }
 }

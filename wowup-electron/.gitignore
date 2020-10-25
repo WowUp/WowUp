@@ -9,6 +9,7 @@
 /build
 main.js
 ipc-events.js
+app-updater.js
 src/**/*.js
 !src/karma.conf.js
 *.js.map
