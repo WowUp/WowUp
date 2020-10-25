@@ -1,10 +1,9 @@
 <div class="addon-column row align-items-center">
-  <div *ngIf="hasThumbnail === true" class="addon-logo-container"
-    [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'">
-  </div>
-  <div *ngIf="hasThumbnail === false" class="addon-logo-container">
-    <div class="addon-logo-letter">
-      {{thumbnailLetter}}
+  <div class="thumbnail-container">
+    <div class="addon-logo-container" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"></div>
+    <div *ngIf="isBetaChannel || isAlphaChannel" class="channel"
+      [ngClass]="{'beta': isBetaChannel, 'alpha': isAlphaChannel }">
+      {{isAlphaChannel ? 'Alpha': 'Beta'}}
     </div>
   </div>
   <div>

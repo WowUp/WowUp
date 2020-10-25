@@ -3,28 +3,36 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
 } from "@angular/core";
 import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
+import { WowClientType } from "app/models/warcraft/wow-client-type";
 import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { SessionService } from "app/services/session/session.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
+import { GetAddonListItemFilePropPipe } from "app/pipes/get-addon-list-item-file-prop.pipe";
 
 @Component({
   selector: "app-potential-addon-table-column",
   templateUrl: "./potential-addon-table-column.component.html",
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
-export class PotentialAddonTableColumnComponent implements OnInit, OnChanges {
+export class PotentialAddonTableColumnComponent implements OnChanges {
   @Input("addon") addon: GetAddonListItem;
   @Input() channel: AddonChannelType;
+  @Input() clientType: WowClientType;
 
   @Output() onViewDetails: EventEmitter<AddonSearchResult> = new EventEmitter();
 
-  public addonVersion: string = "";
+  private _latestChannelType: AddonChannelType = AddonChannelType.Stable;
+
+  public get isBetaChannel(): boolean {
+    return this._latestChannelType === AddonChannelType.Beta;
+  }
+
+  public get isAlphaChannel(): boolean {
+    return this._latestChannelType === AddonChannelType.Alpha;
+  }
 
   public get hasThumbnail() {
     return !!this.addon.thumbnailUrl;
@@ -35,21 +43,13 @@ export class PotentialAddonTableColumnComponent implements OnInit, OnChanges {
   }
 
   constructor(
-    private _sessionService: SessionService,
-    private _wowupService: WowUpService
+    private _getAddonListItemFileProp: GetAddonListItemFilePropPipe
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.channel) {
-      const latestFile = this.addon.getLatestFile(this.channel);
-      this.addonVersion = latestFile?.version;
+    if (changes.clientType) {
+      this._latestChannelType = this._getAddonListItemFileProp.transform(this.addon, 'channelType', this.channel) as AddonChannelType;
     }
-  }
-
-  ngOnInit(): void {
-    // this._defaultChannel = this._wowupService.getDefaultAddonChannel(
-    //   this._sessionService.selectedClientType
-    // );
   }
 
   viewDetails() {
