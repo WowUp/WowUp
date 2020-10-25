@@ -133,7 +133,8 @@
         "LATEST_VERSION_COLUMN_HEADER": "Siste Versjon",
         "PROVIDER_COLUMN_HEADER": "Leverandør",
         "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
-        "STATUS_COLUMN_HEADER": "Status"
+        "STATUS_COLUMN_HEADER": "Status",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",

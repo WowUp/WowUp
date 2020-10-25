@@ -72,6 +72,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     { name: "addon.name", display: "Addon", visible: true },
     { name: "displayState", display: "Status", visible: true },
     {
+      name: "addon.installedAt",
+      display: "Updated At",
+      visible: true,
+      allowToggle: true,
+    },
+    {
       name: "addon.latestVersion",
       display: "Latest Version",
       visible: true,
