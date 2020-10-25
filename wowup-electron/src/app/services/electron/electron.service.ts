@@ -79,7 +79,7 @@ export class ElectronService {
       .then(() =>
         console.log("Zoom levels have been set between 100% and 300%")
       )
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
 
     currentWindow.webContents.on("zoom-changed", (event, zoomDirection) => {
       let currentZoom = currentWindow.webContents.getZoomFactor();
@@ -176,5 +176,9 @@ export class ElectronService {
       });
       this.ipcRenderer.send(channel, request);
     });
+  }
+
+  public async invoke(channel: string, ...args: any[]): Promise<any> {
+    return await this.ipcRenderer.invoke(channel, ...args);
   }
 }

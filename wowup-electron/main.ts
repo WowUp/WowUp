@@ -8,6 +8,7 @@ import {
   nativeImage,
   MenuItem,
   MenuItemConstructorOptions,
+  ipcMain,
 } from "electron";
 import * as path from "path";
 import * as url from "url";
@@ -15,7 +16,6 @@ import { release, arch } from "os";
 import * as electronDl from "electron-dl";
 import "./ipc-events";
 import * as log from "electron-log";
-import { autoUpdater } from "electron-updater";
 import * as Store from "electron-store";
 import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
@@ -25,6 +25,7 @@ import {
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
 } from "./src/common/constants";
+import { AppUpdater } from "./app-updater";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -32,19 +33,12 @@ const isLinux = process.platform === "linux";
 const preferenceStore = new Store({ name: "preferences" });
 
 let appIsQuitting = false;
+let win: BrowserWindow = null;
+let tray: Tray = null;
+let ipcHandler: IpcHandler;
+let appUpdater: AppUpdater;
 
-autoUpdater.logger = log;
-autoUpdater.allowPrerelease = true;
-autoUpdater.channel = "alpha";
-autoUpdater.on("update-available", () => {
-  log.info("AVAILABLE");
-  win.webContents.send("update_available");
-});
-autoUpdater.on("update-downloaded", () => {
-  log.info("DOWNLOADED");
-  win.webContents.send("update_downloaded");
-});
-
+// APP MENU SETUP
 const appMenuTemplate: Array<
   MenuItemConstructorOptions | MenuItem
 > = getAppMenu();
@@ -58,7 +52,6 @@ log.transports.file.resolvePath = (
   variables: log.PathVariables,
   _message?: log.LogMessage
 ) => {
-  console.log("RES", path.join(LOG_PATH, variables.fileName));
   return path.join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
@@ -85,7 +78,6 @@ let ipcHandler: IpcHandler;
 const argv = require('minimist')(process.argv.slice(1), { 'boolean': ['serve','hidden'] });
 
 function createTray() {
-  console.log("TRAY");
   const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
@@ -107,7 +99,6 @@ function createTray() {
 
   if (isWin) {
     tray.on("click", () => {
-      console.log("SHOW");
       win.show();
     });
   }
@@ -222,6 +213,7 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
   ipcHandler = new IpcHandler(win);
+  appUpdater = new AppUpdater(win);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
@@ -231,9 +223,6 @@ function createWindow(): BrowserWindow {
   win.once("ready-to-show", () => {
     if (!argv.hidden)
       win.show();
-    autoUpdater.checkForUpdatesAndNotify().then((result) => {
-      console.log("UPDATE", result);
-    });
   });
 
   win.once("show", () => {

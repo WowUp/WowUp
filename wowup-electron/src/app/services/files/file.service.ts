@@ -88,7 +88,8 @@ export class FileService {
   }
 
   public async deleteIfExists(filePath: string) {
-    if (await this.pathExists(filePath)) {
+    const pathExists = await this.pathExists(filePath);
+    if (pathExists) {
       await this.remove(filePath);
     }
   }
