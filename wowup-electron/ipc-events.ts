@@ -86,7 +86,9 @@ export class IpcHandler {
       try {
         await fs.access(filePath);
       } catch (e) {
-        console.error(e);
+        if (e.code !== "ENOENT") {
+          console.error(e);
+        }
         return false;
       }
 

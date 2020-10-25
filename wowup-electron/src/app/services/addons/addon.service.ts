@@ -435,7 +435,7 @@ export class AddonService {
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType).pipe(
       map((searchResult) => {
-        console.log("SEARCH RES", searchResult);
+        console.debug("SEARCH RES", searchResult);
         let latestFile = this.getLatestFile(searchResult, targetAddonChannel);
         if (!latestFile) {
           latestFile = searchResult.files[0];
