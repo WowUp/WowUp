@@ -218,14 +218,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRefresh() {
-    this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.LOADING");
+    this.spinnerMessage = this._translateService.instant(
+      "PAGES.MY_ADDONS.SPINNER.LOADING"
+    );
     this.loadAddons(this.selectedClient);
   }
 
   public onRowClicked(event: MouseEvent, row: AddonViewModel, index: number) {
-    console.log(row.displayState);
-    console.log("index clicked: " + index);
-
     if (
       (event.ctrlKey && !this.electronService.isMac) ||
       (event.metaKey && this.electronService.isMac)
@@ -398,8 +397,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
-    console.log(event, column);
-
     const col = this.columns.find((col) => col.name === column.name);
     col.visible = event.checked;
   }
@@ -407,8 +404,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onReScan() {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE"),
-        message: this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION"),
+        title: this._translateService.instant(
+          "PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE"
+        ),
+        message: this._translateService.instant(
+          "PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION"
+        ),
       },
     });
 
@@ -429,14 +430,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       data: {
         title: this._translateService.instant(
           "PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE",
-          {count: 1}
+          { count: 1 }
         ),
-        message: this._translateService.instant(
-          "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE",
-          {addonName: addon.name}
-        ) + "\n" + this._translateService.instant(
-          "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-        ),
+        message:
+          this._translateService.instant(
+            "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE",
+            { addonName: addon.name }
+          ) +
+          "\n" +
+          this._translateService.instant(
+            "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+          ),
       },
     });
 
@@ -455,26 +459,28 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     if (listItems.length > 3) {
       message = this._translateService.instant(
         "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_MORE_THAN_THREE",
-        {count: listItems.length}
+        { count: listItems.length }
       );
     } else {
       message = this._translateService.instant(
         "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_LESS_THAN_THREE",
-        {count: listItems.length}
+        { count: listItems.length }
       );
       listItems.forEach(
         (listItem) => (message = `${message}\n\t• ${listItem.addon.name}`)
       );
     }
-    message += "\n" + this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
+    message +=
+      "\n" +
+      this._translateService.instant(
+        "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+      );
 
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant(
           "PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE",
-          {count: listItems.length}
+          { count: listItems.length }
         ),
         message: message,
       },
@@ -568,7 +574,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private async updateAllWithSpinner(...clientTypes: WowClientType[]) {
     this.isBusy = true;
-    this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS")
+    this.spinnerMessage = this._translateService.instant(
+      "PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS"
+    );
 
     try {
       let updatedCt = 0;
@@ -588,20 +596,26 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING", {
-        updateCount : updatedCt,
-        addonCount : addons.length,
-      });
+      this.spinnerMessage = this._translateService.instant(
+        "PAGES.MY_ADDONS.SPINNER.UPDATING",
+        {
+          updateCount: updatedCt,
+          addonCount: addons.length,
+        }
+      );
 
       for (let addon of addons) {
         updatedCt += 1;
 
-        this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME", {
-          updateCount : updatedCt,
-          addonCount : addons.length,
-          clientType : getEnumName(WowClientType, addon.clientType),
-          addonName : addon.name,
-        });
+        this.spinnerMessage = this._translateService.instant(
+          "PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME",
+          {
+            updateCount: updatedCt,
+            addonCount: addons.length,
+            clientType: getEnumName(WowClientType, addon.clientType),
+            addonName: addon.name,
+          }
+        );
 
         await this.addonService.installAddon(addon.id);
       }
@@ -689,8 +703,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       this.tabIndex,
       this._translateService.instant(
         "PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED",
-        {count: this._displayAddonsSrc.value.length
-      })
+        { count: this._displayAddonsSrc.value.length }
+      )
     );
   }
 
@@ -701,7 +715,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       case AddonInstallState.Complete:
         return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
       case AddonInstallState.Downloading:
-        return this._translateService.instant("COMMON.ADDON_STATUS.DOWNLOADING");
+        return this._translateService.instant(
+          "COMMON.ADDON_STATUS.DOWNLOADING"
+        );
       case AddonInstallState.Installing:
         return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
       case AddonInstallState.Pending:

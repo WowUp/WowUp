@@ -71,7 +71,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   private onAutoUpdateInterval = async () => {
-    console.log("Auto update");
+    console.debug("Auto update");
     const updateCount = await this._addonService.processAutoUpdates();
 
     if (updateCount === 0) {

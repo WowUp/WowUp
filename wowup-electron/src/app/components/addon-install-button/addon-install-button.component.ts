@@ -80,7 +80,6 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   public getInstallStateText(installState: AddonInstallState) {
-    console.log("getInstallStateText", installState);
     switch (installState) {
       case AddonInstallState.BackingUp:
         return this._translate.instant("COMMON.ADDON_STATUS.BACKINGUP");

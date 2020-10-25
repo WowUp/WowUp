@@ -58,7 +58,6 @@ log.transports.file.resolvePath = (
   variables: log.PathVariables,
   _message?: log.LogMessage
 ) => {
-  console.log("RES", path.join(LOG_PATH, variables.fileName));
   return path.join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
@@ -86,7 +85,6 @@ const args = process.argv.slice(1),
   serve = args.some((val) => val === "--serve");
 
 function createTray() {
-  console.log("TRAY");
   const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
@@ -108,7 +106,6 @@ function createTray() {
 
   if (isWin) {
     tray.on("click", () => {
-      console.log("SHOW");
       win.show();
     });
   }
