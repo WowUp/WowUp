@@ -117,7 +117,11 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
       );
     }
 
-    return this.listItem?.statusText;
+    if (!this.listItem) {
+      return null;
+    }
+
+    return this._translateService.instant(this.listItem.stateTextTranslationKey);
   }
 
   private getInstallStateText(installState: AddonInstallState) {

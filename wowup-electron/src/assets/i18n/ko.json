@@ -8,6 +8,7 @@
       "IGNORED": "Ignored",
       "INSTALL": "Install",
       "UNINSTALL": "Uninstall",
+      "UNKNOWN": "",
       "UPDATE": "Update",
       "UPTODATE": "Up to date"
     },

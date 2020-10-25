@@ -149,7 +149,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         listItem.isInstalling =
           evt.installState === AddonInstallState.Installing ||
           evt.installState === AddonInstallState.Downloading;
-        listItem.statusText = this.getInstallStateText(evt.installState);
+        listItem.stateTextTranslationKey = this.getInstallStateTextTranslationKey(evt.installState);
         listItem.installProgress = evt.progress;
         listItem.installState = evt.installState;
         if (listItemIdx !== -1) {
@@ -519,7 +519,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       if (evt.checked) {
         listItem.addon.autoUpdateEnabled = false;
       }
-      listItem.statusText = listItem.getStateText();
       this.addonService.saveAddon(listItem.addon);
     });
 
@@ -714,22 +713,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private getInstallStateText(installState: AddonInstallState) {
+  private getInstallStateTextTranslationKey(installState: AddonInstallState) {
     switch (installState) {
       case AddonInstallState.BackingUp:
-        return this._translateService.instant("COMMON.ADDON_STATUS.BACKINGUP");
+        return "COMMON.ADDON_STATUS.BACKINGUP";
       case AddonInstallState.Complete:
-        return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
+        return "COMMON.ADDON_STATE.UPTODATE";
       case AddonInstallState.Downloading:
-        return this._translateService.instant(
-          "COMMON.ADDON_STATUS.DOWNLOADING"
-        );
+        return "COMMON.ADDON_STATUS.DOWNLOADING";
       case AddonInstallState.Installing:
-        return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
+        return "COMMON.ADDON_STATUS.INSTALLING";
       case AddonInstallState.Pending:
-        return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
+        return "COMMON.ADDON_STATUS.PENDING";
       default:
-        return "";
+        return "COMMON.ADDON_STATUS.UNKNOWN";
     }
   }
 }

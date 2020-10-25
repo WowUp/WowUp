@@ -8,6 +8,7 @@
       "IGNORED": "Игнорируется",
       "INSTALL": "Установить",
       "UNINSTALL": "Удалить",
+      "UNKNOWN": "",
       "UPDATE": "Обновить",
       "UPTODATE": "Актуальная"
     },
