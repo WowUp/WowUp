@@ -40,7 +40,7 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
     }
 
     if (!this.listItem) {
-      return null;
+      return "";
     }
 
     return this._translateService.instant(this.listItem.stateTextTranslationKey);
