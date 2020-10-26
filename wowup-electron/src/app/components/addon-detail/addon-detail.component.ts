@@ -6,14 +6,13 @@ import {
   OnDestroy,
   OnInit,
 } from "@angular/core";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
-import { AddonViewModel } from "app/business-objects/my-addon-list-item";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonService } from "app/services/addons/addon.service";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonService } from "../../services/addons/addon.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -24,7 +23,7 @@ export interface AddonDetailModel {
   selector: "app-addon-detail",
   templateUrl: "./addon-detail.component.html",
   styleUrls: ["./addon-detail.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonDetailComponent implements OnInit, OnDestroy {
   private readonly _subscriptions: Subscription[] = [];

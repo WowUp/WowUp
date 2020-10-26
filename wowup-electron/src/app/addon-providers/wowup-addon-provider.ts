@@ -7,15 +7,15 @@ import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonProvider } from "./addon-provider";
 import { WowUpAddonRepresentation } from "../models/wowup-api/wowup-addon.representation";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { ElectronService } from "app/services";
-import { WOWUP_GET_SCAN_RESULTS } from "common/constants";
-import { WowUpScanResult } from "common/wowup/wowup-scan-result";
-import { GetAddonsByFingerprintResponse } from "app/models/wowup-api/get-addons-by-fingerprint.response";
-import { WowUpAddonReleaseRepresentation } from "app/models/wowup-api/wowup-addon-release.representation";
-import { WowGameType } from "app/models/wowup-api/wow-game-type";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AppWowUpScanResult } from "app/models/wowup/app-wowup-scan-result";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { ElectronService } from "../services";
+import { WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
+import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
+import { WowUpAddonReleaseRepresentation } from "../models/wowup-api/wowup-addon-release.representation";
+import { WowGameType } from "../models/wowup-api/wow-game-type";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
 
 const API_URL = AppConfig.wowUpHubUrl;
 

@@ -1,23 +1,19 @@
 import { Injectable } from "@angular/core";
-import { CachingService } from "../caching/caching-service";
 import { remote } from "electron";
 import { join } from "path";
 import { existsSync } from "fs";
-import { v4 as uuidv4 } from "uuid";
+import { Subject } from "rxjs";
+import { UpdateCheckResult } from "electron-updater";
+import { CachingService } from "../caching/caching-service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { WowUpReleaseChannelType } from "app/models/wowup/wowup-release-channel-type";
-import { getEnumList, getEnumName } from "app/utils/enum.utils";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
+import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
-import { from, Observable, of, Subject } from "rxjs";
-import { LatestVersionResponse } from "app/models/wowup-api/latest-version-response";
-import { map, switchMap } from "rxjs/operators";
-import { LatestVersion } from "app/models/wowup-api/latest-version";
-import * as compareVersions from "compare-versions";
 import { DownloadSevice } from "../download/download.service";
-import { PreferenceChange } from "app/models/wowup/preference-change";
+import { PreferenceChange } from "../../models/wowup/preference-change";
 import { FileService } from "../files/file.service";
 import {
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
@@ -30,8 +26,7 @@ import {
   APP_UPDATE_CHECK_FOR_UPDATE,
   APP_UPDATE_START_DOWNLOAD,
   APP_UPDATE_INSTALL,
-} from "common/constants";
-import { UpdateCheckResult } from "electron-updater";
+} from "../../../common/constants";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
 
