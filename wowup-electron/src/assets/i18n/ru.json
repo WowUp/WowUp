@@ -138,7 +138,7 @@
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Это действие удалит все относящиеся папки модификации из вашей папки World of Warcraft.",
-        "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации}}?",
+        "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации} other{модификаций}?",
         "CONFIRMATION_MORE_THAN_THREE": "Вы действительно хотите удалить выбранные {count} {count, plural, few{модификации} other{модификаций}}?",
         "CONFIRMATION_ONE": "Вы действительно хотите удалить {addonName}?",
         "TITLE": "Удалить {count, plural, one{модификацию} other{модификации}}?"
