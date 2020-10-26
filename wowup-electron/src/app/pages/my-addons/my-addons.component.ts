@@ -149,7 +149,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         listItem.isInstalling =
           evt.installState === AddonInstallState.Installing ||
           evt.installState === AddonInstallState.Downloading;
-        listItem.stateTextTranslationKey = this.getInstallStateTextTranslationKey(evt.installState);
+        listItem.stateTextTranslationKey = this.getInstallStateTextTranslationKey(
+          evt.installState
+        );
         listItem.installProgress = evt.progress;
         listItem.installState = evt.installState;
         if (listItemIdx !== -1) {
@@ -276,7 +278,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public openDetailDialog(listItem: AddonViewModel) {
     const data: AddonDetailModel = {
-      listItem: Object.assign({}, listItem),
+      listItem: listItem.clone(),
     };
 
     const dialogRef = this._dialog.open(AddonDetailComponent, {

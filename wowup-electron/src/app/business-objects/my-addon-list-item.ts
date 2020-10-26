@@ -36,7 +36,8 @@ export class AddonViewModel {
 
   get isUpToDate() {
     return (
-      !this.isInstalling && this.displayState === AddonDisplayState.UpToDate
+      !this.isInstalling &&
+      this.addon.installedVersion === this.addon.latestVersion
     );
   }
 
@@ -79,6 +80,10 @@ export class AddonViewModel {
   constructor(addon?: Addon) {
     this.addon = addon;
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
+  }
+
+  public clone() {
+    return new AddonViewModel(this.addon);
   }
 
   public onClicked() {
