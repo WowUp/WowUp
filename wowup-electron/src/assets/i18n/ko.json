@@ -1,13 +1,17 @@
 {
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates"
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
+    "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
+    "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
+    "WOWUP_UPDATE_TOOLTIP": "WowUp update available"
   },
   "COMMON": {
     "ADDON_STATE": {
       "IGNORED": "Ignored",
       "INSTALL": "Install",
       "UNINSTALL": "Uninstall",
+      "UNKNOWN": "",
       "UPDATE": "Update",
       "UPTODATE": "Up to date"
     },
