@@ -134,6 +134,8 @@ export class OptionsComponent implements OnInit, OnChanges {
 
   onStartWithSystemChange = (evt: MatSlideToggleChange) => {
     this.wowupService.startWithSystem = evt.checked;
+    if (!evt.checked)
+      this.startMinimized = false;
   };
 
   onStartMinimizedChange = (evt: MatSlideToggleChange) => {
