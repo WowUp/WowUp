@@ -40,7 +40,7 @@ let appUpdater: AppUpdater;
 
 // APP MENU SETUP
 const appMenuTemplate: Array<
-  MenuItemConstructorOptions | MenuItem
+MenuItemConstructorOptions | MenuItem
 > = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
