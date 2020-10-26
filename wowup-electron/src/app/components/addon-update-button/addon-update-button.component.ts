@@ -7,12 +7,12 @@ import {
   Output,
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { AddonViewModel } from "app/business-objects/my-addon-list-item";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
-import { AddonService } from "app/services/addons/addon.service";
-import { AnalyticsService } from "app/services/analytics/analytics.service";
-import { getEnumName } from "app/utils/enum.utils";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonService } from "../../services/addons/addon.service";
+import { AnalyticsService } from "../../services/analytics/analytics.service";
+import { getEnumName } from "../../utils/enum.utils";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 

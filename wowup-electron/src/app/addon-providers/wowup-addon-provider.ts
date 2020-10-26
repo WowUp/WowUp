@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { AppConfig } from "environments/environment";
+import { AppConfig } from "../../environments/environment";
 import { Observable, of } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";

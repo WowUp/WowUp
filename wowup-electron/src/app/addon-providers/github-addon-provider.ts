@@ -1,18 +1,18 @@
 import { HttpClient } from "@angular/common/http";
-import { Addon } from "app/entities/addon";
-import { GitHubRelease } from "app/models/github/github-release";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
+import { Addon } from "../entities/addon";
+import { GitHubRelease } from "../models/github/github-release";
+import { WowClientType } from "../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { forkJoin, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { AddonProvider } from "./addon-provider";
 import * as _ from "lodash";
 import { extname } from "path";
-import { GitHubAsset } from "app/models/github/github-asset";
-import { GitHubRepository } from "app/models/github/github-repository";
-import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
+import { GitHubAsset } from "../models/github/github-asset";
+import { GitHubRepository } from "../models/github/github-repository";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 
 const API_URL = "https://api.github.com/repos";
 const RELEASE_CONTENT_TYPES = [

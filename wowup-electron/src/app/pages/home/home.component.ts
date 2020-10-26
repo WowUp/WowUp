@@ -6,10 +6,10 @@ import {
 } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { ElectronService } from "app/services";
-import { SessionService } from "app/services/session/session.service";
-import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
+import { ElectronService } from "../../services";
+import { SessionService } from "../../services/session/session.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 import { forkJoin } from "rxjs";
 
 @Component({

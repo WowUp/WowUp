@@ -8,8 +8,8 @@ import { remote } from "electron";
 import { ChangeLog } from "../../models/wowup/change-log";
 
 import * as ChangeLogJson from "../../../assets/changelog.json";
-import { WowUpService } from "app/services/wowup/wowup.service";
-import { ElectronService } from "app/services";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { ElectronService } from "../../services";
 
 @Component({
   selector: "app-about",

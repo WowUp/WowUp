@@ -12,22 +12,22 @@ import { MatDialog } from "@angular/material/dialog";
 import {
   AddonDetailComponent,
   AddonDetailModel,
-} from "app/components/addon-detail/addon-detail.component";
-import { InstallFromUrlDialogComponent } from "app/components/install-from-url-dialog/install-from-url-dialog.component";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { ColumnState } from "app/models/wowup/column-state";
-import { ElectronService } from "app/services";
-import { AddonService } from "app/services/addons/addon.service";
-import { SessionService } from "app/services/session/session.service";
-import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { BehaviorSubject, Subject, Subscription } from "rxjs";
+} from "../../components/addon-detail/addon-detail.component";
+import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { ColumnState } from "../../models/wowup/column-state";
+import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
 import * as _ from "lodash";
-import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { WowUpService } from "app/services/wowup/wowup.service";
+import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { WowUpService } from "../../services/wowup/wowup.service";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({
@@ -237,7 +237,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private setPageContextText() {
     const length = this.dataSource.data?.length;
-    const contextStr = length ? this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS", {count: length}) : "";
+    const contextStr = length
+      ? this._translateService.instant(
+          "PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS",
+          { count: length }
+        )
+      : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);
   }

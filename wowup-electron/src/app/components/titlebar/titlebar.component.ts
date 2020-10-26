@@ -1,7 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
-import { ElectronService } from "app/services/electron/electron.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
-import { AppConfig } from "environments/environment";
+import { ElectronService } from "../../services/electron/electron.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { AppConfig } from "../../../environments/environment";
 import { platform } from "os";
 import { Subscription } from "rxjs";
 
@@ -11,6 +11,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./titlebar.component.scss"],
 })
 export class TitlebarComponent implements OnInit, OnDestroy {
+  // TODO use electron service
   public isMac = platform() === "darwin";
   public isWindows = platform() === "win32";
   public isLinux = platform() === "linux";

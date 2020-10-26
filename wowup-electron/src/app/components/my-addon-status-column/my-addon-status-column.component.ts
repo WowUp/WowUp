@@ -7,7 +7,7 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
-import { AddonViewModel } from "app/business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({

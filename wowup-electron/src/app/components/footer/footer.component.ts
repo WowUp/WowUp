@@ -1,6 +1,6 @@
 import { Component, NgZone, OnInit } from "@angular/core";
-import { SessionService } from "app/services/session/session.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
+import { SessionService } from "../../services/session/session.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 import { Observable } from "rxjs";
 import { filter, map } from "rxjs/operators";
 

@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
 } from "@angular/core";
-import { AddonProviderType } from "app/addon-providers/addon-provider";
+import { AddonProviderType } from "../../addon-providers/addon-provider";
 
 @Component({
   selector: "app-addon-provider-badge",

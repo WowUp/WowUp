@@ -6,11 +6,11 @@ import {
   Output,
   SimpleChanges,
 } from "@angular/core";
-import { GetAddonListItem } from "app/business-objects/get-addon-list-item";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { GetAddonListItemFilePropPipe } from "app/pipes/get-addon-list-item-file-prop.pipe";
+import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
 
 @Component({
   selector: "app-potential-addon-table-column",

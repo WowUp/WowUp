@@ -8,10 +8,10 @@ import {
   Output,
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonService } from "app/services/addons/addon.service";
-import { SessionService } from "app/services/session/session.service";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 
