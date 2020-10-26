@@ -21,6 +21,7 @@
       "UPDATING": "Aktualisiere..."
     },
     "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{Tag} other{Tage}} her",
       "HOURS_AGO": "{count} {count, plural, one{Stunde} other{Stunden}} her",
       "JUST_NOW": "Gerade eben",

@@ -68,7 +68,8 @@
           <ng-template let-releasedAt
             [ngTemplateOutletContext]="{ $implicit: element | getAddonListItemFileProp:'releaseDate':defaultAddonChannel }"
             [ngTemplateOutlet]="t" #t>
-            <div [matTooltip]="releasedAt | date:'short'" matTooltipPosition="above" matTooltipShowDelay="500">
+            <div [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: {d: releasedAt}" matTooltipPosition="above"
+              matTooltipShowDelay="500">
               {{releasedAt | relativeDuration}}
             </div>
           </ng-template>

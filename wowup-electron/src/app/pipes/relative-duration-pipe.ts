@@ -1,4 +1,3 @@
-import { DatePipe } from "@angular/common";
 import { Pipe, PipeTransform } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -6,12 +5,9 @@ import { TranslateService } from "@ngx-translate/core";
 	name: "relativeDuration",
 })
 export class RelativeDurationPipe implements PipeTransform {
-	constructor(
-		public datepipe: DatePipe,
-		private _translate: TranslateService
-	) { }
+	constructor(private _translate: TranslateService) { }
 
-	transform(value: string, format?: string): string {
+	transform(value: string): string {
 		if (!value) {
 			return '';
 		}
@@ -31,7 +27,7 @@ export class RelativeDurationPipe implements PipeTransform {
 
 		if (minutes < 60) {
 			return this._translate.instant('COMMON.DATES.JUST_NOW');
-		} else if (hours <= 25 && now.getDate() - then.getDate() === 1) {
+		} else if (hours <= 48 && now.getDate() - then.getDate() === 1) {
 			return this._translate.instant('COMMON.DATES.YESTERDAY');
 		} else if (hours < 24) {
 			return this._translate.instant('COMMON.DATES.HOURS_AGO', { count: hours });
@@ -39,6 +35,6 @@ export class RelativeDurationPipe implements PipeTransform {
 			return this._translate.instant('COMMON.DATES.DAYS_AGO', { count: days });
 		}
 
-		return this.datepipe.transform(value, !!format ? format : 'short');
+		return this._translate.instant('COMMON.DATES.DATETIME_SHORT', { d: then });
 	}
 }

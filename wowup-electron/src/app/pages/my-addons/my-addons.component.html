@@ -73,7 +73,8 @@
         <th class="installed-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{'PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER' | translate}}
         </th>
-        <td mat-cell *matCellDef="let element" class="cell-padding" [matTooltip]="element.addon.installedAt | date:'short'"
+        <td mat-cell *matCellDef="let element" class="cell-padding"
+          [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: {d: element.addon.installedAt}"
             matTooltipPosition="above" matTooltipShowDelay="500">
           {{element.addon.installedAt | relativeDuration}}
         </td>
@@ -93,7 +94,8 @@
           {{'PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER' | translate}}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding"
-          [matTooltip]="element.addon.releasedAt | date:'short'" matTooltipPosition="above" matTooltipShowDelay="500">
+          [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: {d: element.addon.releasedAt}" 
+            matTooltipPosition="above" matTooltipShowDelay="500">
           {{element.addon.releasedAt | relativeDuration}}
         </td>
       </ng-container>
