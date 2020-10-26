@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Inject,
@@ -23,6 +24,7 @@ export interface AddonDetailModel {
   selector: "app-addon-detail",
   templateUrl: "./addon-detail.component.html",
   styleUrls: ["./addon-detail.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddonDetailComponent implements OnInit, OnDestroy {
   private readonly _subscriptions: Subscription[] = [];

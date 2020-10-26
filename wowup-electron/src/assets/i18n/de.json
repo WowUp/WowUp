@@ -11,6 +11,7 @@
       "IGNORED": "Ignorieren",
       "INSTALL": "Installieren",
       "UNINSTALL": "Deinstallieren",
+      "UNKNOWN": "",
       "UPDATE": "Aktualisieren",
       "UPTODATE": "Aktuell"
     },

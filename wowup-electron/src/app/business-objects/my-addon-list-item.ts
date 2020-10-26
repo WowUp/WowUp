@@ -9,7 +9,7 @@ export class AddonViewModel {
   public installState: AddonInstallState = AddonInstallState.Unknown;
   public isInstalling: boolean = false;
   public installProgress: number = 0;
-  public statusText: string = "";
+  public stateTextTranslationKey: string = "";
   public selected: boolean = false;
 
   get hasThumbnail() {
@@ -36,7 +36,8 @@ export class AddonViewModel {
 
   get isUpToDate() {
     return (
-      !this.isInstalling && this.displayState === AddonDisplayState.UpToDate
+      !this.isInstalling &&
+      this.addon.installedVersion === this.addon.latestVersion
     );
   }
 
@@ -78,26 +79,31 @@ export class AddonViewModel {
 
   constructor(addon?: Addon) {
     this.addon = addon;
-    this.statusText = this.getStateText();
+    this.stateTextTranslationKey = this.getStateTextTranslationKey();
+  }
+
+  public clone() {
+    return new AddonViewModel(this.addon);
   }
 
   public onClicked() {
     this.selected = !this.selected;
   }
 
-  public getStateText() {
+  public getStateTextTranslationKey() {
     switch (this.displayState) {
       case AddonDisplayState.UpToDate:
-        return "Up to Date";
+        return "COMMON.ADDON_STATE.UPTODATE";
       case AddonDisplayState.Ignored:
-        return "Ignored";
+        return "COMMON.ADDON_STATE.IGNORED";
       case AddonDisplayState.Update:
+        return "COMMON.ADDON_STATE.UPDATE";
       case AddonDisplayState.Install:
-        return "Install";
+        return "COMMON.ADDON_STATE.INSTALL";
       case AddonDisplayState.Unknown:
       default:
         console.log("Unhandled display state", this.displayState);
-        return "";
+        return "COMMON.ADDON_STATE.UNKNOWN";
     }
   }
 }

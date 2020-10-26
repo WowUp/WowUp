@@ -11,6 +11,7 @@
       "IGNORED": "IGNORED",
       "INSTALL": "INSTALL",
       "UNINSTALL": "UNINSTALL",
+      "UNKNOWN": "",
       "UPDATE": "UPDATE",
       "UPTODATE": "UPTODATE"
     },
