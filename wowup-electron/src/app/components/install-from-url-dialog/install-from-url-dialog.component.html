@@ -27,9 +27,9 @@
             <button *ngIf="showInstallButton === true" mat-flat-button color="primary" (click)="onInstall()">
                 {{'DIALOGS.INSTALL_FROM_URL.INSTALL_BUTTON' | translate}}
             </button>
-            <div *ngIf="showInstallSuccess === true">
+            <div [hidden]="showInstallSuccess === false">
                 <div class="success-icon">
-                    <mat-icon>check_circle_outline</mat-icon>
+                    <img src="assets/images/checkbox-marked-circle-green.svg" class="icon-larger" />
                 </div>
                 <div>{{'DIALOGS.INSTALL_FROM_URL.INSTALL_SUCCESS_LABEL' | translate}}</div>
             </div>

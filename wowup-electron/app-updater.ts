@@ -48,7 +48,7 @@ export class AppUpdater {
   private initializeIpcHandlers() {
     ipcMain.handle(APP_UPDATE_START_DOWNLOAD, async () => {
       log.info(APP_UPDATE_START_DOWNLOAD);
-      autoUpdater.downloadUpdate();
+      return await autoUpdater.downloadUpdate();
     });
 
     ipcMain.handle(APP_UPDATE_INSTALL, async () => {

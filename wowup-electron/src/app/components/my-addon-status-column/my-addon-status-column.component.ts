@@ -39,7 +39,11 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
       return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
     }
 
-    return this.listItem?.statusText;
+    if (!this.listItem) {
+      return "";
+    }
+
+    return this._translateService.instant(this.listItem.stateTextTranslationKey);
   }
 
   public onUpdateButtonUpdated() {
