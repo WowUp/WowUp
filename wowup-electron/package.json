@@ -20,7 +20,7 @@
     "url": "https://github.com/jliddev/WowUp.git"
   },
   "scripts": {
-    "postinstall": "electron-builder install-app-deps && npm run i18n",
+    "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
     "build": "npm run electron:serve-tsc && ng build --base-href ./",

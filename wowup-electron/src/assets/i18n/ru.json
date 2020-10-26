@@ -1,7 +1,10 @@
 {
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления"
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
+    "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
+    "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
+    "WOWUP_UPDATE_TOOLTIP": "WowUp update available"
   },
   "COMMON": {
     "ADDON_STATE": {
@@ -138,10 +141,10 @@
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Это действие удалит все относящиеся папки модификации из вашей папки World of Warcraft.",
-        "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации}}?",
+        "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации} other{модификаций}}?",
         "CONFIRMATION_MORE_THAN_THREE": "Вы действительно хотите удалить выбранные {count} {count, plural, few{модификации} other{модификаций}}?",
         "CONFIRMATION_ONE": "Вы действительно хотите удалить {addonName}?",
-        "TITLE": "Удалить {count, plural, {count, plural, one{модификацию} other{модификаций}}}?"
+        "TITLE": "Удалить {count, plural, one{модификацию} other{модификации}}?"
       },
       "UPDATE_ALL_BUTTON": "Обновить всё",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
