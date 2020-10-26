@@ -27,7 +27,11 @@ import {
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+  APP_UPDATE_CHECK_FOR_UPDATE,
+  APP_UPDATE_START_DOWNLOAD,
+  APP_UPDATE_INSTALL,
 } from "common/constants";
+import { UpdateCheckResult } from "electron-updater";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
 
@@ -182,66 +186,16 @@ export class WowUpService {
     this._fileService.showDirectory(this.applicationLogsFolderPath);
   }
 
-  public isUpdateAvailable(): Observable<boolean> {
-    const releaseChannel = this.wowUpReleaseChannel;
-
-    return this.getLatestWowUpVersion(releaseChannel).pipe(
-      map((response) => {
-        if (!response?.version) {
-          console.error("Got empty WowUp version");
-          return false;
-        }
-
-        if (
-          this.isBetaBuild &&
-          releaseChannel != WowUpReleaseChannelType.Beta
-        ) {
-          return true;
-        }
-
-        return (
-          compareVersions(
-            response.version,
-            this._electronService.remote.app.getVersion()
-          ) > 0
-        );
-      })
-    );
+  public async checkForAppUpdate(): Promise<UpdateCheckResult> {
+    return await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
   }
 
-  public getLatestWowUpVersion(
-    channel: WowUpReleaseChannelType
-  ): Observable<LatestVersion> {
-    const cachedResponse = this._cacheService.get<LatestVersionResponse>(
-      LATEST_VERSION_CACHE_KEY
-    );
-    if (cachedResponse) {
-      return of(
-        channel === WowUpReleaseChannelType.Beta
-          ? cachedResponse.beta
-          : cachedResponse.stable
-      );
-    }
-    return this._wowUpApiService.getLatestVersion().pipe(
-      map((response) => {
-        this._cacheService.set(LATEST_VERSION_CACHE_KEY, response);
-        return channel === WowUpReleaseChannelType.Beta
-          ? response.beta
-          : response.stable;
-      })
-    );
+  public async downloadUpdate() {
+    return await this._electronService.invoke(APP_UPDATE_START_DOWNLOAD);
   }
 
-  public getLatestUpdaterVersion() {
-    return this._wowUpApiService.getLatestVersion().pipe(
-      map((response) => {
-        return response.updater;
-      })
-    );
-  }
-
-  public installUpdate() {
-    // TODO
+  public async installUpdate() {
+    return await this._electronService.invoke(APP_UPDATE_INSTALL);
   }
 
   private setDefaultPreference(key: string, defaultValue: any) {

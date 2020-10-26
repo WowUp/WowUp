@@ -4,10 +4,13 @@ import {
   Component,
   OnInit,
 } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { TranslateService } from "@ngx-translate/core";
 import { ElectronService } from "app/services";
 import { SessionService } from "app/services/session/session.service";
 import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { APP_UPDATE_CHECK_FOR_UPDATE } from "common/constants";
+import { WowUpService } from "app/services/wowup/wowup.service";
+import { forkJoin } from "rxjs";
 
 @Component({
   selector: "app-home",
@@ -22,7 +25,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   constructor(
     private _electronService: ElectronService,
     private _sessionService: SessionService,
-    private _warcraftService: WarcraftService
+    private _snackBar: MatSnackBar,
+    private _translateService: TranslateService,
+    private _warcraftService: WarcraftService,
+    private _wowupService: WowUpService
   ) {
     this._warcraftService.installedClientTypes$.subscribe((clientTypes) => {
       if (clientTypes === undefined) {
@@ -46,8 +52,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   private async checkForAppUpdate() {
+    // Have to wait for the localize service to start
+    const [sbtext, sbaction] = await forkJoin([
+      this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_TEXT"),
+      this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_ACTION"),
+    ]).toPromise();
+
     try {
-      await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
+      const appUpdateResponse = await this._wowupService.checkForAppUpdate();
+      console.log(appUpdateResponse);
+
+      const snackBarRef = this._snackBar.open(sbtext, sbaction, {
+        duration: 2000,
+      });
+
+      snackBarRef.onAction().subscribe(() => {
+        console.log("The snack-bar action was triggered!");
+      });
+
+      this._sessionService.wowupUpdateData = appUpdateResponse;
     } catch (e) {
       console.error(e);
     }

@@ -1,15 +1,22 @@
 <footer class="bg-dark-4 text-light-2">
-  <a appExternalLink class="patreon-link" href="https://www.patreon.com/jliddev" matTooltip="{{'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate}}"
-    appUserActionTracker category="Footer" action="Patreon">
+  <a appExternalLink class="patreon-link" href="https://www.patreon.com/jliddev"
+    matTooltip="{{'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate}}" appUserActionTracker
+    category="Footer" action="Patreon">
     <img class="patron-img" src="assets/Digital-Patreon-Wordmark_FieryCoral.png" />
   </a>
-  <a appExternalLink class="discord-link" href="https://discord.gg/rk4F5aD" matTooltip="{{'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate}}"
-    appUserActionTracker category="Footer" action="Discord">
+  <a appExternalLink class="discord-link" href="https://discord.gg/rk4F5aD"
+    matTooltip="{{'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate}}" appUserActionTracker
+    category="Footer" action="Discord">
     <img class="discord-img" src="assets/images/discord_logo_small.png" />
   </a>
   <p class="flex-grow-1">{{sessionService.statusText$ | async}}</p>
-  <div class="row">
+  <div class="row align-items-center">
     <p class="mr-3">{{sessionService.pageContextText$ | async}}</p>
     <p>v{{wowUpService.applicationVersion}}</p>
+    <button *ngIf="hasUpdate$ | async" class="update-button ml-3"
+      matTooltip="{{'APP.WOWUP_UPDATE_TOOLTIP' | translate}}" [disabled]="isUpdatingWowUp"
+      (click)="onClickUpdateWowup()">
+      <mat-icon>upgrade</mat-icon>
+    </button>
   </div>
 </footer>
