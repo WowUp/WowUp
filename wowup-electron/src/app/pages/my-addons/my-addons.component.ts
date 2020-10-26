@@ -10,31 +10,31 @@ import {
 } from "@angular/core";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { map } from "rxjs/operators";
-import { from, BehaviorSubject, Subscription, Subject } from "rxjs";
-import { Addon } from "app/entities/addon";
-import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { AddonService } from "app/services/addons/addon.service";
-import { SessionService } from "app/services/session/session.service";
+import { from, BehaviorSubject, Subscription } from "rxjs";
+import { Addon } from "../../entities/addon";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
-import { ColumnState } from "app/models/wowup/column-state";
+import { ColumnState } from "../../models/wowup/column-state";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { AddonViewModel } from "app/business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import * as _ from "lodash";
-import { ElectronService } from "app/services";
-import { AddonDisplayState } from "app/models/wowup/addon-display-state";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
+import { ElectronService } from "../../services";
+import { AddonDisplayState } from "../../models/wowup/addon-display-state";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
 import { MatDialog } from "@angular/material/dialog";
-import { ConfirmDialogComponent } from "app/components/confirm-dialog/confirm-dialog.component";
-import { getEnumName } from "app/utils/enum.utils";
+import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { getEnumName } from "../../utils/enum.utils";
 import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
-import { stringIncludes } from "app/utils/string.utils";
+import { stringIncludes } from "../../utils/string.utils";
 import {
   AddonDetailComponent,
   AddonDetailModel,
-} from "app/components/addon-detail/addon-detail.component";
+} from "../../components/addon-detail/addon-detail.component";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({

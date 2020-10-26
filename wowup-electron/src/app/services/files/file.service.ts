@@ -9,13 +9,13 @@ import {
   READ_FILE_CHANNEL,
   SHOW_DIRECTORY,
   UNZIP_FILE_CHANNEL,
-} from "common/constants";
+} from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 import * as fs from "fs";
 import * as globrex from "globrex";
 import { v4 as uuidv4 } from "uuid";
-import { CopyFileRequest } from "common/models/copy-file-request";
-import { UnzipRequest } from "common/models/unzip-request";
+import { CopyFileRequest } from "../../../common/models/copy-file-request";
+import { UnzipRequest } from "../../../common/models/unzip-request";
 
 @Injectable({
   providedIn: "root",

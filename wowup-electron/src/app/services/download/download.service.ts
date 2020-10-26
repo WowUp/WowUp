@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { DOWNLOAD_FILE_CHANNEL } from "common/constants";
 import { v4 as uuidv4 } from "uuid";
-import { DownloadRequest } from "common/models/download-request";
-import { DownloadStatus } from "common/models/download-status";
-import { DownloadStatusType } from "common/models/download-status-type";
+import { DOWNLOAD_FILE_CHANNEL } from "../../../common/constants";
+import { DownloadRequest } from "../../../common/models/download-request";
+import { DownloadStatus } from "../../../common/models/download-status";
+import { DownloadStatusType } from "../../../common/models/download-status-type";
 import { ElectronService } from "../electron/electron.service";
 
 @Injectable({

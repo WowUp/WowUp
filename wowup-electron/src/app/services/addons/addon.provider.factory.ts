@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AddonProvider } from "app/addon-providers/addon-provider";
-import { GitHubAddonProvider } from "app/addon-providers/github-addon-provider";
-import { TukUiAddonProvider } from "app/addon-providers/tukui-addon-provider";
-import { WowInterfaceAddonProvider } from "app/addon-providers/wow-interface-addon-provider";
+import { AddonProvider } from "../../addon-providers/addon-provider";
+import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
+import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
+import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
 
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";

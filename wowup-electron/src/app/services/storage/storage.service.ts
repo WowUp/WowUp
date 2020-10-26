@@ -1,17 +1,15 @@
 import { Injectable } from "@angular/core";
-import * as Store from 'electron-store'
+import * as Store from "electron-store";
 
-const PREFERENCE_PREFIX = 'preferences';
+const PREFERENCE_PREFIX = "preferences";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class StorageService {
-
   private readonly _store = new Store();
 
-  constructor() {
-  }
+  constructor() {}
 
   public set(key: string, value: any) {
     this._store.set(key, value);

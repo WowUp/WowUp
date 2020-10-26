@@ -1,20 +1,21 @@
-import { Injectable } from "@angular/core";
-import { WarcraftServiceImpl } from "./warcraft.service.impl";
-import { WarcraftServiceWin } from "./warcraft.service.win";
-import { FileUtils } from "../../utils/file.utils";
-import { ProductDb } from "app/models/warcraft/product-db";
-import { InstalledProduct } from "app/models/warcraft/installed-product";
 import { from, BehaviorSubject } from "rxjs";
 import * as path from "path";
 import * as fs from "fs";
+import { Injectable } from "@angular/core";
 import { map, filter, delay, switchMap } from "rxjs/operators";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
+
+import { WarcraftServiceImpl } from "./warcraft.service.impl";
+import { WarcraftServiceWin } from "./warcraft.service.win";
+import { FileUtils } from "../../utils/file.utils";
+import { ProductDb } from "../../models/warcraft/product-db";
+import { InstalledProduct } from "../../models/warcraft/installed-product";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceLinux } from "./warcraft.service.linux";
-import { AddonFolder } from "app/models/wowup/addon-folder";
+import { AddonFolder } from "../../models/wowup/addon-folder";
 import { ElectronService } from "..";
 import { TocService } from "../toc/toc.service";
-import { getEnumList, getEnumName } from "app/utils/enum.utils";
+import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 
@@ -374,7 +375,7 @@ export class WarcraftService {
       return new WarcraftServiceMac();
     }
 
-    if(this._electronService.isLinux){
+    if (this._electronService.isLinux) {
       return new WarcraftServiceLinux();
     }
 

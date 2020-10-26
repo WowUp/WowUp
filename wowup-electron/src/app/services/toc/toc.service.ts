@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Toc } from "app/models/wowup/toc";
+import { Toc } from "../../models/wowup/toc";
 import { FileService } from "../files/file.service";
 
 @Injectable({

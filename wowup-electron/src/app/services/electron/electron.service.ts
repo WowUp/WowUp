@@ -7,10 +7,10 @@ import { ipcRenderer, webFrame, remote, shell } from "electron";
 import * as childProcess from "child_process";
 import * as fs from "fs";
 import { BehaviorSubject } from "rxjs";
-import { ValueResponse } from "common/models/value-response";
-import { ValueRequest } from "common/models/value-request";
-import { IpcRequest } from "common/models/ipc-request";
-import { IpcResponse } from "common/models/ipc-response";
+import { ValueResponse } from "../../../common/models/value-response";
+import { ValueRequest } from "../../../common/models/value-request";
+import { IpcRequest } from "../../../common/models/ipc-request";
+import { IpcResponse } from "../../../common/models/ipc-response";
 
 @Injectable({
   providedIn: "root",

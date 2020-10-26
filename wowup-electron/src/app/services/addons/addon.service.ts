@@ -9,22 +9,22 @@ import { v4 as uuidv4 } from "uuid";
 import * as path from "path";
 import * as fs from "fs";
 import * as slug from "slug";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { forkJoin, from, Observable, Subject } from "rxjs";
 import { map, mergeMap } from "rxjs/operators";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { DownloadSevice } from "../download/download.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
-import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { getEnumName } from "app/utils/enum.utils";
+import { getEnumName } from "../../utils/enum.utils";
 
 interface InstallQueueItem {
   addonId: string;
@@ -480,7 +480,7 @@ export class AddonService {
     let addons = this._addonStorage.getAllForClientType(clientType);
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
-      console.debug('newAddons', newAddons);
+      console.debug("newAddons", newAddons);
 
       this._addonStorage.removeAllForClientType(clientType);
       addons = this.updateAddons(addons, newAddons);

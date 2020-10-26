@@ -1,8 +1,8 @@
-import { Injectable, InjectionToken } from "@angular/core";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
+import { Injectable } from "@angular/core";
 import { UpdateCheckResult } from "electron-updater";
 import { BehaviorSubject } from "rxjs";
 import { filter, first, map } from "rxjs/operators";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 
