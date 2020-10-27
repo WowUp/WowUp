@@ -45,6 +45,9 @@
     "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"]
   },
+  "nsis": {
+    "deleteAppDataOnUninstall": true
+  },
   "mac": {
     "icon": "dist/assets/icons",
     "category": "public.app-category.games",
