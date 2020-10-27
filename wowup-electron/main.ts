@@ -203,7 +203,7 @@ function createWindow(): BrowserWindow {
     show: false,
   };
 
-  if (isWin) {
+  if (isWin || isLinux) {
     windowOptions.frame = false;
   }
 
