@@ -2,7 +2,7 @@
     "ChangeLogs": [
       {
         "Version": "2.0.0-alpha.16",
-        "Description": ""
+        "Description": "Add the ability to have WowUp start on system start (Noxis)\nAdd locale support to the update/install button (Linaori)\nAdd support for locale date/times (chops)\nUpdate RU locales (Medok)\nUpdate German locales (Glow)\nFix an issue with horizontal scrolling on the install by URL dialog (chops)\nLinux support fixes\nPerformance fixes for the details dialog"
       },
       {
         "Version": "2.0.0-alpha.15",

@@ -37,7 +37,7 @@
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} milliarder",
       "MILLION": "{count} millioner",
-      "THOUSAND": "{count] tusen"
+      "THOUSAND": "{count} tusen"
     }
   },
   "DIALOGS": {
