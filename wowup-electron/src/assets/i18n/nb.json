@@ -1,13 +1,13 @@
 {
   "APP": {
-    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
-    "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Install WowUp update",
-    "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want restart WowUp to install the update?",
-    "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update Ready",
-    "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
-    "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
-    "WOWUP_UPDATE_TOOLTIP": "WowUp update available"
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse} ble automatisk oppdatert}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
+    "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
+    "WOWUP_UPDATE_INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
+    "WOWUP_UPDATE_INSTALL_TITLE": "WowUp-oppdatering er klar",
+    "WOWUP_UPDATE_SNACKBAR_ACTION": "Oppdater",
+    "WOWUP_UPDATE_SNACKBAR_TEXT": "en ny versjon av WowUp er tilgjengelig",
+    "WOWUP_UPDATE_TOOLTIP": "WowUp oppdatering tilgjengelig"
   },
   "COMMON": {
     "ADDON_STATE": {
@@ -54,7 +54,7 @@
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Utvidelsens URL",
-      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub eller WowInterface URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "F.Eks. GitHub eller WowInterface URL",
       "CLOSE_BUTTON": "Lukk",
       "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
       "IMPORT_BUTTON": "Importer",
@@ -117,8 +117,8 @@
       "FILTER_LABEL": "Filter",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
-        "JOIN_DISCORD": "Chat with us on Discord",
-        "PATREON_SUPPORT": "Support WowUp on Patreon",
+        "JOIN_DISCORD": "Chat med oss på Discord",
+        "PATREON_SUPPORT": "Støtt WowUp på Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultater}}"
       },
       "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
@@ -145,11 +145,11 @@
         "UPDATED_AT_COLUMN_HEADER": "Updated At"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
-        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
-        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
-        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
-        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
+        "CONFIRMATION_ACTION_EXPLANATION": "Dette vil fjerne alle relaterte mapper fra din World of Warcraft-mappen din.",
+        "CONFIRMATION_LESS_THAN_THREE": "Er du sikker på at du vil fjerne disse {count} utvidelsene?",
+        "CONFIRMATION_MORE_THAN_THREE": "Er du sikker på at du vil fjerne {count} utvalgte utvidelser?",
+        "CONFIRMATION_ONE": "Er du sikker på at du vil fjerne {addonName}?",
+        "TITLE": "Avinstaller {count, plural, =1{Utvidelse} other{Utvidelser}}?"
       },
       "UPDATE_ALL_BUTTON": "Oppdater Alle",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Oppdater alle utvidelser for denne klienten",
@@ -165,10 +165,10 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Når WowUp-vinduet lukkes, minimer til oppgavelinjens varselområde.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukking",
-        "START_MINIMIZED_DESCRIPTION": "...and will not show up on the screen",
-        "START_MINIMIZED_LABEL": "Launch WowUp minimized",
-        "START_WITH_SYSTEM_DESCRIPTION": "WowUp will be launched immediately after your operational system is loaded...",
-        "START_WITH_SYSTEM_LABEL": "Launch WowUp with system",
+        "START_MINIMIZED_DESCRIPTION": "...og vil ikke dukke opp på skjermen din",
+        "START_MINIMIZED_LABEL": "Start WowUp minimert",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp vil startes umiddelbart etter at operativsystemet ditt er lastet...",
+        "START_WITH_SYSTEM_LABEL": "Start WowUp sammen med maskinen",
         "TELEMETRY_DESCRIPTION": "Hjelp til med å forbedre WowUp ved å sende anonyme data og feilmeldinger.",
         "TELEMETRY_LABEL": "Telemetri",
         "TITLE": "Applikasjon",
@@ -190,11 +190,11 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
         "AUTO_UPDATE_LABEL": "Automatisk Oppdatering",
-        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
-        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
+        "CLIENT_TYPE_INPUT_HINT": "Mappen som inneholder {clientTypeName} klientmappe \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} filbane",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanal for Utvidelser",
-        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Velg",
         "RESCAN_CLIENTS_BUTTON": "Skann Igjen",
         "RESCAN_CLIENTS_LABEL": "Skann installerte World of Warcraft produkter på nytt",
         "TITLE": "World of Warcraft"
