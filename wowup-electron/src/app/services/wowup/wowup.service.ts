@@ -36,9 +36,6 @@ import {
 import { UpdateCheckResult } from "electron-updater";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
-const isMac = process.platform === "darwin";
-const isWin = process.platform === "win32";
-const isLinux = process.platform === "linux";
 var autoLaunch = require('auto-launch');
 
 @Injectable({
@@ -303,7 +300,7 @@ export class WowUpService {
   }
 
   private setAutoStartup() {
-    if (isLinux) {
+    if (this._electronService.isLinux) {
       var autoLauncher = new autoLaunch({
         name: 'WowUp',
         isHidden: this.startMinimized
@@ -315,10 +312,10 @@ export class WowUpService {
         autoLauncher.disable();
     }
     else {
-      remote.app.setLoginItemSettings({
+      this._electronService.remote.app.setLoginItemSettings({
         openAtLogin: this.startWithSystem,
-        openAsHidden: isMac ? this.startMinimized : false,
-        args: isWin ? this.startMinimized ? ['--hidden'] : [] : []
+        openAsHidden: this._electronService.isMac ? this.startMinimized : false,
+        args: this._electronService.isWin ? this.startMinimized ? ['--hidden'] : [] : []
       });
     }
   }
