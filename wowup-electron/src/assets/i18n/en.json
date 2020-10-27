@@ -25,6 +25,7 @@
       "UPDATING": "Updating..."
     },
     "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
       "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
       "JUST_NOW": "Just now",

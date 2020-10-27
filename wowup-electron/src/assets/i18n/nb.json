@@ -25,6 +25,7 @@
       "UPDATING": "Oppdaterer..."
     },
     "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
       "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
       "JUST_NOW": "Akkurat nå",
