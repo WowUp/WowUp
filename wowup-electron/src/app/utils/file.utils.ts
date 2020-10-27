@@ -1,10 +1,8 @@
 import * as fs from "fs";
 import * as util from "util";
-import { remote } from "electron";
 
 const fsAccess = util.promisify(fs.access);
 const fsReadFile = util.promisify(fs.readFile);
-const userDataPath = remote.app.getPath("userData");
 
 export class FileUtils {
   static async exists(path: string) {
@@ -22,9 +20,5 @@ export class FileUtils {
 
   static readFileSync(path: string) {
     return fs.readFileSync(path);
-  }
-
-  static getUserDataPath() {
-    return userDataPath;
   }
 }
