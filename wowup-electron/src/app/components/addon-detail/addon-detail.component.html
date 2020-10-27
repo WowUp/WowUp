@@ -3,7 +3,7 @@
     <h1 mat-dialog-title class="flex-grow-1">{{title}}</h1>
     <mat-icon class="close-icon" color="primary" [mat-dialog-close]="true">close</mat-icon>
   </div>
-  <div class="row justify-content-center image-row">
+  <div *ngIf="defaultImageUrl" class="row justify-content-center image-row">
     <img class="image" [src]="defaultImageUrl" alt="Addon Picture" />
   </div>
 
