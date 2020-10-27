@@ -1,7 +1,6 @@
 import { Addon } from "../entities/addon";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
-import { AddonDisplayState } from "../models/wowup/addon-display-state";
 
 export class AddonViewModel {
   public addon: Addon;
