@@ -50,7 +50,7 @@ export class OptionsComponent implements OnInit, OnChanges {
   );
 
   public get minimizeOnCloseDescription() {
-    const key = this._electronService.isWin
+    const key = this.electronService.isWin
       ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
       : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
 
@@ -61,7 +61,6 @@ export class OptionsComponent implements OnInit, OnChanges {
     private _addonService: AddonService,
     private _analyticsService: AnalyticsService,
     private warcraft: WarcraftService,
-    private _electronService: ElectronService,
     public wowupService: WowUpService,
     private _dialog: MatDialog,
     private zone: NgZone,
@@ -126,7 +125,7 @@ export class OptionsComponent implements OnInit, OnChanges {
       }
 
       this.wowupService.useHardwareAcceleration = evt.checked;
-      this._electronService.restartApplication();
+      this.electronService.restartApplication();
     });
   };
 

@@ -46,7 +46,7 @@ export class ElectronService {
       return;
     }
 
-    console.log('Platform', process.platform, this.isLinux)
+    console.log("Platform", process.platform, this.isLinux);
 
     this.ipcRenderer = window.require("electron").ipcRenderer;
     this.webFrame = window.require("electron").webFrame;
@@ -56,27 +56,27 @@ export class ElectronService {
     this.childProcess = window.require("child_process");
     this.fs = window.require("fs");
 
-    const currentWindow = this.remote.getCurrentWindow();
+    const currentWindow = this.remote?.getCurrentWindow();
 
-    currentWindow.on("minimize", () => {
+    currentWindow?.on("minimize", () => {
       this._windowMinimizedSrc.next(true);
     });
 
-    currentWindow.on("restore", () => {
+    currentWindow?.on("restore", () => {
       this._windowMinimizedSrc.next(false);
     });
 
-    currentWindow.on("maximize", () => {
+    currentWindow?.on("maximize", () => {
       this._windowMaximizedSrc.next(true);
     });
 
-    currentWindow.on("unmaximize", () => {
+    currentWindow?.on("unmaximize", () => {
       this._windowMaximizedSrc.next(false);
     });
 
-    this._windowMaximizedSrc.next(currentWindow.isMaximized());
+    this._windowMaximizedSrc.next(currentWindow?.isMaximized() || false);
 
-    currentWindow.webContents
+    currentWindow?.webContents
       .setVisualZoomLevelLimits(1, 3)
       .then(() =>
         console.log("Zoom levels have been set between 100% and 300%")
