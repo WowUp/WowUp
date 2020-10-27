@@ -650,10 +650,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       next: (addons) => {
         this.isBusy = false;
         this.enableControls = true;
-        this._ngZone.run(() => {
           this._displayAddonsSrc.next(this.formatAddons(addons));
           this.setPageContextText();
-        });
+          this._cdRef.detectChanges();
       },
       error: (err) => {
         console.error(err);

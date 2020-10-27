@@ -1,4 +1,4 @@
-<div class="page-container">
+<div class="page-container" [ngClass]="{'linux': electronService.isLinux}">
   <div class="tabs">
     <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [backgroundColor]="'primary'"
       [disablePagination]="true" [(selectedIndex)]="selectedIndex"

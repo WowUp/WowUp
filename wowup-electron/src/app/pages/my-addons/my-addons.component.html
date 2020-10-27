@@ -1,5 +1,5 @@
 <div class="tab-container d-flex flex-col"
-  [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
+  [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin, 'linux': electronService.isLinux }">
   <div class="control-container">
     <div class="select-container ">
       <mat-form-field>
@@ -50,7 +50,11 @@
     </app-progress-spinner>
   </div>
 
-  <div class="table-container flex-grow-1" [hidden]="isBusy === true">
+  <div *ngIf="isBusy === false && sortedListItems.length === 0" class="no-addons-container flex-grow-1">
+    <h1>No Addons found</h1>
+  </div>
+
+  <div class="table-container flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0" >
     <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container matColumnDef="addon.name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>

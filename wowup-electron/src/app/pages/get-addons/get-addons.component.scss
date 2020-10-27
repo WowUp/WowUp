@@ -87,3 +87,9 @@
 .provider-column {
   min-width: 60px;
 }
+
+.linux {
+  .table-container {
+    height: calc(100vh - 150px);
+  }
+}

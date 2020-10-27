@@ -46,6 +46,8 @@ export class ElectronService {
       return;
     }
 
+    console.log('Platform', process.platform, this.isLinux)
+
     this.ipcRenderer = window.require("electron").ipcRenderer;
     this.webFrame = window.require("electron").webFrame;
     this.remote = window.require("electron").remote;

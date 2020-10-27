@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public hasWowClient = false;
 
   constructor(
-    private _electronService: ElectronService,
+    public electronService: ElectronService,
     private _sessionService: SessionService,
     private _snackBar: MatSnackBar,
     private _translateService: TranslateService,

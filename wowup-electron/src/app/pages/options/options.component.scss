@@ -87,3 +87,9 @@ section {
         color: $white-2;
     }
 }
+
+.linux {
+    .options {
+      height: calc(100vh - 80px);
+    }
+  }
