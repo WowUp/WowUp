@@ -21,7 +21,6 @@ import { MatCheckboxChange } from "@angular/material/checkbox";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import * as _ from "lodash";
 import { ElectronService } from "../../services";
-import { AddonDisplayState } from "../../models/wowup/addon-display-state";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
@@ -303,9 +302,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     try {
       const listItems = _.filter(
         this._displayAddonsSrc.value,
-        (listItem) =>
-          listItem.displayState === AddonDisplayState.Install ||
-          listItem.displayState === AddonDisplayState.Update
+        (listItem) => listItem.needsInstall || listItem.needsUpdate
       );
 
       await Promise.all(
@@ -650,9 +647,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       next: (addons) => {
         this.isBusy = false;
         this.enableControls = true;
-          this._displayAddonsSrc.next(this.formatAddons(addons));
-          this.setPageContextText();
-          this._cdRef.detectChanges();
+        this._displayAddonsSrc.next(this.formatAddons(addons));
+        this.setPageContextText();
+        this._cdRef.detectChanges();
       },
       error: (err) => {
         console.error(err);

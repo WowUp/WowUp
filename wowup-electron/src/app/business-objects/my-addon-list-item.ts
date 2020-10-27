@@ -21,13 +21,14 @@ export class AddonViewModel {
   }
 
   get needsInstall() {
-    return (
-      !this.isInstalling && this.displayState === AddonDisplayState.Install
-    );
+    return !this.isInstalling && !this.addon.installedVersion;
   }
 
   get needsUpdate() {
-    return !this.isInstalling && this.displayState === AddonDisplayState.Update;
+    return (
+      !this.isInstalling &&
+      this.addon.installedVersion !== this.addon.latestVersion
+    );
   }
 
   get isAutoUpdate() {
@@ -42,7 +43,7 @@ export class AddonViewModel {
   }
 
   get isIgnored() {
-    return this.displayState === AddonDisplayState.Ignored;
+    return this.addon.isIgnored;
   }
 
   get isStableChannel() {
@@ -55,26 +56,6 @@ export class AddonViewModel {
 
   get isAlphaChannel() {
     return this.addon.channelType === AddonChannelType.Alpha;
-  }
-
-  get displayState(): AddonDisplayState {
-    if (this.addon.isIgnored) {
-      return AddonDisplayState.Ignored;
-    }
-
-    if (!this.addon.installedVersion) {
-      return AddonDisplayState.Install;
-    }
-
-    if (this.addon.installedVersion !== this.addon.latestVersion) {
-      return AddonDisplayState.Update;
-    }
-
-    if (this.addon.installedVersion === this.addon.latestVersion) {
-      return AddonDisplayState.UpToDate;
-    }
-
-    return AddonDisplayState.Unknown;
   }
 
   constructor(addon?: Addon) {
@@ -91,19 +72,23 @@ export class AddonViewModel {
   }
 
   public getStateTextTranslationKey() {
-    switch (this.displayState) {
-      case AddonDisplayState.UpToDate:
-        return "COMMON.ADDON_STATE.UPTODATE";
-      case AddonDisplayState.Ignored:
-        return "COMMON.ADDON_STATE.IGNORED";
-      case AddonDisplayState.Update:
-        return "COMMON.ADDON_STATE.UPDATE";
-      case AddonDisplayState.Install:
-        return "COMMON.ADDON_STATE.INSTALL";
-      case AddonDisplayState.Unknown:
-      default:
-        console.log("Unhandled display state", this.displayState);
-        return "COMMON.ADDON_STATE.UNKNOWN";
+    if (this.isUpToDate) {
+      return "COMMON.ADDON_STATE.UPTODATE";
     }
+
+    if (this.isIgnored) {
+      return "COMMON.ADDON_STATE.IGNORED";
+    }
+
+    if (this.needsUpdate) {
+      return "COMMON.ADDON_STATE.UPDATE";
+    }
+
+    if (this.needsInstall) {
+      return "COMMON.ADDON_STATE.INSTALL";
+    }
+
+    console.log("Unhandled display state");
+    return "COMMON.ADDON_STATE.UNKNOWN";
   }
 }
