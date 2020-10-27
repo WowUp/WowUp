@@ -1,6 +1,7 @@
 import { Addon } from "../entities/addon";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
+import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -68,6 +69,26 @@ export class AddonViewModel {
 
   public onClicked() {
     this.selected = !this.selected;
+  }
+
+  public get sortOrder(): AddonStatusSortOrder {
+    if(this.needsInstall){
+      return AddonStatusSortOrder.Install;
+    }
+
+    if(this.needsUpdate){
+      return AddonStatusSortOrder.Update;
+    }
+
+    if(this.isUpToDate){
+      return AddonStatusSortOrder.UpToDate;
+    }
+
+    if(this.isIgnored){
+      return AddonStatusSortOrder.Ignored;
+    }
+
+    return AddonStatusSortOrder.Unknown;
   }
 
   public getStateTextTranslationKey() {
