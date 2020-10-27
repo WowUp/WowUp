@@ -34,6 +34,8 @@ export class OptionsComponent implements OnInit, OnChanges {
   public collapseToTray = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
+  public startWithSystem = false;
+  public startMinimized = false;
   public wowClientTypes: WowClientType[] = getEnumList(WowClientType).filter(
     (clientType) => clientType !== WowClientType.None
   ) as WowClientType[];
@@ -129,6 +131,16 @@ export class OptionsComponent implements OnInit, OnChanges {
     });
   };
 
+  onStartWithSystemChange = (evt: MatSlideToggleChange) => {
+    this.wowupService.startWithSystem = evt.checked;
+    if (!evt.checked)
+      this.startMinimized = false;
+  };
+
+  onStartMinimizedChange = (evt: MatSlideToggleChange) => {
+    this.wowupService.startMinimized = evt.checked;
+  };
+
   onWowUpChannelChange(evt: MatSelectChange) {
     this.wowupService.wowUpReleaseChannel = evt.value;
   }
@@ -142,6 +154,8 @@ export class OptionsComponent implements OnInit, OnChanges {
       this.telemetryEnabled = this._analyticsService.telemetryEnabled;
       this.collapseToTray = this.wowupService.collapseToTray;
       this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
+      this.startWithSystem = this.wowupService.startWithSystem;
+      this.startMinimized = this.wowupService.startMinimized;
     });
   }
 }
