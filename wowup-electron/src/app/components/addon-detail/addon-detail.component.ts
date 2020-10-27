@@ -137,4 +137,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
 
     return "";
   }
+
+  onInstallUpdated() {
+    this._cdRef.detectChanges();
+  }
 }

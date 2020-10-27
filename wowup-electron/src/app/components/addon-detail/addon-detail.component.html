@@ -22,7 +22,7 @@
   <div mat-dialog-actions class="row align-items-center justify-content-end">
     <a appExternalLink mat-button cdkFocusInitial color="primary" class="mr-3"
       [href]="externalUrl">{{ "DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON" | translate }}</a>
-    <app-addon-install-button *ngIf="showInstallButton" [addonSearchResult]="model.searchResult">
+    <app-addon-install-button *ngIf="showInstallButton" [addonSearchResult]="model.searchResult" (onViewUpdated)="onInstallUpdated()">
     </app-addon-install-button>
     <app-addon-update-button *ngIf="showUpdateButton" [listItem]="model.listItem"></app-addon-update-button>
   </div>
