@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "10.0.1",
-    "@angular-devkit/build-angular": "0.1001.7",
+    "@angular-devkit/build-angular": "0.1002.0",
     "@angular-eslint/builder": "0.5.0-beta.4",
     "@angular-eslint/eslint-plugin": "0.5.0-beta.4",
     "@angular-eslint/eslint-plugin-template": "0.5.0-beta.4",
