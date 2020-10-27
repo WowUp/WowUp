@@ -31,182 +31,167 @@ import { DownloadStatus } from "./src/common/models/download-status";
 import { DownloadStatusType } from "./src/common/models/download-status-type";
 import { DownloadRequest } from "./src/common/models/download-request";
 
-const nativeAddon = require("./build/Release/addon.node");
+export function initializeIpcHanders(window: BrowserWindow) {
+  ipcMain.handle(
+    SHOW_DIRECTORY,
+    async (evt, filePath: string): Promise<string> => {
+      console.log(SHOW_DIRECTORY, filePath);
+      return await shell.openPath(filePath);
+    }
+  );
 
-export class IpcHandler {
-  private _window: BrowserWindow;
+  ipcMain.handle(GET_ASSET_FILE_PATH, async (evt, fileName: string) => {
+    return path.join(__dirname, "assets", fileName);
+  });
 
-  constructor(window: BrowserWindow) {
-    this._window = window;
-    this.initializeHandlers();
-  }
+  ipcMain.handle(
+    CREATE_DIRECTORY_CHANNEL,
+    async (evt, directoryPath: string): Promise<boolean> => {
+      await fs.ensureDir(directoryPath);
+      return true;
+    }
+  );
 
-  private initializeHandlers() {
-    ipcMain.handle(
-      SHOW_DIRECTORY,
-      async (evt, filePath: string): Promise<string> => {
-        console.log(SHOW_DIRECTORY, filePath);
-        return await shell.openPath(filePath);
-      }
-    );
+  ipcMain.handle(LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
+    console.log(LIST_DIRECTORIES_CHANNEL, filePath);
 
-    ipcMain.handle(GET_ASSET_FILE_PATH, async (evt, fileName: string) => {
-      return path.join(__dirname, "assets", fileName);
-    });
-
-    ipcMain.handle(
-      CREATE_DIRECTORY_CHANNEL,
-      async (evt, directoryPath: string): Promise<boolean> => {
-        await fs.ensureDir(directoryPath);
-        return true;
-      }
-    );
-
-    ipcMain.handle(LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
-      console.log(LIST_DIRECTORIES_CHANNEL, filePath);
-
-      return new Promise((resolve, reject) => {
-        readdir(filePath, { withFileTypes: true }, (err, files) => {
-          if (err) {
-            return reject(err);
-          }
-
-          const directories = files
-            .filter((file) => file.isDirectory())
-            .map((file) => file.name);
-
-          resolve(directories);
-        });
-      });
-    });
-
-    ipcMain.handle(PATH_EXISTS_CHANNEL, async (evt, filePath: string) => {
-      console.log(PATH_EXISTS_CHANNEL, filePath);
-
-      try {
-        await fs.access(filePath);
-      } catch (e) {
-        if (e.code !== "ENOENT") {
-          console.error(e);
+    return new Promise((resolve, reject) => {
+      readdir(filePath, { withFileTypes: true }, (err, files) => {
+        if (err) {
+          return reject(err);
         }
-        return false;
-      }
 
-      return true;
+        const directories = files
+          .filter((file) => file.isDirectory())
+          .map((file) => file.name);
+
+        resolve(directories);
+      });
+    });
+  });
+
+  ipcMain.handle(PATH_EXISTS_CHANNEL, async (evt, filePath: string) => {
+    console.log(PATH_EXISTS_CHANNEL, filePath);
+
+    try {
+      await fs.access(filePath);
+    } catch (e) {
+      if (e.code !== "ENOENT") {
+        console.error(e);
+      }
+      return false;
+    }
+
+    return true;
+  });
+
+  ipcMain.handle(
+    CURSE_GET_SCAN_RESULTS,
+    async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
+      console.log(CURSE_GET_SCAN_RESULTS, filePaths);
+
+      // Scan addon folders in parallel for speed!?
+      return await async.mapLimit<string, CurseScanResult>(
+        filePaths,
+        2,
+        async (folder, callback) => {
+          const scanResult = await new CurseFolderScanner().scanFolder(folder);
+
+          callback(undefined, scanResult);
+        }
+      );
+    }
+  );
+
+  ipcMain.handle(
+    WOWUP_GET_SCAN_RESULTS,
+    async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
+      console.log(WOWUP_GET_SCAN_RESULTS, filePaths);
+
+      return await async.mapLimit<string, WowUpScanResult>(
+        filePaths,
+        2,
+        async (folder, callback) => {
+          const scanResult = await new WowUpFolderScanner(folder).scanFolder();
+
+          callback(undefined, scanResult);
+        }
+      );
+    }
+  );
+
+  ipcMain.handle(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
+    console.log(UNZIP_FILE_CHANNEL, arg);
+
+    const zip = new admZip(arg.zipFilePath);
+    await new Promise((resolve, reject) => {
+      zip.extractAllToAsync(arg.outputFolder, true, (err) => {
+        return err ? reject(err) : resolve(true);
+      });
     });
 
-    ipcMain.handle(
-      CURSE_GET_SCAN_RESULTS,
-      async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
-        console.log(CURSE_GET_SCAN_RESULTS, filePaths);
+    return arg.outputFolder;
+  });
 
-        // Scan addon folders in parallel for speed!?
-        return await async.mapLimit<string, CurseScanResult>(
-          filePaths,
-          2,
-          async (folder, callback) => {
-            const scanResult = await new CurseFolderScanner().scanFolder(
-              folder
-            );
+  ipcMain.handle(
+    COPY_FILE_CHANNEL,
+    async (evt, arg: CopyFileRequest): Promise<boolean> => {
+      console.log("Copy File", arg);
+      await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
+      return true;
+    }
+  );
 
-            callback(undefined, scanResult);
-          }
-        );
-      }
-    );
+  ipcMain.handle(DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
+    console.log("Delete File/Dir", filePath);
 
-    ipcMain.handle(
-      WOWUP_GET_SCAN_RESULTS,
-      async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
-        console.log(WOWUP_GET_SCAN_RESULTS, filePaths);
+    await fs.remove(filePath);
 
-        return await async.mapLimit<string, WowUpScanResult>(
-          filePaths,
-          2,
-          async (folder, callback) => {
-            const scanResult = await new WowUpFolderScanner(
-              folder
-            ).scanFolder();
+    return true;
+  });
 
-            callback(undefined, scanResult);
-          }
-        );
-      }
-    );
+  ipcMain.handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
+    return await fs.readFile(filePath, { encoding: "utf-8" });
+  });
 
-    ipcMain.handle(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
-      console.log(UNZIP_FILE_CHANNEL, arg);
+  ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
+    try {
+      const savePath = path.join(arg.outputFolder, arg.fileName);
 
-      const zip = new admZip(arg.zipFilePath);
-      await new Promise((resolve, reject) => {
-        zip.extractAllToAsync(arg.outputFolder, true, (err) => {
-          return err ? reject(err) : resolve(true);
-        });
+      const { data, headers } = await axios({
+        url: arg.url,
+        method: "GET",
+        responseType: "stream",
       });
 
-      return arg.outputFolder;
-    });
+      console.log("Starting download");
 
-    ipcMain.handle(
-      COPY_FILE_CHANNEL,
-      async (evt, arg: CopyFileRequest): Promise<boolean> => {
-        console.log("Copy File", arg);
-        await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
-        return true;
-      }
-    );
+      // const totalLength = headers["content-length"];
+      // Progress is not shown anywhere
+      // data.on("data", (chunk) => {
+      //   console.log("DLPROG", arg.responseKey);
+      // });
 
-    ipcMain.handle(DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
-      console.log("Delete File/Dir", filePath);
+      const writer = fs.createWriteStream(savePath);
+      data.pipe(writer);
 
-      await fs.remove(filePath);
+      await new Promise((resolve, reject) => {
+        writer.on("finish", resolve);
+        writer.on("error", reject);
+      });
 
-      return true;
-    });
-
-    ipcMain.handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
-      return await fs.readFile(filePath, { encoding: "utf-8" });
-    });
-
-    ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
-      try {
-        const savePath = path.join(arg.outputFolder, arg.fileName);
-
-        const { data, headers } = await axios({
-          url: arg.url,
-          method: "GET",
-          responseType: "stream",
-        });
-
-        console.log("Starting download");
-
-        // const totalLength = headers["content-length"];
-        // Progress is not shown anywhere
-        // data.on("data", (chunk) => {
-        //   console.log("DLPROG", arg.responseKey);
-        // });
-
-        const writer = fs.createWriteStream(savePath);
-        data.pipe(writer);
-
-        await new Promise((resolve, reject) => {
-          writer.on("finish", resolve);
-          writer.on("error", reject);
-        });
-
-        const status: DownloadStatus = {
-          type: DownloadStatusType.Complete,
-          savePath,
-        };
-        this._window.webContents.send(arg.responseKey, status);
-      } catch (err) {
-        console.error(err);
-        const status: DownloadStatus = {
-          type: DownloadStatusType.Error,
-          error: err,
-        };
-        this._window.webContents.send(arg.responseKey, status);
-      }
-    });
-  }
+      const status: DownloadStatus = {
+        type: DownloadStatusType.Complete,
+        savePath,
+      };
+      window.webContents.send(arg.responseKey, status);
+    } catch (err) {
+      console.error(err);
+      const status: DownloadStatus = {
+        type: DownloadStatusType.Error,
+        error: err,
+      };
+      window.webContents.send(arg.responseKey, status);
+    }
+  });
 }

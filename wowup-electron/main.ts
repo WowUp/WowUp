@@ -8,7 +8,6 @@ import {
   nativeImage,
   MenuItem,
   MenuItemConstructorOptions,
-  ipcMain,
 } from "electron";
 import * as path from "path";
 import * as url from "url";
@@ -20,12 +19,15 @@ import * as Store from "electron-store";
 import { WindowState } from "./src/common/models/window-state";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
-import { IpcHandler } from "./ipc-events";
+import { initializeIpcHanders } from "./ipc-events";
 import {
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
 } from "./src/common/constants";
-import { AppUpdater } from "./app-updater";
+import {
+  initializeAppUpdateIpcHandlers,
+  initializeAppUpdater,
+} from "./app-updater";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -35,8 +37,6 @@ const preferenceStore = new Store({ name: "preferences" });
 let appIsQuitting = false;
 let win: BrowserWindow = null;
 let tray: Tray = null;
-let ipcHandler: IpcHandler;
-let appUpdater: AppUpdater;
 
 // APP MENU SETUP
 const appMenuTemplate: Array<
@@ -48,10 +48,7 @@ Menu.setApplicationMenu(appMenu);
 
 const LOG_PATH = path.join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
-log.transports.file.resolvePath = (
-  variables: log.PathVariables,
-  _message?: log.LogMessage
-) => {
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return path.join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
@@ -209,8 +206,9 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
-  ipcHandler = new IpcHandler(win);
-  appUpdater = new AppUpdater(win);
+  initializeIpcHanders(win);
+  initializeAppUpdater(win);
+  initializeAppUpdateIpcHandlers();
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
@@ -289,7 +287,7 @@ try {
   if (!singleInstanceLock) {
     app.quit();
   } else {
-    app.on("second-instance", (event, commandLine, workingDirectory) => {
+    app.on("second-instance", () => {
       // Someone tried to run a second instance, we should focus our window.
       if (win) {
         if (win.isMinimized()) {
@@ -313,7 +311,7 @@ try {
     }, 400);
   });
 
-  app.on("before-quit", (e) => {
+  app.on("before-quit", () => {
     appIsQuitting = true;
   });
 
