@@ -2,6 +2,9 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
+    "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Install WowUp update",
+    "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want restart WowUp to install the update?",
+    "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update Ready",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
     "WOWUP_UPDATE_TOOLTIP": "WowUp update available"
@@ -159,7 +162,6 @@
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren / Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim schließen WowUp in der Menübar minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schliessen",

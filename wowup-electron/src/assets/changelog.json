@@ -1,6 +1,10 @@
 {
     "ChangeLogs": [
       {
+        "Version": "2.0.0-alpha.16",
+        "Description": ""
+      },
+      {
         "Version": "2.0.0-alpha.15",
         "Description": "Add the ability to translate plurals (Chops)\nAdd the alpha/beta indicator for user's default install channel to the 'Get Addons' tab (Chops)\nAdd new column to show the last updated time of an Addon (Linaori)\nAdd support for installing vir URL from CurseForge\nShow the release date in a more user friendly way (Chops)\nMore text items are now translated with updated locales (Linaori)\nNew placehold thumbnail for Addons\nAddon author list now limited to 3 rows\nSwitch to a new analytics provider.\nFix issue with addon count not changing when deleting an addon.\nSeveral fixes for linux support"
       },

@@ -16,15 +16,11 @@ export class SessionService {
   private readonly _pageContextTextSrc = new BehaviorSubject(""); // right side bar text, context to the screen
   private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
   private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
-  private readonly _wowupUpdateInfoSrc = new BehaviorSubject<UpdateCheckResult>(
-    undefined
-  );
 
   public readonly selectedClientType$ = this._selectedClientTypeSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
   public readonly selectedHomeTab$ = this._selectedHomeTabSrc.asObservable();
   public readonly pageContextText$ = this._pageContextTextSrc.asObservable();
-  public readonly wowupUpdateInfo$ = this._wowupUpdateInfoSrc.asObservable();
 
   constructor(
     private _warcraftService: WarcraftService,
@@ -57,10 +53,6 @@ export class SessionService {
 
   public get selectedClientType() {
     return this._selectedClientTypeSrc.value;
-  }
-
-  public set wowupUpdateData(updateInfo: UpdateCheckResult) {
-    this._wowupUpdateInfoSrc.next(updateInfo);
   }
 
   private loadInitialClientType() {

@@ -2,6 +2,9 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
+    "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Install WowUp update",
+    "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want restart WowUp to install the update?",
+    "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update Ready",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
     "WOWUP_UPDATE_TOOLTIP": "WowUp update available"

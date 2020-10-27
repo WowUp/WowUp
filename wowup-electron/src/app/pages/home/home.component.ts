@@ -11,6 +11,7 @@ import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { forkJoin } from "rxjs";
+import { UpdateCheckResult } from "electron-updater";
 
 @Component({
   selector: "app-home",
@@ -41,7 +42,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this._wowupService.wowupUpdateCheck$.subscribe(this.showUpdateSnackbar);
+  }
 
   ngAfterViewInit(): void {
     this.checkForAppUpdate();
@@ -52,27 +55,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   private async checkForAppUpdate() {
+    try {
+      const appUpdateResponse = await this._wowupService.checkForAppUpdate();
+      console.log(appUpdateResponse);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private showUpdateSnackbar = async (updateCheckResult: UpdateCheckResult) => {
     // Have to wait for the localize service to start
     const [sbtext, sbaction] = await forkJoin([
       this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_TEXT"),
       this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_ACTION"),
     ]).toPromise();
 
-    try {
-      const appUpdateResponse = await this._wowupService.checkForAppUpdate();
-      console.log(appUpdateResponse);
+    const snackBarRef = this._snackBar.open(sbtext, sbaction, {
+      duration: 2000,
+    });
 
-      const snackBarRef = this._snackBar.open(sbtext, sbaction, {
-        duration: 2000,
-      });
-
-      snackBarRef.onAction().subscribe(() => {
-        console.log("The snack-bar action was triggered!");
-      });
-
-      this._sessionService.wowupUpdateData = appUpdateResponse;
-    } catch (e) {
-      console.error(e);
-    }
-  }
+    snackBarRef.onAction().subscribe(() => {
+      console.log("The snack-bar action was triggered!");
+    });
+  };
 }

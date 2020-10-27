@@ -58,11 +58,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
-  private sortedListItems: AddonViewModel[] = [];
+
+  public sortedListItems: AddonViewModel[] = [];
 
   public spinnerMessage = "";
 
-  contextMenuPosition = { x: "0px", y: "0px" };
+  public contextMenuPosition = { x: "0px", y: "0px" };
 
   public dataSource = new MatTableDataSource<AddonViewModel>([]);
   public filter = "";

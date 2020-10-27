@@ -35,25 +35,34 @@ const LATEST_VERSION_CACHE_KEY = "latest-version-response";
 })
 export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
+  private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
+  private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
 
   public readonly updaterName = "WowUpUpdater.exe";
+
   public readonly applicationFolderPath: string = remote.app.getPath(
     "userData"
   );
+
   public readonly applicationLogsFolderPath: string = remote.app.getPath(
     "logs"
   );
+
   public readonly applicationDownloadsFolderPath: string = join(
     this.applicationFolderPath,
     "downloads"
   );
+
   public readonly applicationUpdaterPath: string = join(
     this.applicationFolderPath,
     this.updaterName
   );
+
   public readonly applicationVersion: string;
   public readonly isBetaBuild: boolean;
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
+  public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
+  public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
 
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
@@ -182,11 +191,21 @@ export class WowUpService {
   }
 
   public async checkForAppUpdate(): Promise<UpdateCheckResult> {
-    return await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
+    const updateCheckResult = await this._electronService.invoke(
+      APP_UPDATE_CHECK_FOR_UPDATE
+    );
+
+    this._wowupUpdateCheckSrc.next(updateCheckResult);
+    return updateCheckResult;
   }
 
   public async downloadUpdate() {
-    return await this._electronService.invoke(APP_UPDATE_START_DOWNLOAD);
+    const downloadResult = await this._electronService.invoke(
+      APP_UPDATE_START_DOWNLOAD
+    );
+
+    this._wowupUpdateDownloadedSrc.next(downloadResult);
+    return downloadResult;
   }
 
   public async installUpdate() {
