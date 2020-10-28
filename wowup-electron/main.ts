@@ -1,33 +1,32 @@
 import {
   app,
   BrowserWindow,
-  screen,
   BrowserWindowConstructorOptions,
-  Tray,
   Menu,
-  nativeImage,
   MenuItem,
   MenuItemConstructorOptions,
+  nativeImage,
+  screen,
+  Tray
 } from "electron";
-import * as path from "path";
-import * as url from "url";
-import { release, arch } from "os";
-import * as electronDl from "electron-dl";
-import "./ipc-events";
 import * as log from "electron-log";
 import * as Store from "electron-store";
-import { WindowState } from "./src/common/models/window-state";
+import { arch, release } from "os";
+import * as path from "path";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import * as url from "url";
+import {
+  initializeAppUpdateIpcHandlers,
+  initializeAppUpdater
+} from "./app-updater";
+import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
 import {
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
-  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY
 } from "./src/common/constants";
-import {
-  initializeAppUpdateIpcHandlers,
-  initializeAppUpdater,
-} from "./app-updater";
+import { WindowState } from "./src/common/models/window-state";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
@@ -63,7 +62,6 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 }
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
-electronDl();
 
 const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
