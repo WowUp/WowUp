@@ -70,7 +70,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   columns: ColumnState[] = [
     { name: "addon.name", display: "Addon", visible: true },
-    { name: "displayState", display: "Status", visible: true },
+    { name: "sortOrder", display: "Status", visible: true },
     {
       name: "addon.installedAt",
       display: "Updated At",
@@ -668,7 +668,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private sortListItems(listItems: AddonViewModel[], sort?: MatSort) {
     if (!sort || !sort.active || sort.direction === "") {
-      return _.orderBy(listItems, ["displayState", "addon.name"]);
+      return _.orderBy(listItems, ["sortOrder", "addon.name"]);
     }
     return _.orderBy(
       listItems,
