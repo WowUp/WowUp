@@ -118,6 +118,10 @@ export class ElectronService {
     });
   }
 
+  public getVersionNumber() {
+    return this.remote.app.getVersion();
+  }
+
   minimizeWindow() {
     this.remote.getCurrentWindow().minimize();
   }

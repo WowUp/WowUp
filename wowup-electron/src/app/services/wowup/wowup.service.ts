@@ -31,7 +31,7 @@ import {
 } from "../../../common/constants";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
-var autoLaunch = require('auto-launch');
+var autoLaunch = require("auto-launch");
 
 @Injectable({
   providedIn: "root",
@@ -136,7 +136,7 @@ export class WowUpService {
     return preference === "true";
   }
 
-  public set startMinimized(value: boolean){
+  public set startMinimized(value: boolean) {
     const key = START_MINIMIZED_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
@@ -224,11 +224,18 @@ export class WowUpService {
   }
 
   public async checkForAppUpdate(): Promise<UpdateCheckResult> {
-    const updateCheckResult = await this._electronService.invoke(
+    const updateCheckResult: UpdateCheckResult = await this._electronService.invoke(
       APP_UPDATE_CHECK_FOR_UPDATE
     );
 
-    this._wowupUpdateCheckSrc.next(updateCheckResult);
+    // only notify things when the version changes
+    if (
+      updateCheckResult.updateInfo.version !==
+      this._electronService.getVersionNumber()
+    ) {
+      this._wowupUpdateCheckSrc.next(updateCheckResult);
+    }
+
     return updateCheckResult;
   }
 
@@ -316,20 +323,21 @@ export class WowUpService {
   private setAutoStartup() {
     if (this._electronService.isLinux) {
       var autoLauncher = new autoLaunch({
-        name: 'WowUp',
-        isHidden: this.startMinimized
+        name: "WowUp",
+        isHidden: this.startMinimized,
       });
-  
-      if (this.startWithSystem)
-        autoLauncher.enable();
-      else
-        autoLauncher.disable();
-    }
-    else {
+
+      if (this.startWithSystem) autoLauncher.enable();
+      else autoLauncher.disable();
+    } else {
       this._electronService.remote.app.setLoginItemSettings({
         openAtLogin: this.startWithSystem,
         openAsHidden: this._electronService.isMac ? this.startMinimized : false,
-        args: this._electronService.isWin ? this.startMinimized ? ['--hidden'] : [] : []
+        args: this._electronService.isWin
+          ? this.startMinimized
+            ? ["--hidden"]
+            : []
+          : [],
       });
     }
   }
