@@ -39,7 +39,7 @@ let tray: Tray = null;
 
 // APP MENU SETUP
 const appMenuTemplate: Array<
-  MenuItemConstructorOptions | MenuItem
+MenuItemConstructorOptions | MenuItem
 > = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
