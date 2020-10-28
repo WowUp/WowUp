@@ -7,7 +7,7 @@ import {
   MenuItemConstructorOptions,
   nativeImage,
   screen,
-  Tray
+  Tray,
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
@@ -18,13 +18,13 @@ import { debounceTime } from "rxjs/operators";
 import * as url from "url";
 import {
   initializeAppUpdateIpcHandlers,
-  initializeAppUpdater
+  initializeAppUpdater,
 } from "./app-updater";
 import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
 import {
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
-  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
 } from "./src/common/constants";
 import { WindowState } from "./src/common/models/window-state";
 
