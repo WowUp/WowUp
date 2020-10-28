@@ -120,7 +120,6 @@
     "axios": "0.20.0",
     "compare-versions": "3.6.0",
     "conf": "7.1.2",
-    "electron-dl": "3.0.2",
     "electron-log": "4.2.4",
     "electron-store": "6.0.1",
     "electron-updater": "4.3.5",

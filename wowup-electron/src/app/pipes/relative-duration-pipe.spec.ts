@@ -8,7 +8,7 @@ describe("RelativeDurationPipe", () => {
     inject(
       [DatePipe, TranslateService],
       (datePipe: DatePipe, translateService: TranslateService) => {
-        const pipe = new RelativeDurationPipe(datePipe, translateService);
+        const pipe = new RelativeDurationPipe(translateService);
         expect(pipe).toBeTruthy();
       }
     );
