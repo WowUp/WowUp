@@ -60,8 +60,15 @@
       "IMPORT_BUTTON": "Import",
       "INSTALL_BUTTON": "Install",
       "INSTALL_SUCCESS_LABEL": "Installed!",
-      "SUPPORTED_SOURCES": "Supports WowInterface and GitHub*",
-      "TITLE": "Install Addon URL"
+      "SUPPORTED_SOURCES": "Supports WowInterface and GitHub",
+      "TITLE": "Install Addon URL",
+      "ERROR" : {
+        "INSTALL_FAILED" : "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
+        "NO_ADDON_FOUND" : "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
+        "FAILED_TO_CONNECT" : "Cannot connect to API, please wait a bit and try again.",
+        "INVALID_URL" : "The given value is not valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html",
+        "TITLE" : "Addon Installation Failed"
+      }
     },
     "TELEMETRY": {
       "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
