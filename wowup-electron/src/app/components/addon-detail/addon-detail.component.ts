@@ -4,7 +4,7 @@ import {
   Component,
   Inject,
   OnDestroy,
-  OnInit
+  OnInit,
 } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";

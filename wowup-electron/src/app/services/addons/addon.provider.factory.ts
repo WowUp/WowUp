@@ -11,7 +11,6 @@ import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { SessionService } from "../session/session.service";
 
-
 @Injectable({
   providedIn: "root",
 })

@@ -6,7 +6,6 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { WowClientOptionsComponent } from "./wow-client-options.component";
 
-
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
   let fixture: ComponentFixture<WowClientOptionsComponent>;

@@ -1,10 +1,10 @@
 import {
-    Component,
-    EventEmitter,
-    Input,
-    OnDestroy,
-    OnInit,
-    Output
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";

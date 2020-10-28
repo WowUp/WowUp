@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
-  NO_SEARCH_RESULTS_ERROR
+  NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
 import { CurseFile } from "../../common/curse/curse-file";
 import { CurseMatch } from "../../common/curse/curse-match";

@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MyAddonStatusColumnComponent } from "./my-addon-status-column.component";
 
-
 describe("MyAddonStatusColumnComponent", () => {
   let component: MyAddonStatusColumnComponent;
   let fixture: ComponentFixture<MyAddonStatusColumnComponent>;

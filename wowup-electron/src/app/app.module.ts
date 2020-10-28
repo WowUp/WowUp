@@ -1,7 +1,7 @@
 import {
-    HttpClient, HttpClientModule,
-
-    HTTP_INTERCEPTORS
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
 } from "@angular/common/http";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
@@ -9,7 +9,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 // NG Translate
 import {
-    TranslateCompiler, TranslateLoader, TranslateModule
+  TranslateCompiler,
+  TranslateLoader,
+  TranslateModule,
 } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
@@ -26,10 +28,6 @@ import { MatModule } from "./mat-module";
 import { HomeModule } from "./pages/home/home.module";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { SharedModule } from "./shared/shared.module";
-
-
-
-
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {

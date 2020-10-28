@@ -1,8 +1,8 @@
 import {
-    ChangeDetectionStrategy,
-    Component,
-    Input,
-    OnInit
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
 } from "@angular/core";
 import { AddonProviderType } from "../../addon-providers/addon-provider";
 

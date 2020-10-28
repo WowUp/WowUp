@@ -4,7 +4,6 @@ import { AddonService } from "../../services/addons/addon.service";
 import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { AddonUpdateButtonComponent } from "./addon-update-button.component";
 
-
 describe("AddonUpdateButtonComponent", () => {
   it("should create", () => {
     inject(

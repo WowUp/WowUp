@@ -1,10 +1,10 @@
 import {
-    Component,
-    EventEmitter,
-    Input,
-    OnChanges,
-    Output,
-    SimpleChanges
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
 } from "@angular/core";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { WowClientType } from "../../models/warcraft/wow-client-type";

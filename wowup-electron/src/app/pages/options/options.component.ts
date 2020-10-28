@@ -1,14 +1,11 @@
 import {
-    ChangeDetectionStrategy, Component,
-
-
-
-
-    Input, NgZone,
-    OnChanges, OnInit,
-
-
-    SimpleChanges
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  NgZone,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";

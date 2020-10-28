@@ -7,7 +7,7 @@ import {
   NgZone,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
@@ -22,7 +22,7 @@ import { map } from "rxjs/operators";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import {
   AddonDetailComponent,
-  AddonDetailModel
+  AddonDetailModel,
 } from "../../components/addon-detail/addon-detail.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { Addon } from "../../entities/addon";

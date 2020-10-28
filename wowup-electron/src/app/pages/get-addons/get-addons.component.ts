@@ -1,12 +1,11 @@
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-
-    OnDestroy,
-    OnInit,
-    ViewChild
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSort } from "@angular/material/sort";
@@ -17,8 +16,8 @@ import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import {
-    AddonDetailComponent,
-    AddonDetailModel
+  AddonDetailComponent,
+  AddonDetailModel,
 } from "../../components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowClientType } from "../../models/warcraft/wow-client-type";

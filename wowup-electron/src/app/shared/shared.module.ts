@@ -5,8 +5,6 @@ import { TranslateModule } from "@ngx-translate/core";
 import { PageNotFoundComponent } from "./components/";
 import { WebviewDirective } from "./directives/";
 
-
-
 @NgModule({
   declarations: [PageNotFoundComponent, WebviewDirective],
   imports: [CommonModule, TranslateModule, FormsModule],

@@ -1,15 +1,14 @@
 import {
-    ChangeDetectionStrategy,
-    Component,
-    Input,
-    OnInit
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
 } from "@angular/core";
 import { remote } from "electron";
 import * as ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
 import { ElectronService } from "../../services";
 import { WowUpService } from "../../services/wowup/wowup.service";
-
 
 @Component({
   selector: "app-about",

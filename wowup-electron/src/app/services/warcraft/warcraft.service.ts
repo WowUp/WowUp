@@ -18,7 +18,6 @@ import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
 
-
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = "_retail_";
 const CLIENT_RETAIL_PTR_FOLDER = "_ptr_";

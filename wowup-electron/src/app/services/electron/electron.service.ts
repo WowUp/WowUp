@@ -11,7 +11,6 @@ import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
 
-
 @Injectable({
   providedIn: "root",
 })

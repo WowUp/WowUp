@@ -1,9 +1,9 @@
 import {
-    ChangeDetectorRef,
-    Component,
-    Input,
-    OnDestroy,
-    OnInit
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
