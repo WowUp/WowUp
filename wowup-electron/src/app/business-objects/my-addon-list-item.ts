@@ -12,6 +12,9 @@ export class AddonViewModel {
   public stateTextTranslationKey: string = "";
   public selected: boolean = false;
 
+  get installedAt(){
+    return new Date(this.addon?.installedAt);
+  }
   get hasThumbnail() {
     return !!this.addon.thumbnailUrl;
   }

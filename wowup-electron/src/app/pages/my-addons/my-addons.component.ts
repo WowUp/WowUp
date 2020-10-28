@@ -72,7 +72,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     { name: "addon.name", display: "Addon", visible: true },
     { name: "sortOrder", display: "Status", visible: true },
     {
-      name: "addon.installedAt",
+      name: "installedAt",
       display: "Updated At",
       visible: true,
       allowToggle: true,
@@ -192,6 +192,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     const dataSourceSortSubscription = this.dataSource
       .connect()
       .subscribe((sortedListItems) => {
+        console.debug('sortedListItems', sortedListItems)
         this.sortedListItems = sortedListItems;
         this.setPageContextText();
       });
