@@ -1,8 +1,12 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-alpha.18",
+      "Description": ""
+    },
+    {
       "Version": "2.0.0-alpha.17",
-      "Description": "Update Norwegian locale (Morten)\nUpdate German Locale (Nils89)\nUpdate Italian locale (Bito)\nHide the update button when the version has not changed\nFIx an issue where status did not say 'Ignored' for ignored addons\nFix an issue with sorting by updated at after updating an addon\nFix 'Get Addons' download count not showing for less than 1000 downloads\nFix an issue with sorting 'My Addons' by status column\nFix an issue with the cursor not changing on raised buttons."
+      "Description": "Update Norwegian locale (Morten)\nUpdate German Locale (Nils89)\nUpdate Italian locale (Bito)\nHide the update button when the version has not changed\nFix an issue where status did not say 'Ignored' for ignored addons\nFix an issue with sorting by updated at after updating an addon\nFix 'Get Addons' download count not showing for less than 1000 downloads\nFix an issue with sorting 'My Addons' by status column\nFix an issue with the cursor not changing on raised buttons."
     },
     {
       "Version": "2.0.0-alpha.16",

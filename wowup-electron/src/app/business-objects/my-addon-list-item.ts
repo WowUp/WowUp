@@ -75,6 +75,10 @@ export class AddonViewModel {
   }
 
   public get sortOrder(): AddonStatusSortOrder {
+    if (this.isIgnored) {
+      return AddonStatusSortOrder.Ignored;
+    }
+
     if (this.needsInstall) {
       return AddonStatusSortOrder.Install;
     }
@@ -85,10 +89,6 @@ export class AddonViewModel {
 
     if (this.isUpToDate) {
       return AddonStatusSortOrder.UpToDate;
-    }
-
-    if (this.isIgnored) {
-      return AddonStatusSortOrder.Ignored;
     }
 
     return AddonStatusSortOrder.Unknown;
