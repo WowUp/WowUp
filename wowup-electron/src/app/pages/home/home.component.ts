@@ -2,16 +2,16 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  OnInit,
+  OnInit
 } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
+import { UpdateCheckResult } from "electron-updater";
+import { forkJoin } from "rxjs";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { forkJoin } from "rxjs";
-import { UpdateCheckResult } from "electron-updater";
 
 @Component({
   selector: "app-home",

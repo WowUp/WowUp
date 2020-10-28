@@ -1,10 +1,10 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { from, Subscription } from "rxjs";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { from, Subscription } from "rxjs";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 
 @Component({

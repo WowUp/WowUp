@@ -1,11 +1,8 @@
 import { Component, NgZone, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { Observable } from "rxjs";
-import { filter, map } from "rxjs/operators";
-import { runInNewContext } from "vm";
-import { TranslateService } from "@ngx-translate/core";
-import { MatDialog } from "@angular/material/dialog";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
 @Component({

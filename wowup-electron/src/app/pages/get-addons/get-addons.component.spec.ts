@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { GetAddonsComponent } from "./get-addons.component";
+
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;

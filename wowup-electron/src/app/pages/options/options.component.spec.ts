@@ -7,8 +7,8 @@ import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { ElectronService } from "../../services/electron/electron.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-
 import { OptionsComponent } from "./options.component";
+
 
 describe("OptionsComponent", () => {
   it("should create", () => {

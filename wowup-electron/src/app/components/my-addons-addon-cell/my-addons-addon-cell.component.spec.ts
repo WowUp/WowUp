@@ -1,6 +1,5 @@
-import { ComponentFixture, inject, TestBed } from "@angular/core/testing";
-
 import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
+
 
 describe("MyAddonsAddonCellComponent", () => {
   it("should create", () => {

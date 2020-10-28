@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { UpdateCheckResult } from "electron-updater";
 import { BehaviorSubject } from "rxjs";
 import { filter, first, map } from "rxjs/operators";
 import { WowClientType } from "../../models/warcraft/wow-client-type";

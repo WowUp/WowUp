@@ -1,26 +1,28 @@
 import {
-  Component,
-  OnInit,
-  NgZone,
-  OnChanges,
-  SimpleChanges,
-  Input,
-  ChangeDetectionStrategy,
+    ChangeDetectionStrategy, Component,
+
+
+
+
+    Input, NgZone,
+    OnChanges, OnInit,
+
+
+    SimpleChanges
 } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { TranslateService } from "@ngx-translate/core";
+import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
+import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import * as _ from "lodash";
-import { MatDialog } from "@angular/material/dialog";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
-import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
-import { MatSelectChange } from "@angular/material/select";
-import { AnalyticsService } from "../../services/analytics/analytics.service";
-import { AddonService } from "../../services/addons/addon.service";
-import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
-import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-options",

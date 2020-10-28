@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
+import * as _ from "lodash";
 import { GetAddonListItem } from "../business-objects/get-addon-list-item";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import * as _ from "lodash";
 
 @Pipe({
   name: "getAddonListItemFileProp",

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { AddonProviderBadgeComponent } from "./addon-provider-badge.component";
+
 
 describe("AddonProviderBadgeComponent", () => {
   let component: AddonProviderBadgeComponent;

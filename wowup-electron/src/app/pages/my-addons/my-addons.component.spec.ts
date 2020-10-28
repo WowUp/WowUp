@@ -7,8 +7,8 @@ import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
-
 import { MyAddonsComponent } from "./my-addons.component";
+
 
 describe("MyAddonsComponent", () => {
   it("should create", () => {

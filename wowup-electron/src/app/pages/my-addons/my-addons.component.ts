@@ -1,3 +1,4 @@
+import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,35 +7,34 @@ import {
   NgZone,
   OnDestroy,
   OnInit,
-  ViewChild,
+  ViewChild
 } from "@angular/core";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { map } from "rxjs/operators";
-import { from, BehaviorSubject, Subscription } from "rxjs";
-import { Addon } from "../../entities/addon";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { AddonService } from "../../services/addons/addon.service";
-import { SessionService } from "../../services/session/session.service";
-import { Overlay, OverlayRef } from "@angular/cdk/overlay";
-import { ColumnState } from "../../models/wowup/column-state";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
-import * as _ from "lodash";
-import { ElectronService } from "../../services";
-import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { MatDialog } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
-import { MatDialog } from "@angular/material/dialog";
-import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
-import { getEnumName } from "../../utils/enum.utils";
-import { MatTableDataSource } from "@angular/material/table";
 import { MatSort } from "@angular/material/sort";
-import { stringIncludes } from "../../utils/string.utils";
+import { MatTableDataSource } from "@angular/material/table";
+import { TranslateService } from "@ngx-translate/core";
+import * as _ from "lodash";
+import { BehaviorSubject, from, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import {
   AddonDetailComponent,
-  AddonDetailModel,
+  AddonDetailModel
 } from "../../components/addon-detail/addon-detail.component";
-import { TranslateService } from "@ngx-translate/core";
+import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { Addon } from "../../entities/addon";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { ColumnState } from "../../models/wowup/column-state";
+import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { getEnumName } from "../../utils/enum.utils";
+import { stringIncludes } from "../../utils/string.utils";
 
 @Component({
   selector: "app-my-addons",

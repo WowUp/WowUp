@@ -1,20 +1,20 @@
 import { HttpClient } from "@angular/common/http";
+import * as _ from "lodash";
+import * as CircuitBreaker from "opossum";
+import { from, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { CachingService } from "../services/caching/caching-service";
 import { ElectronService } from "../services/electron/electron.service";
 import { FileService } from "../services/files/file.service";
-import { from, Observable, of } from "rxjs";
 import { AddonProvider } from "./addon-provider";
-import * as _ from "lodash";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { map } from "rxjs/operators";
-import { v4 as uuidv4 } from "uuid";
-import * as CircuitBreaker from "opossum";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";

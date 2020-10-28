@@ -1,16 +1,16 @@
 import { Injectable } from "@angular/core";
-import { v4 as uuidv4 } from "uuid";
-
+import * as childProcess from "child_process";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import { ipcRenderer, webFrame, remote, shell } from "electron";
-import * as childProcess from "child_process";
+import { ipcRenderer, remote, shell, webFrame } from "electron";
 import * as fs from "fs";
 import { BehaviorSubject } from "rxjs";
-import { ValueResponse } from "../../../common/models/value-response";
-import { ValueRequest } from "../../../common/models/value-request";
+import { v4 as uuidv4 } from "uuid";
 import { IpcRequest } from "../../../common/models/ipc-request";
 import { IpcResponse } from "../../../common/models/ipc-response";
+import { ValueRequest } from "../../../common/models/value-request";
+import { ValueResponse } from "../../../common/models/value-response";
+
 
 @Injectable({
   providedIn: "root",

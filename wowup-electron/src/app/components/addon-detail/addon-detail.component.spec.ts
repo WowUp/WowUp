@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { AddonDetailComponent } from "./addon-detail.component";
+
 
 describe("AddonDetailComponent", () => {
   let component: AddonDetailComponent;

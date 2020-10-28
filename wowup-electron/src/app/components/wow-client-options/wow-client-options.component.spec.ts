@@ -4,8 +4,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { ElectronService } from "../../services/electron/electron.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-
 import { WowClientOptionsComponent } from "./wow-client-options.component";
+
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;

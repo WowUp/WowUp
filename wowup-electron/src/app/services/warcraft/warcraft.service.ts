@@ -1,23 +1,23 @@
-import { from, BehaviorSubject } from "rxjs";
-import * as path from "path";
-import * as fs from "fs";
 import { Injectable } from "@angular/core";
-import { map, filter, delay, switchMap } from "rxjs/operators";
-
-import { WarcraftServiceImpl } from "./warcraft.service.impl";
-import { WarcraftServiceWin } from "./warcraft.service.win";
-import { FileUtils } from "../../utils/file.utils";
-import { ProductDb } from "../../models/warcraft/product-db";
-import { InstalledProduct } from "../../models/warcraft/installed-product";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { WarcraftServiceMac } from "./warcraft.service.mac";
-import { WarcraftServiceLinux } from "./warcraft.service.linux";
-import { AddonFolder } from "../../models/wowup/addon-folder";
+import * as fs from "fs";
+import * as path from "path";
+import { BehaviorSubject, from } from "rxjs";
+import { filter, map, switchMap } from "rxjs/operators";
 import { ElectronService } from "..";
-import { TocService } from "../toc/toc.service";
+import { InstalledProduct } from "../../models/warcraft/installed-product";
+import { ProductDb } from "../../models/warcraft/product-db";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { FileUtils } from "../../utils/file.utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { TocService } from "../toc/toc.service";
+import { WarcraftServiceImpl } from "./warcraft.service.impl";
+import { WarcraftServiceLinux } from "./warcraft.service.linux";
+import { WarcraftServiceMac } from "./warcraft.service.mac";
+import { WarcraftServiceWin } from "./warcraft.service.win";
+
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = "_retail_";

@@ -1,7 +1,7 @@
 import { join } from "path";
-import { WarcraftServiceImpl } from "./warcraft.service.impl";
-import { FileUtils } from "../../utils/file.utils";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { FileUtils } from "../../utils/file.utils";
+import { WarcraftServiceImpl } from "./warcraft.service.impl";
 
 const BLIZZARD_AGENT_PATH = "/Users/Shared/Battle.net/Agent";
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";

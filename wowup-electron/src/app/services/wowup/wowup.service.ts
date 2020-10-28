@@ -1,34 +1,33 @@
 import { Injectable } from "@angular/core";
 import { remote } from "electron";
-import { join } from "path";
-import { existsSync } from "fs";
-import { Subject } from "rxjs";
 import { UpdateCheckResult } from "electron-updater";
-import { CachingService } from "../caching/caching-service";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
-import { getEnumList, getEnumName } from "../../utils/enum.utils";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { ElectronService } from "../electron/electron.service";
-import { WowUpApiService } from "../wowup-api/wowup-api.service";
-import { DownloadSevice } from "../download/download.service";
-import { PreferenceChange } from "../../models/wowup/preference-change";
-import { FileService } from "../files/file.service";
+import { existsSync } from "fs";
+import { join } from "path";
+import { Subject } from "rxjs";
 import {
-  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  APP_UPDATE_CHECK_FOR_UPDATE,
+
+  APP_UPDATE_INSTALL, APP_UPDATE_START_DOWNLOAD, COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
-  WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
-  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
-  START_WITH_SYSTEM_PREFERENCE_KEY,
-  START_MINIMIZED_PREFERENCE_KEY,
-  APP_UPDATE_CHECK_FOR_UPDATE,
-  APP_UPDATE_START_DOWNLOAD,
-  APP_UPDATE_INSTALL,
+
+
+
+  START_MINIMIZED_PREFERENCE_KEY, START_WITH_SYSTEM_PREFERENCE_KEY, USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY
 } from "../../../common/constants";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { PreferenceChange } from "../../models/wowup/preference-change";
+import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { CachingService } from "../caching/caching-service";
+import { DownloadSevice } from "../download/download.service";
+import { ElectronService } from "../electron/electron.service";
+import { FileService } from "../files/file.service";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { WowUpApiService } from "../wowup-api/wowup-api.service";
 
 const LATEST_VERSION_CACHE_KEY = "latest-version-response";
 var autoLaunch = require("auto-launch");

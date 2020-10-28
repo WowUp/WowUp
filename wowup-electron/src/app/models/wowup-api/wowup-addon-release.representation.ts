@@ -1,5 +1,5 @@
-import { WowUpAddonReleaseFolderRepresentation } from "./wowup-addon-release-folder.representation";
 import { WowGameType } from "./wow-game-type";
+import { WowUpAddonReleaseFolderRepresentation } from "./wowup-addon-release-folder.representation";
 
 export interface WowUpAddonReleaseRepresentation {
   id: number;

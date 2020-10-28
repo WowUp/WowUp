@@ -1,20 +1,20 @@
 import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
+    Component,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonService } from "../../services/addons/addon.service";
 import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { getEnumName } from "../../utils/enum.utils";
-import { Subscription } from "rxjs";
-import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-addon-update-button",

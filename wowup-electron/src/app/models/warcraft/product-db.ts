@@ -1,4 +1,4 @@
-import { Type, Field, Message } from "protobufjs";
+import { Field, Message, Type } from "protobufjs";
 import { Product } from "./product";
 
 @Type.d("ProductDb")

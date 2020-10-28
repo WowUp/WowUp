@@ -1,34 +1,34 @@
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  ViewChild,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+
+    OnDestroy,
+    OnInit,
+    ViewChild
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { TranslateService } from "@ngx-translate/core";
+import * as _ from "lodash";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
+import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import {
-  AddonDetailComponent,
-  AddonDetailModel,
+    AddonDetailComponent,
+    AddonDetailModel
 } from "../../components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatSort } from "@angular/material/sort";
-import * as _ from "lodash";
-import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
-import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-get-addons",

@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
+import "firebase/analytics";
+import * as firebase from "firebase/app";
+import { BehaviorSubject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { AppConfig } from "../../../environments/environment";
 import { ElectronService } from "../electron/electron.service";
-import { BehaviorSubject } from "rxjs";
-import * as firebase from "firebase/app";
-import "firebase/analytics";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
 
 @Injectable({
   providedIn: "root",

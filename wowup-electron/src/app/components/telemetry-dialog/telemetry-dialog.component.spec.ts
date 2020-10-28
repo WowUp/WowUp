@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { TelemetryDialogComponent } from "./telemetry-dialog.component";
+
 
 describe("TelemetryDialogComponent", () => {
   let component: TelemetryDialogComponent;

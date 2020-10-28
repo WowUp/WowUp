@@ -5,10 +5,10 @@ import {
   NgZone,
   OnDestroy,
   OnInit,
-  Output,
+  Output
 } from "@angular/core";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { TranslateService } from "@ngx-translate/core";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 
 @Component({
   selector: "app-my-addon-status-column",

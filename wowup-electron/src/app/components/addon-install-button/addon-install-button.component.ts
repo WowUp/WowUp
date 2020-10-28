@@ -1,19 +1,19 @@
 import {
-  Component,
-  EventEmitter,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
+    Component,
+    EventEmitter,
+    Input,
+
+    OnDestroy,
+    OnInit,
+    Output
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { Subscription } from "rxjs";
-import { filter } from "rxjs/operators";
 
 @Component({
   selector: "app-addon-install-button",

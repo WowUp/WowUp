@@ -1,31 +1,31 @@
-import { AddonProvider } from "./addon-provider";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { Addon } from "../entities/addon";
 import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
 import * as _ from "lodash";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { from, Observable, of } from "rxjs";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { CachingService } from "../services/caching/caching-service";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { ElectronService } from "../services";
-import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
+import * as CircuitBreaker from "opossum";
+import { from, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import {
   CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
-  NO_SEARCH_RESULTS_ERROR,
+  NO_SEARCH_RESULTS_ERROR
 } from "../../common/constants";
-import { CurseMatch } from "../../common/curse/curse-match";
-import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
-import { CurseSearchResult } from "../../common/curse/curse-search-result";
 import { CurseFile } from "../../common/curse/curse-file";
+import { CurseMatch } from "../../common/curse/curse-match";
 import { CurseReleaseType } from "../../common/curse/curse-release-type";
-import { CurseGetFeaturedResponse } from "../models/curse/curse-get-featured-response";
-import * as CircuitBreaker from "opossum";
 import { CurseScanResult } from "../../common/curse/curse-scan-result";
+import { CurseSearchResult } from "../../common/curse/curse-search-result";
+import { Addon } from "../entities/addon";
+import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
+import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
+import { CurseGetFeaturedResponse } from "../models/curse/curse-get-featured-response";
+import { WowClientType } from "../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { ElectronService } from "../services";
+import { CachingService } from "../services/caching/caching-service";
+import { AddonProvider } from "./addon-provider";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const HUB_API_URL = "https://hub.dev.wowup.io";

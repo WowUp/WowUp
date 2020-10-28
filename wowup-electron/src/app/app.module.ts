@@ -1,37 +1,35 @@
-import "reflect-metadata";
-import "../polyfills";
+import {
+    HttpClient, HttpClientModule,
 
-import { BrowserModule } from "@angular/platform-browser";
+    HTTP_INTERCEPTORS
+} from "@angular/common/http";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import {
-  HttpClientModule,
-  HttpClient,
-  HTTP_INTERCEPTORS,
-} from "@angular/common/http";
-import { SharedModule } from "./shared/shared.module";
-import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepter";
-import { AppRoutingModule } from "./app-routing.module";
+import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
 // NG Translate
 import {
-  TranslateModule,
-  TranslateLoader,
-  TranslateCompiler,
+    TranslateCompiler, TranslateLoader, TranslateModule
 } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-
-import { HomeModule } from "./pages/home/home.module";
-
+import "reflect-metadata";
+import "../polyfills";
+import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { TitlebarComponent } from "./components/titlebar/titlebar.component";
 import { FooterComponent } from "./components/footer/footer.component";
-import { DefaultHeadersInterceptor } from "./interceptors/default-headers.interceptor";
-import { AnalyticsService } from "./services/analytics/analytics.service";
+import { TitlebarComponent } from "./components/titlebar/titlebar.component";
 import { DirectiveModule } from "./directive.module";
+import { DefaultHeadersInterceptor } from "./interceptors/default-headers.interceptor";
+import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepter";
 import { MatModule } from "./mat-module";
+import { HomeModule } from "./pages/home/home.module";
+import { AnalyticsService } from "./services/analytics/analytics.service";
+import { SharedModule } from "./shared/shared.module";
+
+
+
+
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {

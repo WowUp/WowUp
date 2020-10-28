@@ -4,12 +4,12 @@ import {
   Component,
   Inject,
   OnDestroy,
-  OnInit,
+  OnInit
 } from "@angular/core";
-import { Subscription } from "rxjs";
-import { filter } from "rxjs/operators";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
+import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";

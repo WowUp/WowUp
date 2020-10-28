@@ -1,7 +1,7 @@
-import { ComponentFixture, inject, TestBed } from "@angular/core/testing";
+import { inject } from "@angular/core/testing";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
-
 import { PotentialAddonTableColumnComponent } from "./potential-addon-table-column.component";
+
 
 describe("PotentialAddonTableColumnComponent", () => {
   it("should create", () => {

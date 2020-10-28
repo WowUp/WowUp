@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  Component,
+  Component
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";

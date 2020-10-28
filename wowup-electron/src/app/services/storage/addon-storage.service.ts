@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
+import * as Store from "electron-store";
 import { Addon } from "../../entities/addon";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import * as Store from "electron-store";
 
 const PREFERENCE_PREFIX = "preferences";
 

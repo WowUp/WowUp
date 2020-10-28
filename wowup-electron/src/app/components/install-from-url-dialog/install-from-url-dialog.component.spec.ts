@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { InstallFromUrlDialogComponent } from "./install-from-url-dialog.component";
+
 
 describe("InstallFromUrlDialogComponent", () => {
   let component: InstallFromUrlDialogComponent;

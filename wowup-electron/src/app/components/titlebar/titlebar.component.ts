@@ -1,9 +1,9 @@
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
-import { ElectronService } from "../../services/electron/electron.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { AppConfig } from "../../../environments/environment";
 import { platform } from "os";
 import { Subscription } from "rxjs";
+import { AppConfig } from "../../../environments/environment";
+import { ElectronService } from "../../services/electron/electron.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 
 @Component({
   selector: "app-titlebar",
