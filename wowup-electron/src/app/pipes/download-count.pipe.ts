@@ -21,10 +21,9 @@ export class DownloadCountPipe implements PipeTransform {
       downloadCount /= 1000.0;
     }
     return suffix
-      ? this.translateService.instant(
-          "COMMON.DOWNLOAD_COUNT." + suffix,
-          {count: downloadCount.toFixed(0)}
-        )
-      : "";
+      ? this.translateService.instant("COMMON.DOWNLOAD_COUNT." + suffix, {
+          count: downloadCount.toFixed(0),
+        })
+      : downloadCount.toString();
   }
 }

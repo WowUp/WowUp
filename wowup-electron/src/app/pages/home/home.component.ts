@@ -47,7 +47,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.checkForAppUpdate();
+    // check for an app update every hour
+    window.setInterval(() => {
+      this.checkForAppUpdate();
+    }, 60 * 60 * 1000);
   }
 
   onSelectedIndexChange(index: number) {
