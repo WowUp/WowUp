@@ -29,21 +29,24 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
     private _ngzone: NgZone
   ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {}
 
   public getStatusText() {
-    if (this.listItem?.isUpToDate) {
-      return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
-    }
-
     if (!this.listItem) {
       return "";
     }
 
-    return this._translateService.instant(this.listItem.stateTextTranslationKey);
+    if (this.listItem?.isIgnored) {
+      return "COMMON.ADDON_STATE.IGNORED";
+    }
+
+    if (this.listItem?.isUpToDate) {
+      return "COMMON.ADDON_STATE.UPTODATE";
+    }
+
+    return this.listItem.stateTextTranslationKey;
   }
 
   public onUpdateButtonUpdated() {
