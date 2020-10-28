@@ -341,10 +341,10 @@ export class WarcraftService {
   }
 
   private decodeProducts(productDbPath: string) {
-    if(this._electronService.isLinux){
+    if (this._electronService.isLinux) {
       return [];
     }
-    
+
     const productDbData = FileUtils.readFileSync(productDbPath);
 
     try {

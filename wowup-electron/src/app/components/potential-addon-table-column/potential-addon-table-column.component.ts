@@ -48,7 +48,11 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.clientType) {
-      this._latestChannelType = this._getAddonListItemFileProp.transform(this.addon, 'channelType', this.channel) as AddonChannelType;
+      this._latestChannelType = this._getAddonListItemFileProp.transform(
+        this.addon,
+        "channelType",
+        this.channel
+      ) as AddonChannelType;
     }
   }
 

@@ -192,7 +192,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     const dataSourceSortSubscription = this.dataSource
       .connect()
       .subscribe((sortedListItems) => {
-        console.debug('sortedListItems', sortedListItems)
+        console.debug("sortedListItems", sortedListItems);
         this.sortedListItems = sortedListItems;
         this.setPageContextText();
       });

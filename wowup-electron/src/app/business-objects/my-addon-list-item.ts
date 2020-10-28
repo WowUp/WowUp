@@ -12,7 +12,7 @@ export class AddonViewModel {
   public stateTextTranslationKey: string = "";
   public selected: boolean = false;
 
-  get installedAt(){
+  get installedAt() {
     return new Date(this.addon?.installedAt);
   }
   get hasThumbnail() {
@@ -75,19 +75,19 @@ export class AddonViewModel {
   }
 
   public get sortOrder(): AddonStatusSortOrder {
-    if(this.needsInstall){
+    if (this.needsInstall) {
       return AddonStatusSortOrder.Install;
     }
 
-    if(this.needsUpdate){
+    if (this.needsUpdate) {
       return AddonStatusSortOrder.Update;
     }
 
-    if(this.isUpToDate){
+    if (this.isUpToDate) {
       return AddonStatusSortOrder.UpToDate;
     }
 
-    if(this.isIgnored){
+    if (this.isIgnored) {
       return AddonStatusSortOrder.Ignored;
     }
 

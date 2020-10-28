@@ -1,9 +1,12 @@
-import { HttpInterceptor, HttpRequest, HttpHandler } from "@angular/common/http";
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
 @Injectable()
 export class DefaultHeadersInterceptor implements HttpInterceptor {
-
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     // Get the auth token from the service.
 
@@ -12,7 +15,7 @@ export class DefaultHeadersInterceptor implements HttpInterceptor {
     const authReq = req.clone({
       setHeaders: {
         // 'user-agent': USER_AGENT
-      }
+      },
     });
 
     // send cloned request with header to the next handler.

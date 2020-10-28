@@ -1,5 +1,5 @@
 export enum DownloadStatusType {
-    Progress,
-    Complete,
-    Error
+  Progress,
+  Complete,
+  Error,
 }

@@ -1,7 +1,7 @@
 export enum AddonStatusSortOrder {
-    Install,
-    Update,
-    UpToDate,
-    Ignored,
-    Unknown,
+  Install,
+  Update,
+  UpToDate,
+  Ignored,
+  Unknown,
 }

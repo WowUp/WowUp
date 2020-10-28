@@ -10,5 +10,4 @@ export const AppConfig = {
   wowUpHubUrl: "https://hub.dev.wowup.io",
   rollbarAccessKey: "d01c11314a064572b11acee18d880650",
   googleAnalyticsId: "UA-92563227-4",
-  
 };

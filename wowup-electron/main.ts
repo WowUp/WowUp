@@ -40,7 +40,7 @@ let tray: Tray = null;
 
 // APP MENU SETUP
 const appMenuTemplate: Array<
-MenuItemConstructorOptions | MenuItem
+  MenuItemConstructorOptions | MenuItem
 > = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
@@ -68,7 +68,9 @@ electronDl();
 const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
 
-const argv = require('minimist')(process.argv.slice(1), { 'boolean': ['serve','hidden'] });
+const argv = require("minimist")(process.argv.slice(1), {
+  boolean: ["serve", "hidden"],
+});
 
 function createTray() {
   const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
@@ -215,8 +217,7 @@ function createWindow(): BrowserWindow {
   win.webContents.userAgent = USER_AGENT;
 
   win.once("ready-to-show", () => {
-    if (!argv.hidden)
-      win.show();
+    if (!argv.hidden) win.show();
   });
 
   win.once("show", () => {

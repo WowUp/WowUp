@@ -4,33 +4,30 @@ import { AppConfig } from "environments/environment";
 import * as Rollbar from "rollbar";
 
 export class ErrorHandlerIntercepter implements ErrorHandler {
+  private readonly rollbarConfig = {
+    accessToken: AppConfig.rollbarAccessKey,
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+  };
 
-    private readonly rollbarConfig = {
-        accessToken: AppConfig.rollbarAccessKey,
-        captureUncaught: true,
-        captureUnhandledRejections: true,
-    };
-
-    private _rollbar: Rollbar;
-    private get rollbar() {
-        if (!this._analytics.telemetryEnabled) {
-            return undefined;
-        }
-
-        if (!this._rollbar) {
-            this._rollbar = new Rollbar(this.rollbarConfig);
-        }
-        return this._rollbar;
+  private _rollbar: Rollbar;
+  private get rollbar() {
+    if (!this._analytics.telemetryEnabled) {
+      return undefined;
     }
 
-    constructor(private _analytics: AnalyticsService) {
-
+    if (!this._rollbar) {
+      this._rollbar = new Rollbar(this.rollbarConfig);
     }
+    return this._rollbar;
+  }
 
-    // ErrorHandler
-    handleError(error: any): void {
-        console.error("Caught error", error);
+  constructor(private _analytics: AnalyticsService) {}
 
-        this.rollbar?.error(error.originalError || error);
-    }
+  // ErrorHandler
+  handleError(error: any): void {
+    console.error("Caught error", error);
+
+    this.rollbar?.error(error.originalError || error);
+  }
 }

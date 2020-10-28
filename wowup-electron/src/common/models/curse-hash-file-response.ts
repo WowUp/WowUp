@@ -1,4 +1,4 @@
 export interface CurseHashFileResponse {
-    fingerprint: number;
-    error?: Error;
+  fingerprint: number;
+  error?: Error;
 }

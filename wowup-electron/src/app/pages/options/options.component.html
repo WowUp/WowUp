@@ -1,108 +1,217 @@
-<div class="tab-container" [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin, 'linux': electronService.isLinux }">
+<div
+  class="tab-container"
+  [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }"
+>
   <div class="options">
     <mat-card class="option-card">
       <mat-card-header>
-        <mat-card-title>{{'PAGES.OPTIONS.WOW.TITLE' | translate}}</mat-card-title>
+        <mat-card-title>{{
+          "PAGES.OPTIONS.WOW.TITLE" | translate
+        }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="row">
-          <div class="grow">{{'PAGES.OPTIONS.WOW.RESCAN_CLIENTS_LABEL' | translate}}</div>
-          <button mat-flat-button color="primary" (click)="onReScan()" appUserActionTracker category="Options"
-            action="ScanInstalls">
-            {{'PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON' | translate}}
+          <div class="grow">
+            {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_LABEL" | translate }}
+          </div>
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="onReScan()"
+            appUserActionTracker
+            category="Options"
+            action="ScanInstalls"
+          >
+            {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON" | translate }}
           </button>
         </div>
-        <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes"
-          [clientType]="clientType"></app-wow-client-options>
+        <app-wow-client-options
+          class="client-section"
+          *ngFor="let clientType of wowClientTypes"
+          [clientType]="clientType"
+        ></app-wow-client-options>
       </mat-card-content>
     </mat-card>
     <mat-card class="option-card">
       <mat-card-header>
-        <mat-card-title>{{'PAGES.OPTIONS.APPLICATION.TITLE' | translate}}</mat-card-title>
+        <mat-card-title>{{
+          "PAGES.OPTIONS.APPLICATION.TITLE" | translate
+        }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <div class="row ">
+        <div class="row">
           <div class="grow">
-            <p>{{'PAGES.OPTIONS.APPLICATION.TELEMETRY_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.TELEMETRY_DESCRIPTION' | translate}}</small>
+            <p>{{ "PAGES.OPTIONS.APPLICATION.TELEMETRY_LABEL" | translate }}</p>
+            <small class="hint">{{
+              "PAGES.OPTIONS.APPLICATION.TELEMETRY_DESCRIPTION" | translate
+            }}</small>
           </div>
-          <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
+          <mat-slide-toggle
+            [checked]="telemetryEnabled"
+            (change)="onTelemetryChange($event)"
+          ></mat-slide-toggle>
         </div>
-        <div class="row ">
+        <div class="row">
           <div class="grow">
-            <p>{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL' | translate}}</p>
-            <small class="hint">{{minimizeOnCloseDescription}}</small>
+            <p>
+              {{
+                "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL" | translate
+              }}
+            </p>
+            <small class="hint">{{ minimizeOnCloseDescription }}</small>
           </div>
-          <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" appUserActionTracker
-            category="Options" action="CollapseToTray" [label]="collapseToTray">
+          <mat-slide-toggle
+            [(checked)]="collapseToTray"
+            (change)="onCollapseChange($event)"
+            appUserActionTracker
+            category="Options"
+            action="CollapseToTray"
+            [label]="collapseToTray"
+          >
           </mat-slide-toggle>
         </div>
         <div class="row">
           <div class="grow">
             <p>
-              {{'PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL' | translate}}
+              {{
+                "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL"
+                  | translate
+              }}
             </p>
             <small class="hint">
-              {{'PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION' | translate}}
+              {{
+                "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION"
+                  | translate
+              }}
             </small>
           </div>
-          <mat-slide-toggle [checked]="wowupService.enableSystemNotifications" (change)="onEnableSystemNotifications($event)"
-            appUserActionTracker category="Options" action="EnableSystemNotifications"
-            [label]="wowupService.enableSystemNotifications">
+          <mat-slide-toggle
+            [checked]="wowupService.enableSystemNotifications"
+            (change)="onEnableSystemNotifications($event)"
+            appUserActionTracker
+            category="Options"
+            action="EnableSystemNotifications"
+            [label]="wowupService.enableSystemNotifications"
+          >
           </mat-slide-toggle>
         </div>
         <div class="row hover">
           <div class="grow">
-            <p>{{'PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DESCRIPTION' | translate}}</small>
+            <p>
+              {{
+                "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_LABEL"
+                  | translate
+              }}
+            </p>
+            <small class="hint">{{
+              "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DESCRIPTION"
+                | translate
+            }}</small>
           </div>
-          <mat-slide-toggle [(checked)]="useHardwareAcceleration" (change)="onUseHardwareAccelerationChange($event)" appUserActionTracker
-            category="Options" action="UseHardwareAcceleration" [label]="useHardwareAcceleration">
+          <mat-slide-toggle
+            [(checked)]="useHardwareAcceleration"
+            (change)="onUseHardwareAccelerationChange($event)"
+            appUserActionTracker
+            category="Options"
+            action="UseHardwareAcceleration"
+            [label]="useHardwareAcceleration"
+          >
           </mat-slide-toggle>
         </div>
         <div class="row hover">
           <div class="grow">
-            <p>{{'PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_DESCRIPTION' | translate}}</small>
+            <p>
+              {{
+                "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_LABEL" | translate
+              }}
+            </p>
+            <small class="hint">{{
+              "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_DESCRIPTION"
+                | translate
+            }}</small>
           </div>
-          <mat-slide-toggle [(ngModel)]="startWithSystem" [(checked)]="startWithSystem" (change)="onStartWithSystemChange($event)" appUserActionTracker
-            category="Options" action="StartWithSystem" [label]="startWithSystem">
+          <mat-slide-toggle
+            [(ngModel)]="startWithSystem"
+            [(checked)]="startWithSystem"
+            (change)="onStartWithSystemChange($event)"
+            appUserActionTracker
+            category="Options"
+            action="StartWithSystem"
+            [label]="startWithSystem"
+          >
           </mat-slide-toggle>
         </div>
         <div class="row hover">
           <div class="grow">
-            <p>{{'PAGES.OPTIONS.APPLICATION.START_MINIMIZED_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.START_MINIMIZED_DESCRIPTION' | translate}}</small>
+            <p>
+              {{
+                "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_LABEL" | translate
+              }}
+            </p>
+            <small class="hint">{{
+              "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_DESCRIPTION"
+                | translate
+            }}</small>
           </div>
-          <mat-slide-toggle [(ngModel)]="startMinimized" [(disabled)]="!startWithSystem" [(checked)]="startMinimized" (change)="onStartMinimizedChange($event)" appUserActionTracker
-            category="Options" action="StartMinimized" [label]="startMinimized">
+          <mat-slide-toggle
+            [(ngModel)]="startMinimized"
+            [(disabled)]="!startWithSystem"
+            [(checked)]="startMinimized"
+            (change)="onStartMinimizedChange($event)"
+            appUserActionTracker
+            category="Options"
+            action="StartMinimized"
+            [label]="startMinimized"
+          >
           </mat-slide-toggle>
         </div>
       </mat-card-content>
     </mat-card>
     <mat-card class="option-card">
       <mat-card-header>
-        <mat-card-title>{{'PAGES.OPTIONS.DEBUG.TITLE' | translate}}</mat-card-title>
+        <mat-card-title>{{
+          "PAGES.OPTIONS.DEBUG.TITLE" | translate
+        }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="row">
           <div class="grow">
-            <p>{{'PAGES.OPTIONS.DEBUG.LOG_FILES_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION' | translate}}</small>
+            <p>{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_LABEL" | translate }}</p>
+            <small class="hint">{{
+              "PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION" | translate
+            }}</small>
           </div>
-          <button mat-flat-button color="primary" (click)="onShowLogs()" appUserActionTracker category="Options"
-            action="ShowLogFiles">
-            {{'PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON' | translate}}
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="onShowLogs()"
+            appUserActionTracker
+            category="Options"
+            action="ShowLogFiles"
+          >
+            {{ "PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON" | translate }}
           </button>
         </div>
         <div class="row">
           <div class="grow">
-            <p>{{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION' | translate}}</small>
+            <p>{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_LABEL" | translate }}</p>
+            <small class="hint">{{
+              "PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION" | translate
+            }}</small>
           </div>
-          <button mat-flat-button color="primary" (click)="onLogDebugData()" appUserActionTracker category="Options"
-            action="LogDebugData">
-            {{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON' | translate}}
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="onLogDebugData()"
+            appUserActionTracker
+            category="Options"
+            action="LogDebugData"
+          >
+            {{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON" | translate }}
           </button>
         </div>
       </mat-card-content>

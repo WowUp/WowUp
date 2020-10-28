@@ -1,10 +1,20 @@
 <div class="row">
-  <app-addon-update-button *ngIf="showStatusText === false" [listItem]="listItem"></app-addon-update-button>
-  <div *ngIf="showStatusText === true" class="status-text" [ngClass]="{ ignored: listItem.isIgnored }">
+  <app-addon-update-button
+    *ngIf="showStatusText === false"
+    [listItem]="listItem"
+  ></app-addon-update-button>
+  <div
+    *ngIf="showStatusText === true"
+    class="status-text"
+    [ngClass]="{ ignored: listItem.isIgnored }"
+  >
     {{ getStatusText() | translate }}
   </div>
-  <mat-icon *ngIf="this.listItem.isAutoUpdate === true" class="auto-update-icon"
-    [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate">
+  <mat-icon
+    *ngIf="this.listItem.isAutoUpdate === true"
+    class="auto-update-icon"
+    [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate"
+  >
     update
   </mat-icon>
 </div>

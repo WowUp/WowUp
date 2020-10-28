@@ -1,95 +1,93 @@
 @import "../../../variables.scss";
 
 .tab-container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 .options {
-    max-width: 900px;
-    width: 100%;
+  max-width: 900px;
+  width: 100%;
 
-    .option-card {
-        margin-top: 1em;
-        background-color: $dark-2;
+  .option-card {
+    margin-top: 1em;
+    background-color: $dark-2;
 
-        &:last-child {
-            margin-bottom: 1em;
-        }
+    &:last-child {
+      margin-bottom: 1em;
     }
+  }
 
-    .title {
-        font-size: 1.5em;
-        flex-grow: 1;
-    }
+  .title {
+    font-size: 1.5em;
+    flex-grow: 1;
+  }
 
-    .setting-section {
-        background-color: $dark-4;
-    }
+  .setting-section {
+    background-color: $dark-4;
+  }
 
-    .folder-input {
-        margin-right: 1em;
-    }
+  .folder-input {
+    margin-right: 1em;
+  }
 }
 
 .row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    // margin: 1em 0;
-    padding: 0.5em;
-    &.np {
-        padding: 0;
-    }
-    &.sub {
-        padding-left: 2em;
-    }
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  // margin: 1em 0;
+  padding: 0.5em;
+  &.np {
+    padding: 0;
+  }
+  &.sub {
+    padding-left: 2em;
+  }
 }
 
 .col {
-    padding: 0.5em;
+  padding: 0.5em;
 }
 hr {
-    border: 1px solid $white-4;
+  border: 1px solid $white-4;
 }
 p {
-    margin: 0; 
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 .hint {
-    color: $white-3;
+  color: $white-3;
 }
 .hover {
-    &:hover {
-       cursor: pointer;
-    }
+  &:hover {
+    cursor: pointer;
+  }
 }
 .grow {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 .no-shrink {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 table {
-    width: 100%;
+  width: 100%;
 }
 section {
-    color: $white-1;
-    padding: 1em;
+  color: $white-1;
+  padding: 1em;
 
-    
+  .select-button {
+    flex-shrink: 0;
+  }
 
-    .select-button {
-        flex-shrink: 0;
-    }
-
-    small {
-        color: $white-2;
-    }
+  small {
+    color: $white-2;
+  }
 }
 
 .linux {
-    .options {
-      height: calc(100vh - 80px);
-    }
+  .options {
+    height: calc(100vh - 80px);
   }
+}

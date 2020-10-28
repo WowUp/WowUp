@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { AlertDialogComponent } from './alert-dialog.component';
+import { AlertDialogComponent } from "./alert-dialog.component";
 
-describe('AlertDialogComponent', () => {
+describe("AlertDialogComponent", () => {
   let component: AlertDialogComponent;
   let fixture: ComponentFixture<AlertDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AlertDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [AlertDialogComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('AlertDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

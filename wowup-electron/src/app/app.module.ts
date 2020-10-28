@@ -10,14 +10,18 @@ import {
   HTTP_INTERCEPTORS,
 } from "@angular/common/http";
 import { SharedModule } from "./shared/shared.module";
-import { ErrorHandlerIntercepter } from './interceptors/error-handler-intercepter';
+import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepter";
 import { AppRoutingModule } from "./app-routing.module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 // NG Translate
-import { TranslateModule, TranslateLoader, TranslateCompiler } from "@ngx-translate/core";
+import {
+  TranslateModule,
+  TranslateLoader,
+  TranslateCompiler,
+} from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { TranslateMessageFormatCompiler } from 'ngx-translate-messageformat-compiler';
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 
 import { HomeModule } from "./pages/home/home.module";
 
@@ -53,8 +57,8 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       },
       compiler: {
         provide: TranslateCompiler,
-        useClass: TranslateMessageFormatCompiler
-      }
+        useClass: TranslateMessageFormatCompiler,
+      },
     }),
     BrowserAnimationsModule,
   ],
@@ -64,8 +68,12 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       useClass: DefaultHeadersInterceptor,
       multi: true,
     },
-    { provide: ErrorHandler, useClass: ErrorHandlerIntercepter, deps: [AnalyticsService] },
+    {
+      provide: ErrorHandler,
+      useClass: ErrorHandlerIntercepter,
+      deps: [AnalyticsService],
+    },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

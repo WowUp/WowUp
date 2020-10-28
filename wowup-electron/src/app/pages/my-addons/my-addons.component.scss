@@ -1,7 +1,5 @@
 @import "../../../variables.scss";
 
-
-
 .control-container {
   display: flex;
   flex-direction: row;
@@ -85,7 +83,8 @@
     min-width: 110px;
   }
 
-  .installed-at-cell, .released-at-cell {
+  .installed-at-cell,
+  .released-at-cell {
     min-width: 100px;
   }
 
@@ -116,7 +115,7 @@
     align-items: center;
 
     .addon-provider-name {
-      margin-right: .25em;
+      margin-right: 0.25em;
     }
 
     .provider-logo {

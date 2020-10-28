@@ -1,14 +1,13 @@
 :host {
-  
 }
 .app {
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
-    .content {
-        flex-grow: 1;
-        overflow: auto;
-    }
+  .content {
+    flex-grow: 1;
+    overflow: auto;
+  }
 }

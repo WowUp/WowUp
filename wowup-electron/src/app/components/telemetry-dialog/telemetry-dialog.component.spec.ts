@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { TelemetryDialogComponent } from './telemetry-dialog.component';
+import { TelemetryDialogComponent } from "./telemetry-dialog.component";
 
-describe('TelemetryDialogComponent', () => {
+describe("TelemetryDialogComponent", () => {
   let component: TelemetryDialogComponent;
   let fixture: ComponentFixture<TelemetryDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TelemetryDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [TelemetryDialogComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('TelemetryDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

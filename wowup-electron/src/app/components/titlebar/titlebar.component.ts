@@ -57,14 +57,17 @@ export class TitlebarComponent implements OnInit, OnDestroy {
     const win = this.electronService.remote.getCurrentWindow();
 
     if (this.isMac) {
-      const action = this.electronService.remote.systemPreferences.getUserDefault('AppleActionOnDoubleClick', 'string');
-      if (action === 'Maximize') {
+      const action = this.electronService.remote.systemPreferences.getUserDefault(
+        "AppleActionOnDoubleClick",
+        "string"
+      );
+      if (action === "Maximize") {
         if (win.isMaximized()) {
           win.unmaximize();
         } else {
           win.maximize();
         }
-      } else if (action === 'Minimize') {
+      } else if (action === "Minimize") {
         win.minimize();
       }
     }

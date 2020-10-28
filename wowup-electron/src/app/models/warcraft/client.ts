@@ -1,8 +1,7 @@
-import { Type, Field, Message } from 'protobufjs';
+import { Type, Field, Message } from "protobufjs";
 
 @Type.d("Client")
 export class Client extends Message<Client> {
-
   @Field.d(1, "string")
   public location: string;
 

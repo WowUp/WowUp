@@ -1,4 +1,4 @@
 export interface ReadFileResponse {
-    error?: Error;
-    data: string;
+  error?: Error;
+  data: string;
 }

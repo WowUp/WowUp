@@ -1,3 +1,3 @@
 export interface IpcRequest {
-    responseKey: string;
+  responseKey: string;
 }

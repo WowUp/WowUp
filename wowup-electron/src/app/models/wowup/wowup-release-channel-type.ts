@@ -1,4 +1,4 @@
 export enum WowUpReleaseChannelType {
-    Beta,
-    Stable
+  Beta,
+  Stable,
 }

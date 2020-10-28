@@ -144,7 +144,7 @@
         "STATUS_COLUMN_HEADER": "Stato",
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
       },
-       "UNINSTALL_POPUP": {
+      "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Questa azione rimuoverà tutte le cartelle correlate dalla cartella di World of Warcraft.",
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count} {count, plural, =1{addon} other{addons}}?",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",

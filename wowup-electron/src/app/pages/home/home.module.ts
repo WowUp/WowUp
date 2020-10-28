@@ -65,9 +65,6 @@ import { AddonUpdateButtonComponent } from "app/components/addon-update-button/a
     MatModule,
     DirectiveModule,
   ],
-  providers: [
-    DatePipe,
-    GetAddonListItemFilePropPipe,
-  ]
+  providers: [DatePipe, GetAddonListItemFilePropPipe],
 })
 export class HomeModule {}

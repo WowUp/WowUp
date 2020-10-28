@@ -1,4 +1,4 @@
 export interface ListFilesResponse {
-    files: string[];
-    error?: Error;
+  files: string[];
+  error?: Error;
 }
