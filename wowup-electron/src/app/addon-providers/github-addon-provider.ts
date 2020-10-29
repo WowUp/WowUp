@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import * as _ from "lodash";
-import { extname } from "path";
 import { forkJoin, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Addon } from "../entities/addon";
@@ -13,6 +12,11 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider } from "./addon-provider";
+
+interface GitHubRepoParts {
+  repository: string;
+  owner: string;
+}
 
 const API_URL = "https://api.github.com/repos";
 const RELEASE_CONTENT_TYPES = [
@@ -61,8 +65,7 @@ export class GitHubAddonProvider implements AddonProvider {
     clientType: WowClientType
   ): Promise<AddonSearchResult> {
     const repoPath = addonUri.pathname;
-    const repoExtension = extname(repoPath); // if the repo has the git extension it wont work?
-    if (!repoPath || repoExtension) {
+    if (!repoPath) {
       throw new Error(`Invlaid URL: ${addonUri}`);
     }
 
@@ -224,12 +227,36 @@ export class GitHubAddonProvider implements AddonProvider {
   }
 
   private getReleases(repositoryPath: string): Observable<GitHubRelease[]> {
-    const url = `${API_URL}${repositoryPath}/releases`;
+    const parsed = this.parseRepoPath(repositoryPath);
+    return this.getReleasesByParts(parsed);
+  }
+
+  private getReleasesByParts(
+    repoParts: GitHubRepoParts
+  ): Observable<GitHubRelease[]> {
+    const url = `${API_URL}/${repoParts.owner}/${repoParts.repository}/releases`;
     return this._httpClient.get<GitHubRelease[]>(url.toString());
   }
 
   private getRepository(repositoryPath: string): Observable<GitHubRepository> {
-    const url = `${API_URL}${repositoryPath}`;
+    const parsed = this.parseRepoPath(repositoryPath);
+    return this.getRepositoryByParts(parsed);
+  }
+
+  private getRepositoryByParts(
+    repoParts: GitHubRepoParts
+  ): Observable<GitHubRepository> {
+    const url = `${API_URL}/${repoParts.owner}/${repoParts.repository}`;
     return this._httpClient.get<GitHubRepository>(url.toString());
+  }
+
+  private parseRepoPath(repositoryPath: string): GitHubRepoParts {
+    const regex = /\/(.*?)\/(.*?)(\/.*|\..*)?$/;
+    const matches = regex.exec(repositoryPath);
+
+    return {
+      owner: matches[1],
+      repository: matches[2],
+    };
   }
 }
