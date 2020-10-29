@@ -58,11 +58,11 @@
       "CLOSE_BUTTON": "Закрыть",
       "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
       "ERROR": {
-        "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
-        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
-        "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
-        "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
-        "TITLE": "Addon Installation Failed"
+        "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
+        "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, вы можете получить помощь в канале #wow-support нашего Discord сообщества.",
+        "INVALID_URL": "Введенное значение не является правильным URL. Примеры правильных URL для модификаций:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Модификация не была найдена, убедитесь что ваш URL указывает на правильную страницу.\n\nПри установке с GitHub, убедитесь, что в репозитории есть тег выпуска с zip-архивом, содержащим модификацию.",
+        "TITLE": "Установка модификации не удалась"
       },
       "IMPORT_BUTTON": "Импорт",
       "INSTALL_BUTTON": "Установить",
