@@ -1,11 +1,7 @@
 {
   "ChangeLogs": [
     {
-      "Version": "2.0.0-alpha.19",
-      "Description": "Hardcode the release channel?"
-    },
-    {
-      "Version": "2.0.0-alpha.18",
+      "Version": "2.0.0-alpha.20",
       "Description": "Rewrote some app text to be more helpful (Linaori)\nUpdate Russian local (Medok)\nUpdate Italian locale (Bito)\nImproved GitHub URL support, nested paths and .git urls\nFix issue with Ignored addons not sorting\nFix Ctrl+A highlighting random UI elements\nDropped firebase integration"
     },
     {
