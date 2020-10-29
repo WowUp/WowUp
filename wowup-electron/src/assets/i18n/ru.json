@@ -57,14 +57,21 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Например ссылки GitHub или WowInterface",
       "CLOSE_BUTTON": "Закрыть",
       "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
+      "ERROR": {
+        "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
+        "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, вы можете получить помощь в канале #wow-support нашего Discord сообщества.",
+        "INVALID_URL": "Введенное значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Модификация не была найдена, убедитесь что ваша ссылка указывает на правильную страницу.\n\nПри установке с GitHub, убедитесь, что в репозитории есть тег выпуска с zip-архивом, содержащим модификацию.",
+        "TITLE": "Установка модификации не удалась"
+      },
       "IMPORT_BUTTON": "Импорт",
       "INSTALL_BUTTON": "Установить",
       "INSTALL_SUCCESS_LABEL": "Установлена!",
-      "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub*",
+      "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",
       "TITLE": "Ссылка на установку модификации"
     },
     "TELEMETRY": {
-      "DESCRIPTION": "Хотите помочь мне улучшить WowUp, анонимно отправляя данные об установке и ошибках?",
+      "DESCRIPTION": "Хотите помочь улучшить WowUp, анонимно отправляя данные об установке и ошибках?",
       "NEGATIVE_BUTTON": "Нет, спасибо",
       "POSITIVE_BUTTON": "Конечно!",
       "TITLE": "Телеметрия WowUp"
@@ -123,7 +130,7 @@
       },
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может сбросить информацию о модификации и попытаться угадать, что вы установили. Эта процедура займёт немного времени.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может попытаться угадать какие модификации уже установилены, это действие может обнулить известную о модификации информацию. Используйте эту функцию если не определяются некоторые модификации или их версии не отображаются корректно. Это действие никогда не удалит ваши установленные модификации, лишь то что WowUp знает о них.\n\nЭта процедура займёт немного времени.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Начать повторное сканирование?",
       "SPINNER": {
         "GATHERING_ADDONS": "Сбор модификаций...",
@@ -145,7 +152,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Обновлена"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "Это действие удалит все относящиеся папки модификации из вашей папки World of Warcraft.",
+        "CONFIRMATION_ACTION_EXPLANATION": "Удаление модификации через WowUp удалит выбранную модификацию из директории Interface/AddOns. Настройки персонажа для этой модификации удалены не будут.",
         "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации} other{модификаций}}?",
         "CONFIRMATION_MORE_THAN_THREE": "Вы действительно хотите удалить выбранные {count} {count, plural, few{модификации} other{модификаций}}?",
         "CONFIRMATION_ONE": "Вы действительно хотите удалить {addonName}?",
@@ -160,7 +167,7 @@
     },
     "OPTIONS": {
       "APPLICATION": {
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить/Выключить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "При закрытии окна WowUp сворачивается в область уведомлений панели задач.",
