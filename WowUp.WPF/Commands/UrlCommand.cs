@@ -12,9 +12,7 @@ namespace WowUp.WPF.Commands
 
         private static void ExecuteImpl(object parameter)
         {
-            var uri = new Uri(parameter.ToString());
-
-            uri.AbsoluteUri.OpenUrlInBrowser();
+            parameter.ToString().OpenUrlInBrowser();
         }
     }
 }
