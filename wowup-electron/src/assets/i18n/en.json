@@ -57,14 +57,21 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",
       "CLOSE_BUTTON": "Close",
       "DESCRIPTION": "If you want to install an addon directly from a URL paste it below to get started.",
+      "ERROR": {
+        "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
+        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
+        "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
+        "TITLE": "Addon Installation Failed"
+      },
       "IMPORT_BUTTON": "Import",
       "INSTALL_BUTTON": "Install",
       "INSTALL_SUCCESS_LABEL": "Installed!",
-      "SUPPORTED_SOURCES": "Supports WowInterface and GitHub*",
+      "SUPPORTED_SOURCES": "Supports WowInterface and GitHub",
       "TITLE": "Install Addon URL"
     },
     "TELEMETRY": {
-      "DESCRIPTION": "Help me improve WowUp by sending anonymous app install data and/or errors?",
+      "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
       "NEGATIVE_BUTTON": "No Thanks",
       "POSITIVE_BUTTON": "Sure!",
       "TITLE": "WowUp Telemetry"
@@ -123,7 +130,7 @@
       },
       "RESCAN_FOLDERS_BUTTON": "Re-Scan Folders",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan your client folder for installed addons",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Doing a re-scan may reset the addon information and attempt to re-guess what you have installed. This operation can take a moment.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Doing a re-scan will attempt to guess which addons you currently have installed, doing so may reset known addon information. Use this function when certain addons are not recognized or addon versions are not being shown correctly. This scan will never delete your installed addons, only what WowUp knows about them.\n\nScanning may take a few moments.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start re-scan?",
       "SPINNER": {
         "GATHERING_ADDONS": "Gathering addons...",
@@ -145,7 +152,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Updated At"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
+        "CONFIRMATION_ACTION_EXPLANATION": "Removing an addon via WowUp will remove the selected addon from your interface/addons directory. The character settings for this addon will not be removed.",
         "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
         "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
         "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
@@ -160,14 +167,14 @@
     },
     "OPTIONS": {
       "APPLICATION": {
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable/Disable various system notification popups, such as auto updated addons.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",
-        "START_MINIMIZED_DESCRIPTION": "...and will not show up on the screen",
+        "START_MINIMIZED_DESCRIPTION": "WowUp will start minimized and not show up.",
         "START_MINIMIZED_LABEL": "Launch WowUp minimized",
-        "START_WITH_SYSTEM_DESCRIPTION": "WowUp will be launched immediately after your operational system is loaded...",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp will be started automatically when you start up your system.",
         "START_WITH_SYSTEM_LABEL": "Launch WowUp with system",
         "TELEMETRY_DESCRIPTION": "Help improve WowUp by sending anonymous install data and/or errors.",
         "TELEMETRY_LABEL": "Telemetry",

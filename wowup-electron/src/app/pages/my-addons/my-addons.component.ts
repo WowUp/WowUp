@@ -444,7 +444,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
             "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE",
             { addonName: addon.name }
           ) +
-          "\n" +
+          "\n\n" +
           this._translateService.instant(
             "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
           ),
@@ -478,7 +478,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       );
     }
     message +=
-      "\n" +
+      "\n\n" +
       this._translateService.instant(
         "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
       );
