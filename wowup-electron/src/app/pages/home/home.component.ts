@@ -51,6 +51,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     window.setInterval(() => {
       this.checkForAppUpdate();
     }, 60 * 60 * 1000);
+
+    this.checkForAppUpdate();
   }
 
   onSelectedIndexChange(index: number) {
