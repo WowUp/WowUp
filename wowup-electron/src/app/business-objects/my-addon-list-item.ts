@@ -12,6 +12,10 @@ export class AddonViewModel {
   public stateTextTranslationKey: string = "";
   public selected: boolean = false;
 
+  get isLoadOnDemand() {
+    return this.addon?.isLoadOnDemand;
+  }
+
   get installedAt() {
     return new Date(this.addon?.installedAt);
   }

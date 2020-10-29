@@ -210,6 +210,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       screenshotUrls: response.images?.map((img) => img.imageUrl),
       downloadCount: response.downloads,
       releasedAt: new Date(response.lastUpdate),
+      isLoadOnDemand: false,
     };
   }
 

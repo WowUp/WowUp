@@ -12,4 +12,6 @@ export interface Toc {
   wowInterfaceId?: string;
   tukUiProjectId?: string;
   tukUiProjectFolders?: string;
+  loadOnDemand?: string;
+  dependencyList: string[];
 }

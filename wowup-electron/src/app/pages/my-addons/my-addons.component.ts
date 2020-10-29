@@ -516,6 +516,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     listItems: AddonViewModel[]
   ) {
     listItems.forEach((listItem) => {
+      // if provider is not valid (Unknown) then ignore this
+      if (!this.addonService.isValidProviderName(listItem.addon.providerName)) {
+        return;
+      }
+
       listItem.addon.isIgnored = evt.checked;
       if (evt.checked) {
         listItem.addon.autoUpdateEnabled = false;

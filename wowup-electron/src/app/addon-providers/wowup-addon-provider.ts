@@ -254,6 +254,7 @@ export class WowUpAddonProvider implements AddonProvider {
       patreonFundingLink: scanResult.exactMatch.patreon_funding_link,
       customFundingLink: scanResult.exactMatch.custom_funding_link,
       githubFundingLink: scanResult.exactMatch.github_funding_link,
+      isLoadOnDemand: false,
     };
   }
 }

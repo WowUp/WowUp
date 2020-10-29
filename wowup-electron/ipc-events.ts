@@ -3,7 +3,7 @@ import * as fs from "fs-extra";
 import * as async from "async";
 import * as path from "path";
 import * as admZip from "adm-zip";
-import { readdir } from "fs";
+import { readdir, stat } from "fs";
 import axios from "axios";
 
 import {
@@ -19,6 +19,7 @@ import {
   GET_ASSET_FILE_PATH,
   DOWNLOAD_FILE_CHANNEL,
   CREATE_DIRECTORY_CHANNEL,
+  STAT_FILES_CHANNEL,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -68,6 +69,21 @@ export function initializeIpcHanders(window: BrowserWindow) {
         resolve(directories);
       });
     });
+  });
+
+  ipcMain.handle(STAT_FILES_CHANNEL, async (evt, filePaths: string[]) => {
+    const results: { [path: string]: fs.Stats } = {};
+    await async.eachLimit<string>(filePaths, 3, (path, cb) => {
+      fs.stat(path, (err, stats) => {
+        if (err) {
+          return cb(err);
+        }
+
+        results[path] = stats;
+        cb();
+      });
+    });
+    return results;
   });
 
   ipcMain.handle(PATH_EXISTS_CHANNEL, async (evt, filePath: string) => {

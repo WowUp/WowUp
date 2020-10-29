@@ -1,64 +1,46 @@
-<div class="addon-column row align-items-center">
+<div class="addon-column row align-items-center" >
   <div class="thumbnail-container">
-    <div
-      *ngIf="listItem.hasThumbnail === true"
-      class="addon-logo-container"
-      [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"
-    ></div>
+    <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container"
+      [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"></div>
     <div *ngIf="listItem.hasThumbnail === false" class="addon-logo-container">
       <div class="addon-logo-letter">
         {{ listItem.thumbnailLetter }}
       </div>
     </div>
-    <div
-      *ngIf="listItem.isBetaChannel || listItem.isAlphaChannel"
-      class="channel"
-      [ngClass]="{
+    <div *ngIf="listItem.isBetaChannel || listItem.isAlphaChannel" class="channel" [ngClass]="{
         beta: listItem.isBetaChannel,
         alpha: listItem.isAlphaChannel
-      }"
-    >
+      }">
       {{ listItem.isAlphaChannel ? "Alpha" : "Beta" }}
     </div>
   </div>
   <div>
-    <a
-      class="addon-title mat-subheading-2"
-      (click)="viewDetails()"
-      [ngClass]="{ ignored: listItem.isIgnored }"
-      >{{ listItem.addon.name }}</a
-    >
+    <a class="addon-title mat-subheading-2" (click)="viewDetails()"
+      [ngClass]="{ ignored: listItem.isIgnored }">{{ listItem.addon.name }}</a>
     <div class="addon-funding">
-      <a
-        *ngIf="listItem.addon.patreonFundingLink"
-        appExternalLink
-        [href]="listItem.addon.patreonFundingLink"
-        matTooltip="Support the author on Patreon"
-      >
+      <a *ngIf="listItem.addon.patreonFundingLink" appExternalLink [href]="listItem.addon.patreonFundingLink"
+        matTooltip="Support the author on Patreon">
         <img class="funding-icon" src="assets/images/patreon_logo_small.png" />
       </a>
-      <a
-        *ngIf="listItem.addon.githubFundingLink"
-        appExternalLink
-        [href]="listItem.addon.githubFundingLink"
-        matTooltip="Support the author on GitHub"
-      >
+      <a *ngIf="listItem.addon.githubFundingLink" appExternalLink [href]="listItem.addon.githubFundingLink"
+        matTooltip="Support the author on GitHub">
         <img class="funding-icon" src="assets/images/github_logo_small.png" />
       </a>
-      <a
-        *ngIf="listItem.addon.customFundingLink"
-        appExternalLink
-        [href]="listItem.addon.customFundingLink"
-        matTooltip="Support this author"
-      >
-        <img
-          class="funding-icon"
-          src="assets/images/custom_funding_logo_small.png"
-        />
+      <a *ngIf="listItem.addon.customFundingLink" appExternalLink [href]="listItem.addon.customFundingLink"
+        matTooltip="Support this author">
+        <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
       </a>
     </div>
-    <div class="addon-version" [ngClass]="{ ignored: listItem.isIgnored }">
-      {{ listItem.addon.installedVersion }}
+    <div class="addon-version row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
+      <span class="mr-1">{{ listItem.addon.installedVersion }}</span>
+      <mat-icon *ngIf="listItem.isLoadOnDemand" [inline]="true" [matTooltip]="'Required dependency missing'"
+        [style.color]="'#ff9800'">
+        error_outline
+      </mat-icon>
+      <mat-icon *ngIf="listItem.isAutoUpdate" [inline]="true"
+        [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate">
+        update
+      </mat-icon>
     </div>
   </div>
 </div>

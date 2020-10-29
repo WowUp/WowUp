@@ -84,7 +84,7 @@ export class AddonService {
     );
     var searchResults = await Promise.all(searchTasks);
 
-    await this._analyticsService.trackUserAction(
+    this._analyticsService.trackUserAction(
       "addons",
       "search",
       `${clientType}|${query}`
@@ -307,6 +307,11 @@ export class AddonService {
 
     return addon.name;
   };
+
+  public isValidProviderName(providerName: string) {
+    const providerNames = this._addonProviders.map((provider) => provider.name);
+    return _.includes(providerNames, providerName);
+  }
 
   public async logDebugData() {
     const curseProvider = this._addonProviders.find(
@@ -616,6 +621,8 @@ export class AddonService {
     const matchedAddonFolders = addonFolders.filter(
       (addonFolder) => !!addonFolder.matchingAddon
     );
+    const matchedAddonFolderNames = matchedAddonFolders.map((mf) => mf.name);
+
     const matchedGroups = _.groupBy(
       matchedAddonFolders,
       (addonFolder) =>
@@ -624,7 +631,55 @@ export class AddonService {
 
     console.log(Object.keys(matchedGroups));
 
-    return Object.values(matchedGroups).map((value) => value[0].matchingAddon);
+    const addonList = Object.values(matchedGroups).map(
+      (value) => value[0].matchingAddon
+    );
+
+    const unmatchedFolders = addonFolders.filter((af) =>
+      this.isAddonFolderUnmatched(matchedAddonFolderNames, af)
+    );
+    console.debug("unmatchedFolders", unmatchedFolders);
+
+    const unmatchedAddons = unmatchedFolders.map((uf) =>
+      this.createUnmatchedAddon(uf, clientType)
+    );
+
+    console.debug("unmatchedAddons", unmatchedAddons);
+
+    addonList.push(...unmatchedAddons);
+
+    return addonList;
+  }
+
+  private reconcileUnmatchedAddons(addon: Addon) {}
+
+  /**
+   * This should verify that a folder that did not have a match, is actually unmatched
+   * This will happen for any sub folders of TukUI or WowInterface addons
+   */
+  private isAddonFolderUnmatched(
+    matchedFolderNames: string[],
+    addonFolder: AddonFolder
+  ) {
+    if (addonFolder.matchingAddon) {
+      return false;
+    }
+
+    // if the folder is load on demand, it 'should' be a sub folder
+    const isLoadOnDemand = addonFolder.toc?.loadOnDemand === "1";
+    if (
+      isLoadOnDemand &&
+      this.allItemsMatch(addonFolder.toc.dependencyList, matchedFolderNames)
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /** Check if all primitives in subset are in the superset (strings, ints) */
+  private allItemsMatch(subset: any[], superset: any[]) {
+    return _.difference(subset, superset).length === 0;
   }
 
   public getFeaturedAddons(
@@ -757,6 +812,37 @@ export class AddonService {
       releasedAt: latestFile.releaseDate,
       summary: searchResult.summary,
       screenshotUrls: searchResult.screenshotUrls,
+      isLoadOnDemand: false,
+    };
+  }
+
+  private createUnmatchedAddon(
+    addonFolder: AddonFolder,
+    clientType: WowClientType
+  ): Addon {
+    return {
+      id: uuidv4(),
+      name: addonFolder.toc?.title || addonFolder.name,
+      thumbnailUrl: "",
+      latestVersion: addonFolder.toc?.version || "",
+      installedVersion: addonFolder.toc?.version || "",
+      clientType: clientType,
+      externalId: "",
+      folderName: addonFolder.name,
+      gameVersion: addonFolder.toc?.interface || "",
+      author: addonFolder.toc?.author || "",
+      downloadUrl: "",
+      externalUrl: "",
+      providerName: "Unknown",
+      channelType: this._wowUpService.getDefaultAddonChannel(clientType),
+      isIgnored: true,
+      autoUpdateEnabled: false,
+      releasedAt: new Date(),
+      installedAt: addonFolder.fileStats?.mtime || new Date(),
+      installedFolders: addonFolder.name,
+      summary: "",
+      screenshotUrls: [],
+      isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",
     };
   }
 }

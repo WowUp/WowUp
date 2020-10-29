@@ -4,6 +4,7 @@ export const CREATE_DIRECTORY_CHANNEL = "create-directory";
 export const DELETE_DIRECTORY_CHANNEL = "delete-directory";
 export const STAT_DIRECTORY_CHANNEL = "stat-directory";
 export const LIST_DIRECTORIES_CHANNEL = "list-directories";
+export const STAT_FILES_CHANNEL = "stat_files";
 export const PATH_EXISTS_CHANNEL = "path-exists";
 export const LIST_FILES_CHANNEL = "list-files";
 export const READ_FILE_CHANNEL = "read-file";
@@ -27,6 +28,8 @@ export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY =
   "use_hardware_acceleration";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
+
+// ERRORS
 export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
 export const NO_LATEST_SEARCH_RESULT_FILES_ERROR =
   "NO_LATEST_SEARCH_RESULT_FILES";
