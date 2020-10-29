@@ -10,19 +10,33 @@
     flex-grow: 1;
   }
 
-  .button-container {
+  .right-container {
     display: flex;
     flex-direction: row;
-    align-items: center;
 
-    button {
-      &:not(:last-child) {
-        margin-right: 0.5em;
+    .filter-container {
+      padding-top: 1em;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 1em;
+
+      button {
+        &:not(:last-child) {
+          margin-right: 0.5em;
+        }
       }
     }
   }
 }
 
+.no-addons-container {
+  text-align: center;
+  color: $white-1;
+}
 .spinner-container {
   display: flex;
   align-items: center;
@@ -59,20 +73,28 @@
   }
 
   .addon-title {
-    font-weight: bold;
+    font-weight: 400;
     font-size: 1.1em;
     word-break: break-all;
     white-space: pre-wrap;
   }
 
+  .game-version-cell {
+    min-width: 110px;
+  }
+
+  .installed-at-cell,
+  .released-at-cell {
+    min-width: 100px;
+  }
+
   .status-column {
-    display: flex;
-    justify-content: center;
+    // display: flex;
     width: 130px;
-    align-items: center;
+    // align-items: center;
 
     .auto-update-icon {
-      margin-right: 0.5em;
+      margin-left: 0.5em;
     }
 
     .progress-text {
@@ -83,13 +105,40 @@
       width: 110px;
     }
   }
+
+  .selected-row {
+    background: $dark-4;
+  }
+
+  .addon-provider {
+    display: flex;
+    align-items: center;
+
+    .addon-provider-name {
+      margin-right: 0.25em;
+    }
+
+    .provider-logo {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .cell-padding {
+    padding-right: 1em;
+  }
 }
 
 .author-column {
   width: 100px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
 }
 .provider-column {
-  min-width: 60px;
+  min-width: 70px;
 }
 
 .column-menu {
@@ -101,3 +150,8 @@
   }
 }
 
+.linux {
+  .table-container {
+    height: calc(100vh - 150px);
+  }
+}

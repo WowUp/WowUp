@@ -1,11 +1,16 @@
 import { AddonSearchResultFile } from "./addon-search-result-file";
 
 export interface AddonSearchResult {
-  name: string;
   author: string;
-  thumbnailUrl: string;
+  downloadCount?: number;
   externalId: string;
   externalUrl: string;
+  files?: AddonSearchResultFile[];
+  name: string;
   providerName: string;
-  files: AddonSearchResultFile[];
+  screenshotUrl?: string;
+  screenshotUrls?: string[];
+  summary?: string;
+  thumbnailUrl: string;
+  releasedAt?: Date;
 }

@@ -1,9 +1,9 @@
 {
   "env": {
-      "browser": true,
-      "node": true,
-      "es6": true,
-      "es2017": true
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "es2017": true
   },
   "overrides": [
     {
@@ -18,26 +18,26 @@
       "parserOptions": {
         "ecmaVersion": 10,
         "project": [
-          "./src/tsconfig.json",
+          "./tsconfig.serve.json",
+          "./src/tsconfig.app.json",
           "./src/tsconfig.spec.json",
           "./e2e/tsconfig.e2e.json"
         ],
         "sourceType": "module",
         "ecmaFeatures": {
-            "modules": true
+          "modules": true
         }
       },
-      "plugins": [
-        "@typescript-eslint",
-        "@angular-eslint/eslint-plugin"
-      ],
+      "plugins": ["@typescript-eslint", "@angular-eslint/eslint-plugin"],
       "rules": {
         "@typescript-eslint/indent": [
-          "error", 2, {
+          "error",
+          2,
+          {
             "SwitchCase": 1,
-            "CallExpression": {"arguments": "first"},
-            "FunctionExpression": {"parameters": "first"},
-            "FunctionDeclaration": {"parameters": "first"}
+            "CallExpression": { "arguments": "first" },
+            "FunctionExpression": { "parameters": "first" },
+            "FunctionDeclaration": { "parameters": "first" }
           }
         ],
         "@typescript-eslint/no-empty-function": 0,
@@ -57,8 +57,8 @@
       "parser": "@angular-eslint/template-parser",
       "plugins": ["@angular-eslint/template"],
       "rules": {
-          "@angular-eslint/template/banana-in-a-box": "error",
-          "@angular-eslint/template/no-negated-async": "error"
+        "@angular-eslint/template/banana-in-a-box": "error",
+        "@angular-eslint/template/no-negated-async": "error"
       }
     }
   ]

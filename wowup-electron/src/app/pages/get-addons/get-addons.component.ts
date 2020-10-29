@@ -1,39 +1,76 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { InstallFromUrlDialogComponent } from 'app/components/install-from-url-dialog/install-from-url-dialog.component';
-import { WowClientType } from 'app/models/warcraft/wow-client-type';
-import { ColumnState } from 'app/models/wowup/column-state';
-import { PotentialAddon } from 'app/models/wowup/potential-addon';
-import { ElectronService } from 'app/services';
-import { AddonService } from 'app/services/addons/addon.service';
-import { SessionService } from 'app/services/session/session.service';
-import { WarcraftService } from 'app/services/warcraft/warcraft.service';
-import { BehaviorSubject, fromEvent, Subscription } from 'rxjs';
-import { debounceTime, map } from 'rxjs/operators';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSort } from "@angular/material/sort";
+import { MatTableDataSource } from "@angular/material/table";
+import { TranslateService } from "@ngx-translate/core";
+import * as _ from "lodash";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
+import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
+import {
+  AddonDetailComponent,
+  AddonDetailModel,
+} from "../../components/addon-detail/addon-detail.component";
+import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { ColumnState } from "../../models/wowup/column-state";
+import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 
 @Component({
-  selector: 'app-get-addons',
-  templateUrl: './get-addons.component.html',
-  styleUrls: ['./get-addons.component.scss']
+  selector: "app-get-addons",
+  templateUrl: "./get-addons.component.html",
+  styleUrls: ["./get-addons.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GetAddonsComponent implements OnInit {
-  private readonly _displayAddonsSrc = new BehaviorSubject<PotentialAddon[]>([]);
+export class GetAddonsComponent implements OnInit, OnDestroy {
+  @Input("tabIndex") tabIndex: number;
 
-  private subscriptions: Subscription[] = [];
+  @ViewChild(MatSort) sort: MatSort;
+
+  private _subscriptions: Subscription[] = [];
+  private _isSelectedTab: boolean = false;
+
+  public dataSource = new MatTableDataSource<GetAddonListItem>([]);
 
   columns: ColumnState[] = [
-    { name: 'addon', display: 'Addon', visible: true },
-    { name: 'author', display: 'Author', visible: true },
-    { name: 'provider', display: 'Provider', visible: true },
-    { name: 'status', display: 'Status', visible: true },
-  ]
+    { name: "name", display: "Addon", visible: true },
+    { name: "downloadCount", display: "Downloads", visible: true },
+    { name: "releasedAt", display: "Released At", visible: true },
+    { name: "author", display: "Author", visible: true },
+    { name: "providerName", display: "Provider", visible: true },
+    { name: "status", display: "Status", visible: true },
+  ];
 
   public get displayedColumns(): string[] {
-    return this.columns.filter(col => col.visible).map(col => col.name);
+    return this.columns.filter((col) => col.visible).map((col) => col.name);
   }
 
-  public query = '';
-  public displayAddons$ = this._displayAddonsSrc.asObservable();
+  public get defaultAddonChannelKey() {
+    return this._wowUpService.getClientDefaultAddonChannelKey(
+      this._sessionService.selectedClientType
+    );
+  }
+
+  public get defaultAddonChannel() {
+    return this._wowUpService.getDefaultAddonChannel(
+      this._sessionService.selectedClientType
+    );
+  }
+
+  public query = "";
   public isBusy = false;
   public selectedClient = WowClientType.None;
 
@@ -41,27 +78,82 @@ export class GetAddonsComponent implements OnInit {
     private _addonService: AddonService,
     private _sessionService: SessionService,
     private _dialog: MatDialog,
+    private _wowUpService: WowUpService,
+    private _cdRef: ChangeDetectorRef,
+    private _translateService: TranslateService,
     public electronService: ElectronService,
     public warcraftService: WarcraftService
   ) {
-
+    _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
+      this._isSelectedTab = tabIndex === this.tabIndex;
+      if (this._isSelectedTab) {
+        this.setPageContextText();
+      }
+    });
   }
 
   ngOnInit(): void {
-    this._sessionService.selectedClientType$
+    const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
-        map(clientType => {
+        map((clientType) => {
           this.selectedClient = clientType;
           this.loadPopularAddons(this.selectedClient);
         })
       )
       .subscribe();
+    const addonRemovedSubscription = this._addonService.addonRemoved$
+      .pipe(
+        map((event: string) => {
+          this.onRefresh();
+        })
+      )
+      .subscribe();
+
+    const channelTypeSubscription = this._wowUpService.preferenceChange$
+      .pipe(filter((change) => change.key === this.defaultAddonChannelKey))
+      .subscribe((change) => {
+        this.onSearch();
+      });
+
+    const dataSourceSub = this.dataSource.connect().subscribe((data) => {
+      this.setPageContextText();
+    });
+
+    this._subscriptions = [
+      selectedClientSubscription,
+      addonRemovedSubscription,
+      channelTypeSubscription,
+      dataSourceSub,
+    ];
+  }
+
+  ngOnDestroy() {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions = [];
+  }
+
+  onStatusColumnUpdated() {
+    this._cdRef.detectChanges();
+  }
+
+  private setDataSource(items: GetAddonListItem[]) {
+    this.dataSource.data = items;
+    this.dataSource.sortingDataAccessor = (
+      item: GetAddonListItem,
+      prop: string
+    ) => {
+      if (prop === "releasedAt") {
+        return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
+      }
+      return _.get(item, prop);
+    };
+    this.dataSource.sort = this.sort;
   }
 
   onInstallFromUrl() {
     const dialogRef = this._dialog.open(InstallFromUrlDialogComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log("The dialog was closed");
     });
   }
 
@@ -74,25 +166,39 @@ export class GetAddonsComponent implements OnInit {
   }
 
   onClearSearch() {
-    this.query = '';
+    this.query = "";
     this.onSearch();
   }
 
   async onSearch() {
     if (!this.query) {
-      this.loadPopularAddons(this.selectedClient);
+      await this.loadPopularAddons(this.selectedClient);
       return;
     }
-    console.log(this.query)
 
     this.isBusy = true;
 
-    let searchResults = await this._addonService.search(this.query, this.selectedClient);
-    console.log(searchResults)
-    searchResults = this.filterInstalledAddons(searchResults);
-    this.formatAddons(searchResults);
-    this._displayAddonsSrc.next(searchResults);
+    let searchResults = await this._addonService.search(
+      this.query,
+      this.selectedClient
+    );
+
+    this.setDataSource(
+      this.formatAddons(this.filterInstalledAddons(searchResults))
+    );
     this.isBusy = false;
+  }
+
+  openDetailDialog(listItem: GetAddonListItem) {
+    const data: AddonDetailModel = {
+      searchResult: listItem.searchResult,
+    };
+
+    const dialogRef = this._dialog.open(AddonDetailComponent, {
+      data,
+    });
+
+    dialogRef.afterClosed().subscribe();
   }
 
   private async loadPopularAddons(clientType: WowClientType) {
@@ -102,30 +208,41 @@ export class GetAddonsComponent implements OnInit {
 
     this.isBusy = true;
 
-    this._addonService.getFeaturedAddons(clientType)
-      .subscribe({
-        next: (addons) => {
-          // console.log('FEAT ADDONS', addons);
-          addons = this.filterInstalledAddons(addons);
-          this.formatAddons(addons);
-          this._displayAddonsSrc.next(addons);
-          this.isBusy = false;
-        },
-        error: (err) => {
-          console.error(err);
-        }
-      });
+    this._addonService.getFeaturedAddons(clientType).subscribe({
+      next: (addons) => {
+        const listItems = this.formatAddons(this.filterInstalledAddons(addons));
+        this.setDataSource(listItems);
+        this.isBusy = false;
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
-  private filterInstalledAddons(addons: PotentialAddon[]) {
-    return addons.filter(addon => !this._addonService.isInstalled(addon.externalId, this._sessionService.selectedClientType));
+  private filterInstalledAddons(addons: AddonSearchResult[]) {
+    return addons.filter(
+      (addon) =>
+        !this._addonService.isInstalled(
+          addon.externalId,
+          this._sessionService.selectedClientType
+        )
+    );
   }
 
-  private formatAddons(addons: PotentialAddon[]) {
-    addons.forEach(addon => {
-      if (!addon.thumbnailUrl) {
-        addon.thumbnailUrl = 'assets/wowup_logo_512np.png';
-      }
-    })
+  private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
+    return addons.map((addon) => new GetAddonListItem(addon));
+  }
+
+  private setPageContextText() {
+    const length = this.dataSource.data?.length;
+    const contextStr = length
+      ? this._translateService.instant(
+          "PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS",
+          { count: length }
+        )
+      : "";
+
+    this._sessionService.setContextText(this.tabIndex, contextStr);
   }
 }

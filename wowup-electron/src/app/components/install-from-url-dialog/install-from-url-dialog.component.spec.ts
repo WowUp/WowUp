@@ -1,16 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { InstallFromUrlDialogComponent } from "./install-from-url-dialog.component";
 
-import { InstallFromUrlDialogComponent } from './install-from-url-dialog.component';
-
-describe('InstallFromUrlDialogComponent', () => {
+describe("InstallFromUrlDialogComponent", () => {
   let component: InstallFromUrlDialogComponent;
   let fixture: ComponentFixture<InstallFromUrlDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InstallFromUrlDialogComponent ]
-    })
-    .compileComponents();
+      declarations: [InstallFromUrlDialogComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +17,7 @@ describe('InstallFromUrlDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

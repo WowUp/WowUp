@@ -1,5 +1,6 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -45,6 +46,7 @@ namespace WowUp.WPF.AddonProviders
             AddonChannelType addonChannelType,
             IEnumerable<AddonFolder> addonFolders)
         {
+            Log.Debug($"{Name} Scanning {addonFolders.Count()} addons");
             var addonDirectory = addonFolders.FirstOrDefault()?.Directory.Parent.FullName;
             var scanResults = await GetScanResults(addonFolders);
 
@@ -332,23 +334,33 @@ namespace WowUp.WPF.AddonProviders
 
         private async Task MapAddonFolders(List<CurseScanResult> scanResults, WowClientType clientType)
         {
-            //var fingerprintStr = string.Join(",", scanResults.Select(sf => sf.FolderScanner.Fingerprint));
-            var fingerprintResponse = await GetAddonsByFingerprints(scanResults.Select(sf => sf.FolderScanner.Fingerprint));
+            var fingerprints = scanResults.Select(sf => sf.FolderScanner.Fingerprint);
 
-            foreach (var scanResult in scanResults)
+            try
             {
-                // Curse can deliver the wrong result sometimes, ensure the result matches the client type
-                scanResult.ExactMatch = fingerprintResponse.ExactMatches
-                    .FirstOrDefault(exactMatch =>
-                        IsClientType(exactMatch.File.GameVersionFlavor, clientType) &&
-                        HasMatchingFingerprint(scanResult, exactMatch));
+                var fingerprintResponse = await GetAddonsByFingerprints(fingerprints);
 
-                // If the addon does not have an exact match, check the partial matches.
-                if (scanResult.ExactMatch == null)
+                foreach (var scanResult in scanResults)
                 {
-                    scanResult.ExactMatch = fingerprintResponse.PartialMatches
-                        .FirstOrDefault(partialMatch => partialMatch.File.Modules.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint));
+                    // Curse can deliver the wrong result sometimes, ensure the result matches the client type
+                    scanResult.ExactMatch = fingerprintResponse.ExactMatches
+                        .FirstOrDefault(exactMatch =>
+                            IsClientType(exactMatch.File.GameVersionFlavor, clientType) &&
+                            HasMatchingFingerprint(scanResult, exactMatch));
+
+                    // If the addon does not have an exact match, check the partial matches.
+                    if (scanResult.ExactMatch == null)
+                    {
+                        scanResult.ExactMatch = fingerprintResponse.PartialMatches
+                            .FirstOrDefault(partialMatch => partialMatch.File.Modules.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint));
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "Failed to map addon folders");
+                Log.Error($"Fingerprints\n{string.Join(",", fingerprints)}");
+                throw;
             }
         }
 

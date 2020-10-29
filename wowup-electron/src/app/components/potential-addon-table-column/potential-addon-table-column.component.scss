@@ -4,28 +4,50 @@
   padding-top: 0.5em;
   padding-bottom: 0.5em;
 
-  .addon-logo-container {
-    background-color: $dark-2;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  .thumbnail-container {
     margin-right: 11px;
-    flex-shrink: 0;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
 
-    .addon-logo {
-      width: 100%;
+    .addon-logo-container {
+      background-color: $dark-2;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+
+      .addon-logo {
+        width: 100%;
+      }
+    }
+
+    .channel {
+      background: $dark-4;
+      text-align: center;
+      font-weight: 400;
+      font-size: 0.8em;
+
+      &.beta {
+        color: $rare-color;
+      }
+
+      &.alpha {
+        color: $epic-color;
+      }
+    }
+
+    .addon-logo-letter {
+      color: $white-4;
+      font-size: 2em;
+      font-weight: 400;
     }
   }
 
   .addon-title {
-    font-weight: bold;
-    font-size: 1.1em;
-    // word-break: break-all;
     white-space: normal;
     text-decoration: none;
     color: $white-1;
@@ -35,5 +57,9 @@
       text-decoration: underline;
       color: $white-2;
     }
+  }
+
+  .addon-version {
+    color: $white-2;
   }
 }

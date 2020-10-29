@@ -1,166 +1,159 @@
-import { Component, OnInit, NgZone, OnChanges, SimpleChanges } from '@angular/core';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { WowClientType } from 'app/models/warcraft/wow-client-type';
-import { ElectronService } from 'app/services';
-import { WarcraftService } from 'app/services/warcraft/warcraft.service';
-import { WowUpService } from 'app/services/wowup/wowup.service';
-import { Preferences } from '../../../constants';
-import { filter, map } from 'rxjs/operators';
-import * as _ from 'lodash';
-import * as path from 'path';
-import { MatDialog } from '@angular/material/dialog';
-import { AlertDialogComponent } from 'app/components/alert-dialog/alert-dialog.component';
-import { getEnumList, getEnumName } from 'app/utils/enum.utils';
-import { WowUpReleaseChannelType } from 'app/models/wowup/wowup-release-channel-type';
-import { MatSelectChange } from '@angular/material/select';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  NgZone,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSelectChange } from "@angular/material/select";
+import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { TranslateService } from "@ngx-translate/core";
+import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
+import { AnalyticsService } from "../../services/analytics/analytics.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { getEnumList, getEnumName } from "../../utils/enum.utils";
 
 @Component({
-  selector: 'app-options',
-  templateUrl: './options.component.html',
-  styleUrls: ['./options.component.scss']
+  selector: "app-options",
+  templateUrl: "./options.component.html",
+  styleUrls: ["./options.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsComponent implements OnInit, OnChanges {
+  @Input("tabIndex") tabIndex: number;
 
-  public retailLocation = '';
-  public classicLocation = '';
-  public retailPtrLocation = '';
-  public classicPtrLocation = '';
-  public betaLocation = '';
   public collapseToTray = false;
   public telemetryEnabled = false;
-  public wowClientTypes: WowClientType[] = getEnumList(WowClientType).filter(clientType => clientType !== WowClientType.None) as WowClientType[];
+  public useHardwareAcceleration = true;
+  public startWithSystem = false;
+  public startMinimized = false;
+  public wowClientTypes: WowClientType[] = getEnumList(WowClientType).filter(
+    (clientType) => clientType !== WowClientType.None
+  ) as WowClientType[];
   public wowUpReleaseChannel: WowUpReleaseChannelType;
-  public wowUpReleaseChannels: { type: WowUpReleaseChannelType, name: string }[] = getEnumList(WowUpReleaseChannelType)
-    .map((type: WowUpReleaseChannelType) => ({ type, name: getEnumName(WowUpReleaseChannelType, type) }));
+
+  public wowUpReleaseChannels: {
+    type: WowUpReleaseChannelType;
+    name: string;
+  }[] = getEnumList(WowUpReleaseChannelType).map(
+    (type: WowUpReleaseChannelType) => ({
+      type,
+      name: getEnumName(WowUpReleaseChannelType, type),
+    })
+  );
+
+  public get minimizeOnCloseDescription() {
+    const key = this.electronService.isWin
+      ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
+      : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
+
+    return this._translateService.instant(key);
+  }
 
   constructor(
+    private _addonService: AddonService,
+    private _analyticsService: AnalyticsService,
     private warcraft: WarcraftService,
-    private _electronService: ElectronService,
-    private _warcraftService: WarcraftService,
-    private _wowUpService: WowUpService,
+    public wowupService: WowUpService,
     private _dialog: MatDialog,
     private zone: NgZone,
-    public electronService: ElectronService
+    public electronService: ElectronService,
+    private _translateService: TranslateService
   ) {
-    _wowUpService.preferenceChange$
-      .pipe(filter(change => change.key === Preferences.telemetryEnabledKey))
-      .subscribe(change => {
-        this.telemetryEnabled = change.value === true.toString()
-      })
+    _analyticsService.telemetryEnabled$.subscribe((enabled) => {
+      this.telemetryEnabled = enabled;
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
+    console.log(changes);
   }
 
   ngOnInit(): void {
-    this.wowUpReleaseChannel = this._wowUpService.wowUpReleaseChannel;
+    this.wowUpReleaseChannel = this.wowupService.wowUpReleaseChannel;
 
     this.loadData();
   }
 
   onShowLogs = () => {
-    this._wowUpService.showLogsFolder();
-  }
+    this.wowupService.showLogsFolder();
+  };
 
   onReScan = () => {
     this.warcraft.scanProducts();
     this.loadData();
-  }
+  };
 
   onTelemetryChange = (evt: MatSlideToggleChange) => {
-    this._wowUpService.telemetryEnabled = evt.checked;
-  }
+    this._analyticsService.telemetryEnabled = evt.checked;
+  };
 
   onCollapseChange = (evt: MatSlideToggleChange) => {
-    this._wowUpService.collapseToTray = evt.checked;
-  }
+    this.wowupService.collapseToTray = evt.checked;
+  };
+
+  onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
+    this.wowupService.enableSystemNotifications = evt.checked;
+  };
+
+  onUseHardwareAccelerationChange = (evt: MatSlideToggleChange) => {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant(
+          "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"
+        ),
+        message: this._translateService.instant(
+          evt.checked
+            ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
+            : "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION"
+        ),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        evt.source.checked = !evt.source.checked;
+
+        return;
+      }
+
+      this.wowupService.useHardwareAcceleration = evt.checked;
+      this.electronService.restartApplication();
+    });
+  };
+
+  onStartWithSystemChange = (evt: MatSlideToggleChange) => {
+    this.wowupService.startWithSystem = evt.checked;
+    if (!evt.checked) this.startMinimized = false;
+  };
+
+  onStartMinimizedChange = (evt: MatSlideToggleChange) => {
+    this.wowupService.startMinimized = evt.checked;
+  };
 
   onWowUpChannelChange(evt: MatSelectChange) {
-    this._wowUpService.wowUpReleaseChannel = evt.value;
+    this.wowupService.wowUpReleaseChannel = evt.value;
   }
 
-  async onSelectRetailClientPath() {
-    const selectedPath = await this.selectWowClientPath(WowClientType.Retail);
-    if (selectedPath) {
-      this.retailLocation = selectedPath;
-    }
-  }
-
-  async onSelectRetailPtrClientPath() {
-    const selectedPath = await this.selectWowClientPath(WowClientType.RetailPtr);
-    if (selectedPath) {
-      this.retailPtrLocation = selectedPath;
-    }
-  }
-
-  async onSelectClassicClientPath() {
-    const selectedPath = await this.selectWowClientPath(WowClientType.Classic);
-    if (selectedPath) {
-      this.classicLocation = selectedPath;
-    }
-  }
-
-  async onSelectClassicPtrClientPath() {
-    const selectedPath = await this.selectWowClientPath(WowClientType.ClassicPtr);
-    if (selectedPath) {
-      this.classicPtrLocation = selectedPath;
-    }
-  }
-
-  async onSelectBetaClientPath() {
-    const selectedPath = await this.selectWowClientPath(WowClientType.Beta);
-    if (selectedPath) {
-      this.betaLocation = selectedPath;
-    }
-  }
-
-  private async selectWowClientPath(clientType: WowClientType): Promise<string> {
-    const dialogResult = await this._electronService.remote.dialog.showOpenDialog({
-      properties: ['openDirectory']
-    });
-
-    if (dialogResult.canceled) {
-      return '';
-    }
-
-    const selectedPath = _.first(dialogResult.filePaths);
-    if (!selectedPath) {
-      console.warn('No path selected')
-      return '';
-    }
-
-    console.log('dialogResult', selectedPath);
-
-    if (this._warcraftService.setWowFolderPath(clientType, selectedPath)) {
-      return selectedPath;
-    }
-
-    const clientFolderName = this._warcraftService.getClientFolderName(clientType);
-    const clientExecutableName = this._warcraftService.getExecutableName(clientType);
-    const clientExecutablePath = path.join(selectedPath, clientFolderName, clientExecutableName);
-    const dialogRef = this._dialog.open(AlertDialogComponent, {
-      data: {
-        title: `Alert`,
-        message: `Unable to set "${selectedPath}" as your ${getEnumName(WowClientType, clientType)} folder.\nPath not found: "${clientExecutablePath}".`
-      }
-    });
-
-    await dialogRef.afterClosed().toPromise();
-
-    return '';
+  async onLogDebugData() {
+    await this._addonService.logDebugData();
   }
 
   private loadData() {
     this.zone.run(() => {
-      this.telemetryEnabled = this._wowUpService.telemetryEnabled;
-      this.collapseToTray = this._wowUpService.collapseToTray;
-      this.retailLocation = this.warcraft.getClientLocation(WowClientType.Retail);
-      this.classicLocation = this.warcraft.getClientLocation(WowClientType.Classic);
-      this.retailPtrLocation = this.warcraft.getClientLocation(WowClientType.RetailPtr);
-      this.classicPtrLocation = this.warcraft.getClientLocation(WowClientType.ClassicPtr);
-      this.betaLocation = this.warcraft.getClientLocation(WowClientType.Beta);
-    })
+      this.telemetryEnabled = this._analyticsService.telemetryEnabled;
+      this.collapseToTray = this.wowupService.collapseToTray;
+      this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
+      this.startWithSystem = this.wowupService.startWithSystem;
+      this.startMinimized = this.wowupService.startMinimized;
+    });
   }
-
 }

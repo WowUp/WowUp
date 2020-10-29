@@ -1,17 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'app-progress-spinner',
-  templateUrl: './progress-spinner.component.html',
-  styleUrls: ['./progress-spinner.component.scss']
+  selector: "app-progress-spinner",
+  templateUrl: "./progress-spinner.component.html",
+  styleUrls: ["./progress-spinner.component.scss"],
 })
 export class ProgressSpinnerComponent implements OnInit {
+  @Input("message") message: string;
 
-  @Input('message') message: string;
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

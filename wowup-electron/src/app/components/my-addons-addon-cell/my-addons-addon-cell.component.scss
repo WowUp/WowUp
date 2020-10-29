@@ -14,6 +14,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
       flex-shrink: 0;
       background-size: contain;
       background-repeat: no-repeat;
@@ -22,12 +23,18 @@
       .addon-logo {
         height: 100%;
       }
+
+      .addon-logo-letter {
+        color: $white-4;
+        font-size: 2em;
+        font-weight: 400;
+      }
     }
 
     .channel {
       background: $dark-4;
       text-align: center;
-      font-weight: bold;
+      font-weight: 400;
       font-size: 0.8em;
 
       &.beta {
@@ -41,8 +48,6 @@
   }
 
   .addon-title {
-    font-weight: bold;
-    font-size: 1.1em;
     // word-break: break-all;
     white-space: normal;
     text-decoration: none;
@@ -53,9 +58,28 @@
       text-decoration: underline;
       color: $white-2;
     }
+
+    &.ignored {
+      color: $white-4;
+    }
   }
 
   .addon-version {
     color: $white-2;
+  }
+
+  .addon-funding {
+    a {
+      margin-right: 1em;
+      color: $white-1;
+    }
+    .funding-icon {
+      width: 15px;
+      height: 15px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

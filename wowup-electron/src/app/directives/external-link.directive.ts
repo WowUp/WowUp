@@ -1,22 +1,18 @@
-import { Directive, ElementRef, HostListener } from '@angular/core';
-import { ElectronService } from 'app/services';
+import { Directive, HostListener } from "@angular/core";
+import { ElectronService } from "../services";
 
 @Directive({
-  selector: '[appExternalLink]'
+  selector: "[appExternalLink]",
 })
 export class ExternalLinkDirective {
-
-  @HostListener('click', ['$event']) onClick($event) {
+  @HostListener("click", ["$event"]) onClick($event) {
     $event.preventDefault();
     $event.stopPropagation();
 
-    const target = $event.path.find(t => t.tagName === 'A');
+    const target = $event.path.find((t) => t.tagName === "A");
 
     this._electronService.shell.openExternal(target.href);
   }
 
-  constructor(
-    private _electronService: ElectronService
-  ) { }
-
+  constructor(private _electronService: ElectronService) {}
 }

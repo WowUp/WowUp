@@ -1,5 +1,5 @@
 export interface Image {
-    thumbUrl: string;
-    imageUrl: string;
-    description: string;
+  thumbUrl: string;
+  imageUrl: string;
+  description: string;
 }

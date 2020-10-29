@@ -1,28 +1,73 @@
-<div class="title">{{clientTypeName}}</div>
+<mat-divider></mat-divider>
+<div class="title">{{ clientTypeName }}</div>
 <div class="row">
   <mat-form-field class="grow folder-input">
-    <mat-label>{{clientTypeName}} Path</mat-label>
-    <input matInput disabled [value]="clientLocation">
-    <mat-hint>The folder that contains the retail client folder "{{clientFolderName}}"</mat-hint>
+    <mat-label>{{
+      "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL"
+        | translate: { clientTypeName: clientTypeName }
+    }}</mat-label>
+    <input matInput disabled [value]="clientLocation" />
+    <mat-hint>
+      {{
+        "PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT"
+          | translate
+            : {
+                clientTypeName: clientTypeName.toLowerCase(),
+                clientFolderName: clientFolderName
+              }
+      }}
+    </mat-hint>
   </mat-form-field>
-  <button mat-flat-button color="primary" class="select-button" (click)="onSelectClientPath()">Select</button>
+  <button
+    mat-flat-button
+    color="primary"
+    class="select-button"
+    (click)="onSelectClientPath()"
+    appUserActionTracker
+    category="Options"
+    [action]="clientTypeName + 'SelectPath'"
+  >
+    {{ "PAGES.OPTIONS.WOW.OPEN_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
+  </button>
 </div>
 <div class="row">
   <div class="grow">
-    <p>Default Addon Channel</p>
+    <p>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_LABEL" | translate }}</p>
   </div>
   <mat-form-field class="light-select">
-    <mat-label>Addon Channel</mat-label>
-    <mat-select [(value)]="selectedAddonChannelType" (selectionChange)="onDefaultAddonChannelChange($event)">
-      <mat-option *ngFor="let channel of addonChannelInfos" [value]="channel.type">{{channel.name}}</mat-option>
+    <mat-label>{{
+      "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_SELECT_LABEL" | translate
+    }}</mat-label>
+    <mat-select
+      [(value)]="selectedAddonChannelType"
+      (selectionChange)="onDefaultAddonChannelChange($event)"
+      appUserActionTracker
+      category="Options"
+      [action]="clientTypeName + 'DefaultChannel'"
+      [label]="selectedAddonChannelType"
+    >
+      <mat-option
+        *ngFor="let channel of addonChannelInfos"
+        [value]="channel.type"
+        >{{ channel.name }}</mat-option
+      >
     </mat-select>
   </mat-form-field>
 </div>
 <div class="row">
   <div class="grow">
-    <p>Auto Update</p>
-    <small class="hint">Newly installed addons will be set to auto update by default</small>
+    <p>{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_LABEL" | translate }}</p>
+    <small class="hint">{{
+      "PAGES.OPTIONS.WOW.AUTO_UPDATE_DESCRIPTION" | translate
+    }}</small>
   </div>
-  <mat-slide-toggle [(checked)]="clientAutoUpdate" (change)="onDefaultAutoUpdateChange($event)">
+  <mat-slide-toggle
+    [(checked)]="clientAutoUpdate"
+    (change)="onDefaultAutoUpdateChange($event)"
+    appUserActionTracker
+    category="Options"
+    [action]="clientTypeName + 'DefaultAutoUpdate'"
+    [label]="clientAutoUpdate"
+  >
   </mat-slide-toggle>
 </div>

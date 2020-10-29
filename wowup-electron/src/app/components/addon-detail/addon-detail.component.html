@@ -1,0 +1,52 @@
+<div class="addon-detail-view">
+  <div class="row align-items-start">
+    <h1 mat-dialog-title class="flex-grow-1">{{ title }}</h1>
+    <mat-icon class="close-icon" color="primary" [mat-dialog-close]="true"
+      >close</mat-icon
+    >
+  </div>
+  <div *ngIf="defaultImageUrl" class="row justify-content-center image-row">
+    <img class="image" [src]="defaultImageUrl" alt="Addon Picture" />
+  </div>
+
+  <div mat-dialog-content>
+    <div class="row">
+      <div
+        class="mat-subheading-1 flex-grow-1"
+        translate
+        [translateParams]="{ authorName: subtitle }"
+      >
+        DIALOGS.ADDON_DETAILS.BY_AUTHOR
+      </div>
+      <app-addon-provider-badge
+        [providerName]="provider"
+        class="flex-shrink-0"
+      ></app-addon-provider-badge>
+    </div>
+    <div class="mat-caption addon-detail-summary">
+      {{ summary }}
+    </div>
+  </div>
+
+  <div mat-dialog-actions class="row align-items-center justify-content-end">
+    <a
+      appExternalLink
+      mat-button
+      cdkFocusInitial
+      color="primary"
+      class="mr-3"
+      [href]="externalUrl"
+      >{{ "DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON" | translate }}</a
+    >
+    <app-addon-install-button
+      *ngIf="showInstallButton"
+      [addonSearchResult]="model.searchResult"
+      (onViewUpdated)="onInstallUpdated()"
+    >
+    </app-addon-install-button>
+    <app-addon-update-button
+      *ngIf="showUpdateButton"
+      [listItem]="model.listItem"
+    ></app-addon-update-button>
+  </div>
+</div>

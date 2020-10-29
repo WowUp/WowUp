@@ -1,8 +1,8 @@
 @import "../../../variables.scss";
 
 .about-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .about {
   max-width: 1024px;
@@ -27,10 +27,6 @@
       margin-top: 1em;
     }
 
-    a {
-      color: $white-1;
-    }
-
     .patron-img {
       width: 120px;
     }
@@ -48,12 +44,12 @@
       list-style-type: none;
       margin: 1em 0;
       border-left: 3px solid $purple-1;
-      padding: 0 1em 1em 1em;
+      padding: 0.5em 1em 1em 1em;
       background-color: $dark-4;
 
       .version {
-        font-size: 1em;
-        font-weight: bold;
+        // font-size: 1em;
+        // font-weight: bold;
       }
 
       .description {
@@ -62,5 +58,11 @@
         white-space: pre-wrap;
       }
     }
+  }
+}
+
+.linux {
+  .about {
+    height: calc(100vh - 80px);
   }
 }

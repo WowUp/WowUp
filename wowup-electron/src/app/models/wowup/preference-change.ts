@@ -1,4 +1,4 @@
 export interface PreferenceChange {
-    key: string;
-    value: string;
+  key: string;
+  value: string;
 }
