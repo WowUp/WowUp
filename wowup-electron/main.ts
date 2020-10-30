@@ -291,7 +291,7 @@ try {
       if (win) {
         if (win.isMinimized()) {
           win.restore();
-        } else if (!win.isVisible() && process.platform !== "darwin") {
+        } else if (!win.isVisible() && !isMac) {
           win.show();
         }
         win.focus();
