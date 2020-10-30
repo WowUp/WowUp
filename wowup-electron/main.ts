@@ -1,114 +1,76 @@
 import {
   app,
   BrowserWindow,
-  screen,
   BrowserWindowConstructorOptions,
-  Tray,
   Menu,
-  nativeImage,
-  ipcMain,
   MenuItem,
   MenuItemConstructorOptions,
+  nativeImage,
+  screen,
+  Tray,
 } from "electron";
-import * as path from "path";
-import * as url from "url";
-import { release, arch } from "os";
-import * as electronDl from "electron-dl";
-import { DownloadRequest } from "./src/common/models/download-request";
-import { DownloadStatus } from "./src/common/models/download-status";
-import { DownloadStatusType } from "./src/common/models/download-status-type";
-import { DOWNLOAD_FILE_CHANNEL } from "./src/common/constants";
-import "./ipc-events";
 import * as log from "electron-log";
-import { autoUpdater } from "electron-updater";
 import * as Store from "electron-store";
-import { WindowState } from "./src/common/models/window-state";
+import { arch, release } from "os";
+import * as path from "path";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import * as url from "url";
+import {
+  initializeAppUpdateIpcHandlers,
+  initializeAppUpdater,
+} from "./app-updater";
+import "./ipc-events";
+import { initializeIpcHanders } from "./ipc-events";
+import {
+  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+} from "./src/common/constants";
+import { WindowState } from "./src/common/models/window-state";
 
 const isMac = process.platform === "darwin";
 const isWin = process.platform === "win32";
+const isLinux = process.platform === "linux";
 const preferenceStore = new Store({ name: "preferences" });
 
 let appIsQuitting = false;
+let win: BrowserWindow = null;
+let tray: Tray = null;
 
-autoUpdater.logger = log;
-autoUpdater.allowPrerelease = true;
-autoUpdater.channel = "alpha";
-autoUpdater.on("update-available", () => {
-  log.info("AVAILABLE");
-  win.webContents.send("update_available");
-});
-autoUpdater.on("update-downloaded", () => {
-  log.info("DOWNLOADED");
-  win.webContents.send("update_downloaded");
-});
-
-const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = isMac
-  ? [
-      {
-        label: app.name,
-        submenu: [{ role: "quit" }],
-      },
-      {
-        label: "Edit",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-      {
-        label: "View",
-        submenu: [
-          { role: "reload" },
-          { role: "forceReload" },
-          { role: "toggleDevTools" },
-          { type: "separator" },
-          { role: "resetZoom" },
-          { role: "zoomIn" },
-          { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ]
-  : [];
+// APP MENU SETUP
+const appMenuTemplate: Array<
+MenuItemConstructorOptions | MenuItem
+> = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
 
-app.disableHardwareAcceleration(); // Try to improve font blur?
-
 const LOG_PATH = path.join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
-log.transports.file.resolvePath = (
-  variables: log.PathVariables,
-  message?: log.LogMessage
-) => {
-  console.log("RES", path.join(LOG_PATH, variables.fileName));
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return path.join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
 
+app.setAppUserModelId("io.wowup.jliddev");
+
+if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
+  log.info("Hardware acceleration disabled");
+  app.disableHardwareAcceleration();
+} else {
+  log.info("Hardware acceleration enabled");
+}
+
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
-electronDl();
 
 const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
 
-let win: BrowserWindow = null;
-let tray: Tray = null;
-
-const args = process.argv.slice(1),
-  serve = args.some((val) => val === "--serve");
+const argv = require("minimist")(process.argv.slice(1), {
+  boolean: ["serve", "hidden"],
+});
 
 function createTray() {
-  console.log("TRAY");
   const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
@@ -129,8 +91,7 @@ function createTray() {
   ]);
 
   if (isWin) {
-    tray.on("click", function (event) {
-      console.log("SHOW");
+    tray.on("click", () => {
       win.show();
     });
   }
@@ -229,7 +190,7 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
-      allowRunningInsecureContent: serve ? true : false,
+      allowRunningInsecureContent: argv.serve ? true : false,
       webSecurity: false,
       enableRemoteModule: true,
     },
@@ -238,12 +199,15 @@ function createWindow(): BrowserWindow {
     show: false,
   };
 
-  if (isWin) {
+  if (isWin || isLinux) {
     windowOptions.frame = false;
   }
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
+  initializeIpcHanders(win);
+  initializeAppUpdater(win);
+  initializeAppUpdateIpcHandlers();
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
@@ -251,10 +215,7 @@ function createWindow(): BrowserWindow {
   win.webContents.userAgent = USER_AGENT;
 
   win.once("ready-to-show", () => {
-    win.show();
-    autoUpdater.checkForUpdatesAndNotify().then((result) => {
-      console.log("UPDATE", result);
-    });
+    if (!argv.hidden) win.show();
   });
 
   win.once("show", () => {
@@ -274,7 +235,7 @@ function createWindow(): BrowserWindow {
       e.preventDefault();
       win.hide();
 
-      if (preferenceStore.get("collapse_to_tray") === true) {
+      if (preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) === "true") {
         app.dock.hide();
       }
     });
@@ -284,7 +245,7 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
-  if (serve) {
+  if (argv.serve) {
     require("electron-reload")(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`),
     });
@@ -320,6 +281,24 @@ function createWindow(): BrowserWindow {
 }
 
 try {
+  // Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
+  const singleInstanceLock = app.requestSingleInstanceLock();
+  if (!singleInstanceLock) {
+    app.quit();
+  } else {
+    app.on("second-instance", () => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (win) {
+        if (win.isMinimized()) {
+          win.restore();
+        } else if (!win.isVisible() && !isMac) {
+          win.show();
+        }
+        win.focus();
+      }
+    });
+  }
+
   app.allowRendererProcessReuse = true;
 
   // This method will be called when Electron has finished
@@ -333,7 +312,7 @@ try {
     }, 400);
   });
 
-  app.on("before-quit", (e) => {
+  app.on("before-quit", () => {
     appIsQuitting = true;
   });
 
@@ -363,31 +342,87 @@ try {
   // throw e;
 }
 
-ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
-  try {
-    const download = await electronDl.download(win, arg.url, {
-      directory: arg.outputFolder,
-      onProgress: (progress) => {
-        const progressStatus: DownloadStatus = {
-          type: DownloadStatusType.Progress,
-          progress: parseFloat((progress.percent * 100.0).toFixed(2)),
-        };
-
-        win.webContents.send(arg.responseKey, progressStatus);
+function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
+  if (isMac) {
+    return [
+      {
+        label: app.name,
+        submenu: [{ role: "quit" }],
       },
-    });
-
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Complete,
-      savePath: download.getSavePath(),
-    };
-    win.webContents.send(arg.responseKey, status);
-  } catch (err) {
-    console.error(err);
-    const status: DownloadStatus = {
-      type: DownloadStatusType.Error,
-      error: err,
-    };
-    win.webContents.send(arg.responseKey, status);
+      {
+        label: "Edit",
+        submenu: [
+          { role: "undo" },
+          { role: "redo" },
+          { type: "separator" },
+          { role: "cut" },
+          { role: "copy" },
+          { role: "paste" },
+          { role: "selectAll" },
+        ],
+      },
+      {
+        label: "View",
+        submenu: [
+          { role: "reload" },
+          { role: "forceReload" },
+          { role: "toggleDevTools" },
+          { type: "separator" },
+          { role: "resetZoom" },
+          { role: "zoomIn", accelerator: "CommandOrControl+=" },
+          { role: "zoomOut" },
+          { type: "separator" },
+          { role: "togglefullscreen" },
+        ],
+      },
+    ];
+  } else if (isWin) {
+    return [
+      {
+        label: "View",
+        submenu: [
+          { role: "resetZoom" },
+          { role: "zoomIn", accelerator: "CommandOrControl+=" },
+          { role: "zoomOut" },
+          { type: "separator" },
+          { role: "togglefullscreen" },
+        ],
+      },
+    ];
+  } else if (isLinux) {
+    return [
+      {
+        label: app.name,
+        submenu: [{ role: "quit" }],
+      },
+      {
+        label: "Edit",
+        submenu: [
+          { role: "undo" },
+          { role: "redo" },
+          { type: "separator" },
+          { role: "cut" },
+          { role: "copy" },
+          { role: "paste" },
+          { role: "selectAll" },
+        ],
+      },
+      {
+        label: "View",
+        submenu: [
+          { role: "reload" },
+          { role: "forceReload" },
+          { role: "toggleDevTools" },
+          { type: "separator" },
+          { role: "resetZoom" },
+          { role: "zoomIn", accelerator: "CommandOrControl+=" },
+          { role: "zoomOut" },
+          { type: "separator" },
+          { role: "togglefullscreen" },
+        ],
+      },
+    ];
   }
-});
+
+  return [];
+}

@@ -1,22 +1,22 @@
 import { Injectable } from "@angular/core";
-import { WarcraftServiceImpl } from "./warcraft.service.impl";
-import { WarcraftServiceWin } from "./warcraft.service.win";
-import { FileUtils } from "../../utils/file.utils";
-import { ProductDb } from "app/models/warcraft/product-db";
-import { InstalledProduct } from "app/models/warcraft/installed-product";
-import { from, BehaviorSubject } from "rxjs";
-import * as path from "path";
 import * as fs from "fs";
-import { map, filter, delay, switchMap } from "rxjs/operators";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { StorageService } from "../storage/storage.service";
-import log from "electron-log";
-import { WarcraftServiceMac } from "./warcraft.service.mac";
-import { AddonFolder } from "app/models/wowup/addon-folder";
+import * as path from "path";
+import { BehaviorSubject, from } from "rxjs";
+import { filter, map, switchMap } from "rxjs/operators";
 import { ElectronService } from "..";
-import { TocService } from "../toc/toc.service";
-import { getEnumList, getEnumName } from "app/utils/enum.utils";
+import { InstalledProduct } from "../../models/warcraft/installed-product";
+import { ProductDb } from "../../models/warcraft/product-db";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
+import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { FileUtils } from "../../utils/file.utils";
 import { FileService } from "../files/file.service";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { TocService } from "../toc/toc.service";
+import { WarcraftServiceImpl } from "./warcraft.service.impl";
+import { WarcraftServiceLinux } from "./warcraft.service.linux";
+import { WarcraftServiceMac } from "./warcraft.service.mac";
+import { WarcraftServiceWin } from "./warcraft.service.win";
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = "_retail_";
@@ -56,7 +56,7 @@ export class WarcraftService {
   constructor(
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private storage: StorageService,
+    private _preferenceStorageService: PreferenceStorageService,
     private _tocService: TocService
   ) {
     this._impl = this.getImplementation();
@@ -225,12 +225,12 @@ export class WarcraftService {
 
   public getClientLocation(clientType: WowClientType) {
     const clientLocationKey = this.getClientLocationKey(clientType);
-    return this.storage.getPreference<string>(clientLocationKey) || "";
+    return this._preferenceStorageService.get(clientLocationKey) || "";
   }
 
   public setClientLocation(clientType: WowClientType, clientPath: string) {
     const clientLocationKey = this.getClientLocationKey(clientType);
-    return this.storage.setPreference(clientLocationKey, clientPath);
+    return this._preferenceStorageService.set(clientLocationKey, clientPath);
   }
 
   public setWowFolderPath(
@@ -340,6 +340,10 @@ export class WarcraftService {
   }
 
   private decodeProducts(productDbPath: string) {
+    if (this._electronService.isLinux) {
+      return [];
+    }
+
     const productDbData = FileUtils.readFileSync(productDbPath);
 
     try {
@@ -372,6 +376,10 @@ export class WarcraftService {
 
     if (this._electronService.isMac) {
       return new WarcraftServiceMac();
+    }
+
+    if (this._electronService.isLinux) {
+      return new WarcraftServiceLinux();
     }
 
     throw new Error("No warcraft service implementation found");

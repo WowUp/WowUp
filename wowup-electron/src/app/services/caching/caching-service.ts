@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
-import * as NodeCache from 'node-cache';
+import * as NodeCache from "node-cache";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class CachingService {
-
   private readonly _cache = new NodeCache();
 
   get<T>(key: string): T | undefined {

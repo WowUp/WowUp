@@ -1,28 +1,31 @@
-import { AddonProvider } from "./addon-provider";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { Addon } from "../entities/addon";
 import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
 import * as _ from "lodash";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { from, Observable, of } from "rxjs";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { CachingService } from "app/services/caching/caching-service";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { ElectronService } from "app/services";
-import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
-import { v4 as uuidv4 } from "uuid";
-import { CURSE_GET_SCAN_RESULTS } from "common/constants";
-import { CurseGetScanResultsRequest } from "common/curse/curse-get-scan-results-request";
-import { CurseGetScanResultsResponse } from "common/curse/curse-get-scan-results-response";
-import { CurseMatch } from "common/curse/curse-match";
-import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
-import { CurseSearchResult } from "../../common/curse/curse-search-result";
-import { CurseFile } from "common/curse/curse-file";
-import { CurseReleaseType } from "common/curse/curse-release-type";
-import { CurseGetFeaturedResponse } from "app/models/curse/curse-get-featured-response";
 import * as CircuitBreaker from "opossum";
+import { from, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { v4 as uuidv4 } from "uuid";
+import {
+  CURSE_GET_SCAN_RESULTS,
+  NO_LATEST_SEARCH_RESULT_FILES_ERROR,
+  NO_SEARCH_RESULTS_ERROR,
+} from "../../common/constants";
+import { CurseFile } from "../../common/curse/curse-file";
+import { CurseMatch } from "../../common/curse/curse-match";
+import { CurseReleaseType } from "../../common/curse/curse-release-type";
+import { CurseScanResult } from "../../common/curse/curse-scan-result";
+import { CurseSearchResult } from "../../common/curse/curse-search-result";
+import { Addon } from "../entities/addon";
+import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
+import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
+import { CurseGetFeaturedResponse } from "../models/curse/curse-get-featured-response";
+import { WowClientType } from "../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { ElectronService } from "../services";
+import { CachingService } from "../services/caching/caching-service";
+import { AddonProvider } from "./addon-provider";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const HUB_API_URL = "https://hub.dev.wowup.io";
@@ -73,11 +76,11 @@ export class CurseAddonProvider implements AddonProvider {
 
     const scanResults = await this.getScanResults(addonFolders);
 
-    console.log("ScanResults", scanResults.length);
+    console.debug("ScanResults", scanResults.length);
 
     await this.mapAddonFolders(scanResults, clientType);
 
-    console.log("mapAddonFolders");
+    console.debug("mapAddonFolders");
 
     const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
     const matchedScanResultIds = matchedScanResults.map(
@@ -92,7 +95,6 @@ export class CurseAddonProvider implements AddonProvider {
         (sr) => sr.addonFolder.name === addonFolder.name
       );
       if (!scanResult.exactMatch) {
-        console.log("No search result match", scanResult.directory);
         continue;
       }
 
@@ -100,7 +102,6 @@ export class CurseAddonProvider implements AddonProvider {
         (addonResult) => addonResult.id === scanResult.exactMatch.id
       );
       if (!scanResult.searchResult) {
-        console.log("No search result match", scanResult.directory);
         continue;
       }
 
@@ -118,36 +119,23 @@ export class CurseAddonProvider implements AddonProvider {
   public getScanResults = async (
     addonFolders: AddonFolder[]
   ): Promise<AppCurseScanResult[]> => {
-    const t1 = Date.now();
+    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
+    const scanResults: CurseScanResult[] = await this._electronService.ipcRenderer.invoke(
+      CURSE_GET_SCAN_RESULTS,
+      filePaths
+    );
 
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: CurseGetScanResultsResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
-
-        const appScanResults: AppCurseScanResult[] = arg.scanResults.map(
-          (scanResult) => {
-            const addonFolder = addonFolders.find(
-              (af) => af.path === scanResult.directory
-            );
-
-            return Object.assign({}, scanResult, { addonFolder });
-          }
+    const appScanResults: AppCurseScanResult[] = scanResults.map(
+      (scanResult) => {
+        const addonFolder = addonFolders.find(
+          (af) => af.path === scanResult.directory
         );
 
-        console.log("scan delta", Date.now() - t1);
-        resolve(appScanResults);
-      };
+        return Object.assign({}, scanResult, { addonFolder });
+      }
+    );
 
-      const request: CurseGetScanResultsRequest = {
-        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
-        responseKey: uuidv4(),
-      };
-
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(CURSE_GET_SCAN_RESULTS, request);
-    });
+    return appScanResults;
   };
 
   private async mapAddonFolders(
@@ -165,8 +153,6 @@ export class CurseAddonProvider implements AddonProvider {
     const fingerprintResponse = await this.getAddonsByFingerprintsW(
       scanResults.map((result) => result.fingerprint)
     );
-
-    console.log("fingerprintResponse", fingerprintResponse);
 
     for (let scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
@@ -217,12 +203,13 @@ export class CurseAddonProvider implements AddonProvider {
       })
       .toPromise();
 
-    return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
-      async () =>
-        await this._httpClient
-          .post<CurseFingerprintsResponse>(url, fingerprints)
-          .toPromise()
-    );
+    // If CurseForge API is ever fixed, put this back.
+    // return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
+    //   async () =>
+    //     await this._httpClient
+    //       .post<CurseFingerprintsResponse>(url, fingerprints)
+    //       .toPromise()
+    // );
   }
 
   private async getAddonsByFingerprints(
@@ -332,17 +319,22 @@ export class CurseAddonProvider implements AddonProvider {
         continue;
       }
 
-      searchResults.push(this.getAddonSearchResult(result));
+      searchResults.push(this.getAddonSearchResult(result, latestFiles));
     }
 
     return searchResults;
   }
 
-  searchByUrl(
+  async searchByUrl(
     addonUri: URL,
     clientType: WowClientType
   ): Promise<AddonSearchResult> {
-    throw new Error("Method not implemented.");
+    const slugRegex = /\/addons\/(.*?)(\/|$)/gi;
+    const slugMatch = slugRegex.exec(addonUri.pathname);
+    if (!slugMatch) {
+      return null;
+    }
+    return await this.searchBySlug(slugMatch[1], clientType);
   }
 
   searchByName(
@@ -352,6 +344,23 @@ export class CurseAddonProvider implements AddonProvider {
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
     throw new Error("Method not implemented.");
+  }
+
+  private async searchBySlug(slug: string, clientType: WowClientType) {
+    const searchWord = _.first(slug.split("-"));
+    const response = await this.getSearchResults(searchWord);
+
+    const match = _.find(response, (res) => res.slug === slug);
+    if (!match) {
+      throw new Error(NO_SEARCH_RESULTS_ERROR);
+    }
+
+    const latestFiles = this.getLatestFiles(match, clientType);
+    if (!latestFiles?.length) {
+      throw new Error(NO_LATEST_SEARCH_RESULT_FILES_ERROR);
+    }
+
+    return this.getAddonSearchResult(match, latestFiles);
   }
 
   private async getSearchResults(query: string): Promise<CurseSearchResult[]> {
@@ -436,8 +445,9 @@ export class CurseAddonProvider implements AddonProvider {
         thumbnailUrl,
         externalUrl: result.websiteUrl,
         providerName: this.name,
-        files: _.orderBy(searchResultFiles, f => f.channelType).reverse(),
+        files: _.orderBy(searchResultFiles, (f) => f.channelType).reverse(),
         downloadCount: result.downloadCount,
+        summary: result.summary,
       };
 
       return searchResult;
@@ -572,6 +582,9 @@ export class CurseAddonProvider implements AddonProvider {
       clientType
     );
 
+    const gameVersion =
+      currentVersion.gameVersion[0] || scanResult.addonFolder.toc.interface;
+
     let channelType = this.getChannelType(
       scanResult.exactMatch.file.releaseType
     );
@@ -597,7 +610,7 @@ export class CurseAddonProvider implements AddonProvider {
       externalUrl: scanResult.searchResult.websiteUrl,
       externalId: scanResult.searchResult.id.toString(),
       folderName: scanResult.addonFolder.name,
-      gameVersion: currentVersion.gameVersion[0],
+      gameVersion: gameVersion,
       installedAt: new Date(),
       installedFolders: folderList,
       installedVersion: currentVersion.displayName,
@@ -608,6 +621,7 @@ export class CurseAddonProvider implements AddonProvider {
       screenshotUrls: this.getScreenshotUrls(scanResult.searchResult),
       downloadCount: scanResult.searchResult.downloadCount,
       summary: scanResult.searchResult.summary,
+      releasedAt: new Date(latestVersion.fileDate),
     };
   }
 }

@@ -1,23 +1,21 @@
 import { HttpClient } from "@angular/common/http";
-import { AppConfig } from "environments/environment";
 import { Observable, of } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
+import { WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
+import { AppConfig } from "../../environments/environment";
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonProvider, AddonProviderType } from "./addon-provider";
+import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
+import { WowGameType } from "../models/wowup-api/wow-game-type";
+import { WowUpAddonReleaseRepresentation } from "../models/wowup-api/wowup-addon-release.representation";
 import { WowUpAddonRepresentation } from "../models/wowup-api/wowup-addon.representation";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { WowUpGetScanResultsRequest } from "common/wowup/wowup-get-scan-results-request";
-import { WowUpGetScanResultsResponse } from "common/wowup/wowup-get-scan-results-response";
-import { ElectronService } from "app/services";
-import { WOWUP_GET_SCAN_RESULTS } from "common/constants";
-import { WowUpScanResult } from "common/wowup/wowup-scan-result";
-import { GetAddonsByFingerprintResponse } from "app/models/wowup-api/get-addons-by-fingerprint.response";
-import { WowUpAddonReleaseRepresentation } from "app/models/wowup-api/wowup-addon-release.representation";
-import { WowGameType } from "app/models/wowup-api/wow-game-type";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AppWowUpScanResult } from "app/models/wowup/app-wowup-scan-result";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
+import { ElectronService } from "../services";
+import { AddonProvider } from "./addon-provider";
 
 const API_URL = AppConfig.wowUpHubUrl;
 
@@ -104,7 +102,7 @@ export class WowUpAddonProvider implements AddonProvider {
 
     const scanResults = await this.getScanResults(addonFolders);
 
-    console.log("ScanResults", scanResults.length);
+    console.debug("ScanResults", scanResults.length);
 
     const fingerprintResponse = await this.getAddonsByFingerprints(
       scanResults.map((result) => result.fingerprint)
@@ -204,25 +202,17 @@ export class WowUpAddonProvider implements AddonProvider {
   ): Promise<AppWowUpScanResult[]> => {
     const t1 = Date.now();
 
-    return new Promise((resolve, reject) => {
-      const eventHandler = (_evt: any, arg: WowUpGetScanResultsResponse) => {
-        if (arg.error) {
-          return reject(arg.error);
-        }
+    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
-        console.log("scan delta", Date.now() - t1);
-        console.log("WowUpGetScanResultsResponse", arg);
-        resolve(arg.scanResults);
-      };
+    const scanResults: AppWowUpScanResult[] = await this._electronService.ipcRenderer.invoke(
+      WOWUP_GET_SCAN_RESULTS,
+      filePaths
+    );
 
-      const request: WowUpGetScanResultsRequest = {
-        filePaths: addonFolders.map((addonFolder) => addonFolder.path),
-        responseKey: uuidv4(),
-      };
+    console.log("scan delta", Date.now() - t1);
+    console.log("WowUpGetScanResultsResponse", scanResults);
 
-      this._electronService.ipcRenderer.once(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(WOWUP_GET_SCAN_RESULTS, request);
-    });
+    return scanResults;
   };
 
   private getAddon(

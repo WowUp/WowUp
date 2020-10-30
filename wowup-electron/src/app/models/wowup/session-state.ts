@@ -1,3 +1,1 @@
-export interface SessionState {
-    
-}
+export interface SessionState {}

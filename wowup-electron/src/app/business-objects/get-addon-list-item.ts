@@ -1,10 +1,13 @@
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
 import * as _ from "lodash";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonInstallState } from "../models/wowup/addon-install-state";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 
 export class GetAddonListItem {
   public readonly searchResult: AddonSearchResult;
+
+  public installState: AddonInstallState = AddonInstallState.Unknown;
 
   get downloadCount() {
     return this.searchResult.downloadCount || 0;

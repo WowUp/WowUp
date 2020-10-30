@@ -1,240 +1,264 @@
 {
-    "ChangeLogs": [
-      {
-        "Version": "2.0.0-alpha.11",
-        "Description": "Add version label to the 'Get Addons' page.\nUpdates to the addon detail page (by Flippey).\nRussian local updates (by Medok).\nAdd the system notification for auto updates.\nFix some column spacing.\nTelemetry for user actions added.\nFix a bug not allowing users to uninstall an addon with no 'installed folders'.\nHopefully less issues with installing multiple addons at once.\nFix some errors related to addons imported from GitHub."
-      },
-      {
-        "Version": "2.0.0-alpha.10",
-        "Description": "Temporary CF fingerprint endpoint patch."
-      },
-      {
-        "Version": "2.0.0-alpha.9",
-        "Description": "Update Russian locale.\nTry to fix some font blurriness.\nRemove debug error in WowInterface provider."
-      },
-      {
-        "Version": "2.0.0-alpha.8",
-        "Description": "Localize most static text (by Pansa and Medok).\nImplemented addon detail view in my-addons (by Flippeey).\nWindow position/size/maximized state should now be restored when starting the app (by Chops).\nDouble clicking the titlebar on mac should perform the action set in your system settings (by Chops).\nAddon scanning is now much faster.\nWhen scanning addons, the matching channel type should be applied not the default.\nRe-scan is now less complicated and should prevent duplicates.\nAdd the 'Show Folder' button to the addon context menu.\nAdd http circuit breakers to the providers.\nFix issue with My Addons Provider column not sorting.\nPage context data on the footer.\nRemove the windows menu bar buttons for mac.\nAdd WowUp addon provider prototype"
-      },
-      {
-        "Version": "2.0.0-alpha.7",
-        "Description": "Stuff?"
-      },
-      {
-        "Version": "1.16.1",
-        "Description": "Default addon channel can now be set separately per World of Warcraft client.\nUI updates.\nBug Fixes."
-      },
-      {
-        "Version": "1.16.0",
-        "Description": "Remember the last selected client type.\nNew updater companion app, to deal with in-app update issues."
-      },
-      {
-        "Version": "1.15.2",
-        "Description": "Fix bug with local image paths for certain users."
-      },
-      {
-        "Version": "1.15.1",
-        "Description": "Add column sorting for My Addons page.\nTry out new error tracking service for telemetry users."
-      },
-      {
-        "Version": "1.15.0",
-        "Description": "All new scanning method, better results less 'Install' button.\nWowInterface support during scan.\nBetter TukUI support.\nNew filtering on the 'My Addons' page.\nSystem tray icons should not hang around after you close the app.\nNew option to switch between Stable and Beta WowUp releases.\nUI improvements.\nPerformance improvements."
-      },
-      {
-        "Version": "1.14.12",
-        "Description": "When running the app multiple times the original window should restore instead of showing an alert.\nAdd some color to the In-App update bar to make it more noticeable.\nAdd a column with the provider name to 'My Addons' page."
-      },
-      {
-        "Version": "1.14.11",
-        "Description": "Change the value used for current version for Curse addons.\nThis will require you to re-update all Curse addons."
-      },
-      {
-        "Version": "1.14.10",
-        "Description": "Bind the client type dropdown on 'My Addons' and 'Get Addons' to the same value to reduce confusion."
-      },
-      {
-        "Version": "1.14.9",
-        "Description": "Fix crash bug related to 'Update All' and alpha/beta addons.\nFix issue causing updated alpha/beta addons to revert to stable."
-      },
-      {
-        "Version": "1.14.8",
-        "Description": "Add Wow Interface integration for Scanning.\nAdd Wow Interface intergration for 'Install from URL'.\nPerformance updates."
-      },
-      {
-        "Version": "1.14.7",
-        "Description": "Fix install error when an addon has no files matching the selected channel.\nAttempt to fix some perfomance issues during install.\nSpeed up the scan process."
-      },
-      {
-        "Version": "1.14.6",
-        "Description": "In-App updates should now use the same GitHub download as the website.\nIf the In-App update fails to download dont just leave the user with a .bak file."
-      },
-      {
-        "Version": "1.14.5",
-        "Description": "Attempt to fix startup crash bug from windows for some users."
-      },
-      {
-        "Version": "1.14.4",
-        "Description": "Improve TukUI support while scanning, will now check for X-Tukui-ProjectID for improved results.\nAttempted to make the app single instance, so you cant launch it a bunch of times."
-      },
-      {
-        "Version": "1.14.3",
-        "Description": "Fix issue where addons from TukUI would not install correctly.\nAdd confirmation box to addon uninstall.\nNewly installed addons should appear in the correct spot in the list, not the bottom.\nUninstalling an addon sould be reflected on the 'Get Addons' page.\nRefreshing the 'Get Addons' page should show the correct addons now.\nAddon lists should scroll a little more smoothly."
-      },
-      {
-        "Version": "1.14.2",
-        "Description": "Add the ability to set a global addon channel."
-      },
-      {
-        "Version": "1.14.1",
-        "Description": "Fix issue with update button being shown over progress bar during auto update."
-      },
-      {
-        "Version": "1.14.0",
-        "Description": "Add the ability to set an addon as Auto Update, should happen on app start and when hitting refresh.\nAdded confirmation to the re-scan button to help avoid confusion."
-      },
-      {
-        "Version": "1.13.0",
-        "Description": "Add ability to install from GitHub URLS.\nAdd crude error reporting for telemetry users.\nTidy up options screen."
-      },
-      {
-        "Version": "1.12.2",
-        "Description": "Fix an issue with beta client crashing the app when detected."
-      },
-      {
-        "Version": "1.12.1",
-        "Description": "Attempt to fix issues with maxmizing the window going being the taskbar."
-      },
-      {
-        "Version": "1.12.0",
-        "Description": "Add basic addon search for Curse and TukUi.\nAdd Patreon button."
-      },
-      {
-        "Version": "1.11.2",
-        "Description": "Fix issue with new version check happening too fast."
-      },
-      {
-        "Version": "1.11.1",
-        "Description": "Fix crash bug when a search result has no valid file."
-      },
-      {
-        "Version": "1.11.0",
-        "Description": "Add support for Addon Channels (Stable/Beta/Alpha).\nImproved context menu UI.\nFix bug with trying to install TukUi from Get Addons page.\nImages should look much better now.\nFix various UI bugs."
-      },
-      {
-        "Version": "1.10.4",
-        "Description": "Try to add beta support."
-      },
-      {
-        "Version": "1.10.3",
-        "Description": "My Addon list should no longer duplicate when hitting update-all.\nNew scrollbar style."
-      },
-      {
-        "Version": "1.10.2",
-        "Description": "When trying to guess installed addons, prefer toc metadata."
-      },
-      {
-        "Version": "1.10.1",
-        "Description": "Hopefully improve install/uninstall breaking the app during certain actions."
-      },
-      {
-        "Version": "1.10.0",
-        "Description": "Requires Re-Scan.\nSupport for different locations per WoW client."
-      },
-      {
-        "Version": "1.9.3",
-        "Description": "UI updates."
-      },
-      {
-        "Version": "1.9.2",
-        "Description": "Add ignore right-click option."
-      },
-      {
-        "Version": "1.9.1",
-        "Description": "Add option for collapse to tray."
-      },
-      {
-        "Version": "1.9.0",
-        "Description": "Add In-App updating and restart.\nAdd Open Sans font to be more readible?"
-      },
-      {
-        "Version": "1.8.2",
-        "Description": "Add TukUI addons to the 'Get Addons' tab.\nAdd in some window position saving on Windows."
-      },
-      {
-        "Version": "1.8.1",
-        "Description": "Add per monitor DPI awareness on Windows."
-      },
-      {
-        "Version": "1.8.0",
-        "Description": "Add telemetry opt-in."
-      },
-      {
-        "Version": "1.7.1",
-        "Description": "Fix issue with update-all."
-      },
-      {
-        "Version": "1.7.0",
-        "Description": "Requires Re-Scan\nAdded Right-Click Re-Install.\nAdded Right-Click Uninstall."
-      },
-      {
-        "Version": "1.6.1",
-        "Description": "Report installed versoin, jazz up the user-agent."
-      },
-      {
-        "Version": "1.6.0",
-        "Description": "Add the new Get Addons screen."
-      },
-      {
-        "Version": "1.5.1",
-        "Description": "Requires Re-Scan.\nFix Curse addon filtering to not suggest 'alternate' packages.\nRename a column in the database."
-      },
-      {
-        "Version": "1.5.0",
-        "Description": "Add install tracking analytics."
-      },
-      {
-        "Version": "1.4.0",
-        "Description": "Add collapse to system tray."
-      },
-      {
-        "Version": "1.3.0",
-        "Description": "Requires Re-Scan.\nAdd support for TukUI/ElvUI."
-      },
-      {
-        "Version": "1.2.6",
-        "Description": "Requires Re-Scan.\nAdd addon name clicks to open their URL."
-      },
-      {
-        "Version": "1.2.5",
-        "Description": "Jazz up the about page."
-      },
-      {
-        "Version": "1.2.4",
-        "Description": "More protection against weird toc files.\nImprovements to re-scan function."
-      },
-      {
-        "Version": "1.2.3",
-        "Description": "Add some extra logging and error catching.\nFix some issues searching curse for addons for PTR clients."
-      },
-      {
-        "Version": "1.2.2",
-        "Description": "Add Show Log Files button.\nAdd in recurring call to check for app updates every 10 minutes.\nBetter wow folder selection validation."
-      },
-      {
-        "Version": "1.2.1",
-        "Description": "Add correct task bar icon."
-      },
-      {
-        "Version": "1.2.0",
-        "Description": "Add version checking to alert users of a new version available.\nFix support for classic/classic ptr/retail ptr addon folders."
-      },
-      {
-        "Version": "1.1.0",
-        "Description": "Attempt to add support for Retail and Classic PTR clients"
-      },
-      {
-        "Version": "1.0.0",
-        "Description": "Initial release!"
-      }
-    ]
-  }
+  "ChangeLogs": [
+    {
+      "Version": "2.0.0-alpha.20",
+      "Description": "Rewrote some app text to be more helpful (Linaori)\nUpdate Russian local (Medok)\nUpdate Italian locale (Bito)\nImproved GitHub URL support, nested paths and .git urls\nFix issue with Ignored addons not sorting\nFix Ctrl+A highlighting random UI elements\nDropped firebase integration"
+    },
+    {
+      "Version": "2.0.0-alpha.17",
+      "Description": "Update Norwegian locale (Morten)\nUpdate German Locale (Nils89)\nUpdate Italian locale (Bito)\nHide the update button when the version has not changed\nFix an issue where status did not say 'Ignored' for ignored addons\nFix an issue with sorting by updated at after updating an addon\nFix 'Get Addons' download count not showing for less than 1000 downloads\nFix an issue with sorting 'My Addons' by status column\nFix an issue with the cursor not changing on raised buttons."
+    },
+    {
+      "Version": "2.0.0-alpha.16",
+      "Description": "Add the ability to have WowUp start on system start (Noxis)\nAdd locale support to the update/install button (Linaori)\nAdd support for locale date/times (chops)\nUpdate RU locales (Medok)\nUpdate German locales (Glow)\nFix an issue with horizontal scrolling on the install by URL dialog (chops)\nLinux support fixes\nPerformance fixes for the details dialog"
+    },
+    {
+      "Version": "2.0.0-alpha.15",
+      "Description": "Add the ability to translate plurals (Chops)\nAdd the alpha/beta indicator for user's default install channel to the 'Get Addons' tab (Chops)\nAdd new column to show the last updated time of an Addon (Linaori)\nAdd support for installing vir URL from CurseForge\nShow the release date in a more user friendly way (Chops)\nMore text items are now translated with updated locales (Linaori)\nNew placehold thumbnail for Addons\nAddon author list now limited to 3 rows\nSwitch to a new analytics provider.\nFix issue with addon count not changing when deleting an addon.\nSeveral fixes for linux support"
+    },
+    {
+      "Version": "2.0.0-alpha.14",
+      "Description": "Attempt to lower background CPU usage to 0\nAdd translation logic for download counts (flippey)\nMore locale updates\nInstall from URL now supports WowInterface download links\nUpdate issues with details dialog.\nFix an issue with WoW install locations not showing up correctly on first run (chops)\nFix an issue with downloads folder not being created\nFix website link on About page to show the cursor\nFix an issue where the details panel would change if another addon was updating.\nFix an issue where an addon row would duplicate with the details dialog open."
+    },
+    {
+      "Version": "2.0.0-alpha.13",
+      "Description": "UI Updates to details popup (Flippey).\nLocale updates. (Oleksandr, McBurn, Morten)\nAdd a hardware acceleration toggle (Linaori).\nAdd 'Released At' column to 'My Addons' page. (Chops)\nAdd some basic Linux support.\nAdd a standardized format for game version.\nAdd a toggle to turn off system notifications after an auto update.\nAdd a single instance lock so you can only launch the app once.\nFix an issue with game version column appearing blank.\nFix an issue where update all did not visual update.\nFix an issue where 'Up to Date' appeared as a greyed out button.\nFix an issue with downloaded files/folders not being cleaned up.\nFix issues with file operations erroring when perfoming multiple downloads."
+    },
+    {
+      "Version": "2.0.0-alpha.11",
+      "Description": "Add zoom support shortcuts and ctrl + scrollwheel (by Linaori).\nAdd version label to the 'Get Addons' page (by Chops).\nUpdates to the addon detail page (by Flippey).\nRussian local updates (by Medok).\nAdd the system notification for auto updates.\nFix some column spacing.\nTelemetry for user actions added.\nFix a bug not allowing users to uninstall an addon with no 'installed folders'.\nHopefully less issues with installing multiple addons at once.\nFix some errors related to addons imported from GitHub."
+    },
+    {
+      "Version": "2.0.0-alpha.10",
+      "Description": "Temporary CF fingerprint endpoint patch."
+    },
+    {
+      "Version": "2.0.0-alpha.9",
+      "Description": "Update Russian locale.\nTry to fix some font blurriness.\nRemove debug error in WowInterface provider."
+    },
+    {
+      "Version": "2.0.0-alpha.8",
+      "Description": "Localize most static text (by Pansa and Medok).\nImplemented addon detail view in my-addons (by Flippeey).\nWindow position/size/maximized state should now be restored when starting the app (by Chops).\nDouble clicking the titlebar on mac should perform the action set in your system settings (by Chops).\nAddon scanning is now much faster.\nWhen scanning addons, the matching channel type should be applied not the default.\nRe-scan is now less complicated and should prevent duplicates.\nAdd the 'Show Folder' button to the addon context menu.\nAdd http circuit breakers to the providers.\nFix issue with My Addons Provider column not sorting.\nPage context data on the footer.\nRemove the windows menu bar buttons for mac.\nAdd WowUp addon provider prototype"
+    },
+    {
+      "Version": "2.0.0-alpha.7",
+      "Description": "Stuff?"
+    },
+    {
+      "Version": "1.16.1",
+      "Description": "Default addon channel can now be set separately per World of Warcraft client.\nUI updates.\nBug Fixes."
+    },
+    {
+      "Version": "1.16.0",
+      "Description": "Remember the last selected client type.\nNew updater companion app, to deal with in-app update issues."
+    },
+    {
+      "Version": "1.15.2",
+      "Description": "Fix bug with local image paths for certain users."
+    },
+    {
+      "Version": "1.15.1",
+      "Description": "Add column sorting for My Addons page.\nTry out new error tracking service for telemetry users."
+    },
+    {
+      "Version": "1.15.0",
+      "Description": "All new scanning method, better results less 'Install' button.\nWowInterface support during scan.\nBetter TukUI support.\nNew filtering on the 'My Addons' page.\nSystem tray icons should not hang around after you close the app.\nNew option to switch between Stable and Beta WowUp releases.\nUI improvements.\nPerformance improvements."
+    },
+    {
+      "Version": "1.14.12",
+      "Description": "When running the app multiple times the original window should restore instead of showing an alert.\nAdd some color to the In-App update bar to make it more noticeable.\nAdd a column with the provider name to 'My Addons' page."
+    },
+    {
+      "Version": "1.14.11",
+      "Description": "Change the value used for current version for Curse addons.\nThis will require you to re-update all Curse addons."
+    },
+    {
+      "Version": "1.14.10",
+      "Description": "Bind the client type dropdown on 'My Addons' and 'Get Addons' to the same value to reduce confusion."
+    },
+    {
+      "Version": "1.14.9",
+      "Description": "Fix crash bug related to 'Update All' and alpha/beta addons.\nFix issue causing updated alpha/beta addons to revert to stable."
+    },
+    {
+      "Version": "1.14.8",
+      "Description": "Add Wow Interface integration for Scanning.\nAdd Wow Interface intergration for 'Install from URL'.\nPerformance updates."
+    },
+    {
+      "Version": "1.14.7",
+      "Description": "Fix install error when an addon has no files matching the selected channel.\nAttempt to fix some perfomance issues during install.\nSpeed up the scan process."
+    },
+    {
+      "Version": "1.14.6",
+      "Description": "In-App updates should now use the same GitHub download as the website.\nIf the In-App update fails to download dont just leave the user with a .bak file."
+    },
+    {
+      "Version": "1.14.5",
+      "Description": "Attempt to fix startup crash bug from windows for some users."
+    },
+    {
+      "Version": "1.14.4",
+      "Description": "Improve TukUI support while scanning, will now check for X-Tukui-ProjectID for improved results.\nAttempted to make the app single instance, so you cant launch it a bunch of times."
+    },
+    {
+      "Version": "1.14.3",
+      "Description": "Fix issue where addons from TukUI would not install correctly.\nAdd confirmation box to addon uninstall.\nNewly installed addons should appear in the correct spot in the list, not the bottom.\nUninstalling an addon sould be reflected on the 'Get Addons' page.\nRefreshing the 'Get Addons' page should show the correct addons now.\nAddon lists should scroll a little more smoothly."
+    },
+    {
+      "Version": "1.14.2",
+      "Description": "Add the ability to set a global addon channel."
+    },
+    {
+      "Version": "1.14.1",
+      "Description": "Fix issue with update button being shown over progress bar during auto update."
+    },
+    {
+      "Version": "1.14.0",
+      "Description": "Add the ability to set an addon as Auto Update, should happen on app start and when hitting refresh.\nAdded confirmation to the re-scan button to help avoid confusion."
+    },
+    {
+      "Version": "1.13.0",
+      "Description": "Add ability to install from GitHub URLS.\nAdd crude error reporting for telemetry users.\nTidy up options screen."
+    },
+    {
+      "Version": "1.12.2",
+      "Description": "Fix an issue with beta client crashing the app when detected."
+    },
+    {
+      "Version": "1.12.1",
+      "Description": "Attempt to fix issues with maxmizing the window going being the taskbar."
+    },
+    {
+      "Version": "1.12.0",
+      "Description": "Add basic addon search for Curse and TukUi.\nAdd Patreon button."
+    },
+    {
+      "Version": "1.11.2",
+      "Description": "Fix issue with new version check happening too fast."
+    },
+    {
+      "Version": "1.11.1",
+      "Description": "Fix crash bug when a search result has no valid file."
+    },
+    {
+      "Version": "1.11.0",
+      "Description": "Add support for Addon Channels (Stable/Beta/Alpha).\nImproved context menu UI.\nFix bug with trying to install TukUi from Get Addons page.\nImages should look much better now.\nFix various UI bugs."
+    },
+    {
+      "Version": "1.10.4",
+      "Description": "Try to add beta support."
+    },
+    {
+      "Version": "1.10.3",
+      "Description": "My Addon list should no longer duplicate when hitting update-all.\nNew scrollbar style."
+    },
+    {
+      "Version": "1.10.2",
+      "Description": "When trying to guess installed addons, prefer toc metadata."
+    },
+    {
+      "Version": "1.10.1",
+      "Description": "Hopefully improve install/uninstall breaking the app during certain actions."
+    },
+    {
+      "Version": "1.10.0",
+      "Description": "Requires Re-Scan.\nSupport for different locations per WoW client."
+    },
+    {
+      "Version": "1.9.3",
+      "Description": "UI updates."
+    },
+    {
+      "Version": "1.9.2",
+      "Description": "Add ignore right-click option."
+    },
+    {
+      "Version": "1.9.1",
+      "Description": "Add option for collapse to tray."
+    },
+    {
+      "Version": "1.9.0",
+      "Description": "Add In-App updating and restart.\nAdd Open Sans font to be more readible?"
+    },
+    {
+      "Version": "1.8.2",
+      "Description": "Add TukUI addons to the 'Get Addons' tab.\nAdd in some window position saving on Windows."
+    },
+    {
+      "Version": "1.8.1",
+      "Description": "Add per monitor DPI awareness on Windows."
+    },
+    {
+      "Version": "1.8.0",
+      "Description": "Add telemetry opt-in."
+    },
+    {
+      "Version": "1.7.1",
+      "Description": "Fix issue with update-all."
+    },
+    {
+      "Version": "1.7.0",
+      "Description": "Requires Re-Scan\nAdded Right-Click Re-Install.\nAdded Right-Click Uninstall."
+    },
+    {
+      "Version": "1.6.1",
+      "Description": "Report installed versoin, jazz up the user-agent."
+    },
+    {
+      "Version": "1.6.0",
+      "Description": "Add the new Get Addons screen."
+    },
+    {
+      "Version": "1.5.1",
+      "Description": "Requires Re-Scan.\nFix Curse addon filtering to not suggest 'alternate' packages.\nRename a column in the database."
+    },
+    {
+      "Version": "1.5.0",
+      "Description": "Add install tracking analytics."
+    },
+    {
+      "Version": "1.4.0",
+      "Description": "Add collapse to system tray."
+    },
+    {
+      "Version": "1.3.0",
+      "Description": "Requires Re-Scan.\nAdd support for TukUI/ElvUI."
+    },
+    {
+      "Version": "1.2.6",
+      "Description": "Requires Re-Scan.\nAdd addon name clicks to open their URL."
+    },
+    {
+      "Version": "1.2.5",
+      "Description": "Jazz up the about page."
+    },
+    {
+      "Version": "1.2.4",
+      "Description": "More protection against weird toc files.\nImprovements to re-scan function."
+    },
+    {
+      "Version": "1.2.3",
+      "Description": "Add some extra logging and error catching.\nFix some issues searching curse for addons for PTR clients."
+    },
+    {
+      "Version": "1.2.2",
+      "Description": "Add Show Log Files button.\nAdd in recurring call to check for app updates every 10 minutes.\nBetter wow folder selection validation."
+    },
+    {
+      "Version": "1.2.1",
+      "Description": "Add correct task bar icon."
+    },
+    {
+      "Version": "1.2.0",
+      "Description": "Add version checking to alert users of a new version available.\nFix support for classic/classic ptr/retail ptr addon folders."
+    },
+    {
+      "Version": "1.1.0",
+      "Description": "Attempt to add support for Retail and Classic PTR clients"
+    },
+    {
+      "Version": "1.0.0",
+      "Description": "Initial release!"
+    }
+  ]
+}

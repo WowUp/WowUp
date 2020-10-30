@@ -1,5 +1,6 @@
 {
   "productName": "WowUp",
+  "appId": "io.wowup.jliddev",
   "directories": {
     "output": "release/"
   },
@@ -43,6 +44,9 @@
   "win": {
     "icon": "electron-build/icon.ico",
     "target": ["nsis", "portable"]
+  },
+  "nsis": {
+    "deleteAppDataOnUninstall": true
   },
   "mac": {
     "icon": "dist/assets/icons",

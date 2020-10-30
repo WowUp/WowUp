@@ -1,28 +1,39 @@
 import { Injectable } from "@angular/core";
-import { AddonStorageService } from "../storage/addon-storage.service";
-import { Addon } from "../../entities/addon";
-import { WarcraftService } from "../warcraft/warcraft.service";
+import * as fs from "fs";
+import * as _ from "lodash";
+import * as path from "path";
+import { forkJoin, from, Observable, Subject } from "rxjs";
+import { map, mergeMap } from "rxjs/operators";
+import * as slug from "slug";
+import { v4 as uuidv4 } from "uuid";
 import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
-import * as _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
-import * as path from "path";
-import * as fs from "fs";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
-import { forkJoin, Observable, Subject } from "rxjs";
-import { map } from "rxjs/operators";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
-import { DownloadSevice } from "../download/download.service";
-import { WowUpService } from "../wowup/wowup.service";
-import { FileService } from "../files/file.service";
-import { TocService } from "../toc/toc.service";
-import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
-import { AddonProviderFactory } from "./addon.provider.factory";
+import { Addon } from "../../entities/addon";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { getEnumName } from "../../utils/enum.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
+import { DownloadSevice } from "../download/download.service";
+import { FileService } from "../files/file.service";
+import { AddonStorageService } from "../storage/addon-storage.service";
+import { TocService } from "../toc/toc.service";
+import { WarcraftService } from "../warcraft/warcraft.service";
+import { WowUpService } from "../wowup/wowup.service";
+import { AddonProviderFactory } from "./addon.provider.factory";
+
+interface InstallQueueItem {
+  addonId: string;
+  onUpdate: (
+    installState: AddonInstallState,
+    progress: number
+  ) => void | undefined;
+  completion: any;
+}
 
 @Injectable({
   providedIn: "root",
@@ -31,6 +42,7 @@ export class AddonService {
   private readonly _addonProviders: AddonProvider[];
   private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
   private readonly _addonRemovedSrc = new Subject<string>();
+  private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
@@ -51,6 +63,12 @@ export class AddonService {
       this._addonProviderFactory.createWowInterfaceAddonProvider(),
       this._addonProviderFactory.createGitHubAddonProvider(),
     ];
+
+    this._installQueue
+      .pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3))
+      .subscribe((addonName) => {
+        console.log("Install complete", addonName);
+      });
   }
 
   public saveAddon(addon: Addon) {
@@ -67,8 +85,8 @@ export class AddonService {
     var searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackUserAction(
-      "Addons",
-      "Search",
+      "addons",
+      "search",
       `${clientType}|${query}`
     );
 
@@ -151,17 +169,52 @@ export class AddonService {
     });
   }
 
-  public async installAddon(
+  public installAddon(
     addonId: string,
     onUpdate: (
       installState: AddonInstallState,
       progress: number
     ) => void = undefined
-  ) {
+  ): Promise<void> {
     const addon = this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
       throw new Error("Addon not found or invalid");
     }
+
+    onUpdate?.call(this, AddonInstallState.Pending, 0);
+    this._addonInstalledSrc.next({
+      addon,
+      installState: AddonInstallState.Pending,
+      progress: 0,
+    });
+
+    // create a ref for resolving or rejecting once the queue grabs this.
+    let completion = { resolve: undefined, reject: undefined };
+    const promise = new Promise<void>((resolve, reject) => {
+      completion = { resolve, reject };
+    });
+
+    this._installQueue.next({
+      addonId,
+      onUpdate,
+      completion,
+    });
+
+    return promise;
+  }
+
+  private processInstallQueue = async (
+    queueItem: InstallQueueItem
+  ): Promise<string> => {
+    const addonId = queueItem.addonId;
+    const onUpdate = queueItem.onUpdate;
+
+    const addon = this.getAddonById(addonId);
+    if (addon == null || !addon.downloadUrl) {
+      throw new Error("Addon not found or invalid");
+    }
+
+    const downloadFileName = `${slug(addon.name)}.zip`;
 
     onUpdate?.call(this, AddonInstallState.Downloading, 25);
     this._addonInstalledSrc.next({
@@ -175,11 +228,11 @@ export class AddonService {
     try {
       downloadedFilePath = await this._downloadService.downloadZipFile(
         addon.downloadUrl,
+        downloadFileName,
         this._wowUpService.applicationDownloadsFolderPath
       );
 
       onUpdate?.call(this, AddonInstallState.Installing, 75);
-
       this._addonInstalledSrc.next({
         addon,
         installState: AddonInstallState.Installing,
@@ -191,7 +244,7 @@ export class AddonService {
         uuidv4()
       );
 
-      unzippedDirectory = await this._downloadService.unzipFile(
+      unzippedDirectory = await this._fileService.unzipFile(
         downloadedFilePath,
         unzipPath
       );
@@ -214,22 +267,34 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      await this._analyticsService.trackUserAction(
-        "Addons",
-        "InstallById",
-        `${addon.clientType}|${addon.name}`
+      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${
+        addon.providerName
+      }|${addon.externalId}|${addon.name}`;
+      this._analyticsService.trackUserAction(
+        "addons",
+        "install_by_id",
+        actionLabel
       );
+
+      queueItem.completion.resolve();
     } catch (err) {
       console.error(err);
-
-      // TODO track error
+      queueItem.completion.reject(err);
     } finally {
-      if (fs.existsSync(unzippedDirectory)) {
-        await this._fileService.deleteDirectory(unzippedDirectory);
+      const unzippedDirectoryExists = await this._fileService.pathExists(
+        unzippedDirectory
+      );
+
+      const downloadedFilePathExists = await this._fileService.pathExists(
+        downloadedFilePath
+      );
+
+      if (unzippedDirectoryExists) {
+        await this._fileService.remove(unzippedDirectory);
       }
 
-      if (fs.existsSync(downloadedFilePath)) {
-        fs.unlinkSync(downloadedFilePath);
+      if (downloadedFilePathExists) {
+        await this._fileService.remove(downloadedFilePath);
       }
     }
 
@@ -239,7 +304,9 @@ export class AddonService {
       installState: AddonInstallState.Complete,
       progress: 100,
     });
-  }
+
+    return addon.name;
+  };
 
   public async logDebugData() {
     const curseProvider = this._addonProviders.find(
@@ -308,24 +375,24 @@ export class AddonService {
       );
 
       try {
+        // If the backup dir exists for some reason, kill it.
+        console.log("DELETE BKUP", unzipBackupLocation);
+        await this._fileService.deleteIfExists(unzipBackupLocation);
+
         // If the user already has the addon installed, create a temporary backup
-        if (fs.existsSync(unzipLocation)) {
+        if (await this._fileService.pathExists(unzipLocation)) {
           console.log("BACKING UP", unzipLocation);
-          await this._fileService.renameDirectory(
-            unzipLocation,
-            unzipBackupLocation
-          );
+          await this._fileService.copy(unzipLocation, unzipBackupLocation);
+          await this._fileService.remove(unzipLocation);
         }
 
         // Copy contents from unzipped new directory to existing addon folder location
         console.log("COPY", unzipLocation);
-        await this._fileService.copyDirectory(unzippedFilePath, unzipLocation);
+        await this._fileService.copy(unzippedFilePath, unzipLocation);
 
         // If the copy succeeds, delete the backup
-        if (fs.existsSync(unzipBackupLocation)) {
-          console.log("DELETE BKUP", unzipLocation);
-          await this._fileService.deleteDirectory(unzipBackupLocation);
-        }
+        console.log("DELETE BKUP", unzipBackupLocation);
+        await this._fileService.deleteIfExists(unzipBackupLocation);
       } catch (err) {
         console.error(`Failed to copy addon directory ${unzipLocation}`);
         console.error(err);
@@ -334,15 +401,12 @@ export class AddonService {
         if (fs.existsSync(unzipBackupLocation)) {
           // If the new addon folder was already created delete it
           if (fs.existsSync(unzipLocation)) {
-            await this._fileService.deleteDirectory(unzipLocation);
+            await this._fileService.remove(unzipLocation);
           }
 
           // Move the backup folder into the original location
           console.log(`Attempting to roll back ${unzipBackupLocation}`);
-          await this._fileService.copyDirectory(
-            unzipBackupLocation,
-            unzipLocation
-          );
+          await this._fileService.copy(unzipBackupLocation, unzipLocation);
         }
 
         throw err;
@@ -371,7 +435,7 @@ export class AddonService {
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType).pipe(
       map((searchResult) => {
-        console.log("SEARCH RES", searchResult);
+        console.debug("SEARCH RES", searchResult);
         let latestFile = this.getLatestFile(searchResult, targetAddonChannel);
         if (!latestFile) {
           latestFile = searchResult.files[0];
@@ -402,7 +466,7 @@ export class AddonService {
     );
     for (let directory of installedDirectories) {
       const addonDirectory = path.join(addonFolderPath, directory);
-      await this._fileService.deleteDirectory(addonDirectory);
+      await this._fileService.remove(addonDirectory);
     }
 
     this._addonStorage.remove(addon);
@@ -414,9 +478,9 @@ export class AddonService {
     rescan = false
   ): Promise<Addon[]> {
     let addons = this._addonStorage.getAllForClientType(clientType);
-    if (rescan) {
+    if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
-      console.log(newAddons);
+      console.debug("newAddons", newAddons);
 
       this._addonStorage.removeAllForClientType(clientType);
       addons = this.updateAddons(addons, newAddons);
@@ -443,6 +507,7 @@ export class AddonService {
 
       newAddon.autoUpdateEnabled = existingAddon.autoUpdateEnabled;
       newAddon.isIgnored = existingAddon.isIgnored;
+      newAddon.installedAt = existingAddon.installedAt;
     });
 
     return newAddons;
@@ -495,12 +560,14 @@ export class AddonService {
       if (
         !result ||
         !latestFile ||
-        latestFile.version === addon.latestVersion
+        (latestFile.version === addon.latestVersion &&
+          latestFile.releaseDate === addon.releasedAt)
       ) {
         continue;
       }
 
       addon.latestVersion = latestFile.version;
+      addon.releasedAt = latestFile.releaseDate;
       addon.downloadUrl = latestFile.downloadUrl;
       addon.name = result.name;
       addon.author = result.author;
@@ -542,7 +609,7 @@ export class AddonService {
           validFolders
         );
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
 
@@ -687,6 +754,9 @@ export class AddonService {
       channelType: this._wowUpService.getDefaultAddonChannel(clientType),
       isIgnored: false,
       autoUpdateEnabled: this._wowUpService.getDefaultAutoUpdate(clientType),
+      releasedAt: latestFile.releaseDate,
+      summary: searchResult.summary,
+      screenshotUrls: searchResult.screenshotUrls,
     };
   }
 }

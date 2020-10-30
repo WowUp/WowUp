@@ -1,0 +1,14 @@
+@import "../../../variables.scss";
+
+.container {
+  padding: 1em;
+  max-width: 660px;
+
+  .hint {
+    color: $white-3;
+  }
+
+  .toggle {
+    margin-top: 1em;
+  }
+}

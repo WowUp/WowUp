@@ -23,7 +23,7 @@
       flex-direction: row;
       align-items: center;
       margin-left: 1em;
-  
+
       button {
         &:not(:last-child) {
           margin-right: 0.5em;
@@ -78,7 +78,18 @@
 .author-column {
   width: 100px;
   padding-right: 1em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
 }
 .provider-column {
   min-width: 60px;
+}
+
+.linux {
+  .table-container {
+    height: calc(100vh - 150px);
+  }
 }

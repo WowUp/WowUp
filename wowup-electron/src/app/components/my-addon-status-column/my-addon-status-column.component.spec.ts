@@ -1,16 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MyAddonStatusColumnComponent } from "./my-addon-status-column.component";
 
-import { MyAddonStatusColumnComponent } from './my-addon-status-column.component';
-
-describe('MyAddonStatusColumnComponent', () => {
+describe("MyAddonStatusColumnComponent", () => {
   let component: MyAddonStatusColumnComponent;
   let fixture: ComponentFixture<MyAddonStatusColumnComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MyAddonStatusColumnComponent ]
-    })
-    .compileComponents();
+      declarations: [MyAddonStatusColumnComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +17,7 @@ describe('MyAddonStatusColumnComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

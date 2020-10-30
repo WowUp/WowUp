@@ -1,16 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AddonDetailComponent } from "./addon-detail.component";
 
-import { AddonDetailComponent } from './addon-detail.component';
-
-describe('AddonDetailComponent', () => {
+describe("AddonDetailComponent", () => {
   let component: AddonDetailComponent;
   let fixture: ComponentFixture<AddonDetailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddonDetailComponent ]
-    })
-    .compileComponents();
+      declarations: [AddonDetailComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +17,7 @@ describe('AddonDetailComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

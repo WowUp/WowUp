@@ -1,11 +1,12 @@
 .message {
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    word-break: break-word;
-    white-space: pre-wrap;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  word-break: break-word;
+  white-space: pre-wrap;
+  max-width: 40vw;
 }
 
 .dialog-buttons {
-  display:flex;
+  display: flex;
   .btn-wrapper {
     margin-left: auto;
   }

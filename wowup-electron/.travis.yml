@@ -3,8 +3,8 @@ os:
   - osx
 language: node_js
 node_js:
-  - '12'
-  - '10'
+  - "12"
+  - "10"
 dist: xenial
 sudo: required
 services:

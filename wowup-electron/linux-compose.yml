@@ -1,0 +1,13 @@
+version: "2"
+services:
+  electron-builder:
+    image: node:10
+    working_dir: /home/node/app
+    environment:
+      - "GH_TOKEN=${GH_TOKEN}"
+    volumes:
+      - ./:/home/node/app
+    command: >
+      sh -c "npm i -g node-gyp && 
+             npm i &&
+             npm run electron:publish"

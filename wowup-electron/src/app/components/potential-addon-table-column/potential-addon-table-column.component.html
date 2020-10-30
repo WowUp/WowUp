@@ -1,8 +1,29 @@
 <div class="addon-column row align-items-center">
-    <div class="addon-logo-container" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'">
+  <div class="thumbnail-container">
+    <div
+      *ngIf="hasThumbnail === true"
+      class="addon-logo-container"
+      [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"
+    ></div>
+    <div *ngIf="hasThumbnail === false" class="addon-logo-container">
+      <div class="addon-logo-letter">
+        {{ thumbnailLetter }}
+      </div>
     </div>
-    <div>
-      <a class="addon-title mat-subheading-2" (click)="viewDetails()">{{addon.name}}</a>
-      <div class="addon-version">{{addonVersion}}</div>
+    <div
+      *ngIf="isBetaChannel || isAlphaChannel"
+      class="channel"
+      [ngClass]="{ beta: isBetaChannel, alpha: isAlphaChannel }"
+    >
+      {{ isAlphaChannel ? "Alpha" : "Beta" }}
     </div>
   </div>
+  <div>
+    <a class="addon-title mat-subheading-2" (click)="viewDetails()">{{
+      addon.name
+    }}</a>
+    <div class="addon-version">
+      {{ addon | getAddonListItemFileProp: "version":channel }}
+    </div>
+  </div>
+</div>

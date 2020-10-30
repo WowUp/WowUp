@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { Addon } from "app/entities/addon";
-import { AddonViewModel } from "app/business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 
 @Component({
   selector: "app-my-addons-addon-cell",

@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { AddonService } from "app/services/addons/addon.service";
-import { SessionService } from "app/services/session/session.service";
 import { from, Subscription } from "rxjs";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-install-from-url-dialog",
@@ -26,6 +27,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     private _addonService: AddonService,
     private _dialog: MatDialog,
     private _sessionService: SessionService,
+    private _translateService: TranslateService,
     public dialogRef: MatDialogRef<InstallFromUrlDialogComponent>
   ) {}
 
@@ -62,7 +64,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
         console.error(err);
         this.showInstallSpinner = false;
         this.showInstallButton = true;
-        this.showErrorMessage("Failed to install addon.");
+        this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED"));
       },
     });
   }
@@ -87,7 +89,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
         this._sessionService.selectedClientType
       );
 
-      console.log(importedAddon);
+      console.debug(importedAddon);
       if (!importedAddon) {
         throw new Error("Addon not found");
       }
@@ -106,9 +108,10 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
 
       let message = err.message;
       if (err instanceof HttpErrorResponse) {
-        message = `No addon was found.`;
-      } else if (err.code && err.code === "EOPENBREAKER") { // Provider circuit breaker is open
-        message = `Cannot connect to API, please wait a bit and try again.`;
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_ADDON_FOUND");
+      } else if (err.code && err.code === "EOPENBREAKER") {
+        // Provider circuit breaker is open
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.FAILED_TO_CONNECT");
       }
 
       this.showErrorMessage(message);
@@ -127,7 +130,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
       return new URL(this.query);
     } catch (err) {
       console.error(`Invalid url: ${this.query}`);
-      this.showErrorMessage("Invalid URL.");
+      this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INVALID_URL"));
       return undefined;
     }
   }
@@ -136,7 +139,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     const dialogRef = this._dialog.open(AlertDialogComponent, {
       minWidth: 250,
       data: {
-        title: `Error`,
+        title: this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.TITLE"),
         message: errorMessage,
       },
     });

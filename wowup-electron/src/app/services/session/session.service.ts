@@ -1,7 +1,7 @@
-import { Injectable, InjectionToken } from "@angular/core";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
+import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { filter, first, map } from "rxjs/operators";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 
@@ -54,10 +54,6 @@ export class SessionService {
     return this._selectedClientTypeSrc.value;
   }
 
-  public startUpdaterCheck() {
-    this.checkUpdaterApp();
-  }
-
   private loadInitialClientType() {
     return this._warcraftService.installedClientTypes$.pipe(
       filter((clientTypes) => clientTypes !== undefined),
@@ -83,21 +79,5 @@ export class SessionService {
         this._selectedClientTypeSrc.next(initialClientType);
       })
     );
-  }
-
-  private checkUpdaterApp() {
-    this._statusTextSrc.next("Checking updater app...");
-    this._wowUpService
-      .checkUpdaterApp((progress) => {
-        this._statusTextSrc.next(`Downloading updater (${progress}%)...`);
-      })
-      .subscribe({
-        next: () => {
-          this._statusTextSrc.next("");
-        },
-        error: (err) => {
-          this._statusTextSrc.next("Updater check error");
-        },
-      });
   }
 }

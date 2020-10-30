@@ -3,22 +3,9 @@
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "module": "commonjs",
-    "types": [
-      "jasmine",
-      "node"
-    ]
+    "types": ["jasmine", "node"]
   },
-  "files": [
-    "test.ts",
-    "polyfills-test.ts"
-  ],
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ],
-  "exclude": [
-    "dist",
-    "release",
-    "node_modules"
-  ]
+  "files": ["test.ts", "polyfills-test.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"],
+  "exclude": ["dist", "release", "node_modules"]
 }

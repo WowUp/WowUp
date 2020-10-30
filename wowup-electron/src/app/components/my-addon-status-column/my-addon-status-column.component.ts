@@ -1,10 +1,14 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { MatProgressButtonOptions } from "mat-progress-buttons";
-import { BehaviorSubject, Observable } from "rxjs";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
-import { AddonViewModel } from "app/business-objects/my-addon-list-item";
-import { AddonService } from "app/services/addons/addon.service";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 
 @Component({
   selector: "app-my-addon-status-column",
@@ -14,121 +18,40 @@ import { TranslateService } from "@ngx-translate/core";
 export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   @Input() listItem: AddonViewModel;
 
-  private readonly _buttonOptionsSrc: BehaviorSubject<MatProgressButtonOptions>;
-  private installState: AddonInstallState = AddonInstallState.Unknown;
-  private installProgress: number = 0;
-
-  public readonly buttonOptions$: Observable<MatProgressButtonOptions>;
+  @Output() onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   public get showStatusText() {
     return this.listItem?.isUpToDate || this.listItem?.isIgnored;
   }
 
-  public get buttonText() {
-    if (this.installState !== AddonInstallState.Unknown) {
-      return this.getInstallStateText(this.installState);
-    }
-
-    return this.getStatusText();
-  }
-
-  public get isButtonActive() {
-    return (
-      this.installState !== AddonInstallState.Unknown &&
-      this.installState !== AddonInstallState.Complete
-    );
-  }
-
-  public get isButtonDisabled() {
-    return (
-      this.listItem?.isUpToDate ||
-      this.installState === AddonInstallState.Complete
-    );
-  }
-
   constructor(
-    private _addonService: AddonService,
-    private _translate: TranslateService
-  ) {
-    this._buttonOptionsSrc = new BehaviorSubject<MatProgressButtonOptions>(
-      this.getButtonOptions()
-    );
-    this.buttonOptions$ = this._buttonOptionsSrc.asObservable();
-  }
+    private _translateService: TranslateService,
+    private _ngzone: NgZone
+  ) {}
 
-  ngOnInit(): void {
-    this._buttonOptionsSrc.next(this.getButtonOptions());
-  }
+  ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-    this._buttonOptionsSrc.complete();
-  }
+  ngOnDestroy(): void {}
 
   public getStatusText() {
-    if (this.listItem?.needsInstall) {
-      return this._translate.instant(
-        "PAGES.MY_ADDONS.TABLE.ADDON_INSTALL_BUTTON"
-      );
+    if (!this.listItem) {
+      return "";
     }
 
-    if (this.listItem?.needsUpdate) {
-      return this._translate.instant(
-        "PAGES.MY_ADDONS.TABLE.ADDON_UPDATE_BUTTON"
-      );
+    if (this.listItem?.isIgnored) {
+      return "COMMON.ADDON_STATE.IGNORED";
     }
 
-    return this.listItem?.statusText;
-  }
-
-  public onInstallUpdateClick() {
-    this._addonService.installAddon(
-      this.listItem.addon.id,
-      this.onInstallUpdate
-    );
-  }
-
-  private onInstallUpdate = (
-    installState: AddonInstallState,
-    progress: number
-  ) => {
-    this.installState = installState;
-    this.installProgress = progress;
-
-    console.log(this.getButtonOptions());
-    this._buttonOptionsSrc.next(this.getButtonOptions());
-  };
-
-  private getInstallStateText(installState: AddonInstallState) {
-    switch (installState) {
-      case AddonInstallState.BackingUp:
-        return this._translate.instant("COMMON.ADDON_STATUS.BACKINGUP");
-      case AddonInstallState.Complete:
-        return this._translate.instant("COMMON.ADDON_STATE.UPTODATE");
-      case AddonInstallState.Downloading:
-        return this._translate.instant("COMMON.ADDON_STATUS.DOWNLOADING");
-      case AddonInstallState.Installing:
-        return this._translate.instant("COMMON.ADDON_STATUS.INSTALLING");
-      case AddonInstallState.Pending:
-        return this._translate.instant("COMMON.ADDON_STATUS.PENDING");
-      default:
-        return "";
+    if (this.listItem?.isUpToDate) {
+      return "COMMON.ADDON_STATE.UPTODATE";
     }
+
+    return this.listItem.stateTextTranslationKey;
   }
 
-  private getButtonOptions(): MatProgressButtonOptions {
-    return {
-      active: this.isButtonActive,
-      disabled: this.isButtonDisabled,
-      value: this.installProgress,
-      text: this.buttonText,
-      mode: "determinate",
-      buttonColor: "primary",
-      barColor: "accent",
-      customClass: "install-button",
-      raised: false,
-      flat: true,
-      stroked: false,
-      fullWidth: false,
-    };
+  public onUpdateButtonUpdated() {
+    this._ngzone.run(() => {
+      this.onViewUpdated.emit();
+    });
   }
 }

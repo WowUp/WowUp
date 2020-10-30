@@ -1,23 +1,37 @@
-import { Addon } from "app/entities/addon";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonDisplayState } from "../models/wowup/addon-display-state";
+import { Addon } from "../entities/addon";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonInstallState } from "../models/wowup/addon-install-state";
+import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 
 export class AddonViewModel {
-  public readonly addon: Addon;
+  public addon: Addon;
 
-  isInstalling: boolean = false;
-  installProgress: number = 0;
-  statusText: string = "";
-  selected: boolean = false;
+  public installState: AddonInstallState = AddonInstallState.Unknown;
+  public isInstalling: boolean = false;
+  public installProgress: number = 0;
+  public stateTextTranslationKey: string = "";
+  public selected: boolean = false;
+
+  get installedAt() {
+    return new Date(this.addon?.installedAt);
+  }
+  get hasThumbnail() {
+    return !!this.addon.thumbnailUrl;
+  }
+
+  get thumbnailLetter() {
+    return this.addon.name.charAt(0).toUpperCase();
+  }
 
   get needsInstall() {
-    return (
-      !this.isInstalling && this.displayState === AddonDisplayState.Install
-    );
+    return !this.isInstalling && !this.addon.installedVersion;
   }
 
   get needsUpdate() {
-    return !this.isInstalling && this.displayState === AddonDisplayState.Update;
+    return (
+      !this.isInstalling &&
+      this.addon.installedVersion !== this.addon.latestVersion
+    );
   }
 
   get isAutoUpdate() {
@@ -26,12 +40,13 @@ export class AddonViewModel {
 
   get isUpToDate() {
     return (
-      !this.isInstalling && this.displayState === AddonDisplayState.UpToDate
+      !this.isInstalling &&
+      this.addon.installedVersion === this.addon.latestVersion
     );
   }
 
   get isIgnored() {
-    return this.displayState === AddonDisplayState.Ignored;
+    return this.addon.isIgnored;
   }
 
   get isStableChannel() {
@@ -46,48 +61,57 @@ export class AddonViewModel {
     return this.addon.channelType === AddonChannelType.Alpha;
   }
 
-  get displayState(): AddonDisplayState {
-    if (this.addon.isIgnored) {
-      return AddonDisplayState.Ignored;
-    }
-
-    if (!this.addon.installedVersion) {
-      return AddonDisplayState.Install;
-    }
-
-    if (this.addon.installedVersion !== this.addon.latestVersion) {
-      return AddonDisplayState.Update;
-    }
-
-    if (this.addon.installedVersion === this.addon.latestVersion) {
-      return AddonDisplayState.UpToDate;
-    }
-
-    return AddonDisplayState.Unknown;
-  }
-
   constructor(addon?: Addon) {
     this.addon = addon;
-    this.statusText = this.getStateText();
+    this.stateTextTranslationKey = this.getStateTextTranslationKey();
+  }
+
+  public clone() {
+    return new AddonViewModel(this.addon);
   }
 
   public onClicked() {
     this.selected = !this.selected;
   }
 
-  public getStateText() {
-    switch (this.displayState) {
-      case AddonDisplayState.UpToDate:
-        return "Up to Date";
-      case AddonDisplayState.Ignored:
-        return "Ignored";
-      case AddonDisplayState.Update:
-      case AddonDisplayState.Install:
-        return "Install";
-      case AddonDisplayState.Unknown:
-      default:
-        console.log("Unhandled display state", this.displayState);
-        return "";
+  public get sortOrder(): AddonStatusSortOrder {
+    if (this.isIgnored) {
+      return AddonStatusSortOrder.Ignored;
     }
+
+    if (this.needsInstall) {
+      return AddonStatusSortOrder.Install;
+    }
+
+    if (this.needsUpdate) {
+      return AddonStatusSortOrder.Update;
+    }
+
+    if (this.isUpToDate) {
+      return AddonStatusSortOrder.UpToDate;
+    }
+
+    return AddonStatusSortOrder.Unknown;
+  }
+
+  public getStateTextTranslationKey() {
+    if (this.isUpToDate) {
+      return "COMMON.ADDON_STATE.UPTODATE";
+    }
+
+    if (this.isIgnored) {
+      return "COMMON.ADDON_STATE.IGNORED";
+    }
+
+    if (this.needsUpdate) {
+      return "COMMON.ADDON_STATE.UPDATE";
+    }
+
+    if (this.needsInstall) {
+      return "COMMON.ADDON_STATE.INSTALL";
+    }
+
+    console.log("Unhandled display state");
+    return "COMMON.ADDON_STATE.UNKNOWN";
   }
 }

@@ -1,9 +1,9 @@
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { Addon } from "../entities/addon";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { Observable } from "rxjs";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
+import { Addon } from "../entities/addon";
+import { WowClientType } from "../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
 
 export interface AddonProvider {
   name: AddonProviderType;

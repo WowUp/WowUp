@@ -1,7 +1,10 @@
-import { AfterViewInit, Component } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import { AppConfig } from "../environments/environment";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -16,6 +19,7 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements AfterViewInit {
   private _autoUpdateInterval?: number;
@@ -63,20 +67,27 @@ export class AppComponent implements AfterViewInit {
   }
 
   private onAutoUpdateInterval = async () => {
-    console.log("Auto update");
+    console.debug("Auto update");
     const updateCount = await this._addonService.processAutoUpdates();
 
     if (updateCount === 0) {
       return;
     }
-    
+
     const iconPath = await this._fileService.getAssetFilePath(
       "wowup_logo_512np.png"
     );
 
-    this._electronService.showNotification("Auto Updates", {
-      body: `Automatically updated ${updateCount} addons.`,
-      icon: iconPath,
-    });
+    if (this._wowUpService.enableSystemNotifications) {
+      this._electronService.showNotification(
+        this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_TITLE"),
+        {
+          body: this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_BODY", {
+            count: updateCount,
+          }),
+          icon: iconPath,
+        }
+      );
+    }
   };
 }

@@ -3,9 +3,8 @@
 :not(input):not(textarea),
 :not(input):not(textarea)::after,
 :not(input):not(textarea)::before {
-  -webkit-user-select: none;
-  user-select: none;
-  cursor: default;
+  -webkit-user-select: none !important;
+  user-select: none !important;
 }
 
 input,
@@ -24,10 +23,16 @@ img:not([draggable="true"]) {
 
 a[href^="http://"],
 a[href^="https://"],
-a[href^="ftp://"] {
+a[href^="ftp://"]
+{
   -webkit-user-drag: auto;
   user-drag: auto;
   /* Technically not supported in Electron yet */
+}
+
+.selectable {
+  user-select: text !important;
+  -webkit-user-select: text !important;
 }
 
 html {
@@ -56,15 +61,27 @@ img {
 }
 
 .mr-1 {
-  margin-right: .25em !important;
+  margin-right: 0.25em !important;
 }
 
 .mr-2 {
-  margin-right: .5em !important;
+  margin-right: 0.5em !important;
 }
 
 .mr-3 {
   margin-right: 1em !important;
+}
+
+.ml-1 {
+  margin-left: 0.25em !important;
+}
+
+.ml-2 {
+  margin-left: 0.5em !important;
+}
+
+.ml-3 {
+  margin-left: 1em !important;
 }
 
 .no-reg-drag {
@@ -82,8 +99,34 @@ img {
 .mat-tab-label,
 .mat-tab-label-content,
 .mat-select-value,
-.mat-form-field-infix,
-.mat-button-wrapper span {
+.mat-form-field-infix {
+  &:hover {
+    cursor: pointer !important;
+  }
+}
+
+.mat-button,
+.mat-stroked-button,
+.mat-raised-button,
+.mat-flat-button {
+  &:hover {
+    cursor: default !important;
+  }
+
+  &:not(.mat-button-disabled) {
+    &:hover {
+      cursor: pointer !important;
+    }
+  }
+
+  // Prevent clicking thru the button via the text
+  .mat-button-wrapper {
+    pointer-events: none;
+  }
+}
+
+.mat-slide-toggle-thumb,
+.mat-slide-toggle-bar {
   &:hover {
     cursor: pointer !important;
   }
@@ -93,10 +136,6 @@ img {
 .mat-slide-toggle-bar,
 .mat-button-wrapper {
   -webkit-app-region: no-drag;
-
-  &:hover {
-    cursor: pointer;
-  }
 }
 
 .bg-dark-3 {
@@ -177,6 +216,10 @@ img {
   flex-grow: 1;
 }
 
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
 .row {
   display: flex;
   flex-direction: row;
@@ -185,8 +228,16 @@ img {
     align-items: center;
   }
 
+  &.align-items-start {
+    align-items: flex-start;
+  }
+
   &.justify-content-center {
     justify-content: center;
+  }
+
+  &.justify-content-end {
+    justify-content: flex-end;
   }
 }
 
@@ -227,6 +278,16 @@ img {
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .thumbnail-letter {
+        color: $white-4;
+        font-size: 1.5em;
+        font-weight: 400;
+      }
     }
 
     .addon-name {
@@ -303,9 +364,43 @@ img {
   // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   background: rgb(107, 105, 214);
-  background: linear-gradient(146deg, rgba(107, 105, 214, 1) 0%, rgba(80, 79, 161, 1) 100%);
+  background: linear-gradient(
+    146deg,
+    rgba(107, 105, 214, 1) 0%,
+    rgba(80, 79, 161, 1) 100%
+  );
 }
 
 .install-button {
   min-width: 120px !important;
+}
+
+.progress-button {
+  position: relative;
+  overflow: hidden;
+  min-width: 120px !important;
+
+  .progress-bar {
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    width: 100%;
+    left: 0;
+    position: absolute;
+  }
+
+  .mat-progress-bar-buffer {
+    background: $white-4 !important;
+  }
+
+  .mat-progress-bar-fill::after {
+    background: $blue-1 !important;
+  }
+}
+
+.no-tabs {
+  &.mat-tab-group {
+    .mat-tab-header {
+      display: none;
+    }
+  }
 }

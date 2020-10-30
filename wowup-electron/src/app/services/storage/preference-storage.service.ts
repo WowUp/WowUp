@@ -1,20 +1,17 @@
 import { Injectable } from "@angular/core";
-import * as Store from 'electron-store'
-import { Addon } from "../../entities/addon";
+import * as Store from "electron-store";
 
-const PREFERENCE_PREFIX = 'preferences';
+const PREFERENCE_PREFIX = "preferences";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class PreferenceStorageService {
-
   private readonly _store = new Store({
-    name: 'preferences'
+    name: "preferences",
   });
 
-  constructor() {
-  }
+  constructor() {}
 
   public query<T>(action: (items: Store) => T) {
     return action(this._store);
@@ -28,7 +25,7 @@ export class PreferenceStorageService {
     return this._store.get(key) as string;
   }
 
-  public findByKey(key: string): string{
+  public findByKey(key: string): string {
     return this._store.get(key) as string;
   }
 }

@@ -13,7 +13,7 @@
   .right-container {
     display: flex;
     flex-direction: row;
-  
+
     .filter-container {
       padding-top: 1em;
     }
@@ -23,7 +23,7 @@
       flex-direction: row;
       align-items: center;
       margin-left: 1em;
-  
+
       button {
         &:not(:last-child) {
           margin-right: 0.5em;
@@ -33,6 +33,10 @@
   }
 }
 
+.no-addons-container {
+  text-align: center;
+  color: $white-1;
+}
 .spinner-container {
   display: flex;
   align-items: center;
@@ -79,6 +83,11 @@
     min-width: 110px;
   }
 
+  .installed-at-cell,
+  .released-at-cell {
+    min-width: 100px;
+  }
+
   .status-column {
     // display: flex;
     width: 130px;
@@ -106,7 +115,7 @@
     align-items: center;
 
     .addon-provider-name {
-      margin-right: .25em;
+      margin-right: 0.25em;
     }
 
     .provider-logo {
@@ -122,9 +131,14 @@
 
 .author-column {
   width: 100px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
 }
 .provider-column {
-  min-width: 60px;
+  min-width: 70px;
 }
 
 .column-menu {
@@ -133,5 +147,11 @@
 
   p {
     margin-bottom: 0.5em;
+  }
+}
+
+.linux {
+  .table-container {
+    height: calc(100vh - 150px);
   }
 }

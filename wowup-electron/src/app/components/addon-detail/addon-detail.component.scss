@@ -1,41 +1,16 @@
+@import "../../../variables.scss";
+
+.image-row {
+  background-color: $dark-4;
+  margin-bottom: 16px;
+
+  .image {
+    max-width: 100%;
+    max-height: 250px;
+  }
+}
 .addon-detail-view {
   width: 35vw;
-  max-width: 500px;
-  margin-top: 8px;
-
-  .addon-detail-title,
-  .addon-detail-subtitle {
-    display: flex;
-    justify-content: space-between;
-
-    h2 {
-      padding: 0 0.5rem;
-    }
-  }
-
-  .mat-icon-button .mat-button-wrapper,
-  .close-icon {
-    cursor: pointer !important;
-    &:hover {
-      cursor: pointer !important;
-    }
-  }
-  .addon-detail-summary {
-    margin-bottom: 8px;
-    font-weight: 400;
-    font-size: 14px;
-    letter-spacing: 0.6px;
-  }
-  .dialog-buttons {
-    display: flex;
-    .btn-wrapper {
-      margin-left: auto;
-    }
-  }
-
-  .screenshot-container {
-    img {
-      max-height: 200px;
-    }
-  }
+  min-width: 380px;
+  max-width: 600px;
 }

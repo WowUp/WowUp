@@ -9,7 +9,8 @@ footer {
   justify-content: space-between;
   align-items: center;
 }
-footer a, footer img {
+footer a,
+footer img {
   height: 25px;
   -webkit-app-region: no-drag;
   cursor: pointer;

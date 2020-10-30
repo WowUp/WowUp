@@ -1,20 +1,20 @@
 import { HttpClient } from "@angular/common/http";
-import { Addon } from "app/entities/addon";
-import { TukUiAddon } from "app/models/tukui/tukui-addon";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { CachingService } from "app/services/caching/caching-service";
-import { ElectronService } from "app/services/electron/electron.service";
-import { FileService } from "app/services/files/file.service";
-import { from, Observable, of } from "rxjs";
-import { AddonProvider } from "./addon-provider";
 import * as _ from "lodash";
-import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
+import * as CircuitBreaker from "opossum";
+import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
-import * as CircuitBreaker from "opossum";
+import { Addon } from "../entities/addon";
+import { TukUiAddon } from "../models/tukui/tukui-addon";
+import { WowClientType } from "../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { CachingService } from "../services/caching/caching-service";
+import { ElectronService } from "../services/electron/electron.service";
+import { FileService } from "../services/files/file.service";
+import { AddonProvider } from "./addon-provider";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -176,6 +176,7 @@ export class TukUiAddonProvider implements AddonProvider {
           summary: tukUiAddon.small_desc,
           downloadCount: Number.parseFloat(tukUiAddon.downloads),
           screenshotUrls: [tukUiAddon.screenshot_url],
+          releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
         };
       }
     }
@@ -202,7 +203,7 @@ export class TukUiAddonProvider implements AddonProvider {
       downloadUrl: addon.url,
       gameVersion: addon.patch,
       version: addon.version,
-      releaseDate: new Date(addon.lastUpdate),
+      releaseDate: new Date(`${addon.lastupdate} UTC`),
     };
 
     return {
@@ -214,6 +215,7 @@ export class TukUiAddonProvider implements AddonProvider {
       providerName: this.name,
       downloadCount: parseInt(addon.downloads, 10),
       files: [latestFile],
+      summary: addon.small_desc,
     };
   }
 
@@ -233,7 +235,6 @@ export class TukUiAddonProvider implements AddonProvider {
     try {
       const addons = await this._circuitBreaker.fire(clientType);
 
-      console.log("CACHED");
       this._cachingService.set(cacheKey, addons, CACHE_TIME);
       return addons;
     } catch (err) {

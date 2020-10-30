@@ -1,83 +1,36 @@
-<div class="tab-container" [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
-  <div class="options">
-    <mat-card class="option-card">
-      <mat-card-header>
-        <mat-card-title>{{'PAGES.OPTIONS.WOW.TITLE' | translate}}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="row">
-          <div class="grow">{{'PAGES.OPTIONS.WOW.RESCAN_CLIENTS_LABEL' | translate}}</div>
-          <button mat-flat-button color="primary" (click)="onReScan()" appUserActionTracker category="Options"
-            action="ScanInstalls">
-            {{'PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON' | translate}}
-          </button>
+<div class="tab-container" [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }">
+  <div class="nav-container">
+    <div class="nav-item-container">
+      <div class="nav-item-list-wrap">
+        <div class="nav-item-list">
+          <mat-action-list>
+            <button mat-list-item (click)="optionTabIndex = 0"> World of Warcraft </button>
+            <button mat-list-item (click)="optionTabIndex = 1"> Application </button>
+            <button mat-list-item (click)="optionTabIndex = 2"> Debug </button>
+          </mat-action-list>
         </div>
-        <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes"
-          [clientType]="clientType"></app-wow-client-options>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="option-card">
-      <mat-card-header>
-        <mat-card-title>{{'PAGES.OPTIONS.APPLICATION.TITLE' | translate}}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <!-- <div class="row hover">
-          <div class="grow">
-            <p>WowUp Release Channel</p>
-            <small class="hint">Select Stable for a cleaner less buggy build. Select Beta to see the next wave of
-              features as they come.</small>
-          </div>
-          <mat-form-field class="light-select">
-            <mat-label>Release Channel</mat-label>
-            <mat-select [(value)]="wowUpReleaseChannel" (selectionChange)="onWowUpChannelChange($event)">
-              <mat-option *ngFor="let channel of wowUpReleaseChannels" [value]="channel.type" >{{channel.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div> -->
-        <div class="row hover">
-          <div class="grow">
-            <p>{{'PAGES.OPTIONS.APPLICATION.TELEMETRY_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.TELEMETRY_DESCRIPTION' | translate}}</small>
-          </div>
-          <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
+      </div>
+    </div>
+    <div class="nav-content-container">
+      <div class="nav-content-wrap">
+        <div class="nav-content">
+          <mat-tab-group class="no-tabs  content-tab" animationDuration="0ms" [(selectedIndex)]="optionTabIndex">
+            <mat-tab label="WorldOfWarcraft" class="tab">
+              <app-options-wow-section></app-options-wow-section>
+            </mat-tab>
+            <mat-tab label="Application">
+              <app-options-app-section></app-options-app-section>
+            </mat-tab>
+            <mat-tab label="Debug">
+              <app-options-debug-section></app-options-debug-section>
+            </mat-tab>
+          </mat-tab-group>
         </div>
-        <div class="row hover">
-          <div class="grow">
-            <p>{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION' | translate}}</small>
-          </div>
-          <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" appUserActionTracker
-            category="Options" action="CollapseToTray" [label]="collapseToTray">
-          </mat-slide-toggle>
-        </div>
-      </mat-card-content>
-    </mat-card>
-    <mat-card class="option-card">
-      <mat-card-header>
-        <mat-card-title>{{'PAGES.OPTIONS.DEBUG.TITLE' | translate}}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="row">
-          <div class="grow">
-            <p>{{'PAGES.OPTIONS.DEBUG.LOG_FILES_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION' | translate}}</small>
-          </div>
-          <button mat-flat-button color="primary" (click)="onShowLogs()" appUserActionTracker category="Options"
-            action="ShowLogFiles">
-            {{'PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON' | translate}}
-          </button>
-        </div>
-        <div class="row">
-          <div class="grow">
-            <p>{{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_LABEL' | translate}}</p>
-            <small class="hint">{{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION' | translate}}</small>
-          </div>
-          <button mat-flat-button color="primary" (click)="onLogDebugData()" appUserActionTracker category="Options"
-            action="LogDebugData">
-            {{'PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON' | translate}}
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
 </div>

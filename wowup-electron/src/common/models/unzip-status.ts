@@ -1,7 +1,4 @@
-import { UnzipStatusType } from "./unzip-status-type";
-
-export interface UnzipStatus {
-    type: UnzipStatusType;
-    outputFolder: string;
-    error?: Error;
+import { IpcResponse } from "./ipc-response";
+export interface UnzipStatus extends IpcResponse {
+  outputFolder: string;
 }

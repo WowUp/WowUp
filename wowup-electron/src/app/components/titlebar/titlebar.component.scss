@@ -10,10 +10,11 @@
     height: 22px;
   }
 }
-.titlebar-mac {
+.mac {
   height: 22px;
 }
-.titlebar-windows {
+.windows,
+.linux {
   height: 30px;
 }
 .titlebar-drag-region {

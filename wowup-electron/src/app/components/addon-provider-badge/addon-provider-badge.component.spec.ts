@@ -1,16 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AddonProviderBadgeComponent } from "./addon-provider-badge.component";
 
-import { AddonProviderBadgeComponent } from './addon-provider-badge.component';
-
-describe('AddonProviderBadgeComponent', () => {
+describe("AddonProviderBadgeComponent", () => {
   let component: AddonProviderBadgeComponent;
   let fixture: ComponentFixture<AddonProviderBadgeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddonProviderBadgeComponent ]
-    })
-    .compileComponents();
+      declarations: [AddonProviderBadgeComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +17,7 @@ describe('AddonProviderBadgeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

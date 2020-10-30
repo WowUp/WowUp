@@ -1,4 +1,4 @@
 export interface LatestVersion {
-    version: string;
-    url: string;
+  version: string;
+  url: string;
 }

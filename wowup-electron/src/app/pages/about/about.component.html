@@ -1,24 +1,37 @@
-<div class="tab-container about-container"
-  [ngClass]="{'mac': electronService.isMac, 'windows': electronService.isWin }">
+<div
+  class="tab-container about-container"
+  [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }"
+>
   <div class="about">
     <div class="header">
       <img class="logo" src="assets/wowup_logo_512np.png" />
-      <h2>{{'PAGES.ABOUT.TITLE' | translate}}</h2>
-      <div class="version">v{{version}}</div>
+      <h2>{{ "PAGES.ABOUT.TITLE" | translate }}</h2>
+      <div class="version">v{{ version }}</div>
       <div class="link-container">
-        <a appExternalLink href="https://wowup.io" appUserActionTracker category="About" action="ViewWebsite">
-          {{'PAGES.ABOUT.WEBSITE_LINK_LABEL' | translate}}
+        <a
+          appExternalLink
+          mat-stroked-button
+          href="https://wowup.io"
+          appUserActionTracker
+          category="About"
+          action="ViewWebsite"
+        >
+          {{ "PAGES.ABOUT.WEBSITE_LINK_LABEL" | translate }}
         </a>
       </div>
     </div>
     <div class="changelog-container">
       <h2>
-        {{'PAGES.ABOUT.CHANGE_LOG_SECTION_LABEL' | translate}}
+        {{ "PAGES.ABOUT.CHANGE_LOG_SECTION_LABEL" | translate }}
       </h2>
       <ul class="change-log-list">
         <li class="changelog" *ngFor="let cl of changeLogs">
-          <div class="version mat-subheading-2">{{cl.Version}}</div>
-          <pre class="description">{{cl.Description}}</pre>
+          <div class="version mat-subheading-2">{{ cl.Version }}</div>
+          <pre class="description selectable">{{ cl.Description }}</pre>
         </li>
       </ul>
     </div>

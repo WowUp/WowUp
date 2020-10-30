@@ -1,20 +1,20 @@
 import { HttpClient } from "@angular/common/http";
-import { Addon } from "app/entities/addon";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { AddonDetailsResponse } from "app/models/wow-interface/addon-details-response";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
-import { AddonFolder } from "app/models/wowup/addon-folder";
-import { AddonSearchResult } from "app/models/wowup/addon-search-result";
-import { ElectronService } from "app/services";
-import { CachingService } from "app/services/caching/caching-service";
-import { FileService } from "app/services/files/file.service";
-import { from, Observable, of } from "rxjs";
-import { AddonProvider } from "./addon-provider";
 import * as _ from "lodash";
-import { AddonSearchResultFile } from "app/models/wowup/addon-search-result-file";
+import * as CircuitBreaker from "opossum";
+import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
-import * as CircuitBreaker from "opossum";
+import { Addon } from "../entities/addon";
+import { WowClientType } from "../models/warcraft/wow-client-type";
+import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
+import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonFolder } from "../models/wowup/addon-folder";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { ElectronService } from "../services";
+import { CachingService } from "../services/caching/caching-service";
+import { FileService } from "../services/files/file.service";
+import { AddonProvider } from "./addon-provider";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -144,11 +144,21 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     }
   }
 
+  //https://www.wowinterface.com/downloads/download25538-Aardvark
   private getAddonId(addonUri: URL): string {
-    const regex = /\/info(\d+)/i;
-    const match = regex.exec(addonUri.pathname);
+    const downloadUrlregex = /\/download(\d+)/i;
+    const downloadUrlMatch = downloadUrlregex.exec(addonUri.pathname);
+    if (downloadUrlMatch) {
+      return downloadUrlMatch[1];
+    }
 
-    return match[1];
+    const infoUrlRegex = /\/info(\d+)/i;
+    const infoUrlMatch = infoUrlRegex.exec(addonUri.pathname);
+    if (infoUrlMatch) {
+      return infoUrlMatch[1];
+    }
+
+    throw new Error(`Unhandled URL: ${addonUri}`);
   }
 
   private getAddonDetails = (
@@ -187,7 +197,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
       folderName: addonFolder.name,
-      gameVersion: "",
+      gameVersion: addonFolder.toc.interface,
       installedAt: new Date(),
       installedFolders: addonFolder.name,
       installedVersion: addonFolder.toc?.version,
@@ -199,6 +209,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       summary: response.description,
       screenshotUrls: response.images?.map((img) => img.imageUrl),
       downloadCount: response.downloads,
+      releasedAt: new Date(response.lastUpdate),
     };
   }
 
@@ -213,7 +224,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         downloadUrl: response.downloadUri,
         folders: folderName ? [folderName] : [],
         gameVersion: "",
-        releaseDate: new Date(),
+        releaseDate: new Date(response.lastUpdate),
       };
 
       return {
@@ -225,6 +236,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         providerName: this.name,
         downloadCount: response.downloads,
         files: [searchResultFile],
+        summary: response.description.substr(0, 100),
       };
     } catch (err) {
       console.error("Failed to create addon search result", err);

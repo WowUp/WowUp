@@ -1,8 +1,8 @@
 @import "../../../variables.scss";
 
 .about-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .about {
   max-width: 1024px;
@@ -25,10 +25,6 @@
 
     .link-container {
       margin-top: 1em;
-    }
-
-    a {
-      color: $white-1;
     }
 
     .patron-img {
@@ -62,5 +58,11 @@
         white-space: pre-wrap;
       }
     }
+  }
+}
+
+.linux {
+  .about {
+    height: calc(100vh - 80px);
   }
 }

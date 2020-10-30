@@ -1,0 +1,8 @@
+<app-progress-button
+  [value]="getInstallProgress()"
+  [showProgress]="getIsButtonActive()"
+  [disable]="getIsButtonDisabled()"
+  (btnClick)="onInstallUpdateClick()"
+>
+  {{ getButtonText() }}
+</app-progress-button>
