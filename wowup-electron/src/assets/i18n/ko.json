@@ -107,7 +107,7 @@
       "SEARCH_LABEL": "Search",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
-        "AUTHOR_COLUMN_HEADER": "Author",
+        "AUTHOR_COLUMN_HEADER": "Author(s)",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Downloads",
         "PROVIDER_COLUMN_HEADER": "Provider",
         "RELEASED_AT_COLUMN_HEADER": "Released At",
