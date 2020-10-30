@@ -66,6 +66,8 @@ export class OptionsAppSectionComponent implements OnInit {
     this.wowupService.startWithSystem = evt.checked;
     if (!evt.checked) {
       this.startMinimized = false;
+    } else {
+      this.startMinimized = this.wowupService.startMinimized;
     }
   };
 
