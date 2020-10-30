@@ -7,7 +7,7 @@
       "SHOW_ACTION": "Show"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Install WowUp update",
-    "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want restart WowUp to install the update?",
+    "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want to restart WowUp and install the update?",
     "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update Ready",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
