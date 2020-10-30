@@ -1,5 +1,10 @@
 @import "../../../variables.scss";
 
+.tab-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .control-container {
   display: flex;
   flex-direction: row;
@@ -31,6 +36,16 @@
       }
     }
   }
+}
+
+.no-addons-container {
+  text-align: center;
+  color: $white-1;
+}
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table-container {

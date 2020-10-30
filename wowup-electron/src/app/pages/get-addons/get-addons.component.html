@@ -79,9 +79,18 @@
     </div>
   </div>
 
-  <app-progress-spinner *ngIf="isBusy === true"></app-progress-spinner>
+  <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
+    <app-progress-spinner> </app-progress-spinner>
+  </div>
 
-  <div class="table-container flex-grow-1" [hidden]="isBusy === true">
+  <div
+    *ngIf="isBusy === false && dataSource.data.length === 0"
+    class="no-addons-container flex-grow-1"
+  >
+    <h1>{{ 'COMMON.SEARCH.NO_ADDONS' | translate }}</h1>
+  </div>
+
+  <div class="table-container flex-grow-1" [hidden]="isBusy === true || dataSource.data.length === 0">
     <table
       #table
       mat-table
