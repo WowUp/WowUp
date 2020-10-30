@@ -182,6 +182,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Клиенты",
+        "APPLICATION": "Приложение",
+        "DEBUG": "Отладка"
+      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
