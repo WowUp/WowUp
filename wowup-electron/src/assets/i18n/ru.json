@@ -41,9 +41,9 @@
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
-        "ALPHA": "Alpha",
-        "BETA": "Beta",
-        "STABLE": "Stable"
+        "ALPHA": "Альфа",
+        "BETA": "Бета",
+        "STABLE": "Стабильная"
       }
     },
     "PROGRESS_SPINNER": {
@@ -171,7 +171,7 @@
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущий/Classic"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущий/Классический"
       }
     },
     "OPTIONS": {
