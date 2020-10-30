@@ -58,6 +58,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
+  private _lazyLoaded: boolean = false;
 
   public sortedListItems: AddonViewModel[] = [];
 
@@ -68,7 +69,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public dataSource = new MatTableDataSource<AddonViewModel>([]);
   public filter = "";
 
-  columns: ColumnState[] = [
+  public columns: ColumnState[] = [
     {
       name: "addon.name",
       display: "PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER",
@@ -140,9 +141,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this.isSelectedTab = tabIndex === this.tabIndex;
-      if (this.isSelectedTab) {
-        this.setPageContextText();
+      if (!this.isSelectedTab) {
+        return;
       }
+
+      this.setPageContextText();
+      this.lazyLoad();
     });
 
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(
@@ -217,18 +221,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this._cdRef.detectChanges();
   }
 
-  public ngOnInit(): void {
-    const selectedClientSubscription = this._sessionService.selectedClientType$
-      .pipe(
-        map((clientType) => {
-          this.selectedClient = clientType;
-          this.loadAddons(this.selectedClient);
-        })
-      )
-      .subscribe();
-
-    this.subscriptions.push(selectedClientSubscription);
-  }
+  public ngOnInit(): void {}
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
@@ -577,6 +570,26 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public isSelectedItemsProp(listItems: AddonViewModel[], prop: string) {
     return _.some(listItems, prop);
+  }
+
+  private lazyLoad() {
+    if (this._lazyLoaded) {
+      return;
+    }
+
+    this._lazyLoaded = true;
+    console.debug("LAZY LOAD");
+
+    const selectedClientSubscription = this._sessionService.selectedClientType$
+      .pipe(
+        map((clientType) => {
+          this.selectedClient = clientType;
+          this.loadAddons(this.selectedClient);
+        })
+      )
+      .subscribe();
+
+    this.subscriptions.push(selectedClientSubscription);
   }
 
   private sortTable(dataSource: MatTableDataSource<AddonViewModel>) {

@@ -42,6 +42,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab: boolean = false;
+  private _lazyLoaded: boolean = false;
 
   public dataSource = new MatTableDataSource<GetAddonListItem>([]);
 
@@ -86,13 +87,32 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this._isSelectedTab = tabIndex === this.tabIndex;
-      if (this._isSelectedTab) {
-        this.setPageContextText();
+      if (!this._isSelectedTab) {
+        return;
       }
+      this.setPageContextText();
+      this.lazyLoad();
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngOnDestroy() {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions = [];
+  }
+
+  onStatusColumnUpdated() {
+    this._cdRef.detectChanges();
+  }
+
+  private lazyLoad() {
+    if (this._lazyLoaded) {
+      return;
+    }
+
+    this._lazyLoaded = true;
+
     const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
         map((clientType) => {
@@ -125,15 +145,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       channelTypeSubscription,
       dataSourceSub,
     ];
-  }
-
-  ngOnDestroy() {
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
-    this._subscriptions = [];
-  }
-
-  onStatusColumnUpdated() {
-    this._cdRef.detectChanges();
   }
 
   private setDataSource(items: GetAddonListItem[]) {
