@@ -3,8 +3,8 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "SYSTEM_TRAY": {
-      "QUIT_ACTION": "Quit",
-      "SHOW_ACTION": "Show"
+      "QUIT_ACTION": "Выход",
+      "SHOW_ACTION": "Показать"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
@@ -107,7 +107,7 @@
       "SEARCH_LABEL": "Искать",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Модификация",
-        "AUTHOR_COLUMN_HEADER": "Автор",
+        "AUTHOR_COLUMN_HEADER": "Автор(ы)",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Загрузок",
         "PROVIDER_COLUMN_HEADER": "Источник",
         "RELEASED_AT_COLUMN_HEADER": "Выпущена",
