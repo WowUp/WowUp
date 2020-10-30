@@ -52,7 +52,7 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "BY_AUTHOR": "Da {authorName}",
+      "BY_AUTHOR": "Di {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser"
     },
     "ALERT": {
@@ -68,17 +68,17 @@
       "CLOSE_BUTTON": "Chiudi",
       "DESCRIPTION": "Se si desidera installare un addon direttamente da un URL incollarlo qui sotto per iniziare.",
       "ERROR": {
-        "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
-        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
-        "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
-        "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
-        "TITLE": "Addon Installation Failed"
+        "FAILED_TO_CONNECT": "Impossibile connettersi all'API, per favore riprovare più tardi.",
+        "INSTALL_FAILED": "Qualcosa è andato storto nell'installazione dell'addon, per favore riprovare.\n\nSe questo messaggio continua ad apparire, puoi chiedere aiuto su Discord, in #wow-support channel.",
+        "INVALID_URL": "Il valore fornito non è un URL valido. Esempi di URL di addons validi:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Non è stato trovato nessun addon, assicurarsi che l'URL sia corretto.\n\nSe si sta installando da GitHub, assicurarsi che la repository abbia una release tag con un file zip contenente l'addon.",
+        "TITLE": "Installazione dell'addon fallita"
       },
       "IMPORT_BUTTON": "Importa",
       "INSTALL_BUTTON": "Installa",
       "INSTALL_SUCCESS_LABEL": "Installato!",
       "SUPPORTED_SOURCES": "(Supporta WowInterface e GitHub)",
-      "TITLE": "Installa l'URL del componente aggiuntivo"
+      "TITLE": "Installa l'URL dell'addon"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Aiutaci a migliorare WowUp inviando dati e/o errori di installazione anonimi dell'app",
