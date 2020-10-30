@@ -1,0 +1,80 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.APPLICATION.TITLE" | translate }}
+  </h2>
+  <!-- TELEMETRY -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">{{ "PAGES.OPTIONS.APPLICATION.TELEMETRY_LABEL" | translate }}</div>
+      </div>
+      <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
+    </div>
+    <small class="hint"> {{ "PAGES.OPTIONS.APPLICATION.TELEMETRY_DESCRIPTION" | translate }} </small>
+  </div>
+  <!-- MINIMIZE ON CLOSE -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label"> {{ "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL" | translate }} </div>
+      </div>
+      <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)" appUserActionTracker
+        category="Options" action="CollapseToTray" [label]="collapseToTray">
+      </mat-slide-toggle>
+    </div>
+    <small class="hint">{{ minimizeOnCloseDescription }}</small>
+  </div>
+  <!-- SYSTEM NOTIFICATIONS -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label"> {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL" | translate }} </div>
+      </div>
+      <mat-slide-toggle [checked]="wowupService.enableSystemNotifications"
+        (change)="onEnableSystemNotifications($event)" appUserActionTracker category="Options"
+        action="EnableSystemNotifications" [label]="wowupService.enableSystemNotifications">
+      </mat-slide-toggle>
+    </div>
+    <small class="hint">
+      {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION" | translate }}
+    </small>
+  </div>
+  <!-- HARDWARE ACCELERATION -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div> {{ "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_LABEL" | translate }} </div>
+      </div>
+      <mat-slide-toggle [(checked)]="useHardwareAcceleration" (change)="onUseHardwareAccelerationChange($event)"
+        appUserActionTracker category="Options" action="UseHardwareAcceleration" [label]="useHardwareAcceleration">
+      </mat-slide-toggle>
+    </div>
+    <small class="hint">{{ "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DESCRIPTION" | translate }}</small>
+  </div>
+  <!-- START WITH SYSTEM -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <p> {{ "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_LABEL" | translate }} </p>
+        <small class="hint">{{ "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle [(ngModel)]="startWithSystem" [(checked)]="startWithSystem"
+        (change)="onStartWithSystemChange($event)" appUserActionTracker category="Options" action="StartWithSystem"
+        [label]="startWithSystem">
+      </mat-slide-toggle>
+    </div>
+  </div>
+  <!-- START MINIMIZED -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <p> {{ "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_LABEL" | translate }} </p>
+        <small class="hint">{{ "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle [(ngModel)]="startMinimized" [(disabled)]="!startWithSystem" [(checked)]="startMinimized"
+        (change)="onStartMinimizedChange($event)" appUserActionTracker category="Options" action="StartMinimized"
+        [label]="startMinimized">
+      </mat-slide-toggle>
+    </div>
+  </div>
+</div>

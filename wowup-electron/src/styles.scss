@@ -396,3 +396,11 @@ img {
     background: $blue-1 !important;
   }
 }
+
+.no-tabs {
+  &.mat-tab-group {
+    .mat-tab-header {
+      display: none;
+    }
+  }
+}
