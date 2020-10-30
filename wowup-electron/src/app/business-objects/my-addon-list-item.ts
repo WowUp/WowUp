@@ -83,7 +83,7 @@ export class AddonViewModel {
       return AddonStatusSortOrder.Install;
     }
 
-    if (this.needsUpdate) {
+    if (this.needsUpdate || this.isInstalling) {
       return AddonStatusSortOrder.Update;
     }
 

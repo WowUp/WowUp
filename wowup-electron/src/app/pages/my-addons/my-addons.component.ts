@@ -63,13 +63,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private _lazyLoaded: boolean = false;
 
   public sortedListItems: AddonViewModel[] = [];
-
   public spinnerMessage = "";
-
   public contextMenuPosition = { x: "0px", y: "0px" };
-
   public dataSource = new MatTableDataSource<AddonViewModel>([]);
   public filter = "";
+  public enableUpdateAll = false;
 
   public columns: ColumnState[] = [
     {
@@ -208,6 +206,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       .subscribe((sortedListItems) => {
         console.debug("sortedListItems", sortedListItems);
         this.sortedListItems = sortedListItems;
+        this.enableUpdateAll = this.sortedListItems.some(
+          (li) => li.needsInstall || li.needsUpdate
+        );
         this.setPageContextText();
       });
 

@@ -57,7 +57,7 @@
           mat-flat-button
           color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
-          [disabled]="enableControls === false"
+          [disabled]="enableControls === false || enableUpdateAll === false"
           (click)="onUpdateAll()"
           (contextmenu)="onUpdateAllContext($event)"
           appUserActionTracker
