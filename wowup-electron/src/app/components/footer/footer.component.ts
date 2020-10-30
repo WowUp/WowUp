@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { SessionService } from "../../services/session/session.service";
@@ -19,6 +19,7 @@ export class FooterComponent implements OnInit {
     private _dialog: MatDialog,
     private _translateService: TranslateService,
     private _zone: NgZone,
+    private _cdRef: ChangeDetectorRef,
     public wowUpService: WowUpService,
     public sessionService: SessionService
   ) {}
@@ -26,9 +27,8 @@ export class FooterComponent implements OnInit {
   ngOnInit(): void {
     this.wowUpService.wowupUpdateCheck$.subscribe((updateCheckResult) => {
       console.debug("updateCheckResult", updateCheckResult);
-      this._zone.run(() => {
-        this.isWowUpUpdateAvailable = true;
-      });
+      this.isWowUpUpdateAvailable = true;
+      this._cdRef.detectChanges();
     });
 
     this.wowUpService.wowupUpdateDownloaded$.subscribe((result) => {
