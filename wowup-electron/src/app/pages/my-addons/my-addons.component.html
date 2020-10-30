@@ -505,7 +505,7 @@
       [checked]="column.visible"
       (change)="onColumnVisibleChange($event, column)"
     >
-      {{ column.display }}
+      {{ column.display | translate }}
     </mat-checkbox>
   </ng-template>
 </mat-menu>

@@ -69,41 +69,49 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public filter = "";
 
   columns: ColumnState[] = [
-    { name: "addon.name", display: "Addon", visible: true },
-    { name: "sortOrder", display: "Status", visible: true },
+    {
+      name: "addon.name",
+      display: "PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER",
+      visible: true,
+    },
+    {
+      name: "sortOrder",
+      display: "PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER",
+      visible: true,
+    },
     {
       name: "installedAt",
-      display: "Updated At",
+      display: "PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER",
       visible: true,
       allowToggle: true,
     },
     {
       name: "addon.latestVersion",
-      display: "Latest Version",
+      display: "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER",
       visible: true,
       allowToggle: true,
     },
     {
       name: "addon.releasedAt",
-      display: "Released At",
+      display: "PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER",
       visible: true,
       allowToggle: true,
     },
     {
       name: "addon.gameVersion",
-      display: "Game Version",
+      display: "PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER",
       visible: true,
       allowToggle: true,
     },
     {
       name: "addon.providerName",
-      display: "Provider",
+      display: "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER",
       visible: true,
       allowToggle: true,
     },
     {
       name: "addon.author",
-      display: "Author",
+      display: "PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER",
       visible: true,
       allowToggle: true,
     },
