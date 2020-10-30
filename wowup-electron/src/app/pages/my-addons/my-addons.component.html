@@ -113,7 +113,7 @@
     class="table-container flex-grow-1"
     [hidden]="isBusy === true || sortedListItems.length === 0"
   >
-    <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
+    <table mat-table matSort [dataSource]="dataSource" matSortActive="sortOrder" matSortDirection="asc" class="mat-elevation-z8">
       <ng-container matColumnDef="addon.name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER" | translate }}
