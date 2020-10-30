@@ -182,6 +182,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Clients",
+        "APPLICATION": "Application",
+        "DEBUG": "Debug"
+      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable/Disable various system notification popups, such as auto updated addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
