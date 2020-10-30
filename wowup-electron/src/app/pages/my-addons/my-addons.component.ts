@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
   NgZone,
   OnDestroy,
@@ -51,6 +52,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   @ViewChild("updateAllContextMenuTrigger")
   updateAllContextMenu: MatMenuTrigger;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild("table", { read: ElementRef }) table: ElementRef;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>(
     []
@@ -225,6 +227,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public onSortChange(): void {
+    if (this.table) {
+      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   public onRefresh() {

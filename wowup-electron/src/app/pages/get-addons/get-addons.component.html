@@ -83,8 +83,10 @@
 
   <div class="table-container flex-grow-1" [hidden]="isBusy === true">
     <table
+      #table
       mat-table
       matSort
+      (matSortChange)="onSortChange()"
       [dataSource]="dataSource"
       matSortActive="downloadCount"
       matSortDirection="desc"
