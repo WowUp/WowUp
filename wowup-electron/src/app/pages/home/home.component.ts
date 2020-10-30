@@ -70,17 +70,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   private showUpdateSnackbar = async (updateCheckResult: UpdateCheckResult) => {
     // Have to wait for the localize service to start
-    const [sbtext, sbaction] = await forkJoin([
-      this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_TEXT"),
-      this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_ACTION"),
-    ]).toPromise();
+    // const [sbtext, sbaction] = await forkJoin([
+    //   this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_TEXT"),
+    //   this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_ACTION"),
+    // ]).toPromise();
 
-    const snackBarRef = this._snackBar.open(sbtext, sbaction, {
-      duration: 2000,
-    });
+    // const snackBarRef = this._snackBar.open(sbtext, sbaction, {
+    //   duration: 2000,
+    // });
 
-    snackBarRef.onAction().subscribe(() => {
-      console.log("The snack-bar action was triggered!");
-    });
+    // snackBarRef.onAction().subscribe(() => {
+    //   console.log("The snack-bar action was triggered!");
+    // });
   };
 }

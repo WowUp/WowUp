@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-alpha.21",
+      "Description": "Update Italian locale (Bito)\nUpdate Russion locale (Medok)\nUpdate German locale (Glow)\nFix windows/linux app not restoring when a second instance is launched (chops)\nMy addons show shows the default status sort arrow (chops)\nTable now scrolls to top when changing sort direction (chops)\nAdd some simple lazy loading to 'My Addons' and 'Get Addons'\nAddon channel names can now be localized\nThe system tray can now be localized\nThe loading spinner can now be localized\nThe show/hide column popup can now be localized\nUpdate icon should now appear without user interaction\nFix an issue with updating addons going to the bottom of the list\nRe-style the options tab"
+    },
+    {
       "Version": "2.0.0-alpha.20",
       "Description": "Rewrote some app text to be more helpful (Linaori)\nUpdate Russian local (Medok)\nUpdate Italian locale (Bito)\nImproved GitHub URL support, nested paths and .git urls\nFix issue with Ignored addons not sorting\nFix Ctrl+A highlighting random UI elements\nDropped firebase integration"
     },
