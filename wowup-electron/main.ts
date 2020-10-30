@@ -291,6 +291,8 @@ try {
       if (win) {
         if (win.isMinimized()) {
           win.restore();
+        } else if (!win.isVisible()) {
+          win.show();
         }
         win.focus();
       }
