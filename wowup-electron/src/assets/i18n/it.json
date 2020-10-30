@@ -2,6 +2,10 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti automatici",
+    "SYSTEM_TRAY": {
+      "QUIT_ACTION": "Quit",
+      "SHOW_ACTION": "Show"
+    },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
     "WOWUP_UPDATE_INSTALL_TITLE": "Aggiornamento di Wowup pronto",

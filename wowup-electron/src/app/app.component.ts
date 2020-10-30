@@ -5,6 +5,10 @@ import {
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
+import { from } from "rxjs";
+import { switchMap } from "rxjs/operators";
+import { CREATE_TRAY_MENU_CHANNEL } from "../common/constants";
+import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -40,6 +44,8 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.createSystemTray();
+
     if (this._analyticsService.shouldPromptTelemetry) {
       this.openDialog();
     } else {
@@ -90,4 +96,26 @@ export class AppComponent implements AfterViewInit {
       );
     }
   };
+
+  private async createSystemTray() {
+    const result = await this.translate
+      .get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"])
+      .toPromise();
+
+    console.debug("Creating tray", result);
+    const config: SystemTrayConfig = {
+      quitLabel: result["APP.SYSTEM_TRAY.QUIT_ACTION"],
+      showLabel: result["APP.SYSTEM_TRAY.SYSTEM_TRAY"],
+    };
+
+    try {
+      const trayCreated = await this._electronService.invoke(
+        CREATE_TRAY_MENU_CHANNEL,
+        config
+      );
+      console.log("Tray created", trayCreated);
+    } catch (e) {
+      console.error("Failed to create tray", e);
+    }
+  }
 }

@@ -2,6 +2,10 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
+    "SYSTEM_TRAY": {
+      "QUIT_ACTION": "Quit",
+      "SHOW_ACTION": "Show"
+    },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "WowUp Update installieren",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Willst du WowUp neu Starten um das Update zu installieren?",
     "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update bereit",
@@ -73,8 +77,8 @@
       "ERROR": {
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
         "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst du auf unsrem Discord im Kamlen #wow-support nach Hilfe fragen.",
-        "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic"
-        "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Releases Tags mit einem ZIP Archiv, welches das Addon enthält, besitzt.
+        "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Releases Tags mit einem ZIP Archiv, welches das Addon enthält, besitzt.",
         "TITLE": "Addon Installation fehlgeschlagen"
       },
       "IMPORT_BUTTON": "Importieren",

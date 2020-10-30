@@ -19,6 +19,7 @@ import {
   GET_ASSET_FILE_PATH,
   DOWNLOAD_FILE_CHANNEL,
   CREATE_DIRECTORY_CHANNEL,
+  CREATE_TRAY_MENU_CHANNEL,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -30,6 +31,8 @@ import { CopyFileRequest } from "./src/common/models/copy-file-request";
 import { DownloadStatus } from "./src/common/models/download-status";
 import { DownloadStatusType } from "./src/common/models/download-status-type";
 import { DownloadRequest } from "./src/common/models/download-request";
+import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
+import { createTray } from "./system-tray";
 
 export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
@@ -153,6 +156,13 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
     return await fs.readFile(filePath, { encoding: "utf-8" });
   });
+
+  ipcMain.handle(
+    CREATE_TRAY_MENU_CHANNEL,
+    async (evt, config: SystemTrayConfig) => {
+      return createTray(config);
+    }
+  );
 
   ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
     try {

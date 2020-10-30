@@ -16,6 +16,7 @@ import * as path from "path";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import * as url from "url";
+import * as platform from "./platform";
 import {
   initializeAppUpdateIpcHandlers,
   initializeAppUpdater,
@@ -28,9 +29,6 @@ import {
 } from "./src/common/constants";
 import { WindowState } from "./src/common/models/window-state";
 
-const isMac = process.platform === "darwin";
-const isWin = process.platform === "win32";
-const isLinux = process.platform === "linux";
 const preferenceStore = new Store({ name: "preferences" });
 
 let appIsQuitting = false;
@@ -39,7 +37,7 @@ let tray: Tray = null;
 
 // APP MENU SETUP
 const appMenuTemplate: Array<
-MenuItemConstructorOptions | MenuItem
+  MenuItemConstructorOptions | MenuItem
 > = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
@@ -69,36 +67,6 @@ log.info("USER_AGENT", USER_AGENT);
 const argv = require("minimist")(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
 });
-
-function createTray() {
-  const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
-  const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
-
-  tray = new Tray(icon);
-  const contextMenu = Menu.buildFromTemplate([
-    { label: app.name, type: "normal", icon: icon, enabled: false },
-    {
-      label: "Show",
-      click: () => {
-        win.show();
-
-        if (isMac) {
-          app.dock.show();
-        }
-      },
-    },
-    { role: "quit" },
-  ]);
-
-  if (isWin) {
-    tray.on("click", () => {
-      win.show();
-    });
-  }
-
-  tray.setToolTip("WowUp");
-  tray.setContextMenu(contextMenu);
-}
 
 function windowStateManager(
   windowName: string,
@@ -199,7 +167,7 @@ function createWindow(): BrowserWindow {
     show: false,
   };
 
-  if (isWin || isLinux) {
+  if (platform.isWin || platform.isLinux) {
     windowOptions.frame = false;
   }
 
@@ -226,7 +194,7 @@ function createWindow(): BrowserWindow {
     }
   });
 
-  if (isMac) {
+  if (platform.isMac) {
     win.on("close", (e) => {
       if (appIsQuitting) {
         return;
@@ -291,7 +259,7 @@ try {
       if (win) {
         if (win.isMinimized()) {
           win.restore();
-        } else if (!win.isVisible() && !isMac) {
+        } else if (!win.isVisible() && !platform.isMac) {
           win.show();
         }
         win.focus();
@@ -308,7 +276,6 @@ try {
   app.on("ready", () => {
     setTimeout(() => {
       createWindow();
-      createTray();
     }, 400);
   });
 
@@ -328,7 +295,7 @@ try {
   app.on("activate", () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (isMac) {
+    if (platform.isMac) {
       app.dock.show();
       win.show();
     }
@@ -343,7 +310,7 @@ try {
 }
 
 function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
-  if (isMac) {
+  if (platform.isMac) {
     return [
       {
         label: app.name,
@@ -376,7 +343,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         ],
       },
     ];
-  } else if (isWin) {
+  } else if (platform.isWin) {
     return [
       {
         label: "View",
@@ -389,7 +356,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         ],
       },
     ];
-  } else if (isLinux) {
+  } else if (platform.isLinux) {
     return [
       {
         label: app.name,

@@ -14,6 +14,7 @@ export const SHOW_DIRECTORY = "show-directory";
 export const CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const GET_ASSET_FILE_PATH = "get-asset-file-path";
+export const CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
 
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY =
   "enable_system_notifications";
