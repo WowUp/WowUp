@@ -43,7 +43,7 @@
       "ADDON_CHANNEL_TYPE": {
         "ALPHA": "Alpha",
         "BETA": "Beta",
-        "STABLE": "Stable"
+        "STABLE": "Stabil"
       }
     },
     "PROGRESS_SPINNER": {
@@ -71,16 +71,16 @@
       "CLOSE_BUTTON": "Schließen",
       "DESCRIPTION": "Wenn Sie ein Addon direkt von einer URL installieren möchten, fügen Sie es unten in der Zeile ein.",
       "ERROR": {
-        "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
-        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
-        "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
-        "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
-        "TITLE": "Addon Installation Failed"
+        "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
+        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst du auf unsrem Discord im Kamlen #wow-support nach Hilfe fragen.",
+        "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic"
+        "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Releases Tags mit einem ZIP Archiv, welches das Addon enthält, besitzt.
+        "TITLE": "Addon Installation fehlgeschlagen"
       },
       "IMPORT_BUTTON": "Importieren",
       "INSTALL_BUTTON": "Installieren",
       "INSTALL_SUCCESS_LABEL": "Installiert!",
-      "SUPPORTED_SOURCES": "Unterstützt wird WowInterface und GitHub*",
+      "SUPPORTED_SOURCES": "Unterstützt wird WowInterface und GitHub",
       "TITLE": "Installation eines Addons über eine externe URL"
     },
     "TELEMETRY": {
