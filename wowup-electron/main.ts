@@ -5,7 +5,6 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
-  nativeImage,
   screen,
   Tray,
 } from "electron";
@@ -33,11 +32,10 @@ const preferenceStore = new Store({ name: "preferences" });
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
-let tray: Tray = null;
 
 // APP MENU SETUP
 const appMenuTemplate: Array<
-  MenuItemConstructorOptions | MenuItem
+MenuItemConstructorOptions | MenuItem
 > = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
