@@ -39,8 +39,15 @@
       "MILLION": "{count} Millionen",
       "THOUSAND": "{count} Tausend"
     },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alpha",
+        "BETA": "Beta",
+        "STABLE": "Stable"
+      }
+    },
     "PROGRESS_SPINNER": {
-      "LOADING": "Loading..."
+      "LOADING": "Laden..."
     }
   },
   "DIALOGS": {

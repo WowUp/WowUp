@@ -39,6 +39,13 @@
       "MILLION": "{count} million",
       "THOUSAND": "{count} thousand"
     },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alpha",
+        "BETA": "Beta",
+        "STABLE": "Stable"
+      }
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Loading..."
     }

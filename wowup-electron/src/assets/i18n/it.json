@@ -39,6 +39,13 @@
       "MILLION": "{count} {count, plural, one{milione} other{milioni}}",
       "THOUSAND": "{count, plural, one{mille} other{{count} mila}}"
     },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alpha",
+        "BETA": "Beta",
+        "STABLE": "Stable"
+      }
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
     }

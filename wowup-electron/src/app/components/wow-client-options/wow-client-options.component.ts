@@ -29,17 +29,16 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
+  public readonly addonChannelInfos: {
+    type: AddonChannelType;
+    name: string;
+  }[];
+
   public clientTypeName: string;
   public clientFolderName: string;
   public clientLocation: string;
   public selectedAddonChannelType: AddonChannelType;
-  public addonChannelInfos: {
-    type: AddonChannelType;
-    name: string;
-  }[] = getEnumList(AddonChannelType).map((type: AddonChannelType) => ({
-    type: type,
-    name: getEnumName(AddonChannelType, type),
-  }));
+
   public clientAutoUpdate: boolean;
 
   constructor(
@@ -49,6 +48,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _wowupService: WowUpService,
     private _cdRef: ChangeDetectorRef
   ) {
+    this.addonChannelInfos = this.getAddonChannelInfos();
+
     const warcraftProductSubscription = this._warcraftService.products$.subscribe(
       (products) => {
         const product = products.find((p) => p.clientType === this.clientType);
@@ -95,6 +96,16 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     if (selectedPath) {
       this.clientLocation = selectedPath;
     }
+  }
+
+  private getAddonChannelInfos() {
+    return getEnumList(AddonChannelType).map((type: AddonChannelType) => {
+      const channelName = getEnumName(AddonChannelType, type).toUpperCase();
+      return {
+        type: type,
+        name: `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelName}`,
+      };
+    });
   }
 
   private async selectWowClientPath(
