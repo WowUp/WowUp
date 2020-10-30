@@ -38,6 +38,9 @@
       "BILLION": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}",
       "MILLION": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
       "THOUSAND": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Загрузка..."
     }
   },
   "DIALOGS": {
@@ -134,7 +137,6 @@
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Начать повторное сканирование?",
       "SPINNER": {
         "GATHERING_ADDONS": "Сбор модификаций...",
-        "LOADING": "Загрузка...",
         "UPDATING": "Обновлено {updateCount} из {addonCount}",
         "UPDATING_WITH_ADDON_NAME": "Обновлено {updateCount} из {addonCount}\n{clientType}: {addonName}"
       },

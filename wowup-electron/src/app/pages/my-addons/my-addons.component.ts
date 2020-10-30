@@ -235,9 +235,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRefresh() {
-    this.spinnerMessage = this._translateService.instant(
-      "PAGES.MY_ADDONS.SPINNER.LOADING"
-    );
     this.loadAddons(this.selectedClient);
   }
 

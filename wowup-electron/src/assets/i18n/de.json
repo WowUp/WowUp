@@ -38,6 +38,9 @@
       "BILLION": "{count} Billionen",
       "MILLION": "{count} Millionen",
       "THOUSAND": "{count} Tausend"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Loading..."
     }
   },
   "DIALOGS": {
@@ -134,7 +137,6 @@
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Neu scannen starten?",
       "SPINNER": {
         "GATHERING_ADDONS": "Sammle Addons...",
-        "LOADING": "Laden...",
         "UPDATING": "Aktualisiere {updateCount}/{addonCount}",
         "UPDATING_WITH_ADDON_NAME": "Aktualisiere {updateCount}/{addonCount}\n{clientType}: {addonName}"
       },

@@ -38,6 +38,9 @@
       "BILLION": "{count} milliarder",
       "MILLION": "{count} millioner",
       "THOUSAND": "{count} tusen"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Laster..."
     }
   },
   "DIALOGS": {
@@ -134,7 +137,6 @@
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start skanningen?",
       "SPINNER": {
         "GATHERING_ADDONS": "Samler utvidelser...",
-        "LOADING": "Laster...",
         "UPDATING": "Oppdaterer {updateCount}/{addonCount}",
         "UPDATING_WITH_ADDON_NAME": "Oppdaterer {updateCount}/{addonCount}\n{clientType}: {addonName}"
       },

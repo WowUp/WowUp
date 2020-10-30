@@ -38,6 +38,9 @@
       "BILLION": "{count} {count, plural, one{bilione} other{bilioni}}",
       "MILLION": "{count} {count, plural, one{milione} other{milioni}}",
       "THOUSAND": "{count, plural, one{mille} other{{count} mila}}"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Caricamento in corso..."
     }
   },
   "DIALOGS": {
@@ -134,7 +137,6 @@
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Iniziare una nuova scansione?",
       "SPINNER": {
         "GATHERING_ADDONS": "Raccogliendo gli addons...",
-        "LOADING": "Caricamento in corso...",
         "UPDATING": "Aggiornati {updateCount} di {addonCount}",
         "UPDATING_WITH_ADDON_NAME": "Aggioranti {updateCount} di {addonCount}\n{clientType}: {addonName}"
       },
