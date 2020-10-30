@@ -72,7 +72,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public query = "";
-  public isBusy = false;
+  public isBusy = true;
   public selectedClient = WowClientType.None;
 
   constructor(
@@ -198,6 +198,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.formatAddons(this.filterInstalledAddons(searchResults))
     );
     this.isBusy = false;
+    this._cdRef.detectChanges();
   }
 
   openDetailDialog(listItem: GetAddonListItem) {

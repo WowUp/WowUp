@@ -48,6 +48,9 @@
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
+    },
+    "SEARCH": {
+      "NO_ADDONS": "No addons found"
     }
   },
   "DIALOGS": {
