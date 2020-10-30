@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
@@ -39,6 +40,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild("table", { read: ElementRef }) table: ElementRef;
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab: boolean = false;
@@ -100,6 +102,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
     this._subscriptions = [];
+  }
+
+  onSortChange(): void {
+    if (this.table) {
+      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
+    }
   }
 
   onStatusColumnUpdated() {
