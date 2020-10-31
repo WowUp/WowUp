@@ -3,8 +3,8 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti automatici",
     "SYSTEM_TRAY": {
-      "QUIT_ACTION": "Quit",
-      "SHOW_ACTION": "Show"
+      "QUIT_ACTION": "Chiudi",
+      "SHOW_ACTION": "Mostra"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
@@ -41,20 +41,20 @@
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} {count, plural, one{bilione} other{bilioni}}",
       "MILLION": "{count} {count, plural, one{milione} other{milioni}}",
-      "THOUSAND": "{count, plural, one{mille} other{{count} mila}}"
+      "THOUSAND": "{count, plural, one{Mille} other{{count} mila}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
-        "ALPHA": "Alpha",
+        "ALPHA": "Alfa",
         "BETA": "Beta",
-        "STABLE": "Stable"
+        "STABLE": "Stabile"
       }
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
     },
     "SEARCH": {
-      "NO_ADDONS": "No addons found"
+      "NO_ADDONS": "Nessun Addon trovato"
     }
   },
   "DIALOGS": {
@@ -122,7 +122,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ALPHA_ADDON_CHANNEL": "Alpha",
+        "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Aggiornamento Automatico",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENT_TITLE": "Canale",
@@ -130,7 +130,7 @@
         "REINSTALL_ADDON_BUTTON": "Reinstalla",
         "REMOVE_ADDON_BUTTON": "Rimuovi",
         "SHOW_FOLDER": "Mostra cartella",
-        "STABLE_ADDON_CHANNEL": "Stable"
+        "STABLE_ADDON_CHANNEL": "Stabile"
       },
       "CHECK_UPDATES_BUTTON": "Controlla Aggiornamenti",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Controlla gli ultimi aggiornamenti degli addons",
