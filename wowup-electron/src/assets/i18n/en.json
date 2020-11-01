@@ -158,7 +158,7 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Install",
         "ADDON_UPDATE_BUTTON": "Update",
-        "AUTHOR_COLUMN_HEADER": "Author",
+        "AUTHOR_COLUMN_HEADER": "Author(s)",
         "AUTO_UPDATE_ICON_TOOLTIP": "Auto update enabled",
         "GAME_VERSION_COLUMN_HEADER": "Game Version",
         "LATEST_VERSION_COLUMN_HEADER": "Latest Version",
@@ -182,6 +182,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Clients",
+        "APPLICATION": "Application",
+        "DEBUG": "Debug"
+      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
