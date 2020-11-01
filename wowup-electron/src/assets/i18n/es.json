@@ -182,6 +182,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Clients",
+        "APPLICATION": "Application",
+        "DEBUG": "Debug"
+      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",

@@ -158,7 +158,7 @@
         "ADDON_COLUMN_HEADER": "Модификация",
         "ADDON_INSTALL_BUTTON": "Установить",
         "ADDON_UPDATE_BUTTON": "Обновить",
-        "AUTHOR_COLUMN_HEADER": "Автор",
+        "AUTHOR_COLUMN_HEADER": "Автор(ы)",
         "AUTO_UPDATE_ICON_TOOLTIP": "Автообновление включено",
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
@@ -182,6 +182,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Клиенты",
+        "APPLICATION": "Приложение",
+        "DEBUG": "Отладка"
+      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
