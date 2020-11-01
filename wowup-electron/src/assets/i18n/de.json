@@ -3,8 +3,8 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
     "SYSTEM_TRAY": {
-      "QUIT_ACTION": "Quit",
-      "SHOW_ACTION": "Show"
+      "QUIT_ACTION": "Beenden",
+      "SHOW_ACTION": "Öffnen"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "WowUp Update installieren",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Willst du WowUp neu Starten um das Update zu installieren?",
@@ -54,7 +54,7 @@
       "LOADING": "Laden..."
     },
     "SEARCH": {
-      "NO_ADDONS": "No addons found"
+      "NO_ADDONS": "Keine Addons gefunden"
     }
   },
   "DIALOGS": {
