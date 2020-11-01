@@ -31,7 +31,7 @@ export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
 export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
 export const NO_LATEST_SEARCH_RESULT_FILES_ERROR =
   "NO_LATEST_SEARCH_RESULT_FILES";
-export const SET_LANGUAGE_PREFERENCE_KEY = "set_language";
+export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";

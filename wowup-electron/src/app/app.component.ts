@@ -52,7 +52,7 @@ export class AppComponent implements AfterViewInit {
     ]);
     this.translate.setDefaultLang("en");
     this.translate.use(this._electronService.locale);
-    this.translate.use(this._wowUpService.setCurrentLanguage);
+    this.translate.use(this._wowUpService.currentLanguage);
   }
 
   ngAfterViewInit(): void {

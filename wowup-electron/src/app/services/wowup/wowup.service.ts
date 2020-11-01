@@ -17,7 +17,7 @@ import {
   START_WITH_SYSTEM_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
-  SET_LANGUAGE_PREFERENCE_KEY,
+  SELECTED_LANGUAGE_PREFERENCE_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -115,16 +115,16 @@ export class WowUpService {
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
-  public get setCurrentLanguage() {
+  public get currentLanguage() {
     const preference = this._preferenceStorageService.findByKey(
-      SET_LANGUAGE_PREFERENCE_KEY
+      SELECTED_LANGUAGE_PREFERENCE_KEY
     );
     console.log("Set Language Preference: " + preference);
     return preference;
   }
 
-  public set setCurrentLanguage(value: string) {
-    const key = SET_LANGUAGE_PREFERENCE_KEY;
+  public set currentLanguage(value: string) {
+    const key = SELECTED_LANGUAGE_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
@@ -283,7 +283,10 @@ export class WowUpService {
     this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
-    this.setDefaultPreference(SET_LANGUAGE_PREFERENCE_KEY, "en");
+    this.setDefaultPreference(
+      SELECTED_LANGUAGE_PREFERENCE_KEY,
+      this._electronService.locale
+    );
     this.setDefaultPreference(
       WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
       this.getDefaultReleaseChannel()

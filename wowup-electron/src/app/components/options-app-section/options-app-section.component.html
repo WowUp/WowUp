@@ -2,6 +2,48 @@
   <h2>
     {{ "PAGES.OPTIONS.APPLICATION.TITLE" | translate }}
   </h2>
+  <!-- SET LANGUAGE -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_LABEL" | translate }}
+        </div>
+        <small class="hint">{{
+          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_DESCRIPTION" | translate
+        }}</small>
+      </div>
+      <mat-form-field class="light-select">
+        <mat-label>{{
+          "PAGES.OPTIONS.APPLICATION.CURRENT_LANGUAGE_LABEL" | translate
+        }}</mat-label>
+        <mat-select
+          [(value)]="currentLanguage"
+          (selectionChange)="onCurrentLanguageChange($event)"
+          appUserActionTracker
+          category="Options"
+          action="CurrentLanguage"
+          [label]="currentLanguage"
+        >
+          <mat-option *ngFor="let language of languages" [value]="language">
+            <span [ngSwitch]="language">
+              <p *ngSwitchCase="'en'">English</p>
+              <p *ngSwitchCase="'de'">German</p>
+              <p *ngSwitchCase="'es'">Spanish</p>
+              <p *ngSwitchCase="'fr'">French</p>
+              <p *ngSwitchCase="'it'">Italian</p>
+              <p *ngSwitchCase="'ko'">Korean</p>
+              <p *ngSwitchCase="'nb'">Norwegian</p>
+              <p *ngSwitchCase="'pt'">Portuguese</p>
+              <p *ngSwitchCase="'ru'">Russian</p>
+              <p *ngSwitchCase="'zh'">Chinese</p>
+              <p *ngSwitchDefault>{{ language }}</p>
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
   <!-- TELEMETRY -->
   <div class="toggle">
     <div class="row align-items-center">
@@ -138,48 +180,6 @@
         [label]="startMinimized"
       >
       </mat-slide-toggle>
-    </div>
-  </div>
-  <!-- SET LANGUAGE -->
-  <div class="toggle">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>
-          {{ "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_LABEL" | translate }}
-        </div>
-        <small class="hint">{{
-          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_DESCRIPTION" | translate
-        }}</small>
-      </div>
-      <mat-form-field class="light-select">
-        <mat-label>{{
-          "PAGES.OPTIONS.APPLICATION.CURRENT_LANGUAGE_LABEL" | translate
-        }}</mat-label>
-        <mat-select
-          [(value)]="setCurrentLanguage"
-          (selectionChange)="onSetCurrentLanguageChange($event)"
-          appUserActionTracker
-          category="Options"
-          action="setCurrentLanguage"
-          [label]="setCurrentLanguage"
-        >
-          <mat-option *ngFor="let language of languages" [value]="language">
-            <span [ngSwitch]="language">
-              <p *ngSwitchCase="'en'">English</p>
-              <p *ngSwitchCase="'de'">German</p>
-              <p *ngSwitchCase="'es'">Spanish</p>
-              <p *ngSwitchCase="'fr'">French</p>
-              <p *ngSwitchCase="'it'">Italian</p>
-              <p *ngSwitchCase="'ko'">Korean</p>
-              <p *ngSwitchCase="'nb'">Norwegian</p>
-              <p *ngSwitchCase="'pt'">Portuguese</p>
-              <p *ngSwitchCase="'ru'">Russian</p>
-              <p *ngSwitchCase="'zh'">Chinese</p>
-              <p *ngSwitchDefault>{{ language }}</p>
-            </span>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
   </div>
 </div>

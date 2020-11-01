@@ -20,7 +20,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public startWithSystem = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
-  public setCurrentLanguage: string = "";
+  public currentLanguage: string = "";
   public languages: string[] = [];
 
   constructor(
@@ -51,7 +51,7 @@ export class OptionsAppSectionComponent implements OnInit {
     this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
     this.startWithSystem = this.wowupService.startWithSystem;
     this.startMinimized = this.wowupService.startMinimized;
-    this.setCurrentLanguage = this.wowupService.setCurrentLanguage;
+    this.currentLanguage = this.wowupService.currentLanguage;
     this.languages = this._translateService.getLangs();
   }
 
@@ -105,7 +105,7 @@ export class OptionsAppSectionComponent implements OnInit {
     });
   };
 
-  onSetCurrentLanguageChange = (evt: MatSelectChange) => {
+  onCurrentLanguageChange = (evt: MatSelectChange) => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant(
@@ -123,7 +123,7 @@ export class OptionsAppSectionComponent implements OnInit {
         return;
       }
 
-      this.wowupService.setCurrentLanguage = evt.value;
+      this.wowupService.currentLanguage = evt.value;
       this._electronService.restartApplication();
     });
   };
