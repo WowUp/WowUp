@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 import { ElectronService } from "app/services";
@@ -19,6 +20,8 @@ export class OptionsAppSectionComponent implements OnInit {
   public startWithSystem = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
+  public setCurrentLanguage: string = "";
+  public languages: string[] = [];
 
   constructor(
     private _analyticsService: AnalyticsService,
@@ -48,6 +51,8 @@ export class OptionsAppSectionComponent implements OnInit {
     this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
     this.startWithSystem = this.wowupService.startWithSystem;
     this.startMinimized = this.wowupService.startMinimized;
+    this.setCurrentLanguage = this.wowupService.setCurrentLanguage;
+    this.languages = this._translateService.getLangs();
   }
 
   onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
@@ -96,6 +101,29 @@ export class OptionsAppSectionComponent implements OnInit {
       }
 
       this.wowupService.useHardwareAcceleration = evt.checked;
+      this._electronService.restartApplication();
+    });
+  };
+
+  onSetCurrentLanguageChange = (evt: MatSelectChange) => {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant(
+          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"
+        ),
+        message: this._translateService.instant(
+          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_DESCRIPTION"
+        ),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        evt.value = "en";
+        return;
+      }
+
+      this.wowupService.setCurrentLanguage = evt.value;
       this._electronService.restartApplication();
     });
   };
