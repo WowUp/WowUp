@@ -1,0 +1,71 @@
+@import "../../../variables.scss";
+
+footer {
+  height: 25px;
+  padding: 0.25em 0.5em;
+  display: flex;
+  align-items: center;
+
+  p {
+    margin: 0;
+  }
+
+  a,
+  img {
+    height: 25px;
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+  }
+  // a:hover {
+  //     background: $dark-3;
+  // }
+
+  div {
+    font-size: 0.8em;
+  }
+
+  .patreon-link {
+    margin-right: 1em;
+    &:hover {
+      background-color: $dark-3;
+    }
+
+    .patron-img {
+      height: 25px;
+    }
+  }
+
+  .discord-link {
+    padding: 0 0.25em;
+
+    &:hover {
+      background-color: $dark-3;
+    }
+
+    .discord-img {
+      height: 25px;
+    }
+  }
+
+  .update-button {
+    height: 25px;
+    padding: 0 0.5em;
+    overflow: hidden;
+    background-color: green;
+    border-radius: 4px;
+    border: none;
+    color: $white-1;
+
+    &:hover {
+      background-color: darkgreen;
+      cursor: pointer;
+    }
+
+    &:disabled {
+      background-color: $dark-2;
+    }
+    mat-icon {
+      pointer-events: none;
+    }
+  }
+}

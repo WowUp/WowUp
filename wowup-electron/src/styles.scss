@@ -1,0 +1,406 @@
+@import "./custom-theme.scss";
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+input,
+button,
+textarea,
+:focus {
+  outline: none; // You should add some other style for :focus to help UX/a11y
+}
+
+a:not([draggable="true"]),
+img:not([draggable="true"]) {
+  -webkit-user-drag: none;
+  user-drag: none;
+  /* Technically not supported in Electron yet */
+}
+
+a[href^="http://"],
+a[href^="https://"],
+a[href^="ftp://"]
+{
+  -webkit-user-drag: auto;
+  user-drag: auto;
+  /* Technically not supported in Electron yet */
+}
+
+.selectable {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+html {
+  background-color: $dark-3;
+  overflow: hidden;
+  -webkit-app-region: no-drag;
+}
+
+body {
+  overflow: hidden;
+  margin: 0;
+  -webkit-app-region: no-drag;
+}
+
+a,
+img {
+  -webkit-app-region: no-drag;
+}
+
+.p-0 {
+  padding: 0 !important;
+}
+
+.m-0 {
+  margin: 0 !important;
+}
+
+.mr-1 {
+  margin-right: 0.25em !important;
+}
+
+.mr-2 {
+  margin-right: 0.5em !important;
+}
+
+.mr-3 {
+  margin-right: 1em !important;
+}
+
+.ml-1 {
+  margin-left: 0.25em !important;
+}
+
+.ml-2 {
+  margin-left: 0.5em !important;
+}
+
+.ml-3 {
+  margin-left: 1em !important;
+}
+
+.no-reg-drag {
+  -webkit-app-region: no-drag;
+}
+
+.pointer {
+  pointer-events: all !important;
+
+  &:hover {
+    cursor: pointer !important;
+  }
+}
+
+.mat-tab-label,
+.mat-tab-label-content,
+.mat-select-value,
+.mat-form-field-infix {
+  &:hover {
+    cursor: pointer !important;
+  }
+}
+
+.mat-button,
+.mat-stroked-button,
+.mat-raised-button,
+.mat-flat-button {
+  &:hover {
+    cursor: default !important;
+  }
+
+  &:not(.mat-button-disabled) {
+    &:hover {
+      cursor: pointer !important;
+    }
+  }
+
+  // Prevent clicking thru the button via the text
+  .mat-button-wrapper {
+    pointer-events: none;
+  }
+}
+
+.mat-slide-toggle-thumb,
+.mat-slide-toggle-bar {
+  &:hover {
+    cursor: pointer !important;
+  }
+}
+
+.mat-slide-toggle-thumb,
+.mat-slide-toggle-bar,
+.mat-button-wrapper {
+  -webkit-app-region: no-drag;
+}
+
+.bg-dark-3 {
+  background-color: $dark-3;
+}
+
+.bg-dark-4 {
+  background-color: $dark-4;
+}
+
+.bg-purple-1 {
+  background-color: $purple-1;
+}
+
+.text-light {
+  color: $white-1;
+}
+
+.text-light-2 {
+  color: $white-2;
+}
+
+.pre-load-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  justify-content: center;
+  align-items: center;
+
+  .logo {
+    width: 200px;
+  }
+}
+
+.window-appicon {
+  background-size: 30px !important;
+  padding-left: 12px !important;
+}
+
+.tab-container {
+  overflow: auto;
+  overflow-x: hidden;
+
+  &.mac {
+    height: calc(100vh - 102px);
+  }
+
+  &.windows {
+    height: calc(100vh - 110px);
+  }
+}
+
+.no-pad-select {
+  .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+  }
+}
+
+.mat-input-element {
+  color: $white-1 !important;
+}
+
+.mat-option.mat-selected:not(.mat-option-disabled) {
+  color: $white-3 !important;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+
+  &.align-items-center {
+    align-items: center;
+  }
+
+  &.align-items-start {
+    align-items: flex-start;
+  }
+
+  &.justify-content-center {
+    justify-content: center;
+  }
+
+  &.justify-content-end {
+    justify-content: flex-end;
+  }
+}
+
+.addon-table {
+  width: 100%;
+  height: 100%;
+
+  .cell-break-all {
+    word-break: break-all;
+  }
+
+  .cell-wrap-text {
+    white-space: normal;
+  }
+
+  // .addon-title {
+  //   font-weight: bold;
+  //   font-size: 1.1em;
+
+  // }
+}
+
+.addon-context-menu {
+  background-color: $dark-4;
+
+  .addon-context-menu-header {
+    padding: 0 16px 8px 16px;
+    color: $white-1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .thumbnail {
+      background-color: $dark-2;
+      width: 30px;
+      height: 30px;
+      margin-right: 16px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .thumbnail-letter {
+        color: $white-4;
+        font-size: 1.5em;
+        font-weight: 400;
+      }
+    }
+
+    .addon-name {
+      font-size: 1em;
+      // font-weight: bold;
+    }
+
+    .addon-version {
+      color: $white-2;
+    }
+  }
+}
+
+.wide-slide-toggle {
+  width: 100%;
+
+  &:hover {
+    cursor: pointer !important;
+  }
+
+  .mat-slide-toggle-label {
+    &:hover {
+      cursor: pointer !important;
+    }
+  }
+
+  .mat-slide-toggle-content {
+    flex-grow: 1;
+  }
+}
+
+.light-select {
+  .mat-form-field-label {
+    color: $white-2 !important;
+  }
+}
+
+.vertical-radio-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.cell-break-all {
+  word-break: break-all;
+}
+
+.cell-wrap-text {
+  white-space: normal;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+}
+
+.cell-center-text {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $dark-2;
+  // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  border: 1px solid $purple-3;
+  // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  background: rgb(107, 105, 214);
+  background: linear-gradient(
+    146deg,
+    rgba(107, 105, 214, 1) 0%,
+    rgba(80, 79, 161, 1) 100%
+  );
+}
+
+.install-button {
+  min-width: 120px !important;
+}
+
+.progress-button {
+  position: relative;
+  overflow: hidden;
+  min-width: 120px !important;
+
+  .progress-bar {
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    width: 100%;
+    left: 0;
+    position: absolute;
+  }
+
+  .mat-progress-bar-buffer {
+    background: $white-4 !important;
+  }
+
+  .mat-progress-bar-fill::after {
+    background: $blue-1 !important;
+  }
+}
+
+.no-tabs {
+  &.mat-tab-group {
+    .mat-tab-header {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,183 @@
+@import "../../../variables.scss";
+
+.tab-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.nav-container {
+  height: 100%;
+  display: flex;
+  width: 100%;
+
+  .nav-item-container {
+    background: $dark-3;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    flex: 1 0 200px;
+    z-index: 1;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+
+    .nav-item-list-wrap {
+      flex: 1 0 auto;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      flex-direction: row;
+      -webkit-box-align: start;
+      align-items: flex-start;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-flex: 1;
+      -webkit-box-pack: end;
+      justify-content: flex-end;
+      box-sizing: border-box;
+
+      .nav-item-list {
+        width: 200px;
+      }
+    }
+  }
+  .nav-content-container {
+    background: $dark-2;
+    color: $white-1;
+    position: relative;
+    display: flex;
+    -webkit-box-flex: 1;
+    flex: 1 1 800px;
+    -webkit-box-align: start;
+    align-items: flex-start;
+    box-sizing: border-box;
+
+    .nav-content-wrap {
+      -webkit-box-flex: 1;
+      flex: 1;
+      box-sizing: border-box;
+      height: 100%;
+
+      .nav-content {
+        overflow: hidden scroll;
+        padding-right: 0px;
+        height: 100%;
+        position: static;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        flex-direction: row;
+        -webkit-box-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        align-items: flex-start;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        flex: 1 1 auto;
+        min-height: 0;
+        -webkit-box-flex: 1;
+
+        .content-tab {
+          position: relative;
+          -webkit-box-flex: 1;
+          flex: 1 1 auto;
+          max-width: 740px;
+          min-width: 460px;
+          min-height: 100%;
+          
+        }
+      }
+    }
+  }
+}
+
+.options {
+  max-width: 900px;
+  width: 100%;
+  height: 100%;
+
+  .option-card {
+    margin-top: 1em;
+    background-color: $dark-2;
+
+    &:last-child {
+      margin-bottom: 1em;
+    }
+  }
+
+  .title {
+    font-size: 1.5em;
+    flex-grow: 1;
+  }
+
+  .setting-section {
+    background-color: $dark-4;
+  }
+
+  .folder-input {
+    margin-right: 1em;
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  // margin: 1em 0;
+  padding: 0.5em;
+  &.np {
+    padding: 0;
+  }
+  &.sub {
+    padding-left: 2em;
+  }
+}
+
+.col {
+  padding: 0.5em;
+}
+hr {
+  border: 1px solid $white-4;
+}
+p {
+  margin: 0;
+  padding: 0;
+}
+.hint {
+  color: $white-3;
+}
+.hover {
+  &:hover {
+    cursor: pointer;
+  }
+}
+.grow {
+  flex-grow: 1;
+}
+.no-shrink {
+  flex-shrink: 0;
+}
+table {
+  width: 100%;
+}
+section {
+  color: $white-1;
+  padding: 1em;
+
+  .select-button {
+    flex-shrink: 0;
+  }
+
+  small {
+    color: $white-2;
+  }
+}
+
+.linux {
+  .options {
+    height: calc(100vh - 80px);
+  }
+}

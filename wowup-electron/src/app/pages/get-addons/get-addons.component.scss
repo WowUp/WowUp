@@ -1,0 +1,110 @@
+@import "../../../variables.scss";
+
+.tab-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.control-container {
+  display: flex;
+  flex-direction: row;
+  padding: 0 1em 0 1em;
+
+  .select-container {
+    padding-top: 1em;
+    flex-grow: 1;
+  }
+
+  .right-container {
+    display: flex;
+    flex-direction: row;
+
+    .search-container {
+      padding-top: 1em;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 1em;
+
+      button {
+        &:not(:last-child) {
+          margin-right: 0.5em;
+        }
+      }
+    }
+  }
+}
+
+.no-addons-container {
+  text-align: center;
+  color: $white-1;
+}
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-container {
+  height: calc(100% - 75px);
+  overflow: auto;
+  overflow-x: hidden;
+
+  table {
+    width: 100%;
+  }
+
+  tr {
+    &:hover {
+      background-color: $dark-1;
+    }
+  }
+
+  .addon-logo-container {
+    background-color: $dark-2;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 0.5em;
+    flex-shrink: 0;
+
+    .addon-logo {
+      width: 100%;
+    }
+  }
+
+  .addon-title {
+    font-weight: 400;
+    font-size: 1.1em;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+
+  .cell-padding {
+    padding-right: 1em;
+  }
+}
+
+.author-column {
+  width: 100px;
+  padding-right: 1em;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
+}
+.provider-column {
+  min-width: 60px;
+}
+
+.linux {
+  .table-container {
+    height: calc(100vh - 150px);
+  }
+}
