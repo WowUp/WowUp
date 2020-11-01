@@ -5,11 +5,10 @@ import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
 
 let _trayRef: Tray;
 
-export function createTray(config: SystemTrayConfig): boolean {
+export function createTray(window: BrowserWindow, config: SystemTrayConfig): boolean {
   _trayRef?.destroy();
 
   console.log("Creating tray");
-  const win = BrowserWindow.getFocusedWindow();
   const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
@@ -24,7 +23,7 @@ export function createTray(config: SystemTrayConfig): boolean {
     {
       label: config.showLabel || "Show",
       click: () => {
-        win.show();
+        window.show();
 
         if (platform.isMac) {
           app.dock.show();
@@ -39,7 +38,7 @@ export function createTray(config: SystemTrayConfig): boolean {
 
   if (platform.isWin) {
     _trayRef.on("click", () => {
-      win.show();
+      window.show();
     });
   }
 
