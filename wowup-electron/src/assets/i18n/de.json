@@ -36,6 +36,8 @@
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
       "HOURS_AGO": "Vor {count} {count, plural, one{Stunde} other{Stunden}}",
       "JUST_NOW": "Gerade eben",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "Gestern"
     },
     "DOWNLOAD_COUNT": {
@@ -182,11 +184,6 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Application",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren / Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
@@ -214,6 +211,11 @@
         "LOG_FILES_DESCRIPTION": "Öffnen Sie den Ordner, der Ihre letzten Logdateien enthält.",
         "LOG_FILES_LABEL": "Log-Dateien",
         "TITLE": "Debuggen"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf Auto-Update gesetzt",

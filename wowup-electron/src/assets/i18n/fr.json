@@ -36,6 +36,8 @@
       "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
       "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
       "JUST_NOW": "Just now",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "Yesterday"
     },
     "DOWNLOAD_COUNT": {
@@ -182,11 +184,6 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Application",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
@@ -214,6 +211,11 @@
         "LOG_FILES_DESCRIPTION": "Ouvrez le dossier qui contient vos derniers fichiers journaux.",
         "LOG_FILES_LABEL": "Fichiers de log",
         "TITLE": "Déboguage"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Les extensions nouvellement installées seront mises à jour automatiquement par défaut",

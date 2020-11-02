@@ -36,6 +36,8 @@
       "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
       "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
       "JUST_NOW": "Just now",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "Yesterday"
     },
     "DOWNLOAD_COUNT": {
@@ -182,11 +184,6 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Application",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
@@ -214,6 +211,11 @@
         "LOG_FILES_DESCRIPTION": "Abra la carpeta que contiene sus últimos archivos de registro.",
         "LOG_FILES_LABEL": "Archivos de Registro",
         "TITLE": "Depuración"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Los addons recién instalados se configurarán para actualizarse automáticamente de forma predeterminada",
