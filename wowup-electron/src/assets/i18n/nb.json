@@ -183,6 +183,7 @@
     },
     "OPTIONS": {
       "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver systemvarsler",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",

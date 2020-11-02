@@ -183,6 +183,7 @@
     },
     "OPTIONS": {
       "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
@@ -192,7 +193,6 @@
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
         "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
         "SET_LANGUAGE_LABEL": "Set Language",
-        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "START_MINIMIZED_DESCRIPTION": "WowUp will start minimized and not show up.",
         "START_MINIMIZED_LABEL": "Launch WowUp minimized",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp will be started automatically when you start up your system.",

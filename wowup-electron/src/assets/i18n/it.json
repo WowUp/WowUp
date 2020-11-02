@@ -183,6 +183,7 @@
     },
     "OPTIONS": {
       "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita/Disabilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Abilita notifiche di sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Quando si chiude la finestra WowUp, minimizzare nella barra dei menu",
