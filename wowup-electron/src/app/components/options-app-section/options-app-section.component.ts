@@ -119,7 +119,7 @@ export class OptionsAppSectionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) {
-        evt.value = "en";
+        evt.source.value = this.wowupService.currentLanguage;
         return;
       }
 
