@@ -118,35 +118,28 @@ export class ElectronService {
 
     currentWindow?.webContents.on("zoom-changed", (event, zoomDirection) => {
       let currentZoom = currentWindow.webContents.getZoomFactor();
+      let zoomStep = 1.1;
+      let zoomMin = 0.6;
+      let zoomMax = 3;
+
       if (zoomDirection === "in") {
+        let value = currentZoom * zoomStep;
+        value = Math.min(value, zoomMax);
         // setting the zoomFactor comes at a cost, this early return greatly improves performance
-        if (Math.round(currentZoom * 100) == 300) {
+        if (value == zoomMax) {
           return;
         }
-
-        if (currentZoom > 3.0) {
-          currentWindow.webContents.zoomFactor = 3.0;
-
-          return;
-        }
-
-        currentWindow.webContents.zoomFactor = currentZoom + 0.2;
-
+        currentWindow.webContents.zoomFactor = value;
         return;
       }
       if (zoomDirection === "out") {
+        let value = currentZoom / zoomStep;
+        value = Math.max(value, zoomMin);
         // setting the zoomFactor comes at a cost, this early return greatly improves performance
-        if (Math.round(currentZoom * 100) == 100) {
+        if (value == zoomMin) {
           return;
         }
-
-        if (currentZoom < 1.0) {
-          currentWindow.webContents.zoomFactor = 1.0;
-
-          return;
-        }
-
-        currentWindow.webContents.zoomFactor = currentZoom - 0.2;
+        currentWindow.webContents.zoomFactor = value;
       }
     });
 
