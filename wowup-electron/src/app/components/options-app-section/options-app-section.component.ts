@@ -67,6 +67,9 @@ export class OptionsAppSectionComponent implements OnInit {
     },
   ]
 
+  public allowedScales = [70, 75, 85, 90, 100, 110, 120, 130, 150, 200, 300];
+  public currentScale = 100;
+
   constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
@@ -95,6 +98,9 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startWithSystem = this.wowupService.startWithSystem;
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
+
+    const currentWindow = window.require("electron").remote.getCurrentWindow();
+    this.currentScale = Math.round(currentWindow.webContents.zoomFactor * 100);
   }
 
   onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
@@ -162,5 +168,10 @@ export class OptionsAppSectionComponent implements OnInit {
       this.wowupService.currentLanguage = evt.value;
       this._electronService.restartApplication();
     });
+  };
+
+  onScaleChange = (evt: MatSelectChange) => {
+    const currentWindow = window.require("electron").remote.getCurrentWindow();
+    currentWindow.webContents.zoomFactor = evt.value / 100;
   };
 }
