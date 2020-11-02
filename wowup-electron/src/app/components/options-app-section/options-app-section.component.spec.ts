@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OptionsAppSectionComponent } from './options-app-section.component';
+import { OptionsAppSectionComponent } from "./options-app-section.component";
 
-describe('OptionsAppSectionComponent', () => {
+describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
   let fixture: ComponentFixture<OptionsAppSectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OptionsAppSectionComponent ]
-    })
-    .compileComponents();
+      declarations: [OptionsAppSectionComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('OptionsAppSectionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

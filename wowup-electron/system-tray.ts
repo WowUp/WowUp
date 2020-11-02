@@ -5,7 +5,10 @@ import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
 
 let _trayRef: Tray;
 
-export function createTray(window: BrowserWindow, config: SystemTrayConfig): boolean {
+export function createTray(
+  window: BrowserWindow,
+  config: SystemTrayConfig
+): boolean {
   _trayRef?.destroy();
 
   console.log("Creating tray");

@@ -42,7 +42,7 @@
     "lint": "ng lint",
     "i18n": "sync-i18n --files ./src/assets/i18n/*.json --primary en --space 2 --finalnewline --lineendings CRLF --languages de es fr it nb pt ru zh ko",
     "check-i18n": "npm run i18n -- --check",
-    "pretty": "ng lint --fix && npx prettier --write ."
+    "pretty": "npx prettier --write . && ng lint --fix"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "10.0.1",

@@ -74,11 +74,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     //   this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_TEXT"),
     //   this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_ACTION"),
     // ]).toPromise();
-
     // const snackBarRef = this._snackBar.open(sbtext, sbaction, {
     //   duration: 2000,
     // });
-
     // snackBarRef.onAction().subscribe(() => {
     //   console.log("The snack-bar action was triggered!");
     // });
