@@ -195,7 +195,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     const displayAddonSubscription = this._displayAddonsSrc.subscribe(
       (items: AddonViewModel[]) => {
         this.dataSource.data = items;
-        this.dataSource.sortingDataAccessor = _.get;
+        this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string) => {
+          let value = _.get(data, sortHeaderId);
+          return typeof value === "string" ? value.toLowerCase() : value;
+        };
         this.dataSource.filterPredicate = this.filterListItem;
         this.dataSource.sort = this.sort;
       }
@@ -696,7 +699,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   private sortListItems(listItems: AddonViewModel[], sort?: MatSort) {
     if (!sort || !sort.active || sort.direction === "") {
-      return _.orderBy(listItems, ["sortOrder", "addon.name"]);
+      return _.orderBy(listItems, ["sortOrder", "addon.name"].map(column => {
+        return row => {
+          let value = _.get(row, column);
+          return typeof value === "string" ? value.toLowerCase() : value;
+        }
+      }));
     }
     return _.orderBy(
       listItems,

@@ -164,7 +164,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       if (prop === "releasedAt") {
         return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
       }
-      return _.get(item, prop);
+      let value = _.get(item, prop);
+      return typeof value === "string" ? value.toLowerCase() : value;
     };
     this.dataSource.sort = this.sort;
   }
