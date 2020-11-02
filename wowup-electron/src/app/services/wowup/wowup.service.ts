@@ -18,6 +18,7 @@ import {
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
   SELECTED_LANGUAGE_PREFERENCE_KEY,
+  MY_ADDONS_HIDDEN_COLUMNS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -359,5 +360,14 @@ export class WowUpService {
           : [],
       });
     }
+  }
+
+  public get myAddonsHiddenColumns() {
+    let pref = this._preferenceStorageService.findByKey(MY_ADDONS_HIDDEN_COLUMNS_KEY);
+    return pref.split(",");
+  }
+
+  public set myAddonsHiddenColumns(value: Array<string>) {
+    this._preferenceStorageService.set(MY_ADDONS_HIDDEN_COLUMNS_KEY, value.join());
   }
 }

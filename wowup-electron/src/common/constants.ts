@@ -33,6 +33,8 @@ export const NO_LATEST_SEARCH_RESULT_FILES_ERROR =
   "NO_LATEST_SEARCH_RESULT_FILES";
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";
 
+export const MY_ADDONS_HIDDEN_COLUMNS_KEY = "my_addons_hidden_columns";
+
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
 export const APP_UPDATE_DOWNLOADED = "app-update-downloaded";
