@@ -371,6 +371,10 @@ img {
   );
 }
 
+::-webkit-scrollbar-corner {
+  background: $dark-3;
+}
+
 .install-button {
   min-width: 120px !important;
 }

@@ -10,6 +10,7 @@ namespace WowUp.WPF.Services.Contracts
 {
     public delegate void AddonEventHandler(object sender, AddonEventArgs e);
     public delegate void AddonStateEventHandler(object sender, AddonStateEventArgs e);
+    public delegate void AddonListUpdatedEventHandler(object sender, EventArgs e);
 
     public interface IAddonService
     {
@@ -17,6 +18,7 @@ namespace WowUp.WPF.Services.Contracts
         event AddonEventHandler AddonInstalled;
         event AddonEventHandler AddonUpdated;
         event AddonStateEventHandler AddonStateChanged;
+        event AddonListUpdatedEventHandler AddonListUpdated;
 
         string BackupPath { get; }
 
@@ -27,7 +29,8 @@ namespace WowUp.WPF.Services.Contracts
 
         Task<List<PotentialAddon>> Search(
             string query,
-            WowClientType clientType);
+            WowClientType clientType,
+            Action<Exception> onProviderError);
 
         bool IsInstalled(
             string externalId,
@@ -49,12 +52,21 @@ namespace WowUp.WPF.Services.Contracts
             int addonId,
             Action<AddonInstallState, decimal> onUpdate = null);
 
-        Task UninstallAddon(Addon addon);
+        Task UninstallAddon(Addon addon, bool uninstallDependencies);
 
         Task<List<Addon>> GetAddons(
             WowClientType clientType,
             bool rescan = false);
 
         Task<int> ProcessAutoUpdates();
+
+        int GetAddonCount(WowClientType clientType);
+
+        // Dependencies
+        IEnumerable<AddonDependency> GetDependencies(Addon addon);
+
+        bool HasDependencies(Addon addon);
+
+        int GetDependencyCount(Addon addon);
     }
 }

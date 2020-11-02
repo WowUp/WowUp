@@ -1,5 +1,11 @@
 @import "../../../variables.scss";
 
+.tab-container {
+  &.linux {
+    height: calc(100vh - 110px);
+  }
+}
+
 .about-container {
   display: flex;
   justify-content: center;
@@ -58,11 +64,5 @@
         white-space: pre-wrap;
       }
     }
-  }
-}
-
-.linux {
-  .about {
-    height: calc(100vh - 80px);
   }
 }

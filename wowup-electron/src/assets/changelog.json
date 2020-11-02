@@ -1,12 +1,16 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.2",
+      "Description": "Details dialog website link re-arranged (Cratis)\nAdd a language selector to the application options (Cratis)\nUpdate All button should now be disabled if an ignored addon has an update (Cratis)\nOption tabs can be translated (Medok)\nUpdate Russian locale (Medok)\nUpdate German locale (Glow)\nUpdate Italian locale (Bito)\nSelecting a World of Warcraft path is now smarter\nFix an issue with starting minimized throwing an error when using the tray\nFix an issue with tab bar being hidden on Linux\nFix an issue with the options page not being scrollable on Linux"
+    },
+    {
       "Version": "2.0.0-beta.1",
-      "Description": "Update Russion locale (Medok)\nUpdate Italian locale (Bito)\nFix some typos (Cratis)\nDisable start minimized when auto launch disabled (chops)"
+      "Description": "Update Russian locale (Medok)\nUpdate Italian locale (Bito)\nFix some typos (Cratis)\nDisable start minimized when auto launch disabled (chops)"
     },
     {
       "Version": "2.0.0-alpha.22",
-      "Description": "Update Italian locale (Bito)\nUpdate Russion locale (Medok)\nUpdate German locale (Glow)\nFix windows/linux app not restoring when a second instance is launched (chops)\nMy addons show shows the default status sort arrow (chops)\nTable now scrolls to top when changing sort direction (chops)\nAdd some simple lazy loading to 'My Addons' and 'Get Addons'\nAddon channel names can now be localized\nThe system tray can now be localized\nThe loading spinner can now be localized\nThe show/hide column popup can now be localized\nUpdate icon should now appear without user interaction\nFix an issue with updating addons going to the bottom of the list\nRe-style the options tab"
+      "Description": "Update Italian locale (Bito)\nUpdate Russian locale (Medok)\nUpdate German locale (Glow)\nFix windows/linux app not restoring when a second instance is launched (chops)\nMy addons show shows the default status sort arrow (chops)\nTable now scrolls to top when changing sort direction (chops)\nAdd some simple lazy loading to 'My Addons' and 'Get Addons'\nAddon channel names can now be localized\nThe system tray can now be localized\nThe loading spinner can now be localized\nThe show/hide column popup can now be localized\nUpdate icon should now appear without user interaction\nFix an issue with updating addons going to the bottom of the list\nRe-style the options tab"
     },
     {
       "Version": "2.0.0-alpha.20",

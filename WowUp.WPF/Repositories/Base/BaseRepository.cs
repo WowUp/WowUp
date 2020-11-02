@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.IO;
 using WowUp.WPF.Migrations;
 using WowUp.WPF.Migrations.Contracts;
+using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Utilities;
 
 namespace WowUp.WPF.Repositories.Base
 {
-    public class BaseRepository
+    public class BaseRepository : IBaseRepository
     {
         private const string SchemaVersionKey = "schema_version";
 
@@ -30,6 +31,12 @@ namespace WowUp.WPF.Repositories.Base
                 EnableWriteAheadLogging(_database);
                 BootstrapDatabase(_database);
             }
+        }
+
+        public void ShutDown()
+        {
+            _database?.Close();
+            _database?.Dispose();
         }
 
         public void MigrateDatabase()

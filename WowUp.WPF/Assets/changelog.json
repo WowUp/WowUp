@@ -1,8 +1,32 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.19.0",
+      "Description": "Support for installing addon dependencies (By Shaydera).\nImplemented a new event which fires after a rescan or the first start scan, which will cause a refresh on the 'Get Addons' Tab (By Shaydera).\nUse the new WowUp custom fingerprint service.\nFix an issue with partial curse matches with no files or modules causing the whole curse scan to fail.\nFix an issue with the local DB not being closed properly."
+    },
+    {
+      "Version": "1.18.4",
+      "Description": "Fix crash bug when searching and provider fails.\nAdd some feedback when searching a provider fails."
+    },
+    {
+      "Version": "1.18.3",
+      "Description": "Add cuircuit breakers to reduce chaining failing calls onto apis."
+    },
+    {
+      "Version": "1.18.2",
+      "Description": "Add some shorter HTTP timeout times (4 seconds).\nAdd some feedback when scanning from a provider fails.\nFix a bug with CF sending empty current files."
+    },
+    {
+      "Version": "1.18.1",
+      "Description": "Fix an issue with partial curse matches with no files or modules causing the whole curse scan to fail."
+    },
+    {
       "Version": "1.18.0",
       "Description": "Add an 'Open Folder' option to the addon context menu (By Xathz).\nAdd command line paramater to start the app minimized '-m' (By Noxis).\nAdd command line paramater to start the app and quit after auto updates are complete '-q' (By Noxis).\nAdd selector for when the app fails to automatically find WoW install folders.\nAdd the ability to select multiple addons and update their AutoUpdate status.\nAdd the ability to select multiple addons and update their Channel.\nAdd the ability to select multiple addons and re-install them.\nAdd the ability to select multiple addons and un-install them.\nFeatured addons are now sorted by download count.\nAddon icons should now be updated when a change is detected.\nThe system tray icon will now show the window when double clicked."
+    },
+    {
+      "Version": "1.17.4",
+      "Description": "Fix another CurseForge API error."
     },
     {
       "Version": "1.17.3",

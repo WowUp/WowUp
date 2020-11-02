@@ -1,5 +1,11 @@
 @import "../../../variables.scss";
 
+.tab-container {
+  &.linux {
+    height: calc(100vh - 110px);
+  }
+}
+
 .control-container {
   display: flex;
   flex-direction: row;
@@ -45,6 +51,7 @@
 
 .table-container {
   // height: calc(100% - 75px);
+  background-color: $dark-2;
   overflow: auto;
 
   table {
@@ -147,11 +154,5 @@
 
   p {
     margin-bottom: 0.5em;
-  }
-}
-
-.linux {
-  .table-container {
-    height: calc(100vh - 150px);
   }
 }

@@ -182,6 +182,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Clients",
+        "APPLICATION": "Application",
+        "DEBUG": "Debug"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",

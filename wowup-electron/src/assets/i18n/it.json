@@ -39,7 +39,7 @@
       "YESTERDAY": "Ieri"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} {count, plural, one{bilione} other{bilioni}}",
+      "BILLION": "{count} {count, plural, one{miliardo} other{miliardi}}",
       "MILLION": "{count} {count, plural, one{milione} other{milioni}}",
       "THOUSAND": "{count, plural, one{Mille} other{{count} mila}}"
     },
@@ -54,7 +54,7 @@
       "LOADING": "Caricamento in corso..."
     },
     "SEARCH": {
-      "NO_ADDONS": "Nessun Addon trovato"
+      "NO_ADDONS": "Nessun addon trovato"
     }
   },
   "DIALOGS": {
@@ -76,7 +76,7 @@
       "DESCRIPTION": "Se si desidera installare un addon direttamente da un URL incollarlo qui sotto per iniziare.",
       "ERROR": {
         "FAILED_TO_CONNECT": "Impossibile connettersi all'API, per favore riprovare più tardi.",
-        "INSTALL_FAILED": "Qualcosa è andato storto nell'installazione dell'addon, per favore riprovare.\n\nSe questo messaggio continua ad apparire, puoi chiedere aiuto su Discord, in #wow-support channel.",
+        "INSTALL_FAILED": "Qualcosa è andato storto nell'installazione dell'addon, per favore riprovare.\n\nSe questo messaggio continua ad apparire puoi chiederci aiuto su Discord, in #wow-support channel.",
         "INVALID_URL": "Il valore fornito non è un URL valido. Esempi di URL di addons validi:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Non è stato trovato nessun addon, assicurarsi che l'URL sia corretto.\n\nSe si sta installando da GitHub, assicurarsi che la repository abbia una release tag con un file zip contenente l'addon.",
         "TITLE": "Installazione dell'addon fallita"
@@ -107,7 +107,7 @@
       "SEARCH_LABEL": "Cerca",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
-        "AUTHOR_COLUMN_HEADER": "Autore",
+        "AUTHOR_COLUMN_HEADER": "Autore/i",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Numero di download",
         "PROVIDER_COLUMN_HEADER": "Provveditore",
         "RELEASED_AT_COLUMN_HEADER": "Rilasciato",
@@ -172,7 +172,7 @@
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}??",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
-        "TITLE": "Disinstalla {count, plural, =1{Addon} other{Addons}}?"
+        "TITLE": "Disinstallare {count, plural, =1{l'addon} other{gli addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Aggiorna Tutto",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Aggiorna tutti gli addons per questo client",
@@ -182,6 +182,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Clients",
+        "APPLICATION": "Applicazione",
+        "DEBUG": "Debug"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita/Disabilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente",
@@ -216,7 +221,7 @@
         "TITLE": "Debug"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati per l'aggiornamento automatico di default",
+        "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati di default per l'aggiornamento automatico ",
         "AUTO_UPDATE_LABEL": "Aggiornamento Automatico",
         "CLIENT_TYPE_INPUT_HINT": "La cartella che contiene {clientTypeName}: \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",

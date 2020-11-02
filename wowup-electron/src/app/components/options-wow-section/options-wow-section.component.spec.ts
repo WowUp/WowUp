@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OptionsWowSectionComponent } from './options-wow-section.component';
+import { OptionsWowSectionComponent } from "./options-wow-section.component";
 
-describe('OptionsWowSectionComponent', () => {
+describe("OptionsWowSectionComponent", () => {
   let component: OptionsWowSectionComponent;
   let fixture: ComponentFixture<OptionsWowSectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OptionsWowSectionComponent ]
-    })
-    .compileComponents();
+      declarations: [OptionsWowSectionComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('OptionsWowSectionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

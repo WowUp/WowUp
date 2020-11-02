@@ -6,7 +6,8 @@
       color="accent"
       [mat-dialog-close]="true"
       [ngStyle]="{ cursor: 'pointer' }"
-      >highlight_off</mat-icon
+    >
+      highlight_off</mat-icon
     >
   </div>
   <div *ngIf="defaultImageUrl" class="row justify-content-center image-row">
@@ -14,9 +15,9 @@
   </div>
 
   <div mat-dialog-content>
-    <div class="row">
+    <div class="row align-items-start">
       <div
-        class="mat-subheading-1 flex-grow-1"
+        class="mat-subheading-1 flex-grow-1 mr-3"
         translate
         [translateParams]="{ authorName: subtitle }"
       >
@@ -27,10 +28,15 @@
         class="flex-shrink-0"
       ></app-addon-provider-badge> -->
       <span> Go to {{ provider }} &nbsp; </span>
-      <a appExternalLink [href]="externalUrl">
+      <a
+        class="icon-link"
+        appExternalLink
+        [href]="externalUrl"
+        [matTooltip]="
+          'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate
+        "
+      >
         <mat-icon class="open-in-browser-icon" color="accent">launch</mat-icon>
-
-        <!-- {{ "DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON" | translate }} -->
       </a>
     </div>
     <div class="mat-caption addon-detail-summary">{{ summary }}</div>

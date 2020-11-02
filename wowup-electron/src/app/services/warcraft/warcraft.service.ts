@@ -237,11 +237,13 @@ export class WarcraftService {
     clientType: WowClientType,
     folderPath: string
   ): boolean {
-    if (!this.isClientFolder(clientType, folderPath)) {
+    const relativePath = this.getClientRelativePath(clientType, folderPath);
+
+    if (!this.isClientFolder(clientType, relativePath)) {
       return false;
     }
 
-    this.setClientLocation(clientType, folderPath);
+    this.setClientLocation(clientType, relativePath);
 
     from(this.getWowClientTypes())
       .pipe(
@@ -254,11 +256,24 @@ export class WarcraftService {
     return true;
   }
 
+  public getClientRelativePath(clientType: WowClientType, folderPath: string) {
+    const clientFolderName = this.getClientFolderName(clientType);
+    const clientFolderIdx = folderPath.indexOf(clientFolderName);
+    const relativePath =
+      clientFolderIdx === -1
+        ? folderPath
+        : folderPath.substring(0, clientFolderIdx);
+
+    return path.normalize(relativePath);
+  }
+
   private isClientFolder(clientType: WowClientType, folderPath: string) {
     const clientFolderName = this.getClientFolderName(clientType);
+    const relativePath = this.getClientRelativePath(clientType, folderPath);
+
     const executableName = this.getExecutableName(clientType);
     const executablePath = path.join(
-      folderPath,
+      relativePath,
       clientFolderName,
       executableName
     );
