@@ -36,8 +36,8 @@
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
       "HOURS_AGO": "{count} {count, plural, one{час} few{часа} other{часов}} назад",
       "JUST_NOW": "Только что",
-      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
-      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
+      "MONTHS_AGO": "{count} {count, plural, one{месяц} few{месяца} other{месяцев}} назад",
+      "YEARS_AGO": "{count} {count, plural, one{год} few{года} other{лет}} назад",
       "YESTERDAY": "Вчера"
     },
     "DOWNLOAD_COUNT": {
