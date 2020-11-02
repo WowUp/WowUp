@@ -39,7 +39,7 @@
       "YESTERDAY": "Gestern"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} Billionen",
+      "BILLION": "{count} Milliarden",
       "MILLION": "{count} Millionen",
       "THOUSAND": "{count} Tausend"
     },
@@ -184,7 +184,7 @@
     "OPTIONS": {
       "TABS": {
         "CLIENTS": "Clients",
-        "APPLICATION": "Application",
+        "APPLICATION": "Anwendung",
         "DEBUG": "Debug"
       },
       "APPLICATION": {
