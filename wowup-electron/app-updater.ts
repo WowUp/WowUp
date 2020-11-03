@@ -71,6 +71,6 @@ export function initializeAppUpdateIpcHandlers(win: BrowserWindow) {
 
   ipcMain.handle(APP_UPDATE_CHECK_FOR_UPDATE, async () => {
     log.info(APP_UPDATE_CHECK_FOR_UPDATE);
-    return await checkForUpdates();
+    return await checkForUpdates(win);
   });
 }
