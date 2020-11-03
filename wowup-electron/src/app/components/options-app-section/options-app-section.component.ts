@@ -21,7 +21,18 @@ export class OptionsAppSectionComponent implements OnInit {
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage: string = "";
-  public languages: string[] = [];
+  public languages: { localeId: string; label: string }[] = [
+    { localeId: "en", label: "English" },
+    { localeId: "de", label: "Deutsch" },
+    { localeId: "es", label: "Español" },
+    { localeId: "fr", label: "Français" },
+    { localeId: "it", label: "Italiano" },
+    { localeId: "ko", label: "한국어" },
+    { localeId: "nb", label: "Norsk Bokmål" },
+    { localeId: "pt", label: "Português" },
+    { localeId: "ru", label: "русский" },
+    { localeId: "zh", label: "简体中文" },
+  ];
 
   constructor(
     private _analyticsService: AnalyticsService,
@@ -52,7 +63,6 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startWithSystem = this.wowupService.startWithSystem;
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
-    this.languages = this._translateService.getLangs();
   }
 
   onEnableSystemNotifications = (evt: MatSlideToggleChange) => {

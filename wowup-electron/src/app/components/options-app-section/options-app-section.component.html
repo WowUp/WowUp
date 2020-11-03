@@ -25,20 +25,11 @@
           action="CurrentLanguage"
           [label]="currentLanguage"
         >
-          <mat-option *ngFor="let language of languages" [value]="language">
-            <span [ngSwitch]="language">
-              <p *ngSwitchCase="'en'">English</p>
-              <p *ngSwitchCase="'de'">Deutsch</p>
-              <p *ngSwitchCase="'es'">Español</p>
-              <p *ngSwitchCase="'fr'">Français</p>
-              <p *ngSwitchCase="'it'">Italiano</p>
-              <p *ngSwitchCase="'ko'">한국어</p>
-              <p *ngSwitchCase="'nb'">Norsk Bokmål</p>
-              <p *ngSwitchCase="'pt'">Português</p>
-              <p *ngSwitchCase="'ru'">русский</p>
-              <p *ngSwitchCase="'zh'">简体中文</p>
-              <p *ngSwitchDefault>{{ language }}</p>
-            </span>
+          <mat-option
+            *ngFor="let language of languages"
+            [value]="language.localeId"
+          >
+            {{ language.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>

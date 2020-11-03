@@ -38,18 +38,6 @@ export class AppComponent implements AfterViewInit {
     private _dialog: MatDialog,
     private _addonService: AddonService
   ) {
-    this.translate.addLangs([
-      "en",
-      "de",
-      "es",
-      "fr",
-      "it",
-      "ko",
-      "nb",
-      "pt",
-      "ru",
-      "zh",
-    ]);
     this.translate.setDefaultLang("en");
     this.translate.use(this._wowUpService.currentLanguage);
   }
