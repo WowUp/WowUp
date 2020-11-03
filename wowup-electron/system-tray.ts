@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu, nativeImage, Tray } from "electron";
 import * as path from "path";
 import * as platform from "./platform";
 import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
+import { checkForUpdates } from "./app-updater";
 
 let _trayRef: Tray;
 
@@ -29,6 +30,12 @@ export function createTray(config: SystemTrayConfig): boolean {
         if (platform.isMac) {
           app.dock.show();
         }
+      },
+    },
+    {
+      label: config.showLabel || "Check for Updates...",
+      click: () => {
+        checkForUpdates(win);
       },
     },
     {

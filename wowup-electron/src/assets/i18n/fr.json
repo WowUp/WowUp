@@ -3,6 +3,7 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
     "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Check for Updates...",
       "QUIT_ACTION": "Quit",
       "SHOW_ACTION": "Show"
     },

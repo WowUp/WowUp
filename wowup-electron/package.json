@@ -114,6 +114,8 @@
     "@angular/animations": "~10.1.4",
     "@angular/cdk": "10.2.5",
     "@angular/material": "10.2.5",
+    "@fortawesome/fontawesome-svg-core": "1.2.32",
+    "@fortawesome/free-solid-svg-icons": "5.15.1",
     "@types/lodash": "4.14.162",
     "adm-zip": "0.4.16",
     "async": "3.2.0",

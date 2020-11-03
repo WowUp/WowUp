@@ -3,6 +3,7 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Check for Updates...",
       "QUIT_ACTION": "Выход",
       "SHOW_ACTION": "Показать"
     },

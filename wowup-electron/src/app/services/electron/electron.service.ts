@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as childProcess from "child_process";
+import { APP_UPDATE_CHECK_END, APP_UPDATE_CHECK_START } from "common/constants";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, remote, shell, webFrame } from "electron";
@@ -17,6 +18,7 @@ import { ValueResponse } from "../../../common/models/value-response";
 export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
+  private readonly _rendererEventSrc = new BehaviorSubject('');
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -27,6 +29,7 @@ export class ElectronService {
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
+  public readonly renderedEventSrc$ = this._rendererEventSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -54,6 +57,14 @@ export class ElectronService {
 
     this.childProcess = window.require("child_process");
     this.fs = window.require("fs");
+
+    this.ipcRenderer.on(APP_UPDATE_CHECK_START, () => {
+      this._rendererEventSrc.next(APP_UPDATE_CHECK_START);
+    });
+    
+    this.ipcRenderer.on(APP_UPDATE_CHECK_END, () => {
+      this._rendererEventSrc.next(APP_UPDATE_CHECK_END);
+    });
 
     const currentWindow = this.remote?.getCurrentWindow();
 
