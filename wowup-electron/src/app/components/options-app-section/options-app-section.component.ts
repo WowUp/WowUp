@@ -51,11 +51,9 @@ export class OptionsAppSectionComponent implements OnInit {
       ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
       : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
 
-    this._translateService
-      .get(minimizeOnCloseKey)
-      .subscribe((translatedStr) => {
-        this.minimizeOnCloseDescription = translatedStr;
-      });
+    this._translateService.get(minimizeOnCloseKey).subscribe((translatedStr) => {
+      this.minimizeOnCloseDescription = translatedStr;
+    });
 
     this.telemetryEnabled = this._analyticsService.telemetryEnabled;
     this.collapseToTray = this.wowupService.collapseToTray;
@@ -93,9 +91,7 @@ export class OptionsAppSectionComponent implements OnInit {
   onUseHardwareAccelerationChange = (evt: MatSlideToggleChange) => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this._translateService.instant(
-          "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"
-        ),
+        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"),
         message: this._translateService.instant(
           evt.checked
             ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
@@ -118,12 +114,8 @@ export class OptionsAppSectionComponent implements OnInit {
   onCurrentLanguageChange = (evt: MatSelectChange) => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this._translateService.instant(
-          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"
-        ),
-        message: this._translateService.instant(
-          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_DESCRIPTION"
-        ),
+        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"),
+        message: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_DESCRIPTION"),
       },
     });
 

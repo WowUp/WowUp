@@ -1,8 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { from } from "rxjs";
@@ -52,10 +48,7 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    this._autoUpdateInterval = window.setInterval(
-      this.onAutoUpdateInterval,
-      AUTO_UPDATE_PERIOD_MS
-    );
+    this._autoUpdateInterval = window.setInterval(this.onAutoUpdateInterval, AUTO_UPDATE_PERIOD_MS);
   }
 
   openDialog(): void {
@@ -79,27 +72,20 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    const iconPath = await this._fileService.getAssetFilePath(
-      "wowup_logo_512np.png"
-    );
+    const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
 
     if (this._wowUpService.enableSystemNotifications) {
-      this._electronService.showNotification(
-        this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_TITLE"),
-        {
-          body: this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_BODY", {
-            count: updateCount,
-          }),
-          icon: iconPath,
-        }
-      );
+      this._electronService.showNotification(this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_TITLE"), {
+        body: this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_BODY", {
+          count: updateCount,
+        }),
+        icon: iconPath,
+      });
     }
   };
 
   private async createSystemTray() {
-    const result = await this.translate
-      .get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"])
-      .toPromise();
+    const result = await this.translate.get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"]).toPromise();
 
     console.debug("Creating tray", result);
     const config: SystemTrayConfig = {
@@ -108,10 +94,7 @@ export class AppComponent implements AfterViewInit {
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(
-        CREATE_TRAY_MENU_CHANNEL,
-        config
-      );
+      const trayCreated = await this._electronService.invoke(CREATE_TRAY_MENU_CHANNEL, config);
       console.log("Tray created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);
