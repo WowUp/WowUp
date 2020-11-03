@@ -37,7 +37,7 @@ export function createTray(
     {
       label: config.showLabel || "Check for Updates...",
       click: () => {
-        checkForUpdates(win);
+        checkForUpdates(window);
       },
     },
     {
