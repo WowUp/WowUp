@@ -34,6 +34,7 @@ import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 
@@ -137,7 +138,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     private _translateService: TranslateService,
     public electronService: ElectronService,
     public overlay: Overlay,
-    public warcraftService: WarcraftService
+    public warcraftService: WarcraftService,
+    public wowUpService: WowUpService
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this.isSelectedTab = tabIndex === this.tabIndex;
@@ -224,7 +226,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this._cdRef.detectChanges();
   }
 
-  public ngOnInit(): void {}
+  public ngOnInit(): void {
+    let hidden_columns = this.wowUpService.myAddonsHiddenColumns;
+    this.columns.forEach(col => {
+      if (
+        col.allowToggle === true 
+        && col.visible 
+        && hidden_columns.indexOf(col.name) !== -1 
+      ) {
+        col.visible = false;
+      }
+    });
+  }
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
@@ -413,6 +426,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
     const col = this.columns.find((col) => col.name === column.name);
     col.visible = event.checked;
+    this.wowUpService.myAddonsHiddenColumns = 
+      this.columns.filter((col) => !col.visible).map((col) => col.name);
   }
 
   public onReScan() {
