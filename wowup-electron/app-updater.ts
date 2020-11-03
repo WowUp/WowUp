@@ -18,14 +18,11 @@ export const checkForUpdates = async function checkForUpdates(
 ) {
   win = win || BrowserWindow.getFocusedWindow();
   let result = {} as UpdateCheckResult;
+  
   try {
     win.webContents.send(APP_UPDATE_CHECK_START);
     result = await autoUpdater.checkForUpdates();
   } catch (err) {}
-
-  await new Promise((resolve) => {
-    setTimeout(() => resolve(), 5000);
-  });
 
   win.webContents.send(APP_UPDATE_CHECK_END);
   return result;
