@@ -160,7 +160,7 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     CREATE_TRAY_MENU_CHANNEL,
     async (evt, config: SystemTrayConfig) => {
-      return createTray(config);
+      return createTray(window, config);
     }
   );
 

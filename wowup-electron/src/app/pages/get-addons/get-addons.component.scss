@@ -3,6 +3,10 @@
 .tab-container {
   display: flex;
   flex-direction: column;
+
+  &.linux {
+    height: calc(100vh - 110px);
+  }
 }
 
 .control-container {
@@ -101,10 +105,4 @@
 }
 .provider-column {
   min-width: 60px;
-}
-
-.linux {
-  .table-container {
-    height: calc(100vh - 150px);
-  }
 }

@@ -129,8 +129,15 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
     console.log("dialogResult", selectedPath);
 
-    if (this._warcraftService.setWowFolderPath(clientType, selectedPath)) {
-      return selectedPath;
+    const clientRelativePath = this._warcraftService.getClientRelativePath(
+      clientType,
+      selectedPath
+    );
+
+    if (
+      this._warcraftService.setWowFolderPath(clientType, clientRelativePath)
+    ) {
+      return clientRelativePath;
     }
 
     const clientFolderName = this._warcraftService.getClientFolderName(
@@ -140,14 +147,14 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       clientType
     );
     const clientExecutablePath = path.join(
-      selectedPath,
+      clientRelativePath,
       clientFolderName,
       clientExecutableName
     );
     const dialogRef = this._dialog.open(AlertDialogComponent, {
       data: {
         title: `Alert`,
-        message: `Unable to set "${selectedPath}" as your ${getEnumName(
+        message: `Unable to set "${clientRelativePath}" as your ${getEnumName(
           WowClientType,
           clientType
         )} folder.\nPath not found: "${clientExecutablePath}".`,

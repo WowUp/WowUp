@@ -4,8 +4,8 @@
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Check for Updates...",
-      "QUIT_ACTION": "Quit",
-      "SHOW_ACTION": "Show"
+      "QUIT_ACTION": "Beenden",
+      "SHOW_ACTION": "Öffnen"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "WowUp Update installieren",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Willst du WowUp neu Starten um das Update zu installieren?",
@@ -40,7 +40,7 @@
       "YESTERDAY": "Gestern"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} Billionen",
+      "BILLION": "{count} Milliarden",
       "MILLION": "{count} Millionen",
       "THOUSAND": "{count} Tausend"
     },
@@ -55,7 +55,7 @@
       "LOADING": "Laden..."
     },
     "SEARCH": {
-      "NO_ADDONS": "No addons found"
+      "NO_ADDONS": "Keine Addons gefunden"
     }
   },
   "DIALOGS": {
@@ -183,12 +183,21 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Clients",
+        "APPLICATION": "Application",
+        "DEBUG": "Debug"
+      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren / Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim schließen WowUp in der Menübar minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schliessen",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
+        "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
+        "SET_LANGUAGE_LABEL": "Set Language",
         "START_MINIMIZED_DESCRIPTION": "...und wird nicht auf dem Bildschirm angezeigt",
         "START_MINIMIZED_LABEL": "Starte WowUp minimiert",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp wird direkt gestartet, nachdem dein Betriebssystem geladen wurde...",

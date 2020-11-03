@@ -4,6 +4,10 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+
+  &.linux {
+    height: calc(100vh - 110px);
+  }
 }
 
 .nav-container {
@@ -87,7 +91,6 @@
           max-width: 740px;
           min-width: 460px;
           min-height: 100%;
-          
         }
       }
     }
@@ -173,11 +176,5 @@ section {
 
   small {
     color: $white-2;
-  }
-}
-
-.linux {
-  .options {
-    height: calc(100vh - 80px);
   }
 }

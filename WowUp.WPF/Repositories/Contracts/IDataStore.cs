@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace WowUp.WPF.Repositories.Contracts
 {
-    public interface IDataStore<T>
+    public interface IDataStore<T> : IBaseRepository
     {
         bool AddItem(T item);
         bool AddItems(IEnumerable<T> item);

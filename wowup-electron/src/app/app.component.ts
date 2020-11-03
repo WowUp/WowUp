@@ -37,9 +37,21 @@ export class AppComponent implements AfterViewInit {
     private _addonService: AddonService,
     private _iconService: IconService
   ) {
+    this.translate.addLangs([
+      "en",
+      "de",
+      "es",
+      "fr",
+      "it",
+      "ko",
+      "nb",
+      "pt",
+      "ru",
+      "zh",
+    ]);
     this.translate.setDefaultLang("en");
-
     this.translate.use(this._electronService.locale);
+    this.translate.use(this._wowUpService.currentLanguage);
 
     this._iconService.addSvg(faAngleDoubleDown);
   }

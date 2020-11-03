@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OptionsDebugSectionComponent } from './options-debug-section.component';
+import { OptionsDebugSectionComponent } from "./options-debug-section.component";
 
-describe('OptionsDebugSectionComponent', () => {
+describe("OptionsDebugSectionComponent", () => {
   let component: OptionsDebugSectionComponent;
   let fixture: ComponentFixture<OptionsDebugSectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OptionsDebugSectionComponent ]
-    })
-    .compileComponents();
+      declarations: [OptionsDebugSectionComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('OptionsDebugSectionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

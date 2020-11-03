@@ -207,7 +207,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         console.debug("sortedListItems", sortedListItems);
         this.sortedListItems = sortedListItems;
         this.enableUpdateAll = this.sortedListItems.some(
-          (li) => li.needsInstall || li.needsUpdate
+          (li) => !li.isIgnored && (li.needsInstall || li.needsUpdate)
         );
         this.setPageContextText();
       });
