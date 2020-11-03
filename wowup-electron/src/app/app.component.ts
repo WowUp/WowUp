@@ -90,7 +90,7 @@ export class AppComponent implements AfterViewInit {
     console.debug("Creating tray", result);
     const config: SystemTrayConfig = {
       quitLabel: result["APP.SYSTEM_TRAY.QUIT_ACTION"],
-      showLabel: result["APP.SYSTEM_TRAY.SYSTEM_TRAY"],
+      showLabel: result["APP.SYSTEM_TRAY.SHOW_ACTION"],
     };
 
     try {
