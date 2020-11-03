@@ -22,12 +22,9 @@
     </div>
   </div>
   <div>
-    <a
-      class="addon-title mat-subheading-2"
-      (click)="viewDetails()"
-      [ngClass]="{ ignored: listItem.isIgnored }"
-      >{{ listItem.addon.name }}</a
-    >
+    <a class="addon-title mat-subheading-2" (click)="viewDetails()" [ngClass]="{ ignored: listItem.isIgnored }">{{
+      listItem.addon.name
+    }}</a>
     <div class="addon-funding">
       <a
         *ngIf="listItem.addon.patreonFundingLink"
@@ -51,13 +48,18 @@
         [href]="listItem.addon.customFundingLink"
         matTooltip="Support this author"
       >
-        <img
-          class="funding-icon"
-          src="assets/images/custom_funding_logo_small.png"
-        />
+        <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
       </a>
     </div>
     <div class="addon-version" [ngClass]="{ ignored: listItem.isIgnored }">
+      <mat-icon
+        *ngIf="this.listItem.isAutoUpdate === true"
+        class="auto-update-icon"
+        [inline]="true"
+        [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate"
+      >
+        update
+      </mat-icon>
       {{ listItem.addon.installedVersion }}
     </div>
   </div>
