@@ -35,7 +35,7 @@ let win: BrowserWindow = null;
 
 // APP MENU SETUP
 const appMenuTemplate: Array<
-MenuItemConstructorOptions | MenuItem
+  MenuItemConstructorOptions | MenuItem
 > = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
@@ -66,6 +66,10 @@ const argv = require("minimist")(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
 });
 
+function canStartHidden() {
+  return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
+}
+
 function windowStateManager(
   windowName: string,
   { width, height }: { width: number; height: number }
@@ -90,9 +94,9 @@ function windowStateManager(
           windowState.x >= display.bounds.x &&
           windowState.y >= display.bounds.y &&
           windowState.x + windowState.width <=
-            display.bounds.x + display.bounds.width &&
+          display.bounds.x + display.bounds.width &&
           windowState.y + windowState.height <=
-            display.bounds.y + display.bounds.height
+          display.bounds.y + display.bounds.height
         );
       });
 
@@ -181,7 +185,10 @@ function createWindow(): BrowserWindow {
   win.webContents.userAgent = USER_AGENT;
 
   win.once("ready-to-show", () => {
-    if (!argv.hidden) win.show();
+    if (canStartHidden()) {
+      return;
+    }
+    win.show();
   });
 
   win.once("show", () => {

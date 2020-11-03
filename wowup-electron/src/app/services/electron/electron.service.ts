@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import * as childProcess from "child_process";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import { ipcRenderer, remote, shell, webFrame } from "electron";
+import { ipcRenderer, remote, Settings, shell, webFrame } from "electron";
 import * as fs from "fs";
 import { BehaviorSubject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
@@ -37,6 +37,13 @@ export class ElectronService {
 
   get locale(): string {
     return this.remote.app.getLocale().split("-")[0];
+  }
+
+  get loginItemSettings() {
+    return this.remote.app.getLoginItemSettings();
+  }
+  set loginItemSettings(settings: Settings) {
+    this.remote.app.setLoginItemSettings(settings);
   }
 
   constructor() {

@@ -25,15 +25,11 @@ import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
-import { CachingService } from "../caching/caching-service";
-import { DownloadSevice } from "../download/download.service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { WowUpApiService } from "../wowup-api/wowup-api.service";
 
-const LATEST_VERSION_CACHE_KEY = "latest-version-response";
-var autoLaunch = require("auto-launch");
+const autoLaunch = require("auto-launch");
 
 @Injectable({
   providedIn: "root",
@@ -71,11 +67,8 @@ export class WowUpService {
 
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
-    private _downloadService: DownloadSevice,
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private _cacheService: CachingService,
-    private _wowUpApiService: WowUpApiService
   ) {
     this.setDefaultPreferences();
 
@@ -85,6 +78,8 @@ export class WowUpService {
 
     this.createDownloadDirectory().then(() => this.cleanupDownloads());
     this.setAutoStartup();
+
+    console.log('loginItemSettings', this._electronService.loginItemSettings);
   }
 
   public get updaterExists() {
@@ -351,9 +346,11 @@ export class WowUpService {
       if (this.startWithSystem) {
         autoLauncher.enable();
       }
-      else autoLauncher.disable();
+      else {
+        autoLauncher.disable();
+      }
     } else {
-      this._electronService.remote.app.setLoginItemSettings({
+      this._electronService.loginItemSettings = {
         openAtLogin: this.startWithSystem,
         openAsHidden: this._electronService.isMac ? this.startMinimized : false,
         args: this._electronService.isWin
@@ -361,7 +358,7 @@ export class WowUpService {
             ? ["--hidden"]
             : []
           : [],
-      });
+      };
     }
   }
 
