@@ -36,6 +36,8 @@
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
       "HOURS_AGO": "{count} {count, plural, one{час} few{часа} other{часов}} назад",
       "JUST_NOW": "Только что",
+      "MONTHS_AGO": "{count} {count, plural, one{месяц} few{месяца} other{месяцев}} назад",
+      "YEARS_AGO": "{count} {count, plural, one{год} few{года} other{лет}} назад",
       "YESTERDAY": "Вчера"
     },
     "DOWNLOAD_COUNT": {
@@ -182,11 +184,6 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Клиенты",
-        "APPLICATION": "Приложение",
-        "DEBUG": "Отладка"
-      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
@@ -218,6 +215,11 @@
         "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую последние несколько лог-файлов.",
         "LOG_FILES_LABEL": "Файлы логов",
         "TITLE": "Отладка"
+      },
+      "TABS": {
+        "APPLICATION": "Приложение",
+        "CLIENTS": "Клиенты",
+        "DEBUG": "Отладка"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",

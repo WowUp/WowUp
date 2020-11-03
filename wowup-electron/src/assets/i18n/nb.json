@@ -36,6 +36,8 @@
       "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
       "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
       "JUST_NOW": "Akkurat nå",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "I går"
     },
     "DOWNLOAD_COUNT": {
@@ -182,11 +184,6 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Application",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver systemvarsler",
@@ -218,6 +215,11 @@
         "LOG_FILES_DESCRIPTION": "Åpne mappen som inneholder dine siste loggfiler.",
         "LOG_FILES_LABEL": "Loggfiler",
         "TITLE": "Debug"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
