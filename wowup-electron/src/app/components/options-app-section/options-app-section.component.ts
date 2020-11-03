@@ -8,6 +8,11 @@ import { AnalyticsService } from "app/services/analytics/analytics.service";
 import { WowUpService } from "app/services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
+interface LocaleListItem {
+  localeId: string;
+  label: string;
+}
+
 @Component({
   selector: "app-options-app-section",
   templateUrl: "./options-app-section.component.html",
@@ -21,7 +26,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage: string = "";
-  public languages: { localeId: string; label: string }[] = [
+  public languages: LocaleListItem[] = [
     { localeId: "en", label: "English" },
     { localeId: "de", label: "Deutsch" },
     { localeId: "es", label: "Español" },
