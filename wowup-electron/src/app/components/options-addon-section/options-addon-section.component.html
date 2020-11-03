@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.ADDON.TITLE" | translate }}
+  </h2>
+
+  <!-- SET LANGUAGE -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.FIELD_LABEL" | translate }}
+        </div>
+        <small class="hint">{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-form-field class="light-select">
+        <mat-label>{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.INPUT_LABEL" | translate }}</mat-label>
+        <mat-select multiple [value]="enabledAddonProviders" (selectionChange)="onEnabledProvidersChange($event)">
+          <mat-option *ngFor="let addonProvider of addonProviders" [value]="addonProvider.name">
+            {{ addonProvider.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

@@ -202,6 +202,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to update and install your addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
@@ -226,14 +234,6 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Для включения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение"
       },
-      "ADDON_SOURCES": {
-        "TITLE": "Источники модификаций",
-        "ENABLED_SOURCES": {
-          "FIELD_LABEL": "Включенные источники модификаций",
-          "DESCRIPTION": "Выберите желаемые источники для установки и обновления ваших модификаций.",
-          "INPUT_LABEL": "Источники"
-        }
-      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
         "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Его можно найти в последнем лог-файле, если необходимо.",
@@ -244,6 +244,7 @@
         "TITLE": "Отладка"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",
         "DEBUG": "Отладка"

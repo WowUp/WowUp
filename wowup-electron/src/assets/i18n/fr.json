@@ -202,6 +202,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to update and install your addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
@@ -226,14 +234,6 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
         "USE_HARDWARE_ACCELERATION_LABEL": "TEXT_ELEMENT"
       },
-      "ADDON_SOURCES": {
-        "TITLE": "TEXT_ELEMENT",
-        "ENABLED_SOURCES": {
-          "FIELD_LABEL": "TEXT_ELEMENT",
-          "DESCRIPTION": "TEXT_ELEMENT",
-          "INPUT_LABEL": "TEXT_ELEMENT"
-        }
-      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump des données de débogage",
         "DEBUG_DATA_DESCRIPTION": "Log les données de débogage pour aider à diagnostiquer les problèmes potentiels. Cela peut être trouvé dans votre dernier fichier journal pour les curieux.",
@@ -244,6 +244,7 @@
         "TITLE": "Déboguage"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"

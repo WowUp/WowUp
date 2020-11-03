@@ -202,6 +202,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to update and install your addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Idioma Actual",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, como el de cuando los addons son actualizados automáticamente.",
@@ -226,14 +234,6 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Activar la aceleración por hardware requiere reinicar la aplicación.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Activar Aceleración por Hardware"
       },
-      "ADDON_SOURCES": {
-        "TITLE": "TEXT_ELEMENT",
-        "ENABLED_SOURCES": {
-          "FIELD_LABEL": "TEXT_ELEMENT",
-          "DESCRIPTION": "TEXT_ELEMENT",
-          "INPUT_LABEL": "TEXT_ELEMENT"
-        }
-      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Eliminar Datos de Depuración",
         "DEBUG_DATA_DESCRIPTION": "Registra datos de depuración y ayuda a diagnosticar problemas potenciales. Puede curiosearlo abriendo el último archivo de registro.",
@@ -244,6 +244,7 @@
         "TITLE": "Depuración"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Aplicación",
         "CLIENTS": "Clientes",
         "DEBUG": "Depuración"

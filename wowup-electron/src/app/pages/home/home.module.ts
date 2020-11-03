@@ -18,6 +18,7 @@ import { WowClientOptionsComponent } from "../../components/wow-client-options/w
 import { OptionsWowSectionComponent } from "../../components/options-wow-section/options-wow-section.component";
 import { OptionsAppSectionComponent } from "../../components/options-app-section/options-app-section.component";
 import { OptionsDebugSectionComponent } from "../../components/options-debug-section/options-debug-section.component";
+import { OptionsAddonSectionComponent } from "../../components/options-addon-section/options-addon-section.component";
 import { DirectiveModule } from "../../directive.module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
@@ -61,6 +62,7 @@ import { HomeComponent } from "./home.component";
     OptionsWowSectionComponent,
     OptionsAppSectionComponent,
     OptionsDebugSectionComponent,
+    OptionsAddonSectionComponent,
   ],
   imports: [
     CommonModule,

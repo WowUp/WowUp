@@ -202,6 +202,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to update and install your addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren / Deaktivieren verschiedener Systembenachrichtigungen",
@@ -226,14 +234,6 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Bei Aktivierung der Hardwarebeschleunigung benötigt die App einen Neustart.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Hardwarebeschleunigung aktivieren"
       },
-      "ADDON_SOURCES": {
-        "TITLE": "TEXT_ELEMENT",
-        "ENABLED_SOURCES": {
-          "FIELD_LABEL": "TEXT_ELEMENT",
-          "DESCRIPTION": "TEXT_ELEMENT",
-          "INPUT_LABEL": "TEXT_ELEMENT"
-        }
-      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten dumpen",
         "DEBUG_DATA_DESCRIPTION": "Protokollieren Sie Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies finden Sie in Ihrer aktuellen Protokolldatei (für Neugierige).",
@@ -244,6 +244,7 @@
         "TITLE": "Debuggen"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Anwendung",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"

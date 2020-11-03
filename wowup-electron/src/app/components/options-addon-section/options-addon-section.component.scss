@@ -1,0 +1,13 @@
+@import "../../../variables.scss";
+
+.container {
+  padding: 1em;
+
+  .hint {
+    color: $white-3;
+  }
+
+  .section {
+    margin-top: 1em;
+  }
+}
