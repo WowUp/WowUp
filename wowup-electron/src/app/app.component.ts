@@ -7,7 +7,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { from } from "rxjs";
 import { switchMap } from "rxjs/operators";
-import { join, dirname } from "path";
 import { CREATE_TRAY_MENU_CHANNEL } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
@@ -28,7 +27,6 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 })
 export class AppComponent implements AfterViewInit {
   private _autoUpdateInterval?: number;
-  private _languageList: string[] = [];
 
   constructor(
     private _analyticsService: AnalyticsService,
@@ -40,12 +38,18 @@ export class AppComponent implements AfterViewInit {
     private _dialog: MatDialog,
     private _addonService: AddonService
   ) {
-    this._fileService
-      .listFiles("./src/assets/i18n/", "*.json")
-      .forEach((items) => {
-        this._languageList.push(items.split(".")[0]);
-      });
-    this.translate.addLangs(this._languageList);
+    this.translate.addLangs([
+      "en",
+      "de",
+      "es",
+      "fr",
+      "it",
+      "ko",
+      "nb",
+      "pt",
+      "ru",
+      "zh",
+    ]);
     this.translate.setDefaultLang("en");
     this.translate.use(this._wowUpService.currentLanguage);
   }
