@@ -202,9 +202,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.selectedClient
     );
 
-    this.setDataSource(
-      this.formatAddons(this.filterInstalledAddons(searchResults))
-    );
+    this.setDataSource(this.formatAddons(searchResults));
     this.isBusy = false;
     this._cdRef.detectChanges();
   }
@@ -230,7 +228,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
-        const listItems = this.formatAddons(this.filterInstalledAddons(addons));
+        const listItems = this.formatAddons(addons);
         this.setDataSource(listItems);
         this.isBusy = false;
       },
@@ -238,16 +236,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         console.error(err);
       },
     });
-  }
-
-  private filterInstalledAddons(addons: AddonSearchResult[]) {
-    return addons.filter(
-      (addon) =>
-        !this._addonService.isInstalled(
-          addon.externalId,
-          this._sessionService.selectedClientType
-        )
-    );
   }
 
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {

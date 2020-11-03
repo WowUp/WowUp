@@ -29,7 +29,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   public disableButton = false;
   public showProgress = false;
   public progressValue = 0;
-  public buttonText = this.getButtonText(AddonInstallState.Unknown);
+  public buttonText = "";
 
   constructor(
     private _addonService: AddonService,
@@ -38,9 +38,13 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.disableButton = this._addonService.isInstalled(
+    let isInstalled = this._addonService.isInstalled(
       this.addonSearchResult.externalId,
       this._sessionService.selectedClientType
+    );
+    this.disableButton = isInstalled;
+    this.buttonText = this.getButtonText(
+      isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown
     );
 
     const addonInstalledSub = this._addonService.addonInstalled$
