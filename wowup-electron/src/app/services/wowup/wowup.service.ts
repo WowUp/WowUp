@@ -84,6 +84,7 @@ export class WowUpService {
       this.applicationVersion.toLowerCase().indexOf("beta") != -1;
 
     this.createDownloadDirectory().then(() => this.cleanupDownloads());
+    this.setAutoStartup();
   }
 
   public get updaterExists() {
@@ -347,7 +348,9 @@ export class WowUpService {
         isHidden: this.startMinimized,
       });
 
-      if (this.startWithSystem) autoLauncher.enable();
+      if (this.startWithSystem) {
+        autoLauncher.enable();
+      }
       else autoLauncher.disable();
     } else {
       this._electronService.remote.app.setLoginItemSettings({
