@@ -36,6 +36,8 @@
       "DAYS_AGO": "DAYS_AGO",
       "HOURS_AGO": "HOURS_AGO",
       "JUST_NOW": "Just now",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "Yesterday"
     },
     "DOWNLOAD_COUNT": {
@@ -182,11 +184,6 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Application",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
@@ -214,6 +211,11 @@
         "LOG_FILES_DESCRIPTION": "打开包含您最后几个日志文件的文件夹。",
         "LOG_FILES_LABEL": "日志文件",
         "TITLE": "除错"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
