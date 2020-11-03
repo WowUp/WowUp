@@ -66,6 +66,10 @@
 
   .addon-version {
     color: $white-2;
+
+    .update-available {
+      color: $zak;
+    }
   }
 
   .addon-funding {

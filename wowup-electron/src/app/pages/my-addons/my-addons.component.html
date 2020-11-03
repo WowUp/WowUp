@@ -131,6 +131,7 @@
           <app-my-addons-addon-cell
             [addon]="element"
             (onViewDetails)="openDetailDialog($event)"
+            [showUpdateToVersion]="!isLatestUpdateColumnVisible()"
           >
           </app-my-addons-addon-cell>
         </td>
@@ -179,7 +180,7 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER" | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="cell-padding">
+        <td mat-cell *matCellDef="let element" class="cell-padding" [ngClass]="{'addon-update-available' : element.addon.latestVersion !== element.addon.installedVersion}">
           {{ element.addon.latestVersion }}
         </td>
       </ng-container>
@@ -307,7 +308,13 @@
       </div>
       <div>
         <div class="addon-name">{{ listItem.addon.name }}</div>
-        <div class="addon-version">{{ listItem.addon.latestVersion }}</div>
+        <div class="addon-version">{{ listItem.addon.installedVersion  }}</div>
+        <div
+          class="addon-update-available"
+          *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion"
+        >
+          {{ listItem.addon.latestVersion }}
+        </div>
       </div>
     </div>
     <mat-divider></mat-divider>

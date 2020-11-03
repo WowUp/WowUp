@@ -59,6 +59,12 @@
     </div>
     <div class="addon-version" [ngClass]="{ ignored: listItem.isIgnored }">
       {{ listItem.addon.installedVersion }}
+      <span
+        class="update-available"
+        *ngIf="showUpdateToVersion && listItem.addon.latestVersion !== listItem.addon.installedVersion"
+      >
+          ➤ {{ listItem.addon.latestVersion }}
+      </span>
     </div>
   </div>
 </div>
