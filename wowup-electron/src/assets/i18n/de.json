@@ -184,7 +184,7 @@
     "OPTIONS": {
       "TABS": {
         "CLIENTS": "Clients",
-        "APPLICATION": "Application",
+        "APPLICATION": "Anwendung",
         "DEBUG": "Debug"
       },
       "APPLICATION": {
