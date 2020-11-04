@@ -9,10 +9,15 @@
     }}">
     <img class="discord-img" src="assets/images/discord_logo_small.png" />
   </a>
-  <a appExternalLink class="github-link" href="https://github.com/jliddev/WowUp" matTooltip="{{
+  <a appExternalLink class="github-link mr-2" href="https://github.com/jliddev/WowUp" matTooltip="{{
     'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GITHUB' | translate
   }}">
     <img class="github-img" src="assets/images/github_logo.png" />
+  </a>
+  <a appExternalLink class="guide-link mr-2" href="https://wowup.io/guide/section/my-addons/overview" matTooltip="{{
+    'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate
+  }}">
+    <mat-icon>help_outline</mat-icon>
   </a>
   <p class="flex-grow-1">{{ sessionService.statusText$ | async }}</p>
   <div class="row align-items-center">

@@ -55,6 +55,19 @@ footer {
     }
   }
 
+  .guide-link {
+    height: 20px;
+    padding: 2.5px 0.25em;
+    color: $white-1;
+    &:hover {
+      background-color: $dark-3;
+    }
+    .mat-icon {
+      height: 20px;
+      margin: -2px 0 2px;
+    }
+  }
+
   .update-button {
     height: 25px;
     padding: 0 0.5em;

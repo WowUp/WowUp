@@ -151,7 +151,8 @@
         "JOIN_DISCORD": "Общайтесь с нами в Discord",
         "PATREON_SUPPORT": "Поддержите WowUp на Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, one{результат} few{результата} other{результатов}}",
-        "VIEW_GITHUB": "Check out the code on GitHub"
+        "VIEW_GITHUB": "Check out the code on GitHub",
+        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
       },
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
