@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { remote } from "electron";
 import * as ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
@@ -22,12 +17,13 @@ export class AboutComponent implements OnInit {
   public version = "";
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;
 
-  constructor(
-    private wowup: WowUpService,
-    public electronService: ElectronService
-  ) {}
+  constructor(private wowup: WowUpService, public electronService: ElectronService) {}
 
   ngOnInit(): void {
     this.version = remote.app.getVersion();
+  }
+
+  formatChanges(changeLog: ChangeLog): string {
+    return changeLog.changes.join("\n");
   }
 }

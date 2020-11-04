@@ -6,7 +6,6 @@ import {
   MenuItem,
   MenuItemConstructorOptions,
   screen,
-  Tray,
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
@@ -16,16 +15,10 @@ import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import * as url from "url";
 import * as platform from "./platform";
-import {
-  initializeAppUpdateIpcHandlers,
-  initializeAppUpdater,
-} from "./app-updater";
+import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
-import {
-  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
-  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
-} from "./src/common/constants";
+import { COLLAPSE_TO_TRAY_PREFERENCE_KEY, USE_HARDWARE_ACCELERATION_PREFERENCE_KEY } from "./src/common/constants";
 import { WindowState } from "./src/common/models/window-state";
 
 const preferenceStore = new Store({ name: "preferences" });
@@ -34,9 +27,7 @@ let appIsQuitting = false;
 let win: BrowserWindow = null;
 
 // APP MENU SETUP
-const appMenuTemplate: Array<
-  MenuItemConstructorOptions | MenuItem
-> = getAppMenu();
+const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
@@ -70,19 +61,14 @@ function canStartHidden() {
   return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
 }
 
-function windowStateManager(
-  windowName: string,
-  { width, height }: { width: number; height: number }
-) {
+function windowStateManager(windowName: string, { width, height }: { width: number; height: number }) {
   let window: BrowserWindow;
   let windowState: WindowState;
   const saveState$ = new Subject<void>();
 
   function setState() {
     let setDefaults = false;
-    windowState = preferenceStore.get(
-      `${windowName}-window-state`
-    ) as WindowState;
+    windowState = preferenceStore.get(`${windowName}-window-state`) as WindowState;
 
     if (!windowState) {
       setDefaults = true;
@@ -93,10 +79,8 @@ function windowStateManager(
         return (
           windowState.x >= display.bounds.x &&
           windowState.y >= display.bounds.y &&
-          windowState.x + windowState.width <=
-          display.bounds.x + display.bounds.width &&
-          windowState.y + windowState.height <=
-          display.bounds.y + display.bounds.height
+          windowState.x + windowState.width <= display.bounds.x + display.bounds.width &&
+          windowState.y + windowState.height <= display.bounds.y + display.bounds.height
         );
       });
 

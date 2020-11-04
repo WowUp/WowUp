@@ -1,6 +1,30 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.3",
+      "changes": [
+        "Show installed addons in the 'Get Addons' page (strayge)",
+        "Save hidden columns (strayge)",
+        "Sorting columns is now case insensitive (strayge)",
+        "Add new latest version display when 'Latest Version' column is hidden (Linaori)",
+        "Improve the 'Released At' diplay names (Linaori)",
+        "Russian locale updates (Medok)",
+        "German locale updates (Glow)",
+        "Italian locale updates (Bito)",
+        "Portuguese locale updates (Lucas SD)",
+        "Language list fixes (Cratis)",
+        "Hide generic _ForgeUser from author list (Cratis)",
+        "Move the auto update icon into the addon cell (Cratis)",
+        "Fix an issue with updating across clients updating ignored addons (Cratis)",
+        "Add button to manually check for WowUp updates (chops)",
+        "Fix the tray 'Show' action localization",
+        "Fix issue with startup hidden not working on Mac",
+        "Sync auto start values with login settings when app starts",
+        "Add GitHub link to bottom bar",
+        "Update bottom bar icons layout"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.2",
       "Description": "Details dialog website link re-arranged (Cratis)\nAdd a language selector to the application options (Cratis)\nUpdate All button should now be disabled if an ignored addon has an update (Cratis)\nOption tabs can be translated (Medok)\nUpdate Russian locale (Medok)\nUpdate German locale (Glow)\nUpdate Italian locale (Bito)\nSelecting a World of Warcraft path is now smarter\nFix an issue with starting minimized throwing an error when using the tray\nFix an issue with tab bar being hidden on Linux\nFix an issue with the options page not being scrollable on Linux"
     },
