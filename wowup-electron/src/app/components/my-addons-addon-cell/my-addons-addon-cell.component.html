@@ -51,10 +51,10 @@
         <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
       </a>
     </div>
-    <div class="addon-version" [ngClass]="{ ignored: listItem.isIgnored }">
+    <div class="addon-version row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
       <mat-icon
         *ngIf="this.listItem.isAutoUpdate === true"
-        class="auto-update-icon"
+        class="auto-update-icon mr-1"
         [inline]="true"
         [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate"
       >
