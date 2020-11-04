@@ -2,7 +2,6 @@ import { app, BrowserWindow, Menu, nativeImage, Tray } from "electron";
 import * as path from "path";
 import * as platform from "./platform";
 import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
-import { checkForUpdates } from "./app-updater";
 
 let _trayRef: Tray;
 
@@ -34,12 +33,13 @@ export function createTray(
         }
       },
     },
-    {
-      label: config.showLabel || "Check for Updates...",
-      click: () => {
-        checkForUpdates(window);
-      },
-    },
+    // Removing this for now per discussion with zak
+    // {
+    //   label: config.showLabel || "Check for Updates...",
+    //   click: () => {
+    //     checkForUpdates(window);
+    //   },
+    // },
     {
       label: config.quitLabel || "Quit",
       role: "quit",

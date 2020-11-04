@@ -18,7 +18,7 @@ import { ValueResponse } from "../../../common/models/value-response";
 export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
-  private readonly _rendererEventSrc = new BehaviorSubject('');
+  private readonly _ipcEventReceivedSrc = new BehaviorSubject('');
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -29,7 +29,7 @@ export class ElectronService {
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
-  public readonly renderedEventSrc$ = this._rendererEventSrc.asObservable();
+  public readonly ipcEventReceived$ = this._ipcEventReceivedSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -59,11 +59,11 @@ export class ElectronService {
     this.fs = window.require("fs");
 
     this.ipcRenderer.on(APP_UPDATE_CHECK_START, () => {
-      this._rendererEventSrc.next(APP_UPDATE_CHECK_START);
+      this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_START);
     });
     
     this.ipcRenderer.on(APP_UPDATE_CHECK_END, () => {
-      this._rendererEventSrc.next(APP_UPDATE_CHECK_END);
+      this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_END);
     });
 
     const currentWindow = this.remote?.getCurrentWindow();

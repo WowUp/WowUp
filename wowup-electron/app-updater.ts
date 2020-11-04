@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from "electron";
 import * as log from "electron-log";
-import { autoUpdater, UpdateCheckResult } from "electron-updater";
+import { autoUpdater } from "electron-updater";
 import {
   APP_UPDATE_AVAILABLE,
   APP_UPDATE_CHECK_END,
@@ -14,11 +14,10 @@ import {
 } from "./src/common/constants";
 
 export const checkForUpdates = async function checkForUpdates(
-  win?: BrowserWindow
+  win: BrowserWindow
 ) {
-  win = win || BrowserWindow.getFocusedWindow();
-  let result = {} as UpdateCheckResult;
-  
+  let result = null;
+
   try {
     win.webContents.send(APP_UPDATE_CHECK_START);
     result = await autoUpdater.checkForUpdates();

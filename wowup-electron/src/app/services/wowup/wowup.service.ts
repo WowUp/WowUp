@@ -84,7 +84,7 @@ export class WowUpService {
 
     this.createDownloadDirectory().then(() => this.cleanupDownloads());
 
-    this._electronService.renderedEventSrc$.subscribe((evt) => {
+    this._electronService.ipcEventReceived$.subscribe((evt) => {
       switch (evt) {
         case APP_UPDATE_CHECK_START:
           console.log(APP_UPDATE_CHECK_START);
@@ -266,9 +266,9 @@ export class WowUpService {
 
     // only notify things when the version changes
     if (
-      updateCheckResult && 
-      updateCheckResult.updateInfo && 
-      updateCheckResult.updateInfo.version !== this._electronService.getVersionNumber()
+      updateCheckResult &&
+      updateCheckResult.updateInfo?.version !==
+        this._electronService.getVersionNumber()
     ) {
       this._wowupUpdateCheckSrc.next(updateCheckResult);
     }

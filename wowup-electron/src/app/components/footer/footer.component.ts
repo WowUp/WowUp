@@ -65,6 +65,9 @@ export class FooterComponent implements OnInit {
   }
 
   public async onClickCheckForUpdates(): Promise<void> {
+    if (this.isCheckingForUpdates) {
+      return;
+    }
     await this.wowUpService.checkForAppUpdate();
   }
 
