@@ -51,13 +51,14 @@ footer {
     height: 25px;
     padding: 0 0.5em;
     overflow: hidden;
-    background-color: green;
+    color: green;
     border-radius: 4px;
     border: none;
-    color: $white-1;
+    background-color: $dark-4;
+    // color: $white-1;
 
     &:hover {
-      background-color: darkgreen;
+      background-color: $dark-3;
       cursor: pointer;
     }
 
@@ -67,5 +68,42 @@ footer {
     mat-icon {
       pointer-events: none;
     }
+  }
+
+  .downloading-button {
+    height: 25px;
+
+    &.animate {
+      animation: fadeInDown 1s infinite linear;
+    }
+  }
+
+  .check-update-button {
+    height: 25px;
+    
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.animate {
+      animation: rotate 1.5s infinite linear reverse;
+    }
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+     opacity: 1;
+     transform: translateY(-5px);
+  }
+  100% {
+     opacity: 0;
+     transform: translateY(5px);
   }
 }

@@ -32,6 +32,18 @@
   <div class="row align-items-center">
     <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
     <p>v{{ wowUpService.applicationVersion }}</p>
+    <div *ngIf="isWowUpdateDownloading" class="downloading-button ml-3 animate">
+      <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
+    </div>
+    <div 
+      *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading"
+      class="check-update-button ml-3"
+      [ngClass]="{'animate': isCheckingForUpdates}"
+      (click)="onClickCheckForUpdates()"
+      [matTooltip]="'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate"
+    >
+      <mat-icon>cached</mat-icon>
+    </div>
     <button
       *ngIf="isWowUpUpdateAvailable"
       class="update-button ml-3"

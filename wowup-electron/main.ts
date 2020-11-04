@@ -177,7 +177,7 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow(windowOptions);
   initializeIpcHanders(win);
   initializeAppUpdater(win);
-  initializeAppUpdateIpcHandlers();
+  initializeAppUpdateIpcHandlers(win);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);

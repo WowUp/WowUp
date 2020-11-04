@@ -5,7 +5,10 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { Subject } from "rxjs";
 import {
+  APP_UPDATE_CHECK_END,
   APP_UPDATE_CHECK_FOR_UPDATE,
+  APP_UPDATE_CHECK_START,
+  APP_UPDATE_DOWNLOADED,
   APP_UPDATE_INSTALL,
   APP_UPDATE_START_DOWNLOAD,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
@@ -36,8 +39,10 @@ const autoLaunch = require("auto-launch");
 })
 export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
+  private readonly _wowupUpdateDownloadInProgressSrc = new Subject<boolean>();
   private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
   private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
+  private readonly _wowupUpdateCheckInProgressSrc = new Subject<boolean>();
 
   public readonly updaterName = "WowUpUpdater.exe";
 
@@ -63,7 +68,9 @@ export class WowUpService {
   public readonly isBetaBuild: boolean;
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
   public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
+  public readonly wowupUpdateDownloadInProgress$ = this._wowupUpdateDownloadInProgressSrc.asObservable();
   public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
+  public readonly wowupUpdateCheckInProgress$ = this._wowupUpdateCheckInProgressSrc.asObservable();
 
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
@@ -77,6 +84,28 @@ export class WowUpService {
       this.applicationVersion.toLowerCase().indexOf("beta") != -1;
 
     this.createDownloadDirectory().then(() => this.cleanupDownloads());
+
+    this._electronService.ipcEventReceived$.subscribe((evt) => {
+      switch (evt) {
+        case APP_UPDATE_CHECK_START:
+          console.log(APP_UPDATE_CHECK_START);
+          this._wowupUpdateCheckInProgressSrc.next(true);
+          break;
+        case APP_UPDATE_CHECK_END:
+          console.log(APP_UPDATE_CHECK_END);
+          this._wowupUpdateCheckInProgressSrc.next(false);
+          break;
+        case APP_UPDATE_START_DOWNLOAD:
+          console.log(APP_UPDATE_START_DOWNLOAD);
+          this._wowupUpdateDownloadInProgressSrc.next(true);
+          break;
+        case APP_UPDATE_DOWNLOADED:
+          console.log(APP_UPDATE_DOWNLOADED);
+          this._wowupUpdateDownloadInProgressSrc.next(false);
+          break;
+      }
+    });
+    
     this.setAutoStartup();
 
     console.log('loginItemSettings', this._electronService.loginItemSettings);
@@ -241,14 +270,19 @@ export class WowUpService {
     );
 
     // only notify things when the version changes
-    if (
-      updateCheckResult.updateInfo.version !==
-      this._electronService.getVersionNumber()
-    ) {
+    if (!this.isSameVersion(updateCheckResult)) {
       this._wowupUpdateCheckSrc.next(updateCheckResult);
     }
 
     return updateCheckResult;
+  }
+
+  public isSameVersion(updateCheckResult: UpdateCheckResult) {
+    return (
+      updateCheckResult &&
+      updateCheckResult.updateInfo?.version ===
+        this._electronService.getVersionNumber()
+    );
   }
 
   public async downloadUpdate() {
