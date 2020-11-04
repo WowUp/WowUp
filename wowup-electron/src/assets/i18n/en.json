@@ -150,7 +150,8 @@
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Chat with us on Discord",
         "PATREON_SUPPORT": "Support WowUp on Patreon",
-        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}"
+        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}",
+        "VIEW_GITHUB": "Check out the code on GitHub"
       },
       "RESCAN_FOLDERS_BUTTON": "Re-Scan Folders",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan your client folder for installed addons",

@@ -1,32 +1,18 @@
 <footer class="bg-dark-4 text-light-2">
-  <a
-    appExternalLink
-    class="patreon-link"
-    href="https://www.patreon.com/jliddev"
-    matTooltip="{{
+  <a appExternalLink class="patreon-link mr-2" href="https://www.patreon.com/jliddev" matTooltip="{{
       'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate
-    }}"
-    appUserActionTracker
-    category="Footer"
-    action="Patreon"
-  >
-    <img
-      class="patron-img"
-      src="assets/Digital-Patreon-Wordmark_FieryCoral.png"
-    />
+    }}">
+    <img class="patron-img" src="assets/images/patreon_logo_small.png" />
   </a>
-  <a
-    appExternalLink
-    class="discord-link"
-    href="https://discord.gg/rk4F5aD"
-    matTooltip="{{
+  <a appExternalLink class="discord-link mr-2" href="https://discord.gg/rk4F5aD" matTooltip="{{
       'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate
-    }}"
-    appUserActionTracker
-    category="Footer"
-    action="Discord"
-  >
+    }}">
     <img class="discord-img" src="assets/images/discord_logo_small.png" />
+  </a>
+  <a appExternalLink class="github-link" href="https://github.com/jliddev/WowUp" matTooltip="{{
+    'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GITHUB' | translate
+  }}">
+    <img class="github-img" src="assets/images/github_logo.png" />
   </a>
   <p class="flex-grow-1">{{ sessionService.statusText$ | async }}</p>
   <div class="row align-items-center">
@@ -35,22 +21,13 @@
     <div *ngIf="isWowUpdateDownloading" class="downloading-button ml-3 animate">
       <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
     </div>
-    <div 
-      *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading"
-      class="check-update-button ml-3"
-      [ngClass]="{'animate': isCheckingForUpdates}"
-      (click)="onClickCheckForUpdates()"
-      [matTooltip]="'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate"
-    >
+    <div *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading" class="check-update-button ml-3"
+      [ngClass]="{'animate': isCheckingForUpdates}" (click)="onClickCheckForUpdates()"
+      [matTooltip]="'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate">
       <mat-icon>cached</mat-icon>
     </div>
-    <button
-      *ngIf="isWowUpUpdateAvailable"
-      class="update-button ml-3"
-      matTooltip="{{ getUpdateIconTooltip() | translate }}"
-      [disabled]="isUpdatingWowUp"
-      (click)="onClickUpdateWowup()"
-    >
+    <button *ngIf="isWowUpUpdateAvailable" class="update-button ml-3"
+      matTooltip="{{ getUpdateIconTooltip() | translate }}" [disabled]="isUpdatingWowUp" (click)="onClickUpdateWowup()">
       <mat-icon>upgrade</mat-icon>
     </button>
   </div>

@@ -16,16 +16,13 @@ footer {
     -webkit-app-region: no-drag;
     cursor: pointer;
   }
-  // a:hover {
-  //     background: $dark-3;
-  // }
 
   div {
     font-size: 0.8em;
   }
 
   .patreon-link {
-    margin-right: 1em;
+    padding: 0 0.25em;
     &:hover {
       background-color: $dark-3;
     }
@@ -44,6 +41,17 @@ footer {
 
     .discord-img {
       height: 25px;
+    }
+  }
+
+  .github-link {
+    height: 20px;
+    padding: 2.5px 0.25em;
+    &:hover {
+      background-color: $dark-3;
+    }
+    .github-img {
+      height: 20px;
     }
   }
 
@@ -80,7 +88,7 @@ footer {
 
   .check-update-button {
     height: 25px;
-    
+
     &:hover {
       cursor: pointer;
     }
@@ -99,11 +107,11 @@ footer {
 
 @keyframes fadeInDown {
   0% {
-     opacity: 1;
-     transform: translateY(-5px);
+    opacity: 1;
+    transform: translateY(-5px);
   }
   100% {
-     opacity: 0;
-     transform: translateY(5px);
+    opacity: 0;
+    transform: translateY(5px);
   }
 }
