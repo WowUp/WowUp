@@ -344,6 +344,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       this.electronService.shell.openExternal(
         addonPath,
         //open issue on Electron causing activate false to set to foreground instead of background
+        //https://github.com/electron/electron/issues/12492
+        //temporary workaround until its fixed in Electron
         this.electronService.isMac ? { activate: true } : { activate: false }
       );
     } catch (err) {
