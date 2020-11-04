@@ -21,12 +21,12 @@ export const checkForUpdates = async function checkForUpdates(
   try {
     win.webContents.send(APP_UPDATE_CHECK_START);
     result = await autoUpdater.checkForUpdates();
-  } catch (err) {}
+  } finally {
+    win.webContents.send(APP_UPDATE_CHECK_END);
+  }
 
-  win.webContents.send(APP_UPDATE_CHECK_END);
   return result;
 };
-
 
 // Example: https://github.com/electron-userland/electron-builder/blob/docs/encapsulated%20manual%20update%20via%20menu.js
 export function initializeAppUpdater(win: BrowserWindow) {

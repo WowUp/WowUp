@@ -7,10 +7,13 @@
       "QUIT_ACTION": "Beenden",
       "SHOW_ACTION": "Öffnen"
     },
+    "WOWUP_UPDATE": {
+      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "UPDATE_ERROR": "Failed to get WowUp update"
+    },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "WowUp Update installieren",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Willst du WowUp neu Starten um das Update zu installieren?",
     "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update bereit",
-    "WOWUP_UPDATE_NOT_AVAILABLE": "Latest version of WowUp is already installed",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "Eine neue Version von WowUp ist verfügbar",
     "WOWUP_UPDATE_TOOLTIP": "WowUp Update verfügbar"

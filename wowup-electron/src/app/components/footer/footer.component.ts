@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
+import { UpdateCheckResult } from "electron-updater";
 import { from } from "rxjs";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
@@ -70,18 +71,25 @@ export class FooterComponent implements OnInit {
     if (this.isCheckingForUpdates) {
       return;
     }
-    const result = await this.wowUpService.checkForAppUpdate();
 
-    if (result === null) {
-      this._snackBar.open(
-        this._translateService.instant("APP.WOWUP_UPDATE_NOT_AVAILABLE"),
-        null,
-        {
-          duration: 2000,
-          panelClass: 'center-text',
-        }
-      );
+    let result: UpdateCheckResult = null;
+    try {
+      result = await this.wowUpService.checkForAppUpdate();
+
+      if (result === null || this.wowUpService.isSameVersion(result)) {
+        this.showSnackbar("APP.WOWUP_UPDATE.NOT_AVAILABLE");
+      }
+    } catch (e) {
+      console.error(e);
+      this.showSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR", ["error-text"]);
     }
+  }
+
+  private showSnackbar(localeKey: string, classes: string[] = []) {
+    this._snackBar.open(this._translateService.instant(localeKey), null, {
+      duration: 2000,
+      panelClass: ["center-text", ...classes],
+    });
   }
 
   public getUpdateIconTooltip() {

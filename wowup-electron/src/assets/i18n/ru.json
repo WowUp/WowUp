@@ -7,10 +7,13 @@
       "QUIT_ACTION": "Выход",
       "SHOW_ACTION": "Показать"
     },
+    "WOWUP_UPDATE": {
+      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "UPDATE_ERROR": "Failed to get WowUp update"
+    },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
     "WOWUP_UPDATE_INSTALL_TITLE": "Для WowUp готово обновление",
-    "WOWUP_UPDATE_NOT_AVAILABLE": "Latest version of WowUp is already installed",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Обновить",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "Доступна новая версия WowUp",
     "WOWUP_UPDATE_TOOLTIP": "Доступно обновление для WowUp"

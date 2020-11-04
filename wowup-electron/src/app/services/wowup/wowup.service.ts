@@ -74,7 +74,7 @@ export class WowUpService {
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
-    private _fileService: FileService,
+    private _fileService: FileService
   ) {
     this.setDefaultPreferences();
 
@@ -265,15 +265,19 @@ export class WowUpService {
     );
 
     // only notify things when the version changes
-    if (
-      updateCheckResult &&
-      updateCheckResult.updateInfo?.version !==
-        this._electronService.getVersionNumber()
-    ) {
+    if (!this.isSameVersion(updateCheckResult)) {
       this._wowupUpdateCheckSrc.next(updateCheckResult);
     }
 
     return updateCheckResult;
+  }
+
+  public isSameVersion(updateCheckResult: UpdateCheckResult) {
+    return (
+      updateCheckResult &&
+      updateCheckResult.updateInfo?.version ===
+        this._electronService.getVersionNumber()
+    );
   }
 
   public async downloadUpdate() {
