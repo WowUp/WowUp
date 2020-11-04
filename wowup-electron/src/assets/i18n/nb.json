@@ -41,6 +41,8 @@
       "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
       "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
       "JUST_NOW": "Akkurat nå",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "I går"
     },
     "DOWNLOAD_COUNT": {

@@ -21,6 +21,7 @@ import {
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
   SELECTED_LANGUAGE_PREFERENCE_KEY,
+  MY_ADDONS_HIDDEN_COLUMNS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -31,7 +32,7 @@ import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 
-var autoLaunch = require("auto-launch");
+const autoLaunch = require("auto-launch");
 
 @Injectable({
   providedIn: "root",
@@ -74,7 +75,7 @@ export class WowUpService {
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
-    private _fileService: FileService
+    private _fileService: FileService,
   ) {
     this.setDefaultPreferences();
 
@@ -104,6 +105,10 @@ export class WowUpService {
           break;
       }
     });
+    
+    this.setAutoStartup();
+
+    console.log('loginItemSettings', this._electronService.loginItemSettings);
   }
 
   public get updaterExists() {
@@ -372,10 +377,14 @@ export class WowUpService {
         isHidden: this.startMinimized,
       });
 
-      if (this.startWithSystem) autoLauncher.enable();
-      else autoLauncher.disable();
+      if (this.startWithSystem) {
+        autoLauncher.enable();
+      }
+      else {
+        autoLauncher.disable();
+      }
     } else {
-      this._electronService.remote.app.setLoginItemSettings({
+      this._electronService.loginItemSettings = {
         openAtLogin: this.startWithSystem,
         openAsHidden: this._electronService.isMac ? this.startMinimized : false,
         args: this._electronService.isWin
@@ -383,7 +392,16 @@ export class WowUpService {
             ? ["--hidden"]
             : []
           : [],
-      });
+      };
     }
+  }
+
+  public get myAddonsHiddenColumns() {
+    let pref = this._preferenceStorageService.findByKey(MY_ADDONS_HIDDEN_COLUMNS_KEY);
+    return pref.split(",");
+  }
+
+  public set myAddonsHiddenColumns(value: Array<string>) {
+    this._preferenceStorageService.set(MY_ADDONS_HIDDEN_COLUMNS_KEY, value.join());
   }
 }

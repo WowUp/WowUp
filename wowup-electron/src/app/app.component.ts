@@ -1,8 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { CREATE_TRAY_MENU_CHANNEL } from "../common/constants";
@@ -37,20 +33,7 @@ export class AppComponent implements AfterViewInit {
     private _addonService: AddonService,
     private _iconService: IconService
   ) {
-    this.translate.addLangs([
-      "en",
-      "de",
-      "es",
-      "fr",
-      "it",
-      "ko",
-      "nb",
-      "pt",
-      "ru",
-      "zh",
-    ]);
     this.translate.setDefaultLang("en");
-    this.translate.use(this._electronService.locale);
     this.translate.use(this._wowUpService.currentLanguage);
 
     this._iconService.addSvg(faAngleDoubleDown);
@@ -66,10 +49,7 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    this._autoUpdateInterval = window.setInterval(
-      this.onAutoUpdateInterval,
-      AUTO_UPDATE_PERIOD_MS
-    );
+    this._autoUpdateInterval = window.setInterval(this.onAutoUpdateInterval, AUTO_UPDATE_PERIOD_MS);
   }
 
   openDialog(): void {
@@ -93,40 +73,30 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    const iconPath = await this._fileService.getAssetFilePath(
-      "wowup_logo_512np.png"
-    );
+    const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
 
     if (this._wowUpService.enableSystemNotifications) {
-      this._electronService.showNotification(
-        this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_TITLE"),
-        {
-          body: this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_BODY", {
-            count: updateCount,
-          }),
-          icon: iconPath,
-        }
-      );
+      this._electronService.showNotification(this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_TITLE"), {
+        body: this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_BODY", {
+          count: updateCount,
+        }),
+        icon: iconPath,
+      });
     }
   };
 
   private async createSystemTray() {
-    const result = await this.translate
-      .get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"])
-      .toPromise();
+    const result = await this.translate.get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"]).toPromise();
 
     console.debug("Creating tray", result);
     const config: SystemTrayConfig = {
       quitLabel: result["APP.SYSTEM_TRAY.QUIT_ACTION"],
       checkUpdateLabel: result["APP.SYSTEM_TRAY.CHECK_UPDATE"],
-      showLabel: result["APP.SYSTEM_TRAY.SYSTEM_TRAY"],
+      showLabel: result["APP.SYSTEM_TRAY.SHOW_ACTION"],
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(
-        CREATE_TRAY_MENU_CHANNEL,
-        config
-      );
+      const trayCreated = await this._electronService.invoke(CREATE_TRAY_MENU_CHANNEL, config);
       console.log("Tray created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);

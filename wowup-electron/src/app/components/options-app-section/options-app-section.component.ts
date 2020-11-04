@@ -8,6 +8,11 @@ import { AnalyticsService } from "app/services/analytics/analytics.service";
 import { WowUpService } from "app/services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
+interface LocaleListItem {
+  localeId: string;
+  label: string;
+}
+
 @Component({
   selector: "app-options-app-section",
   templateUrl: "./options-app-section.component.html",
@@ -21,7 +26,18 @@ export class OptionsAppSectionComponent implements OnInit {
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage: string = "";
-  public languages: string[] = [];
+  public languages: LocaleListItem[] = [
+    { localeId: "en", label: "English" },
+    { localeId: "de", label: "Deutsch" },
+    { localeId: "es", label: "Español" },
+    { localeId: "fr", label: "Français" },
+    { localeId: "it", label: "Italiano" },
+    { localeId: "ko", label: "한국어" },
+    { localeId: "nb", label: "Norsk Bokmål" },
+    { localeId: "pt", label: "Português" },
+    { localeId: "ru", label: "русский" },
+    { localeId: "zh", label: "简体中文" },
+  ];
 
   constructor(
     private _analyticsService: AnalyticsService,
@@ -40,11 +56,9 @@ export class OptionsAppSectionComponent implements OnInit {
       ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
       : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
 
-    this._translateService
-      .get(minimizeOnCloseKey)
-      .subscribe((translatedStr) => {
-        this.minimizeOnCloseDescription = translatedStr;
-      });
+    this._translateService.get(minimizeOnCloseKey).subscribe((translatedStr) => {
+      this.minimizeOnCloseDescription = translatedStr;
+    });
 
     this.telemetryEnabled = this._analyticsService.telemetryEnabled;
     this.collapseToTray = this.wowupService.collapseToTray;
@@ -52,7 +66,6 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startWithSystem = this.wowupService.startWithSystem;
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
-    this.languages = this._translateService.getLangs();
   }
 
   onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
@@ -83,9 +96,7 @@ export class OptionsAppSectionComponent implements OnInit {
   onUseHardwareAccelerationChange = (evt: MatSlideToggleChange) => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this._translateService.instant(
-          "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"
-        ),
+        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"),
         message: this._translateService.instant(
           evt.checked
             ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
@@ -108,18 +119,14 @@ export class OptionsAppSectionComponent implements OnInit {
   onCurrentLanguageChange = (evt: MatSelectChange) => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this._translateService.instant(
-          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"
-        ),
-        message: this._translateService.instant(
-          "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_DESCRIPTION"
-        ),
+        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"),
+        message: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_DESCRIPTION"),
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) {
-        evt.value = "en";
+        evt.source.value = this.wowupService.currentLanguage;
         return;
       }
 

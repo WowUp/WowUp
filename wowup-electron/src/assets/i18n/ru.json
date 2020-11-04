@@ -41,6 +41,8 @@
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
       "HOURS_AGO": "{count} {count, plural, one{час} few{часа} other{часов}} назад",
       "JUST_NOW": "Только что",
+      "MONTHS_AGO": "{count} {count, plural, one{месяц} few{месяца} other{месяцев}} назад",
+      "YEARS_AGO": "{count} {count, plural, one{год} few{года} other{лет}} назад",
       "YESTERDAY": "Вчера"
     },
     "DOWNLOAD_COUNT": {
@@ -188,7 +190,7 @@
     },
     "OPTIONS": {
       "APPLICATION": {
-        "CURRENT_LANGUAGE_LABEL": "Current Language",
+        "CURRENT_LANGUAGE_LABEL": "Текущий язык",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",

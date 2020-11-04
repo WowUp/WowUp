@@ -41,6 +41,8 @@
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
       "HOURS_AGO": "Vor {count} {count, plural, one{Stunde} other{Stunden}}",
       "JUST_NOW": "Gerade eben",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "Gestern"
     },
     "DOWNLOAD_COUNT": {
@@ -187,6 +189,11 @@
       }
     },
     "OPTIONS": {
+      "TABS": {
+        "CLIENTS": "Clients",
+        "APPLICATION": "Anwendung",
+        "DEBUG": "Debug"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren / Deaktivieren verschiedener Systembenachrichtigungen",

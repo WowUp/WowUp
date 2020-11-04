@@ -41,6 +41,8 @@
       "DAYS_AGO": "{count} {count, plural, one{giorno} other{giorni}} fa",
       "HOURS_AGO": "{count} {count, plural, one{ora} other{ore}} fa",
       "JUST_NOW": "Ora",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "Ieri"
     },
     "DOWNLOAD_COUNT": {
