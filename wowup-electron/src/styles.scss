@@ -408,3 +408,12 @@ img {
     }
   }
 }
+
+snack-bar-container {
+  &.center-text {
+    span {
+      margin: auto;
+      text-align: center;
+    }
+  }
+}

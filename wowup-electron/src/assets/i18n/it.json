@@ -10,6 +10,7 @@
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
     "WOWUP_UPDATE_INSTALL_TITLE": "Aggiornamento di Wowup pronto",
+    "WOWUP_UPDATE_NOT_AVAILABLE": "Latest version of WowUp is already installed",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Aggiorna",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "È disponibile una nuova versione di WowUp",
     "WOWUP_UPDATE_TOOLTIP": "L'aggiornamento di WowUp è pronto per l'installazione"
@@ -183,12 +184,8 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Applicazione",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita/Disabilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Abilita notifiche di sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Quando si chiude la finestra WowUp, minimizzare nella barra dei menu",
@@ -219,6 +216,11 @@
         "LOG_FILES_DESCRIPTION": "Aprire la cartella che contiene gli ultimi file di registro.",
         "LOG_FILES_LABEL": "File Di Log",
         "TITLE": "Debug"
+      },
+      "TABS": {
+        "APPLICATION": "Applicazione",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati di default per l'aggiornamento automatico ",

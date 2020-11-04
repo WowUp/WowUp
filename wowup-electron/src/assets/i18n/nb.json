@@ -10,6 +10,7 @@
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
     "WOWUP_UPDATE_INSTALL_TITLE": "WowUp-oppdatering er klar",
+    "WOWUP_UPDATE_NOT_AVAILABLE": "Latest version of WowUp is already installed",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Oppdater",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "en ny versjon av WowUp er tilgjengelig",
     "WOWUP_UPDATE_TOOLTIP": "WowUp oppdatering tilgjengelig"
@@ -183,12 +184,8 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Application",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver systemvarsler",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
@@ -219,6 +216,11 @@
         "LOG_FILES_DESCRIPTION": "Åpne mappen som inneholder dine siste loggfiler.",
         "LOG_FILES_LABEL": "Loggfiler",
         "TITLE": "Debug"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",

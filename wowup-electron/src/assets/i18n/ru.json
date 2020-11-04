@@ -10,6 +10,7 @@
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
     "WOWUP_UPDATE_INSTALL_TITLE": "Для WowUp готово обновление",
+    "WOWUP_UPDATE_NOT_AVAILABLE": "Latest version of WowUp is already installed",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Обновить",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "Доступна новая версия WowUp",
     "WOWUP_UPDATE_TOOLTIP": "Доступно обновление для WowUp"
@@ -183,12 +184,8 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Клиенты",
-        "APPLICATION": "Приложение",
-        "DEBUG": "Отладка"
-      },
       "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
@@ -219,6 +216,11 @@
         "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую последние несколько лог-файлов.",
         "LOG_FILES_LABEL": "Файлы логов",
         "TITLE": "Отладка"
+      },
+      "TABS": {
+        "APPLICATION": "Приложение",
+        "CLIENTS": "Клиенты",
+        "DEBUG": "Отладка"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",

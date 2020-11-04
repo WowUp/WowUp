@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { from } from "rxjs";
 import { SessionService } from "../../services/session/session.service";
@@ -24,7 +25,8 @@ export class FooterComponent implements OnInit {
     private _zone: NgZone,
     private _cdRef: ChangeDetectorRef,
     public wowUpService: WowUpService,
-    public sessionService: SessionService
+    public sessionService: SessionService,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -68,7 +70,18 @@ export class FooterComponent implements OnInit {
     if (this.isCheckingForUpdates) {
       return;
     }
-    await this.wowUpService.checkForAppUpdate();
+    const result = await this.wowUpService.checkForAppUpdate();
+
+    if (result === null) {
+      this._snackBar.open(
+        this._translateService.instant("APP.WOWUP_UPDATE_NOT_AVAILABLE"),
+        null,
+        {
+          duration: 2000,
+          panelClass: 'center-text',
+        }
+      );
+    }
   }
 
   public getUpdateIconTooltip() {

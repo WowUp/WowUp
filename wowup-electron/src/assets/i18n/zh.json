@@ -10,6 +10,7 @@
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Install WowUp update",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want restart WowUp to install the update?",
     "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update Ready",
+    "WOWUP_UPDATE_NOT_AVAILABLE": "Latest version of WowUp is already installed",
     "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
     "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
     "WOWUP_UPDATE_TOOLTIP": "WowUp update available"
@@ -183,12 +184,8 @@
       }
     },
     "OPTIONS": {
-      "TABS": {
-        "CLIENTS": "Clients",
-        "APPLICATION": "Application",
-        "DEBUG": "Debug"
-      },
       "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
@@ -219,6 +216,11 @@
         "LOG_FILES_DESCRIPTION": "打开包含您最后几个日志文件的文件夹。",
         "LOG_FILES_LABEL": "日志文件",
         "TITLE": "除错"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
