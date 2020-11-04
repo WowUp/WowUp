@@ -3,8 +3,13 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
     "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Check for Updates...",
       "QUIT_ACTION": "Beenden",
       "SHOW_ACTION": "Öffnen"
+    },
+    "WOWUP_UPDATE": {
+      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "UPDATE_ERROR": "Failed to get WowUp update"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "WowUp Update installieren",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Willst du WowUp neu Starten um das Update zu installieren?",
@@ -221,6 +226,11 @@
         "LOG_FILES_DESCRIPTION": "Öffnen Sie den Ordner, der Ihre letzten Logdateien enthält.",
         "LOG_FILES_LABEL": "Log-Dateien",
         "TITLE": "Debuggen"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
       },
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf Auto-Update gesetzt",

@@ -298,6 +298,10 @@ img {
     .addon-version {
       color: $white-2;
     }
+
+    .addon-update-available {
+      color: $artifact;
+    }
   }
 }
 
@@ -401,10 +405,23 @@ img {
   }
 }
 
+.error-text {
+  color: red;
+}
+
 .no-tabs {
   &.mat-tab-group {
     .mat-tab-header {
       display: none;
+    }
+  }
+}
+
+snack-bar-container {
+  &.center-text {
+    span {
+      margin: auto;
+      text-align: center;
     }
   }
 }

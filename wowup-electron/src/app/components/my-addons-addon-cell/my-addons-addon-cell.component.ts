@@ -8,6 +8,7 @@ import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 })
 export class MyAddonsAddonCellComponent implements OnInit {
   @Input("addon") listItem: AddonViewModel;
+  @Input() showUpdateToVersion = false;
 
   @Output() onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
 

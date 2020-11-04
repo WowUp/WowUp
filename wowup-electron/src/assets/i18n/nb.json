@@ -3,8 +3,13 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse} ble automatisk oppdatert}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
     "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Check for Updates...",
       "QUIT_ACTION": "Quit",
       "SHOW_ACTION": "Show"
+    },
+    "WOWUP_UPDATE": {
+      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "UPDATE_ERROR": "Failed to get WowUp update"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
