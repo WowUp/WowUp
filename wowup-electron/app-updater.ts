@@ -3,13 +3,30 @@ import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
 import {
   APP_UPDATE_AVAILABLE,
+  APP_UPDATE_CHECK_END,
   APP_UPDATE_CHECK_FOR_UPDATE,
+  APP_UPDATE_CHECK_START,
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_ERROR,
   APP_UPDATE_INSTALL,
   APP_UPDATE_NOT_AVAILABLE,
   APP_UPDATE_START_DOWNLOAD,
 } from "./src/common/constants";
+
+export const checkForUpdates = async function checkForUpdates(
+  win: BrowserWindow
+) {
+  let result = null;
+
+  try {
+    win.webContents.send(APP_UPDATE_CHECK_START);
+    result = await autoUpdater.checkForUpdates();
+  } finally {
+    win.webContents.send(APP_UPDATE_CHECK_END);
+  }
+
+  return result;
+};
 
 // Example: https://github.com/electron-userland/electron-builder/blob/docs/encapsulated%20manual%20update%20via%20menu.js
 export function initializeAppUpdater(win: BrowserWindow) {
@@ -39,9 +56,10 @@ export function initializeAppUpdater(win: BrowserWindow) {
   });
 }
 
-export function initializeAppUpdateIpcHandlers() {
+export function initializeAppUpdateIpcHandlers(win: BrowserWindow) {
   ipcMain.handle(APP_UPDATE_START_DOWNLOAD, async () => {
     log.info(APP_UPDATE_START_DOWNLOAD);
+    win.webContents.send(APP_UPDATE_START_DOWNLOAD);
     return await autoUpdater.downloadUpdate();
   });
 
@@ -52,6 +70,6 @@ export function initializeAppUpdateIpcHandlers() {
 
   ipcMain.handle(APP_UPDATE_CHECK_FOR_UPDATE, async () => {
     log.info(APP_UPDATE_CHECK_FOR_UPDATE);
-    return await autoUpdater.checkForUpdates();
+    return await checkForUpdates(win);
   });
 }

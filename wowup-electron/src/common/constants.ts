@@ -43,3 +43,5 @@ export const APP_UPDATE_AVAILABLE = "app-update-available";
 export const APP_UPDATE_START_DOWNLOAD = "app-update-start-download";
 export const APP_UPDATE_INSTALL = "app-update-install";
 export const APP_UPDATE_CHECK_FOR_UPDATE = "app-update-check-for-update";
+export const APP_UPDATE_CHECK_START = "app-update-check-start";
+export const APP_UPDATE_CHECK_END = "app-update-check-end";

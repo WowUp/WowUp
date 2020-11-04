@@ -1,6 +1,9 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
+import { UpdateCheckResult } from "electron-updater";
+import { from } from "rxjs";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
@@ -14,6 +17,8 @@ export class FooterComponent implements OnInit {
   public isUpdatingWowUp = false;
   public isWowUpUpdateAvailable = false;
   public isWowUpUpdateDownloaded = false;
+  public isCheckingForUpdates = false;
+  public isWowUpdateDownloading = false;
 
   constructor(
     private _dialog: MatDialog,
@@ -21,7 +26,8 @@ export class FooterComponent implements OnInit {
     private _zone: NgZone,
     private _cdRef: ChangeDetectorRef,
     public wowUpService: WowUpService,
-    public sessionService: SessionService
+    public sessionService: SessionService,
+    private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +45,18 @@ export class FooterComponent implements OnInit {
       });
     });
 
+    this.wowUpService.wowupUpdateCheckInProgress$.subscribe((inProgress) => {
+      console.debug("wowUpUpdateCheckInProgress", inProgress);
+      this.isCheckingForUpdates = inProgress;
+      this._cdRef.detectChanges();
+    });
+
+    this.wowUpService.wowupUpdateDownloadInProgress$.subscribe((inProgress) => {
+      console.debug("wowupUpdateDownloadInProgress", inProgress);
+      this.isWowUpdateDownloading = inProgress;
+      this._cdRef.detectChanges();
+    });
+
     // Force the angular zone to pump for every progress update since its outside the zone
     this.sessionService.statusText$.subscribe((text) => {
       this._zone.run(() => {});
@@ -46,6 +64,31 @@ export class FooterComponent implements OnInit {
 
     this.sessionService.pageContextText$.subscribe((text) => {
       this._zone.run(() => {});
+    });
+  }
+
+  public async onClickCheckForUpdates(): Promise<void> {
+    if (this.isCheckingForUpdates) {
+      return;
+    }
+
+    let result: UpdateCheckResult = null;
+    try {
+      result = await this.wowUpService.checkForAppUpdate();
+
+      if (result === null || this.wowUpService.isSameVersion(result)) {
+        this.showSnackbar("APP.WOWUP_UPDATE.NOT_AVAILABLE");
+      }
+    } catch (e) {
+      console.error(e);
+      this.showSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR", ["error-text"]);
+    }
+  }
+
+  private showSnackbar(localeKey: string, classes: string[] = []) {
+    this._snackBar.open(this._translateService.instant(localeKey), null, {
+      duration: 2000,
+      panelClass: ["center-text", ...classes],
     });
   }
 

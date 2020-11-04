@@ -180,6 +180,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
+  public isLatestUpdateColumnVisible(): boolean {
+    return this.columns.find(column => column.name === 'addon.latestVersion').visible
+  }
+
   public onSortChange(): void {
     if (this.table) {
       this.table.nativeElement.scrollIntoView({ behavior: "smooth" });

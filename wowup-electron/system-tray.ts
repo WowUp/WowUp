@@ -33,6 +33,13 @@ export function createTray(
         }
       },
     },
+    // Removing this for now per discussion with zak
+    // {
+    //   label: config.showLabel || "Check for Updates...",
+    //   click: () => {
+    //     checkForUpdates(window);
+    //   },
+    // },
     {
       label: config.quitLabel || "Quit",
       role: "quit",

@@ -3,8 +3,13 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
     "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Check for Updates...",
       "QUIT_ACTION": "Quit",
       "SHOW_ACTION": "Show"
+    },
+    "WOWUP_UPDATE": {
+      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "UPDATE_ERROR": "Failed to get WowUp update"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Install WowUp update",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want restart WowUp to install the update?",

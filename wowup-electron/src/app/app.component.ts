@@ -1,8 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import { from } from "rxjs";
-import { switchMap } from "rxjs/operators";
 import { CREATE_TRAY_MENU_CHANNEL } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
@@ -10,8 +8,9 @@ import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
-import { WarcraftService } from "./services/warcraft/warcraft.service";
 import { WowUpService } from "./services/wowup/wowup.service";
+import { IconService } from "./services/icons/icon.service";
+import { faAngleDoubleDown } from "@fortawesome/free-solid-svg-icons";
 
 const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 
@@ -29,13 +28,15 @@ export class AppComponent implements AfterViewInit {
     private _electronService: ElectronService,
     private _fileService: FileService,
     private translate: TranslateService,
-    private warcraft: WarcraftService,
     private _wowUpService: WowUpService,
     private _dialog: MatDialog,
-    private _addonService: AddonService
+    private _addonService: AddonService,
+    private _iconService: IconService
   ) {
     this.translate.setDefaultLang("en");
     this.translate.use(this._wowUpService.currentLanguage);
+
+    this._iconService.addSvg(faAngleDoubleDown);
   }
 
   ngAfterViewInit(): void {
@@ -90,6 +91,7 @@ export class AppComponent implements AfterViewInit {
     console.debug("Creating tray", result);
     const config: SystemTrayConfig = {
       quitLabel: result["APP.SYSTEM_TRAY.QUIT_ACTION"],
+      checkUpdateLabel: result["APP.SYSTEM_TRAY.CHECK_UPDATE"],
       showLabel: result["APP.SYSTEM_TRAY.SHOW_ACTION"],
     };
 
