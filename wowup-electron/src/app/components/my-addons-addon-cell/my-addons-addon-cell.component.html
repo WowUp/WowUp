@@ -32,6 +32,10 @@
       </a>
     </div>
     <div class="addon-version row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
+      <mat-icon *ngIf="this.listItem.isAutoUpdate === true" class="auto-update-icon mr-1" [inline]="true"
+        [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate">
+        update
+      </mat-icon>
       {{ listItem.addon.installedVersion }}
       <div class="update-available row"
         *ngIf="showUpdateToVersion && listItem.addon.latestVersion !== listItem.addon.installedVersion">
