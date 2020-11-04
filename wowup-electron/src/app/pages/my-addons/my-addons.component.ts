@@ -181,7 +181,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public isLatestUpdateColumnVisible(): boolean {
-    return this.columns.find(column => column.name === 'addon.latestVersion').visible
+    return this.columns.find((column) => column.name === "addon.latestVersion").visible;
   }
 
   public onSortChange(): void {
@@ -528,7 +528,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       // Only care about the ones that need to be updated/installed
       addons = addons
         .map((addon) => new AddonViewModel(addon))
-        .filter((listItem) => listItem.needsUpdate || listItem.needsInstall)
+        .filter((listItem) => !listItem.isIgnored && (listItem.needsUpdate || listItem.needsInstall))
         .map((listItem) => listItem.addon);
 
       if (addons.length === 0) {

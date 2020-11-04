@@ -9,35 +9,23 @@
   <div class="control-container">
     <div class="select-container">
       <mat-form-field>
-        <mat-label>{{
-          "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate
-        }}</mat-label>
+        <mat-label>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
         <mat-select
           class="select pointer"
           [(value)]="selectedClient"
           (selectionChange)="onClientChange()"
           [disabled]="enableControls === false"
         >
-          <mat-option
-            [value]="clientType"
-            *ngFor="
-              let clientType of warcraftService.installedClientTypes$ | async
-            "
-          >
+          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
             {{ warcraftService.getClientDisplayName(clientType) }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div class="right-container">
-      <div
-        class="filter-container"
-        *ngIf="selectedClient !== wowClientType.None"
-      >
+      <div class="filter-container" *ngIf="selectedClient !== wowClientType.None">
         <mat-form-field>
-          <mat-label>{{
-            "PAGES.MY_ADDONS.FILTER_LABEL" | translate
-          }}</mat-label>
+          <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
           <input matInput (keyup)="filterAddons()" [(ngModel)]="filter" />
           <button
             mat-button
@@ -69,9 +57,7 @@
         <button
           mat-flat-button
           color="primary"
-          [matTooltip]="
-            'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate
-          "
+          [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls === false"
           (click)="onRefresh()"
           appUserActionTracker
@@ -83,9 +69,7 @@
         <button
           mat-flat-button
           color="primary"
-          [matTooltip]="
-            'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate
-          "
+          [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls === false"
           (click)="onReScan()"
           appUserActionTracker
@@ -102,17 +86,11 @@
     <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
   </div>
 
-  <div
-    *ngIf="isBusy === false && sortedListItems.length === 0"
-    class="no-addons-container flex-grow-1"
-  >
+  <div *ngIf="isBusy === false && sortedListItems.length === 0" class="no-addons-container flex-grow-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <div
-    class="table-container flex-grow-1"
-    [hidden]="isBusy === true || sortedListItems.length === 0"
-  >
+  <div class="table-container flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0">
     <table
       #table
       mat-table
@@ -141,34 +119,20 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER" | translate }}
         </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          class="status-column cell-padding"
-        >
-          <app-my-addon-status-column
-            [listItem]="element"
-          ></app-my-addon-status-column>
+        <td mat-cell *matCellDef="let element" class="status-column cell-padding">
+          <app-my-addon-status-column [listItem]="element"></app-my-addon-status-column>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="installedAt">
-        <th
-          class="installed-at-cell"
-          mat-header-cell
-          mat-sort-header
-          *matHeaderCellDef
-        >
+        <th class="installed-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER" | translate }}
         </th>
         <td
           mat-cell
           *matCellDef="let element"
           class="cell-padding"
-          [matTooltip]="
-            'COMMON.DATES.DATETIME_SHORT'
-              | translate: { d: element.installedAt }
-          "
+          [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: { d: element.installedAt }"
           matTooltipPosition="above"
           matTooltipShowDelay="500"
         >
@@ -180,28 +144,25 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER" | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="cell-padding" [ngClass]="{'addon-update-available' : element.addon.latestVersion !== element.addon.installedVersion}">
+        <td
+          mat-cell
+          *matCellDef="let element"
+          class="cell-padding"
+          [ngClass]="{ 'addon-update-available': element.addon.latestVersion !== element.addon.installedVersion }"
+        >
           {{ element.addon.latestVersion }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="addon.releasedAt">
-        <th
-          class="released-at-cell"
-          mat-header-cell
-          mat-sort-header
-          *matHeaderCellDef
-        >
+        <th class="released-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER" | translate }}
         </th>
         <td
           mat-cell
           *matCellDef="let element"
           class="cell-padding"
-          [matTooltip]="
-            'COMMON.DATES.DATETIME_SHORT'
-              | translate: { d: element.addon.releasedAt }
-          "
+          [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: { d: element.addon.releasedAt }"
           matTooltipPosition="above"
           matTooltipShowDelay="500"
         >
@@ -210,12 +171,7 @@
       </ng-container>
 
       <ng-container matColumnDef="addon.gameVersion">
-        <th
-          class="game-version-cell"
-          mat-header-cell
-          mat-sort-header
-          *matHeaderCellDef
-        >
+        <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER" | translate }}
         </th>
         <td class="game-version-cell" mat-cell *matCellDef="let element">
@@ -224,22 +180,14 @@
       </ng-container>
 
       <ng-container matColumnDef="addon.providerName">
-        <th
-          mat-header-cell
-          mat-sort-header
-          *matHeaderCellDef
-          class="provider-column"
-        >
+        <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding">
           <div *ngIf="element.addon.providerName !== 'WowUp'">
             {{ element.addon.providerName }}
           </div>
-          <div
-            *ngIf="element.addon.providerName === 'WowUp'"
-            class="addon-provider"
-          >
+          <div *ngIf="element.addon.providerName === 'WowUp'" class="addon-provider">
             <div class="addon-provider-name">
               {{ element.addon.providerSource }}
             </div>
@@ -308,11 +256,8 @@
       </div>
       <div>
         <div class="addon-name">{{ listItem.addon.name }}</div>
-        <div class="addon-version">{{ listItem.addon.installedVersion  }}</div>
-        <div
-          class="addon-update-available"
-          *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion"
-        >
+        <div class="addon-version">{{ listItem.addon.installedVersion }}</div>
+        <div class="addon-update-available" *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion">
           {{ listItem.addon.latestVersion }}
         </div>
       </div>
@@ -339,15 +284,10 @@
       action="AutoUpdateAddon"
       [label]="listItem.addon.name"
     >
-      {{
-        "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON"
-          | translate
-      }}
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
     </mat-checkbox>
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">
-      {{
-        "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE" | translate
-      }}
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE" | translate }}
     </button>
     <button
       mat-menu-item
@@ -367,9 +307,7 @@
       action="ReInstallAddon"
       [label]="listItem.addon.name"
     >
-      {{
-        "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate
-      }}
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
     </button>
     <mat-divider></mat-divider>
     <button
@@ -396,10 +334,7 @@
           action="SetStableAddonChannel"
           [label]="listItem.addon.name"
         >
-          {{
-            "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL"
-              | translate
-          }}
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
         <mat-radio-button
           class="mat-menu-item"
@@ -409,9 +344,7 @@
           action="SetBetaAddonChannel"
           [label]="listItem.addon.name"
         >
-          {{
-            "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL" | translate
-          }}
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
         <mat-radio-button
           class="mat-menu-item"
@@ -421,9 +354,7 @@
           action="SetAlphaAddonChannel"
           [label]="listItem.addon.name"
         >
-          {{
-            "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL" | translate
-          }}
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
       </mat-radio-group>
     </mat-menu>
@@ -455,45 +386,28 @@
       [checked]="isSelectedItemsProp(listItems, 'addon.autoUpdateEnabled')"
       (change)="onClickAutoUpdateAddons($event, listItems)"
     >
-      {{
-        "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON"
-          | translate
-      }}
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
     </mat-checkbox>
     <button mat-menu-item [matMenuTriggerFor]="addonChannels">
-      {{
-        "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE" | translate
-      }}
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENT_TITLE" | translate }}
     </button>
     <button mat-menu-item (click)="onReInstallAddons(listItems)">
-      {{
-        "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate
-      }}
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
     </button>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="onRemoveAddons(listItems)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}
     </button>
     <mat-menu #addonChannels="matMenu" class="addon-context-menu">
-      <mat-radio-group
-        class="vertical-radio-group"
-        (change)="onSelectedAddonsChannelChange($event, listItems)"
-      >
+      <mat-radio-group class="vertical-radio-group" (change)="onSelectedAddonsChannelChange($event, listItems)">
         <mat-radio-button class="mat-menu-item" [value]="0">
-          {{
-            "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL"
-              | translate
-          }}
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
         <mat-radio-button class="mat-menu-item" [value]="1">
-          {{
-            "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL" | translate
-          }}
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
         <mat-radio-button class="mat-menu-item" [value]="2">
-          {{
-            "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL" | translate
-          }}
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
       </mat-radio-group>
     </mat-menu>
@@ -542,10 +456,7 @@
       category="MyAddons"
       action="UpdateAllClassicRetail"
     >
-      {{
-        "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_RETAIL_CLASSIC_BUTTON"
-          | translate
-      }}
+      {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_RETAIL_CLASSIC_BUTTON" | translate }}
     </button>
     <button
       mat-menu-item
@@ -554,10 +465,7 @@
       category="MyAddons"
       action="UpdateAllClients"
     >
-      {{
-        "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_ALL_CLIENTS_BUTTON"
-          | translate
-      }}
+      {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_ALL_CLIENTS_BUTTON" | translate }}
     </button>
   </ng-template>
 </mat-menu>
