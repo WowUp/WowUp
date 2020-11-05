@@ -168,10 +168,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    let hidden_columns = this.wowUpService.myAddonsHiddenColumns;
+    const columnStates = this.wowUpService.myAddonsHiddenColumns;
     this.columns.forEach((col) => {
-      if (col.allowToggle === true && col.visible && hidden_columns.indexOf(col.name) !== -1) {
-        col.visible = false;
+      if (!col.allowToggle) {
+        return;
+      }
+
+      const state = _.find(columnStates, (cs) => cs.name === col.name);
+      if(state){
+        col.visible = state.visible;
       }
     });
   }
@@ -362,7 +367,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
     const col = this.columns.find((col) => col.name === column.name);
     col.visible = event.checked;
-    this.wowUpService.myAddonsHiddenColumns = this.columns.filter((col) => !col.visible).map((col) => col.name);
+    this.wowUpService.myAddonsHiddenColumns = [...this.columns];
   }
 
   public onReScan() {

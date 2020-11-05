@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { ColumnState } from "app/models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
 import { existsSync } from "fs";
@@ -46,23 +47,13 @@ export class WowUpService {
 
   public readonly updaterName = "WowUpUpdater.exe";
 
-  public readonly applicationFolderPath: string = remote.app.getPath(
-    "userData"
-  );
+  public readonly applicationFolderPath: string = remote.app.getPath("userData");
 
-  public readonly applicationLogsFolderPath: string = remote.app.getPath(
-    "logs"
-  );
+  public readonly applicationLogsFolderPath: string = remote.app.getPath("logs");
 
-  public readonly applicationDownloadsFolderPath: string = join(
-    this.applicationFolderPath,
-    "downloads"
-  );
+  public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, "downloads");
 
-  public readonly applicationUpdaterPath: string = join(
-    this.applicationFolderPath,
-    this.updaterName
-  );
+  public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
   public readonly applicationVersion: string;
   public readonly isBetaBuild: boolean;
@@ -75,13 +66,12 @@ export class WowUpService {
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
-    private _fileService: FileService,
+    private _fileService: FileService
   ) {
     this.setDefaultPreferences();
 
     this.applicationVersion = _electronService.remote.app.getVersion();
-    this.isBetaBuild =
-      this.applicationVersion.toLowerCase().indexOf("beta") != -1;
+    this.isBetaBuild = this.applicationVersion.toLowerCase().indexOf("beta") != -1;
 
     this.createDownloadDirectory().then(() => this.cleanupDownloads());
 
@@ -105,10 +95,10 @@ export class WowUpService {
           break;
       }
     });
-    
+
     this.setAutoStartup();
 
-    console.log('loginItemSettings', this._electronService.loginItemSettings);
+    console.log("loginItemSettings", this._electronService.loginItemSettings);
   }
 
   public get updaterExists() {
@@ -116,9 +106,7 @@ export class WowUpService {
   }
 
   public get collapseToTray() {
-    const preference = this._preferenceStorageService.findByKey(
-      COLLAPSE_TO_TRAY_PREFERENCE_KEY
-    );
+    const preference = this._preferenceStorageService.findByKey(COLLAPSE_TO_TRAY_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -129,9 +117,7 @@ export class WowUpService {
   }
 
   public get useHardwareAcceleration() {
-    const preference = this._preferenceStorageService.findByKey(
-      USE_HARDWARE_ACCELERATION_PREFERENCE_KEY
-    );
+    const preference = this._preferenceStorageService.findByKey(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -142,9 +128,7 @@ export class WowUpService {
   }
 
   public get currentLanguage() {
-    const preference = this._preferenceStorageService.findByKey(
-      SELECTED_LANGUAGE_PREFERENCE_KEY
-    );
+    const preference = this._preferenceStorageService.findByKey(SELECTED_LANGUAGE_PREFERENCE_KEY);
     console.log("Set Language Preference: " + preference);
     return preference;
   }
@@ -156,9 +140,7 @@ export class WowUpService {
   }
 
   public get startWithSystem() {
-    const preference = this._preferenceStorageService.findByKey(
-      START_WITH_SYSTEM_PREFERENCE_KEY
-    );
+    const preference = this._preferenceStorageService.findByKey(START_WITH_SYSTEM_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -171,9 +153,7 @@ export class WowUpService {
   }
 
   public get startMinimized() {
-    const preference = this._preferenceStorageService.findByKey(
-      START_MINIMIZED_PREFERENCE_KEY
-    );
+    const preference = this._preferenceStorageService.findByKey(START_MINIMIZED_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -186,47 +166,38 @@ export class WowUpService {
   }
 
   public get wowUpReleaseChannel() {
-    const preference = this._preferenceStorageService.findByKey(
-      WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY
-    );
+    const preference = this._preferenceStorageService.findByKey(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY);
     return parseInt(preference, 10) as WowUpReleaseChannelType;
   }
 
   public set wowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType) {
-    this._preferenceStorageService.set(
-      WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
-      releaseChannel
-    );
+    this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
   }
 
   public get lastSelectedClientType(): WowClientType {
-    const preference = this._preferenceStorageService.findByKey(
-      LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY
-    );
+    const preference = this._preferenceStorageService.findByKey(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY);
     const value = parseInt(preference, 10);
     return isNaN(value) ? WowClientType.None : (value as WowClientType);
   }
 
   public set lastSelectedClientType(clientType: WowClientType) {
-    this._preferenceStorageService.set(
-      LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
-      clientType
-    );
+    this._preferenceStorageService.set(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY, clientType);
   }
 
   public get enableSystemNotifications() {
-    return (
-      this._preferenceStorageService.findByKey(
-        ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY
-      ) === true.toString()
-    );
+    return this._preferenceStorageService.findByKey(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY) === true.toString();
   }
 
   public set enableSystemNotifications(enabled: boolean) {
-    this._preferenceStorageService.set(
-      ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
-      enabled
-    );
+    this._preferenceStorageService.set(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, enabled);
+  }
+
+  public get myAddonsHiddenColumns() {
+    return this._preferenceStorageService.getObject<ColumnState[]>(MY_ADDONS_HIDDEN_COLUMNS_KEY) || [];
+  }
+
+  public set myAddonsHiddenColumns(columnStates: ColumnState[]) {
+    this._preferenceStorageService.setObject(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
   public getClientDefaultAddonChannelKey(clientType: WowClientType) {
@@ -240,10 +211,7 @@ export class WowUpService {
     return parseInt(preference, 10) as AddonChannelType;
   }
 
-  public setDefaultAddonChannel(
-    clientType: WowClientType,
-    channelType: AddonChannelType
-  ) {
+  public setDefaultAddonChannel(clientType: WowClientType, channelType: AddonChannelType) {
     const key = this.getClientDefaultAddonChannelKey(clientType);
     this._preferenceStorageService.set(key, channelType);
     this._preferenceChangeSrc.next({ key, value: channelType.toString() });
@@ -265,9 +233,7 @@ export class WowUpService {
   }
 
   public async checkForAppUpdate(): Promise<UpdateCheckResult> {
-    const updateCheckResult: UpdateCheckResult = await this._electronService.invoke(
-      APP_UPDATE_CHECK_FOR_UPDATE
-    );
+    const updateCheckResult: UpdateCheckResult = await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
 
     // only notify things when the version changes
     if (!this.isSameVersion(updateCheckResult)) {
@@ -278,17 +244,11 @@ export class WowUpService {
   }
 
   public isSameVersion(updateCheckResult: UpdateCheckResult) {
-    return (
-      updateCheckResult &&
-      updateCheckResult.updateInfo?.version ===
-        this._electronService.getVersionNumber()
-    );
+    return updateCheckResult && updateCheckResult.updateInfo?.version === this._electronService.getVersionNumber();
   }
 
   public async downloadUpdate() {
-    const downloadResult = await this._electronService.invoke(
-      APP_UPDATE_START_DOWNLOAD
-    );
+    const downloadResult = await this._electronService.invoke(APP_UPDATE_START_DOWNLOAD);
 
     this._wowupUpdateDownloadedSrc.next(downloadResult);
     return downloadResult;
@@ -314,21 +274,13 @@ export class WowUpService {
     this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
-    this.setDefaultPreference(
-      SELECTED_LANGUAGE_PREFERENCE_KEY,
-      this._electronService.locale
-    );
-    this.setDefaultPreference(
-      WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
-      this.getDefaultReleaseChannel()
-    );
+    this.setDefaultPreference(SELECTED_LANGUAGE_PREFERENCE_KEY, this._electronService.locale);
+    this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, this.getDefaultReleaseChannel());
     this.setDefaultClientPreferences();
   }
 
   private setDefaultClientPreferences() {
-    const keys = getEnumList<WowClientType>(WowClientType).filter(
-      (key) => key !== WowClientType.None
-    );
+    const keys = getEnumList<WowClientType>(WowClientType).filter((key) => key !== WowClientType.None);
     keys.forEach((key) => {
       const preferenceKey = this.getClientDefaultAddonChannelKey(key);
       this.setDefaultPreference(preferenceKey, AddonChannelType.Stable);
@@ -339,19 +291,14 @@ export class WowUpService {
   }
 
   private getDefaultReleaseChannel() {
-    return this.isBetaBuild
-      ? WowUpReleaseChannelType.Beta
-      : WowUpReleaseChannelType.Stable;
+    return this.isBetaBuild ? WowUpReleaseChannelType.Beta : WowUpReleaseChannelType.Stable;
   }
 
   /**
    * Clean up lost downloads in the download folder
    */
   private async cleanupDownloads() {
-    const downloadFiles = this._fileService.listEntries(
-      this.applicationDownloadsFolderPath,
-      "*"
-    );
+    const downloadFiles = this._fileService.listEntries(this.applicationDownloadsFolderPath, "*");
 
     for (let entry of downloadFiles) {
       const path = join(this.applicationDownloadsFolderPath, entry.name);
@@ -365,9 +312,7 @@ export class WowUpService {
   }
 
   private async createDownloadDirectory() {
-    await this._fileService.createDirectory(
-      this.applicationDownloadsFolderPath
-    );
+    await this._fileService.createDirectory(this.applicationDownloadsFolderPath);
   }
 
   private setAutoStartup() {
@@ -379,29 +324,15 @@ export class WowUpService {
 
       if (this.startWithSystem) {
         autoLauncher.enable();
-      }
-      else {
+      } else {
         autoLauncher.disable();
       }
     } else {
       this._electronService.loginItemSettings = {
         openAtLogin: this.startWithSystem,
         openAsHidden: this._electronService.isMac ? this.startMinimized : false,
-        args: this._electronService.isWin
-          ? this.startMinimized
-            ? ["--hidden"]
-            : []
-          : [],
+        args: this._electronService.isWin ? (this.startMinimized ? ["--hidden"] : []) : [],
       };
     }
-  }
-
-  public get myAddonsHiddenColumns() {
-    let pref = this._preferenceStorageService.findByKey(MY_ADDONS_HIDDEN_COLUMNS_KEY);
-    return pref.split(",");
-  }
-
-  public set myAddonsHiddenColumns(value: Array<string>) {
-    this._preferenceStorageService.set(MY_ADDONS_HIDDEN_COLUMNS_KEY, value.join());
   }
 }
