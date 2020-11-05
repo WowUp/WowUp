@@ -29,6 +29,8 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { MatMenuTrigger } from "@angular/material/menu";
+import { MatCheckboxChange } from "@angular/material/checkbox";
 
 @Component({
   selector: "app-get-addons",
@@ -41,6 +43,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("table", { read: ElementRef }) table: ElementRef;
+  @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab: boolean = false;
@@ -52,10 +55,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   columns: ColumnState[] = [
     { name: "name", display: "Addon", visible: true },
-    { name: "downloadCount", display: "Downloads", visible: true },
-    { name: "releasedAt", display: "Released At", visible: true },
-    { name: "author", display: "Author", visible: true },
-    { name: "providerName", display: "Provider", visible: true },
+    { name: "downloadCount", display: "Downloads", visible: true, allowToggle: true },
+    { name: "releasedAt", display: "Released At", visible: true, allowToggle: true },
+    { name: "author", display: "Author", visible: true, allowToggle: true },
+    { name: "providerName", display: "Provider", visible: true, allowToggle: true },
     { name: "status", display: "Status", visible: true },
   ];
 
@@ -78,6 +81,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public query = "";
   public isBusy = true;
   public selectedClient = WowClientType.None;
+  public contextMenuPosition = { x: "0px", y: "0px" };
 
   constructor(
     private _addonService: AddonService,
@@ -105,6 +109,18 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.activeSort = sortOrder.name;
       this.activeSortDirection = sortOrder.direction;
     }
+
+    const columnStates = this._wowUpService.getAddonsHiddenColumns;
+    this.columns.forEach((col) => {
+      if (!col.allowToggle) {
+        return;
+      }
+
+      const state = _.find(columnStates, (cs) => cs.name === col.name);
+      if (state) {
+        col.visible = state.visible;
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -125,6 +141,27 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   onStatusColumnUpdated() {
     this._cdRef.detectChanges();
+  }
+
+  public onHeaderContext(event: MouseEvent) {
+    event.preventDefault();
+    this.updateContextMenuPosition(event);
+    this.columnContextMenu.menuData = {
+      columns: this.columns.filter((col) => col.allowToggle),
+    };
+    this.columnContextMenu.menu.focusFirstItem("mouse");
+    this.columnContextMenu.openMenu();
+  }
+
+  private updateContextMenuPosition(event: MouseEvent) {
+    this.contextMenuPosition.x = event.clientX + "px";
+    this.contextMenuPosition.y = event.clientY + "px";
+  }
+
+  public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
+    const col = this.columns.find((col) => col.name === column.name);
+    col.visible = event.checked;
+    this._wowUpService.getAddonsHiddenColumns = [...this.columns];
   }
 
   private lazyLoad() {

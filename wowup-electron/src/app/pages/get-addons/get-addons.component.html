@@ -197,7 +197,10 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr
+        mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
+        (contextmenu)="onHeaderContext($event); $event.preventDefault()"
+      ></tr>
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns; let i = index"
@@ -206,3 +209,30 @@
     </table>
   </div>
 </div>
+
+<!-- COLUMNS CONTEXT MENU -->
+<div
+  style="visibility: hidden; position: fixed"
+  #columnContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="columnContextMenu"
+></div>
+<mat-menu #columnContextMenu="matMenu" class="addon-context-menu">
+  <ng-template matMenuContent let-columns="columns">
+    <div class="addon-context-menu-header">
+      <div class="addon-name">
+        {{ "PAGES.MY_ADDONS.COLUMNS_CONTEXT_MENU.TITLE" | translate }}
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-checkbox
+      *ngFor="let column of columns"
+      class="mat-menu-item"
+      [checked]="column.visible"
+      (change)="onColumnVisibleChange($event, column)"
+    >
+      {{ column.display | translate }}
+    </mat-checkbox>
+  </ng-template>
+</mat-menu>
