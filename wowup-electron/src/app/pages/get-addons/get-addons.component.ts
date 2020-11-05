@@ -47,6 +47,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _lazyLoaded: boolean = false;
 
   public dataSource = new MatTableDataSource<GetAddonListItem>([]);
+  public activeSort = "downloadCount";
+  public activeSortDirection = "desc";
 
   columns: ColumnState[] = [
     { name: "name", display: "Addon", visible: true },
@@ -97,7 +99,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const sortOrder = this._wowUpService.getAddonsSortOrder;
+    if(sortOrder){
+      this.activeSort = sortOrder.name;
+      this.activeSortDirection = sortOrder.direction;
+    }
+  }
 
   ngOnDestroy() {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
@@ -108,6 +116,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     if (this.table) {
       this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
+
+    this._wowUpService.getAddonsSortOrder = {
+      name: this.sort.active,
+      direction: this.sort.start || "",
+    };
   }
 
   onStatusColumnUpdated() {

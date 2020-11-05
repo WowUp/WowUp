@@ -24,6 +24,8 @@ import {
   SELECTED_LANGUAGE_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
   MY_ADDONS_SORT_ORDER,
+  GET_ADDONS_HIDDEN_COLUMNS_KEY,
+  GET_ADDONS_SORT_ORDER,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -208,6 +210,22 @@ export class WowUpService {
 
   public set myAddonsSortOrder(sortOrder: SortOrder) {
     this._preferenceStorageService.setObject(MY_ADDONS_SORT_ORDER, sortOrder);
+  }
+
+  public get getAddonsHiddenColumns() {
+    return this._preferenceStorageService.getObject<ColumnState[]>(GET_ADDONS_HIDDEN_COLUMNS_KEY) || [];
+  }
+
+  public set getAddonsHiddenColumns(columnStates: ColumnState[]) {
+    this._preferenceStorageService.setObject(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
+  }
+
+  public get getAddonsSortOrder(): SortOrder {
+    return this._preferenceStorageService.getObject<SortOrder>(GET_ADDONS_SORT_ORDER);
+  }
+
+  public set getAddonsSortOrder(sortOrder: SortOrder) {
+    this._preferenceStorageService.setObject(GET_ADDONS_SORT_ORDER, sortOrder);
   }
 
   public getClientDefaultAddonChannelKey(clientType: WowClientType) {
