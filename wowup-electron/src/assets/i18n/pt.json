@@ -38,11 +38,11 @@
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} atrás",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} atrás",
+      "DAYS_AGO": "{count} {count, plural, one{dia} other{dias}} atrás",
+      "HOURS_AGO": "{count} {count, plural, one{hora} other{horas}} atrás",
       "JUST_NOW": "Recentemente",
-      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} atrás",
-      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} atrás",
+      "MONTHS_AGO": "{count} {count, plural, one{mês} other{meses}} atrás",
+      "YEARS_AGO": "{count} {count, plural, one{ano} other{anos}} atrás",
       "YESTERDAY": "Ontem"
     },
     "DOWNLOAD_COUNT": {
@@ -150,9 +150,9 @@
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Converse conosco no Discord",
         "PATREON_SUPPORT": "Ajude o WowUp no Patreon",
-        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{resultado} other{resultados}}",
         "VIEW_GITHUB": "Olhe o código no GitHub",
-        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
+        "VIEW_GUIDE": "Olhe o nosso guia para ver o que o WowUp pode fazer"
       },
       "RESCAN_FOLDERS_BUTTON": "Re-escanear pastas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Procura por Addons instalados",
@@ -172,9 +172,9 @@
         "GAME_VERSION_COLUMN_HEADER": "Versão do Jogo",
         "LATEST_VERSION_COLUMN_HEADER": "Última versão",
         "PROVIDER_COLUMN_HEADER": "Provedor",
-        "RELEASED_AT_COLUMN_HEADER": "Lançado Em",
+        "RELEASED_AT_COLUMN_HEADER": "Lançado em",
         "STATUS_COLUMN_HEADER": "Estado",
-        "UPDATED_AT_COLUMN_HEADER": "Atualizado Em"
+        "UPDATED_AT_COLUMN_HEADER": "Atualizado em"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Isto irá remover todas as pastas relacionadas de sua pasta do World of Warcraft.",
@@ -232,13 +232,13 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Addons recém-instalados serão definidos para atualizar automáticamente por padrão",
         "AUTO_UPDATE_LABEL": "Atualização Automática",
-        "CLIENT_TYPE_INPUT_HINT": "A pasta que contém {clientTypeName} pasta do cliente \"{clientFolderName}\"",
-        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} caminho",
+        "CLIENT_TYPE_INPUT_HINT": "A pasta \"{clientFolderName}\" que contém o {clientTypeName}",
+        "CLIENT_TYPE_PATH_LABEL": "Pasta {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addon Padrão",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal de Addon",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Selecionar",
         "RESCAN_CLIENTS_BUTTON": "Reescanear",
-        "RESCAN_CLIENTS_LABEL": "Reescanear World of Warcraft instalados",
+        "RESCAN_CLIENTS_LABEL": "Reescanear clientes World of Warcraft instalados",
         "TITLE": "World of Warcraft"
       }
     }
