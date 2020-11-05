@@ -1,6 +1,22 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.4",
+      "changes": [
+        "Increase tooltip font size (Linaori)",
+        "Add in-app link to the user guide to bottom bar (Linaori)",
+        "Fix an issue with explorer window not coming to the front on windows (Cratis)",
+        "Fix a display issue with alpha/beta channels on the 'Get Addons' page (chops)",
+        "Multiple selection context menu now has an indeterminate check (chops)",
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "Portuguese locale updates (Lucas SD)",
+        "Fix an issue with custom sort order and updating an addon getting out of sync on 'My Addons'",
+        "Store selected sort order for 'My Addons'"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.3",
       "changes": [
         "Show installed addons in the 'Get Addons' page (strayge)",
