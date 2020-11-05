@@ -492,8 +492,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     this.loadAddons(this.selectedClient);
   }
 
-  public isSelectedItemsProp(listItems: AddonViewModel[], prop: string) {
-    return _.some(listItems, prop);
+  public isIndeterminate(listItems: AddonViewModel[], prop: string) {
+    return _.some(listItems, prop) && !this.isAllItemsSelected(listItems, prop);
+  }
+
+  public isAllItemsSelected(listItems: AddonViewModel[], prop: string) {
+    return _.filter(listItems, prop).length === listItems.length;
   }
 
   private lazyLoad() {

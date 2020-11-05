@@ -376,14 +376,16 @@
     <mat-divider></mat-divider>
     <mat-checkbox
       class="mat-menu-item"
-      [checked]="isSelectedItemsProp(listItems, 'addon.isIgnored')"
+      [indeterminate]="isIndeterminate(listItems, 'addon.isIgnored')"
+      [checked]="isAllItemsSelected(listItems, 'addon.isIgnored')"
       (change)="onClickIgnoreAddons($event, listItems)"
     >
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
     </mat-checkbox>
     <mat-checkbox
       class="mat-menu-item"
-      [checked]="isSelectedItemsProp(listItems, 'addon.autoUpdateEnabled')"
+      [indeterminate]="isIndeterminate(listItems, 'addon.autoUpdateEnabled')"
+      [checked]="isAllItemsSelected(listItems, 'addon.autoUpdateEnabled')"
       (change)="onClickAutoUpdateAddons($event, listItems)"
     >
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
