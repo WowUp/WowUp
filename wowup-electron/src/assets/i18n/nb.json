@@ -151,7 +151,8 @@
         "JOIN_DISCORD": "Chat med oss på Discord",
         "PATREON_SUPPORT": "Støtt WowUp på Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultater}}",
-        "VIEW_GITHUB": "Check out the code on GitHub"
+        "VIEW_GITHUB": "Check out the code on GitHub",
+        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
       },
       "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
