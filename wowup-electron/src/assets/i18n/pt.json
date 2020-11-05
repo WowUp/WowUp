@@ -3,13 +3,13 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente atualizou {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Atualizações Automáticas",
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Check for Updates...",
+      "CHECK_UPDATE": "Buscar Atualizações...",
       "QUIT_ACTION": "Sair",
       "SHOW_ACTION": "Mostrar"
     },
     "WOWUP_UPDATE": {
-      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
-      "UPDATE_ERROR": "Failed to get WowUp update"
+      "NOT_AVAILABLE": "A última atualização do WowUp já está instalada",
+      "UPDATE_ERROR": "Não foi possível atualizar o WowUp"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Instalar atualização do WowUp",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Você gostaria de reiniciar o WowUp para instalar a atualização?",
@@ -83,7 +83,7 @@
       "DESCRIPTION": "Se você deseja instalar um addon diretamente de uma URL, cole-a abaixo para iniciar.",
       "ERROR": {
         "FAILED_TO_CONNECT": "Não foi possível conectar à API, por favor espere um pouco e tente novamente.",
-        "INSTALL_FAILED": "Algo deu erro ao tentar instalar o addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wow-support.",
+        "INSTALL_FAILED": "Algo deu errado ao tentar instalar o addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wow-support.",
         "INVALID_URL": "O valor fornecido não é uma URL válida. Exemplos de URLs de addon válidos são:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "O addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o addon.",
         "TITLE": "Instalação do Addon Falhou"
@@ -115,7 +115,7 @@
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Autor",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "Downlods",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Downloads",
         "PROVIDER_COLUMN_HEADER": "Provedor",
         "RELEASED_AT_COLUMN_HEADER": "Lançado em",
         "STATUS_COLUMN_HEADER": "Estado"
@@ -151,7 +151,7 @@
         "JOIN_DISCORD": "Converse conosco no Discord",
         "PATREON_SUPPORT": "Ajude o WowUp no Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}",
-        "VIEW_GITHUB": "Check out the code on GitHub",
+        "VIEW_GITHUB": "Olhe o código no GitHub",
         "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
       },
       "RESCAN_FOLDERS_BUTTON": "Re-escanear pastas",
@@ -170,7 +170,7 @@
         "AUTHOR_COLUMN_HEADER": "Autor",
         "AUTO_UPDATE_ICON_TOOLTIP": "Atualização automática habilitada",
         "GAME_VERSION_COLUMN_HEADER": "Versão do Jogo",
-        "LATEST_VERSION_COLUMN_HEADER": "Ultima versão",
+        "LATEST_VERSION_COLUMN_HEADER": "Última versão",
         "PROVIDER_COLUMN_HEADER": "Provedor",
         "RELEASED_AT_COLUMN_HEADER": "Lançado Em",
         "STATUS_COLUMN_HEADER": "Estado",
