@@ -34,6 +34,8 @@ export class GetAddonListItem {
   }
 
   public getLatestFile(channel: AddonChannelType): AddonSearchResultFile {
-    return _.find(this.searchResult.files, (f) => f.channelType <= channel);
+    let files = _.filter(this.searchResult.files, (f) => f.channelType <= channel);
+    files = _.orderBy(files, ["releaseDate"]).reverse();
+    return _.first(files);
   }
 }
