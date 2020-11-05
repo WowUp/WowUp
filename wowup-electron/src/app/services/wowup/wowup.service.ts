@@ -23,10 +23,12 @@ import {
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
   SELECTED_LANGUAGE_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
+  MY_ADDONS_SORT_ORDER,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { PreferenceChange } from "../../models/wowup/preference-change";
+import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
@@ -198,6 +200,14 @@ export class WowUpService {
 
   public set myAddonsHiddenColumns(columnStates: ColumnState[]) {
     this._preferenceStorageService.setObject(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
+  }
+
+  public get myAddonsSortOrder(): SortOrder {
+    return this._preferenceStorageService.getObject<SortOrder>(MY_ADDONS_SORT_ORDER);
+  }
+
+  public set myAddonsSortOrder(sortOrder: SortOrder) {
+    this._preferenceStorageService.setObject(MY_ADDONS_SORT_ORDER, sortOrder);
   }
 
   public getClientDefaultAddonChannelKey(clientType: WowClientType) {

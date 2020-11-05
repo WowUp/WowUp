@@ -65,6 +65,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public dataSource = new MatTableDataSource<AddonViewModel>([]);
   public filter = "";
   public enableUpdateAll = false;
+  public activeSort = "sortOrder";
+  public activeSortDirection = "asc";
 
   public columns: ColumnState[] = [
     {
@@ -168,6 +170,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    const sortOrder = this.wowUpService.myAddonsSortOrder;
+    if(sortOrder){
+      this.activeSort = sortOrder.name;
+      this.activeSortDirection = sortOrder.direction;
+    }
+
     const columnStates = this.wowUpService.myAddonsHiddenColumns;
     this.columns.forEach((col) => {
       if (!col.allowToggle) {
@@ -175,7 +183,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       }
 
       const state = _.find(columnStates, (cs) => cs.name === col.name);
-      if(state){
+      if (state) {
         col.visible = state.visible;
       }
     });
@@ -193,6 +201,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     if (this.table) {
       this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
+
+    this.wowUpService.myAddonsSortOrder = {
+      name: this.sort.active,
+      direction: this.sort.start || "",
+    };
   }
 
   public onRefresh() {
@@ -404,7 +417,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log("The dialog was closed", result);
       if (!result) {
         return;
       }
@@ -436,7 +448,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      console.log("The dialog was closed", result);
       if (!result) {
         return;
       }

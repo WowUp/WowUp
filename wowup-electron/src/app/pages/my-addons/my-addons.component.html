@@ -97,8 +97,8 @@
       matSort
       (matSortChange)="onSortChange()"
       [dataSource]="dataSource"
-      matSortActive="sortOrder"
-      matSortDirection="asc"
+      [matSortActive]="activeSort"
+      [matSortDirection]="activeSortDirection"
       class="mat-elevation-z8"
     >
       <ng-container matColumnDef="addon.name">

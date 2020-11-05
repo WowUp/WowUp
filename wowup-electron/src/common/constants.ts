@@ -16,24 +16,21 @@ export const WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
 
-export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY =
-  "enable_system_notifications";
+// PREFERENCES
+export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
 export const COLLAPSE_TO_TRAY_PREFERENCE_KEY = "collapse_to_tray";
 export const WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY = "wowup_release_channel";
 export const DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX = "_default_addon_channel";
 export const DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX = "_default_auto_update";
-export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY =
-  "last_selected_client_type";
-export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY =
-  "use_hardware_acceleration";
+export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_client_type";
+export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY = "use_hardware_acceleration";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
 export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
-export const NO_LATEST_SEARCH_RESULT_FILES_ERROR =
-  "NO_LATEST_SEARCH_RESULT_FILES";
+export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";
-
 export const MY_ADDONS_HIDDEN_COLUMNS_KEY = "my_addons_hidden_columns";
+export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
