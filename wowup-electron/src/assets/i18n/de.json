@@ -3,13 +3,13 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Check for Updates...",
+      "CHECK_UPDATE": "Nach Updates suchen...",
       "QUIT_ACTION": "Beenden",
       "SHOW_ACTION": "Öffnen"
     },
     "WOWUP_UPDATE": {
-      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
-      "UPDATE_ERROR": "Failed to get WowUp update"
+      "NOT_AVAILABLE": "DIe aktuellste Version von WowUp ist bereits installiert",
+      "UPDATE_ERROR": "WowUp konnte nicht nach Updates suchen"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "WowUp Update installieren",
     "WOWUP_UPDATE_INSTALL_MESSAGE": "Willst du WowUp neu Starten um das Update zu installieren?",
@@ -41,8 +41,8 @@
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
       "HOURS_AGO": "Vor {count} {count, plural, one{Stunde} other{Stunden}}",
       "JUST_NOW": "Gerade eben",
-      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
-      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
+      "MONTHS_AGO": "Vor {count} {count, plural, one{Monat} other{Monaten}}",
+      "YEARS_AGO": "Vor {count} {count, plural, one{Jahr} other{Jahren}}",
       "YESTERDAY": "Gestern"
     },
     "DOWNLOAD_COUNT": {
@@ -151,8 +151,8 @@
         "JOIN_DISCORD": "Schreibe mit uns auf Discord",
         "PATREON_SUPPORT": "Unterstütze WowUp auf Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{Treffer} other{Treffer}}",
-        "VIEW_GITHUB": "Check out the code on GitHub",
-        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
+        "VIEW_GITHUB": "Schau dir den Code auf GitHub an",
+        "VIEW_GUIDE": "Schaue dir unseren Leitfaden an, um zu sehen, was WowUp kann"
       },
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannen Sie Ihren Client-Ordner nach installierten Addons",
@@ -192,16 +192,16 @@
     },
     "OPTIONS": {
       "APPLICATION": {
-        "CURRENT_LANGUAGE_LABEL": "Current Language",
+        "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren / Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim schließen WowUp in der Menübar minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schliessen",
-        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
-        "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
-        "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
-        "SET_LANGUAGE_LABEL": "Set Language",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Zum Ändern der Standardsprache muss die Anwendung neu gestartet werden.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Festlegen einer neuen Standardsprache",
+        "SET_LANGUAGE_DESCRIPTION": "Wähle eine Sprache aus, in die du wechseln möchtest",
+        "SET_LANGUAGE_LABEL": "Sprache einstellen",
         "START_MINIMIZED_DESCRIPTION": "...und wird nicht auf dem Bildschirm angezeigt",
         "START_MINIMIZED_LABEL": "Starte WowUp minimiert",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp wird direkt gestartet, nachdem dein Betriebssystem geladen wurde...",
