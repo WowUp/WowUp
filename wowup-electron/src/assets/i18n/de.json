@@ -8,7 +8,7 @@
       "SHOW_ACTION": "Öffnen"
     },
     "WOWUP_UPDATE": {
-      "NOT_AVAILABLE": "DIe aktuellste Version von WowUp ist bereits installiert",
+      "NOT_AVAILABLE": "Die aktuellste Version von WowUp ist bereits installiert",
       "UPDATE_ERROR": "WowUp konnte nicht nach Updates suchen"
     },
     "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "WowUp Update installieren",
