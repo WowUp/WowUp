@@ -151,7 +151,8 @@
         "JOIN_DISCORD": "Schreibe mit uns auf Discord",
         "PATREON_SUPPORT": "Unterstütze WowUp auf Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{Treffer} other{Treffer}}",
-        "VIEW_GITHUB": "Check out the code on GitHub"
+        "VIEW_GITHUB": "Check out the code on GitHub",
+        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
       },
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannen Sie Ihren Client-Ordner nach installierten Addons",
