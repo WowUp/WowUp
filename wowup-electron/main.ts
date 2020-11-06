@@ -20,6 +20,7 @@ import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
 import { COLLAPSE_TO_TRAY_PREFERENCE_KEY, USE_HARDWARE_ACCELERATION_PREFERENCE_KEY } from "./src/common/constants";
 import { WindowState } from "./src/common/models/window-state";
+import { AppOptions } from "./src/common/wowup/app-options";
 
 const preferenceStore = new Store({ name: "preferences" });
 
@@ -55,7 +56,7 @@ log.info("USER_AGENT", USER_AGENT);
 
 const argv = require("minimist")(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
-});
+}) as AppOptions;
 
 function canStartHidden() {
   return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;

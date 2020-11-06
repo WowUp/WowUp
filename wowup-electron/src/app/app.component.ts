@@ -23,6 +23,10 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 export class AppComponent implements AfterViewInit {
   private _autoUpdateInterval?: number;
 
+  public get quitEnabled() {
+    return this._electronService.appOptions.quit;
+  }
+
   constructor(
     private _analyticsService: AnalyticsService,
     private _electronService: ElectronService,
@@ -70,20 +74,39 @@ export class AppComponent implements AfterViewInit {
     const updateCount = await this._addonService.processAutoUpdates();
 
     if (updateCount === 0) {
+      this.checkQuitEnabled();
       return;
     }
 
-    const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
-
     if (this._wowUpService.enableSystemNotifications) {
-      this._electronService.showNotification(this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_TITLE"), {
-        body: this.translate.instant("APP.AUTO_UPDATE_NOTIFICATION_BODY", {
+      const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
+      const translated = await this.translate
+        .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {
           count: updateCount,
-        }),
+        })
+        .toPromise();
+
+      const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
+        body: translated["APP.AUTO_UPDATE_NOTIFICATION_BODY"],
         icon: iconPath,
       });
+
+      notification.addEventListener("close", () => {
+        this.checkQuitEnabled();
+      });
+    } else {
+      this.checkQuitEnabled();
     }
   };
+
+  private checkQuitEnabled() {
+    if (!this._electronService.appOptions.quit) {
+      return;
+    }
+
+    console.debug("checkQuitEnabled");
+    this._electronService.quitApplication();
+  }
 
   private async createSystemTray() {
     const result = await this.translate.get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"]).toPromise();

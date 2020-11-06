@@ -11,6 +11,8 @@ import { IpcRequest } from "../../../common/models/ipc-request";
 import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
+import { AppOptions } from "../../../common/wowup/app-options";
+import * as minimist from "minimist";
 
 @Injectable({
   providedIn: "root",
@@ -18,7 +20,7 @@ import { ValueResponse } from "../../../common/models/value-response";
 export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
-  private readonly _ipcEventReceivedSrc = new BehaviorSubject('');
+  private readonly _ipcEventReceivedSrc = new BehaviorSubject("");
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -33,19 +35,21 @@ export class ElectronService {
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
+  public readonly appOptions: AppOptions;
 
-  get isElectron(): boolean {
+  public get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
   }
 
-  get locale(): string {
+  public get locale(): string {
     return this.remote.app.getLocale().split("-")[0];
   }
 
-  get loginItemSettings() {
+  public get loginItemSettings() {
     return this.remote.app.getLoginItemSettings();
   }
-  set loginItemSettings(settings: Settings) {
+
+  public set loginItemSettings(settings: Settings) {
     this.remote.app.setLoginItemSettings(settings);
   }
 
@@ -68,7 +72,7 @@ export class ElectronService {
     this.ipcRenderer.on(APP_UPDATE_CHECK_START, () => {
       this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_START);
     });
-    
+
     this.ipcRenderer.on(APP_UPDATE_CHECK_END, () => {
       this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_END);
     });
@@ -95,9 +99,7 @@ export class ElectronService {
 
     currentWindow?.webContents
       .setVisualZoomLevelLimits(1, 3)
-      .then(() =>
-        console.log("Zoom levels have been set between 100% and 300%")
-      )
+      .then(() => console.log("Zoom levels have been set between 100% and 300%"))
       .catch((err) => console.error(err));
 
     currentWindow.webContents.on("zoom-changed", (event, zoomDirection) => {
@@ -133,55 +135,59 @@ export class ElectronService {
         currentWindow.webContents.zoomFactor = currentZoom - 0.2;
       }
     });
+
+    this.appOptions = (<any>minimist(this.remote.process.argv.slice(1), {
+      boolean: ["hidden", "quit"],
+    })) as AppOptions;
+
+    console.log("appOptions", this.appOptions);
   }
 
   public getVersionNumber() {
     return this.remote.app.getVersion();
   }
 
-  minimizeWindow() {
+  public minimizeWindow() {
     this.remote.getCurrentWindow().minimize();
   }
 
-  maximizeWindow() {
+  public maximizeWindow() {
     this.remote.getCurrentWindow().maximize();
   }
 
-  unmaximizeWindow() {
+  public unmaximizeWindow() {
     this.remote.getCurrentWindow().unmaximize();
   }
 
-  hideWindow() {
+  public hideWindow() {
     this.remote.getCurrentWindow().hide();
   }
 
-  restartApplication() {
+  public restartApplication() {
     this.remote.app.relaunch();
+    this.quitApplication();
+  }
+
+  public quitApplication() {
     this.remote.app.quit();
   }
 
-  closeWindow() {
+  public closeWindow() {
     this.remote.getCurrentWindow().close();
     this.remote.app.quit();
   }
 
   public showNotification(title: string, options?: NotificationOptions) {
-    const myNotification = new Notification(title, options);
+    return new Notification(title, options);
   }
 
-  public async sendIpcValueMessage<TIN, TOUT>(
-    channel: string,
-    value: TIN
-  ): Promise<TOUT> {
+  public async sendIpcValueMessage<TIN, TOUT>(channel: string, value: TIN): Promise<TOUT> {
     const request: ValueRequest<TIN> = {
       value,
       responseKey: uuidv4(),
     };
 
-    const response = await this.sendIPCMessage<
-      ValueRequest<TIN>,
-      ValueResponse<TOUT>
-    >(channel, request);
+    const response = await this.sendIPCMessage<ValueRequest<TIN>, ValueResponse<TOUT>>(channel, request);
 
     return response.value;
   }
