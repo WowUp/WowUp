@@ -132,7 +132,7 @@
       "ADDON_CONTEXT_MENU": {
         "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "Alpha",
-        "AUTO_UPDATE_ADDON_BUTTON": "Automatisches Aktualisieren",
+        "AUTO_UPDATE_ADDON_BUTTON": "Automatisch aktualisieren",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENT_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorieren",
@@ -227,7 +227,7 @@
         "TITLE": "Debuggen"
       },
       "TABS": {
-        "APPLICATION": "Application",
+        "APPLICATION": "Anwendung",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"
       },
