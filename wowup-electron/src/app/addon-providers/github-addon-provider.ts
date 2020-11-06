@@ -19,20 +19,14 @@ interface GitHubRepoParts {
 }
 
 const API_URL = "https://api.github.com/repos";
-const RELEASE_CONTENT_TYPES = [
-  "application/x-zip-compressed",
-  "application/zip",
-];
+const RELEASE_CONTENT_TYPES = ["application/x-zip-compressed", "application/zip"];
 
 export class GitHubAddonProvider implements AddonProvider {
   public readonly name = "GitHub";
 
   constructor(private _httpClient: HttpClient) {}
 
-  async getAll(
-    clientType: WowClientType,
-    addonIds: string[]
-  ): Promise<AddonSearchResult[]> {
+  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     var searchResults: AddonSearchResult[] = [];
 
     for (let addonId of addonIds) {
@@ -47,23 +41,15 @@ export class GitHubAddonProvider implements AddonProvider {
     return searchResults;
   }
 
-  async getFeaturedAddons(
-    clientType: WowClientType
-  ): Promise<AddonSearchResult[]> {
+  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     return [];
   }
 
-  async searchByQuery(
-    query: string,
-    clientType: WowClientType
-  ): Promise<AddonSearchResult[]> {
+  public async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
     return [];
   }
 
-  async searchByUrl(
-    addonUri: URL,
-    clientType: WowClientType
-  ): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
     const repoPath = addonUri.pathname;
     if (!repoPath) {
       throw new Error(`Invlaid URL: ${addonUri}`);
@@ -84,7 +70,7 @@ export class GitHubAddonProvider implements AddonProvider {
     var potentialAddon: AddonSearchResult = {
       author: author,
       downloadCount: asset.download_count,
-      externalId: repoPath,
+      externalId: this.createExternalId(addonUri),
       externalUrl: repository.html_url,
       name: repository.name,
       providerName: this.name,
@@ -94,7 +80,12 @@ export class GitHubAddonProvider implements AddonProvider {
     return potentialAddon;
   }
 
-  async searchByName(
+  private createExternalId(addonUri: URL) {
+    const parsed = this.parseRepoPath(addonUri.pathname);
+    return `${parsed.owner}/${parsed.repository}`;
+  }
+
+  public async searchByName(
     addonName: string,
     folderName: string,
     clientType: WowClientType,
@@ -103,14 +94,8 @@ export class GitHubAddonProvider implements AddonProvider {
     return [];
   }
 
-  getById(
-    addonId: string,
-    clientType: WowClientType
-  ): Observable<AddonSearchResult> {
-    return forkJoin([
-      this.getReleases(addonId),
-      this.getRepository(addonId),
-    ]).pipe(
+  public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+    return forkJoin([this.getReleases(addonId), this.getRepository(addonId)]).pipe(
       map(([releases, repository]) => {
         if (!releases?.length) {
           return undefined;
@@ -154,13 +139,13 @@ export class GitHubAddonProvider implements AddonProvider {
     );
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     return addonUri.host && addonUri.host.endsWith("github.com");
   }
 
-  onPostInstall(addon: Addon): void {}
+  public onPostInstall(addon: Addon): void {}
 
-  async scan(
+  public async scan(
     clientType: WowClientType,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
@@ -168,24 +153,15 @@ export class GitHubAddonProvider implements AddonProvider {
 
   private getLatestRelease(releases: GitHubRelease[]): GitHubRelease {
     let sortedReleases = _.filter(releases, (r) => !r.draft);
-    sortedReleases = _.sortBy(
-      sortedReleases,
-      (release) => new Date(release.published_at)
-    ).reverse();
+    sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
 
     return _.first(sortedReleases);
   }
 
-  private getValidAsset(
-    release: GitHubRelease,
-    clientType: WowClientType
-  ): GitHubAsset {
+  private getValidAsset(release: GitHubRelease, clientType: WowClientType): GitHubAsset {
     const sortedAssets = _.filter(
       release.assets,
-      (asset) =>
-        this.isNotNoLib(asset) &&
-        this.isValidContentType(asset) &&
-        this.isValidClientType(clientType, asset)
+      (asset) => this.isNotNoLib(asset) && this.isValidContentType(asset) && this.isValidClientType(clientType, asset)
     );
 
     return _.first(sortedAssets);
@@ -199,10 +175,7 @@ export class GitHubAddonProvider implements AddonProvider {
     return RELEASE_CONTENT_TYPES.some((ct) => ct == asset.content_type);
   }
 
-  private isValidClientType(
-    clientType: WowClientType,
-    asset: GitHubAsset
-  ): boolean {
+  private isValidClientType(clientType: WowClientType, asset: GitHubAsset): boolean {
     const isClassic = this.isClassicAsset(asset);
 
     switch (clientType) {
@@ -231,9 +204,7 @@ export class GitHubAddonProvider implements AddonProvider {
     return this.getReleasesByParts(parsed);
   }
 
-  private getReleasesByParts(
-    repoParts: GitHubRepoParts
-  ): Observable<GitHubRelease[]> {
+  private getReleasesByParts(repoParts: GitHubRepoParts): Observable<GitHubRelease[]> {
     const url = `${API_URL}/${repoParts.owner}/${repoParts.repository}/releases`;
     return this._httpClient.get<GitHubRelease[]>(url.toString());
   }
@@ -243,15 +214,13 @@ export class GitHubAddonProvider implements AddonProvider {
     return this.getRepositoryByParts(parsed);
   }
 
-  private getRepositoryByParts(
-    repoParts: GitHubRepoParts
-  ): Observable<GitHubRepository> {
+  private getRepositoryByParts(repoParts: GitHubRepoParts): Observable<GitHubRepository> {
     const url = `${API_URL}/${repoParts.owner}/${repoParts.repository}`;
     return this._httpClient.get<GitHubRepository>(url.toString());
   }
 
   private parseRepoPath(repositoryPath: string): GitHubRepoParts {
-    const regex = /\/(.*?)\/(.*?)(\/.*|\..*)?$/;
+    const regex = /\/?(.*?)\/(.*?)(\/.*|\..*)?$/;
     const matches = regex.exec(repositoryPath);
 
     return {

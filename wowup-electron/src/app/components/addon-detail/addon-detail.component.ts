@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
@@ -81,43 +74,23 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
   }
 
   get title() {
-    return (
-      this.model.listItem?.addon?.name ||
-      this.model.searchResult?.name ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.name || this.model.searchResult?.name || "UNKNOWN";
   }
 
   get subtitle() {
-    return (
-      this.model.listItem?.addon?.author ||
-      this.model.searchResult?.author ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.author || this.model.searchResult?.author || "UNKNOWN";
   }
 
   get provider() {
-    return (
-      this.model.listItem?.addon?.providerName ||
-      this.model.searchResult?.providerName ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.providerName || this.model.searchResult?.providerName || "UNKNOWN";
   }
 
   get summary() {
-    return (
-      this.model.listItem?.addon?.summary ||
-      this.model.searchResult?.summary ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
   }
 
   get externalUrl() {
-    return (
-      this.model.listItem?.addon?.externalUrl ||
-      this.model.searchResult?.externalUrl ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.externalUrl || this.model.searchResult?.externalUrl || "UNKNOWN";
   }
 
   get defaultImageUrl(): string {
