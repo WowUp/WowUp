@@ -3,7 +3,6 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { UpdateCheckResult } from "electron-updater";
-import { from } from "rxjs";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
@@ -19,6 +18,7 @@ export class FooterComponent implements OnInit {
   public isWowUpUpdateDownloaded = false;
   public isCheckingForUpdates = false;
   public isWowUpdateDownloading = false;
+  public updateIconTooltip = "APP.WOWUP_UPDATE_TOOLTIP";
 
   constructor(
     private _dialog: MatDialog,
@@ -41,6 +41,7 @@ export class FooterComponent implements OnInit {
       console.debug("wowupUpdateDownloaded", result);
       this._zone.run(() => {
         this.isWowUpUpdateDownloaded = true;
+        this.updateIconTooltip = "APP.WOWUP_UPDATE_DOWNLOADED_TOOLTIP";
         this.onClickUpdateWowup();
       });
     });
@@ -92,18 +93,6 @@ export class FooterComponent implements OnInit {
     });
   }
 
-  public getUpdateIconTooltip() {
-    if (this.isWowUpUpdateDownloaded) {
-      return "APP.WOWUP_UPDATE_DOWNLOADED_TOOLTIP";
-    }
-
-    if (this.isWowUpUpdateAvailable) {
-      return "APP.WOWUP_UPDATE_TOOLTIP";
-    }
-
-    return "";
-  }
-
   public async onClickUpdateWowup() {
     if (!this.isWowUpUpdateAvailable) {
       return;
@@ -112,12 +101,8 @@ export class FooterComponent implements OnInit {
     if (this.isWowUpUpdateDownloaded) {
       const dialogRef = this._dialog.open(ConfirmDialogComponent, {
         data: {
-          title: this._translateService.instant(
-            "APP.WOWUP_UPDATE_INSTALL_TITLE"
-          ),
-          message: this._translateService.instant(
-            "APP.WOWUP_UPDATE_INSTALL_MESSAGE"
-          ),
+          title: this._translateService.instant("APP.WOWUP_UPDATE_INSTALL_TITLE"),
+          message: this._translateService.instant("APP.WOWUP_UPDATE_INSTALL_MESSAGE"),
         },
       });
 
