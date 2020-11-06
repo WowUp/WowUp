@@ -16,6 +16,7 @@ import {
   COPY_FILE_CHANNEL,
   DELETE_DIRECTORY_CHANNEL,
   READ_FILE_CHANNEL,
+  WRITE_FILE_CHANNEL,
   GET_ASSET_FILE_PATH,
   DOWNLOAD_FILE_CHANNEL,
   CREATE_DIRECTORY_CHANNEL,
@@ -155,6 +156,11 @@ export function initializeIpcHanders(window: BrowserWindow) {
 
   ipcMain.handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
     return await fs.readFile(filePath, { encoding: "utf-8" });
+  });
+
+
+  ipcMain.handle(WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
+    return await fs.writeFile(filePath, contents, { encoding: "utf-8" });
   });
 
   ipcMain.handle(
