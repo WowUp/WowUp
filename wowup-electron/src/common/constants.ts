@@ -31,6 +31,8 @@ export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILE
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";
 export const MY_ADDONS_HIDDEN_COLUMNS_KEY = "my_addons_hidden_columns";
 export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
+export const GET_ADDONS_HIDDEN_COLUMNS_KEY = "get_addons_hidden_columns";
+export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
