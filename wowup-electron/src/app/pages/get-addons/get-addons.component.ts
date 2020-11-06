@@ -58,7 +58,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     { name: "downloadCount", display: "Downloads", visible: true, allowToggle: true },
     { name: "releasedAt", display: "Released At", visible: true, allowToggle: true },
     { name: "author", display: "Author", visible: true, allowToggle: true },
-    { name: "providerName", display: "Provider", visible: true, allowToggle: true },
+    { name: "providerName", display: "Provider", visible: true, allowToggle: false },
     { name: "status", display: "Status", visible: true },
   ];
 
