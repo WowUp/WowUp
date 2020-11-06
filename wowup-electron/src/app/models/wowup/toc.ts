@@ -13,4 +13,5 @@ export interface Toc {
   tukUiProjectId?: string;
   tukUiProjectFolders?: string;
   modificationDate?: Date;
+  creationDate?: Date;
 }

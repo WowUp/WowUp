@@ -13,6 +13,7 @@ export class TocService {
     const tocText = await this._fileService.readFile(tocPath);
     const tocFsStat = await FileUtils.getFileModificationTime(tocPath);
     const modificationDate = tocFsStat.mtime;
+    const creationDate = tocFsStat.ctime;
 
     return {
       author: this.getValue("Author", tocText),
@@ -29,6 +30,7 @@ export class TocService {
       tukUiProjectId: this.getValue("X-Tukui-ProjectID", tocText),
       tukUiProjectFolders: this.getValue("X-Tukui-ProjectFolders", tocText),
       modificationDate: modificationDate,
+      creationDate: creationDate,
     };
   }
 

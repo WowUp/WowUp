@@ -526,6 +526,8 @@ export class AddonService {
             externalUrl: folder.toc.website,
             latestVersion: folder.toc.version,
             releasedAt: folder.toc.modificationDate,
+            updatedAt: folder.toc.modificationDate,
+            installedAt: folder.toc.creationDate,
           };
           return addon;
         })
