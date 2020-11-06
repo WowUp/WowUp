@@ -67,7 +67,8 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "От {authorName}",
-      "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере"
+      "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
+      "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "Окей"
@@ -129,6 +130,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "Альфа",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
         "BETA_ADDON_CHANNEL": "Бета",

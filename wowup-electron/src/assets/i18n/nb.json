@@ -67,7 +67,8 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Av {authorName}",
-      "VIEW_IN_BROWSER_BUTTON": "Se i nettleser"
+      "VIEW_IN_BROWSER_BUTTON": "Se i nettleser",
+      "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "Okey"
@@ -129,6 +130,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Oppdater Automatisk",
         "BETA_ADDON_CHANNEL": "Beta",

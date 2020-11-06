@@ -67,7 +67,8 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "By {authorName}",
-      "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看"
+      "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看",
+      "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "好的"
@@ -129,6 +130,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "阿尔法",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
         "BETA_ADDON_CHANNEL": "测试版",

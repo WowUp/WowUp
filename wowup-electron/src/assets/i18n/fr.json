@@ -67,7 +67,8 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "By {authorName}",
-      "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur"
+      "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
+      "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "Ok"
@@ -129,6 +130,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "Alphabétisation",
         "AUTO_UPDATE_ADDON_BUTTON": "Mise à jour automatique",
         "BETA_ADDON_CHANNEL": "Bêta",
