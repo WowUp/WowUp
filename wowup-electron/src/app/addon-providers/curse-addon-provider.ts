@@ -504,7 +504,6 @@ export class CurseAddonProvider implements AddonProvider {
       downloadUrl: latestVersion.downloadUrl,
       externalUrl: scanResult.searchResult.websiteUrl,
       externalId: scanResult.searchResult.id.toString(),
-      folderName: scanResult.addonFolder.name,
       gameVersion: gameVersion,
       installedAt: new Date(),
       installedFolders: folderList,
