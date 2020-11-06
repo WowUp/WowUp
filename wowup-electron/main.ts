@@ -286,7 +286,7 @@ try {
     // dock icon is clicked and there are no other windows open.
     if (platform.isMac) {
       app.dock.show();
-      win.show();
+      win?.show();
     }
 
     if (win === null) {
