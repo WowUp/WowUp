@@ -150,11 +150,11 @@
       "FILTER_LABEL": "Filtra",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
-        "JOIN_DISCORD": "Contattaci su Discord!",
+        "JOIN_DISCORD": "Contattaci su Discord",
         "PATREON_SUPPORT": "Supporta WowUp con il Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{risultato} other{risultati}}",
         "VIEW_GITHUB": "Controlla il codice su GitHub",
-        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
+        "VIEW_GUIDE": "Controlla la nostra guida per vedere cosa può fare Wowup"
       },
       "RESCAN_FOLDERS_BUTTON": "Riscansiona Cartelle",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scansiona la cartella client per gli addons installati",
