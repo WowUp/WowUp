@@ -23,17 +23,17 @@
   <div class="row align-items-center">
     <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
     <p>v{{ wowUpService.applicationVersion }}</p>
-    <div *ngIf="isWowUpdateDownloading" class="downloading-button ml-3 animate">
-      <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
-    </div>
-    <div *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading" class="check-update-button ml-3"
-      [ngClass]="{'animate': isCheckingForUpdates}" (click)="onClickCheckForUpdates()"
-      [matTooltip]="'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate">
-      <mat-icon>cached</mat-icon>
-    </div>
-    <button *ngIf="isWowUpUpdateAvailable" class="update-button ml-3"
-      matTooltip="{{ getUpdateIconTooltip() | translate }}" [disabled]="isUpdatingWowUp" (click)="onClickUpdateWowup()">
+    <button *ngIf="isWowUpUpdateAvailable && !isWowUpdateDownloading" class="footer-button update-button ml-3"
+      matTooltip="{{ updateIconTooltip | translate }}" [disabled]="isUpdatingWowUp" (click)="onClickUpdateWowup()">
       <mat-icon>upgrade</mat-icon>
+    </button>
+    <button *ngIf="isWowUpdateDownloading" class="footer-button downloading-button ml-3 animate">
+      <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
+    </button>
+    <button *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading" class="footer-button check-update-button ml-3"
+      [ngClass]="{'animate': isCheckingForUpdates}" (click)="onClickCheckForUpdates()"
+      matTooltip="{{'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate}}">
+      <mat-icon>cached</mat-icon>
     </button>
   </div>
 </footer>

@@ -1,6 +1,11 @@
 import { Injectable } from "@angular/core";
 import * as childProcess from "child_process";
-import { APP_UPDATE_CHECK_END, APP_UPDATE_CHECK_START } from "common/constants";
+import {
+  APP_UPDATE_CHECK_END,
+  APP_UPDATE_CHECK_START,
+  APP_UPDATE_DOWNLOADED,
+  APP_UPDATE_START_DOWNLOAD,
+} from "common/constants";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, remote, Settings, shell, webFrame } from "electron";
@@ -71,6 +76,14 @@ export class ElectronService {
     
     this.ipcRenderer.on(APP_UPDATE_CHECK_END, () => {
       this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_END);
+    });
+
+    this.ipcRenderer.on(APP_UPDATE_START_DOWNLOAD, () => {
+      this._ipcEventReceivedSrc.next(APP_UPDATE_START_DOWNLOAD);
+    });
+
+    this.ipcRenderer.on(APP_UPDATE_DOWNLOADED, () => {
+      this._ipcEventReceivedSrc.next(APP_UPDATE_DOWNLOADED);
     });
 
     const currentWindow = this.remote?.getCurrentWindow();
