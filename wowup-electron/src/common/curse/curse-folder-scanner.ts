@@ -8,6 +8,9 @@ import { readDirRecursive, readFile } from "../../../file.utils";
 const nativeAddon = require("../../../build/Release/addon.node");
 
 export class CurseFolderScanner {
+  // This map is required for solving for case sensitive mismatches from addon authors on Linux
+  private _fileMap: { [key: string]: string } = {};
+
   private get tocFileCommentsRegex() {
     return /\s*#.*$/gm;
   }
@@ -33,11 +36,14 @@ export class CurseFolderScanner {
   }
 
   async scanFolder(folderPath: string): Promise<CurseScanResult> {
-    const files = await readDirRecursive(folderPath);
-    console.log("listAllFiles", folderPath, files.length);
+    const fileList = await readDirRecursive(folderPath);
+    fileList.forEach(fp => (this._fileMap[fp.toLowerCase()] = fp));
 
-    let matchingFiles = await this.getMatchingFiles(folderPath, files);
+    console.log("listAllFiles", folderPath, fileList.length);
+
+    let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
     matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
+    console.log('matchingFiles', matchingFiles.length);
 
     const individualFingerprints = await async.mapLimit<string, number>(
       matchingFiles,
@@ -78,7 +84,7 @@ export class CurseFolderScanner {
       }
     }
 
-    // console.log('fileInfoList', fileInfoList.length)
+    console.log('fileInfoList', fileInfoList.length)
     for (let fileInfo of fileInfoList) {
       await this.processIncludeFile(matchingFileList, fileInfo);
     }
@@ -90,21 +96,22 @@ export class CurseFolderScanner {
     matchingFileList: string[],
     fileInfo: string
   ) {
-    if (!fs.existsSync(fileInfo) || matchingFileList.indexOf(fileInfo) !== -1) {
+    const nativePath = this.getRealPath(fileInfo);
+    if (!fs.existsSync(nativePath) || matchingFileList.indexOf(nativePath) !== -1) {
       return;
     }
 
-    matchingFileList.push(fileInfo);
+    matchingFileList.push(nativePath);
 
-    let input = await readFile(fileInfo);
-    input = this.removeComments(fileInfo, input);
+    let input = await readFile(nativePath);
+    input = this.removeComments(nativePath, input);
 
-    const inclusions = this.getFileInclusionMatches(fileInfo, input);
+    const inclusions = this.getFileInclusionMatches(nativePath, input);
     if (!inclusions || !inclusions.length) {
       return;
     }
 
-    const dirname = path.dirname(fileInfo);
+    const dirname = path.dirname(nativePath);
     for (let include of inclusions) {
       const fileName = path.join(dirname, include.replace(/\\/g, path.sep));
       await this.processIncludeFile(matchingFileList, fileName);
@@ -189,5 +196,14 @@ export class CurseFolderScanner {
         return reject(err);
       }
     });
+  }
+
+  private getRealPath(filePath: string) {
+    const lowerPath = filePath.toLowerCase();
+    const matchedPath = this._fileMap[lowerPath];
+    if (!matchedPath) {
+      throw new Error(`Path not found: ${lowerPath}`);
+    }
+    return matchedPath;
   }
 }
