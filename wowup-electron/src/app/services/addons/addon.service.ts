@@ -213,6 +213,11 @@ export class AddonService {
       addon.installedVersion = addon.latestVersion;
       addon.installedAt = new Date();
       addon.installedFolders = unzippedDirectoryNames.join(",");
+      if (addon.providerName === "GitHub") {
+        // Github provider defaults to the repository name as addon.folderName
+        // This does not have to match the zip, and the zip should be leading
+        addon.folderName = unzippedDirectoryNames[0];
+      }
 
       if (!!addon.gameVersion) {
         addon.gameVersion = await this.getLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
