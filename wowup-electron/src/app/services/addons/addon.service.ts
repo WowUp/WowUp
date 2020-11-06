@@ -503,15 +503,33 @@ export class AddonService {
       }
     }
 
+    const nonMatchedFolders = addonFolders.filter((af) => !af.matchingAddon && af.toc);
     const matchedAddonFolders = addonFolders.filter((addonFolder) => !!addonFolder.matchingAddon);
     const matchedGroups = _.groupBy(
       matchedAddonFolders,
       (addonFolder) => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`
     );
 
-    console.log(Object.keys(matchedGroups));
-
-    return Object.values(matchedGroups).map((value) => value[0].matchingAddon);
+    return Object.values(matchedGroups).map((value) => value[0].matchingAddon).concat(
+        nonMatchedFolders.map((folder) => {
+          let addon: Addon = {
+            id: folder.name,
+            name: folder.toc.title,
+            folderName: folder.path,
+            isIgnored: false,
+            autoUpdateEnabled: false,
+            clientType: clientType,
+            channelType: AddonChannelType.Stable,
+            installedVersion: folder.toc.version,
+            author: folder.toc.author,
+            gameVersion: folder.toc.interface,
+            externalUrl: folder.toc.website,
+            latestVersion: folder.toc.version,
+            releasedAt: folder.toc.modificationDate,
+          };
+          return addon;
+        })
+      );
   }
 
   public getFeaturedAddons(clientType: WowClientType): Observable<AddonSearchResult[]> {

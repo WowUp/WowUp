@@ -12,4 +12,5 @@ export interface Toc {
   wowInterfaceId?: string;
   tukUiProjectId?: string;
   tukUiProjectFolders?: string;
+  modificationDate?: Date;
 }

@@ -3,6 +3,7 @@ import * as util from "util";
 
 const fsAccess = util.promisify(fs.access);
 const fsReadFile = util.promisify(fs.readFile);
+const fsStat = util.promisify(fs.stat);
 
 export class FileUtils {
   static async exists(path: string) {
@@ -20,5 +21,12 @@ export class FileUtils {
 
   static readFileSync(path: string) {
     return fs.readFileSync(path);
+  }
+
+  static async getFileModificationTime(path: string) {
+    try {
+      return await fsStat(path);
+    } catch (e) {
+    }
   }
 }
