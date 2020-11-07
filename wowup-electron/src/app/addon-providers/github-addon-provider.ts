@@ -52,7 +52,7 @@ export class GitHubAddonProvider implements AddonProvider {
   public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
     const repoPath = addonUri.pathname;
     if (!repoPath) {
-      throw new Error(`Invlaid URL: ${addonUri}`);
+      throw new Error(`Invalid URL: ${addonUri}`);
     }
 
     const results = await this.getReleases(repoPath).toPromise();
@@ -220,7 +220,7 @@ export class GitHubAddonProvider implements AddonProvider {
   }
 
   private parseRepoPath(repositoryPath: string): GitHubRepoParts {
-    const regex = /\/?(.*?)\/(.*?)(\/.*|\..*)?$/;
+    const regex = /\/?(.*?)\/(.*?)(\/.*|\.git.*)?$/;
     const matches = regex.exec(repositoryPath);
 
     return {

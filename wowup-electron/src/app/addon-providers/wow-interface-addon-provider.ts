@@ -196,7 +196,6 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       downloadUrl: response.downloadUri,
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
-      folderName: addonFolder.name,
       gameVersion: addonFolder.toc.interface,
       installedAt: new Date(),
       installedFolders: addonFolder.name,

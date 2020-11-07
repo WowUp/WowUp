@@ -241,7 +241,6 @@ export class WowUpAddonProvider implements AddonProvider {
       downloadUrl: scanResult.exactMatch.matched_release.download_url,
       externalUrl: scanResult.exactMatch.repository,
       externalId: scanResult.exactMatch.external_id,
-      folderName: primaryAddonFolder.folder_name,
       gameVersion: scanResult.exactMatch.matched_release.game_version,
       installedAt: new Date(),
       installedFolders: folderList,

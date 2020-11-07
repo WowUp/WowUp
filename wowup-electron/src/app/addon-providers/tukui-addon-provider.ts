@@ -157,7 +157,6 @@ export class TukUiAddonProvider implements AddonProvider {
           autoUpdateEnabled: false,
           channelType: addonChannelType,
           clientType: clientType,
-          folderName: addonFolder.name,
           id: uuidv4(),
           isIgnored: false,
           name: tukUiAddon.name,

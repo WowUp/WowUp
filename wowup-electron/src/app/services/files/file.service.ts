@@ -10,6 +10,7 @@ import {
   LIST_DIRECTORIES_CHANNEL,
   PATH_EXISTS_CHANNEL,
   READ_FILE_CHANNEL,
+  WRITE_FILE_CHANNEL,
   SHOW_DIRECTORY,
   UNZIP_FILE_CHANNEL,
 } from "../../../common/constants";
@@ -98,6 +99,14 @@ export class FileService {
     return await this._electronService.ipcRenderer.invoke(
       READ_FILE_CHANNEL,
       sourcePath
+    );
+  }
+
+  public async writeFile(sourcePath: string, contents: string): Promise<string> {
+    return await this._electronService.ipcRenderer.invoke(
+      WRITE_FILE_CHANNEL,
+      sourcePath,
+      contents,
     );
   }
 

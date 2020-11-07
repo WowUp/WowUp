@@ -35,6 +35,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
+import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 
 @Component({
   selector: "app-my-addons",
@@ -133,6 +134,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     private _ngZone: NgZone,
     private _dialog: MatDialog,
     private _cdRef: ChangeDetectorRef,
+    private _wowUpAddonService: WowUpAddonService,
     private _translateService: TranslateService,
     public electronService: ElectronService,
     public overlay: Overlay,
@@ -606,6 +608,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         this._displayAddonsSrc.next(this.formatAddons(addons));
         this.setPageContextText();
         this._cdRef.detectChanges();
+        this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
       },
       error: (err) => {
         console.error(err);

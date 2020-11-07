@@ -128,6 +128,7 @@
     "electron-updater": "4.3.5",
     "fs-extra": "9.0.1",
     "globrex": "0.1.2",
+    "handlebars": "4.7.6",
     "lodash": "4.17.20",
     "messageformat": "2.3.0",
     "minimist": "1.2.5",

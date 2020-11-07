@@ -7,6 +7,7 @@ export const LIST_DIRECTORIES_CHANNEL = "list-directories";
 export const PATH_EXISTS_CHANNEL = "path-exists";
 export const LIST_FILES_CHANNEL = "list-files";
 export const READ_FILE_CHANNEL = "read-file";
+export const WRITE_FILE_CHANNEL = "write-file";
 export const UNZIP_FILE_CHANNEL = "unzip-file";
 export const COPY_FILE_CHANNEL = "copy-file";
 export const CURSE_HASH_FILE_CHANNEL = "curse-hash-file";

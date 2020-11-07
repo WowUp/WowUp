@@ -4,7 +4,6 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 export interface Addon {
   id: string;
   name: string;
-  folderName: string;
   downloadUrl?: string;
   installedVersion?: string;
   latestVersion?: string;

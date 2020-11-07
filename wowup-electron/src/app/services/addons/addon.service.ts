@@ -368,7 +368,13 @@ export class AddonService {
 
   public getFullInstallPath(addon: Addon) {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
-    return path.join(addonFolderPath, addon.folderName);
+    const installedFolders = this.getInstalledFolders(addon);
+    return path.join(addonFolderPath, _.first(installedFolders));
+  }
+
+  public getInstalledFolders(addon: Addon): string[] {
+    const folders = addon?.installedFolders || "";
+    return folders.split(",").map((f) => f.trim());
   }
 
   public async removeAddon(addon: Addon) {
@@ -595,7 +601,6 @@ export class AddonService {
       latestVersion: latestFile.version,
       clientType: clientType,
       externalId: searchResult.externalId,
-      folderName: folderName,
       gameVersion: latestFile.gameVersion,
       author: searchResult.author,
       downloadUrl: latestFile.downloadUrl,
