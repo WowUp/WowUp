@@ -35,10 +35,10 @@ export class WowUpAddonService {
 
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailableCount: addons.filter(
-          (addon: Addon) => addon.latestVersion !== addon.installedVersion && !addon.isIgnored
+          (addon: Addon) => !addon.isIgnored && addon.latestVersion !== addon.installedVersion
         ).length,
-        generatedAt: (new Date()).toString(),
-      }
+        generatedAt: new Date().toString(),
+      };
 
       if (!this.compiledTemplate) {
         this.compiledTemplate = Handlebars.compile(templateContents);
@@ -50,4 +50,3 @@ export class WowUpAddonService {
     }
   }
 }
-
