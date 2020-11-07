@@ -47,7 +47,7 @@ export class CurseFolderScanner {
 
     const individualFingerprints = await async.mapLimit<string, number>(
       matchingFiles,
-      2,
+      4,
       async (path, callback) => {
         const normalizedFileHash = await this.getFileHash(path);
         callback(undefined, normalizedFileHash);
