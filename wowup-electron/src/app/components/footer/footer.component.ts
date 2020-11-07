@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
+import { ElectronService } from "app/services";
+import { REPOSITORY_URL } from "../../../common/constants";
 import { UpdateCheckResult } from "electron-updater";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
@@ -18,8 +20,8 @@ export class FooterComponent implements OnInit {
   public isWowUpUpdateDownloaded = false;
   public isCheckingForUpdates = false;
   public isWowUpdateDownloading = false;
-  public updateIconTooltip = "APP.WOWUP_UPDATE_TOOLTIP";
-
+  public updateIconTooltip = "APP.WOWUP_UPDATE.TOOLTIP";
+  
   constructor(
     private _dialog: MatDialog,
     private _translateService: TranslateService,
@@ -27,7 +29,8 @@ export class FooterComponent implements OnInit {
     private _cdRef: ChangeDetectorRef,
     public wowUpService: WowUpService,
     public sessionService: SessionService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _electronService: ElectronService,
   ) {}
 
   ngOnInit(): void {
@@ -41,7 +44,7 @@ export class FooterComponent implements OnInit {
       console.debug("wowupUpdateDownloaded", result);
       this._zone.run(() => {
         this.isWowUpUpdateDownloaded = true;
-        this.updateIconTooltip = "APP.WOWUP_UPDATE_DOWNLOADED_TOOLTIP";
+        this.updateIconTooltip = "APP.WOWUP_UPDATE.DOWNLOADED_TOOLTIP";
         this.onClickUpdateWowup();
       });
     });
@@ -93,16 +96,40 @@ export class FooterComponent implements OnInit {
     });
   }
 
+  private portableUpdate() {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("APP.WOWUP_UPDATE.PORTABLE_DOWNLOAD_TITLE"),
+        message: this._translateService.instant("APP.WOWUP_UPDATE.PORTABLE_DOWNLOAD_MESSAGE"),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+      
+      this._electronService.shell.openExternal(`${REPOSITORY_URL}/releases/tag/v${this.wowUpService.availableVersion}`);
+    });
+
+    return;
+  }
+
   public async onClickUpdateWowup() {
     if (!this.isWowUpUpdateAvailable) {
+      return;
+    }
+
+    if (this._electronService.isPortable) {
+      this.portableUpdate();
       return;
     }
 
     if (this.isWowUpUpdateDownloaded) {
       const dialogRef = this._dialog.open(ConfirmDialogComponent, {
         data: {
-          title: this._translateService.instant("APP.WOWUP_UPDATE_INSTALL_TITLE"),
-          message: this._translateService.instant("APP.WOWUP_UPDATE_INSTALL_MESSAGE"),
+          title: this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_TITLE"),
+          message: this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_MESSAGE"),
         },
       });
 

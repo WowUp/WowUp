@@ -8,15 +8,17 @@
       "SHOW_ACTION": "Show"
     },
     "WOWUP_UPDATE": {
+      "DOWNLOADED_TOOLTIP": "Install WowUp update",
+      "INSTALL_MESSAGE": "Do you want to restart WowUp and install the update?",
+      "INSTALL_TITLE": "WowUp Update Ready",
       "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
+      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
+      "SNACKBAR_ACTION": "Update",
+      "SNACKBAR_TEXT": "A new version of WowUp is available",
+      "TOOLTIP": "WowUp update available",
       "UPDATE_ERROR": "Failed to get WowUp update"
-    },
-    "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Install WowUp update",
-    "WOWUP_UPDATE_INSTALL_MESSAGE": "Do you want to restart WowUp and install the update?",
-    "WOWUP_UPDATE_INSTALL_TITLE": "WowUp Update Ready",
-    "WOWUP_UPDATE_SNACKBAR_ACTION": "Update",
-    "WOWUP_UPDATE_SNACKBAR_TEXT": "A new version of WowUp is available",
-    "WOWUP_UPDATE_TOOLTIP": "WowUp update available"
+    }
   },
   "COMMON": {
     "ADDON_STATE": {

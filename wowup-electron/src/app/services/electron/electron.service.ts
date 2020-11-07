@@ -40,6 +40,7 @@ export class ElectronService {
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
+  public readonly isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
   public readonly appOptions: AppOptions;
 
   public get isElectron(): boolean {

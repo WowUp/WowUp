@@ -1,13 +1,6 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { UpdateCheckResult } from "electron-updater";
-import { forkJoin } from "rxjs";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
@@ -19,7 +12,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./home.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements AfterViewInit {
   public selectedIndex = 0;
   public hasWowClient = false;
 
@@ -40,10 +33,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.selectedIndex = this.hasWowClient ? 0 : 3;
       }
     });
-  }
-
-  ngOnInit(): void {
-    this._wowupService.wowupUpdateCheck$.subscribe(this.showUpdateSnackbar);
   }
 
   ngAfterViewInit(): void {
@@ -67,18 +56,4 @@ export class HomeComponent implements OnInit, AfterViewInit {
       console.error(e);
     }
   }
-
-  private showUpdateSnackbar = async (updateCheckResult: UpdateCheckResult) => {
-    // Have to wait for the localize service to start
-    // const [sbtext, sbaction] = await forkJoin([
-    //   this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_TEXT"),
-    //   this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_ACTION"),
-    // ]).toPromise();
-    // const snackBarRef = this._snackBar.open(sbtext, sbaction, {
-    //   duration: 2000,
-    // });
-    // snackBarRef.onAction().subscribe(() => {
-    //   console.log("The snack-bar action was triggered!");
-    // });
-  };
 }
