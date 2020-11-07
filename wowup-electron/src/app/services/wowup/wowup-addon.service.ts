@@ -34,7 +34,9 @@ export class WowUpAddonService {
       const dataFile = this._addonService.getFullInstallPath(wowupAddon) + "/data.lua";
 
       const wowUpAddonData: WowUpAddonData = {
-        updatesAvailableCount: addons.filter((addon: Addon) => addon.latestVersion !== addon.installedVersion).length,
+        updatesAvailableCount: addons.filter(
+          (addon: Addon) => addon.latestVersion !== addon.installedVersion && !addon.isIgnored
+        ).length,
         generatedAt: (new Date()).toString(),
       }
 
