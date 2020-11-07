@@ -8,17 +8,15 @@
       "SHOW_ACTION": "Показать"
     },
     "WOWUP_UPDATE": {
-      "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
-      "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
-      "INSTALL_TITLE": "Для WowUp готово обновление",
       "NOT_AVAILABLE": "Последняя версия WowUp уже установлена",
-      "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
-      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
-      "SNACKBAR_ACTION": "Обновить",
-      "SNACKBAR_TEXT": "Доступна новая версия WowUp",
-      "TOOLTIP": "Доступно обновление для WowUp",
       "UPDATE_ERROR": "Неудачная попытка получить обновление для WowUp"
-    }
+    },
+    "WOWUP_UPDATE_DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
+    "WOWUP_UPDATE_INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
+    "WOWUP_UPDATE_INSTALL_TITLE": "Для WowUp готово обновление",
+    "WOWUP_UPDATE_SNACKBAR_ACTION": "Обновить",
+    "WOWUP_UPDATE_SNACKBAR_TEXT": "Доступна новая версия WowUp",
+    "WOWUP_UPDATE_TOOLTIP": "Доступно обновление для WowUp"
   },
   "COMMON": {
     "ADDON_STATE": {
@@ -176,7 +174,7 @@
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
+        "PROVIDER_RELEASE_CHANNEL": "Канал выпуска",
         "RELEASED_AT_COLUMN_HEADER": "Выпущена",
         "STATUS_COLUMN_HEADER": "Статус",
         "UPDATED_AT_COLUMN_HEADER": "Обновлена"
