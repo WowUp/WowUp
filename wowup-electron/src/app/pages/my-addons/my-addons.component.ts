@@ -173,7 +173,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const sortOrder = this.wowUpService.myAddonsSortOrder;
-    if(sortOrder){
+    if (sortOrder) {
       this.activeSort = sortOrder.name;
       this.activeSortDirection = sortOrder.direction;
     }
@@ -361,13 +361,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   public onShowfolder(addon: Addon) {
     try {
       const addonPath = this.addonService.getFullInstallPath(addon);
-      this.electronService.shell.openExternal(
-        addonPath,
-        //open issue on Electron causing activate false to set to foreground instead of background
-        //https://github.com/electron/electron/issues/12492
-        //temporary workaround until its fixed in Electron
-        { activate: this.electronService.isMac }
-      );
+      this.electronService.shell.openPath(addonPath);
     } catch (err) {
       console.error(err);
     }
@@ -460,7 +454,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onInstall() {}
+  public onInstall() { }
 
   public onClickIgnoreAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
     this.onClickIgnoreAddons(evt, [listItem]);
