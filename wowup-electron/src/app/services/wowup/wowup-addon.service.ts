@@ -34,9 +34,11 @@ export class WowUpAddonService {
       const dataFile = this._addonService.getFullInstallPath(wowupAddon) + "/data.lua";
 
       const wowUpAddonData: WowUpAddonData = {
-        updatesAvailableCount: addons.filter((addon: Addon) => addon.latestVersion !== addon.installedVersion).length,
-        generatedAt: (new Date()).toString(),
-      }
+        updatesAvailableCount: addons.filter(
+          (addon: Addon) => !addon.isIgnored && addon.latestVersion !== addon.installedVersion
+        ).length,
+        generatedAt: new Date().toString(),
+      };
 
       if (!this.compiledTemplate) {
         this.compiledTemplate = Handlebars.compile(templateContents);
@@ -48,4 +50,3 @@ export class WowUpAddonService {
     }
   }
 }
-
