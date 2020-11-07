@@ -148,9 +148,11 @@
         category="Options"
         [action]="scale"
         [label]="selectedScale"
-        placeholder="{{ currentScale }} %"
+        placeholder="{{ currentScale  * 100 | number:'1.0-0'  }} %"
       >
-        <mat-option *ngFor="let value of allowedScales" [value]="value">{{ value }} %</mat-option>
+        <mat-option *ngFor="let value of allowedScales" [value]="value">
+          {{ value * 100 | number:'1.0-0' }} %
+        </mat-option>
       </mat-select>
     </mat-form-field>
   </div>

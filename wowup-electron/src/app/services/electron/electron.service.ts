@@ -111,35 +111,20 @@ export class ElectronService {
 
     this._windowMaximizedSrc.next(currentWindow?.isMaximized() || false);
 
-    currentWindow?.webContents
-      .setVisualZoomLevelLimits(1, 3)
-      .then(() => console.log("Zoom levels have been set between 100% and 300%"))
-      .catch((err) => console.error(err));
+    currentWindow?.webContents.setVisualZoomLevelLimits(1, 1);
 
     currentWindow?.webContents.on("zoom-changed", (event, zoomDirection) => {
-      let currentZoom = currentWindow.webContents.getZoomFactor();
-      let zoomStep = 1.1;
-      let zoomMin = 0.6;
-      let zoomMax = 3;
-
-      if (zoomDirection === "in") {
-        let value = currentZoom * zoomStep;
-        value = Math.min(value, zoomMax);
-        // setting the zoomFactor comes at a cost, this early return greatly improves performance
-        if (value == zoomMax) {
-          return;
-        }
-        currentWindow.webContents.zoomFactor = value;
-        return;
-      }
-      if (zoomDirection === "out") {
-        let value = currentZoom / zoomStep;
-        value = Math.max(value, zoomMin);
-        // setting the zoomFactor comes at a cost, this early return greatly improves performance
-        if (value == zoomMin) {
-          return;
-        }
-        currentWindow.webContents.zoomFactor = value;
+      let stepLogBase = 1.2;
+      let step = 0.5;
+      let scaleMin = 0.6;
+      let scaleMax = 3;
+      let scaleFactor = currentWindow.webContents.getZoomFactor();
+      let scaleBaseFactor = Math.log(scaleFactor) / Math.log(stepLogBase);
+      let scaleBaseFactorRounded = Math.round(scaleBaseFactor * 2) / 2;
+      let scaleBaseFactorNew = zoomDirection === "in" ? scaleBaseFactorRounded + step : scaleBaseFactorRounded - step;
+      let scaleFactorNew = Math.pow(stepLogBase, scaleBaseFactorNew);
+      if (scaleFactorNew >= scaleMin && scaleFactorNew <= scaleMax) {
+        currentWindow.webContents.zoomFactor = scaleFactorNew;
       }
     });
 
