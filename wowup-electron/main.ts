@@ -23,6 +23,7 @@ import { WindowState } from "./src/common/models/window-state";
 import { AppOptions } from "./src/common/wowup/app-options";
 
 const preferenceStore = new Store({ name: "preferences" });
+const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
@@ -51,7 +52,9 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 
-const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
+const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()};${
+  isPortable ? " portable;" : ""
+} +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
 
 const argv = require("minimist")(process.argv.slice(1), {

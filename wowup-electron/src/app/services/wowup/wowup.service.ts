@@ -48,6 +48,7 @@ export class WowUpService {
   private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
   private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
   private readonly _wowupUpdateCheckInProgressSrc = new Subject<boolean>();
+  private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
 
@@ -74,7 +75,7 @@ export class WowUpService {
   ) {
     this.setDefaultPreferences();
 
-    this.applicationVersion = _electronService.remote.app.getVersion();
+    this.applicationVersion = _electronService.remote.app.getVersion() + `${this._electronService.isPortable ? ' (portable)' : ''}`;
     this.isBetaBuild = this.applicationVersion.toLowerCase().indexOf("beta") != -1;
 
     this.createDownloadDirectory().then(() => this.cleanupDownloads());
@@ -103,6 +104,10 @@ export class WowUpService {
     this.setAutoStartup();
 
     console.log("loginItemSettings", this._electronService.loginItemSettings);
+  }
+
+  public get availableVersion() {
+    return this._availableVersion;
   }
 
   public get updaterExists() {
@@ -265,6 +270,7 @@ export class WowUpService {
 
     // only notify things when the version changes
     if (!this.isSameVersion(updateCheckResult)) {
+      this._availableVersion = updateCheckResult.updateInfo.version;
       this._wowupUpdateCheckSrc.next(updateCheckResult);
     }
 
