@@ -515,7 +515,7 @@ export class AddonService {
           let addon: Addon = {
             id: folder.name,
             name: folder.toc.title,
-            folderName: folder.path,
+            installedFolders: folder.name,
             isIgnored: false,
             autoUpdateEnabled: false,
             clientType: clientType,
