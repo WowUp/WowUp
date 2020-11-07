@@ -9,6 +9,7 @@ export interface Addon {
   latestVersion?: string;
   installedAt?: Date;
   externalId?: string;
+  externalChannel?: string;
   providerName?: string;
   providerSource?: string;
   externalUrl?: string;

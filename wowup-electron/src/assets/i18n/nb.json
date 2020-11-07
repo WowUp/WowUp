@@ -174,6 +174,7 @@
         "GAME_VERSION_COLUMN_HEADER": "Spillversjon",
         "LATEST_VERSION_COLUMN_HEADER": "Siste Versjon",
         "PROVIDER_COLUMN_HEADER": "Leverandør",
+        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
         "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
         "STATUS_COLUMN_HEADER": "Status",
         "UPDATED_AT_COLUMN_HEADER": "Updated At"

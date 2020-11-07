@@ -120,6 +120,15 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="addon.externalChannel">
+        <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL" | translate }}
+        </th>
+        <td class="game-version-cell" mat-cell *matCellDef="let element">
+          {{ element.addon.externalChannel }}
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="addon.providerName">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}

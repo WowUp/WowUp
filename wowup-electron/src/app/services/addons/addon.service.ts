@@ -471,6 +471,7 @@ export class AddonService {
       addon.downloadUrl = latestFile.downloadUrl;
       addon.name = result.name;
       addon.author = result.author;
+      addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
 
       if (latestFile.gameVersion) {
         addon.gameVersion = latestFile.gameVersion;

@@ -35,20 +35,11 @@ export class AddonProviderFactory {
   }
 
   public createCurseAddonProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(
-      this._httpClient,
-      this._cachingService,
-      this._electronService
-    );
+    return new CurseAddonProvider(this._httpClient, this._cachingService, this._electronService);
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
-    return new TukUiAddonProvider(
-      this._httpClient,
-      this._cachingService,
-      this._electronService,
-      this._fileService
-    );
+    return new TukUiAddonProvider(this._httpClient, this._cachingService, this._electronService, this._fileService);
   }
 
   public createWowInterfaceAddonProvider(): WowInterfaceAddonProvider {

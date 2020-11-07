@@ -174,6 +174,7 @@
         "GAME_VERSION_COLUMN_HEADER": "Version du jeu",
         "LATEST_VERSION_COLUMN_HEADER": "Dernière version",
         "PROVIDER_COLUMN_HEADER": "Fournisseur",
+        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
         "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
         "STATUS_COLUMN_HEADER": "Statut",
         "UPDATED_AT_COLUMN_HEADER": "Updated At"

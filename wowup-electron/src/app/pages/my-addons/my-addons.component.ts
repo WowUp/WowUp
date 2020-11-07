@@ -105,6 +105,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       allowToggle: true,
     },
     {
+      name: "addon.externalChannel",
+      display: "PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER",
+      visible: false,
+      allowToggle: true,
+    },
+    {
       name: "addon.providerName",
       display: "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER",
       visible: true,
@@ -454,7 +460,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onInstall() { }
+  public onInstall() {}
 
   public onClickIgnoreAddon(evt: MatCheckboxChange, listItem: AddonViewModel) {
     this.onClickIgnoreAddons(evt, [listItem]);
