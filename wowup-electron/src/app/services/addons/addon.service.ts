@@ -513,7 +513,7 @@ export class AddonService {
     return Object.values(matchedGroups).map((value) => value[0].matchingAddon).concat(
         nonMatchedFolders.map((folder) => {
           let addon: Addon = {
-            id: folder.name,
+            id: uuidv4(),
             name: folder.toc.title,
             installedFolders: folder.name,
             isIgnored: false,
