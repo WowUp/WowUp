@@ -3,8 +3,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { ElectronService } from "app/services";
-import { REPOSITORY_URL } from "../../../common/constants";
 import { UpdateCheckResult } from "electron-updater";
+import { AppConfig } from "environments/environment";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
@@ -21,7 +21,7 @@ export class FooterComponent implements OnInit {
   public isCheckingForUpdates = false;
   public isWowUpdateDownloading = false;
   public updateIconTooltip = "APP.WOWUP_UPDATE.TOOLTIP";
-  
+
   constructor(
     private _dialog: MatDialog,
     private _translateService: TranslateService,
@@ -30,7 +30,7 @@ export class FooterComponent implements OnInit {
     public wowUpService: WowUpService,
     public sessionService: SessionService,
     private _snackBar: MatSnackBar,
-    private _electronService: ElectronService,
+    private _electronService: ElectronService
   ) {}
 
   ngOnInit(): void {
@@ -108,8 +108,10 @@ export class FooterComponent implements OnInit {
       if (!result) {
         return;
       }
-      
-      this._electronService.shell.openExternal(`${REPOSITORY_URL}/releases/tag/v${this.wowUpService.availableVersion}`);
+
+      this._electronService.shell.openExternal(
+        `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
+      );
     });
 
     return;
