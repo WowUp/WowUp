@@ -2,6 +2,7 @@ import * as path from "path";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as async from "async";
+import * as log from "electron-log";
 import { CurseScanResult } from "./curse-scan-result";
 import { readDirRecursive, readFile } from "../../../file.utils";
 
@@ -37,26 +38,22 @@ export class CurseFolderScanner {
 
   async scanFolder(folderPath: string): Promise<CurseScanResult> {
     const fileList = await readDirRecursive(folderPath);
-    fileList.forEach(fp => (this._fileMap[fp.toLowerCase()] = fp));
+    fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
 
-    console.log("listAllFiles", folderPath, fileList.length);
+    log.info("listAllFiles", folderPath, fileList.length);
 
     let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
     matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
-    console.log('matchingFiles', matchingFiles.length);
+    log.info("matchingFiles", matchingFiles.length);
 
-    const individualFingerprints = await async.mapLimit<string, number>(
-      matchingFiles,
-      4,
-      async (path, callback) => {
-        const normalizedFileHash = await this.getFileHash(path);
-        callback(undefined, normalizedFileHash);
-      }
-    );
+    const individualFingerprints = await async.mapLimit<string, number>(matchingFiles, 4, async (path, callback) => {
+      const normalizedFileHash = await this.getFileHash(path);
+      callback(undefined, normalizedFileHash);
+    });
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
     const fingerprint = this.getStringHash(hashConcat);
-    console.log("fingerprint", fingerprint);
+    log.info("fingerprint", fingerprint);
 
     return {
       directory: folderPath,
@@ -67,10 +64,7 @@ export class CurseFolderScanner {
     };
   }
 
-  private async getMatchingFiles(
-    folderPath: string,
-    filePaths: string[]
-  ): Promise<string[]> {
+  private async getMatchingFiles(folderPath: string, filePaths: string[]): Promise<string[]> {
     const parentDir = path.dirname(folderPath) + path.sep;
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
@@ -84,7 +78,7 @@ export class CurseFolderScanner {
       }
     }
 
-    console.log('fileInfoList', fileInfoList.length)
+    log.info("fileInfoList", fileInfoList.length);
     for (let fileInfo of fileInfoList) {
       await this.processIncludeFile(matchingFileList, fileInfo);
     }
@@ -92,11 +86,16 @@ export class CurseFolderScanner {
     return matchingFileList;
   }
 
-  private async processIncludeFile(
-    matchingFileList: string[],
-    fileInfo: string
-  ) {
-    const nativePath = this.getRealPath(fileInfo);
+  private async processIncludeFile(matchingFileList: string[], fileInfo: string) {
+    let nativePath = "";
+    try {
+      nativePath = this.getRealPath(fileInfo);
+    } catch (e) {
+      log.error(`Include file path does not exist: ${fileInfo}`);
+      log.error(e);
+      return;
+    }
+
     if (!fs.existsSync(nativePath) || matchingFileList.indexOf(nativePath) !== -1) {
       return;
     }
@@ -118,10 +117,7 @@ export class CurseFolderScanner {
     }
   }
 
-  private getFileInclusionMatches(
-    fileInfo: string,
-    fileContent: string
-  ): string[] | null {
+  private getFileInclusionMatches(fileInfo: string, fileContent: string): string[] | null {
     const ext = path.extname(fileInfo);
     switch (ext) {
       case ".xml":
@@ -158,22 +154,16 @@ export class CurseFolderScanner {
     return matches;
   }
 
-  private getStringHash(
-    targetString: string,
-    targetStringEncoding?: BufferEncoding
-  ): number {
+  private getStringHash(targetString: string, targetStringEncoding?: BufferEncoding): number {
     try {
-      const strBuffer = Buffer.from(
-        targetString,
-        targetStringEncoding || "ascii"
-      );
+      const strBuffer = Buffer.from(targetString, targetStringEncoding || "ascii");
 
       const hash = nativeAddon.computeHash(strBuffer, strBuffer.length);
 
       return hash;
     } catch (err) {
-      console.error(err);
-      console.log(targetString, targetStringEncoding);
+      log.error(err);
+      log.info(targetString, targetStringEncoding);
       throw err;
     }
   }
@@ -191,8 +181,8 @@ export class CurseFolderScanner {
           return resolve(hash);
         });
       } catch (err) {
-        console.error(err);
-        console.log(filePath);
+        log.error(err);
+        log.info(filePath);
         return reject(err);
       }
     });
