@@ -5,6 +5,7 @@ export const AppConfig = {
   wowUpHubUrl: "https://hub.wowup.io",
   rollbarAccessKey: "d01c11314a064572b11acee18d880650",
   googleAnalyticsId: "UA-92563227-4",
+  wowupRepositoryUrl: "https://github.com/WowUp/WowUp",
   firebaseConfig: {
     apiKey: "AIzaSyBvZ1_ldinsxeh-iRI53REm8j1CPcQuIBw",
     authDomain: "wowup-893c6.firebaseapp.com",
