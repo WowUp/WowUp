@@ -41,6 +41,14 @@ log.transports.file.resolvePath = (variables: log.PathVariables) => {
 };
 log.info("Main starting");
 
+process.on("uncaughtException", (error) => {
+  log.error("uncaughtException", error);
+});
+
+process.on("unhandledRejection", (error) => {
+  log.error("unhandledRejection", error);
+});
+
 app.setAppUserModelId("io.wowup.jliddev");
 
 if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
