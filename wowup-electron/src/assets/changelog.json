@@ -1,6 +1,31 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.5",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "German locale updates (Glow)",
+        "Portuguese locale updates (Lucas SD)",
+        "Store the sort order of 'Get Addons' (strayge)",
+        "Columns can now be hidden/shown on 'Get Addons' (strayge)",
+        "WowUp update icon now visible during download (chops)",
+        "Handle update for Windows portable exe (chops)",
+        "Fix issues with importing GitHub addons (Linaori)",
+        "Add support for the WowUp addon (Linaori)",
+        "Add the ability to have the app quit automatically after auto update via --quit",
+        "Add the ability to have the app quit automatically after auto update via --quit",
+        "Add a column that can be enabled to show the provider channel of an addon",
+        "Store the sort order of 'My Addons'",
+        "Increase the amount of folders scanned at once",
+        "Fix an issue with addon channel settings being lost on re-scan",
+        "Fix an issue with null window on 'appear' on Mac",
+        "Fix an issue with Show Folder not working on Mac",
+        "Fix an issue that allowed addons installed via GitHub to be duplicated",
+        "The multi-select context menu can now be translated"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.4",
       "changes": [
         "Increase tooltip font size (Linaori)",
