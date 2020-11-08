@@ -176,7 +176,7 @@
         "GAME_VERSION_COLUMN_HEADER": "Версия игры",
         "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
         "PROVIDER_COLUMN_HEADER": "Источник",
-        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
+        "PROVIDER_RELEASE_CHANNEL": "Канал выпуска",
         "RELEASED_AT_COLUMN_HEADER": "Выпущена",
         "STATUS_COLUMN_HEADER": "Статус",
         "UPDATED_AT_COLUMN_HEADER": "Обновлена"
