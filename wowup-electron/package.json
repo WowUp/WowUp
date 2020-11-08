@@ -17,7 +17,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/jliddev/WowUp.git"
+    "url": "https://github.com/WowUp/WowUp.git"
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
