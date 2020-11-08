@@ -95,11 +95,15 @@ export function initializeIpcHanders(window: BrowserWindow) {
 
       // Scan addon folders in parallel for speed!?
       try {
-        return await async.mapLimit<string, CurseScanResult>(filePaths, 2, async (folder, callback) => {
+        const results = await async.mapLimit<string, CurseScanResult>(filePaths, 2, async (folder, callback) => {
           const scanResult = await new CurseFolderScanner().scanFolder(folder);
 
           callback(undefined, scanResult);
         });
+
+        log.info(CURSE_GET_SCAN_RESULTS, "complete");
+
+        return results;
       } catch (e) {
         log.error("Failed during curse scan", e);
         throw e;

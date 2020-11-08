@@ -77,10 +77,11 @@ footer {
     background-color: transparent;
 
     &.update-button {
-      color: green;
+      background-color: green;
+      color: $white-1;
 
       &:hover {
-        background-color: $dark-3;
+        background-color: darkgreen;
         cursor: pointer;
       }
   

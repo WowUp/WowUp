@@ -106,7 +106,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     },
     {
       name: "addon.externalChannel",
-      display: "PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER",
+      display: "PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL",
       visible: false,
       allowToggle: true,
     },
