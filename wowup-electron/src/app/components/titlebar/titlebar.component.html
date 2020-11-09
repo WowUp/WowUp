@@ -11,10 +11,14 @@
     <div>WowUp.io</div>
   </div>
   <div *ngIf="isMac" class="window-control-container pointer">
-    <mat-icon class="debug-button pointer" (click)="onClickDebug()" svgIcon="fas:bug"></mat-icon>
+    <div class="window-control" (click)="onClickDebug()">
+      <mat-icon class="debug-button pointer" svgIcon="fas:bug"></mat-icon>
+    </div>
   </div>
-  <div *ngIf="electronService.isWin || electronService.isLinux" class="window-control-container">
-    <mat-icon (click)="onClickDebug()" svgIcon="fas:bug"></mat-icon>
+  <div *ngIf="electronService.isWin || electronService.isLinux" class="window-control-container row align-items-center">
+    <div class="window-control" (click)="onClickDebug()">
+      <mat-icon class="debug-button" svgIcon="fas:bug"></mat-icon>
+    </div>
     <div class="window-control" (click)="electronService.minimizeWindow()">
       <img src="assets/chrome-minimize.svg" />
     </div>

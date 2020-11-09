@@ -1,6 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.8",
+      "changes": [
+        "Fix an issue with the update WowUp dialog not restart on Mac",
+        "Fix another issue with column sorting not being assigned correctly",
+        "Fix the refresh WowUp update icon spin direction",
+        "Minor updates for the new icon set"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.7",
       "changes": [
         "Italian locale updates (Bito)",
