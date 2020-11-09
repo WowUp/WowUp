@@ -12,8 +12,8 @@
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
       "INSTALL_TITLE": "Aggiornamento di Wowup pronto",
       "NOT_AVAILABLE": "L'ultima versione di Wowup è già installata",
-      "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
-      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Vuoi scaricare manualmente l'ultima versione portatile?\n\nDovrai chiudere l'applicazione manualmente e sovrascrivere la nuova versione.",
+      "PORTABLE_DOWNLOAD_TITLE": "Richiesto Download Manuale",
       "SNACKBAR_ACTION": "Aggiorna",
       "SNACKBAR_TEXT": "È disponibile una nuova versione di WowUp",
       "TOOLTIP": "L'aggiornamento di WowUp è pronto per l'installazione",
@@ -70,7 +70,7 @@
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Di {authorName}",
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser",
-      "VIEW_ON_PROVIDER_PREFIX": "View on"
+      "VIEW_ON_PROVIDER_PREFIX": "Visualizza su"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "Ok"
@@ -176,7 +176,7 @@
         "GAME_VERSION_COLUMN_HEADER": "Versione Del Gioco",
         "LATEST_VERSION_COLUMN_HEADER": "Ultima Versione",
         "PROVIDER_COLUMN_HEADER": "Provveditore",
-        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
+        "PROVIDER_RELEASE_CHANNEL": "Canale del Provveditore",
         "RELEASED_AT_COLUMN_HEADER": "Rilasciato",
         "STATUS_COLUMN_HEADER": "Stato",
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
