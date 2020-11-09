@@ -1,11 +1,8 @@
-<div
-  class="titlebar bg-purple-1 text-light"
-  [ngClass]="{
+<div class="titlebar bg-purple-1 text-light" [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }"
->
+  }">
   <div class="titlebar-drag-region" (dblclick)="onDblClick()"></div>
   <div class="window-logo-container" *ngIf="electronService.isWin">
     <img src="assets/wowup_logo_512np.png" />
@@ -14,30 +11,17 @@
     <div>WowUp.io</div>
   </div>
   <div *ngIf="isMac" class="window-control-container pointer">
-    <mat-icon class="debug-button pointer" (click)="onClickDebug()"
-      >bug_report</mat-icon
-    >
+    <mat-icon class="debug-button pointer" (click)="onClickDebug()" svgIcon="fas:bug"></mat-icon>
   </div>
-  <div
-    *ngIf="electronService.isWin || electronService.isLinux"
-    class="window-control-container"
-  >
-    <mat-icon (click)="onClickDebug()">bug_report</mat-icon>
+  <div *ngIf="electronService.isWin || electronService.isLinux" class="window-control-container">
+    <mat-icon (click)="onClickDebug()" svgIcon="fas:bug"></mat-icon>
     <div class="window-control" (click)="electronService.minimizeWindow()">
       <img src="assets/chrome-minimize.svg" />
     </div>
-    <div
-      class="window-control"
-      *ngIf="isMaximized === false"
-      (click)="electronService.maximizeWindow()"
-    >
+    <div class="window-control" *ngIf="isMaximized === false" (click)="electronService.maximizeWindow()">
       <img src="assets/chrome-maximize.svg" />
     </div>
-    <div
-      class="window-control"
-      *ngIf="isMaximized === true"
-      (click)="electronService.unmaximizeWindow()"
-    >
+    <div class="window-control" *ngIf="isMaximized === true" (click)="electronService.unmaximizeWindow()">
       <img src="assets/chrome-restore.svg" />
     </div>
     <div class="window-control" (click)="onClickClose()">

@@ -71,11 +71,15 @@
       color: $artifact;
     }
   }
+  .upgrade-icon {
+    height: 10px;
+  }
 
   .auto-update-icon {
-     //vertical-align: text-bottom;
-     color: $white-1;
-    }
+    height: 12px;
+    //vertical-align: text-bottom;
+    color: $white-1;
+  }
 
   .addon-funding {
     a {

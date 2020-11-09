@@ -32,14 +32,15 @@
       </a>
     </div>
     <div class="addon-version row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
-      <mat-icon *ngIf="this.listItem.isAutoUpdate === true" class="auto-update-icon mr-1" [inline]="true"
-        [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate">
-        update
-      </mat-icon>
+      <div class="mr-1">
+        <mat-icon *ngIf="this.listItem.isAutoUpdate === true" class="auto-update-icon"
+          [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate" svgIcon="far:clock">
+        </mat-icon>
+      </div>
       {{ listItem.addon.installedVersion }}
       <div class="update-available row"
         *ngIf="showUpdateToVersion && listItem.addon.latestVersion !== listItem.addon.installedVersion">
-        <mat-icon [inline]="true">play_arrow</mat-icon>
+        <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
         <div>{{ listItem.addon.latestVersion }}</div>
       </div>
     </div>

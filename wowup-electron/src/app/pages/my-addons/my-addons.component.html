@@ -22,7 +22,7 @@
           <input matInput (keyup)="filterAddons()" [(ngModel)]="filter" />
           <button mat-button color="accent" *ngIf="filter" matSuffix mat-icon-button aria-label="Clear"
             (click)="onClearFilter()">
-            <mat-icon>close</mat-icon>
+            <mat-icon svgIcon="fas:times"></mat-icon>
           </button>
         </mat-form-field>
       </div>

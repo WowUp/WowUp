@@ -10,7 +10,6 @@ import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
-import { faAngleDoubleDown } from "@fortawesome/free-solid-svg-icons";
 
 const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 
@@ -39,8 +38,6 @@ export class AppComponent implements AfterViewInit {
   ) {
     this.translate.setDefaultLang("en");
     this.translate.use(this._wowUpService.currentLanguage);
-
-    this._iconService.addSvg(faAngleDoubleDown);
   }
 
   ngAfterViewInit(): void {
