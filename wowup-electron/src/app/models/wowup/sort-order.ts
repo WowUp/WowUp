@@ -1,4 +1,4 @@
 export interface SortOrder {
   name: string;
-  direction: string;
+  direction: "asc" | "desc" | "";
 }

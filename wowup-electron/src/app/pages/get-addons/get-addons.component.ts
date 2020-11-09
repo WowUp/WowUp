@@ -16,10 +16,7 @@ import * as _ from "lodash";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
-import {
-  AddonDetailComponent,
-  AddonDetailModel,
-} from "../../components/addon-detail/addon-detail.component";
+import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
@@ -67,15 +64,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public get defaultAddonChannelKey() {
-    return this._wowUpService.getClientDefaultAddonChannelKey(
-      this._sessionService.selectedClientType
-    );
+    return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.selectedClientType);
   }
 
   public get defaultAddonChannel() {
-    return this._wowUpService.getDefaultAddonChannel(
-      this._sessionService.selectedClientType
-    );
+    return this._wowUpService.getDefaultAddonChannel(this._sessionService.selectedClientType);
   }
 
   public query = "";
@@ -104,12 +97,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const sortOrder = this._wowUpService.getAddonsSortOrder;
-    if(sortOrder){
-      this.activeSort = sortOrder.name;
-      this.activeSortDirection = sortOrder.direction;
-    }
-
     const columnStates = this._wowUpService.getAddonsHiddenColumns;
     this.columns.forEach((col) => {
       if (!col.allowToggle) {
@@ -135,7 +122,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._wowUpService.getAddonsSortOrder = {
       name: this.sort.active,
-      direction: this.sort.start || "",
+      direction: this.sort.direction,
     };
   }
 
@@ -163,6 +150,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     col.visible = event.checked;
     this._wowUpService.getAddonsHiddenColumns = [...this.columns];
   }
+
+  private loadSortOrder = () => {
+    const sortOrder = this._wowUpService.getAddonsSortOrder;
+    if (sortOrder && this.sort) {
+      this.activeSort = sortOrder.name;
+      this.activeSortDirection = sortOrder.direction;
+      this.sort.sort({ id: sortOrder.name, start: sortOrder.direction || "asc", disableClear: false });
+    }
+  };
 
   private lazyLoad() {
     if (this._lazyLoaded) {
@@ -194,6 +190,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       });
 
     const dataSourceSub = this.dataSource.connect().subscribe((data) => {
+      console.debug("get addons activeSortDirection", this.sort);
+
       this.setPageContextText();
     });
 
@@ -207,10 +205,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private setDataSource(items: GetAddonListItem[]) {
     this.dataSource.data = items;
-    this.dataSource.sortingDataAccessor = (
-      item: GetAddonListItem,
-      prop: string
-    ) => {
+    this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
       if (prop === "releasedAt") {
         return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
       }
@@ -218,6 +213,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return typeof value === "string" ? value.toLowerCase() : value;
     };
     this.dataSource.sort = this.sort;
+    this.loadSortOrder();
   }
 
   onInstallFromUrl() {
@@ -248,10 +244,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this.isBusy = true;
 
-    let searchResults = await this._addonService.search(
-      this.query,
-      this.selectedClient
-    );
+    let searchResults = await this._addonService.search(this.query, this.selectedClient);
 
     this.setDataSource(this.formatAddons(searchResults));
     this.isBusy = false;
@@ -296,10 +289,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private setPageContextText() {
     const length = this.dataSource.data?.length;
     const contextStr = length
-      ? this._translateService.instant(
-          "PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS",
-          { count: length }
-        )
+      ? this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS", { count: length })
       : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);

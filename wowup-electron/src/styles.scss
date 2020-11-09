@@ -429,3 +429,8 @@ snack-bar-container {
 .mat-tooltip {
   font-size: 0.95em;
 }
+
+th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}

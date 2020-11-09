@@ -51,7 +51,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
   @ViewChild("updateAllContextMenuTrigger")
   updateAllContextMenu: MatMenuTrigger;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild("table", { read: ElementRef }) table: ElementRef;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>([]);
@@ -173,17 +173,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     );
   }
 
-  onStatusColumnUpdated() {
-    this._cdRef.detectChanges();
-  }
-
   public ngOnInit(): void {
-    const sortOrder = this.wowUpService.myAddonsSortOrder;
-    if (sortOrder) {
-      this.activeSort = sortOrder.name;
-      this.activeSortDirection = sortOrder.direction;
-    }
-
     const columnStates = this.wowUpService.myAddonsHiddenColumns;
     this.columns.forEach((col) => {
       if (!col.allowToggle) {
@@ -212,9 +202,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
     this.wowUpService.myAddonsSortOrder = {
       name: this.sort.active,
-      direction: this.sort.start || "",
+      direction: this.sort.direction,
     };
   }
+
+  private loadSortOrder = () => {
+    const sortOrder = this.wowUpService.myAddonsSortOrder;
+    if (sortOrder && this.sort) {
+      this.activeSort = sortOrder.name;
+      this.activeSortDirection = sortOrder.direction;
+      this.sort.sort({ id: sortOrder.name, start: sortOrder.direction || "asc", disableClear: false });
+    }
+  };
 
   public onRefresh() {
     this.loadAddons(this.selectedClient);
@@ -733,6 +732,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     };
     this.dataSource.filterPredicate = this.filterListItem;
     this.dataSource.sort = this.sort;
+    this.loadSortOrder();
   };
 
   private onDataSourceChange = (sortedListItems: AddonViewModel[]) => {
