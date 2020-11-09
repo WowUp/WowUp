@@ -60,6 +60,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
   private _lazyLoaded: boolean = false;
+  private _automaticSort: boolean = false;
 
   public sortedListItems: AddonViewModel[] = [];
   public spinnerMessage = "";
@@ -201,6 +202,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
 
+    if (this._automaticSort) {
+      return;
+    }
+
     this.wowUpService.myAddonsSortOrder = {
       name: this.sort.active,
       direction: this.sort.direction,
@@ -212,7 +217,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     if (sortOrder && this.sort) {
       this.activeSort = sortOrder.name;
       this.activeSortDirection = sortOrder.direction;
-      this.sort.sort({ id: sortOrder.name, start: sortOrder.direction || "asc", disableClear: false });
+      this._automaticSort = true;
+      this.sort.active = sortOrder.name;
+      this.sort.direction = sortOrder.direction;
+      this.sort.sortChange.emit();
+      this._automaticSort = false;
     }
   };
 
@@ -735,6 +744,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       let value = _.get(data, sortHeaderId);
       return typeof value === "string" ? value.toLowerCase() : value;
     };
+
     this.dataSource.filterPredicate = this.filterListItem;
     this.dataSource.sort = this.sort;
     this.loadSortOrder();
