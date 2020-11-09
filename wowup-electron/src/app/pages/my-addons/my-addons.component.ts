@@ -36,6 +36,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
+import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-my-addons",
@@ -515,6 +516,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public isAllItemsSelected(listItems: AddonViewModel[], prop: string) {
     return _.filter(listItems, prop).length === listItems.length;
+  }
+
+  public getChannelTypeLocaleKey(channelType: string) {
+    return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType.toUpperCase()}`;
   }
 
   private lazyLoad() {

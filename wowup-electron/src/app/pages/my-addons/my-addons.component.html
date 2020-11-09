@@ -125,7 +125,7 @@
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL" | translate }}
         </th>
         <td class="game-version-cell" mat-cell *matCellDef="let element">
-          {{ element.addon.externalChannel }}
+          {{ getChannelTypeLocaleKey(element.addon.externalChannel) | translate }}
         </td>
       </ng-container>
 

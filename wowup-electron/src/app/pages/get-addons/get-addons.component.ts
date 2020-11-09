@@ -51,12 +51,27 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public activeSortDirection = "desc";
 
   columns: ColumnState[] = [
-    { name: "name", display: "Addon", visible: true },
-    { name: "downloadCount", display: "Downloads", visible: true, allowToggle: true },
-    { name: "releasedAt", display: "Released At", visible: true, allowToggle: true },
-    { name: "author", display: "Author", visible: true, allowToggle: true },
-    { name: "providerName", display: "Provider", visible: true, allowToggle: false },
-    { name: "status", display: "Status", visible: true },
+    { name: "name", display: "PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER", visible: true },
+    {
+      name: "downloadCount",
+      display: "PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER",
+      visible: true,
+      allowToggle: true,
+    },
+    {
+      name: "releasedAt",
+      display: "PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER",
+      visible: true,
+      allowToggle: true,
+    },
+    { name: "author", display: "PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER", visible: true, allowToggle: true },
+    {
+      name: "providerName",
+      display: "PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER",
+      visible: true,
+      allowToggle: false,
+    },
+    { name: "status", display: "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER", visible: true },
   ];
 
   public get displayedColumns(): string[] {
