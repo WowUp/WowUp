@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
 import {
@@ -63,8 +63,15 @@ export function initializeAppUpdateIpcHandlers(win: BrowserWindow) {
     return await autoUpdater.downloadUpdate();
   });
 
+  // Used this solution for Mac support 
+  // https://github.com/electron-userland/electron-builder/issues/1604#issuecomment-372091881
   ipcMain.handle(APP_UPDATE_INSTALL, async () => {
     log.info(APP_UPDATE_INSTALL);
+    app.removeAllListeners('window-all-closed');
+    var browserWindows = BrowserWindow.getAllWindows();
+    browserWindows.forEach(function(browserWindow) {
+        browserWindow.removeAllListeners('close');
+    });
     autoUpdater.quitAndInstall();
   });
 
