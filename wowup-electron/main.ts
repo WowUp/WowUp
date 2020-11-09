@@ -22,6 +22,7 @@ import { COLLAPSE_TO_TRAY_PREFERENCE_KEY, USE_HARDWARE_ACCELERATION_PREFERENCE_K
 import { WindowState } from "./src/common/models/window-state";
 import { AppOptions } from "./src/common/wowup/app-options";
 
+const startedAt = Date.now();
 const preferenceStore = new Store({ name: "preferences" });
 const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
 
@@ -214,6 +215,7 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
+  log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
     require("electron-reload")(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`),
@@ -275,6 +277,7 @@ try {
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on("ready", () => {
+    log.info(`App ready: ${Date.now() - startedAt}ms`);
     setTimeout(() => {
       createWindow();
     }, 400);
