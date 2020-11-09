@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { ColumnState } from "app/models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
@@ -71,11 +72,13 @@ export class WowUpService {
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
-    private _fileService: FileService
+    private _fileService: FileService,
+    private _translateService: TranslateService
   ) {
     this.setDefaultPreferences();
 
-    this.applicationVersion = _electronService.remote.app.getVersion() + `${this._electronService.isPortable ? ' (portable)' : ''}`;
+    this.applicationVersion =
+      _electronService.remote.app.getVersion() + `${this._electronService.isPortable ? " (portable)" : ""}`;
     this.isBetaBuild = this.applicationVersion.toLowerCase().indexOf("beta") != -1;
 
     this.createDownloadDirectory().then(() => this.cleanupDownloads());
@@ -104,6 +107,28 @@ export class WowUpService {
     this.setAutoStartup();
 
     console.log("loginItemSettings", this._electronService.loginItemSettings);
+  }
+
+  /**
+   * This is called before the app component is initialized in order to catch issues
+   * with unsupported languages
+   */
+  async initializeLanguage() {
+    console.log("Language setup start");
+    const langCode = this.currentLanguage || this._electronService.locale;
+
+    this._translateService.setDefaultLang("en");
+    try {
+      await this._translateService.use(langCode).toPromise();
+      console.log(`using locale ${langCode}`);
+      this.currentLanguage = langCode;
+    } catch (e) {
+      console.warn(`Language ${langCode} not found defaulting to english`);
+      this.currentLanguage = "en";
+      await this._translateService.use("en").toPromise();
+    }
+
+    console.log("Language setup complete");
   }
 
   public get availableVersion() {
@@ -308,7 +333,6 @@ export class WowUpService {
     this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
-    this.setDefaultPreference(SELECTED_LANGUAGE_PREFERENCE_KEY, this._electronService.locale);
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, this.getDefaultReleaseChannel());
     this.setDefaultClientPreferences();
   }

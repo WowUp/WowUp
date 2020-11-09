@@ -10,6 +10,7 @@ import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
+import { filter } from "rxjs/operators";
 
 const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 
@@ -35,10 +36,7 @@ export class AppComponent implements AfterViewInit {
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _iconService: IconService
-  ) {
-    this.translate.setDefaultLang("en");
-    this.translate.use(this._wowUpService.currentLanguage);
-  }
+  ) {}
 
   ngAfterViewInit(): void {
     this.createSystemTray();
@@ -106,9 +104,9 @@ export class AppComponent implements AfterViewInit {
   }
 
   private async createSystemTray() {
+    console.log("Creating tray");
     const result = await this.translate.get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"]).toPromise();
 
-    console.debug("Creating tray", result);
     const config: SystemTrayConfig = {
       quitLabel: result["APP.SYSTEM_TRAY.QUIT_ACTION"],
       checkUpdateLabel: result["APP.SYSTEM_TRAY.CHECK_UPDATE"],
