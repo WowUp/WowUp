@@ -1,6 +1,19 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.7",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "German locale updates (Glow)",
+        "Fix an issue where bad addon include paths would cause scanning to hang",
+        "Fix storage and assignment of column sort for 'My Addons' and 'Get Addons'",
+        "Column select in 'Get Addons' is now localized",
+        "Provider channel in 'My Addons' is now localized",
+        "Removed material icons since its hard to embed",
+        "Refactor language initialization to prevent several issues"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.6",
       "changes": [
         "Russian locale updates (Medok)",
