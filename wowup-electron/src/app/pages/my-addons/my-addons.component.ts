@@ -212,6 +212,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * This method should recall the stored column sort state
+   * this method needs _automaticSort to prevent the sort from changing
+   */
   private loadSortOrder = () => {
     const sortOrder = this.wowUpService.myAddonsSortOrder;
     if (sortOrder && this.sort) {
