@@ -18,7 +18,6 @@ import { AddonProvider } from "./addon-provider";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
-const CACHE_TIME = 10 * 60 * 1000;
 
 export class TukUiAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<
@@ -234,7 +233,7 @@ export class TukUiAddonProvider implements AddonProvider {
     try {
       const addons = await this._circuitBreaker.fire(clientType);
 
-      this._cachingService.set(cacheKey, addons, CACHE_TIME);
+      this._cachingService.set(cacheKey, addons);
       return addons;
     } catch (err) {
       console.error(err);
