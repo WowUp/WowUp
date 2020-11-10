@@ -11,19 +11,24 @@
 
   <div mat-dialog-content>
     <div class="row align-items-start">
-      <div class="mat-subheading-1 flex-grow-1 mr-3" translate [translateParams]="{ authorName: subtitle }">
-        DIALOGS.ADDON_DETAILS.BY_AUTHOR
+      <div class="mat-subheading-1 flex-grow-1 mr-3">
+        <div translate [translateParams]="{ authorName: subtitle }">DIALOGS.ADDON_DETAILS.BY_AUTHOR</div>
+        <div class="sub-text">{{ getVersion() }}</div>
       </div>
-      <!-- <app-addon-provider-badge
-        [providerName]="provider"
-        class="flex-shrink-0"
-      ></app-addon-provider-badge> -->
-      <span> {{ 'DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX' | translate }} {{ provider }} &nbsp; </span>
-      <a class="icon-link" appExternalLink [href]="externalUrl" [matTooltip]="
-          'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate
-        ">
-        <mat-icon class="open-in-browser-icon" color="accent" svgIcon="fas:external-link-alt"></mat-icon>
-      </a>
+
+      <div>
+        <div class="row align-items-center">
+          <div class="mr-2">
+            <div> {{ 'DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX' | translate }} {{ provider }}</div>
+            <div class="sub-text text-right selectable">{{ getExternalId() }}</div>
+          </div>
+          <a class="icon-link" appExternalLink [href]="externalUrl" [matTooltip]="
+            'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate
+          ">
+            <mat-icon class="open-in-browser-icon" color="accent" svgIcon="fas:external-link-alt"></mat-icon>
+          </a>
+        </div>
+      </div>
     </div>
     <!-- DEPENDENCIES -->
     <div *ngIf="hasRequiredDependencies()" class="addon-dependencies row align-items-center">

@@ -1,6 +1,17 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.9",
+      "changes": [
+        "Spanish locale updates (Stidius)",
+        "Lower the cache time for TukUI from 1 week to 10 minutes, oops",
+        "Fix an issue where empty game versions from CurseForge were not falling back to the toc",
+        "Add version number and external ID to the details dialog",
+        "Add some profiling for the startup process",
+        "Add first pass at CurseForge dependency support"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.8",
       "changes": [
         "Fix an issue with the update WowUp dialog not restart on Mac",

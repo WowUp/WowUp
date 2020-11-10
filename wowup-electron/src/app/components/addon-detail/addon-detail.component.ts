@@ -144,4 +144,18 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
   getRequiredDependencyCount() {
     return this._dependencies.length;
   }
+
+  getVersion() {
+    return this.model.searchResult
+      ? this.getLatestSearchResultFile().version
+      : this.model.listItem.addon.installedVersion;
+  }
+
+  getExternalId() {
+    return this.model.searchResult ? this.model.searchResult.externalId : this.model.listItem.addon.externalId;
+  }
+
+  private getLatestSearchResultFile() {
+    return SearchResult.getLatestFile(this.model.searchResult, this.model.channelType);
+  }
 }

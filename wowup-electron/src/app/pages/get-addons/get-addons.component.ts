@@ -30,6 +30,7 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { PotentialAddonViewDetailsEvent } from "app/components/potential-addon-table-column/potential-addon-table-column.component";
 import * as SearchResults from "../../utils/search-result.utils";
+import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-get-addons",
@@ -268,10 +269,18 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._cdRef.detectChanges();
   }
 
-  openDetailDialog(event: PotentialAddonViewDetailsEvent, listItem: GetAddonListItem) {
+  onDoubleClickRow(listItem: GetAddonListItem) {
+    this.openDetailDialog(listItem.searchResult, this.defaultAddonChannel);
+  }
+
+  onAddonColumnDetailDialog(event: PotentialAddonViewDetailsEvent) {
+    this.openDetailDialog(event.searchResult, event.channelType);
+  }
+
+  openDetailDialog(searchResult: AddonSearchResult, channelType: AddonChannelType) {
     const data: AddonDetailModel = {
-      searchResult: listItem.searchResult,
-      channelType: event.channelType,
+      searchResult: searchResult,
+      channelType: channelType,
     };
 
     const dialogRef = this._dialog.open(AddonDetailComponent, {
