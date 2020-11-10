@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 
 @Component({
@@ -19,4 +20,13 @@ export class MyAddonsAddonCellComponent implements OnInit {
   viewDetails() {
     this.onViewDetails.emit(this.listItem);
   }
+
+  getRequireDependencyCount() {
+    return this.listItem.getDependencies(AddonDependencyType.Required).length;
+  }
+
+  hasRequiredDependencies() {
+    return this.getRequireDependencyCount() > 0;
+  }
+
 }

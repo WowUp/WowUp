@@ -1,29 +1,19 @@
-<div
-  class="tab-container"
-  [ngClass]="{
+<div class="tab-container" [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }"
->
+  }">
   <div class="control-container">
     <div class="select-container">
       <mat-form-field>
         <mat-label>{{
           "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate
         }}</mat-label>
-        <mat-select
-          class="select"
-          [(value)]="selectedClient"
-          (selectionChange)="onClientChange()"
-          [disabled]="isBusy === true"
-        >
-          <mat-option
-            [value]="clientType"
-            *ngFor="
+        <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
+          [disabled]="isBusy === true">
+          <mat-option [value]="clientType" *ngFor="
               let clientType of warcraftService.installedClientTypes$ | async
-            "
-          >
+            ">
             {{ warcraftService.getClientDisplayName(clientType) }}
           </mat-option>
         </mat-select>
@@ -35,44 +25,20 @@
           <mat-label>{{
             "PAGES.GET_ADDONS.SEARCH_LABEL" | translate
           }}</mat-label>
-          <input
-            matInput
-            type="text"
-            [(ngModel)]="query"
-            (keyup.enter)="onSearch()"
-          />
-          <button
-            mat-button
-            color="accent"
-            *ngIf="query"
-            matSuffix
-            mat-icon-button
-            aria-label="Clear"
-            (click)="onClearSearch()"
-          >
+          <input matInput type="text" [(ngModel)]="query" (keyup.enter)="onSearch()" />
+          <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
+            (click)="onClearSearch()">
             <mat-icon svgIcon="fas:times"></mat-icon>
           </button>
         </mat-form-field>
       </div>
       <div class="button-container">
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="onRefresh()"
-          appUserActionTracker
-          category="GetAddons"
-          action="Refresh"
-        >
+        <button mat-flat-button color="primary" (click)="onRefresh()" appUserActionTracker category="GetAddons"
+          action="Refresh">
           {{ "PAGES.GET_ADDONS.REFRESH_BUTTON" | translate }}
         </button>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="onInstallFromUrl()"
-          appUserActionTracker
-          category="GetAddons"
-          action="InstallFromUrl"
-        >
+        <button mat-flat-button color="primary" (click)="onInstallFromUrl()" appUserActionTracker category="GetAddons"
+          action="InstallFromUrl">
           {{ "PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON" | translate }}
         </button>
       </div>
@@ -83,38 +49,20 @@
     <app-progress-spinner> </app-progress-spinner>
   </div>
 
-  <div
-    *ngIf="isBusy === false && dataSource.data.length === 0"
-    class="no-addons-container flex-grow-1"
-  >
+  <div *ngIf="isBusy === false && dataSource.data.length === 0" class="no-addons-container flex-grow-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <div
-    class="table-container flex-grow-1"
-    [hidden]="isBusy === true || dataSource.data.length === 0"
-  >
-    <table
-      #table
-      mat-table
-      matSort
-      (matSortChange)="onSortChange()"
-      [dataSource]="dataSource"
-      [matSortActive]="activeSort"
-      [matSortDirection]="activeSortDirection"
-      class="mat-elevation-z8"
-    >
+  <div class="table-container flex-grow-1" [hidden]="isBusy === true || dataSource.data.length === 0">
+    <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
+      [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
       <ng-container matColumnDef="name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
-          <app-potential-addon-table-column
-            [addon]="element"
-            [channel]="defaultAddonChannel"
-            [clientType]="selectedClient"
-            (onViewDetails)="openDetailDialog(element)"
-          >
+          <app-potential-addon-table-column [addon]="element" [channel]="defaultAddonChannel"
+            [clientType]="selectedClient" (onViewDetails)="openDetailDialog($event, element)">
           </app-potential-addon-table-column>
         </td>
       </ng-container>
@@ -135,23 +83,14 @@
           {{ "PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
-          <ng-template
-            let-releasedAt
-            [ngTemplateOutletContext]="{
+          <ng-template let-releasedAt [ngTemplateOutletContext]="{
               $implicit:
                 element
                 | getAddonListItemFileProp: 'releaseDate':defaultAddonChannel
-            }"
-            [ngTemplateOutlet]="t"
-            #t
-          >
-            <div
-              [matTooltip]="
+            }" [ngTemplateOutlet]="t" #t>
+            <div [matTooltip]="
                 'COMMON.DATES.DATETIME_SHORT' | translate: { d: releasedAt }
-              "
-              matTooltipPosition="above"
-              matTooltipShowDelay="500"
-            >
+              " matTooltipPosition="above" matTooltipShowDelay="500">
               {{ releasedAt | relativeDuration }}
             </div>
           </ng-template>
@@ -159,12 +98,7 @@
       </ng-container>
 
       <ng-container matColumnDef="providerName">
-        <th
-          mat-header-cell
-          mat-sort-header
-          *matHeaderCellDef
-          class="provider-column"
-        >
+        <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{ "PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
@@ -190,34 +124,23 @@
           {{ "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element">
-          <app-get-addon-status-column
-            [addonSearchResult]="element.searchResult"
-            (onInstallViewUpdated)="onStatusColumnUpdated()"
-          ></app-get-addon-status-column>
+          <app-get-addon-status-column [addonSearchResult]="element.searchResult"
+            (onInstallViewUpdated)="onStatusColumnUpdated()"></app-get-addon-status-column>
         </td>
       </ng-container>
 
-      <tr
-        mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
-        (contextmenu)="onHeaderContext($event); $event.preventDefault()"
-      ></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns; let i = index"
-        (dblclick)="openDetailDialog(row)"
-      ></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
+        (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (dblclick)="openDetailDialog(row)">
+      </tr>
     </table>
   </div>
 </div>
 
 <!-- COLUMNS CONTEXT MENU -->
-<div
-  style="visibility: hidden; position: fixed"
-  #columnContextMenuTrigger="matMenuTrigger"
-  [style.left]="contextMenuPosition.x"
-  [style.top]="contextMenuPosition.y"
-  [matMenuTriggerFor]="columnContextMenu"
-></div>
+<div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
+</div>
 <mat-menu #columnContextMenu="matMenu" class="addon-context-menu">
   <ng-template matMenuContent let-columns="columns">
     <div class="addon-context-menu-header">
@@ -226,12 +149,8 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    <mat-checkbox
-      *ngFor="let column of columns"
-      class="mat-menu-item"
-      [checked]="column.visible"
-      (change)="onColumnVisibleChange($event, column)"
-    >
+    <mat-checkbox *ngFor="let column of columns" class="mat-menu-item" [checked]="column.visible"
+      (change)="onColumnVisibleChange($event, column)">
       {{ column.display | translate }}
     </mat-checkbox>
   </ng-template>

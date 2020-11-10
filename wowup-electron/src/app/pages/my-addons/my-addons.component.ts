@@ -298,7 +298,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
     try {
       const listItems = _.filter(
         this._displayAddonsSrc.value,
-        (listItem) => listItem.needsInstall || listItem.needsUpdate
+        (listItem) => !listItem.isIgnored && (listItem.needsInstall || listItem.needsUpdate)
       );
 
       await Promise.all(
@@ -436,7 +436,27 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.addonService.removeAddon(addon);
+      if (this.addonService.getRequiredDependencies(addon).length) {
+        this.promptRemoveDependencies(addon);
+      } else {
+        this.addonService.removeAddon(addon);
+      }
+    });
+  }
+
+  private promptRemoveDependencies(addon: Addon) {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: "Remove Addon Dependencies?",
+        message:
+          `${addon.name} has ${addon.dependencies.length} dependencies. Do you want to remove them also?` +
+          "\n\n" +
+          this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.addonService.removeAddon(addon, result);
     });
   }
 

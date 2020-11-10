@@ -11,6 +11,7 @@ import {
   faExternalLinkAlt,
   faPlay,
   faBug,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 
@@ -28,6 +29,7 @@ export class IconService {
     this.addSvg(faPlay);
     this.addSvg(faClock);
     this.addSvg(faBug);
+    this.addSvg(faLink);
   }
 
   async addSvg(icon: IconDefinition) {

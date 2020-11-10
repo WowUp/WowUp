@@ -1,4 +1,8 @@
 import { HttpClient } from "@angular/common/http";
+import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
+import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
+import { CurseDependency } from "common/curse/curse-dependency";
+import { CurseDependencyType } from "common/curse/curse-dependency-type";
 import * as _ from "lodash";
 import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
@@ -357,6 +361,7 @@ export class CurseAddonProvider implements AddonProvider {
           folders: this.getFolderNames(lf),
           gameVersion: this.getGameVersion(lf),
           releaseDate: new Date(lf.fileDate),
+          dependencies: lf.dependencies.map(this.createAddonSearchResultDependency),
         };
       });
 
@@ -376,6 +381,29 @@ export class CurseAddonProvider implements AddonProvider {
     } catch (e) {
       console.error(e);
       return null;
+    }
+  }
+
+  private createAddonSearchResultDependency = (dependency: CurseDependency): AddonSearchResultDependency => {
+    return {
+      externalAddonId: dependency.addonId.toString(),
+      type: this.toAddonDependencyType(dependency.type),
+    };
+  };
+
+  private toAddonDependencyType(curseDependencyType: CurseDependencyType): AddonDependencyType {
+    switch (curseDependencyType) {
+      case CurseDependencyType.EmbeddedLibrary:
+        return AddonDependencyType.Embedded;
+      case CurseDependencyType.OptionalDependency:
+        return AddonDependencyType.Optional;
+      case CurseDependencyType.RequiredDependency:
+        return AddonDependencyType.Required;
+      case CurseDependencyType.Include:
+      case CurseDependencyType.Incompatible:
+      case CurseDependencyType.Tool:
+      default:
+        return AddonDependencyType.Other;
     }
   }
 

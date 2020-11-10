@@ -62,4 +62,12 @@
   .addon-version {
     color: $white-2;
   }
+
+  .dependency-icon {
+    .mat-icon {
+      width: 11px;
+      height: 11px;
+      color: $white-1;
+    }
+  }
 }

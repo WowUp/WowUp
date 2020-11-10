@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
 import { Addon } from "../entities/addon";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
@@ -28,10 +30,7 @@ export class AddonViewModel {
   }
 
   get needsUpdate() {
-    return (
-      !this.isInstalling &&
-      this.addon.installedVersion !== this.addon.latestVersion
-    );
+    return !this.isInstalling && this.addon.installedVersion !== this.addon.latestVersion;
   }
 
   get isAutoUpdate() {
@@ -39,10 +38,7 @@ export class AddonViewModel {
   }
 
   get isUpToDate() {
-    return (
-      !this.isInstalling &&
-      this.addon.installedVersion === this.addon.latestVersion
-    );
+    return !this.isInstalling && this.addon.installedVersion === this.addon.latestVersion;
   }
 
   get isIgnored() {
@@ -114,4 +110,11 @@ export class AddonViewModel {
     console.log("Unhandled display state");
     return "COMMON.ADDON_STATE.UNKNOWN";
   }
+
+  public getDependencies(dependencyType: AddonDependencyType = undefined) {
+    return dependencyType == undefined
+      ? this.addon.dependencies
+      : _.filter(this.addon.dependencies, (dep) => dep.type === dependencyType);
+  }
+
 }

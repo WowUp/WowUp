@@ -28,6 +28,8 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatCheckboxChange } from "@angular/material/checkbox";
+import { PotentialAddonViewDetailsEvent } from "app/components/potential-addon-table-column/potential-addon-table-column.component";
+import * as SearchResults from "../../utils/search-result.utils";
 
 @Component({
   selector: "app-get-addons",
@@ -222,7 +224,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.dataSource.data = items;
     this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
       if (prop === "releasedAt") {
-        return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
+        return SearchResults.getLatestFile(item.searchResult, this.defaultAddonChannel)?.releaseDate;
       }
       let value = _.get(item, prop);
       return typeof value === "string" ? value.toLowerCase() : value;
@@ -266,9 +268,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._cdRef.detectChanges();
   }
 
-  openDetailDialog(listItem: GetAddonListItem) {
+  openDetailDialog(event: PotentialAddonViewDetailsEvent, listItem: GetAddonListItem) {
     const data: AddonDetailModel = {
       searchResult: listItem.searchResult,
+      channelType: event.channelType,
     };
 
     const dialogRef = this._dialog.open(AddonDetailComponent, {

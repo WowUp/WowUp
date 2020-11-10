@@ -1,8 +1,6 @@
 import * as _ from "lodash";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 
 export class GetAddonListItem {
   public readonly searchResult: AddonSearchResult;
@@ -33,9 +31,4 @@ export class GetAddonListItem {
     this.searchResult = searchResult;
   }
 
-  public getLatestFile(channel: AddonChannelType): AddonSearchResultFile {
-    let files = _.filter(this.searchResult.files, (f) => f.channelType <= channel);
-    files = _.orderBy(files, ["releaseDate"]).reverse();
-    return _.first(files);
-  }
 }

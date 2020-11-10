@@ -25,6 +25,12 @@
         <mat-icon class="open-in-browser-icon" color="accent" svgIcon="fas:external-link-alt"></mat-icon>
       </a>
     </div>
+    <!-- DEPENDENCIES -->
+    <div *ngIf="hasRequiredDependencies()" class="addon-dependencies row align-items-center">
+      <mat-icon svgIcon="fas:link" class="mr-1"></mat-icon>
+      This addon has {{ getRequiredDependencyCount() }} required dependencies.
+    </div>
+    <!-- SUMMARY -->
     <div class="mat-caption addon-detail-summary">{{ summary }}</div>
   </div>
   <div mat-dialog-actions class="row align-items-center justify-content-end">

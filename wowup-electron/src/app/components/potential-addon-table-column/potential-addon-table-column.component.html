@@ -1,20 +1,14 @@
 <div class="addon-column row align-items-center">
   <div class="thumbnail-container">
-    <div
-      *ngIf="hasThumbnail === true"
-      class="addon-logo-container"
-      [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"
-    ></div>
+    <div *ngIf="hasThumbnail === true" class="addon-logo-container"
+      [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"></div>
     <div *ngIf="hasThumbnail === false" class="addon-logo-container">
       <div class="addon-logo-letter">
         {{ thumbnailLetter }}
       </div>
     </div>
-    <div
-      *ngIf="isBetaChannel || isAlphaChannel"
-      class="channel"
-      [ngClass]="{ beta: isBetaChannel, alpha: isAlphaChannel }"
-    >
+    <div *ngIf="isBetaChannel || isAlphaChannel" class="channel"
+      [ngClass]="{ beta: isBetaChannel, alpha: isAlphaChannel }">
       {{ isAlphaChannel ? "Alpha" : "Beta" }}
     </div>
   </div>
@@ -23,7 +17,12 @@
       addon.name
     }}</a>
     <div class="addon-version">
+      <span *ngIf="hasRequiredDependencies()" class="dependency-icon mr-1"
+        [matTooltip]="requiredDependencyCount() + ' required dependencies'">
+        <mat-icon svgIcon="fas:link"></mat-icon>
+      </span>
       {{ addon | getAddonListItemFileProp: "version":channel }}
     </div>
+
   </div>
 </div>

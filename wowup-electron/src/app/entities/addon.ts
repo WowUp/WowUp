@@ -1,5 +1,6 @@
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonDependency } from "../models/wowup/addon-dependency";
 
 export interface Addon {
   id: string;
@@ -29,4 +30,5 @@ export interface Addon {
   summary?: string;
   screenshotUrls?: string[];
   releasedAt?: Date;
+  dependencies?: AddonDependency[];
 }

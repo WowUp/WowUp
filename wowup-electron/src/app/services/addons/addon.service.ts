@@ -1,4 +1,7 @@
 import { Injectable } from "@angular/core";
+import { AddonDependency } from "app/models/wowup/addon-dependency";
+import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
+import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
@@ -96,6 +99,56 @@ export class AddonService {
     this._addonStorage.set(addon.id, addon);
 
     await this.installAddon(addon.id, onUpdate);
+  }
+
+  public getRequiredDependencies(addon: Addon) {
+    return _.filter(addon.dependencies, (dep) => dep.type === AddonDependencyType.Required);
+  }
+
+  public async installDependencies(
+    addon: Addon,
+    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
+  ) {
+    if (!addon.dependencies) {
+      console.log(`${addon.name}: No dependencies found`);
+      return;
+    }
+
+    console.debug("Deps detected", addon, onUpdate);
+
+    const requiredDependencies = this.getRequiredDependencies(addon);
+    if (!requiredDependencies.length) {
+      console.log(`${addon.name}: No required dependencies found`);
+      return;
+    }
+
+    console.debug("Deps detected", requiredDependencies);
+    const maxCt = requiredDependencies.length;
+    let currentCt = 0;
+    for (let dependency of requiredDependencies) {
+      currentCt += 1;
+      const percent = (currentCt / maxCt) * 100;
+
+      console.debug("UPDATE", percent);
+      onUpdate?.call(this, AddonInstallState.Installing, percent);
+
+      // If the dependency is already installed, skip it
+      var existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.clientType);
+      if (existingAddon) {
+        continue;
+      }
+
+      const dependencyAddon = await this.getAddon(
+        dependency.externalAddonId,
+        addon.providerName,
+        addon.clientType
+      ).toPromise();
+
+      this._addonStorage.set(dependencyAddon.id, dependencyAddon);
+
+      console.debug("Addon dep", dependencyAddon);
+      await this.installAddon(dependencyAddon.id);
+    }
   }
 
   public async processAutoUpdates(): Promise<number> {
@@ -224,6 +277,8 @@ export class AddonService {
         addon.name
       }`;
       this._analyticsService.trackUserAction("addons", "install_by_id", actionLabel);
+
+      await this.installDependencies(addon, onUpdate);
 
       queueItem.completion.resolve();
     } catch (err) {
@@ -377,7 +432,7 @@ export class AddonService {
     return folders.split(",").map((f) => f.trim());
   }
 
-  public async removeAddon(addon: Addon) {
+  public async removeAddon(addon: Addon, removeDependencies: boolean = false) {
     const installedDirectories = addon.installedFolders?.split(",") ?? [];
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
@@ -388,6 +443,22 @@ export class AddonService {
 
     this._addonStorage.remove(addon);
     this._addonRemovedSrc.next(addon.id);
+
+    if (removeDependencies) {
+      await this.removeDependencies(addon);
+    }
+  }
+
+  private async removeDependencies(addon: Addon) {
+    for (let dependency of addon.dependencies) {
+      const dependencyAddon = this.getByExternalId(dependency.externalAddonId, addon.clientType);
+      if (!dependencyAddon) {
+        console.log(`${addon.name}: Dependency not found ${dependency.externalAddonId}`);
+        continue;
+      }
+
+      await this.removeAddon(dependencyAddon);
+    }
   }
 
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
@@ -522,8 +593,12 @@ export class AddonService {
     );
   }
 
+  public getByExternalId(externalId: string, clientType: WowClientType) {
+    return this._addonStorage.getByExternalId(externalId, clientType);
+  }
+
   public isInstalled(externalId: string, clientType: WowClientType) {
-    return !!this._addonStorage.getByExternalId(externalId, clientType);
+    return !!this.getByExternalId(externalId, clientType);
   }
 
   private getProvider(providerName: string) {
@@ -596,6 +671,8 @@ export class AddonService {
       return null;
     }
 
+    const dependencies = _.map(latestFile.dependencies, this.createAddonDependency);
+
     return {
       id: uuidv4(),
       name: searchResult.name,
@@ -614,6 +691,14 @@ export class AddonService {
       releasedAt: latestFile.releaseDate,
       summary: searchResult.summary,
       screenshotUrls: searchResult.screenshotUrls,
+      dependencies,
     };
   }
+
+  private createAddonDependency = (dependency: AddonSearchResultDependency): AddonDependency => {
+    return {
+      externalAddonId: dependency.externalAddonId,
+      type: dependency.type,
+    };
+  };
 }
