@@ -45,6 +45,12 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     return this.addon.name.charAt(0).toUpperCase();
   }
 
+  get dependencyTooltip() {
+    return {
+      dependencyCount: this.getRequiredDependencyCount(),
+    };
+  }
+
   constructor(private _getAddonListItemFileProp: GetAddonListItemFilePropPipe) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -66,7 +72,7 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     });
   }
 
-  requiredDependencyCount() {
+  getRequiredDependencyCount() {
     return this._requiredDependencies.length;
   }
 

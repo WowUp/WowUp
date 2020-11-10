@@ -64,11 +64,15 @@
     },
     "SEARCH": {
       "NO_ADDONS": "No addons found"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "By {authorName}",
+      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
@@ -186,7 +190,9 @@
         "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
         "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
         "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
-        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
+        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?",
+        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?"
       },
       "UPDATE_ALL_BUTTON": "Update All",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Update all addons for this client",
