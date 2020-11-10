@@ -47,6 +47,9 @@
       "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "I går"
     },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+    },
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} milliarder",
       "MILLION": "{count} millioner",
@@ -69,6 +72,7 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Av {authorName}",
+      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser",
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
@@ -186,6 +190,8 @@
         "CONFIRMATION_LESS_THAN_THREE": "Er du sikker på at du vil fjerne disse {count} utvidelsene?",
         "CONFIRMATION_MORE_THAN_THREE": "Er du sikker på at du vil fjerne {count} utvalgte utvidelser?",
         "CONFIRMATION_ONE": "Er du sikker på at du vil fjerne {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
+        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
         "TITLE": "Avinstaller {count, plural, =1{Utvidelse} other{Utvidelser}}?"
       },
       "UPDATE_ALL_BUTTON": "Oppdater Alle",
