@@ -1,6 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.10",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "Russian locale updates (Medok)",
+        "Add localization for dependency related text",
+        "Fix several sorting related bugs"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.9",
       "changes": [
         "Spanish locale updates (Stidius)",
