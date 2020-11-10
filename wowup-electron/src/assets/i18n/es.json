@@ -40,11 +40,11 @@
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
-      "DAYS_AGO": "hace {count} {count, plural, one{día} other{días}}",
-      "HOURS_AGO": "hace {count} {count, plural, one{hora} other{horas}}",
+      "DAYS_AGO": "Hace {count} {count, plural, one{día} other{días}}",
+      "HOURS_AGO": "Hace {count} {count, plural, one{hora} other{horas}}",
       "JUST_NOW": "Ahora",
-      "MONTHS_AGO": "hace {count} {count, plural, one{mes} other{meses}}",
-      "YEARS_AGO": "hace {count} {count, plural, one{año} other{años}}",
+      "MONTHS_AGO": "Hace {count} {count, plural, one{mes} other{meses}}",
+      "YEARS_AGO": "Hace {count} {count, plural, one{año} other{años}}",
       "YESTERDAY": "Ayer"
     },
     "DOWNLOAD_COUNT": {
