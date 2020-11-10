@@ -48,7 +48,7 @@
       "YESTERDAY": "Вчера"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount, plural, one{Необходима} other{Необходимо}} {dependencyCount} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}"
     },
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}",
@@ -72,7 +72,7 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "От {authorName}",
-      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
+      "DEPENDENCY_TEXT": "Эта модификация имеет {dependencyCount} {dependencyCount, plural, one{необходимую} other{необходимых}} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },
@@ -190,8 +190,8 @@
         "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации} other{модификаций}}?",
         "CONFIRMATION_MORE_THAN_THREE": "Вы действительно хотите удалить выбранные {count} {count, plural, few{модификации} other{модификаций}}?",
         "CONFIRMATION_ONE": "Вы действительно хотите удалить {addonName}?",
-        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
-        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "DEPENDENCY_MESSAGE": "{addonName} имеет {dependencyCount} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}. Хотите удалить и их тоже?",
+        "DEPENDENCY_TITLE": "Удалить зависимости модификации?",
         "TITLE": "Удалить {count, plural, one{модификацию} other{модификации}}?"
       },
       "UPDATE_ALL_BUTTON": "Обновить всё",
