@@ -129,7 +129,6 @@ export class AddonService {
       currentCt += 1;
       const percent = (currentCt / maxCt) * 100;
 
-      console.debug("UPDATE", percent);
       onUpdate?.call(this, AddonInstallState.Installing, percent);
 
       // If the dependency is already installed, skip it
@@ -267,7 +266,7 @@ export class AddonService {
       addon.installedAt = new Date();
       addon.installedFolders = unzippedDirectoryNames.join(",");
 
-      if (!!addon.gameVersion) {
+      if (!addon.gameVersion) {
         addon.gameVersion = await this.getLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
       }
 
