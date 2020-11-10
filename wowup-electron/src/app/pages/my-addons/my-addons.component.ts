@@ -198,12 +198,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onSortChange(): void {
-    if (this.table) {
-      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
-    }
-
     if (this._automaticSort) {
       return;
+    }
+
+    if (this.table) {
+      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
 
     this.wowUpService.myAddonsSortOrder = {

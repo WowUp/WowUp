@@ -48,6 +48,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab: boolean = false;
   private _lazyLoaded: boolean = false;
+  private _automaticSort: boolean = false;
 
   public dataSource = new MatTableDataSource<GetAddonListItem>([]);
   public activeSort = "downloadCount";
@@ -134,6 +135,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(): void {
+    if (this._automaticSort) {
+      return;
+    }
+    
     if (this.table) {
       this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
@@ -174,7 +179,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     if (sortOrder && this.sort) {
       this.activeSort = sortOrder.name;
       this.activeSortDirection = sortOrder.direction;
-      this.sort.sort({ id: sortOrder.name, start: sortOrder.direction || "asc", disableClear: false });
+      this._automaticSort = true;
+      this.sort.active = sortOrder.name;
+      this.sort.direction = sortOrder.direction;
+      this.sort.sortChange.emit();
+      this._automaticSort = false;
     }
   };
 
