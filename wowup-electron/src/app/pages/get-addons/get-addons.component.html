@@ -62,7 +62,7 @@
         </th>
         <td mat-cell *matCellDef="let element">
           <app-potential-addon-table-column [addon]="element" [channel]="defaultAddonChannel"
-            [clientType]="selectedClient" (onViewDetails)="openDetailDialog($event, element)">
+            [clientType]="selectedClient" (onViewDetails)="onAddonColumnDetailDialog($event)">
           </app-potential-addon-table-column>
         </td>
       </ng-container>
@@ -131,7 +131,7 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
         (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (dblclick)="openDetailDialog(row)">
+      <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" (dblclick)="onDoubleClickRow(row)">
       </tr>
     </table>
   </div>
