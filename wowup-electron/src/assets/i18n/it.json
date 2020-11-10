@@ -47,6 +47,9 @@
       "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
       "YESTERDAY": "Ieri"
     },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+    },
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} {count, plural, one{miliardo} other{miliardi}}",
       "MILLION": "{count} {count, plural, one{milione} other{milioni}}",
@@ -69,6 +72,7 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Di {authorName}",
+      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser",
       "VIEW_ON_PROVIDER_PREFIX": "Visualizza su"
     },
@@ -186,6 +190,8 @@
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}??",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
+        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
         "TITLE": "Disinstallare {count, plural, =1{l'addon} other{gli addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Aggiorna Tutto",

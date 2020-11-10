@@ -29,4 +29,9 @@ export class MyAddonsAddonCellComponent implements OnInit {
     return this.getRequireDependencyCount() > 0;
   }
 
+  get dependencyTooltip() {
+    return {
+      dependencyCount: this.getRequireDependencyCount(),
+    };
+  }
 }
