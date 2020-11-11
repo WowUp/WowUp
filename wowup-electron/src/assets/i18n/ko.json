@@ -204,7 +204,7 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to update and install your addons",
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
           "FIELD_LABEL": "Enabled Addon Providers",
           "INPUT_LABEL": "Providers"
         },
