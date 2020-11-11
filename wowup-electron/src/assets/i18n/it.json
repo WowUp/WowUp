@@ -48,7 +48,7 @@
       "YESTERDAY": "Ieri"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{dipendenza richiesta} other{dipendenze richieste}}"
     },
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} {count, plural, one{miliardo} other{miliardi}}",
@@ -72,7 +72,7 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Di {authorName}",
-      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
+      "DEPENDENCY_TEXT": "Questo addon richiede {dependencyCount} {dependencyCount, plural, one{dipendenza} other{dipendenze}}",
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser",
       "VIEW_ON_PROVIDER_PREFIX": "Visualizza su"
     },
@@ -123,7 +123,7 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Autore/i",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Numero di download",
-        "PROVIDER_COLUMN_HEADER": "Provveditore",
+        "PROVIDER_COLUMN_HEADER": "Provider",
         "RELEASED_AT_COLUMN_HEADER": "Rilasciato",
         "STATUS_COLUMN_HEADER": "Stato"
       }
@@ -179,8 +179,8 @@
         "AUTO_UPDATE_ICON_TOOLTIP": "Aggiornamento automatico abilitato",
         "GAME_VERSION_COLUMN_HEADER": "Versione Del Gioco",
         "LATEST_VERSION_COLUMN_HEADER": "Ultima Versione",
-        "PROVIDER_COLUMN_HEADER": "Provveditore",
-        "PROVIDER_RELEASE_CHANNEL": "Canale del Provveditore",
+        "PROVIDER_COLUMN_HEADER": "Provider",
+        "PROVIDER_RELEASE_CHANNEL": "Canale del Provider",
         "RELEASED_AT_COLUMN_HEADER": "Rilasciato",
         "STATUS_COLUMN_HEADER": "Stato",
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
