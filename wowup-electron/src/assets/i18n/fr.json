@@ -1,59 +1,59 @@
 {
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Check for Updates...",
-      "QUIT_ACTION": "Quit",
-      "SHOW_ACTION": "Show"
+      "CHECK_UPDATE": "Vérification des mises à jour...",
+      "QUIT_ACTION": "Quitter",
+      "SHOW_ACTION": "Montrer"
     },
     "WOWUP_UPDATE": {
-      "DOWNLOADED_TOOLTIP": "Install WowUp update",
-      "INSTALL_MESSAGE": "Do you want restart WowUp to install the update?",
-      "INSTALL_TITLE": "WowUp Update Ready",
-      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
+      "INSTALL_MESSAGE": "Voulez-vous redémarrer WowUp pour installer la mise à jour ?",
+      "INSTALL_TITLE": "Mise à jour WowUp prête",
+      "NOT_AVAILABLE": "La dernière version de WowUp est prêtre à être installée",
       "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
-      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
-      "SNACKBAR_ACTION": "Update",
-      "SNACKBAR_TEXT": "A new version of WowUp is available",
-      "TOOLTIP": "WowUp update available",
-      "UPDATE_ERROR": "Failed to get WowUp update"
+      "PORTABLE_DOWNLOAD_TITLE": "Téléchargement manuel requis",
+      "SNACKBAR_ACTION": "Mise à jour ", "Vérifier si Mis ou Mise"
+      "SNACKBAR_TEXT": "Une nouvelle version de WowUp est disponible",
+      "TOOLTIP": "Mise à jour de WowUp disponible",
+      "UPDATE_ERROR": "Impossible d'obtenir la mise à jour de WowUp"
     }
   },
   "COMMON": {
     "ADDON_STATE": {
-      "IGNORED": "IGNORED",
-      "INSTALL": "INSTALL",
-      "UNINSTALL": "UNINSTALL",
+      "IGNORED": "IGNORÉ",
+      "INSTALL": "INSTALLER",
+      "UNINSTALL": "DÉSINSTALLER",
       "UNKNOWN": "",
-      "UPDATE": "UPDATE",
-      "UPTODATE": "UPTODATE"
+      "UPDATE": "MISE À JOUR",
+      "UPTODATE": "À JOUR"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Backing Up",
-      "COMPLETE": "COMPLETE",
-      "DOWNLOADING": "DOWNLOADING",
-      "INSTALLING": "INSTALLING",
-      "PENDING": "Pending",
-      "UNINSTALLING": "UNINSTALLING",
-      "UPDATING": "UPDATING"
+      "BACKINGUP": "SAUVEGARDE", "à vérifier"
+      "COMPLETE": "ACHEVÉ", "à vérifier" 
+      "DOWNLOADING": "TÉLÉCHARGEMENT",
+      "INSTALLING": "INSTALLATION",
+      "PENDING": "EN ATTENTE",
+      "UNINSTALLING": "DÉSINSTALLATION",
+      "UPDATING": "EN COURS DE MISE À JOUR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
-      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
-      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
-      "YESTERDAY": "Yesterday"
+      "DAYS_AGO": "il y a {count} {count, plural, one{jour} other{jours}}",
+      "HOURS_AGO": "il y a {count} {count, plural, one{heure} other{heures}}",
+      "JUST_NOW": "A l'instant",
+      "MONTHS_AGO": "il y a {count} {count, plural, one{mois} other{mois}}",
+      "YEARS_AGO": "il y a {count} {count, plural, one{an} other{ans}}",
+      "YESTERDAY": "Hier"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{dépendance requise} other{dépendances requises}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} billion",
-      "MILLION": "{count} million",
-      "THOUSAND": "{count} thousand"
+      "BILLION": "{count} milliards",
+      "MILLION": "{count} millions",
+      "THOUSAND": "{count} milliers"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -63,18 +63,18 @@
       }
     },
     "PROGRESS_SPINNER": {
-      "LOADING": "Loading..."
+      "LOADING": "Chargement..."
     },
     "SEARCH": {
-      "NO_ADDONS": "No addons found"
+      "NO_ADDONS": "Aucun addon trouvé"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "BY_AUTHOR": "By {authorName}",
+      "BY_AUTHOR": "Par {authorName}",
       "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
-      "VIEW_ON_PROVIDER_PREFIX": "View on"
+      "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
     "ALERT": {
       "POSITIVE_BUTTON": "Ok"
@@ -84,10 +84,10 @@
       "POSITIVE_BUTTON": "Oui"
     },
     "INSTALL_FROM_URL": {
-      "ADDON_URL_INPUT_LABEL": "Addon URL",
-      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",
-      "CLOSE_BUTTON": "Clôturer",
-      "DESCRIPTION": "Si vous voulez installer un addon directement à partir d'une URL collez le ci-dessous pour commencer.",
+      "ADDON_URL_INPUT_LABEL": "URL de l'Addon",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. URL de GitHub ou WowInterface",
+      "CLOSE_BUTTON": "Fermer",
+      "DESCRIPTION": "Si vous voulez installer un addon directement à partir d'une URL, collez-le ci-dessous.",
       "ERROR": {
         "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
         "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
@@ -95,7 +95,7 @@
         "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
         "TITLE": "Addon Installation Failed"
       },
-      "IMPORT_BUTTON": "Importation",
+      "IMPORT_BUTTON": "Importer",
       "INSTALL_BUTTON": "Installer",
       "INSTALL_SUCCESS_LABEL": "Installé !",
       "SUPPORTED_SOURCES": "Supporte WowInterface et GitHub*",
@@ -122,9 +122,9 @@
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Auteur",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "DOWNLOAD_COUNT_COLUMN_HEADER",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Téléchargements",
         "PROVIDER_COLUMN_HEADER": "Fournisseur",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
+        "RELEASED_AT_COLUMN_HEADER": "Publié",
         "STATUS_COLUMN_HEADER": "Statut"
       }
     },
@@ -136,16 +136,16 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
-        "ALPHA_ADDON_CHANNEL": "Alphabétisation",
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon sélectionné} other{selectionnés}}",
+        "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Mise à jour automatique",
         "BETA_ADDON_CHANNEL": "Bêta",
-        "CHANNEL_SUBMENT_TITLE": "Chaîne",
+        "CHANNEL_SUBMENT_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorer",
         "REINSTALL_ADDON_BUTTON": "Réinstaller",
-        "REMOVE_ADDON_BUTTON": "Retirer",
-        "SHOW_FOLDER": "SHOW_FOLDER",
-        "STABLE_ADDON_CHANNEL": "Écurie"
+        "REMOVE_ADDON_BUTTON": "Désinstaller",
+        "SHOW_FOLDER": "Montrer le dossier",
+        "STABLE_ADDON_CHANNEL": "Stable"
       },
       "CHECK_UPDATES_BUTTON": "Vérifier les mises à jour",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Vérifier les dernières mises à jour des modules complémentaires",
@@ -156,20 +156,20 @@
       "FILTER_LABEL": "Filter",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
-        "JOIN_DISCORD": "Chat with us on Discord",
-        "PATREON_SUPPORT": "Support WowUp on Patreon",
-        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}",
-        "VIEW_GITHUB": "Check out the code on GitHub",
-        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
+        "JOIN_DISCORD": "Discutez avec nous sur Discord",
+        "PATREON_SUPPORT": "Supportez WowUp sur Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultats}}",
+        "VIEW_GITHUB": "Voir le code sur Github",
+        "VIEW_GUIDE": "Consultez notre guide pour voir ce que WowUp peut faire"
       },
       "RESCAN_FOLDERS_BUTTON": "Re-scanner les dossiers",
-      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannez votre dossier client pour trouver des extensions installées",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannez votre dossier client pour trouver des addons installées",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
       "SPINNER": {
-        "GATHERING_ADDONS": "Gathering addons...",
-        "UPDATING": "Updating {updateCount}/{addonCount}",
-        "UPDATING_WITH_ADDON_NAME": "Updating {updateCount}/{addonCount}\n{clientType}: {addonName}"
+        "GATHERING_ADDONS": "R2colte des addons...",
+        "UPDATING": "Mise à jour {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Mise à jour {updateCount}/{addonCount}\n{clientType}: {addonName}"
       },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
@@ -180,10 +180,10 @@
         "GAME_VERSION_COLUMN_HEADER": "Version du jeu",
         "LATEST_VERSION_COLUMN_HEADER": "Dernière version",
         "PROVIDER_COLUMN_HEADER": "Fournisseur",
-        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
-        "RELEASED_AT_COLUMN_HEADER": "RELEASED_AT_COLUMN_HEADER",
+        "PROVIDER_RELEASE_CHANNEL": "Canal",
+        "RELEASED_AT_COLUMN_HEADER": "Publié",
         "STATUS_COLUMN_HEADER": "Statut",
-        "UPDATED_AT_COLUMN_HEADER": "Updated At"
+        "UPDATED_AT_COLUMN_HEADER": "Mis à jour"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
@@ -241,15 +241,15 @@
         "DEBUG": "Debug"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Les extensions nouvellement installées seront mises à jour automatiquement par défaut",
+        "AUTO_UPDATE_DESCRIPTION": "Les addons nouvellement installés seront mises à jour automatiquement par défaut",
         "AUTO_UPDATE_LABEL": "Mise à jour automatique",
         "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal d'extension par défaut",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal d'Addon",
-        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Sélectionner",
         "RESCAN_CLIENTS_BUTTON": "Re-scanner",
-        "RESCAN_CLIENTS_LABEL": "Rescanner les produits de World of Warcraft installés",
+        "RESCAN_CLIENTS_LABEL": "Rescanner les clients de World of Warcraft installés",
         "TITLE": "World of Warcraft"
       }
     }
