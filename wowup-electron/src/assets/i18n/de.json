@@ -48,7 +48,7 @@
       "YESTERDAY": "Gestern"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten} benötigt}"
     },
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} Milliarden",
@@ -72,7 +72,7 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Von {authorName}",
-      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
+      "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"
     },
@@ -136,7 +136,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
+        "ADDONS_SELECTED": "{count} {count, plural, =1{Addon} other{Addons}} ausgewählt",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Automatisch aktualisieren",
         "BETA_ADDON_CHANNEL": "Beta",
@@ -190,8 +190,8 @@
         "CONFIRMATION_LESS_THAN_THREE": "Bist du sicher, dass du die folgenden {count} Addons entfernen willst?",
         "CONFIRMATION_MORE_THAN_THREE": "Bist du sicher, dass du die ausgewählten {count} Addons entfernen willst?",
         "CONFIRMATION_ONE": "Bist du sicher, dass du {addonName} entfernen willst?",
-        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
-        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "DEPENDENCY_MESSAGE": "{addonName} hat {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}. Willst du diese ebenfalls entfernen?",
+        "DEPENDENCY_TITLE": "Addon Abhängigkeiten entfernen?",
         "TITLE": "Deinstalliere {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Alle aktualisieren",
