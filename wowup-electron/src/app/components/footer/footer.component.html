@@ -30,7 +30,7 @@
     <button *ngIf="isWowUpdateDownloading" class="footer-button downloading-button ml-3 animate">
       <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
     </button>
-    <button  class="footer-button check-update-button ml-3"
+    <button *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading" class="footer-button check-update-button ml-3"
       [ngClass]="{'animate': isCheckingForUpdates}" (click)="onClickCheckForUpdates()"
       matTooltip="{{'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate}}">
       <mat-icon svgIcon="fas:sync-alt"></mat-icon>

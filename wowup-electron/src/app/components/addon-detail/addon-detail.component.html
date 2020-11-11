@@ -33,7 +33,9 @@
     <!-- DEPENDENCIES -->
     <div *ngIf="hasRequiredDependencies()" class="addon-dependencies row align-items-center">
       <mat-icon svgIcon="fas:link" class="mr-1"></mat-icon>
-      This addon has {{ getRequiredDependencyCount() }} required dependencies.
+      <span translate [translateParams]="{ 'dependencyCount': getRequiredDependencyCount() }">
+        DIALOGS.ADDON_DETAILS.DEPENDENCY_TEXT
+      </span>
     </div>
     <!-- SUMMARY -->
     <div class="mat-caption addon-detail-summary">{{ summary }}</div>

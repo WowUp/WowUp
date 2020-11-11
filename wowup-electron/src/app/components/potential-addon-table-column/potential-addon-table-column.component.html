@@ -18,7 +18,7 @@
     }}</a>
     <div class="addon-version">
       <span *ngIf="hasRequiredDependencies()" class="dependency-icon mr-1"
-        [matTooltip]="requiredDependencyCount() + ' required dependencies'">
+        [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate:dependencyTooltip">
         <mat-icon svgIcon="fas:link"></mat-icon>
       </span>
       {{ addon | getAddonListItemFileProp: "version":channel }}

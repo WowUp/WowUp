@@ -198,12 +198,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onSortChange(): void {
-    if (this.table) {
-      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
-    }
-
     if (this._automaticSort) {
       return;
+    }
+
+    if (this.table) {
+      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
 
     this.wowUpService.myAddonsSortOrder = {
@@ -447,9 +447,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private promptRemoveDependencies(addon: Addon) {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: "Remove Addon Dependencies?",
+        title: this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_TITLE"),
         message:
-          `${addon.name} has ${addon.dependencies.length} dependencies. Do you want to remove them also?` +
+          this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_MESSAGE", {
+            addonName: addon.name,
+            dependencyCount: addon.dependencies.length,
+          }) +
           "\n\n" +
           this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"),
       },

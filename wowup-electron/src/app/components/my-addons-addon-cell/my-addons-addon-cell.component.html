@@ -38,7 +38,7 @@
         </mat-icon>
       </div>
       <div *ngIf="hasRequiredDependencies()" class=" mr-2"
-        [matTooltip]="getRequireDependencyCount() + ' required dependencies'">
+        [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate:dependencyTooltip">
         <mat-icon class="auto-update-icon" svgIcon="fas:link"></mat-icon>
       </div>
       {{ listItem.addon.installedVersion }}
