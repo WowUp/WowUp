@@ -29,7 +29,8 @@ namespace WowUp.WPF.AddonProviders
         private readonly ICacheService _cacheService;
 
         private readonly AsyncPolicy CircuitBreaker = Policy
-            .Handle<FlurlHttpException>()
+            .Handle<FlurlHttpException>(ex =>
+                ex.Call.Response.StatusCode != System.Net.HttpStatusCode.NotFound)
             .CircuitBreakerAsync(
                 2,
                 TimeSpan.FromMinutes(1),
@@ -48,7 +49,7 @@ namespace WowUp.WPF.AddonProviders
 
         public async Task Scan(
             WowClientType clientType,
-            AddonChannelType addonChannelType, 
+            AddonChannelType addonChannelType,
             IEnumerable<AddonFolder> addonFolders)
         {
             Log.Debug($"{Name} Scanning {addonFolders.Count()} addons");
@@ -143,7 +144,7 @@ namespace WowUp.WPF.AddonProviders
             }
 
             var addon = await GetAddonDetails(addonId);
-            if(addon == null)
+            if (addon == null)
             {
                 throw new Exception($"Bad addon api response {addonUri}");
             }

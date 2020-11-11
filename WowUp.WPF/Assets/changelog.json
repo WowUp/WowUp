@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.19.1",
+      "Description": "Increase the timeout time for Curse API from 4 seconds to 10.\nIf a provider responds with a 404, the circuit breaker should no longer be opened."
+    },
+    {
       "Version": "1.19.0",
       "Description": "Support for installing addon dependencies (By Shaydera).\nImplemented a new event which fires after a rescan or the first start scan, which will cause a refresh on the 'Get Addons' Tab (By Shaydera).\nUse the new WowUp custom fingerprint service.\nFix an issue with partial curse matches with no files or modules causing the whole curse scan to fail.\nFix an issue with the local DB not being closed properly."
     },

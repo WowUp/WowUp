@@ -29,13 +29,14 @@ namespace WowUp.WPF.AddonProviders
         private const string HubApiUrl = "https://hub.wowup.io";
         private const string ClassicGameVersionFlavor = "wow_classic";
         private const string RetailGameVersionFlavor = "wow_retail";
-        private const int HttpTimeoutSeconds = 4;
+        private const int HttpTimeoutSeconds = 10;
 
         private readonly ICacheService _cacheService;
         private readonly IAnalyticsService _analyticsService;
 
         private readonly AsyncPolicy CircuitBreaker = Policy
-            .Handle<FlurlHttpException>()
+            .Handle<FlurlHttpException>(ex =>
+                ex.Call.Response.StatusCode != System.Net.HttpStatusCode.NotFound)
             .CircuitBreakerAsync(
                 2,
                 TimeSpan.FromMinutes(1),
