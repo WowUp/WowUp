@@ -190,9 +190,9 @@
         "CONFIRMATION_LESS_THAN_THREE": "¿Quiere eliminar los siguientes {count} addons?",
         "CONFIRMATION_MORE_THAN_THREE": "¿Quiere eliminar los {count} addons seleccionados?",
         "CONFIRMATION_ONE": "¿Quiere eliminar {addonName}?",
-        "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?"
         "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
         "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Actualizar Todo",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Actualizar todos los addons para este cliente",
