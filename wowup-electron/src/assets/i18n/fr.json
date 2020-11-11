@@ -87,7 +87,7 @@
       "ADDON_URL_INPUT_LABEL": "URL de l'Addon",
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. URL de GitHub ou WowInterface",
       "CLOSE_BUTTON": "Fermer",
-      "DESCRIPTION": "Si vous voulez installer un addon directement à partir d'une URL, collez-le ci-dessous.",
+      "DESCRIPTION": "Si vous voulez installer un addon directement à partir d'une URL, collez-là ci-dessous.",
       "ERROR": {
         "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
         "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
@@ -162,12 +162,12 @@
         "VIEW_GITHUB": "Voir le code sur Github",
         "VIEW_GUIDE": "Consultez notre guide pour voir ce que WowUp peut faire"
       },
-      "RESCAN_FOLDERS_BUTTON": "Re-scanner les dossiers",
-      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannez votre dossier client pour trouver des addons installées",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "TEXT_ELEMENT",
-      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "TEXT_ELEMENT",
+      "RESCAN_FOLDERS_BUTTON": "Réanalyser les dossiers",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Analysez votre dossier client pour trouver les addons installés",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Doing a re-scan will attempt to guess which addons you currently have installed, doing so may reset known addon information. Use this function when certain addons are not recognized or addon versions are not being shown correctly. This scan will never delete your installed addons, only what WowUp knows about them.\n\nScanning may take a few moments.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Débuter une réanalyse ?",
       "SPINNER": {
-        "GATHERING_ADDONS": "R2colte des addons...",
+        "GATHERING_ADDONS": "Récolte des addons...",
         "UPDATING": "Mise à jour {updateCount}/{addonCount}",
         "UPDATING_WITH_ADDON_NAME": "Mise à jour {updateCount}/{addonCount}\n{clientType}: {addonName}"
       },
@@ -187,37 +187,37 @@
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "This will remove all related folders from your World of Warcraft folder.",
-        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
-        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
-        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
-        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
-        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
-        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
+        "CONFIRMATION_LESS_THAN_THREE": "Êtes-vous sûr de vouloir désinstaller les {count} addons suivants ?",
+        "CONFIRMATION_MORE_THAN_THREE": "Êtes-vous sûr de vouloir désinstaller les {count} addons sélectionnés ?",
+        "CONFIRMATION_ONE": "Êtes-vous certain de vouloir désinstaller {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} a {dependencyCount} {dependencyCount, plural, one{dépendance} other{dépendances}}. Voulez-vous également les supprimer ?",
+        "DEPENDENCY_TITLE": "Supprimer les dépendances de l'addon ?",
+        "TITLE": "Désinstaller {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Tout mettre à jour",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Mettre à jour tous les addons pour ce client",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Mettre à jour tous les clients",
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Mise à jour Retail/Classique"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Mise à jour Retail / Classic"
       }
     },
     "OPTIONS": {
       "APPLICATION": {
-        "CURRENT_LANGUAGE_LABEL": "Current Language",
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION",
-        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "ENABLE_SYSTEM_NOTIFICATIONS_LABEL",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Lorsque vous fermez la fenêtre WowUp, minimisez dans la barre d'état système.",
+        "CURRENT_LANGUAGE_LABEL": "Langue actuelle",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activer les fenêtres contextuelles système comme la mise à jour auto des addons.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Activer le système de notification",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Lorsque vous fermez la fenêtre WowUp, minimise dans la barre des menus",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Lorsque vous fermez la fenêtre WowUp, minimise dans la barre d'état système.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimiser à la fermeture",
-        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
-        "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
-        "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
-        "SET_LANGUAGE_LABEL": "Set Language",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changer la langue par défaut nécessite le redémarrage de l'application.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Définir une langue par défaut",
+        "SET_LANGUAGE_DESCRIPTION": "Sélectionner une langue pour l'application.",
+        "SET_LANGUAGE_LABEL": "Définir une langue",
         "START_MINIMIZED_DESCRIPTION": "...and will not show up on the screen",
         "START_MINIMIZED_LABEL": "Launch WowUp minimized",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp will be launched immediately after your operational system is loaded...",
         "START_WITH_SYSTEM_LABEL": "Launch WowUp with system",
-        "TELEMETRY_DESCRIPTION": "Aidez à améliorer WowUp en envoyant des données d'installation et/ou des erreurs anonymes.",
+        "TELEMETRY_DESCRIPTION": "Aidez à améliorer WowUp en envoyant des données d'installation et / ou des erreurs anonymes.",
         "TELEMETRY_LABEL": "Télémétrie",
         "TITLE": "Application",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "TEXT_ELEMENT",
@@ -228,7 +228,7 @@
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump des données de débogage",
-        "DEBUG_DATA_DESCRIPTION": "Log les données de débogage pour aider à diagnostiquer les problèmes potentiels. Cela peut être trouvé dans votre dernier fichier journal pour les curieux.",
+        "DEBUG_DATA_DESCRIPTION": "Log les données de débogage pour aider à diagnostiquer les problèmes potentiels. Cela peut être trouvé dans votre dernier fichier journal pour les curieux.", "à améliorer !!"
         "DEBUG_DATA_LABEL": "Déboguer les données",
         "LOG_FILES_BUTTON": "Afficher les fichiers de log",
         "LOG_FILES_DESCRIPTION": "Ouvrez le dossier qui contient vos derniers fichiers journaux.",
@@ -248,8 +248,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal d'extension par défaut",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal d'Addon",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Sélectionner",
-        "RESCAN_CLIENTS_BUTTON": "Re-scanner",
-        "RESCAN_CLIENTS_LABEL": "Rescanner les clients de World of Warcraft installés",
+        "RESCAN_CLIENTS_BUTTON": "Réanalyser",
+        "RESCAN_CLIENTS_LABEL": "Réanalyser les clients de World of Warcraft installés",
         "TITLE": "World of Warcraft"
       }
     }
