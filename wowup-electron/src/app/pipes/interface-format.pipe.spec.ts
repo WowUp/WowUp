@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { InterfaceFormatPipe } from "./interface-format.pipe";
 
 describe("InterfaceFormatPipe", () => {
   let directive: InterfaceFormatPipe;
   let fixture: ComponentFixture<InterfaceFormatPipe>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [InterfaceFormatPipe],
     }).compileComponents();

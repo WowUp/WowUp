@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { ExternalLinkDirective } from "./external-link.directive";
 
 describe("ExternalLinkDirective", () => {
   let directive: ExternalLinkDirective;
   let fixture: ComponentFixture<ExternalLinkDirective>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ExternalLinkDirective],
     }).compileComponents();

@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { GetAddonListItemFilePropPipe } from "./get-addon-list-item-file-prop.pipe";
 
 describe("GetAddonListItemFilePropPipe", () => {
   let directive: GetAddonListItemFilePropPipe;
   let fixture: ComponentFixture<GetAddonListItemFilePropPipe>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [GetAddonListItemFilePropPipe],
     }).compileComponents();

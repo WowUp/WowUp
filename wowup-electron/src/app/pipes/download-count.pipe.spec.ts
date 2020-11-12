@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { DownloadCountPipe } from "./download-count.pipe";
 
 describe("DownloadCountPipe", () => {
   let directive: DownloadCountPipe;
   let fixture: ComponentFixture<DownloadCountPipe>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DownloadCountPipe],
     }).compileComponents();
