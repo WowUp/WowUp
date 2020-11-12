@@ -36,7 +36,6 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-my-addons",
@@ -47,13 +46,13 @@ import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 export class MyAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
 
-  @ViewChild("addonContextMenuTrigger") contextMenu: MatMenuTrigger;
-  @ViewChild("addonMultiContextMenuTrigger") multiContextMenu: MatMenuTrigger;
-  @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
-  @ViewChild("updateAllContextMenuTrigger")
+  @ViewChild("addonContextMenuTrigger", { static: false }) contextMenu: MatMenuTrigger;
+  @ViewChild("addonMultiContextMenuTrigger", { static: false }) multiContextMenu: MatMenuTrigger;
+  @ViewChild("columnContextMenuTrigger", { static: false }) columnContextMenu: MatMenuTrigger;
+  @ViewChild("updateAllContextMenuTrigger", { static: false })
   updateAllContextMenu: MatMenuTrigger;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild("table", { read: ElementRef }) table: ElementRef;
+  @ViewChild("table", { static: false, read: ElementRef }) table: ElementRef;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>([]);
 
@@ -157,6 +156,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
       this.setPageContextText();
       this.lazyLoad();
+    });
+
+    _sessionService.autoUpdateComplete$.subscribe(() => {
+      this._cdRef.markForCheck();
+      this.onRefresh();
     });
 
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent);
@@ -637,7 +641,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private loadAddons(clientType: WowClientType, rescan = false) {
     this.isBusy = true;
     this.enableControls = false;
-    this._cdRef.detectChanges();
 
     console.log("Load-addons", clientType);
 

@@ -9,23 +9,24 @@ import { WowUpService } from "../wowup/wowup.service";
   providedIn: "root",
 })
 export class SessionService {
-  private readonly _selectedClientTypeSrc = new BehaviorSubject(
-    WowClientType.None
-  );
+  private readonly _selectedClientTypeSrc = new BehaviorSubject(WowClientType.None);
   private readonly _pageContextTextSrc = new BehaviorSubject(""); // right side bar text, context to the screen
   private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
   private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
+  private readonly _autoUpdateCompleteSrc = new BehaviorSubject(0);
 
   public readonly selectedClientType$ = this._selectedClientTypeSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
   public readonly selectedHomeTab$ = this._selectedHomeTabSrc.asObservable();
   public readonly pageContextText$ = this._pageContextTextSrc.asObservable();
+  public readonly autoUpdateComplete$ = this._autoUpdateCompleteSrc.asObservable();
 
-  constructor(
-    private _warcraftService: WarcraftService,
-    private _wowUpService: WowUpService
-  ) {
+  constructor(private _warcraftService: WarcraftService, private _wowUpService: WowUpService) {
     this.loadInitialClientType().pipe(first()).subscribe();
+  }
+
+  public autoUpdateComplete() {
+    this._autoUpdateCompleteSrc.next(Date.now());
   }
 
   public setContextText(tabIndex: number, text: string) {
@@ -62,15 +63,10 @@ export class SessionService {
         console.log("installedClientTypes", installedClientTypes);
         const lastSelectedType = this._wowUpService.lastSelectedClientType;
         console.log("lastSelectedType", lastSelectedType);
-        let initialClientType = installedClientTypes.length
-          ? installedClientTypes[0]
-          : WowClientType.None;
+        let initialClientType = installedClientTypes.length ? installedClientTypes[0] : WowClientType.None;
 
         // If the user has no stored type, or the type is no longer found just set it.
-        if (
-          lastSelectedType == WowClientType.None ||
-          !installedClientTypes.some((ct) => ct == lastSelectedType)
-        ) {
+        if (lastSelectedType == WowClientType.None || !installedClientTypes.some((ct) => ct == lastSelectedType)) {
           this._wowUpService.lastSelectedClientType = initialClientType;
         } else {
           initialClientType = lastSelectedType;

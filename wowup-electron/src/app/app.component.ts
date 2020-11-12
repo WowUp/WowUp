@@ -10,7 +10,7 @@ import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
-import { filter } from "rxjs/operators";
+import { SessionService } from "./services/session/session.service";
 
 const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 
@@ -35,7 +35,8 @@ export class AppComponent implements AfterViewInit {
     private _wowUpService: WowUpService,
     private _dialog: MatDialog,
     private _addonService: AddonService,
-    private _iconService: IconService
+    private _iconService: IconService,
+    private _sessionService: SessionService
   ) {}
 
   ngAfterViewInit(): void {
@@ -48,7 +49,10 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    this._autoUpdateInterval = window.setInterval(this.onAutoUpdateInterval, AUTO_UPDATE_PERIOD_MS);
+    this._autoUpdateInterval = window.setInterval(() => {
+      this.onAutoUpdateInterval();
+      this._sessionService.autoUpdateComplete();
+    }, AUTO_UPDATE_PERIOD_MS);
   }
 
   openDialog(): void {
