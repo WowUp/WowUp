@@ -1,5 +1,6 @@
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -43,7 +44,7 @@ import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
   styleUrls: ["./my-addons.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MyAddonsComponent implements OnInit, OnDestroy {
+export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input("tabIndex") tabIndex: number;
 
   @ViewChild("addonContextMenuTrigger", { static: false }) contextMenu: MatMenuTrigger;
@@ -158,11 +159,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
       this.lazyLoad();
     });
 
-    _sessionService.autoUpdateComplete$.subscribe(() => {
-      this._cdRef.markForCheck();
-      this.onRefresh();
-    });
-
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent);
 
     const addonRemovedSubscription = this.addonService.addonRemoved$.subscribe(this.onAddonRemoved);
@@ -195,6 +191,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public ngAfterViewInit(): void {
+    this._sessionService.autoUpdateComplete$.subscribe(() => {
+      this._cdRef.markForCheck();
+      this.onRefresh();
+    });
   }
 
   public isLatestUpdateColumnVisible(): boolean {
