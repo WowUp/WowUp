@@ -9,7 +9,7 @@ import {
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
-import { arch, release } from "os";
+import * as os from "os";
 import * as path from "path";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
@@ -61,7 +61,7 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 
-const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()};${
+const USER_AGENT = `WowUp-Client/${app.getVersion()} (${os.type()}; ${os.release()}; ${os.arch()}; ${
   isPortable ? " portable;" : ""
 } +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);

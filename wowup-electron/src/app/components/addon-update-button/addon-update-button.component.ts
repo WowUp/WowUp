@@ -84,12 +84,6 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public onInstallUpdateClick() {
-    this._analyticsService.trackUserAction(
-      "addons",
-      "update_addon",
-      this.getActionLabel()
-    );
-
     this._addonService.installAddon(this.listItem.addon.id);
   }
 

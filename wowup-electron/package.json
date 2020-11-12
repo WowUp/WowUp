@@ -118,6 +118,7 @@
     "@fortawesome/free-brands-svg-icons": "5.15.1",
     "@fortawesome/free-regular-svg-icons": "5.15.1",
     "@fortawesome/free-solid-svg-icons": "5.15.1",
+    "@microsoft/applicationinsights-web": "2.5.9",
     "@types/lodash": "4.14.165",
     "adm-zip": "0.4.16",
     "async": "3.2.0",
