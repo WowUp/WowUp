@@ -88,25 +88,23 @@ function getMaxScreenY(display: Electron.Display) {
   return display.bounds.y + display.bounds.height;
 }
 
+function constrainCoordinate(n: number, min: number, max: number) {
+  if (n < min) {
+    return min;
+  } else if (n > max) {
+    return max;
+  }
+  return n;
+}
+
 function getConstrainedCoordinates(window: BrowserWindow) {
   const bounds = window.getBounds();
   const nearestScreen = getNearestScreen(bounds.x, bounds.y);
 
-  let x = bounds.x;
-  let y = bounds.y;
-  if (bounds.x < nearestScreen.bounds.x) {
-    x = nearestScreen.bounds.x;
-  } else if (bounds.x > getMaxScreenX(nearestScreen)) {
-    x = getMaxScreenX(nearestScreen);
-  }
-
-  if (bounds.y < nearestScreen.bounds.y) {
-    y = nearestScreen.bounds.y;
-  } else if (bounds.y > getMaxScreenY(nearestScreen)) {
-    y = getMaxScreenY(nearestScreen);
-  }
-
-  return { x, y };
+  return {
+    x: constrainCoordinate(bounds.x, nearestScreen.bounds.x, getMaxScreenX(nearestScreen)),
+    y: constrainCoordinate(bounds.y, nearestScreen.bounds.y, getMaxScreenY(nearestScreen)),
+  };
 }
 
 function windowStateManager(windowName: string, { width, height }: { width: number; height: number }) {
