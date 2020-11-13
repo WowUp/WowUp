@@ -42,8 +42,7 @@
       <h4>{{ addon.name }}</h4>
       <p>{{ addon.author }}</p>
       <p class="addon-download-count">
-        {{ addon.downloadCount | downloadCount }} downloads on
-        {{ addon.providerName }}
+        {{ "DIALOGS.INSTALL_FROM_URL.DOWNLOAD_COUNT" | translate:{count: addon.downloadCount, textCount: (addon.downloadCount | downloadCount), provider: addon.providerName} }}
       </p>
     </div>
     <div class="install-container">

@@ -88,6 +88,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub ou WowInterface URL",
       "CLOSE_BUTTON": "Fechar",
       "DESCRIPTION": "Se você deseja instalar um addon diretamente de uma URL, cole-a abaixo para iniciar.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Não foi possível conectar à API, por favor espere um pouco e tente novamente.",
         "INSTALL_FAILED": "Algo deu errado ao tentar instalar o addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wow-support.",

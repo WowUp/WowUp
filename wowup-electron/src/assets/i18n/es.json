@@ -88,6 +88,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ejemplo: URL de GitHub o WowInterface",
       "CLOSE_BUTTON": "Cerrar",
       "DESCRIPTION": "Si desea instalar un addon directamente desde una URL, péguelo a continuación para comenzar.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "No se pudo conectar con la API. Por favor, espere un momento y vuelva a intentarlo.",
         "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #wow-support.",
@@ -190,9 +191,9 @@
         "CONFIRMATION_LESS_THAN_THREE": "¿Quiere eliminar los siguientes {count} addons?",
         "CONFIRMATION_MORE_THAN_THREE": "¿Quiere eliminar los {count} addons seleccionados?",
         "CONFIRMATION_ONE": "¿Quiere eliminar {addonName}?",
-        "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?",
         "DEPENDENCY_MESSAGE": "{addonName} tiene {dependencyCount} {dependencyCount, plural, one{dependencia} other{dependencias}}. ¿Quiere eliminarlas también?",
-        "DEPENDENCY_TITLE": "¿Eliminar Dependencias del Addon?"
+        "DEPENDENCY_TITLE": "¿Eliminar Dependencias del Addon?",
+        "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Actualizar Todo",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Actualizar todos los addons para este cliente",

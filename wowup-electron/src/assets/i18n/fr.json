@@ -14,7 +14,7 @@
       "NOT_AVAILABLE": "La dernière version de WowUp est prêtre à être installée",
       "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
       "PORTABLE_DOWNLOAD_TITLE": "Téléchargement manuel requis",
-      "SNACKBAR_ACTION": "Mise à jour ", "Vérifier si Mis ou Mise"
+      "SNACKBAR_ACTION": "Mise à jour ",
       "SNACKBAR_TEXT": "Une nouvelle version de WowUp est disponible",
       "TOOLTIP": "Mise à jour de WowUp disponible",
       "UPDATE_ERROR": "Impossible d'obtenir la mise à jour de WowUp"
@@ -30,8 +30,8 @@
       "UPTODATE": "À JOUR"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "SAUVEGARDE", "à vérifier"
-      "COMPLETE": "ACHEVÉ", "à vérifier" 
+      "BACKINGUP": "SAUVEGARDE",
+      "COMPLETE": "ACHEVÉ",
       "DOWNLOADING": "TÉLÉCHARGEMENT",
       "INSTALLING": "INSTALLATION",
       "PENDING": "EN ATTENTE",
@@ -88,6 +88,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. URL de GitHub ou WowInterface",
       "CLOSE_BUTTON": "Fermer",
       "DESCRIPTION": "Si vous voulez installer un addon directement à partir d'une URL, collez-là ci-dessous.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
         "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
@@ -228,7 +229,7 @@
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump des données de débogage",
-        "DEBUG_DATA_DESCRIPTION": "Log les données de débogage pour aider à diagnostiquer les problèmes potentiels. Cela peut être trouvé dans votre dernier fichier journal pour les curieux.", "à améliorer !!"
+        "DEBUG_DATA_DESCRIPTION": "Log les données de débogage pour aider à diagnostiquer les problèmes potentiels. Cela peut être trouvé dans votre dernier fichier journal pour les curieux.",
         "DEBUG_DATA_LABEL": "Déboguer les données",
         "LOG_FILES_BUTTON": "Afficher les fichiers de log",
         "LOG_FILES_DESCRIPTION": "Ouvrez le dossier qui contient vos derniers fichiers journaux.",
