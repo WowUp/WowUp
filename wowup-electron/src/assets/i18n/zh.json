@@ -88,6 +88,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "例如，GitHub 或 WowInterface URL",
       "CLOSE_BUTTON": "关闭",
       "DESCRIPTION": "如需直接从某 URL 安装插件，请将其粘贴到下面以开始安装。",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
         "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wow-support 频道寻求帮助（英语）。",

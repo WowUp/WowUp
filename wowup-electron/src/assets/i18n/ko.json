@@ -88,6 +88,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "예) GitHub 또는 WowInterface URL",
       "CLOSE_BUTTON": "닫기",
       "DESCRIPTION": "URL 주소로 직접 설치를 하려면 아래 입력란에 애드온 URL을 붙여넣으세요.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
         "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wow-support 채널에서 도움을 요청해보세요.",
