@@ -31,7 +31,7 @@
         <small class="hint">{{ "PAGES.OPTIONS.APPLICATION.THEME_DESCRIPTION" | translate }}</small>
       </div>
       <mat-form-field class="light-select">
-        <mat-label>{{ "PAGES.OPTIONS.APPLICATION.CURRENT_LANGUAGE_LABEL" | translate }}</mat-label>
+        <mat-label>{{ "PAGES.OPTIONS.APPLICATION.THEME_LABEL" | translate }}</mat-label>
         <mat-select [(value)]="wowupService.currentTheme">
           <mat-option *ngFor="let theme of themes" [value]="theme.class">
             {{ theme.display | translate }}
