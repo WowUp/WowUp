@@ -7,6 +7,11 @@
       "QUIT_ACTION": "Quitter",
       "SHOW_ACTION": "Montrer"
     },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "Default",
+      "HORDE": "Horde"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
       "INSTALL_MESSAGE": "Voulez-vous redémarrer WowUp pour installer la mise à jour ?",
@@ -220,6 +225,8 @@
         "START_WITH_SYSTEM_LABEL": "Launch WowUp with system",
         "TELEMETRY_DESCRIPTION": "Aidez à améliorer WowUp en envoyant des données d'installation et / ou des erreurs anonymes.",
         "TELEMETRY_LABEL": "Télémétrie",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
         "TITLE": "Application",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "TEXT_ELEMENT",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "TEXT_ELEMENT",

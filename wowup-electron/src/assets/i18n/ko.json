@@ -7,6 +7,11 @@
       "QUIT_ACTION": "종료",
       "SHOW_ACTION": "창 열기"
     },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "Default",
+      "HORDE": "Horde"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
       "INSTALL_MESSAGE": "업데이트를 설치하기 위해 WowUp을 재시작할까요?",
@@ -220,6 +225,8 @@
         "START_WITH_SYSTEM_LABEL": "시동 시 자동 실행",
         "TELEMETRY_DESCRIPTION": "앱 설치 데이터 또는 오류를 익명으로 전송하여 WowUp 서비스 개선에 도움을 줍니다.",
         "TELEMETRY_LABEL": "데이터 전송",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
         "TITLE": "애픒리케이션",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "재시작하시겠습니까?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "하드웨어 가속을 비활성화 하면 FPS 또는 다른 렌더링 이슈 해결이 가능합니다. 변경 시 재시작이 필요합니다",

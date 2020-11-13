@@ -7,6 +7,11 @@
       "QUIT_ACTION": "Quit",
       "SHOW_ACTION": "Show"
     },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "Default",
+      "HORDE": "Horde"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
       "INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
@@ -220,6 +225,8 @@
         "START_WITH_SYSTEM_LABEL": "Start WowUp sammen med maskinen",
         "TELEMETRY_DESCRIPTION": "Hjelp til med å forbedre WowUp ved å sende anonyme data og feilmeldinger.",
         "TELEMETRY_LABEL": "Telemetri",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
         "TITLE": "Applikasjon",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vil du restarte?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Deaktivering av maskinvareakselerasjon kan løse FPS-problemer og andre renderproblemer i appen. Denne endringen krever en restart",

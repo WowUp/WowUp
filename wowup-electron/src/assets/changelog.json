@@ -3,7 +3,13 @@
     {
       "Version": "2.0.0-beta.12",
       "changes": [
-        ""
+        "German locale updates (Glow)",
+        "French locale updates (Galiwyx)",
+        "Chinese locale updates (Cyano Hao)",
+        "Korean locale updates ()",
+        "Auto update timer will now refresh the 'My Addons' list",
+        "Update to Angular 11",
+        "Fix issue with window snap fullscreen not saving screen"
       ]
     },
     {

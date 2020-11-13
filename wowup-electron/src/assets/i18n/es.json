@@ -7,6 +7,11 @@
       "QUIT_ACTION": "Salir",
       "SHOW_ACTION": "Mostrar"
     },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "Default",
+      "HORDE": "Horde"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar actualización de WowUp",
       "INSTALL_MESSAGE": "¿Quiere reiniciar WowUp para instalar la actualización?",
@@ -220,6 +225,8 @@
         "START_WITH_SYSTEM_LABEL": "Iniciar WowUp con el sistema",
         "TELEMETRY_DESCRIPTION": "Ayuda a mejorar WowUp enviando datos de instalación y/o errores de forma anónima.",
         "TELEMETRY_LABEL": "Telemetría",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
         "TITLE": "Aplicación",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "¿Quiere reiniciar la aplicación?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Desactivar la aceleración por hardware puede resolver problemas de FPS y corregir otros problemas de renderizado en esta aplicación. Es necesario reiniciar tras cambiar esta opción.",

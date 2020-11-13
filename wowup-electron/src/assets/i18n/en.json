@@ -7,6 +7,11 @@
       "QUIT_ACTION": "Quit",
       "SHOW_ACTION": "Show"
     },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "Default",
+      "HORDE": "Horde"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Install WowUp update",
       "INSTALL_MESSAGE": "Do you want to restart WowUp and install the update?",
@@ -18,11 +23,6 @@
       "SNACKBAR_TEXT": "A new version of WowUp is available",
       "TOOLTIP": "WowUp update available",
       "UPDATE_ERROR": "Failed to get WowUp update"
-    },
-    "THEME": {
-      "DEFAULT": "Default",
-      "HORDE": "Horde",
-      "ALLIANCE": "Alliance"
     }
   },
   "COMMON": {
@@ -225,14 +225,14 @@
         "START_WITH_SYSTEM_LABEL": "Launch WowUp with system",
         "TELEMETRY_DESCRIPTION": "Help improve WowUp by sending anonymous install data and/or errors.",
         "TELEMETRY_LABEL": "Telemetry",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
         "TITLE": "Application",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Do you want to restart?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Disabling hardware acceleration requires the application to restart.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Enabling hardware acceleration requires the application to restart.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration",
-        "THEME_LABEL": "Color Theme",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like"
+        "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debug Data",
