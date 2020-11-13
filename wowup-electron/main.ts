@@ -15,6 +15,7 @@ import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import * as url from "url";
 import * as platform from "./platform";
+import { minBy } from "lodash";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
@@ -74,6 +75,38 @@ function canStartHidden() {
   return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
 }
 
+function getNearestScreen(x: number, y: number) {
+  const displays = screen.getAllDisplays();
+  return minBy(displays, (display) => Math.hypot(display.bounds.x - x, display.bounds.y - y));
+}
+
+function getMaxScreenX(display: Electron.Display) {
+  return display.bounds.x + display.bounds.width;
+}
+
+function getMaxScreenY(display: Electron.Display) {
+  return display.bounds.y + display.bounds.height;
+}
+
+function constrainCoordinate(n: number, min: number, max: number) {
+  if (n < min) {
+    return min;
+  } else if (n > max) {
+    return max;
+  }
+  return n;
+}
+
+function getConstrainedCoordinates(window: BrowserWindow) {
+  const bounds = window.getBounds();
+  const nearestScreen = getNearestScreen(bounds.x, bounds.y);
+
+  return {
+    x: constrainCoordinate(bounds.x, nearestScreen.bounds.x, getMaxScreenX(nearestScreen)),
+    y: constrainCoordinate(bounds.y, nearestScreen.bounds.y, getMaxScreenY(nearestScreen)),
+  };
+}
+
 function windowStateManager(windowName: string, { width, height }: { width: number; height: number }) {
   let window: BrowserWindow;
   let windowState: WindowState;
@@ -111,9 +144,15 @@ function windowStateManager(windowName: string, { width, height }: { width: numb
 
   function saveState() {
     log.info("saving window state");
+    const bounds = window.getBounds();
+    const constrained = getConstrainedCoordinates(window);
+    windowState.x = constrained.x;
+    windowState.y = constrained.y;
+
     if (!window.isMaximized() && !window.isFullScreen()) {
-      windowState = { ...windowState, ...window.getBounds() };
+      windowState = { ...windowState, width: bounds.width, height: bounds.height };
     }
+
     windowState.isMaximized = window.isMaximized();
     windowState.isFullScreen = window.isFullScreen();
     preferenceStore.set(`${windowName}-window-state`, windowState);
