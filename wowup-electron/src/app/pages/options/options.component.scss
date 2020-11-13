@@ -17,19 +17,25 @@
 //   background-repeat: no-repeat;
 // }
 
-.theme-logo::after {
+.theme-logo {
   content: "";
-  background-image: url(../../../assets/images/horde-1.png);
-  background-size: cover;
+  // background-color: red;
+  // background-image: url(../../../assets/images/wowup-white-1.png);
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  // background-position: top;
   opacity: 0.03;
-  overflow: hidden;
-  width: 40vw;
-  max-width: 400px;
-  height: 100%;
   position: absolute;
-  top:0;
+  top: 0;
   left: 0;
-  z-index: -1;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  overflow: hidden;
+
+   img {
+     height: 100vh;
+   }
 }
 
 .nav-container {
@@ -49,7 +55,7 @@
     z-index: 1;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    overflow: hidden;
+    // overflow: hidden;
 
     .nav-item-list-wrap {
       flex: 1 0 auto;
@@ -106,6 +112,7 @@
         flex: 1 1 auto;
         min-height: 0;
         -webkit-box-flex: 1;
+        z-index: 2;
 
         .content-tab {
           position: relative;
