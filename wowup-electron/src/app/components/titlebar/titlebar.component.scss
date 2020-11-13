@@ -10,7 +10,25 @@
     height: 15px;
     width: 15px;
   }
+
+  .theme-logo {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 4px;
+    height: 78px;
+    opacity: 0.3;
+    overflow: hidden;
+
+    img {
+      position: relative;
+      left: 0;
+      height: 150%;
+      width: auto;
+    }
+  }
 }
+
 .mac {
   height: 22px;
 }
@@ -64,7 +82,6 @@
     z-index: 2500;
 
     &:hover {
-      background-color: $purple-2;
       cursor: pointer;
     }
 

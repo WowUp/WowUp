@@ -21,7 +21,7 @@ $md-wowup-pallette: (
   A100: #8c9eff,
   A200: #536dfe,
   A400: #3d5afe,
-  A700: #304ffe,
+  A700: #6874bb,
   contrast: (
     50: #000000,
     100: #ffffff,
@@ -61,31 +61,185 @@ $candy-app-theme: mat-dark-theme(
   )
 );
 
-$wowup-app-white-primary: mat-palette($md-wowup-pallette, 50, 50, 300);
-$wowup-app-secondary-theme: mat-dark-theme(
-  (
-    color: (
-      primary: $wowup-app-white-primary,
-      accent: $candy-app-accent,
-      warn: $candy-app-warn,
-    ),
-  )
-);
+.bg-primary {
+  background-color: $purple-1;
+}
 
-$dark-primary: mat-palette($mat-blue-grey);
-$dark-accent: mat-palette($mat-amber, A200, A100, A400);
-$dark-warn: mat-palette($mat-deep-orange);
-$dark-theme: mat-dark-theme(
-  (
-    color: (
-      primary: $dark-primary,
-      accent: $dark-accent,
-      warn: $dark-warn,
-    ),
-  )
-);
+.bg-primary-2 {
+  background-color: $purple-2;
+}
+
+.hover-primary-2:hover {
+  background-color: $purple-2;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $dark-2;
+}
+
+::-webkit-scrollbar-thumb {
+  border-color: $purple-3;
+  background: $purple-1;
+  background: linear-gradient(146deg, $purple-1 0%, $purple-2 100%);
+}
+
+::-webkit-scrollbar-corner {
+  background: $dark-3;
+}
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($candy-app-theme);
+
+// Horde theme
+$horde-pallette: (
+  50: #e8eaf6,
+  100: $horde-red-1,
+  200: #504fa1,
+  300: #383773,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: $horde-red-1,
+  A200: $horde-red-2,
+  A400: $horde-red-3,
+  A700: #6874bb,
+  contrast: (
+    50: #000000,
+    100: #ffffff,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+  ),
+);
+$horde-primary: mat-palette($horde-pallette, 100, 50, 300);
+$horde-accent: mat-palette($horde-pallette, A200, A100, A400);
+$horde-warn: mat-palette($mat-deep-orange);
+$horde-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $horde-primary,
+      accent: $horde-accent,
+      warn: $horde-warn,
+    ),
+  )
+);
+
+.horde-theme {
+  @include angular-material-color($horde-theme);
+
+  .bg-primary {
+    background-color: $horde-red-1 !important;
+  }
+
+  .bg-primary-2 {
+    background-color: $horde-red-2 !important;
+  }
+
+  .hover-primary-2:hover {
+    background-color: $horde-red-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $dark-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-color: $horde-red-3;
+    background: $horde-red-1;
+    background: linear-gradient(146deg, $horde-red-1 0%, $horde-red-2 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: $dark-3;
+  }
+}
+
+// Alliance theme
+$alliance-pallette: (
+  50: #e8eaf6,
+  100: $alliance-blue-1,
+  200: #504fa1,
+  300: #383773,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: $alliance-blue-1,
+  A200: $alliance-blue-2,
+  A400: $alliance-blue-3,
+  A700: #6874bb,
+  contrast: (
+    50: #000000,
+    100: #ffffff,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+  ),
+);
+$alliance-primary: mat-palette($alliance-pallette, 100, 50, 300);
+$alliance-accent: mat-palette($alliance-pallette, A200, A100, A400);
+$alliance-warn: mat-palette($mat-deep-orange);
+$alliance-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $alliance-primary,
+      accent: $alliance-accent,
+      warn: $alliance-warn,
+    ),
+  )
+);
+
+.alliance-theme {
+  @include angular-material-color($alliance-theme);
+
+  .bg-primary {
+    background-color: $alliance-blue-1 !important;
+  }
+
+  .bg-primary-2 {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  .hover-primary-2:hover {
+    background-color: $alliance-blue-3 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $dark-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-color: $alliance-blue-3;
+    background: $alliance-blue-1;
+    background: linear-gradient(146deg, $alliance-blue-1 0%, $alliance-blue-2 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: $dark-3;
+  }
+}

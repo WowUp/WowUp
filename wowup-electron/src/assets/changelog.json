@@ -1,6 +1,12 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.12",
+      "changes": [
+        ""
+      ]
+    },
+    {
       "Version": "2.0.0-beta.11",
       "changes": ["Italian locale updates (Bito)", "Fix a bug with the Spanish locale file"]
     },

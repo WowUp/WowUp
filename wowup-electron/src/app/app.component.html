@@ -1,4 +1,4 @@
-<div *ngIf="quitEnabled === false" class="app">
+<div *ngIf="quitEnabled === false" class="app" [ngClass]="[ wowUpService.currentTheme ]">
   <app-titlebar></app-titlebar>
   <div class="content">
     <router-outlet></router-outlet>

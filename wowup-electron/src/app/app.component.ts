@@ -32,11 +32,11 @@ export class AppComponent implements AfterViewInit {
     private _electronService: ElectronService,
     private _fileService: FileService,
     private translate: TranslateService,
-    private _wowUpService: WowUpService,
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _iconService: IconService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    private wowUpService: WowUpService
   ) {}
 
   ngAfterViewInit(): void {
@@ -77,7 +77,7 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    if (this._wowUpService.enableSystemNotifications) {
+    if (this.wowUpService.enableSystemNotifications) {
       const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
       const translated = await this.translate
         .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {

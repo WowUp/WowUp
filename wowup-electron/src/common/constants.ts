@@ -34,6 +34,7 @@ export const MY_ADDONS_HIDDEN_COLUMNS_KEY = "my_addons_hidden_columns";
 export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
 export const GET_ADDONS_HIDDEN_COLUMNS_KEY = "get_addons_hidden_columns";
 export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
+export const CURRENT_THEME_KEY = "current-theme";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
@@ -45,3 +46,8 @@ export const APP_UPDATE_INSTALL = "app-update-install";
 export const APP_UPDATE_CHECK_FOR_UPDATE = "app-update-check-for-update";
 export const APP_UPDATE_CHECK_START = "app-update-check-start";
 export const APP_UPDATE_CHECK_END = "app-update-check-end";
+
+// THEMES
+export const DEFAULT_THEME = "default-theme";
+export const HORDE_THEME = "horde-theme";
+export const ALLIANCE_THEME = "alliance-theme";

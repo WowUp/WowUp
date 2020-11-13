@@ -27,6 +27,8 @@ import {
   MY_ADDONS_SORT_ORDER,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
   GET_ADDONS_SORT_ORDER,
+  CURRENT_THEME_KEY,
+  DEFAULT_THEME,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -148,6 +150,16 @@ export class WowUpService {
     const key = COLLAPSE_TO_TRAY_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public get currentTheme() {
+    return this._preferenceStorageService.get(CURRENT_THEME_KEY);
+  }
+
+  public set currentTheme(value: string) {
+    const key = CURRENT_THEME_KEY;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value });
   }
 
   public get useHardwareAcceleration() {
@@ -333,6 +345,7 @@ export class WowUpService {
     this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
+    this.setDefaultPreference(CURRENT_THEME_KEY, DEFAULT_THEME);
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, this.getDefaultReleaseChannel());
     this.setDefaultClientPreferences();
   }
