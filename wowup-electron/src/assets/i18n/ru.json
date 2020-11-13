@@ -8,9 +8,9 @@
       "SHOW_ACTION": "Показать"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
-      "DEFAULT": "Default",
-      "HORDE": "Horde"
+      "ALLIANCE": "Альянс",
+      "DEFAULT": "По умолчанию",
+      "HORDE": "Орда"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
@@ -225,8 +225,8 @@
         "START_WITH_SYSTEM_LABEL": "Запускать WowUp вместе со стартом системы",
         "TELEMETRY_DESCRIPTION": "Помогите улучшить WowUp, отправив анонимные данные об установке и/или ошибках.",
         "TELEMETRY_LABEL": "Телеметрия",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
-        "THEME_LABEL": "Color Theme",
+        "THEME_DESCRIPTION": "Изменить цветовую тему по вкусу",
+        "THEME_LABEL": "Цветовая тема",
         "TITLE": "Приложение",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Хотите перезапустить приложение?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
