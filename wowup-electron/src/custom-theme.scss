@@ -153,6 +153,14 @@ $horde-theme: mat-dark-theme(
     background-color: $horde-red-2 !important;
   }
 
+  .mat-form-field-ripple {
+    background-color: $horde-red-2 !important;
+  }
+
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $horde-red-2 !important;
+  }
+
   ::-webkit-scrollbar-track {
     background-color: $dark-2;
   }
@@ -172,7 +180,7 @@ $horde-theme: mat-dark-theme(
 $alliance-pallette: (
   50: #e8eaf6,
   100: $alliance-blue-1,
-  200: #504fa1,
+  200: $alliance-blue-2,
   300: #383773,
   400: #5c6bc0,
   500: #3f51b5,
@@ -227,6 +235,14 @@ $alliance-theme: mat-dark-theme(
 
   .hover-primary-2:hover {
     background-color: $alliance-blue-3 !important;
+  }
+
+  .mat-form-field-ripple {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $alliance-blue-2 !important;
   }
 
   ::-webkit-scrollbar-track {
