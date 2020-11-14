@@ -5,11 +5,13 @@ describe("GetAddonListItemFilePropPipe", () => {
   let directive: GetAddonListItemFilePropPipe;
   let fixture: ComponentFixture<GetAddonListItemFilePropPipe>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [GetAddonListItemFilePropPipe],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [GetAddonListItemFilePropPipe],
+      }).compileComponents();
+    })
+  );
 
   it("should create an instance", () => {
     fixture = TestBed.createComponent(GetAddonListItemFilePropPipe);

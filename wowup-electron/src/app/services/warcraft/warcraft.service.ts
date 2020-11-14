@@ -40,16 +40,12 @@ const BETA_LOCATION_KEY = "wow_beta_location";
 export class WarcraftService {
   private readonly _impl: WarcraftServiceImpl;
   private readonly _productsSrc = new BehaviorSubject<InstalledProduct[]>([]);
-  private readonly _installedClientTypesSrc = new BehaviorSubject<
-    WowClientType[] | undefined
-  >(undefined);
+  private readonly _installedClientTypesSrc = new BehaviorSubject<WowClientType[] | undefined>(undefined);
 
   private _productDbPath = "";
 
   public products$ = this._productsSrc.asObservable();
-  public productsReady$ = this.products$.pipe(
-    filter((products) => Array.isArray(products))
-  );
+  public productsReady$ = this.products$.pipe(filter((products) => Array.isArray(products)));
 
   public installedClientTypes$ = this._installedClientTypesSrc.asObservable();
 
@@ -66,9 +62,7 @@ export class WarcraftService {
         map((productDbPath) => (this._productDbPath = productDbPath)),
         map(() => this.scanProducts()),
         switchMap(() => from(this.getWowClientTypes())),
-        map((installedClientTypes) =>
-          this._installedClientTypesSrc.next(installedClientTypes)
-        )
+        map((installedClientTypes) => this._installedClientTypesSrc.next(installedClientTypes))
       )
       .subscribe();
   }
@@ -123,9 +117,7 @@ export class WarcraftService {
 
   public getProductLocation(clientType: WowClientType) {
     const clientFolderName = this.getClientFolderName(clientType);
-    const clientLocation = this._productsSrc.value.find(
-      (product) => product.name === clientFolderName
-    );
+    const clientLocation = this._productsSrc.value.find((product) => product.name === clientFolderName);
     return clientLocation?.location ?? "";
   }
 
@@ -147,9 +139,7 @@ export class WarcraftService {
         continue;
       }
 
-      console.log(
-        `clientLocation ${clientLocation}, productLocation ${productLocation}`
-      );
+      console.log(`clientLocation ${clientLocation}, productLocation ${productLocation}`);
       if (this.arePathsEqual(clientLocation, productLocation)) {
         continue;
       }
@@ -178,9 +168,7 @@ export class WarcraftService {
       return addonFolders;
     }
 
-    const directories = await this._fileService.listDirectories(
-      addonFolderPath
-    );
+    const directories = await this._fileService.listDirectories(addonFolderPath);
     // const directories = files.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
     for (let i = 0; i < directories.length; i += 1) {
       const dir = directories[i];
@@ -193,10 +181,7 @@ export class WarcraftService {
     return addonFolders;
   }
 
-  private async getAddonFolder(
-    addonFolderPath: string,
-    dir: string
-  ): Promise<AddonFolder> {
+  private async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder> {
     try {
       const dirPath = path.join(addonFolderPath, dir);
       const dirFiles = fs.readdirSync(dirPath);
@@ -233,10 +218,7 @@ export class WarcraftService {
     return this._preferenceStorageService.set(clientLocationKey, clientPath);
   }
 
-  public setWowFolderPath(
-    clientType: WowClientType,
-    folderPath: string
-  ): boolean {
+  public setWowFolderPath(clientType: WowClientType, folderPath: string): boolean {
     const relativePath = this.getClientRelativePath(clientType, folderPath);
 
     if (!this.isClientFolder(clientType, relativePath)) {
@@ -246,11 +228,7 @@ export class WarcraftService {
     this.setClientLocation(clientType, relativePath);
 
     from(this.getWowClientTypes())
-      .pipe(
-        map((wowClientTypes) =>
-          this._installedClientTypesSrc.next(wowClientTypes)
-        )
-      )
+      .pipe(map((wowClientTypes) => this._installedClientTypesSrc.next(wowClientTypes)))
       .subscribe();
 
     return true;
@@ -259,10 +237,7 @@ export class WarcraftService {
   public getClientRelativePath(clientType: WowClientType, folderPath: string) {
     const clientFolderName = this.getClientFolderName(clientType);
     const clientFolderIdx = folderPath.indexOf(clientFolderName);
-    const relativePath =
-      clientFolderIdx === -1
-        ? folderPath
-        : folderPath.substring(0, clientFolderIdx);
+    const relativePath = clientFolderIdx === -1 ? folderPath : folderPath.substring(0, clientFolderIdx);
 
     return path.normalize(relativePath);
   }
@@ -272,11 +247,7 @@ export class WarcraftService {
     const relativePath = this.getClientRelativePath(clientType, folderPath);
 
     const executableName = this.getExecutableName(clientType);
-    const executablePath = path.join(
-      relativePath,
-      clientFolderName,
-      executableName
-    );
+    const executablePath = path.join(relativePath, clientFolderName, executableName);
 
     return fs.existsSync(executablePath);
   }
@@ -345,12 +316,7 @@ export class WarcraftService {
       case WowClientType.Beta:
         return BETA_LOCATION_KEY;
       default:
-        throw new Error(
-          `Failed to get client location key: ${clientType}, ${getEnumName(
-            WowClientType,
-            clientType
-          )}`
-        );
+        throw new Error(`Failed to get client location key: ${clientType}, ${getEnumName(WowClientType, clientType)}`);
     }
   }
 

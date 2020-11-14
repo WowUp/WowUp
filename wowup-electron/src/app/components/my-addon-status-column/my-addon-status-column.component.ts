@@ -1,12 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 
@@ -24,10 +16,7 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
     return this.listItem?.isUpToDate || this.listItem?.isIgnored;
   }
 
-  constructor(
-    private _translateService: TranslateService,
-    private _ngzone: NgZone
-  ) {}
+  constructor(private _translateService: TranslateService, private _ngzone: NgZone) {}
 
   ngOnInit(): void {}
 

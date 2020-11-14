@@ -5,11 +5,13 @@ describe("DownloadCountPipe", () => {
   let directive: DownloadCountPipe;
   let fixture: ComponentFixture<DownloadCountPipe>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [DownloadCountPipe],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [DownloadCountPipe],
+      }).compileComponents();
+    })
+  );
 
   it("should create an instance", () => {
     fixture = TestBed.createComponent(DownloadCountPipe);

@@ -13,9 +13,7 @@ import {
   APP_UPDATE_START_DOWNLOAD,
 } from "./src/common/constants";
 
-export const checkForUpdates = async function checkForUpdates(
-  win: BrowserWindow
-) {
+export const checkForUpdates = async function checkForUpdates(win: BrowserWindow) {
   let result = null;
 
   try {
@@ -63,14 +61,14 @@ export function initializeAppUpdateIpcHandlers(win: BrowserWindow) {
     return await autoUpdater.downloadUpdate();
   });
 
-  // Used this solution for Mac support 
+  // Used this solution for Mac support
   // https://github.com/electron-userland/electron-builder/issues/1604#issuecomment-372091881
   ipcMain.handle(APP_UPDATE_INSTALL, async () => {
     log.info(APP_UPDATE_INSTALL);
-    app.removeAllListeners('window-all-closed');
+    app.removeAllListeners("window-all-closed");
     var browserWindows = BrowserWindow.getAllWindows();
-    browserWindows.forEach(function(browserWindow) {
-        browserWindow.removeAllListeners('close');
+    browserWindows.forEach(function (browserWindow) {
+      browserWindow.removeAllListeners("close");
     });
     autoUpdater.quitAndInstall();
   });

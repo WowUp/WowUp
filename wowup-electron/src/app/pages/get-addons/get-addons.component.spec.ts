@@ -5,11 +5,13 @@ describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
   let fixture: ComponentFixture<GetAddonsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [GetAddonsComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [GetAddonsComponent],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GetAddonsComponent);

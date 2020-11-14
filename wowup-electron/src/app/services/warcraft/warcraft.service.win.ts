@@ -14,11 +14,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
     const driveNames = diskInfo.map((i) => i.mounted);
 
     for (const name of driveNames) {
-      const agentPath = path.join(
-        name,
-        WINDOWS_BLIZZARD_AGENT_PATH,
-        BLIZZARD_PRODUCT_DB_NAME
-      );
+      const agentPath = path.join(name, WINDOWS_BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
       const exists = await FileUtils.exists(agentPath);
 
       if (exists) {

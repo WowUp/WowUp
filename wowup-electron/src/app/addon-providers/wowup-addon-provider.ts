@@ -22,43 +22,27 @@ const API_URL = AppConfig.wowUpHubUrl;
 export class WowUpAddonProvider implements AddonProvider {
   public readonly name = "WowUp";
 
-  constructor(
-    private _httpClient: HttpClient,
-    private _electronService: ElectronService
-  ) {}
+  constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}
 
-  async getAll(
-    clientType: WowClientType,
-    addonIds: string[]
-  ): Promise<AddonSearchResult[]> {
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     const url = `${API_URL}/addons`;
-    const addons = await this._httpClient
-      .get<WowUpAddonRepresentation[]>(url.toString())
-      .toPromise();
+    const addons = await this._httpClient.get<WowUpAddonRepresentation[]>(url.toString()).toPromise();
 
     // TODO
     return [];
   }
 
-  public async getFeaturedAddons(
-    clientType: WowClientType
-  ): Promise<AddonSearchResult[]> {
+  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     // TODO
     return [];
   }
 
-  async searchByQuery(
-    query: string,
-    clientType: WowClientType
-  ): Promise<AddonSearchResult[]> {
+  async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
     // TODO
     return [];
   }
 
-  async searchByUrl(
-    addonUri: URL,
-    clientType: WowClientType
-  ): Promise<AddonSearchResult> {
+  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
     // TODO
     return undefined;
   }
@@ -73,10 +57,7 @@ export class WowUpAddonProvider implements AddonProvider {
     return [];
   }
 
-  getById(
-    addonId: string,
-    clientType: WowClientType
-  ): Observable<AddonSearchResult> {
+  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     // TODO
     return of(undefined);
   }
@@ -90,11 +71,7 @@ export class WowUpAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  async scan(
-    clientType: WowClientType,
-    addonChannelType: any,
-    addonFolders: AddonFolder[]
-  ): Promise<void> {
+  async scan(clientType: WowClientType, addonChannelType: any, addonFolders: AddonFolder[]): Promise<void> {
     // const url = `${API_URL}/addons`;
     // const addons = await this._httpClient
     //   .get<WuAddon[]>(url.toString())
@@ -130,9 +107,7 @@ export class WowUpAddonProvider implements AddonProvider {
     }
 
     const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
-    const matchedScanResultIds = matchedScanResults.map(
-      (sr) => sr.exactMatch.id
-    );
+    const matchedScanResultIds = matchedScanResults.map((sr) => sr.exactMatch.id);
 
     for (let addonFolder of addonFolders) {
       var scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
@@ -142,11 +117,7 @@ export class WowUpAddonProvider implements AddonProvider {
       }
 
       try {
-        const newAddon = this.getAddon(
-          clientType,
-          addonChannelType,
-          scanResult
-        );
+        const newAddon = this.getAddon(clientType, addonChannelType, scanResult);
 
         addonFolder.matchingAddon = newAddon;
       } catch (err) {
@@ -158,19 +129,11 @@ export class WowUpAddonProvider implements AddonProvider {
     }
   }
 
-  private hasMatchingFingerprint(
-    scanResult: WowUpScanResult,
-    release: WowUpAddonReleaseRepresentation
-  ) {
-    return release.addonFolders.some(
-      (addonFolder) => addonFolder.fingerprint == scanResult.fingerprint
-    );
+  private hasMatchingFingerprint(scanResult: WowUpScanResult, release: WowUpAddonReleaseRepresentation) {
+    return release.addonFolders.some((addonFolder) => addonFolder.fingerprint == scanResult.fingerprint);
   }
 
-  private isGameType(
-    release: WowUpAddonReleaseRepresentation,
-    clientType: WowClientType
-  ) {
+  private isGameType(release: WowUpAddonReleaseRepresentation, clientType: WowClientType) {
     return release.game_type === this.getWowGameType(clientType);
   }
 
@@ -187,9 +150,7 @@ export class WowUpAddonProvider implements AddonProvider {
     }
   }
 
-  private getAddonsByFingerprints(
-    fingerprints: string[]
-  ): Observable<GetAddonsByFingerprintResponse> {
+  private getAddonsByFingerprints(fingerprints: string[]): Observable<GetAddonsByFingerprintResponse> {
     const url = `${API_URL}/addons/fingerprint`;
 
     return this._httpClient.post<any>(url, {
@@ -197,9 +158,7 @@ export class WowUpAddonProvider implements AddonProvider {
     });
   }
 
-  private getScanResults = async (
-    addonFolders: AddonFolder[]
-  ): Promise<AppWowUpScanResult[]> => {
+  private getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
     const t1 = Date.now();
 
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
@@ -224,9 +183,7 @@ export class WowUpAddonProvider implements AddonProvider {
       (af) => af.load_on_demand === false
     );
     const authors = scanResult.exactMatch.owner_name;
-    const folderList = scanResult.exactMatch.matched_release.addonFolders
-      .map((af) => af.folder_name)
-      .join(", ");
+    const folderList = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name).join(", ");
 
     let channelType = addonChannelType;
     let latestVersion = primaryAddonFolder.version;

@@ -8,16 +8,8 @@ describe("AddonUpdateButtonComponent", () => {
   it("should create", () => {
     inject(
       [AddonService, AnalyticsService, TranslateService],
-      (
-        addonService: AddonService,
-        analyticsService: AnalyticsService,
-        translateService: TranslateService
-      ) => {
-        const instance = new AddonUpdateButtonComponent(
-          addonService,
-          analyticsService,
-          translateService
-        );
+      (addonService: AddonService, analyticsService: AnalyticsService, translateService: TranslateService) => {
+        const instance = new AddonUpdateButtonComponent(addonService, analyticsService, translateService);
         expect(instance).toBeTruthy();
       }
     );

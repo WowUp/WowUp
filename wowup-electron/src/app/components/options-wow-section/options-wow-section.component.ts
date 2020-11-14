@@ -21,17 +21,12 @@ export class OptionsWowSectionComponent implements OnInit {
   public wowUpReleaseChannels: {
     type: WowUpReleaseChannelType;
     name: string;
-  }[] = getEnumList(WowUpReleaseChannelType).map(
-    (type: WowUpReleaseChannelType) => ({
-      type,
-      name: getEnumName(WowUpReleaseChannelType, type),
-    })
-  );
+  }[] = getEnumList(WowUpReleaseChannelType).map((type: WowUpReleaseChannelType) => ({
+    type,
+    name: getEnumName(WowUpReleaseChannelType, type),
+  }));
 
-  constructor(
-    private _warcraftService: WarcraftService,
-    private _wowupService: WowUpService
-  ) {}
+  constructor(private _warcraftService: WarcraftService, private _wowupService: WowUpService) {}
 
   ngOnInit(): void {
     this.wowUpReleaseChannel = this._wowupService.wowUpReleaseChannel;

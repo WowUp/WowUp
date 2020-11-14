@@ -1,7 +1,7 @@
 import { BrowserWindow, screen } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
-import { minBy } from 'lodash';
+import { minBy } from "lodash";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { WindowState } from "./src/common/models/window-state";

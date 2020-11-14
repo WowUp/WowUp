@@ -14,6 +14,7 @@ window-state.js
 src/**/*.js
 !src/karma.conf.js
 *.js.map
+*.hbs
 
 # dependencies
 /node_modules

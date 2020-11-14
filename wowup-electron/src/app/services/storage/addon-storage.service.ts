@@ -70,19 +70,13 @@ export class AddonStorageService {
     return addons[0];
   }
 
-  public getAllForClientType(
-    clientType: WowClientType,
-    validator?: (addon: Addon) => boolean
-  ) {
+  public getAllForClientType(clientType: WowClientType, validator?: (addon: Addon) => boolean) {
     const addons: Addon[] = [];
 
     this.query((store) => {
       for (const result of store) {
         const addon = result[1] as Addon;
-        if (
-          addon.clientType === clientType &&
-          (!validator || validator(addon))
-        ) {
+        if (addon.clientType === clientType && (!validator || validator(addon))) {
           addons.push(addon);
         }
       }

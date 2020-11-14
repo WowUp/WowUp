@@ -8,10 +8,7 @@ import { WowUpService } from "app/services/wowup/wowup.service";
   styleUrls: ["./options-debug-section.component.scss"],
 })
 export class OptionsDebugSectionComponent implements OnInit {
-  constructor(
-    private _addonService: AddonService,
-    private _wowupService: WowUpService
-  ) {}
+  constructor(private _addonService: AddonService, private _wowupService: WowUpService) {}
 
   ngOnInit(): void {}
 

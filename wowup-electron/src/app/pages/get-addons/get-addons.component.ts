@@ -138,7 +138,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     if (this._automaticSort) {
       return;
     }
-    
+
     if (this.table) {
       this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
     }

@@ -62,8 +62,7 @@
           {{ "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL" | translate }}
         </div>
       </div>
-      <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)">
-      </mat-slide-toggle>
+      <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)"> </mat-slide-toggle>
     </div>
     <small class="hint">{{ minimizeOnCloseDescription }}</small>
   </div>
@@ -75,8 +74,10 @@
           {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL" | translate }}
         </div>
       </div>
-      <mat-slide-toggle [checked]="wowupService.enableSystemNotifications"
-        (change)="onEnableSystemNotifications($event)">
+      <mat-slide-toggle
+        [checked]="wowupService.enableSystemNotifications"
+        (change)="onEnableSystemNotifications($event)"
+      >
       </mat-slide-toggle>
     </div>
     <small class="hint">
@@ -105,8 +106,11 @@
         </div>
         <small class="hint">{{ "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_DESCRIPTION" | translate }}</small>
       </div>
-      <mat-slide-toggle [(ngModel)]="startWithSystem" [(checked)]="startWithSystem"
-        (change)="onStartWithSystemChange($event)">
+      <mat-slide-toggle
+        [(ngModel)]="startWithSystem"
+        [(checked)]="startWithSystem"
+        (change)="onStartWithSystemChange($event)"
+      >
       </mat-slide-toggle>
     </div>
   </div>
@@ -119,8 +123,12 @@
         </div>
         <small class="hint">{{ "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_DESCRIPTION" | translate }}</small>
       </div>
-      <mat-slide-toggle [(ngModel)]="startMinimized" [(disabled)]="!startWithSystem" [(checked)]="startMinimized"
-        (change)="onStartMinimizedChange($event)">
+      <mat-slide-toggle
+        [(ngModel)]="startMinimized"
+        [(disabled)]="!startWithSystem"
+        [(checked)]="startMinimized"
+        (change)="onStartMinimizedChange($event)"
+      >
       </mat-slide-toggle>
     </div>
   </div>

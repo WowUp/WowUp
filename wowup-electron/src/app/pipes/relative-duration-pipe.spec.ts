@@ -5,12 +5,9 @@ import { RelativeDurationPipe } from "./relative-duration-pipe";
 
 describe("RelativeDurationPipe", () => {
   it("create an instance", () => {
-    inject(
-      [DatePipe, TranslateService],
-      (datePipe: DatePipe, translateService: TranslateService) => {
-        const pipe = new RelativeDurationPipe(translateService);
-        expect(pipe).toBeTruthy();
-      }
-    );
+    inject([DatePipe, TranslateService], (datePipe: DatePipe, translateService: TranslateService) => {
+      const pipe = new RelativeDurationPipe(translateService);
+      expect(pipe).toBeTruthy();
+    });
   });
 });

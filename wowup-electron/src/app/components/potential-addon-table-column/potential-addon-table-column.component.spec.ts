@@ -4,12 +4,9 @@ import { PotentialAddonTableColumnComponent } from "./potential-addon-table-colu
 
 describe("PotentialAddonTableColumnComponent", () => {
   it("should create", () => {
-    inject(
-      [GetAddonListItemFilePropPipe],
-      (propPipe: GetAddonListItemFilePropPipe) => {
-        const pipe = new PotentialAddonTableColumnComponent(propPipe);
-        expect(pipe).toBeTruthy();
-      }
-    );
+    inject([GetAddonListItemFilePropPipe], (propPipe: GetAddonListItemFilePropPipe) => {
+      const pipe = new PotentialAddonTableColumnComponent(propPipe);
+      expect(pipe).toBeTruthy();
+    });
   });
 });
