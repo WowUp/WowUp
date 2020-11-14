@@ -135,16 +135,13 @@ function createWindow(): BrowserWindow {
 
   if (platform.isMac) {
     win.on("close", (e) => {
-      if (appIsQuitting) {
+      if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
         return;
       }
 
       e.preventDefault();
       win.hide();
-
-      if (preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) === "true") {
-        app.dock.hide();
-      }
+      app.dock.hide();
     });
   }
 
@@ -228,9 +225,9 @@ try {
   app.on("window-all-closed", () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== "darwin") {
+    // if (process.platform !== "darwin") {
       app.quit();
-    }
+    // }
   });
 
   app.on("activate", () => {
