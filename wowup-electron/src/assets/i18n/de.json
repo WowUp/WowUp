@@ -8,8 +8,8 @@
       "SHOW_ACTION": "Öffnen"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
-      "DEFAULT": "Default",
+      "ALLIANCE": "Allianz",
+      "DEFAULT": "Standard",
       "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {
@@ -225,8 +225,8 @@
         "START_WITH_SYSTEM_LABEL": "Starte WowUp mit dem System",
         "TELEMETRY_DESCRIPTION": "Helfen Sie WowUp zu verbessern, indem Sie anonyme Installationsdaten und/oder Fehler senden.",
         "TELEMETRY_LABEL": "Telemetrie",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
-        "THEME_LABEL": "Color Theme",
+        "THEME_DESCRIPTION": "Ändere das Farbschma nach deinen Wünschen",
+        "THEME_LABEL": "Farbschema",
         "TITLE": "Applikation",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Neustart der App?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Das Deaktivieren der Hardwarebeschleunigung kann FPS Probleme und Probleme beim Rendern beheben. Eine Änderung dieser Einstellung benötigt einen Neustart der App.",
