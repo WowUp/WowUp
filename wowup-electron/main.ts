@@ -58,8 +58,8 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 
-const USER_AGENT = `WowUp-Client/${app.getVersion()} (${os.type()}; ${os.release()}; ${os.arch()}; ${isPortable ? " portable;" : ""
-  } +https://wowup.io)`;
+const portableStr = isPortable ? " portable;" : "";
+const USER_AGENT = `WowUp-Client/${app.getVersion()} (${os.type()}; ${os.release()}; ${os.arch()}; ${portableStr} +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
 
 const argv = require("minimist")(process.argv.slice(1), {

@@ -36,7 +36,7 @@ export class AppComponent implements AfterViewInit {
     private _addonService: AddonService,
     private _iconService: IconService,
     private _sessionService: SessionService,
-    private wowUpService: WowUpService
+    public wowUpService: WowUpService
   ) {}
 
   ngAfterViewInit(): void {
