@@ -430,6 +430,13 @@ snack-bar-container {
   z-index: 2;
 }
 
+.mat-input-element {
+  caret-color: $white-3 !important;
+}
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: $white-2 !important;
+}
+
 th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
   opacity: 1 !important;
   transform: translateY(0) !important;
