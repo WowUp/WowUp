@@ -45,15 +45,15 @@
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
-      "DAYS_AGO": "{count} {count, plural, one{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, one{hour} other{hours}} ago",
+      "DAYS_AGO": "{count} {count, plural, =1{day} other{days}} ago",
+      "HOURS_AGO": "{count} {count, plural, =1{hour} other{hours}} ago",
       "JUST_NOW": "Just now",
-      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
-      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
+      "MONTHS_AGO": "{count} {count, plural, =1{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, =1{year} other{years}} ago",
       "YESTERDAY": "Yesterday"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} billion",
@@ -77,7 +77,7 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "By {authorName}",
-      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
+      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}",
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
@@ -93,7 +93,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",
       "CLOSE_BUTTON": "Close",
       "DESCRIPTION": "If you want to install an addon directly from a URL paste it below to get started.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
         "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
@@ -196,7 +196,7 @@
         "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
         "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
         "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
-        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
+        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, =1{dependency} other{dependencies}}. Do you want to remove them also?",
         "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
         "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
       },
