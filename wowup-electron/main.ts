@@ -5,6 +5,7 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
+  powerMonitor,
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
@@ -93,7 +94,7 @@ function createWindow(): BrowserWindow {
       webSecurity: false,
       enableRemoteModule: true,
     },
-    minWidth: 900,
+    minWidth: 940,
     minHeight: 550,
     show: false,
   };
@@ -117,6 +118,23 @@ function createWindow(): BrowserWindow {
   mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-render-process-gone
+  win.webContents.on("render-process-gone", (evt, details) => {
+    log.error("webContents render-process-gone");
+    log.error(evt);
+    log.error(details);
+  });
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-unresponsive
+  win.webContents.on("unresponsive", () => {
+    log.error("webContents unresponsive");
+  });
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-responsive
+  win.webContents.on("responsive", () => {
+    log.error("webContents responsive");
+  });
 
   win.once("ready-to-show", () => {
     if (canStartHidden()) {
@@ -165,23 +183,6 @@ function createWindow(): BrowserWindow {
     );
   }
 
-  // Emitted when the window is closed.
-  // win.on('closed', () => {
-  //   // Dereference the window object, usually you would store window
-  //   // in an array if your app supports multi windows, this is the time
-  //   // when you should delete the corresponding element.
-  //   win = null;
-  // });
-
-  // win.on('minimize', function (event) {
-  //   event.preventDefault();
-  //   win.hide();
-  // });
-
-  // win.on('restore', function (event) {
-  //   win.show();
-  // });
-
   return win;
 }
 
@@ -204,7 +205,7 @@ try {
     });
   }
 
-  app.allowRendererProcessReuse = true;
+  app.allowRendererProcessReuse = false;
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
@@ -241,6 +242,22 @@ try {
     if (win === null) {
       createWindow();
     }
+  });
+
+  powerMonitor.on("resume", () => {
+    log.info("powerMonitor resume");
+  });
+
+  powerMonitor.on("suspend", () => {
+    log.info("powerMonitor suspend");
+  });
+
+  powerMonitor.on("lock-screen", () => {
+    log.info("powerMonitor lock-screen");
+  });
+
+  powerMonitor.on("unlock-screen", () => {
+    log.info("powerMonitor unlock-screen");
   });
 } catch (e) {
   // Catch Error
