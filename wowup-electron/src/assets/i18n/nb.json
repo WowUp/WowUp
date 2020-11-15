@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse} ble automatisk oppdatert}.",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse}} ble automatisk oppdatert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Check for Updates...",
