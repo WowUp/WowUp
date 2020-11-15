@@ -1,6 +1,18 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.13",
+      "changes": [
+        "German locale updates (chops)",
+        "French locale updates (Zazou)",
+        "Italian locale updates (Bito)",
+        "Theme updates (NoobTaco)",
+        "Fix Korean locale",
+        "Fix Chinese locale",
+        "Fix NB locale"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.12",
       "changes": [
         "Russian locale updates (Medok)",
