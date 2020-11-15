@@ -105,7 +105,7 @@ $horde-pallette: (
   800: #283593,
   900: #1a237e,
   A100: $horde-red-1,
-  A200: $horde-red-2,
+  A200: $horde-control,
   A400: $horde-red-3,
   A700: #6874bb,
   contrast: (
@@ -157,10 +157,6 @@ $horde-theme: mat-dark-theme(
     background-color: $horde-red-2 !important;
   }
 
-  .mat-form-field.mat-focused .mat-form-field-label {
-    color: $horde-red-2 !important;
-  }
-
   ::-webkit-scrollbar-track {
     background-color: $dark-2;
   }
@@ -189,7 +185,7 @@ $alliance-pallette: (
   800: #283593,
   900: #1a237e,
   A100: $alliance-blue-1,
-  A200: $alliance-blue-2,
+  A200: $alliance-control,
   A400: $alliance-blue-3,
   A700: #6874bb,
   contrast: (
@@ -239,10 +235,6 @@ $alliance-theme: mat-dark-theme(
 
   .mat-form-field-ripple {
     background-color: $alliance-blue-2 !important;
-  }
-
-  .mat-form-field.mat-focused .mat-form-field-label {
-    color: $alliance-blue-2 !important;
   }
 
   ::-webkit-scrollbar-track {
