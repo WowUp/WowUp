@@ -27,21 +27,21 @@
   },
   "COMMON": {
     "ADDON_STATE": {
-      "IGNORED": "IGNORÉ",
-      "INSTALL": "INSTALLER",
-      "UNINSTALL": "DÉSINSTALLER",
+      "IGNORED": "Ignoré",
+      "INSTALL": "Installer",
+      "UNINSTALL": "Désinstaller",
       "UNKNOWN": "",
-      "UPDATE": "MISE À JOUR",
-      "UPTODATE": "À JOUR"
+      "UPDATE": "Mise à jour",
+      "UPTODATE": "À jour"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "SAUVEGARDE",
-      "COMPLETE": "ACHEVÉ",
-      "DOWNLOADING": "TÉLÉCHARGEMENT",
-      "INSTALLING": "INSTALLATION",
-      "PENDING": "EN ATTENTE",
-      "UNINSTALLING": "DÉSINSTALLATION",
-      "UPDATING": "EN COURS DE MISE À JOUR"
+      "BACKINGUP": "Sauvegarde",
+      "COMPLETE": "Installé",
+      "DOWNLOADING": "Téléchargement",
+      "INSTALLING": "Installation",
+      "PENDING": "En attente",
+      "UNINSTALLING": "Désinstallation",
+      "UPDATING": "En cours de mise à jour"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",

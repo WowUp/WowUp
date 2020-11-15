@@ -8,9 +8,9 @@
       "SHOW_ACTION": "Mostra"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
+      "ALLIANCE": "Alleanza",
       "DEFAULT": "Default",
-      "HORDE": "Horde"
+      "HORDE": "Orda"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
@@ -142,7 +142,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} {count, plural, =1{selezionato} other{selezionati}}",
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Aggiornamento Automatico",
         "BETA_ADDON_CHANNEL": "Beta",
@@ -196,8 +196,8 @@
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}??",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
-        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
-        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "DEPENDENCY_MESSAGE": "{addonName} ha {dependencyCount} {dependencyCount, plural, one{dipendenza} other{dipendnenze}}. Vuoi rimuovere anche queste?",
+        "DEPENDENCY_TITLE": "Rimuovere Dipendenze dell'Addon?",
         "TITLE": "Disinstallare {count, plural, =1{l'addon} other{gli addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Aggiorna Tutto",
@@ -209,7 +209,7 @@
     },
     "OPTIONS": {
       "APPLICATION": {
-        "CURRENT_LANGUAGE_LABEL": "Lingua Attuale",
+        "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita/Disabilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Abilita notifiche di sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Quando si chiude la finestra WowUp, minimizzare nella barra dei menu",
@@ -225,8 +225,8 @@
         "START_WITH_SYSTEM_LABEL": "Lancia WowUp all'avvio del sistema",
         "TELEMETRY_DESCRIPTION": "Aiuta a migliorare WowUp inviando dati di installazione e/o errori anonimi.",
         "TELEMETRY_LABEL": "Telemetria",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
-        "THEME_LABEL": "Color Theme",
+        "THEME_DESCRIPTION": "Cambia il tema del colore come preferisci",
+        "THEME_LABEL": "Tema Colore",
         "TITLE": "Applicazione",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vuoi riavviare?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware potrebbe risolvere i problemi di FPS e altri problemi di rendering in questa app. La modifica di questa impostazione richiede un riavvio.",
