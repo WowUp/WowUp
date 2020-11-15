@@ -53,7 +53,7 @@
       "YESTERDAY": "Gestern"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten} benötigt}"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}} benötigt"
     },
     "DOWNLOAD_COUNT": {
       "BILLION": "{count} Milliarden",
