@@ -61,6 +61,10 @@ $candy-app-theme: mat-dark-theme(
   )
 );
 
+.border-primary {
+  border-color: $purple-1;
+}
+
 .bg-primary {
   background-color: $purple-1;
 }
@@ -141,6 +145,10 @@ $horde-theme: mat-dark-theme(
 .horde-theme {
   @include angular-material-color($horde-theme);
 
+  .border-primary {
+    border-color: $horde-red-1 !important;
+  }
+
   .bg-primary {
     background-color: $horde-red-1 !important;
   }
@@ -220,6 +228,10 @@ $alliance-theme: mat-dark-theme(
 
 .alliance-theme {
   @include angular-material-color($alliance-theme);
+
+  .border-primary {
+    border-color: $alliance-blue-1 !important;
+  }
 
   .bg-primary {
     background-color: $alliance-blue-1 !important;
