@@ -93,7 +93,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub oder WowInterface URL",
       "CLOSE_BUTTON": "Schließen",
       "DESCRIPTION": "Wenn Sie ein Addon direkt von einer URL installieren möchten, fügen Sie es unten in der Zeile ein.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
         "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst du auf unsrem Discord im Kamlen #wow-support nach Hilfe fragen.",
