@@ -376,9 +376,25 @@ $alliance-theme: mat-dark-theme(
   )
 );
 
+$alliance-theme-light: mat-light-theme(
+  (
+    color: (
+      primary: $alliance-primary,
+      accent: $alliance-accent,
+      warn: $alliance-warn,
+    ),
+  )
+);
+
+.alliance-theme-light-theme {
+  @include angular-material-color($alliance-theme-light);
+}
+
 .alliance-theme {
   @include angular-material-color($alliance-theme);
+}
 
+[class*="alliance-theme"] {
   .border-primary {
     border-color: $alliance-blue-1 !important;
   }
