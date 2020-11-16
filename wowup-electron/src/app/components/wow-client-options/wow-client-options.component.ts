@@ -58,7 +58,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedAddonChannelType = this._wowupService.getDefaultAddonChannel(this.clientType);
     this.clientAutoUpdate = this._wowupService.getDefaultAutoUpdate(this.clientType);
-    this.clientTypeName = getEnumName(WowClientType, this.clientType);
+    this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(WowClientType, this.clientType).toUpperCase()}`;
     this.clientFolderName = this._warcraftService.getClientFolderName(this.clientType);
     this.clientLocation = this._warcraftService.getClientLocation(this.clientType);
   }
