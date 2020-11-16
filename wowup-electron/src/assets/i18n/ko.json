@@ -3,20 +3,20 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "업데이트 확인 중...",
+      "CHECK_UPDATE": "업데이트 확인",
       "QUIT_ACTION": "종료",
       "SHOW_ACTION": "창 열기"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
-      "DEFAULT": "Default",
-      "HORDE": "Horde"
+      "ALLIANCE": "얼라이언스",
+      "DEFAULT": "기본",
+      "HORDE": "호드"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
-      "INSTALL_MESSAGE": "업데이트를 설치하기 위해 WowUp을 재시작할까요?",
+      "INSTALL_MESSAGE": "업데이트를 설치하기 위해 프로그램을 재시작할까요?",
       "INSTALL_TITLE": "WowUp 업데이트 준비됨",
-      "NOT_AVAILABLE": "최신 버전의 WowUp이 설치됨",
+      "NOT_AVAILABLE": "최신 버전입니다",
       "PORTABLE_DOWNLOAD_MESSAGE": "최신 포터블 버전을 수동 다운로드하시겠습니까?\n\n앱을 수동으로 닫고 새 버전 파일로 엎어써야 합니다.",
       "PORTABLE_DOWNLOAD_TITLE": "수동 다운로드 필요",
       "SNACKBAR_ACTION": "업데이트",
@@ -135,7 +135,7 @@
       }
     },
     "HOME": {
-      "ABOUT_TAB_TITLE": "소개",
+      "ABOUT_TAB_TITLE": "프로그램 소개",
       "GET_ADDONS_TAB_TITLE": "애드온 찾기",
       "MY_ADDONS_TAB_TITLE": "내 애드온",
       "OPTIONS_TAB_TITLE": "설정"
@@ -170,7 +170,7 @@
       },
       "RESCAN_FOLDERS_BUTTON": "디렉토리 재탐색",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "설치된 애드온 목록 확인을 위해 클라이언트 디렉토리를 탐색합니다",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "설치된 애드온을 찾기 위해 재탐색을 할 경우, 애드온 정보가 초기화될 수 있습니다. 특정 애드온이 인식되지 않았거나 버전 정보가 올바르게 표시되지 않을 경우에만 사용하세요. 탐색 작업 중 애드온이 삭제되지는 않으며, WowUp의 정보와 매칭작업만 이루어집니다.\n\n탐색 작업에 시작이 소요될 수 있습니다.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "설치된 애드온을 찾기 위해 재탐색을 할 경우, 애드온 정보가 초기화될 수 있습니다. 특정 애드온이 인식되지 않았거나 버전 정보가 올바르게 표시되지 않을 경우에만 사용하세요. 탐색 작업 중 애드온이 삭제되지는 않으며, WowUp의 정보와 매칭작업만 이루어집니다.\n\n탐색 작업에 시간이 소요될 수 있습니다.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "재탐색을 하시겠습니까?",
       "SPINNER": {
         "GATHERING_ADDONS": "애드온 수집 중...",
@@ -212,8 +212,8 @@
         "CURRENT_LANGUAGE_LABEL": "현재 언어",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "애드온 자동업데이트 등과 같은 다양한 시스템 알림 팝업 활성화 여부",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "시스템 알림 활성화",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "WowUp 창을 닫으면 메뉴바로 최소화",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "WowUp 창을 닫으면 시스템 트레이로 최소화",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "창을 닫으면 메뉴바로 최소화",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "창을 닫으면 시스템 트레이로 최소화",
         "MINIMIZE_ON_CLOSE_LABEL": "종료 시 최소화",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "기본 언어를 바꾸려면 애플리케이션을 다시 시작해야 합니다.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "새 기본 언어 설정",
@@ -225,11 +225,11 @@
         "START_WITH_SYSTEM_LABEL": "시동 시 자동 실행",
         "TELEMETRY_DESCRIPTION": "앱 설치 데이터 또는 오류를 익명으로 전송하여 WowUp 서비스 개선에 도움을 줍니다.",
         "TELEMETRY_LABEL": "데이터 전송",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
-        "THEME_LABEL": "Color Theme",
-        "TITLE": "애픒리케이션",
+        "THEME_DESCRIPTION": "원하시는 테마 색상을 선택하세요.",
+        "THEME_LABEL": "테마",
+        "TITLE": "애플리케이션",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "재시작하시겠습니까?",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "하드웨어 가속을 비활성화 하면 FPS 또는 다른 렌더링 이슈 해결이 가능합니다. 변경 시 재시작이 필요합니다",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "FPS 문제 등 렌더링 이슈를 겪고 있다면 하드웨어 가속을 비활성화해보세요. 변경 시 재시작이 필요합니다",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "하드웨어 가속을 비활성화 하려면 재시작이 필요합니다.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "하드웨어 가속을 활성화 하려면 재시작이 필요합니다.",
         "USE_HARDWARE_ACCELERATION_LABEL": "하드웨어 가속 활성화"
@@ -251,7 +251,7 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "새로 설치되는 애드온의 자동업데이트 옵션을 활성화합니다.",
         "AUTO_UPDATE_LABEL": "자동 업데이트",
-        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} 클라이언트 \"{clientFolderName}\" 디렉토리를 포함하는 위치",
+        "CLIENT_TYPE_INPUT_HINT": "\"{clientFolderName}\" 디렉토리를 포함하는 위치",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 설치 위치",
         "DEFAULT_ADDON_CHANNEL_LABEL": "기본 애드온 채널",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "애드온 채널",
