@@ -9,11 +9,11 @@
     },
     "THEME": {
       "ALLIANCE": "Альянс",
-      "ALLIANCE_LIGHT": "Alliance Light",
+      "ALLIANCE_LIGHT": "Альянс (Светлая)",
       "DEFAULT": "По умолчанию",
-      "DEFAULT_LIGHT": "Default Light",
+      "DEFAULT_LIGHT": "По умолчанию (Светлая)",
       "HORDE": "Орда",
-      "HORDE_LIGHT": "Horde Light"
+      "HORDE_LIGHT": "Орда (Светлая)"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
@@ -47,11 +47,11 @@
       "UPDATING": "Обновляется..."
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta RU",
-      "CLASSIC": "Classic RU",
-      "CLASSICPTR": "Classic PTR RU",
-      "RETAIL": "Retail RU",
-      "RETAILPTR": "Retail PTR RU"
+      "BETA": "Бета",
+      "CLASSIC": "Классический",
+      "CLASSICPTR": "Классический PTR",
+      "RETAIL": "Актуальный",
+      "RETAILPTR": "Актуальный PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -214,7 +214,7 @@
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущий/Классический"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
       }
     },
     "OPTIONS": {
