@@ -1,5 +1,12 @@
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
-import { ALLIANCE_THEME, DEFAULT_THEME, HORDE_THEME } from "common/constants";
+import {
+  ALLIANCE_LIGHT_THEME,
+  ALLIANCE_THEME,
+  DEFAULT_LIGHT_THEME,
+  DEFAULT_THEME,
+  HORDE_LIGHT_THEME,
+  HORDE_THEME,
+} from "common/constants";
 import { platform } from "os";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../environments/environment";
@@ -39,10 +46,13 @@ export class TitlebarComponent implements OnInit, OnDestroy {
   getLogoPath() {
     switch (this._wowUpService.currentTheme) {
       case HORDE_THEME:
+      case HORDE_LIGHT_THEME:
         return "assets/images/horde-1.png";
       case ALLIANCE_THEME:
+      case ALLIANCE_LIGHT_THEME:
         return "assets/images/alliance-1.png";
       case DEFAULT_THEME:
+      case DEFAULT_LIGHT_THEME:
       default:
         return "assets/images/wowup-white-1.png";
     }

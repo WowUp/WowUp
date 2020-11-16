@@ -9,8 +9,11 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
+      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "Default",
-      "HORDE": "Horde"
+      "DEFAULT_LIGHT": "Default Light",
+      "HORDE": "Horde",
+      "HORDE_LIGHT": "Horde Light"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Install WowUp update",

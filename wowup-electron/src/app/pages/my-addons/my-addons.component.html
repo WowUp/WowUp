@@ -52,7 +52,7 @@
     <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
   </div>
 
-  <div *ngIf="isBusy === false && sortedListItems.length === 0" class="no-addons-container flex-grow-1">
+  <div *ngIf="isBusy === false && sortedListItems.length === 0" class="no-addons-container text-1 flex-grow-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
@@ -164,9 +164,10 @@
         (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
 
       <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns" tabindex="0"
-        class="hover-bg-secondary-2" [ngClass]="{ 'bg-secondary-4': row.selected }" (click)="onRowClicked($event, row, i)"
-        (dblclick)="openDetailDialog(row)" (contextmenu)="onCellContext($event, row)"
-        (keydown.control.a)="selectAllRows($event)" (keydown.meta.a)="selectAllRows($event)"></tr>
+        class="hover-bg-secondary-2" [ngClass]="{ 'bg-secondary-4': row.selected }"
+        (click)="onRowClicked($event, row, i)" (dblclick)="openDetailDialog(row)"
+        (contextmenu)="onCellContext($event, row)" (keydown.control.a)="selectAllRows($event)"
+        (keydown.meta.a)="selectAllRows($event)"></tr>
     </table>
   </div>
 </div>

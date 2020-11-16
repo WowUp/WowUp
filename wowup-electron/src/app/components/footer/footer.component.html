@@ -31,8 +31,8 @@
   >
     <mat-icon svgIcon="far:question-circle"></mat-icon>
   </a>
-  <p class="flex-grow-1">{{ sessionService.statusText$ | async }}</p>
-  <div class="row align-items-center">
+  <p class="flex-grow-1 text-1">{{ sessionService.statusText$ | async }}</p>
+  <div class="row align-items-center text-1">
     <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
     <p>v{{ wowUpService.applicationVersion }}</p>
     <button
@@ -44,7 +44,7 @@
     >
       <mat-icon svgIcon="fas:arrow-up"></mat-icon>
     </button>
-    <button *ngIf="isWowUpdateDownloading" class="footer-button downloading-button ml-3 animate">
+    <button *ngIf="isWowUpdateDownloading" class="footer-button downloading-button text-2 ml-3 animate">
       <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
     </button>
     <button

@@ -147,88 +147,81 @@ $wowup-light-theme: mat-light-theme(
 
 .mat-input-element {
   caret-color: $white-3 !important;
+  color: $white-1 !important;
 }
 .mat-form-field.mat-focused .mat-form-field-label {
   color: $white-2 !important;
 }
 
-.default-light-theme {
+.default-theme-light-theme {
   @include angular-material-color($wowup-light-theme);
 
-  $secondary-1: #ffffff;
-  $secondary-2: #f2f3f5;
-  $secondary-3: #ebedef;
-  $secondary-4: #e3e5e8;
-
-  $text-1: #000000;
-  $text-2: #666666;
-  $text-3: #888888;
-
   .bg-secondary {
-    background-color: $secondary-1 !important;
+    background-color: $lt-secondary-1 !important;
   }
 
   .bg-secondary-2 {
-    background-color: $secondary-2 !important;
+    background-color: $lt-secondary-2 !important;
   }
 
   .bg-secondary-3 {
-    background-color: $secondary-3 !important;
+    background-color: $lt-secondary-3 !important;
   }
 
   .bg-secondary-4 {
-    background-color: $secondary-4 !important;
+    background-color: $lt-secondary-4 !important;
   }
 
   .hover-bg-secondary:hover {
-    background-color: $secondary-1 !important;
+    background-color: $lt-secondary-1 !important;
   }
 
   .hover-bg-secondary-2:hover {
-    background-color: $secondary-2 !important;
+    background-color: $lt-secondary-2 !important;
   }
 
   .hover-bg-secondary-3:hover {
-    background-color: $secondary-3 !important;
+    background-color: $lt-secondary-3 !important;
   }
 
   .hover-bg-secondary-4:hover {
-    background-color: $secondary-4 !important;
+    background-color: $lt-secondary-4 !important;
   }
 
   .text-1 {
-    color: $text-1 !important;
+    color: $lt-text-1 !important;
   }
 
   .text-2 {
-    color: $text-2 !important;
+    color: $lt-text-2 !important;
   }
 
   .text-3 {
-    color: $text-3 !important;
+    color: $lt-text-3 !important;
   }
 
   .hover-text-1:hover {
-    color: $text-1 !important;
+    color: $lt-text-1 !important;
   }
 
   .hover-text-2:hover {
-    color: $text-2 !important;
+    color: $lt-text-2 !important;
   }
 
   ::-webkit-scrollbar-track {
-    background-color: $secondary-4 !important;
+    background-color: $lt-secondary-4 !important;
   }
 
   .mat-form-field-label {
-    color: $text-1 !important;
+    color: $lt-text-1 !important;
   }
 
   .mat-input-element {
-    caret-color: $text-3 !important;
+    caret-color: $lt-text-3 !important;
+    color: $lt-text-1 !important;
   }
   .mat-form-field.mat-focused .mat-form-field-label {
-    color: $text-2 !important;
+    color: $lt-text-2 !important;
   }
 }
 
@@ -283,9 +276,25 @@ $horde-theme: mat-dark-theme(
   )
 );
 
+$horde-theme-light: mat-light-theme(
+  (
+    color: (
+      primary: $horde-primary,
+      accent: $horde-accent,
+      warn: $horde-warn,
+    ),
+  )
+);
+
+.horde-theme-light-theme {
+  @include angular-material-color($horde-theme-light);
+}
+
 .horde-theme {
   @include angular-material-color($horde-theme);
+}
 
+[class*="horde-theme"] {
   .border-primary {
     border-color: $horde-red-1 !important;
   }
@@ -402,5 +411,76 @@ $alliance-theme: mat-dark-theme(
 
   ::-webkit-scrollbar-corner {
     background: $dark-3;
+  }
+}
+
+// LIGHT THEME
+[class*="light-theme"] {
+  .bg-secondary {
+    background-color: $lt-secondary-1 !important;
+  }
+
+  .bg-secondary-2 {
+    background-color: $lt-secondary-2 !important;
+  }
+
+  .bg-secondary-3 {
+    background-color: $lt-secondary-3 !important;
+  }
+
+  .bg-secondary-4 {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .hover-bg-secondary:hover {
+    background-color: $lt-secondary-1 !important;
+  }
+
+  .hover-bg-secondary-2:hover {
+    background-color: $lt-secondary-2 !important;
+  }
+
+  .hover-bg-secondary-3:hover {
+    background-color: $lt-secondary-3 !important;
+  }
+
+  .hover-bg-secondary-4:hover {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .text-1 {
+    color: $lt-text-1 !important;
+  }
+
+  .text-2 {
+    color: $lt-text-2 !important;
+  }
+
+  .text-3 {
+    color: $lt-text-3 !important;
+  }
+
+  .hover-text-1:hover {
+    color: $lt-text-1 !important;
+  }
+
+  .hover-text-2:hover {
+    color: $lt-text-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .mat-form-field-label {
+    color: $lt-text-1 !important;
+  }
+
+  .mat-input-element {
+    caret-color: $lt-text-3 !important;
+    color: $lt-text-1 !important;
+  }
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $lt-text-2 !important;
   }
 }

@@ -88,8 +88,6 @@ footer {
     }
 
     &.downloading-button {
-      color: $white-2;
-
       &.animate {
         animation: fadeInDown 1s infinite linear;
       }
