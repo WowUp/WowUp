@@ -3,7 +3,7 @@
 <div class="row">
   <mat-form-field class="grow folder-input">
     <mat-label>{{
-      "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL" | translate: { clientTypeName: clientTypeName }
+      "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL" | translate: { clientTypeName: (clientTypeName | translate) }
     }}</mat-label>
     <input matInput disabled [value]="clientLocation" />
     <mat-hint class="text-2">

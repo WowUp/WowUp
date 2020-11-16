@@ -3,10 +3,13 @@ import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
 import {
+  ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
   CREATE_TRAY_MENU_CHANNEL,
   CURRENT_THEME_KEY,
+  DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
+  HORDE_LIGHT_THEME,
   HORDE_THEME,
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
@@ -50,9 +53,18 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
-    
+
     this.wowUpService.preferenceChange$.pipe(filter((pref) => pref.key === CURRENT_THEME_KEY)).subscribe((pref) => {
-      this.overlayContainer.getContainerElement().classList.remove(HORDE_THEME, ALLIANCE_THEME, DEFAULT_THEME);
+      this.overlayContainer
+        .getContainerElement()
+        .classList.remove(
+          HORDE_THEME,
+          HORDE_LIGHT_THEME,
+          ALLIANCE_THEME,
+          ALLIANCE_LIGHT_THEME,
+          DEFAULT_THEME,
+          DEFAULT_LIGHT_THEME
+        );
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });
   }
