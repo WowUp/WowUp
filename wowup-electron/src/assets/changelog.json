@@ -1,6 +1,21 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.14",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow)",
+        "Portuguese locale updates (Dogo)",
+        "Korean locale updates (soaakim)",
+        "French locale updates (Zazou)",
+        "Theme updates (NoobTaco)",
+        "Add light themes",
+        "App can now be resized via the top of the frame",
+        "Fix an issue with the scrollbar in options not being clickable anymore"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.13",
       "changes": [
         "German locale updates (chops)",
