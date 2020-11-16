@@ -56,7 +56,7 @@
       "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}} benötigt"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} Milliarden",
+      "BILLION": "{count, number, integer}",
       "MILLION": "{count} Millionen",
       "THOUSAND": "{count} Tausend"
     },

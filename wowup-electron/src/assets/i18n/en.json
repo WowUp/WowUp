@@ -59,7 +59,16 @@
       "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} billion",
+      "e+9": "{count} BILLY",
+      "e+8": "{count} MILLY",
+      "e+7": "{count} MILLY",
+      "e+6": "{count} MILLY",
+      "e+5": "{count} THOUSY",
+      "e+4": "{count} THOUSY",
+      "e+3": "{count} THOUSY",
+      "e+2": "{count}",
+      "e+1": "{count}",
+      "BILLION": "{count, number, integer}",
       "MILLION": "{count} million",
       "THOUSAND": "{count} thousand"
     },
