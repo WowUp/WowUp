@@ -9,8 +9,11 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
+      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "Défaut",
-      "HORDE": "Horde"
+      "DEFAULT_LIGHT": "Default Light",
+      "HORDE": "Horde",
+      "HORDE_LIGHT": "Horde Light"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
@@ -42,6 +45,13 @@
       "PENDING": "En attente",
       "UNINSTALLING": "Désinstallation",
       "UPDATING": "En cours de mise à jour"
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",

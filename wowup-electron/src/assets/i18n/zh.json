@@ -9,8 +9,11 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
+      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "Default",
-      "HORDE": "Horde"
+      "DEFAULT_LIGHT": "Default Light",
+      "HORDE": "Horde",
+      "HORDE_LIGHT": "Horde Light"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
@@ -42,6 +45,13 @@
       "PENDING": "等待中",
       "UNINSTALLING": "正在卸载",
       "UPDATING": "正在更新..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",

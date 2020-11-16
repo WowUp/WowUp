@@ -9,8 +9,11 @@
     },
     "THEME": {
       "ALLIANCE": "얼라이언스",
+      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "기본",
-      "HORDE": "호드"
+      "DEFAULT_LIGHT": "Default Light",
+      "HORDE": "호드",
+      "HORDE_LIGHT": "Horde Light"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
@@ -42,6 +45,13 @@
       "PENDING": "일시정지됨",
       "UNINSTALLING": "삭제 중",
       "UPDATING": "업데이트 중..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",

@@ -9,8 +9,11 @@
     },
     "THEME": {
       "ALLIANCE": "Альянс",
+      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "По умолчанию",
-      "HORDE": "Орда"
+      "DEFAULT_LIGHT": "Default Light",
+      "HORDE": "Орда",
+      "HORDE_LIGHT": "Horde Light"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
@@ -42,6 +45,13 @@
       "PENDING": "В ожидании",
       "UNINSTALLING": "Удаляется",
       "UPDATING": "Обновляется..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta RU",
+      "CLASSIC": "Classic RU",
+      "CLASSICPTR": "Classic PTR RU",
+      "RETAIL": "Retail RU",
+      "RETAILPTR": "Retail PTR RU"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",

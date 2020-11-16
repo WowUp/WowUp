@@ -4,6 +4,7 @@ import * as path from "path";
 import { BehaviorSubject, from } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
 import { ElectronService } from "..";
+import { SelectItem } from "../../models/wowup/select-item";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { ProductDb } from "../../models/warcraft/product-db";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
@@ -48,6 +49,22 @@ export class WarcraftService {
   public productsReady$ = this.products$.pipe(filter((products) => Array.isArray(products)));
 
   public installedClientTypes$ = this._installedClientTypesSrc.asObservable();
+
+  // Map the client types so that we can localize them
+  public installedClientTypesSelectItems$ = this._installedClientTypesSrc.pipe(
+    filter((clientTypes) => !!clientTypes),
+    map((clientTypes) => {
+      return clientTypes.map(
+        (ct): SelectItem<WowClientType> => {
+          const clientTypeName = getEnumName(WowClientType, ct).toUpperCase();
+          return {
+            display: `COMMON.CLIENT_TYPES.${clientTypeName}`,
+            value: ct,
+          };
+        }
+      );
+    })
+  );
 
   constructor(
     private _electronService: ElectronService,
