@@ -58,7 +58,13 @@
     "DOWNLOAD_COUNT": {
       "BILLION": "{count}b",
       "MILLION": "{count}m",
-      "THOUSAND": "{count}k"
+      "THOUSAND": "{count}k",
+      "DIGIT_ABBR_UNIT": "4",
+      "ABBR_SUFFIXES": [
+        "{count}",
+        "{count}만",
+        "{count}억"
+      ]
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -85,8 +91,8 @@
       "POSITIVE_BUTTON": "확인"
     },
     "CONFIRM": {
-      "NEGATIVE_BUTTON": "아니오",
-      "POSITIVE_BUTTON": "네"
+      "NEGATIVE_BUTTON": "취소",
+      "POSITIVE_BUTTON": "확인"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "애드온 URL 주소",
