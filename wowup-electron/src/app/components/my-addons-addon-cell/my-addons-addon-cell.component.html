@@ -2,17 +2,17 @@
   <div class="thumbnail-container">
     <div
       *ngIf="listItem.hasThumbnail === true"
-      class="addon-logo-container"
+      class="addon-logo-container bg-secondary-3"
       [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"
     ></div>
     <div *ngIf="listItem.hasThumbnail === false" class="addon-logo-container">
-      <div class="addon-logo-letter">
+      <div class="addon-logo-letter text-3">
         {{ listItem.thumbnailLetter }}
       </div>
     </div>
     <div
       *ngIf="listItem.isBetaChannel || listItem.isAlphaChannel"
-      class="channel"
+      class="channel bg-secondary-3"
       [ngClass]="{
         beta: listItem.isBetaChannel,
         alpha: listItem.isAlphaChannel
@@ -22,7 +22,7 @@
     </div>
   </div>
   <div>
-    <a class="addon-title mat-subheading-2" (click)="viewDetails()" [ngClass]="{ ignored: listItem.isIgnored }">{{
+    <a class="addon-title hover-text-2 mat-subheading-2" (click)="viewDetails()" [ngClass]="{ 'text-3': listItem.isIgnored }">{{
       listItem.addon.name
     }}</a>
     <div class="addon-funding">
@@ -51,10 +51,10 @@
         <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
       </a>
     </div>
-    <div class="addon-version row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
+    <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
       <div *ngIf="this.listItem.isAutoUpdate === true" class="mr-2">
         <mat-icon
-          class="auto-update-icon"
+          class="auto-update-icon text-2"
           [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate"
           svgIcon="far:clock"
         >

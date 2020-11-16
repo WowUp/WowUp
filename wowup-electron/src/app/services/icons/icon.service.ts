@@ -14,6 +14,7 @@ import {
   faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
+import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
 
 @Injectable({
   providedIn: "root",
@@ -30,6 +31,8 @@ export class IconService {
     this.addSvg(faClock);
     this.addSvg(faBug);
     this.addSvg(faLink);
+    this.addSvg(faDiscord);
+    this.addSvg(faGithub);
   }
 
   async addSvg(icon: IconDefinition) {

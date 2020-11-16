@@ -36,7 +36,6 @@ a[href^="ftp://"]
 }
 
 html {
-  background-color: $dark-3;
   overflow: hidden;
   -webkit-app-region: no-drag;
 }
@@ -136,18 +135,6 @@ img {
 .mat-slide-toggle-bar,
 .mat-button-wrapper {
   -webkit-app-region: no-drag;
-}
-
-.bg-dark-3 {
-  background-color: $dark-3;
-}
-
-.bg-dark-4 {
-  background-color: $dark-4;
-}
-
-.bg-purple-1 {
-  background-color: $purple-1;
 }
 
 .text-light {
@@ -286,7 +273,6 @@ img {
 }
 
 .addon-context-menu {
-  background-color: $dark-4;
 
   .addon-context-menu-header {
     padding: 0 16px 8px 16px;
@@ -428,13 +414,6 @@ snack-bar-container {
 
 .mat-tab-labels {
   z-index: 2;
-}
-
-.mat-input-element {
-  caret-color: $white-3 !important;
-}
-.mat-form-field.mat-focused .mat-form-field-label {
-  color: $white-2 !important;
 }
 
 th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {

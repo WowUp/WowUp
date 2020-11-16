@@ -9,7 +9,7 @@ import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { Theme } from "../../models/wowup/theme";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { ALLIANCE_THEME, DEFAULT_THEME, HORDE_THEME } from "common/constants";
+import { ALLIANCE_THEME, DEFAULT_LIGHT_THEME, DEFAULT_THEME, HORDE_THEME } from "../../../common/constants";
 
 interface LocaleListItem {
   localeId: string;
@@ -44,6 +44,7 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public themes: Theme[] = [
     { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
+    { display: "APP.THEME.DEFAULT", class: DEFAULT_LIGHT_THEME },
     { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
     { display: "APP.THEME.HORDE", class: HORDE_THEME },
   ];

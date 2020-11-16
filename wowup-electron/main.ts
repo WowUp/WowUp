@@ -16,7 +16,13 @@ import * as platform from "./platform";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
-import { COLLAPSE_TO_TRAY_PREFERENCE_KEY, USE_HARDWARE_ACCELERATION_PREFERENCE_KEY } from "./src/common/constants";
+import {
+  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  CURRENT_THEME_KEY,
+  DEFAULT_BG_COLOR,
+  DEFAULT_LIGHT_BG_COLOR,
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+} from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
 
@@ -72,6 +78,9 @@ function canStartHidden() {
 }
 
 function createWindow(): BrowserWindow {
+  const savedTheme = preferenceStore.get(CURRENT_THEME_KEY) as string;
+  const backgroundColor = savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
+
   // Main object for managing window state
   // Initialize with a window name and default size
   const mainWindowManager = windowStateManager("main", {
@@ -84,7 +93,7 @@ function createWindow(): BrowserWindow {
     height: mainWindowManager.height,
     x: mainWindowManager.x,
     y: mainWindowManager.y,
-    backgroundColor: "#444444",
+    backgroundColor,
     title: "WowUp",
     titleBarStyle: "hidden",
     webPreferences: {

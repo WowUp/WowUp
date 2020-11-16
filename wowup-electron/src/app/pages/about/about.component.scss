@@ -15,7 +15,6 @@
 
   .header {
     text-align: center;
-    color: $white-1;
 
     .logo {
       width: 150px;
@@ -23,10 +22,6 @@
 
     h2 {
       margin-bottom: 0;
-    }
-
-    .version {
-      color: $white-3;
     }
 
     .link-container {
@@ -40,7 +35,6 @@
 
   .changelog-container {
     padding: 1em;
-    color: $white-1;
 
     .change-log-list {
       padding-left: 0;
@@ -49,14 +43,9 @@
     .changelog {
       list-style-type: none;
       margin: 1em 0;
-      border-left: 3px solid;
+      border-left-width: 3px;
+      border-left-style: solid;
       padding: 0.5em 1em 1em 1em;
-      background-color: $dark-4;
-
-      .version {
-        // font-size: 1em;
-        // font-weight: bold;
-      }
 
       .description {
         margin: 0;

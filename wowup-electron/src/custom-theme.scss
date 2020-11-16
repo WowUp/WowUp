@@ -61,6 +61,16 @@ $wowup-default-theme: mat-dark-theme(
   )
 );
 
+$wowup-light-theme: mat-light-theme(
+  (
+    color: (
+      primary: $wowup-default-primary,
+      accent: $wowup-default-accent,
+      warn: $wowup-default-warn,
+    ),
+  )
+);
+
 .border-primary {
   border-color: $purple-1;
 }
@@ -73,8 +83,52 @@ $wowup-default-theme: mat-dark-theme(
   background-color: $purple-2;
 }
 
+.bg-secondary {
+  background-color: $dark-1;
+}
+
+.bg-secondary-2 {
+  background-color: $dark-2;
+}
+
+.bg-secondary-3 {
+  background-color: $dark-3;
+}
+
+.bg-secondary-4 {
+  background-color: $dark-4;
+}
+
+.hover-bg-secondary:hover {
+  background-color: $dark-1;
+}
+
+.hover-bg-secondary-2:hover {
+  background-color: $dark-2;
+}
+
+.hover-bg-secondary-3:hover {
+  background-color: $dark-3;
+}
+
+.hover-bg-secondary-4:hover {
+  background-color: $dark-4;
+}
+
 .hover-primary-2:hover {
   background-color: $purple-2;
+}
+
+.text-1 {
+  color: $white-1;
+}
+
+.text-2 {
+  color: $white-2;
+}
+
+.text-3 {
+  color: $white-3;
 }
 
 ::-webkit-scrollbar-track {
@@ -89,6 +143,93 @@ $wowup-default-theme: mat-dark-theme(
 
 ::-webkit-scrollbar-corner {
   background: $dark-3;
+}
+
+.mat-input-element {
+  caret-color: $white-3 !important;
+}
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: $white-2 !important;
+}
+
+.default-light-theme {
+  @include angular-material-color($wowup-light-theme);
+
+  $secondary-1: #ffffff;
+  $secondary-2: #f2f3f5;
+  $secondary-3: #ebedef;
+  $secondary-4: #e3e5e8;
+
+  $text-1: #000000;
+  $text-2: #666666;
+  $text-3: #888888;
+
+  .bg-secondary {
+    background-color: $secondary-1 !important;
+  }
+
+  .bg-secondary-2 {
+    background-color: $secondary-2 !important;
+  }
+
+  .bg-secondary-3 {
+    background-color: $secondary-3 !important;
+  }
+
+  .bg-secondary-4 {
+    background-color: $secondary-4 !important;
+  }
+
+  .hover-bg-secondary:hover {
+    background-color: $secondary-1 !important;
+  }
+
+  .hover-bg-secondary-2:hover {
+    background-color: $secondary-2 !important;
+  }
+
+  .hover-bg-secondary-3:hover {
+    background-color: $secondary-3 !important;
+  }
+
+  .hover-bg-secondary-4:hover {
+    background-color: $secondary-4 !important;
+  }
+
+  .text-1 {
+    color: $text-1 !important;
+  }
+
+  .text-2 {
+    color: $text-2 !important;
+  }
+
+  .text-3 {
+    color: $text-3 !important;
+  }
+
+  .hover-text-1:hover {
+    color: $text-1 !important;
+  }
+
+  .hover-text-2:hover {
+    color: $text-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $secondary-4 !important;
+  }
+
+  .mat-form-field-label {
+    color: $text-1 !important;
+  }
+
+  .mat-input-element {
+    caret-color: $text-3 !important;
+  }
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $text-2 !important;
+  }
 }
 
 // Include theme styles for core and each component used in your app.

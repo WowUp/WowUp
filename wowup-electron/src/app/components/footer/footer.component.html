@@ -1,7 +1,7 @@
-<footer class="bg-dark-4 text-light-2">
+<footer class="bg-secondary-4 text-light-2">
   <a
     appExternalLink
-    class="patreon-link mr-2"
+    class="patreon-link hover-bg-secondary-2 mr-2"
     href="https://www.patreon.com/jliddev"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate }}"
   >
@@ -9,23 +9,23 @@
   </a>
   <a
     appExternalLink
-    class="discord-link mr-2"
+    class="link discord-link text-1 hover-bg-secondary-2 mr-2"
     href="https://discord.gg/rk4F5aD"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}"
   >
-    <img class="discord-img" src="assets/images/discord_logo_small.png" />
+    <mat-icon svgIcon="fab:discord"></mat-icon>
   </a>
   <a
     appExternalLink
-    class="github-link mr-2"
+    class="link github-link text-1 hover-bg-secondary-2 mr-2"
     href="https://github.com/WowUp/WowUp"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GITHUB' | translate }}"
   >
-    <img class="github-img" src="assets/images/github_logo.png" />
+    <mat-icon svgIcon="fab:github"></mat-icon>
   </a>
   <a
     appExternalLink
-    class="guide-link mr-2"
+    class="link guide-link text-1 hover-bg-secondary-2 mr-2"
     href="https://wowup.io/guide/section/my-addons/overview"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}"
   >
@@ -49,7 +49,7 @@
     </button>
     <button
       *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading"
-      class="footer-button check-update-button ml-3"
+      class="footer-button text-1 check-update-button ml-3"
       [ngClass]="{ animate: isCheckingForUpdates }"
       (click)="onClickCheckForUpdates()"
       matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}"
