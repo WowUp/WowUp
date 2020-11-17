@@ -9,9 +9,9 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
+      "DEFAULT": "Défaut",
       "GROUP_DARK": "Dark",
       "GROUP_LIGHT": "Light",
-      "DEFAULT": "Défaut",
       "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {

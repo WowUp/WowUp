@@ -8,10 +8,10 @@
       "SHOW_ACTION": "显示"
     },
     "THEME": {
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
       "ALLIANCE": "联盟",
       "DEFAULT": "默认",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
       "HORDE": "部落"
     },
     "WOWUP_UPDATE": {
