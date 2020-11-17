@@ -1,6 +1,13 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.15",
+      "changes": [
+        "Fix an issue where light/dark themes could overlap",
+        "Fix an issue with a nested translate call"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.14",
       "changes": [
         "Russian locale updates (Medok)",
