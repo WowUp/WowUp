@@ -65,9 +65,15 @@
       "TOOLTIP": "{dependencyCount, plural, one{Необходима} other{Необходимо}} {dependencyCount} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}",
-      "MILLION": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
-      "THOUSAND": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}"
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} thousand",
+      "e+4": "{count} thousand",
+      "e+5": "{count} thousand",
+      "e+6": "{count} million",
+      "e+7": "{count} million",
+      "e+8": "{count} million",
+      "e+9": "{count} billion"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
