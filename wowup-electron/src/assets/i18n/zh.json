@@ -9,11 +9,10 @@
     },
     "THEME": {
       "ALLIANCE": "联盟",
-      "ALLIANCE_LIGHT": "联盟·浅色",
       "DEFAULT": "默认",
-      "DEFAULT_LIGHT": "默认·浅色",
-      "HORDE": "部落",
-      "HORDE_LIGHT": "部落·浅色"
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "部落"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",

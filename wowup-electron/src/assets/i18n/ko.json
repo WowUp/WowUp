@@ -9,11 +9,10 @@
     },
     "THEME": {
       "ALLIANCE": "얼라이언스",
-      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "기본",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "호드",
-      "HORDE_LIGHT": "Horde Light"
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "호드"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",

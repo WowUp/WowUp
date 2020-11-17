@@ -9,11 +9,10 @@
     },
     "THEME": {
       "ALLIANCE": "Aliança",
-      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "Padrão",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "Horda",
-      "HORDE_LIGHT": "Horde Light"
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "Horda"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar atualização do WowUp",

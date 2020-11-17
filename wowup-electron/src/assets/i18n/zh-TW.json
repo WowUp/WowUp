@@ -9,11 +9,10 @@
     },
     "THEME": {
       "ALLIANCE": "聯盟",
-      "ALLIANCE_LIGHT": "聯盟·淺色",
       "DEFAULT": "預設",
-      "DEFAULT_LIGHT": "預設·淺色",
-      "HORDE": "部落",
-      "HORDE_LIGHT": "部落·淺色"
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "部落"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安裝 WowUp 更新",
@@ -77,6 +76,9 @@
         "STABLE": "穩定版"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "正在載入..."
     },
@@ -92,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "確定"
     },
     "CONFIRM": {
@@ -156,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自動更新",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "更新通道",
+        "CHANNEL_SUBMENU_TITLE": "Channel",
         "IGNORE_ADDON_BUTTON": "忽略",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "重新安裝",
         "REMOVE_ADDON_BUTTON": "刪除",
         "SHOW_FOLDER": "開啟資料夾",
         "STABLE_ADDON_CHANNEL": "穩定版"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "檢查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "檢查最新的插件更新",
