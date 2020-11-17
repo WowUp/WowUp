@@ -1,11 +1,5 @@
 @import "../../../variables.scss";
 
-.tab-container {
-  &.linux {
-    height: calc(100vh - 110px);
-  }
-}
-
 .control-container {
   display: flex;
   flex-direction: row;
