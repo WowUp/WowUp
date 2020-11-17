@@ -9,9 +9,9 @@
     },
     "THEME": {
       "ALLIANCE": "Alianza",
-      "DEFAULT": "Predeterminado",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Oscuro",
+      "GROUP_LIGHT": "Claro",
       "HORDE": "Horda"
     },
     "WOWUP_UPDATE": {
@@ -67,13 +67,13 @@
     "DOWNLOAD_COUNT": {
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count} mil",
+      "e+4": "{count} mil",
+      "e+5": "{count} mil",
+      "e+6": "{count} {count, plural, =1{millón} other{millones}}",
+      "e+7": "{count} millones",
+      "e+8": "{count} millones",
+      "e+9": "{count} mil millones"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -83,7 +83,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Error al cambiar el proveedor del addon {addonName} a {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Cargando..."
@@ -167,15 +167,15 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "Proveedor",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Eliminar",
         "SHOW_FOLDER": "Mostrar Carpeta",
         "STABLE_ADDON_CHANNEL": "Estable"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "¿Quiere cambiar el proveedor del addon {addonName} a {providerName}? Esta operación desinstalará el addon existente y lo reemplazará con la versión disponible en el nuevo proveedor.",
+        "TITLE": "¿Cambiar Proveedor del Addon?"
       },
       "CHECK_UPDATES_BUTTON": "Buscar Actualizaciones",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons",
