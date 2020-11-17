@@ -282,7 +282,7 @@ export class AddonService {
       }
 
       for (let directory of directoriesToBeRemoved) {
-        console.log("Removing backup", directory)
+        console.log("Removing backup", directory);
         await this._fileService.deleteIfExists(directory);
       }
 
@@ -413,7 +413,7 @@ export class AddonService {
     return backupFolders;
   }
 
-  private async restoreAddonDirectories(directories : string[]) {
+  private async restoreAddonDirectories(directories: string[]) {
     console.log("Attempting to restore addon directories based on backups");
     for (let directory of directories) {
       const originalLocation = directory.substring(0, directory.length - 4);
@@ -484,7 +484,10 @@ export class AddonService {
 
   public getInstalledFolders(addon: Addon): string[] {
     const folders = addon?.installedFolders || "";
-    return folders.split(",").map((f) => f.trim());
+    return folders
+      .split(",")
+      .map((f) => f.trim())
+      .filter((f) => !!f);
   }
 
   public async removeAddon(addon: Addon, removeDependencies: boolean = false) {
