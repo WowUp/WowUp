@@ -23,7 +23,7 @@ import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-fi
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { DownloadSevice } from "../download/download.service";
+import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -54,7 +54,7 @@ export class AddonService {
     private _analyticsService: AnalyticsService,
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService,
-    private _downloadService: DownloadSevice,
+    private _downloadService: DownloadService,
     private _fileService: FileService,
     private _tocService: TocService,
     private _addonProviderFactory: AddonProviderFactory
@@ -253,6 +253,15 @@ export class AddonService {
         this._wowUpService.applicationDownloadsFolderPath
       );
 
+      onUpdate?.call(this, AddonInstallState.BackingUp, 50);
+      this._addonInstalledSrc.next({
+        addon,
+        installState: AddonInstallState.BackingUp,
+        progress: 50,
+      });
+
+      const directoriesToBeRemoved = await this.backupOriginalDirectories(addon);
+
       onUpdate?.call(this, AddonInstallState.Installing, 75);
       this._addonInstalledSrc.next({
         addon,
@@ -261,11 +270,34 @@ export class AddonService {
       });
 
       const unzipPath = path.join(this._wowUpService.applicationDownloadsFolderPath, uuidv4());
-
       unzippedDirectory = await this._fileService.unzipFile(downloadedFilePath, unzipPath);
 
-      await this.installUnzippedDirectory(unzippedDirectory, addon.clientType);
+      try {
+        await this.installUnzippedDirectory(unzippedDirectory, addon.clientType);
+      } catch (err) {
+        console.error(err);
+        await this.restoreAddonDirectories(directoriesToBeRemoved);
+
+        throw err;
+      }
+
+      for (let directory of directoriesToBeRemoved) {
+        console.log("Removing backup", directory)
+        await this._fileService.deleteIfExists(directory);
+      }
+
       const unzippedDirectoryNames = await this._fileService.listDirectories(unzippedDirectory);
+      const existingDirectoryNames = addon.installedFolders.split(",");
+      const addedDirectoryNames = _.difference(unzippedDirectoryNames, existingDirectoryNames);
+      const removedDirectoryNames = _.difference(existingDirectoryNames, unzippedDirectoryNames);
+
+      if (existingDirectoryNames.length > 0) {
+        console.log("Addon added new directories", addedDirectoryNames);
+      }
+
+      if (removedDirectoryNames.length > 0) {
+        console.log("Addon removed existing directories", removedDirectoryNames);
+      }
 
       addon.installedVersion = addon.latestVersion;
       addon.installedAt = new Date();
@@ -357,49 +389,62 @@ export class AddonService {
     return _.orderBy(versions)[0] || "";
   }
 
+  private async backupOriginalDirectories(addon: Addon) {
+    const installedFolders = addon.installedFolders.split(",");
+    const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
+
+    let backupFolders = [];
+    for (let addonFolder of installedFolders) {
+      const currentAddonLocation = path.join(addonFolderPath, addonFolder);
+      const addonFolderBackupLocation = path.join(addonFolderPath, `${addonFolder}-bak`);
+
+      console.log("Ensure existing backup is deleted", addonFolderBackupLocation);
+      await this._fileService.deleteIfExists(addonFolderBackupLocation);
+
+      if (await this._fileService.pathExists(currentAddonLocation)) {
+        console.log("Backing up", currentAddonLocation);
+        await this._fileService.copy(currentAddonLocation, addonFolderBackupLocation);
+        await this._fileService.remove(currentAddonLocation);
+
+        backupFolders.push(addonFolderBackupLocation);
+      }
+    }
+
+    return backupFolders;
+  }
+
+  private async restoreAddonDirectories(directories : string[]) {
+    console.log("Attempting to restore addon directories based on backups");
+    for (let directory of directories) {
+      const originalLocation = directory.substring(0, directory.length - 4);
+
+      // If a backup directory exists, attempt to roll back
+      if (fs.existsSync(directory)) {
+        // If the new addon folder was already created delete it
+        if (fs.existsSync(originalLocation)) {
+          await this._fileService.remove(originalLocation);
+        }
+
+        // Move the backup folder into the original location
+        console.log(`Attempting to roll back ${directory}`);
+        await this._fileService.copy(directory, originalLocation);
+      }
+    }
+  }
+
   private async installUnzippedDirectory(unzippedDirectory: string, clientType: WowClientType) {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(clientType);
     const unzippedFolders = await this._fileService.listDirectories(unzippedDirectory);
     for (let unzippedFolder of unzippedFolders) {
       const unzippedFilePath = path.join(unzippedDirectory, unzippedFolder);
       const unzipLocation = path.join(addonFolderPath, unzippedFolder);
-      const unzipBackupLocation = path.join(addonFolderPath, `${unzippedFolder}-bak`);
 
       try {
-        // If the backup dir exists for some reason, kill it.
-        console.log("DELETE BKUP", unzipBackupLocation);
-        await this._fileService.deleteIfExists(unzipBackupLocation);
-
-        // If the user already has the addon installed, create a temporary backup
-        if (await this._fileService.pathExists(unzipLocation)) {
-          console.log("BACKING UP", unzipLocation);
-          await this._fileService.copy(unzipLocation, unzipBackupLocation);
-          await this._fileService.remove(unzipLocation);
-        }
-
         // Copy contents from unzipped new directory to existing addon folder location
         console.log("COPY", unzipLocation);
         await this._fileService.copy(unzippedFilePath, unzipLocation);
-
-        // If the copy succeeds, delete the backup
-        console.log("DELETE BKUP", unzipBackupLocation);
-        await this._fileService.deleteIfExists(unzipBackupLocation);
       } catch (err) {
         console.error(`Failed to copy addon directory ${unzipLocation}`);
-        console.error(err);
-
-        // If a backup directory exists, attempt to roll back
-        if (fs.existsSync(unzipBackupLocation)) {
-          // If the new addon folder was already created delete it
-          if (fs.existsSync(unzipLocation)) {
-            await this._fileService.remove(unzipLocation);
-          }
-
-          // Move the backup folder into the original location
-          console.log(`Attempting to roll back ${unzipBackupLocation}`);
-          await this._fileService.copy(unzipBackupLocation, unzipLocation);
-        }
-
         throw err;
       }
     }
