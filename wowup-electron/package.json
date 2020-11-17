@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.0.0-beta.15",
+  "version": "2.0.0-beta.16",
   "description": "Word of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
@@ -40,7 +40,7 @@
     "e2e": "npm run build:prod && cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "lint": "ng lint",
-    "i18n": "sync-i18n --files ./src/assets/i18n/*.json --primary en --space 2 --finalnewline --lineendings CRLF --languages de es fr it nb pt ru zh ko",
+    "i18n": "sync-i18n --files ./src/assets/i18n/*.json --primary en --space 2 --finalnewline --lineendings CRLF --languages de es fr it nb pt ru zh zh-TW ko",
     "check-i18n": "npm run i18n -- --check",
     "pretty": "npx prettier --write . && ng lint --fix"
   },

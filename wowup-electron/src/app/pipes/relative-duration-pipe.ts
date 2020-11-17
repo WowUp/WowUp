@@ -19,6 +19,10 @@ export class RelativeDurationPipe implements PipeTransform {
       return "";
     }
 
+    if (isNaN(then.getTime())) {
+      return "";
+    }
+
     const now = new Date();
     const seconds = Math.round((now.getTime() - then.getTime()) / 1000);
     const minutes = Math.round(seconds / 60);

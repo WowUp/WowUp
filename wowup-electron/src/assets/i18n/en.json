@@ -9,11 +9,10 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
-      "ALLIANCE_LIGHT": "Alliance Light",
-      "DEFAULT": "Default",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "Horde",
-      "HORDE_LIGHT": "Horde Light"
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Install WowUp update",
@@ -66,9 +65,15 @@
       "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} billion",
-      "MILLION": "{count} million",
-      "THOUSAND": "{count} thousand"
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} thousand",
+      "e+4": "{count} thousand",
+      "e+5": "{count} thousand",
+      "e+6": "{count} million",
+      "e+7": "{count} million",
+      "e+8": "{count} million",
+      "e+9": "{count} billion"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -76,6 +81,9 @@
         "BETA": "Beta",
         "STABLE": "Stable"
       }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Loading..."
@@ -92,6 +100,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Okay"
     },
     "CONFIRM": {
@@ -156,12 +165,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Auto Update",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Channel",
+        "CHANNEL_SUBMENU_TITLE": "Channel",
         "IGNORE_ADDON_BUTTON": "Ignore",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Re-Install",
         "REMOVE_ADDON_BUTTON": "Remove",
         "SHOW_FOLDER": "Show Folder",
         "STABLE_ADDON_CHANNEL": "Stable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Check Updates",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Check for latest addon updates",

@@ -25,6 +25,7 @@ export class TocService {
       dependencies: this.getValue("Dependencies", tocText),
       tukUiProjectId: this.getValue("X-Tukui-ProjectID", tocText),
       tukUiProjectFolders: this.getValue("X-Tukui-ProjectFolders", tocText),
+      loadOnDemand: this.getValue("LoadOnDemand", tocText),
     };
   }
 

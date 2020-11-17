@@ -9,7 +9,7 @@ import { ElectronService } from "../electron/electron.service";
 @Injectable({
   providedIn: "root",
 })
-export class DownloadSevice {
+export class DownloadService {
   constructor(private _electronService: ElectronService) {}
 
   public downloadZipFile(

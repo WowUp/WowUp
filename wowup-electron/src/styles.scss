@@ -169,11 +169,15 @@ img {
   overflow-x: hidden;
 
   &.mac {
-    height: calc(100vh - 102px);
+    height: calc(100vh - 106px);
   }
 
   &.windows {
-    height: calc(100vh - 110px);
+    height: calc(100vh - 114px);
+  }
+
+  &.linux {
+    height: calc(100vh - 114px);
   }
 }
 
@@ -182,8 +186,6 @@ img {
     padding-bottom: 0 !important;
   }
 }
-
-
 
 .mat-option.mat-selected:not(.mat-option-disabled) {
   color: $white-3 !important;
@@ -271,7 +273,6 @@ img {
 }
 
 .addon-context-menu {
-
   .addon-context-menu-header {
     padding: 0 16px 8px 16px;
     color: $white-1;

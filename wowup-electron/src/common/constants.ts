@@ -1,3 +1,8 @@
+export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
+export const ADDON_PROVIDER_CURSEFORGE = "Curse";
+export const ADDON_PROVIDER_TUKUI = "TukUI";
+
+// IPC CHANNELS
 export const DOWNLOAD_FILE_CHANNEL = "download-file";
 export const COPY_DIRECTORY_CHANNEL = "copy-directory";
 export const CREATE_DIRECTORY_CHANNEL = "create-directory";

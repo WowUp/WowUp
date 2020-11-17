@@ -9,11 +9,10 @@
     },
     "THEME": {
       "ALLIANCE": "Alianza",
-      "ALLIANCE_LIGHT": "Alianza Claro",
-      "DEFAULT": "Predeterminado",
-      "DEFAULT_LIGHT": "Predeterminado Claro",
-      "HORDE": "Horda",
-      "HORDE_LIGHT": "Horda Claro"
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Oscuro",
+      "GROUP_LIGHT": "Claro",
+      "HORDE": "Horda"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar actualización de WowUp",
@@ -66,9 +65,15 @@
       "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{dependencia requerida} other{dependencias requeridas}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} mil millones",
-      "MILLION": "{count} {count, plural, =1{millón} other{millones}}",
-      "THOUSAND": "{count} mil"
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} mil",
+      "e+4": "{count} mil",
+      "e+5": "{count} mil",
+      "e+6": "{count} {count, plural, =1{millón} other{millones}}",
+      "e+7": "{count} millones",
+      "e+8": "{count} millones",
+      "e+9": "{count} mil millones"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -76,6 +81,9 @@
         "BETA": "Beta",
         "STABLE": "Estable"
       }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Error al cambiar el proveedor del addon {addonName} a {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Cargando..."
@@ -92,6 +100,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Ver en"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Aceptar"
     },
     "CONFIRM": {
@@ -156,12 +165,17 @@
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Actualización automática",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Canal",
+        "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
+        "PROVIDER_SUBMENU_TITLE": "Proveedor",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Eliminar",
         "SHOW_FOLDER": "Mostrar Carpeta",
         "STABLE_ADDON_CHANNEL": "Estable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "¿Quiere cambiar el proveedor del addon {addonName} a {providerName}? Esta operación desinstalará el addon existente y lo reemplazará con la versión disponible en el nuevo proveedor.",
+        "TITLE": "¿Cambiar Proveedor del Addon?"
       },
       "CHECK_UPDATES_BUTTON": "Buscar Actualizaciones",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons",

@@ -11,21 +11,13 @@
         "PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT"
           | translate
             : {
-                clientTypeName: clientTypeName.toLowerCase(),
+                clientTypeName: (clientTypeName | translate).toLowerCase(),
                 clientFolderName: clientFolderName
               }
       }}
     </mat-hint>
   </mat-form-field>
-  <button
-    mat-flat-button
-    color="primary"
-    class="select-button"
-    (click)="onSelectClientPath()"
-    appUserActionTracker
-    category="Options"
-    [action]="clientTypeName + 'SelectPath'"
-  >
+  <button mat-flat-button color="primary" class="select-button" (click)="onSelectClientPath()">
     {{ "PAGES.OPTIONS.WOW.OPEN_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
   </button>
 </div>
@@ -35,14 +27,7 @@
   </div>
   <mat-form-field class="">
     <mat-label>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_SELECT_LABEL" | translate }}</mat-label>
-    <mat-select
-      [(value)]="selectedAddonChannelType"
-      (selectionChange)="onDefaultAddonChannelChange($event)"
-      appUserActionTracker
-      category="Options"
-      [action]="clientTypeName + 'DefaultChannel'"
-      [label]="selectedAddonChannelType"
-    >
+    <mat-select [(value)]="selectedAddonChannelType" (selectionChange)="onDefaultAddonChannelChange($event)">
       <mat-option *ngFor="let channel of addonChannelInfos" [value]="channel.type">{{
         channel.name | translate
       }}</mat-option>
@@ -54,13 +39,6 @@
     <p>{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_LABEL" | translate }}</p>
     <small class="text-2">{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_DESCRIPTION" | translate }}</small>
   </div>
-  <mat-slide-toggle
-    [(checked)]="clientAutoUpdate"
-    (change)="onDefaultAutoUpdateChange($event)"
-    appUserActionTracker
-    category="Options"
-    [action]="clientTypeName + 'DefaultAutoUpdate'"
-    [label]="clientAutoUpdate"
-  >
+  <mat-slide-toggle [(checked)]="clientAutoUpdate" (change)="onDefaultAutoUpdateChange($event)">
   </mat-slide-toggle>
 </div>
