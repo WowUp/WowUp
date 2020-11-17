@@ -65,9 +65,15 @@
       "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} billion",
-      "MILLION": "{count} million",
-      "THOUSAND": "{count} thousand"
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} thousand",
+      "e+4": "{count} thousand",
+      "e+5": "{count} thousand",
+      "e+6": "{count} million",
+      "e+7": "{count} million",
+      "e+8": "{count} million",
+      "e+9": "{count} billion"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
