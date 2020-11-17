@@ -97,7 +97,7 @@ function createWindow(): BrowserWindow {
     title: "WowUp",
     titleBarStyle: "hidden",
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      // preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
       allowRunningInsecureContent: argv.serve ? true : false,
       webSecurity: false,

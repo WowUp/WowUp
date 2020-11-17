@@ -10,6 +10,8 @@
     "THEME": {
       "ALLIANCE": "얼라이언스",
       "DEFAULT": "기본",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
       "HORDE": "호드"
     },
     "WOWUP_UPDATE": {
@@ -42,6 +44,13 @@
       "PENDING": "일시정지됨",
       "UNINSTALLING": "삭제 중",
       "UPDATING": "업데이트 중..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -76,6 +85,9 @@
         "STABLE": "안정"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "불러오는 중..."
     },
@@ -91,6 +103,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "확인"
     },
     "CONFIRM": {
@@ -155,12 +168,17 @@
         "ALPHA_ADDON_CHANNEL": "알파",
         "AUTO_UPDATE_ADDON_BUTTON": "자동 업데이트",
         "BETA_ADDON_CHANNEL": "베타",
-        "CHANNEL_SUBMENT_TITLE": "채널",
+        "CHANNEL_SUBMENU_TITLE": "채널",
         "IGNORE_ADDON_BUTTON": "관리제외",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "재설치",
         "REMOVE_ADDON_BUTTON": "삭제",
         "SHOW_FOLDER": "디렉토리 보기",
         "STABLE_ADDON_CHANNEL": "안정"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "업데이트 체크",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "최신 애드온 업데이트를 체크",

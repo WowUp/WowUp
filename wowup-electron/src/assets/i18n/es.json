@@ -10,6 +10,8 @@
     "THEME": {
       "ALLIANCE": "Alianza",
       "DEFAULT": "Predeterminado",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
       "HORDE": "Horda"
     },
     "WOWUP_UPDATE": {
@@ -43,6 +45,13 @@
       "UNINSTALLING": "Desinstalando",
       "UPDATING": "Actualizando"
     },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "PTR Classic",
+      "RETAIL": "Retail",
+      "RETAILPTR": "PTR Retail"
+    },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "Hace {count} {count, plural, one{día} other{días}}",
@@ -67,6 +76,9 @@
         "STABLE": "Estable"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Cargando..."
     },
@@ -82,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Ver en"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Aceptar"
     },
     "CONFIRM": {
@@ -146,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Actualización automática",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Canal",
+        "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Eliminar",
         "SHOW_FOLDER": "Mostrar Carpeta",
         "STABLE_ADDON_CHANNEL": "Estable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Buscar Actualizaciones",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons",
@@ -217,7 +235,7 @@
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizar al Cerrar",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiar el idioma predeterminado requiere reiniciar la aplicación.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Estableciendo un nuevo idioma predeterminado",
-        "SET_LANGUAGE_DESCRIPTION": "Seleccione el idioma al que cambiar",
+        "SET_LANGUAGE_DESCRIPTION": "Establece el idioma en el que se mostrará WowUp",
         "SET_LANGUAGE_LABEL": "Establecer Idioma",
         "START_MINIMIZED_DESCRIPTION": "WowUp se iniciará minimizado y no se mostrará en pantalla",
         "START_MINIMIZED_LABEL": "Iniciar WowUp minimizado",
@@ -251,7 +269,7 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada",
         "AUTO_UPDATE_LABEL": "Actualización automática",
-        "CLIENT_TYPE_INPUT_HINT": "La carpeta que contiene el cliente de {clientTypeName} \"{clientFolderName}\"",
+        "CLIENT_TYPE_INPUT_HINT": "La carpeta que contiene la versión {clientTypeName} del cliente de World of Warcraft \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Ruta de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addons Predeterminado",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal de Addons",

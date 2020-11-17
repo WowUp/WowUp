@@ -10,6 +10,8 @@
     "THEME": {
       "ALLIANCE": "Alleanza",
       "DEFAULT": "Default",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
       "HORDE": "Orda"
     },
     "WOWUP_UPDATE": {
@@ -43,6 +45,13 @@
       "UNINSTALLING": "Disinstallazione in corso",
       "UPDATING": "Aggiornamento in corso..."
     },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
+    },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{giorno} other{giorni}} fa",
@@ -67,6 +76,9 @@
         "STABLE": "Stabile"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
     },
@@ -82,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Visualizza su"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Ok"
     },
     "CONFIRM": {
@@ -146,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Aggiornamento Automatico",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Canale",
+        "CHANNEL_SUBMENU_TITLE": "Canale",
         "IGNORE_ADDON_BUTTON": "Ignora",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Reinstalla",
         "REMOVE_ADDON_BUTTON": "Rimuovi",
         "SHOW_FOLDER": "Mostra cartella",
         "STABLE_ADDON_CHANNEL": "Stabile"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Controlla Aggiornamenti",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Controlla gli ultimi aggiornamenti degli addons",

@@ -6,6 +6,22 @@
   }
 }
 
+.theme-logo {
+  opacity: 0.02;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+
+  img {
+    height: 100vh;
+  }
+}
+
 .about-container {
   display: flex;
   justify-content: center;

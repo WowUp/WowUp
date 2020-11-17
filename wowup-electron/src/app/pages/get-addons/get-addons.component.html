@@ -9,8 +9,8 @@
         <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
           [disabled]="isBusy === true">
-          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
-            {{ warcraftService.getClientDisplayName(clientType) }}
+          <mat-option [value]="clientType.value" *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
+            {{ clientType.display | translate }}
           </mat-option>
         </mat-select>
       </mat-form-field>

@@ -1,8 +1,9 @@
 @import "../../../variables.scss";
 
 .image-row {
-  background-color: $dark-4;
   margin-bottom: 16px;
+  border-radius: 4px;
+  overflow: hidden;
 
   .image {
     max-width: 100%;

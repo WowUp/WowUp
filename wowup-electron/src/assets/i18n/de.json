@@ -10,6 +10,8 @@
     "THEME": {
       "ALLIANCE": "Allianz",
       "DEFAULT": "Standard",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
       "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {
@@ -43,6 +45,13 @@
       "UNINSTALLING": "Deinstalliere",
       "UPDATING": "Aktualisiere..."
     },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
+    },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "Vor {count} {count, plural, one{Tag} other{Tagen}}",
@@ -67,6 +76,9 @@
         "STABLE": "Stabil"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
     },
@@ -82,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Okay"
     },
     "CONFIRM": {
@@ -146,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Automatisch aktualisieren",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Kanal",
+        "CHANNEL_SUBMENU_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorieren",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Neu installieren",
         "REMOVE_ADDON_BUTTON": "Entfernen",
         "SHOW_FOLDER": "Dateiordner anzeigen",
         "STABLE_ADDON_CHANNEL": "Stabil"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Updates prüfen",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Nach neuen Addon-Updates suchen",

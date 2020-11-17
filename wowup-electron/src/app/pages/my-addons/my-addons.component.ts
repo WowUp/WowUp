@@ -37,6 +37,8 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
+import * as AddonUtils from "../../utils/addon.utils";
+import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 
 @Component({
   selector: "app-my-addons",
@@ -70,6 +72,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public enableUpdateAll = false;
   public activeSort = "sortOrder";
   public activeSortDirection = "asc";
+  public addonUtils = AddonUtils;
 
   public columns: ColumnState[] = [
     {
@@ -541,6 +544,39 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  public onSelectedProviderChange(evt: MatRadioChange, listItem: AddonViewModel) {
+    const messageData = {
+      addonName: listItem.addon.name,
+      providerName: evt.value,
+    };
+
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("PAGES.MY_ADDONS.CHANGE_ADDON_PROVIDER_CONFIRMATION.TITLE"),
+        message: this._translateService.instant(
+          "PAGES.MY_ADDONS.CHANGE_ADDON_PROVIDER_CONFIRMATION.MESSAGE",
+          messageData
+        ),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (!result) {
+        return;
+      }
+
+      try {
+        const externalId = _.find(listItem.addon.externalIds, (extid) => extid.providerName === evt.value);
+        this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, this.selectedClient);
+      } catch (e) {
+        console.error(e);
+        const errorTitle = this._translateService.instant("DIALOGS.ALERT.ERROR_TITLE");
+        const errorMessage = this._translateService.instant("COMMON.ERRORS.CHANGE_PROVIDER_ERROR", messageData);
+        this.showErrorMessage(errorTitle, errorMessage);
+      }
+    });
+  }
+
   public onSelectedAddonChannelChange(evt: MatRadioChange, listItem: AddonViewModel) {
     this.onSelectedAddonsChannelChange(evt, [listItem]);
   }
@@ -565,13 +601,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType.toUpperCase()}`;
   }
 
-  private lazyLoad() {
+  private async lazyLoad() {
     if (this._lazyLoaded) {
       return;
     }
 
     this._lazyLoaded = true;
+    this.isBusy = true;
+    this.enableControls = false;
+
     console.debug("LAZY LOAD");
+
+    await this.addonService.backfillAddons();
 
     const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
@@ -788,4 +829,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.enableUpdateAll = this.sortedListItems.some((li) => !li.isIgnored && (li.needsInstall || li.needsUpdate));
     this.setPageContextText();
   };
+
+  private showErrorMessage(title: string, message: string) {
+    const dialogRef = this._dialog.open(AlertDialogComponent, {
+      minWidth: 250,
+      data: {
+        title,
+        message,
+      },
+    });
+    dialogRef.afterClosed().subscribe();
+  }
 }

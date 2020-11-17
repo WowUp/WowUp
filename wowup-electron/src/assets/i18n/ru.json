@@ -10,6 +10,8 @@
     "THEME": {
       "ALLIANCE": "Альянс",
       "DEFAULT": "По умолчанию",
+      "GROUP_DARK": "Темные",
+      "GROUP_LIGHT": "Светлые",
       "HORDE": "Орда"
     },
     "WOWUP_UPDATE": {
@@ -43,6 +45,13 @@
       "UNINSTALLING": "Удаляется",
       "UPDATING": "Обновляется..."
     },
+    "CLIENT_TYPES": {
+      "BETA": "Бета",
+      "CLASSIC": "Классический",
+      "CLASSICPTR": "Классический PTR",
+      "RETAIL": "Актуальный",
+      "RETAILPTR": "Актуальный PTR"
+    },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
@@ -67,6 +76,9 @@
         "STABLE": "Стабильная"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
     },
@@ -82,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Окей"
     },
     "CONFIRM": {
@@ -146,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Альфа",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
         "BETA_ADDON_CHANNEL": "Бета",
-        "CHANNEL_SUBMENT_TITLE": "Тип выпуска",
+        "CHANNEL_SUBMENU_TITLE": "Тип выпуска",
         "IGNORE_ADDON_BUTTON": "Пропускать",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Переустановить",
         "REMOVE_ADDON_BUTTON": "Удалить",
         "SHOW_FOLDER": "Показать папку",
         "STABLE_ADDON_CHANNEL": "Стабильная"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Проверить обновления",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Проверить наличие последних обновлений модификации",
@@ -204,7 +222,7 @@
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущий/Классический"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
       }
     },
     "OPTIONS": {
