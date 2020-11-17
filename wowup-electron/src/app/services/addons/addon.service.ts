@@ -287,7 +287,7 @@ export class AddonService {
       }
 
       const unzippedDirectoryNames = await this._fileService.listDirectories(unzippedDirectory);
-      const existingDirectoryNames = addon.installedFolders.split(",");
+      const existingDirectoryNames = this.getInstalledFolders(addon);
       const addedDirectoryNames = _.difference(unzippedDirectoryNames, existingDirectoryNames);
       const removedDirectoryNames = _.difference(existingDirectoryNames, unzippedDirectoryNames);
 
@@ -390,7 +390,7 @@ export class AddonService {
   }
 
   private async backupOriginalDirectories(addon: Addon) {
-    const installedFolders = addon.installedFolders.split(",");
+    const installedFolders = this.getInstalledFolders(addon);
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
 
     let backupFolders = [];
