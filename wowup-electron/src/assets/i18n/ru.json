@@ -7,6 +7,14 @@
       "QUIT_ACTION": "Выход",
       "SHOW_ACTION": "Показать"
     },
+    "THEME": {
+      "ALLIANCE": "Альянс",
+      "ALLIANCE_LIGHT": "Альянс (Светлая)",
+      "DEFAULT": "По умолчанию",
+      "DEFAULT_LIGHT": "По умолчанию (Светлая)",
+      "HORDE": "Орда",
+      "HORDE_LIGHT": "Орда (Светлая)"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
       "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
@@ -37,6 +45,13 @@
       "PENDING": "В ожидании",
       "UNINSTALLING": "Удаляется",
       "UPDATING": "Обновляется..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Бета",
+      "CLASSIC": "Классический",
+      "CLASSICPTR": "Классический PTR",
+      "RETAIL": "Актуальный",
+      "RETAILPTR": "Актуальный PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -88,6 +103,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Например ссылки GitHub или WowInterface",
       "CLOSE_BUTTON": "Закрыть",
       "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{загрузка} few{загрузки} other{загрузок}} на {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
         "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, вы можете получить помощь в канале #wow-support нашего Discord сообщества.",
@@ -198,7 +214,7 @@
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
-        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Текущий/Классический"
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
       }
     },
     "OPTIONS": {
@@ -227,6 +243,8 @@
         "START_WITH_SYSTEM_LABEL": "Запускать WowUp вместе со стартом системы",
         "TELEMETRY_DESCRIPTION": "Помогите улучшить WowUp, отправив анонимные данные об установке и/или ошибках.",
         "TELEMETRY_LABEL": "Телеметрия",
+        "THEME_DESCRIPTION": "Изменить цветовую тему по вкусу",
+        "THEME_LABEL": "Цветовая тема",
         "TITLE": "Приложение",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Хотите перезапустить приложение?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",

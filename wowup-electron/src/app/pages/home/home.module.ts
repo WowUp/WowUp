@@ -64,13 +64,7 @@ import { HomeComponent } from "./home.component";
     OptionsDebugSectionComponent,
     OptionsAddonSectionComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    HomeRoutingModule,
-    MatModule,
-    DirectiveModule,
-  ],
+  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule],
   providers: [DatePipe, GetAddonListItemFilePropPipe],
 })
 export class HomeModule {}

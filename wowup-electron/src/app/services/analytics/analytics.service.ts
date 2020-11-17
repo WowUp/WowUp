@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { BehaviorSubject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 import { AppConfig } from "../../../environments/environment";
@@ -16,6 +17,8 @@ export class AnalyticsService {
   private readonly _appVersion: string;
   private readonly _telemetryEnabledSrc = new BehaviorSubject(false);
 
+  private _insights?: ApplicationInsights;
+
   public readonly telemetryPromptUsedKey = "telemetry_prompt_sent";
   public readonly telemetryEnabledKey = "telemetry_enabled";
   public readonly telemetryEnabled$ = this._telemetryEnabledSrc.asObservable();
@@ -25,19 +28,24 @@ export class AnalyticsService {
   }
 
   public get shouldPromptTelemetry() {
-    return (
-      this._preferenceStorageService.get(this.telemetryEnabledKey) === undefined
-    );
+    return this._preferenceStorageService.get(this.telemetryEnabledKey) === undefined;
   }
 
   public get telemetryEnabled() {
-    const preference = this._preferenceStorageService.findByKey(
-      this.telemetryEnabledKey
-    );
-    return preference === true.toString();
+    const preference = this._preferenceStorageService.findByKey(this.telemetryEnabledKey);
+    const value = preference === true.toString();
+
+    this.configureAppInsights(value);
+
+    return value;
   }
 
   public set telemetryEnabled(value: boolean) {
+    if (this._insights) {
+      this._insights.appInsights.config.disableTelemetry = value;
+      console.debug("disableTelemetry", this._insights.appInsights.config.disableTelemetry);
+    }
+
     this._preferenceStorageService.set(this.telemetryEnabledKey, value);
     this._telemetryEnabledSrc.next(value);
   }
@@ -54,23 +62,41 @@ export class AnalyticsService {
   }
 
   public async trackStartup() {
-    await this.track((params) => {
-      params.set("t", "pageview");
-      params.set("dp", "app/startup");
-    });
+    //Record an event
+    await this.track2("app-startup");
+
+    // await this.track((params) => {
+    //   params.set("t", "pageview");
+    //   params.set("dp", "app/startup");
+    // });
   }
 
-  public async trackUserAction(
-    category: string,
-    action: string,
-    label: string = null
-  ) {
-    await this.track((params) => {
-      params.set("t", "event");
-      params.set("ec", category);
-      params.set("ea", action);
-      params.set("el", label);
+  public async trackAction(name: string, properties: object = undefined) {
+    await this.track2(name, properties);
+  }
+
+  public async trackUserAction(category: string, action: string, label: string = null) {
+    await this.track2(category, {
+      action,
+      label,
     });
+
+    // await this.track((params) => {
+    //   params.set("t", "event");
+    //   params.set("ec", category);
+    //   params.set("ea", action);
+    //   params.set("el", label);
+    // });
+  }
+
+  private async track2(name: string, properties: object = undefined) {
+    if (!this.telemetryEnabled) {
+      return;
+    }
+
+    this._insights?.trackEvent({ name, properties });
+
+    console.debug("Track", name);
   }
 
   private async track(action: (params: HttpParams) => void = undefined) {
@@ -109,9 +135,7 @@ export class AnalyticsService {
   }
 
   private loadInstallId() {
-    let installId = this._preferenceStorageService.findByKey(
-      this.installIdPreferenceKey
-    );
+    let installId = this._preferenceStorageService.findByKey(this.installIdPreferenceKey);
     if (installId) {
       return installId;
     }
@@ -120,5 +144,26 @@ export class AnalyticsService {
     this._preferenceStorageService.set(this.installIdPreferenceKey, installId);
 
     return installId;
+  }
+
+  private configureAppInsights(enable: boolean) {
+    if (!enable || this._insights) {
+      return;
+    }
+
+    this._insights = new ApplicationInsights({
+      config: {
+        instrumentationKey: AppConfig.azure.applicationInsightsKey,
+      },
+    });
+    this._insights.loadAppInsights();
+    this._insights.trackPageView();
+
+    // If telemetry is off, dont let it track anything
+    this._insights.addTelemetryInitializer((envelop) => {
+      if (!this.telemetryEnabled) {
+        return false;
+      }
+    });
   }
 }

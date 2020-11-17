@@ -25,24 +25,15 @@ export class FileService {
   constructor(private _electronService: ElectronService) {}
 
   public async getAssetFilePath(fileName: string) {
-    return await this._electronService.ipcRenderer.invoke(
-      GET_ASSET_FILE_PATH,
-      fileName
-    );
+    return await this._electronService.ipcRenderer.invoke(GET_ASSET_FILE_PATH, fileName);
   }
 
   public async createDirectory(directoryPath: string) {
-    return await this._electronService.ipcRenderer.invoke(
-      CREATE_DIRECTORY_CHANNEL,
-      directoryPath
-    );
+    return await this._electronService.ipcRenderer.invoke(CREATE_DIRECTORY_CHANNEL, directoryPath);
   }
 
   public async showDirectory(sourceDir: string) {
-    return await this._electronService.ipcRenderer.invoke(
-      SHOW_DIRECTORY,
-      sourceDir
-    );
+    return await this._electronService.ipcRenderer.invoke(SHOW_DIRECTORY, sourceDir);
   }
 
   public async pathExists(sourcePath: string): Promise<boolean> {
@@ -50,10 +41,7 @@ export class FileService {
       return Promise.resolve(false);
     }
 
-    return await this._electronService.ipcRenderer.invoke(
-      PATH_EXISTS_CHANNEL,
-      sourcePath
-    );
+    return await this._electronService.ipcRenderer.invoke(PATH_EXISTS_CHANNEL, sourcePath);
   }
 
   /**
@@ -64,19 +52,13 @@ export class FileService {
       throw new Error("remove sourcePath required");
     }
 
-    return await this._electronService.ipcRenderer.invoke(
-      DELETE_DIRECTORY_CHANNEL,
-      sourcePath
-    );
+    return await this._electronService.ipcRenderer.invoke(DELETE_DIRECTORY_CHANNEL, sourcePath);
   }
 
   /**
    * Copy a file or folder
    */
-  public async copy(
-    sourceFilePath: string,
-    destinationFilePath: string
-  ): Promise<string> {
+  public async copy(sourceFilePath: string, destinationFilePath: string): Promise<string> {
     const request: CopyFileRequest = {
       destinationFilePath,
       sourceFilePath,
@@ -96,33 +78,21 @@ export class FileService {
   }
 
   public async readFile(sourcePath: string): Promise<string> {
-    return await this._electronService.ipcRenderer.invoke(
-      READ_FILE_CHANNEL,
-      sourcePath
-    );
+    return await this._electronService.ipcRenderer.invoke(READ_FILE_CHANNEL, sourcePath);
   }
 
   public async writeFile(sourcePath: string, contents: string): Promise<string> {
-    return await this._electronService.ipcRenderer.invoke(
-      WRITE_FILE_CHANNEL,
-      sourcePath,
-      contents,
-    );
+    return await this._electronService.ipcRenderer.invoke(WRITE_FILE_CHANNEL, sourcePath, contents);
   }
 
   public async listDirectories(sourcePath: string): Promise<string[]> {
-    return await this._electronService.ipcRenderer.invoke(
-      LIST_DIRECTORIES_CHANNEL,
-      sourcePath
-    );
+    return await this._electronService.ipcRenderer.invoke(LIST_DIRECTORIES_CHANNEL, sourcePath);
   }
 
   public listEntries(sourcePath: string, filter: string) {
     const globFilter = globrex(filter);
 
-    return fs
-      .readdirSync(sourcePath, { withFileTypes: true })
-      .filter((entry) => !!globFilter.regex.test(entry.name));
+    return fs.readdirSync(sourcePath, { withFileTypes: true }).filter((entry) => !!globFilter.regex.test(entry.name));
   }
 
   public listFiles(sourcePath: string, filter: string) {
@@ -134,10 +104,7 @@ export class FileService {
       .map((entry) => entry.name);
   }
 
-  public async unzipFile(
-    zipFilePath: string,
-    outputFolder: string
-  ): Promise<string> {
+  public async unzipFile(zipFilePath: string, outputFolder: string): Promise<string> {
     console.log("unzipFile", zipFilePath);
 
     const request: UnzipRequest = {
@@ -146,9 +113,6 @@ export class FileService {
       responseKey: uuidv4(),
     };
 
-    return await this._electronService.ipcRenderer.invoke(
-      UNZIP_FILE_CHANNEL,
-      request
-    );
+    return await this._electronService.ipcRenderer.invoke(UNZIP_FILE_CHANNEL, request);
   }
 }

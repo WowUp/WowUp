@@ -24,13 +24,7 @@ describe("WowClientOptionsComponent", () => {
 
   it("should create", () => {
     inject(
-      [
-        MatDialog,
-        ElectronService,
-        WarcraftService,
-        WowUpService,
-        ChangeDetectorRef,
-      ],
+      [MatDialog, ElectronService, WarcraftService, WowUpService, ChangeDetectorRef],
       (
         matDialog: MatDialog,
         electronService: ElectronService,

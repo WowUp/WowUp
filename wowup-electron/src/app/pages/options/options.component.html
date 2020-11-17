@@ -7,7 +7,10 @@
   }"
 >
   <div class="nav-container">
-    <div class="nav-item-container">
+    <div class="theme-logo">
+      <img [src]="getLogoPath()" />
+    </div>
+    <div class="nav-item-container" [ngClass]="[this.wowUpService.currentTheme]">
       <div class="nav-item-list-wrap">
         <div class="nav-item-list">
           <mat-action-list>
@@ -27,14 +30,10 @@
         </div>
       </div>
     </div>
-    <div class="nav-content-container">
+    <div class="nav-content-container bg-secondary-2 text-1">
       <div class="nav-content-wrap">
         <div class="nav-content">
-          <mat-tab-group
-            class="no-tabs content-tab"
-            animationDuration="0ms"
-            [(selectedIndex)]="optionTabIndex"
-          >
+          <mat-tab-group class="no-tabs content-tab" animationDuration="0ms" [(selectedIndex)]="optionTabIndex">
             <mat-tab label="WorldOfWarcraft" class="tab">
               <app-options-wow-section></app-options-wow-section>
             </mat-tab>

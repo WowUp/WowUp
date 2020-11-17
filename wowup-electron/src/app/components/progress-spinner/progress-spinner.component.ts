@@ -14,10 +14,8 @@ export class ProgressSpinnerComponent implements OnInit {
   constructor(private _translateService: TranslateService) {}
 
   ngOnInit(): void {
-    this._translateService
-      .get("COMMON.PROGRESS_SPINNER.LOADING")
-      .subscribe((translatedStr) => {
-        this.defaultMessage = translatedStr;
-      });
+    this._translateService.get("COMMON.PROGRESS_SPINNER.LOADING").subscribe((translatedStr) => {
+      this.defaultMessage = translatedStr;
+    });
   }
 }

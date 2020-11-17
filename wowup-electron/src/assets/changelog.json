@@ -1,6 +1,58 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.15",
+      "changes": [
+        "Fix an issue where light/dark themes could overlap",
+        "Fix an issue with a nested translate call"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.14",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow)",
+        "Portuguese locale updates (Dogo)",
+        "Korean locale updates (soaakim)",
+        "French locale updates (Zazou)",
+        "Theme updates (NoobTaco)",
+        "Add light themes",
+        "App can now be resized via the top of the frame",
+        "Fix an issue with the scrollbar in options not being clickable anymore"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.13",
+      "changes": [
+        "German locale updates (chops)",
+        "French locale updates (Zazou)",
+        "Italian locale updates (Bito)",
+        "Theme updates (NoobTaco)",
+        "Fix Korean locale",
+        "Fix Chinese locale",
+        "Fix NB locale"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.12",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "German locale updates (Glow)",
+        "French locale updates (Zazou)",
+        "Chinese locale updates (CyanoHao)",
+        "Korean locale updates (soaakim)",
+        "Spanish locale updates (SkollVargr)",
+        "Add the ability to localize the 'Install by URL' download count (chops)",
+        "Add a new theming feature for Alliance and Horde",
+        "Auto update timer will now refresh the 'My Addons' list",
+        "Update to Angular 11",
+        "Fix issue with window snap fullscreen not saving screen",
+        "Fix an issue with the app icon not showing up on ubuntu",
+        "The app will now quit if you close the window on Mac and 'Minimize to Tray' is off"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.11",
       "changes": ["Italian locale updates (Bito)", "Fix a bug with the Spanish locale file"]
     },

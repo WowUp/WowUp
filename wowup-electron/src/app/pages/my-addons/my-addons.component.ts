@@ -1,5 +1,6 @@
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -19,8 +20,8 @@ import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
 import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 import * as _ from "lodash";
-import { BehaviorSubject, from, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { BehaviorSubject, from, Observable, Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
@@ -28,6 +29,7 @@ import { Addon } from "../../entities/addon";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { ColumnState } from "../../models/wowup/column-state";
+import { SelectItem } from "../../models/wowup/select-item";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
@@ -36,7 +38,6 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-my-addons",
@@ -44,16 +45,16 @@ import { AddonChannelType } from "app/models/wowup/addon-channel-type";
   styleUrls: ["./my-addons.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MyAddonsComponent implements OnInit, OnDestroy {
+export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input("tabIndex") tabIndex: number;
 
-  @ViewChild("addonContextMenuTrigger") contextMenu: MatMenuTrigger;
-  @ViewChild("addonMultiContextMenuTrigger") multiContextMenu: MatMenuTrigger;
-  @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
-  @ViewChild("updateAllContextMenuTrigger")
+  @ViewChild("addonContextMenuTrigger", { static: false }) contextMenu: MatMenuTrigger;
+  @ViewChild("addonMultiContextMenuTrigger", { static: false }) multiContextMenu: MatMenuTrigger;
+  @ViewChild("columnContextMenuTrigger", { static: false }) columnContextMenu: MatMenuTrigger;
+  @ViewChild("updateAllContextMenuTrigger", { static: false })
   updateAllContextMenu: MatMenuTrigger;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild("table", { read: ElementRef }) table: ElementRef;
+  @ViewChild("table", { static: false, read: ElementRef }) table: ElementRef;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>([]);
 
@@ -191,6 +192,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public ngAfterViewInit(): void {
+    this._sessionService.autoUpdateComplete$.subscribe(() => {
+      this._cdRef.markForCheck();
+      this.onRefresh();
+    });
   }
 
   public isLatestUpdateColumnVisible(): boolean {
@@ -637,7 +645,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy {
   private loadAddons(clientType: WowClientType, rescan = false) {
     this.isBusy = true;
     this.enableControls = false;
-    this._cdRef.detectChanges();
 
     console.log("Load-addons", clientType);
 

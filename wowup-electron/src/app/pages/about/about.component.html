@@ -3,11 +3,14 @@
     windows: electronService.isWin,
     linux: electronService.isLinux
   }">
+  <div class="theme-logo">
+    <img [src]="getLogoPath()" />
+  </div>
   <div class="about">
-    <div class="header">
+    <div class="header text-1">
       <img class="logo" src="assets/wowup_logo_512np.png" />
       <h2>{{ "PAGES.ABOUT.TITLE" | translate }}</h2>
-      <div class="version">v{{ version }}</div>
+      <div class="version text-2">v{{ version }}</div>
       <div class="link-container">
         <a appExternalLink mat-stroked-button href="https://wowup.io" appUserActionTracker category="About"
           action="ViewWebsite">
@@ -15,14 +18,14 @@
         </a>
       </div>
     </div>
-    <div class="changelog-container">
+    <div class="changelog-container text-1">
       <h2>
         {{ "PAGES.ABOUT.CHANGE_LOG_SECTION_LABEL" | translate }}
       </h2>
       <ul class="change-log-list">
-        <li class="changelog" *ngFor="let cl of changeLogs">
-          <div class="version mat-subheading-2">{{ cl.Version }}</div>
-          <pre *ngIf="cl.Description" class="description selectable">{{ cl.Description }}</pre>
+        <li class="changelog bg-secondary-4 border-primary" *ngFor="let cl of changeLogs">
+          <div class="version  mat-subheading-2">{{ cl.Version }}</div>
+          <pre *ngIf="cl.Description" class="description  selectable">{{ cl.Description }}</pre>
           <pre *ngIf="cl.changes" class="description selectable">{{ formatChanges(cl) }}</pre>
         </li>
       </ul>

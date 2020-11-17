@@ -76,10 +76,7 @@ export class WowUpFolderScanner {
     return path.join(directory, tocFile);
   }
 
-  private async getMatchingFiles(
-    folderPath: string,
-    filePaths: string[]
-  ): Promise<string[]> {
+  private async getMatchingFiles(folderPath: string, filePaths: string[]): Promise<string[]> {
     const parentDir = path.dirname(folderPath) + path.sep;
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
@@ -101,10 +98,7 @@ export class WowUpFolderScanner {
     return matchingFileList;
   }
 
-  private async processIncludeFile(
-    matchingFileList: string[],
-    fileInfo: string
-  ) {
+  private async processIncludeFile(matchingFileList: string[], fileInfo: string) {
     if (!fs.existsSync(fileInfo) || matchingFileList.indexOf(fileInfo) !== -1) {
       return;
     }
@@ -138,10 +132,7 @@ export class WowUpFolderScanner {
     }
   }
 
-  private getFileInclusionMatches(
-    fileInfo: string,
-    fileContent: string
-  ): string[] | null {
+  private getFileInclusionMatches(fileInfo: string, fileContent: string): string[] | null {
     const ext = path.extname(fileInfo);
     switch (ext) {
       case ".xml":

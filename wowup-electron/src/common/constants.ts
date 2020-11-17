@@ -34,6 +34,8 @@ export const MY_ADDONS_HIDDEN_COLUMNS_KEY = "my_addons_hidden_columns";
 export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
 export const GET_ADDONS_HIDDEN_COLUMNS_KEY = "get_addons_hidden_columns";
 export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
+export const CURRENT_THEME_KEY = "current-theme";
+export const ENABLED_ADDON_PROVIDERS_KEY = "enabled_addon_providers";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
@@ -45,5 +47,14 @@ export const APP_UPDATE_INSTALL = "app-update-install";
 export const APP_UPDATE_CHECK_FOR_UPDATE = "app-update-check-for-update";
 export const APP_UPDATE_CHECK_START = "app-update-check-start";
 export const APP_UPDATE_CHECK_END = "app-update-check-end";
-export const ENABLED_ADDON_PROVIDERS_KEY = "enabled_addon_providers";
 
+
+// THEMES
+export const DEFAULT_THEME = "default-theme";
+export const DEFAULT_LIGHT_THEME = "default-theme-light-theme";
+export const HORDE_THEME = "horde-theme";
+export const HORDE_LIGHT_THEME = "horde-theme-light-theme";
+export const ALLIANCE_THEME = "alliance-theme";
+export const ALLIANCE_LIGHT_THEME = "alliance-theme-light-theme";
+export const DEFAULT_BG_COLOR = "#444444";
+export const DEFAULT_LIGHT_BG_COLOR = "#ebedef";

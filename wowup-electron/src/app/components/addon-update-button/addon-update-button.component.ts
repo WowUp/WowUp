@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
@@ -52,9 +45,9 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public getActionLabel() {
-    return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${
-      this.listItem?.addon.providerName
-    }|${this.listItem?.addon.externalId}|${this.listItem?.addon.name}`;
+    return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${this.listItem?.addon.providerName}|${
+      this.listItem?.addon.externalId
+    }|${this.listItem?.addon.name}`;
   }
 
   public getInstallProgress() {
@@ -69,10 +62,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public getIsButtonDisabled() {
-    return (
-      this.listItem?.isUpToDate ||
-      this.listItem?.installState < AddonInstallState.Unknown
-    );
+    return this.listItem?.isUpToDate || this.listItem?.installState < AddonInstallState.Unknown;
   }
 
   public getButtonText() {
@@ -84,35 +74,23 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public onInstallUpdateClick() {
-    this._analyticsService.trackUserAction(
-      "addons",
-      "update_addon",
-      this.getActionLabel()
-    );
-
     this._addonService.installAddon(this.listItem.addon.id);
   }
 
   public getStatusText() {
     if (this.listItem?.needsInstall) {
-      return this._translateService.instant(
-        "PAGES.MY_ADDONS.TABLE.ADDON_INSTALL_BUTTON"
-      );
+      return this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_INSTALL_BUTTON");
     }
 
     if (this.listItem?.needsUpdate) {
-      return this._translateService.instant(
-        "PAGES.MY_ADDONS.TABLE.ADDON_UPDATE_BUTTON"
-      );
+      return this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_UPDATE_BUTTON");
     }
 
     if (!this.listItem) {
       return "";
     }
 
-    return this._translateService.instant(
-      this.listItem.stateTextTranslationKey
-    );
+    return this._translateService.instant(this.listItem.stateTextTranslationKey);
   }
 
   private getInstallStateText(installState: AddonInstallState) {
@@ -122,9 +100,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
       case AddonInstallState.Complete:
         return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
       case AddonInstallState.Downloading:
-        return this._translateService.instant(
-          "COMMON.ADDON_STATUS.DOWNLOADING"
-        );
+        return this._translateService.instant("COMMON.ADDON_STATUS.DOWNLOADING");
       case AddonInstallState.Installing:
         return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
       case AddonInstallState.Pending:

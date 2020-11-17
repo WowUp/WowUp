@@ -20,10 +20,7 @@ const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
 
 export class WowInterfaceAddonProvider implements AddonProvider {
-  private readonly _circuitBreaker: CircuitBreaker<
-    [addonId: string],
-    AddonDetailsResponse
-  >;
+  private readonly _circuitBreaker: CircuitBreaker<[addonId: string], AddonDetailsResponse>;
 
   public readonly name = "WowInterface";
 
@@ -45,10 +42,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     });
   }
 
-  async getAll(
-    clientType: WowClientType,
-    addonIds: string[]
-  ): Promise<AddonSearchResult[]> {
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     var searchResults: AddonSearchResult[] = [];
 
     for (let addonId of addonIds) {
@@ -63,23 +57,15 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     return searchResults;
   }
 
-  public async getFeaturedAddons(
-    clientType: WowClientType
-  ): Promise<AddonSearchResult[]> {
+  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     return [];
   }
 
-  async searchByQuery(
-    query: string,
-    clientType: WowClientType
-  ): Promise<AddonSearchResult[]> {
+  async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
     return [];
   }
 
-  async searchByUrl(
-    addonUri: URL,
-    clientType: WowClientType
-  ): Promise<AddonSearchResult> {
+  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
       throw new Error(`Addon ID not found ${addonUri}`);
@@ -102,14 +88,9 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  getById(
-    addonId: string,
-    clientType: WowClientType
-  ): Observable<AddonSearchResult> {
+  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     return from(this._circuitBreaker.fire(addonId)).pipe(
-      map((result) =>
-        result ? this.toAddonSearchResult(result, "") : undefined
-      )
+      map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );
   }
 
@@ -131,16 +112,9 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         continue;
       }
 
-      const details = await this._circuitBreaker.fire(
-        addonFolder.toc.wowInterfaceId
-      );
+      const details = await this._circuitBreaker.fire(addonFolder.toc.wowInterfaceId);
 
-      addonFolder.matchingAddon = this.toAddon(
-        details,
-        clientType,
-        addonChannelType,
-        addonFolder
-      );
+      addonFolder.matchingAddon = this.toAddon(details, clientType, addonChannelType, addonFolder);
     }
   }
 
@@ -161,9 +135,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     throw new Error(`Unhandled URL: ${addonUri}`);
   }
 
-  private getAddonDetails = (
-    addonId: string
-  ): Promise<AddonDetailsResponse> => {
+  private getAddonDetails = (addonId: string): Promise<AddonDetailsResponse> => {
     console.debug("getAddonDetails");
     const url = new URL(`${API_URL}/filedetails/${addonId}.json`);
 
@@ -212,10 +184,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     };
   }
 
-  private toAddonSearchResult(
-    response: AddonDetailsResponse,
-    folderName?: string
-  ): AddonSearchResult {
+  private toAddonSearchResult(response: AddonDetailsResponse, folderName?: string): AddonSearchResult {
     try {
       var searchResultFile: AddonSearchResultFile = {
         channelType: AddonChannelType.Stable,

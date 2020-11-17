@@ -7,6 +7,14 @@
       "QUIT_ACTION": "Salir",
       "SHOW_ACTION": "Mostrar"
     },
+    "THEME": {
+      "ALLIANCE": "Alianza",
+      "ALLIANCE_LIGHT": "Alianza Claro",
+      "DEFAULT": "Predeterminado",
+      "DEFAULT_LIGHT": "Predeterminado Claro",
+      "HORDE": "Horda",
+      "HORDE_LIGHT": "Horda Claro"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar actualización de WowUp",
       "INSTALL_MESSAGE": "¿Quiere reiniciar WowUp para instalar la actualización?",
@@ -37,6 +45,13 @@
       "PENDING": "Pendiente",
       "UNINSTALLING": "Desinstalando",
       "UPDATING": "Actualizando"
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "PTR Classic",
+      "RETAIL": "Retail",
+      "RETAILPTR": "PTR Retail"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -88,6 +103,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ejemplo: URL de GitHub o WowInterface",
       "CLOSE_BUTTON": "Cerrar",
       "DESCRIPTION": "Si desea instalar un addon directamente desde una URL, péguelo a continuación para comenzar.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{descarga} other{descargas}} en {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "No se pudo conectar con la API. Por favor, espere un momento y vuelva a intentarlo.",
         "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #wow-support.",
@@ -190,9 +206,9 @@
         "CONFIRMATION_LESS_THAN_THREE": "¿Quiere eliminar los siguientes {count} addons?",
         "CONFIRMATION_MORE_THAN_THREE": "¿Quiere eliminar los {count} addons seleccionados?",
         "CONFIRMATION_ONE": "¿Quiere eliminar {addonName}?",
-        "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?",
         "DEPENDENCY_MESSAGE": "{addonName} tiene {dependencyCount} {dependencyCount, plural, one{dependencia} other{dependencias}}. ¿Quiere eliminarlas también?",
-        "DEPENDENCY_TITLE": "¿Eliminar Dependencias del Addon?"
+        "DEPENDENCY_TITLE": "¿Eliminar Dependencias del Addon?",
+        "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Actualizar Todo",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Actualizar todos los addons para este cliente",
@@ -212,14 +228,14 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Idioma Actual",
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, como el de cuando los addons son actualizados automáticamente.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, tales como cuando los addons son actualizados automáticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Activar notificaciones del sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Al cerrar la ventana de WowUp, minimizarla a la barra de menú",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Al cerrar la ventana de WowUp, minimizarla a la bandeja del sistema.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizar al Cerrar",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiar el idioma predeterminado requiere reiniciar la aplicación.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Estableciendo un nuevo idioma predeterminado",
-        "SET_LANGUAGE_DESCRIPTION": "Seleccione el idioma al que cambiar",
+        "SET_LANGUAGE_DESCRIPTION": "Establece el idioma en el que se mostrará WowUp",
         "SET_LANGUAGE_LABEL": "Establecer Idioma",
         "START_MINIMIZED_DESCRIPTION": "WowUp se iniciará minimizado y no se mostrará en pantalla",
         "START_MINIMIZED_LABEL": "Iniciar WowUp minimizado",
@@ -227,6 +243,8 @@
         "START_WITH_SYSTEM_LABEL": "Iniciar WowUp con el sistema",
         "TELEMETRY_DESCRIPTION": "Ayuda a mejorar WowUp enviando datos de instalación y/o errores de forma anónima.",
         "TELEMETRY_LABEL": "Telemetría",
+        "THEME_DESCRIPTION": "Cambia el color del tema de la aplicación",
+        "THEME_LABEL": "Apariencia",
         "TITLE": "Aplicación",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "¿Quiere reiniciar la aplicación?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Desactivar la aceleración por hardware puede resolver problemas de FPS y corregir otros problemas de renderizado en esta aplicación. Es necesario reiniciar tras cambiar esta opción.",
@@ -250,9 +268,9 @@
         "DEBUG": "Depuración"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Los addons instalados a continuación se configurarán para actualizarse automáticamente de forma predeterminada",
+        "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada",
         "AUTO_UPDATE_LABEL": "Actualización automática",
-        "CLIENT_TYPE_INPUT_HINT": "La carpeta que contiene el cliente de {clientTypeName} \"{clientFolderName}\"",
+        "CLIENT_TYPE_INPUT_HINT": "La carpeta que contiene la versión {clientTypeName} del cliente de World of Warcraft \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Ruta de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addons Predeterminado",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal de Addons",

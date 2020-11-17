@@ -16,8 +16,6 @@ export class WowUpApiService {
   public getLatestVersion(): Observable<LatestVersionResponse> {
     const url = new URL(`${API_URL}/wowup/latest`);
 
-    return this._httpClient
-      .get<LatestVersionResponse>(url.toString())
-      .pipe(tap((res) => console.log(res)));
+    return this._httpClient.get<LatestVersionResponse>(url.toString()).pipe(tap((res) => console.log(res)));
   }
 }

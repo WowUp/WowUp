@@ -1,7 +1,17 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import { CREATE_TRAY_MENU_CHANNEL } from "../common/constants";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import {
+  ALLIANCE_LIGHT_THEME,
+  ALLIANCE_THEME,
+  CREATE_TRAY_MENU_CHANNEL,
+  CURRENT_THEME_KEY,
+  DEFAULT_LIGHT_THEME,
+  DEFAULT_THEME,
+  HORDE_LIGHT_THEME,
+  HORDE_THEME,
+} from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
@@ -10,6 +20,7 @@ import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
+import { SessionService } from "./services/session/session.service";
 import { filter } from "rxjs/operators";
 
 const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
@@ -20,7 +31,7 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
   styleUrls: ["./app.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
   private _autoUpdateInterval?: number;
 
   public get quitEnabled() {
@@ -32,11 +43,31 @@ export class AppComponent implements AfterViewInit {
     private _electronService: ElectronService,
     private _fileService: FileService,
     private translate: TranslateService,
-    private _wowUpService: WowUpService,
     private _dialog: MatDialog,
     private _addonService: AddonService,
-    private _iconService: IconService
+    private _iconService: IconService,
+    private _sessionService: SessionService,
+    public overlayContainer: OverlayContainer,
+    public wowUpService: WowUpService
   ) {}
+
+  ngOnInit(): void {
+    this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
+
+    this.wowUpService.preferenceChange$.pipe(filter((pref) => pref.key === CURRENT_THEME_KEY)).subscribe((pref) => {
+      this.overlayContainer
+        .getContainerElement()
+        .classList.remove(
+          HORDE_THEME,
+          HORDE_LIGHT_THEME,
+          ALLIANCE_THEME,
+          ALLIANCE_LIGHT_THEME,
+          DEFAULT_THEME,
+          DEFAULT_LIGHT_THEME
+        );
+      this.overlayContainer.getContainerElement().classList.add(pref.value);
+    });
+  }
 
   ngAfterViewInit(): void {
     this.createSystemTray();
@@ -48,7 +79,10 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    this._autoUpdateInterval = window.setInterval(this.onAutoUpdateInterval, AUTO_UPDATE_PERIOD_MS);
+    this._autoUpdateInterval = window.setInterval(() => {
+      this.onAutoUpdateInterval();
+      this._sessionService.autoUpdateComplete();
+    }, AUTO_UPDATE_PERIOD_MS);
   }
 
   openDialog(): void {
@@ -73,7 +107,7 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    if (this._wowUpService.enableSystemNotifications) {
+    if (this.wowUpService.enableSystemNotifications) {
       const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
       const translated = await this.translate
         .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {

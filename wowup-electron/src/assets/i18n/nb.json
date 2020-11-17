@@ -1,11 +1,19 @@
 {
   "APP": {
-    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse} ble automatisk oppdatert}.",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse}} ble automatisk oppdatert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Check for Updates...",
       "QUIT_ACTION": "Quit",
       "SHOW_ACTION": "Show"
+    },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "ALLIANCE_LIGHT": "Alliance Light",
+      "DEFAULT": "Default",
+      "DEFAULT_LIGHT": "Default Light",
+      "HORDE": "Horde",
+      "HORDE_LIGHT": "Horde Light"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
@@ -37,6 +45,13 @@
       "PENDING": "Venter",
       "UNINSTALLING": "Avinstallerer",
       "UPDATING": "Oppdaterer..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -88,6 +103,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "F.Eks. GitHub eller WowInterface URL",
       "CLOSE_BUTTON": "Lukk",
       "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
         "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
@@ -227,6 +243,8 @@
         "START_WITH_SYSTEM_LABEL": "Start WowUp sammen med maskinen",
         "TELEMETRY_DESCRIPTION": "Hjelp til med å forbedre WowUp ved å sende anonyme data og feilmeldinger.",
         "TELEMETRY_LABEL": "Telemetri",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
         "TITLE": "Applikasjon",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vil du restarte?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Deaktivering av maskinvareakselerasjon kan løse FPS-problemer og andre renderproblemer i appen. Denne endringen krever en restart",

@@ -53,22 +53,13 @@
 }
 
 .table-container {
-  // height: calc(100% - 75px);
-  background-color: $dark-2;
   overflow: auto;
 
   table {
     width: 100%;
   }
 
-  tr {
-    &:hover {
-      background-color: $dark-1;
-    }
-  }
-
   .addon-logo-container {
-    background-color: $dark-2;
     width: 40px;
     height: 40px;
     display: flex;
@@ -118,10 +109,6 @@
     .addon-progress {
       width: 110px;
     }
-  }
-
-  .selected-row {
-    background: $dark-4;
   }
 
   .addon-provider {

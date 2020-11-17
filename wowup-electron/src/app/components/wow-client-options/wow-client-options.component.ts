@@ -1,10 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
@@ -50,33 +44,23 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
 
-    const warcraftProductSubscription = this._warcraftService.products$.subscribe(
-      (products) => {
-        const product = products.find((p) => p.clientType === this.clientType);
-        if (product) {
-          this.clientLocation = product.location;
-          this._cdRef.detectChanges();
-        }
+    const warcraftProductSubscription = this._warcraftService.products$.subscribe((products) => {
+      const product = products.find((p) => p.clientType === this.clientType);
+      if (product) {
+        this.clientLocation = product.location;
+        this._cdRef.detectChanges();
       }
-    );
+    });
 
     this.subscriptions.push(warcraftProductSubscription);
   }
 
   ngOnInit(): void {
-    this.selectedAddonChannelType = this._wowupService.getDefaultAddonChannel(
-      this.clientType
-    );
-    this.clientAutoUpdate = this._wowupService.getDefaultAutoUpdate(
-      this.clientType
-    );
-    this.clientTypeName = getEnumName(WowClientType, this.clientType);
-    this.clientFolderName = this._warcraftService.getClientFolderName(
-      this.clientType
-    );
-    this.clientLocation = this._warcraftService.getClientLocation(
-      this.clientType
-    );
+    this.selectedAddonChannelType = this._wowupService.getDefaultAddonChannel(this.clientType);
+    this.clientAutoUpdate = this._wowupService.getDefaultAutoUpdate(this.clientType);
+    this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(WowClientType, this.clientType).toUpperCase()}`;
+    this.clientFolderName = this._warcraftService.getClientFolderName(this.clientType);
+    this.clientLocation = this._warcraftService.getClientLocation(this.clientType);
   }
 
   ngOnDestroy(): void {
@@ -108,14 +92,10 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async selectWowClientPath(
-    clientType: WowClientType
-  ): Promise<string> {
-    const dialogResult = await this._electronService.remote.dialog.showOpenDialog(
-      {
-        properties: ["openDirectory"],
-      }
-    );
+  private async selectWowClientPath(clientType: WowClientType): Promise<string> {
+    const dialogResult = await this._electronService.remote.dialog.showOpenDialog({
+      properties: ["openDirectory"],
+    });
 
     if (dialogResult.canceled) {
       return "";
@@ -129,28 +109,15 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
     console.log("dialogResult", selectedPath);
 
-    const clientRelativePath = this._warcraftService.getClientRelativePath(
-      clientType,
-      selectedPath
-    );
+    const clientRelativePath = this._warcraftService.getClientRelativePath(clientType, selectedPath);
 
-    if (
-      this._warcraftService.setWowFolderPath(clientType, clientRelativePath)
-    ) {
+    if (this._warcraftService.setWowFolderPath(clientType, clientRelativePath)) {
       return clientRelativePath;
     }
 
-    const clientFolderName = this._warcraftService.getClientFolderName(
-      clientType
-    );
-    const clientExecutableName = this._warcraftService.getExecutableName(
-      clientType
-    );
-    const clientExecutablePath = path.join(
-      clientRelativePath,
-      clientFolderName,
-      clientExecutableName
-    );
+    const clientFolderName = this._warcraftService.getClientFolderName(clientType);
+    const clientExecutableName = this._warcraftService.getExecutableName(clientType);
+    const clientExecutablePath = path.join(clientRelativePath, clientFolderName, clientExecutableName);
     const dialogRef = this._dialog.open(AlertDialogComponent, {
       data: {
         title: `Alert`,

@@ -3,14 +3,15 @@
     windows: electronService.isWin,
     linux: electronService.isLinux
   }">
-  <div class="control-container">
+  <div class="control-container bg-secondary-3">
     <div class="select-container">
       <mat-form-field>
         <mat-label>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
         <mat-select class="select pointer" [(value)]="selectedClient" (selectionChange)="onClientChange()"
           [disabled]="enableControls === false">
-          <mat-option [value]="clientType" *ngFor="let clientType of warcraftService.installedClientTypes$ | async">
-            {{ warcraftService.getClientDisplayName(clientType) }}
+          <mat-option [value]="clientType.value"
+            *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
+            {{ clientType.display | translate }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -52,11 +53,11 @@
     <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
   </div>
 
-  <div *ngIf="isBusy === false && sortedListItems.length === 0" class="no-addons-container flex-grow-1">
+  <div *ngIf="isBusy === false && sortedListItems.length === 0" class="no-addons-container text-1 flex-grow-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <div class="table-container flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0">
+  <div class="table-container bg-secondary-2 flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0">
     <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
       [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
       <ng-container matColumnDef="addon.name">
@@ -160,13 +161,14 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="hover-bg-secondary-2"
         (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
 
       <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns" tabindex="0"
-        [ngClass]="{ 'selected-row': row.selected }" (click)="onRowClicked($event, row, i)"
-        (dblclick)="openDetailDialog(row)" (contextmenu)="onCellContext($event, row)"
-        (keydown.control.a)="selectAllRows($event)" (keydown.meta.a)="selectAllRows($event)"></tr>
+        class="hover-bg-secondary-2" [ngClass]="{ 'bg-secondary-4': row.selected }"
+        (click)="onRowClicked($event, row, i)" (dblclick)="openDetailDialog(row)"
+        (contextmenu)="onCellContext($event, row)" (keydown.control.a)="selectAllRows($event)"
+        (keydown.meta.a)="selectAllRows($event)"></tr>
     </table>
   </div>
 </div>

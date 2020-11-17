@@ -30,5 +30,4 @@ export class GetAddonListItem {
   constructor(searchResult: AddonSearchResult) {
     this.searchResult = searchResult;
   }
-
 }

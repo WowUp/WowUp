@@ -1,13 +1,12 @@
 <mat-divider></mat-divider>
-<div class="title">{{ clientTypeName }}</div>
+<div class="title">{{ clientTypeName | translate }}</div>
 <div class="row">
   <mat-form-field class="grow folder-input">
     <mat-label>{{
-      "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL"
-        | translate: { clientTypeName: clientTypeName }
+      "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL" | translate: { clientTypeName: (clientTypeName | translate) }
     }}</mat-label>
     <input matInput disabled [value]="clientLocation" />
-    <mat-hint>
+    <mat-hint class="text-2">
       {{
         "PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT"
           | translate
@@ -34,10 +33,8 @@
   <div class="grow">
     <p>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_LABEL" | translate }}</p>
   </div>
-  <mat-form-field class="light-select">
-    <mat-label>{{
-      "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_SELECT_LABEL" | translate
-    }}</mat-label>
+  <mat-form-field class="">
+    <mat-label>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_SELECT_LABEL" | translate }}</mat-label>
     <mat-select
       [(value)]="selectedAddonChannelType"
       (selectionChange)="onDefaultAddonChannelChange($event)"
@@ -46,20 +43,16 @@
       [action]="clientTypeName + 'DefaultChannel'"
       [label]="selectedAddonChannelType"
     >
-      <mat-option
-        *ngFor="let channel of addonChannelInfos"
-        [value]="channel.type"
-        >{{ channel.name | translate }}</mat-option
-      >
+      <mat-option *ngFor="let channel of addonChannelInfos" [value]="channel.type">{{
+        channel.name | translate
+      }}</mat-option>
     </mat-select>
   </mat-form-field>
 </div>
 <div class="row">
   <div class="grow">
     <p>{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_LABEL" | translate }}</p>
-    <small class="hint">{{
-      "PAGES.OPTIONS.WOW.AUTO_UPDATE_DESCRIPTION" | translate
-    }}</small>
+    <small class="text-2">{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_DESCRIPTION" | translate }}</small>
   </div>
   <mat-slide-toggle
     [(checked)]="clientAutoUpdate"

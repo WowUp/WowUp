@@ -72,7 +72,10 @@ export class AddonService {
     var searchTasks = this.getEnabledAddonProviders().map((p) => p.searchByQuery(query, clientType));
     var searchResults = await Promise.all(searchTasks);
 
-    await this._analyticsService.trackUserAction("addons", "search", `${clientType}|${query}`);
+    await this._analyticsService.trackAction("addon-search", {
+      clientType: getEnumName(WowClientType, clientType),
+      query,
+    });
 
     const flatResults = searchResults.flat(1);
 
@@ -270,7 +273,11 @@ export class AddonService {
       const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${
         addon.name
       }`;
-      this._analyticsService.trackUserAction("addons", "install_by_id", actionLabel);
+      this._analyticsService.trackAction("install-addon", {
+        clientType: getEnumName(WowClientType, addon.clientType),
+        provider: addon.providerName,
+        addon: actionLabel,
+      });
 
       await this.installDependencies(addon, onUpdate);
 

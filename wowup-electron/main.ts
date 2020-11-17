@@ -5,22 +5,26 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
-  screen,
+  powerMonitor,
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
-import { arch, release } from "os";
+import * as os from "os";
 import * as path from "path";
-import { Subject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
 import * as url from "url";
 import * as platform from "./platform";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
-import { COLLAPSE_TO_TRAY_PREFERENCE_KEY, USE_HARDWARE_ACCELERATION_PREFERENCE_KEY } from "./src/common/constants";
-import { WindowState } from "./src/common/models/window-state";
+import {
+  COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  CURRENT_THEME_KEY,
+  DEFAULT_BG_COLOR,
+  DEFAULT_LIGHT_BG_COLOR,
+  USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+} from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
+import { windowStateManager } from "./window-state";
 
 const startedAt = Date.now();
 const preferenceStore = new Store({ name: "preferences" });
@@ -61,9 +65,8 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 
-const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()};${
-  isPortable ? " portable;" : ""
-} +https://wowup.io)`;
+const portableStr = isPortable ? " portable;" : "";
+const USER_AGENT = `WowUp-Client/${app.getVersion()} (${os.type()}; ${os.release()}; ${os.arch()}; ${portableStr} +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
 
 const argv = require("minimist")(process.argv.slice(1), {
@@ -74,71 +77,10 @@ function canStartHidden() {
   return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
 }
 
-function windowStateManager(windowName: string, { width, height }: { width: number; height: number }) {
-  let window: BrowserWindow;
-  let windowState: WindowState;
-  const saveState$ = new Subject<void>();
-
-  function setState() {
-    let setDefaults = false;
-    windowState = preferenceStore.get(`${windowName}-window-state`) as WindowState;
-
-    if (!windowState) {
-      setDefaults = true;
-    } else {
-      log.info("found window state:", windowState);
-
-      const valid = screen.getAllDisplays().some((display) => {
-        return (
-          windowState.x >= display.bounds.x &&
-          windowState.y >= display.bounds.y &&
-          windowState.x + windowState.width <= display.bounds.x + display.bounds.width &&
-          windowState.y + windowState.height <= display.bounds.y + display.bounds.height
-        );
-      });
-
-      if (!valid) {
-        log.info("reset window state, bounds are outside displays");
-        setDefaults = true;
-      }
-    }
-
-    if (setDefaults) {
-      log.info("setting window defaults");
-      windowState = <WindowState>{ width, height };
-    }
-  }
-
-  function saveState() {
-    log.info("saving window state");
-    if (!window.isMaximized() && !window.isFullScreen()) {
-      windowState = { ...windowState, ...window.getBounds() };
-    }
-    windowState.isMaximized = window.isMaximized();
-    windowState.isFullScreen = window.isFullScreen();
-    preferenceStore.set(`${windowName}-window-state`, windowState);
-  }
-
-  function monitorState(win: BrowserWindow) {
-    window = win;
-
-    win.on("close", saveState);
-    win.on("resize", () => saveState$.next());
-    win.on("move", () => saveState$.next());
-    win.on("closed", () => saveState$.unsubscribe());
-  }
-
-  saveState$.pipe(debounceTime(500)).subscribe(() => saveState());
-
-  setState();
-
-  return {
-    ...windowState,
-    monitorState,
-  };
-}
-
 function createWindow(): BrowserWindow {
+  const savedTheme = preferenceStore.get(CURRENT_THEME_KEY) as string;
+  const backgroundColor = savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
+
   // Main object for managing window state
   // Initialize with a window name and default size
   const mainWindowManager = windowStateManager("main", {
@@ -151,7 +93,7 @@ function createWindow(): BrowserWindow {
     height: mainWindowManager.height,
     x: mainWindowManager.x,
     y: mainWindowManager.y,
-    backgroundColor: "#444444",
+    backgroundColor,
     title: "WowUp",
     titleBarStyle: "hidden",
     webPreferences: {
@@ -161,13 +103,18 @@ function createWindow(): BrowserWindow {
       webSecurity: false,
       enableRemoteModule: true,
     },
-    minWidth: 900,
+    minWidth: 940,
     minHeight: 550,
     show: false,
   };
 
   if (platform.isWin || platform.isLinux) {
     windowOptions.frame = false;
+  }
+
+  // Attempt to fix the missing icon issue on Ubuntu
+  if (platform.isLinux) {
+    windowOptions.icon = path.join(__dirname, "assets", "wowup_logo_512np.png");
   }
 
   // Create the browser window.
@@ -180,6 +127,23 @@ function createWindow(): BrowserWindow {
   mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-render-process-gone
+  win.webContents.on("render-process-gone", (evt, details) => {
+    log.error("webContents render-process-gone");
+    log.error(evt);
+    log.error(details);
+  });
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-unresponsive
+  win.webContents.on("unresponsive", () => {
+    log.error("webContents unresponsive");
+  });
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-responsive
+  win.webContents.on("responsive", () => {
+    log.error("webContents responsive");
+  });
 
   win.once("ready-to-show", () => {
     if (canStartHidden()) {
@@ -198,16 +162,13 @@ function createWindow(): BrowserWindow {
 
   if (platform.isMac) {
     win.on("close", (e) => {
-      if (appIsQuitting) {
+      if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
         return;
       }
 
       e.preventDefault();
       win.hide();
-
-      if (preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) === "true") {
-        app.dock.hide();
-      }
+      app.dock.hide();
     });
   }
 
@@ -231,23 +192,6 @@ function createWindow(): BrowserWindow {
     );
   }
 
-  // Emitted when the window is closed.
-  // win.on('closed', () => {
-  //   // Dereference the window object, usually you would store window
-  //   // in an array if your app supports multi windows, this is the time
-  //   // when you should delete the corresponding element.
-  //   win = null;
-  // });
-
-  // win.on('minimize', function (event) {
-  //   event.preventDefault();
-  //   win.hide();
-  // });
-
-  // win.on('restore', function (event) {
-  //   win.show();
-  // });
-
   return win;
 }
 
@@ -270,7 +214,7 @@ try {
     });
   }
 
-  app.allowRendererProcessReuse = true;
+  app.allowRendererProcessReuse = false;
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
@@ -291,9 +235,9 @@ try {
   app.on("window-all-closed", () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== "darwin") {
-      app.quit();
-    }
+    // if (process.platform !== "darwin") {
+    app.quit();
+    // }
   });
 
   app.on("activate", () => {
@@ -307,6 +251,22 @@ try {
     if (win === null) {
       createWindow();
     }
+  });
+
+  powerMonitor.on("resume", () => {
+    log.info("powerMonitor resume");
+  });
+
+  powerMonitor.on("suspend", () => {
+    log.info("powerMonitor suspend");
+  });
+
+  powerMonitor.on("lock-screen", () => {
+    log.info("powerMonitor lock-screen");
+  });
+
+  powerMonitor.on("unlock-screen", () => {
+    log.info("powerMonitor unlock-screen");
   });
 } catch (e) {
   // Catch Error

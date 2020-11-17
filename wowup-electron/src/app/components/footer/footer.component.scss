@@ -21,51 +21,33 @@ footer {
     font-size: 0.8em;
   }
 
+  .link {
+    .mat-icon {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
   .patreon-link {
     padding: 0 0.25em;
-    &:hover {
-      background-color: $dark-3;
-    }
-
     .patron-img {
       height: 25px;
     }
   }
 
   .discord-link {
-    padding: 0 0.25em;
-
-    &:hover {
-      background-color: $dark-3;
-    }
-
-    .discord-img {
-      height: 25px;
-    }
+    height: 20px;
+    padding: 2.5px 0.25em;
   }
 
   .github-link {
     height: 20px;
     padding: 2.5px 0.25em;
-    &:hover {
-      background-color: $dark-3;
-    }
-    .github-img {
-      height: 20px;
-    }
   }
 
   .guide-link {
     height: 20px;
     padding: 2.5px 0.25em;
-    color: $white-1;
-    &:hover {
-      background-color: $dark-3;
-    }
-    .mat-icon {
-      height: 20px;
-      width: 20px;
-    }
   }
 
   .footer-button {
@@ -78,7 +60,6 @@ footer {
 
     &.update-button {
       background-color: green;
-      color: $white-1;
 
       &:hover {
         background-color: darkgreen;
@@ -97,8 +78,6 @@ footer {
     }
 
     &.check-update-button {
-      color: $white-2;
-
       &:hover {
         cursor: pointer;
       }
@@ -109,8 +88,6 @@ footer {
     }
 
     &.downloading-button {
-      color: $white-2;
-
       &.animate {
         animation: fadeInDown 1s infinite linear;
       }

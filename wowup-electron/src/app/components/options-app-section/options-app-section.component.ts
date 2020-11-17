@@ -3,10 +3,20 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
-import { ElectronService } from "app/services";
-import { AnalyticsService } from "app/services/analytics/analytics.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
+import { ElectronService } from "../../services";
+import { AnalyticsService } from "../../services/analytics/analytics.service";
+import { SessionService } from "../../services/session/session.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { Theme } from "../../models/wowup/theme";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import {
+  ALLIANCE_LIGHT_THEME,
+  ALLIANCE_THEME,
+  DEFAULT_LIGHT_THEME,
+  DEFAULT_THEME,
+  HORDE_LIGHT_THEME,
+  HORDE_THEME,
+} from "../../../common/constants";
 
 interface LocaleListItem {
   localeId: string;
@@ -39,11 +49,21 @@ export class OptionsAppSectionComponent implements OnInit {
     { localeId: "zh", label: "简体中文" },
   ];
 
+  public themes: Theme[] = [
+    { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
+    { display: "APP.THEME.DEFAULT_LIGHT", class: DEFAULT_LIGHT_THEME },
+    { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
+    { display: "APP.THEME.ALLIANCE_LIGHT", class: ALLIANCE_LIGHT_THEME },
+    { display: "APP.THEME.HORDE", class: HORDE_THEME },
+    { display: "APP.THEME.HORDE_LIGHT", class: HORDE_LIGHT_THEME },
+  ];
+
   constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
     private _electronService: ElectronService,
     private _translateService: TranslateService,
+    public sessionService: SessionService,
     public wowupService: WowUpService
   ) {}
 

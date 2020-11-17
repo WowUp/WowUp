@@ -195,6 +195,18 @@ export class ElectronService {
     return new Notification(title, options);
   }
 
+  public isHandlingProtocol(protocol: string): boolean {
+    return this.remote.app.isDefaultProtocolClient(protocol);
+  }
+
+  public setHandleProtocol(protocol: string, enable: boolean) {
+    if (enable) {
+      return this.remote.app.setAsDefaultProtocolClient(protocol);
+    } else {
+      return this.remote.app.removeAsDefaultProtocolClient(protocol);
+    }
+  }
+
   public async sendIpcValueMessage<TIN, TOUT>(channel: string, value: TIN): Promise<TOUT> {
     const request: ValueRequest<TIN> = {
       value,

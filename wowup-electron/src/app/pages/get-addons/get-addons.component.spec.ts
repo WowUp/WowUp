@@ -1,15 +1,17 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { GetAddonsComponent } from "./get-addons.component";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
   let fixture: ComponentFixture<GetAddonsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [GetAddonsComponent],
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [GetAddonsComponent],
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GetAddonsComponent);

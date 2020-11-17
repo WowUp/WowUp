@@ -58,10 +58,12 @@ export class GitHubAddonProvider implements AddonProvider {
     const results = await this.getReleases(repoPath).toPromise();
     const latestRelease = this.getLatestRelease(results);
     if (!latestRelease) {
+      console.log("latestRelease results", results);
       throw new Error(`No release found in ${addonUri}`);
     }
 
     const asset = this.getValidAsset(latestRelease, clientType);
+    console.log("latestRelease", latestRelease);
     if (asset == null) {
       throw new Error(`No release assets found in ${addonUri}`);
     }

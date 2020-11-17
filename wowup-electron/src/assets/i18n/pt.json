@@ -7,13 +7,21 @@
       "QUIT_ACTION": "Sair",
       "SHOW_ACTION": "Mostrar"
     },
+    "THEME": {
+      "ALLIANCE": "Aliança",
+      "ALLIANCE_LIGHT": "Alliance Light",
+      "DEFAULT": "Padrão",
+      "DEFAULT_LIGHT": "Default Light",
+      "HORDE": "Horda",
+      "HORDE_LIGHT": "Horde Light"
+    },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar atualização do WowUp",
       "INSTALL_MESSAGE": "Você gostaria de reiniciar o WowUp para instalar a atualização?",
       "INSTALL_TITLE": "Atualização do WowUp Pronta",
       "NOT_AVAILABLE": "A última atualização do WowUp já está instalada",
       "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
-      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
+      "PORTABLE_DOWNLOAD_TITLE": "Download manual é necessário",
       "SNACKBAR_ACTION": "Atualizar",
       "SNACKBAR_TEXT": "Uma nova versão do WowUp está disponível",
       "TOOLTIP": "Atualização do WowUp disponível",
@@ -38,6 +46,13 @@
       "UNINSTALLING": "Desinstalando",
       "UPDATING": "Atualizando..."
     },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
+    },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, one{dia} other{dias}} atrás",
@@ -48,11 +63,11 @@
       "YESTERDAY": "Ontem"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependência} other{dependências}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} bilhão",
-      "MILLION": "{count} milhão",
+      "BILLION": "{count} {count, plural, one{bilhão} other{bilhões}}",
+      "MILLION": "{count} {count, plural, one{milhão} other{milhões}}",
       "THOUSAND": "{count} mil"
     },
     "ENUM": {
@@ -88,6 +103,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub ou WowInterface URL",
       "CLOSE_BUTTON": "Fechar",
       "DESCRIPTION": "Se você deseja instalar um addon diretamente de uma URL, cole-a abaixo para iniciar.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Não foi possível conectar à API, por favor espere um pouco e tente novamente.",
         "INSTALL_FAILED": "Algo deu errado ao tentar instalar o addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wow-support.",
@@ -227,6 +243,8 @@
         "START_WITH_SYSTEM_LABEL": "Iniciar WowUp com o sistema",
         "TELEMETRY_DESCRIPTION": "Ajude a melhorar o WowUp enviando dados e/ou erros de instalação anonimamente.",
         "TELEMETRY_LABEL": "Telemetria",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Cor do tema",
         "TITLE": "Aplicativo",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Você quer reiniciar",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Desabilitar aceleração de hardware pode solucionar problemas de FPS de corrigir outros problemas de renderização no app. Mudar esta opção exige reiniciar o aplicativo.",

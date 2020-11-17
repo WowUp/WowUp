@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
@@ -43,9 +36,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
       this._sessionService.selectedClientType
     );
     this.disableButton = isInstalled;
-    this.buttonText = this.getButtonText(
-      isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown
-    );
+    this.buttonText = this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown);
 
     const addonInstalledSub = this._addonService.addonInstalled$
       .pipe(
@@ -72,10 +63,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   public getIsButtonActive(installState: AddonInstallState) {
-    return (
-      installState !== AddonInstallState.Unknown &&
-      installState !== AddonInstallState.Complete
-    );
+    return installState !== AddonInstallState.Unknown && installState !== AddonInstallState.Complete;
   }
 
   public getIsButtonDisabled(installState: AddonInstallState) {
@@ -108,9 +96,6 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   public async onInstallUpdateClick() {
-    await this._addonService.installPotentialAddon(
-      this.addonSearchResult,
-      this._sessionService.selectedClientType
-    );
+    await this._addonService.installPotentialAddon(this.addonSearchResult, this._sessionService.selectedClientType);
   }
 }

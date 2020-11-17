@@ -116,5 +116,4 @@ export class AddonViewModel {
       ? this.addon.dependencies
       : _.filter(this.addon.dependencies, (dep) => dep.type === dependencyType);
   }
-
 }

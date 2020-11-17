@@ -18,11 +18,7 @@
         {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON" | translate }}
       </button>
     </div>
-    <app-wow-client-options
-      class="client-section"
-      *ngFor="let clientType of wowClientTypes"
-      [clientType]="clientType"
-    >
+    <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes" [clientType]="clientType">
     </app-wow-client-options>
   </div>
 </div>
