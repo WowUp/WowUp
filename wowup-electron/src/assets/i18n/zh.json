@@ -8,12 +8,12 @@
       "SHOW_ACTION": "显示"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
-      "ALLIANCE_LIGHT": "Alliance Light",
-      "DEFAULT": "Default",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "Horde",
-      "HORDE_LIGHT": "Horde Light"
+      "ALLIANCE": "联盟",
+      "ALLIANCE_LIGHT": "联盟·浅色",
+      "DEFAULT": "默认",
+      "DEFAULT_LIGHT": "默认·浅色",
+      "HORDE": "部落",
+      "HORDE_LIGHT": "部落·浅色"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
@@ -48,10 +48,10 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "CLASSIC": "经典怀旧服",
+      "CLASSICPTR": "经典怀旧服 PTR",
+      "RETAIL": "正式服",
+      "RETAILPTR": "正式服 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -107,7 +107,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "例如，GitHub 或 WowInterface URL",
       "CLOSE_BUTTON": "关闭",
       "DESCRIPTION": "如需直接从某 URL 安装插件，请将其粘贴到下面以开始安装。",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下载",
       "ERROR": {
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
         "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wow-support 频道寻求帮助（英语）。",
@@ -244,8 +244,8 @@
         "START_WITH_SYSTEM_LABEL": "登录后自动启动 WowUp",
         "TELEMETRY_DESCRIPTION": "发送匿名应用安装数据和错误信息以帮助改进 WowUp。",
         "TELEMETRY_LABEL": "遥测",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
-        "THEME_LABEL": "Color Theme",
+        "THEME_DESCRIPTION": "选择喜欢的配色主题",
+        "THEME_LABEL": "配色主题",
         "TITLE": "应用程序",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "是否重新启动？",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬件加速可能会提高 FPS 并修复其他渲染问题。更改此项需要重新启动。",
