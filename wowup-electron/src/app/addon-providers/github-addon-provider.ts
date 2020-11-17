@@ -23,6 +23,7 @@ const RELEASE_CONTENT_TYPES = ["application/x-zip-compressed", "application/zip"
 
 export class GitHubAddonProvider implements AddonProvider {
   public readonly name = "GitHub";
+  public enabled = true;
 
   constructor(private _httpClient: HttpClient) {}
 

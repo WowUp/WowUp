@@ -42,6 +42,7 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   public readonly name = "Curse";
+  public enabled = true;
 
   constructor(
     private _httpClient: HttpClient,

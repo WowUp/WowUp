@@ -1,8 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { WowUpService } from "app/services/wowup/wowup.service";
-import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 import { MatSelectChange } from "@angular/material/select";
-import { AddonProvider } from "../../addon-providers/addon-provider";
+import { FormControl } from "@angular/forms";
+import { find } from "lodash";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { AddonService } from "../../services/addons/addon.service";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
+import { MatSelectionListChange } from "@angular/material/list";
 
 @Component({
   selector: "app-options-addon-section",
@@ -10,21 +13,30 @@ import { AddonProvider } from "../../addon-providers/addon-provider";
   styleUrls: ["./options-addon-section.component.scss"],
 })
 export class OptionsAddonSectionComponent implements OnInit {
-  constructor(
-    private _addonProviderFactory: AddonProviderFactory,
-    private _wowupService: WowUpService
-  ) {}
+  public enabledAddonProviders = new FormControl();
+  public addonProviderStates: AddonProviderState[] = [];
 
-  ngOnInit(): void {}
+  constructor(private _addonService: AddonService, private _wowupService: WowUpService) {}
 
-  public onEnabledProvidersChange(event: MatSelectChange): void {
-    this._wowupService.enabledAddonProviders = event.value;
+  ngOnInit(): void {
+    this.addonProviderStates = this._addonService.getAddonProviderStates();
+    this.enabledAddonProviders.setValue(this.getEnabledProviderNames());
+    console.debug("addonProviderStates", this.addonProviderStates);
   }
 
-  public get addonProviders(): AddonProvider[] {
-    return this._addonProviderFactory.getAll();
+  public onProviderStateSelectionChange(event: MatSelectionListChange) {
+    console.debug(event);
+    event.options.forEach((option) => {
+      this._wowupService.setAddonProviderState({ providerName: option.value, enabled: option.selected });
+      this._addonService.setProviderEnabled(option.value, option.selected);
+    });
   }
-  public get enabledAddonProviders(): string[] {
-    return this._wowupService.enabledAddonProviders;
+
+  private getEnabledProviders() {
+    return this.addonProviderStates.filter((state) => state.enabled);
+  }
+
+  private getEnabledProviderNames() {
+    return this.getEnabledProviders().map((provider) => provider.providerName);
   }
 }

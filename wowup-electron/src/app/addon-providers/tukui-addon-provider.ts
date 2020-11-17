@@ -23,6 +23,7 @@ export class TukUiAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[clientType: WowClientType], TukUiAddon[]>;
 
   public readonly name = "TukUI";
+  public enabled = true;
 
   constructor(
     private _httpClient: HttpClient,

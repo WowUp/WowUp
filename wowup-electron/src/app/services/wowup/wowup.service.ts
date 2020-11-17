@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import * as _ from "lodash";
 import { ColumnState } from "app/models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
@@ -27,21 +28,20 @@ import {
   MY_ADDONS_SORT_ORDER,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
   GET_ADDONS_SORT_ORDER,
-  ENABLED_ADDON_PROVIDERS_KEY,
   CURRENT_THEME_KEY,
   DEFAULT_THEME,
+  ADDON_PROVIDERS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { AddonProviderFactory } from "../addons/addon.provider.factory";
-import { AddonProvider } from "../../addon-providers/addon-provider";
 
 const autoLaunch = require("auto-launch");
 
@@ -50,10 +50,15 @@ const autoLaunch = require("auto-launch");
 })
 export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
+
   private readonly _wowupUpdateDownloadInProgressSrc = new Subject<boolean>();
+
   private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
+
   private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
+
   private readonly _wowupUpdateCheckInProgressSrc = new Subject<boolean>();
+
   private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
@@ -67,19 +72,24 @@ export class WowUpService {
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
   public readonly applicationVersion: string;
+
   public readonly isBetaBuild: boolean;
+
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
+
   public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
+
   public readonly wowupUpdateDownloadInProgress$ = this._wowupUpdateDownloadInProgressSrc.asObservable();
+
   public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
+
   public readonly wowupUpdateCheckInProgress$ = this._wowupUpdateCheckInProgressSrc.asObservable();
 
   constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private _translateService: TranslateService,
-    private _addonProviderFactory: AddonProviderFactory,
+    private _translateService: TranslateService
   ) {
     this.setDefaultPreferences();
 
@@ -224,15 +234,31 @@ export class WowUpService {
     this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
   }
 
-  public get enabledAddonProviders() {
-    const preference = this._preferenceStorageService.findByKey(ENABLED_ADDON_PROVIDERS_KEY)
-    return preference.split(',');
+  public getAddonProviderStates(): AddonProviderState[] {
+    return this._preferenceStorageService.getObject<AddonProviderState[]>(ADDON_PROVIDERS_KEY) || [];
   }
 
-  public set enabledAddonProviders(value) {
-    const key = ENABLED_ADDON_PROVIDERS_KEY;
-    this._preferenceStorageService.set(key, value);
-    this._preferenceChangeSrc.next({ key, value: value.toString() })
+  public getAddonProviderState(providerName: string): AddonProviderState {
+    const preference = this.getAddonProviderStates();
+    return _.find(preference, (pref) => pref.providerName === providerName.toLowerCase());
+  }
+
+  public setAddonProviderState(state: AddonProviderState) {
+    const key = ADDON_PROVIDERS_KEY;
+    const stateCpy = { ...state };
+    stateCpy.providerName = stateCpy.providerName.toLowerCase();
+
+    const preference = this.getAddonProviderStates();
+    const stateIndex = _.findIndex(preference, (pref) => pref.providerName === stateCpy.providerName);
+
+    if (stateIndex === -1) {
+      preference.push(stateCpy);
+    } else {
+      preference[stateIndex] = stateCpy;
+    }
+
+    this._preferenceStorageService.setObject(key, preference);
+    this._preferenceChangeSrc.next({ key, value: preference.toString() });
   }
 
   public get lastSelectedClientType(): WowClientType {
@@ -362,10 +388,6 @@ export class WowUpService {
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
     this.setDefaultPreference(CURRENT_THEME_KEY, DEFAULT_THEME);
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, this.getDefaultReleaseChannel());
-    this.setDefaultPreference(ENABLED_ADDON_PROVIDERS_KEY, this._addonProviderFactory
-      .getAll()
-      .map((addonProvider: AddonProvider) => addonProvider.name)
-    );
     this.setDefaultClientPreferences();
   }
 

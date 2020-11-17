@@ -21,6 +21,7 @@ const API_URL = AppConfig.wowUpHubUrl;
 
 export class WowUpAddonProvider implements AddonProvider {
   public readonly name = "WowUp";
+  public enabled = true;
 
   constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}
 

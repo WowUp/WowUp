@@ -7,6 +7,7 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 
 export interface AddonProvider {
   name: AddonProviderType;
+  enabled: boolean;
 
   getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]>;
 

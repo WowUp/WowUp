@@ -9,6 +9,7 @@ import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
+import { WowUpService } from "../wowup/wowup.service";
 
 @Injectable({
   providedIn: "root",
@@ -20,19 +21,9 @@ export class AddonProviderFactory {
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
-    private _fileService: FileService
+    private _fileService: FileService,
+    private _wowupService: WowUpService
   ) {}
-
-  public getAddonProvider<T extends object>(providerType: T & AddonProvider) {
-    switch (providerType.name) {
-      case CurseAddonProvider.name:
-        return this.createCurseAddonProvider();
-      case TukUiAddonProvider.name:
-        break;
-      default:
-        break;
-    }
-  }
 
   public createCurseAddonProvider(): CurseAddonProvider {
     return new CurseAddonProvider(this._httpClient, this._cachingService, this._electronService);
@@ -59,7 +50,7 @@ export class AddonProviderFactory {
     return new WowUpAddonProvider(this._httpClient, this._electronService);
   }
 
-  public getAll() : AddonProvider[] {
+  public getAll(): AddonProvider[] {
     if (this._providers.length === 0) {
       this._providers = [
         this.createCurseAddonProvider(),
@@ -67,8 +58,18 @@ export class AddonProviderFactory {
         this.createWowInterfaceAddonProvider(),
         this.createGitHubAddonProvider(),
       ];
+
+      this._providers.forEach(this.setProviderState);
     }
 
     return this._providers;
   }
+
+  private setProviderState = (provider: AddonProvider) => {
+    const state = this._wowupService.getAddonProviderState(provider.name);
+    console.debug("STATE", state);
+    if (state) {
+      provider.enabled = state.enabled;
+    }
+  };
 }

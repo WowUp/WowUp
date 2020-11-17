@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AddonDependency } from "app/models/wowup/addon-dependency";
 import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
+import { AddonProviderState } from "app/models/wowup/addon-provider-state";
 import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
 import * as fs from "fs";
 import * as _ from "lodash";
@@ -55,12 +56,21 @@ export class AddonService {
     private _downloadService: DownloadSevice,
     private _fileService: FileService,
     private _tocService: TocService,
-    private _addonProviderFactory: AddonProviderFactory
+    addonProviderFactory: AddonProviderFactory
   ) {
-    this._addonProviders = _addonProviderFactory.getAll();
+    this._addonProviders = addonProviderFactory.getAll();
 
     this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe((addonName) => {
       console.log("Install complete", addonName);
+    });
+  }
+
+  public getAddonProviderStates(): AddonProviderState[] {
+    return _.map(this._addonProviders, (provider) => {
+      return {
+        providerName: provider.name,
+        enabled: provider.enabled,
+      };
     });
   }
 
@@ -567,7 +577,7 @@ export class AddonService {
 
     const addonFolders = await this._warcraftService.listAddons(clientType);
     // not using getEnabledAddonProviders() to ensure everything is still displayed
-    for (let provider of this._addonProviders) {
+    for (let provider of this.getEnabledAddonProviders()) {
       try {
         const validFolders = addonFolders.filter((af) => !af.matchingAddon && af.toc);
         await provider.scan(clientType, this._wowUpService.getDefaultAddonChannel(clientType), validFolders);
@@ -601,6 +611,13 @@ export class AddonService {
 
   public isInstalled(externalId: string, clientType: WowClientType) {
     return !!this.getByExternalId(externalId, clientType);
+  }
+
+  public setProviderEnabled(providerName: string, enabled: boolean) {
+    const provider = this.getProvider(providerName);
+    if (provider) {
+      provider.enabled = enabled;
+    }
   }
 
   private getProvider(providerName: string) {
@@ -705,7 +722,6 @@ export class AddonService {
   };
 
   public getEnabledAddonProviders() {
-    let enabledAddonProviders = this._wowUpService.enabledAddonProviders;
-    return this._addonProviders.filter((addonProvider: AddonProvider) => enabledAddonProviders.indexOf(addonProvider.name) !== -1);
+    return _.filter(this._addonProviders, (provider) => provider.enabled);
   }
 }

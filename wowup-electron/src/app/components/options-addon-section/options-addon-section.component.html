@@ -4,22 +4,19 @@
   </h2>
 
   <!-- SET LANGUAGE -->
-  <div class="toggle">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>
-          {{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.FIELD_LABEL" | translate }}
-        </div>
-        <small class="hint">{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.DESCRIPTION" | translate }}</small>
-      </div>
-      <mat-form-field class="light-select">
-        <mat-label>{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.INPUT_LABEL" | translate }}</mat-label>
-        <mat-select multiple [value]="enabledAddonProviders" (selectionChange)="onEnabledProvidersChange($event)">
-          <mat-option *ngFor="let addonProvider of addonProviders" [value]="addonProvider.name">
-            {{ addonProvider.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+  <div>
+
+    <div>
+      {{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.FIELD_LABEL" | translate }}
+    </div>
+    <small class="text-2">{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.DESCRIPTION" | translate }}</small>
+    <div class="bg-secondary-3">
+      <mat-selection-list #shoes (selectionChange)="onProviderStateSelectionChange($event)">
+        <mat-list-option *ngFor="let state of addonProviderStates" [value]="state.providerName"
+          [selected]="state.enabled">
+          {{state.providerName}}
+        </mat-list-option>
+      </mat-selection-list>
     </div>
   </div>
 </div>

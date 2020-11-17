@@ -32,6 +32,7 @@ import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -64,7 +65,7 @@ import { HomeComponent } from "./home.component";
     OptionsDebugSectionComponent,
     OptionsAddonSectionComponent,
   ],
-  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule],
+  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule, ReactiveFormsModule],
   providers: [DatePipe, GetAddonListItemFilePropPipe],
 })
 export class HomeModule {}
