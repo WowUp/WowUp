@@ -65,9 +65,15 @@
       "TOOLTIP": "{dependencyCount, plural, one{Необходима} other{Необходимо}} {dependencyCount} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}",
-      "MILLION": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
-      "THOUSAND": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}"
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+4": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+5": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+6": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+7": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+8": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+9": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -77,7 +83,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
@@ -94,7 +100,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
+      "ERROR_TITLE": "Ошибка",
       "POSITIVE_BUTTON": "Окей"
     },
     "CONFIRM": {
@@ -168,8 +174,8 @@
         "STABLE_ADDON_CHANNEL": "Стабильная"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "Хотите изменить источник модификаций для {addonName} на {providerName}? Это действие удалит существующую модификацию и заменит её копией из нового источника.",
+        "TITLE": "Изменить источник модификации?"
       },
       "CHECK_UPDATES_BUTTON": "Проверить обновления",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Проверить наличие последних обновлений модификации",
