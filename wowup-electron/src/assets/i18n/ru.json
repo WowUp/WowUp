@@ -67,9 +67,9 @@
     "DOWNLOAD_COUNT": {
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count}  {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
-      "e+4": "{count}  {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
-      "e+5": "{count}  {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+3": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+4": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+5": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
       "e+6": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
       "e+7": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
       "e+8": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
