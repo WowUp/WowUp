@@ -9,11 +9,11 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
-      "ALLIANCE_LIGHT": "Alliance Light",
+      "ALLIANCE_LIGHT": "Alliance Clair",
       "DEFAULT": "Défaut",
-      "DEFAULT_LIGHT": "Default Light",
+      "DEFAULT_LIGHT": "Défaut Sombre",
       "HORDE": "Horde",
-      "HORDE_LIGHT": "Horde Light"
+      "HORDE_LIGHT": "Horde Clair"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
