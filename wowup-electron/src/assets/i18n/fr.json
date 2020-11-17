@@ -10,8 +10,8 @@
     "THEME": {
       "ALLIANCE": "Alliance",
       "DEFAULT": "Défaut",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "GROUP_DARK": "Sombre",
+      "GROUP_LIGHT": "Clair",
       "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {
@@ -48,9 +48,9 @@
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "Classic",
-      "CLASSICPTR": "Classic PTR",
+      "CLASSICPTR": "PTR Classic",
       "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "RETAILPTR": "PTR Retail"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -67,13 +67,13 @@
     "DOWNLOAD_COUNT": {
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count} milliers",
+      "e+4": "{count} milliers",
+      "e+5": "{count} milliers",
+      "e+6": "{count} millions",
+      "e+7": "{count} millions",
+      "e+8": "{count} millions",
+      "e+9": "{count} milliards"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -83,7 +83,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Impossible de changer le fournisseur {providerName} pour l´addon {addonName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Chargement..."
@@ -100,7 +100,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
+      "ERROR_TITLE": "Erreur",
       "POSITIVE_BUTTON": "Ok"
     },
     "CONFIRM": {
@@ -174,8 +174,8 @@
         "STABLE_ADDON_CHANNEL": "Stable"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "Souhaitez-vous changer le fournisseur d´addons pour {addonName} par {providerName}? Cette opération désinstallera l´addon existant et le remplacera par une copie du nouveau fournisseur.",
+        "TITLE": "Changer de fournisseur d´addon"
       },
       "CHECK_UPDATES_BUTTON": "Vérifier les mises à jour",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Vérifier les dernières mises à jour des modules complémentaires",
