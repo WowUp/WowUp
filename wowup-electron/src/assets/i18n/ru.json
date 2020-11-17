@@ -10,8 +10,8 @@
     "THEME": {
       "ALLIANCE": "Альянс",
       "DEFAULT": "По умолчанию",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "GROUP_DARK": "Темные",
+      "GROUP_LIGHT": "Светлые",
       "HORDE": "Орда"
     },
     "WOWUP_UPDATE": {
