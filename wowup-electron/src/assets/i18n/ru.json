@@ -67,13 +67,13 @@
     "DOWNLOAD_COUNT": {
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count}  {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+4": "{count}  {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+5": "{count}  {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+6": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+7": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+8": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+9": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
