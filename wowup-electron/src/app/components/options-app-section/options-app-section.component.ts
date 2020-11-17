@@ -7,7 +7,7 @@ import { ElectronService } from "../../services";
 import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { Theme } from "../../models/wowup/theme";
+import { ThemeGroup } from "../../models/wowup/theme";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import {
   ALLIANCE_LIGHT_THEME,
@@ -49,14 +49,22 @@ export class OptionsAppSectionComponent implements OnInit {
     { localeId: "zh", label: "简体中文" },
   ];
 
-  public themes: Theme[] = [
-    { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
-    { display: "APP.THEME.DEFAULT_LIGHT", class: DEFAULT_LIGHT_THEME },
-    { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
-    { display: "APP.THEME.ALLIANCE_LIGHT", class: ALLIANCE_LIGHT_THEME },
-    { display: "APP.THEME.HORDE", class: HORDE_THEME },
-    { display: "APP.THEME.HORDE_LIGHT", class: HORDE_LIGHT_THEME },
-  ];
+  public themeGroups: ThemeGroup[] = [
+    {
+      name: 'APP.THEME.GROUP_DARK', themes: [
+        { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
+        { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
+        { display: "APP.THEME.HORDE", class: HORDE_THEME },
+      ]
+    },
+    {
+      name: 'APP.THEME.GROUP_LIGHT', themes: [
+        { display: "APP.THEME.DEFAULT", class: DEFAULT_LIGHT_THEME },
+        { display: "APP.THEME.ALLIANCE", class: ALLIANCE_LIGHT_THEME },
+        { display: "APP.THEME.HORDE", class: HORDE_LIGHT_THEME },
+      ]
+    },
+  ]
 
   constructor(
     private _analyticsService: AnalyticsService,

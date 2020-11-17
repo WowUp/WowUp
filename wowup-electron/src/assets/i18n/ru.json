@@ -9,11 +9,10 @@
     },
     "THEME": {
       "ALLIANCE": "Альянс",
-      "ALLIANCE_LIGHT": "Альянс (Светлая)",
       "DEFAULT": "По умолчанию",
-      "DEFAULT_LIGHT": "По умолчанию (Светлая)",
-      "HORDE": "Орда",
-      "HORDE_LIGHT": "Орда (Светлая)"
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "Орда"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
