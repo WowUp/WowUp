@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import * as AddonUtils from "../../utils/addon.utils";
 
 @Component({
   selector: "app-my-addons-addon-cell",
@@ -12,6 +13,8 @@ export class MyAddonsAddonCellComponent implements OnInit {
   @Input() showUpdateToVersion = false;
 
   @Output() onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
+
+  public addonUtils = AddonUtils;
 
   constructor() {}
 

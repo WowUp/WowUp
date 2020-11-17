@@ -47,6 +47,7 @@ export class OptionsAppSectionComponent implements OnInit {
     { localeId: "pt", label: "Português" },
     { localeId: "ru", label: "русский" },
     { localeId: "zh", label: "简体中文" },
+    { localeId: "zh-TW", label: "繁體中文" },
   ];
 
   public themeGroups: ThemeGroup[] = [

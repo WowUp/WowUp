@@ -76,6 +76,9 @@
         "STABLE": "Stable"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Laster..."
     },
@@ -91,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Okey"
     },
     "CONFIRM": {
@@ -155,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Oppdater Automatisk",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Kanal",
+        "CHANNEL_SUBMENU_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorer",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Re-Installer",
         "REMOVE_ADDON_BUTTON": "Fjern",
         "SHOW_FOLDER": "Vis Mappe",
         "STABLE_ADDON_CHANNEL": "Stable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Finn Oppdateringer",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Finn de siste oppdateringene til utvidelsene dine",

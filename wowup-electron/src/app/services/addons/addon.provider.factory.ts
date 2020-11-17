@@ -19,7 +19,6 @@ export class AddonProviderFactory {
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
-    private _sessionService: SessionService,
     private _fileService: FileService
   ) {}
 

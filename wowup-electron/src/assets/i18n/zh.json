@@ -8,11 +8,11 @@
       "SHOW_ACTION": "显示"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
-      "DEFAULT": "Default",
       "GROUP_DARK": "Dark",
       "GROUP_LIGHT": "Light",
-      "HORDE": "Horde"
+      "ALLIANCE": "联盟",
+      "DEFAULT": "默认",
+      "HORDE": "部落"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
@@ -47,10 +47,10 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "CLASSIC": "经典怀旧服",
+      "CLASSICPTR": "经典怀旧服 PTR",
+      "RETAIL": "正式服",
+      "RETAILPTR": "正式服 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -76,6 +76,9 @@
         "STABLE": "稳定版"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "正在加载..."
     },
@@ -91,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "在该网站上查看："
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "确定"
     },
     "CONFIRM": {
@@ -102,7 +106,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "例如，GitHub 或 WowInterface URL",
       "CLOSE_BUTTON": "关闭",
       "DESCRIPTION": "如需直接从某 URL 安装插件，请将其粘贴到下面以开始安装。",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下载",
       "ERROR": {
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
         "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wow-support 频道寻求帮助（英语）。",
@@ -155,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "更新通道",
+        "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "重新安装",
         "REMOVE_ADDON_BUTTON": "删除",
         "SHOW_FOLDER": "打开文件夹",
         "STABLE_ADDON_CHANNEL": "稳定版"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "检查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "检查最新的插件更新",
@@ -234,8 +243,8 @@
         "START_WITH_SYSTEM_LABEL": "登录后自动启动 WowUp",
         "TELEMETRY_DESCRIPTION": "发送匿名应用安装数据和错误信息以帮助改进 WowUp。",
         "TELEMETRY_LABEL": "遥测",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
-        "THEME_LABEL": "Color Theme",
+        "THEME_DESCRIPTION": "选择喜欢的配色主题",
+        "THEME_LABEL": "配色主题",
         "TITLE": "应用程序",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "是否重新启动？",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬件加速可能会提高 FPS 并修复其他渲染问题。更改此项需要重新启动。",

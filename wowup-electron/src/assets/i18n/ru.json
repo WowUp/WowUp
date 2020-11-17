@@ -76,6 +76,9 @@
         "STABLE": "Стабильная"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
     },
@@ -91,6 +94,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Окей"
     },
     "CONFIRM": {
@@ -155,12 +159,17 @@
         "ALPHA_ADDON_CHANNEL": "Альфа",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
         "BETA_ADDON_CHANNEL": "Бета",
-        "CHANNEL_SUBMENT_TITLE": "Тип выпуска",
+        "CHANNEL_SUBMENU_TITLE": "Тип выпуска",
         "IGNORE_ADDON_BUTTON": "Пропускать",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Переустановить",
         "REMOVE_ADDON_BUTTON": "Удалить",
         "SHOW_FOLDER": "Показать папку",
         "STABLE_ADDON_CHANNEL": "Стабильная"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Проверить обновления",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Проверить наличие последних обновлений модификации",
