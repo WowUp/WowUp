@@ -77,6 +77,9 @@
         "STABLE": "稳定版"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "正在加载..."
     },
@@ -92,6 +95,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "在该网站上查看："
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "确定"
     },
     "CONFIRM": {
@@ -156,12 +160,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "更新通道",
+        "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "重新安装",
         "REMOVE_ADDON_BUTTON": "删除",
         "SHOW_FOLDER": "打开文件夹",
         "STABLE_ADDON_CHANNEL": "稳定版"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "检查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "检查最新的插件更新",

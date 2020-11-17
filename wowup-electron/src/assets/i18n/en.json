@@ -77,6 +77,9 @@
         "STABLE": "Stable"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Loading..."
     },
@@ -92,6 +95,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Okay"
     },
     "CONFIRM": {
@@ -156,12 +160,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Auto Update",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Channel",
+        "CHANNEL_SUBMENU_TITLE": "Channel",
         "IGNORE_ADDON_BUTTON": "Ignore",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Re-Install",
         "REMOVE_ADDON_BUTTON": "Remove",
         "SHOW_FOLDER": "Show Folder",
         "STABLE_ADDON_CHANNEL": "Stable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Check Updates",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Check for latest addon updates",
