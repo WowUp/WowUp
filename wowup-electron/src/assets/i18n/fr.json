@@ -281,7 +281,7 @@
           "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
           "TITLE": "Clear Install Location?"
         },
-        "CLIENT_TYPE_INPUT_HINT": "Ce dossier contient le client {clientTypeName} avec le dossier \"{clientFolderName}\"",
+        "CLIENT_TYPE_INPUT_HINT": "Ce dossier contient le client {clientTypeName} identifié par le dossier \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Chemin de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal d'extension par défaut",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal d'Addon",
