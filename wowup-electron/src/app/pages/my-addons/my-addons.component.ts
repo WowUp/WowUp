@@ -782,7 +782,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
-    let listItems: AddonViewModel[] = [].concat(this.sortedListItems);
+    let listItems: AddonViewModel[] = [].concat(this._displayAddonsSrc.value);
     const listItemIdx = listItems.findIndex((li) => li.addon.id === evt.addon.id);
     const listItem = this.createAddonListItem(evt.addon);
     listItem.isInstalling = [AddonInstallState.Installing, AddonInstallState.Downloading].includes(evt.installState);
