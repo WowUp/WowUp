@@ -94,7 +94,6 @@ export class AddonService {
     clientType: WowClientType,
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
   ) {
-    console.debug("POTADD", potentialAddon);
     const existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, clientType);
     if (existingAddon) {
       throw new Error("Addon already installed");
@@ -119,15 +118,12 @@ export class AddonService {
       return;
     }
 
-    console.debug("Deps detected", addon, onUpdate);
-
     const requiredDependencies = this.getRequiredDependencies(addon);
     if (!requiredDependencies.length) {
       console.log(`${addon.name}: No required dependencies found`);
       return;
     }
 
-    console.debug("Deps detected", requiredDependencies);
     const maxCt = requiredDependencies.length;
     let currentCt = 0;
     for (let dependency of requiredDependencies) {
@@ -150,7 +146,6 @@ export class AddonService {
 
       this._addonStorage.set(dependencyAddon.id, dependencyAddon);
 
-      console.debug("Addon dep", dependencyAddon);
       await this.installAddon(dependencyAddon.id);
     }
   }
@@ -467,7 +462,6 @@ export class AddonService {
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType).pipe(
       map((searchResult) => {
-        console.debug("SEARCH RES", searchResult);
         let latestFile = this.getLatestFile(searchResult, targetAddonChannel);
         if (!latestFile) {
           latestFile = searchResult.files[0];
@@ -525,7 +519,6 @@ export class AddonService {
     let addons = this._addonStorage.getAllForClientType(clientType);
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
-      console.debug("newAddons", newAddons);
 
       this._addonStorage.removeAllForClientType(clientType);
       addons = this.updateAddons(addons, newAddons);
@@ -692,13 +685,10 @@ export class AddonService {
       throw new Error(`Provider not found: ${providerName}`);
     }
 
-    console.debug(`Setting new provider: ${providerName}`);
     const externalAddon = await this.getAddon(externalId, providerName, clientType).toPromise();
     if (!externalAddon) {
       throw new Error(`External addon not found: ${providerName}|${externalId}`);
     }
-
-    console.debug("externalAdd", externalAddon);
 
     this.saveAddon(externalAddon);
     await this.installAddon(externalAddon.id, undefined, addon);
@@ -716,7 +706,7 @@ export class AddonService {
       if (match) {
         return;
       }
-      console.debug(`Reconciling external id: ${oldExtId.providerName}|${oldExtId.id}`);
+      console.log(`Reconciling external id: ${oldExtId.providerName}|${oldExtId.id}`);
       newAddon.externalIds.push({ ...oldExtId });
     })
 
@@ -740,7 +730,6 @@ export class AddonService {
   }
 
   public async backfillAddons() {
-    console.debug("backfillAddons");
     const clientTypes = getEnumList<WowClientType>(WowClientType).filter(
       (clientType) => clientType !== WowClientType.None
     );
@@ -760,7 +749,6 @@ export class AddonService {
 
     try {
       const tocPaths = this.getTocPaths(addon);
-      console.debug("tocPaths", tocPaths);
       const tocFiles = await Promise.all(_.map(tocPaths, (tocPath) => this._tocService.parse(tocPath)));
       const orderedTocFiles = _.orderBy(tocFiles, ["wowInterfaceId", "loadOnDemand"], ["desc", "asc"]);
       const primaryToc = _.first(orderedTocFiles);
@@ -774,7 +762,6 @@ export class AddonService {
   public containsOwnExternalId(addon: Addon, array?: AddonExternalId[]): boolean {
     const arr = array || addon.externalIds;
     const result = arr && !!arr.find(ext => ext.id === addon.externalId && ext.providerName === addon.providerName);
-    console.debug(arr, result);
     return result;
   }
 
