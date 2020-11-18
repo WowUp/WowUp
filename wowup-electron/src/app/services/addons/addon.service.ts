@@ -309,9 +309,8 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${
-        addon.name
-      }`;
+      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${addon.name
+        }`;
       this._analyticsService.trackAction("install-addon", {
         clientType: getEnumName(WowClientType, addon.clientType),
         provider: addon.providerName,
@@ -731,13 +730,17 @@ export class AddonService {
       return;
     }
 
-    const tocPaths = this.getTocPaths(addon);
-    console.debug("tocPaths", tocPaths);
-    const tocFiles = await Promise.all(_.map(tocPaths, (tocPath) => this._tocService.parse(tocPath)));
-    const orderedTocFiles = _.orderBy(tocFiles, ["wowInterfaceId", "loadOnDemand"], ["desc", "asc"]);
-    const primaryToc = _.first(orderedTocFiles);
-    this.setExternalIds(addon, primaryToc);
-    this.saveAddon(addon);
+    try {
+      const tocPaths = this.getTocPaths(addon);
+      console.debug("tocPaths", tocPaths);
+      const tocFiles = await Promise.all(_.map(tocPaths, (tocPath) => this._tocService.parse(tocPath)));
+      const orderedTocFiles = _.orderBy(tocFiles, ["wowInterfaceId", "loadOnDemand"], ["desc", "asc"]);
+      const primaryToc = _.first(orderedTocFiles);
+      this.setExternalIds(addon, primaryToc);
+      this.saveAddon(addon);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public getTocPaths(addon: Addon) {

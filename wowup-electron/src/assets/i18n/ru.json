@@ -65,6 +65,7 @@
       "TOOLTIP": "{dependencyCount, plural, one{Необходима} other{Необходимо}} {dependencyCount} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}"
     },
     "DOWNLOAD_COUNT": {
+      "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
       "e+3": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",

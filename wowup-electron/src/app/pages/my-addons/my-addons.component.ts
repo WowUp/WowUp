@@ -598,7 +598,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public getChannelTypeLocaleKey(channelType: string) {
-    return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType.toUpperCase()}`;
+    return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType?.toUpperCase()}`;
   }
 
   private async lazyLoad() {
