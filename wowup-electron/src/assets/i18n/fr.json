@@ -67,13 +67,13 @@
     "DOWNLOAD_COUNT": {
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} milliers",
+      "e+3": "{count} {count, plural, one{millier} other{{count} milliers}}",
       "e+4": "{count} milliers",
       "e+5": "{count} milliers",
-      "e+6": "{count} millions",
+      "e+6": "{count} {count, plural, one{million} other{{count} millions}} ",
       "e+7": "{count} millions",
       "e+8": "{count} millions",
-      "e+9": "{count} milliards"
+      "e+9": "{count} {count, plural, one{milliard} other{{count} milliards}} "
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -167,7 +167,7 @@
         "BETA_ADDON_CHANNEL": "Bêta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorer",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "Fournisseurs",
         "REINSTALL_ADDON_BUTTON": "Réinstaller",
         "REMOVE_ADDON_BUTTON": "Désinstaller",
         "SHOW_FOLDER": "Montrer le dossier",
