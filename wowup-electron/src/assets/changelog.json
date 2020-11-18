@@ -1,6 +1,12 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.17",
+      "changes": [
+        "Bug fixes"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.16",
       "changes": [
         "Russian locale updates (Medok)",
