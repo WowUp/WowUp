@@ -1,6 +1,14 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.19",
+      "changes": [
+        "Add the ability to clear an installation path",
+        "Add the ability to have addons removed for installations that are missing",
+        "Fix some issues related to switching providers"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.18",
       "changes": [
         "Add better external ID tracking for provider switching",
@@ -9,9 +17,7 @@
     },
     {
       "Version": "2.0.0-beta.17",
-      "changes": [
-        "Bug fixes"
-      ]
+      "changes": ["Bug fixes"]
     },
     {
       "Version": "2.0.0-beta.16",
@@ -33,10 +39,7 @@
     },
     {
       "Version": "2.0.0-beta.15",
-      "changes": [
-        "Fix an issue where light/dark themes could overlap",
-        "Fix an issue with a nested translate call"
-      ]
+      "changes": ["Fix an issue where light/dark themes could overlap", "Fix an issue with a nested translate call"]
     },
     {
       "Version": "2.0.0-beta.14",

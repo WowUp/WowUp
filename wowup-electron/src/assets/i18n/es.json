@@ -276,6 +276,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada",
         "AUTO_UPDATE_LABEL": "Actualización automática",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "La carpeta que contiene la versión {clientTypeName} del cliente de World of Warcraft \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Ruta de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addons Predeterminado",

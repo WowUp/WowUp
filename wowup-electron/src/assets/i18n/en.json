@@ -276,6 +276,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Newly installed addons will be set to auto update by default",
         "AUTO_UPDATE_LABEL": "Auto Update",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Default Addon Channel",

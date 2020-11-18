@@ -13,7 +13,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
 import { forkJoin, from, Observable, Subject } from "rxjs";
-import { map, mergeMap } from "rxjs/operators";
+import { filter, first, map, mergeMap, switchMap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
 import { AddonProvider } from "../../addon-providers/addon-provider";
@@ -74,6 +74,16 @@ export class AddonService {
     this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe((addonName) => {
       console.log("Install complete", addonName);
     });
+
+    // Attempt to remove addons for clients that were lost
+    this._warcraftService.installedClientTypes$
+      .pipe(
+        filter((clientTypes) => !!clientTypes),
+        switchMap((clientTypes) => from(this.reconcileOrphanAddons(clientTypes)))
+      )
+      .subscribe(() => {
+        console.debug("reconcileOrphanAddons complete");
+      });
   }
 
   public saveAddon(addon: Addon) {
@@ -711,6 +721,20 @@ export class AddonService {
     await this.removeAddon(addon, false, false);
   }
 
+  public async reconcileOrphanAddons(installedClientTypes: WowClientType[]) {
+    console.debug("reconcileOrphanAddons", installedClientTypes);
+    const clientTypes = this._warcraftService.getAllClientTypes();
+    const unusedClients = _.difference(clientTypes, installedClientTypes);
+    console.debug("unusedClients", unusedClients);
+
+    for (let clientType of unusedClients) {
+      const addons = this._addonStorage.getAllForClientType(clientType);
+      for (let addon of addons) {
+        await this.removeAddon(addon, false, false);
+      }
+    }
+  }
+
   public reconcileExternalIds(newAddon: Addon, oldAddon: Addon) {
     if (!newAddon || !oldAddon) {
       return;
@@ -752,9 +776,7 @@ export class AddonService {
   }
 
   public async backfillAddons() {
-    const clientTypes = getEnumList<WowClientType>(WowClientType).filter(
-      (clientType) => clientType !== WowClientType.None
-    );
+    const clientTypes = this._warcraftService.getAllClientTypes();
 
     for (let clientType of clientTypes) {
       const addons = this._addonStorage.getAllForClientType(clientType);

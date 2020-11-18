@@ -276,6 +276,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
         "AUTO_UPDATE_LABEL": "Automatisk Oppdatering",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "Mappen som inneholder {clientTypeName} klientmappe \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} filbane",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",

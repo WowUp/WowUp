@@ -2,9 +2,12 @@ import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { TranslateService } from "@ngx-translate/core";
 import * as _ from "lodash";
+import { map } from "lodash";
 import * as path from "path";
-import { Subscription } from "rxjs";
+import { from, Subscription } from "rxjs";
+import { switchMap } from "rxjs/operators";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { ElectronService } from "../../services";
@@ -12,6 +15,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
+import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: "app-wow-client-options",
@@ -40,7 +44,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
-    private _cdRef: ChangeDetectorRef
+    private _cdRef: ChangeDetectorRef,
+    private _translateService: TranslateService
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
 
@@ -73,6 +78,32 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   onDefaultAutoUpdateChange(evt: MatSlideToggleChange) {
     this._wowupService.setDefaultAutoUpdate(this.clientType, evt.checked);
+  }
+
+  public async clearInstallPath() {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.TITLE"),
+        message: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.MESSAGE", {
+          clientName: this._translateService.instant(this.clientTypeName),
+        }),
+      },
+    });
+
+    const result = await dialogRef.afterClosed().toPromise();
+
+    if (!result) {
+      return;
+    }
+
+    try {
+      await this._warcraftService.removeWowFolderPath(this.clientType).toPromise();
+      this.clientLocation = "";
+      this._cdRef.detectChanges();
+      console.debug("Remove client location complete");
+    } catch (e) {
+      console.error("Failed to remove location", e);
+    }
   }
 
   async onSelectClientPath() {
