@@ -5,7 +5,7 @@
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Vérification des mises à jour...",
       "QUIT_ACTION": "Quitter",
-      "SHOW_ACTION": "Montrer"
+      "SHOW_ACTION": "Afficher"
     },
     "THEME": {
       "ALLIANCE": "Alliance",
@@ -171,7 +171,7 @@
         "PROVIDER_SUBMENU_TITLE": "Fournisseurs",
         "REINSTALL_ADDON_BUTTON": "Réinstaller",
         "REMOVE_ADDON_BUTTON": "Désinstaller",
-        "SHOW_FOLDER": "Montrer le dossier",
+        "SHOW_FOLDER": "Afficher le dossier",
         "STABLE_ADDON_CHANNEL": "Stable"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
@@ -185,7 +185,7 @@
         "TITLE": "Afficher les colonnes"
       },
       "FILTER_LABEL": "Filter",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Cet addon a de multiples fournisseurs",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Discutez avec nous sur Discord",
@@ -245,9 +245,9 @@
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Définir une langue par défaut",
         "SET_LANGUAGE_DESCRIPTION": "Sélectionner une langue pour l'application.",
         "SET_LANGUAGE_LABEL": "Définir une langue",
-        "START_MINIMIZED_DESCRIPTION": "...et n'apparaîtra pas à l'écran",
+        "START_MINIMIZED_DESCRIPTION": "WowUP sera démarré minimisé et n'apparaîtra pas à l'écran",
         "START_MINIMIZED_LABEL": "Lancer WowUp minimisé",
-        "START_WITH_SYSTEM_DESCRIPTION": "WowUp sera lancé immédiatement après le chargement de votre système d'exploitation ...",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp sera démarré au lancement de votre système d'exploitation",
         "START_WITH_SYSTEM_LABEL": "Lancer WowUp avec le système",
         "TELEMETRY_DESCRIPTION": "Aidez à améliorer WowUp en envoyant des données d'installation et / ou des erreurs anonymes.",
         "TELEMETRY_LABEL": "Télémétrie",
@@ -278,8 +278,8 @@
         "AUTO_UPDATE_DESCRIPTION": "Les addons nouvellement installés seront mises à jour automatiquement par défaut",
         "AUTO_UPDATE_LABEL": "Mise à jour automatique",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "Voulez-vous vraiment effacer le chemin d'installation de {clientName} ? Cette action supprimera toutes les informations des addons stockées pour ce client.\n\nVos dossiers d'addons ne seront pas supprimées.",
+          "TITLE": "Effacer le chemin d'installation ?"
         },
         "CLIENT_TYPE_INPUT_HINT": "Ce dossier contient le client {clientTypeName} avec le dossier \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Chemin de {clientTypeName}",
