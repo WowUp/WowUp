@@ -3,12 +3,17 @@ import { AddonDependency } from "app/models/wowup/addon-dependency";
 import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
 import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
 import { Toc } from "app/models/wowup/toc";
-import { ADDON_PROVIDER_CURSEFORGE, ADDON_PROVIDER_TUKUI, ADDON_PROVIDER_WOWINTERFACE } from "common/constants";
+import {
+  ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_TUKUI,
+  ADDON_PROVIDER_WOWINTERFACE,
+  ERROR_ADDON_ALREADY_INSTALLED,
+} from "common/constants";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
 import { forkJoin, from, Observable, Subject } from "rxjs";
-import { map, mergeMap } from "rxjs/operators";
+import { filter, first, map, mergeMap, switchMap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
 import { AddonProvider } from "../../addon-providers/addon-provider";
@@ -69,6 +74,16 @@ export class AddonService {
     this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe((addonName) => {
       console.log("Install complete", addonName);
     });
+
+    // Attempt to remove addons for clients that were lost
+    this._warcraftService.installedClientTypes$
+      .pipe(
+        filter((clientTypes) => !!clientTypes),
+        switchMap((clientTypes) => from(this.reconcileOrphanAddons(clientTypes)))
+      )
+      .subscribe(() => {
+        console.debug("reconcileOrphanAddons complete");
+      });
   }
 
   public saveAddon(addon: Addon) {
@@ -217,7 +232,7 @@ export class AddonService {
       addonId,
       onUpdate,
       completion,
-      originalAddon: originalAddon ? { ...originalAddon } : undefined
+      originalAddon: originalAddon ? { ...originalAddon } : undefined,
     });
 
     return promise;
@@ -306,8 +321,9 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${addon.name
-        }`;
+      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${
+        addon.name
+      }`;
       this._analyticsService.trackAction("install-addon", {
         clientType: getEnumName(WowClientType, addon.clientType),
         provider: addon.providerName,
@@ -486,13 +502,15 @@ export class AddonService {
       .filter((f) => !!f);
   }
 
-  public async removeAddon(addon: Addon, removeDependencies: boolean = false) {
+  public async removeAddon(addon: Addon, removeDependencies: boolean = false, removeDirectories: boolean = true) {
     const installedDirectories = addon.installedFolders?.split(",") ?? [];
-
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
-    for (let directory of installedDirectories) {
-      const addonDirectory = path.join(addonFolderPath, directory);
-      await this._fileService.remove(addonDirectory);
+
+    if (removeDirectories) {
+      for (let directory of installedDirectories) {
+        const addonDirectory = path.join(addonFolderPath, directory);
+        await this._fileService.remove(addonDirectory);
+      }
     }
 
     this._addonStorage.remove(addon);
@@ -647,42 +665,49 @@ export class AddonService {
     }
 
     const externalIds: AddonExternalId[] = [];
-    if (toc.wowInterfaceId) {
-      externalIds.push({
-        id: toc.wowInterfaceId,
-        providerName: ADDON_PROVIDER_WOWINTERFACE,
-      });
-    }
-
-    if (toc.tukUiProjectId) {
-      externalIds.push({
-        id: toc.tukUiProjectId,
-        providerName: ADDON_PROVIDER_TUKUI,
-      });
-    }
-
-    if (toc.curseProjectId) {
-      externalIds.push({
-        id: toc.curseProjectId,
-        providerName: ADDON_PROVIDER_CURSEFORGE,
-      });
-    }
+    this.insertExternalId(externalIds, ADDON_PROVIDER_WOWINTERFACE, toc.wowInterfaceId);
+    this.insertExternalId(externalIds, ADDON_PROVIDER_TUKUI, toc.tukUiProjectId);
+    this.insertExternalId(externalIds, ADDON_PROVIDER_CURSEFORGE, toc.curseProjectId);
 
     //If the addon does not include the current external id add it
     if (!this.containsOwnExternalId(addon, externalIds)) {
-      externalIds.push({
-        id: addon.externalId,
-        providerName: addon.providerName
-      });
+      this.insertExternalId(externalIds, addon.providerName, addon.externalId);
     }
 
     addon.externalIds = externalIds;
+  }
+
+  public insertExternalId(externalIds: AddonExternalId[], providerName: string, addonId?: string) {
+    if (!addonId) {
+      return;
+    }
+
+    const exists =
+      _.findIndex(externalIds, (extId) => extId.id === addonId && extId.providerName === providerName) !== -1;
+
+    if (exists) {
+      console.debug(`External id exists ${providerName}|${addonId}`);
+      return;
+    }
+
+    if (this.getProvider(providerName).isValidAddonId(addonId)) {
+      externalIds.push({
+        id: addonId,
+        providerName: providerName,
+      });
+    } else {
+      console.debug(`Invalid provider id ${providerName}|${addonId}`);
+    }
   }
 
   public async setProvider(addon: Addon, externalId: string, providerName: string, clientType: WowClientType) {
     const provider = this.getProvider(providerName);
     if (!provider) {
       throw new Error(`Provider not found: ${providerName}`);
+    }
+
+    if (this.isInstalled(externalId, clientType)) {
+      throw new Error(ERROR_ADDON_ALREADY_INSTALLED);
     }
 
     const externalAddon = await this.getAddon(externalId, providerName, clientType).toPromise();
@@ -693,7 +718,21 @@ export class AddonService {
     this.saveAddon(externalAddon);
     await this.installAddon(externalAddon.id, undefined, addon);
 
-    await this.removeAddon(addon, false);
+    await this.removeAddon(addon, false, false);
+  }
+
+  public async reconcileOrphanAddons(installedClientTypes: WowClientType[]) {
+    console.debug("reconcileOrphanAddons", installedClientTypes);
+    const clientTypes = this._warcraftService.getAllClientTypes();
+    const unusedClients = _.difference(clientTypes, installedClientTypes);
+    console.debug("unusedClients", unusedClients);
+
+    for (let clientType of unusedClients) {
+      const addons = this._addonStorage.getAllForClientType(clientType);
+      for (let addon of addons) {
+        await this.removeAddon(addon, false, false);
+      }
+    }
   }
 
   public reconcileExternalIds(newAddon: Addon, oldAddon: Addon) {
@@ -701,14 +740,21 @@ export class AddonService {
       return;
     }
 
-    oldAddon.externalIds.forEach(oldExtId => {
-      const match = newAddon.externalIds.find(newExtId => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName);
+    // Ensure all previously existing external ids are brought along during the swap
+    // some addons are not always the same between providers ;)
+    oldAddon.externalIds.forEach((oldExtId) => {
+      const match = newAddon.externalIds.find(
+        (newExtId) => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName
+      );
       if (match) {
         return;
       }
       console.log(`Reconciling external id: ${oldExtId.providerName}|${oldExtId.id}`);
       newAddon.externalIds.push({ ...oldExtId });
-    })
+    });
+
+    // Remove external ids that are not valid that we may have saved previously
+    _.remove(newAddon.externalIds, (extId) => !this.getProvider(extId.providerName).isValidAddonId(extId.id));
 
     this.saveAddon(newAddon);
   }
@@ -730,9 +776,7 @@ export class AddonService {
   }
 
   public async backfillAddons() {
-    const clientTypes = getEnumList<WowClientType>(WowClientType).filter(
-      (clientType) => clientType !== WowClientType.None
-    );
+    const clientTypes = this._warcraftService.getAllClientTypes();
 
     for (let clientType of clientTypes) {
       const addons = this._addonStorage.getAllForClientType(clientType);
@@ -761,7 +805,7 @@ export class AddonService {
 
   public containsOwnExternalId(addon: Addon, array?: AddonExternalId[]): boolean {
     const arr = array || addon.externalIds;
-    const result = arr && !!arr.find(ext => ext.id === addon.externalId && ext.providerName === addon.providerName);
+    const result = arr && !!arr.find((ext) => ext.id === addon.externalId && ext.providerName === addon.providerName);
     return result;
   }
 
@@ -819,6 +863,7 @@ export class AddonService {
       summary: searchResult.summary,
       screenshotUrls: searchResult.screenshotUrls,
       dependencies,
+      externalChannel: getEnumName(AddonChannelType, latestFile.channelType),
     };
   }
 

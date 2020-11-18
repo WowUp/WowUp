@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { filter, first, map } from "rxjs/operators";
+import { first as ldFirst } from "lodash";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
@@ -23,6 +24,22 @@ export class SessionService {
 
   constructor(private _warcraftService: WarcraftService, private _wowUpService: WowUpService) {
     this.loadInitialClientType().pipe(first()).subscribe();
+
+    this._warcraftService.installedClientTypes$
+      .pipe(filter((clientTypes) => !!clientTypes))
+      .subscribe((clientTypes) => this.onInstalledClientsChange(clientTypes));
+  }
+
+  public onInstalledClientsChange(installedClientTypes: WowClientType[]) {
+    if (!installedClientTypes.length) {
+      this._selectedClientTypeSrc.next(WowClientType.None);
+    }
+
+    if (installedClientTypes.indexOf(this.selectedClientType) !== -1) {
+      return;
+    }
+
+    this.selectedClientType = ldFirst(installedClientTypes);
   }
 
   public autoUpdateComplete() {

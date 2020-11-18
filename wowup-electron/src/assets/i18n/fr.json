@@ -10,8 +10,8 @@
     "THEME": {
       "ALLIANCE": "Alliance",
       "DEFAULT": "Défaut",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "GROUP_DARK": "Sombre",
+      "GROUP_LIGHT": "Clair",
       "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {
@@ -48,9 +48,9 @@
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "Classic",
-      "CLASSICPTR": "Classic PTR",
+      "CLASSICPTR": "PTR Classic",
       "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "RETAILPTR": "PTR Retail"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -68,13 +68,13 @@
       "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count} {count, plural, one{millier} other{{count} milliers}}",
+      "e+4": "{count} milliers",
+      "e+5": "{count} milliers",
+      "e+6": "{count} {count, plural, one{million} other{{count} millions}} ",
+      "e+7": "{count} millions",
+      "e+8": "{count} millions",
+      "e+9": "{count} {count, plural, one{milliard} other{{count} milliards}} "
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -84,7 +84,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Impossible de changer le fournisseur {providerName} pour l´addon {addonName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Chargement..."
@@ -101,7 +101,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
+      "ERROR_TITLE": "Erreur",
       "POSITIVE_BUTTON": "Ok"
     },
     "CONFIRM": {
@@ -168,15 +168,15 @@
         "BETA_ADDON_CHANNEL": "Bêta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorer",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "Fournisseurs",
         "REINSTALL_ADDON_BUTTON": "Réinstaller",
         "REMOVE_ADDON_BUTTON": "Désinstaller",
         "SHOW_FOLDER": "Montrer le dossier",
         "STABLE_ADDON_CHANNEL": "Stable"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "Souhaitez-vous changer le fournisseur d´addons pour {addonName} par {providerName}? Cette opération désinstallera l´addon existant et le remplacera par une copie du nouveau fournisseur.",
+        "TITLE": "Changer de fournisseur d´addon"
       },
       "CHECK_UPDATES_BUTTON": "Vérifier les mises à jour",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Vérifier les dernières mises à jour des modules complémentaires",
@@ -185,6 +185,7 @@
         "TITLE": "Afficher les colonnes"
       },
       "FILTER_LABEL": "Filter",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Discutez avec nous sur Discord",
@@ -276,6 +277,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Les addons nouvellement installés seront mises à jour automatiquement par défaut",
         "AUTO_UPDATE_LABEL": "Mise à jour automatique",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "Ce dossier contient le client {clientTypeName} avec le dossier \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Chemin de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal d'extension par défaut",

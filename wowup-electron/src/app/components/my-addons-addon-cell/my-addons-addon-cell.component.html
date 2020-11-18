@@ -35,7 +35,8 @@
     </div>
     <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
       <div *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" class="mr-2">
-        <mat-icon class="auto-update-icon" svgIcon="fas:code-branch" [matTooltip]="'This addon has multiple providers'">
+        <mat-icon class="auto-update-icon" svgIcon="fas:code-branch"
+          [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
         </mat-icon>
       </div>
       <div *ngIf="this.listItem.isAutoUpdate === true" class="mr-2">

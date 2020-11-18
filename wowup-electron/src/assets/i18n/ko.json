@@ -185,6 +185,7 @@
         "TITLE": "컬럼 보기"
       },
       "FILTER_LABEL": "필터",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",
         "JOIN_DISCORD": "디스코드 입장",
@@ -276,6 +277,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "새로 설치되는 애드온의 자동업데이트 옵션을 활성화합니다.",
         "AUTO_UPDATE_LABEL": "자동 업데이트",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "\"{clientFolderName}\" 디렉토리를 포함하는 위치",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 설치 위치",
         "DEFAULT_ADDON_CHANNEL_LABEL": "기본 애드온 채널",

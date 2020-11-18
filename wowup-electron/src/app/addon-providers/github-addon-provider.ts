@@ -148,6 +148,10 @@ export class GitHubAddonProvider implements AddonProvider {
     return addonUri.host && addonUri.host.endsWith("github.com");
   }
 
+  public isValidAddonId(addonId: string): boolean {
+    return addonId.indexOf("/") !== -1;
+  }
+
   public onPostInstall(addon: Addon): void {}
 
   public async scan(

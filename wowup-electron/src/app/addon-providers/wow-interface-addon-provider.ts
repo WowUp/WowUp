@@ -88,17 +88,21 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+  public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     return from(this._circuitBreaker.fire(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     return addonUri.host && addonUri.host.endsWith("wowinterface.com");
   }
 
-  onPostInstall(addon: Addon): void {
+  public isValidAddonId(addonId: string): boolean {
+    return !!addonId && !isNaN(parseInt(addonId, 10));
+  }
+
+  public onPostInstall(addon: Addon): void {
     throw new Error("Method not implemented.");
   }
 

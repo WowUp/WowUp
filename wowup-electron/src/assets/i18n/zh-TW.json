@@ -185,6 +185,7 @@
         "TITLE": "顯示列表項"
       },
       "FILTER_LABEL": "篩選",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 個插件",
         "JOIN_DISCORD": "在 Discord 上與我們交流（英語）",
@@ -276,6 +277,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "新安裝的插件將預設設定為自動更新",
         "AUTO_UPDATE_LABEL": "自動更新",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "請選擇 {clientTypeName} 客戶端路徑（\"{clientFolderName}\" 的上級路徑）",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
         "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",

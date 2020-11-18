@@ -168,7 +168,7 @@
         "BETA_ADDON_CHANNEL": "Бета",
         "CHANNEL_SUBMENU_TITLE": "Тип выпуска",
         "IGNORE_ADDON_BUTTON": "Пропускать",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "Источники",
         "REINSTALL_ADDON_BUTTON": "Переустановить",
         "REMOVE_ADDON_BUTTON": "Удалить",
         "SHOW_FOLDER": "Показать папку",
@@ -185,6 +185,7 @@
         "TITLE": "Показать колонки"
       },
       "FILTER_LABEL": "Фильтр",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
         "JOIN_DISCORD": "Общайтесь с нами в Discord",
@@ -276,6 +277,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",
         "AUTO_UPDATE_LABEL": "Автообновление",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "Папка которая содержит папку клиента {clientTypeName} – \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Путь для {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",

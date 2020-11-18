@@ -61,3 +61,6 @@ export const ALLIANCE_THEME = "alliance-theme";
 export const ALLIANCE_LIGHT_THEME = "alliance-theme-light-theme";
 export const DEFAULT_BG_COLOR = "#444444";
 export const DEFAULT_LIGHT_BG_COLOR = "#ebedef";
+
+// ERRORS
+export const ERROR_ADDON_ALREADY_INSTALLED = "ERROR_ADDON_ALREADY_INSTALLED"
