@@ -192,7 +192,7 @@
         "PATREON_SUPPORT": "Supportez WowUp sur Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultats}}",
         "VIEW_GITHUB": "Voir le code sur Github",
-        "VIEW_GUIDE": "Consultez notre guide pour voir ce que WowUp peut faire"
+        "VIEW_GUIDE": "Consultez notre guide pour voir toutes les fonctionnalités de WowUp"
       },
       "RESCAN_FOLDERS_BUTTON": "Réanalyser les dossiers",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Analysez votre dossier client pour trouver les addons installés",
