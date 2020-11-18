@@ -24,6 +24,7 @@ export class DownloadCountPipe implements PipeTransform {
     return suffix
       ? this.translateService.instant("COMMON.DOWNLOAD_COUNT." + suffix, {
           count: downloadCount.toFixed(0),
+          simpleCount: value.toString()[0]
         })
       : downloadCount.toString();
   }
