@@ -16,7 +16,6 @@ import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { Addon, AddonExternalId } from "../../entities/addon";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
@@ -35,6 +34,7 @@ interface InstallQueueItem {
   addonId: string;
   onUpdate: (installState: AddonInstallState, progress: number) => void | undefined;
   completion: any;
+  originalAddon?: Addon;
 }
 
 @Injectable({
@@ -95,7 +95,7 @@ export class AddonService {
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
   ) {
     console.debug("POTADD", potentialAddon);
-    var existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, clientType);
+    const existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, clientType);
     if (existingAddon) {
       throw new Error("Addon already installed");
     }
@@ -197,7 +197,8 @@ export class AddonService {
 
   public installAddon(
     addonId: string,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
+    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
+    originalAddon: Addon = undefined
   ): Promise<void> {
     const addon = this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
@@ -221,6 +222,7 @@ export class AddonService {
       addonId,
       onUpdate,
       completion,
+      originalAddon: originalAddon ? { ...originalAddon } : undefined
     });
 
     return promise;
@@ -320,6 +322,7 @@ export class AddonService {
       await this.installDependencies(addon, onUpdate);
 
       await this.backfillAddon(addon);
+      this.reconcileExternalIds(addon, queueItem.originalAddon);
 
       queueItem.completion.resolve();
     } catch (err) {
@@ -672,6 +675,14 @@ export class AddonService {
       });
     }
 
+    //If the addon does not include the current external id add it
+    if (!this.containsOwnExternalId(addon, externalIds)) {
+      externalIds.push({
+        id: addon.externalId,
+        providerName: addon.providerName
+      });
+    }
+
     addon.externalIds = externalIds;
   }
 
@@ -689,10 +700,27 @@ export class AddonService {
 
     console.debug("externalAdd", externalAddon);
 
-    this.removeAddon(addon, false);
+    this.saveAddon(externalAddon);
+    await this.installAddon(externalAddon.id, undefined, addon);
 
-    this._addonStorage.set(externalAddon.id, externalAddon);
-    this.installAddon(externalAddon.id);
+    await this.removeAddon(addon, false);
+  }
+
+  public reconcileExternalIds(newAddon: Addon, oldAddon: Addon) {
+    if (!newAddon || !oldAddon) {
+      return;
+    }
+
+    oldAddon.externalIds.forEach(oldExtId => {
+      const match = newAddon.externalIds.find(newExtId => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName);
+      if (match) {
+        return;
+      }
+      console.debug(`Reconciling external id: ${oldExtId.providerName}|${oldExtId.id}`);
+      newAddon.externalIds.push({ ...oldExtId });
+    })
+
+    this.saveAddon(newAddon);
   }
 
   public getFeaturedAddons(clientType: WowClientType): Observable<AddonSearchResult[]> {
@@ -726,7 +754,7 @@ export class AddonService {
   }
 
   public async backfillAddon(addon: Addon) {
-    if (addon.externalIds) {
+    if (addon.externalIds && this.containsOwnExternalId(addon)) {
       return;
     }
 
@@ -741,6 +769,13 @@ export class AddonService {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  public containsOwnExternalId(addon: Addon, array?: AddonExternalId[]): boolean {
+    const arr = array || addon.externalIds;
+    const result = arr && !!arr.find(ext => ext.id === addon.externalId && ext.providerName === addon.providerName);
+    console.debug(arr, result);
+    return result;
   }
 
   public getTocPaths(addon: Addon) {

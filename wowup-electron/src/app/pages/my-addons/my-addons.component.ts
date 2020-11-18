@@ -567,7 +567,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
       try {
         const externalId = _.find(listItem.addon.externalIds, (extid) => extid.providerName === evt.value);
-        this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, this.selectedClient);
+        await this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, this.selectedClient);
       } catch (e) {
         console.error(e);
         const errorTitle = this._translateService.instant("DIALOGS.ALERT.ERROR_TITLE");
