@@ -487,13 +487,15 @@ export class AddonService {
       .filter((f) => !!f);
   }
 
-  public async removeAddon(addon: Addon, removeDependencies: boolean = false) {
+  public async removeAddon(addon: Addon, removeDependencies: boolean = false, removeDirectories: boolean = true) {
     const installedDirectories = addon.installedFolders?.split(",") ?? [];
-
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
-    for (let directory of installedDirectories) {
-      const addonDirectory = path.join(addonFolderPath, directory);
-      await this._fileService.remove(addonDirectory);
+
+    if (removeDirectories) {
+      for (let directory of installedDirectories) {
+        const addonDirectory = path.join(addonFolderPath, directory);
+        await this._fileService.remove(addonDirectory);
+      }
     }
 
     this._addonStorage.remove(addon);
@@ -648,36 +650,39 @@ export class AddonService {
     }
 
     const externalIds: AddonExternalId[] = [];
-    if (this.getProvider(ADDON_PROVIDER_WOWINTERFACE).isValidAddonId(toc.wowInterfaceId)) {
-      externalIds.push({
-        id: toc.wowInterfaceId,
-        providerName: ADDON_PROVIDER_WOWINTERFACE,
-      });
-    }
-
-    if (this.getProvider(ADDON_PROVIDER_TUKUI).isValidAddonId(toc.tukUiProjectId)) {
-      externalIds.push({
-        id: toc.tukUiProjectId,
-        providerName: ADDON_PROVIDER_TUKUI,
-      });
-    }
-
-    if (this.getProvider(ADDON_PROVIDER_CURSEFORGE).isValidAddonId(toc.curseProjectId)) {
-      externalIds.push({
-        id: toc.curseProjectId,
-        providerName: ADDON_PROVIDER_CURSEFORGE,
-      });
-    }
+    this.insertExternalId(externalIds, ADDON_PROVIDER_WOWINTERFACE, toc.wowInterfaceId);
+    this.insertExternalId(externalIds, ADDON_PROVIDER_TUKUI, toc.tukUiProjectId);
+    this.insertExternalId(externalIds, ADDON_PROVIDER_CURSEFORGE, toc.curseProjectId);
 
     //If the addon does not include the current external id add it
     if (!this.containsOwnExternalId(addon, externalIds)) {
-      externalIds.push({
-        id: addon.externalId,
-        providerName: addon.providerName,
-      });
+      this.insertExternalId(externalIds, addon.providerName, addon.externalId);
     }
 
     addon.externalIds = externalIds;
+  }
+
+  public insertExternalId(externalIds: AddonExternalId[], providerName: string, addonId?: string) {
+    if (!addonId) {
+      return;
+    }
+
+    const exists =
+      _.findIndex(externalIds, (extId) => extId.id === addonId && extId.providerName === providerName) !== -1;
+
+    if (exists) {
+      console.debug(`External id exists ${providerName}|${addonId}`);
+      return;
+    }
+
+    if (this.getProvider(providerName).isValidAddonId(addonId)) {
+      externalIds.push({
+        id: addonId,
+        providerName: providerName,
+      });
+    } else {
+      console.debug(`Invalid provider id ${providerName}|${addonId}`);
+    }
   }
 
   public async setProvider(addon: Addon, externalId: string, providerName: string, clientType: WowClientType) {
@@ -694,7 +699,7 @@ export class AddonService {
     this.saveAddon(externalAddon);
     await this.installAddon(externalAddon.id, undefined, addon);
 
-    await this.removeAddon(addon, false);
+    await this.removeAddon(addon, false, false);
   }
 
   public reconcileExternalIds(newAddon: Addon, oldAddon: Addon) {
@@ -702,6 +707,8 @@ export class AddonService {
       return;
     }
 
+    // Ensure all previously existing external ids are brought along during the swap
+    // some addons are not always the same between providers ;)
     oldAddon.externalIds.forEach((oldExtId) => {
       const match = newAddon.externalIds.find(
         (newExtId) => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName
@@ -714,7 +721,7 @@ export class AddonService {
     });
 
     // Remove external ids that are not valid that we may have saved previously
-    _.remove(newAddon.externalIds, (extId) => !this.getProvider(extId.providerName).isValidAddonId(extId.providerName));
+    _.remove(newAddon.externalIds, (extId) => !this.getProvider(extId.providerName).isValidAddonId(extId.id));
 
     this.saveAddon(newAddon);
   }
