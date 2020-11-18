@@ -1,6 +1,19 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.20",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "German locale updates (Nils)",
+        "Portuguese locale updates (Dogo)",
+        "French locale updates (Zazou)",
+        "Multiple providers tooltip can now be translated",
+        "Fix an issue with filtering getting stuck on 'My Addons' (chops)",
+        "Fix an issue where external provider channel was not being stored"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.19",
       "changes": [
         "Add the ability to clear an installation path",
