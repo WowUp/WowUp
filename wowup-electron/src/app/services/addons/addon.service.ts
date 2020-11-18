@@ -3,7 +3,12 @@ import { AddonDependency } from "app/models/wowup/addon-dependency";
 import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
 import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
 import { Toc } from "app/models/wowup/toc";
-import { ADDON_PROVIDER_CURSEFORGE, ADDON_PROVIDER_TUKUI, ADDON_PROVIDER_WOWINTERFACE } from "common/constants";
+import {
+  ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_TUKUI,
+  ADDON_PROVIDER_WOWINTERFACE,
+  ERROR_ADDON_ALREADY_INSTALLED,
+} from "common/constants";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
@@ -689,6 +694,10 @@ export class AddonService {
     const provider = this.getProvider(providerName);
     if (!provider) {
       throw new Error(`Provider not found: ${providerName}`);
+    }
+
+    if (this.isInstalled(externalId, clientType)) {
+      throw new Error(ERROR_ADDON_ALREADY_INSTALLED);
     }
 
     const externalAddon = await this.getAddon(externalId, providerName, clientType).toPromise();
