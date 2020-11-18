@@ -185,6 +185,7 @@
         "TITLE": "Показать колонки"
       },
       "FILTER_LABEL": "Фильтр",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
         "JOIN_DISCORD": "Общайтесь с нами в Discord",

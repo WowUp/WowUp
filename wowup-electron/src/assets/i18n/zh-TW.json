@@ -185,6 +185,7 @@
         "TITLE": "顯示列表項"
       },
       "FILTER_LABEL": "篩選",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 個插件",
         "JOIN_DISCORD": "在 Discord 上與我們交流（英語）",

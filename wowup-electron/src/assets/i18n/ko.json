@@ -185,6 +185,7 @@
         "TITLE": "컬럼 보기"
       },
       "FILTER_LABEL": "필터",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",
         "JOIN_DISCORD": "디스코드 입장",
