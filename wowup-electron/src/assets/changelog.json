@@ -1,6 +1,13 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-beta.18",
+      "changes": [
+        "Add better external ID tracking for provider switching",
+        "Fix an issue with row selection not showing in dark theme"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.17",
       "changes": [
         "Bug fixes"
