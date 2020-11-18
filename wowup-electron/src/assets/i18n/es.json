@@ -37,7 +37,7 @@
       "UPTODATE": "Actualizado"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Copia de seguridad",
+      "BACKINGUP": "Respaldando",
       "COMPLETE": "Instalado",
       "DOWNLOADING": "Descargando",
       "INSTALLING": "Instalando",
@@ -185,7 +185,7 @@
         "TITLE": "Mostrar Columna"
       },
       "FILTER_LABEL": "Filtro",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon tiene varios proveedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Charle con nosotros en Discord",
@@ -278,8 +278,8 @@
         "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada",
         "AUTO_UPDATE_LABEL": "Actualización automática",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "¿Quiere borrar la ruta de instalación de la versión {clientName}? Esto eliminará toda la información sobre los addons almacenada para este cliente de WoW.\n\nLas carpetas de los addons no serán eliminadas.",
+          "TITLE": "¿Borrar la Ruta de Instalación?"
         },
         "CLIENT_TYPE_INPUT_HINT": "La carpeta que contiene la versión {clientTypeName} del cliente de World of Warcraft \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Ruta de {clientTypeName}",
