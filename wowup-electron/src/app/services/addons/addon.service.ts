@@ -863,6 +863,7 @@ export class AddonService {
       summary: searchResult.summary,
       screenshotUrls: searchResult.screenshotUrls,
       dependencies,
+      externalChannel: getEnumName(AddonChannelType, latestFile.channelType),
     };
   }
 
