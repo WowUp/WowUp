@@ -14,7 +14,6 @@
       "GROUP_LIGHT": "Clair",
       "HORDE": "Horde"
     },
-    "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
       "INSTALL_MESSAGE": "Voulez-vous redémarrer WowUp pour installer la mise à jour ?",
       "INSTALL_TITLE": "Mise à jour WowUp prête",
@@ -189,7 +188,7 @@
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Discutez avec nous sur Discord",
-        "PATREON_SUPPORT": "Supportez WowUp sur Patreon",
+        "PATREON_SUPPORT": "Soutenez WowUp sur Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultats}}",
         "VIEW_GITHUB": "Voir le code sur Github",
         "VIEW_GUIDE": "Consultez notre guide pour voir toutes les fonctionnalités de WowUp"
