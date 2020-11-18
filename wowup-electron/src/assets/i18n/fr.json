@@ -14,11 +14,10 @@
       "GROUP_LIGHT": "Clair",
       "HORDE": "Horde"
     },
-    "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
       "INSTALL_MESSAGE": "Voulez-vous redémarrer WowUp pour installer la mise à jour ?",
       "INSTALL_TITLE": "Mise à jour WowUp prête",
-      "NOT_AVAILABLE": "La dernière version de WowUp est prêtre à être installée",
+      "NOT_AVAILABLE": "Vous disposez déjà de la dernière version de WowUp",
       "PORTABLE_DOWNLOAD_MESSAGE": "Voulez-vous télécharger manuellement la dernière version portable ?\n\nVous devrez fermer l'application manuellement et copier la nouvelle version.",
       "PORTABLE_DOWNLOAD_TITLE": "Téléchargement manuel requis",
       "SNACKBAR_ACTION": "Mise à jour ",
@@ -179,7 +178,7 @@
         "TITLE": "Changer de fournisseur d´addon"
       },
       "CHECK_UPDATES_BUTTON": "Vérifier les mises à jour",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Vérifier les dernières mises à jour des modules complémentaires",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Vérifier les dernières mises à jour des addons",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Afficher les colonnes"
@@ -189,10 +188,10 @@
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Discutez avec nous sur Discord",
-        "PATREON_SUPPORT": "Supportez WowUp sur Patreon",
+        "PATREON_SUPPORT": "Soutenez WowUp sur Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultats}}",
         "VIEW_GITHUB": "Voir le code sur Github",
-        "VIEW_GUIDE": "Consultez notre guide pour voir ce que WowUp peut faire"
+        "VIEW_GUIDE": "Consultez notre guide pour voir toutes les fonctionnalités de WowUp"
       },
       "RESCAN_FOLDERS_BUTTON": "Réanalyser les dossiers",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Analysez votre dossier client pour trouver les addons installés",
@@ -281,7 +280,7 @@
           "MESSAGE": "Voulez-vous vraiment effacer le chemin d'installation de {clientName} ? Cette action supprimera toutes les informations des addons stockées pour ce client.\n\nVos dossiers d'addons ne seront pas supprimées.",
           "TITLE": "Effacer le chemin d'installation ?"
         },
-        "CLIENT_TYPE_INPUT_HINT": "Ce dossier contient le client {clientTypeName} avec le dossier \"{clientFolderName}\"",
+        "CLIENT_TYPE_INPUT_HINT": "Ce dossier contient le client {clientTypeName} identifié par le dossier \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Chemin de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal d'extension par défaut",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal d'Addon",
