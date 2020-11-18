@@ -108,6 +108,10 @@ export class TukUiAddonProvider implements AddonProvider {
     return false;
   }
 
+  isValidAddonId(addonId: string): boolean {
+    return !!addonId && !isNaN(parseInt(addonId, 10));
+  }
+
   onPostInstall(addon: Addon): void {}
 
   async scan(

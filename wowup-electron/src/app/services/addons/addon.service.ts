@@ -217,7 +217,7 @@ export class AddonService {
       addonId,
       onUpdate,
       completion,
-      originalAddon: originalAddon ? { ...originalAddon } : undefined
+      originalAddon: originalAddon ? { ...originalAddon } : undefined,
     });
 
     return promise;
@@ -306,8 +306,9 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${addon.name
-        }`;
+      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${
+        addon.name
+      }`;
       this._analyticsService.trackAction("install-addon", {
         clientType: getEnumName(WowClientType, addon.clientType),
         provider: addon.providerName,
@@ -647,21 +648,21 @@ export class AddonService {
     }
 
     const externalIds: AddonExternalId[] = [];
-    if (toc.wowInterfaceId) {
+    if (this.getProvider(ADDON_PROVIDER_WOWINTERFACE).isValidAddonId(toc.wowInterfaceId)) {
       externalIds.push({
         id: toc.wowInterfaceId,
         providerName: ADDON_PROVIDER_WOWINTERFACE,
       });
     }
 
-    if (toc.tukUiProjectId) {
+    if (this.getProvider(ADDON_PROVIDER_TUKUI).isValidAddonId(toc.tukUiProjectId)) {
       externalIds.push({
         id: toc.tukUiProjectId,
         providerName: ADDON_PROVIDER_TUKUI,
       });
     }
 
-    if (toc.curseProjectId) {
+    if (this.getProvider(ADDON_PROVIDER_CURSEFORGE).isValidAddonId(toc.curseProjectId)) {
       externalIds.push({
         id: toc.curseProjectId,
         providerName: ADDON_PROVIDER_CURSEFORGE,
@@ -672,7 +673,7 @@ export class AddonService {
     if (!this.containsOwnExternalId(addon, externalIds)) {
       externalIds.push({
         id: addon.externalId,
-        providerName: addon.providerName
+        providerName: addon.providerName,
       });
     }
 
@@ -701,14 +702,19 @@ export class AddonService {
       return;
     }
 
-    oldAddon.externalIds.forEach(oldExtId => {
-      const match = newAddon.externalIds.find(newExtId => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName);
+    oldAddon.externalIds.forEach((oldExtId) => {
+      const match = newAddon.externalIds.find(
+        (newExtId) => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName
+      );
       if (match) {
         return;
       }
       console.log(`Reconciling external id: ${oldExtId.providerName}|${oldExtId.id}`);
       newAddon.externalIds.push({ ...oldExtId });
-    })
+    });
+
+    // Remove external ids that are not valid that we may have saved previously
+    _.remove(newAddon.externalIds, (extId) => !this.getProvider(extId.providerName).isValidAddonId(extId.providerName));
 
     this.saveAddon(newAddon);
   }
@@ -761,7 +767,7 @@ export class AddonService {
 
   public containsOwnExternalId(addon: Addon, array?: AddonExternalId[]): boolean {
     const arr = array || addon.externalIds;
-    const result = arr && !!arr.find(ext => ext.id === addon.externalId && ext.providerName === addon.providerName);
+    const result = arr && !!arr.find((ext) => ext.id === addon.externalId && ext.providerName === addon.providerName);
     return result;
   }
 
