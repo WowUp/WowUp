@@ -1,7 +1,7 @@
 {
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count} {count, plural, =1{addon} other{addons}}.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti automatici",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Controlla Aggiornamenti...",
       "QUIT_ACTION": "Chiudi",
@@ -18,13 +18,13 @@
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
       "INSTALL_TITLE": "Aggiornamento di Wowup pronto",
-      "NOT_AVAILABLE": "L'ultima versione di Wowup è già installata",
+      "NOT_AVAILABLE": "È già installata l'ultima versione di Wowup",
       "PORTABLE_DOWNLOAD_MESSAGE": "Vuoi scaricare manualmente l'ultima versione portatile?\n\nDovrai chiudere l'applicazione manualmente e sovrascrivere la nuova versione.",
       "PORTABLE_DOWNLOAD_TITLE": "Richiesto Download Manuale",
       "SNACKBAR_ACTION": "Aggiorna",
       "SNACKBAR_TEXT": "È disponibile una nuova versione di WowUp",
-      "TOOLTIP": "L'aggiornamento di WowUp è pronto per l'installazione",
-      "UPDATE_ERROR": "Errore nell'ottenere l'ultima versione di Wowup"
+      "TOOLTIP": "Aggiornamento di WowUp disponibile",
+      "UPDATE_ERROR": "Fallito nell'ottenere l'ultima versione di Wowup"
     }
   },
   "COMMON": {
@@ -205,7 +205,7 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installa",
         "ADDON_UPDATE_BUTTON": "Aggiorna",
-        "AUTHOR_COLUMN_HEADER": "Autore",
+        "AUTHOR_COLUMN_HEADER": "Autore/i",
         "AUTO_UPDATE_ICON_TOOLTIP": "Aggiornamento automatico abilitato",
         "GAME_VERSION_COLUMN_HEADER": "Versione Del Gioco",
         "LATEST_VERSION_COLUMN_HEADER": "Ultima Versione",
