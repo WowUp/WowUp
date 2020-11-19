@@ -116,7 +116,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
-        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst du auf unsrem Discord im Kamlen #wow-support nach Hilfe fragen.",
+        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst du auf unsrem Discord im Kamlen #wowup-support nach Hilfe fragen.",
         "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Releases Tags mit einem ZIP Archiv, welches das Addon enthält, besitzt.",
         "TITLE": "Addon Installation fehlgeschlagen"
