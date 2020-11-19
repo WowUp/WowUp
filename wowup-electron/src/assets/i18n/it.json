@@ -68,9 +68,9 @@
       "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} {count, plural, one{mille} other{{count} mila}}",
-      "e+4": "{count} {count, plural, one{mille} other{{count} mila}}",
-      "e+5": "{count} {count, plural, one{mille} other{{count} mila}}",
+      "e+3": "{count, plural, one{Mille} other{{count} mila}}",
+      "e+4": "{count, plural, one{Mille} other{{count} mila}}",
+      "e+5": "{count, plural, one{Mille} other{{count} mila}}",
       "e+6": "{count} {count, plural, one{milione} other{milioni}}",
       "e+7": "{count} {count, plural, one{milione} other{milioni}}",
       "e+8": "{count} {count, plural, one{milione} other{milioni}}",
@@ -176,7 +176,7 @@
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Vuoi cambiare il provider dell'addon {addonName} con {providerName}? Questa operazione disinstallerà il tuo addon esistente e lo sostituirà con una copia dal nuovo provider.",
-        "TITLE": "Cambiare Provider dell'Addon??"
+        "TITLE": "Cambiare Provider dell'Addon?"
       },
       "CHECK_UPDATES_BUTTON": "Controlla Aggiornamenti",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Controlla gli ultimi aggiornamenti degli addons",
@@ -185,7 +185,7 @@
         "TITLE": "Mostra Colonne"
       },
       "FILTER_LABEL": "Filtra",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Questo addon ha più providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Contattaci su Discord",
@@ -209,7 +209,7 @@
         "ADDON_UPDATE_BUTTON": "Aggiorna",
         "AUTHOR_COLUMN_HEADER": "Autore/i",
         "AUTO_UPDATE_ICON_TOOLTIP": "Aggiornamento automatico abilitato",
-        "GAME_VERSION_COLUMN_HEADER": "Versione Del Gioco",
+        "GAME_VERSION_COLUMN_HEADER": "Versione del Gioco",
         "LATEST_VERSION_COLUMN_HEADER": "Ultima Versione",
         "PROVIDER_COLUMN_HEADER": "Provider",
         "PROVIDER_RELEASE_CHANNEL": "Canale del Provider",
@@ -218,7 +218,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "Questa azione rimuoverà tutte le cartelle correlate dalla cartella di World of Warcraft.",
+        "CONFIRMATION_ACTION_EXPLANATION": "Questa azione rimuoverà tutte le cartelle correlate dalla cartella di World of Warcraft. Le impostazioni del personaggio per questo addon non verranno rimosse.",
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}??",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
@@ -243,7 +243,7 @@
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizza alla chiusura",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiare la lingua di default richiede il riavvio dell'applicazione.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Impostare una nuova lingua di default",
-        "SET_LANGUAGE_DESCRIPTION": "Scegliere una lingua da impostare",
+        "SET_LANGUAGE_DESCRIPTION": "Scegli una lingua da impostare",
         "SET_LANGUAGE_LABEL": "Imposta Lingua",
         "START_MINIMIZED_DESCRIPTION": "...e non apparirà sullo schermo",
         "START_MINIMIZED_LABEL": "Lancia Wowup ridotto ad icona",
@@ -262,10 +262,10 @@
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
-        "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questo può essere trovato nel tuo ultimo file di log (per i curiosi).",
+        "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questo può essere trovato nel tuo ultimo file di log per i curiosi.",
         "DEBUG_DATA_LABEL": "Dati Di Debug",
         "LOG_FILES_BUTTON": "Mostra File Di Log",
-        "LOG_FILES_DESCRIPTION": "Aprire la cartella che contiene gli ultimi file di registro.",
+        "LOG_FILES_DESCRIPTION": "Aprire la cartella che contiene gli ultimi file di log.",
         "LOG_FILES_LABEL": "File Di Log",
         "TITLE": "Debug"
       },
@@ -278,11 +278,11 @@
         "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati di default per l'aggiornamento automatico ",
         "AUTO_UPDATE_LABEL": "Aggiornamento Automatico",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "Sei sicuro di voler pulire il percorso d'installazione per {clientName}? Questo rimuverà tutte le informazioni salvate dell'addon per questo client.\n\nLe tue cartelle degli addons non verranno rimosse.",
+          "TITLE": "Pulire Percorso d'Installazione?"
         },
         "CLIENT_TYPE_INPUT_HINT": "La cartella che contiene {clientTypeName}: \"{clientFolderName}\"",
-        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
+        "CLIENT_TYPE_PATH_LABEL": "Percorso {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canale Addon Predefinito",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canale Addon",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seleziona",
