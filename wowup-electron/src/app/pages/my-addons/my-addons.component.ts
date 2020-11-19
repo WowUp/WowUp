@@ -73,6 +73,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public activeSort = "sortOrder";
   public activeSortDirection = "asc";
   public addonUtils = AddonUtils;
+  public selectedClient = WowClientType.None;
+  public wowClientType = WowClientType;
+  public overlayRef: OverlayRef | null;
+  public isBusy = true;
+  public enableControls = true;
 
   public columns: ColumnState[] = [
     {
@@ -132,12 +137,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public get displayedColumns(): string[] {
     return this.columns.filter((col) => col.visible).map((col) => col.name);
   }
-
-  public selectedClient = WowClientType.None;
-  public wowClientType = WowClientType;
-  public overlayRef: OverlayRef | null;
-  public isBusy = true;
-  public enableControls = true;
 
   constructor(
     private addonService: AddonService,
@@ -308,7 +307,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       const listItems = _.filter(
         this._displayAddonsSrc.value,
-        (listItem) => !listItem.isIgnored && (listItem.needsInstall || listItem.needsUpdate)
+        (listItem) => !listItem.isIgnored && !listItem.isInstalling && (listItem.needsInstall || listItem.needsUpdate)
       );
 
       await Promise.all(
@@ -324,7 +323,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error(err);
     }
 
-    this.enableControls = true;
+    this.enableControls = this.calculateControlState();
   }
 
   public async onUpdateAllRetailClassic() {
@@ -644,7 +643,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       // Only care about the ones that need to be updated/installed
       addons = addons
         .map((addon) => new AddonViewModel(addon))
-        .filter((listItem) => !listItem.isIgnored && (listItem.needsUpdate || listItem.needsInstall))
+        .filter((listItem) => !listItem.isIgnored && !listItem.isInstalling && (listItem.needsUpdate || listItem.needsInstall))
         .map((listItem) => listItem.addon);
 
       if (addons.length === 0) {
@@ -691,7 +690,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     from(this.addonService.getAddons(clientType, rescan)).subscribe({
       next: (addons) => {
         this.isBusy = false;
-        this.enableControls = true;
+        this.enableControls = this.calculateControlState();
         this._displayAddonsSrc.next(this.formatAddons(addons));
         this.setPageContextText();
         this._cdRef.detectChanges();
@@ -700,7 +699,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       error: (err) => {
         console.error(err);
         this.isBusy = false;
-        this.enableControls = true;
+        this.enableControls = this.calculateControlState();
       },
     });
   }
@@ -785,7 +784,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     let listItems: AddonViewModel[] = [].concat(this._displayAddonsSrc.value);
     const listItemIdx = listItems.findIndex((li) => li.addon.id === evt.addon.id);
     const listItem = this.createAddonListItem(evt.addon);
-    listItem.isInstalling = [AddonInstallState.Installing, AddonInstallState.Downloading].includes(evt.installState);
+    listItem.isInstalling = [AddonInstallState.Installing, AddonInstallState.Downloading, AddonInstallState.BackingUp].includes(evt.installState);
     listItem.stateTextTranslationKey = this.getInstallStateTextTranslationKey(evt.installState);
     listItem.installProgress = evt.progress;
     listItem.installState = evt.installState;
@@ -826,7 +825,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onDataSourceChange = (sortedListItems: AddonViewModel[]) => {
     this.sortedListItems = sortedListItems;
-    this.enableUpdateAll = this.sortedListItems.some((li) => !li.isIgnored && (li.needsInstall || li.needsUpdate));
+    this.enableUpdateAll = this.sortedListItems.some((li) => !li.isIgnored && !li.isInstalling && (li.needsInstall || li.needsUpdate));
+    this.enableControls = this.calculateControlState();
     this.setPageContextText();
   };
 
@@ -839,5 +839,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     });
     dialogRef.afterClosed().subscribe();
+  }
+
+  private calculateControlState(): boolean
+  {
+    if (! this._displayAddonsSrc.value) {
+      return true;
+    }
+
+    return !this._displayAddonsSrc.value.some((item) => item.isInstalling);
   }
 }

@@ -38,11 +38,10 @@
           <div class="menu-button-divider"></div>
           <button mat-flat-button color="primary" class="chip col justify-content-center"
             [matMenuTriggerFor]="updateAllMenu" [disabled]="enableControls === false || enableUpdateAll === false">
-            <mat-icon class="auto-update-icon" svgIcon="fas:caret-down">
-            </mat-icon>
+            <mat-icon svgIcon="fas:caret-down"></mat-icon>
           </button>
         </div>
-        <mat-menu #updateAllMenu="matMenu">
+        <mat-menu #updateAllMenu="matMenu" xPosition="before">
           <button mat-menu-item (click)="onUpdateAllRetailClassic()">
             {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_RETAIL_CLASSIC_BUTTON" | translate }}
           </button>
