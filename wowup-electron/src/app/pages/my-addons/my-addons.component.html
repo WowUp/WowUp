@@ -150,13 +150,10 @@
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding">
-          <div class="row"
-            *ngIf="addonUtils.hasMultipleProviders(element.addon) === false && element.addon.providerName !== 'WowUp'">
+          <div class="row" *ngIf="element.addon.providerName !== 'WowUp'">
             {{ element.addon.providerName }}
           </div>
-          <div
-            *ngIf="addonUtils.hasMultipleProviders(element.addon) === false && element.addon.providerName === 'WowUp'"
-            class="addon-provider">
+          <div *ngIf="element.addon.providerName === 'WowUp'" class="addon-provider">
             <div class="addon-provider-name">
               {{ element.addon.providerSource }}
             </div>
