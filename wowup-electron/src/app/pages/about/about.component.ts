@@ -25,7 +25,7 @@ export class AboutComponent implements OnInit {
   public version = "";
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;
 
-  constructor(private wowUpService: WowUpService, public electronService: ElectronService) {}
+  constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 
   ngOnInit(): void {
     this.version = remote.app.getVersion();
@@ -33,23 +33,5 @@ export class AboutComponent implements OnInit {
 
   formatChanges(changeLog: ChangeLog): string {
     return changeLog.changes.join("\n");
-  }
-
-  getLogoPath() {
-    switch (this.wowUpService.currentTheme) {
-      case HORDE_THEME:
-        return "assets/images/horde-1.png";
-      case HORDE_LIGHT_THEME:
-        return "assets/images/horde-dark-1.png";
-      case ALLIANCE_THEME:
-        return "assets/images/alliance-1.png";
-      case ALLIANCE_LIGHT_THEME:
-        return "assets/images/alliance-dark-1.png";
-      case DEFAULT_LIGHT_THEME:
-        return "assets/images/wowup-dark-1.png";
-      case DEFAULT_THEME:
-      default:
-        return "assets/images/wowup-white-1.png";
-    }
   }
 }

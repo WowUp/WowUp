@@ -14,6 +14,7 @@ import {
   faLink,
   faInfoCircle,
   faCodeBranch,
+  faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -37,6 +38,7 @@ export class IconService {
     this.addSvg(faGithub);
     this.addSvg(faInfoCircle);
     this.addSvg(faCodeBranch);
+    this.addSvg(faCaretDown);
   }
 
   async addSvg(icon: IconDefinition) {

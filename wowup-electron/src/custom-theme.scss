@@ -83,20 +83,24 @@ $wowup-light-theme: mat-light-theme(
   background-color: $purple-2;
 }
 
+.bg-primary-3 {
+  background-color: $purple-3;
+}
+
 .bg-secondary {
-  background-color: $dark-1 !important;
+  background-color: $dark-1;
 }
 
 .bg-secondary-2 {
-  background-color: $dark-2 !important;
+  background-color: $dark-2;
 }
 
 .bg-secondary-3 {
-  background-color: $dark-3 !important;
+  background-color: $dark-3;
 }
 
 .bg-secondary-4 {
-  background-color: $dark-4 !important;
+  background-color: $dark-4;
 }
 
 .hover-bg-secondary:hover {

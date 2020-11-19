@@ -28,11 +28,28 @@
         </mat-form-field>
       </div>
       <div class="button-container">
-        <button mat-flat-button color="primary" [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
-          [disabled]="enableControls === false || enableUpdateAll === false" (click)="onUpdateAll()"
-          (contextmenu)="onUpdateAllContext($event)">
-          {{ "PAGES.MY_ADDONS.UPDATE_ALL_BUTTON" | translate }}
-        </button>
+        <!-- UPDATE ALL DROPDOWN -->
+        <div class="row">
+          <button mat-flat-button color="primary" class="menu-button"
+            [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
+            [disabled]="enableControls === false || enableUpdateAll === false" (click)="onUpdateAll()">
+            {{ "PAGES.MY_ADDONS.UPDATE_ALL_BUTTON" | translate }}
+          </button>
+          <div class="menu-button-divider"></div>
+          <button mat-flat-button color="primary" class="chip col justify-content-center"
+            [matMenuTriggerFor]="updateAllMenu" [disabled]="enableControls === false || enableUpdateAll === false">
+            <mat-icon class="auto-update-icon" svgIcon="fas:caret-down">
+            </mat-icon>
+          </button>
+        </div>
+        <mat-menu #updateAllMenu="matMenu">
+          <button mat-menu-item (click)="onUpdateAllRetailClassic()">
+            {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_RETAIL_CLASSIC_BUTTON" | translate }}
+          </button>
+          <button mat-menu-item (click)="onUpdateAllClients()">
+            {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_ALL_CLIENTS_BUTTON" | translate }}
+          </button>
+        </mat-menu>
         <button mat-flat-button color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls === false" (click)="onRefresh()">
@@ -133,10 +150,13 @@
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding">
-          <div class="row" *ngIf="element.addon.providerName !== 'WowUp'">
+          <div class="row"
+            *ngIf="addonUtils.hasMultipleProviders(element.addon) === false && element.addon.providerName !== 'WowUp'">
             {{ element.addon.providerName }}
           </div>
-          <div *ngIf="element.addon.providerName === 'WowUp'" class="addon-provider">
+          <div
+            *ngIf="addonUtils.hasMultipleProviders(element.addon) === false && element.addon.providerName === 'WowUp'"
+            class="addon-provider">
             <div class="addon-provider-name">
               {{ element.addon.providerSource }}
             </div>
@@ -302,19 +322,5 @@
       (change)="onColumnVisibleChange($event, column)">
       {{ column.display | translate }}
     </mat-checkbox>
-  </ng-template>
-</mat-menu>
-
-<div style="visibility: hidden; position: fixed" #updateAllContextMenuTrigger="matMenuTrigger"
-  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="updateAllContextMenu">
-</div>
-<mat-menu #updateAllContextMenu="matMenu" class="addon-context-menu">
-  <ng-template matMenuContent let-columns="columns">
-    <button mat-menu-item (click)="onUpdateAllRetailClassic()">
-      {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_RETAIL_CLASSIC_BUTTON" | translate }}
-    </button>
-    <button mat-menu-item (click)="onUpdateAllClients()">
-      {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_ALL_CLIENTS_BUTTON" | translate }}
-    </button>
   </ng-template>
 </mat-menu>

@@ -71,6 +71,8 @@ export class AnalyticsService {
     // });
   }
 
+  public async trackError(error: Error) {}
+
   public async trackAction(name: string, properties: object = undefined) {
     await this.track2(name, properties);
   }

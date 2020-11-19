@@ -33,6 +33,36 @@
   }
 }
 
+.switch-button {
+  padding-left: 0;
+}
+
+.menu-button {
+  padding: 0;
+  overflow: hidden;
+  margin-right: 0 !important;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 4px 0 16px;
+}
+.menu-button-divider {
+  background-color: $white-3;
+  width: 1px;
+  height: 36px;
+}
+.chip {
+  margin-right: 0.5em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 0 4px;
+  width: auto;
+  min-width: auto;
+
+  .mat-icon {
+    width: 12px;
+  }
+}
+
 .no-addons-container {
   display: flex;
   color: $white-1;
