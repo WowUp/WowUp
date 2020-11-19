@@ -14,6 +14,7 @@
       "GROUP_LIGHT": "Clair",
       "HORDE": "Horde"
     },
+    "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
       "INSTALL_MESSAGE": "Voulez-vous redémarrer WowUp pour installer la mise à jour ?",
       "INSTALL_TITLE": "Mise à jour WowUp prête",
