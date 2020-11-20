@@ -10,8 +10,8 @@
     "THEME": {
       "ALLIANCE": "얼라이언스",
       "DEFAULT": "기본",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "GROUP_DARK": "다크모드",
+      "GROUP_LIGHT": "라이트모드",
       "HORDE": "호드"
     },
     "WOWUP_UPDATE": {
@@ -46,11 +46,11 @@
       "UPDATING": "업데이트 중..."
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "BETA": "베타",
+      "CLASSIC": "클래식",
+      "CLASSICPTR": "클래식 PTR",
+      "RETAIL": "리테일",
+      "RETAILPTR": "리테일 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -65,16 +65,16 @@
       "TOOLTIP": "{dependencyCount}개의 다른 애드온 참조"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{count}",
-      "e+1": "{count}",
-      "e+2": "{count} 백",
-      "e+3": "{count} 천",
-      "e+4": "{count} 만",
-      "e+5": "{count} 십만",
-      "e+6": "{count} 백만",
-      "e+7": "{count} 천만",
-      "e+8": "{count} 일억",
-      "e+9": "{count} 십억"
+      "e+0": "{simpleCount}",
+      "e+1": "{simpleCount}십",
+      "e+2": "{simpleCount}백",
+      "e+3": "{simpleCount}천",
+      "e+4": "{simpleCount}만",
+      "e+5": "{simpleCount}십만",
+      "e+6": "{simpleCount}백만",
+      "e+7": "{simpleCount}천만",
+      "e+8": "{simpleCount}억",
+      "e+9": "{simpleCount}십억"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -84,7 +84,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "{addonName} 애드온 제공자를 {providerName}로 변경하는 과정에서 오류가 발생했습니다"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "불러오는 중..."
@@ -101,12 +101,12 @@
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
+      "ERROR_TITLE": "오류",
       "POSITIVE_BUTTON": "확인"
     },
     "CONFIRM": {
-      "NEGATIVE_BUTTON": "아니오",
-      "POSITIVE_BUTTON": "네"
+      "NEGATIVE_BUTTON": "취소",
+      "POSITIVE_BUTTON": "확인"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "애드온 URL 주소",
@@ -168,15 +168,15 @@
         "BETA_ADDON_CHANNEL": "베타",
         "CHANNEL_SUBMENU_TITLE": "채널",
         "IGNORE_ADDON_BUTTON": "관리제외",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "제공자",
         "REINSTALL_ADDON_BUTTON": "재설치",
         "REMOVE_ADDON_BUTTON": "삭제",
         "SHOW_FOLDER": "디렉토리 보기",
         "STABLE_ADDON_CHANNEL": "안정"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "{addonName} 애드온의 제공자를 {providerName}로 변경하시겠습니까? 애드온이 먼저 삭제된 후, 새 제공자의 버전으로 다시 설치됩니다",
+        "TITLE": "애드온 제공자를 변경할까요?"
       },
       "CHECK_UPDATES_BUTTON": "업데이트 체크",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "최신 애드온 업데이트를 체크",
