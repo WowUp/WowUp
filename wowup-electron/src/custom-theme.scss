@@ -157,82 +157,14 @@ $wowup-light-theme: mat-light-theme(
   color: $white-2 !important;
 }
 
-.default-theme-light-theme {
-  @include angular-material-color($wowup-light-theme);
-
-  .bg-secondary {
-    background-color: $lt-secondary-1 !important;
-  }
-
-  .bg-secondary-2 {
-    background-color: $lt-secondary-2 !important;
-  }
-
-  .bg-secondary-3 {
-    background-color: $lt-secondary-3 !important;
-  }
-
-  .bg-secondary-4 {
-    background-color: $lt-secondary-4 !important;
-  }
-
-  .hover-bg-secondary:hover {
-    background-color: $lt-secondary-1 !important;
-  }
-
-  .hover-bg-secondary-2:hover {
-    background-color: $lt-secondary-2 !important;
-  }
-
-  .hover-bg-secondary-3:hover {
-    background-color: $lt-secondary-3 !important;
-  }
-
-  .hover-bg-secondary-4:hover {
-    background-color: $lt-secondary-4 !important;
-  }
-
-  .text-1 {
-    color: $lt-text-1 !important;
-  }
-
-  .text-2 {
-    color: $lt-text-2 !important;
-  }
-
-  .text-3 {
-    color: $lt-text-3 !important;
-  }
-
-  .hover-text-1:hover {
-    color: $lt-text-1 !important;
-  }
-
-  .hover-text-2:hover {
-    color: $lt-text-2 !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: $lt-secondary-4 !important;
-  }
-
-  .mat-form-field-label {
-    color: $lt-text-1 !important;
-  }
-
-  .mat-input-element {
-    caret-color: $lt-text-3 !important;
-    color: $lt-text-1 !important;
-  }
-  .mat-form-field.mat-focused .mat-form-field-label {
-    color: $lt-text-2 !important;
-  }
-}
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($wowup-default-theme);
+
+.default-theme-light-theme {
+  @include angular-material-color($wowup-light-theme);
+}
 
 // Horde theme
 $horde-pallette: (
@@ -431,6 +363,43 @@ $alliance-theme-light: mat-light-theme(
 
   ::-webkit-scrollbar-corner {
     background: $dark-3;
+  }
+}
+
+// DARK THEME
+.default-theme,
+.alliance-theme,
+.horde-theme {
+  .bg-secondary {
+    background-color: $dark-1 !important;
+  }
+
+  .bg-secondary-2 {
+    background-color: $dark-2 !important;
+  }
+
+  .bg-secondary-3 {
+    background-color: $dark-3 !important;
+  }
+
+  .bg-secondary-4 {
+    background-color: $dark-4 !important;
+  }
+
+  .hover-bg-secondary:hover {
+    background-color: $dark-1 !important;
+  }
+  
+  .hover-bg-secondary-2:hover {
+    background-color: $dark-2 !important;
+  }
+  
+  .hover-bg-secondary-3:hover {
+    background-color: $dark-3 !important;
+  }
+  
+  .hover-bg-secondary-4:hover {
+    background-color: $dark-4 !important;
   }
 }
 
