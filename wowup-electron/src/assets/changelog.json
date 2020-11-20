@@ -1,10 +1,50 @@
 {
   "ChangeLogs": [
     {
-      "Version": "2.0.0-beta.17",
+      "Version": "2.0.0-beta.21",
       "changes": [
-        "Bug fixes"
+        "Italian locale updates (Bito)",
+        "French locale updates (Zazou)",
+        "Fix an an issue where the controls were not properly disabled during update all (Linaori)",
+        "Fix an an issue with addon buttons flickering during update (Linaori)",
+        "Fix an typo with the Discord support channel name (Linaori)",
+        "Update to Electron 11",
+        "Remove Rollbar integration",
+        "Add lazy image loading for addons",
+        "Theme fixes"
       ]
+    },
+    {
+      "Version": "2.0.0-beta.20",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "German locale updates (Nils)",
+        "Portuguese locale updates (Dogo)",
+        "French locale updates (Zazou)",
+        "Multiple providers tooltip can now be translated",
+        "Fix an issue with filtering getting stuck on 'My Addons' (chops)",
+        "Fix an issue where external provider channel was not being stored"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.19",
+      "changes": [
+        "Add the ability to clear an installation path",
+        "Add the ability to have addons removed for installations that are missing",
+        "Fix some issues related to switching providers"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.18",
+      "changes": [
+        "Add better external ID tracking for provider switching",
+        "Fix an issue with row selection not showing in dark theme"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.17",
+      "changes": ["Bug fixes"]
     },
     {
       "Version": "2.0.0-beta.16",
@@ -26,10 +66,7 @@
     },
     {
       "Version": "2.0.0-beta.15",
-      "changes": [
-        "Fix an issue where light/dark themes could overlap",
-        "Fix an issue with a nested translate call"
-      ]
+      "changes": ["Fix an issue where light/dark themes could overlap", "Fix an issue with a nested translate call"]
     },
     {
       "Version": "2.0.0-beta.14",

@@ -36,4 +36,8 @@ export class PreferenceStorageService {
   public getObject<T>(key: string): T | undefined {
     return this._store.get(key, undefined) as T;
   }
+
+  public remove(key: string): void {
+    this._store.delete(key);
+  }
 }

@@ -67,6 +67,10 @@ export class WowUpAddonProvider implements AddonProvider {
     return false;
   }
 
+  isValidAddonId(addonId: string): boolean {
+    return true;
+  }
+
   onPostInstall(addon: Addon): void {
     throw new Error("Method not implemented.");
   }

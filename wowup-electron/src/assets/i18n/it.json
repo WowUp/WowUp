@@ -1,7 +1,7 @@
 {
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count} {count, plural, =1{addon} other{addons}}.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti automatici",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Controlla Aggiornamenti...",
       "QUIT_ACTION": "Chiudi",
@@ -10,21 +10,21 @@
     "THEME": {
       "ALLIANCE": "Alleanza",
       "DEFAULT": "Default",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "GROUP_DARK": "Scuro",
+      "GROUP_LIGHT": "Chiaro",
       "HORDE": "Orda"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
       "INSTALL_TITLE": "Aggiornamento di Wowup pronto",
-      "NOT_AVAILABLE": "L'ultima versione di Wowup è già installata",
+      "NOT_AVAILABLE": "È già installata l'ultima versione di Wowup",
       "PORTABLE_DOWNLOAD_MESSAGE": "Vuoi scaricare manualmente l'ultima versione portatile?\n\nDovrai chiudere l'applicazione manualmente e sovrascrivere la nuova versione.",
       "PORTABLE_DOWNLOAD_TITLE": "Richiesto Download Manuale",
       "SNACKBAR_ACTION": "Aggiorna",
       "SNACKBAR_TEXT": "È disponibile una nuova versione di WowUp",
-      "TOOLTIP": "L'aggiornamento di WowUp è pronto per l'installazione",
-      "UPDATE_ERROR": "Errore nell'ottenere l'ultima versione di Wowup"
+      "TOOLTIP": "Aggiornamento di WowUp disponibile",
+      "UPDATE_ERROR": "Fallito nell'ottenere l'ultima versione di Wowup"
     }
   },
   "COMMON": {
@@ -57,8 +57,8 @@
       "DAYS_AGO": "{count} {count, plural, one{giorno} other{giorni}} fa",
       "HOURS_AGO": "{count} {count, plural, one{ora} other{ore}} fa",
       "JUST_NOW": "Ora",
-      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
-      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
+      "MONTHS_AGO": "{count} {count, plural, one{mese} other{mesi}} fa",
+      "YEARS_AGO": "{count} {count, plural, one{mese} other{mesi}} fa",
       "YESTERDAY": "Ieri"
     },
     "DEPENDENCY": {
@@ -68,13 +68,13 @@
       "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count, plural, one{Mille} other{{count} mila}}",
+      "e+4": "{count, plural, one{Mille} other{{count} mila}}",
+      "e+5": "{count, plural, one{Mille} other{{count} mila}}",
+      "e+6": "{count} {count, plural, one{milione} other{milioni}}",
+      "e+7": "{count} {count, plural, one{milione} other{milioni}}",
+      "e+8": "{count} {count, plural, one{milione} other{milioni}}",
+      "e+9": "{count} {count, plural, one{bilione} other{bilioni}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -84,7 +84,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Fallito nel cambiare provider per {addonName} con {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
@@ -101,7 +101,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Visualizza su"
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
+      "ERROR_TITLE": "Errore",
       "POSITIVE_BUTTON": "Ok"
     },
     "CONFIRM": {
@@ -113,10 +113,10 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "URL di esempio GitHub o WowInterface",
       "CLOSE_BUTTON": "Chiudi",
       "DESCRIPTION": "Se si desidera installare un addon direttamente da un URL incollarlo qui sotto per iniziare.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} su {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Impossibile connettersi all'API, per favore riprovare più tardi.",
-        "INSTALL_FAILED": "Qualcosa è andato storto nell'installazione dell'addon, per favore riprovare.\n\nSe questo messaggio continua ad apparire puoi chiederci aiuto su Discord, in #wow-support channel.",
+        "INSTALL_FAILED": "Qualcosa è andato storto nell'installazione dell'addon, per favore riprovare.\n\nSe questo messaggio continua ad apparire puoi chiederci aiuto su Discord, in #wowup-support channel.",
         "INVALID_URL": "Il valore fornito non è un URL valido. Esempi di URL di addons validi:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Non è stato trovato nessun addon, assicurarsi che l'URL sia corretto.\n\nSe si sta installando da GitHub, assicurarsi che la repository abbia una release tag con un file zip contenente l'addon.",
         "TITLE": "Installazione dell'addon fallita"
@@ -175,8 +175,8 @@
         "STABLE_ADDON_CHANNEL": "Stabile"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "Vuoi cambiare il provider dell'addon {addonName} con {providerName}? Questa operazione disinstallerà il tuo addon esistente e lo sostituirà con una copia dal nuovo provider.",
+        "TITLE": "Cambiare Provider dell'Addon?"
       },
       "CHECK_UPDATES_BUTTON": "Controlla Aggiornamenti",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Controlla gli ultimi aggiornamenti degli addons",
@@ -185,6 +185,7 @@
         "TITLE": "Mostra Colonne"
       },
       "FILTER_LABEL": "Filtra",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Questo addon ha più providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Contattaci su Discord",
@@ -206,9 +207,9 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installa",
         "ADDON_UPDATE_BUTTON": "Aggiorna",
-        "AUTHOR_COLUMN_HEADER": "Autore",
+        "AUTHOR_COLUMN_HEADER": "Autore/i",
         "AUTO_UPDATE_ICON_TOOLTIP": "Aggiornamento automatico abilitato",
-        "GAME_VERSION_COLUMN_HEADER": "Versione Del Gioco",
+        "GAME_VERSION_COLUMN_HEADER": "Versione del Gioco",
         "LATEST_VERSION_COLUMN_HEADER": "Ultima Versione",
         "PROVIDER_COLUMN_HEADER": "Provider",
         "PROVIDER_RELEASE_CHANNEL": "Canale del Provider",
@@ -217,7 +218,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "Questa azione rimuoverà tutte le cartelle correlate dalla cartella di World of Warcraft.",
+        "CONFIRMATION_ACTION_EXPLANATION": "Questa azione rimuoverà tutte le cartelle correlate dalla cartella di World of Warcraft. Le impostazioni del personaggio per questo addon non verranno rimosse.",
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}??",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
@@ -242,7 +243,7 @@
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizza alla chiusura",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiare la lingua di default richiede il riavvio dell'applicazione.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Impostare una nuova lingua di default",
-        "SET_LANGUAGE_DESCRIPTION": "Scegliere una lingua da impostare",
+        "SET_LANGUAGE_DESCRIPTION": "Scegli una lingua da impostare",
         "SET_LANGUAGE_LABEL": "Imposta Lingua",
         "START_MINIMIZED_DESCRIPTION": "...e non apparirà sullo schermo",
         "START_MINIMIZED_LABEL": "Lancia Wowup ridotto ad icona",
@@ -261,10 +262,10 @@
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
-        "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questo può essere trovato nel tuo ultimo file di log (per i curiosi).",
+        "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questo può essere trovato nel tuo ultimo file di log per i curiosi.",
         "DEBUG_DATA_LABEL": "Dati Di Debug",
         "LOG_FILES_BUTTON": "Mostra File Di Log",
-        "LOG_FILES_DESCRIPTION": "Aprire la cartella che contiene gli ultimi file di registro.",
+        "LOG_FILES_DESCRIPTION": "Aprire la cartella che contiene gli ultimi file di log.",
         "LOG_FILES_LABEL": "File Di Log",
         "TITLE": "Debug"
       },
@@ -276,8 +277,12 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati di default per l'aggiornamento automatico ",
         "AUTO_UPDATE_LABEL": "Aggiornamento Automatico",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Sei sicuro di voler pulire il percorso d'installazione per {clientName}? Questo rimuverà tutte le informazioni salvate dell'addon per questo client.\n\nLe tue cartelle degli addons non verranno rimosse.",
+          "TITLE": "Pulire Percorso d'Installazione?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "La cartella che contiene {clientTypeName}: \"{clientFolderName}\"",
-        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
+        "CLIENT_TYPE_PATH_LABEL": "Percorso {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canale Addon Predefinito",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canale Addon",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seleziona",

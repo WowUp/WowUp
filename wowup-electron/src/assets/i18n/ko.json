@@ -116,7 +116,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
-        "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wow-support 채널에서 도움을 요청해보세요.",
+        "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wowup-support 채널에서 도움을 요청해보세요.",
         "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "애드온을 찾을 수 없습니다. 입력하신 주소가 올바른 애드온 페이지를 가리키고 있는지 확인해주세요.\n\nGithub에서 설치할 때는, 애드온을 zip 파일로 묶은 릴리즈 태그가 존재하는 저장소인지 확인하세요.",
         "TITLE": "애드온 설치 실패"
@@ -185,6 +185,7 @@
         "TITLE": "컬럼 보기"
       },
       "FILTER_LABEL": "필터",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",
         "JOIN_DISCORD": "디스코드 입장",
@@ -276,6 +277,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "새로 설치되는 애드온의 자동업데이트 옵션을 활성화합니다.",
         "AUTO_UPDATE_LABEL": "자동 업데이트",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "\"{clientFolderName}\" 디렉토리를 포함하는 위치",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 설치 위치",
         "DEFAULT_ADDON_CHANNEL_LABEL": "기본 애드온 채널",

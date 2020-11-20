@@ -1,7 +1,8 @@
 <div class="addon-column row align-items-center">
   <div class="thumbnail-container">
-    <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container bg-secondary-3"
-      [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"></div>
+    <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container bg-secondary-3">
+      <img [src]="listItem.addon.thumbnailUrl" loading="lazy" />
+    </div>
     <div *ngIf="listItem.hasThumbnail === false" class="addon-logo-container">
       <div class="addon-logo-letter text-3">
         {{ listItem.thumbnailLetter }}
@@ -35,7 +36,8 @@
     </div>
     <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
       <div *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" class="mr-2">
-        <mat-icon class="auto-update-icon" svgIcon="fas:code-branch" [matTooltip]="'This addon has multiple providers'">
+        <mat-icon class="auto-update-icon" svgIcon="fas:code-branch"
+          [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
         </mat-icon>
       </div>
       <div *ngIf="this.listItem.isAutoUpdate === true" class="mr-2">

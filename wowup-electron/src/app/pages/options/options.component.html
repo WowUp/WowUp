@@ -8,9 +8,9 @@
 >
   <div class="nav-container">
     <div class="theme-logo">
-      <img [src]="getLogoPath()" />
+      <img [src]="wowUpService.getThemeLogoPath()" />
     </div>
-    <div class="nav-item-container" [ngClass]="[this.wowUpService.currentTheme]">
+    <div class="nav-item-container" [ngClass]="[wowUpService.currentTheme]">
       <div class="nav-item-list-wrap">
         <div class="nav-item-list">
           <mat-action-list>

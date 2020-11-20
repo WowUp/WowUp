@@ -116,7 +116,7 @@
       "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下载",
       "ERROR": {
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
-        "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wow-support 频道寻求帮助（英语）。",
+        "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wowup-support 频道寻求帮助（英语）。",
         "INVALID_URL": "输入的 URL 无效。有效 URL 示例：\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "未找到插件，请检查 URL 是否指向正确的页面。\n\n从 GitHub 安装时，请检查是否存在带有 zip 包的 release tag。",
         "TITLE": "插件安装失败"
@@ -185,6 +185,7 @@
         "TITLE": "显示列表项"
       },
       "FILTER_LABEL": "筛选",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 个插件",
         "JOIN_DISCORD": "在 Discord 上与我们交流（英语）",
@@ -276,6 +277,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
         "AUTO_UPDATE_LABEL": "自动更新",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "请选择 {clientTypeName} 客户端路径（\"{clientFolderName}\" 的上级路径）",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路径",
         "DEFAULT_ADDON_CHANNEL_LABEL": "默认插件更新通道",

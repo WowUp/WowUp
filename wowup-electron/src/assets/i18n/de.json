@@ -10,8 +10,8 @@
     "THEME": {
       "ALLIANCE": "Allianz",
       "DEFAULT": "Standard",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "GROUP_DARK": "Dunkel",
+      "GROUP_LIGHT": "Hell",
       "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {
@@ -68,13 +68,13 @@
       "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count} Tausend",
+      "e+4": "{count} Tausend",
+      "e+5": "{count} Tausend",
+      "e+6": "{count} Millionen",
+      "e+7": "{count} Millionen",
+      "e+8": "{count} Millionen",
+      "e+9": "{count} Milliarden"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -84,7 +84,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
@@ -116,7 +116,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
-        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst du auf unsrem Discord im Kamlen #wow-support nach Hilfe fragen.",
+        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst du auf unsrem Discord im Kamlen #wowup-support nach Hilfe fragen.",
         "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Releases Tags mit einem ZIP Archiv, welches das Addon enthält, besitzt.",
         "TITLE": "Addon Installation fehlgeschlagen"
@@ -168,15 +168,15 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorieren",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "Anbieter",
         "REINSTALL_ADDON_BUTTON": "Neu installieren",
         "REMOVE_ADDON_BUTTON": "Entfernen",
         "SHOW_FOLDER": "Dateiordner anzeigen",
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "Möchtest du den Addon Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
+        "TITLE": "Addon Anbieter wechsel?"
       },
       "CHECK_UPDATES_BUTTON": "Updates prüfen",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Nach neuen Addon-Updates suchen",
@@ -185,6 +185,7 @@
         "TITLE": "Spalten anzeigen"
       },
       "FILTER_LABEL": "Filter",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{Addon} other{Addons}}",
         "JOIN_DISCORD": "Schreibe mit uns auf Discord",
@@ -276,6 +277,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf Auto-Update gesetzt",
         "AUTO_UPDATE_LABEL": "Automatisch aktualisieren",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "Der Order, der den {clientTypeName} Clientorder \"{clientFolderName}\" enthält",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} Pfad",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard-Addon-Kanal",

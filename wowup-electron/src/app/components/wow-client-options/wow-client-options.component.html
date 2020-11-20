@@ -6,6 +6,10 @@
       "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL" | translate: { clientTypeName: (clientTypeName | translate) }
     }}</mat-label>
     <input matInput disabled [value]="clientLocation" />
+    <button mat-button color="accent" *ngIf="clientLocation" matSuffix mat-icon-button aria-label="Clear"
+      (click)="clearInstallPath()">
+      <mat-icon svgIcon="fas:times"></mat-icon>
+    </button>
     <mat-hint class="text-2">
       {{
         "PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT"
