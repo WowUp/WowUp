@@ -9,9 +9,9 @@
     },
     "THEME": {
       "ALLIANCE": "联盟",
-      "DEFAULT": "默认",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "暗色",
+      "GROUP_LIGHT": "亮色",
       "HORDE": "部落"
     },
     "WOWUP_UPDATE": {
@@ -65,16 +65,16 @@
       "TOOLTIP": "{dependencyCount} 个依赖项"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{count}",
-      "e+1": "{count}",
-      "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+0": "{myriadCount}",
+      "e+1": "{myriadCount}",
+      "e+2": "{myriadCount}",
+      "e+3": "{myriadCount}",
+      "e+4": "{myriadCount} 万",
+      "e+5": "{myriadCount} 万",
+      "e+6": "{myriadCount} 万",
+      "e+7": "{myriadCount} 万",
+      "e+8": "{myriadCount} 亿",
+      "e+9": "{myriadCount} 亿"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -84,7 +84,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的提供方修改为 {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "正在加载..."
@@ -101,7 +101,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "在该网站上查看："
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
+      "ERROR_TITLE": "错误",
       "POSITIVE_BUTTON": "确定"
     },
     "CONFIRM": {
@@ -175,8 +175,8 @@
         "STABLE_ADDON_CHANNEL": "稳定版"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "是否将 {addonName} 的提供方修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
+        "TITLE": "修改插件提供方？"
       },
       "CHECK_UPDATES_BUTTON": "检查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "检查最新的插件更新",
@@ -185,18 +185,18 @@
         "TITLE": "显示列表项"
       },
       "FILTER_LABEL": "筛选",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个提供方",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 个插件",
         "JOIN_DISCORD": "在 Discord 上与我们交流（英语）",
-        "PATREON_SUPPORT": "通过 Patreon 向 WowUp 捐助",
+        "PATREON_SUPPORT": "通过 Patreon 向 WowUp 捐助（英语）",
         "SEARCH_RESULTS": "共 {count} 条结果",
         "VIEW_GITHUB": "在 GitHub 上查看源代码",
         "VIEW_GUIDE": "访问指南，探索 WowUp 的功能（英语）"
       },
       "RESCAN_FOLDERS_BUTTON": "重新扫描",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "扫描客户端文件夹中已安装的附加组件",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新扫描过程将会猜测已经安装了哪些插件，可能会重置已知插件信息。如果特定插件无法识别或显示不正确，请使用此功能。扫描不会删除插件本身，只会删除 WowUp 缓存的插件信息。\n\n扫描需要花费一些时间。",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新扫描过程将会猜测已经安装了哪些插件，可能会重置已知插件信息。如果特定插件无法识别或显示不正确，请使用此功能。扫描不会删除插件本身，只会删除 WowUp 记录的插件信息。\n\n扫描需要花费一些时间。",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "是否开始扫描？",
       "SPINNER": {
         "GATHERING_ADDONS": "正在收集插件信息...",
@@ -278,8 +278,8 @@
         "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
         "AUTO_UPDATE_LABEL": "自动更新",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "是否忘记 {clientName} 的安装路径？此操作将会删除 WowUp 记录的此客户端所安装插件信息。\n\n插件文件夹不会被删除。",
+          "TITLE": "忘记此路径？"
         },
         "CLIENT_TYPE_INPUT_HINT": "请选择 {clientTypeName} 客户端路径（\"{clientFolderName}\" 的上级路径）",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路径",
