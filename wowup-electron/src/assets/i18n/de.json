@@ -200,7 +200,7 @@
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Erneut scannen?",
       "SPINNER": {
         "GATHERING_ADDONS": "Addons sammeln...",
-        "UPDATING": "{updateCount}/{addonCount} akutalisiert",
+        "UPDATING": "{updateCount}/{addonCount} aktualisiert",
         "UPDATING_WITH_ADDON_NAME": "{updateCount}/{addonCount}\n{clientType}: {addonName} wird aktualisiert"
       },
       "TABLE": {
