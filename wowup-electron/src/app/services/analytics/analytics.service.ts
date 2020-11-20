@@ -1,4 +1,3 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { BehaviorSubject } from "rxjs";
@@ -50,90 +49,35 @@ export class AnalyticsService {
     this._telemetryEnabledSrc.next(value);
   }
 
-  constructor(
-    private _electronService: ElectronService,
-    private _httpClient: HttpClient,
-    private _preferenceStorageService: PreferenceStorageService
-  ) {
-    this._appVersion = _electronService.remote.app.getVersion();
+  constructor(private _preferenceStorageService: PreferenceStorageService, electronService: ElectronService) {
+    this._appVersion = electronService.remote.app.getVersion();
     this._installId = this.loadInstallId();
     this._telemetryEnabledSrc.next(this.telemetryEnabled);
     console.log("installId", this._installId);
   }
 
   public async trackStartup() {
-    //Record an event
-    await this.track2("app-startup");
-
-    // await this.track((params) => {
-    //   params.set("t", "pageview");
-    //   params.set("dp", "app/startup");
-    // });
+    await this.track("app-startup");
   }
 
-  public async trackError(error: Error) {}
+  public async trackError(error: Error) {
+    if (!this.telemetryEnabled) {
+      return;
+    }
 
-  public async trackAction(name: string, properties: object = undefined) {
-    await this.track2(name, properties);
+    this._insights?.trackException({ exception: error });
   }
 
-  public async trackUserAction(category: string, action: string, label: string = null) {
-    await this.track2(category, {
-      action,
-      label,
-    });
-
-    // await this.track((params) => {
-    //   params.set("t", "event");
-    //   params.set("ec", category);
-    //   params.set("ea", action);
-    //   params.set("el", label);
-    // });
-  }
-
-  private async track2(name: string, properties: object = undefined) {
+  private async track(name: string, properties: object = undefined) {
     if (!this.telemetryEnabled) {
       return;
     }
 
     this._insights?.trackEvent({ name, properties });
-
-    console.debug("Track", name);
   }
 
-  private async track(action: (params: HttpParams) => void = undefined) {
-    if (!this.telemetryEnabled) {
-      return;
-    }
-
-    var url = `${this.analyticsUrl}/collect`;
-
-    try {
-      let params = new URLSearchParams();
-      params.set("v", "1");
-      params.set("tid", AppConfig.googleAnalyticsId);
-      params.set("cid", this._installId);
-      params.set("ua", window.navigator.userAgent);
-      params.set("an", "WowUp Client");
-      params.set("av", this._appVersion);
-
-      action?.call(this, params);
-
-      const fullUrl = `${url}?${params}`;
-
-      const response = await this._httpClient
-        .post(
-          fullUrl,
-          {},
-          {
-            responseType: "text",
-          }
-        )
-        .toPromise();
-    } catch (e) {
-      // eat
-      console.error(e);
-    }
+  public async trackAction(name: string, properties: object = undefined) {
+    await this.track(name, properties);
   }
 
   private loadInstallId() {
