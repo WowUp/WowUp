@@ -65,16 +65,16 @@
       "TOOLTIP": "{dependencyCount} 个依赖项"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{count}",
-      "e+1": "{count}",
-      "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+0": "{myriadCount}",
+      "e+1": "{myriadCount}",
+      "e+2": "{myriadCount}",
+      "e+3": "{myriadCount}",
+      "e+4": "{myriadCount} 万",
+      "e+5": "{myriadCount} 万",
+      "e+6": "{myriadCount} 万",
+      "e+7": "{myriadCount} 万",
+      "e+8": "{myriadCount} 亿",
+      "e+9": "{myriadCount} 亿"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
