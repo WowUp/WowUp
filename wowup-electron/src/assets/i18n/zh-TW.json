@@ -9,9 +9,9 @@
     },
     "THEME": {
       "ALLIANCE": "聯盟",
-      "DEFAULT": "預設",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "暗色",
+      "GROUP_LIGHT": "亮色",
       "HORDE": "部落"
     },
     "WOWUP_UPDATE": {
@@ -84,7 +84,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "無法將 {addonName} 的提供方修改為 {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "正在載入..."
@@ -101,7 +101,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
+      "ERROR_TITLE": "錯誤",
       "POSITIVE_BUTTON": "確定"
     },
     "CONFIRM": {
@@ -175,8 +175,8 @@
         "STABLE_ADDON_CHANNEL": "穩定版"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
-        "TITLE": "Change Addon Provider?"
+        "MESSAGE": "是否將 {addonName} 的提供方修改為 {providerName}？此操作將會用 {providerName} 的版本替換現有版本。",
+        "TITLE": "修改插件提供方？"
       },
       "CHECK_UPDATES_BUTTON": "檢查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "檢查最新的插件更新",
@@ -185,18 +185,18 @@
         "TITLE": "顯示列表項"
       },
       "FILTER_LABEL": "篩選",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多個提供方",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 個插件",
         "JOIN_DISCORD": "在 Discord 上與我們交流（英語）",
-        "PATREON_SUPPORT": "透過 Patreon 向 WowUp 捐助",
+        "PATREON_SUPPORT": "透過 Patreon 向 WowUp 捐助（英語）",
         "SEARCH_RESULTS": "共 {count} 條結果",
         "VIEW_GITHUB": "在 GitHub 上檢視原始碼",
         "VIEW_GUIDE": "訪問指南，探索 WowUp 的功能（英語）"
       },
       "RESCAN_FOLDERS_BUTTON": "重新掃描",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "掃描客戶端資料夾中已安裝的插件",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新掃描過程將會猜測已經安裝了哪些插件，可能會重置已知插件資訊。如果特定插件無法識別或顯示不正確，請使用此功能。掃描不會刪除插件本身，只會刪除 WowUp 快取的插件資訊。\n\n掃描需要花費一些時間。",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新掃描過程將會猜測已經安裝了哪些插件，可能會重置已知插件資訊。如果特定插件無法識別或顯示不正確，請使用此功能。掃描不會刪除插件本身，只會刪除 WowUp 記錄的插件資訊。\n\n掃描需要花費一些時間。",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "是否開始掃描？",
       "SPINNER": {
         "GATHERING_ADDONS": "正在收集插件資訊...",
@@ -278,8 +278,8 @@
         "AUTO_UPDATE_DESCRIPTION": "新安裝的插件將預設設定為自動更新",
         "AUTO_UPDATE_LABEL": "自動更新",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",
+          "TITLE": "忘記此路徑？"
         },
         "CLIENT_TYPE_INPUT_HINT": "請選擇 {clientTypeName} 客戶端路徑（\"{clientFolderName}\" 的上級路徑）",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
