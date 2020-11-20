@@ -7,6 +7,8 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
+import { roundDownloadCount, shortenDownloadCount } from "../../utils/number.utils";
+import { DownloadCountPipe } from "app/pipes/download-count.pipe";
 
 @Component({
   selector: "app-install-from-url-dialog",
@@ -28,6 +30,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _sessionService: SessionService,
     private _translateService: TranslateService,
+    private _downloadCountPipe: DownloadCountPipe,
     public dialogRef: MatDialogRef<InstallFromUrlDialogComponent>
   ) {}
 
@@ -64,6 +67,18 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
         this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED"));
       },
     });
+  }
+
+  public getDownloadCountParams() {
+    const count = 1000;
+    return {
+      count,
+      shortCount: roundDownloadCount(count),
+      simpleCount: shortenDownloadCount(count, 1),
+      myriadCount: shortenDownloadCount(count, 4),
+      textCount: this._downloadCountPipe.transform(count),
+      provider: this.addon.providerName,
+    };
   }
 
   async onImportUrl() {
