@@ -20,3 +20,21 @@ export function needsUpdate(addon: Addon): boolean {
 export function needsInstall(addon: Addon): boolean {
   return !addon.installedVersion;
 }
+
+export function getGameVersion(gameVersion: string): string {
+  if (!gameVersion) {
+    return gameVersion;
+  }
+
+  if (gameVersion.indexOf(".") !== -1) {
+    return gameVersion;
+  }
+
+  // split the long interface into 3 chunks, major minor patch
+  const chunks = [
+    gameVersion.substr(0, gameVersion.length - 4),
+    gameVersion.substr(gameVersion.length - 4, 2),
+    gameVersion.substr(gameVersion.length - 2, 2),
+  ];
+  return chunks.map((c) => parseInt(c, 10)).join(".");
+}

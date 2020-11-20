@@ -26,6 +26,7 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { getEnumName } from "../../utils/enum.utils";
+import * as AddonUtils from "../../utils/addon.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
@@ -413,7 +414,7 @@ export class AddonService {
       versions.push(toc.interface);
     }
 
-    return _.orderBy(versions)[0] || "";
+    return AddonUtils.getGameVersion(_.orderBy(versions)[0] || "");
   }
 
   private async backupOriginalDirectories(addon: Addon) {
@@ -632,7 +633,9 @@ export class AddonService {
       addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
 
       if (latestFile.gameVersion) {
-        addon.gameVersion = latestFile.gameVersion;
+        addon.gameVersion = AddonUtils.getGameVersion(latestFile.gameVersion);
+      } else {
+        addon.gameVersion = AddonUtils.getGameVersion(addon.gameVersion);
       }
 
       addon.thumbnailUrl = result.thumbnailUrl;
@@ -867,7 +870,7 @@ export class AddonService {
       latestVersion: latestFile.version,
       clientType: clientType,
       externalId: searchResult.externalId,
-      gameVersion: latestFile.gameVersion,
+      gameVersion: AddonUtils.getGameVersion(latestFile.gameVersion),
       author: searchResult.author,
       downloadUrl: latestFile.downloadUrl,
       externalUrl: searchResult.externalUrl,
