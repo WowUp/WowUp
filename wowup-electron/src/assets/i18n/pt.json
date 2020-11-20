@@ -10,8 +10,8 @@
     "THEME": {
       "ALLIANCE": "Aliança",
       "DEFAULT": "Padrão",
-      "GROUP_DARK": "Dark",
-      "GROUP_LIGHT": "Light",
+      "GROUP_DARK": "Escuro",
+      "GROUP_LIGHT": "Claro",
       "HORDE": "Horda"
     },
     "WOWUP_UPDATE": {
@@ -72,9 +72,9 @@
       "e+4": "{count} mil",
       "e+5": "{count} mil",
       "e+6": "{count} {count, plural, =1{milhão} other{milhões}}",
-      "e+7": "{count} milhão",
-      "e+8": "{count} milhão",
-      "e+9": "{count} bilhões"
+      "e+7": "{count} {count, plural, =1{milhão} other{milhões}}",
+      "e+8": "{count} {count, plural, =1{milhão} other{milhões}}",
+      "e+9": "{count} {count, plural, =1{bilhão} other{bilhões}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -168,7 +168,7 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "Provedores",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Remover",
         "SHOW_FOLDER": "Mostrar Pasta",
@@ -185,7 +185,7 @@
         "TITLE": "Exibir Colunas"
       },
       "FILTER_LABEL": "Filtrar",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Este Addon tem múltiplos provedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{Addon} other{Addons}}",
         "JOIN_DISCORD": "Converse conosco no Discord",
