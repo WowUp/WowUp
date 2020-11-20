@@ -185,7 +185,7 @@
         "TITLE": "Spalten anzeigen"
       },
       "FILTER_LABEL": "Filter",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Dieses Addon hat mehrere Anbieter",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{Addon} other{Addons}}",
         "JOIN_DISCORD": "Schreibe mit uns auf Discord",
@@ -278,8 +278,8 @@
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf Auto-Update gesetzt",
         "AUTO_UPDATE_LABEL": "Automatisch aktualisieren",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "Bist du sicher, dass du den Installationsort für {clientName} säubern möchtest? Dies wird alle gespeicherten Addoninformation für diesen Client entfernen.\n\nDeine Addon-Ordner werden nicht entfernt.",
+          "TITLE": "Installationsort säubern?"
         },
         "CLIENT_TYPE_INPUT_HINT": "Der Order, der den {clientTypeName} Clientorder \"{clientFolderName}\" enthält",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} Pfad",
