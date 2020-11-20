@@ -337,8 +337,9 @@ export class AddonService {
       addon.installedAt = new Date();
       addon.installedFolders = unzippedDirectoryNames.join(",");
 
-      if (!addon.gameVersion) {
-        addon.gameVersion = await this.getLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
+      const gameVersion = await this.getLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
+      if (gameVersion) {
+        addon.gameVersion = gameVersion;
       }
 
       this._addonStorage.set(addon.id, addon);
@@ -414,7 +415,7 @@ export class AddonService {
       versions.push(toc.interface);
     }
 
-    return AddonUtils.getGameVersion(_.orderBy(versions)[0] || "");
+    return AddonUtils.getGameVersion(_.orderBy(versions, null, "desc")[0] || "");
   }
 
   private async backupOriginalDirectories(addon: Addon) {
