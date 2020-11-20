@@ -13,7 +13,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
 import { forkJoin, from, Observable, Subject } from "rxjs";
-import { filter, first, map, mergeMap, switchMap } from "rxjs/operators";
+import { filter, map, mergeMap, switchMap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
 import { AddonProvider } from "../../addon-providers/addon-provider";
@@ -25,7 +25,7 @@ import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { getEnumName } from "../../utils/enum.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
@@ -35,11 +35,14 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 
+type InstallType = "install" | "update" | "remove";
+
 interface InstallQueueItem {
   addonId: string;
   onUpdate: (installState: AddonInstallState, progress: number) => void | undefined;
   completion: any;
   originalAddon?: Addon;
+  installType: InstallType;
 }
 
 @Injectable({
@@ -184,7 +187,7 @@ export class AddonService {
         }
 
         try {
-          await this.installAddon(addon.id);
+          await this.updateAddon(addon.id);
           updateCt += 1;
         } catch (err) {
           console.error(err);
@@ -205,8 +208,25 @@ export class AddonService {
     });
   }
 
+  public updateAddon(
+    addonId: string,
+    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
+    originalAddon: Addon = undefined
+  ): Promise<void> {
+    return this.installOrUpdateAddon(addonId, "update", onUpdate, originalAddon);
+  }
+
   public installAddon(
     addonId: string,
+    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
+    originalAddon: Addon = undefined
+  ): Promise<void> {
+    return this.installOrUpdateAddon(addonId, "install", onUpdate, originalAddon);
+  }
+
+  public installOrUpdateAddon(
+    addonId: string,
+    installType: InstallType,
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
     originalAddon: Addon = undefined
   ): Promise<void> {
@@ -232,6 +252,7 @@ export class AddonService {
       addonId,
       onUpdate,
       completion,
+      installType,
       originalAddon: originalAddon ? { ...originalAddon } : undefined,
     });
 
@@ -321,14 +342,7 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
 
-      const actionLabel = `${getEnumName(WowClientType, addon.clientType)}|${addon.providerName}|${addon.externalId}|${
-        addon.name
-      }`;
-      this._analyticsService.trackAction("install-addon", {
-        clientType: getEnumName(WowClientType, addon.clientType),
-        provider: addon.providerName,
-        addon: actionLabel,
-      });
+      this.trackInstallAction(queueItem.installType, addon);
 
       await this.installDependencies(addon, onUpdate);
 
@@ -519,6 +533,8 @@ export class AddonService {
     if (removeDependencies) {
       await this.removeDependencies(addon);
     }
+
+    this.trackInstallAction("remove", addon);
   }
 
   private async removeDependencies(addon: Addon) {
@@ -873,4 +889,14 @@ export class AddonService {
       type: dependency.type,
     };
   };
+
+  private trackInstallAction(installType: InstallType, addon: Addon) {
+    this._analyticsService.trackAction(`addon-install-action`, {
+      clientType: getEnumName(WowClientType, addon.clientType),
+      provider: addon.providerName,
+      addon: addon.name,
+      addonId: addon.externalId,
+      installType,
+    });
+  }
 }

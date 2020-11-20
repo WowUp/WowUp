@@ -224,7 +224,7 @@
     <button *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonProviders">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
     </button>
-    <button mat-menu-item (click)="onShowfolder(listItem.addon)">
+    <button mat-menu-item (click)="onShowFolder(listItem.addon)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
     </button>
     <button mat-menu-item (click)="onReInstallAddon(listItem)">
