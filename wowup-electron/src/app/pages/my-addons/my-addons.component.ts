@@ -313,7 +313,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       await Promise.all(
         listItems.map(async (listItem) => {
           try {
-            this.addonService.installAddon(listItem.addon.id);
+            this.addonService.updateAddon(listItem.addon.id);
           } catch (e) {
             console.error("Failed to install", e);
           }
@@ -386,19 +386,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onShowfolder(addon: Addon) {
+  public onShowFolder(addon: Addon) {
     try {
       const addonPath = this.addonService.getFullInstallPath(addon);
       this.electronService.shell.openPath(addonPath);
     } catch (err) {
       console.error(err);
     }
-  }
-
-  public onUpdateAddon(listItem: AddonViewModel) {
-    listItem.isInstalling = true;
-
-    this.addonService.installAddon(listItem.addon.id);
   }
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
@@ -566,7 +560,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
       try {
         const externalId = _.find(listItem.addon.externalIds, (extid) => extid.providerName === evt.value);
-        await this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, this.selectedClient);
+        await this.addonService.setProvider(
+          listItem.addon,
+          externalId.id,
+          externalId.providerName,
+          this.selectedClient
+        );
       } catch (e) {
         console.error(e);
         const errorTitle = this._translateService.instant("DIALOGS.ALERT.ERROR_TITLE");
@@ -641,10 +640,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       // Only care about the ones that need to be updated/installed
-      addons = addons
-        .map((addon) => new AddonViewModel(addon))
-        .filter((listItem) => !listItem.isIgnored && !listItem.isInstalling && (listItem.needsUpdate || listItem.needsInstall))
-        .map((listItem) => listItem.addon);
+      addons = addons.filter(
+        (addon) => !addon.isIgnored && (AddonUtils.needsUpdate(addon) || AddonUtils.needsInstall(addon))
+      );
 
       if (addons.length === 0) {
         this.loadAddons(this.selectedClient);
@@ -666,7 +664,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           addonName: addon.name,
         });
 
-        await this.addonService.installAddon(addon.id);
+        await this.addonService.updateAddon(addon.id);
       }
 
       this.loadAddons(this.selectedClient);
@@ -784,7 +782,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     let listItems: AddonViewModel[] = [].concat(this._displayAddonsSrc.value);
     const listItemIdx = listItems.findIndex((li) => li.addon.id === evt.addon.id);
     const listItem = this.createAddonListItem(evt.addon);
-    listItem.isInstalling = [AddonInstallState.Installing, AddonInstallState.Downloading, AddonInstallState.BackingUp].includes(evt.installState);
+    listItem.isInstalling = [
+      AddonInstallState.Installing,
+      AddonInstallState.Downloading,
+      AddonInstallState.BackingUp,
+    ].includes(evt.installState);
     listItem.stateTextTranslationKey = this.getInstallStateTextTranslationKey(evt.installState);
     listItem.installProgress = evt.progress;
     listItem.installState = evt.installState;
@@ -825,7 +827,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onDataSourceChange = (sortedListItems: AddonViewModel[]) => {
     this.sortedListItems = sortedListItems;
-    this.enableUpdateAll = this.sortedListItems.some((li) => !li.isIgnored && !li.isInstalling && (li.needsInstall || li.needsUpdate));
+    this.enableUpdateAll = this.sortedListItems.some(
+      (li) => !li.isIgnored && !li.isInstalling && (li.needsInstall || li.needsUpdate)
+    );
     this.enableControls = this.calculateControlState();
     this.setPageContextText();
   };
@@ -841,9 +845,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef.afterClosed().subscribe();
   }
 
-  private calculateControlState(): boolean
-  {
-    if (! this._displayAddonsSrc.value) {
+  private calculateControlState(): boolean {
+    if (!this._displayAddonsSrc.value) {
       return true;
     }
 

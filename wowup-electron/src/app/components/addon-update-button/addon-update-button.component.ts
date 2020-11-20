@@ -74,7 +74,11 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public onInstallUpdateClick() {
-    this._addonService.installAddon(this.listItem.addon.id);
+    if (this.listItem.needsUpdate) {
+      this._addonService.updateAddon(this.listItem.addon.id);
+    } else {
+      this._addonService.installAddon(this.listItem.addon.id);
+    }
   }
 
   public getStatusText() {

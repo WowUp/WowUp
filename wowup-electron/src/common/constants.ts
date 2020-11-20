@@ -32,14 +32,13 @@ export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_clien
 export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY = "use_hardware_acceleration";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
-export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
-export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";
 export const MY_ADDONS_HIDDEN_COLUMNS_KEY = "my_addons_hidden_columns";
 export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
 export const GET_ADDONS_HIDDEN_COLUMNS_KEY = "get_addons_hidden_columns";
 export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
-export const CURRENT_THEME_KEY = "current-theme";
+export const CURRENT_THEME_KEY = "current_theme";
+export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
@@ -63,4 +62,6 @@ export const DEFAULT_BG_COLOR = "#444444";
 export const DEFAULT_LIGHT_BG_COLOR = "#ebedef";
 
 // ERRORS
-export const ERROR_ADDON_ALREADY_INSTALLED = "ERROR_ADDON_ALREADY_INSTALLED"
+export const ERROR_ADDON_ALREADY_INSTALLED = "ERROR_ADDON_ALREADY_INSTALLED";
+export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
+export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
