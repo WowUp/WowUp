@@ -150,7 +150,7 @@
         "AUTHOR_COLUMN_HEADER": "Veröffentlicher",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Anzahl Downloads",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
-        "RELEASED_AT_COLUMN_HEADER": "Erscheinungsdatum",
+        "RELEASED_AT_COLUMN_HEADER": "Veröffentlicht am",
         "STATUS_COLUMN_HEADER": "Status"
       }
     },
