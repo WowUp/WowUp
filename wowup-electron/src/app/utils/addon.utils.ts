@@ -16,7 +16,7 @@ export function hasMultipleProviders(addon: Addon): boolean {
 export function needsUpdate(addon: Addon): boolean {
   return (
     addon.installedVersion !== addon.latestVersion ||
-    new Date(addon.installedAt).getTime() < new Date(addon.releasedAt).getTime()
+    new Date(addon.updatedAt).getTime() < new Date(addon.releasedAt).getTime()
   );
 }
 
