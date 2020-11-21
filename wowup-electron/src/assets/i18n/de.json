@@ -201,7 +201,7 @@
       "SPINNER": {
         "GATHERING_ADDONS": "Addons sammeln...",
         "UPDATING": "{updateCount}/{addonCount} aktualisiert",
-        "UPDATING_WITH_ADDON_NAME": "{updateCount}/{addonCount}\n{clientType}: {addonName} wird aktualisiert"
+        "UPDATING_WITH_ADDON_NAME": "{updateCount}/{addonCount} aktualisiert\n{clientType}: {addonName}"
       },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
