@@ -109,8 +109,14 @@ export class AddonService {
     this._addonStorage.set(addon.id, addon);
   }
 
-  public async search(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    var searchTasks = this._addonProviders.map((p) => p.searchByQuery(query, clientType));
+  public async search(
+    query: string,
+    clientType: WowClientType,
+    category?: string,
+  ): Promise<AddonSearchResult[]> {
+    var searchTasks = this._addonProviders.map(
+      (p) => p.searchByQuery(query, clientType, null, category)
+    );
     var searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackAction("addon-search", {
@@ -883,6 +889,15 @@ export class AddonService {
     let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
     files = _.orderBy(files, ["releaseDate"]).reverse();
     return _.first(files);
+  }
+
+  public async getCategories(): Promise<string[]> {
+    let result: Set<string> = new Set();
+    for (let i=0; i < this._addonProviders.length; i++) {
+      let categories = await this._addonProviders[i].getCategories();
+      categories.map((name) => result.add(name));
+    }
+    return [...result].sort();
   }
 
   private createAddon(

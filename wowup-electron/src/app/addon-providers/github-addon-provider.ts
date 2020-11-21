@@ -45,7 +45,12 @@ export class GitHubAddonProvider implements AddonProvider {
     return [];
   }
 
-  public async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
+  public async searchByQuery(
+    query: string,
+    clientType: WowClientType,
+    channelType?: AddonChannelType,
+    category?: string,
+  ): Promise<AddonSearchResult[]> {
     return [];
   }
 
@@ -236,5 +241,9 @@ export class GitHubAddonProvider implements AddonProvider {
       owner: matches[1],
       repository: matches[2],
     };
+  }
+
+  public async getCategories(): Promise<string[]> {
+    return [];
   }
 }

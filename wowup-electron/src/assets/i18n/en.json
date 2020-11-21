@@ -150,6 +150,7 @@
       "INSTALL_FROM_URL_BUTTON": "Install from URL",
       "REFRESH_BUTTON": "Refresh",
       "SEARCH_LABEL": "Search",
+      "CATEGORY_LABEL": "Category",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Author(s)",

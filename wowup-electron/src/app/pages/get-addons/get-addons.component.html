@@ -16,6 +16,26 @@
       </mat-form-field>
     </div>
     <div class="right-container">
+
+      <div class="category-container">
+        <mat-form-field>
+          <mat-label>{{ "PAGES.GET_ADDONS.CATEGORY_LABEL" | translate }}</mat-label>
+          <mat-select
+            class="select"
+            [(value)]="selectedCategory"
+            (selectionChange)="onSearch()"
+            [disabled]="isBusy === true"
+          >
+            <mat-option
+              [value]="category"
+              *ngFor="let category of categories"
+            >
+              {{ category }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
       <div class="search-container">
         <mat-form-field>
           <mat-label>{{ "PAGES.GET_ADDONS.SEARCH_LABEL" | translate }}</mat-label>

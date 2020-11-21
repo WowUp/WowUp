@@ -30,6 +30,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { AddonProvider } from "./addon-provider";
+import { CurseGetCategory } from "../../common/curse/curse-get-category";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const HUB_API_URL = "https://hub.dev.wowup.io";
@@ -252,12 +253,22 @@ export class CurseAddonProvider implements AddonProvider {
   async searchByQuery(
     query: string,
     clientType: WowClientType,
-    channelType?: AddonChannelType
+    channelType?: AddonChannelType,
+    category?: string,
   ): Promise<AddonSearchResult[]> {
     channelType = channelType || AddonChannelType.Stable;
     var searchResults: AddonSearchResult[] = [];
 
-    var response = await this.getSearchResults(query);
+    let categoryId;
+    if (category) {
+      let categories = await this.downloadCategories();
+      let requestedCategory = categories.find(cat => cat.name === category);
+      if (requestedCategory) {
+        categoryId = requestedCategory.id;
+      }
+    }
+
+    var response = await this.getSearchResults(query, categoryId);
     for (let result of response) {
       var latestFiles = this.getLatestFiles(result, clientType);
       if (!latestFiles.length) {
@@ -305,10 +316,13 @@ export class CurseAddonProvider implements AddonProvider {
     return this.getAddonSearchResult(match, latestFiles);
   }
 
-  private async getSearchResults(query: string): Promise<CurseSearchResult[]> {
+  private async getSearchResults(query: string, categoryId?: number): Promise<CurseSearchResult[]> {
     const url = new URL(`${API_URL}/addon/search`);
     url.searchParams.set("gameId", "1");
     url.searchParams.set("searchFilter", query);
+    if (categoryId) {
+      url.searchParams.set("categoryId", categoryId.toString());
+    }
 
     return await this.getCircuitBreaker<CurseSearchResult[]>().fire(
       async () => await this._httpClient.get<CurseSearchResult[]>(url.toString()).toPromise()
@@ -549,5 +563,26 @@ export class CurseAddonProvider implements AddonProvider {
       summary: scanResult.searchResult.summary,
       releasedAt: new Date(latestVersion.fileDate),
     };
+  }
+
+  public async getCategories(): Promise<string[]> {
+    let categories = await this.downloadCategories();
+    return categories.map((category) => category.name)
+  }
+
+  private async downloadCategories(): Promise<CurseGetCategory[]> {
+    const url = `${API_URL}/category?gameId=1`;
+    let result = this._cachingService.get<CurseGetCategory[]>(url);
+    if (!result) {
+      result = await this.getCircuitBreaker<CurseGetCategory[]>().fire(
+        async () => await this._httpClient.get<CurseGetCategory[]>(url).toPromise()
+      );
+      if (result) {
+        this._cachingService.set(url, result, 24 * 3600);
+      } else {
+        return [];
+      }
+    }
+    return result;
   }
 }

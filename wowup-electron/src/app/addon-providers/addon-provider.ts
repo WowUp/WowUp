@@ -12,7 +12,12 @@ export interface AddonProvider {
 
   getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]>;
 
-  searchByQuery(query: string, clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]>;
+  searchByQuery(
+    query: string,
+    clientType: WowClientType,
+    channelType?: AddonChannelType,
+    category?: string,
+  ): Promise<AddonSearchResult[]>;
 
   searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult>;
 
@@ -31,6 +36,8 @@ export interface AddonProvider {
   onPostInstall(addon: Addon): void;
 
   scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void>;
+
+  getCategories(): Promise<string[]>;
 }
 
 export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "WowUp";
