@@ -37,7 +37,7 @@
       "UPTODATE": "Aktuell"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Sichern",
+      "BACKINGUP": "Backup wird erstellt",
       "COMPLETE": "Installiert",
       "DOWNLOADING": "Herunterladen...",
       "INSTALLING": "Installieren...",
