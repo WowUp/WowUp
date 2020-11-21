@@ -1,7 +1,12 @@
 {
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{Addon} other{Addons}} automatisch aktualisiert.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatisches Update",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon-Scan abgeschlossen...",
+      "ADDON_SCAN_STARTED": "Addon-Scan gestartet...",
+      "ADDON_SCAN_UPDATE": "{count} Ordner werden gescannt..."
+    },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Nach Updates prüfen...",
       "QUIT_ACTION": "Beenden",
@@ -62,7 +67,7 @@
       "YESTERDAY": "Gestern"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}} benötigt"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}} erforderlich"
     },
     "DOWNLOAD_COUNT": {
       "e+0": "{count}",
