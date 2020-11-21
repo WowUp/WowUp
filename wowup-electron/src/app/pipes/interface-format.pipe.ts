@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { getGameVersion } from "app/utils/addon.utils";
+import { getGameVersion } from "../utils/addon.utils";
 
 @Pipe({
   name: "interfaceFormat",

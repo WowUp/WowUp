@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { MatSelectChange } from "@angular/material/select";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
-import { WowUpReleaseChannelType } from "app/models/wowup/wowup-release-channel-type";
-import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
-import { getEnumList, getEnumName } from "app/utils/enum.utils";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { getEnumList, getEnumName } from "../../utils/enum.utils";
 
 @Component({
   selector: "app-options-wow-section",

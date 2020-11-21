@@ -18,7 +18,7 @@ import { MatRadioChange } from "@angular/material/radio";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
-import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import * as _ from "lodash";
 import { BehaviorSubject, from, Subscription } from "rxjs";
 import { map } from "rxjs/operators";

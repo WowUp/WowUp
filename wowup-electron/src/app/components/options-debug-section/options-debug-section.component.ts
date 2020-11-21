@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { AddonService } from "app/services/addons/addon.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
+import { AddonService } from "../../services/addons/addon.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 
 @Component({
   selector: "app-options-debug-section",

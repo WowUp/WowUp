@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { AddonService, ScanUpdate, ScanUpdateType } from "app/services/addons/addon.service";
+import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { filter } from "rxjs/operators";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
