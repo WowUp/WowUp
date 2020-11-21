@@ -5,7 +5,7 @@
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Сканирование модификаций завершено...",
       "ADDON_SCAN_STARTED": "Началось сканирование модификаций...",
-      "ADDON_SCAN_UPDATE": "Сканируется {count} {count, plural, one{папка} few{папки} others{папок}}..."
+      "ADDON_SCAN_UPDATE": "Сканируется {count} {count, plural, one{папка} few{папки} other{папок}}..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Проверить наличие обновлений",
