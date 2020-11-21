@@ -9,11 +9,14 @@
         "Spanish locale updates (SkollVargr)",
         "Always get the game version from the toc, not the provider (Linaori)",
         "Add more translation flexibility to the 'Install By URL' dialog",
+        "Improve the scanning time",
+        "Add some status text to the scanning process",
         "Fix an issue with sorting by game version appearing mismatched",
         "Fix checkbox wrapping in context menus",
         "Fix addon install analytics to be more useful",
         "Fix checkbox wrapping in context menus",
         "Fix dark theme row highlight again",
+        "Fix an issue where re-scan was not updating the UI",
         "Try to fix an issue with authors pushing the same version name multiple times not getting picked up"
       ]
     },
