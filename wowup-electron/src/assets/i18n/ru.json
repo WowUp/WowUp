@@ -3,9 +3,9 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "Сканирование модификаций завершено...",
+      "ADDON_SCAN_STARTED": "Началось сканирование модификаций...",
+      "ADDON_SCAN_UPDATE": "Сканируется {count} {count, plural, one{папка} few{папки} others{папок}}..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Проверить наличие обновлений",
