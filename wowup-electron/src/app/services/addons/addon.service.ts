@@ -12,7 +12,7 @@ import {
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
-import { forkJoin, from, Observable, Subject } from "rxjs";
+import { BehaviorSubject, forkJoin, from, Observable, Subject } from "rxjs";
 import { filter, map, mergeMap, switchMap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
@@ -36,6 +36,19 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 
+export enum ScanUpdateType {
+  Start,
+  Update,
+  Complete,
+  Unknown,
+}
+
+export interface ScanUpdate {
+  type: ScanUpdateType;
+  totalCount?: number;
+  currentCount?: number;
+}
+
 type InstallType = "install" | "update" | "remove";
 
 interface InstallQueueItem {
@@ -53,10 +66,12 @@ export class AddonService {
   private readonly _addonProviders: AddonProvider[];
   private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
   private readonly _addonRemovedSrc = new Subject<string>();
+  private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
+  public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -655,28 +670,46 @@ export class AddonService {
       return [];
     }
 
-    const addonFolders = await this._warcraftService.listAddons(clientType);
-    for (let provider of this._addonProviders) {
-      try {
-        const validFolders = addonFolders.filter((af) => !af.matchingAddon && af.toc);
-        await provider.scan(clientType, this._wowUpService.getDefaultAddonChannel(clientType), validFolders);
-      } catch (err) {
-        console.error(err);
+    this._scanUpdateSrc.next({
+      type: ScanUpdateType.Start,
+    });
+
+    try {
+      const defaultAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
+      const addonFolders = await this._warcraftService.listAddons(clientType);
+
+      this._scanUpdateSrc.next({
+        type: ScanUpdateType.Update,
+        currentCount: 0,
+        totalCount: addonFolders.length,
+      });
+
+      for (let provider of this._addonProviders) {
+        try {
+          const validFolders = addonFolders.filter((af) => !af.matchingAddon && af.toc);
+          await provider.scan(clientType, defaultAddonChannel, validFolders);
+        } catch (err) {
+          console.error(err);
+        }
       }
+
+      const matchedAddonFolders = addonFolders.filter((addonFolder) => !!addonFolder.matchingAddon);
+      matchedAddonFolders.forEach((maf) => this.setExternalIds(maf.matchingAddon, maf.toc));
+      const matchedGroups = _.groupBy(
+        matchedAddonFolders,
+        (addonFolder) => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`
+      );
+
+      console.log(Object.keys(matchedGroups));
+
+      return Object.values(matchedGroups).map(
+        (value) => _.orderBy(value, (v) => v.matchingAddon.externalIds.length).reverse()[0].matchingAddon
+      );
+    } finally {
+      this._scanUpdateSrc.next({
+        type: ScanUpdateType.Complete,
+      });
     }
-
-    const matchedAddonFolders = addonFolders.filter((addonFolder) => !!addonFolder.matchingAddon);
-    matchedAddonFolders.forEach((maf) => this.setExternalIds(maf.matchingAddon, maf.toc));
-    const matchedGroups = _.groupBy(
-      matchedAddonFolders,
-      (addonFolder) => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`
-    );
-
-    console.log(Object.keys(matchedGroups));
-
-    return Object.values(matchedGroups).map(
-      (value) => _.orderBy(value, (v) => v.matchingAddon.externalIds.length).reverse()[0].matchingAddon
-    );
   }
 
   private setExternalIds(addon: Addon, toc: Toc) {
