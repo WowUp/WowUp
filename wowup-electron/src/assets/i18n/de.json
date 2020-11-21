@@ -155,7 +155,7 @@
         "AUTHOR_COLUMN_HEADER": "Veröffentlicher",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Anzahl Downloads",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
-        "RELEASED_AT_COLUMN_HEADER": "Veröffentlicht am",
+        "RELEASED_AT_COLUMN_HEADER": "Veröffentlichung",
         "STATUS_COLUMN_HEADER": "Status"
       }
     },
@@ -218,7 +218,7 @@
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "PROVIDER_RELEASE_CHANNEL": "Anbieter Kanal",
-        "RELEASED_AT_COLUMN_HEADER": "Veröffentlicht am",
+        "RELEASED_AT_COLUMN_HEADER": "Veröffentlichung",
         "STATUS_COLUMN_HEADER": "Status",
         "UPDATED_AT_COLUMN_HEADER": "Aktualisiert am"
       },
