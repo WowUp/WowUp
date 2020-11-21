@@ -395,15 +395,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-    public onVisitProvider(addon: Addon) {
-    try {
-      const externalURL = addon.externalUrl;
-      this.electronService.shell.openExternal(externalURL);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
     const col = this.columns.find((col) => col.name === column.name);
     col.visible = event.checked;
