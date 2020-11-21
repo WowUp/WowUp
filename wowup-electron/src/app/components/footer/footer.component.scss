@@ -7,6 +7,7 @@ footer {
   align-items: center;
 
   p {
+    font-size: 0.8em;
     margin: 0;
   }
 
@@ -15,10 +16,6 @@ footer {
     height: 25px;
     -webkit-app-region: no-drag;
     cursor: pointer;
-  }
-
-  div {
-    font-size: 0.8em;
   }
 
   .link {
