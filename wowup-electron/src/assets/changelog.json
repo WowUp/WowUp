@@ -1,6 +1,18 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-rc.2",
+      "changes": [
+        "French locale updates (Zazou)",
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "Use the updated date to check for new version, not installed date (Linaori)",
+        "Title bar buttons will no longer have a gap at the top on Windows (Linaori)",
+        "Fix the wobbly app update refresh button animation",
+        "Fix the title bar theme logo on Mac"
+      ]
+    },
+    {
       "Version": "2.0.0-rc.1",
       "changes": [
         "German locale updates (Glow)",
