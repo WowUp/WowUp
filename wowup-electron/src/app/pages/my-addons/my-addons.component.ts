@@ -679,27 +679,28 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextMenuPosition.y = event.clientY + "px";
   }
 
-  private loadAddons(clientType: WowClientType, rescan = false) {
+  private async loadAddons(clientType: WowClientType, rescan = false) {
     this.isBusy = true;
     this.enableControls = false;
+    this._cdRef.detectChanges();
 
     console.log("Load-addons", clientType);
 
-    from(this.addonService.getAddons(clientType, rescan)).subscribe({
-      next: (addons) => {
-        this.isBusy = false;
-        this.enableControls = this.calculateControlState();
-        this._displayAddonsSrc.next(this.formatAddons(addons));
-        this.setPageContextText();
-        this._cdRef.detectChanges();
-        this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
-      },
-      error: (err) => {
-        console.error(err);
-        this.isBusy = false;
-        this.enableControls = this.calculateControlState();
-      },
-    });
+    try {
+      const addons = await this.addonService.getAddons(clientType, rescan);
+      this.isBusy = false;
+      this.enableControls = this.calculateControlState();
+      this._displayAddonsSrc.next(this.formatAddons(addons));
+      this.setPageContextText();
+      this._cdRef.detectChanges();
+      this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
+    } catch (e) {
+      console.error(e);
+      this.isBusy = false;
+      this.enableControls = this.calculateControlState();
+    } finally {
+      this._cdRef.detectChanges();
+    }
   }
 
   private formatAddons(addons: Addon[]): AddonViewModel[] {
