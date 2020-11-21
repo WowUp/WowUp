@@ -3,9 +3,9 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Mise à jour automatique de {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "Analyse des addons terminée...",
+      "ADDON_SCAN_STARTED": "Début de l'analyse des addons...",
+      "ADDON_SCAN_UPDATE": "Analyse de {count} dossiers..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Vérification des mises à jour...",
@@ -73,13 +73,13 @@
       "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} {count, plural, one{millier} other{{count} milliers}}",
-      "e+4": "{count} milliers",
-      "e+5": "{count} milliers",
-      "e+6": "{count} {count, plural, one{million} other{{count} millions}} ",
+      "e+3": "{count}",
+      "e+4": "{count}",
+      "e+5": "{count}",
+      "e+6": "{count} {count, plural, =1{million} other{millions}}",
       "e+7": "{count} millions",
       "e+8": "{count} millions",
-      "e+9": "{count} {count, plural, one{milliard} other{{count} milliards}} "
+      "e+9": "{count} {count, plural, =1{milliard} other{milliards}}",      
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -129,7 +129,7 @@
       "IMPORT_BUTTON": "Importer",
       "INSTALL_BUTTON": "Installer",
       "INSTALL_SUCCESS_LABEL": "Installé !",
-      "SUPPORTED_SOURCES": "Supporte WowInterface et GitHub*",
+      "SUPPORTED_SOURCES": "Supporte WowInterface et GitHub",
       "TITLE": "URL de l'addon à installer"
     },
     "TELEMETRY": {
