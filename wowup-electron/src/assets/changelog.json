@@ -1,6 +1,23 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-rc.1",
+      "changes": [
+        "German locale updates (Glow)",
+        "Chinese locale updates (CyanoHao)",
+        "Portuguese locale updates (Dogo)",
+        "Spanish locale updates (SkollVargr)",
+        "Always get the game version from the toc, not the provider (Linaori)",
+        "Add more translation flexibility to the 'Install By URL' dialog",
+        "Fix an issue with sorting by game version appearing mismatched",
+        "Fix checkbox wrapping in context menus",
+        "Fix addon install analytics to be more useful",
+        "Fix checkbox wrapping in context menus",
+        "Fix dark theme row highlight again",
+        "Try to fix an issue with authors pushing the same version name multiple times not getting picked up"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.21",
       "changes": [
         "Italian locale updates (Bito)",

@@ -27,11 +27,11 @@ export class AddonViewModel {
   }
 
   get needsInstall() {
-    return !this.isInstalling && !this.addon.installedVersion;
+    return !this.isInstalling && AddonUtils.needsInstall(this.addon);
   }
 
   get needsUpdate() {
-    return !this.isInstalling && this.addon.installedVersion !== this.addon.latestVersion;
+    return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
   }
 
   get isAutoUpdate() {
@@ -108,7 +108,7 @@ export class AddonViewModel {
       return "COMMON.ADDON_STATE.INSTALL";
     }
 
-    console.log("Unhandled display state", this);
+    console.warn("Unhandled display state", this.isUpToDate, JSON.stringify(this, null, 2));
     return "COMMON.ADDON_STATE.UNKNOWN";
   }
 
