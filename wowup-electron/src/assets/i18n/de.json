@@ -1,7 +1,7 @@
 {
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatisches Update",
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Nach Updates prüfen...",
       "QUIT_ACTION": "Beenden",
@@ -112,11 +112,11 @@
       "ADDON_URL_INPUT_LABEL": "Addon URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub oder WowInterface URL",
       "CLOSE_BUTTON": "Schließen",
-      "DESCRIPTION": "Wenn Du ein Addon direkt von einer URL installieren möchtest, füge sie unten in der Zeile ein.",
+      "DESCRIPTION": "Wenn Du ein Addon direkt per URL installieren möchtest, füge sie unten in der Zeile ein.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
-        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche er erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #wowup-support nach Hilfe fragen.",
+        "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #wowup-support nach Hilfe fragen.",
         "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest Du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository ein Release Etikett mit einem ZIP Archiv hat, welches das Addon enthält.",
         "TITLE": "Addon Installation fehlgeschlagen"
@@ -138,7 +138,7 @@
     "ABOUT": {
       "CHANGE_LOG_SECTION_LABEL": "Änderungsverlauf",
       "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "Schau Dir die Website an!"
+      "WEBSITE_LINK_LABEL": "Schau dir die Website an!"
     },
     "GET_ADDONS": {
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
@@ -220,7 +220,7 @@
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Die Entfernung eines Addons über WowUp wird das ausgewählte Addon auch von deinem 'interfaces/addons' Ordner entfernen. Die Charakter Einstellungen des Addons werden nicht entfernt.",
         "CONFIRMATION_LESS_THAN_THREE": "Bist Du sicher, dass Du die folgenden {count} Addons entfernen willst?",
-        "CONFIRMATION_MORE_THAN_THREE": "Bist du sicher, dass Du die ausgewählten {count} Addons entfernen willst?",
+        "CONFIRMATION_MORE_THAN_THREE": "Bist Du sicher, dass Du die ausgewählten {count} Addons entfernen willst?",
         "CONFIRMATION_ONE": "Bist Du sicher, dass Du {addonName} entfernen willst?",
         "DEPENDENCY_MESSAGE": "{addonName} hat {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}. Willst Du diese ebenfalls entfernen?",
         "DEPENDENCY_TITLE": "Addon Abhängigkeiten entfernen?",
@@ -243,7 +243,7 @@
         "MINIMIZE_ON_CLOSE_LABEL": "Beim Schließen minimieren",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Die Änderung der Standardsprache erfordert einen Neustart.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Neue Standardsprache wird eingestellt",
-        "SET_LANGUAGE_DESCRIPTION": "Wähle eine Sprache aus, in die Du wechseln möchtest",
+        "SET_LANGUAGE_DESCRIPTION": "Wähl eine Sprache aus, in die Du wechseln möchtest",
         "SET_LANGUAGE_LABEL": "Sprache einstellen",
         "START_MINIMIZED_DESCRIPTION": "WowUp wird minimiert und nicht angezeigt gestartet.",
         "START_MINIMIZED_LABEL": "WowUp minimiert starten",
@@ -275,7 +275,7 @@
         "DEBUG": "Debug"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf 'Automatisches Update' gesetzt",
+        "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf 'Automatisches Update' eingestellt",
         "AUTO_UPDATE_LABEL": "Automatisch aktualisieren",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Bist Du sicher, dass Du den Installationsort für {clientName} leeren möchtest? Dies wird alle gespeicherten Addoninformationen für diesen Client entfernen.\n\nDeine Addon-Ordner werden nicht entfernt.",
