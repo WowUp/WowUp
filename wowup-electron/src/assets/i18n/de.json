@@ -219,10 +219,10 @@
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Die Entfernung eines Addons über WowUp wird das ausgewählte Addon auch von deinem 'interfaces/addons' Ordner entfernen. Die Charakter Einstellungen des Addons werden nicht entfernt.",
-        "CONFIRMATION_LESS_THAN_THREE": "Bist Du sicher, dass Du die folgenden {count} Addons entfernen willst?",
-        "CONFIRMATION_MORE_THAN_THREE": "Bist Du sicher, dass Du die ausgewählten {count} Addons entfernen willst?",
-        "CONFIRMATION_ONE": "Bist Du sicher, dass Du {addonName} entfernen willst?",
-        "DEPENDENCY_MESSAGE": "{addonName} hat {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}. Willst Du diese ebenfalls entfernen?",
+        "CONFIRMATION_LESS_THAN_THREE": "Bist Du sicher, dass Du die folgenden {count} Addons entfernen möchtest?",
+        "CONFIRMATION_MORE_THAN_THREE": "Bist Du sicher, dass Du die ausgewählten {count} Addons entfernen möchtest?",
+        "CONFIRMATION_ONE": "Bist Du sicher, dass Du {addonName} entfernen möchtest?",
+        "DEPENDENCY_MESSAGE": "{addonName} hat {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}. Möchtest Du diese ebenfalls entfernen?",
         "DEPENDENCY_TITLE": "Addon Abhängigkeiten entfernen?",
         "TITLE": "{count, plural, =1{Addon} other{Addons}} deinstallieren?"
       },
