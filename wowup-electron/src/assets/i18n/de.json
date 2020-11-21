@@ -110,7 +110,7 @@
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon URL",
-      "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub oder WowInterface URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub- oder WowInterface URL",
       "CLOSE_BUTTON": "Schließen",
       "DESCRIPTION": "Wenn Du ein Addon direkt per URL installieren möchtest, füge sie unten in der Zeile ein.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
