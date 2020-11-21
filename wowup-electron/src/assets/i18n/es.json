@@ -2,8 +2,13 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Buscar Actualizaciones...",
+      "CHECK_UPDATE": "Buscar Actualizaciones de WowUp",
       "QUIT_ACTION": "Salir",
       "SHOW_ACTION": "Mostrar"
     },
@@ -185,7 +190,7 @@
         "TITLE": "Mostrar Columna"
       },
       "FILTER_LABEL": "Filtro",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon tiene varios proveedores",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon está disponible en varios proveedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Charle con nosotros en Discord",
@@ -227,7 +232,7 @@
         "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Actualizar Todo",
-      "UPDATE_ALL_BUTTON_TOOLTIP": "Actualizar todos los addons para este cliente",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Actualiza todos los addons para este cliente",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Actualizar Todos los Clientes",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Actualizar Retail/Classic"

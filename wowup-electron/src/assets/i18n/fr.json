@@ -2,6 +2,11 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "Mise à jour automatique de {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Vérification des mises à jour...",
       "QUIT_ACTION": "Quitter",
