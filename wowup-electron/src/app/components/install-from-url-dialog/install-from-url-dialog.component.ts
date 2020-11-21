@@ -70,7 +70,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
   }
 
   public getDownloadCountParams() {
-    const count = 1000;
+    const count = this.addon.downloadCount;
     return {
       count,
       shortCount: roundDownloadCount(count),

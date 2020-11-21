@@ -83,7 +83,9 @@ footer {
       }
 
       &.animate {
-        animation: rotate 1.5s infinite linear reverse;
+        .mat-icon {
+          animation: rotate 1.5s infinite linear reverse;
+        }
       }
     }
 
