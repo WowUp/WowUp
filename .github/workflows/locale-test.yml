@@ -33,10 +33,14 @@ jobs:
       run: npm install -g @angular/cli
 
     - name: Install Deps
-      run: cd ./wowup-electron && npm i
+      run: |
+        cd ./wowup-electron
+        npm i
 
     - name: Install XVFB
       uses: GabrielBB/xvfb-action@v1
       with:
         # working-directory: ./wowup-electron #optional
-        run: cd ./wowup-electron && ng test --watch=false --include='src/locales.spec.ts'
+        run: |
+          cd ./wowup-electron 
+          ng test --watch=false --include='src/locales.spec.ts'
