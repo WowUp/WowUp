@@ -9,11 +9,11 @@ import { httpLoaderFactory } from "../../app.module";
 
 describe("OptionsDebugSectionComponent", () => {
   let component: OptionsDebugSectionComponent;
+  let fixture: ComponentFixture<OptionsDebugSectionComponent>;
   let addonService: AddonService;
   let wowUpService: WowUpService;
   let addonServiceSpy: any;
   let wowUpServiceSpy: any;
-  let fixture: ComponentFixture<OptionsDebugSectionComponent>;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj(AddonService, ["logDebugData"]);
