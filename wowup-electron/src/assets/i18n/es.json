@@ -3,9 +3,9 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "Escaneo de addons completado.",
+      "ADDON_SCAN_STARTED": "Iniciando escaneo de addons...",
+      "ADDON_SCAN_UPDATE": "Escaneando {count} carpetas..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Buscar Actualizaciones de WowUp",
