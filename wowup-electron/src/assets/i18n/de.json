@@ -8,7 +8,7 @@
       "ADDON_SCAN_UPDATE": "{count} Ordner werden gescannt..."
     },
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Nach Updates prüfen...",
+      "CHECK_UPDATE": "Auf Updates prüfen...",
       "QUIT_ACTION": "Beenden",
       "SHOW_ACTION": "Öffnen"
     },
@@ -21,7 +21,7 @@
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp Update installieren",
-      "INSTALL_MESSAGE": "Möchtest Du WowUp neustarten, um das Update zu installieren?",
+      "INSTALL_MESSAGE": "Möchtest Du WowUp neu starten, um das Update zu installieren?",
       "INSTALL_TITLE": "WowUp Update bereit",
       "NOT_AVAILABLE": "Die aktuellste Version von WowUp ist bereits installiert",
       "PORTABLE_DOWNLOAD_MESSAGE": "Möchtest Du die neueste Portable-Version manuell herunterladen?\n\nDu musst die App manuell schließen und die neue Version über die Alte kopieren.",
@@ -29,7 +29,7 @@
       "SNACKBAR_ACTION": "Update",
       "SNACKBAR_TEXT": "Eine neue Version von WowUp ist verfügbar",
       "TOOLTIP": "WowUp Update verfügbar",
-      "UPDATE_ERROR": "WowUp konnte das Update nicht finden"
+      "UPDATE_ERROR": "WowUp konnte nicht nach Updates suchen"
     }
   },
   "COMMON": {
@@ -43,7 +43,7 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup wird erstellt",
-      "COMPLETE": "Installiert",
+      "COMPLETE": "Vollständig",
       "DOWNLOADING": "Herunterladen...",
       "INSTALLING": "Installieren...",
       "PENDING": "Ausstehend",
@@ -117,7 +117,7 @@
       "ADDON_URL_INPUT_LABEL": "Addon URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub- oder WowInterface URL",
       "CLOSE_BUTTON": "Schließen",
-      "DESCRIPTION": "Wenn Du ein Addon direkt per URL installieren möchtest, füge sie unten in der Zeile ein.",
+      "DESCRIPTION": "Wenn Du ein Addon direkt per URL installieren möchtest, füge diese unten in der Zeile ein.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
@@ -147,15 +147,15 @@
     },
     "GET_ADDONS": {
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "INSTALL_FROM_URL_BUTTON": "Über eine URL installieren",
+      "INSTALL_FROM_URL_BUTTON": "Mit URL installieren",
       "REFRESH_BUTTON": "Aktualisieren",
       "SEARCH_LABEL": "Suchen",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
-        "AUTHOR_COLUMN_HEADER": "Veröffentlicher",
+        "AUTHOR_COLUMN_HEADER": "Autor",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Anzahl Downloads",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
-        "RELEASED_AT_COLUMN_HEADER": "Veröffentlichung",
+        "RELEASED_AT_COLUMN_HEADER": "Aktualisiert vor",
         "STATUS_COLUMN_HEADER": "Status"
       }
     },
@@ -180,11 +180,11 @@
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Möchtest Du den Addon Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und es durch eine Version vom neuen Anbieter ersetzen.",
+        "MESSAGE": "Möchtest Du den Addon Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und dieses durch eine Version vom neuen Anbieter ersetzen.",
         "TITLE": "Addon Anbieter wechseln?"
       },
-      "CHECK_UPDATES_BUTTON": "Nach Updates prüfen",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Nach neuen Addon-Updates prüfen",
+      "CHECK_UPDATES_BUTTON": "Auf Updates prüfen",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Auf neue Addon-Updates prüfen",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Spalten anzeigen"
@@ -212,15 +212,15 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installieren",
         "ADDON_UPDATE_BUTTON": "Aktualisieren",
-        "AUTHOR_COLUMN_HEADER": "Veröffentlicher",
+        "AUTHOR_COLUMN_HEADER": "Autor",
         "AUTO_UPDATE_ICON_TOOLTIP": "Automatisches Update aktiviert",
         "GAME_VERSION_COLUMN_HEADER": "Spielversion",
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "PROVIDER_RELEASE_CHANNEL": "Anbieter Kanal",
-        "RELEASED_AT_COLUMN_HEADER": "Veröffentlichung",
+        "RELEASED_AT_COLUMN_HEADER": "Veröffentlicht am",
         "STATUS_COLUMN_HEADER": "Status",
-        "UPDATED_AT_COLUMN_HEADER": "Aktualisiert am"
+        "UPDATED_AT_COLUMN_HEADER": "Aktualisiert vor"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Die Entfernung eines Addons über WowUp wird das ausgewählte Addon auch von deinem 'interfaces/addons' Ordner entfernen. Die Charakter Einstellungen des Addons werden nicht entfernt.",
@@ -243,8 +243,8 @@
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivierung/Deaktivierung verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen des WowUp-Fensters in die Menübar minimieren.",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters auf das Systemabschnitt minimieren.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen in die Menübar minimieren.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen auf das Systemabschnitt minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Beim Schließen minimieren",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Die Änderung der Standardsprache erfordert einen Neustart.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Neue Standardsprache wird eingestellt",
@@ -256,10 +256,10 @@
         "START_WITH_SYSTEM_LABEL": "WowUp mit dem System starten",
         "TELEMETRY_DESCRIPTION": "WowUp helfen, indem anonyme Installationsdaten und/oder Fehler gesendet werden.",
         "TELEMETRY_LABEL": "Telemetrie",
-        "THEME_DESCRIPTION": "Die Farbschema nach Herzenslust verändern",
+        "THEME_DESCRIPTION": "Die Farbschema nach deinen Wünschen verändern",
         "THEME_LABEL": "Farbschema",
         "TITLE": "Applikation",
-        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "App neustarten?",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "App neu starten?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Die Deaktivierung der Hardwarebeschleunigung kann FPS Probleme und Probleme beim Rendern beheben. Eine Änderung dieser Einstellung erfordert einen Neustart der App.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Die Deaktivierung der Hardwarebeschleunigung erfordert einen Neustart der App.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Die Aktivierung der Hardwarebeschleunigung erfordert einen Neustart der App.",
