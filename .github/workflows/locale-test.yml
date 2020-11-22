@@ -38,5 +38,5 @@ jobs:
     - name: Install XVFB
       uses: GabrielBB/xvfb-action@v1
       with:
-        working-directory: ./wowup-electron #optional
+        # working-directory: ./wowup-electron #optional
         run: ng test --watch=false --include='src/locales.spec.ts'
