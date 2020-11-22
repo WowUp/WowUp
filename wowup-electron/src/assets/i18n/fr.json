@@ -70,12 +70,12 @@
       "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{dépendance requise} other{dépendances requises}}"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{count}",
-      "e+1": "{count}",
-      "e+2": "{count}",
-      "e+3": "{count}",
-      "e+4": "{count}",
-      "e+5": "{count}",
+      "e+0": "{rawCount}",
+      "e+1": "{rawCount}",
+      "e+2": "{rawCount}",
+      "e+3": "{rawCount}",
+      "e+4": "{rawCount}",
+      "e+5": "{rawCount}",
       "e+6": "{count} {count, plural, one{million} other{millions}}",
       "e+7": "{count} millions",
       "e+8": "{count} millions",
