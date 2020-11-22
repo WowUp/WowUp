@@ -5,6 +5,6 @@ node_js:
   - 'lts/*'
 install:
   - npm install -g @angular/cli
-  - npm install
+  - cd ./wowup-electron && npm install
 script:
   - cd ./wowup-electron && ng lint
