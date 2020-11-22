@@ -65,11 +65,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: CD Project
-      run: cd ./wowup-electron
-
     - name: Install Deps
-      run: npm i
+      run: cd ./wowup-electron && npm i
 
     - name: Run Locale Test
-      run:  ng test --watch=false --include='src/locales.spec.ts'
+      run: cd ./wowup-electron && ng test --watch=false --include='src/locales.spec.ts'
