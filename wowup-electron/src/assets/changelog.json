@@ -1,6 +1,16 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-rc.4",
+      "changes": [
+        "German locale updates (maestroh, Glow)",
+        "Italian locale updates (Bito)",
+        "Fix a bug with importing via URL and having 0 downloads",
+        "Add raw count option for translating download count",
+        "Add art attributions"
+      ]
+    },
+    {
       "Version": "2.0.0-rc.3",
       "changes": [
         "Spanish locale updates (SkollVargr)",
