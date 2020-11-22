@@ -220,7 +220,7 @@
         "PROVIDER_RELEASE_CHANNEL": "Canale del Provider",
         "RELEASED_AT_COLUMN_HEADER": "Rilasciato",
         "STATUS_COLUMN_HEADER": "Stato",
-        "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
+        "UPDATED_AT_COLUMN_HEADER": "Aggiornato",
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Rimuovendo un addon tramite WowUp rimuoverà l'addon selezionato dal percorso Interface\nAddOns. Le impostazioni del personaggio per questo addon non verranno rimosse.",
