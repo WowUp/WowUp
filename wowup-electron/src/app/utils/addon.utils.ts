@@ -31,7 +31,7 @@ export function getGameVersion(gameVersion: string): string {
     return gameVersion;
   }
 
-  if (gameVersion.indexOf(".") !== -1) {
+  if (gameVersion.toString().indexOf(".") !== -1) {
     return gameVersion;
   }
 

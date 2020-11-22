@@ -10,7 +10,7 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
   template: `<p>{{ number | downloadCount }}</p>`,
 })
 class TestDownloadCountComponent {
-  public number: number = 1;
+  public number: number = 0;
 }
 
 describe("DownloadCountPipe", () => {
