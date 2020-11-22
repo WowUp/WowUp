@@ -10,7 +10,7 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 describe("OptionsComponent", () => {
   let component: OptionsComponent;
   let fixture: ComponentFixture<OptionsComponent>;
-  let addonService: ElectronService;
+  let electronService: ElectronService;
   let wowUpService: WowUpService;
   let electronServiceSpy: any;
   let wowUpServiceSpy: any;
@@ -51,7 +51,7 @@ describe("OptionsComponent", () => {
     fixture = TestBed.createComponent(OptionsComponent);
     component = fixture.componentInstance;
     wowUpService = fixture.debugElement.injector.get(WowUpService);
-    addonService = fixture.debugElement.injector.get(ElectronService);
+    electronService = fixture.debugElement.injector.get(ElectronService);
 
     fixture.detectChanges();
   });
