@@ -219,7 +219,7 @@
         "PROVIDER_COLUMN_HEADER": "Provider",
         "PROVIDER_RELEASE_CHANNEL": "Canale del Provider",
         "RELEASED_AT_COLUMN_HEADER": "Rilasciato",
-        "STATUS_COLUMN_HEADER": "Stato",
+        "STATUS_COLUMN_HEADER": "Stato", 
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
       },
       "UNINSTALL_POPUP": {
