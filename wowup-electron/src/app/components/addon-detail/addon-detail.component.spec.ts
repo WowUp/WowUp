@@ -67,7 +67,7 @@ describe("AddonDetailComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create a", () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
