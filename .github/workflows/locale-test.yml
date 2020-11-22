@@ -1,7 +1,8 @@
 name: Angular Locale Test
 
 on:
-  branches: [ develop ]
+  push:
+    branches: [ develop ]
 
 jobs:
 
