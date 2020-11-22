@@ -1,7 +1,7 @@
 name: Angular Locale Test
 
 on:
-  push:
+  pull_request:
     branches: [ develop ]
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
         cd ./wowup-electron
         ng lint
 
-    - name: Install XVFB
+    - name: Test Locales
       run: |
         sudo apt-get install xvfb
         cd ./wowup-electron 
