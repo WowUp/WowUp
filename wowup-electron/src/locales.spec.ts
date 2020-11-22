@@ -51,7 +51,7 @@ describe("LocaleTest", () => {
     );
   }
 
-  for (let locale of LOCALES) {
+  for (const locale of LOCALES) {
     checkLocale(locale);
   }
 });
