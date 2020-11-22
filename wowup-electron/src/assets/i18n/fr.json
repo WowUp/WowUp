@@ -79,7 +79,7 @@
       "e+6": "{count} {count, plural, one{million} other{millions}}",
       "e+7": "{count} millions",
       "e+8": "{count} millions",
-      "e+9": "{count} {count, plural, one{milliard} other{milliards}}",
+      "e+9": "{count} {count, plural, one{milliard} other{milliards}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
