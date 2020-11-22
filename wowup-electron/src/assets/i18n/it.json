@@ -29,7 +29,7 @@
       "SNACKBAR_ACTION": "Aggiorna",
       "SNACKBAR_TEXT": "È disponibile una nuova versione di WowUp",
       "TOOLTIP": "Aggiornamento di WowUp disponibile",
-      "UPDATE_ERROR": "Fallito nell'ottenere l'ultima versione di WowUp"
+      "UPDATE_ERROR": "Errore nel download dell'ultima versione di WowUp"
     }
   },
   "COMMON": {
@@ -89,7 +89,7 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Fallito nel cambiare provider per {addonName} con {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Errore nel cambio di provider per {addonName} con {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
@@ -190,7 +190,7 @@
         "TITLE": "Mostra Colonne"
       },
       "FILTER_LABEL": "Filtra",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "Questo addon ha più providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Questo addon ha più di un provider",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Contattaci su Discord",
