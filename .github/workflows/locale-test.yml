@@ -38,9 +38,10 @@ jobs:
         npm i
 
     - name: Install XVFB
-      uses: GabrielBB/xvfb-action@v1
+      # uses: GabrielBB/xvfb-action@v1
       with:
         # working-directory: ./wowup-electron #optional
         run: |
+          sudo apt-get install xvfb
           cd ./wowup-electron 
-          ng test --watch=false --include='src/locales.spec.ts'
+          xvfb-run --auto-servernum ng test --watch=false --include='src/locales.spec.ts'
