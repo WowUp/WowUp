@@ -1,37 +1,88 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { TranslateModule } from "@ngx-translate/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { ElectronService } from "../../services";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { httpLoaderFactory } from "../../app.module";
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { BehaviorSubject } from "rxjs";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { HomeComponent } from "./home.component";
-import { MatOptionModule } from "@angular/material/core";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  let electronService: ElectronService;
+  let electronServiceSpy: any;
+  let wowUpService: WowUpService;
+  let wowUpServiceSpy: any;
+  let sessionService: SessionService;
+  let sessionServiceSpy: any;
+  let addonService: AddonService;
+  let addonServiceSpy: any;
+  let warcraftService: WarcraftService;
+  let warcraftServiceSpy: any;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [HomeComponent],
-        imports: [MatOptionModule, TranslateModule.forRoot(), RouterTestingModule],
-      }).compileComponents();
+  beforeEach(async () => {
+    addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
+      scanUpdate$: new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown }).asObservable(),
     })
-  );
+    warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
+      installedClientTypes$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
+    })
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
+      isWin : false,
+      isLinux : true,
+      isMax: false,
+    });
 
-  beforeEach(() => {
+    await TestBed.configureTestingModule({
+      declarations: [HomeComponent],
+      imports: [
+        MatSnackBarModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        })
+      ],
+      providers: [
+        MatSnackBar,
+      ]
+    }).overrideComponent(HomeComponent, {
+      set: {
+        providers: [
+          { provide: AddonService, useValue: addonServiceSpy },
+          { provide: WowUpService, useValue: wowUpServiceSpy },
+          { provide: ElectronService, useValue: electronServiceSpy },
+          { provide: SessionService, useValue: sessionServiceSpy },
+          { provide: WarcraftService, useValue: warcraftServiceSpy },
+        ]},
+    }).compileComponents();
+
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
+    addonService = fixture.debugElement.injector.get(AddonService);
+    wowUpService = fixture.debugElement.injector.get(WowUpService);
+    electronService = fixture.debugElement.injector.get(ElectronService);
+    sessionService = fixture.debugElement.injector.get(SessionService);
+    warcraftService = fixture.debugElement.injector.get(WarcraftService);
+
     fixture.detectChanges();
   });
 
   it("should create", () => {
     expect(component).toBeTruthy();
   });
-
-  it(
-    "should render title in a h1 tag",
-    waitForAsync(() => {
-      const compiled = fixture.debugElement.nativeElement;
-      expect(compiled.querySelector("h1").textContent).toContain("PAGES.HOME.TITLE");
-    })
-  );
 });

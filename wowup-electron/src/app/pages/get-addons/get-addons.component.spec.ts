@@ -14,8 +14,6 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { BehaviorSubject } from "rxjs";
 import { MatMenuModule } from "@angular/material/menu";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { MatInputModule } from "@angular/material/input";
-import { MatFormFieldModule } from "@angular/material/form-field";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
