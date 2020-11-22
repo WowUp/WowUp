@@ -34,8 +34,8 @@ describe("AppComponent", () => {
   let analyticsServiceSpy: any;
 
   beforeEach(async () => {
-    addonServiceSpy = jasmine.createSpyObj("AddonService", ['processAutoUpdates']);
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", ['invoke'], {
+    addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke"], {
       appOptions: {quit : null},
     });
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
@@ -43,7 +43,7 @@ describe("AppComponent", () => {
     });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""]);
     fileServiceSpy = jasmine.createSpyObj("FileService", [""]);
-    analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", ['trackStartup']);
+    analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", ["trackStartup"]);
 
     await TestBed.configureTestingModule({
       declarations: [AppComponent],
