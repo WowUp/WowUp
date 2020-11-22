@@ -1,7 +1,7 @@
 name: Angular Locale Test
 
 on:
-  pull_request:
+  push:
     branches: [ develop ]
 
 jobs:
@@ -35,6 +35,11 @@ jobs:
       run: |
         cd ./wowup-electron
         npm i
+
+    - name: Lint
+      run: |
+        cd ./wowup-electron
+        ng lint
 
     - name: Install XVFB
       run: |
