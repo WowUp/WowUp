@@ -39,6 +39,9 @@ describe("HomeComponent", () => {
       isLinux : true,
       isMax: false,
     });
+    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
+      checkForAppUpdate : async () => null,
+    })
 
     await TestBed.configureTestingModule({
       declarations: [HomeComponent],
