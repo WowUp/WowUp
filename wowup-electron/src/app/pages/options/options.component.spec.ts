@@ -21,7 +21,7 @@ describe("OptionsComponent", () => {
     }, {
       currentTheme: "horde ofc",
     });
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["a"], {
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
       isWin : false,
       isLinux : true,
       isMax: false,

@@ -38,11 +38,11 @@ describe("AppComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ['invoke'], {
       appOptions: {quit : null},
     });
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", ['a'], {
+    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       preferenceChange$: new Subject<PreferenceChange>().asObservable(),
     });
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", ['a']);
-    fileServiceSpy = jasmine.createSpyObj("FileService", ['a']);
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", [""]);
+    fileServiceSpy = jasmine.createSpyObj("FileService", [""]);
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", ['trackStartup']);
 
     await TestBed.configureTestingModule({
