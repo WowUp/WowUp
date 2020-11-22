@@ -65,6 +65,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: CD Project
+      run: cd ./wowup-electron
+
     - name: Install Deps
       run: npm i
 
