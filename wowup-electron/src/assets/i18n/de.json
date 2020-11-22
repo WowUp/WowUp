@@ -244,7 +244,7 @@
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivierung/Deaktivierung verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen in die Menübar minimieren.",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen auf dem Systemabschnitt minimieren.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen auf den Systemabschnitt minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Beim Schließen minimieren",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Die Änderung der Standardsprache erfordert einen Neustart.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Neue Standardsprache wird eingestellt",
