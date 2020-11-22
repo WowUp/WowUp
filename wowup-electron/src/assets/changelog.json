@@ -1,6 +1,18 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-rc.3",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "French locale updates (Zazou)",
+        "Russian locale updates (Medok)",
+        "Get the unit tests back to functioning (Linaori)",
+        "Standardize the footer text size",
+        "Remove update date check when looking for TukUI updates",
+        "Added action to test locales upon pull request"
+      ]
+    },
+    {
       "Version": "2.0.0-rc.2",
       "changes": [
         "French locale updates (Zazou)",
