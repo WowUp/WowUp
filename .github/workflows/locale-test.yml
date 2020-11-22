@@ -26,9 +26,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-        
-    - name: Install XVFB
-      uses: GabrielBB/xvfb-action@v1
+
+
 
     - name: Install Angular CLI
       run: npm install -g @angular/cli
@@ -36,5 +35,8 @@ jobs:
     - name: Install Deps
       run: cd ./wowup-electron && npm i
 
-    - name: Run Locale Test
-      run: cd ./wowup-electron && ng test --watch=false --include='src/locales.spec.ts'
+    - name: Install XVFB
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        working-directory: ./wowup-electron #optional
+        run: ng test --watch=false --include='src/locales.spec.ts'
