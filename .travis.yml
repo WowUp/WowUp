@@ -1,3 +1,4 @@
+if: (type = pull_request AND branch IN (develop)) 
 os:
   - linux
 language: node_js
