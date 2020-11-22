@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateModule } from "@ngx-translate/core";
 import { HomeComponent } from "./home.component";
+import { MatOptionModule } from "@angular/material/core";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -11,7 +12,7 @@ describe("HomeComponent", () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [HomeComponent],
-        imports: [TranslateModule.forRoot(), RouterTestingModule],
+        imports: [MatOptionModule, TranslateModule.forRoot(), RouterTestingModule],
       }).compileComponents();
     })
   );

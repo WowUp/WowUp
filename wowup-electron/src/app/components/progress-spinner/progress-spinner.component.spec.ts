@@ -4,6 +4,7 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 describe("ProgressSpinnerComponent", () => {
   let component: ProgressSpinnerComponent;
@@ -12,7 +13,7 @@ describe("ProgressSpinnerComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ProgressSpinnerComponent],
-      imports: [HttpClientModule, TranslateModule.forRoot({
+      imports: [MatProgressSpinnerModule, HttpClientModule, TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
           useFactory: httpLoaderFactory,

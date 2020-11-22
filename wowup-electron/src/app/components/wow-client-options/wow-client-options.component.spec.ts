@@ -33,11 +33,6 @@ describe("WowClientOptionsComponent", () => {
     }, {
       products$: new BehaviorSubject<InstalledProduct[]>([]).asObservable(),
     })
-    // electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-    //   isWin : false,
-    //   isLinux : true,
-    //   isMax: false,
-    // });
 
     await TestBed.configureTestingModule({
       declarations: [WowClientOptionsComponent],
