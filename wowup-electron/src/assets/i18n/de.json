@@ -3,9 +3,9 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "Addon-Scan abgeschlossen...",
+      "ADDON_SCAN_STARTED": "Addon-Scan gestartet...",
+      "ADDON_SCAN_UPDATE": "Scanne {count} Ordner..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Nach Updates suchen...",
@@ -117,7 +117,7 @@
       "ADDON_URL_INPUT_LABEL": "Addon URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub oder WowInterface URL",
       "CLOSE_BUTTON": "Schließen",
-      "DESCRIPTION": "Wenn Sie ein Addon direkt von einer URL installieren möchten, fügen Sie es unten in der Zeile ein.",
+      "DESCRIPTION": "Wenn du ein Addon direkt von einer URL installieren möchten, füge diese in das Textfeld ein.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
@@ -200,7 +200,7 @@
         "VIEW_GUIDE": "Schaue dir unseren Leitfaden an, um zu sehen, was WowUp kann"
       },
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
-      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scannen Sie Ihren Client-Ordner nach installierten Addons",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scanne deine Client-Ordner nach installierten Addons",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Wenn du ein erneutes scannen durchführst, können deine Addon Informationen verloren gehen. Dieser Vorgang braucht einen Moment.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Neu scannen starten?",
       "SPINNER": {
@@ -254,7 +254,7 @@
         "START_MINIMIZED_LABEL": "Starte WowUp minimiert",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp wird direkt gestartet, nachdem dein Betriebssystem geladen wurde...",
         "START_WITH_SYSTEM_LABEL": "Starte WowUp mit dem System",
-        "TELEMETRY_DESCRIPTION": "Helfen Sie WowUp zu verbessern, indem Sie anonyme Installationsdaten und/oder Fehler senden.",
+        "TELEMETRY_DESCRIPTION": "Hilf dabei WowUp zu verbessern, indem du anonyme Installationsdaten und/oder Fehler sendest.",
         "TELEMETRY_LABEL": "Telemetrie",
         "THEME_DESCRIPTION": "Ändere das Farbschma nach deinen Wünschen",
         "THEME_LABEL": "Farbschema",
@@ -267,10 +267,10 @@
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten dumpen",
-        "DEBUG_DATA_DESCRIPTION": "Protokollieren Sie Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies finden Sie in Ihrer aktuellen Protokolldatei (für Neugierige).",
+        "DEBUG_DATA_DESCRIPTION": "Protokolliere Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies findest du in deiner aktuellen Protokolldatei (für Neugierige).",
         "DEBUG_DATA_LABEL": "Debug-Daten",
         "LOG_FILES_BUTTON": "Log-Dateien anzeigen",
-        "LOG_FILES_DESCRIPTION": "Öffnen Sie den Ordner, der Ihre letzten Logdateien enthält.",
+        "LOG_FILES_DESCRIPTION": "Öffne den Ordner, der deine letzten Logdateien enthält.",
         "LOG_FILES_LABEL": "Log-Dateien",
         "TITLE": "Debuggen"
       },
