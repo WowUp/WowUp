@@ -1,13 +1,13 @@
 import * as _ from "lodash";
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
-import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
+import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import * as SearchResults from "../../utils/search-result.utils";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
-import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
+import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 
 export interface PotentialAddonViewDetailsEvent {
   searchResult: AddonSearchResult;

@@ -8,7 +8,7 @@ import { SessionService } from "../../services/session/session.service";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { roundDownloadCount, shortenDownloadCount } from "../../utils/number.utils";
-import { DownloadCountPipe } from "app/pipes/download-count.pipe";
+import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 
 @Component({
   selector: "app-install-from-url-dialog",

@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
-import { AddonDependency } from "app/models/wowup/addon-dependency";
-import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
-import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
-import { Toc } from "app/models/wowup/toc";
+import { AddonDependency } from "../../models/wowup/addon-dependency";
+import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
+import { Toc } from "../../models/wowup/toc";
 import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_WOWINTERFACE,
   ERROR_ADDON_ALREADY_INSTALLED,
-} from "common/constants";
+} from "../../../common/constants";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
