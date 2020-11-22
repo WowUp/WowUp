@@ -41,7 +41,7 @@ describe("ExternalLinkDirective", () => {
   });
 
   it("should call openExternal on click", async () => {
-    let a = fixture.debugElement.nativeElement.querySelector('a');
+    let a = fixture.debugElement.nativeElement.querySelector("a");
     a.click();
     fixture.detectChanges();
     expect(shellSpy.openExternal).toHaveBeenCalledWith("http://localhost:2020/");
