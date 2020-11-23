@@ -12,7 +12,6 @@ import { AddonUpdateButtonComponent } from "./addon-update-button.component";
 import { Subject } from "rxjs";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { MatModule } from "../../mat-module";
-
 describe("AddonUpdateButtonComponent", () => {
   let component: AddonUpdateButtonComponent;
   let fixture: ComponentFixture<AddonUpdateButtonComponent>;

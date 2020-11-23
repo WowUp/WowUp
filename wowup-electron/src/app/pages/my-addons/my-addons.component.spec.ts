@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { ElectronService } from "../../services";
@@ -18,6 +18,7 @@ import { SortOrder } from "../../models/wowup/sort-order";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../mat-module";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
@@ -82,7 +83,8 @@ describe("MyAddonsComponent", () => {
       ],
       providers: [
         MatDialog,
-      ]
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).overrideComponent(MyAddonsComponent, {
       set: {
         providers: [

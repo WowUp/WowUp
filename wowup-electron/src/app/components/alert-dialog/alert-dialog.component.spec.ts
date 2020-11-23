@@ -14,17 +14,21 @@ describe("AlertDialogComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AlertDialogComponent],
-      imports: [MatModule, HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
-        },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
+      imports: [
+        MatModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        })
+      ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },

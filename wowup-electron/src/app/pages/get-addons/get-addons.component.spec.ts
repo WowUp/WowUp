@@ -15,6 +15,7 @@ import { BehaviorSubject } from "rxjs";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../mat-module";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -67,7 +68,8 @@ describe("GetAddonsComponent", () => {
       ],
       providers: [
         MatDialog,
-      ]
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).overrideComponent(GetAddonsComponent, {
       set: {
         providers: [

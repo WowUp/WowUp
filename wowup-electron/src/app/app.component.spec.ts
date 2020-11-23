@@ -12,7 +12,6 @@ import { WowUpService } from "./services/wowup/wowup.service";
 import { SessionService } from "./services/session/session.service";
 import { FileService } from "./services/files/file.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
-import { IconService } from "./services/icons/icon.service";
 import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { Subject } from "rxjs";
 import { PreferenceChange } from "./models/wowup/preference-change";
@@ -73,7 +72,6 @@ describe("AppComponent", () => {
       set: {
         providers: [
           MatDialog,
-          IconService,
           OverlayContainer,
           { provide: AddonService, useValue: addonServiceSpy },
           { provide: ElectronService, useValue: electronServiceSpy },

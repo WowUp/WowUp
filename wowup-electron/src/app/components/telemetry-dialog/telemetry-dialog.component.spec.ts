@@ -14,17 +14,21 @@ describe("TelemetryDialogComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TelemetryDialogComponent],
-      imports: [MatModule, HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
-        },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
+      imports: [
+        MatModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        })
+      ],
       providers: [
         {provide: MatDialogRef, useValue: {} },
       ]

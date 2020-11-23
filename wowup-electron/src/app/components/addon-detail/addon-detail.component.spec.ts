@@ -38,17 +38,21 @@ describe("AddonDetailComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [AddonDetailComponent],
-      imports: [MatModule, HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
-        },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
+      imports: [
+        MatModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        })
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: dialogModel },
