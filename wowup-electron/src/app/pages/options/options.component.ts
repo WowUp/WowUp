@@ -1,12 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import {
-  ALLIANCE_LIGHT_THEME,
-  ALLIANCE_THEME,
-  DEFAULT_LIGHT_THEME,
-  DEFAULT_THEME,
-  HORDE_LIGHT_THEME,
-  HORDE_THEME,
-} from "common/constants";
 import { ElectronService } from "../../services";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
@@ -24,5 +16,5 @@ export class OptionsComponent implements OnInit {
   constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 
   ngOnInit(): void {}
-  
+
 }

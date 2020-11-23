@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { ColumnState } from "app/models/wowup/column-state";
+import { ColumnState } from "../../models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
 import { existsSync } from "fs";

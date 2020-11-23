@@ -2,6 +2,11 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "애드온 탐색 완료",
+      "ADDON_SCAN_STARTED": "애드온 탐색 시작",
+      "ADDON_SCAN_UPDATE": "{count}개의 디렉토리 탐색중..."
+    },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "업데이트 확인",
       "QUIT_ACTION": "종료",
@@ -22,8 +27,8 @@
       "PORTABLE_DOWNLOAD_MESSAGE": "최신 포터블 버전을 수동 다운로드하시겠습니까?\n\n앱을 수동으로 닫고 새 버전 파일로 엎어써야 합니다.",
       "PORTABLE_DOWNLOAD_TITLE": "수동 다운로드 필요",
       "SNACKBAR_ACTION": "업데이트",
-      "SNACKBAR_TEXT": "새 버전의 WowUp 설치 가능",
-      "TOOLTIP": "WowUp 업데이트가 있습니다.",
+      "SNACKBAR_TEXT": "새 버전 설치 가능",
+      "TOOLTIP": "프로그램 업데이트가 있습니다.",
       "UPDATE_ERROR": "업데이트 실패"
     }
   },
@@ -34,7 +39,7 @@
       "UNINSTALL": "삭제",
       "UNKNOWN": "",
       "UPDATE": "업데이트",
-      "UPTODATE": "최신 버전"
+      "UPTODATE": "최신"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "백업 중",
@@ -185,7 +190,7 @@
         "TITLE": "컬럼 보기"
       },
       "FILTER_LABEL": "필터",
-      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "복수의 제공자가 존재합니다",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",
         "JOIN_DISCORD": "디스코드 입장",
@@ -278,8 +283,8 @@
         "AUTO_UPDATE_DESCRIPTION": "새로 설치되는 애드온의 자동업데이트 옵션을 활성화합니다.",
         "AUTO_UPDATE_LABEL": "자동 업데이트",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "{clientName}의 설치 위치 정보를 삭제할까요?\n이 클라이언트의 저장된 애드온 정보는 모두 사라지지만 애드온 디렉토리는 삭제되지 않습니다.",
+          "TITLE": "설치 위치 정보 초기화"
         },
         "CLIENT_TYPE_INPUT_HINT": "\"{clientFolderName}\" 디렉토리를 포함하는 위치",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 설치 위치",

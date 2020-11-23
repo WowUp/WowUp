@@ -1,9 +1,14 @@
 {
   "APP": {
-    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatisch {count} {count, plural, =1{Addon} other{Addons}} aktualisiert.",
-    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Aktualisierung",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{Addon} other{Addons}} automatisch aktualisiert.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon-Scan abgeschlossen...",
+      "ADDON_SCAN_STARTED": "Addon-Scan gestartet...",
+      "ADDON_SCAN_UPDATE": "{count} Ordner werden gescannt..."
+    },
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Nach Updates suchen...",
+      "CHECK_UPDATE": "Auf Updates prüfen...",
       "QUIT_ACTION": "Beenden",
       "SHOW_ACTION": "Öffnen"
     },
@@ -16,8 +21,8 @@
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp Update installieren",
-      "INSTALL_MESSAGE": "Willst Du WowUp neu Starten um das Update zu installieren?",
-      "INSTALL_TITLE": "WowUp Update bereit",
+      "INSTALL_MESSAGE": "Möchtest Du WowUp neu starten, um das Update zu installieren?",
+      "INSTALL_TITLE": "WowUp-Update bereit",
       "NOT_AVAILABLE": "Die aktuellste Version von WowUp ist bereits installiert",
       "PORTABLE_DOWNLOAD_MESSAGE": "Möchtest Du die letzte portable Version manuell herunterladen?\n\nDu musst die Anwendung manuell schließen und die neue Version über die Alte kopieren.",
       "PORTABLE_DOWNLOAD_TITLE": "Manuelles Herunterladen erforderlich",
@@ -29,7 +34,7 @@
   },
   "COMMON": {
     "ADDON_STATE": {
-      "IGNORED": "Ignorieren",
+      "IGNORED": "Ignoriert",
       "INSTALL": "Installieren",
       "UNINSTALL": "Deinstallieren",
       "UNKNOWN": "Unbekannt",
@@ -37,13 +42,13 @@
       "UPTODATE": "Aktuell"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Sichern",
+      "BACKINGUP": "Backup wird erstellt",
       "COMPLETE": "Vollständig",
-      "DOWNLOADING": "Herunterladen",
-      "INSTALLING": "Installiere",
+      "DOWNLOADING": "Herunterladen...",
+      "INSTALLING": "Installieren...",
       "PENDING": "Ausstehend",
-      "UNINSTALLING": "Deinstalliere",
-      "UPDATING": "Aktualisiere..."
+      "UNINSTALLING": "Deinstallieren...",
+      "UPDATING": "Aktualisieren..."
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -62,7 +67,7 @@
       "YESTERDAY": "Gestern"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}} benötigt"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}} erforderlich"
     },
     "DOWNLOAD_COUNT": {
       "e+0": "{count}",
@@ -124,25 +129,25 @@
       "IMPORT_BUTTON": "Importieren",
       "INSTALL_BUTTON": "Installieren",
       "INSTALL_SUCCESS_LABEL": "Installiert!",
-      "SUPPORTED_SOURCES": "Unterstützt werden WoWInterface und GitHub",
+      "SUPPORTED_SOURCES": "Unterstützt werden WowInterface und GitHub",
       "TITLE": "Installation eines Addons über eine externe URL"
     },
     "TELEMETRY": {
-      "DESCRIPTION": "Bei der Verbesserung von WowUp mithelfen, indem Du anonyme Installationsdaten und/oder Fehler schickst?",
-      "NEGATIVE_BUTTON": "Nein Danke",
-      "POSITIVE_BUTTON": "Sicher!",
+      "DESCRIPTION": "Möchest Du helfen, WowUp zu verbessern, indem anonyme Installationsdaten und/oder Fehler gesendet werden?",
+      "NEGATIVE_BUTTON": "Nein, Danke",
+      "POSITIVE_BUTTON": "Ja",
       "TITLE": "WowUp Telemetrie"
     }
   },
   "PAGES": {
     "ABOUT": {
-      "CHANGE_LOG_SECTION_LABEL": "Changelog/Änderungen",
+      "CHANGE_LOG_SECTION_LABEL": "Änderungsverlauf",
       "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "Schau Dir die Webseite an!"
+      "WEBSITE_LINK_LABEL": "Schau dir die Website an!"
     },
     "GET_ADDONS": {
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "INSTALL_FROM_URL_BUTTON": "Von URL installieren",
+      "INSTALL_FROM_URL_BUTTON": "Mit URL installieren",
       "REFRESH_BUTTON": "Aktualisieren",
       "SEARCH_LABEL": "Suchen",
       "TABLE": {
@@ -150,15 +155,15 @@
         "AUTHOR_COLUMN_HEADER": "Autor",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Anzahl Downloads",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
-        "RELEASED_AT_COLUMN_HEADER": "Erscheinungsdatum",
+        "RELEASED_AT_COLUMN_HEADER": "Veröffentlicht am",
         "STATUS_COLUMN_HEADER": "Status"
       }
     },
     "HOME": {
-      "ABOUT_TAB_TITLE": "Infos",
+      "ABOUT_TAB_TITLE": "Über WowUp",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "MY_ADDONS_TAB_TITLE": "Meine Addons",
-      "OPTIONS_TAB_TITLE": "Optionen"
+      "OPTIONS_TAB_TITLE": "Einstellungen"
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
@@ -175,11 +180,11 @@
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
-        "MESSAGE": "Möchtest Du den Addon Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
+        "MESSAGE": "Möchtest Du den Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
         "TITLE": "Addon-Anbieter wechseln?"
       },
-      "CHECK_UPDATES_BUTTON": "Updates prüfen",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Nach neuen Addon-Updates suchen",
+      "CHECK_UPDATES_BUTTON": "Auf Updates prüfen",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Auf neue Addon-Updates prüfen",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Spalten anzeigen"
@@ -188,7 +193,7 @@
       "MULTIPLE_PROVIDERS_TOOLTIP": "Dieses Addon hat mehrere Anbieter",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{Addon} other{Addons}}",
-        "JOIN_DISCORD": "Schreibe mit uns auf Discord",
+        "JOIN_DISCORD": "Rede mit uns auf Discord",
         "PATREON_SUPPORT": "Unterstütze WowUp auf Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{Treffer} other{Treffer}}",
         "VIEW_GITHUB": "Schaue Dir den Code auf GitHub an",
@@ -199,23 +204,23 @@
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Wenn Du ein erneutes scannen durchführst, können deine Addon-Informationen verloren gehen. Dieser Vorgang braucht einen Moment.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Neuen Scan starten?",
       "SPINNER": {
-        "GATHERING_ADDONS": "Sammle Addons...",
-        "UPDATING": "Aktualisiere {updateCount}/{addonCount}",
-        "UPDATING_WITH_ADDON_NAME": "Aktualisiere {updateCount}/{addonCount}\n{clientType}: {addonName}"
+        "GATHERING_ADDONS": "Addons sammeln...",
+        "UPDATING": "{updateCount}/{addonCount} aktualisiert",
+        "UPDATING_WITH_ADDON_NAME": "{updateCount}/{addonCount} aktualisiert\n{clientType}: {addonName}"
       },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installieren",
         "ADDON_UPDATE_BUTTON": "Aktualisieren",
         "AUTHOR_COLUMN_HEADER": "Autor",
-        "AUTO_UPDATE_ICON_TOOLTIP": "Auto-Update aktiviert",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Automatisches Update aktiviert",
         "GAME_VERSION_COLUMN_HEADER": "Spielversion",
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "PROVIDER_RELEASE_CHANNEL": "Anbieter-Channel",
         "RELEASED_AT_COLUMN_HEADER": "Erscheinungsdatum",
         "STATUS_COLUMN_HEADER": "Status",
-        "UPDATED_AT_COLUMN_HEADER": "Aktualisiert am"
+        "UPDATED_AT_COLUMN_HEADER": "Aktualisiert vor"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Dadurch werden alle zugehörigen Ordner aus dem World of Warcraft-Ordner entfernt.",
@@ -270,12 +275,12 @@
         "TITLE": "Debuggen"
       },
       "TABS": {
-        "APPLICATION": "Anwendung",
+        "APPLICATION": "Applikation",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf Auto-Update gesetzt",
+        "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf 'Automatisches Update' eingestellt",
         "AUTO_UPDATE_LABEL": "Automatisch aktualisieren",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Bist Du dir sicher, dass Du den Installationspfad für {clientName} löschen möchtest? Dies wird alle gespeicherten Addon-Informationen für diesen Client entfernen.\n\nDeine Addon-Ordner werden nicht entfernt.",

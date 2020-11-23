@@ -8,6 +8,8 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { MyAddonsComponent } from "./my-addons.component";
+import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 
 describe("MyAddonsComponent", () => {
   it("should create", () => {
@@ -19,9 +21,11 @@ describe("MyAddonsComponent", () => {
         MatDialog,
         ChangeDetectorRef,
         TranslateService,
+        WowUpAddonService,
         ElectronService,
         Overlay,
         WarcraftService,
+        WowUpService,
       ],
       (
         addonService: AddonService,
@@ -29,10 +33,12 @@ describe("MyAddonsComponent", () => {
         ngZone: NgZone,
         dialog: MatDialog,
         cdRef: ChangeDetectorRef,
+        wowUpAddonService: WowUpAddonService,
         translateService: TranslateService,
         electronService: ElectronService,
         overlay: Overlay,
-        warcraftService: WarcraftService
+        warcraftService: WarcraftService,
+        wowUpService: WowUpService,
       ) => {
         const instance = new MyAddonsComponent(
           addonService,
@@ -40,10 +46,12 @@ describe("MyAddonsComponent", () => {
           ngZone,
           dialog,
           cdRef,
+          wowUpAddonService,
           translateService,
           electronService,
           overlay,
-          warcraftService
+          warcraftService,
+          wowUpService,
         );
         expect(instance).toBeTruthy();
       }
