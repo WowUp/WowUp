@@ -1,6 +1,10 @@
 ﻿{
   "ChangeLogs": [
     {
+      "Version": "1.19.2",
+      "Description": "Added a banner to send you to 2.0"
+    },
+    {
       "Version": "1.19.1",
       "Description": "Increase the timeout time for Curse API from 4 seconds to 10.\nIf a provider responds with a 404, the circuit breaker should no longer be opened."
     },
