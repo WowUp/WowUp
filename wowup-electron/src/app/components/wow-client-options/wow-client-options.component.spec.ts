@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { ElectronService } from "../../services";
@@ -11,11 +11,8 @@ import { WowClientOptionsComponent } from "./wow-client-options.component";
 import { BehaviorSubject } from "rxjs";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { MatSelectModule } from "@angular/material/select";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatInputModule } from "@angular/material/input";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatModule } from "../../mat-module";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
@@ -42,12 +39,8 @@ describe("WowClientOptionsComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [WowClientOptionsComponent],
       imports: [
-        MatMenuModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatSelectModule,
+        MatModule,
         HttpClientModule,
-        MatDialogModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {

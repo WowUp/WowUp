@@ -4,7 +4,8 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { MatModule } from "../../mat-module";
 
 describe("ProgressSpinnerComponent", () => {
   let component: ProgressSpinnerComponent;
@@ -13,7 +14,7 @@ describe("ProgressSpinnerComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ProgressSpinnerComponent],
-      imports: [MatProgressSpinnerModule, HttpClientModule, TranslateModule.forRoot({
+      imports: [MatModule, HttpClientModule, TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
           useFactory: httpLoaderFactory,
@@ -24,6 +25,7 @@ describe("ProgressSpinnerComponent", () => {
           useClass: TranslateMessageFormatCompiler,
         },
       })],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProgressSpinnerComponent);

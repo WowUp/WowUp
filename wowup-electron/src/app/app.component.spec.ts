@@ -7,7 +7,7 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { httpLoaderFactory } from "./app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { AddonService } from "./services/addons/addon.service";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { SessionService } from "./services/session/session.service";
 import { FileService } from "./services/files/file.service";
@@ -16,6 +16,7 @@ import { IconService } from "./services/icons/icon.service";
 import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { Subject } from "rxjs";
 import { PreferenceChange } from "./models/wowup/preference-change";
+import { MatModule } from "./mat-module";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -55,7 +56,7 @@ describe("AppComponent", () => {
         OverlayModule,
         RouterTestingModule,
         HttpClientModule,
-        MatDialogModule,
+        MatModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

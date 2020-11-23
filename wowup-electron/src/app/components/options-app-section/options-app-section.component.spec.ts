@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { FileService } from "../../services/files/file.service";
 import { SessionService } from "../../services/session/session.service";
@@ -11,8 +11,8 @@ import { ElectronService } from "../../services";
 import { OptionsAppSectionComponent } from "./options-app-section.component";
 import { httpLoaderFactory } from "../../app.module";
 import { BehaviorSubject } from "rxjs";
-import { MatSelectModule } from "@angular/material/select";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatModule } from "../../mat-module";
 
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
@@ -52,9 +52,8 @@ describe("OptionsAppSectionComponent", () => {
         ElectronService,
       ],
       imports: [
-        MatSelectModule,
         HttpClientModule,
-        MatDialogModule,
+        MatModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {

@@ -6,8 +6,10 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { InstallFromUrlDialogComponent } from "./install-from-url-dialog.component";
-import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatDialogRef } from "@angular/material/dialog";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
+import { MatModule } from "../../mat-module";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("InstallFromUrlDialogComponent", () => {
   let component: InstallFromUrlDialogComponent;
@@ -21,8 +23,9 @@ describe("InstallFromUrlDialogComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [InstallFromUrlDialogComponent],
       imports: [
-        MatDialogModule,
+        MatModule,
         HttpClientModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

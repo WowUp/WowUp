@@ -11,7 +11,10 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 import { BehaviorSubject } from "rxjs";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { HomeComponent } from "./home.component";
-import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { MatModule } from "../../mat-module";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -46,8 +49,9 @@ describe("HomeComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [HomeComponent],
       imports: [
-        MatSnackBarModule,
+        MatModule,
         HttpClientModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -62,7 +66,8 @@ describe("HomeComponent", () => {
       ],
       providers: [
         MatSnackBar,
-      ]
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).overrideComponent(HomeComponent, {
       set: {
         providers: [
@@ -83,6 +88,11 @@ describe("HomeComponent", () => {
     warcraftService = fixture.debugElement.injector.get(WarcraftService);
 
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.debugElement.nativeElement.remove();
+    fixture.destroy();
   });
 
   it("should create", () => {

@@ -10,23 +10,17 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { OverlayModule } from "@angular/cdk/overlay";
-import { MatMenuModule } from "@angular/material/menu";
-import { MatSelectModule } from "@angular/material/select";
 import { MyAddonsComponent } from "./my-addons.component";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
 import { BehaviorSubject, Subject } from "rxjs";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
-class MyAddonsComponentomponent {
-}
+import { MatModule } from "../../mat-module";
 
 describe("MyAddonsComponent", () => {
-  let component: MyAddonsComponentomponent;
+  let component: MyAddonsComponent;
   let fixture: ComponentFixture<MyAddonsComponent>;
   let electronService: ElectronService;
   let electronServiceSpy: any;
@@ -42,14 +36,17 @@ describe("MyAddonsComponent", () => {
   let warcraftServiceSpy: any;
 
   beforeEach(async () => {
-    addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
+    wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", {
+      persistUpdateInformationToWowUpAddon: () => {},
+    });
+    addonServiceSpy = jasmine.createSpyObj("AddonService", {
+      getAddons: Promise.resolve([]),
+    }, {
       addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
       addonRemoved$: new Subject<string>().asObservable(),
-
     })
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       myAddonsSortOrder: {name: "test sort", direction: "asc"} as SortOrder,
-      getAddons: () => [],
     })
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
@@ -67,14 +64,9 @@ describe("MyAddonsComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [MyAddonsComponent],
       imports: [
-        MatSelectModule,
-        MatMenuModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatSelectModule,
+        MatModule,
         OverlayModule,
         HttpClientModule,
-        MatDialogModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
@@ -113,6 +105,11 @@ describe("MyAddonsComponent", () => {
     warcraftService = fixture.debugElement.injector.get(WarcraftService);
 
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.debugElement.nativeElement.remove();
+    fixture.destroy();
   });
 
   it("should create", () => {

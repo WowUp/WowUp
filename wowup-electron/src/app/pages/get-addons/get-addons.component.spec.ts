@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GetAddonsComponent } from "./get-addons.component";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { ElectronService } from "../../services";
@@ -12,12 +12,9 @@ import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { BehaviorSubject } from "rxjs";
-import { MatMenuModule } from "@angular/material/menu";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { MatSelectModule } from "@angular/material/select";
-import { MatInputModule } from "@angular/material/input";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatModule } from "../../mat-module";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -52,15 +49,10 @@ describe("GetAddonsComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [GetAddonsComponent],
       imports: [
-        MatMenuModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatMenuModule,
+        MatModule,
         OverlayModule,
         BrowserAnimationsModule,
         HttpClientModule,
-        MatDialogModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -96,6 +88,11 @@ describe("GetAddonsComponent", () => {
     warcraftService = fixture.debugElement.injector.get(WarcraftService);
 
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    fixture.debugElement.nativeElement.remove();
+    fixture.destroy();
   });
 
   it("should create", () => {

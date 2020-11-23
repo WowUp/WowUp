@@ -7,12 +7,10 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
-import { MatDialogModule } from "@angular/material/dialog";
 import { OverlayModule } from "@angular/cdk/overlay";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { BehaviorSubject, Subject } from "rxjs";
 import { UpdateCheckResult } from "electron-updater";
-import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatModule } from "../../mat-module";
 
 describe("FooterComponent", () => {
   let component: FooterComponent;
@@ -40,10 +38,8 @@ describe("FooterComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [FooterComponent],
       imports: [
-        MatTooltipModule,
-        MatDialogModule,
+        MatModule,
         OverlayModule,
-        MatSnackBarModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

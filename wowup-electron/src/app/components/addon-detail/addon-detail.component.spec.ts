@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import {AddonDetailComponent, AddonDetailModel} from "./addon-detail.component";
+import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { AddonService } from "../../services/addons/addon.service";
@@ -7,15 +7,15 @@ import {
   TranslateCompiler,
   TranslateLoader,
   TranslateModule,
-  TranslateService, TranslateStore
 } from "@ngx-translate/core";
 import { Subject} from "rxjs";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import {httpLoaderFactory} from "../../app.module";
-import {TranslateMessageFormatCompiler} from "ngx-translate-messageformat-compiler";
-import {AddonViewModel} from "../../business-objects/my-addon-list-item";
-import {Addon} from "../../entities/addon";
+import { httpLoaderFactory } from "../../app.module";
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { Addon } from "../../entities/addon";
+import { MatModule } from "../../mat-module";
 
 describe("AddonDetailComponent", () => {
   let component: AddonDetailComponent;
@@ -38,7 +38,7 @@ describe("AddonDetailComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [AddonDetailComponent],
-      imports: [HttpClientModule, TranslateModule.forRoot({
+      imports: [MatModule, HttpClientModule, TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
           useFactory: httpLoaderFactory,

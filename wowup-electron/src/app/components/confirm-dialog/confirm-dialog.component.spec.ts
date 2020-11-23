@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { MatModule } from "../../mat-module";
 
 describe("ConfirmDialogComponent", () => {
   let component: ConfirmDialogComponent;
@@ -13,7 +14,7 @@ describe("ConfirmDialogComponent", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ConfirmDialogComponent],
-      imports: [MatDialogModule, HttpClientModule, TranslateModule.forRoot({
+      imports: [MatModule, HttpClientModule, TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,
           useFactory: httpLoaderFactory,
