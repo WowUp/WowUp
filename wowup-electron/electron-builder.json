@@ -53,7 +53,9 @@
   "mac": {
     "icon": "dist/assets/icons",
     "category": "public.app-category.games",
-    "target": ["default"]
+    "target": ["default"],
+    "hardenedRuntime": true,
+    "entitlements": "./mac/entitlements.plist"
   },
   "linux": {
     "icon": "dist/assets/icons",
