@@ -1,0 +1,47 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.DEBUG.TITLE" | translate }}
+  </h2>
+  <!-- SHOW LOG FILES -->
+  <div class="section">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_LABEL" | translate }}</div>
+        <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION" | translate }}</small>
+      </div>
+      <div>
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="onShowLogs()"
+          appUserActionTracker
+          category="Options"
+          action="ShowLogFiles"
+        >
+          {{ "PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- DUMP DEBUG DATA -->
+  <div class="section">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_LABEL" | translate }}</div>
+        <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION" | translate }}</small>
+      </div>
+      <div>
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="onLogDebugData()"
+          appUserActionTracker
+          category="Options"
+          action="LogDebugData"
+        >
+          {{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

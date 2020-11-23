@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>{{ "DIALOGS.TELEMETRY.TITLE" | translate }}</h1>
+<div mat-dialog-content>
+  <p>{{ "DIALOGS.TELEMETRY.DESCRIPTION" | translate }}</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false">
+    {{ "DIALOGS.TELEMETRY.NEGATIVE_BUTTON" | translate }}
+  </button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>
+    {{ "DIALOGS.TELEMETRY.POSITIVE_BUTTON" | translate }}
+  </button>
+</div>

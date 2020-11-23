@@ -1,0 +1,111 @@
+@import "../../../variables.scss";
+
+.tab-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.theme-logo {
+  content: "";
+  opacity: 0.02;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+
+  img {
+    height: 100vh;
+  }
+}
+
+.nav-container {
+  height: 100%;
+  display: flex;
+  width: 100%;
+
+  .nav-item-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    flex: 1 0 200px;
+    z-index: 1;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    // overflow: hidden;
+
+    .nav-item-list-wrap {
+      flex: 1 0 auto;
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: normal;
+      flex-direction: row;
+      -webkit-box-align: start;
+      align-items: flex-start;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-flex: 1;
+      -webkit-box-pack: end;
+      justify-content: flex-end;
+      box-sizing: border-box;
+
+      .nav-item-list {
+        width: 200px;
+      }
+    }
+  }
+  .nav-content-container {
+    position: relative;
+    display: flex;
+    -webkit-box-flex: 1;
+    flex: 1 1 800px;
+    -webkit-box-align: start;
+    align-items: flex-start;
+    box-sizing: border-box;
+
+    .nav-content-wrap {
+      -webkit-box-flex: 1;
+      flex: 1;
+      box-sizing: border-box;
+      height: 100%;
+
+      .nav-content {
+        overflow: hidden scroll;
+        padding-right: 0px;
+        height: 100%;
+        position: static;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        flex-direction: row;
+        -webkit-box-pack: start;
+        justify-content: flex-start;
+        -webkit-box-align: start;
+        align-items: flex-start;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        flex: 1 1 auto;
+        min-height: 0;
+        -webkit-box-flex: 1;
+        z-index: 2;
+
+        .content-tab {
+          position: relative;
+          -webkit-box-flex: 1;
+          flex: 1 1 auto;
+          max-width: 740px;
+          min-width: 460px;
+          min-height: 100%;
+        }
+      }
+    }
+  }
+}
+

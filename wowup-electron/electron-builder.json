@@ -1,0 +1,62 @@
+{
+  "productName": "WowUp",
+  "appId": "io.wowup.jliddev",
+  "directories": {
+    "output": "release/"
+  },
+  "generateUpdatesFilesForAllChannels": true,
+  "publish": ["github"],
+  "nodeGypRebuild": true,
+  "files": [
+    "**/*",
+    "**\\*",
+    "build/Release/*.node",
+    "src/common/**/*.js",
+    "!**/*.ts",
+    "!**/*.scss",
+    "!**/*.map",
+    "!*.code-workspace",
+    "!LICENSE.md",
+    "!package.json",
+    "!package-lock.json",
+    "!src/app/*",
+    "!src/assets/*",
+    "!src/environments/*",
+    "!src/*.html",
+    "!src/*.js",
+    "!src/*.json",
+    "!e2e/",
+    "!hooks/",
+    "!angular.json",
+    "!_config.yml",
+    "!karma.conf.js",
+    "!tsconfig.json",
+    "!tslint.json",
+    "!**/.vscode/*",
+    "!node_modules/@angular",
+    "!native/",
+    "!*.npmrc",
+    "!*.eslintrc.json",
+    "!binding.gyp",
+    "!angular.webpack.js",
+    "!tsconfig*.json"
+  ],
+  "win": {
+    "icon": "electron-build/icon.ico",
+    "target": ["nsis", "portable"],
+    "forceCodeSigning": true,
+    "publisherName": "WowUp LLC"
+  },
+  "nsis": {
+    "deleteAppDataOnUninstall": true
+  },
+  "mac": {
+    "icon": "dist/assets/icons",
+    "category": "public.app-category.games",
+    "target": ["default"]
+  },
+  "linux": {
+    "icon": "dist/assets/icons",
+    "target": ["AppImage"]
+  }
+}

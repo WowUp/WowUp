@@ -1,0 +1,24 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.WOW.TITLE" | translate }}
+  </h2>
+  <div>
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_LABEL" | translate }}
+      </div>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="onReScan()"
+        appUserActionTracker
+        category="Options"
+        action="ScanInstalls"
+      >
+        {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON" | translate }}
+      </button>
+    </div>
+    <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes" [clientType]="clientType">
+    </app-wow-client-options>
+  </div>
+</div>

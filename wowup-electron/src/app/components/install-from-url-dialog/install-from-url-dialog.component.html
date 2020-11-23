@@ -1,0 +1,52 @@
+<h1 mat-dialog-title>{{ "DIALOGS.INSTALL_FROM_URL.TITLE" | translate }}</h1>
+<div mat-dialog-content>
+  <p class="p-0 m-0">
+    {{ "DIALOGS.INSTALL_FROM_URL.DESCRIPTION" | translate }}
+  </p>
+  <p>{{ "DIALOGS.INSTALL_FROM_URL.SUPPORTED_SOURCES" | translate }}</p>
+  <mat-form-field class="url-input-container">
+    <mat-label>{{ "DIALOGS.INSTALL_FROM_URL.ADDON_URL_INPUT_LABEL" | translate }}</mat-label>
+    <input matInput [placeholder]="'DIALOGS.INSTALL_FROM_URL.ADDON_URL_INPUT_PLACEHOLDER' | translate"
+      [(ngModel)]="query" (keyup.enter)="onImportUrl()" [disabled]="isBusy === true" />
+    <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
+      (click)="onClearSearch()" [disabled]="isBusy === true">
+      <mat-icon svgIcon="fas:times"></mat-icon>
+    </button>
+  </mat-form-field>
+  <div *ngIf="isBusy === true" class="busy-container">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+  <div *ngIf="isBusy === false && addon !== undefined" class="addon-container">
+    <div class="addon-thumb" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"></div>
+    <div class="addon-info">
+      <h4>{{ addon.name }}</h4>
+      <p>{{ addon.author }}</p>
+      <p class="addon-download-count">
+        {{ "DIALOGS.INSTALL_FROM_URL.DOWNLOAD_COUNT" | translate: getDownloadCountParams() }}
+      </p>
+    </div>
+    <div class="install-container">
+      <mat-spinner *ngIf="showInstallSpinner === true" diameter="40"></mat-spinner>
+      <button *ngIf="showInstallButton === true" mat-flat-button color="primary" (click)="onInstall()">
+        {{ "DIALOGS.INSTALL_FROM_URL.INSTALL_BUTTON" | translate }}
+      </button>
+      <div [hidden]="showInstallSuccess === false">
+        <div class="success-icon">
+          <img src="assets/images/checkbox-marked-circle-green.svg" class="icon-larger" />
+        </div>
+        <div>
+          {{ "DIALOGS.INSTALL_FROM_URL.INSTALL_SUCCESS_LABEL" | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onClose()">
+    {{ "DIALOGS.INSTALL_FROM_URL.CLOSE_BUTTON" | translate }}
+  </button>
+  <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()" appUserActionTracker
+    category="InstallFromUrl" action="ImportUrl" [label]="query">
+    {{ "DIALOGS.INSTALL_FROM_URL.IMPORT_BUTTON" | translate }}
+  </button>
+</div>

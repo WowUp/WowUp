@@ -1,0 +1,60 @@
+<div class="addon-column row align-items-center">
+  <div class="thumbnail-container">
+    <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container bg-secondary-3">
+      <img [src]="listItem.addon.thumbnailUrl" loading="lazy" />
+    </div>
+    <div *ngIf="listItem.hasThumbnail === false" class="addon-logo-container">
+      <div class="addon-logo-letter text-3">
+        {{ listItem.thumbnailLetter }}
+      </div>
+    </div>
+    <div *ngIf="listItem.isBetaChannel || listItem.isAlphaChannel" class="channel bg-secondary-3" [ngClass]="{
+        beta: listItem.isBetaChannel,
+        alpha: listItem.isAlphaChannel
+      }">
+      {{ listItem.isAlphaChannel ? "Alpha" : "Beta" }}
+    </div>
+  </div>
+  <div>
+    <a class="addon-title hover-text-2 mat-subheading-2" (click)="viewDetails()"
+      [ngClass]="{ 'text-3': listItem.isIgnored }">{{
+      listItem.addon.name
+    }}</a>
+    <div class="addon-funding">
+      <a *ngIf="listItem.addon.patreonFundingLink" appExternalLink [href]="listItem.addon.patreonFundingLink"
+        matTooltip="Support the author on Patreon">
+        <img class="funding-icon" src="assets/images/patreon_logo_small.png" />
+      </a>
+      <a *ngIf="listItem.addon.githubFundingLink" appExternalLink [href]="listItem.addon.githubFundingLink"
+        matTooltip="Support the author on GitHub">
+        <img class="funding-icon" src="assets/images/github_logo_small.png" />
+      </a>
+      <a *ngIf="listItem.addon.customFundingLink" appExternalLink [href]="listItem.addon.customFundingLink"
+        matTooltip="Support this author">
+        <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
+      </a>
+    </div>
+    <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
+      <div *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" class="mr-2">
+        <mat-icon class="auto-update-icon" svgIcon="fas:code-branch"
+          [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
+        </mat-icon>
+      </div>
+      <div *ngIf="this.listItem.isAutoUpdate === true" class="mr-2">
+        <mat-icon class="auto-update-icon text-2"
+          [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate" svgIcon="far:clock">
+        </mat-icon>
+      </div>
+      <div *ngIf="hasRequiredDependencies()" class="mr-2"
+        [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate: dependencyTooltip">
+        <mat-icon class="auto-update-icon" svgIcon="fas:link"></mat-icon>
+      </div>
+      {{ listItem.addon.installedVersion }}
+      <div class="update-available row"
+        *ngIf="showUpdateToVersion && listItem.needsUpdate">
+        <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
+        <div>{{ listItem.addon.latestVersion }}</div>
+      </div>
+    </div>
+  </div>
+</div>

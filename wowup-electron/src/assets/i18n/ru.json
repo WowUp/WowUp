@@ -1,0 +1,300 @@
+{
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Сканирование модификаций завершено...",
+      "ADDON_SCAN_STARTED": "Началось сканирование модификаций...",
+      "ADDON_SCAN_UPDATE": "Сканируется {count} {count, plural, one{папка} few{папки} other{папок}}..."
+    },
+    "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Проверить наличие обновлений",
+      "QUIT_ACTION": "Выход",
+      "SHOW_ACTION": "Показать"
+    },
+    "THEME": {
+      "ALLIANCE": "Альянс",
+      "DEFAULT": "По умолчанию",
+      "GROUP_DARK": "Темные",
+      "GROUP_LIGHT": "Светлые",
+      "HORDE": "Орда"
+    },
+    "WOWUP_UPDATE": {
+      "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
+      "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
+      "INSTALL_TITLE": "Для WowUp готово обновление",
+      "NOT_AVAILABLE": "Последняя версия WowUp уже установлена",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Хотите вручную установить последнюю портативную версию?\n\nНужно будет закрыть приложение вручную и заменить его новой версией.",
+      "PORTABLE_DOWNLOAD_TITLE": "Необходима загрузка вручную",
+      "SNACKBAR_ACTION": "Обновить",
+      "SNACKBAR_TEXT": "Доступна новая версия WowUp",
+      "TOOLTIP": "Доступно обновление для WowUp",
+      "UPDATE_ERROR": "Неудачная попытка получить обновление для WowUp"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATE": {
+      "IGNORED": "Игнорируется",
+      "INSTALL": "Установить",
+      "UNINSTALL": "Удалить",
+      "UNKNOWN": "",
+      "UPDATE": "Обновить",
+      "UPTODATE": "Актуальная"
+    },
+    "ADDON_STATUS": {
+      "BACKINGUP": "Резервное копирование",
+      "COMPLETE": "Установлена",
+      "DOWNLOADING": "Загружается",
+      "INSTALLING": "Устанавливается",
+      "PENDING": "В ожидании",
+      "UNINSTALLING": "Удаляется",
+      "UPDATING": "Обновляется..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Бета",
+      "CLASSIC": "Классический",
+      "CLASSICPTR": "Классический PTR",
+      "RETAIL": "Актуальный",
+      "RETAILPTR": "Актуальный PTR"
+    },
+    "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
+      "DAYS_AGO": "{count} {count, plural, one{день} few{дня} other{дней}} назад",
+      "HOURS_AGO": "{count} {count, plural, one{час} few{часа} other{часов}} назад",
+      "JUST_NOW": "Только что",
+      "MONTHS_AGO": "{count} {count, plural, one{месяц} few{месяца} other{месяцев}} назад",
+      "YEARS_AGO": "{count} {count, plural, one{год} few{года} other{лет}} назад",
+      "YESTERDAY": "Вчера"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount, plural, one{Необходима} other{Необходимо}} {dependencyCount} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}"
+    },
+    "DOWNLOAD_COUNT": {
+      "e+0": "{count}",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+4": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+5": "{count} {count, plural, one{тысяча} few{тысячи} other{тысяч}}",
+      "e+6": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+7": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+8": "{count} {count, plural, one{миллион} few{миллиона} other{миллионов}}",
+      "e+9": "{count} {count, plural, one{миллиард} few{миллиарда} other{миллиардов}}"
+    },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Альфа",
+        "BETA": "Бета",
+        "STABLE": "Стабильная"
+      }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Загрузка..."
+    },
+    "SEARCH": {
+      "NO_ADDONS": "Модификаций не найдено"
+    }
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "BY_AUTHOR": "От {authorName}",
+      "DEPENDENCY_TEXT": "Эта модификация имеет {dependencyCount} {dependencyCount, plural, one{необходимую} other{необходимых}} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}",
+      "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
+      "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
+    },
+    "ALERT": {
+      "ERROR_TITLE": "Ошибка",
+      "POSITIVE_BUTTON": "Окей"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "Нет",
+      "POSITIVE_BUTTON": "Да"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "Ссылка на модификацию",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Например ссылки GitHub или WowInterface",
+      "CLOSE_BUTTON": "Закрыть",
+      "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
+      "DOWNLOAD_COUNT": "{textCount} {shortCount, plural, one{загрузка} few{загрузки} other{загрузок}} на {provider}",
+      "ERROR": {
+        "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
+        "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, вы можете получить помощь в канале #wowup-support нашего Discord сообщества.",
+        "INVALID_URL": "Введенное значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Модификация не была найдена, убедитесь что ваша ссылка указывает на правильную страницу.\n\nПри установке с GitHub, убедитесь, что в репозитории есть тег выпуска с zip-архивом, содержащим модификацию.",
+        "TITLE": "Установка модификации не удалась"
+      },
+      "IMPORT_BUTTON": "Импорт",
+      "INSTALL_BUTTON": "Установить",
+      "INSTALL_SUCCESS_LABEL": "Установлена!",
+      "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",
+      "TITLE": "Ссылка на установку модификации"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "Хотите помочь улучшить WowUp, анонимно отправляя данные об установке и ошибках?",
+      "NEGATIVE_BUTTON": "Нет, спасибо",
+      "POSITIVE_BUTTON": "Конечно!",
+      "TITLE": "Телеметрия WowUp"
+    }
+  },
+  "PAGES": {
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "Журнал изменений",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Посетите наш сайт!"
+    },
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Установить по ссылке",
+      "REFRESH_BUTTON": "Обновить",
+      "SEARCH_LABEL": "Искать",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Модификация",
+        "AUTHOR_COLUMN_HEADER": "Автор(ы)",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Загрузок",
+        "PROVIDER_COLUMN_HEADER": "Источник",
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
+        "STATUS_COLUMN_HEADER": "Статус"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "О программе",
+      "GET_ADDONS_TAB_TITLE": "Получить модификации",
+      "MY_ADDONS_TAB_TITLE": "Мои модификации",
+      "OPTIONS_TAB_TITLE": "Настройки"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "Выбрано {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
+        "ALPHA_ADDON_CHANNEL": "Альфа",
+        "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
+        "BETA_ADDON_CHANNEL": "Бета",
+        "CHANNEL_SUBMENU_TITLE": "Тип выпуска",
+        "IGNORE_ADDON_BUTTON": "Пропускать",
+        "PROVIDER_SUBMENU_TITLE": "Источники",
+        "REINSTALL_ADDON_BUTTON": "Переустановить",
+        "REMOVE_ADDON_BUTTON": "Удалить",
+        "SHOW_FOLDER": "Показать папку",
+        "STABLE_ADDON_CHANNEL": "Стабильная"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Хотите изменить источник модификаций для {addonName} на {providerName}? Это действие удалит существующую модификацию и заменит её копией из нового источника.",
+        "TITLE": "Изменить источник модификации?"
+      },
+      "CHECK_UPDATES_BUTTON": "Проверить обновления",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Проверить наличие последних обновлений модификации",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Показать колонки"
+      },
+      "FILTER_LABEL": "Фильтр",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Эта модификация имеет несколько источников",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
+        "JOIN_DISCORD": "Общайтесь с нами в Discord",
+        "PATREON_SUPPORT": "Поддержите WowUp на Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, one{результат} few{результата} other{результатов}}",
+        "VIEW_GITHUB": "Просмотреть код на GitHub",
+        "VIEW_GUIDE": "Просмотрите наше руководство чтобы узнать что может WowUp"
+      },
+      "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может попытаться угадать какие модификации уже установилены, это действие может обнулить известную о модификации информацию. Используйте эту функцию если не определяются некоторые модификации или их версии не отображаются корректно. Это действие никогда не удалит ваши установленные модификации, лишь то что WowUp знает о них.\n\nЭта процедура займёт немного времени.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Начать повторное сканирование?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Сбор модификаций...",
+        "UPDATING": "Обновлено {updateCount} из {addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Обновлено {updateCount} из {addonCount}\n{clientType}: {addonName}"
+      },
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Модификация",
+        "ADDON_INSTALL_BUTTON": "Установить",
+        "ADDON_UPDATE_BUTTON": "Обновить",
+        "AUTHOR_COLUMN_HEADER": "Автор(ы)",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Автообновление включено",
+        "GAME_VERSION_COLUMN_HEADER": "Версия игры",
+        "LATEST_VERSION_COLUMN_HEADER": "Последняя версия",
+        "PROVIDER_COLUMN_HEADER": "Источник",
+        "PROVIDER_RELEASE_CHANNEL": "Канал выпуска",
+        "RELEASED_AT_COLUMN_HEADER": "Выпущена",
+        "STATUS_COLUMN_HEADER": "Статус",
+        "UPDATED_AT_COLUMN_HEADER": "Обновлена"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "Удаление модификации через WowUp удалит выбранную модификацию из директории Interface/AddOns. Настройки персонажа для этой модификации удалены не будут.",
+        "CONFIRMATION_LESS_THAN_THREE": "Вы действительно хотите удалить следующие {count} {count, plural, few{модификации} other{модификаций}}?",
+        "CONFIRMATION_MORE_THAN_THREE": "Вы действительно хотите удалить выбранные {count} {count, plural, few{модификации} other{модификаций}}?",
+        "CONFIRMATION_ONE": "Вы действительно хотите удалить {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} имеет {dependencyCount} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}. Хотите удалить и их тоже?",
+        "DEPENDENCY_TITLE": "Удалить зависимости модификации?",
+        "TITLE": "Удалить {count, plural, one{модификацию} other{модификации}}?"
+      },
+      "UPDATE_ALL_BUTTON": "Обновить всё",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Текущий язык",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "При закрытии окна WowUp сворачивается в область уведомлений панели задач.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Свернуть в трей при закрытии",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Изменение языка по умолчанию требует перезапуска приложения.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Установить новый язык по умолчанию",
+        "SET_LANGUAGE_DESCRIPTION": "Выберите язык для изменения",
+        "SET_LANGUAGE_LABEL": "Установить язык приложения",
+        "START_MINIMIZED_DESCRIPTION": "...и не будет показан на экране",
+        "START_MINIMIZED_LABEL": "Запускать WowUp свернутым",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp будет запущен сразу после загрузки операционной системы...",
+        "START_WITH_SYSTEM_LABEL": "Запускать WowUp вместе со стартом системы",
+        "TELEMETRY_DESCRIPTION": "Помогите улучшить WowUp, отправив анонимные данные об установке и/или ошибках.",
+        "TELEMETRY_LABEL": "Телеметрия",
+        "THEME_DESCRIPTION": "Изменить цветовую тему по вкусу",
+        "THEME_LABEL": "Цветовая тема",
+        "TITLE": "Приложение",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Хотите перезапустить приложение?",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Для отключения аппаратного ускорения нужен перезапуск приложения.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Для включения аппаратного ускорения нужен перезапуск приложения.",
+        "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
+        "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Его можно найти в последнем лог-файле, если необходимо.",
+        "DEBUG_DATA_LABEL": "Отладка данных",
+        "LOG_FILES_BUTTON": "Показать лог-файлы",
+        "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую последние несколько лог-файлов.",
+        "LOG_FILES_LABEL": "Файлы логов",
+        "TITLE": "Отладка"
+      },
+      "TABS": {
+        "APPLICATION": "Приложение",
+        "CLIENTS": "Клиенты",
+        "DEBUG": "Отладка"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",
+        "AUTO_UPDATE_LABEL": "Автообновление",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Вы точно хотите очистить путь установки для {clientName}? Это удалит всю хранимую информацию модификации для этого клиента.\n\nПапки ваших модификаций не будут удалены.",
+          "TITLE": "Очистить место установки?"
+        },
+        "CLIENT_TYPE_INPUT_HINT": "Папка которая содержит папку клиента {clientTypeName} – \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "Путь для {clientTypeName}",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Тип выпуска модификации",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
+        "RESCAN_CLIENTS_BUTTON": "Повторное сканирование",
+        "RESCAN_CLIENTS_LABEL": "Повторно найти установленные продукты World of Warcraft",
+        "TITLE": "World of Warcraft"
+      }
+    }
+  }
+}

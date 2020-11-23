@@ -1,0 +1,475 @@
+@import "./variables.scss";
+@import "~@angular/material/theming";
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+$md-wowup-pallette: (
+  50: #e8eaf6,
+  100: #6b69d6,
+  200: #504fa1,
+  300: #383773,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: #8c9eff,
+  A200: #536dfe,
+  A400: #3d5afe,
+  A700: #6874bb,
+  contrast: (
+    50: #000000,
+    100: #ffffff,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+  ),
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$wowup-default-primary: mat-palette($md-wowup-pallette, 100, 50, 300);
+$wowup-default-accent: mat-palette($md-wowup-pallette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$wowup-default-warn: mat-palette($mat-red);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as `color` or `typography`.
+$wowup-default-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $wowup-default-primary,
+      accent: $wowup-default-accent,
+      warn: $wowup-default-warn,
+    ),
+  )
+);
+
+$wowup-light-theme: mat-light-theme(
+  (
+    color: (
+      primary: $wowup-default-primary,
+      accent: $wowup-default-accent,
+      warn: $wowup-default-warn,
+    ),
+  )
+);
+
+.border-primary {
+  border-color: $purple-1;
+}
+
+.bg-primary {
+  background-color: $purple-1;
+}
+
+.bg-primary-2 {
+  background-color: $purple-2;
+}
+
+.bg-primary-3 {
+  background-color: $purple-3;
+}
+
+.bg-secondary {
+  background-color: $dark-1;
+}
+
+.bg-secondary-2 {
+  background-color: $dark-2;
+}
+
+.bg-secondary-3 {
+  background-color: $dark-3;
+}
+
+.bg-secondary-4 {
+  background-color: $dark-4;
+}
+
+.hover-bg-secondary:hover {
+  background-color: $dark-1;
+}
+
+.hover-bg-secondary-2:hover {
+  background-color: $dark-2;
+}
+
+.hover-bg-secondary-3:hover {
+  background-color: $dark-3;
+}
+
+.hover-bg-secondary-4:hover {
+  background-color: $dark-4;
+}
+
+.hover-primary-2:hover {
+  background-color: $purple-2;
+}
+
+.text-1 {
+  color: $white-1;
+}
+
+.text-2 {
+  color: $white-2;
+}
+
+.text-3 {
+  color: $white-3;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $dark-2;
+}
+
+::-webkit-scrollbar-thumb {
+  border-color: $purple-3;
+  background: $purple-1;
+  background: linear-gradient(146deg, $purple-1 0%, $purple-2 100%);
+}
+
+::-webkit-scrollbar-corner {
+  background: $dark-3;
+}
+
+.mat-input-element {
+  caret-color: $white-3 !important;
+  color: $white-1 !important;
+}
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: $white-2 !important;
+}
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($wowup-default-theme);
+
+.default-theme-light-theme {
+  @include angular-material-color($wowup-light-theme);
+}
+
+// Horde theme
+$horde-pallette: (
+  50: #e8eaf6,
+  100: $horde-red-1,
+  200: #504fa1,
+  300: #383773,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: $horde-red-1,
+  A200: $horde-control,
+  A400: $horde-red-3,
+  A700: #6874bb,
+  contrast: (
+    50: #000000,
+    100: #ffffff,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+  ),
+);
+$horde-primary: mat-palette($horde-pallette, 100, 50, 300);
+$horde-accent: mat-palette($horde-pallette, A200, A100, A400);
+$horde-warn: mat-palette($mat-deep-orange);
+$horde-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $horde-primary,
+      accent: $horde-accent,
+      warn: $horde-warn,
+    ),
+  )
+);
+
+$horde-theme-light: mat-light-theme(
+  (
+    color: (
+      primary: $horde-primary,
+      accent: $horde-accent,
+      warn: $horde-warn,
+    ),
+  )
+);
+
+.horde-theme-light-theme {
+  @include angular-material-color($horde-theme-light);
+}
+
+.horde-theme {
+  @include angular-material-color($horde-theme);
+}
+
+[class*="horde-theme"] {
+  .border-primary {
+    border-color: $horde-red-1 !important;
+  }
+
+  .bg-primary {
+    background-color: $horde-red-1 !important;
+  }
+
+  .bg-primary-2 {
+    background-color: $horde-red-2 !important;
+  }
+
+  .hover-primary-2:hover {
+    background-color: $horde-red-2 !important;
+  }
+
+  .mat-form-field-ripple {
+    background-color: $horde-red-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $dark-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-color: $horde-red-3;
+    background: $horde-red-1;
+    background: linear-gradient(146deg, $horde-red-1 0%, $horde-red-2 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: $dark-3;
+  }
+}
+
+// Alliance theme
+$alliance-pallette: (
+  50: #e8eaf6,
+  100: $alliance-blue-1,
+  200: $alliance-blue-2,
+  300: #383773,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: $alliance-blue-1,
+  A200: $alliance-control,
+  A400: $alliance-blue-3,
+  A700: #6874bb,
+  contrast: (
+    50: #000000,
+    100: #ffffff,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+  ),
+);
+$alliance-primary: mat-palette($alliance-pallette, 100, 50, 300);
+$alliance-accent: mat-palette($alliance-pallette, A200, A100, A400);
+$alliance-warn: mat-palette($mat-deep-orange);
+$alliance-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $alliance-primary,
+      accent: $alliance-accent,
+      warn: $alliance-warn,
+    ),
+  )
+);
+
+$alliance-theme-light: mat-light-theme(
+  (
+    color: (
+      primary: $alliance-primary,
+      accent: $alliance-accent,
+      warn: $alliance-warn,
+    ),
+  )
+);
+
+.alliance-theme-light-theme {
+  @include angular-material-color($alliance-theme-light);
+}
+
+.alliance-theme {
+  @include angular-material-color($alliance-theme);
+}
+
+[class*="alliance-theme"] {
+  .border-primary {
+    border-color: $alliance-blue-1 !important;
+  }
+
+  .bg-primary {
+    background-color: $alliance-blue-1 !important;
+  }
+
+  .bg-primary-2 {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  .hover-primary-2:hover {
+    background-color: $alliance-blue-3 !important;
+  }
+
+  .mat-form-field-ripple {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $dark-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-color: $alliance-blue-3;
+    background: $alliance-blue-1;
+    background: linear-gradient(146deg, $alliance-blue-1 0%, $alliance-blue-2 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: $dark-3;
+  }
+}
+
+// DARK THEME
+.default-theme,
+.alliance-theme,
+.horde-theme {
+  .bg-secondary {
+    background-color: $dark-1 !important;
+  }
+
+  .bg-secondary-2 {
+    background-color: $dark-2 !important;
+  }
+
+  .bg-secondary-3 {
+    background-color: $dark-3 !important;
+  }
+
+  .bg-secondary-4 {
+    background-color: $dark-4 !important;
+  }
+
+  .hover-bg-secondary:hover {
+    background-color: $dark-1 !important;
+  }
+  
+  .hover-bg-secondary-2:hover {
+    background-color: $dark-2 !important;
+  }
+  
+  .hover-bg-secondary-3:hover {
+    background-color: $dark-3 !important;
+  }
+  
+  .hover-bg-secondary-4:hover {
+    background-color: $dark-4 !important;
+  }
+}
+
+// LIGHT THEME
+[class*="light-theme"] {
+  .bg-secondary {
+    background-color: $lt-secondary-1 !important;
+  }
+
+  .bg-secondary-2 {
+    background-color: $lt-secondary-2 !important;
+  }
+
+  .bg-secondary-3 {
+    background-color: $lt-secondary-3 !important;
+  }
+
+  .bg-secondary-4 {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .hover-bg-secondary:hover {
+    background-color: $lt-secondary-1 !important;
+  }
+
+  .hover-bg-secondary-2:hover {
+    background-color: $lt-secondary-2 !important;
+  }
+
+  .hover-bg-secondary-3:hover {
+    background-color: $lt-secondary-3 !important;
+  }
+
+  .hover-bg-secondary-4:hover {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .text-1 {
+    color: $lt-text-1 !important;
+  }
+
+  .text-2 {
+    color: $lt-text-2 !important;
+  }
+
+  .text-3 {
+    color: $lt-text-3 !important;
+  }
+
+  .hover-text-1:hover {
+    color: $lt-text-1 !important;
+  }
+
+  .hover-text-2:hover {
+    color: $lt-text-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .mat-form-field-label {
+    color: $lt-text-1 !important;
+  }
+
+  .mat-input-element {
+    caret-color: $lt-text-3 !important;
+    color: $lt-text-1 !important;
+  }
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $lt-text-2 !important;
+  }
+}

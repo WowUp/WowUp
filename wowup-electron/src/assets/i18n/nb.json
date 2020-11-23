@@ -1,0 +1,300 @@
+{
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse}} ble automatisk oppdatert.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
+    "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Check for Updates...",
+      "QUIT_ACTION": "Quit",
+      "SHOW_ACTION": "Show"
+    },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "Default",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "Horde"
+    },
+    "WOWUP_UPDATE": {
+      "DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
+      "INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
+      "INSTALL_TITLE": "WowUp-oppdatering er klar",
+      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
+      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
+      "SNACKBAR_ACTION": "Oppdater",
+      "SNACKBAR_TEXT": "en ny versjon av WowUp er tilgjengelig",
+      "TOOLTIP": "WowUp oppdatering tilgjengelig",
+      "UPDATE_ERROR": "Failed to get WowUp update"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATE": {
+      "IGNORED": "Ignorert",
+      "INSTALL": "Installer",
+      "UNINSTALL": "Avinstaller",
+      "UNKNOWN": "",
+      "UPDATE": "Oppdater",
+      "UPTODATE": "Oppdatert"
+    },
+    "ADDON_STATUS": {
+      "BACKINGUP": "Sikkerhetskopierer",
+      "COMPLETE": "Installert",
+      "DOWNLOADING": "Laster Ned",
+      "INSTALLING": "Installerer",
+      "PENDING": "Venter",
+      "UNINSTALLING": "Avinstallerer",
+      "UPDATING": "Oppdaterer..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
+    },
+    "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
+      "DAYS_AGO": "{count} {count, plural, one{dag} other{dager}} siden",
+      "HOURS_AGO": "{count} {count, plural, one{time} other{timer}} siden",
+      "JUST_NOW": "Akkurat nå",
+      "MONTHS_AGO": "{count} {count, plural, one{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, one{year} other{years}} ago",
+      "YESTERDAY": "I går"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
+    },
+    "DOWNLOAD_COUNT": {
+      "e+0": "{count}",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} thousand",
+      "e+4": "{count} thousand",
+      "e+5": "{count} thousand",
+      "e+6": "{count} million",
+      "e+7": "{count} million",
+      "e+8": "{count} million",
+      "e+9": "{count} billion"
+    },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alpha",
+        "BETA": "Beta",
+        "STABLE": "Stable"
+      }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Laster..."
+    },
+    "SEARCH": {
+      "NO_ADDONS": "No addons found"
+    }
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "BY_AUTHOR": "Av {authorName}",
+      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
+      "VIEW_IN_BROWSER_BUTTON": "Se i nettleser",
+      "VIEW_ON_PROVIDER_PREFIX": "View on"
+    },
+    "ALERT": {
+      "ERROR_TITLE": "Error",
+      "POSITIVE_BUTTON": "Okey"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "Nei",
+      "POSITIVE_BUTTON": "Ja"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "Utvidelsens URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "F.Eks. GitHub eller WowInterface URL",
+      "CLOSE_BUTTON": "Lukk",
+      "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
+      "ERROR": {
+        "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
+        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wowup-support channel.",
+        "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
+        "TITLE": "Addon Installation Failed"
+      },
+      "IMPORT_BUTTON": "Importer",
+      "INSTALL_BUTTON": "Installer",
+      "INSTALL_SUCCESS_LABEL": "Installert!",
+      "SUPPORTED_SOURCES": "Støtter WowInterface og GitHub*",
+      "TITLE": "Installer Utvidelse fra URL"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "Hjelp meg med å forbedre WowUp ved å sende anyonyme data og feilmeldinger?",
+      "NEGATIVE_BUTTON": "Nei Takk!",
+      "POSITIVE_BUTTON": "Selvfølgelig!",
+      "TITLE": "WowUp Telemetri"
+    }
+  },
+  "PAGES": {
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "Endringslogg",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Besøk nettsiden!"
+    },
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Installer fra URL",
+      "REFRESH_BUTTON": "Oppdater",
+      "SEARCH_LABEL": "Søk",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Utvidelse",
+        "AUTHOR_COLUMN_HEADER": "Forfatter",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Nedlastinger",
+        "PROVIDER_COLUMN_HEADER": "Leverandør",
+        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
+        "STATUS_COLUMN_HEADER": "Status"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "Om",
+      "GET_ADDONS_TAB_TITLE": "Få Utvidelser",
+      "MY_ADDONS_TAB_TITLE": "Mine Utvidelser",
+      "OPTIONS_TAB_TITLE": "Alternativer"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
+        "ALPHA_ADDON_CHANNEL": "Alpha",
+        "AUTO_UPDATE_ADDON_BUTTON": "Oppdater Automatisk",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENU_TITLE": "Kanal",
+        "IGNORE_ADDON_BUTTON": "Ignorer",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "REINSTALL_ADDON_BUTTON": "Re-Installer",
+        "REMOVE_ADDON_BUTTON": "Fjern",
+        "SHOW_FOLDER": "Vis Mappe",
+        "STABLE_ADDON_CHANNEL": "Stable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
+      },
+      "CHECK_UPDATES_BUTTON": "Finn Oppdateringer",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Finn de siste oppdateringene til utvidelsene dine",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Vis Kolonner"
+      },
+      "FILTER_LABEL": "Filter",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
+        "JOIN_DISCORD": "Chat med oss på Discord",
+        "PATREON_SUPPORT": "Støtt WowUp på Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{resultat} other{resultater}}",
+        "VIEW_GITHUB": "Check out the code on GitHub",
+        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
+      },
+      "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Ved å skanne på nytt kan utvidelsesinformasjonen bli resatt imens vi prøver å finne ut av hva du har installert. Dette kan ta et øyeblikk.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start skanningen?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Samler utvidelser...",
+        "UPDATING": "Oppdaterer {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Oppdaterer {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Utvidelse",
+        "ADDON_INSTALL_BUTTON": "Installer",
+        "ADDON_UPDATE_BUTTON": "Oppdater",
+        "AUTHOR_COLUMN_HEADER": "Forfatter",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Automatisk oppdatering aktivert",
+        "GAME_VERSION_COLUMN_HEADER": "Spillversjon",
+        "LATEST_VERSION_COLUMN_HEADER": "Siste Versjon",
+        "PROVIDER_COLUMN_HEADER": "Leverandør",
+        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
+        "RELEASED_AT_COLUMN_HEADER": "Utgivelsesdato",
+        "STATUS_COLUMN_HEADER": "Status",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "Dette vil fjerne alle relaterte mapper fra din World of Warcraft-mappen din.",
+        "CONFIRMATION_LESS_THAN_THREE": "Er du sikker på at du vil fjerne disse {count} utvidelsene?",
+        "CONFIRMATION_MORE_THAN_THREE": "Er du sikker på at du vil fjerne {count} utvalgte utvidelser?",
+        "CONFIRMATION_ONE": "Er du sikker på at du vil fjerne {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
+        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "TITLE": "Avinstaller {count, plural, =1{Utvidelse} other{Utvidelser}}?"
+      },
+      "UPDATE_ALL_BUTTON": "Oppdater Alle",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Oppdater alle utvidelser for denne klienten",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Oppdater Alle Klienter",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Oppdater Retail/Classic"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver systemvarsler",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Når WowUp-vinduet lukkes, minimer til oppgavelinjens varselområde.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukking",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
+        "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
+        "SET_LANGUAGE_LABEL": "Set Language",
+        "START_MINIMIZED_DESCRIPTION": "...og vil ikke dukke opp på skjermen din",
+        "START_MINIMIZED_LABEL": "Start WowUp minimert",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp vil startes umiddelbart etter at operativsystemet ditt er lastet...",
+        "START_WITH_SYSTEM_LABEL": "Start WowUp sammen med maskinen",
+        "TELEMETRY_DESCRIPTION": "Hjelp til med å forbedre WowUp ved å sende anonyme data og feilmeldinger.",
+        "TELEMETRY_LABEL": "Telemetri",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
+        "TITLE": "Applikasjon",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vil du restarte?",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Deaktivering av maskinvareakselerasjon kan løse FPS-problemer og andre renderproblemer i appen. Denne endringen krever en restart",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Deaktivering av maskinvareakselerasjon krever at du restarter programmet.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Aktivering av maskinvareakselerasjon krever at du restarter programmet.",
+        "USE_HARDWARE_ACCELERATION_LABEL": "Aktiver Maskinvareakselerasjon"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "Dump Debugdata",
+        "DEBUG_DATA_DESCRIPTION": "Loggfør debugdata for å hjelpe til med å diagnotisere eventuelle problemer. Hvis du er nyskgjerrig kan du finne dette i din siste loggfil.",
+        "DEBUG_DATA_LABEL": "Debugdata",
+        "LOG_FILES_BUTTON": "Vis Loggfiler",
+        "LOG_FILES_DESCRIPTION": "Åpne mappen som inneholder dine siste loggfiler.",
+        "LOG_FILES_LABEL": "Loggfiler",
+        "TITLE": "Debug"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
+        "AUTO_UPDATE_LABEL": "Automatisk Oppdatering",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
+        "CLIENT_TYPE_INPUT_HINT": "Mappen som inneholder {clientTypeName} klientmappe \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} filbane",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanal for Utvidelser",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Velg",
+        "RESCAN_CLIENTS_BUTTON": "Skann Igjen",
+        "RESCAN_CLIENTS_LABEL": "Skann installerte World of Warcraft produkter på nytt",
+        "TITLE": "World of Warcraft"
+      }
+    }
+  }
+}

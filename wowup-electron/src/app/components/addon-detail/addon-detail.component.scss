@@ -1,0 +1,33 @@
+@import "../../../variables.scss";
+
+.image-row {
+  margin-bottom: 16px;
+  border-radius: 4px;
+  overflow: hidden;
+
+  .image {
+    max-width: 100%;
+    max-height: 250px;
+  }
+}
+.addon-detail-view {
+  width: 35vw;
+  min-width: 380px;
+  max-width: 600px;
+
+  .icon-link {
+    width: 24px;
+    height: 24px;
+  }
+
+  .addon-dependencies {
+    background-color: $dark-4;
+    color: $artifact;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .sub-text {
+    color: $white-2;
+  }
+}

@@ -1,0 +1,48 @@
+<mat-divider></mat-divider>
+<div class="title">{{ clientTypeName | translate }}</div>
+<div class="row">
+  <mat-form-field class="grow folder-input">
+    <mat-label>{{
+      "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL" | translate: { clientTypeName: (clientTypeName | translate) }
+    }}</mat-label>
+    <input matInput disabled [value]="clientLocation" />
+    <button mat-button color="accent" *ngIf="clientLocation" matSuffix mat-icon-button aria-label="Clear"
+      (click)="clearInstallPath()">
+      <mat-icon svgIcon="fas:times"></mat-icon>
+    </button>
+    <mat-hint class="text-2">
+      {{
+        "PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT"
+          | translate
+            : {
+                clientTypeName: (clientTypeName | translate).toLowerCase(),
+                clientFolderName: clientFolderName
+              }
+      }}
+    </mat-hint>
+  </mat-form-field>
+  <button mat-flat-button color="primary" class="select-button" (click)="onSelectClientPath()">
+    {{ "PAGES.OPTIONS.WOW.OPEN_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
+  </button>
+</div>
+<div class="row">
+  <div class="grow">
+    <p>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_LABEL" | translate }}</p>
+  </div>
+  <mat-form-field class="">
+    <mat-label>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_SELECT_LABEL" | translate }}</mat-label>
+    <mat-select [(value)]="selectedAddonChannelType" (selectionChange)="onDefaultAddonChannelChange($event)">
+      <mat-option *ngFor="let channel of addonChannelInfos" [value]="channel.type">{{
+        channel.name | translate
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div class="row">
+  <div class="grow">
+    <p>{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_LABEL" | translate }}</p>
+    <small class="text-2">{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_DESCRIPTION" | translate }}</small>
+  </div>
+  <mat-slide-toggle [(checked)]="clientAutoUpdate" (change)="onDefaultAutoUpdateChange($event)">
+  </mat-slide-toggle>
+</div>

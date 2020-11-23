@@ -1,0 +1,92 @@
+@import "../../../variables.scss";
+
+.addon-column {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+
+  .thumbnail-container {
+    margin-right: 11px;
+
+    .addon-logo-container {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      overflow: hidden;
+
+      .addon-logo {
+        height: 100%;
+      }
+
+      .addon-logo-letter {
+        font-size: 2em;
+        font-weight: 400;
+      }
+
+      img {
+        height: 100%;
+      }
+    }
+
+    .channel {
+      text-align: center;
+      font-weight: 400;
+      font-size: 0.8em;
+
+      &.beta {
+        color: $rare-color;
+      }
+
+      &.alpha {
+        color: $epic-color;
+      }
+    }
+  }
+
+  .addon-title {
+    // word-break: break-all;
+    white-space: normal;
+    text-decoration: none;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+  }
+
+  .addon-version {
+
+    .update-available {
+      color: $artifact;
+    }
+  }
+  .upgrade-icon {
+    height: 10px;
+  }
+
+  .auto-update-icon {
+    height: 11px;
+    width: 11px;
+  }
+
+  .addon-funding {
+    a {
+      margin-right: 1em;
+    }
+    .funding-icon {
+      width: 15px;
+      height: 15px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}

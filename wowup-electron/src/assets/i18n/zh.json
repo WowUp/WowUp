@@ -1,0 +1,300 @@
+{
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "自动更新了 {count} 个插件。",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "自动更新",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
+    "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "检查更新...",
+      "QUIT_ACTION": "退出",
+      "SHOW_ACTION": "显示"
+    },
+    "THEME": {
+      "ALLIANCE": "联盟",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "暗色",
+      "GROUP_LIGHT": "亮色",
+      "HORDE": "部落"
+    },
+    "WOWUP_UPDATE": {
+      "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
+      "INSTALL_MESSAGE": "是否重新启动 WowUp 以完成更新？",
+      "INSTALL_TITLE": "WowUp 更新已准备就绪",
+      "NOT_AVAILABLE": "已安装最新版 WowUp",
+      "PORTABLE_DOWNLOAD_MESSAGE": "是否手动下载最新绿色版？\n\n下载完成后请关闭本应用程序，然后用新版本覆盖。",
+      "PORTABLE_DOWNLOAD_TITLE": "需要手动下载",
+      "SNACKBAR_ACTION": "更新",
+      "SNACKBAR_TEXT": "新版本 WowUp 可用",
+      "TOOLTIP": "WowUp 更新可用",
+      "UPDATE_ERROR": "WowUp 更新下载失败"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATE": {
+      "IGNORED": "忽略",
+      "INSTALL": "安装",
+      "UNINSTALL": "卸载",
+      "UNKNOWN": "",
+      "UPDATE": "更新",
+      "UPTODATE": "已安装最新版"
+    },
+    "ADDON_STATUS": {
+      "BACKINGUP": "正在备份",
+      "COMPLETE": "已安装",
+      "DOWNLOADING": "正在下载",
+      "INSTALLING": "正在安装",
+      "PENDING": "等待中",
+      "UNINSTALLING": "正在卸载",
+      "UPDATING": "正在更新..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "经典怀旧服",
+      "CLASSICPTR": "经典怀旧服 PTR",
+      "RETAIL": "正式服",
+      "RETAILPTR": "正式服 PTR"
+    },
+    "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
+      "DAYS_AGO": "{count} 天前",
+      "HOURS_AGO": "{count} 小时前",
+      "JUST_NOW": "刚刚",
+      "MONTHS_AGO": "{count} 个月前",
+      "YEARS_AGO": "{count} 年前",
+      "YESTERDAY": "昨天"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} 个依赖项"
+    },
+    "DOWNLOAD_COUNT": {
+      "e+0": "{myriadCount}",
+      "e+1": "{myriadCount}",
+      "e+2": "{myriadCount}",
+      "e+3": "{myriadCount}",
+      "e+4": "{myriadCount} 万",
+      "e+5": "{myriadCount} 万",
+      "e+6": "{myriadCount} 万",
+      "e+7": "{myriadCount} 万",
+      "e+8": "{myriadCount} 亿",
+      "e+9": "{myriadCount} 亿"
+    },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alpha",
+        "BETA": "Beta",
+        "STABLE": "稳定版"
+      }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的提供方修改为 {providerName}"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "正在加载..."
+    },
+    "SEARCH": {
+      "NO_ADDONS": "未找到插件"
+    }
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "BY_AUTHOR": "By {authorName}",
+      "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 个依赖项",
+      "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看",
+      "VIEW_ON_PROVIDER_PREFIX": "在该网站上查看："
+    },
+    "ALERT": {
+      "ERROR_TITLE": "错误",
+      "POSITIVE_BUTTON": "确定"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "否",
+      "POSITIVE_BUTTON": "是"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "插件 URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "例如，GitHub 或 WowInterface URL",
+      "CLOSE_BUTTON": "关闭",
+      "DESCRIPTION": "如需直接从某 URL 安装插件，请将其粘贴到下面以开始安装。",
+      "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下载",
+      "ERROR": {
+        "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
+        "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wowup-support 频道寻求帮助（英语）。",
+        "INVALID_URL": "输入的 URL 无效。有效 URL 示例：\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "未找到插件，请检查 URL 是否指向正确的页面。\n\n从 GitHub 安装时，请检查是否存在带有 zip 包的 release tag。",
+        "TITLE": "插件安装失败"
+      },
+      "IMPORT_BUTTON": "导入",
+      "INSTALL_BUTTON": "安装",
+      "INSTALL_SUCCESS_LABEL": "安装成功！",
+      "SUPPORTED_SOURCES": "支持 WowInterface 和 GitHub",
+      "TITLE": "从 URL 安装"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "是否发送匿名应用安装数据和错误信息以帮助改进 WowUp？",
+      "NEGATIVE_BUTTON": "否",
+      "POSITIVE_BUTTON": "是",
+      "TITLE": "WowUp 遥测"
+    }
+  },
+  "PAGES": {
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "更新记录",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "访问网站！"
+    },
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "魔兽世界",
+      "INSTALL_FROM_URL_BUTTON": "从 URL 安装",
+      "REFRESH_BUTTON": "刷新",
+      "SEARCH_LABEL": "搜索",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "插件",
+        "AUTHOR_COLUMN_HEADER": "作者",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "下载次数",
+        "PROVIDER_COLUMN_HEADER": "提供方",
+        "RELEASED_AT_COLUMN_HEADER": "发布时间",
+        "STATUS_COLUMN_HEADER": "状态"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "关于",
+      "GET_ADDONS_TAB_TITLE": "获取插件",
+      "MY_ADDONS_TAB_TITLE": "我的插件",
+      "OPTIONS_TAB_TITLE": "选项"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "已选中 {count} 项",
+        "ALPHA_ADDON_CHANNEL": "Alpha",
+        "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENU_TITLE": "更新通道",
+        "IGNORE_ADDON_BUTTON": "忽略",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "REINSTALL_ADDON_BUTTON": "重新安装",
+        "REMOVE_ADDON_BUTTON": "删除",
+        "SHOW_FOLDER": "打开文件夹",
+        "STABLE_ADDON_CHANNEL": "稳定版"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "是否将 {addonName} 的提供方修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
+        "TITLE": "修改插件提供方？"
+      },
+      "CHECK_UPDATES_BUTTON": "检查更新",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "检查最新的插件更新",
+      "CLIENT_TYPE_SELECT_LABEL": "魔兽世界",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "显示列表项"
+      },
+      "FILTER_LABEL": "筛选",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个提供方",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "共 {count} 个插件",
+        "JOIN_DISCORD": "在 Discord 上与我们交流（英语）",
+        "PATREON_SUPPORT": "通过 Patreon 向 WowUp 捐助（英语）",
+        "SEARCH_RESULTS": "共 {count} 条结果",
+        "VIEW_GITHUB": "在 GitHub 上查看源代码",
+        "VIEW_GUIDE": "访问指南，探索 WowUp 的功能（英语）"
+      },
+      "RESCAN_FOLDERS_BUTTON": "重新扫描",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "扫描客户端文件夹中已安装的附加组件",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新扫描过程将会猜测已经安装了哪些插件，可能会重置已知插件信息。如果特定插件无法识别或显示不正确，请使用此功能。扫描不会删除插件本身，只会删除 WowUp 记录的插件信息。\n\n扫描需要花费一些时间。",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "是否开始扫描？",
+      "SPINNER": {
+        "GATHERING_ADDONS": "正在收集插件信息...",
+        "UPDATING": "正在更新第 {updateCount} 个，共 {addonCount} 个",
+        "UPDATING_WITH_ADDON_NAME": "正在更新第 {updateCount} 个，共 {addonCount} 个\n{clientType}：{addonName}"
+      },
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "插件",
+        "ADDON_INSTALL_BUTTON": "安装",
+        "ADDON_UPDATE_BUTTON": "更新",
+        "AUTHOR_COLUMN_HEADER": "作者",
+        "AUTO_UPDATE_ICON_TOOLTIP": "自动更新已启用",
+        "GAME_VERSION_COLUMN_HEADER": "游戏版本",
+        "LATEST_VERSION_COLUMN_HEADER": "最新版本",
+        "PROVIDER_COLUMN_HEADER": "提供方",
+        "PROVIDER_RELEASE_CHANNEL": "更新通道",
+        "RELEASED_AT_COLUMN_HEADER": "发布时间",
+        "STATUS_COLUMN_HEADER": "状态",
+        "UPDATED_AT_COLUMN_HEADER": "更新时间"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "此操作将会从《魔兽世界》所在路径下删除所有与插件相关的文件夹。",
+        "CONFIRMATION_LESS_THAN_THREE": "是否确定要删除以下 {count} 个插件？",
+        "CONFIRMATION_MORE_THAN_THREE": "是否确定要删除选中的 {count} 个插件？",
+        "CONFIRMATION_ONE": "是否确定要删除 {addonName}？",
+        "DEPENDENCY_MESSAGE": "{addonName} 有 {dependencyCount} 个依赖项，是否一并删除？",
+        "DEPENDENCY_TITLE": "是否删除插件依赖项？",
+        "TITLE": "是否卸载插件？"
+      },
+      "UPDATE_ALL_BUTTON": "全部更新",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "更新此客户端的所有插件",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客户端",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/经典怀旧服"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "当前语言",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "启用各种系统通知弹窗，如自动更新插件通知。",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "启用系统通知",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "关闭 WowUp 窗口时，最小化到菜单栏。",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "关闭 WowUp 窗口时，最小化到系统托盘。",
+        "MINIMIZE_ON_CLOSE_LABEL": "关闭时最小化",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改默认语言需要重新启动客户端。",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "设置新的默认语言",
+        "SET_LANGUAGE_DESCRIPTION": "选择要使用的语言",
+        "SET_LANGUAGE_LABEL": "设置语言",
+        "START_MINIMIZED_DESCRIPTION": "……并且不显示窗口。",
+        "START_MINIMIZED_LABEL": "以最小化窗口启动 WowUp",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp 将在登录后自动启动……",
+        "START_WITH_SYSTEM_LABEL": "登录后自动启动 WowUp",
+        "TELEMETRY_DESCRIPTION": "发送匿名应用安装数据和错误信息以帮助改进 WowUp。",
+        "TELEMETRY_LABEL": "遥测",
+        "THEME_DESCRIPTION": "选择喜欢的配色主题",
+        "THEME_LABEL": "配色主题",
+        "TITLE": "应用程序",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "是否重新启动？",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬件加速可能会提高 FPS 并修复其他渲染问题。更改此项需要重新启动。",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "禁用硬件加速需要重新启动 WowUp。",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "启用硬件加速需要重新启动 WowUp。",
+        "USE_HARDWARE_ACCELERATION_LABEL": "启用硬件加速"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "转储调试数据",
+        "DEBUG_DATA_DESCRIPTION": "记录调试数据以帮助诊断潜在的问题。调试数据可以在最新的日志文件中找到。",
+        "DEBUG_DATA_LABEL": "调试数据",
+        "LOG_FILES_BUTTON": "显示日志文件",
+        "LOG_FILES_DESCRIPTION": "打开包含您最后几个日志文件的文件夹。",
+        "LOG_FILES_LABEL": "日志文件",
+        "TITLE": "调试"
+      },
+      "TABS": {
+        "APPLICATION": "应用程序",
+        "CLIENTS": "客户端",
+        "DEBUG": "调试"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
+        "AUTO_UPDATE_LABEL": "自动更新",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "是否忘记 {clientName} 的安装路径？此操作将会删除 WowUp 记录的此客户端所安装插件信息。\n\n插件文件夹不会被删除。",
+          "TITLE": "忘记此路径？"
+        },
+        "CLIENT_TYPE_INPUT_HINT": "请选择 {clientTypeName} 客户端路径（\"{clientFolderName}\" 的上级路径）",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路径",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "默认插件更新通道",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "浏览",
+        "RESCAN_CLIENTS_BUTTON": "重新扫描",
+        "RESCAN_CLIENTS_LABEL": "重新扫描已安装的《魔兽世界》客户端",
+        "TITLE": "魔兽世界"
+      }
+    }
+  }
+}
