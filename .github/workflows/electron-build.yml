@@ -1,9 +1,9 @@
 name: Build WowUp Electron
 on:
-  - push
-  # create:
-  # tags:
-  # - v*
+  # - push
+  create:
+    tags:
+      - v*
 
 jobs:
   create-release:
@@ -15,6 +15,11 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: true
 
   build:
     name: Build
@@ -45,6 +50,7 @@ jobs:
         run: |
           cd ./wowup-electron
           npm i
+          npm run electron:publish
 
       - name: Build Windows App
         if: matrix.os == 'windows-latest'
@@ -55,3 +61,4 @@ jobs:
         run: |
           cd ./wowup-electron
           npm i
+          npm run electron:publish
