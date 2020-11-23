@@ -12,6 +12,7 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { BehaviorSubject, Subject } from "rxjs";
 import { UpdateCheckResult } from "electron-updater";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 describe("FooterComponent", () => {
   let component: FooterComponent;
@@ -39,6 +40,7 @@ describe("FooterComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [FooterComponent],
       imports: [
+        MatTooltipModule,
         MatDialogModule,
         OverlayModule,
         MatSnackBarModule,

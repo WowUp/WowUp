@@ -18,11 +18,6 @@ describe("InstallFromUrlDialogComponent", () => {
   let addonServiceSpy: any;
 
   beforeEach(async () => {
-    // addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
-    //   scanUpdate$: new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown }).asObservable(),
-    // })
-
-
     await TestBed.configureTestingModule({
       declarations: [InstallFromUrlDialogComponent],
       imports: [
