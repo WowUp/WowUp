@@ -46,10 +46,17 @@ export class CurseFolderScanner {
     matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
     // log.debug("matchingFiles", matchingFiles.length);
 
-    const individualFingerprints = await async.mapLimit<string, number>(matchingFiles, 4, async (path, callback) => {
-      const normalizedFileHash = await this.getFileHash(path);
-      callback(undefined, normalizedFileHash);
+    let individualFingerprints = await async.mapLimit<string, number>(matchingFiles, 4, async (path, callback) => {
+      try {
+        const fileHash = await this.getFileHash(path);
+        callback(undefined, fileHash);
+      } catch (e) {
+        log.error(`Failed to get filehash: ${path}`, e);
+        callback(undefined, -1);
+      }
     });
+
+    individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
     const fingerprint = this.getStringHash(hashConcat);
