@@ -11,6 +11,11 @@ import { WowClientOptionsComponent } from "./wow-client-options.component";
 import { BehaviorSubject } from "rxjs";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { MatSelectModule } from "@angular/material/select";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
@@ -37,8 +42,13 @@ describe("WowClientOptionsComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [WowClientOptionsComponent],
       imports: [
+        MatMenuModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
         HttpClientModule,
         MatDialogModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

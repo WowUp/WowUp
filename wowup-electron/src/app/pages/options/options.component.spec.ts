@@ -25,7 +25,7 @@ describe("OptionsComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
       isWin : false,
       isLinux : true,
-      isMax: false,
+      isMac: false,
     });
 
     await TestBed.configureTestingModule({

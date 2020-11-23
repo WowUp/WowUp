@@ -11,6 +11,8 @@ import { ElectronService } from "../../services";
 import { OptionsAppSectionComponent } from "./options-app-section.component";
 import { httpLoaderFactory } from "../../app.module";
 import { BehaviorSubject } from "rxjs";
+import { MatSelectModule } from "@angular/material/select";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
@@ -33,7 +35,7 @@ describe("OptionsAppSectionComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
       isWin : false,
       isLinux : true,
-      isMax: false,
+      isMac: false,
     });
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       collapseToTray: false,
@@ -50,8 +52,10 @@ describe("OptionsAppSectionComponent", () => {
         ElectronService,
       ],
       imports: [
+        MatSelectModule,
         HttpClientModule,
         MatDialogModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

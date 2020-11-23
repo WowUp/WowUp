@@ -14,6 +14,10 @@ import { OverlayModule } from "@angular/cdk/overlay";
 import { BehaviorSubject } from "rxjs";
 import { MatMenuModule } from "@angular/material/menu";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { MatSelectModule } from "@angular/material/select";
+import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -42,14 +46,19 @@ describe("GetAddonsComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
       isWin : false,
       isLinux : true,
-      isMax: false,
+      isMac: false,
     });
 
     await TestBed.configureTestingModule({
       declarations: [GetAddonsComponent],
       imports: [
         MatMenuModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatMenuModule,
         OverlayModule,
+        BrowserAnimationsModule,
         HttpClientModule,
         MatDialogModule,
         TranslateModule.forRoot({
