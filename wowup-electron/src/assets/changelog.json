@@ -1,11 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-rc.6",
+      "changes": ["Fix a bug causing the loading of the product DB to lock the app"]
+    },
+    {
       "Version": "2.0.0-rc.5",
       "changes": ["Korean locale updates (soaakim)", "Fix a bug with importing via URL and having downloads under 10"]
     },
     {
-      "Version": "2.0.0-rc.5",
+      "Version": "2.0.0-rc.4",
       "changes": [
         "German locale updates (maestroh, Glow)",
         "Italian locale updates (Bito)",
