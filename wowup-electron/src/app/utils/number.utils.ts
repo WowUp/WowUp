@@ -1,6 +1,6 @@
 export function shortenDownloadCount(value: number, nDigit: number): string {
-  if (value === 0) {
-    return "0";
+  if (value < 10) {
+    return value.toString();
   }
   const exponent = Math.log10(value);
   const nGroups = Math.floor(exponent / nDigit);
@@ -10,8 +10,8 @@ export function shortenDownloadCount(value: number, nDigit: number): string {
 
 // This is a horrifying way to round to the nearest tens place
 export function roundDownloadCount(value: number): number {
-  if (value === 0) {
-    return 0;
+  if (value < 10) {
+    return value;
   }
   const exp = value.toExponential();
   const numberMatch = /(\d*\.?\d*)e\+(\d+)/.exec(exp);
