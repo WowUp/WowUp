@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0-rc.7",
+      "changes": ["Fix a bug if Windows fails to list the drives when searching for Blizzard products"]
+    },
+    {
       "Version": "2.0.0-rc.6",
       "changes": ["Fix a bug causing the loading of the product DB to lock the app"]
     },
