@@ -1,7 +1,11 @@
 {
   "ChangeLogs": [
     {
-      "Version": "2.0.0-rc.4",
+      "Version": "2.0.0-rc.5",
+      "changes": ["Korean locale updates (soaakim)", "Fix a bug with importing via URL and having downloads under 10"]
+    },
+    {
+      "Version": "2.0.0-rc.5",
       "changes": [
         "German locale updates (maestroh, Glow)",
         "Italian locale updates (Bito)",
