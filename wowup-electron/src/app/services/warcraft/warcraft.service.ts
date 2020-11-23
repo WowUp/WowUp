@@ -356,13 +356,12 @@ export class WarcraftService {
   }
 
   private decodeProducts(productDbPath: string) {
-    if (this._electronService.isLinux) {
+    if (!productDbPath || this._electronService.isLinux) {
       return [];
     }
 
-    const productDbData = FileUtils.readFileSync(productDbPath);
-
     try {
+      const productDbData = FileUtils.readFileSync(productDbPath);
       const productDb = ProductDb.decode(productDbData);
       const wowProducts: InstalledProduct[] = productDb.products
         .filter((p) => p.family === "wow")
@@ -375,7 +374,7 @@ export class WarcraftService {
       console.log("wowProducts", wowProducts);
       return wowProducts;
     } catch (e) {
-      console.error("failed to decode product db");
+      console.error(`failed to decode product db at ${productDbPath}`);
       console.error(e);
       return [];
     }
