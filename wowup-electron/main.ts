@@ -297,7 +297,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         submenu: [
           { role: "reload" },
           { role: "forceReload" },
-          { role: "toggleDevTools" },
+          { role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
           { type: "separator" },
           { role: "resetZoom" },
           { role: "zoomIn", accelerator: "CommandOrControl+=" },
@@ -313,6 +313,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         label: "View",
         submenu: [
           { role: "resetZoom" },
+          { role: "toggleDevTools" },
           { role: "zoomIn", accelerator: "CommandOrControl+=" },
           { role: "zoomOut" },
           { type: "separator" },

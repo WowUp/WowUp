@@ -1,7 +1,6 @@
 @import "../../../variables.scss";
 
 .tab-container {
- 
 }
 
 .theme-logo {
@@ -45,6 +44,16 @@
 
     .patron-img {
       width: 120px;
+    }
+  }
+
+  .header-2 {
+    a {
+      color: inherit;
+
+      &:visited {
+        color: inherit;
+      }
     }
   }
 

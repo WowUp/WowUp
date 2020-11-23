@@ -5,6 +5,7 @@ import { ElectronService } from "../../services/electron/electron.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { WowClientOptionsComponent } from "./wow-client-options.component";
+import { TranslateService } from "@ngx-translate/core";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
@@ -24,20 +25,22 @@ describe("WowClientOptionsComponent", () => {
 
   it("should create", () => {
     inject(
-      [MatDialog, ElectronService, WarcraftService, WowUpService, ChangeDetectorRef],
+      [MatDialog, ElectronService, WarcraftService, WowUpService, ChangeDetectorRef, TranslateService],
       (
         matDialog: MatDialog,
         electronService: ElectronService,
         warcraftService: WarcraftService,
         wowupService: WowUpService,
-        chageRef: ChangeDetectorRef
+        changeRef: ChangeDetectorRef,
+        translateService: TranslateService,
       ) => {
         const instance = new WowClientOptionsComponent(
           matDialog,
           electronService,
           warcraftService,
           wowupService,
-          chageRef
+          changeRef,
+          translateService,
         );
         expect(instance).toBeTruthy();
       }

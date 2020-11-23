@@ -40,11 +40,11 @@ export class CurseFolderScanner {
     const fileList = await readDirRecursive(folderPath);
     fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
 
-    log.info("listAllFiles", folderPath, fileList.length);
+    // log.debug("listAllFiles", folderPath, fileList.length);
 
     let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
     matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
-    log.info("matchingFiles", matchingFiles.length);
+    // log.debug("matchingFiles", matchingFiles.length);
 
     const individualFingerprints = await async.mapLimit<string, number>(matchingFiles, 4, async (path, callback) => {
       const normalizedFileHash = await this.getFileHash(path);
@@ -53,7 +53,7 @@ export class CurseFolderScanner {
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
     const fingerprint = this.getStringHash(hashConcat);
-    log.info("fingerprint", fingerprint);
+    // log.debug("fingerprint", fingerprint);
 
     return {
       directory: folderPath,
@@ -78,7 +78,7 @@ export class CurseFolderScanner {
       }
     }
 
-    log.info("fileInfoList", fileInfoList.length);
+    // log.debug("fileInfoList", fileInfoList.length);
     for (let fileInfo of fileInfoList) {
       await this.processIncludeFile(matchingFileList, fileInfo);
     }

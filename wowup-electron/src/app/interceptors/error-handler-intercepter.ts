@@ -1,5 +1,5 @@
 import { ErrorHandler } from "@angular/core";
-import { AnalyticsService } from "app/services/analytics/analytics.service";
+import { AnalyticsService } from "../services/analytics/analytics.service";
 
 export class ErrorHandlerIntercepter implements ErrorHandler {
   constructor(private _analytics: AnalyticsService) {}

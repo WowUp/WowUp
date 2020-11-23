@@ -30,8 +30,7 @@ export const checkForUpdates = async function checkForUpdates(win: BrowserWindow
 export function initializeAppUpdater(win: BrowserWindow) {
   autoUpdater.logger = log;
   autoUpdater.autoDownload = false;
-  autoUpdater.allowPrerelease = true;
-  // autoUpdater.channel = "alpha";
+  // autoUpdater.allowPrerelease = true;
 
   autoUpdater.on("update-available", () => {
     log.info(APP_UPDATE_AVAILABLE);

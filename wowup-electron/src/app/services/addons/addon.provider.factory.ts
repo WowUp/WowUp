@@ -9,7 +9,6 @@ import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
-import { SessionService } from "../session/session.service";
 
 @Injectable({
   providedIn: "root",
