@@ -44,3 +44,9 @@ jobs:
         sudo apt-get install xvfb
         cd ./wowup-electron 
         xvfb-run --auto-servernum ng test --watch=false --include='src/locales.spec.ts'
+
+    - name: Run Test Suite
+      run: |
+        sudo apt-get install xvfb
+        cd ./wowup-electron
+        xvfb-run --auto-servernum ng test --watch=false
