@@ -1,0 +1,368 @@
+{
+  "ChangeLogs": [
+    {
+      "Version": "2.0.0",
+      "changes": ["You are not prepared!"]
+    },
+    {
+      "Version": "2.0.0-rc.7",
+      "changes": [
+        "Fix a bug if Windows fails to list the drives when searching for Blizzard products",
+        "Wrap the curse filehash method to prevent hanging during scans"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.6",
+      "changes": ["Fix a bug causing the loading of the product DB to lock the app"]
+    },
+    {
+      "Version": "2.0.0-rc.5",
+      "changes": ["Korean locale updates (soaakim)", "Fix a bug with importing via URL and having downloads under 10"]
+    },
+    {
+      "Version": "2.0.0-rc.4",
+      "changes": [
+        "German locale updates (maestroh, Glow)",
+        "Italian locale updates (Bito)",
+        "Fix a bug with importing via URL and having 0 downloads",
+        "Add raw count option for translating download count",
+        "Add art attributions"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.3",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "French locale updates (Zazou)",
+        "Russian locale updates (Medok)",
+        "Get the unit tests back to functioning (Linaori)",
+        "Standardize the footer text size",
+        "Remove update date check when looking for TukUI updates",
+        "Added action to test locales upon pull request"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.2",
+      "changes": [
+        "French locale updates (Zazou)",
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "Use the updated date to check for new version, not installed date (Linaori)",
+        "Title bar buttons will no longer have a gap at the top on Windows (Linaori)",
+        "Fix the wobbly app update refresh button animation",
+        "Fix the title bar theme logo on Mac"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.1",
+      "changes": [
+        "German locale updates (Glow)",
+        "Chinese locale updates (CyanoHao)",
+        "Portuguese locale updates (Dogo)",
+        "Spanish locale updates (SkollVargr)",
+        "Always get the game version from the toc, not the provider (Linaori)",
+        "Add more translation flexibility to the 'Install By URL' dialog",
+        "Improve the scanning time",
+        "Add some status text to the scanning process",
+        "Fix an issue with sorting by game version appearing mismatched",
+        "Fix checkbox wrapping in context menus",
+        "Fix addon install analytics to be more useful",
+        "Fix checkbox wrapping in context menus",
+        "Fix dark theme row highlight again",
+        "Fix an issue where re-scan was not updating the UI",
+        "Try to fix an issue with authors pushing the same version name multiple times not getting picked up"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.21",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "French locale updates (Zazou)",
+        "Fix an an issue where the controls were not properly disabled during update all (Linaori)",
+        "Fix an an issue with addon buttons flickering during update (Linaori)",
+        "Fix an typo with the Discord support channel name (Linaori)",
+        "Update to Electron 11",
+        "Remove Rollbar integration",
+        "Add lazy image loading for addons",
+        "Theme fixes"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.20",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "German locale updates (Nils)",
+        "Portuguese locale updates (Dogo)",
+        "French locale updates (Zazou)",
+        "Multiple providers tooltip can now be translated",
+        "Fix an issue with filtering getting stuck on 'My Addons' (chops)",
+        "Fix an issue where external provider channel was not being stored"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.19",
+      "changes": [
+        "Add the ability to clear an installation path",
+        "Add the ability to have addons removed for installations that are missing",
+        "Fix some issues related to switching providers"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.18",
+      "changes": [
+        "Add better external ID tracking for provider switching",
+        "Fix an issue with row selection not showing in dark theme"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.17",
+      "changes": ["Bug fixes"]
+    },
+    {
+      "Version": "2.0.0-beta.16",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "French locale updates (Zazou)",
+        "Chinese locale updates (CyanoHao)",
+        "Spanish locale updates (SkollVargr)",
+        "Group the light and dark theme picker (Linaori)",
+        "When installing an addon folders removed by the author should now be removed (Linaori)",
+        "Add the ability to switch providers via the 'My Addons' context menu on some addons",
+        "Add more fine control over number formatting of downloads",
+        "Fix an issue with the 'My Addons' context menu width",
+        "Fix an issue with the scrollbars being cut off",
+        "Fix an issue with the 'Updated At' saying NaN years ago",
+        "Fix an issue with the wow client location hint not being translated",
+        "Remove old changelogs"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.15",
+      "changes": ["Fix an issue where light/dark themes could overlap", "Fix an issue with a nested translate call"]
+    },
+    {
+      "Version": "2.0.0-beta.14",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow)",
+        "Portuguese locale updates (Dogo)",
+        "Korean locale updates (soaakim)",
+        "French locale updates (Zazou)",
+        "Theme updates (NoobTaco)",
+        "Add light themes",
+        "App can now be resized via the top of the frame",
+        "Fix an issue with the scrollbar in options not being clickable anymore"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.13",
+      "changes": [
+        "German locale updates (chops)",
+        "French locale updates (Zazou)",
+        "Italian locale updates (Bito)",
+        "Theme updates (NoobTaco)",
+        "Fix Korean locale",
+        "Fix Chinese locale",
+        "Fix NB locale"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.12",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "German locale updates (Glow)",
+        "French locale updates (Zazou)",
+        "Chinese locale updates (CyanoHao)",
+        "Korean locale updates (soaakim)",
+        "Spanish locale updates (SkollVargr)",
+        "Add the ability to localize the 'Install by URL' download count (chops)",
+        "Add a new theming feature for Alliance and Horde",
+        "Auto update timer will now refresh the 'My Addons' list",
+        "Update to Angular 11",
+        "Fix issue with window snap fullscreen not saving screen",
+        "Fix an issue with the app icon not showing up on ubuntu",
+        "The app will now quit if you close the window on Mac and 'Minimize to Tray' is off"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.11",
+      "changes": ["Italian locale updates (Bito)", "Fix a bug with the Spanish locale file"]
+    },
+    {
+      "Version": "2.0.0-beta.10",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "Russian locale updates (Medok)",
+        "Add localization for dependency related text",
+        "Fix several sorting related bugs"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.9",
+      "changes": [
+        "Spanish locale updates (Stidius)",
+        "Lower the cache time for TukUI from 1 week to 10 minutes, oops",
+        "Fix an issue where empty game versions from CurseForge were not falling back to the toc",
+        "Add version number and external ID to the details dialog",
+        "Add some profiling for the startup process",
+        "Add first pass at CurseForge dependency support"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.8",
+      "changes": [
+        "Fix an issue with the update WowUp dialog not restart on Mac",
+        "Fix another issue with column sorting not being assigned correctly",
+        "Fix the refresh WowUp update icon spin direction",
+        "Minor updates for the new icon set"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.7",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "German locale updates (Glow)",
+        "Fix an issue where bad addon include paths would cause scanning to hang",
+        "Fix storage and assignment of column sort for 'My Addons' and 'Get Addons'",
+        "Column select in 'Get Addons' is now localized",
+        "Provider channel in 'My Addons' is now localized",
+        "Removed material icons since its hard to embed",
+        "Refactor language initialization to prevent several issues"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.6",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Fixed a null pointer when no release is found via 'Install from URL' (Linaori)",
+        "Fix some logging in the main process to log to the file not std out",
+        "Fix an issue with the 'Provider Channel' column in the dropdown",
+        "Make the WowUp update button more visible",
+        "Add some unhandled exception handlers to the main process"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.5",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "German locale updates (Glow)",
+        "Portuguese locale updates (Lucas SD)",
+        "Store the sort order of 'Get Addons' (strayge)",
+        "Columns can now be hidden/shown on 'Get Addons' (strayge)",
+        "WowUp update icon now visible during download (chops)",
+        "Handle update for Windows portable exe (chops)",
+        "Fix issues with importing GitHub addons (Linaori)",
+        "Add support for the WowUp addon (Linaori)",
+        "Add the ability to have the app quit automatically after auto update via --quit",
+        "Add the ability to have the app quit automatically after auto update via --quit",
+        "Add a column that can be enabled to show the provider channel of an addon",
+        "Store the sort order of 'My Addons'",
+        "Increase the amount of folders scanned at once",
+        "Fix an issue with addon channel settings being lost on re-scan",
+        "Fix an issue with null window on 'appear' on Mac",
+        "Fix an issue with Show Folder not working on Mac",
+        "Fix an issue that allowed addons installed via GitHub to be duplicated",
+        "The multi-select context menu can now be translated"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.4",
+      "changes": [
+        "Increase tooltip font size (Linaori)",
+        "Add in-app link to the user guide to bottom bar (Linaori)",
+        "Fix an issue with explorer window not coming to the front on windows (Cratis)",
+        "Fix a display issue with alpha/beta channels on the 'Get Addons' page (chops)",
+        "Multiple selection context menu now has an indeterminate check (chops)",
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "Portuguese locale updates (Lucas SD)",
+        "Fix an issue with custom sort order and updating an addon getting out of sync on 'My Addons'",
+        "Store selected sort order for 'My Addons'"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.3",
+      "changes": [
+        "Show installed addons in the 'Get Addons' page (strayge)",
+        "Save hidden columns (strayge)",
+        "Sorting columns is now case insensitive (strayge)",
+        "Add new latest version display when 'Latest Version' column is hidden (Linaori)",
+        "Improve the 'Released At' diplay names (Linaori)",
+        "Russian locale updates (Medok)",
+        "German locale updates (Glow)",
+        "Italian locale updates (Bito)",
+        "Portuguese locale updates (Lucas SD)",
+        "Language list fixes (Cratis)",
+        "Hide generic _ForgeUser from author list (Cratis)",
+        "Move the auto update icon into the addon cell (Cratis)",
+        "Fix an issue with updating across clients updating ignored addons (Cratis)",
+        "Add button to manually check for WowUp updates (chops)",
+        "Fix the tray 'Show' action localization",
+        "Fix issue with startup hidden not working on Mac",
+        "Sync auto start values with login settings when app starts",
+        "Add GitHub link to bottom bar",
+        "Update bottom bar icons layout"
+      ]
+    },
+    {
+      "Version": "2.0.0-beta.2",
+      "Description": "Details dialog website link re-arranged (Cratis)\nAdd a language selector to the application options (Cratis)\nUpdate All button should now be disabled if an ignored addon has an update (Cratis)\nOption tabs can be translated (Medok)\nUpdate Russian locale (Medok)\nUpdate German locale (Glow)\nUpdate Italian locale (Bito)\nSelecting a World of Warcraft path is now smarter\nFix an issue with starting minimized throwing an error when using the tray\nFix an issue with tab bar being hidden on Linux\nFix an issue with the options page not being scrollable on Linux"
+    },
+    {
+      "Version": "2.0.0-beta.1",
+      "Description": "Update Russian locale (Medok)\nUpdate Italian locale (Bito)\nFix some typos (Cratis)\nDisable start minimized when auto launch disabled (chops)"
+    },
+    {
+      "Version": "2.0.0-alpha.22",
+      "Description": "Update Italian locale (Bito)\nUpdate Russian locale (Medok)\nUpdate German locale (Glow)\nFix windows/linux app not restoring when a second instance is launched (chops)\nMy addons show shows the default status sort arrow (chops)\nTable now scrolls to top when changing sort direction (chops)\nAdd some simple lazy loading to 'My Addons' and 'Get Addons'\nAddon channel names can now be localized\nThe system tray can now be localized\nThe loading spinner can now be localized\nThe show/hide column popup can now be localized\nUpdate icon should now appear without user interaction\nFix an issue with updating addons going to the bottom of the list\nRe-style the options tab"
+    },
+    {
+      "Version": "2.0.0-alpha.20",
+      "Description": "Rewrote some app text to be more helpful (Linaori)\nUpdate Russian local (Medok)\nUpdate Italian locale (Bito)\nImproved GitHub URL support, nested paths and .git urls\nFix issue with Ignored addons not sorting\nFix Ctrl+A highlighting random UI elements\nDropped firebase integration"
+    },
+    {
+      "Version": "2.0.0-alpha.17",
+      "Description": "Update Norwegian locale (Morten)\nUpdate German Locale (Nils89)\nUpdate Italian locale (Bito)\nHide the update button when the version has not changed\nFix an issue where status did not say 'Ignored' for ignored addons\nFix an issue with sorting by updated at after updating an addon\nFix 'Get Addons' download count not showing for less than 1000 downloads\nFix an issue with sorting 'My Addons' by status column\nFix an issue with the cursor not changing on raised buttons."
+    },
+    {
+      "Version": "2.0.0-alpha.16",
+      "Description": "Add the ability to have WowUp start on system start (Noxis)\nAdd locale support to the update/install button (Linaori)\nAdd support for locale date/times (chops)\nUpdate RU locales (Medok)\nUpdate German locales (Glow)\nFix an issue with horizontal scrolling on the install by URL dialog (chops)\nLinux support fixes\nPerformance fixes for the details dialog"
+    },
+    {
+      "Version": "2.0.0-alpha.15",
+      "Description": "Add the ability to translate plurals (Chops)\nAdd the alpha/beta indicator for user's default install channel to the 'Get Addons' tab (Chops)\nAdd new column to show the last updated time of an Addon (Linaori)\nAdd support for installing vir URL from CurseForge\nShow the release date in a more user friendly way (Chops)\nMore text items are now translated with updated locales (Linaori)\nNew placehold thumbnail for Addons\nAddon author list now limited to 3 rows\nSwitch to a new analytics provider.\nFix issue with addon count not changing when deleting an addon.\nSeveral fixes for linux support"
+    },
+    {
+      "Version": "2.0.0-alpha.14",
+      "Description": "Attempt to lower background CPU usage to 0\nAdd translation logic for download counts (flippey)\nMore locale updates\nInstall from URL now supports WowInterface download links\nUpdate issues with details dialog.\nFix an issue with WoW install locations not showing up correctly on first run (chops)\nFix an issue with downloads folder not being created\nFix website link on About page to show the cursor\nFix an issue where the details panel would change if another addon was updating.\nFix an issue where an addon row would duplicate with the details dialog open."
+    },
+    {
+      "Version": "2.0.0-alpha.13",
+      "Description": "UI Updates to details popup (Flippey).\nLocale updates. (Oleksandr, McBurn, Morten)\nAdd a hardware acceleration toggle (Linaori).\nAdd 'Released At' column to 'My Addons' page. (Chops)\nAdd some basic Linux support.\nAdd a standardized format for game version.\nAdd a toggle to turn off system notifications after an auto update.\nAdd a single instance lock so you can only launch the app once.\nFix an issue with game version column appearing blank.\nFix an issue where update all did not visual update.\nFix an issue where 'Up to Date' appeared as a greyed out button.\nFix an issue with downloaded files/folders not being cleaned up.\nFix issues with file operations erroring when perfoming multiple downloads."
+    },
+    {
+      "Version": "2.0.0-alpha.11",
+      "Description": "Add zoom support shortcuts and ctrl + scrollwheel (by Linaori).\nAdd version label to the 'Get Addons' page (by Chops).\nUpdates to the addon detail page (by Flippey).\nRussian local updates (by Medok).\nAdd the system notification for auto updates.\nFix some column spacing.\nTelemetry for user actions added.\nFix a bug not allowing users to uninstall an addon with no 'installed folders'.\nHopefully less issues with installing multiple addons at once.\nFix some errors related to addons imported from GitHub."
+    },
+    {
+      "Version": "2.0.0-alpha.10",
+      "Description": "Temporary CF fingerprint endpoint patch."
+    },
+    {
+      "Version": "2.0.0-alpha.9",
+      "Description": "Update Russian locale.\nTry to fix some font blurriness.\nRemove debug error in WowInterface provider."
+    },
+    {
+      "Version": "2.0.0-alpha.8",
+      "Description": "Localize most static text (by Pansa and Medok).\nImplemented addon detail view in my-addons (by Flippeey).\nWindow position/size/maximized state should now be restored when starting the app (by Chops).\nDouble clicking the titlebar on mac should perform the action set in your system settings (by Chops).\nAddon scanning is now much faster.\nWhen scanning addons, the matching channel type should be applied not the default.\nRe-scan is now less complicated and should prevent duplicates.\nAdd the 'Show Folder' button to the addon context menu.\nAdd http circuit breakers to the providers.\nFix issue with My Addons Provider column not sorting.\nPage context data on the footer.\nRemove the windows menu bar buttons for mac.\nAdd WowUp addon provider prototype"
+    },
+    {
+      "Version": "2.0.0-alpha.7",
+      "Description": "Stuff?"
+    }
+  ]
+}

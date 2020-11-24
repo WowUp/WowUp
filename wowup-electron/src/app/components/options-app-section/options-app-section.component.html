@@ -1,0 +1,137 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.APPLICATION.TITLE" | translate }}
+  </h2>
+  <!-- SET LANGUAGE -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_LABEL" | translate }}
+        </div>
+        <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-form-field class="">
+        <mat-label>{{ "PAGES.OPTIONS.APPLICATION.CURRENT_LANGUAGE_LABEL" | translate }}</mat-label>
+        <mat-select [value]="currentLanguage" (selectionChange)="onCurrentLanguageChange($event)">
+          <mat-option *ngFor="let language of languages" [value]="language.localeId">
+            {{ language.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- THEME -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.THEME_LABEL" | translate }}
+        </div>
+        <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.THEME_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-form-field class="">
+        <mat-label>{{ "PAGES.OPTIONS.APPLICATION.THEME_LABEL" | translate }}</mat-label>
+        <mat-select [(value)]="wowupService.currentTheme">
+          <mat-optgroup *ngFor="let themeGroup of themeGroups" [label]="themeGroup.name | translate">
+            <mat-option *ngFor="let theme of themeGroup.themes" [value]="theme.class">
+              {{ theme.display | translate }}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- TELEMETRY -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.APPLICATION.TELEMETRY_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
+    </div>
+    <small class="text-2">
+      {{ "PAGES.OPTIONS.APPLICATION.TELEMETRY_DESCRIPTION" | translate }}
+    </small>
+  </div>
+  <!-- MINIMIZE ON CLOSE -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)"> </mat-slide-toggle>
+    </div>
+    <small class="text-2">{{ minimizeOnCloseDescription }}</small>
+  </div>
+  <!-- SYSTEM NOTIFICATIONS -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle
+        [checked]="wowupService.enableSystemNotifications"
+        (change)="onEnableSystemNotifications($event)"
+      >
+      </mat-slide-toggle>
+    </div>
+    <small class="text-2">
+      {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION" | translate }}
+    </small>
+  </div>
+  <!-- HARDWARE ACCELERATION -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [(checked)]="useHardwareAcceleration" (change)="onUseHardwareAccelerationChange($event)">
+      </mat-slide-toggle>
+    </div>
+    <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DESCRIPTION" | translate }}</small>
+  </div>
+  <!-- START WITH SYSTEM -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_LABEL" | translate }}
+        </div>
+        <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle
+        [(ngModel)]="startWithSystem"
+        [(checked)]="startWithSystem"
+        (change)="onStartWithSystemChange($event)"
+      >
+      </mat-slide-toggle>
+    </div>
+  </div>
+  <!-- START MINIMIZED -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_LABEL" | translate }}
+        </div>
+        <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle
+        [(ngModel)]="startMinimized"
+        [(disabled)]="!startWithSystem"
+        [(checked)]="startMinimized"
+        (change)="onStartMinimizedChange($event)"
+      >
+      </mat-slide-toggle>
+    </div>
+  </div>
+</div>

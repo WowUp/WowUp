@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using System;
+using System.Collections.Generic;
 using WowUp.Common.Enums;
 
 namespace WowUp.WPF.Entities
@@ -150,5 +151,8 @@ namespace WowUp.WPF.Entities
             get => _updatedAt;
             set { SetProperty(ref _updatedAt, value); }
         }
+
+        [Ignore]
+        public IEnumerable<Addon> Dependencies { get; set; }
     }
 }

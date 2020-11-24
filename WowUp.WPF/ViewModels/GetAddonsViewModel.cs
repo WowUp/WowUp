@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -76,6 +77,11 @@ namespace WowUp.WPF.ViewModels
             {
                 OnRefresh();
             };
+
+            _addonService.AddonListUpdated += (sender, args) =>
+            {
+                OnRefresh();
+            }; 
 
             _sessionService.SessionChanged += (sender, args) =>
             {
@@ -165,7 +171,16 @@ namespace WowUp.WPF.ViewModels
 
             IsBusy = true;
 
-            var searchResults = await _addonService.Search(text, SelectedClientType);
+            var searchResults = await _addonService.Search(
+                text, 
+                SelectedClientType,
+                (ex) =>
+                {
+                    MessageBox.Show(
+                        ex.Message, 
+                        "Error", 
+                        MessageBoxButton.OK);
+                });
 
             lock (DisplayAddonsLock)
             {
@@ -213,7 +228,7 @@ namespace WowUp.WPF.ViewModels
 
             try
             {
-                if(SelectedClientType == WowClientType.None)
+                if (SelectedClientType == WowClientType.None)
                 {
                     return;
                 }
@@ -239,6 +254,10 @@ namespace WowUp.WPF.ViewModels
                 }
 
                 SetResultCountContextText(DisplayAddons.Count);
+            }
+            catch (Exception ex) 
+            {
+                Log.Error(ex, "failed to get popular addons");
             }
             finally
             {

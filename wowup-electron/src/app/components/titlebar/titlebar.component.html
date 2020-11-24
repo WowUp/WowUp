@@ -1,0 +1,40 @@
+<div class="titlebar bg-primary text-light" [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }">
+  <div class="theme-logo">
+    <img [src]="getLogoPath()" />
+  </div>
+  <div class="titlebar-drag-region" (dblclick)="onDblClick()"></div>
+  <!-- <div class="window-logo-container" *ngIf="electronService.isWin">
+    <img src="assets/wowup_logo_512np.png" />
+  </div> -->
+  <div class="title-container">
+    <div>WowUp.io</div>
+  </div>
+  <!-- <div *ngIf="isMac" class="window-control-container pointer">
+    <div class="window-control hover-primary-2" (click)="onClickDebug()">
+      <mat-icon class="debug-button pointer" svgIcon="fas:bug"></mat-icon>
+    </div>
+  </div> -->
+  <div *ngIf="electronService.isWin || electronService.isLinux" class="window-control-container row align-items-center">
+    <!-- <div class="window-control hover-primary-2" (click)="onClickDebug()">
+      <mat-icon class="debug-button" svgIcon="fas:bug"></mat-icon>
+    </div> -->
+    <div class="window-control hover-primary-2" (click)="electronService.minimizeWindow()">
+      <img src="assets/chrome-minimize.svg" />
+    </div>
+    <div class="window-control hover-primary-2" *ngIf="isMaximized === false"
+      (click)="electronService.maximizeWindow()">
+      <img src="assets/chrome-maximize.svg" />
+    </div>
+    <div class="window-control hover-primary-2" *ngIf="isMaximized === true"
+      (click)="electronService.unmaximizeWindow()">
+      <img src="assets/chrome-restore.svg" />
+    </div>
+    <div class="window-control hover-primary-2" (click)="onClickClose()">
+      <img src="assets/chrome-close.svg" />
+    </div>
+  </div>
+</div>

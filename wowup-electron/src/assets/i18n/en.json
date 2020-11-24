@@ -1,0 +1,300 @@
+{
+  "APP": {
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
+    "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Check for Updates...",
+      "QUIT_ACTION": "Quit",
+      "SHOW_ACTION": "Show"
+    },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "Horde"
+    },
+    "WOWUP_UPDATE": {
+      "DOWNLOADED_TOOLTIP": "Install WowUp update",
+      "INSTALL_MESSAGE": "Do you want to restart WowUp and install the update?",
+      "INSTALL_TITLE": "WowUp Update Ready",
+      "NOT_AVAILABLE": "Latest version of WowUp is already installed",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
+      "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
+      "SNACKBAR_ACTION": "Update",
+      "SNACKBAR_TEXT": "A new version of WowUp is available",
+      "TOOLTIP": "WowUp update available",
+      "UPDATE_ERROR": "Failed to get WowUp update"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATE": {
+      "IGNORED": "Ignored",
+      "INSTALL": "Install",
+      "UNINSTALL": "Uninstall",
+      "UNKNOWN": "",
+      "UPDATE": "Update",
+      "UPTODATE": "Up to date"
+    },
+    "ADDON_STATUS": {
+      "BACKINGUP": "Backing Up",
+      "COMPLETE": "Installed",
+      "DOWNLOADING": "Downloading",
+      "INSTALLING": "Installing",
+      "PENDING": "Pending",
+      "UNINSTALLING": "Uninstalling",
+      "UPDATING": "Updating..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
+    },
+    "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
+      "DAYS_AGO": "{count} {count, plural, =1{day} other{days}} ago",
+      "HOURS_AGO": "{count} {count, plural, =1{hour} other{hours}} ago",
+      "JUST_NOW": "Just now",
+      "MONTHS_AGO": "{count} {count, plural, =1{month} other{months}} ago",
+      "YEARS_AGO": "{count} {count, plural, =1{year} other{years}} ago",
+      "YESTERDAY": "Yesterday"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}"
+    },
+    "DOWNLOAD_COUNT": {
+      "e+0": "{count}",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} thousand",
+      "e+4": "{count} thousand",
+      "e+5": "{count} thousand",
+      "e+6": "{count} million",
+      "e+7": "{count} million",
+      "e+8": "{count} million",
+      "e+9": "{count} billion"
+    },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alpha",
+        "BETA": "Beta",
+        "STABLE": "Stable"
+      }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Loading..."
+    },
+    "SEARCH": {
+      "NO_ADDONS": "No addons found"
+    }
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "BY_AUTHOR": "By {authorName}",
+      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}",
+      "VIEW_IN_BROWSER_BUTTON": "View in browser",
+      "VIEW_ON_PROVIDER_PREFIX": "View on"
+    },
+    "ALERT": {
+      "ERROR_TITLE": "Error",
+      "POSITIVE_BUTTON": "Okay"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "No",
+      "POSITIVE_BUTTON": "Yes"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "Addon URL",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",
+      "CLOSE_BUTTON": "Close",
+      "DESCRIPTION": "If you want to install an addon directly from a URL paste it below to get started.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
+      "ERROR": {
+        "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
+        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wowup-support channel.",
+        "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
+        "TITLE": "Addon Installation Failed"
+      },
+      "IMPORT_BUTTON": "Import",
+      "INSTALL_BUTTON": "Install",
+      "INSTALL_SUCCESS_LABEL": "Installed!",
+      "SUPPORTED_SOURCES": "Supports WowInterface and GitHub",
+      "TITLE": "Install Addon URL"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
+      "NEGATIVE_BUTTON": "No Thanks",
+      "POSITIVE_BUTTON": "Sure!",
+      "TITLE": "WowUp Telemetry"
+    }
+  },
+  "PAGES": {
+    "ABOUT": {
+      "CHANGE_LOG_SECTION_LABEL": "Change Log",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Check out the website!"
+    },
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Install from URL",
+      "REFRESH_BUTTON": "Refresh",
+      "SEARCH_LABEL": "Search",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "AUTHOR_COLUMN_HEADER": "Author(s)",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Downloads",
+        "PROVIDER_COLUMN_HEADER": "Provider",
+        "RELEASED_AT_COLUMN_HEADER": "Released At",
+        "STATUS_COLUMN_HEADER": "Status"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "About",
+      "GET_ADDONS_TAB_TITLE": "Get Addons",
+      "MY_ADDONS_TAB_TITLE": "My Addons",
+      "OPTIONS_TAB_TITLE": "Options"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
+        "ALPHA_ADDON_CHANNEL": "Alpha",
+        "AUTO_UPDATE_ADDON_BUTTON": "Auto Update",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENU_TITLE": "Channel",
+        "IGNORE_ADDON_BUTTON": "Ignore",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "REINSTALL_ADDON_BUTTON": "Re-Install",
+        "REMOVE_ADDON_BUTTON": "Remove",
+        "SHOW_FOLDER": "Show Folder",
+        "STABLE_ADDON_CHANNEL": "Stable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
+      },
+      "CHECK_UPDATES_BUTTON": "Check Updates",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Check for latest addon updates",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Show Columns"
+      },
+      "FILTER_LABEL": "Filter",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
+        "JOIN_DISCORD": "Chat with us on Discord",
+        "PATREON_SUPPORT": "Support WowUp on Patreon",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}",
+        "VIEW_GITHUB": "Check out the code on GitHub",
+        "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
+      },
+      "RESCAN_FOLDERS_BUTTON": "Re-Scan Folders",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan your client folder for installed addons",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Doing a re-scan will attempt to guess which addons you currently have installed, doing so may reset known addon information. Use this function when certain addons are not recognized or addon versions are not being shown correctly. This scan will never delete your installed addons, only what WowUp knows about them.\n\nScanning may take a few moments.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Start re-scan?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Gathering addons...",
+        "UPDATING": "Updating {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Updating {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "ADDON_INSTALL_BUTTON": "Install",
+        "ADDON_UPDATE_BUTTON": "Update",
+        "AUTHOR_COLUMN_HEADER": "Author(s)",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Auto update enabled",
+        "GAME_VERSION_COLUMN_HEADER": "Game Version",
+        "LATEST_VERSION_COLUMN_HEADER": "Latest Version",
+        "PROVIDER_COLUMN_HEADER": "Provider",
+        "PROVIDER_RELEASE_CHANNEL": "Provider Channel",
+        "RELEASED_AT_COLUMN_HEADER": "Released At",
+        "STATUS_COLUMN_HEADER": "Status",
+        "UPDATED_AT_COLUMN_HEADER": "Updated At"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "Removing an addon via WowUp will remove the selected addon from your interface/addons directory. The character settings for this addon will not be removed.",
+        "CONFIRMATION_LESS_THAN_THREE": "Are you sure you want to remove the following {count} addons?",
+        "CONFIRMATION_MORE_THAN_THREE": "Are you sure you want to remove the selected {count} addons?",
+        "CONFIRMATION_ONE": "Are you sure you want to remove {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, =1{dependency} other{dependencies}}. Do you want to remove them also?",
+        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
+      },
+      "UPDATE_ALL_BUTTON": "Update All",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Update all addons for this client",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Update All Clients",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Update Retail/Classic"
+      }
+    },
+    "OPTIONS": {
+      "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Current Language",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
+        "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
+        "SET_LANGUAGE_LABEL": "Set Language",
+        "START_MINIMIZED_DESCRIPTION": "WowUp will start minimized and not show up.",
+        "START_MINIMIZED_LABEL": "Launch WowUp minimized",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp will be started automatically when you start up your system.",
+        "START_WITH_SYSTEM_LABEL": "Launch WowUp with system",
+        "TELEMETRY_DESCRIPTION": "Help improve WowUp by sending anonymous install data and/or errors.",
+        "TELEMETRY_LABEL": "Telemetry",
+        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_LABEL": "Color Theme",
+        "TITLE": "Application",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Do you want to restart?",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Disabling hardware acceleration requires the application to restart.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Enabling hardware acceleration requires the application to restart.",
+        "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "Dump Debug Data",
+        "DEBUG_DATA_DESCRIPTION": "Log debug data to help with diagnosing potential issues. This can be found in your latest log file for the curious.",
+        "DEBUG_DATA_LABEL": "Debug Data",
+        "LOG_FILES_BUTTON": "Show Log Files",
+        "LOG_FILES_DESCRIPTION": "Open the folder that contains your last couple of log files.",
+        "LOG_FILES_LABEL": "Log Files",
+        "TITLE": "Debug"
+      },
+      "TABS": {
+        "APPLICATION": "Application",
+        "CLIENTS": "Clients",
+        "DEBUG": "Debug"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "Newly installed addons will be set to auto update by default",
+        "AUTO_UPDATE_LABEL": "Auto Update",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
+        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
+        "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Default Addon Channel",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
+        "RESCAN_CLIENTS_BUTTON": "Re-Scan",
+        "RESCAN_CLIENTS_LABEL": "Rescan installed World of Warcraft products",
+        "TITLE": "World of Warcraft"
+      }
+    }
+  }
+}

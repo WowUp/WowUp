@@ -36,9 +36,9 @@ namespace WowUp.Common.Models.Curse
         public int? FileTypeId { get; set; }
         public object ExposeAsAlternative { get; set; }
         public long PackageFingerprintId { get; set; }
-        public DateTime GameVersionDateReleased { get; set; }
-        public long GameVersionMappingId { get; set; }
-        public int GameVersionId { get; set; }
+        public DateTime? GameVersionDateReleased { get; set; }
+        public long? GameVersionMappingId { get; set; }
+        public int? GameVersionId { get; set; }
         public int GameId { get; set; }
         public bool IsServerPack { get; set; }
         public int? ServerPackFileId { get; set; }

@@ -31,6 +31,7 @@ namespace WowUp.WPF.ViewModels
         }
 
         public Command ActionCommand { get; set; }
+        public Command OpenFolderCommand { get; set; }
         public Command InstallCommand { get; set; }
         public Command UpdateCommand { get; set; }
         public Command OpenLinkCommand { get; set; }
@@ -263,6 +264,7 @@ namespace WowUp.WPF.ViewModels
             _addonService = addonService;
             _analyticsService = analyticsService;
 
+            OpenFolderCommand = new Command(() => addonService.GetFullInstallPath(Addon).OpenUrlInBrowser());
             InstallCommand = new Command(async () => await InstallAddon());
             UpdateCommand = new Command(async () => await UpdateAddon());
             OpenLinkCommand = new Command(() => ExternalUrl.OpenUrlInBrowser());
@@ -278,7 +280,7 @@ namespace WowUp.WPF.ViewModels
             _epicBrush = Application.Current.Resources["EpicBrush"] as SolidColorBrush;
         }
 
-        private void SetupDisplayState()
+        public void SetupDisplayState()
         {
             Name = _addon.Name;
             CurrentVersion = string.IsNullOrEmpty(_addon.InstalledVersion)
@@ -374,9 +376,20 @@ namespace WowUp.WPF.ViewModels
                 return;
             }
 
+            var uninstallDependencies = false;
+            if (_addonService.HasDependencies(Addon))
+            {
+                messageBoxResult = MessageBox.Show(
+                    $"{Addon.Name} has {_addonService.GetDependencyCount(Addon)} dependencies, do you want to remove them as well?",
+                    "Uninstall Addon Dependencies?",
+                    MessageBoxButton.YesNo);
+
+                uninstallDependencies = messageBoxResult == MessageBoxResult.Yes;
+            }
+
             try
             {
-                await _addonService.UninstallAddon(Addon);
+                await _addonService.UninstallAddon(Addon, uninstallDependencies);
             }
             catch (Exception ex)
             {

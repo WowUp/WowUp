@@ -1,5 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
+using Polly;
+using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,11 +26,22 @@ namespace WowUp.WPF.AddonProviders
     public class CurseAddonProvider : ICurseAddonProvider
     {
         private const string ApiUrl = "https://addons-ecs.forgesvc.net/api/v2";
+        private const string HubApiUrl = "https://hub.wowup.io";
         private const string ClassicGameVersionFlavor = "wow_classic";
         private const string RetailGameVersionFlavor = "wow_retail";
+        private const int HttpTimeoutSeconds = 10;
 
         private readonly ICacheService _cacheService;
         private readonly IAnalyticsService _analyticsService;
+
+        private readonly AsyncPolicy CircuitBreaker = Policy
+            .Handle<FlurlHttpException>(ex =>
+                ex.Call.Response.StatusCode != System.Net.HttpStatusCode.NotFound)
+            .CircuitBreakerAsync(
+                2,
+                TimeSpan.FromMinutes(1),
+                (ex, ts) => { Log.Error(ex, "Curse CircuitBreaker broken"); },
+                () => { Log.Information("Curse CircuitBreaker reset"); });
 
         public string Name => "Curse";
 
@@ -45,6 +58,7 @@ namespace WowUp.WPF.AddonProviders
             AddonChannelType addonChannelType,
             IEnumerable<AddonFolder> addonFolders)
         {
+            Log.Debug($"{Name} Scanning {addonFolders.Count()} addons");
             var addonDirectory = addonFolders.FirstOrDefault()?.Directory.Parent.FullName;
             var scanResults = await GetScanResults(addonFolders);
 
@@ -116,10 +130,11 @@ namespace WowUp.WPF.AddonProviders
 
             return await _cacheService.GetCache(url, async () =>
             {
-                return await url
+                return await CircuitBreaker.ExecuteAsync(async () => await url
                     .WithHeaders(HttpUtilities.DefaultHeaders)
-                    .GetJsonAsync<CurseSearchResult>();
-            });
+                    .WithTimeout(HttpTimeoutSeconds)
+                    .GetJsonAsync<CurseSearchResult>());
+            }, 5);
         }
 
         public async Task<IEnumerable<PotentialAddon>> Search(string query, WowClientType clientType)
@@ -261,41 +276,10 @@ namespace WowUp.WPF.AddonProviders
             return scanResults.ToList();
         }
 
-        private Addon GetAddon(
-            WowClientType clientType,
-            AddonChannelType addonChannelType,
-            AddonFolder addonFolder,
-            CurseSearchResult searchResult)
+        private IEnumerable<CurseDependency> GetRequiredDependencies(CurseFile file)
         {
-            if (addonFolder == null || searchResult == null)
-            {
-                return null;
-            }
-
-            var currentVersion = addonFolder.Toc.Version;
-            var latestFile = GetLatestFiles(searchResult, clientType).First();
-            var authors = GetAuthor(searchResult);
-
-            return new Addon
-            {
-                Author = authors,
-                Name = searchResult.Name,
-                ChannelType = addonChannelType,
-                AutoUpdateEnabled = false,
-                ClientType = clientType,
-                DownloadUrl = latestFile.DownloadUrl,
-                ExternalUrl = searchResult.WebsiteUrl,
-                ExternalId = searchResult.Id.ToString(),
-                FolderName = addonFolder.Name,
-                GameVersion = latestFile.GameVersion.FirstOrDefault(),
-                InstalledAt = DateTime.Now,
-                InstalledFolders = string.Join(",", GetFolderNames(latestFile)),
-                InstalledVersion = currentVersion,
-                IsIgnored = false,
-                LatestVersion = latestFile.DisplayName,
-                ProviderName = Name,
-                ThumbnailUrl = GetThumbnailUrl(searchResult)
-            };
+            return file.Dependencies
+                    .Where(dep => dep.Type.AsAddonDependencyType() == AddonDependencyType.Required);
         }
 
         private Addon GetAddon(
@@ -322,9 +306,9 @@ namespace WowUp.WPF.AddonProviders
                 GameVersion = currentVersion.GameVersion.FirstOrDefault(),
                 InstalledAt = DateTime.Now,
                 InstalledFolders = folderList,
-                InstalledVersion = currentVersion.DisplayName,
+                InstalledVersion = currentVersion.FileName,
                 IsIgnored = false,
-                LatestVersion = latestVersion.DisplayName,
+                LatestVersion = latestVersion.FileName,
                 ProviderName = Name,
                 ThumbnailUrl = GetThumbnailUrl(scanResult.SearchResult)
             };
@@ -332,23 +316,37 @@ namespace WowUp.WPF.AddonProviders
 
         private async Task MapAddonFolders(List<CurseScanResult> scanResults, WowClientType clientType)
         {
-            //var fingerprintStr = string.Join(",", scanResults.Select(sf => sf.FolderScanner.Fingerprint));
-            var fingerprintResponse = await GetAddonsByFingerprints(scanResults.Select(sf => sf.FolderScanner.Fingerprint));
+            var fingerprints = scanResults.Select(sf => sf.FolderScanner.Fingerprint);
 
-            foreach (var scanResult in scanResults)
+            try
             {
-                // Curse can deliver the wrong result sometimes, ensure the result matches the client type
-                scanResult.ExactMatch = fingerprintResponse.ExactMatches
-                    .FirstOrDefault(exactMatch =>
-                        IsClientType(exactMatch.File.GameVersionFlavor, clientType) &&
-                        HasMatchingFingerprint(scanResult, exactMatch));
+                var fingerprintResponse = await GetAddonsByFingerprintsW(fingerprints);
 
-                // If the addon does not have an exact match, check the partial matches.
-                if (scanResult.ExactMatch == null)
+                foreach (var scanResult in scanResults)
                 {
-                    scanResult.ExactMatch = fingerprintResponse.PartialMatches
-                        .FirstOrDefault(partialMatch => partialMatch.File.Modules.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint));
+                    // Curse can deliver the wrong result sometimes, ensure the result matches the client type
+                    scanResult.ExactMatch = fingerprintResponse.ExactMatches
+                        .FirstOrDefault(exactMatch =>
+                            exactMatch.File != null &&
+                            IsClientType(exactMatch.File.GameVersionFlavor, clientType) &&
+                            HasMatchingFingerprint(scanResult, exactMatch));
+
+                    // If the addon does not have an exact match, check the partial matches.
+                    if (scanResult.ExactMatch == null && fingerprintResponse.PartialMatches != null)
+                    {
+                        scanResult.ExactMatch = fingerprintResponse.PartialMatches
+                            .FirstOrDefault(partialMatch =>
+                                IsClientType(partialMatch.File.GameVersionFlavor, clientType) &&
+                                (partialMatch.File?.Modules?.Any(module => module.Fingerprint == scanResult.FolderScanner.Fingerprint)
+                                ?? false));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to map addon folders");
+                Log.Error($"Fingerprints\n{string.Join(",", fingerprints)}");
+                throw;
             }
         }
 
@@ -395,11 +393,17 @@ namespace WowUp.WPF.AddonProviders
                 var searchResultFiles = latestFiles.Select(lf => new AddonSearchResultFile
                 {
                     ChannelType = GetChannelType(lf.ReleaseType),
-                    Version = lf.DisplayName,
+                    Version = lf.FileName,
                     DownloadUrl = lf.DownloadUrl,
                     Folders = GetFolderNames(lf),
                     GameVersion = GetGameVersion(lf),
-                    ReleaseDate = lf.FileDate
+                    ReleaseDate = lf.FileDate,
+                    Dependencies = lf.Dependencies != null ? 
+                        lf.Dependencies.Select(dep => new AddonSearchResultDependency
+                        {
+                            AddonId = dep.AddonId,
+                            Type = dep.Type.AsAddonDependencyType()
+                        }) : Enumerable.Empty<AddonSearchResultDependency>()
                 });
 
                 return new AddonSearchResult
@@ -475,10 +479,11 @@ namespace WowUp.WPF.AddonProviders
 
             try
             {
-                return await url
+                return await CircuitBreaker.ExecuteAsync(async () => await url
                     .WithHeaders(HttpUtilities.DefaultHeaders)
+                    .WithTimeout(HttpTimeoutSeconds)
                     .PostJsonAsync(addonIds.Select(id => Convert.ToInt32(id)).ToArray())
-                    .ReceiveJson<List<CurseSearchResult>>();
+                    .ReceiveJson<List<CurseSearchResult>>());
             }
             catch (Exception ex)
             {
@@ -494,10 +499,11 @@ namespace WowUp.WPF.AddonProviders
 
             try
             {
-                return await url
+                return await CircuitBreaker.ExecuteAsync(async () => await url
                     .SetQueryParams(new { gameId = 1, searchFilter = query })
+                    .WithTimeout(HttpTimeoutSeconds)
                     .WithHeaders(HttpUtilities.DefaultHeaders)
-                    .GetJsonAsync<IList<CurseSearchResult>>();
+                    .GetJsonAsync<IList<CurseSearchResult>>());
             }
             catch (Exception ex)
             {
@@ -523,11 +529,12 @@ namespace WowUp.WPF.AddonProviders
 
                 var response = await _cacheService.GetCache(url, async () =>
                 {
-                    return await url
+                    return await CircuitBreaker.ExecuteAsync(async () => await url
                         .WithHeaders(HttpUtilities.DefaultHeaders)
+                        .WithTimeout(HttpTimeoutSeconds)
                         .PostJsonAsync(body)
-                        .ReceiveJson<CurseGetFeaturedResponse>();
-                });
+                        .ReceiveJson<CurseGetFeaturedResponse>());
+                }, 5);
 
                 return response.Popular.ToList();
             }
@@ -538,14 +545,31 @@ namespace WowUp.WPF.AddonProviders
             }
         }
 
+        private async Task<CurseFingerprintsResponse> GetAddonsByFingerprintsW(IEnumerable<long> fingerprints)
+        {
+            var url = $"{HubApiUrl}/curseforge/addons/fingerprint";
+
+            Log.Information($"Wowup Fetching fingerprints {string.Join(',', fingerprints)}");
+
+            return await CircuitBreaker.ExecuteAsync(async () => await url
+                .WithHeaders(HttpUtilities.DefaultHeaders)
+                .WithTimeout(HttpTimeoutSeconds)
+                .PostJsonAsync(new
+                {
+                    fingerprints
+                })
+                .ReceiveJson<CurseFingerprintsResponse>());
+        }
+
         private async Task<CurseFingerprintsResponse> GetAddonsByFingerprints(IEnumerable<long> fingerprints)
         {
             var url = $"{ApiUrl}/fingerprint";
 
-            return await url
+            return await CircuitBreaker.ExecuteAsync(async () => await url
                 .WithHeaders(HttpUtilities.DefaultHeaders)
+                .WithTimeout(HttpTimeoutSeconds)
                 .PostJsonAsync(fingerprints)
-                .ReceiveJson<CurseFingerprintsResponse>();
+                .ReceiveJson<CurseFingerprintsResponse>());
         }
 
         private PotentialAddon GetPotentialAddon(CurseSearchResult searchResult)

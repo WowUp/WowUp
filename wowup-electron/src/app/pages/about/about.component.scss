@@ -1,0 +1,81 @@
+@import "../../../variables.scss";
+
+.tab-container {
+}
+
+.theme-logo {
+  opacity: 0.02;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+
+  img {
+    height: 100vh;
+  }
+}
+
+.about-container {
+  display: flex;
+  justify-content: center;
+}
+.about {
+  max-width: 1024px;
+  z-index: 2;
+
+  .header {
+    text-align: center;
+
+    .logo {
+      width: 150px;
+    }
+
+    h2 {
+      margin-bottom: 0;
+    }
+
+    .link-container {
+      margin-top: 1em;
+    }
+
+    .patron-img {
+      width: 120px;
+    }
+  }
+
+  .header-2 {
+    a {
+      color: inherit;
+
+      &:visited {
+        color: inherit;
+      }
+    }
+  }
+
+  .changelog-container {
+    padding: 1em;
+
+    .change-log-list {
+      padding-left: 0;
+    }
+
+    .changelog {
+      list-style-type: none;
+      margin: 1em 0;
+      border-left-width: 3px;
+      border-left-style: solid;
+      padding: 0.5em 1em 1em 1em;
+
+      .description {
+        margin: 0;
+        word-break: break-all;
+        white-space: pre-wrap;
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+<div class="addon-column row align-items-center">
+  <div class="thumbnail-container bg-secondary-3">
+    <div *ngIf="hasThumbnail === true" class="addon-logo-container ">
+      <img [src]="addon.thumbnailUrl" loading="lazy" />
+    </div>
+    <div *ngIf="hasThumbnail === false" class="addon-logo-container">
+      <div class="addon-logo-letter text-3">
+        {{ thumbnailLetter }}
+      </div>
+    </div>
+    <div *ngIf="isBetaChannel || isAlphaChannel" class="channel"
+      [ngClass]="{ beta: isBetaChannel, alpha: isAlphaChannel }">
+      {{ isAlphaChannel ? "Alpha" : "Beta" }}
+    </div>
+  </div>
+  <div>
+    <a class="addon-title hover-text-2 mat-subheading-2" (click)="viewDetails()">{{ addon.name }}</a>
+    <div class="addon-version text-2">
+      <span *ngIf="hasRequiredDependencies()" class="dependency-icon mr-1"
+        [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate: dependencyTooltip">
+        <mat-icon svgIcon="fas:link"></mat-icon>
+      </span>
+      {{ addon | getAddonListItemFileProp: "version":channel }}
+    </div>
+  </div>
+</div>

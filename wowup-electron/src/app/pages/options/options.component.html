@@ -1,0 +1,48 @@
+<div
+  class="tab-container"
+  [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }"
+>
+  <div class="nav-container">
+    <div class="theme-logo">
+      <img [src]="wowUpService.getThemeLogoPath()" />
+    </div>
+    <div class="nav-item-container" [ngClass]="[wowUpService.currentTheme]">
+      <div class="nav-item-list-wrap">
+        <div class="nav-item-list">
+          <mat-action-list>
+            <button mat-list-item (click)="optionTabIndex = 0">
+              {{ "PAGES.OPTIONS.TABS.CLIENTS" | translate }}
+            </button>
+            <button mat-list-item (click)="optionTabIndex = 1">
+              {{ "PAGES.OPTIONS.TABS.APPLICATION" | translate }}
+            </button>
+            <button mat-list-item (click)="optionTabIndex = 2">
+              {{ "PAGES.OPTIONS.TABS.DEBUG" | translate }}
+            </button>
+          </mat-action-list>
+        </div>
+      </div>
+    </div>
+    <div class="nav-content-container bg-secondary-2 text-1">
+      <div class="nav-content-wrap">
+        <div class="nav-content">
+          <mat-tab-group class="no-tabs content-tab" animationDuration="0ms" [(selectedIndex)]="optionTabIndex">
+            <mat-tab label="WorldOfWarcraft" class="tab">
+              <app-options-wow-section></app-options-wow-section>
+            </mat-tab>
+            <mat-tab label="Application">
+              <app-options-app-section></app-options-app-section>
+            </mat-tab>
+            <mat-tab label="Debug">
+              <app-options-debug-section></app-options-debug-section>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

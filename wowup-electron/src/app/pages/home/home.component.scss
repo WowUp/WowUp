@@ -1,0 +1,23 @@
+@import "../../../custom-theme.scss";
+
+.app-logo {
+  position: absolute;
+  width: 40px;
+  z-index: 1;
+  top: 4px;
+  left: 0.5em;
+
+  img {
+    width: 100%;
+  }
+}
+.page-container {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.tabs {
+  flex-grow: 1;
+  overflow: hidden;
+}

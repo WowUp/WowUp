@@ -1,0 +1,180 @@
+@import "../../../variables.scss";
+
+.control-container {
+  display: flex;
+  flex-direction: row;
+  padding: 0 1em 0 1em;
+
+  .select-container {
+    padding-top: 1em;
+    flex-grow: 1;
+  }
+
+  .right-container {
+    display: flex;
+    flex-direction: row;
+
+    .filter-container {
+      padding-top: 1em;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 1em;
+
+      button {
+        &:not(:last-child) {
+          margin-right: 0.5em;
+        }
+      }
+    }
+  }
+}
+
+.switch-button {
+  padding-left: 0;
+}
+
+.menu-button {
+  overflow: hidden;
+  margin-right: 0 !important;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 16px;
+}
+.menu-button-divider {
+  width: 1px;
+  height: 36px;
+}
+.chip {
+  margin-right: 0.5em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 0 10px;
+  width: auto;
+  min-width: auto;
+
+  .mat-icon {
+    width: 12px;
+    padding-bottom: 3px;
+  }
+}
+
+.no-addons-container {
+  display: flex;
+  color: $white-1;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-container {
+  overflow: auto;
+
+  table {
+    width: 100%;
+  }
+
+  .addon-logo-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 0.5em;
+    flex-shrink: 0;
+
+    .addon-logo {
+      width: 100%;
+    }
+  }
+
+  .addon-title {
+    font-weight: 400;
+    font-size: 1.1em;
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+
+  .addon-update-available {
+    color: $artifact;
+  }
+
+  .game-version-cell {
+    min-width: 110px;
+  }
+
+  .installed-at-cell,
+  .released-at-cell {
+    min-width: 100px;
+  }
+
+  .status-column {
+    // display: flex;
+    width: 130px;
+    // align-items: center;
+
+    .auto-update-icon {
+      margin-left: 0.5em;
+    }
+
+    .progress-text {
+      text-align: center;
+    }
+
+    .addon-progress {
+      width: 110px;
+    }
+  }
+
+  .status-icon {
+    height: 11px;
+    width: 11px;
+  }
+
+  .addon-provider {
+    display: flex;
+    align-items: center;
+
+    .addon-provider-name {
+      margin-right: 0.25em;
+    }
+
+    .provider-logo {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .cell-padding {
+    padding-right: 1em;
+  }
+}
+
+.author-column {
+  width: 100px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-align: left;
+}
+.provider-column {
+  min-width: 70px;
+}
+
+.column-menu {
+  padding: 0.5em;
+  color: $white-1;
+
+  p {
+    margin-bottom: 0.5em;
+  }
+}

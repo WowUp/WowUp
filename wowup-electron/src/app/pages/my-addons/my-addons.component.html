@@ -1,0 +1,322 @@
+<div class="tab-container d-flex flex-col" [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }">
+  <div class="control-container bg-secondary-3">
+    <div class="select-container">
+      <mat-form-field>
+        <mat-label>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
+        <mat-select class="select pointer" [(value)]="selectedClient" (selectionChange)="onClientChange()"
+          [disabled]="enableControls === false">
+          <mat-option [value]="clientType.value"
+            *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
+            {{ clientType.display | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="right-container">
+      <div class="filter-container" *ngIf="selectedClient !== wowClientType.None">
+        <mat-form-field>
+          <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
+          <input matInput (keyup)="filterAddons()" [(ngModel)]="filter" />
+          <button mat-button color="accent" *ngIf="filter" matSuffix mat-icon-button aria-label="Clear"
+            (click)="onClearFilter()">
+            <mat-icon svgIcon="fas:times"></mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="button-container">
+        <!-- UPDATE ALL DROPDOWN -->
+        <div class="row">
+          <button mat-flat-button color="primary" class="menu-button"
+            [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
+            [disabled]="enableControls === false || enableUpdateAll === false" (click)="onUpdateAll()">
+            {{ "PAGES.MY_ADDONS.UPDATE_ALL_BUTTON" | translate }}
+          </button>
+          <div class="menu-button-divider"></div>
+          <button mat-flat-button color="primary" class="chip col justify-content-center"
+            [matMenuTriggerFor]="updateAllMenu" [disabled]="enableControls === false || enableUpdateAll === false">
+            <mat-icon svgIcon="fas:caret-down"></mat-icon>
+          </button>
+        </div>
+        <mat-menu #updateAllMenu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="onUpdateAllRetailClassic()">
+            {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_RETAIL_CLASSIC_BUTTON" | translate }}
+          </button>
+          <button mat-menu-item (click)="onUpdateAllClients()">
+            {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_ALL_CLIENTS_BUTTON" | translate }}
+          </button>
+        </mat-menu>
+        <button mat-flat-button color="primary"
+          [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
+          [disabled]="enableControls === false" (click)="onRefresh()">
+          {{ "PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON" | translate }}
+        </button>
+        <button mat-flat-button color="primary"
+          [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
+          [disabled]="enableControls === false" (click)="onReScan()">
+          {{ "PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
+    <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
+  </div>
+
+  <div *ngIf="isBusy === false && sortedListItems.length === 0" class="no-addons-container text-1 flex-grow-1">
+    <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
+  </div>
+
+  <div class="table-container bg-secondary-2 flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0">
+    <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
+      [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
+      <ng-container matColumnDef="addon.name">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding">
+          <app-my-addons-addon-cell [addon]="element" (onViewDetails)="openDetailDialog($event)"
+            [showUpdateToVersion]="!isLatestUpdateColumnVisible()">
+          </app-my-addons-addon-cell>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sortOrder">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="status-column cell-padding">
+          <app-my-addon-status-column [listItem]="element"></app-my-addon-status-column>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="installedAt">
+        <th class="installed-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding"
+          [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: { d: element.installedAt }"
+          matTooltipPosition="above" matTooltipShowDelay="500">
+          {{ element.installedAt | relativeDuration }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="addon.latestVersion">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding"
+          [ngClass]="{ 'addon-update-available': element.needsUpdate }">
+          {{ element.addon.latestVersion }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="addon.releasedAt">
+        <th class="released-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding"
+          [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: { d: element.addon.releasedAt }"
+          matTooltipPosition="above" matTooltipShowDelay="500">
+          {{ element.addon.releasedAt | relativeDuration }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="addon.gameVersion">
+        <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER" | translate }}
+        </th>
+        <td class="game-version-cell" mat-cell *matCellDef="let element">
+          {{ element.addon.gameVersion | interfaceFormat }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="addon.externalChannel">
+        <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
+          {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL" | translate }}
+        </th>
+        <td class="game-version-cell" mat-cell *matCellDef="let element">
+          {{ getChannelTypeLocaleKey(element.addon.externalChannel) | translate }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="addon.providerName">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
+          {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="cell-padding">
+          <div class="row" *ngIf="element.addon.providerName !== 'WowUp'">
+            {{ element.addon.providerName }}
+          </div>
+          <div *ngIf="element.addon.providerName === 'WowUp'" class="addon-provider">
+            <div class="addon-provider-name">
+              {{ element.addon.providerSource }}
+            </div>
+            <img class="provider-logo" [matTooltip]="'Sourced from ' + element.addon.providerName"
+              src="assets/icons/favicon.256x256.png" />
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="addon.author">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>
+          <div class="author-column">
+            {{ "PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER" | translate }}
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="author-column">
+            {{ element.addon.author }}
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="hover-bg-secondary-2"
+        (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
+
+      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns" tabindex="0"
+        class="hover-bg-secondary-2" [ngClass]="{ 'bg-secondary-4': row.selected }"
+        (click)="onRowClicked($event, row, i)" (dblclick)="openDetailDialog(row)"
+        (contextmenu)="onCellContext($event, row)" (keydown.control.a)="selectAllRows($event)"
+        (keydown.meta.a)="selectAllRows($event)"></tr>
+    </table>
+  </div>
+</div>
+
+<div style="visibility: hidden; position: fixed" #addonContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu"></div>
+<mat-menu #contextMenu="matMenu" class="addon-context-menu">
+  <ng-template matMenuContent let-listItem="listItem">
+    <div class="addon-context-menu-header">
+      <div *ngIf="listItem.hasThumbnail === true" class="thumbnail"
+        [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"></div>
+      <div *ngIf="listItem.hasThumbnail === false" class="thumbnail">
+        <div class="thumbnail-letter">
+          {{ listItem.thumbnailLetter }}
+        </div>
+      </div>
+      <div>
+        <div class="addon-name">{{ listItem.addon.name }}</div>
+        <div class="addon-version">{{ listItem.addon.installedVersion }}</div>
+        <div class="addon-update-available" *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion">
+          {{ listItem.addon.latestVersion }}
+        </div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="mat-menu-item">
+      <mat-checkbox [checked]="listItem.addon.isIgnored" (change)="onClickIgnoreAddon($event, listItem)">
+        {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
+      </mat-checkbox>
+    </div>
+    <div *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item">
+      <mat-checkbox [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem)">
+        {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
+      </mat-checkbox>
+    </div>
+    <button mat-menu-item [matMenuTriggerFor]="addonChannels">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
+    </button>
+    <button *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonProviders">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
+    </button>
+    <button mat-menu-item (click)="onShowFolder(listItem.addon)">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
+    </button>
+    <button mat-menu-item (click)="onReInstallAddon(listItem)">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="onRemoveAddon(listItem.addon)">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}
+    </button>
+    <mat-menu #addonChannels="matMenu" class="addon-context-menu">
+      <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
+        (change)="onSelectedAddonChannelChange($event, listItem)">
+        <mat-radio-button class="mat-menu-item" [value]="0">
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL" | translate }}
+        </mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="1">
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL" | translate }}
+        </mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="2">
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL" | translate }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </mat-menu>
+    <mat-menu #addonProviders="matMenu" class="addon-context-menu">
+      <mat-radio-group class="vertical-radio-group" [value]="listItem.addon.providerName"
+        (change)="onSelectedProviderChange($event, listItem)">
+        <mat-radio-button *ngFor="let provider of addonUtils.getAllProviders(listItem.addon)" class="mat-menu-item"
+          [value]="provider.providerName">
+          {{ provider.providerName }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </mat-menu>
+  </ng-template>
+</mat-menu>
+
+<div style="visibility: hidden; position: fixed" #addonMultiContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="multiContextMenu"></div>
+<mat-menu #multiContextMenu="matMenu" class="addon-context-menu">
+  <ng-template matMenuContent let-listItems="listItems">
+    <div class="addon-context-menu-header" translate [translateParams]="{ count: listItems.length }">
+      PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ADDONS_SELECTED
+    </div>
+    <mat-divider></mat-divider>
+    <mat-checkbox class="mat-menu-item" [indeterminate]="isIndeterminate(listItems, 'addon.isIgnored')"
+      [checked]="isAllItemsSelected(listItems, 'addon.isIgnored')" (change)="onClickIgnoreAddons($event, listItems)">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
+    </mat-checkbox>
+    <mat-checkbox class="mat-menu-item" [indeterminate]="isIndeterminate(listItems, 'addon.autoUpdateEnabled')"
+      [checked]="isAllItemsSelected(listItems, 'addon.autoUpdateEnabled')"
+      (change)="onClickAutoUpdateAddons($event, listItems)">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
+    </mat-checkbox>
+    <button mat-menu-item [matMenuTriggerFor]="addonChannels">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
+    </button>
+    <button mat-menu-item (click)="onReInstallAddons(listItems)">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="onRemoveAddons(listItems)">
+      {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}
+    </button>
+    <mat-menu #addonChannels="matMenu" class="addon-context-menu">
+      <mat-radio-group class="vertical-radio-group" (change)="onSelectedAddonsChannelChange($event, listItems)">
+        <mat-radio-button class="mat-menu-item" [value]="0">
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL" | translate }}
+        </mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="1">
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.BETA_ADDON_CHANNEL" | translate }}
+        </mat-radio-button>
+        <mat-radio-button class="mat-menu-item" [value]="2">
+          {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL" | translate }}
+        </mat-radio-button>
+      </mat-radio-group>
+    </mat-menu>
+  </ng-template>
+</mat-menu>
+
+<div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
+</div>
+<mat-menu #columnContextMenu="matMenu" class="addon-context-menu">
+  <ng-template matMenuContent let-columns="columns">
+    <div class="addon-context-menu-header">
+      <div class="addon-name">
+        {{ "PAGES.MY_ADDONS.COLUMNS_CONTEXT_MENU.TITLE" | translate }}
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <mat-checkbox *ngFor="let column of columns" class="mat-menu-item" [checked]="column.visible"
+      (change)="onColumnVisibleChange($event, column)">
+      {{ column.display | translate }}
+    </mat-checkbox>
+  </ng-template>
+</mat-menu>

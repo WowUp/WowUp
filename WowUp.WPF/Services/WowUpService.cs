@@ -1,11 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Xaml.Behaviors.Media;
+using Newtonsoft.Json;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using WowUp.Common.Enums;
 using WowUp.Common.Models;
 using WowUp.Common.Models.WowUpApi.Response;
@@ -27,6 +30,11 @@ namespace WowUp.WPF.Services
         private const string LatestVersionCacheKey = "latest-version-response";
 
         public const string WebsiteUrl = "https://wowup.io";
+
+        private static readonly List<string> RescanRequiredVersions = new List<string>
+        {
+            "1.19.0"
+        };
 
         private static string LocalAppDataPath => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         private static bool UpdaterExists => File.Exists(UpdaterPath);
@@ -346,6 +354,50 @@ namespace WowUp.WPF.Services
 
                 throw;
             }
+        }
+
+        public bool IsReScanRequired()
+        {
+            var matchedVersion = GetMatchingRescanVersion();
+
+            if (string.IsNullOrEmpty(matchedVersion))
+            {
+                return false;
+            }
+
+            var versionPrefKey = GetReScanVersionKey(matchedVersion);
+
+            var pref = _preferenceRepository.FindByKey(versionPrefKey);
+
+            if(pref?.Value == true.ToString())
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public void SetRequiredReScanCompleted()
+        {
+            var matchedVersion = GetMatchingRescanVersion();
+            if (string.IsNullOrEmpty(matchedVersion))
+            {
+                return;
+            }
+
+            var versionPrefKey = GetReScanVersionKey(matchedVersion);
+            SetPreference(versionPrefKey, true.ToString());
+        }
+
+        private string GetMatchingRescanVersion()
+        {
+            return RescanRequiredVersions
+                .FirstOrDefault(ver => AppUtilities.CurrentVersionString.StartsWith(ver));
+        }
+
+        private string GetReScanVersionKey(string version)
+        {
+            return $"{version}_Rescan";
         }
         
         private string GetClientDefaultAddonChannelKey(WowClientType clientType)

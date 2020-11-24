@@ -1,0 +1,25 @@
+<div class="page-container bg-secondary-3" [ngClass]="{ linux: electronService.isLinux }">
+  <div class="tabs">
+    <mat-tab-group
+      mat-align-tabs="center"
+      animationDuration="0ms"
+      [backgroundColor]="'primary'"
+      [disablePagination]="true"
+      [(selectedIndex)]="selectedIndex"
+      (selectedIndexChange)="onSelectedIndexChange($event)"
+    >
+      <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.MY_ADDONS_TAB_TITLE' | translate">
+        <app-my-addons [tabIndex]="0"></app-my-addons>
+      </mat-tab>
+      <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.GET_ADDONS_TAB_TITLE' | translate">
+        <app-get-addons [tabIndex]="1"></app-get-addons>
+      </mat-tab>
+      <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.ABOUT_TAB_TITLE' | translate">
+        <app-about [tabIndex]="2"></app-about>
+      </mat-tab>
+      <mat-tab [label]="'PAGES.HOME.OPTIONS_TAB_TITLE' | translate">
+        <app-options [tabIndex]="3"></app-options>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

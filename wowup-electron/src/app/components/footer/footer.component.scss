@@ -1,0 +1,112 @@
+@import "../../../variables.scss";
+
+footer {
+  height: 25px;
+  padding: 0.25em 0.5em;
+  display: flex;
+  align-items: center;
+
+  p {
+    font-size: 0.8em;
+    margin: 0;
+  }
+
+  a,
+  img {
+    height: 25px;
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+  }
+
+  .link {
+    .mat-icon {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  .patreon-link {
+    padding: 0 0.25em;
+    .patron-img {
+      height: 25px;
+    }
+  }
+
+  .discord-link {
+    height: 20px;
+    padding: 2.5px 0.25em;
+  }
+
+  .github-link {
+    height: 20px;
+    padding: 2.5px 0.25em;
+  }
+
+  .guide-link {
+    height: 20px;
+    padding: 2.5px 0.25em;
+  }
+
+  .footer-button {
+    height: 25px;
+    padding: 0 0.5em;
+    overflow: hidden;
+    border-radius: 4px;
+    border: none;
+    background-color: transparent;
+
+    &.update-button {
+      background-color: green;
+
+      &:hover {
+        background-color: darkgreen;
+        cursor: pointer;
+      }
+
+      &:disabled {
+        background-color: $dark-2;
+      }
+    }
+
+    .mat-icon {
+      pointer-events: none;
+      height: 20px;
+      width: 20px;
+    }
+
+    &.check-update-button {
+      &:hover {
+        cursor: pointer;
+      }
+
+      &.animate {
+        .mat-icon {
+          animation: rotate 1.5s infinite linear reverse;
+        }
+      }
+    }
+
+    &.downloading-button {
+      &.animate {
+        animation: fadeInDown 1s infinite linear;
+      }
+    }
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}

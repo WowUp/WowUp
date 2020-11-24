@@ -1,0 +1,42 @@
+@import "../../../variables.scss";
+
+.option-card {
+  margin-top: 1em;
+  background-color: $dark-2;
+}
+
+.title {
+  font-size: 1.5em;
+  flex-grow: 1;
+  margin-top: 1em;
+}
+
+p {
+  margin: 0;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.setting-section {
+  background-color: $dark-4;
+}
+
+.folder-input {
+  margin-right: 1em;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  // margin: 1em 0;
+  padding: 0.5em;
+  &.np {
+    padding: 0;
+  }
+  &.sub {
+    padding-left: 2em;
+  }
+}

@@ -1,0 +1,20 @@
+.patron-img {
+  height: 25px;
+}
+
+footer {
+  height: 25px;
+  padding: 0.25em 0.5em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+footer a,
+footer img {
+  height: 25px;
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+}
+footer div {
+  font-size: 0.8em;
+}
