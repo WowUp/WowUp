@@ -34,7 +34,7 @@
   height: 22px;
 
   .theme-logo {
-    height: 70px;
+    height: 74px;
     right: 4px;
     left: initial;
   }
@@ -87,6 +87,7 @@
     justify-content: center;
     align-items: center;
     z-index: 2500;
+    margin-top: -8px;
 
     &:hover {
       cursor: pointer;

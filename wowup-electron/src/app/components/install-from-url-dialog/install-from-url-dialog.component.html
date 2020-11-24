@@ -6,23 +6,10 @@
   <p>{{ "DIALOGS.INSTALL_FROM_URL.SUPPORTED_SOURCES" | translate }}</p>
   <mat-form-field class="url-input-container">
     <mat-label>{{ "DIALOGS.INSTALL_FROM_URL.ADDON_URL_INPUT_LABEL" | translate }}</mat-label>
-    <input
-      matInput
-      [placeholder]="'DIALOGS.INSTALL_FROM_URL.ADDON_URL_INPUT_PLACEHOLDER' | translate"
-      [(ngModel)]="query"
-      (keyup.enter)="onImportUrl()"
-      [disabled]="isBusy === true"
-    />
-    <button
-      mat-button
-      color="accent"
-      *ngIf="query"
-      matSuffix
-      mat-icon-button
-      aria-label="Clear"
-      (click)="onClearSearch()"
-      [disabled]="isBusy === true"
-    >
+    <input matInput [placeholder]="'DIALOGS.INSTALL_FROM_URL.ADDON_URL_INPUT_PLACEHOLDER' | translate"
+      [(ngModel)]="query" (keyup.enter)="onImportUrl()" [disabled]="isBusy === true" />
+    <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
+      (click)="onClearSearch()" [disabled]="isBusy === true">
       <mat-icon svgIcon="fas:times"></mat-icon>
     </button>
   </mat-form-field>
@@ -35,15 +22,7 @@
       <h4>{{ addon.name }}</h4>
       <p>{{ addon.author }}</p>
       <p class="addon-download-count">
-        {{
-          "DIALOGS.INSTALL_FROM_URL.DOWNLOAD_COUNT"
-            | translate
-              : {
-                  count: addon.downloadCount,
-                  textCount: (addon.downloadCount | downloadCount),
-                  provider: addon.providerName
-                }
-        }}
+        {{ "DIALOGS.INSTALL_FROM_URL.DOWNLOAD_COUNT" | translate: getDownloadCountParams() }}
       </p>
     </div>
     <div class="install-container">
@@ -66,16 +45,8 @@
   <button mat-button (click)="onClose()">
     {{ "DIALOGS.INSTALL_FROM_URL.CLOSE_BUTTON" | translate }}
   </button>
-  <button
-    mat-flat-button
-    color="primary"
-    cdkFocusInitial
-    (click)="onImportUrl()"
-    appUserActionTracker
-    category="InstallFromUrl"
-    action="ImportUrl"
-    [label]="query"
-  >
+  <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()" appUserActionTracker
+    category="InstallFromUrl" action="ImportUrl" [label]="query">
     {{ "DIALOGS.INSTALL_FROM_URL.IMPORT_BUTTON" | translate }}
   </button>
 </div>

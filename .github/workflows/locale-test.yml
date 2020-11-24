@@ -1,0 +1,46 @@
+name: Angular Locale Test
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+
+  build:
+    strategy:
+      matrix:
+        configuration: [Release]
+        node-version: [ 14.x ]
+
+    runs-on: ubuntu-latest  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install Angular CLI
+      run: npm install -g @angular/cli
+
+    - name: Install Deps
+      run: |
+        cd ./wowup-electron
+        npm i
+
+    - name: Lint
+      run: |
+        cd ./wowup-electron
+        ng lint
+
+    - name: Test Locales
+      run: |
+        sudo apt-get install xvfb
+        cd ./wowup-electron 
+        xvfb-run --auto-servernum ng test --watch=false --include='src/locales.spec.ts'

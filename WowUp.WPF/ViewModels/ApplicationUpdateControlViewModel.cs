@@ -2,6 +2,7 @@
 using System;
 using WowUp.Common.Enums;
 using WowUp.Common.Services.Contracts;
+using WowUp.WPF.Extensions;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.Utilities;
 
@@ -118,23 +119,26 @@ namespace WowUp.WPF.ViewModels
 
         private async void CheckVersion(object state)
         {
-            if (_didUpdateError || _isUpdatePending || !_updaterReady)
-            {
-                return;
-            }
+            ShowDownload = true;
+            IsUpdateAvailable = true;
 
-            try
-            {
-                var latestVersion = await _wowUpService.GetLatestClientVersion();
+            //if (_didUpdateError || _isUpdatePending || !_updaterReady)
+            //{
+            //    return;
+            //}
 
-                LatestVersion = latestVersion.Version;
-                ShowDownload = IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Failure during WowUp version check");
-                ShowDownload = IsUpdateAvailable = false;
-            }
+            //try
+            //{
+            //    var latestVersion = await _wowUpService.GetLatestClientVersion();
+
+            //    LatestVersion = latestVersion.Version;
+            //    ShowDownload = IsUpdateAvailable = await _wowUpService.IsUpdateAvailable();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error(ex, "Failure during WowUp version check");
+            //    ShowDownload = IsUpdateAvailable = false;
+            //}
         }
 
         private void OnRestartApp()
@@ -144,31 +148,33 @@ namespace WowUp.WPF.ViewModels
 
         private async void OnDownloadUpdate()
         {
-            ShowDownload = false;
-            ShowProgress = true;
-            _isUpdatePending = true;
+            new Uri("https://wowup.io").AbsoluteUri.OpenUrlInBrowser();
 
-            try
-            {
-                OnDownloadState(ApplicationUpdateState.Downloading);
-                await _wowUpService.DownloadUpdate(progress =>
-                {
-                    ProgressPercent = progress;
-                });
+            //ShowDownload = false;
+            //ShowProgress = true;
+            //_isUpdatePending = true;
 
-                ShowRestart = true;
-            }
-            catch (Exception)
-            {
-                _didUpdateError = true;
-                _isUpdatePending = false;
-            }
-            finally
-            {
-                OnDownloadState(ApplicationUpdateState.Complete);
-            }
+            //try
+            //{
+            //    OnDownloadState(ApplicationUpdateState.Downloading);
+            //    await _wowUpService.DownloadUpdate(progress =>
+            //    {
+            //        ProgressPercent = progress;
+            //    });
 
-            ShowProgress = false;
+            //    ShowRestart = true;
+            //}
+            //catch (Exception)
+            //{
+            //    _didUpdateError = true;
+            //    _isUpdatePending = false;
+            //}
+            //finally
+            //{
+            //    OnDownloadState(ApplicationUpdateState.Complete);
+            //}
+
+            //ShowProgress = false;
         }
 
         private void OnDownloadState(ApplicationUpdateState state)

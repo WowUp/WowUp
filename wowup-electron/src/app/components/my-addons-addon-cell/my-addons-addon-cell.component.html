@@ -51,7 +51,7 @@
       </div>
       {{ listItem.addon.installedVersion }}
       <div class="update-available row"
-        *ngIf="showUpdateToVersion && listItem.addon.latestVersion !== listItem.addon.installedVersion">
+        *ngIf="showUpdateToVersion && listItem.needsUpdate">
         <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
         <div>{{ listItem.addon.latestVersion }}</div>
       </div>

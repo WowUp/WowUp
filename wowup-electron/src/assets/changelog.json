@@ -1,6 +1,79 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.0.0",
+      "changes": ["You are not prepared!"]
+    },
+    {
+      "Version": "2.0.0-rc.7",
+      "changes": [
+        "Fix a bug if Windows fails to list the drives when searching for Blizzard products",
+        "Wrap the curse filehash method to prevent hanging during scans"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.6",
+      "changes": ["Fix a bug causing the loading of the product DB to lock the app"]
+    },
+    {
+      "Version": "2.0.0-rc.5",
+      "changes": ["Korean locale updates (soaakim)", "Fix a bug with importing via URL and having downloads under 10"]
+    },
+    {
+      "Version": "2.0.0-rc.4",
+      "changes": [
+        "German locale updates (maestroh, Glow)",
+        "Italian locale updates (Bito)",
+        "Fix a bug with importing via URL and having 0 downloads",
+        "Add raw count option for translating download count",
+        "Add art attributions"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.3",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "French locale updates (Zazou)",
+        "Russian locale updates (Medok)",
+        "Get the unit tests back to functioning (Linaori)",
+        "Standardize the footer text size",
+        "Remove update date check when looking for TukUI updates",
+        "Added action to test locales upon pull request"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.2",
+      "changes": [
+        "French locale updates (Zazou)",
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "Use the updated date to check for new version, not installed date (Linaori)",
+        "Title bar buttons will no longer have a gap at the top on Windows (Linaori)",
+        "Fix the wobbly app update refresh button animation",
+        "Fix the title bar theme logo on Mac"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.1",
+      "changes": [
+        "German locale updates (Glow)",
+        "Chinese locale updates (CyanoHao)",
+        "Portuguese locale updates (Dogo)",
+        "Spanish locale updates (SkollVargr)",
+        "Always get the game version from the toc, not the provider (Linaori)",
+        "Add more translation flexibility to the 'Install By URL' dialog",
+        "Improve the scanning time",
+        "Add some status text to the scanning process",
+        "Fix an issue with sorting by game version appearing mismatched",
+        "Fix checkbox wrapping in context menus",
+        "Fix addon install analytics to be more useful",
+        "Fix checkbox wrapping in context menus",
+        "Fix dark theme row highlight again",
+        "Fix an issue where re-scan was not updating the UI",
+        "Try to fix an issue with authors pushing the same version name multiple times not getting picked up"
+      ]
+    },
+    {
       "Version": "2.0.0-beta.21",
       "changes": [
         "Italian locale updates (Bito)",

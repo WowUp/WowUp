@@ -110,7 +110,7 @@
           {{ "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding"
-          [ngClass]="{ 'addon-update-available': element.addon.latestVersion !== element.addon.installedVersion }">
+          [ngClass]="{ 'addon-update-available': element.needsUpdate }">
           {{ element.addon.latestVersion }}
         </td>
       </ng-container>

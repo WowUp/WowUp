@@ -6,7 +6,7 @@ import {
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
-} from "common/constants";
+} from "../../../common/constants";
 import { platform } from "os";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../environments/environment";

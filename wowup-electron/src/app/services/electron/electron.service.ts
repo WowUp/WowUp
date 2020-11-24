@@ -5,7 +5,7 @@ import {
   APP_UPDATE_CHECK_START,
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_START_DOWNLOAD,
-} from "common/constants";
+} from "../../../common/constants";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, remote, Settings, shell, webFrame } from "electron";
@@ -116,7 +116,7 @@ export class ElectronService {
       .then(() => console.log("Zoom levels have been set between 100% and 300%"))
       .catch((err) => console.error(err));
 
-    currentWindow.webContents.on("zoom-changed", (event, zoomDirection) => {
+    currentWindow?.webContents.on("zoom-changed", (event, zoomDirection) => {
       let currentZoom = currentWindow.webContents.getZoomFactor();
       if (zoomDirection === "in") {
         // setting the zoomFactor comes at a cost, this early return greatly improves performance

@@ -1,12 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import {
-  ALLIANCE_LIGHT_THEME,
-  ALLIANCE_THEME,
-  DEFAULT_LIGHT_THEME,
-  DEFAULT_THEME,
-  HORDE_LIGHT_THEME,
-  HORDE_THEME,
-} from "common/constants";
 import { remote } from "electron";
 import * as ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
