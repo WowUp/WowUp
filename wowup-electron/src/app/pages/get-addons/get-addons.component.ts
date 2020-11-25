@@ -129,7 +129,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         col.visible = state.visible;
       }
     });
-    this._addonService.getCategories().then(result => this.categories = ["All"].concat(result));
+    if (this._addonService) {
+      this._addonService.getCategories().then(result => this.categories = ["All"].concat(result));
+    }
   }
 
   ngOnDestroy() {
