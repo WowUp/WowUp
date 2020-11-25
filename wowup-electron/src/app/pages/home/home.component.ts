@@ -1,13 +1,8 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { UpdateCheckResult } from "electron-updater";
-import { forkJoin } from "rxjs";
+import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
+import { filter } from "rxjs/operators";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
@@ -19,7 +14,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./home.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements AfterViewInit {
   public selectedIndex = 0;
   public hasWowClient = false;
 
@@ -28,6 +23,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private _sessionService: SessionService,
     private _snackBar: MatSnackBar,
     private _translateService: TranslateService,
+    private _addonService: AddonService,
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService
   ) {
@@ -40,10 +36,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.selectedIndex = this.hasWowClient ? 0 : 3;
       }
     });
-  }
 
-  ngOnInit(): void {
-    this._wowupService.wowupUpdateCheck$.subscribe(this.showUpdateSnackbar);
+    this._addonService.scanUpdate$
+      .pipe(filter((update) => update.type !== ScanUpdateType.Unknown))
+      .subscribe(this.onScanUpdate);
   }
 
   ngAfterViewInit(): void {
@@ -51,11 +47,34 @@ export class HomeComponent implements OnInit, AfterViewInit {
     window.setInterval(() => {
       this.checkForAppUpdate();
     }, 60 * 60 * 1000);
+
+    this.checkForAppUpdate();
   }
 
   onSelectedIndexChange(index: number) {
     this._sessionService.selectedHomeTab = index;
   }
+
+  private onScanUpdate = (update: ScanUpdate) => {
+    switch (update.type) {
+      case ScanUpdateType.Start:
+        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_STARTED");
+        break;
+      case ScanUpdateType.Complete:
+        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_COMPLETED");
+        window.setTimeout(() => {
+          this._sessionService.statusText = "";
+        }, 3000);
+        break;
+      case ScanUpdateType.Update:
+        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_UPDATE", {
+          count: update.totalCount,
+        });
+        break;
+      default:
+        break;
+    }
+  };
 
   private async checkForAppUpdate() {
     try {
@@ -65,20 +84,4 @@ export class HomeComponent implements OnInit, AfterViewInit {
       console.error(e);
     }
   }
-
-  private showUpdateSnackbar = async (updateCheckResult: UpdateCheckResult) => {
-    // Have to wait for the localize service to start
-    const [sbtext, sbaction] = await forkJoin([
-      this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_TEXT"),
-      this._translateService.get("APP.WOWUP_UPDATE_SNACKBAR_ACTION"),
-    ]).toPromise();
-
-    const snackBarRef = this._snackBar.open(sbtext, sbaction, {
-      duration: 2000,
-    });
-
-    snackBarRef.onAction().subscribe(() => {
-      console.log("The snack-bar action was triggered!");
-    });
-  };
 }

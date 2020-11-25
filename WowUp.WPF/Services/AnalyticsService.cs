@@ -150,7 +150,7 @@ namespace WowUp.WPF.Services
 
                 await SetAppCenterEnabled(true);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 // eat
             }

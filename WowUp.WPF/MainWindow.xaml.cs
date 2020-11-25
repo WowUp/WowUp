@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -7,6 +8,8 @@ using System.Windows.Interop;
 using System.Windows.Threading;
 using WowUp.WPF.Enums;
 using WowUp.WPF.Extensions;
+using WowUp.WPF.Repositories.Base;
+using WowUp.WPF.Repositories.Contracts;
 using WowUp.WPF.Services.Contracts;
 using WowUp.WPF.ViewModels;
 using static WowUp.WPF.Utilities.WindowUtilities;
@@ -18,12 +21,17 @@ namespace WowUp.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly IServiceProvider _serviceProvider;
+
         private readonly MainWindowViewModel _viewModel;
 
         public MainWindow(
+            IServiceProvider serviceProvider,
             IIpcServerService ipcServerService,
             MainWindowViewModel viewModel)
         {
+            _serviceProvider = serviceProvider;
+
             DataContext = _viewModel = viewModel;
 
             ipcServerService.CommandReceived += (sender, args) =>
@@ -67,6 +75,9 @@ namespace WowUp.WPF
 
         protected override void OnClosed(EventArgs e)
         {
+            IBaseRepository addonRepo = _serviceProvider.GetService<IAddonRepository>();
+            addonRepo.ShutDown();
+
             base.OnClosed(e);
         }
 

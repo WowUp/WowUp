@@ -4,6 +4,7 @@ import * as path from "path";
 import { BehaviorSubject, from } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
 import { ElectronService } from "..";
+import { SelectItem } from "../../models/wowup/select-item";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { ProductDb } from "../../models/warcraft/product-db";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
@@ -40,18 +41,33 @@ const BETA_LOCATION_KEY = "wow_beta_location";
 export class WarcraftService {
   private readonly _impl: WarcraftServiceImpl;
   private readonly _productsSrc = new BehaviorSubject<InstalledProduct[]>([]);
-  private readonly _installedClientTypesSrc = new BehaviorSubject<
-    WowClientType[] | undefined
-  >(undefined);
+  private readonly _installedClientTypesSrc = new BehaviorSubject<WowClientType[] | undefined>(undefined);
+  private readonly _allClientTypes = getEnumList<WowClientType>(WowClientType).filter(
+    (clientType) => clientType !== WowClientType.None
+  );
 
   private _productDbPath = "";
 
   public products$ = this._productsSrc.asObservable();
-  public productsReady$ = this.products$.pipe(
-    filter((products) => Array.isArray(products))
-  );
+  public productsReady$ = this.products$.pipe(filter((products) => Array.isArray(products)));
 
   public installedClientTypes$ = this._installedClientTypesSrc.asObservable();
+
+  // Map the client types so that we can localize them
+  public installedClientTypesSelectItems$ = this._installedClientTypesSrc.pipe(
+    filter((clientTypes) => !!clientTypes),
+    map((clientTypes) => {
+      return clientTypes.map(
+        (ct): SelectItem<WowClientType> => {
+          const clientTypeName = getEnumName(WowClientType, ct).toUpperCase();
+          return {
+            display: `COMMON.CLIENT_TYPES.${clientTypeName}`,
+            value: ct,
+          };
+        }
+      );
+    })
+  );
 
   constructor(
     private _electronService: ElectronService,
@@ -66,9 +82,7 @@ export class WarcraftService {
         map((productDbPath) => (this._productDbPath = productDbPath)),
         map(() => this.scanProducts()),
         switchMap(() => from(this.getWowClientTypes())),
-        map((installedClientTypes) =>
-          this._installedClientTypesSrc.next(installedClientTypes)
-        )
+        map((installedClientTypes) => this._installedClientTypesSrc.next(installedClientTypes))
       )
       .subscribe();
   }
@@ -97,12 +111,14 @@ export class WarcraftService {
     return path.join(fullClientPath, INTERFACE_FOLDER_NAME, ADDON_FOLDER_NAME);
   }
 
+  public getAllClientTypes() {
+    return [...this._allClientTypes];
+  }
+
   public async getWowClientTypes() {
     const clients: WowClientType[] = [];
 
-    const clientTypes = getEnumList<WowClientType>(WowClientType).filter(
-      (clientType) => clientType !== WowClientType.None
-    );
+    const clientTypes = this.getAllClientTypes();
 
     for (let clientType of clientTypes) {
       const clientLocation = this.getClientLocation(clientType);
@@ -123,9 +139,7 @@ export class WarcraftService {
 
   public getProductLocation(clientType: WowClientType) {
     const clientFolderName = this.getClientFolderName(clientType);
-    const clientLocation = this._productsSrc.value.find(
-      (product) => product.name === clientFolderName
-    );
+    const clientLocation = this._productsSrc.value.find((product) => product.name === clientFolderName);
     return clientLocation?.location ?? "";
   }
 
@@ -133,9 +147,7 @@ export class WarcraftService {
     const installedProducts = this.decodeProducts(this._productDbPath);
     this._productsSrc.next(installedProducts);
 
-    const clientTypes = getEnumList<WowClientType>(WowClientType).filter(
-      (clientType) => clientType !== WowClientType.None
-    );
+    const clientTypes = this.getAllClientTypes();
 
     for (const clientType of clientTypes) {
       const clientLocation = this.getClientLocation(clientType);
@@ -147,9 +159,7 @@ export class WarcraftService {
         continue;
       }
 
-      console.log(
-        `clientLocation ${clientLocation}, productLocation ${productLocation}`
-      );
+      console.log(`clientLocation ${clientLocation}, productLocation ${productLocation}`);
       if (this.arePathsEqual(clientLocation, productLocation)) {
         continue;
       }
@@ -161,6 +171,8 @@ export class WarcraftService {
 
       this.setClientLocation(clientType, productLocation);
     }
+
+    this.broadcastInstalledClients().subscribe();
 
     return installedProducts;
   }
@@ -178,9 +190,7 @@ export class WarcraftService {
       return addonFolders;
     }
 
-    const directories = await this._fileService.listDirectories(
-      addonFolderPath
-    );
+    const directories = await this._fileService.listDirectories(addonFolderPath);
 
     const dirPaths = directories.map((dir) => path.join(addonFolderPath, dir));
     const dirStats = await this._fileService.statFiles(dirPaths);
@@ -201,10 +211,7 @@ export class WarcraftService {
     return addonFolders;
   }
 
-  private async getAddonFolder(
-    addonFolderPath: string,
-    dir: string
-  ): Promise<AddonFolder> {
+  private async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder> {
     try {
       const dirPath = path.join(addonFolderPath, dir);
       const dirFiles = fs.readdirSync(dirPath);
@@ -241,35 +248,43 @@ export class WarcraftService {
     return this._preferenceStorageService.set(clientLocationKey, clientPath);
   }
 
-  public setWowFolderPath(
-    clientType: WowClientType,
-    folderPath: string
-  ): boolean {
-    if (!this.isClientFolder(clientType, folderPath)) {
+  public removeWowFolderPath(clientType: WowClientType) {
+    const clientLocationKey = this.getClientLocationKey(clientType);
+    this._preferenceStorageService.remove(clientLocationKey);
+
+    return this.broadcastInstalledClients();
+  }
+
+  public setWowFolderPath(clientType: WowClientType, folderPath: string): boolean {
+    const relativePath = this.getClientRelativePath(clientType, folderPath);
+
+    if (!this.isClientFolder(clientType, relativePath)) {
       return false;
     }
 
-    this.setClientLocation(clientType, folderPath);
+    this.setClientLocation(clientType, relativePath);
 
     from(this.getWowClientTypes())
-      .pipe(
-        map((wowClientTypes) =>
-          this._installedClientTypesSrc.next(wowClientTypes)
-        )
-      )
+      .pipe(map((wowClientTypes) => this._installedClientTypesSrc.next(wowClientTypes)))
       .subscribe();
 
     return true;
   }
 
+  public getClientRelativePath(clientType: WowClientType, folderPath: string) {
+    const clientFolderName = this.getClientFolderName(clientType);
+    const clientFolderIdx = folderPath.indexOf(clientFolderName);
+    const relativePath = clientFolderIdx === -1 ? folderPath : folderPath.substring(0, clientFolderIdx);
+
+    return path.normalize(relativePath);
+  }
+
   private isClientFolder(clientType: WowClientType, folderPath: string) {
     const clientFolderName = this.getClientFolderName(clientType);
+    const relativePath = this.getClientRelativePath(clientType, folderPath);
+
     const executableName = this.getExecutableName(clientType);
-    const executablePath = path.join(
-      folderPath,
-      clientFolderName,
-      executableName
-    );
+    const executablePath = path.join(relativePath, clientFolderName, executableName);
 
     return fs.existsSync(executablePath);
   }
@@ -338,23 +353,23 @@ export class WarcraftService {
       case WowClientType.Beta:
         return BETA_LOCATION_KEY;
       default:
-        throw new Error(
-          `Failed to get client location key: ${clientType}, ${getEnumName(
-            WowClientType,
-            clientType
-          )}`
-        );
+        throw new Error(`Failed to get client location key: ${clientType}, ${getEnumName(WowClientType, clientType)}`);
     }
   }
 
+  private broadcastInstalledClients() {
+    return from(this.getWowClientTypes()).pipe(
+      map((wowClientTypes) => this._installedClientTypesSrc.next(wowClientTypes))
+    );
+  }
+
   private decodeProducts(productDbPath: string) {
-    if (this._electronService.isLinux) {
+    if (!productDbPath || this._electronService.isLinux) {
       return [];
     }
 
-    const productDbData = FileUtils.readFileSync(productDbPath);
-
     try {
+      const productDbData = FileUtils.readFileSync(productDbPath);
       const productDb = ProductDb.decode(productDbData);
       const wowProducts: InstalledProduct[] = productDb.products
         .filter((p) => p.family === "wow")
@@ -367,7 +382,7 @@ export class WarcraftService {
       console.log("wowProducts", wowProducts);
       return wowProducts;
     } catch (e) {
-      console.error("failed to decode product db");
+      console.error(`failed to decode product db at ${productDbPath}`);
       console.error(e);
       return [];
     }

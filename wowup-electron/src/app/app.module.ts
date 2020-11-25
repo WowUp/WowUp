@@ -1,18 +1,10 @@
-import {
-  HttpClient,
-  HttpClientModule,
-  HTTP_INTERCEPTORS,
-} from "@angular/common/http";
-import { ErrorHandler, NgModule } from "@angular/core";
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { APP_INITIALIZER, ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 // NG Translate
-import {
-  TranslateCompiler,
-  TranslateLoader,
-  TranslateModule,
-} from "@ngx-translate/core";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import "reflect-metadata";
@@ -27,11 +19,18 @@ import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepte
 import { MatModule } from "./mat-module";
 import { HomeModule } from "./pages/home/home.module";
 import { AnalyticsService } from "./services/analytics/analytics.service";
+import { WowUpService } from "./services/wowup/wowup.service";
 import { SharedModule } from "./shared/shared.module";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+}
+
+export function initializeApp(wowupService: WowUpService) {
+  return async () => {
+    await wowupService.initializeLanguage();
+  };
 }
 
 @NgModule({
@@ -59,6 +58,12 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     BrowserAnimationsModule,
   ],
   providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [WowUpService],
+      multi: true,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: DefaultHeadersInterceptor,

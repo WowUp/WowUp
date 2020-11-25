@@ -1,15 +1,34 @@
 @import "../../../variables.scss";
 
+.tab-container {
+}
+
+.theme-logo {
+  opacity: 0.02;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+
+  img {
+    height: 100vh;
+  }
+}
+
 .about-container {
   display: flex;
   justify-content: center;
 }
 .about {
   max-width: 1024px;
+  z-index: 2;
 
   .header {
     text-align: center;
-    color: $white-1;
 
     .logo {
       width: 150px;
@@ -17,10 +36,6 @@
 
     h2 {
       margin-bottom: 0;
-    }
-
-    .version {
-      color: $white-3;
     }
 
     .link-container {
@@ -32,9 +47,18 @@
     }
   }
 
+  .header-2 {
+    a {
+      color: inherit;
+
+      &:visited {
+        color: inherit;
+      }
+    }
+  }
+
   .changelog-container {
     padding: 1em;
-    color: $white-1;
 
     .change-log-list {
       padding-left: 0;
@@ -43,14 +67,9 @@
     .changelog {
       list-style-type: none;
       margin: 1em 0;
-      border-left: 3px solid $purple-1;
+      border-left-width: 3px;
+      border-left-style: solid;
       padding: 0.5em 1em 1em 1em;
-      background-color: $dark-4;
-
-      .version {
-        // font-size: 1em;
-        // font-weight: bold;
-      }
 
       .description {
         margin: 0;
@@ -58,11 +77,5 @@
         white-space: pre-wrap;
       }
     }
-  }
-}
-
-.linux {
-  .about {
-    height: calc(100vh - 80px);
   }
 }

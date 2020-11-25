@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-progress-spinner",
@@ -8,7 +9,13 @@ import { Component, Input, OnInit } from "@angular/core";
 export class ProgressSpinnerComponent implements OnInit {
   @Input("message") message: string;
 
-  constructor() {}
+  public defaultMessage = "";
 
-  ngOnInit(): void {}
+  constructor(private _translateService: TranslateService) {}
+
+  ngOnInit(): void {
+    this._translateService.get("COMMON.PROGRESS_SPINNER.LOADING").subscribe((translatedStr) => {
+      this.defaultMessage = translatedStr;
+    });
+  }
 }

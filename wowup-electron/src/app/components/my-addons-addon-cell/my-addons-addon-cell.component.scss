@@ -8,7 +8,6 @@
     margin-right: 11px;
 
     .addon-logo-container {
-      background-color: $dark-2;
       width: 40px;
       height: 40px;
       display: flex;
@@ -19,20 +18,23 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      overflow: hidden;
 
       .addon-logo {
         height: 100%;
       }
 
       .addon-logo-letter {
-        color: $white-4;
         font-size: 2em;
         font-weight: 400;
+      }
+
+      img {
+        height: 100%;
       }
     }
 
     .channel {
-      background: $dark-4;
       text-align: center;
       font-weight: 400;
       font-size: 0.8em;
@@ -51,27 +53,32 @@
     // word-break: break-all;
     white-space: normal;
     text-decoration: none;
-    color: $white-1;
 
     &:hover {
       cursor: pointer;
       text-decoration: underline;
-      color: $white-2;
     }
 
-    &.ignored {
-      color: $white-4;
-    }
   }
 
   .addon-version {
-    color: $white-2;
+
+    .update-available {
+      color: $artifact;
+    }
+  }
+  .upgrade-icon {
+    height: 10px;
+  }
+
+  .auto-update-icon {
+    height: 11px;
+    width: 11px;
   }
 
   .addon-funding {
     a {
       margin-right: 1em;
-      color: $white-1;
     }
     .funding-icon {
       width: 15px;

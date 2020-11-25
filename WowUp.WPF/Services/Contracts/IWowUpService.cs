@@ -41,5 +41,8 @@ namespace WowUp.WPF.Services.Contracts
 
         bool GetClientDefaultAutoUpdate(WowClientType clientType);
         void SetClientDefaultAutoUpdate(WowClientType clientType, bool autoUpdate);
+
+        bool IsReScanRequired();
+        void SetRequiredReScanCompleted();
     }
 }

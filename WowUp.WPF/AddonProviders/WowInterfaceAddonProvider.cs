@@ -1,4 +1,5 @@
 ﻿using Flurl.Http;
+using Polly;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -22,9 +23,19 @@ namespace WowUp.WPF.AddonProviders
     {
         private const string ApiUrl = "https://api.mmoui.com/v4/game/WOW";
         private const string AddonUrl = "https://www.wowinterface.com/downloads/info";
+        private const int HttpTimeoutSeconds = 4;
 
         private readonly IAnalyticsService _analyticsService;
         private readonly ICacheService _cacheService;
+
+        private readonly AsyncPolicy CircuitBreaker = Policy
+            .Handle<FlurlHttpException>(ex =>
+                ex.Call.Response.StatusCode != System.Net.HttpStatusCode.NotFound)
+            .CircuitBreakerAsync(
+                2,
+                TimeSpan.FromMinutes(1),
+                (ex, ts) => { Log.Error(ex, "WowInterface CircuitBreaker broken"); },
+                () => { Log.Information("WowInterface CircuitBreaker reset"); });
 
         public string Name => "WowInterface";
 
@@ -38,7 +49,7 @@ namespace WowUp.WPF.AddonProviders
 
         public async Task Scan(
             WowClientType clientType,
-            AddonChannelType addonChannelType, 
+            AddonChannelType addonChannelType,
             IEnumerable<AddonFolder> addonFolders)
         {
             Log.Debug($"{Name} Scanning {addonFolders.Count()} addons");
@@ -133,7 +144,7 @@ namespace WowUp.WPF.AddonProviders
             }
 
             var addon = await GetAddonDetails(addonId);
-            if(addon == null)
+            if (addon == null)
             {
                 throw new Exception($"Bad addon api response {addonUri}");
             }
@@ -152,12 +163,13 @@ namespace WowUp.WPF.AddonProviders
 
             return await _cacheService.GetCache(url, async () =>
             {
-                var results = await url
+                var results = await CircuitBreaker.ExecuteAsync(async () => await url
                    .WithHeaders(HttpUtilities.DefaultHeaders)
-                   .GetJsonAsync<List<AddonDetailsResponse>>();
+                   .WithTimeout(HttpTimeoutSeconds)
+                   .GetJsonAsync<List<AddonDetailsResponse>>());
 
                 return results.FirstOrDefault();
-            });
+            }, 5);
         }
 
         private string GetAddonId(Uri addonUri)
@@ -207,7 +219,8 @@ namespace WowUp.WPF.AddonProviders
                     DownloadUrl = response.DownloadUri,
                     Folders = new[] { folderName },
                     GameVersion = string.Empty,
-                    ReleaseDate = DateTime.UtcNow
+                    ReleaseDate = DateTime.UtcNow,
+                    Dependencies = Enumerable.Empty<AddonSearchResultDependency>()
                 };
 
                 return new AddonSearchResult

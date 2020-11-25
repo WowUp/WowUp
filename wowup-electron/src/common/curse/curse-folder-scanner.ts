@@ -2,12 +2,16 @@ import * as path from "path";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as async from "async";
+import * as log from "electron-log";
 import { CurseScanResult } from "./curse-scan-result";
 import { readDirRecursive, readFile } from "../../../file.utils";
 
 const nativeAddon = require("../../../build/Release/addon.node");
 
 export class CurseFolderScanner {
+  // This map is required for solving for case sensitive mismatches from addon authors on Linux
+  private _fileMap: { [key: string]: string } = {};
+
   private get tocFileCommentsRegex() {
     return /\s*#.*$/gm;
   }
@@ -33,24 +37,30 @@ export class CurseFolderScanner {
   }
 
   async scanFolder(folderPath: string): Promise<CurseScanResult> {
-    const files = await readDirRecursive(folderPath);
-    console.log("listAllFiles", folderPath, files.length);
+    const fileList = await readDirRecursive(folderPath);
+    fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
 
-    let matchingFiles = await this.getMatchingFiles(folderPath, files);
+    // log.debug("listAllFiles", folderPath, fileList.length);
+
+    let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
     matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
+    // log.debug("matchingFiles", matchingFiles.length);
 
-    const individualFingerprints = await async.mapLimit<string, number>(
-      matchingFiles,
-      2,
-      async (path, callback) => {
-        const normalizedFileHash = await this.getFileHash(path);
-        callback(undefined, normalizedFileHash);
+    let individualFingerprints = await async.mapLimit<string, number>(matchingFiles, 4, async (path, callback) => {
+      try {
+        const fileHash = await this.getFileHash(path);
+        callback(undefined, fileHash);
+      } catch (e) {
+        log.error(`Failed to get filehash: ${path}`, e);
+        callback(undefined, -1);
       }
-    );
+    });
+
+    individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
     const fingerprint = this.getStringHash(hashConcat);
-    console.log("fingerprint", fingerprint);
+    // log.debug("fingerprint", fingerprint);
 
     return {
       directory: folderPath,
@@ -61,10 +71,7 @@ export class CurseFolderScanner {
     };
   }
 
-  private async getMatchingFiles(
-    folderPath: string,
-    filePaths: string[]
-  ): Promise<string[]> {
+  private async getMatchingFiles(folderPath: string, filePaths: string[]): Promise<string[]> {
     const parentDir = path.dirname(folderPath) + path.sep;
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
@@ -78,7 +85,7 @@ export class CurseFolderScanner {
       }
     }
 
-    // console.log('fileInfoList', fileInfoList.length)
+    // log.debug("fileInfoList", fileInfoList.length);
     for (let fileInfo of fileInfoList) {
       await this.processIncludeFile(matchingFileList, fileInfo);
     }
@@ -86,35 +93,38 @@ export class CurseFolderScanner {
     return matchingFileList;
   }
 
-  private async processIncludeFile(
-    matchingFileList: string[],
-    fileInfo: string
-  ) {
-    if (!fs.existsSync(fileInfo) || matchingFileList.indexOf(fileInfo) !== -1) {
+  private async processIncludeFile(matchingFileList: string[], fileInfo: string) {
+    let nativePath = "";
+    try {
+      nativePath = this.getRealPath(fileInfo);
+    } catch (e) {
+      log.error(`Include file path does not exist: ${fileInfo}`);
+      log.error(e);
       return;
     }
 
-    matchingFileList.push(fileInfo);
+    if (!fs.existsSync(nativePath) || matchingFileList.indexOf(nativePath) !== -1) {
+      return;
+    }
 
-    let input = await readFile(fileInfo);
-    input = this.removeComments(fileInfo, input);
+    matchingFileList.push(nativePath);
 
-    const inclusions = this.getFileInclusionMatches(fileInfo, input);
+    let input = await readFile(nativePath);
+    input = this.removeComments(nativePath, input);
+
+    const inclusions = this.getFileInclusionMatches(nativePath, input);
     if (!inclusions || !inclusions.length) {
       return;
     }
 
-    const dirname = path.dirname(fileInfo);
+    const dirname = path.dirname(nativePath);
     for (let include of inclusions) {
       const fileName = path.join(dirname, include.replace(/\\/g, path.sep));
       await this.processIncludeFile(matchingFileList, fileName);
     }
   }
 
-  private getFileInclusionMatches(
-    fileInfo: string,
-    fileContent: string
-  ): string[] | null {
+  private getFileInclusionMatches(fileInfo: string, fileContent: string): string[] | null {
     const ext = path.extname(fileInfo);
     switch (ext) {
       case ".xml":
@@ -151,22 +161,16 @@ export class CurseFolderScanner {
     return matches;
   }
 
-  private getStringHash(
-    targetString: string,
-    targetStringEncoding?: BufferEncoding
-  ): number {
+  private getStringHash(targetString: string, targetStringEncoding?: BufferEncoding): number {
     try {
-      const strBuffer = Buffer.from(
-        targetString,
-        targetStringEncoding || "ascii"
-      );
+      const strBuffer = Buffer.from(targetString, targetStringEncoding || "ascii");
 
       const hash = nativeAddon.computeHash(strBuffer, strBuffer.length);
 
       return hash;
     } catch (err) {
-      console.error(err);
-      console.log(targetString, targetStringEncoding);
+      log.error(err);
+      log.info(targetString, targetStringEncoding);
       throw err;
     }
   }
@@ -184,10 +188,19 @@ export class CurseFolderScanner {
           return resolve(hash);
         });
       } catch (err) {
-        console.error(err);
-        console.log(filePath);
+        log.error(err);
+        log.info(filePath);
         return reject(err);
       }
     });
+  }
+
+  private getRealPath(filePath: string) {
+    const lowerPath = filePath.toLowerCase();
+    const matchedPath = this._fileMap[lowerPath];
+    if (!matchedPath) {
+      throw new Error(`Path not found: ${lowerPath}`);
+    }
+    return matchedPath;
   }
 }

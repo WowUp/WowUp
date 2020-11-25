@@ -1,7 +1,10 @@
+import * as _ from "lodash";
+import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
 import { Addon } from "../entities/addon";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
+import * as AddonUtils from "../utils/addon.utils";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -28,14 +31,11 @@ export class AddonViewModel {
   }
 
   get needsInstall() {
-    return !this.isInstalling && !this.addon.installedVersion;
+    return !this.isInstalling && AddonUtils.needsInstall(this.addon);
   }
 
   get needsUpdate() {
-    return (
-      !this.isInstalling &&
-      this.addon.installedVersion !== this.addon.latestVersion
-    );
+    return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
   }
 
   get isAutoUpdate() {
@@ -43,10 +43,7 @@ export class AddonViewModel {
   }
 
   get isUpToDate() {
-    return (
-      !this.isInstalling &&
-      this.addon.installedVersion === this.addon.latestVersion
-    );
+    return !this.isInstalling && !AddonUtils.needsUpdate(this.addon);
   }
 
   get isIgnored() {
@@ -87,7 +84,7 @@ export class AddonViewModel {
       return AddonStatusSortOrder.Install;
     }
 
-    if (this.needsUpdate) {
+    if (this.needsUpdate || this.isInstalling) {
       return AddonStatusSortOrder.Update;
     }
 
@@ -115,7 +112,13 @@ export class AddonViewModel {
       return "COMMON.ADDON_STATE.INSTALL";
     }
 
-    console.log("Unhandled display state");
+    console.warn("Unhandled display state", this.isUpToDate, JSON.stringify(this, null, 2));
     return "COMMON.ADDON_STATE.UNKNOWN";
+  }
+
+  public getDependencies(dependencyType: AddonDependencyType = undefined) {
+    return dependencyType == undefined
+      ? this.addon.dependencies
+      : _.filter(this.addon.dependencies, (dep) => dep.type === dependencyType);
   }
 }

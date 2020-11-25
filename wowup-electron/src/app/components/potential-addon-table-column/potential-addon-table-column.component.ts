@@ -1,16 +1,18 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-} from "@angular/core";
+import * as _ from "lodash";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
+import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import * as SearchResults from "../../utils/search-result.utils";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
+import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
+
+export interface PotentialAddonViewDetailsEvent {
+  searchResult: AddonSearchResult;
+  channelType: AddonChannelType;
+}
 
 @Component({
   selector: "app-potential-addon-table-column",
@@ -22,9 +24,10 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
   @Input() channel: AddonChannelType;
   @Input() clientType: WowClientType;
 
-  @Output() onViewDetails: EventEmitter<AddonSearchResult> = new EventEmitter();
+  @Output() onViewDetails: EventEmitter<PotentialAddonViewDetailsEvent> = new EventEmitter();
 
   private _latestChannelType: AddonChannelType = AddonChannelType.Stable;
+  private _requiredDependencies: AddonSearchResultDependency[] = [];
 
   public get isBetaChannel(): boolean {
     return this._latestChannelType === AddonChannelType.Beta;
@@ -42,9 +45,13 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     return this.addon.name.charAt(0).toUpperCase();
   }
 
-  constructor(
-    private _getAddonListItemFileProp: GetAddonListItemFilePropPipe
-  ) {}
+  get dependencyTooltip() {
+    return {
+      dependencyCount: this.getRequiredDependencyCount(),
+    };
+  }
+
+  constructor(private _getAddonListItemFileProp: GetAddonListItemFilePropPipe) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.clientType) {
@@ -53,10 +60,31 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
         "channelType",
         this.channel
       ) as AddonChannelType;
+
+      this._requiredDependencies = this.getRequiredDependencies();
     }
   }
 
   viewDetails() {
-    this.onViewDetails.emit(this.addon.searchResult);
+    this.onViewDetails.emit({
+      searchResult: this.addon.searchResult,
+      channelType: this._latestChannelType,
+    });
+  }
+
+  getRequiredDependencyCount() {
+    return this._requiredDependencies.length;
+  }
+
+  hasRequiredDependencies() {
+    return this._requiredDependencies.length > 0;
+  }
+
+  getRequiredDependencies() {
+    return SearchResults.getDependencyType(
+      this.addon.searchResult,
+      this._latestChannelType,
+      AddonDependencyType.Required
+    );
   }
 }

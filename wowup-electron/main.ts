@@ -5,42 +5,36 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
-  nativeImage,
-  screen,
-  Tray,
+  powerMonitor,
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
-import { arch, release } from "os";
+import * as os from "os";
 import * as path from "path";
-import { Subject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
 import * as url from "url";
-import {
-  initializeAppUpdateIpcHandlers,
-  initializeAppUpdater,
-} from "./app-updater";
+import * as platform from "./platform";
+import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import "./ipc-events";
 import { initializeIpcHanders } from "./ipc-events";
 import {
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  CURRENT_THEME_KEY,
+  DEFAULT_BG_COLOR,
+  DEFAULT_LIGHT_BG_COLOR,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
 } from "./src/common/constants";
-import { WindowState } from "./src/common/models/window-state";
+import { AppOptions } from "./src/common/wowup/app-options";
+import { windowStateManager } from "./window-state";
 
-const isMac = process.platform === "darwin";
-const isWin = process.platform === "win32";
-const isLinux = process.platform === "linux";
+const startedAt = Date.now();
 const preferenceStore = new Store({ name: "preferences" });
+const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
-let tray: Tray = null;
 
 // APP MENU SETUP
-const appMenuTemplate: Array<
-MenuItemConstructorOptions | MenuItem
-> = getAppMenu();
+const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = getAppMenu();
 
 const appMenu = Menu.buildFromTemplate(appMenuTemplate);
 Menu.setApplicationMenu(appMenu);
@@ -51,6 +45,14 @@ log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return path.join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
+
+process.on("uncaughtException", (error) => {
+  log.error("uncaughtException", error);
+});
+
+process.on("unhandledRejection", (error) => {
+  log.error("unhandledRejection", error);
+});
 
 app.setAppUserModelId("io.wowup.jliddev");
 
@@ -63,115 +65,22 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 
-const USER_AGENT = `WowUp-Client/${app.getVersion()} (${release()}; ${arch()}; +https://wowup.io)`;
+const portableStr = isPortable ? " portable;" : "";
+const USER_AGENT = `WowUp-Client/${app.getVersion()} (${os.type()}; ${os.release()}; ${os.arch()}; ${portableStr} +https://wowup.io)`;
 log.info("USER_AGENT", USER_AGENT);
 
 const argv = require("minimist")(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
-});
+}) as AppOptions;
 
-function createTray() {
-  const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
-  const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
-
-  tray = new Tray(icon);
-  const contextMenu = Menu.buildFromTemplate([
-    { label: app.name, type: "normal", icon: icon, enabled: false },
-    {
-      label: "Show",
-      click: () => {
-        win.show();
-
-        if (isMac) {
-          app.dock.show();
-        }
-      },
-    },
-    { role: "quit" },
-  ]);
-
-  if (isWin) {
-    tray.on("click", () => {
-      win.show();
-    });
-  }
-
-  tray.setToolTip("WowUp");
-  tray.setContextMenu(contextMenu);
-}
-
-function windowStateManager(
-  windowName: string,
-  { width, height }: { width: number; height: number }
-) {
-  let window: BrowserWindow;
-  let windowState: WindowState;
-  const saveState$ = new Subject<void>();
-
-  function setState() {
-    let setDefaults = false;
-    windowState = preferenceStore.get(
-      `${windowName}-window-state`
-    ) as WindowState;
-
-    if (!windowState) {
-      setDefaults = true;
-    } else {
-      log.info("found window state:", windowState);
-
-      const valid = screen.getAllDisplays().some((display) => {
-        return (
-          windowState.x >= display.bounds.x &&
-          windowState.y >= display.bounds.y &&
-          windowState.x + windowState.width <=
-            display.bounds.x + display.bounds.width &&
-          windowState.y + windowState.height <=
-            display.bounds.y + display.bounds.height
-        );
-      });
-
-      if (!valid) {
-        log.info("reset window state, bounds are outside displays");
-        setDefaults = true;
-      }
-    }
-
-    if (setDefaults) {
-      log.info("setting window defaults");
-      windowState = <WindowState>{ width, height };
-    }
-  }
-
-  function saveState() {
-    log.info("saving window state");
-    if (!window.isMaximized() && !window.isFullScreen()) {
-      windowState = { ...windowState, ...window.getBounds() };
-    }
-    windowState.isMaximized = window.isMaximized();
-    windowState.isFullScreen = window.isFullScreen();
-    preferenceStore.set(`${windowName}-window-state`, windowState);
-  }
-
-  function monitorState(win: BrowserWindow) {
-    window = win;
-
-    win.on("close", saveState);
-    win.on("resize", () => saveState$.next());
-    win.on("move", () => saveState$.next());
-    win.on("closed", () => saveState$.unsubscribe());
-  }
-
-  saveState$.pipe(debounceTime(500)).subscribe(() => saveState());
-
-  setState();
-
-  return {
-    ...windowState,
-    monitorState,
-  };
+function canStartHidden() {
+  return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
 }
 
 function createWindow(): BrowserWindow {
+  const savedTheme = preferenceStore.get(CURRENT_THEME_KEY) as string;
+  const backgroundColor = savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
+
   // Main object for managing window state
   // Initialize with a window name and default size
   const mainWindowManager = windowStateManager("main", {
@@ -184,38 +93,63 @@ function createWindow(): BrowserWindow {
     height: mainWindowManager.height,
     x: mainWindowManager.x,
     y: mainWindowManager.y,
-    backgroundColor: "#444444",
+    backgroundColor,
     title: "WowUp",
     titleBarStyle: "hidden",
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      // preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
       allowRunningInsecureContent: argv.serve ? true : false,
       webSecurity: false,
       enableRemoteModule: true,
     },
-    minWidth: 900,
+    minWidth: 940,
     minHeight: 550,
     show: false,
   };
 
-  if (isWin || isLinux) {
+  if (platform.isWin || platform.isLinux) {
     windowOptions.frame = false;
+  }
+
+  // Attempt to fix the missing icon issue on Ubuntu
+  if (platform.isLinux) {
+    windowOptions.icon = path.join(__dirname, "assets", "wowup_logo_512np.png");
   }
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
   initializeIpcHanders(win);
   initializeAppUpdater(win);
-  initializeAppUpdateIpcHandlers();
+  initializeAppUpdateIpcHandlers(win);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
 
+  // See https://www.electronjs.org/docs/api/web-contents#event-render-process-gone
+  win.webContents.on("render-process-gone", (evt, details) => {
+    log.error("webContents render-process-gone");
+    log.error(evt);
+    log.error(details);
+  });
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-unresponsive
+  win.webContents.on("unresponsive", () => {
+    log.error("webContents unresponsive");
+  });
+
+  // See https://www.electronjs.org/docs/api/web-contents#event-responsive
+  win.webContents.on("responsive", () => {
+    log.error("webContents responsive");
+  });
+
   win.once("ready-to-show", () => {
-    if (!argv.hidden) win.show();
+    if (canStartHidden()) {
+      return;
+    }
+    win.show();
   });
 
   win.once("show", () => {
@@ -226,18 +160,15 @@ function createWindow(): BrowserWindow {
     }
   });
 
-  if (isMac) {
+  if (platform.isMac) {
     win.on("close", (e) => {
-      if (appIsQuitting) {
+      if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
         return;
       }
 
       e.preventDefault();
       win.hide();
-
-      if (preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) === "true") {
-        app.dock.hide();
-      }
+      app.dock.hide();
     });
   }
 
@@ -245,6 +176,7 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
+  log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
     require("electron-reload")(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`),
@@ -260,23 +192,6 @@ function createWindow(): BrowserWindow {
     );
   }
 
-  // Emitted when the window is closed.
-  // win.on('closed', () => {
-  //   // Dereference the window object, usually you would store window
-  //   // in an array if your app supports multi windows, this is the time
-  //   // when you should delete the corresponding element.
-  //   win = null;
-  // });
-
-  // win.on('minimize', function (event) {
-  //   event.preventDefault();
-  //   win.hide();
-  // });
-
-  // win.on('restore', function (event) {
-  //   win.show();
-  // });
-
   return win;
 }
 
@@ -291,22 +206,24 @@ try {
       if (win) {
         if (win.isMinimized()) {
           win.restore();
+        } else if (!win.isVisible() && !platform.isMac) {
+          win.show();
         }
         win.focus();
       }
     });
   }
 
-  app.allowRendererProcessReuse = true;
+  app.allowRendererProcessReuse = false;
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on("ready", () => {
+    log.info(`App ready: ${Date.now() - startedAt}ms`);
     setTimeout(() => {
       createWindow();
-      createTray();
     }, 400);
   });
 
@@ -318,22 +235,38 @@ try {
   app.on("window-all-closed", () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== "darwin") {
-      app.quit();
-    }
+    // if (process.platform !== "darwin") {
+    app.quit();
+    // }
   });
 
   app.on("activate", () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (isMac) {
+    if (platform.isMac) {
       app.dock.show();
-      win.show();
+      win?.show();
     }
 
     if (win === null) {
       createWindow();
     }
+  });
+
+  powerMonitor.on("resume", () => {
+    log.info("powerMonitor resume");
+  });
+
+  powerMonitor.on("suspend", () => {
+    log.info("powerMonitor suspend");
+  });
+
+  powerMonitor.on("lock-screen", () => {
+    log.info("powerMonitor lock-screen");
+  });
+
+  powerMonitor.on("unlock-screen", () => {
+    log.info("powerMonitor unlock-screen");
   });
 } catch (e) {
   // Catch Error
@@ -341,7 +274,7 @@ try {
 }
 
 function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
-  if (isMac) {
+  if (platform.isMac) {
     return [
       {
         label: app.name,
@@ -364,7 +297,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         submenu: [
           { role: "reload" },
           { role: "forceReload" },
-          { role: "toggleDevTools" },
+          { role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
           { type: "separator" },
           { role: "resetZoom" },
           { role: "zoomIn", accelerator: "CommandOrControl+=" },
@@ -374,12 +307,13 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         ],
       },
     ];
-  } else if (isWin) {
+  } else if (platform.isWin) {
     return [
       {
         label: "View",
         submenu: [
           { role: "resetZoom" },
+          { role: "toggleDevTools" },
           { role: "zoomIn", accelerator: "CommandOrControl+=" },
           { role: "zoomOut" },
           { type: "separator" },
@@ -387,7 +321,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         ],
       },
     ];
-  } else if (isLinux) {
+  } else if (platform.isLinux) {
     return [
       {
         label: app.name,

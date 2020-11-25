@@ -1,15 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
+import * as SearchResult from "../../utils/search-result.utils";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
@@ -17,6 +14,7 @@ import { AddonService } from "../../services/addons/addon.service";
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
   searchResult?: AddonSearchResult;
+  channelType?: AddonChannelType;
 }
 
 @Component({
@@ -27,6 +25,7 @@ export interface AddonDetailModel {
 })
 export class AddonDetailComponent implements OnInit, OnDestroy {
   private readonly _subscriptions: Subscription[] = [];
+  private readonly _dependencies: AddonSearchResultDependency[];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -34,6 +33,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef
   ) {
+    this._dependencies = this.getDependencies();
+
     this._subscriptions.push(
       this._addonService.addonInstalled$
         .pipe(
@@ -81,43 +82,23 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
   }
 
   get title() {
-    return (
-      this.model.listItem?.addon?.name ||
-      this.model.searchResult?.name ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.name || this.model.searchResult?.name || "UNKNOWN";
   }
 
   get subtitle() {
-    return (
-      this.model.listItem?.addon?.author ||
-      this.model.searchResult?.author ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.author || this.model.searchResult?.author || "UNKNOWN";
   }
 
   get provider() {
-    return (
-      this.model.listItem?.addon?.providerName ||
-      this.model.searchResult?.providerName ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.providerName || this.model.searchResult?.providerName || "UNKNOWN";
   }
 
   get summary() {
-    return (
-      this.model.listItem?.addon?.summary ||
-      this.model.searchResult?.summary ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
   }
 
   get externalUrl() {
-    return (
-      this.model.listItem?.addon?.externalUrl ||
-      this.model.searchResult?.externalUrl ||
-      "UNKNOWN"
-    );
+    return this.model.listItem?.addon?.externalUrl || this.model.searchResult?.externalUrl || "UNKNOWN";
   }
 
   get defaultImageUrl(): string {
@@ -140,5 +121,41 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
 
   onInstallUpdated() {
     this._cdRef.detectChanges();
+  }
+
+  getDependencies() {
+    if (this.model.searchResult) {
+      return SearchResult.getDependencyType(
+        this.model.searchResult,
+        this.model.channelType,
+        AddonDependencyType.Required
+      );
+    } else if (this.model.listItem) {
+      return this.model.listItem.getDependencies(AddonDependencyType.Required);
+    }
+
+    return [];
+  }
+
+  hasRequiredDependencies() {
+    return this._dependencies.length > 0;
+  }
+
+  getRequiredDependencyCount() {
+    return this._dependencies.length;
+  }
+
+  getVersion() {
+    return this.model.searchResult
+      ? this.getLatestSearchResultFile().version
+      : this.model.listItem.addon.installedVersion;
+  }
+
+  getExternalId() {
+    return this.model.searchResult ? this.model.searchResult.externalId : this.model.listItem.addon.externalId;
+  }
+
+  private getLatestSearchResultFile() {
+    return SearchResult.getLatestFile(this.model.searchResult, this.model.channelType);
   }
 }

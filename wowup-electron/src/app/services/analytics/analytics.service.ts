@@ -1,25 +1,21 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import "firebase/analytics";
-import * as firebase from "firebase/app";
+import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { BehaviorSubject } from "rxjs";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidV4 } from "uuid";
 import { AppConfig } from "../../../environments/environment";
-import { ElectronService } from "../electron/electron.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { TELEMETRY_ENABLED_KEY } from "../../../common/constants";
 
 @Injectable({
   providedIn: "root",
 })
 export class AnalyticsService {
-  private readonly analyticsUrl = "https://www.google-analytics.com";
   private readonly installIdPreferenceKey = "install_id";
   private readonly _installId: string;
-  private readonly _appVersion: string;
   private readonly _telemetryEnabledSrc = new BehaviorSubject(false);
 
-  public readonly telemetryPromptUsedKey = "telemetry_prompt_sent";
-  public readonly telemetryEnabledKey = "telemetry_enabled";
+  private _insights?: ApplicationInsights;
+
   public readonly telemetryEnabled$ = this._telemetryEnabledSrc.asObservable();
 
   private get installId() {
@@ -27,100 +23,89 @@ export class AnalyticsService {
   }
 
   public get shouldPromptTelemetry() {
-    return (
-      this._preferenceStorageService.get(this.telemetryEnabledKey) === undefined
-    );
+    return this._preferenceStorageService.get(TELEMETRY_ENABLED_KEY) === undefined;
   }
 
   public get telemetryEnabled() {
-    const preference = this._preferenceStorageService.findByKey(
-      this.telemetryEnabledKey
-    );
-    return preference === true.toString();
+    const preference = this._preferenceStorageService.findByKey(TELEMETRY_ENABLED_KEY);
+    const value = preference === true.toString();
+
+    this.configureAppInsights(value);
+
+    return value;
   }
 
   public set telemetryEnabled(value: boolean) {
-    this._preferenceStorageService.set(this.telemetryEnabledKey, value);
+    console.log(`Set telemetry enabled: ${value}`);
+
+    if (this._insights) {
+      this._insights.appInsights.config.disableTelemetry = value;
+    }
+
+    this._preferenceStorageService.set(TELEMETRY_ENABLED_KEY, value);
     this._telemetryEnabledSrc.next(value);
   }
 
-  constructor(
-    private _electronService: ElectronService,
-    private _httpClient: HttpClient,
-    private _preferenceStorageService: PreferenceStorageService
-  ) {
-    this._appVersion = _electronService.remote.app.getVersion();
+  constructor(private _preferenceStorageService: PreferenceStorageService) {
     this._installId = this.loadInstallId();
     this._telemetryEnabledSrc.next(this.telemetryEnabled);
     console.log("installId", this._installId);
   }
 
-  public async trackStartup() {
-    await this.track((params) => {
-      params.set("t", "pageview");
-      params.set("dp", "app/startup");
-    });
+  public trackStartup() {
+    this.track("app-startup");
   }
 
-  public async trackUserAction(
-    category: string,
-    action: string,
-    label: string = null
-  ) {
-    await this.track((params) => {
-      params.set("t", "event");
-      params.set("ec", category);
-      params.set("ea", action);
-      params.set("el", label);
-    });
-  }
-
-  private async track(action: (params: HttpParams) => void = undefined) {
+  public trackError(error: Error) {
     if (!this.telemetryEnabled) {
       return;
     }
 
-    var url = `${this.analyticsUrl}/collect`;
+    this._insights?.trackException({ exception: error });
+  }
 
-    try {
-      let params = new URLSearchParams();
-      params.set("v", "1");
-      params.set("tid", AppConfig.googleAnalyticsId);
-      params.set("cid", this._installId);
-      params.set("ua", window.navigator.userAgent);
-      params.set("an", "WowUp Client");
-      params.set("av", this._appVersion);
-
-      action?.call(this, params);
-
-      const fullUrl = `${url}?${params}`;
-
-      const response = await this._httpClient
-        .post(
-          fullUrl,
-          {},
-          {
-            responseType: "text",
-          }
-        )
-        .toPromise();
-    } catch (e) {
-      // eat
-      console.error(e);
+  private track(name: string, properties: object = undefined) {
+    if (!this.telemetryEnabled) {
+      return;
     }
+
+    this._insights?.trackEvent({ name, properties });
+  }
+
+  public trackAction(name: string, properties: object = undefined) {
+    this.track(name, properties);
   }
 
   private loadInstallId() {
-    let installId = this._preferenceStorageService.findByKey(
-      this.installIdPreferenceKey
-    );
+    let installId = this._preferenceStorageService.findByKey(this.installIdPreferenceKey);
     if (installId) {
       return installId;
     }
 
-    installId = uuidv4();
+    installId = uuidV4();
     this._preferenceStorageService.set(this.installIdPreferenceKey, installId);
 
     return installId;
+  }
+
+  private configureAppInsights(enable: boolean) {
+    if (!enable || this._insights) {
+      return;
+    }
+
+    this._insights = new ApplicationInsights({
+      config: {
+        instrumentationKey: AppConfig.azure.applicationInsightsKey,
+      },
+    });
+    this._insights.loadAppInsights();
+    this._insights.trackPageView();
+
+    // If telemetry is off, don't let it track anything
+    this._insights.addTelemetryInitializer((envelop) => {
+      if (!this.telemetryEnabled) {
+        return false;
+      }
+    });
   }
 }

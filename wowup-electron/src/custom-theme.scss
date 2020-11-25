@@ -21,7 +21,7 @@ $md-wowup-pallette: (
   A100: #8c9eff,
   A200: #536dfe,
   A400: #3d5afe,
-  A700: #304ffe,
+  A700: #6874bb,
   contrast: (
     50: #000000,
     100: #ffffff,
@@ -43,270 +43,433 @@ $md-wowup-pallette: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$candy-app-primary: mat-palette($md-wowup-pallette, 100, 50, 300);
-$candy-app-accent: mat-palette($md-wowup-pallette, A200, A100, A400);
+$wowup-default-primary: mat-palette($md-wowup-pallette, 100, 50, 300);
+$wowup-default-accent: mat-palette($md-wowup-pallette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$candy-app-warn: mat-palette($mat-red);
+$wowup-default-warn: mat-palette($mat-red);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
-$candy-app-theme: mat-dark-theme(
+$wowup-default-theme: mat-dark-theme(
   (
     color: (
-      primary: $candy-app-primary,
-      accent: $candy-app-accent,
-      warn: $candy-app-warn,
+      primary: $wowup-default-primary,
+      accent: $wowup-default-accent,
+      warn: $wowup-default-warn,
     ),
   )
 );
 
-$wowup-app-white-primary: mat-palette($md-wowup-pallette, 50, 50, 300);
-$wowup-app-secondary-theme: mat-dark-theme(
+$wowup-light-theme: mat-light-theme(
   (
     color: (
-      primary: $wowup-app-white-primary,
-      accent: $candy-app-accent,
-      warn: $candy-app-warn,
+      primary: $wowup-default-primary,
+      accent: $wowup-default-accent,
+      warn: $wowup-default-warn,
     ),
   )
 );
 
-$dark-primary: mat-palette($mat-blue-grey);
-$dark-accent: mat-palette($mat-amber, A200, A100, A400);
-$dark-warn: mat-palette($mat-deep-orange);
-$dark-theme: mat-dark-theme(
-  (
-    color: (
-      primary: $dark-primary,
-      accent: $dark-accent,
-      warn: $dark-warn,
-    ),
-  )
-);
+.border-primary {
+  border-color: $purple-1;
+}
+
+.bg-primary {
+  background-color: $purple-1;
+}
+
+.bg-primary-2 {
+  background-color: $purple-2;
+}
+
+.bg-primary-3 {
+  background-color: $purple-3;
+}
+
+.bg-secondary {
+  background-color: $dark-1;
+}
+
+.bg-secondary-2 {
+  background-color: $dark-2;
+}
+
+.bg-secondary-3 {
+  background-color: $dark-3;
+}
+
+.bg-secondary-4 {
+  background-color: $dark-4;
+}
+
+.hover-bg-secondary:hover {
+  background-color: $dark-1;
+}
+
+.hover-bg-secondary-2:hover {
+  background-color: $dark-2;
+}
+
+.hover-bg-secondary-3:hover {
+  background-color: $dark-3;
+}
+
+.hover-bg-secondary-4:hover {
+  background-color: $dark-4;
+}
+
+.hover-primary-2:hover {
+  background-color: $purple-2;
+}
+
+.text-1 {
+  color: $white-1;
+}
+
+.text-2 {
+  color: $white-2;
+}
+
+.text-3 {
+  color: $white-3;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $dark-2;
+}
+
+::-webkit-scrollbar-thumb {
+  border-color: $purple-3;
+  background: $purple-1;
+  background: linear-gradient(146deg, $purple-1 0%, $purple-2 100%);
+}
+
+::-webkit-scrollbar-corner {
+  background: $dark-3;
+}
+
+.mat-input-element {
+  caret-color: $white-3 !important;
+  color: $white-1 !important;
+}
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: $white-2 !important;
+}
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($candy-app-theme);
+@include angular-material-theme($wowup-default-theme);
 
-// @font-face {
-//   font-family: 'Material Icons';
-//   font-style: normal;
-//   font-weight: 400;
-//   src: url(assets/material-design-icons/iconfont/MaterialIcons-Regular.eot);
-//   src: local('Material Icons'),
-//     local('MaterialIcons-Regular'),
-//     url(assets/material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
-//     url(assets/material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'),
-//     url(assets/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
-// }
+.default-theme-light-theme {
+  @include angular-material-color($wowup-light-theme);
+}
 
-// .material-icons {
-//   font-family: 'Material Icons';
-//   font-weight: normal;
-//   font-style: normal;
-//   font-size: 24px;
-//   display: inline-block;
-//   line-height: 1;
-//   text-transform: none;
-//   letter-spacing: normal;
-//   word-wrap: normal;
-//   white-space: nowrap;
-//   direction: ltr;
+// Horde theme
+$horde-pallette: (
+  50: #e8eaf6,
+  100: $horde-red-1,
+  200: #504fa1,
+  300: #383773,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: $horde-red-1,
+  A200: $horde-control,
+  A400: $horde-red-3,
+  A700: #6874bb,
+  contrast: (
+    50: #000000,
+    100: #ffffff,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+  ),
+);
+$horde-primary: mat-palette($horde-pallette, 100, 50, 300);
+$horde-accent: mat-palette($horde-pallette, A200, A100, A400);
+$horde-warn: mat-palette($mat-deep-orange);
+$horde-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $horde-primary,
+      accent: $horde-accent,
+      warn: $horde-warn,
+    ),
+  )
+);
 
-//   -webkit-font-smoothing: antialiased;
-//   text-rendering: optimizeLegibility;
-//   -moz-osx-font-smoothing: grayscale;
-//   font-feature-settings: 'liga';
-// }
+$horde-theme-light: mat-light-theme(
+  (
+    color: (
+      primary: $horde-primary,
+      accent: $horde-accent,
+      warn: $horde-warn,
+    ),
+  )
+);
 
-// /* cyrillic-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   font-display: swap;
-//   src: local('Roboto Light'), local('Roboto-Light'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format('woff2');
-//   unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-// }
-// /* cyrillic */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   font-display: swap;
-//   src: local('Roboto Light'), local('Roboto-Light'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format('woff2');
-//   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-// }
-// /* greek-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   font-display: swap;
-//   src: local('Roboto Light'), local('Roboto-Light'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format('woff2');
-//   unicode-range: U+1F00-1FFF;
-// }
-// /* greek */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   font-display: swap;
-//   src: local('Roboto Light'), local('Roboto-Light'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format('woff2');
-//   unicode-range: U+0370-03FF;
-// }
-// /* vietnamese */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   font-display: swap;
-//   src: local('Roboto Light'), local('Roboto-Light'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format('woff2');
-//   unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
-// }
-// /* latin-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   font-display: swap;
-//   src: local('Roboto Light'), local('Roboto-Light'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format('woff2');
-//   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-// }
-// /* latin */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   font-display: swap;
-//   src: local('Roboto Light'), local('Roboto-Light'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format('woff2');
-//   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-// }
-// /* cyrillic-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   font-display: swap;
-//   src: local('Roboto'), local('Roboto-Regular'), url(assets/typeface-roboto/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format('woff2');
-//   unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-// }
-// /* cyrillic */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   font-display: swap;
-//   src: local('Roboto'), local('Roboto-Regular'), url(assets/typeface-roboto/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format('woff2');
-//   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-// }
-// /* greek-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   font-display: swap;
-//   src: local('Roboto'), local('Roboto-Regular'), url(assets/typeface-roboto/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format('woff2');
-//   unicode-range: U+1F00-1FFF;
-// }
-// /* greek */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   font-display: swap;
-//   src: local('Roboto'), local('Roboto-Regular'), url(assets/typeface-roboto/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format('woff2');
-//   unicode-range: U+0370-03FF;
-// }
-// /* vietnamese */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   font-display: swap;
-//   src: local('Roboto'), local('Roboto-Regular'), url(assets/typeface-roboto/KFOmCnqEu92Fr1Mu7WxKOzY.woff2) format('woff2');
-//   unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
-// }
-// /* latin-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   font-display: swap;
-//   src: local('Roboto'), local('Roboto-Regular'), url(assets/typeface-roboto/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format('woff2');
-//   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-// }
-// /* latin */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 400;
-//   font-display: swap;
-//   src: local('Roboto'), local('Roboto-Regular'), url(assets/typeface-roboto/KFOmCnqEu92Fr1Mu4mxK.woff2) format('woff2');
-//   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-// }
-// /* cyrillic-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   font-display: swap;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmEU9fCRc4EsA.woff2) format('woff2');
-//   unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-// }
-// /* cyrillic */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   font-display: swap;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmEU9fABc4EsA.woff2) format('woff2');
-//   unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-// }
-// /* greek-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   font-display: swap;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmEU9fCBc4EsA.woff2) format('woff2');
-//   unicode-range: U+1F00-1FFF;
-// }
-// /* greek */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   font-display: swap;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmEU9fBxc4EsA.woff2) format('woff2');
-//   unicode-range: U+0370-03FF;
-// }
-// /* vietnamese */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   font-display: swap;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmEU9fCxc4EsA.woff2) format('woff2');
-//   unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
-// }
-// /* latin-ext */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   font-display: swap;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmEU9fChc4EsA.woff2) format('woff2');
-//   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-// }
-// /* latin */
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 500;
-//   font-display: swap;
-//   src: local('Roboto Medium'), local('Roboto-Medium'), url(assets/typeface-roboto/KFOlCnqEu92Fr1MmEU9fBBc4.woff2) format('woff2');
-//   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-// }
+.horde-theme-light-theme {
+  @include angular-material-color($horde-theme-light);
+}
+
+.horde-theme {
+  @include angular-material-color($horde-theme);
+}
+
+[class*="horde-theme"] {
+  .border-primary {
+    border-color: $horde-red-1 !important;
+  }
+
+  .bg-primary {
+    background-color: $horde-red-1 !important;
+  }
+
+  .bg-primary-2 {
+    background-color: $horde-red-2 !important;
+  }
+
+  .hover-primary-2:hover {
+    background-color: $horde-red-2 !important;
+  }
+
+  .mat-form-field-ripple {
+    background-color: $horde-red-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $dark-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-color: $horde-red-3;
+    background: $horde-red-1;
+    background: linear-gradient(146deg, $horde-red-1 0%, $horde-red-2 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: $dark-3;
+  }
+}
+
+// Alliance theme
+$alliance-pallette: (
+  50: #e8eaf6,
+  100: $alliance-blue-1,
+  200: $alliance-blue-2,
+  300: #383773,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: $alliance-blue-1,
+  A200: $alliance-control,
+  A400: $alliance-blue-3,
+  A700: #6874bb,
+  contrast: (
+    50: #000000,
+    100: #ffffff,
+    200: #ffffff,
+    300: #ffffff,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #ffffff,
+    A400: #ffffff,
+    A700: #ffffff,
+  ),
+);
+$alliance-primary: mat-palette($alliance-pallette, 100, 50, 300);
+$alliance-accent: mat-palette($alliance-pallette, A200, A100, A400);
+$alliance-warn: mat-palette($mat-deep-orange);
+$alliance-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $alliance-primary,
+      accent: $alliance-accent,
+      warn: $alliance-warn,
+    ),
+  )
+);
+
+$alliance-theme-light: mat-light-theme(
+  (
+    color: (
+      primary: $alliance-primary,
+      accent: $alliance-accent,
+      warn: $alliance-warn,
+    ),
+  )
+);
+
+.alliance-theme-light-theme {
+  @include angular-material-color($alliance-theme-light);
+}
+
+.alliance-theme {
+  @include angular-material-color($alliance-theme);
+}
+
+[class*="alliance-theme"] {
+  .border-primary {
+    border-color: $alliance-blue-1 !important;
+  }
+
+  .bg-primary {
+    background-color: $alliance-blue-1 !important;
+  }
+
+  .bg-primary-2 {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  .hover-primary-2:hover {
+    background-color: $alliance-blue-3 !important;
+  }
+
+  .mat-form-field-ripple {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $dark-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-color: $alliance-blue-3;
+    background: $alliance-blue-1;
+    background: linear-gradient(146deg, $alliance-blue-1 0%, $alliance-blue-2 100%);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: $dark-3;
+  }
+}
+
+// DARK THEME
+.default-theme,
+.alliance-theme,
+.horde-theme {
+  .bg-secondary {
+    background-color: $dark-1 !important;
+  }
+
+  .bg-secondary-2 {
+    background-color: $dark-2 !important;
+  }
+
+  .bg-secondary-3 {
+    background-color: $dark-3 !important;
+  }
+
+  .bg-secondary-4 {
+    background-color: $dark-4 !important;
+  }
+
+  .hover-bg-secondary:hover {
+    background-color: $dark-1 !important;
+  }
+  
+  .hover-bg-secondary-2:hover {
+    background-color: $dark-2 !important;
+  }
+  
+  .hover-bg-secondary-3:hover {
+    background-color: $dark-3 !important;
+  }
+  
+  .hover-bg-secondary-4:hover {
+    background-color: $dark-4 !important;
+  }
+}
+
+// LIGHT THEME
+[class*="light-theme"] {
+  .bg-secondary {
+    background-color: $lt-secondary-1 !important;
+  }
+
+  .bg-secondary-2 {
+    background-color: $lt-secondary-2 !important;
+  }
+
+  .bg-secondary-3 {
+    background-color: $lt-secondary-3 !important;
+  }
+
+  .bg-secondary-4 {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .hover-bg-secondary:hover {
+    background-color: $lt-secondary-1 !important;
+  }
+
+  .hover-bg-secondary-2:hover {
+    background-color: $lt-secondary-2 !important;
+  }
+
+  .hover-bg-secondary-3:hover {
+    background-color: $lt-secondary-3 !important;
+  }
+
+  .hover-bg-secondary-4:hover {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .text-1 {
+    color: $lt-text-1 !important;
+  }
+
+  .text-2 {
+    color: $lt-text-2 !important;
+  }
+
+  .text-3 {
+    color: $lt-text-3 !important;
+  }
+
+  .hover-text-1:hover {
+    color: $lt-text-1 !important;
+  }
+
+  .hover-text-2:hover {
+    color: $lt-text-2 !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $lt-secondary-4 !important;
+  }
+
+  .mat-form-field-label {
+    color: $lt-text-1 !important;
+  }
+
+  .mat-input-element {
+    caret-color: $lt-text-3 !important;
+    color: $lt-text-1 !important;
+  }
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $lt-text-2 !important;
+  }
+}

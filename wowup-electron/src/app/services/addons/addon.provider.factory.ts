@@ -9,7 +9,6 @@ import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
-import { SessionService } from "../session/session.service";
 
 @Injectable({
   providedIn: "root",
@@ -19,7 +18,6 @@ export class AddonProviderFactory {
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
-    private _sessionService: SessionService,
     private _fileService: FileService
   ) {}
 
@@ -35,20 +33,11 @@ export class AddonProviderFactory {
   }
 
   public createCurseAddonProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(
-      this._httpClient,
-      this._cachingService,
-      this._electronService
-    );
+    return new CurseAddonProvider(this._httpClient, this._cachingService, this._electronService);
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
-    return new TukUiAddonProvider(
-      this._httpClient,
-      this._cachingService,
-      this._electronService,
-      this._fileService
-    );
+    return new TukUiAddonProvider(this._httpClient, this._cachingService, this._electronService, this._fileService);
   }
 
   public createWowInterfaceAddonProvider(): WowInterfaceAddonProvider {

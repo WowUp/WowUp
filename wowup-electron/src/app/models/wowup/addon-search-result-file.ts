@@ -1,4 +1,5 @@
 import { AddonChannelType } from "./addon-channel-type";
+import { AddonSearchResultDependency } from "./addon-search-result-dependency";
 
 export interface AddonSearchResultFile {
   channelType: AddonChannelType;
@@ -7,4 +8,5 @@ export interface AddonSearchResultFile {
   gameVersion: string;
   downloadUrl: string;
   releaseDate: Date;
+  dependencies?: AddonSearchResultDependency[];
 }

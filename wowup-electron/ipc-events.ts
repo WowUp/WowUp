@@ -5,6 +5,7 @@ import * as path from "path";
 import * as admZip from "adm-zip";
 import { readdir, stat } from "fs";
 import axios from "axios";
+import * as log from "electron-log";
 
 import {
   LIST_DIRECTORIES_CHANNEL,
@@ -16,10 +17,12 @@ import {
   COPY_FILE_CHANNEL,
   DELETE_DIRECTORY_CHANNEL,
   READ_FILE_CHANNEL,
+  WRITE_FILE_CHANNEL,
   GET_ASSET_FILE_PATH,
   DOWNLOAD_FILE_CHANNEL,
   CREATE_DIRECTORY_CHANNEL,
   STAT_FILES_CHANNEL,
+  CREATE_TRAY_MENU_CHANNEL,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -31,12 +34,14 @@ import { CopyFileRequest } from "./src/common/models/copy-file-request";
 import { DownloadStatus } from "./src/common/models/download-status";
 import { DownloadStatusType } from "./src/common/models/download-status-type";
 import { DownloadRequest } from "./src/common/models/download-request";
+import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
+import { createTray } from "./system-tray";
 
 export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     SHOW_DIRECTORY,
     async (evt, filePath: string): Promise<string> => {
-      console.log(SHOW_DIRECTORY, filePath);
+      log.info(SHOW_DIRECTORY, filePath);
       return await shell.openPath(filePath);
     }
   );
@@ -54,7 +59,7 @@ export function initializeIpcHanders(window: BrowserWindow) {
   );
 
   ipcMain.handle(LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
-    console.log(LIST_DIRECTORIES_CHANNEL, filePath);
+    log.info(LIST_DIRECTORIES_CHANNEL, filePath);
 
     return new Promise((resolve, reject) => {
       readdir(filePath, { withFileTypes: true }, (err, files) => {
@@ -62,9 +67,7 @@ export function initializeIpcHanders(window: BrowserWindow) {
           return reject(err);
         }
 
-        const directories = files
-          .filter((file) => file.isDirectory())
-          .map((file) => file.name);
+        const directories = files.filter((file) => file.isDirectory()).map((file) => file.name);
 
         resolve(directories);
       });
@@ -87,13 +90,13 @@ export function initializeIpcHanders(window: BrowserWindow) {
   });
 
   ipcMain.handle(PATH_EXISTS_CHANNEL, async (evt, filePath: string) => {
-    console.log(PATH_EXISTS_CHANNEL, filePath);
+    log.info(PATH_EXISTS_CHANNEL, filePath);
 
     try {
       await fs.access(filePath);
     } catch (e) {
       if (e.code !== "ENOENT") {
-        console.error(e);
+        log.error(e);
       }
       return false;
     }
@@ -104,40 +107,41 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     CURSE_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
-      console.log(CURSE_GET_SCAN_RESULTS, filePaths);
+      log.info(CURSE_GET_SCAN_RESULTS, filePaths);
 
       // Scan addon folders in parallel for speed!?
-      return await async.mapLimit<string, CurseScanResult>(
-        filePaths,
-        2,
-        async (folder, callback) => {
+      try {
+        const results = await async.mapLimit<string, CurseScanResult>(filePaths, 2, async (folder, callback) => {
           const scanResult = await new CurseFolderScanner().scanFolder(folder);
 
           callback(undefined, scanResult);
-        }
-      );
+        });
+
+        log.info(CURSE_GET_SCAN_RESULTS, "complete");
+
+        return results;
+      } catch (e) {
+        log.error("Failed during curse scan", e);
+        throw e;
+      }
     }
   );
 
   ipcMain.handle(
     WOWUP_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
-      console.log(WOWUP_GET_SCAN_RESULTS, filePaths);
+      log.info(WOWUP_GET_SCAN_RESULTS, filePaths);
 
-      return await async.mapLimit<string, WowUpScanResult>(
-        filePaths,
-        2,
-        async (folder, callback) => {
-          const scanResult = await new WowUpFolderScanner(folder).scanFolder();
+      return await async.mapLimit<string, WowUpScanResult>(filePaths, 2, async (folder, callback) => {
+        const scanResult = await new WowUpFolderScanner(folder).scanFolder();
 
-          callback(undefined, scanResult);
-        }
-      );
+        callback(undefined, scanResult);
+      });
     }
   );
 
   ipcMain.handle(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
-    console.log(UNZIP_FILE_CHANNEL, arg);
+    log.info(UNZIP_FILE_CHANNEL, arg);
 
     const zip = new admZip(arg.zipFilePath);
     await new Promise((resolve, reject) => {
@@ -152,14 +156,14 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     COPY_FILE_CHANNEL,
     async (evt, arg: CopyFileRequest): Promise<boolean> => {
-      console.log("Copy File", arg);
+      log.info("Copy File", arg);
       await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
       return true;
     }
   );
 
   ipcMain.handle(DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
-    console.log("Delete File/Dir", filePath);
+    log.info("Delete File/Dir", filePath);
 
     await fs.remove(filePath);
 
@@ -168,6 +172,14 @@ export function initializeIpcHanders(window: BrowserWindow) {
 
   ipcMain.handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
     return await fs.readFile(filePath, { encoding: "utf-8" });
+  });
+
+  ipcMain.handle(WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
+    return await fs.writeFile(filePath, contents, { encoding: "utf-8" });
+  });
+
+  ipcMain.handle(CREATE_TRAY_MENU_CHANNEL, async (evt, config: SystemTrayConfig) => {
+    return createTray(window, config);
   });
 
   ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {
@@ -180,12 +192,12 @@ export function initializeIpcHanders(window: BrowserWindow) {
         responseType: "stream",
       });
 
-      console.log("Starting download");
+      log.info("Starting download");
 
       // const totalLength = headers["content-length"];
       // Progress is not shown anywhere
       // data.on("data", (chunk) => {
-      //   console.log("DLPROG", arg.responseKey);
+      //   log.info("DLPROG", arg.responseKey);
       // });
 
       const writer = fs.createWriteStream(savePath);
@@ -202,7 +214,7 @@ export function initializeIpcHanders(window: BrowserWindow) {
       };
       window.webContents.send(arg.responseKey, status);
     } catch (err) {
-      console.error(err);
+      log.error(err);
       const status: DownloadStatus = {
         type: DownloadStatusType.Error,
         error: err,

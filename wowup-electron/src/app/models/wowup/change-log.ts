@@ -1,4 +1,5 @@
 export interface ChangeLog {
   Version: string;
-  Description: string;
+  Description?: string;
+  changes?: string[];
 }

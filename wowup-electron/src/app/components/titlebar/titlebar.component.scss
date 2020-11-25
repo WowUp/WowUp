@@ -5,13 +5,39 @@
   flex-direction: row;
   align-items: center;
   position: relative;
+  margin-top: 4px;
 
   .debug-button {
-    height: 22px;
+    height: 15px;
+    width: 15px;
+  }
+
+  .theme-logo {
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 4px;
+    height: 82px;
+    opacity: 0.3;
+    overflow: hidden;
+
+    img {
+      position: relative;
+      left: 0;
+      height: 150%;
+      width: auto;
+    }
   }
 }
+
 .mac {
   height: 22px;
+
+  .theme-logo {
+    height: 74px;
+    right: 4px;
+    left: initial;
+  }
 }
 .windows,
 .linux {
@@ -61,9 +87,9 @@
     justify-content: center;
     align-items: center;
     z-index: 2500;
+    margin-top: -8px;
 
     &:hover {
-      background-color: $purple-2;
       cursor: pointer;
     }
 

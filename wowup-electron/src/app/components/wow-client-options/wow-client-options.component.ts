@@ -1,13 +1,8 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
+import { TranslateService } from "@ngx-translate/core";
 import * as _ from "lodash";
 import * as path from "path";
 import { Subscription } from "rxjs";
@@ -18,6 +13,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
+import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: "app-wow-client-options",
@@ -29,17 +25,16 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
+  public readonly addonChannelInfos: {
+    type: AddonChannelType;
+    name: string;
+  }[];
+
   public clientTypeName: string;
   public clientFolderName: string;
   public clientLocation: string;
   public selectedAddonChannelType: AddonChannelType;
-  public addonChannelInfos: {
-    type: AddonChannelType;
-    name: string;
-  }[] = getEnumList(AddonChannelType).map((type: AddonChannelType) => ({
-    type: type,
-    name: getEnumName(AddonChannelType, type),
-  }));
+
   public clientAutoUpdate: boolean;
 
   constructor(
@@ -47,35 +42,28 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
-    private _cdRef: ChangeDetectorRef
+    private _cdRef: ChangeDetectorRef,
+    private _translateService: TranslateService
   ) {
-    const warcraftProductSubscription = this._warcraftService.products$.subscribe(
-      (products) => {
-        const product = products.find((p) => p.clientType === this.clientType);
-        if (product) {
-          this.clientLocation = product.location;
-          this._cdRef.detectChanges();
-        }
+    this.addonChannelInfos = this.getAddonChannelInfos();
+
+    const warcraftProductSubscription = this._warcraftService.products$.subscribe((products) => {
+      const product = products.find((p) => p.clientType === this.clientType);
+      if (product) {
+        this.clientLocation = product.location;
+        this._cdRef.detectChanges();
       }
-    );
+    });
 
     this.subscriptions.push(warcraftProductSubscription);
   }
 
   ngOnInit(): void {
-    this.selectedAddonChannelType = this._wowupService.getDefaultAddonChannel(
-      this.clientType
-    );
-    this.clientAutoUpdate = this._wowupService.getDefaultAutoUpdate(
-      this.clientType
-    );
-    this.clientTypeName = getEnumName(WowClientType, this.clientType);
-    this.clientFolderName = this._warcraftService.getClientFolderName(
-      this.clientType
-    );
-    this.clientLocation = this._warcraftService.getClientLocation(
-      this.clientType
-    );
+    this.selectedAddonChannelType = this._wowupService.getDefaultAddonChannel(this.clientType);
+    this.clientAutoUpdate = this._wowupService.getDefaultAutoUpdate(this.clientType);
+    this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(WowClientType, this.clientType).toUpperCase()}`;
+    this.clientFolderName = this._warcraftService.getClientFolderName(this.clientType);
+    this.clientLocation = this._warcraftService.getClientLocation(this.clientType);
   }
 
   ngOnDestroy(): void {
@@ -90,6 +78,32 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this._wowupService.setDefaultAutoUpdate(this.clientType, evt.checked);
   }
 
+  public async clearInstallPath() {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.TITLE"),
+        message: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.MESSAGE", {
+          clientName: this._translateService.instant(this.clientTypeName),
+        }),
+      },
+    });
+
+    const result = await dialogRef.afterClosed().toPromise();
+
+    if (!result) {
+      return;
+    }
+
+    try {
+      await this._warcraftService.removeWowFolderPath(this.clientType).toPromise();
+      this.clientLocation = "";
+      this._cdRef.detectChanges();
+      console.debug("Remove client location complete");
+    } catch (e) {
+      console.error("Failed to remove location", e);
+    }
+  }
+
   async onSelectClientPath() {
     const selectedPath = await this.selectWowClientPath(this.clientType);
     if (selectedPath) {
@@ -97,14 +111,20 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async selectWowClientPath(
-    clientType: WowClientType
-  ): Promise<string> {
-    const dialogResult = await this._electronService.remote.dialog.showOpenDialog(
-      {
-        properties: ["openDirectory"],
-      }
-    );
+  private getAddonChannelInfos() {
+    return getEnumList(AddonChannelType).map((type: AddonChannelType) => {
+      const channelName = getEnumName(AddonChannelType, type).toUpperCase();
+      return {
+        type: type,
+        name: `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelName}`,
+      };
+    });
+  }
+
+  private async selectWowClientPath(clientType: WowClientType): Promise<string> {
+    const dialogResult = await this._electronService.remote.dialog.showOpenDialog({
+      properties: ["openDirectory"],
+    });
 
     if (dialogResult.canceled) {
       return "";
@@ -118,25 +138,19 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
     console.log("dialogResult", selectedPath);
 
-    if (this._warcraftService.setWowFolderPath(clientType, selectedPath)) {
-      return selectedPath;
+    const clientRelativePath = this._warcraftService.getClientRelativePath(clientType, selectedPath);
+
+    if (this._warcraftService.setWowFolderPath(clientType, clientRelativePath)) {
+      return clientRelativePath;
     }
 
-    const clientFolderName = this._warcraftService.getClientFolderName(
-      clientType
-    );
-    const clientExecutableName = this._warcraftService.getExecutableName(
-      clientType
-    );
-    const clientExecutablePath = path.join(
-      selectedPath,
-      clientFolderName,
-      clientExecutableName
-    );
+    const clientFolderName = this._warcraftService.getClientFolderName(clientType);
+    const clientExecutableName = this._warcraftService.getExecutableName(clientType);
+    const clientExecutablePath = path.join(clientRelativePath, clientFolderName, clientExecutableName);
     const dialogRef = this._dialog.open(AlertDialogComponent, {
       data: {
         title: `Alert`,
-        message: `Unable to set "${selectedPath}" as your ${getEnumName(
+        message: `Unable to set "${clientRelativePath}" as your ${getEnumName(
           WowClientType,
           clientType
         )} folder.\nPath not found: "${clientExecutablePath}".`,

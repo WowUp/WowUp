@@ -3,9 +3,8 @@
 :not(input):not(textarea),
 :not(input):not(textarea)::after,
 :not(input):not(textarea)::before {
-  -webkit-user-select: none;
-  user-select: none;
-  cursor: default;
+  -webkit-user-select: none !important;
+  user-select: none !important;
 }
 
 input,
@@ -37,7 +36,6 @@ a[href^="ftp://"]
 }
 
 html {
-  background-color: $dark-3;
   overflow: hidden;
   -webkit-app-region: no-drag;
 }
@@ -139,18 +137,6 @@ img {
   -webkit-app-region: no-drag;
 }
 
-.bg-dark-3 {
-  background-color: $dark-3;
-}
-
-.bg-dark-4 {
-  background-color: $dark-4;
-}
-
-.bg-purple-1 {
-  background-color: $purple-1;
-}
-
 .text-light {
   color: $white-1;
 }
@@ -183,11 +169,15 @@ img {
   overflow-x: hidden;
 
   &.mac {
-    height: calc(100vh - 102px);
+    height: calc(100vh - 106px);
   }
 
   &.windows {
-    height: calc(100vh - 110px);
+    height: calc(100vh - 114px);
+  }
+
+  &.linux {
+    height: calc(100vh - 114px);
   }
 }
 
@@ -195,10 +185,6 @@ img {
   .mat-form-field-wrapper {
     padding-bottom: 0 !important;
   }
-}
-
-.mat-input-element {
-  color: $white-1 !important;
 }
 
 .mat-option.mat-selected:not(.mat-option-disabled) {
@@ -219,6 +205,27 @@ img {
 
 .flex-shrink-0 {
   flex-shrink: 0;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+
+  &.align-items-center {
+    align-items: center;
+  }
+
+  &.align-items-start {
+    align-items: flex-start;
+  }
+
+  &.justify-content-center {
+    justify-content: center;
+  }
+
+  &.justify-content-end {
+    justify-content: flex-end;
+  }
 }
 
 .row {
@@ -242,6 +249,13 @@ img {
   }
 }
 
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
+
 .addon-table {
   width: 100%;
   height: 100%;
@@ -262,8 +276,6 @@ img {
 }
 
 .addon-context-menu {
-  background-color: $dark-4;
-
   .addon-context-menu-header {
     padding: 0 16px 8px 16px;
     color: $white-1;
@@ -298,6 +310,10 @@ img {
 
     .addon-version {
       color: $white-2;
+    }
+
+    .addon-update-available {
+      color: $artifact;
     }
   }
 }
@@ -347,31 +363,6 @@ img {
   align-items: center;
 }
 
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: $dark-2;
-  // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  border: 1px solid $purple-3;
-  // box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-  background: rgb(107, 105, 214);
-  background: linear-gradient(
-    146deg,
-    rgba(107, 105, 214, 1) 0%,
-    rgba(80, 79, 161, 1) 100%
-  );
-}
-
 .install-button {
   min-width: 120px !important;
 }
@@ -396,4 +387,62 @@ img {
   .mat-progress-bar-fill::after {
     background: $blue-1 !important;
   }
+}
+
+.error-text {
+  color: red;
+}
+
+.no-tabs {
+  &.mat-tab-group {
+    .mat-tab-header {
+      display: none;
+    }
+  }
+}
+
+snack-bar-container {
+  &.center-text {
+    span {
+      margin: auto;
+      text-align: center;
+    }
+  }
+}
+
+// MATERIAL OVERRIDES
+
+.mat-tooltip {
+  font-size: 0.95em;
+}
+
+.mat-tab-labels {
+  z-index: 2;
+}
+
+th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.mat-menu-content {
+  .mat-checkbox {
+    display: block;
+  }
+}
+
+// SCROLLBAR
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
 }

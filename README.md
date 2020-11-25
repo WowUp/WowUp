@@ -5,15 +5,11 @@
 [![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/rk4F5aD) 
 [![WowUp on Patreon](https://img.shields.io/static/v1?label=Patreon&message=WowUp&color=f96854)](https://www.patreon.com/jliddev) 
 
-### Due to a bug in the 1.15.0-1.15.2 updater Users will have to manually update 1.16.0. We apologize for the inconvenience
-
 # WowUp
 [WowUp](https://wowup.io) the World of Warcraft addon updater
 
 Thanks to the announcement that Twitch is giving the Curse addon client to yet another company I wanted to try and create something the community can believe in.
 If you have any ideas/requests for the feature list let me know!
-
-The windows version uses [WowUpdater](https://github.com/jliddev/WowUpUpdater) under the hood for now.
 
 ### Upcoming Features
 - [x] Create feature List
@@ -26,6 +22,6 @@ The windows version uses [WowUpdater](https://github.com/jliddev/WowUpUpdater) u
 - [X] GitHub support
 - [x] Addon Search
 - [x] Auto addon updates
-- [ ] Mac client [Coming Soon](https://github.com/jliddev/WowUp/tree/electron)
-- [ ] Linux Client [Coming Soon](https://github.com/jliddev/WowUp/tree/electron)
+- [x] Mac client
+- [x] Linux Client
 - [ ] Curse alternative?

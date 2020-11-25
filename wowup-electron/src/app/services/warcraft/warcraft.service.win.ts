@@ -10,21 +10,21 @@ const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 
 export class WarcraftServiceWin implements WarcraftServiceImpl {
   async getBlizzardAgentPath(): Promise<string> {
-    const diskInfo = await nodeDiskInfo.getDiskInfo();
-    const driveNames = diskInfo.map((i) => i.mounted);
+    try {
+      const diskInfo = await nodeDiskInfo.getDiskInfo();
+      const driveNames = diskInfo.map((i) => i.mounted);
 
-    for (const name of driveNames) {
-      const agentPath = path.join(
-        name,
-        WINDOWS_BLIZZARD_AGENT_PATH,
-        BLIZZARD_PRODUCT_DB_NAME
-      );
-      const exists = await FileUtils.exists(agentPath);
+      for (const name of driveNames) {
+        const agentPath = path.join(name, WINDOWS_BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
+        const exists = await FileUtils.exists(agentPath);
 
-      if (exists) {
-        console.log(`Found products at ${agentPath}`);
-        return agentPath;
+        if (exists) {
+          console.log(`Found products at ${agentPath}`);
+          return agentPath;
+        }
       }
+    } catch (e) {
+      console.error("Failed to search for blizzard products", e);
     }
 
     return "";

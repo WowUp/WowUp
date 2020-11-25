@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
@@ -15,10 +16,7 @@ import * as _ from "lodash";
 import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
-import {
-  AddonDetailComponent,
-  AddonDetailModel,
-} from "../../components/addon-detail/addon-detail.component";
+import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
@@ -28,6 +26,11 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { MatMenuTrigger } from "@angular/material/menu";
+import { MatCheckboxChange } from "@angular/material/checkbox";
+import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
+import * as SearchResults from "../../utils/search-result.utils";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-get-addons",
@@ -39,19 +42,40 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild("table", { read: ElementRef }) table: ElementRef;
+  @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab: boolean = false;
+  private _lazyLoaded: boolean = false;
+  private _automaticSort: boolean = false;
 
   public dataSource = new MatTableDataSource<GetAddonListItem>([]);
+  public activeSort = "downloadCount";
+  public activeSortDirection = "desc";
 
   columns: ColumnState[] = [
-    { name: "name", display: "Addon", visible: true },
-    { name: "downloadCount", display: "Downloads", visible: true },
-    { name: "releasedAt", display: "Released At", visible: true },
-    { name: "author", display: "Author", visible: true },
-    { name: "providerName", display: "Provider", visible: true },
-    { name: "status", display: "Status", visible: true },
+    { name: "name", display: "PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER", visible: true },
+    {
+      name: "downloadCount",
+      display: "PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER",
+      visible: true,
+      allowToggle: true,
+    },
+    {
+      name: "releasedAt",
+      display: "PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER",
+      visible: true,
+      allowToggle: true,
+    },
+    { name: "author", display: "PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER", visible: true, allowToggle: true },
+    {
+      name: "providerName",
+      display: "PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER",
+      visible: true,
+      allowToggle: false,
+    },
+    { name: "status", display: "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER", visible: true },
   ];
 
   public get displayedColumns(): string[] {
@@ -59,20 +83,17 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public get defaultAddonChannelKey() {
-    return this._wowUpService.getClientDefaultAddonChannelKey(
-      this._sessionService.selectedClientType
-    );
+    return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.selectedClientType);
   }
 
   public get defaultAddonChannel() {
-    return this._wowUpService.getDefaultAddonChannel(
-      this._sessionService.selectedClientType
-    );
+    return this._wowUpService.getDefaultAddonChannel(this._sessionService.selectedClientType);
   }
 
   public query = "";
-  public isBusy = false;
+  public isBusy = true;
   public selectedClient = WowClientType.None;
+  public contextMenuPosition = { x: "0px", y: "0px" };
 
   constructor(
     private _addonService: AddonService,
@@ -86,13 +107,93 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   ) {
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this._isSelectedTab = tabIndex === this.tabIndex;
-      if (this._isSelectedTab) {
-        this.setPageContextText();
+      if (!this._isSelectedTab) {
+        return;
       }
+      this.setPageContextText();
+      this.lazyLoad();
     });
   }
 
   ngOnInit(): void {
+    const columnStates = this._wowUpService.getAddonsHiddenColumns;
+    this.columns.forEach((col) => {
+      if (!col.allowToggle) {
+        return;
+      }
+
+      const state = _.find(columnStates, (cs) => cs.name === col.name);
+      if (state) {
+        col.visible = state.visible;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions = [];
+  }
+
+  onSortChange(): void {
+    if (this._automaticSort) {
+      return;
+    }
+
+    if (this.table) {
+      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
+    }
+
+    this._wowUpService.getAddonsSortOrder = {
+      name: this.sort.active,
+      direction: this.sort.direction,
+    };
+  }
+
+  onStatusColumnUpdated() {
+    this._cdRef.detectChanges();
+  }
+
+  public onHeaderContext(event: MouseEvent) {
+    event.preventDefault();
+    this.updateContextMenuPosition(event);
+    this.columnContextMenu.menuData = {
+      columns: this.columns.filter((col) => col.allowToggle),
+    };
+    this.columnContextMenu.menu.focusFirstItem("mouse");
+    this.columnContextMenu.openMenu();
+  }
+
+  private updateContextMenuPosition(event: MouseEvent) {
+    this.contextMenuPosition.x = event.clientX + "px";
+    this.contextMenuPosition.y = event.clientY + "px";
+  }
+
+  public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
+    const col = this.columns.find((col) => col.name === column.name);
+    col.visible = event.checked;
+    this._wowUpService.getAddonsHiddenColumns = [...this.columns];
+  }
+
+  private loadSortOrder = () => {
+    const sortOrder = this._wowUpService.getAddonsSortOrder;
+    if (sortOrder && this.sort) {
+      this.activeSort = sortOrder.name;
+      this.activeSortDirection = sortOrder.direction;
+      this._automaticSort = true;
+      this.sort.active = sortOrder.name;
+      this.sort.direction = sortOrder.direction;
+      this.sort.sortChange.emit();
+      this._automaticSort = false;
+    }
+  };
+
+  private lazyLoad() {
+    if (this._lazyLoaded) {
+      return;
+    }
+
+    this._lazyLoaded = true;
+
     const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
         map((clientType) => {
@@ -116,6 +217,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       });
 
     const dataSourceSub = this.dataSource.connect().subscribe((data) => {
+      console.debug("get addons activeSortDirection", this.sort);
+
       this.setPageContextText();
     });
 
@@ -127,27 +230,17 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     ];
   }
 
-  ngOnDestroy() {
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
-    this._subscriptions = [];
-  }
-
-  onStatusColumnUpdated() {
-    this._cdRef.detectChanges();
-  }
-
   private setDataSource(items: GetAddonListItem[]) {
     this.dataSource.data = items;
-    this.dataSource.sortingDataAccessor = (
-      item: GetAddonListItem,
-      prop: string
-    ) => {
+    this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
       if (prop === "releasedAt") {
-        return item.getLatestFile(this.defaultAddonChannel)?.releaseDate;
+        return SearchResults.getLatestFile(item.searchResult, this.defaultAddonChannel)?.releaseDate;
       }
-      return _.get(item, prop);
+      let value = _.get(item, prop);
+      return typeof value === "string" ? value.toLowerCase() : value;
     };
     this.dataSource.sort = this.sort;
+    this.loadSortOrder();
   }
 
   onInstallFromUrl() {
@@ -178,20 +271,25 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this.isBusy = true;
 
-    let searchResults = await this._addonService.search(
-      this.query,
-      this.selectedClient
-    );
+    let searchResults = await this._addonService.search(this.query, this.selectedClient);
 
-    this.setDataSource(
-      this.formatAddons(this.filterInstalledAddons(searchResults))
-    );
+    this.setDataSource(this.formatAddons(searchResults));
     this.isBusy = false;
+    this._cdRef.detectChanges();
   }
 
-  openDetailDialog(listItem: GetAddonListItem) {
+  onDoubleClickRow(listItem: GetAddonListItem) {
+    this.openDetailDialog(listItem.searchResult, this.defaultAddonChannel);
+  }
+
+  onAddonColumnDetailDialog(event: PotentialAddonViewDetailsEvent) {
+    this.openDetailDialog(event.searchResult, event.channelType);
+  }
+
+  openDetailDialog(searchResult: AddonSearchResult, channelType: AddonChannelType) {
     const data: AddonDetailModel = {
-      searchResult: listItem.searchResult,
+      searchResult: searchResult,
+      channelType: channelType,
     };
 
     const dialogRef = this._dialog.open(AddonDetailComponent, {
@@ -210,7 +308,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
-        const listItems = this.formatAddons(this.filterInstalledAddons(addons));
+        const listItems = this.formatAddons(addons);
         this.setDataSource(listItems);
         this.isBusy = false;
       },
@@ -220,16 +318,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private filterInstalledAddons(addons: AddonSearchResult[]) {
-    return addons.filter(
-      (addon) =>
-        !this._addonService.isInstalled(
-          addon.externalId,
-          this._sessionService.selectedClientType
-        )
-    );
-  }
-
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
     return addons.map((addon) => new GetAddonListItem(addon));
   }
@@ -237,10 +325,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private setPageContextText() {
     const length = this.dataSource.data?.length;
     const contextStr = length
-      ? this._translateService.instant(
-          "PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS",
-          { count: length }
-        )
+      ? this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS", { count: length })
       : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);
