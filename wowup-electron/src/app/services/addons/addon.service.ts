@@ -36,7 +36,7 @@ import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import { AddonFolder } from "app/models/wowup/addon-folder";
+import { AddonFolder } from "../../models/wowup/addon-folder";
 
 export enum ScanUpdateType {
   Start,
