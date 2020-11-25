@@ -153,6 +153,7 @@ export class TukUiAddonProvider implements AddonProvider {
           downloadCount: Number.parseFloat(tukUiAddon.downloads),
           screenshotUrls: [tukUiAddon.screenshot_url],
           releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
+          isLoadOnDemand: false,
         };
       }
     }

@@ -12,6 +12,7 @@ import {
   READ_FILE_CHANNEL,
   WRITE_FILE_CHANNEL,
   SHOW_DIRECTORY,
+  STAT_FILES_CHANNEL,
   UNZIP_FILE_CHANNEL,
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
@@ -87,6 +88,15 @@ export class FileService {
 
   public async listDirectories(sourcePath: string): Promise<string[]> {
     return await this._electronService.ipcRenderer.invoke(LIST_DIRECTORIES_CHANNEL, sourcePath);
+  }
+
+  public async statFiles(
+    filePaths: string[]
+  ): Promise<{ [path: string]: fs.Stats }> {
+    return await this._electronService.ipcRenderer.invoke(
+      STAT_FILES_CHANNEL,
+      filePaths
+    );
   }
 
   public listEntries(sourcePath: string, filter: string) {
