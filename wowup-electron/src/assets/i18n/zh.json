@@ -2,18 +2,22 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "自动更新了 {count} 个插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自动更新",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "检查更新...",
       "QUIT_ACTION": "退出",
       "SHOW_ACTION": "显示"
     },
     "THEME": {
-      "ALLIANCE": "Alliance",
-      "ALLIANCE_LIGHT": "Alliance Light",
-      "DEFAULT": "Default",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "Horde",
-      "HORDE_LIGHT": "Horde Light"
+      "ALLIANCE": "联盟",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "暗色",
+      "GROUP_LIGHT": "亮色",
+      "HORDE": "部落"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
@@ -48,10 +52,10 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "CLASSIC": "经典怀旧服",
+      "CLASSICPTR": "经典怀旧服 PTR",
+      "RETAIL": "正式服",
+      "RETAILPTR": "正式服 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -66,9 +70,16 @@
       "TOOLTIP": "{dependencyCount} 个依赖项"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count}B",
-      "MILLION": "{count}M",
-      "THOUSAND": "{count}k"
+      "e+0": "{myriadCount}",
+      "e+1": "{myriadCount}",
+      "e+2": "{myriadCount}",
+      "e+3": "{myriadCount}",
+      "e+4": "{myriadCount} 万",
+      "e+5": "{myriadCount} 万",
+      "e+6": "{myriadCount} 万",
+      "e+7": "{myriadCount} 万",
+      "e+8": "{myriadCount} 亿",
+      "e+9": "{myriadCount} 亿"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -76,6 +87,9 @@
         "BETA": "Beta",
         "STABLE": "稳定版"
       }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的提供方修改为 {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "正在加载..."
@@ -92,6 +106,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "在该网站上查看："
     },
     "ALERT": {
+      "ERROR_TITLE": "错误",
       "POSITIVE_BUTTON": "确定"
     },
     "CONFIRM": {
@@ -103,10 +118,10 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "例如，GitHub 或 WowInterface URL",
       "CLOSE_BUTTON": "关闭",
       "DESCRIPTION": "如需直接从某 URL 安装插件，请将其粘贴到下面以开始安装。",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下载",
       "ERROR": {
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
-        "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wow-support 频道寻求帮助（英语）。",
+        "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wowup-support 频道寻求帮助（英语）。",
         "INVALID_URL": "输入的 URL 无效。有效 URL 示例：\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "未找到插件，请检查 URL 是否指向正确的页面。\n\n从 GitHub 安装时，请检查是否存在带有 zip 包的 release tag。",
         "TITLE": "插件安装失败"
@@ -156,12 +171,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "更新通道",
+        "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "重新安装",
         "REMOVE_ADDON_BUTTON": "删除",
         "SHOW_FOLDER": "打开文件夹",
         "STABLE_ADDON_CHANNEL": "稳定版"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "是否将 {addonName} 的提供方修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
+        "TITLE": "修改插件提供方？"
       },
       "CHECK_UPDATES_BUTTON": "检查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "检查最新的插件更新",
@@ -170,17 +190,18 @@
         "TITLE": "显示列表项"
       },
       "FILTER_LABEL": "筛选",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个提供方",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 个插件",
         "JOIN_DISCORD": "在 Discord 上与我们交流（英语）",
-        "PATREON_SUPPORT": "通过 Patreon 向 WowUp 捐助",
+        "PATREON_SUPPORT": "通过 Patreon 向 WowUp 捐助（英语）",
         "SEARCH_RESULTS": "共 {count} 条结果",
         "VIEW_GITHUB": "在 GitHub 上查看源代码",
         "VIEW_GUIDE": "访问指南，探索 WowUp 的功能（英语）"
       },
       "RESCAN_FOLDERS_BUTTON": "重新扫描",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "扫描客户端文件夹中已安装的附加组件",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新扫描过程将会猜测已经安装了哪些插件，可能会重置已知插件信息。如果特定插件无法识别或显示不正确，请使用此功能。扫描不会删除插件本身，只会删除 WowUp 缓存的插件信息。\n\n扫描需要花费一些时间。",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新扫描过程将会猜测已经安装了哪些插件，可能会重置已知插件信息。如果特定插件无法识别或显示不正确，请使用此功能。扫描不会删除插件本身，只会删除 WowUp 记录的插件信息。\n\n扫描需要花费一些时间。",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "是否开始扫描？",
       "SPINNER": {
         "GATHERING_ADDONS": "正在收集插件信息...",
@@ -243,8 +264,8 @@
         "START_WITH_SYSTEM_LABEL": "登录后自动启动 WowUp",
         "TELEMETRY_DESCRIPTION": "发送匿名应用安装数据和错误信息以帮助改进 WowUp。",
         "TELEMETRY_LABEL": "遥测",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
-        "THEME_LABEL": "Color Theme",
+        "THEME_DESCRIPTION": "选择喜欢的配色主题",
+        "THEME_LABEL": "配色主题",
         "TITLE": "应用程序",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "是否重新启动？",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬件加速可能会提高 FPS 并修复其他渲染问题。更改此项需要重新启动。",
@@ -270,6 +291,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "新安装的插件将默认设置为自动更新",
         "AUTO_UPDATE_LABEL": "自动更新",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "是否忘记 {clientName} 的安装路径？此操作将会删除 WowUp 记录的此客户端所安装插件信息。\n\n插件文件夹不会被删除。",
+          "TITLE": "忘记此路径？"
+        },
         "CLIENT_TYPE_INPUT_HINT": "请选择 {clientTypeName} 客户端路径（\"{clientFolderName}\" 的上级路径）",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路径",
         "DEFAULT_ADDON_CHANNEL_LABEL": "默认插件更新通道",

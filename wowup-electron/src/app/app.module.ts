@@ -27,7 +27,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
-export function intializeApp(wowupService: WowUpService) {
+export function initializeApp(wowupService: WowUpService) {
   return async () => {
     await wowupService.initializeLanguage();
   };
@@ -60,7 +60,7 @@ export function intializeApp(wowupService: WowUpService) {
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: intializeApp,
+      useFactory: initializeApp,
       deps: [WowUpService],
       multi: true,
     },

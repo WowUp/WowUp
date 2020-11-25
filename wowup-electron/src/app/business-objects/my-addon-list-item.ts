@@ -1,9 +1,11 @@
 import * as _ from "lodash";
-import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
+import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
 import { Addon } from "../entities/addon";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
+import * as AddonUtils from "../utils/addon.utils";
+import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -13,6 +15,10 @@ export class AddonViewModel {
   public installProgress: number = 0;
   public stateTextTranslationKey: string = "";
   public selected: boolean = false;
+
+  get isLoadOnDemand() {
+    return this.addon?.isLoadOnDemand;
+  }
 
   get installedAt() {
     return new Date(this.addon?.installedAt);
@@ -26,11 +32,11 @@ export class AddonViewModel {
   }
 
   get needsInstall() {
-    return !this.isInstalling && !this.addon.installedVersion;
+    return !this.isInstalling && AddonUtils.needsInstall(this.addon);
   }
 
   get needsUpdate() {
-    return !this.isInstalling && this.addon.installedVersion !== this.addon.latestVersion;
+    return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
   }
 
   get isAutoUpdate() {
@@ -38,7 +44,7 @@ export class AddonViewModel {
   }
 
   get isUpToDate() {
-    return !this.isInstalling && this.addon.installedVersion === this.addon.latestVersion;
+    return !this.isInstalling && !AddonUtils.needsUpdate(this.addon);
   }
 
   get isIgnored() {
@@ -60,6 +66,10 @@ export class AddonViewModel {
   constructor(addon?: Addon) {
     this.addon = addon;
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
+  }
+
+  public isUnMatched() {
+    return this.addon.providerName === ADDON_PROVIDER_UNKNOWN;
   }
 
   public clone() {
@@ -107,7 +117,7 @@ export class AddonViewModel {
       return "COMMON.ADDON_STATE.INSTALL";
     }
 
-    console.log("Unhandled display state");
+    console.warn("Unhandled display state", this.isUpToDate, JSON.stringify(this, null, 2));
     return "COMMON.ADDON_STATE.UNKNOWN";
   }
 

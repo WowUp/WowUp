@@ -1,9 +1,6 @@
 @import "../../../variables.scss";
 
 .tab-container {
-  &.linux {
-    height: calc(100vh - 110px);
-  }
 }
 
 .theme-logo {
@@ -28,6 +25,7 @@
 }
 .about {
   max-width: 1024px;
+  z-index: 2;
 
   .header {
     text-align: center;
@@ -46,6 +44,16 @@
 
     .patron-img {
       width: 120px;
+    }
+  }
+
+  .header-2 {
+    a {
+      color: inherit;
+
+      &:visited {
+        color: inherit;
+      }
     }
   }
 

@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
-import { AddonDependencyType } from "app/models/wowup/addon-dependency-type";
-import { AddonSearchResultDependency } from "app/models/wowup/addon-search-result-dependency";
-import { CurseDependency } from "common/curse/curse-dependency";
-import { CurseDependencyType } from "common/curse/curse-dependency-type";
+import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
+import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
+import { CurseDependency } from "../../common/curse/curse-dependency";
+import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
 import * as _ from "lodash";
 import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
@@ -343,6 +343,10 @@ export class CurseAddonProvider implements AddonProvider {
     return addonUri.host && addonUri.host.endsWith("curseforge.com") && addonUri.pathname.startsWith("/wow/addons");
   }
 
+  isValidAddonId(addonId: string): boolean {
+    return !!addonId && !isNaN(parseInt(addonId, 10));
+  }
+
   onPostInstall(addon: Addon): void {
     throw new Error("Method not implemented.");
   }
@@ -545,6 +549,7 @@ export class CurseAddonProvider implements AddonProvider {
       downloadCount: scanResult.searchResult.downloadCount,
       summary: scanResult.searchResult.summary,
       releasedAt: new Date(latestVersion.fileDate),
+      isLoadOnDemand: false
     };
   }
 }

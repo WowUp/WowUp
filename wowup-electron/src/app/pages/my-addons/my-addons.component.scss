@@ -1,11 +1,5 @@
 @import "../../../variables.scss";
 
-.tab-container {
-  &.linux {
-    height: calc(100vh - 110px);
-  }
-}
-
 .control-container {
   display: flex;
   flex-direction: row;
@@ -36,6 +30,35 @@
         }
       }
     }
+  }
+}
+
+.switch-button {
+  padding-left: 0;
+}
+
+.menu-button {
+  overflow: hidden;
+  margin-right: 0 !important;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 16px;
+}
+.menu-button-divider {
+  width: 1px;
+  height: 36px;
+}
+.chip {
+  margin-right: 0.5em;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 0 10px;
+  width: auto;
+  min-width: auto;
+
+  .mat-icon {
+    width: 12px;
+    padding-bottom: 3px;
   }
 }
 
@@ -111,6 +134,11 @@
     }
   }
 
+  .status-icon {
+    height: 11px;
+    width: 11px;
+  }
+
   .addon-provider {
     display: flex;
     align-items: center;
@@ -149,4 +177,10 @@
   p {
     margin-bottom: 0.5em;
   }
+}
+
+.open-in-browser-icon {
+  width: 12px;
+  height: 12px;
+  margin-right: 0 !important;
 }

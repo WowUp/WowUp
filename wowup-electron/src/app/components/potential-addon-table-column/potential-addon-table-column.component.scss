@@ -18,9 +18,14 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      overflow: hidden;
 
       .addon-logo {
         width: 100%;
+      }
+
+      img {
+        height: 100%;
       }
     }
 

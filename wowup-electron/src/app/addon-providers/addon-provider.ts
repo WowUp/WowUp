@@ -27,6 +27,7 @@ export interface AddonProvider {
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult>;
 
   isValidAddonUri(addonUri: URL): boolean;
+  isValidAddonId(addonId: string): boolean;
 
   onPostInstall(addon: Addon): void;
 

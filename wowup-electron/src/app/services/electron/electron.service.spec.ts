@@ -1,11 +1,14 @@
-import { TestBed } from "@angular/core/testing";
 import { ElectronService } from "./electron.service";
 
-describe("ElectronService", () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+class StubbedElectronService extends ElectronService {
+  public get isElectron(): boolean {
+    return false;
+  }
+}
 
+describe("ElectronService", () => {
   it("should be created", () => {
-    const service: ElectronService = new ElectronService();
+    const service: ElectronService = new StubbedElectronService();
     expect(service).toBeTruthy();
   });
 });

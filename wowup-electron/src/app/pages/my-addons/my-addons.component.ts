@@ -18,10 +18,10 @@ import { MatRadioChange } from "@angular/material/radio";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
-import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import * as _ from "lodash";
-import { BehaviorSubject, from, Observable, Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { BehaviorSubject, from, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
@@ -29,7 +29,6 @@ import { Addon } from "../../entities/addon";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { ColumnState } from "../../models/wowup/column-state";
-import { SelectItem } from "../../models/wowup/select-item";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
@@ -38,6 +37,8 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
+import * as AddonUtils from "../../utils/addon.utils";
+import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 
 @Component({
   selector: "app-my-addons",
@@ -71,6 +72,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public enableUpdateAll = false;
   public activeSort = "sortOrder";
   public activeSortDirection = "asc";
+  public addonUtils = AddonUtils;
+  public selectedClient = WowClientType.None;
+  public wowClientType = WowClientType;
+  public overlayRef: OverlayRef | null;
+  public isBusy = true;
+  public enableControls = true;
 
   public columns: ColumnState[] = [
     {
@@ -130,12 +137,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public get displayedColumns(): string[] {
     return this.columns.filter((col) => col.visible).map((col) => col.name);
   }
-
-  public selectedClient = WowClientType.None;
-  public wowClientType = WowClientType;
-  public overlayRef: OverlayRef | null;
-  public isBusy = true;
-  public enableControls = true;
 
   constructor(
     private addonService: AddonService,
@@ -306,13 +307,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       const listItems = _.filter(
         this._displayAddonsSrc.value,
-        (listItem) => !listItem.isIgnored && (listItem.needsInstall || listItem.needsUpdate)
+        (listItem) => !listItem.isIgnored && !listItem.isInstalling && (listItem.needsInstall || listItem.needsUpdate)
       );
 
       await Promise.all(
         listItems.map(async (listItem) => {
           try {
-            this.addonService.installAddon(listItem.addon.id);
+            this.addonService.updateAddon(listItem.addon.id);
           } catch (e) {
             console.error("Failed to install", e);
           }
@@ -322,7 +323,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error(err);
     }
 
-    this.enableControls = true;
+    this.enableControls = this.calculateControlState();
   }
 
   public async onUpdateAllRetailClassic() {
@@ -385,19 +386,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onShowfolder(addon: Addon) {
+  public onShowFolder(addon: Addon) {
     try {
       const addonPath = this.addonService.getFullInstallPath(addon);
       this.electronService.shell.openPath(addonPath);
     } catch (err) {
       console.error(err);
     }
-  }
-
-  public onUpdateAddon(listItem: AddonViewModel) {
-    listItem.isInstalling = true;
-
-    this.addonService.installAddon(listItem.addon.id);
   }
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState) {
@@ -512,6 +507,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickIgnoreAddons(evt: MatCheckboxChange, listItems: AddonViewModel[]) {
     listItems.forEach((listItem) => {
+      // if provider is not valid (Unknown) then ignore this
+      if (!this.addonService.isValidProviderName(listItem.addon.providerName)) {
+        return;
+      }
+
       listItem.addon.isIgnored = evt.checked;
       if (evt.checked) {
         listItem.addon.autoUpdateEnabled = false;
@@ -542,6 +542,44 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  public onSelectedProviderChange(evt: MatRadioChange, listItem: AddonViewModel) {
+    const messageData = {
+      addonName: listItem.addon.name,
+      providerName: evt.value,
+    };
+
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("PAGES.MY_ADDONS.CHANGE_ADDON_PROVIDER_CONFIRMATION.TITLE"),
+        message: this._translateService.instant(
+          "PAGES.MY_ADDONS.CHANGE_ADDON_PROVIDER_CONFIRMATION.MESSAGE",
+          messageData
+        ),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (!result) {
+        return;
+      }
+
+      try {
+        const externalId = _.find(listItem.addon.externalIds, (extid) => extid.providerName === evt.value);
+        await this.addonService.setProvider(
+          listItem.addon,
+          externalId.id,
+          externalId.providerName,
+          this.selectedClient
+        );
+      } catch (e) {
+        console.error(e);
+        const errorTitle = this._translateService.instant("DIALOGS.ALERT.ERROR_TITLE");
+        const errorMessage = this._translateService.instant("COMMON.ERRORS.CHANGE_PROVIDER_ERROR", messageData);
+        this.showErrorMessage(errorTitle, errorMessage);
+      }
+    });
+  }
+
   public onSelectedAddonChannelChange(evt: MatRadioChange, listItem: AddonViewModel) {
     this.onSelectedAddonsChannelChange(evt, [listItem]);
   }
@@ -563,16 +601,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public getChannelTypeLocaleKey(channelType: string) {
-    return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType.toUpperCase()}`;
+    return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType?.toUpperCase()}`;
   }
 
-  private lazyLoad() {
+  private async lazyLoad() {
     if (this._lazyLoaded) {
       return;
     }
 
     this._lazyLoaded = true;
+    this.isBusy = true;
+    this.enableControls = false;
+
     console.debug("LAZY LOAD");
+
+    await this.addonService.backfillAddons();
 
     const selectedClientSubscription = this._sessionService.selectedClientType$
       .pipe(
@@ -602,10 +645,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       // Only care about the ones that need to be updated/installed
-      addons = addons
-        .map((addon) => new AddonViewModel(addon))
-        .filter((listItem) => !listItem.isIgnored && (listItem.needsUpdate || listItem.needsInstall))
-        .map((listItem) => listItem.addon);
+      addons = addons.filter(
+        (addon) => !addon.isIgnored && (AddonUtils.needsUpdate(addon) || AddonUtils.needsInstall(addon))
+      );
 
       if (addons.length === 0) {
         this.loadAddons(this.selectedClient);
@@ -627,7 +669,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           addonName: addon.name,
         });
 
-        await this.addonService.installAddon(addon.id);
+        await this.addonService.updateAddon(addon.id);
       }
 
       this.loadAddons(this.selectedClient);
@@ -642,27 +684,28 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextMenuPosition.y = event.clientY + "px";
   }
 
-  private loadAddons(clientType: WowClientType, rescan = false) {
+  private async loadAddons(clientType: WowClientType, rescan = false) {
     this.isBusy = true;
     this.enableControls = false;
+    this._cdRef.detectChanges();
 
     console.log("Load-addons", clientType);
 
-    from(this.addonService.getAddons(clientType, rescan)).subscribe({
-      next: (addons) => {
-        this.isBusy = false;
-        this.enableControls = true;
-        this._displayAddonsSrc.next(this.formatAddons(addons));
-        this.setPageContextText();
-        this._cdRef.detectChanges();
-        this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
-      },
-      error: (err) => {
-        console.error(err);
-        this.isBusy = false;
-        this.enableControls = true;
-      },
-    });
+    try {
+      const addons = await this.addonService.getAddons(clientType, rescan);
+      this.isBusy = false;
+      this.enableControls = this.calculateControlState();
+      this._displayAddonsSrc.next(this.formatAddons(addons));
+      this.setPageContextText();
+      this._cdRef.detectChanges();
+      await this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
+    } catch (e) {
+      console.error(e);
+      this.isBusy = false;
+      this.enableControls = this.calculateControlState();
+    } finally {
+      this._cdRef.detectChanges();
+    }
   }
 
   private formatAddons(addons: Addon[]): AddonViewModel[] {
@@ -705,7 +748,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const listItem = new AddonViewModel(addon);
 
     if (!listItem.addon.installedVersion) {
-      listItem.addon.installedVersion = "None";
+      listItem.addon.installedVersion = "";
     }
 
     return listItem;
@@ -742,10 +785,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
-    let listItems: AddonViewModel[] = [].concat(this.sortedListItems);
+    let listItems: AddonViewModel[] = [].concat(this._displayAddonsSrc.value);
     const listItemIdx = listItems.findIndex((li) => li.addon.id === evt.addon.id);
     const listItem = this.createAddonListItem(evt.addon);
-    listItem.isInstalling = [AddonInstallState.Installing, AddonInstallState.Downloading].includes(evt.installState);
+    listItem.isInstalling = [
+      AddonInstallState.Installing,
+      AddonInstallState.Downloading,
+      AddonInstallState.BackingUp,
+    ].includes(evt.installState);
     listItem.stateTextTranslationKey = this.getInstallStateTextTranslationKey(evt.installState);
     listItem.installProgress = evt.progress;
     listItem.installState = evt.installState;
@@ -786,7 +833,29 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onDataSourceChange = (sortedListItems: AddonViewModel[]) => {
     this.sortedListItems = sortedListItems;
-    this.enableUpdateAll = this.sortedListItems.some((li) => !li.isIgnored && (li.needsInstall || li.needsUpdate));
+    this.enableUpdateAll = this.sortedListItems.some(
+      (li) => !li.isIgnored && !li.isInstalling && (li.needsInstall || li.needsUpdate)
+    );
+    this.enableControls = this.calculateControlState();
     this.setPageContextText();
   };
+
+  private showErrorMessage(title: string, message: string) {
+    const dialogRef = this._dialog.open(AlertDialogComponent, {
+      minWidth: 250,
+      data: {
+        title,
+        message,
+      },
+    });
+    dialogRef.afterClosed().subscribe();
+  }
+
+  private calculateControlState(): boolean {
+    if (!this._displayAddonsSrc.value) {
+      return true;
+    }
+
+    return !this._displayAddonsSrc.value.some((item) => item.isInstalling);
+  }
 }

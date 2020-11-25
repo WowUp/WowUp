@@ -66,6 +66,6 @@ import { ReactiveFormsModule } from "@angular/forms";
     OptionsAddonSectionComponent,
   ],
   imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule, ReactiveFormsModule],
-  providers: [DatePipe, GetAddonListItemFilePropPipe],
+  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe],
 })
 export class HomeModule {}

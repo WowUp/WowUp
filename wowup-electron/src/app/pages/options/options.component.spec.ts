@@ -1,49 +1,64 @@
-import { NgZone } from "@angular/core";
-import { inject } from "@angular/core/testing";
-import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
-import { AddonService } from "../../services/addons/addon.service";
-import { AnalyticsService } from "../../services/analytics/analytics.service";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ElectronService } from "../../services/electron/electron.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { OptionsComponent } from "./options.component";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { httpLoaderFactory } from "../../app.module";
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 describe("OptionsComponent", () => {
+  let component: OptionsComponent;
+  let fixture: ComponentFixture<OptionsComponent>;
+  let electronService: ElectronService;
+  let wowUpService: WowUpService;
+  let electronServiceSpy: any;
+  let wowUpServiceSpy: any;
+
+  beforeEach(async () => {
+    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
+      getThemeLogoPath: () => "",
+    }, {
+      currentTheme: "horde ofc",
+    });
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
+      isWin : false,
+      isLinux : true,
+      isMac: false,
+    });
+
+    await TestBed.configureTestingModule({
+      declarations: [OptionsComponent],
+      imports: [HttpClientModule, TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: httpLoaderFactory,
+          deps: [HttpClient],
+        },
+        compiler: {
+          provide: TranslateCompiler,
+          useClass: TranslateMessageFormatCompiler,
+        },
+      })],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).overrideComponent(OptionsComponent, {
+      set: {
+        providers: [
+          { provide: WowUpService, useValue: wowUpServiceSpy },
+          { provide: ElectronService, useValue: electronServiceSpy },
+        ]},
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(OptionsComponent);
+    component = fixture.componentInstance;
+    wowUpService = fixture.debugElement.injector.get(WowUpService);
+    electronService = fixture.debugElement.injector.get(ElectronService);
+
+    fixture.detectChanges();
+  });
+
   it("should create", () => {
-    inject(
-      [
-        AddonService,
-        AnalyticsService,
-        WarcraftService,
-        WowUpService,
-        MatDialog,
-        NgZone,
-        ElectronService,
-        TranslateService,
-      ],
-      (
-        addonService: AddonService,
-        analyticsService: AnalyticsService,
-        warcraft: WarcraftService,
-        wowupService: WowUpService,
-        dialog: MatDialog,
-        zone: NgZone,
-        electronService: ElectronService,
-        translateService: TranslateService
-      ) => {
-        const instance = new OptionsComponent(
-          addonService,
-          analyticsService,
-          warcraft,
-          wowupService,
-          dialog,
-          zone,
-          electronService,
-          translateService
-        );
-        expect(instance).toBeTruthy();
-      }
-    );
+    expect(component).toBeTruthy();
   });
 });

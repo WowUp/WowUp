@@ -2,6 +2,11 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse}} ble automatisk oppdatert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Check for Updates...",
       "QUIT_ACTION": "Quit",
@@ -9,11 +14,10 @@
     },
     "THEME": {
       "ALLIANCE": "Alliance",
-      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "Default",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "Horde",
-      "HORDE_LIGHT": "Horde Light"
+      "GROUP_DARK": "Dark",
+      "GROUP_LIGHT": "Light",
+      "HORDE": "Horde"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
@@ -66,9 +70,16 @@
       "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} milliarder",
-      "MILLION": "{count} millioner",
-      "THOUSAND": "{count} tusen"
+      "e+0": "{count}",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} thousand",
+      "e+4": "{count} thousand",
+      "e+5": "{count} thousand",
+      "e+6": "{count} million",
+      "e+7": "{count} million",
+      "e+8": "{count} million",
+      "e+9": "{count} billion"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -76,6 +87,9 @@
         "BETA": "Beta",
         "STABLE": "Stable"
       }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laster..."
@@ -92,6 +106,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Okey"
     },
     "CONFIRM": {
@@ -106,7 +121,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
-        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wow-support channel.",
+        "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wowup-support channel.",
         "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
         "TITLE": "Addon Installation Failed"
@@ -156,12 +171,17 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Oppdater Automatisk",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Kanal",
+        "CHANNEL_SUBMENU_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorer",
+        "PROVIDER_SUBMENU_TITLE": "Providers",
         "REINSTALL_ADDON_BUTTON": "Re-Installer",
         "REMOVE_ADDON_BUTTON": "Fjern",
         "SHOW_FOLDER": "Vis Mappe",
         "STABLE_ADDON_CHANNEL": "Stable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
+        "TITLE": "Change Addon Provider?"
       },
       "CHECK_UPDATES_BUTTON": "Finn Oppdateringer",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Finn de siste oppdateringene til utvidelsene dine",
@@ -170,6 +190,7 @@
         "TITLE": "Vis Kolonner"
       },
       "FILTER_LABEL": "Filter",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
         "JOIN_DISCORD": "Chat med oss på Discord",
@@ -270,6 +291,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Nye utvidelser du installerer vil bli satt til å oppdateres automatisk",
         "AUTO_UPDATE_LABEL": "Automatisk Oppdatering",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "Mappen som inneholder {clientTypeName} klientmappe \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} filbane",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",

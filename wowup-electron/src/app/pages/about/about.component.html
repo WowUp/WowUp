@@ -4,7 +4,7 @@
     linux: electronService.isLinux
   }">
   <div class="theme-logo">
-    <img [src]="getLogoPath()" />
+    <img [src]="wowUpService.getThemeLogoPath()" />
   </div>
   <div class="about">
     <div class="header text-1">
@@ -17,6 +17,15 @@
           {{ "PAGES.ABOUT.WEBSITE_LINK_LABEL" | translate }}
         </a>
       </div>
+    </div>
+    <div class="changelog-container  header-2 text-1">
+      <h2>Attributions</h2>
+      <ul class="change-log-list">
+        <li class="changelog bg-secondary-4 border-primary">
+          <p><a appExternalLink href="https://vectorified.com/wow-alliance-icon">Wow Alliance Icon</a></p>
+          <p><a appExternalLink href="https://vectorified.com/horde-logo-vector">Horde Logo Vector</a></p>
+        </li>
+      </ul>
     </div>
     <div class="changelog-container text-1">
       <h2>

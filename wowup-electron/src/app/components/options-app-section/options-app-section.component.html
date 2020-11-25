@@ -33,9 +33,11 @@
       <mat-form-field class="">
         <mat-label>{{ "PAGES.OPTIONS.APPLICATION.THEME_LABEL" | translate }}</mat-label>
         <mat-select [(value)]="wowupService.currentTheme">
-          <mat-option *ngFor="let theme of themes" [value]="theme.class">
-            {{ theme.display | translate }}
-          </mat-option>
+          <mat-optgroup *ngFor="let themeGroup of themeGroups" [label]="themeGroup.name | translate">
+            <mat-option *ngFor="let theme of themeGroup.themes" [value]="theme.class">
+              {{ theme.display | translate }}
+            </mat-option>
+          </mat-optgroup>
         </mat-select>
       </mat-form-field>
     </div>

@@ -8,8 +8,8 @@ import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-a
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
-import { FileService } from "../files/file.service";
 import { WowUpService } from "../wowup/wowup.service";
+import { FileService } from "../files/file.service";
 
 @Injectable({
   providedIn: "root",

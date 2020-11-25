@@ -109,6 +109,10 @@ export class TukUiAddonProvider implements AddonProvider {
     return false;
   }
 
+  isValidAddonId(addonId: string): boolean {
+    return !!addonId && !isNaN(parseInt(addonId, 10));
+  }
+
   onPostInstall(addon: Addon): void {}
 
   async scan(
@@ -150,6 +154,7 @@ export class TukUiAddonProvider implements AddonProvider {
           downloadCount: Number.parseFloat(tukUiAddon.downloads),
           screenshotUrls: [tukUiAddon.screenshot_url],
           releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
+          isLoadOnDemand: false,
         };
       }
     }

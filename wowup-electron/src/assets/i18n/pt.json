@@ -1,7 +1,12 @@
 {
   "APP": {
-    "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente atualizou {count} {count, plural, =1{addon} other{addons}}.",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente atualizou {count} {count, plural, =1{Addon} other{Addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Atualizações Automáticas",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
+      "ADDON_SCAN_STARTED": "Addon scan started...",
+      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+    },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Buscar Atualizações...",
       "QUIT_ACTION": "Sair",
@@ -9,18 +14,17 @@
     },
     "THEME": {
       "ALLIANCE": "Aliança",
-      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "Padrão",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "Horda",
-      "HORDE_LIGHT": "Horde Light"
+      "GROUP_DARK": "Escuro",
+      "GROUP_LIGHT": "Claro",
+      "HORDE": "Horda"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar atualização do WowUp",
       "INSTALL_MESSAGE": "Você gostaria de reiniciar o WowUp para instalar a atualização?",
       "INSTALL_TITLE": "Atualização do WowUp Pronta",
       "NOT_AVAILABLE": "A última atualização do WowUp já está instalada",
-      "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Deseja baixar manualmente a versão portátil mais recente?\n\nVocê precisará fechar o aplicativo manualmente e copiar a nova versão.",
       "PORTABLE_DOWNLOAD_TITLE": "Download manual é necessário",
       "SNACKBAR_ACTION": "Atualizar",
       "SNACKBAR_TEXT": "Uma nova versão do WowUp está disponível",
@@ -63,12 +67,19 @@
       "YESTERDAY": "Ontem"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, one{dependência} other{dependências}}"
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{dependência necessária} other{dependências necessárias}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} {count, plural, one{bilhão} other{bilhões}}",
-      "MILLION": "{count} {count, plural, one{milhão} other{milhões}}",
-      "THOUSAND": "{count} mil"
+      "e+0": "{count}",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} mil",
+      "e+4": "{count} mil",
+      "e+5": "{count} mil",
+      "e+6": "{count} {count, plural, =1{milhão} other{milhões}}",
+      "e+7": "{count} {count, plural, =1{milhão} other{milhões}}",
+      "e+8": "{count} {count, plural, =1{milhão} other{milhões}}",
+      "e+9": "{count} {count, plural, =1{bilhão} other{bilhões}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -77,38 +88,42 @@
         "STABLE": "Estável"
       }
     },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Falha ao alterar o provedor de {addonName} para {providerName}"
+    },
     "PROGRESS_SPINNER": {
       "LOADING": "Carregando..."
     },
     "SEARCH": {
-      "NO_ADDONS": "Nenhum addon encontrado"
+      "NO_ADDONS": "Nenhum Addon encontrado"
     }
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Por {authorName}",
-      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
+      "DEPENDENCY_TEXT": "Este Addon tem {dependencyCount} {dependencyCount, plural, one{dependência necessária} other{dependências necessárias}}",
       "VIEW_IN_BROWSER_BUTTON": "Visualizar no navegador",
-      "VIEW_ON_PROVIDER_PREFIX": "View on"
+      "VIEW_ON_PROVIDER_PREFIX": "Ver em"
     },
     "ALERT": {
-      "POSITIVE_BUTTON": "Ok"
+      "ERROR_TITLE": "Erro",
+      "POSITIVE_BUTTON": "OK"
     },
     "CONFIRM": {
       "NEGATIVE_BUTTON": "Não",
       "POSITIVE_BUTTON": "Sim"
     },
     "INSTALL_FROM_URL": {
-      "ADDON_URL_INPUT_LABEL": "Addon URL",
+      "ADDON_URL_INPUT_LABEL": "URL do Addon ",
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub ou WowInterface URL",
       "CLOSE_BUTTON": "Fechar",
-      "DESCRIPTION": "Se você deseja instalar um addon diretamente de uma URL, cole-a abaixo para iniciar.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
+      "DESCRIPTION": "Se você deseja instalar um Addon diretamente de uma URL, cole-a abaixo para iniciar.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} de {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "Não foi possível conectar à API, por favor espere um pouco e tente novamente.",
-        "INSTALL_FAILED": "Algo deu errado ao tentar instalar o addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wow-support.",
-        "INVALID_URL": "O valor fornecido não é uma URL válida. Exemplos de URLs de addon válidos são:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
-        "NO_ADDON_FOUND": "O addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o addon.",
+        "INSTALL_FAILED": "Algo deu errado ao tentar instalar o Addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wowup-support.",
+        "INVALID_URL": "O valor fornecido não é uma URL válida. Exemplos de URLs de Addon válidos são:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "O Addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o Addon.",
         "TITLE": "Instalação do Addon Falhou"
       },
       "IMPORT_BUTTON": "Importar",
@@ -152,16 +167,21 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
+        "ADDONS_SELECTED": "{count} {count, plural, =1{Addon selecionado} other{Addons selecionados}}",
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Atualização Automática",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Canal",
+        "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
+        "PROVIDER_SUBMENU_TITLE": "Provedores",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Remover",
         "SHOW_FOLDER": "Mostrar Pasta",
         "STABLE_ADDON_CHANNEL": "Estável"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Deseja alterar o provedor de Addons de {addonName} para {providerName}? Esta operação irá desinstalar seu Addon existente e substituí-lo por uma cópia do novo provedor.",
+        "TITLE": "Alterar provedor de Addons?"
       },
       "CHECK_UPDATES_BUTTON": "Verificar Atualizações",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Verificar atualizações recentes",
@@ -169,9 +189,10 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Exibir Colunas"
       },
-      "FILTER_LABEL": "Filter",
+      "FILTER_LABEL": "Filtrar",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Este Addon tem múltiplos provedores",
       "PAGE_CONTEXT_FOOTER": {
-        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{Addon} other{Addons}}",
         "JOIN_DISCORD": "Converse conosco no Discord",
         "PATREON_SUPPORT": "Ajude o WowUp no Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{resultado} other{resultados}}",
@@ -180,10 +201,10 @@
       },
       "RESCAN_FOLDERS_BUTTON": "Re-escanear pastas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Procura por Addons instalados",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Fazer um novo escaneamento irá tentar conseguir quais addons você tem instalado, mas fazer isso pode resetar a informação dos addons conhecidos.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Fazer um novo escaneamento irá tentar conseguir quais Addons você tem instalado, mas fazer isso pode resetar a informação dos Addons conhecidos.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Começar novo escaneamento?",
       "SPINNER": {
-        "GATHERING_ADDONS": "Coletando addons...",
+        "GATHERING_ADDONS": "Coletando Addons...",
         "UPDATING": "Atualizando {updateCount}/{addonCount}",
         "UPDATING_WITH_ADDON_NAME": "Atualizando {updateCount}/{addonCount}\n{clientType}: {addonName}"
       },
@@ -203,11 +224,11 @@
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Isto irá remover todas as pastas relacionadas de sua pasta do World of Warcraft.",
-        "CONFIRMATION_LESS_THAN_THREE": "Você tem certeza que quer remover os {count} addons abaixo?",
-        "CONFIRMATION_MORE_THAN_THREE": "Você tem certeza que quer remover os {count} addons selecionados?",
+        "CONFIRMATION_LESS_THAN_THREE": "Você tem certeza que quer remover os {count} Addons abaixo?",
+        "CONFIRMATION_MORE_THAN_THREE": "Você tem certeza que quer remover os {count} Addons selecionados?",
         "CONFIRMATION_ONE": "Você tem certeza que quer remover {addonName}?",
-        "DEPENDENCY_MESSAGE": "{addonName} has {dependencyCount} {dependencyCount, plural, one{dependency} other{dependencies}}. Do you want to remove them also?",
-        "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
+        "DEPENDENCY_MESSAGE": "{addonName} tem {dependencyCount} {dependencyCount, plural, one{dependência} other{dependências}}. Você deseja removê-los também?",
+        "DEPENDENCY_TITLE": "Remover dependências do Addon?",
         "TITLE": "Desinstalar {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Atualizar todos",
@@ -228,7 +249,7 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Língua Atual",
-        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Habilitar várias notificações e popups do sistema, como os de aviso de addons atualizados automaticamente.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Habilitar várias notificações e popups do sistema, como os de aviso de Addons atualizados automaticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Habilitar notificações do sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Ao fechar a janela do WowUp, minimize para a barra de menu",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Ao fechar a janela do WowUp, minimize para a bandeja do sistema.",
@@ -243,7 +264,7 @@
         "START_WITH_SYSTEM_LABEL": "Iniciar WowUp com o sistema",
         "TELEMETRY_DESCRIPTION": "Ajude a melhorar o WowUp enviando dados e/ou erros de instalação anonimamente.",
         "TELEMETRY_LABEL": "Telemetria",
-        "THEME_DESCRIPTION": "Change the color theme to whatever you like",
+        "THEME_DESCRIPTION": "Mude o tema do WowUp",
         "THEME_LABEL": "Cor do tema",
         "TITLE": "Aplicativo",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Você quer reiniciar",
@@ -270,6 +291,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Addons recém-instalados serão definidos para atualizar automáticamente por padrão",
         "AUTO_UPDATE_LABEL": "Atualização Automática",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Clear Install Location?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "A pasta \"{clientFolderName}\" que contém o {clientTypeName}",
         "CLIENT_TYPE_PATH_LABEL": "Pasta {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addon Padrão",

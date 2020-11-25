@@ -2,6 +2,11 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "애드온 탐색 완료",
+      "ADDON_SCAN_STARTED": "애드온 탐색 시작",
+      "ADDON_SCAN_UPDATE": "{count}개의 디렉토리 탐색중..."
+    },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "업데이트 확인",
       "QUIT_ACTION": "종료",
@@ -9,11 +14,10 @@
     },
     "THEME": {
       "ALLIANCE": "얼라이언스",
-      "ALLIANCE_LIGHT": "Alliance Light",
       "DEFAULT": "기본",
-      "DEFAULT_LIGHT": "Default Light",
-      "HORDE": "호드",
-      "HORDE_LIGHT": "Horde Light"
+      "GROUP_DARK": "다크모드",
+      "GROUP_LIGHT": "라이트모드",
+      "HORDE": "호드"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
@@ -23,8 +27,8 @@
       "PORTABLE_DOWNLOAD_MESSAGE": "최신 포터블 버전을 수동 다운로드하시겠습니까?\n\n앱을 수동으로 닫고 새 버전 파일로 엎어써야 합니다.",
       "PORTABLE_DOWNLOAD_TITLE": "수동 다운로드 필요",
       "SNACKBAR_ACTION": "업데이트",
-      "SNACKBAR_TEXT": "새 버전의 WowUp 설치 가능",
-      "TOOLTIP": "WowUp 업데이트가 있습니다.",
+      "SNACKBAR_TEXT": "새 버전 설치 가능",
+      "TOOLTIP": "프로그램 업데이트가 있습니다.",
       "UPDATE_ERROR": "업데이트 실패"
     }
   },
@@ -35,7 +39,7 @@
       "UNINSTALL": "삭제",
       "UNKNOWN": "",
       "UPDATE": "업데이트",
-      "UPTODATE": "최신 버전"
+      "UPTODATE": "최신"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "백업 중",
@@ -47,11 +51,11 @@
       "UPDATING": "업데이트 중..."
     },
     "CLIENT_TYPES": {
-      "BETA": "Beta",
-      "CLASSIC": "Classic",
-      "CLASSICPTR": "Classic PTR",
-      "RETAIL": "Retail",
-      "RETAILPTR": "Retail PTR"
+      "BETA": "베타",
+      "CLASSIC": "클래식",
+      "CLASSICPTR": "클래식 PTR",
+      "RETAIL": "리테일",
+      "RETAILPTR": "리테일 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -66,9 +70,16 @@
       "TOOLTIP": "{dependencyCount}개의 다른 애드온 참조"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count}b",
-      "MILLION": "{count}m",
-      "THOUSAND": "{count}k"
+      "e+0": "{simpleCount}",
+      "e+1": "{simpleCount}십",
+      "e+2": "{simpleCount}백",
+      "e+3": "{simpleCount}천",
+      "e+4": "{simpleCount}만",
+      "e+5": "{simpleCount}십만",
+      "e+6": "{simpleCount}백만",
+      "e+7": "{simpleCount}천만",
+      "e+8": "{simpleCount}억",
+      "e+9": "{simpleCount}십억"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -76,6 +87,9 @@
         "BETA": "베타",
         "STABLE": "안정"
       }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "{addonName} 애드온 제공자를 {providerName}로 변경하는 과정에서 오류가 발생했습니다"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "불러오는 중..."
@@ -92,11 +106,12 @@
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "
     },
     "ALERT": {
+      "ERROR_TITLE": "오류",
       "POSITIVE_BUTTON": "확인"
     },
     "CONFIRM": {
-      "NEGATIVE_BUTTON": "아니오",
-      "POSITIVE_BUTTON": "네"
+      "NEGATIVE_BUTTON": "취소",
+      "POSITIVE_BUTTON": "확인"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "애드온 URL 주소",
@@ -106,7 +121,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
-        "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wow-support 채널에서 도움을 요청해보세요.",
+        "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wowup-support 채널에서 도움을 요청해보세요.",
         "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "애드온을 찾을 수 없습니다. 입력하신 주소가 올바른 애드온 페이지를 가리키고 있는지 확인해주세요.\n\nGithub에서 설치할 때는, 애드온을 zip 파일로 묶은 릴리즈 태그가 존재하는 저장소인지 확인하세요.",
         "TITLE": "애드온 설치 실패"
@@ -156,12 +171,17 @@
         "ALPHA_ADDON_CHANNEL": "알파",
         "AUTO_UPDATE_ADDON_BUTTON": "자동 업데이트",
         "BETA_ADDON_CHANNEL": "베타",
-        "CHANNEL_SUBMENT_TITLE": "채널",
+        "CHANNEL_SUBMENU_TITLE": "채널",
         "IGNORE_ADDON_BUTTON": "관리제외",
+        "PROVIDER_SUBMENU_TITLE": "제공자",
         "REINSTALL_ADDON_BUTTON": "재설치",
         "REMOVE_ADDON_BUTTON": "삭제",
         "SHOW_FOLDER": "디렉토리 보기",
         "STABLE_ADDON_CHANNEL": "안정"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "{addonName} 애드온의 제공자를 {providerName}로 변경하시겠습니까? 애드온이 먼저 삭제된 후, 새 제공자의 버전으로 다시 설치됩니다",
+        "TITLE": "애드온 제공자를 변경할까요?"
       },
       "CHECK_UPDATES_BUTTON": "업데이트 체크",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "최신 애드온 업데이트를 체크",
@@ -170,6 +190,7 @@
         "TITLE": "컬럼 보기"
       },
       "FILTER_LABEL": "필터",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "복수의 제공자가 존재합니다",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",
         "JOIN_DISCORD": "디스코드 입장",
@@ -270,6 +291,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "새로 설치되는 애드온의 자동업데이트 옵션을 활성화합니다.",
         "AUTO_UPDATE_LABEL": "자동 업데이트",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "{clientName}의 설치 위치 정보를 삭제할까요?\n이 클라이언트의 저장된 애드온 정보는 모두 사라지지만 애드온 디렉토리는 삭제되지 않습니다.",
+          "TITLE": "설치 위치 정보 초기화"
+        },
         "CLIENT_TYPE_INPUT_HINT": "\"{clientFolderName}\" 디렉토리를 포함하는 위치",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 설치 위치",
         "DEFAULT_ADDON_CHANNEL_LABEL": "기본 애드온 채널",

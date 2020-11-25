@@ -2,18 +2,22 @@
   "APP": {
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Escaneo de addons completado.",
+      "ADDON_SCAN_STARTED": "Iniciando escaneo de addons...",
+      "ADDON_SCAN_UPDATE": "Escaneando {count} carpetas..."
+    },
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Buscar Actualizaciones...",
+      "CHECK_UPDATE": "Buscar Actualizaciones de WowUp",
       "QUIT_ACTION": "Salir",
       "SHOW_ACTION": "Mostrar"
     },
     "THEME": {
       "ALLIANCE": "Alianza",
-      "ALLIANCE_LIGHT": "Alianza Claro",
-      "DEFAULT": "Predeterminado",
-      "DEFAULT_LIGHT": "Predeterminado Claro",
-      "HORDE": "Horda",
-      "HORDE_LIGHT": "Horda Claro"
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Oscuro",
+      "GROUP_LIGHT": "Claro",
+      "HORDE": "Horda"
     },
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar actualización de WowUp",
@@ -38,7 +42,7 @@
       "UPTODATE": "Actualizado"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Copia de seguridad",
+      "BACKINGUP": "Respaldando",
       "COMPLETE": "Instalado",
       "DOWNLOADING": "Descargando",
       "INSTALLING": "Instalando",
@@ -66,9 +70,16 @@
       "TOOLTIP": "{dependencyCount} {dependencyCount, plural, one{dependencia requerida} other{dependencias requeridas}}"
     },
     "DOWNLOAD_COUNT": {
-      "BILLION": "{count} mil millones",
-      "MILLION": "{count} {count, plural, =1{millón} other{millones}}",
-      "THOUSAND": "{count} mil"
+      "e+0": "{count}",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} mil",
+      "e+4": "{count} mil",
+      "e+5": "{count} mil",
+      "e+6": "{count} {count, plural, =1{millón} other{millones}}",
+      "e+7": "{count} millones",
+      "e+8": "{count} millones",
+      "e+9": "{count} mil millones"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -76,6 +87,9 @@
         "BETA": "Beta",
         "STABLE": "Estable"
       }
+    },
+    "ERRORS": {
+      "CHANGE_PROVIDER_ERROR": "Error al cambiar el proveedor del addon {addonName} a {providerName}"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Cargando..."
@@ -92,6 +106,7 @@
       "VIEW_ON_PROVIDER_PREFIX": "Ver en"
     },
     "ALERT": {
+      "ERROR_TITLE": "Error",
       "POSITIVE_BUTTON": "Aceptar"
     },
     "CONFIRM": {
@@ -106,7 +121,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{descarga} other{descargas}} en {provider}",
       "ERROR": {
         "FAILED_TO_CONNECT": "No se pudo conectar con la API. Por favor, espere un momento y vuelva a intentarlo.",
-        "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #wow-support.",
+        "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #wowup-support.",
         "INVALID_URL": "El valor introducido no es una URL válida. Ejemplos de URLs válidas:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "No se encontró el addon, asegúrese de que la URL apunta a la página correcta.\n\nSi está instalando desde GitHub, asegúrese de que el repositorio tiene una release tag con un archivo zip conteniendo el addon.",
         "TITLE": "Falló la Instalación del Addon"
@@ -156,12 +171,17 @@
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Actualización automática",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENT_TITLE": "Canal",
+        "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
+        "PROVIDER_SUBMENU_TITLE": "Proveedor",
         "REINSTALL_ADDON_BUTTON": "Reinstalar",
         "REMOVE_ADDON_BUTTON": "Eliminar",
         "SHOW_FOLDER": "Mostrar Carpeta",
         "STABLE_ADDON_CHANNEL": "Estable"
+      },
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "¿Quiere cambiar el proveedor del addon {addonName} a {providerName}? Esta operación desinstalará el addon existente y lo reemplazará con la versión disponible en el nuevo proveedor.",
+        "TITLE": "¿Cambiar Proveedor del Addon?"
       },
       "CHECK_UPDATES_BUTTON": "Buscar Actualizaciones",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons",
@@ -170,6 +190,7 @@
         "TITLE": "Mostrar Columna"
       },
       "FILTER_LABEL": "Filtro",
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon está disponible en varios proveedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Charle con nosotros en Discord",
@@ -211,7 +232,7 @@
         "TITLE": "¿Desinstalar {count, plural, =1{Addon} other{Addons}}?"
       },
       "UPDATE_ALL_BUTTON": "Actualizar Todo",
-      "UPDATE_ALL_BUTTON_TOOLTIP": "Actualizar todos los addons para este cliente",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Actualiza todos los addons para este cliente",
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Actualizar Todos los Clientes",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Actualizar Retail/Classic"
@@ -270,6 +291,10 @@
       "WOW": {
         "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada",
         "AUTO_UPDATE_LABEL": "Actualización automática",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "¿Quiere borrar la ruta de instalación de la versión {clientName}? Esto eliminará toda la información sobre los addons almacenada para este cliente de WoW.\n\nLas carpetas de los addons no serán eliminadas.",
+          "TITLE": "¿Borrar la Ruta de Instalación?"
+        },
         "CLIENT_TYPE_INPUT_HINT": "La carpeta que contiene la versión {clientTypeName} del cliente de World of Warcraft \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Ruta de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de Addons Predeterminado",

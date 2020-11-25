@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import * as _ from "lodash";
-import { ColumnState } from "app/models/wowup/column-state";
+import { ColumnState } from "../../models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
 import { existsSync } from "fs";
@@ -31,6 +31,11 @@ import {
   CURRENT_THEME_KEY,
   DEFAULT_THEME,
   ADDON_PROVIDERS_KEY,
+  HORDE_THEME,
+  HORDE_LIGHT_THEME,
+  ALLIANCE_THEME,
+  ALLIANCE_LIGHT_THEME,
+  DEFAULT_LIGHT_THEME,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -167,7 +172,7 @@ export class WowUpService {
   }
 
   public get currentTheme() {
-    return this._preferenceStorageService.get(CURRENT_THEME_KEY);
+    return this._preferenceStorageService.get(CURRENT_THEME_KEY) || DEFAULT_THEME;
   }
 
   public set currentTheme(value: string) {
@@ -368,6 +373,24 @@ export class WowUpService {
 
   public async installUpdate() {
     return await this._electronService.invoke(APP_UPDATE_INSTALL);
+  }
+
+  public getThemeLogoPath() {
+    switch (this.currentTheme) {
+      case HORDE_THEME:
+        return "assets/images/horde-1.png";
+      case HORDE_LIGHT_THEME:
+        return "assets/images/horde-dark-1.png";
+      case ALLIANCE_THEME:
+        return "assets/images/alliance-1.png";
+      case ALLIANCE_LIGHT_THEME:
+        return "assets/images/alliance-dark-1.png";
+      case DEFAULT_LIGHT_THEME:
+        return "assets/images/wowup-dark-1.png";
+      case DEFAULT_THEME:
+      default:
+        return "assets/images/wowup-white-1.png";
+    }
   }
 
   private setDefaultPreference(key: string, defaultValue: any) {

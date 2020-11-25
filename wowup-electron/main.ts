@@ -97,7 +97,7 @@ function createWindow(): BrowserWindow {
     title: "WowUp",
     titleBarStyle: "hidden",
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      // preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
       allowRunningInsecureContent: argv.serve ? true : false,
       webSecurity: false,
@@ -297,7 +297,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         submenu: [
           { role: "reload" },
           { role: "forceReload" },
-          { role: "toggleDevTools" },
+          { role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
           { type: "separator" },
           { role: "resetZoom" },
           { role: "zoomIn", accelerator: "CommandOrControl+=" },
@@ -313,6 +313,7 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
         label: "View",
         submenu: [
           { role: "resetZoom" },
+          { role: "toggleDevTools" },
           { role: "zoomIn", accelerator: "CommandOrControl+=" },
           { role: "zoomOut" },
           { type: "separator" },

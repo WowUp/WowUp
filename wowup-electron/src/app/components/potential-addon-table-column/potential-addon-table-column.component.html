@@ -1,7 +1,8 @@
 <div class="addon-column row align-items-center">
   <div class="thumbnail-container bg-secondary-3">
-    <div *ngIf="hasThumbnail === true" class="addon-logo-container "
-      [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"></div>
+    <div *ngIf="hasThumbnail === true" class="addon-logo-container ">
+      <img [src]="addon.thumbnailUrl" loading="lazy" />
+    </div>
     <div *ngIf="hasThumbnail === false" class="addon-logo-container">
       <div class="addon-logo-letter text-3">
         {{ thumbnailLetter }}

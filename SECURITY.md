@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Currently the only version available is being supported. Once we have newer once this will be updated.
+Currently the only version available is being supported. Once we've released newer versions, this will be updated.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -10,4 +10,4 @@ Currently the only version available is being supported. Once we have newer once
 
 ## Reporting a Vulnerability
 
-If you find a security issue, please create an issue and we will get to ASAP.
+If you find a security issue, please create an issue and we will get to it ASAP.

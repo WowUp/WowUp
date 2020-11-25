@@ -28,9 +28,9 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { PotentialAddonViewDetailsEvent } from "app/components/potential-addon-table-column/potential-addon-table-column.component";
+import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
 import * as SearchResults from "../../utils/search-result.utils";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-get-addons",
