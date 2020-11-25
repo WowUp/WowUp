@@ -5,6 +5,7 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
+import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -65,6 +66,10 @@ export class AddonViewModel {
   constructor(addon?: Addon) {
     this.addon = addon;
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
+  }
+
+  public isUnMatched() {
+    return this.addon.providerName === ADDON_PROVIDER_UNKNOWN;
   }
 
   public clone() {

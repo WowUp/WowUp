@@ -748,7 +748,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const listItem = new AddonViewModel(addon);
 
     if (!listItem.addon.installedVersion) {
-      listItem.addon.installedVersion = "None";
+      listItem.addon.installedVersion = "";
     }
 
     return listItem;

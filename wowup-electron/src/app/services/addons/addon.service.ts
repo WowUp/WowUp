@@ -6,6 +6,7 @@ import { Toc } from "../../models/wowup/toc";
 import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_TUKUI,
+  ADDON_PROVIDER_UNKNOWN,
   ADDON_PROVIDER_WOWINTERFACE,
   ERROR_ADDON_ALREADY_INSTALLED,
 } from "../../../common/constants";
@@ -978,7 +979,7 @@ export class AddonService {
       author: addonFolder.toc?.author || "",
       downloadUrl: "",
       externalUrl: "",
-      providerName: "Unknown",
+      providerName: ADDON_PROVIDER_UNKNOWN,
       channelType: this._wowUpService.getDefaultAddonChannel(clientType),
       isIgnored: true,
       autoUpdateEnabled: false,

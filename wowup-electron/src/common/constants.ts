@@ -1,6 +1,7 @@
 export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
 export const ADDON_PROVIDER_CURSEFORGE = "Curse";
 export const ADDON_PROVIDER_TUKUI = "TukUI";
+export const ADDON_PROVIDER_UNKNOWN = "Unknown";
 
 // IPC CHANNELS
 export const DOWNLOAD_FILE_CHANNEL = "download-file";
