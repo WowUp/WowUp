@@ -30,12 +30,13 @@ describe("OptionsAppSectionComponent", () => {
 
   beforeEach(async () => {
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
-      telemetryEnabled$: new BehaviorSubject(false).asObservable()
+      telemetryEnabled$: new BehaviorSubject(false).asObservable(),
     });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin : false,
-      isLinux : true,
+      isWin: false,
+      isLinux: true,
       isMac: false,
+      zoomFactor$: new BehaviorSubject(1.0).asObservable(),
     });
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       collapseToTray: false,
@@ -47,10 +48,7 @@ describe("OptionsAppSectionComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [OptionsAppSectionComponent],
-      providers: [
-        MatDialog,
-        ElectronService,
-      ],
+      providers: [MatDialog, ElectronService],
       imports: [
         HttpClientModule,
         MatModule,
@@ -65,19 +63,22 @@ describe("OptionsAppSectionComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-    }).overrideComponent(OptionsAppSectionComponent, {
-      set: {
-        providers: [
-          MatDialog,
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
-          { provide: FileService, useValue: fileServiceSpy },
-          { provide: AnalyticsService, useValue: analyticsServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(OptionsAppSectionComponent, {
+        set: {
+          providers: [
+            MatDialog,
+            { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+            { provide: FileService, useValue: fileServiceSpy },
+            { provide: AnalyticsService, useValue: analyticsServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(OptionsAppSectionComponent);
     component = fixture.componentInstance;
