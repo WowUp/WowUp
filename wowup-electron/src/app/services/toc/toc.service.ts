@@ -2,6 +2,9 @@ import { Injectable } from "@angular/core";
 import { Toc } from "../../models/wowup/toc";
 import { FileService } from "../files/file.service";
 
+const TOC_DEPENDENCIES = "Dependencies";
+const TOC_REQUIRED_DEPS = "RequiredDeps";
+
 @Injectable({
   providedIn: "root",
 })
@@ -9,7 +12,14 @@ export class TocService {
   constructor(private _fileService: FileService) {}
 
   public async parse(tocPath: string): Promise<Toc> {
-    const tocText = await this._fileService.readFile(tocPath);
+    let tocText = await this._fileService.readFile(tocPath);
+    tocText = tocText.trim();
+
+    const dependencies =
+      this.getValue(TOC_DEPENDENCIES, tocText) ||
+      this.getValue(TOC_REQUIRED_DEPS, tocText);
+
+    const dependencyList: string[] = this.getDependencyList(tocText);
 
     return {
       author: this.getValue("Author", tocText),
@@ -22,11 +32,25 @@ export class TocService {
       category: this.getValue("X-Category", tocText),
       localizations: this.getValue("X-Localizations", tocText),
       wowInterfaceId: this.getValue("X-WoWI-ID", tocText),
-      dependencies: this.getValue("Dependencies", tocText),
+      dependencies,
+      dependencyList,
       tukUiProjectId: this.getValue("X-Tukui-ProjectID", tocText),
       tukUiProjectFolders: this.getValue("X-Tukui-ProjectFolders", tocText),
       loadOnDemand: this.getValue("LoadOnDemand", tocText),
     };
+  }
+
+  private getDependencyList(tocText: string) {
+    const dependencies = this.getValue(TOC_DEPENDENCIES, tocText);
+    const requiredDeps = this.getValue(TOC_REQUIRED_DEPS, tocText);
+
+    const deps = []
+      .concat(...dependencies.split(","), ...requiredDeps.split(","))
+      .filter((dep) => !!dep);
+
+    console.debug("deps", deps);
+
+    return deps;
   }
 
   public async parseMetaData(tocPath: string): Promise<string[]> {

@@ -191,10 +191,18 @@ export class WarcraftService {
     }
 
     const directories = await this._fileService.listDirectories(addonFolderPath);
+
+    const dirPaths = directories.map((dir) => path.join(addonFolderPath, dir));
+    const dirStats = await this._fileService.statFiles(dirPaths);
+
+    console.debug("directories", directories);
+    console.debug("dirStats", dirStats);
+
     // const directories = files.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
     for (let i = 0; i < directories.length; i += 1) {
       const dir = directories[i];
       const addonFolder = await this.getAddonFolder(addonFolderPath, dir);
+      addonFolder.fileStats = dirStats[path.join(addonFolderPath, dir)];
       if (addonFolder) {
         addonFolders.push(addonFolder);
       }
