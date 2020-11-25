@@ -144,11 +144,6 @@
       <mat-select
         [(value)]="currentScale"
         (selectionChange)="onScaleChange($event)"
-        appUserActionTracker
-        category="Options"
-        [action]="scale"
-        [label]="selectedScale"
-        placeholder="{{ currentScale  * 100 | number:'1.0-0'  }} %"
       >
         <mat-option *ngFor="let value of allowedScales" [value]="value">
           {{ value * 100 | number:'1.0-0' }} %
