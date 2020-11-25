@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
@@ -17,6 +17,7 @@ import {
   HORDE_LIGHT_THEME,
   HORDE_THEME,
 } from "../../../common/constants";
+import { ZOOM_SCALE } from "../../utils/zoom.utils";
 
 interface LocaleListItem {
   localeId: string;
@@ -36,6 +37,8 @@ export class OptionsAppSectionComponent implements OnInit {
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage: string = "";
+  public zoomScale = ZOOM_SCALE;
+  public currentScale = 1;
   public languages: LocaleListItem[] = [
     { localeId: "en", label: "English" },
     { localeId: "de", label: "Deutsch" },
@@ -52,31 +55,29 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public themeGroups: ThemeGroup[] = [
     {
-      name: 'APP.THEME.GROUP_DARK', themes: [
+      name: "APP.THEME.GROUP_DARK",
+      themes: [
         { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_THEME },
-      ]
+      ],
     },
     {
-      name: 'APP.THEME.GROUP_LIGHT', themes: [
+      name: "APP.THEME.GROUP_LIGHT",
+      themes: [
         { display: "APP.THEME.DEFAULT", class: DEFAULT_LIGHT_THEME },
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_LIGHT_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_LIGHT_THEME },
-      ]
+      ],
     },
-  ]
-
-  public allowedScales = [-2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6].map(
-    (x) => Math.pow(1.2, x)
-  );
-  public currentScale = 1;
+  ];
 
   constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
-    private _electronService: ElectronService,
     private _translateService: TranslateService,
+    private _cdRef: ChangeDetectorRef,
+    public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService
   ) {}
@@ -86,7 +87,7 @@ export class OptionsAppSectionComponent implements OnInit {
       this.telemetryEnabled = enabled;
     });
 
-    const minimizeOnCloseKey = this._electronService.isWin
+    const minimizeOnCloseKey = this.electronService.isWin
       ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
       : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
 
@@ -101,13 +102,18 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
 
-    if (window.require("electron").remote) {
+    if (this.electronService.remote) {
       this.updateScale();
-      const currentWindow = window.require("electron").remote.getCurrentWindow();
-      currentWindow.webContents.on('zoom-changed', (event, arg) => {
-        this.updateScale()
+      const currentWindow = this.electronService.remote.getCurrentWindow();
+      currentWindow.webContents.on("zoom-changed", (event, arg) => {
+        this.updateScale();
       });
     }
+
+    this.electronService.zoomFactor$.subscribe((zoomFactor) => {
+      this.currentScale = zoomFactor;
+      this._cdRef.detectChanges();
+    });
   }
 
   onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
@@ -154,7 +160,7 @@ export class OptionsAppSectionComponent implements OnInit {
       }
 
       this.wowupService.useHardwareAcceleration = evt.checked;
-      this._electronService.restartApplication();
+      this.electronService.restartApplication();
     });
   };
 
@@ -173,19 +179,17 @@ export class OptionsAppSectionComponent implements OnInit {
       }
 
       this.wowupService.currentLanguage = evt.value;
-      this._electronService.restartApplication();
+      this.electronService.restartApplication();
     });
   };
 
-  onScaleChange = (evt: MatSelectChange) => {
-    let newScale = evt.value;
-    const currentWindow = window.require("electron").remote.getCurrentWindow();
-    currentWindow.webContents.zoomFactor = newScale;
+  public onScaleChange = (evt: MatSelectChange) => {
+    const newScale = evt.value;
+    this.electronService.setZoomFactor(newScale);
     this.currentScale = newScale;
   };
 
-  updateScale() {
-    const currentWindow = window.require("electron").remote.getCurrentWindow();
-    this.currentScale = currentWindow.webContents.zoomFactor;
-  };
+  private updateScale() {
+    this.currentScale = this.electronService.getZoomFactor();
+  }
 }

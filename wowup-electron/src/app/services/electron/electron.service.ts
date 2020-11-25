@@ -6,6 +6,7 @@ import {
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_START_DOWNLOAD,
 } from "../../../common/constants";
+import * as minimist from "minimist";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import { ipcRenderer, remote, Settings, shell, webFrame } from "electron";
@@ -17,7 +18,7 @@ import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
 import { AppOptions } from "../../../common/wowup/app-options";
-import * as minimist from "minimist";
+import { ZoomDirection, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from "../../utils/zoom.utils";
 
 @Injectable({
   providedIn: "root",
@@ -26,6 +27,7 @@ export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
   private readonly _ipcEventReceivedSrc = new BehaviorSubject("");
+  private readonly _zoomFactorChangeSrc = new BehaviorSubject(1.0);
 
   ipcRenderer: typeof ipcRenderer;
   webFrame: typeof webFrame;
@@ -37,6 +39,7 @@ export class ElectronService {
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
   public readonly ipcEventReceived$ = this._ipcEventReceivedSrc.asObservable();
+  public readonly zoomFactor$ = this._zoomFactorChangeSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -128,6 +131,8 @@ export class ElectronService {
       }
     });
 
+    this._zoomFactorChangeSrc.next(this.getZoomFactor());
+
     this.appOptions = (<any>minimist(this.remote.process.argv.slice(1), {
       boolean: ["hidden", "quit"],
     })) as AppOptions;
@@ -213,5 +218,37 @@ export class ElectronService {
 
   public async invoke(channel: string, ...args: any[]): Promise<any> {
     return await this.ipcRenderer.invoke(channel, ...args);
+  }
+
+  public applyZoom = (zoomDirection: ZoomDirection) => {
+    const zoomFactor = this.getZoomFactor();
+    const zoomInFactor = Math.min(ZOOM_MAX, zoomFactor + ZOOM_STEP);
+    const zoomOutFactor = Math.max(ZOOM_MIN, zoomFactor - ZOOM_STEP);
+
+    switch (zoomDirection) {
+      case ZoomDirection.ZoomIn:
+        this.setZoomFactor(zoomInFactor);
+        break;
+      case ZoomDirection.ZoomOut:
+        this.setZoomFactor(zoomOutFactor);
+        break;
+      case ZoomDirection.ZoomReset:
+        this.setZoomFactor(1.0);
+        break;
+      case ZoomDirection.ZoomUnknown:
+      default:
+        break;
+    }
+  };
+
+  public setZoomFactor = (zoomFactor: number) => {
+    const currentWindow = this.remote.getCurrentWindow();
+    currentWindow.webContents.zoomFactor = zoomFactor;
+    this._zoomFactorChangeSrc.next(zoomFactor);
+  };
+
+  public getZoomFactor(): number {
+    const currentWindow = this.remote.getCurrentWindow();
+    return currentWindow.webContents.zoomFactor;
   }
 }
