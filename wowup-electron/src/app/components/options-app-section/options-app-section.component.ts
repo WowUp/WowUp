@@ -101,9 +101,13 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
 
-    this.updateScale();
-    const currentWindow = window.require("electron").remote.getCurrentWindow();
-    currentWindow.webContents.on('zoom-changed', (event, arg) => {this.updateScale()});
+    if (window.require("electron").remote) {
+      this.updateScale();
+      const currentWindow = window.require("electron").remote.getCurrentWindow();
+      currentWindow.webContents.on('zoom-changed', (event, arg) => {
+        this.updateScale()
+      });
+    }
   }
 
   onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
