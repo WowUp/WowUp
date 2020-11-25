@@ -117,17 +117,15 @@ export class ElectronService {
     currentWindow?.webContents.setVisualZoomLevelLimits(1, 1);
 
     currentWindow?.webContents.on("zoom-changed", (event, zoomDirection) => {
-      let stepLogBase = 1.2;
-      let step = 0.5;
-      let scaleMin = 0.6;
-      let scaleMax = 3;
-      let scaleFactor = currentWindow.webContents.getZoomFactor();
-      let scaleBaseFactor = Math.log(scaleFactor) / Math.log(stepLogBase);
-      let scaleBaseFactorRounded = Math.round(scaleBaseFactor * 2) / 2;
-      let scaleBaseFactorNew = zoomDirection === "in" ? scaleBaseFactorRounded + step : scaleBaseFactorRounded - step;
-      let scaleFactorNew = Math.pow(stepLogBase, scaleBaseFactorNew);
-      if (scaleFactorNew >= scaleMin && scaleFactorNew <= scaleMax) {
-        currentWindow.webContents.zoomFactor = scaleFactorNew;
+      switch (zoomDirection) {
+        case "in":
+          this.setZoomFactor(this.getNextZoomInFactor());
+          break;
+        case "out":
+          this.setZoomFactor(this.getNextZoomOutFactor());
+          break;
+        default:
+          break;
       }
     });
 
@@ -221,16 +219,12 @@ export class ElectronService {
   }
 
   public applyZoom = (zoomDirection: ZoomDirection) => {
-    const zoomFactor = this.getZoomFactor();
-    const zoomInFactor = Math.min(ZOOM_MAX, zoomFactor + ZOOM_STEP);
-    const zoomOutFactor = Math.max(ZOOM_MIN, zoomFactor - ZOOM_STEP);
-
     switch (zoomDirection) {
       case ZoomDirection.ZoomIn:
-        this.setZoomFactor(zoomInFactor);
+        this.setZoomFactor(this.getNextZoomInFactor());
         break;
       case ZoomDirection.ZoomOut:
-        this.setZoomFactor(zoomOutFactor);
+        this.setZoomFactor(this.getNextZoomOutFactor());
         break;
       case ZoomDirection.ZoomReset:
         this.setZoomFactor(1.0);
@@ -250,5 +244,13 @@ export class ElectronService {
   public getZoomFactor(): number {
     const currentWindow = this.remote.getCurrentWindow();
     return currentWindow.webContents.zoomFactor;
+  }
+
+  private getNextZoomInFactor(): number {
+    return Math.min(ZOOM_MAX, this.getZoomFactor() + ZOOM_STEP);
+  }
+
+  private getNextZoomOutFactor(): number {
+    return Math.max(ZOOM_MIN, this.getZoomFactor() - ZOOM_STEP);
   }
 }
