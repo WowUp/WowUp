@@ -9,10 +9,10 @@ import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ElectronService } from "../../services";
 import { OptionsAppSectionComponent } from "./options-app-section.component";
-import { httpLoaderFactory } from "../../app.module";
 import { BehaviorSubject } from "rxjs";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../mat-module";
+import { createTranslateModule } from "../../utils/test.utils";
 
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
@@ -30,11 +30,11 @@ describe("OptionsAppSectionComponent", () => {
 
   beforeEach(async () => {
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
-      telemetryEnabled$: new BehaviorSubject(false).asObservable()
+      telemetryEnabled$: new BehaviorSubject(false).asObservable(),
     });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin : false,
-      isLinux : true,
+      isWin: false,
+      isLinux: true,
       isMac: false,
     });
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
@@ -47,37 +47,22 @@ describe("OptionsAppSectionComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [OptionsAppSectionComponent],
-      providers: [
-        MatDialog,
-        ElectronService,
-      ],
-      imports: [
-        HttpClientModule,
-        MatModule,
-        BrowserAnimationsModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: httpLoaderFactory,
-            deps: [HttpClient],
-          },
-          compiler: {
-            provide: TranslateCompiler,
-            useClass: TranslateMessageFormatCompiler,
-          },
-        })
-      ],
-    }).overrideComponent(OptionsAppSectionComponent, {
-      set: {
-        providers: [
-          MatDialog,
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
-          { provide: FileService, useValue: fileServiceSpy },
-          { provide: AnalyticsService, useValue: analyticsServiceSpy },
-        ]},
-    }).compileComponents();
+      providers: [MatDialog, ElectronService],
+      imports: [HttpClientModule, MatModule, BrowserAnimationsModule, createTranslateModule()],
+    })
+      .overrideComponent(OptionsAppSectionComponent, {
+        set: {
+          providers: [
+            MatDialog,
+            { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+            { provide: FileService, useValue: fileServiceSpy },
+            { provide: AnalyticsService, useValue: analyticsServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(OptionsAppSectionComponent);
     component = fixture.componentInstance;

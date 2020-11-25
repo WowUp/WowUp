@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AddonProviderState } from "app/models/wowup/addon-provider-state";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { AddonDependency } from "../../models/wowup/addon-dependency";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
