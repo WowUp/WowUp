@@ -22,6 +22,7 @@
           <mat-label>{{ "PAGES.GET_ADDONS.CATEGORY_LABEL" | translate }}</mat-label>
           <mat-select
             class="select"
+            disableOptionCentering
             [(value)]="selectedCategory"
             (selectionChange)="onSearch()"
             [disabled]="isBusy === true"
