@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { MatIconRegistry } from "@angular/material/icon";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { DomSanitizer } from "@angular/platform-browser";
-
 import {
   faAngleDoubleDown,
   faArrowUp,
@@ -15,6 +14,7 @@ import {
   faInfoCircle,
   faCodeBranch,
   faCaretDown,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -39,6 +39,7 @@ export class IconService {
     this.addSvg(faInfoCircle);
     this.addSvg(faCodeBranch);
     this.addSvg(faCaretDown);
+    this.addSvg(faExclamationTriangle);
   }
 
   async addSvg(icon: IconDefinition) {

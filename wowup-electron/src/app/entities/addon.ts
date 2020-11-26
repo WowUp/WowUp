@@ -24,6 +24,7 @@ export interface Addon {
   author?: string;
   installedFolders?: string;
   isIgnored: boolean;
+  isLoadOnDemand: boolean;
   autoUpdateEnabled: boolean;
   clientType: WowClientType;
   channelType: AddonChannelType;

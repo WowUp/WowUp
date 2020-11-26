@@ -507,6 +507,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickIgnoreAddons(evt: MatCheckboxChange, listItems: AddonViewModel[]) {
     listItems.forEach((listItem) => {
+      // if provider is not valid (Unknown) then ignore this
+      if (!this.addonService.isValidProviderName(listItem.addon.providerName)) {
+        return;
+      }
+
       listItem.addon.isIgnored = evt.checked;
       if (evt.checked) {
         listItem.addon.autoUpdateEnabled = false;
@@ -693,7 +698,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._displayAddonsSrc.next(this.formatAddons(addons));
       this.setPageContextText();
       this._cdRef.detectChanges();
-      this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
+      await this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
     } catch (e) {
       console.error(e);
       this.isBusy = false;
@@ -743,7 +748,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const listItem = new AddonViewModel(addon);
 
     if (!listItem.addon.installedVersion) {
-      listItem.addon.installedVersion = "None";
+      listItem.addon.installedVersion = "";
     }
 
     return listItem;
