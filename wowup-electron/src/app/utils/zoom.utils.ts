@@ -3,10 +3,7 @@ const ZOOM_IN_CODE = "Equal";
 const ZOOM_OUT_CODE = "Minus";
 const ZOOM_RESET_CODE = "Digit0";
 
-export const ZOOM_SCALE = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0];
-export const ZOOM_MIN = ZOOM_SCALE[0];
-export const ZOOM_MAX = ZOOM_SCALE[ZOOM_SCALE.length - 1];
-export const ZOOM_STEP = 0.25;
+export const ZOOM_SCALE = [0.5, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0];
 
 export enum ZoomDirection {
   ZoomIn,

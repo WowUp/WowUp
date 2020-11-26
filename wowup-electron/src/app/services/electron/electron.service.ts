@@ -18,7 +18,7 @@ import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
 import { AppOptions } from "../../../common/wowup/app-options";
-import { ZoomDirection, ZOOM_MAX, ZOOM_MIN, ZOOM_STEP } from "../../utils/zoom.utils";
+import { ZoomDirection, ZOOM_SCALE } from "../../utils/zoom.utils";
 
 @Injectable({
   providedIn: "root",
@@ -247,10 +247,22 @@ export class ElectronService {
   }
 
   private getNextZoomInFactor(): number {
-    return Math.min(ZOOM_MAX, this.getZoomFactor() + ZOOM_STEP);
+    let zoomFactor = Math.round(this.getZoomFactor() * 100) / 100;
+    let zoomIndex = ZOOM_SCALE.indexOf(zoomFactor);
+    if (zoomIndex == -1) {
+      return 1.0;
+    }
+    zoomIndex = Math.min(zoomIndex + 1, ZOOM_SCALE.length - 1);
+    return ZOOM_SCALE[zoomIndex];
   }
 
   private getNextZoomOutFactor(): number {
-    return Math.max(ZOOM_MIN, this.getZoomFactor() - ZOOM_STEP);
+    let zoomFactor = Math.round(this.getZoomFactor() * 100) / 100;
+    let zoomIndex = ZOOM_SCALE.indexOf(zoomFactor);
+    if (zoomIndex == -1) {
+      return 1.0;
+    }
+    zoomIndex = Math.max(zoomIndex - 1, 0);
+    return ZOOM_SCALE[zoomIndex];
   }
 }
