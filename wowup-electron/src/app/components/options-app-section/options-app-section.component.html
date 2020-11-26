@@ -76,10 +76,8 @@
           {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL" | translate }}
         </div>
       </div>
-      <mat-slide-toggle
-        [checked]="wowupService.enableSystemNotifications"
-        (change)="onEnableSystemNotifications($event)"
-      >
+      <mat-slide-toggle [checked]="wowupService.enableSystemNotifications"
+        (change)="onEnableSystemNotifications($event)">
       </mat-slide-toggle>
     </div>
     <small class="text-2">
@@ -108,11 +106,8 @@
         </div>
         <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.START_WITH_SYSTEM_DESCRIPTION" | translate }}</small>
       </div>
-      <mat-slide-toggle
-        [(ngModel)]="startWithSystem"
-        [(checked)]="startWithSystem"
-        (change)="onStartWithSystemChange($event)"
-      >
+      <mat-slide-toggle [(ngModel)]="startWithSystem" [(checked)]="startWithSystem"
+        (change)="onStartWithSystemChange($event)">
       </mat-slide-toggle>
     </div>
   </div>
@@ -125,13 +120,23 @@
         </div>
         <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.START_MINIMIZED_DESCRIPTION" | translate }}</small>
       </div>
-      <mat-slide-toggle
-        [(ngModel)]="startMinimized"
-        [(disabled)]="!startWithSystem"
-        [(checked)]="startMinimized"
-        (change)="onStartMinimizedChange($event)"
-      >
+      <mat-slide-toggle [(ngModel)]="startMinimized" [(disabled)]="!startWithSystem" [(checked)]="startMinimized"
+        (change)="onStartMinimizedChange($event)">
       </mat-slide-toggle>
     </div>
+  </div>
+  <!-- SCALE -->
+  <div class="row row align-items-center">
+    <div class="flex-grow-1">
+      <div> {{ "PAGES.OPTIONS.APPLICATION.SCALE_LABEL" | translate }} </div>
+      <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.SCALE_DESCRIPTION" | translate }}</small>
+    </div>
+    <mat-form-field class="light-select">
+      <mat-select [(value)]="currentScale" (selectionChange)="onScaleChange($event)">
+        <mat-option *ngFor="let value of zoomScale" [value]="value">
+          {{ value * 100 | number:'1.0-0' }} %
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 </div>

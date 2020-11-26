@@ -271,7 +271,9 @@
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Для отключения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Для включения аппаратного ускорения нужен перезапуск приложения.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение"
+        "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение",
+        "SCALE_LABEL": "Масштабирование",
+        "SCALE_DESCRIPTION": "Изменить масштаб всего приложения."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
