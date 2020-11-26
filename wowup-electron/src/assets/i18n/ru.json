@@ -239,6 +239,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
@@ -277,6 +285,7 @@
         "TITLE": "Отладка"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",
         "DEBUG": "Отладка"

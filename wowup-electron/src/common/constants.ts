@@ -39,6 +39,7 @@ export const MY_ADDONS_HIDDEN_COLUMNS_KEY = "my_addons_hidden_columns";
 export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
 export const GET_ADDONS_HIDDEN_COLUMNS_KEY = "get_addons_hidden_columns";
 export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
+export const ADDON_PROVIDERS_KEY = "addon_providers";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
 

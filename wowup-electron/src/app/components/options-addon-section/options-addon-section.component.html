@@ -1,0 +1,22 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.ADDON.TITLE" | translate }}
+  </h2>
+
+  <!-- SET LANGUAGE -->
+  <div>
+
+    <div>
+      {{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.FIELD_LABEL" | translate }}
+    </div>
+    <small class="text-2">{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.DESCRIPTION" | translate }}</small>
+    <div class="bg-secondary-3">
+      <mat-selection-list #shoes (selectionChange)="onProviderStateSelectionChange($event)">
+        <mat-list-option *ngFor="let state of addonProviderStates" [value]="state.providerName"
+          [selected]="state.enabled">
+          {{state.providerName}}
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+  </div>
+</div>

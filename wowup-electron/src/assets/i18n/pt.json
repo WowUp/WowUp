@@ -239,6 +239,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Língua Atual",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Habilitar várias notificações e popups do sistema, como os de aviso de Addons atualizados automaticamente.",
@@ -275,6 +283,7 @@
         "TITLE": "Depurar"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Aplicação",
         "CLIENTS": "Clientes",
         "DEBUG": "Debug"

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import * as _ from "lodash";
 import { ColumnState } from "../../models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
@@ -29,6 +30,7 @@ import {
   GET_ADDONS_SORT_ORDER,
   CURRENT_THEME_KEY,
   DEFAULT_THEME,
+  ADDON_PROVIDERS_KEY,
   HORDE_THEME,
   HORDE_LIGHT_THEME,
   ALLIANCE_THEME,
@@ -40,6 +42,7 @@ import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
@@ -52,10 +55,15 @@ const autoLaunch = require("auto-launch");
 })
 export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
+
   private readonly _wowupUpdateDownloadInProgressSrc = new Subject<boolean>();
+
   private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
+
   private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
+
   private readonly _wowupUpdateCheckInProgressSrc = new Subject<boolean>();
+
   private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
@@ -69,11 +77,17 @@ export class WowUpService {
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
   public readonly applicationVersion: string;
+
   public readonly isBetaBuild: boolean;
+
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
+
   public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
+
   public readonly wowupUpdateDownloadInProgress$ = this._wowupUpdateDownloadInProgressSrc.asObservable();
+
   public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
+
   public readonly wowupUpdateCheckInProgress$ = this._wowupUpdateCheckInProgressSrc.asObservable();
 
   constructor(
@@ -225,6 +239,33 @@ export class WowUpService {
     this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
   }
 
+  public getAddonProviderStates(): AddonProviderState[] {
+    return this._preferenceStorageService.getObject<AddonProviderState[]>(ADDON_PROVIDERS_KEY) || [];
+  }
+
+  public getAddonProviderState(providerName: string): AddonProviderState {
+    const preference = this.getAddonProviderStates();
+    return _.find(preference, (pref) => pref.providerName === providerName.toLowerCase());
+  }
+
+  public setAddonProviderState(state: AddonProviderState) {
+    const key = ADDON_PROVIDERS_KEY;
+    const stateCpy = { ...state };
+    stateCpy.providerName = stateCpy.providerName.toLowerCase();
+
+    const preference = this.getAddonProviderStates();
+    const stateIndex = _.findIndex(preference, (pref) => pref.providerName === stateCpy.providerName);
+
+    if (stateIndex === -1) {
+      preference.push(stateCpy);
+    } else {
+      preference[stateIndex] = stateCpy;
+    }
+
+    this._preferenceStorageService.setObject(key, preference);
+    this._preferenceChangeSrc.next({ key, value: preference.toString() });
+  }
+
   public get lastSelectedClientType(): WowClientType {
     const preference = this._preferenceStorageService.findByKey(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY);
     const value = parseInt(preference, 10);
@@ -354,7 +395,7 @@ export class WowUpService {
 
   private setDefaultPreference(key: string, defaultValue: any) {
     let pref = this._preferenceStorageService.findByKey(key);
-    if (!pref) {
+    if (pref === null || pref === undefined) {
       this._preferenceStorageService.set(key, defaultValue.toString());
     }
   }

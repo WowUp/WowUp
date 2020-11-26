@@ -239,6 +239,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",
@@ -275,6 +283,7 @@
         "TITLE": "Debuggen"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Applikation",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"
