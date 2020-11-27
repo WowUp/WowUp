@@ -23,7 +23,7 @@
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
       "INSTALL_TITLE": "Aggiornamento di WowUp pronto",
-      "NOT_AVAILABLE": "È già installata l'ultima versione di WowUp",
+      "NOT_AVAILABLE": "WowUp è aggiornato",
       "PORTABLE_DOWNLOAD_MESSAGE": "Vuoi scaricare manualmente l'ultima versione portatile?\n\nDovrai chiudere l'applicazione manualmente e sovrascrivere la nuova versione.",
       "PORTABLE_DOWNLOAD_TITLE": "Richiesto Download Manuale",
       "SNACKBAR_ACTION": "Aggiorna",
@@ -169,7 +169,7 @@
       "ADDON_CONTEXT_MENU": {
         "ADDONS_SELECTED": "{count, plural, =1{Un addon} other{{count} addons}} {count, plural, =1{selezionato} other{selezionati}}",
         "ALPHA_ADDON_CHANNEL": "Alfa",
-        "AUTO_UPDATE_ADDON_BUTTON": "Aggiornamento Automatico",
+        "AUTO_UPDATE_ADDON_BUTTON": "Aggiornamenti Automatici",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canale",
         "IGNORE_ADDON_BUTTON": "Ignora",
@@ -223,7 +223,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "Rimuovendo un addon tramite WowUp rimuoverà l'addon selezionato dal percorso Interface\nAddOns. Le impostazioni del personaggio per questo addon non verranno rimosse.",
+        "CONFIRMATION_ACTION_EXPLANATION": "Rimuovendo un addon tramite WowUp l'addon selezionato verrà rimosso dal percorso Interface\nAddOns. Le impostazioni del personaggio per questo addon non verranno rimosse.",
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}?",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
@@ -241,8 +241,8 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
+          "DESCRIPTION": "Selezionare quali providers utilizzare per cercare ed installare gli addons",
+          "FIELD_LABEL": "Abilita Providers degli Addon",
           "INPUT_LABEL": "Providers"
         },
         "TITLE": "Addons"
@@ -272,6 +272,8 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "L'abilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Abilita l'accelerazione hardware"
+        "SCALE_LABEL": "Zoom",
+        "SCALE_DESCRIPTION": "Selezionare lo zoom per l'intera app."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
@@ -289,8 +291,8 @@
         "DEBUG": "Debug"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati per l'aggiornamento automatico di default",
-        "AUTO_UPDATE_LABEL": "Aggiornamento Automatico",
+        "AUTO_UPDATE_DESCRIPTION": "I nuovi addons installati saranno impostati per l'aggiornamento automatico",
+        "AUTO_UPDATE_LABEL": "Aggiornamenti Automatici",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Sei sicuro di voler ripulire il percorso d'installazione per {clientName}? Questo rimuverà tutte le informazioni salvate dell'addon per questo client.\n\nLe tue cartelle degli addons non verranno rimosse.",
           "TITLE": "Ripulire Percorso d'Installazione?"
