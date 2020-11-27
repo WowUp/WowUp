@@ -241,11 +241,11 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
-          "INPUT_LABEL": "Providers"
+          "DESCRIPTION": "Выберите источники используемые для поиска и установки новых модификаций",
+          "FIELD_LABEL": "Включенные источники модификаций",
+          "INPUT_LABEL": "Источники"
         },
-        "TITLE": "Addons"
+        "TITLE": "Модификации"
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
@@ -285,7 +285,7 @@
         "TITLE": "Отладка"
       },
       "TABS": {
-        "ADDONS": "Addons",
+        "ADDONS": "Модификации",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",
         "DEBUG": "Отладка"
