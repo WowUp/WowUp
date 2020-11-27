@@ -4,7 +4,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService }
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 
-const LOCALES = ["de", "en", "es", "fr", "it", "ko", "nb", "pt", "ru", "zh-TW", "zh"];
+const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pt", "ru", "zh-TW", "zh"];
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -46,7 +46,10 @@ describe("LocaleTest", () => {
       `should load ${locale} locale`,
       waitForAsync(async () => {
         await translate.use(locale).toPromise();
-        expect(true).toBeTruthy();
+        const localeKey = "APP.AUTO_UPDATE_NOTIFICATION_TITLE";
+        const result = await translate.get(localeKey).toPromise();
+        console.log(`Checking locale: ${locale} -> ${result}`);
+        expect(result === localeKey).toBeFalse();
       })
     );
   }
