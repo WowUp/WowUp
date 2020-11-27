@@ -225,12 +225,14 @@
     <button *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonProviders">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
     </button>
+    <!-- SHOW FOLDER -->
     <button mat-menu-item (click)="onShowFolder(listItem.addon)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
     </button>
+    <!-- VIEW IN PROVIDER -->
     <a *ngIf="listItem.isUnMatched() === false" mat-menu-item appExternalLink [href]="listItem.addon.externalUrl">
       <div class="row align-items-center">
-        <div class="flex-grow-1">
+        <div class="flex-grow-1 mr-3">
           {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{listItem.addon.providerName}}
         </div>
         <div>
