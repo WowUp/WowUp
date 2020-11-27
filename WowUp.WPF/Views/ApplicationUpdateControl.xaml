@@ -40,16 +40,13 @@
             <StackPanel HorizontalAlignment="Center" 
                             Orientation="Horizontal">
                 <TextBlock Margin="10, 0"
-                           VerticalAlignment="Center" >
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="A new version of WowUp is available! {0}">
-                            <Binding Path="LatestVersion" />
-                        </MultiBinding>
-                    </TextBlock.Text>
+                           VerticalAlignment="Center" Text="WowUp 2.0 is now available!" >
                 </TextBlock>
                 <Button x:Name="DownloadUpdateButton" 
-                        Style="{StaticResource PurpleButtonLight}"
-                        Command="{Binding DownloadUpdateCommand}">Download</Button>
+                            Style="{StaticResource PurpleButtonLight}"
+                            Command="{Binding DownloadUpdateCommand}">
+                    Download Now!
+                </Button>
             </StackPanel>
         </Border>
         <Border Visibility="{Binding ShowProgress, Converter={StaticResource BoolToVisibilty}}"

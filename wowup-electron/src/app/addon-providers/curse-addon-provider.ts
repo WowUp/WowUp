@@ -42,6 +42,7 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   public readonly name = "Curse";
+  public enabled = true;
 
   constructor(
     private _httpClient: HttpClient,
@@ -548,6 +549,7 @@ export class CurseAddonProvider implements AddonProvider {
       downloadCount: scanResult.searchResult.downloadCount,
       summary: scanResult.searchResult.summary,
       releasedAt: new Date(latestVersion.fileDate),
+      isLoadOnDemand: false
     };
   }
 }

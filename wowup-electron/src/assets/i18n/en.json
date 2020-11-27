@@ -239,6 +239,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
@@ -263,7 +271,9 @@
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Disabling hardware acceleration requires the application to restart.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Enabling hardware acceleration requires the application to restart.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration"
+        "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration",
+        "SCALE_LABEL": "Scale",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debug Data",
@@ -275,6 +285,7 @@
         "TITLE": "Debug"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"

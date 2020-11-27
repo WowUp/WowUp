@@ -239,6 +239,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Langue actuelle",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activer les fenêtres contextuelles système comme la mise à jour auto des addons.",
@@ -275,6 +283,7 @@
         "TITLE": "Déboguage"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"

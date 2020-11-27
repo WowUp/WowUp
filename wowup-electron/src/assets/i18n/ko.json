@@ -239,6 +239,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "현재 언어",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "애드온 자동업데이트 등과 같은 다양한 시스템 알림 팝업 활성화 여부",
@@ -275,6 +283,7 @@
         "TITLE": "디버그"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "애플리케이션",
         "CLIENTS": "클라이언트",
         "DEBUG": "디버그"

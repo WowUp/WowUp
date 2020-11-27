@@ -21,6 +21,7 @@ const API_URL = AppConfig.wowUpHubUrl;
 
 export class WowUpAddonProvider implements AddonProvider {
   public readonly name = "WowUp";
+  public enabled = true;
 
   constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}
 
@@ -214,6 +215,7 @@ export class WowUpAddonProvider implements AddonProvider {
       patreonFundingLink: scanResult.exactMatch.patreon_funding_link,
       customFundingLink: scanResult.exactMatch.custom_funding_link,
       githubFundingLink: scanResult.exactMatch.github_funding_link,
+      isLoadOnDemand: false,
     };
   }
 }

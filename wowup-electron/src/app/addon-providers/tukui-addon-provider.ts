@@ -23,6 +23,7 @@ export class TukUiAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[clientType: WowClientType], TukUiAddon[]>;
 
   public readonly name = "TukUI";
+  public enabled = true;
 
   constructor(
     private _httpClient: HttpClient,
@@ -153,6 +154,7 @@ export class TukUiAddonProvider implements AddonProvider {
           downloadCount: Number.parseFloat(tukUiAddon.downloads),
           screenshotUrls: [tukUiAddon.screenshot_url],
           releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
+          isLoadOnDemand: false,
         };
       }
     }

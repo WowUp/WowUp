@@ -191,10 +191,18 @@ export class WarcraftService {
     }
 
     const directories = await this._fileService.listDirectories(addonFolderPath);
+
+    const dirPaths = directories.map((dir) => path.join(addonFolderPath, dir));
+    const dirStats = await this._fileService.statFiles(dirPaths);
+
+    console.debug("directories", directories);
+    console.debug("dirStats", dirStats);
+
     // const directories = files.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
     for (let i = 0; i < directories.length; i += 1) {
       const dir = directories[i];
       const addonFolder = await this.getAddonFolder(addonFolderPath, dir);
+      addonFolder.fileStats = dirStats[path.join(addonFolderPath, dir)];
       if (addonFolder) {
         addonFolders.push(addonFolder);
       }
@@ -356,13 +364,12 @@ export class WarcraftService {
   }
 
   private decodeProducts(productDbPath: string) {
-    if (this._electronService.isLinux) {
+    if (!productDbPath || this._electronService.isLinux) {
       return [];
     }
 
-    const productDbData = FileUtils.readFileSync(productDbPath);
-
     try {
+      const productDbData = FileUtils.readFileSync(productDbPath);
       const productDb = ProductDb.decode(productDbData);
       const wowProducts: InstalledProduct[] = productDb.products
         .filter((p) => p.family === "wow")
@@ -375,7 +382,7 @@ export class WarcraftService {
       console.log("wowProducts", wowProducts);
       return wowProducts;
     } catch (e) {
-      console.error("failed to decode product db");
+      console.error(`failed to decode product db at ${productDbPath}`);
       console.error(e);
       return [];
     }

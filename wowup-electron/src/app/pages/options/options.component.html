@@ -23,6 +23,9 @@
             <button mat-list-item (click)="optionTabIndex = 2">
               {{ "PAGES.OPTIONS.TABS.DEBUG" | translate }}
             </button>
+            <button mat-list-item (click)="optionTabIndex = 3">
+              {{ "PAGES.OPTIONS.TABS.ADDONS" | translate }}
+            </button>
           </mat-action-list>
         </div>
       </div>
@@ -39,6 +42,9 @@
             </mat-tab>
             <mat-tab label="Debug">
               <app-options-debug-section></app-options-debug-section>
+            </mat-tab>
+            <mat-tab label="Addons">
+              <app-options-addon-section></app-options-addon-section>
             </mat-tab>
           </mat-tab-group>
         </div>

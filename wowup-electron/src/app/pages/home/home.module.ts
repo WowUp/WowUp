@@ -18,6 +18,7 @@ import { WowClientOptionsComponent } from "../../components/wow-client-options/w
 import { OptionsWowSectionComponent } from "../../components/options-wow-section/options-wow-section.component";
 import { OptionsAppSectionComponent } from "../../components/options-app-section/options-app-section.component";
 import { OptionsDebugSectionComponent } from "../../components/options-debug-section/options-debug-section.component";
+import { OptionsAddonSectionComponent } from "../../components/options-addon-section/options-addon-section.component";
 import { DirectiveModule } from "../../directive.module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
@@ -31,6 +32,7 @@ import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -61,8 +63,9 @@ import { HomeComponent } from "./home.component";
     OptionsWowSectionComponent,
     OptionsAppSectionComponent,
     OptionsDebugSectionComponent,
+    OptionsAddonSectionComponent,
   ],
-  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule],
+  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule, ReactiveFormsModule],
   providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe],
 })
 export class HomeModule {}

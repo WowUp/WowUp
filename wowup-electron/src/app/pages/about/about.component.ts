@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { remote } from "electron";
 import * as ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
 import { ElectronService } from "../../services";
@@ -20,7 +19,7 @@ export class AboutComponent implements OnInit {
   constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 
   ngOnInit(): void {
-    this.version = remote.app.getVersion();
+    this.electronService.getVersionNumber()
   }
 
   formatChanges(changeLog: ChangeLog): string {

@@ -1,11 +1,37 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.1",
+      "changes": [
+        "German locale updates (Glow)",
+        "View on provider link added to context menu (stevietv)",
+        "Get all the tests to run again (Linaori)",
+        "Add the ability to turn providers on and off (Linaori)",
+        "Bind all the zoom controls to the same scale (strayge)",
+        "Add the showing of unmatched addon folders to 'My Addons'"
+      ]
+    },
+    {
+      "Version": "2.0.0",
+      "changes": ["You are not prepared!"]
+    },
+    {
+      "Version": "2.0.0-rc.7",
+      "changes": [
+        "Fix a bug if Windows fails to list the drives when searching for Blizzard products",
+        "Wrap the curse filehash method to prevent hanging during scans"
+      ]
+    },
+    {
+      "Version": "2.0.0-rc.6",
+      "changes": ["Fix a bug causing the loading of the product DB to lock the app"]
+    },
+    {
       "Version": "2.0.0-rc.5",
       "changes": ["Korean locale updates (soaakim)", "Fix a bug with importing via URL and having downloads under 10"]
     },
     {
-      "Version": "2.0.0-rc.5",
+      "Version": "2.0.0-rc.4",
       "changes": [
         "German locale updates (maestroh, Glow)",
         "Italian locale updates (Bito)",

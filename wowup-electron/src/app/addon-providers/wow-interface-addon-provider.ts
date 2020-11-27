@@ -23,6 +23,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[addonId: string], AddonDetailsResponse>;
 
   public readonly name = "WowInterface";
+  public enabled = true;
 
   constructor(
     private _httpClient: HttpClient,
@@ -185,6 +186,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       screenshotUrls: response.images?.map((img) => img.imageUrl),
       downloadCount: response.downloads,
       releasedAt: new Date(response.lastUpdate),
+      isLoadOnDemand: false,
     };
   }
 

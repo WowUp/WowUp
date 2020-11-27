@@ -187,6 +187,7 @@
   </div>
 </div>
 
+<!-- ADDON CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #addonContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu"></div>
 <mat-menu #contextMenu="matMenu" class="addon-context-menu">
@@ -208,7 +209,7 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    <div class="mat-menu-item">
+    <div *ngIf="listItem.isUnMatched() === false" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.isIgnored" (change)="onClickIgnoreAddon($event, listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
@@ -218,16 +219,28 @@
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
-    <button mat-menu-item [matMenuTriggerFor]="addonChannels">
+    <button *ngIf="listItem.isUnMatched() === false" mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
     </button>
     <button *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonProviders">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
     </button>
+    <!-- SHOW FOLDER -->
     <button mat-menu-item (click)="onShowFolder(listItem.addon)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
     </button>
-    <button mat-menu-item (click)="onReInstallAddon(listItem)">
+    <!-- VIEW IN PROVIDER -->
+    <a *ngIf="listItem.isUnMatched() === false" mat-menu-item appExternalLink [href]="listItem.addon.externalUrl">
+      <div class="row align-items-center">
+        <div class="flex-grow-1 mr-3">
+          {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{listItem.addon.providerName}}
+        </div>
+        <div>
+          <mat-icon class="open-in-browser-icon" svgIcon="fas:external-link-alt"></mat-icon>
+        </div>
+      </div>
+    </a>
+    <button *ngIf="listItem.isUnMatched() === false" mat-menu-item (click)="onReInstallAddon(listItem)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
     </button>
     <mat-divider></mat-divider>
@@ -260,6 +273,7 @@
   </ng-template>
 </mat-menu>
 
+<!-- MULTI ADDON CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #addonMultiContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="multiContextMenu"></div>
 <mat-menu #multiContextMenu="matMenu" class="addon-context-menu">
@@ -303,6 +317,7 @@
   </ng-template>
 </mat-menu>
 
+<!-- COLUMN SHOW/HIDE MENU -->
 <div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
 </div>

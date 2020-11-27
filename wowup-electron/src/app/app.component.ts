@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
+import { filter } from "rxjs/operators";
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
@@ -21,7 +22,7 @@ import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
-import { filter } from "rxjs/operators";
+import { getZoomDirection, ZoomDirection } from "./utils/zoom.utils";
 
 const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 
@@ -33,6 +34,12 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 })
 export class AppComponent implements OnInit, AfterViewInit {
   private _autoUpdateInterval?: number;
+
+  @HostListener("document:keydown", ["$event"])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    const zoomDirection = getZoomDirection(event);
+    this._electronService.applyZoom(zoomDirection);
+  }
 
   public get quitEnabled() {
     return this._electronService.appOptions.quit;
