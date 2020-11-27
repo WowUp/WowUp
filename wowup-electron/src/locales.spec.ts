@@ -47,7 +47,7 @@ describe("LocaleTest", () => {
       waitForAsync(async () => {
         await translate.use(locale).toPromise();
         const localeKey = "APP.AUTO_UPDATE_NOTIFICATION_TITLE";
-        const result = await translate.get(localeKey).toPromise();
+        const result: string = await translate.get(localeKey).toPromise();
         console.log(`Checking locale: ${locale} -> ${result}`);
         expect(result === localeKey).toBeFalse();
       })
