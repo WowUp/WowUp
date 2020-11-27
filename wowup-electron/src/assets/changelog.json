@@ -1,6 +1,17 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.1",
+      "changes": [
+        "German locale updates (Glow)",
+        "View on provider link added to context menu (stevietv)",
+        "Get all the tests to run again (Linaori)",
+        "Add the ability to turn providers on and off (Linaori)",
+        "Bind all the zoom controls to the same scale (strayge)",
+        "Add the showing of unmatched addon folders to 'My Addons'"
+      ]
+    },
+    {
       "Version": "2.0.0",
       "changes": ["You are not prepared!"]
     },
