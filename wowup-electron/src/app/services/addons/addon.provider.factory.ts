@@ -6,6 +6,7 @@ import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
+import { RaiderIoAddonProvider } from "../../addon-providers/raiderio-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpService } from "../wowup/wowup.service";
@@ -24,6 +25,10 @@ export class AddonProviderFactory {
     private _fileService: FileService,
     private _wowupService: WowUpService
   ) {}
+
+  public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
+    return new RaiderIoAddonProvider();
+  }
 
   public createCurseAddonProvider(): CurseAddonProvider {
     return new CurseAddonProvider(this._httpClient, this._cachingService, this._electronService);
@@ -53,6 +58,7 @@ export class AddonProviderFactory {
   public getAll(): AddonProvider[] {
     if (this._providers.length === 0) {
       this._providers = [
+        this.createRaiderIoAddonProvider(),
         this.createCurseAddonProvider(),
         this.createTukUiAddonProvider(),
         this.createWowInterfaceAddonProvider(),

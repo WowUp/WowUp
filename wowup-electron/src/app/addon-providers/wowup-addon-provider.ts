@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
-import { WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { ADDON_PROVIDER_WOWUP, WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
 import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
 import { AppConfig } from "../../environments/environment";
 import { Addon } from "../entities/addon";
@@ -20,7 +20,10 @@ import { AddonProvider } from "./addon-provider";
 const API_URL = AppConfig.wowUpHubUrl;
 
 export class WowUpAddonProvider implements AddonProvider {
-  public readonly name = "WowUp";
+  public readonly name = ADDON_PROVIDER_WOWUP;
+  public readonly forceIgnore = false;
+  public readonly allowReinstall = true;
+  public readonly allowChannelChange = false;
   public enabled = true;
 
   constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}

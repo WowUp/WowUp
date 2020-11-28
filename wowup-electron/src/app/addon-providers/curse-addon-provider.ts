@@ -9,6 +9,7 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import {
+  ADDON_PROVIDER_CURSEFORGE,
   CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
@@ -41,7 +42,10 @@ export class CurseAddonProvider implements AddonProvider {
     return this._circuitBreaker as CircuitBreaker<[clientType: () => Promise<T>], T>;
   }
 
-  public readonly name = "Curse";
+  public readonly name = ADDON_PROVIDER_CURSEFORGE;
+  public readonly forceIgnore = false;
+  public readonly allowReinstall = true;
+  public readonly allowChannelChange = true;
   public enabled = true;
 
   constructor(
