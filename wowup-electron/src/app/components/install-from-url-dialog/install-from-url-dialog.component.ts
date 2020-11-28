@@ -97,8 +97,6 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
 
     try {
       const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.selectedClientType);
-
-      console.debug(importedAddon);
       if (!importedAddon) {
         throw new Error("Addon not found");
       }

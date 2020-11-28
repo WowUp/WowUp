@@ -517,8 +517,12 @@ export class AddonService {
     return this._addonStorage.get(addonId);
   }
 
-  public async getAddonByUrl(url: URL, clientType: WowClientType) {
+  public async getAddonByUrl(url: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
     const provider = this.getAddonProvider(url);
+    if (!provider) {
+      console.warn(`No provider found for urlL: ${url}`);
+      return undefined;
+    }
 
     return await provider.searchByUrl(url, clientType);
   }
@@ -766,7 +770,7 @@ export class AddonService {
     addon.externalIds = externalIds;
   }
 
-  private reconcileUnmatchedAddons(addon: Addon) {}
+  private reconcileUnmatchedAddons(addon: Addon) { }
 
   /**
    * This should verify that a folder that did not have a match, is actually unmatched
