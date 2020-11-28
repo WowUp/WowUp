@@ -198,10 +198,14 @@ export class WarcraftService {
     console.debug("directories", directories);
     console.debug("dirStats", dirStats);
 
-    // const directories = files.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name);
     for (let i = 0; i < directories.length; i += 1) {
       const dir = directories[i];
       const addonFolder = await this.getAddonFolder(addonFolderPath, dir);
+      if (!addonFolder) {
+        console.warn(`Failed to get addonFolder, no toc found: ${dir}`);
+        continue;
+      }
+
       addonFolder.fileStats = dirStats[path.join(addonFolderPath, dir)];
       if (addonFolder) {
         addonFolders.push(addonFolder);
@@ -211,14 +215,13 @@ export class WarcraftService {
     return addonFolders;
   }
 
-  private async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder> {
+  private async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
     try {
       const dirPath = path.join(addonFolderPath, dir);
       const dirFiles = fs.readdirSync(dirPath);
-      // const dirFiles = await readdirAsync(dirPath);
       const tocFile = dirFiles.find((f) => path.extname(f) === ".toc");
       if (!tocFile) {
-        return null;
+        return undefined;
       }
 
       const tocPath = path.join(dirPath, tocFile);
