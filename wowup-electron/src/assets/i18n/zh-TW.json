@@ -1,5 +1,6 @@
 {
   "APP": {
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自動更新了 {count} 個插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自動更新",
     "STATUS_TEXT": {
@@ -239,6 +240,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "當前語言",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
@@ -246,6 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "關閉 WowUp 視窗時，最小化到選單欄。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "關閉 WowUp 視窗時，最小化到系統托盤。",
         "MINIMIZE_ON_CLOSE_LABEL": "關閉時最小化",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改預設語言需要重新啟動客戶端。",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "設定新的預設語言",
         "SET_LANGUAGE_DESCRIPTION": "選擇要使用的語言",
@@ -275,6 +286,7 @@
         "TITLE": "除錯"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "應用程式",
         "CLIENTS": "客戶端",
         "DEBUG": "除錯"

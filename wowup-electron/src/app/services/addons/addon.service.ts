@@ -185,8 +185,10 @@ export class AddonService {
         addon.clientType
       ).toPromise();
 
-      if(!dependencyAddon){
-        console.warn(`No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName} CT: ${addon.clientType}`);
+      if (!dependencyAddon) {
+        console.warn(
+          `No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName} CT: ${addon.clientType}`
+        );
         continue;
       }
 
@@ -196,10 +198,10 @@ export class AddonService {
     }
   }
 
-  public async processAutoUpdates(): Promise<number> {
+  public async processAutoUpdates(): Promise<Addon[]> {
     const autoUpdateAddons = this.getAutoUpdateEnabledAddons();
     const clientTypeGroups = _.groupBy(autoUpdateAddons, (addon) => addon.clientType);
-    let updateCt = 0;
+    const updatedAddons = [];
 
     for (let clientTypeStr in clientTypeGroups) {
       const clientType: WowClientType = parseInt(clientTypeStr, 10);
@@ -216,14 +218,14 @@ export class AddonService {
 
         try {
           await this.updateAddon(addon.id);
-          updateCt += 1;
+          updatedAddons.push(addon);
         } catch (err) {
           console.error(err);
         }
       }
     }
 
-    return updateCt;
+    return updatedAddons;
   }
 
   public canUpdateAddon(addon: Addon) {
@@ -526,7 +528,7 @@ export class AddonService {
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType).pipe(
       map((searchResult) => {
-        if(!searchResult){
+        if (!searchResult) {
           return undefined;
         }
 
@@ -945,9 +947,12 @@ export class AddonService {
     return this.getEnabledAddonProviders().find((provider) => provider.isValidAddonUri(addonUri));
   }
 
-  private getLatestFile(searchResult: AddonSearchResult, channelType: AddonChannelType): AddonSearchResultFile | undefined{
-    if(!searchResult?.files){
-      console.warn('Search result had no files', searchResult);
+  private getLatestFile(
+    searchResult: AddonSearchResult,
+    channelType: AddonChannelType
+  ): AddonSearchResultFile | undefined {
+    if (!searchResult?.files) {
+      console.warn("Search result had no files", searchResult);
       return undefined;
     }
 

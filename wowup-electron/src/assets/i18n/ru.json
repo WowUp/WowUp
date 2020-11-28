@@ -1,5 +1,6 @@
 {
   "APP": {
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "STATUS_TEXT": {
@@ -254,6 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "При закрытии окна WowUp сворачивается в область уведомлений панели задач.",
         "MINIMIZE_ON_CLOSE_LABEL": "Свернуть в трей при закрытии",
+        "SCALE_DESCRIPTION": "Изменить масштаб всего приложения.",
+        "SCALE_LABEL": "Масштабирование",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Изменение языка по умолчанию требует перезапуска приложения.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Установить новый язык по умолчанию",
         "SET_LANGUAGE_DESCRIPTION": "Выберите язык для изменения",
@@ -271,9 +274,7 @@
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Для отключения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Для включения аппаратного ускорения нужен перезапуск приложения.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение",
-        "SCALE_LABEL": "Масштабирование",
-        "SCALE_DESCRIPTION": "Изменить масштаб всего приложения."
+        "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",

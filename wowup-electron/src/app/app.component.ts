@@ -3,6 +3,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
 import { filter } from "rxjs/operators";
+import { map, join } from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
@@ -23,6 +24,9 @@ import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
 import { getZoomDirection, ZoomDirection } from "./utils/zoom.utils";
+import { Addon } from "./entities/addon";
+import { WowClientType } from "./models/warcraft/wow-client-type";
+import { AddonChannelType } from "./models/wowup/addon-channel-type";
 
 const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
 
@@ -86,10 +90,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    this._autoUpdateInterval = window.setInterval(() => {
-      this.onAutoUpdateInterval();
-      this._sessionService.autoUpdateComplete();
-    }, AUTO_UPDATE_PERIOD_MS);
+    this._autoUpdateInterval = window.setInterval(this.onAutoUpdateInterval, AUTO_UPDATE_PERIOD_MS);
   }
 
   openDialog(): void {
@@ -107,32 +108,71 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   private onAutoUpdateInterval = async () => {
     console.debug("Auto update");
-    const updateCount = await this._addonService.processAutoUpdates();
+    const updatedAddons = await this._addonService.processAutoUpdates();
 
-    if (updateCount === 0) {
+    if (updatedAddons.length === 0) {
       this.checkQuitEnabled();
       return;
     }
 
     if (this.wowUpService.enableSystemNotifications) {
-      const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
-      const translated = await this.translate
-        .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {
-          count: updateCount,
-        })
-        .toPromise();
-
-      const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
-        body: translated["APP.AUTO_UPDATE_NOTIFICATION_BODY"],
-        icon: iconPath,
-      });
-
-      notification.addEventListener("close", () => {
-        this.checkQuitEnabled();
-      });
+      // Windows notification only shows so many chars
+      if (this.getAddonNamesLength(updatedAddons) > 60) {
+        await this.showManyAddonsAutoUpdated(updatedAddons);
+      } else {
+        await this.showFewAddonsAutoUpdated(updatedAddons);
+      }
     } else {
       this.checkQuitEnabled();
     }
+
+    this._sessionService.autoUpdateComplete();
+  };
+
+  private async showManyAddonsAutoUpdated(updatedAddons: Addon[]) {
+    const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
+    const translated = await this.translate
+      .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {
+        count: updatedAddons.length,
+      })
+      .toPromise();
+
+    const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
+      body: translated["APP.AUTO_UPDATE_NOTIFICATION_BODY"],
+      icon: iconPath,
+    });
+
+    notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
+  }
+
+  private async showFewAddonsAutoUpdated(updatedAddons: Addon[]) {
+    const addonNames = map(updatedAddons, (addon) => addon.name);
+    const addonText = join(addonNames, "\r\n");
+    const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
+    const translated = await this.translate
+      .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"], {
+        addonNames: addonText,
+      })
+      .toPromise();
+
+    const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
+      body: translated["APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"],
+      icon: iconPath,
+    });
+
+    notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
+  }
+
+  private getAddonNames(addons: Addon[]) {
+    return map(addons, (addon) => addon.name);
+  }
+
+  private getAddonNamesLength(addons: Addon[]) {
+    return join(this.getAddonNames(addons), " ").length;
+  }
+
+  private onAutoUpdateNotificationClosed = () => {
+    this.checkQuitEnabled();
   };
 
   private checkQuitEnabled() {

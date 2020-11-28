@@ -1,5 +1,6 @@
 {
   "APP": {
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse}} ble automatisk oppdatert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
     "STATUS_TEXT": {
@@ -254,6 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Når WowUp-vinduet lukkes, minimer til oppgavelinjens varselområde.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukking",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
         "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",

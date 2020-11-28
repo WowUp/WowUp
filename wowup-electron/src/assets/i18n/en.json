@@ -1,5 +1,6 @@
 {
   "APP": {
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
     "STATUS_TEXT": {
@@ -254,6 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
         "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
@@ -271,9 +274,7 @@
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Disabling hardware acceleration might solve FPS issues and fix other rendering issues in this app. Changing this setting requires a restart.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Disabling hardware acceleration requires the application to restart.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Enabling hardware acceleration requires the application to restart.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration",
-        "SCALE_LABEL": "Scale",
-        "SCALE_DESCRIPTION": "Change zoom factor for entire app."
+        "USE_HARDWARE_ACCELERATION_LABEL": "Enable Hardware Acceleration"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Debug Data",

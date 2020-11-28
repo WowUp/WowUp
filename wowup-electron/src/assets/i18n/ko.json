@@ -1,5 +1,6 @@
 {
   "APP": {
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",
     "STATUS_TEXT": {
@@ -254,6 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "창을 닫으면 메뉴바로 최소화",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "창을 닫으면 시스템 트레이로 최소화",
         "MINIMIZE_ON_CLOSE_LABEL": "종료 시 최소화",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "기본 언어를 바꾸려면 애플리케이션을 다시 시작해야 합니다.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "새 기본 언어 설정",
         "SET_LANGUAGE_DESCRIPTION": "언어를 선택하세요.",

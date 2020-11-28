@@ -1,5 +1,6 @@
 {
   "APP": {
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自动更新了 {count} 个插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自动更新",
     "STATUS_TEXT": {
@@ -254,6 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "关闭 WowUp 窗口时，最小化到菜单栏。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "关闭 WowUp 窗口时，最小化到系统托盘。",
         "MINIMIZE_ON_CLOSE_LABEL": "关闭时最小化",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改默认语言需要重新启动客户端。",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "设置新的默认语言",
         "SET_LANGUAGE_DESCRIPTION": "选择要使用的语言",

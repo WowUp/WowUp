@@ -1,5 +1,6 @@
 {
   "APP": {
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente atualizou {count} {count, plural, =1{Addon} other{Addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Atualizações Automáticas",
     "STATUS_TEXT": {
@@ -254,6 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Ao fechar a janela do WowUp, minimize para a barra de menu",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Ao fechar a janela do WowUp, minimize para a bandeja do sistema.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizar ao Fechar",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Para mudar a língua padrão é necessário reiniciar a aplicação.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Definir uma nova língua padrão",
         "SET_LANGUAGE_DESCRIPTION": "Selecione uma nova língua",
