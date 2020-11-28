@@ -4,6 +4,7 @@
   "directories": {
     "output": "release/"
   },
+  "afterSign": "./electron-build/after-sign.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
@@ -55,7 +56,7 @@
     "category": "public.app-category.games",
     "target": ["default"],
     "hardenedRuntime": true,
-    "entitlements": "./mac/entitlements.plist"
+    "entitlements": "./electron-build/entitlements.mac.plist"
   },
   "linux": {
     "icon": "dist/assets/icons",

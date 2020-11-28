@@ -1,4 +1,5 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
+.env
 
 # compiled output
 /dist
@@ -15,6 +16,7 @@ src/**/*.js
 !src/karma.conf.js
 *.js.map
 *.js
+!electron-build/*.js
 
 # dependencies
 /node_modules
