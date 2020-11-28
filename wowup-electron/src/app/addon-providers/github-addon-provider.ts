@@ -1,4 +1,5 @@
 import { HttpClient } from "@angular/common/http";
+import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
 import * as _ from "lodash";
 import { forkJoin, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -22,7 +23,10 @@ const API_URL = "https://api.github.com/repos";
 const RELEASE_CONTENT_TYPES = ["application/x-zip-compressed", "application/zip"];
 
 export class GitHubAddonProvider implements AddonProvider {
-  public readonly name = "GitHub";
+  public readonly name = ADDON_PROVIDER_GITHUB;
+  public readonly forceIgnore = false;
+  public readonly allowReinstall = true;
+  public readonly allowChannelChange = false;
   public enabled = true;
 
   constructor(private _httpClient: HttpClient) {}

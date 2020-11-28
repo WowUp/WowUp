@@ -1,4 +1,5 @@
 import { HttpClient } from "@angular/common/http";
+import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import * as _ from "lodash";
 import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
@@ -22,7 +23,10 @@ const ADDON_URL = "https://www.wowinterface.com/downloads/info";
 export class WowInterfaceAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[addonId: string], AddonDetailsResponse>;
 
-  public readonly name = "WowInterface";
+  public readonly name = ADDON_PROVIDER_WOWINTERFACE;
+  public readonly forceIgnore = false;
+  public readonly allowReinstall = true;
+  public readonly allowChannelChange = false;
   public enabled = true;
 
   constructor(

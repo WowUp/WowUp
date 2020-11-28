@@ -6,6 +6,7 @@ import { AddonSearchResultDependency } from "../../models/wowup/addon-search-res
 import { Toc } from "../../models/wowup/toc";
 import {
   ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
   ADDON_PROVIDER_WOWINTERFACE,
@@ -101,6 +102,18 @@ export class AddonService {
       .subscribe(() => {
         console.debug("reconcileOrphanAddons complete");
       });
+  }
+
+  public isForceIgnore(addon: Addon) {
+    return addon.providerName === ADDON_PROVIDER_UNKNOWN || this.getProvider(addon.providerName).forceIgnore;
+  }
+
+  public canReinstall(addon: Addon) {
+    return addon.providerName !== ADDON_PROVIDER_UNKNOWN && this.getProvider(addon.providerName).allowReinstall;
+  }
+
+  public canChangeChannel(addon: Addon) {
+    return addon.providerName !== ADDON_PROVIDER_UNKNOWN && this.getProvider(addon.providerName).allowChannelChange;
   }
 
   public getAddonProviderStates(): AddonProviderState[] {
@@ -901,7 +914,7 @@ export class AddonService {
   }
 
   private getProvider(providerName: string) {
-    return this.getEnabledAddonProviders().find((provider) => provider.name === providerName);
+    return this._addonProviders.find((provider) => provider.name === providerName);
   }
 
   public async backfillAddons() {
