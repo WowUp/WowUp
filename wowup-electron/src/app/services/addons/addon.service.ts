@@ -185,6 +185,11 @@ export class AddonService {
         addon.clientType
       ).toPromise();
 
+      if(!dependencyAddon){
+        console.warn(`No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName} CT: ${addon.clientType}`);
+        continue;
+      }
+
       this._addonStorage.set(dependencyAddon.id, dependencyAddon);
 
       await this.installAddon(dependencyAddon.id);
@@ -516,11 +521,15 @@ export class AddonService {
     return await provider.searchByUrl(url, clientType);
   }
 
-  public getAddon(externalId: string, providerName: string, clientType: WowClientType) {
+  public getAddon(externalId: string, providerName: string, clientType: WowClientType): Observable<Addon | undefined> {
     const targetAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType).pipe(
       map((searchResult) => {
+        if(!searchResult){
+          return undefined;
+        }
+
         let latestFile = this.getLatestFile(searchResult, targetAddonChannel);
         if (!latestFile) {
           latestFile = searchResult.files[0];
@@ -936,7 +945,12 @@ export class AddonService {
     return this.getEnabledAddonProviders().find((provider) => provider.isValidAddonUri(addonUri));
   }
 
-  private getLatestFile(searchResult: AddonSearchResult, channelType: AddonChannelType): AddonSearchResultFile {
+  private getLatestFile(searchResult: AddonSearchResult, channelType: AddonChannelType): AddonSearchResultFile | undefined{
+    if(!searchResult?.files){
+      console.warn('Search result had no files', searchResult);
+      return undefined;
+    }
+
     let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
     files = _.orderBy(files, ["releaseDate"]).reverse();
     return _.first(files);
