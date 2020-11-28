@@ -209,19 +209,23 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    <div *ngIf="listItem.isUnMatched() === false" class="mat-menu-item">
+    <!-- IGNORE -->
+    <div *ngIf="addonService.isForceIgnore(listItem.addon) === false" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.isIgnored" (change)="onClickIgnoreAddon($event, listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
+    <!-- AUTO UPDATE -->
     <div *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
-    <button *ngIf="listItem.isUnMatched() === false" mat-menu-item [matMenuTriggerFor]="addonChannels">
+    <!-- CHANNEL SUBMENU -->
+    <button *ngIf="addonService.canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
     </button>
+    <!-- PROVIDER SUBMENU -->
     <button *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonProviders">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
     </button>
@@ -240,10 +244,12 @@
         </div>
       </div>
     </a>
-    <button *ngIf="listItem.isUnMatched() === false" mat-menu-item (click)="onReInstallAddon(listItem)">
+    <!-- REINSTALL -->
+    <button *ngIf="addonService.canReinstall(listItem.addon)" mat-menu-item (click)="onReInstallAddon(listItem)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
     </button>
     <mat-divider></mat-divider>
+    <!-- REMOVE -->
     <button mat-menu-item (click)="onRemoveAddon(listItem.addon)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}
     </button>

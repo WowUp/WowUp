@@ -1,4 +1,5 @@
 import { HttpClient } from "@angular/common/http";
+import { ADDON_PROVIDER_TUKUI } from "common/constants";
 import * as _ from "lodash";
 import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
@@ -22,7 +23,10 @@ const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
 export class TukUiAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[clientType: WowClientType], TukUiAddon[]>;
 
-  public readonly name = "TukUI";
+  public readonly name = ADDON_PROVIDER_TUKUI;
+  public readonly forceIgnore = false;
+  public readonly allowReinstall = true;
+  public readonly allowChannelChange = false;
   public enabled = true;
 
   constructor(

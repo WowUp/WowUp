@@ -8,6 +8,9 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 export interface AddonProvider {
   name: AddonProviderType;
   enabled: boolean;
+  forceIgnore: boolean;
+  allowReinstall: boolean;
+  allowChannelChange: boolean;
 
   getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]>;
 
@@ -34,4 +37,4 @@ export interface AddonProvider {
   scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void>;
 }
 
-export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "WowUp";
+export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "WowUp" | "RaiderIO";

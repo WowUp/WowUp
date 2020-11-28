@@ -14,4 +14,6 @@ export interface Toc {
   tukUiProjectFolders?: string;
   loadOnDemand?: string;
   dependencyList: string[];
+  addonProvider?: string;
+  notes?: string;
 }
