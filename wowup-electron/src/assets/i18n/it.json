@@ -246,7 +246,7 @@
           "INPUT_LABEL": "Providers"
         },
         "TITLE": "Addons"
-      },
+    },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente.",
@@ -272,9 +272,7 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "L'abilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Abilita l'accelerazione hardware"
-        "SCALE_LABEL": "Zoom",
-        "SCALE_DESCRIPTION": "Selezionare lo zoom per l'intera app."
-      },
+       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
         "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questo può essere trovato nel tuo ultimo file di log per i curiosi.",
