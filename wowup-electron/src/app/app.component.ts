@@ -110,7 +110,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     console.debug("Auto update");
     const updatedAddons = await this._addonService.processAutoUpdates();
 
-    if (updatedAddons.length === 0) {
+    if (!updatedAddons || updatedAddons.length === 0) {
       this.checkQuitEnabled();
       return;
     }
