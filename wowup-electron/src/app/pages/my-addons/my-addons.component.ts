@@ -366,6 +366,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  public closeContextMenu() {
+    this.contextMenu.closeMenu();
+  }
+
   public onUpdateAllContext(event: MouseEvent) {
     event.preventDefault();
     this.updateContextMenuPosition(event);

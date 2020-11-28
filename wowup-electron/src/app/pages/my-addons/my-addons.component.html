@@ -234,7 +234,8 @@
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
     </button>
     <!-- VIEW IN PROVIDER -->
-    <a *ngIf="listItem.isUnMatched() === false" mat-menu-item appExternalLink [href]="listItem.addon.externalUrl">
+    <a *ngIf="listItem.isUnMatched() === false" mat-menu-item appExternalLink [href]="listItem.addon.externalUrl"
+      (click)="closeContextMenu()">
       <div class="row align-items-center">
         <div class="flex-grow-1 mr-3">
           {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{listItem.addon.providerName}}
