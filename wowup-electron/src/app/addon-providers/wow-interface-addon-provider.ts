@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { ADDON_PROVIDER_WOWINTERFACE } from "common/constants";
+import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import * as _ from "lodash";
 import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
