@@ -139,13 +139,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   constructor(
-    private addonService: AddonService,
     private _sessionService: SessionService,
     private _ngZone: NgZone,
     private _dialog: MatDialog,
     private _cdRef: ChangeDetectorRef,
     private _wowUpAddonService: WowUpAddonService,
     private _translateService: TranslateService,
+    public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
     public warcraftService: WarcraftService,
