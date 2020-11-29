@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisch aktualisiert\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{Addon} other{Addons}} automatisch aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
     "STATUS_TEXT": {
@@ -242,9 +242,9 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
-          "INPUT_LABEL": "Providers"
+          "DESCRIPTION": "Wähle aus, welche Addon-Anbieter zur Suche und Installation neuer Addons genutzt werden soll",
+          "FIELD_LABEL": "Aktiviere Addon-Anbieter",
+          "INPUT_LABEL": "Anbieter"
         },
         "TITLE": "Addons"
       },
@@ -255,8 +255,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen WowUp in die Menüleiste minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters in den Benachrichtigungsbereich der Taskleiste minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schliessen",
-        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
-        "SCALE_LABEL": "Scale",
+        "SCALE_DESCRIPTION": "Ändere den Zoomfaktor für die komplette App.",
+        "SCALE_LABEL": "Skalierung",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Zum Ändern der Standardsprache muss die Anwendung neu gestartet werden.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Festlegen einer neuen Standardsprache",
         "SET_LANGUAGE_DESCRIPTION": "Wähle eine Sprache aus, in die Du wechseln möchtest",
