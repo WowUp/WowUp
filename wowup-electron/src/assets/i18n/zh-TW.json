@@ -142,6 +142,7 @@
   },
   "PAGES": {
     "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "更新記錄",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "訪問網站！"

@@ -142,6 +142,7 @@
   },
   "PAGES": {
     "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "Registro delle Modifiche",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Dai un'occhiata al sito!"
