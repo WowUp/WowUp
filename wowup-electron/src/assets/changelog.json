@@ -1,5 +1,21 @@
 {
-  "ChangeLogs": [
+  "ChangeLogs": [{
+      "Version": "2.1.0-beta.2",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "Mac app is now notarized",
+        "Auto updated addon names will show up in the notification when possible",
+        "Add support for identifying Raider.io addon updated by their own app",
+        "Add support for new TukUI api mirror",
+        "Fix some issues with bad CurseForge dependencies",
+        "Fix some locale test related issues",
+        "Fix an issue when an addon provider cannot be found for a URL",
+        "Fix an issue with the context menu not closing when clicking the addon URL",
+        "Fix an issue when scanning a folder that does not contain a toc file",
+        "Minor UI updates"
+      ]
+    },
     {
       "Version": "2.1.0-beta.1",
       "changes": [
