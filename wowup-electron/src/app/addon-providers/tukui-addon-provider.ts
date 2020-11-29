@@ -16,9 +16,11 @@ import { CachingService } from "../services/caching/caching-service";
 import { ElectronService } from "../services/electron/electron.service";
 import { FileService } from "../services/files/file.service";
 import { AddonProvider } from "./addon-provider";
+import { AppConfig } from "../../environments/environment";
 
-const API_URL = "https://www.tukui.org/api.php";
-const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
+// const API_URL = "https://www.tukui.org/api.php";
+// const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
+const WOWUP_API_URL = AppConfig.wowUpHubUrl;
 
 export class TukUiAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[clientType: WowClientType], TukUiAddon[]>;
@@ -35,7 +37,7 @@ export class TukUiAddonProvider implements AddonProvider {
     private _electronService: ElectronService,
     private _fileService: FileService
   ) {
-    this._circuitBreaker = new CircuitBreaker(this.fetchApiResults, {
+    this._circuitBreaker = new CircuitBreaker(this.fetchApiResultsWowUp, {
       resetTimeout: 60000,
     });
 
@@ -218,34 +220,48 @@ export class TukUiAddonProvider implements AddonProvider {
     }
   };
 
-  private fetchApiResults = async (clientType: WowClientType) => {
-    const query = this.getAddonsSuffix(clientType);
-    const url = new URL(API_URL);
-    url.searchParams.append(query, "all");
+  private fetchApiResultsWowUp = async (clientType: WowClientType) => {
+    const clientTypeName = this.getAddonsSuffixWowUp(clientType);
+    const url = new URL(`${WOWUP_API_URL}/tukui/addons/client/${clientTypeName}`);
 
     const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
-    if (this.isRetail(clientType)) {
-      addons.push(await this.getTukUiRetailAddon().toPromise());
-      addons.push(await this.getElvUiRetailAddon().toPromise());
-    }
+    // if (this.isRetail(clientType)) {
+    //   addons.push(await this.getTukUiRetailAddon().toPromise());
+    //   addons.push(await this.getElvUiRetailAddon().toPromise());
+    // }
+    console.debug("WowUpTukui",addons);
 
     return addons;
   };
 
-  private getTukUiRetailAddon() {
-    return this.getClientApiAddon("tukui");
-  }
+  // private fetchApiResults = async (clientType: WowClientType) => {
+  //   const query = this.getAddonsSuffix(clientType);
+  //   const url = new URL(API_URL);
+  //   url.searchParams.append(query, "all");
 
-  private getElvUiRetailAddon() {
-    return this.getClientApiAddon("elvui");
-  }
+  //   const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
+  //   if (this.isRetail(clientType)) {
+  //     addons.push(await this.getTukUiRetailAddon().toPromise());
+  //     addons.push(await this.getElvUiRetailAddon().toPromise());
+  //   }
 
-  private getClientApiAddon(addonName: string): Observable<TukUiAddon> {
-    const url = new URL(CLIENT_API_URL);
-    url.searchParams.append("ui", addonName);
+  //   return addons;
+  // };
 
-    return this._httpClient.get<TukUiAddon>(url.toString());
-  }
+  // private getTukUiRetailAddon() {
+  //   return this.getClientApiAddon("tukui");
+  // }
+
+  // private getElvUiRetailAddon() {
+  //   return this.getClientApiAddon("elvui");
+  // }
+
+  // private getClientApiAddon(addonName: string): Observable<TukUiAddon> {
+  //   const url = new URL(CLIENT_API_URL);
+  //   url.searchParams.append("ui", addonName);
+
+  //   return this._httpClient.get<TukUiAddon>(url.toString());
+  // }
 
   private isRetail(clientType: WowClientType) {
     switch (clientType) {
@@ -267,6 +283,20 @@ export class TukUiAddonProvider implements AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
         return "addons";
+      default:
+        return "";
+    }
+  }
+
+  private getAddonsSuffixWowUp(clientType: WowClientType) {
+    switch (clientType) {
+      case WowClientType.Classic:
+      case WowClientType.ClassicPtr:
+        return "classic";
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+      case WowClientType.Beta:
+        return "retail";
       default:
         return "";
     }
