@@ -224,7 +224,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "Rimuovendo un addon tramite WowUp l'addon selezionato verrà rimosso dal percorso Interface\nAddOns. Le impostazioni del personaggio per questo addon non verranno rimosse.",
+        "CONFIRMATION_ACTION_EXPLANATION": "WowUp rimuoverà l'addon selezionato dal percorso Interface\nAddOns. Le impostazioni del personaggio per questo addon non verranno rimosse.",
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}?",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
@@ -275,6 +275,8 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "L'abilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Abilita l'accelerazione hardware"
+        "SCALE_DESCRIPTION": "Modifica lo zoom per l'intera applicazione.",
+        "SCALE_LABEL": "Zoom",
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
