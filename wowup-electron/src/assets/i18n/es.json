@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Actualización automática:\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
     "STATUS_TEXT": {
@@ -142,7 +142,7 @@
   },
   "PAGES": {
     "ABOUT": {
-      "ATTRIBUTIONS_TITLE": "Attributions",
+      "ATTRIBUTIONS_TITLE": "Atribuciones",
       "CHANGE_LOG_SECTION_LABEL": "Registro de Cambios",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "¡Visita la página web!"
@@ -243,9 +243,9 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
-          "INPUT_LABEL": "Providers"
+          "DESCRIPTION": "Determina qué proveedores serán utilizados para la búsqueda e instalación de nuevos addons.",
+          "FIELD_LABEL": "Selección de proveedores de addons",
+          "INPUT_LABEL": "Proveedores"
         },
         "TITLE": "Addons"
       },
@@ -256,8 +256,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Al cerrar la ventana de WowUp, minimizarla a la barra de menú",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Al cerrar la ventana de WowUp, minimizarla a la bandeja del sistema.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizar al Cerrar",
-        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
-        "SCALE_LABEL": "Scale",
+        "SCALE_DESCRIPTION": "Cambia el nivel de zoom de la interfaz de WowUp.",
+        "SCALE_LABEL": "Escala",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiar el idioma predeterminado requiere reiniciar la aplicación.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Estableciendo un nuevo idioma predeterminado",
         "SET_LANGUAGE_DESCRIPTION": "Establece el idioma en el que se mostrará WowUp",
