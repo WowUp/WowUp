@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggioranti\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count, plural, one{un addon} other{{count} addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
     "STATUS_TEXT": {
@@ -142,7 +142,7 @@
   },
   "PAGES": {
     "ABOUT": {
-      "ATTRIBUTIONS_TITLE": "Attributions",
+      "ATTRIBUTIONS_TITLE": "Riconoscimenti",
       "CHANGE_LOG_SECTION_LABEL": "Registro delle Modifiche",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Dai un'occhiata al sito!"
@@ -210,7 +210,7 @@
       },
       "RESCAN_FOLDERS_BUTTON": "Riscansiona Cartelle",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scansiona la cartella client per gli addons installati",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Eseguire una nuova scansione verificherà quali addons sono correntemente installati; ciò resetterà le informazioni conosciute degli addons. Utilizzare questa funzione quando alcuni addons non sono riconosciuti o le versioni degli addons non sono mostrate correttamente. Questa scansione non eliminerà mai i tuoi addons installati, solo cosa WowUp sa riguardo a loro. Questa operazione può richiedere un po' di tempo.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Eseguire una nuova scansione verificherà quali addons sono correntemente installati; ciò resetterà le informazioni conosciute degli addons. Utilizzare questa funzione quando alcuni addons non sono riconosciuti o le versioni degli addons non sono mostrate correttamente. Questa operazione non eliminerà i tuoi addons installati, solo cosa WowUp sa riguardo a loro. Questa operazione può richiedere un po' di tempo.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Iniziare una nuova scansione?",
       "SPINNER": {
         "GATHERING_ADDONS": "Raccogliendo gli addons...",
@@ -232,7 +232,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Aggiornato"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "Rimuovendo un addon tramite WowUp l'addon selezionato verrà rimosso dal percorso Interface\nAddOns. Le impostazioni del personaggio per questo addon non verranno rimosse.",
+        "CONFIRMATION_ACTION_EXPLANATION": "WowUp rimuoverà l'addon selezionato dal percorso 'Interface>AddOns'. Le impostazioni del personaggio per questo addon non verranno rimosse.",
         "CONFIRMATION_LESS_THAN_THREE": "Sei sicuro di voler rimuovere {count, plural, =1{il seguente} other{i seguenti}} {count, plural, one{addon} other{{count} addons}}?",
         "CONFIRMATION_MORE_THAN_THREE": "Sei sicuro di voler rimuovere i {count} addons selezionati?",
         "CONFIRMATION_ONE": "Sei sicuro di voler rimuovere {addonName}?",
@@ -260,11 +260,11 @@
         "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Abilita notifiche di sistema",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Quando si chiude la finestra WowUp, minimizza nella barra dei menu.",
-        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Quando si chiude la finestra WowUp, minimizza nella barra di sistema.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Alla chiusura, WowUp verrà ridotto a icona nella barra dei menu.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Alla chiusura, WowUp verrà ridotto a icona nella barra delle applicazioni.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizza alla Chiusura",
-        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
-        "SCALE_LABEL": "Scale",
+        "SCALE_DESCRIPTION": "Seleziona lo zoom per l'intera app.",
+        "SCALE_LABEL": "Zoom",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiare la lingua di default richiede il riavvio dell'applicazione.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Impostare una nuova lingua di default",
         "SET_LANGUAGE_DESCRIPTION": "Scegli una lingua da impostare",
@@ -279,7 +279,7 @@
         "THEME_LABEL": "Tema Colore",
         "TITLE": "Applicazione",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vuoi riavviare?",
-        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware potrebbe risolvere i problemi di FPS e altri problemi di rendering in questa app. La modifica di questa impostazione richiede un riavvio.",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware potrebbe risolvere i problemi di FPS e altri problemi di rendering in questa app. La modifica di questa impostazione richiede il riavvio di WowUp.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "L'abilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Abilita l'accelerazione hardware"
