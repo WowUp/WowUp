@@ -783,7 +783,7 @@ export class AddonService {
     addon.externalIds = externalIds;
   }
 
-  private reconcileUnmatchedAddons(addon: Addon) { }
+  private reconcileUnmatchedAddons(addon: Addon) {}
 
   /**
    * This should verify that a folder that did not have a match, is actually unmatched
@@ -809,7 +809,7 @@ export class AddonService {
   }
 
   public insertExternalId(externalIds: AddonExternalId[], providerName: string, addonId?: string) {
-    if (!addonId) {
+    if (!addonId || providerName === ADDON_PROVIDER_RAIDERIO) {
       return;
     }
 

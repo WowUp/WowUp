@@ -192,6 +192,13 @@
         "TITLE": "Mostra Colonne"
       },
       "FILTER_LABEL": "Filtra",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Support this author",
+        "GENERIC": "Support this author on {platform}",
+        "GITHUB": "Support this author on GitHub",
+        "PATREON": "Support this author on Patreon",
+        "PAYPAL": "Support this author on PayPal"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Questo addon ha più di un provider",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",

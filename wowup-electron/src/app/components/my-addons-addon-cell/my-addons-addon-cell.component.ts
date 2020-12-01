@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import * as AddonUtils from "../../utils/addon.utils";
+import { capitalizeString } from "../../utils/string.utils";
 
 @Component({
   selector: "app-my-addons-addon-cell",
@@ -14,6 +15,8 @@ export class MyAddonsAddonCellComponent implements OnInit {
 
   @Output() onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
 
+  public readonly capitalizeString = capitalizeString;
+  
   public addonUtils = AddonUtils;
 
   constructor() {}

@@ -66,8 +66,6 @@ export class TocService {
 
     const deps = [].concat(...dependencies.split(","), ...requiredDeps.split(",")).filter((dep) => !!dep);
 
-    console.debug("deps", deps);
-
     return deps;
   }
 

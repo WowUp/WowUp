@@ -192,6 +192,13 @@
         "TITLE": "컬럼 보기"
       },
       "FILTER_LABEL": "필터",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Support this author",
+        "GENERIC": "Support this author on {platform}",
+        "GITHUB": "Support this author on GitHub",
+        "PATREON": "Support this author on Patreon",
+        "PAYPAL": "Support this author on PayPal"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "복수의 제공자가 존재합니다",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",

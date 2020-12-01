@@ -192,6 +192,13 @@
         "TITLE": "顯示列表項"
       },
       "FILTER_LABEL": "篩選",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Support this author",
+        "GENERIC": "Support this author on {platform}",
+        "GITHUB": "Support this author on GitHub",
+        "PATREON": "Support this author on Patreon",
+        "PAYPAL": "Support this author on PayPal"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多個提供方",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 個插件",

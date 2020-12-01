@@ -127,8 +127,6 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     WOWUP_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
-      log.info(WOWUP_GET_SCAN_RESULTS, filePaths);
-
       return await async.mapLimit<string, WowUpScanResult>(filePaths, 2, async (folder, callback) => {
         const scanResult = await new WowUpFolderScanner(folder).scanFolder();
 

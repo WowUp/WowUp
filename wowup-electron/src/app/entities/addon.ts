@@ -7,6 +7,11 @@ export interface AddonExternalId {
   id: string;
 }
 
+export interface AddonFundingLink {
+  platform: string;
+  url: string;
+}
+
 export interface Addon {
   id: string;
   name: string;
@@ -29,9 +34,7 @@ export interface Addon {
   clientType: WowClientType;
   channelType: AddonChannelType;
   updatedAt?: Date;
-  patreonFundingLink?: string;
-  githubFundingLink?: string;
-  customFundingLink?: string;
+  fundingLinks?: AddonFundingLink[];
   downloadCount?: number;
   summary?: string;
   screenshotUrls?: string[];

@@ -15,3 +15,7 @@ export function getSha1Hash(str: string): string {
   shasum.update(str);
   return shasum.digest("hex");
 }
+
+export function capitalizeString(str: string): string {
+  return str.charAt(0).toUpperCase() + str.toLowerCase().slice(1);
+}

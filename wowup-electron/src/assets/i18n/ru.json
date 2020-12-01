@@ -192,6 +192,13 @@
         "TITLE": "Показать колонки"
       },
       "FILTER_LABEL": "Фильтр",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Support this author",
+        "GENERIC": "Support this author on {platform}",
+        "GITHUB": "Support this author on GitHub",
+        "PATREON": "Support this author on Patreon",
+        "PAYPAL": "Support this author on PayPal"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Эта модификация имеет несколько источников",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",

@@ -8,8 +8,7 @@ import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
 import { WowGameType } from "../models/wowup-api/wow-game-type";
-import { WowUpAddonReleaseRepresentation } from "../models/wowup-api/wowup-addon-release.representation";
-import { WowUpAddonRepresentation } from "../models/wowup-api/wowup-addon.representation";
+import { WowUpAddonReleaseRepresentation, WowUpAddonRepresentation } from "../models/wowup-api/addon-representations";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
@@ -205,7 +204,7 @@ export class WowUpAddonProvider implements AddonProvider {
       clientType,
       downloadUrl: scanResult.exactMatch.matched_release.download_url,
       externalUrl: scanResult.exactMatch.repository,
-      externalId: scanResult.exactMatch.external_id,
+      externalId: scanResult.exactMatch.id.toString(),
       gameVersion: scanResult.exactMatch.matched_release.game_version,
       installedAt: new Date(),
       installedFolders: folderList,
@@ -215,9 +214,7 @@ export class WowUpAddonProvider implements AddonProvider {
       providerName: this.name,
       providerSource: scanResult.exactMatch.source,
       thumbnailUrl: scanResult.exactMatch.image_url,
-      patreonFundingLink: scanResult.exactMatch.patreon_funding_link,
-      customFundingLink: scanResult.exactMatch.custom_funding_link,
-      githubFundingLink: scanResult.exactMatch.github_funding_link,
+      fundingLinks: [...scanResult.exactMatch.fundingLinks],
       isLoadOnDemand: false,
       releasedAt: scanResult.exactMatch?.matched_release?.published_at,
     };
