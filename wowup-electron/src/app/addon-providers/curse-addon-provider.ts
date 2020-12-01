@@ -30,9 +30,9 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { AddonProvider } from "./addon-provider";
+import { AppConfig } from "environments/environment";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
-const HUB_API_URL = "https://hub.dev.wowup.io";
 
 export class CurseAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[clientType: () => Promise<any>], any>;
@@ -158,7 +158,7 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   private async getAddonsByFingerprintsW(fingerprints: number[]) {
-    const url = `${HUB_API_URL}/curseforge/addons/fingerprint`;
+    const url = `${AppConfig.wowUpHubUrl}/curseforge/addons/fingerprint`;
 
     console.log(`Wowup Fetching fingerprints`, JSON.stringify(fingerprints));
 
