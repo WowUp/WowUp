@@ -1,5 +1,16 @@
 {
-  "ChangeLogs": [{
+  "ChangeLogs": [
+    {
+      "Version": "2.1.0-beta.3",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow)",
+        "Turned on the WowUp Hub provider"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.2",
       "changes": [
         "Russian locale updates (Medok)",
