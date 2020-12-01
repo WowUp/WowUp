@@ -59,6 +59,7 @@ export class AddonProviderFactory {
     if (this._providers.length === 0) {
       this._providers = [
         this.createRaiderIoAddonProvider(),
+        this.createWowUpAddonProvider(),
         this.createCurseAddonProvider(),
         this.createTukUiAddonProvider(),
         this.createWowInterfaceAddonProvider(),

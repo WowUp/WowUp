@@ -37,4 +37,4 @@ export interface AddonProvider {
   scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void>;
 }
 
-export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "WowUp" | "RaiderIO";
+export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO";

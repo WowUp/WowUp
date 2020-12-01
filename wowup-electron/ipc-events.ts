@@ -107,7 +107,6 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     CURSE_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
-      log.info(CURSE_GET_SCAN_RESULTS, filePaths);
 
       // Scan addon folders in parallel for speed!?
       try {
@@ -116,8 +115,6 @@ export function initializeIpcHanders(window: BrowserWindow) {
 
           callback(undefined, scanResult);
         });
-
-        log.info(CURSE_GET_SCAN_RESULTS, "complete");
 
         return results;
       } catch (e) {
