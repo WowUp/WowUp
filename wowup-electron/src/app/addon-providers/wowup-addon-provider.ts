@@ -15,6 +15,7 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
 import { ElectronService } from "../services";
 import { AddonProvider } from "./addon-provider";
+import { getEnumName } from "../utils/enum.utils";
 
 const API_URL = AppConfig.wowUpHubUrl;
 
@@ -217,6 +218,7 @@ export class WowUpAddonProvider implements AddonProvider {
       fundingLinks: [...scanResult.exactMatch.fundingLinks],
       isLoadOnDemand: false,
       releasedAt: scanResult.exactMatch?.matched_release?.published_at,
+      externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
     };
   }
 }

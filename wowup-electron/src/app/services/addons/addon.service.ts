@@ -1028,7 +1028,7 @@ export class AddonService {
       downloadUrl: "",
       externalUrl: "",
       providerName: ADDON_PROVIDER_UNKNOWN,
-      channelType: this._wowUpService.getDefaultAddonChannel(clientType),
+      channelType: AddonChannelType.Stable,
       isIgnored: true,
       autoUpdateEnabled: false,
       releasedAt: new Date(),
@@ -1037,6 +1037,7 @@ export class AddonService {
       summary: "",
       screenshotUrls: [],
       isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",
+      externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
     };
   }
 

@@ -31,7 +31,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { AddonProvider } from "./addon-provider";
-import { AppConfig } from "environments/environment";
+import { AppConfig } from "../../environments/environment";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 
@@ -553,7 +553,7 @@ export class CurseAddonProvider implements AddonProvider {
       downloadCount: scanResult.searchResult.downloadCount,
       summary: scanResult.searchResult.summary,
       releasedAt: new Date(latestVersion.fileDate),
-      isLoadOnDemand: false
+      isLoadOnDemand: false,
     };
   }
 }

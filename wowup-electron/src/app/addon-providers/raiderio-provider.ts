@@ -9,6 +9,7 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonProvider } from "./addon-provider";
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
+import { getEnumName } from "../utils/enum.utils";
 
 export class RaiderIoAddonProvider implements AddonProvider {
   private readonly _scanWebsite = "https://raider.io";
@@ -104,6 +105,7 @@ export class RaiderIoAddonProvider implements AddonProvider {
         screenshotUrls: [],
         releasedAt: new Date(),
         isLoadOnDemand: rioAddonFolder.toc.loadOnDemand === "1",
+        externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
       };
     }
   }
