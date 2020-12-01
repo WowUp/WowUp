@@ -28,6 +28,14 @@
       ]
     },
     {
+      "Version": "2.0.2",
+      "changes": ["Fix an issue with a hardcoded hub URL"]
+    },
+    {
+      "Version": "2.0.1",
+      "changes": ["Use the new TukUI mirror to fix timeout issues"]
+    },
+    {
       "Version": "2.0.0",
       "changes": ["You are not prepared!"]
     },
