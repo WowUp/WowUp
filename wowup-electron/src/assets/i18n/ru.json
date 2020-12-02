@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Автоматически обновлены\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "STATUS_TEXT": {
@@ -193,11 +193,11 @@
       },
       "FILTER_LABEL": "Фильтр",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "Поддержать этого автора",
+        "GENERIC": "Поддержать этого автора на {platform}",
+        "GITHUB": "Поддержать этого автора на GitHub",
+        "PATREON": "Поддержать этого автора на Patreon",
+        "PAYPAL": "Поддержать этого автора на PayPal"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Эта модификация имеет несколько источников",
       "PAGE_CONTEXT_FOOTER": {
