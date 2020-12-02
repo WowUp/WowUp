@@ -142,7 +142,7 @@
   },
   "PAGES": {
     "ABOUT": {
-      "ATTRIBUTIONS_TITLE": "Attributions",
+      "ATTRIBUTIONS_TITLE": "Zuschreibungen",
       "CHANGE_LOG_SECTION_LABEL": "Änderungsverlauf",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Schau dir die Website an!"
@@ -193,11 +193,11 @@
       },
       "FILTER_LABEL": "Filter",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "Unterstütze den Autor",
+        "GENERIC": "Unterstütze den Autor auf {platform}",
+        "GITHUB": "Unterstütze den Autor auf GitHub",
+        "PATREON": "Unterstütze den Autor auf Patreon",
+        "PAYPAL": "Unterstütze den Autor auf PayPal"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Dieses Addon hat mehrere Anbieter",
       "PAGE_CONTEXT_FOOTER": {
@@ -221,7 +221,8 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installieren",
         "ADDON_UPDATE_BUTTON": "Aktualisieren",
-        "AUTHOR_COLUMN_HEADER": "Autor",
+        "AUTHOR_COLUMN_HEADER": "
+        ",
         "AUTO_UPDATE_ICON_TOOLTIP": "Automatisches Update aktiviert",
         "GAME_VERSION_COLUMN_HEADER": "Spielversion",
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
