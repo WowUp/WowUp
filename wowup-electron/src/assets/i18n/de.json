@@ -221,8 +221,7 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Installieren",
         "ADDON_UPDATE_BUTTON": "Aktualisieren",
-        "AUTHOR_COLUMN_HEADER": "
-        ",
+        "AUTHOR_COLUMN_HEADER": "Autor",
         "AUTO_UPDATE_ICON_TOOLTIP": "Automatisches Update aktiviert",
         "GAME_VERSION_COLUMN_HEADER": "Spielversion",
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
