@@ -3,9 +3,9 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente atualizou {count} {count, plural, =1{Addon} other{Addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Atualizações Automáticas",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "Scan de addons completo...",
+      "ADDON_SCAN_STARTED": "Scan de addons iniciado...",
+      "ADDON_SCAN_UPDATE": "Escaneando {count} pastas..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "Buscar Atualizações...",
