@@ -137,43 +137,63 @@ export class WarcraftService {
     return clients;
   }
 
-  public getProductLocation(clientType: WowClientType) {
+  public getProductLocation(clientType: WowClientType, installedProducts: Map<string, InstalledProduct>) {
     const clientFolderName = this.getClientFolderName(clientType);
-    const clientLocation = this._productsSrc.value.find((product) => product.name === clientFolderName);
+    const clientLocation = installedProducts.get(clientFolderName);
     return clientLocation?.location ?? "";
   }
 
+  public getBlizzardLocations() {
+    const decodedProducts = this.decodeProducts(this._productDbPath);
+    const dictionary = new Map<string, InstalledProduct>();
+
+    for (const product of decodedProducts) {
+      dictionary.set(product.name, product);
+    }
+
+    return dictionary;
+  }
+
   public scanProducts() {
-    const installedProducts = this.decodeProducts(this._productDbPath);
-    this._productsSrc.next(installedProducts);
+    const installedProducts: InstalledProduct[] = [];
+    const decodedProducts = this.getBlizzardLocations();
 
     const clientTypes = this.getAllClientTypes();
 
     for (const clientType of clientTypes) {
+      const clientFolderName = this.getClientFolderName(clientType);
       const clientLocation = this.getClientLocation(clientType);
-      const productLocation = this.getProductLocation(clientType);
-
-      console.log(clientLocation, productLocation);
+      const productLocation = this.getProductLocation(clientType, decodedProducts);
 
       if (!clientLocation && !productLocation) {
         continue;
       }
 
-      console.log(`clientLocation ${clientLocation}, productLocation ${productLocation}`);
       if (this.arePathsEqual(clientLocation, productLocation)) {
         continue;
       }
 
       // If the path that the user selected is valid, then move on.
       if (clientLocation && this.isClientFolder(clientType, clientLocation)) {
+        installedProducts.push({
+          clientType,
+          location: clientLocation,
+          name: clientFolderName,
+        });
         continue;
       }
 
       this.setClientLocation(clientType, productLocation);
+      installedProducts.push({
+        clientType,
+        location: productLocation,
+        name: clientFolderName,
+      });
     }
 
     this.broadcastInstalledClients().subscribe();
 
+    this._productsSrc.next(installedProducts);
     return installedProducts;
   }
 
@@ -261,6 +281,7 @@ export class WarcraftService {
       return false;
     }
 
+    console.debug("setClientLocation2");
     this.setClientLocation(clientType, relativePath);
 
     from(this.getWowClientTypes())
@@ -285,6 +306,7 @@ export class WarcraftService {
     const executableName = this.getExecutableName(clientType);
     const executablePath = path.join(relativePath, clientFolderName, executableName);
 
+    console.debug("isClientFolder", executablePath);
     return fs.existsSync(executablePath);
   }
 

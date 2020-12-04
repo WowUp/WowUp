@@ -6,16 +6,16 @@ export interface WowUpAddonFundingLinkRepresentation {
 }
 
 export interface WowUpAddonReleaseFolderRepresentation {
-    id: number;
-    folder_name: string;
-    fingerprint: string;
-    game_version: string;
-    addon_title: string;
-    addon_authors: string;
-    load_on_demand: boolean;
-    version: string;
-  }
-  
+  id: number;
+  folder_name: string;
+  fingerprint: string;
+  game_version: string;
+  addon_title: string;
+  addon_authors: string;
+  load_on_demand: boolean;
+  version: string;
+}
+
 export interface WowUpAddonReleaseRepresentation {
   id: number;
   url: string;
@@ -45,5 +45,5 @@ export interface WowUpAddonRepresentation {
   current_release?: WowUpAddonReleaseRepresentation;
   matched_release?: WowUpAddonReleaseRepresentation;
   releases?: WowUpAddonReleaseRepresentation[];
-  fundingLinks?: WowUpAddonFundingLinkRepresentation[];
+  funding_links?: WowUpAddonFundingLinkRepresentation[];
 }

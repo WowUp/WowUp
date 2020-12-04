@@ -50,6 +50,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     const warcraftProductSubscription = this._warcraftService.products$.subscribe((products) => {
       const product = products.find((p) => p.clientType === this.clientType);
       if (product) {
+        console.debug("CHANGE LOC", product.location, this.clientType);
         this.clientLocation = product.location;
         this._cdRef.detectChanges();
       }
@@ -64,6 +65,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(WowClientType, this.clientType).toUpperCase()}`;
     this.clientFolderName = this._warcraftService.getClientFolderName(this.clientType);
     this.clientLocation = this._warcraftService.getClientLocation(this.clientType);
+    console.debug("ngOnInit clientLocation", this.clientLocation, this.clientType);
   }
 
   ngOnDestroy(): void {
@@ -107,7 +109,9 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   async onSelectClientPath() {
     const selectedPath = await this.selectWowClientPath(this.clientType);
     if (selectedPath) {
+      console.debug("selectedPath", selectedPath);
       this.clientLocation = selectedPath;
+      this._cdRef.detectChanges();
     }
   }
 

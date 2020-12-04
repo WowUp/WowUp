@@ -13,9 +13,13 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
+import { WowUpGetAddonsResponse } from "../models/wowup-api/api-responses";
 import { ElectronService } from "../services";
 import { AddonProvider } from "./addon-provider";
 import { getEnumName } from "../utils/enum.utils";
+import { first, map } from "lodash";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { getGameVersion } from "../utils/addon.utils";
 
 const API_URL = AppConfig.wowUpHubUrl;
 
@@ -29,7 +33,7 @@ export class WowUpAddonProvider implements AddonProvider {
   constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
-    const url = `${API_URL}/addons`;
+    const url = new URL(`${API_URL}/addons`);
     const addons = await this._httpClient.get<WowUpAddonRepresentation[]>(url.toString()).toPromise();
 
     // TODO
@@ -37,8 +41,12 @@ export class WowUpAddonProvider implements AddonProvider {
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    // TODO
-    return [];
+    const gameType = this.getWowGameType(clientType);
+    const url = new URL(`${API_URL}/addons/featured/${gameType}`);
+    const addons = await this._httpClient.get<WowUpGetAddonsResponse>(url.toString()).toPromise();
+    console.log("WOWUP FEAT", addons);
+    const searchResults = map(addons?.addons, (addon) => this.getSearchResult(addon));
+    return searchResults;
   }
 
   async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
@@ -145,19 +153,6 @@ export class WowUpAddonProvider implements AddonProvider {
     return release.game_type === this.getWowGameType(clientType);
   }
 
-  private getWowGameType(clientType: WowClientType): string {
-    switch (clientType) {
-      case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
-        return WowGameType.Classic;
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-      case WowClientType.Beta:
-      default:
-        return WowGameType.Retail;
-    }
-  }
-
   private getAddonsByFingerprints(fingerprints: string[]): Observable<GetAddonsByFingerprintResponse> {
     const url = `${API_URL}/addons/fingerprint`;
 
@@ -181,6 +176,37 @@ export class WowUpAddonProvider implements AddonProvider {
 
     return scanResults;
   };
+
+  private getSearchResult(representation: WowUpAddonRepresentation): AddonSearchResult {
+    const release = first(representation.releases);
+    const searchResultFiles: AddonSearchResultFile[] = [];
+    if (release) {
+      searchResultFiles.push({
+        channelType: AddonChannelType.Stable,
+        downloadUrl: release.download_url,
+        folders: [],
+        gameVersion: getGameVersion(release.game_version),
+        releaseDate: release.published_at,
+        version: release.name,
+        dependencies: [],
+      });
+    }
+
+    return {
+      author: representation.owner_name,
+      externalId: representation.id.toString(),
+      externalUrl: representation.repository,
+      name: representation.repository_name,
+      providerName: this.name,
+      thumbnailUrl: representation.owner_image_url,
+      downloadCount: representation.total_download_count,
+      files: searchResultFiles,
+      releasedAt: new Date(),
+      screenshotUrl: "",
+      screenshotUrls: [],
+      summary: representation.description,
+    };
+  }
 
   private getAddon(
     clientType: WowClientType,
@@ -215,10 +241,23 @@ export class WowUpAddonProvider implements AddonProvider {
       providerName: this.name,
       providerSource: scanResult.exactMatch.source,
       thumbnailUrl: scanResult.exactMatch.image_url,
-      fundingLinks: [...scanResult.exactMatch.fundingLinks],
+      fundingLinks: [...scanResult.exactMatch.funding_links],
       isLoadOnDemand: false,
       releasedAt: scanResult.exactMatch?.matched_release?.published_at,
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
     };
+  }
+
+  private getWowGameType(clientType: WowClientType): string {
+    switch (clientType) {
+      case WowClientType.Classic:
+      case WowClientType.ClassicPtr:
+        return WowGameType.Classic;
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+      case WowClientType.Beta:
+      default:
+        return WowGameType.Retail;
+    }
   }
 }
