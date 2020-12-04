@@ -4,9 +4,9 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "自動更新了 {count} 個插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自動更新",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "插件掃描完成...",
+      "ADDON_SCAN_STARTED": "開始插件掃描...",
+      "ADDON_SCAN_UPDATE": "正在掃描 {count} 個資料夾..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "檢查更新...",
@@ -38,7 +38,7 @@
       "IGNORED": "忽略",
       "INSTALL": "安裝",
       "UNINSTALL": "解除安裝",
-      "UNKNOWN": "",
+      "UNKNOWN": "未知",
       "UPDATE": "更新",
       "UPTODATE": "已安裝最新版"
     },
@@ -173,9 +173,9 @@
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自動更新",
         "BETA_ADDON_CHANNEL": "Beta",
-        "CHANNEL_SUBMENU_TITLE": "Channel",
+        "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "提供方",
         "REINSTALL_ADDON_BUTTON": "重新安裝",
         "REMOVE_ADDON_BUTTON": "刪除",
         "SHOW_FOLDER": "開啟資料夾",
@@ -193,11 +193,11 @@
       },
       "FILTER_LABEL": "篩選",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "支援作者",
+        "GENERIC": "在 {platform} 上支援作者",
+        "GITHUB": "在 GitHub 上支援作者",
+        "PATREON": "通过 Patreon 支援作者",
+        "PAYPAL": "通过 PayPal 支援作者"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多個提供方",
       "PAGE_CONTEXT_FOOTER": {
@@ -250,11 +250,11 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
-          "INPUT_LABEL": "Providers"
+          "DESCRIPTION": "選擇從哪些提供方搜尋和安裝新插件",
+          "FIELD_LABEL": "啟用插件提供方",
+          "INPUT_LABEL": "提供方"
         },
-        "TITLE": "Addons"
+        "TITLE": "插件"
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "當前語言",
@@ -263,8 +263,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "關閉 WowUp 視窗時，最小化到選單欄。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "關閉 WowUp 視窗時，最小化到系統托盤。",
         "MINIMIZE_ON_CLOSE_LABEL": "關閉時最小化",
-        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
-        "SCALE_LABEL": "Scale",
+        "SCALE_DESCRIPTION": "修改整個應用程式的縮放係數。",
+        "SCALE_LABEL": "介面縮放",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改預設語言需要重新啟動客戶端。",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "設定新的預設語言",
         "SET_LANGUAGE_DESCRIPTION": "選擇要使用的語言",
@@ -294,7 +294,7 @@
         "TITLE": "除錯"
       },
       "TABS": {
-        "ADDONS": "Addons",
+        "ADDONS": "插件",
         "APPLICATION": "應用程式",
         "CLIENTS": "客戶端",
         "DEBUG": "除錯"

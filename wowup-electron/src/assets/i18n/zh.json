@@ -4,9 +4,9 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "自动更新了 {count} 个插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自动更新",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "插件扫描完成...",
+      "ADDON_SCAN_STARTED": "开始插件扫描...",
+      "ADDON_SCAN_UPDATE": "正在扫描 {count} 个文件夹..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "检查更新...",
@@ -38,7 +38,7 @@
       "IGNORED": "忽略",
       "INSTALL": "安装",
       "UNINSTALL": "卸载",
-      "UNKNOWN": "",
+      "UNKNOWN": "未知",
       "UPDATE": "更新",
       "UPTODATE": "已安装最新版"
     },
@@ -175,7 +175,7 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "提供方",
         "REINSTALL_ADDON_BUTTON": "重新安装",
         "REMOVE_ADDON_BUTTON": "删除",
         "SHOW_FOLDER": "打开文件夹",
@@ -193,11 +193,11 @@
       },
       "FILTER_LABEL": "筛选",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "支持作者",
+        "GENERIC": "在 {platform} 上支持作者",
+        "GITHUB": "在 GitHub 上支持作者",
+        "PATREON": "通过 Patreon 支持作者",
+        "PAYPAL": "通过 PayPal 支持作者"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个提供方",
       "PAGE_CONTEXT_FOOTER": {
@@ -250,11 +250,11 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
-          "INPUT_LABEL": "Providers"
+          "DESCRIPTION": "选择从哪些提供方搜索和安装新插件",
+          "FIELD_LABEL": "启用插件提供方",
+          "INPUT_LABEL": "提供方"
         },
-        "TITLE": "Addons"
+        "TITLE": "插件"
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "当前语言",
@@ -263,8 +263,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "关闭 WowUp 窗口时，最小化到菜单栏。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "关闭 WowUp 窗口时，最小化到系统托盘。",
         "MINIMIZE_ON_CLOSE_LABEL": "关闭时最小化",
-        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
-        "SCALE_LABEL": "Scale",
+        "SCALE_DESCRIPTION": "修改整个应用程序的缩放系数。",
+        "SCALE_LABEL": "界面缩放",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改默认语言需要重新启动客户端。",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "设置新的默认语言",
         "SET_LANGUAGE_DESCRIPTION": "选择要使用的语言",
@@ -294,7 +294,7 @@
         "TITLE": "调试"
       },
       "TABS": {
-        "ADDONS": "Addons",
+        "ADDONS": "插件",
         "APPLICATION": "应用程序",
         "CLIENTS": "客户端",
         "DEBUG": "调试"
