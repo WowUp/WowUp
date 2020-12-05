@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Actualización automática:\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
     "STATUS_TEXT": {
@@ -193,11 +193,11 @@
       },
       "FILTER_LABEL": "Filtro",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "Apoyar a este autor",
+        "GENERIC": "Apoyar a este autor en {platform}",
+        "GITHUB": "Apoyar a este autor en GitHub",
+        "PATREON": "Apoyar a este autor en Patreon",
+        "PAYPAL": "Apoyar a este autor en PayPal"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon está disponible en varios proveedores",
       "PAGE_CONTEXT_FOOTER": {
@@ -267,15 +267,15 @@
         "SCALE_LABEL": "Escala",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiar el idioma predeterminado requiere reiniciar la aplicación.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Estableciendo un nuevo idioma predeterminado",
-        "SET_LANGUAGE_DESCRIPTION": "Establece el idioma en el que se mostrará WowUp",
+        "SET_LANGUAGE_DESCRIPTION": "Establece el idioma en el que se mostrará WowUp.",
         "SET_LANGUAGE_LABEL": "Establecer Idioma",
-        "START_MINIMIZED_DESCRIPTION": "WowUp se iniciará minimizado y no se mostrará en pantalla",
+        "START_MINIMIZED_DESCRIPTION": "WowUp se iniciará minimizado y no se mostrará en pantalla.",
         "START_MINIMIZED_LABEL": "Iniciar WowUp minimizado",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp se iniciará automáticamente durante el arranque del sistema.",
         "START_WITH_SYSTEM_LABEL": "Iniciar WowUp con el sistema",
         "TELEMETRY_DESCRIPTION": "Ayuda a mejorar WowUp enviando datos de instalación y/o errores de forma anónima.",
         "TELEMETRY_LABEL": "Telemetría",
-        "THEME_DESCRIPTION": "Cambia el color del tema de la aplicación",
+        "THEME_DESCRIPTION": "Cambia el color del tema de la aplicación.",
         "THEME_LABEL": "Apariencia",
         "TITLE": "Aplicación",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "¿Quiere reiniciar la aplicación?",
@@ -300,7 +300,7 @@
         "DEBUG": "Depuración"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada",
+        "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada.",
         "AUTO_UPDATE_LABEL": "Actualización automática",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "¿Quiere borrar la ruta de instalación de la versión {clientName}? Esto eliminará toda la información sobre los addons almacenada para este cliente de WoW.\n\nLas carpetas de los addons no serán eliminadas.",
