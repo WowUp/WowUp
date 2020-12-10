@@ -20,7 +20,7 @@ export interface WowUpAddonReleaseRepresentation {
   id: number;
   url: string;
   name: string;
-  tagName: string;
+  tag_name: string;
   external_id: string;
   prerelease: boolean;
   body: string;

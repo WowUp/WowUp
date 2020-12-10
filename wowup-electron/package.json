@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.1.0-beta.3",
+  "version": "2.1.0-beta.4",
   "description": "Word of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
@@ -142,6 +142,7 @@
     "node-cache": "5.1.2",
     "node-disk-info": "1.1.0",
     "opossum": "5.0.2",
+    "p-limit": "3.1.0",
     "protobufjs": "6.10.2",
     "rxjs": "6.6.3",
     "slug": "4.0.2",

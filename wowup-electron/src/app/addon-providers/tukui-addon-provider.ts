@@ -222,7 +222,7 @@ export class TukUiAddonProvider implements AddonProvider {
 
   private fetchApiResultsWowUp = async (clientType: WowClientType) => {
     const clientTypeName = this.getAddonsSuffixWowUp(clientType);
-    const url = new URL(`${WOWUP_API_URL}/tukui/addons/client/${clientTypeName}`);
+    const url = new URL(`${WOWUP_API_URL}/tukui/${clientTypeName}`);
 
     const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
     // if (this.isRetail(clientType)) {

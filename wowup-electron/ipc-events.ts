@@ -3,6 +3,8 @@ import * as fs from "fs-extra";
 import * as async from "async";
 import * as path from "path";
 import * as admZip from "adm-zip";
+import * as pLimit from "p-limit";
+import { map } from "lodash";
 import { readdir, stat } from "fs";
 import axios from "axios";
 import * as log from "electron-log";
@@ -107,7 +109,6 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     CURSE_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
-
       // Scan addon folders in parallel for speed!?
       try {
         const results = await async.mapLimit<string, CurseScanResult>(filePaths, 2, async (folder, callback) => {
@@ -127,11 +128,9 @@ export function initializeIpcHanders(window: BrowserWindow) {
   ipcMain.handle(
     WOWUP_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
-      return await async.mapLimit<string, WowUpScanResult>(filePaths, 2, async (folder, callback) => {
-        const scanResult = await new WowUpFolderScanner(folder).scanFolder();
-
-        callback(undefined, scanResult);
-      });
+      const limit = pLimit(2);
+      const tasks = map(filePaths, (folder) => limit(() => new WowUpFolderScanner(folder).scanFolder()));
+      return await Promise.all(tasks);
     }
   );
 

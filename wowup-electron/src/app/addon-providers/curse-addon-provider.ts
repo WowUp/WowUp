@@ -74,7 +74,10 @@ export class CurseAddonProvider implements AddonProvider {
       return;
     }
 
+    console.debug("Curse scan start");
+    console.time("CFScan");
     const scanResults = await this.getScanResults(addonFolders);
+    console.timeEnd("CFScan");
 
     console.debug("ScanResults", scanResults.length);
 

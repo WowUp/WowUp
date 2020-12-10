@@ -13,13 +13,14 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
-import { WowUpGetAddonsResponse } from "../models/wowup-api/api-responses";
+import { WowUpGetAddonResponse, WowUpGetAddonsResponse } from "../models/wowup-api/api-responses";
 import { ElectronService } from "../services";
 import { AddonProvider } from "./addon-provider";
 import { getEnumName } from "../utils/enum.utils";
-import { first, map } from "lodash";
+import * as _ from "lodash";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { getGameVersion } from "../utils/addon.utils";
+import { map } from "rxjs/operators";
 
 const API_URL = AppConfig.wowUpHubUrl;
 
@@ -44,8 +45,8 @@ export class WowUpAddonProvider implements AddonProvider {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/featured/${gameType}`);
     const addons = await this._httpClient.get<WowUpGetAddonsResponse>(url.toString()).toPromise();
-    console.log("WOWUP FEAT", addons);
-    const searchResults = map(addons?.addons, (addon) => this.getSearchResult(addon));
+    console.debug("WOWUP FEAT", addons);
+    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
     return searchResults;
   }
 
@@ -70,8 +71,12 @@ export class WowUpAddonProvider implements AddonProvider {
   }
 
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    // TODO
-    return of(undefined);
+    const url = new URL(`${API_URL}/addons/${addonId}`);
+    return this._httpClient.get<WowUpGetAddonResponse>(url.toString()).pipe(
+      map((result) => {
+        return this.getSearchResult(result.addon);
+      })
+    );
   }
 
   isValidAddonUri(addonUri: URL): boolean {
@@ -88,47 +93,32 @@ export class WowUpAddonProvider implements AddonProvider {
   }
 
   async scan(clientType: WowClientType, addonChannelType: any, addonFolders: AddonFolder[]): Promise<void> {
-    // const url = `${API_URL}/addons`;
-    // const addons = await this._httpClient
-    //   .get<WuAddon[]>(url.toString())
-    //   .toPromise();
-
+    console.debug("WowUp scan start");
+    console.time("WowUpScan");
     const scanResults = await this.getScanResults(addonFolders);
+    console.timeEnd("WowUpScan");
 
     console.debug("ScanResults", scanResults.length);
+    const fingerprints = scanResults.map((result) => result.fingerprint);
+    console.debug("fingerprintRequest", fingerprints);
+    const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints).toPromise();
 
-    const fingerprintResponse = await this.getAddonsByFingerprints(
-      scanResults.map((result) => result.fingerprint)
-    ).toPromise();
-
-    console.log("fingerprintResponse", fingerprintResponse);
+    console.debug("fingerprintResponse", fingerprintResponse);
 
     for (let scanResult of scanResults) {
-      // Curse can deliver the wrong result sometimes, ensure the result matches the client type
+      // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
       scanResult.exactMatch = fingerprintResponse.exactMatches.find(
         (exactMatch) =>
           this.isGameType(exactMatch.matched_release, clientType) &&
           this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
       );
-
-      // If the addon does not have an exact match, check the partial matches.
-      // if (!scanResult.exactMatch) {
-      //   scanResult.exactMatch = fingerprintResponse.partialMatches.find(
-      //     (partialMatch) =>
-      //       partialMatch.file?.modules?.some(
-      //         (module) => module.fingerprint === scanResult.fingerprint
-      //       )
-      //   );
-      // }
     }
 
     const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
-    const matchedScanResultIds = matchedScanResults.map((sr) => sr.exactMatch.id);
 
     for (let addonFolder of addonFolders) {
       var scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
       if (!scanResult.exactMatch) {
-        console.log("No search result match", scanResult.path);
         continue;
       }
 
@@ -139,8 +129,6 @@ export class WowUpAddonProvider implements AddonProvider {
       } catch (err) {
         console.error(scanResult);
         console.error(err);
-        // TODO
-        // _analyticsService.Track(ex, $"Failed to create addon for result {scanResult.FolderScanner.Fingerprint}");
       }
     }
   }
@@ -171,14 +159,14 @@ export class WowUpAddonProvider implements AddonProvider {
       filePaths
     );
 
-    console.log("scan delta", Date.now() - t1);
-    console.log("WowUpGetScanResultsResponse", scanResults);
+    console.debug("scan delta", Date.now() - t1);
+    console.debug("WowUpGetScanResultsResponse", scanResults);
 
     return scanResults;
   };
 
   private getSearchResult(representation: WowUpAddonRepresentation): AddonSearchResult {
-    const release = first(representation.releases);
+    const release = _.first(representation.releases);
     const searchResultFiles: AddonSearchResultFile[] = [];
     if (release) {
       searchResultFiles.push({
@@ -187,7 +175,7 @@ export class WowUpAddonProvider implements AddonProvider {
         folders: [],
         gameVersion: getGameVersion(release.game_version),
         releaseDate: release.published_at,
-        version: release.name,
+        version: release.tag_name,
         dependencies: [],
       });
     }
@@ -213,14 +201,10 @@ export class WowUpAddonProvider implements AddonProvider {
     addonChannelType: AddonChannelType,
     scanResult: AppWowUpScanResult
   ): Addon {
-    const primaryAddonFolder = scanResult.exactMatch.matched_release.addonFolders.find(
-      (af) => af.load_on_demand === false
-    );
     const authors = scanResult.exactMatch.owner_name;
     const folderList = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name).join(", ");
 
     let channelType = addonChannelType;
-    let latestVersion = primaryAddonFolder.version;
 
     return {
       id: uuidv4(),
@@ -235,9 +219,9 @@ export class WowUpAddonProvider implements AddonProvider {
       gameVersion: scanResult.exactMatch.matched_release.game_version,
       installedAt: new Date(),
       installedFolders: folderList,
-      installedVersion: scanResult.exactMatch.matched_release.tagName,
+      installedVersion: scanResult.exactMatch.matched_release.tag_name,
       isIgnored: false,
-      latestVersion: scanResult.exactMatch.matched_release.tagName,
+      latestVersion: scanResult.exactMatch.matched_release.tag_name,
       providerName: this.name,
       providerSource: scanResult.exactMatch.source,
       thumbnailUrl: scanResult.exactMatch.image_url,
