@@ -1,6 +1,21 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.4",
+      "changes": [
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Chinese locale updates (CyanoHao)",
+        "Portuguese locale updates (danielschmitz)",
+        "Change the default 'No' button in confirm boxes to match theme (jar349)",
+        "Add 'Get Addons' support for new Hub provider",
+        "Fix an internal bug with the CurseForge fingerprint scanner",
+        "Several Hub scanning improvements",
+        "Use the shorter TukUI route",
+        "Use the new API database"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.3",
       "changes": [
         "Russian locale updates (Medok)",
