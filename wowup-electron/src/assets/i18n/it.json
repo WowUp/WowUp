@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggioranti\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggiornato/i:\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count, plural, one{un addon} other{{count} addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
     "STATUS_TEXT": {
