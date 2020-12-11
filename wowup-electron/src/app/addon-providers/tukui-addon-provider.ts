@@ -18,8 +18,8 @@ import { FileService } from "../services/files/file.service";
 import { AddonProvider } from "./addon-provider";
 import { AppConfig } from "../../environments/environment";
 
-// const API_URL = "https://www.tukui.org/api.php";
-// const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
+const API_URL = "https://www.tukui.org/api.php";
+const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
 const WOWUP_API_URL = AppConfig.wowUpHubUrl;
 
 export class TukUiAddonProvider implements AddonProvider {
@@ -37,7 +37,7 @@ export class TukUiAddonProvider implements AddonProvider {
     private _electronService: ElectronService,
     private _fileService: FileService
   ) {
-    this._circuitBreaker = new CircuitBreaker(this.fetchApiResultsWowUp, {
+    this._circuitBreaker = new CircuitBreaker(this.fetchApiResults, {
       resetTimeout: 60000,
     });
 
@@ -225,43 +225,39 @@ export class TukUiAddonProvider implements AddonProvider {
     const url = new URL(`${WOWUP_API_URL}/tukui/${clientTypeName}`);
 
     const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
-    // if (this.isRetail(clientType)) {
-    //   addons.push(await this.getTukUiRetailAddon().toPromise());
-    //   addons.push(await this.getElvUiRetailAddon().toPromise());
-    // }
-    console.debug("WowUpTukui",addons);
+    console.debug("WowUpTukui", addons);
 
     return addons;
   };
 
-  // private fetchApiResults = async (clientType: WowClientType) => {
-  //   const query = this.getAddonsSuffix(clientType);
-  //   const url = new URL(API_URL);
-  //   url.searchParams.append(query, "all");
+  private fetchApiResults = async (clientType: WowClientType) => {
+    const query = this.getAddonsSuffix(clientType);
+    const url = new URL(API_URL);
+    url.searchParams.append(query, "all");
 
-  //   const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
-  //   if (this.isRetail(clientType)) {
-  //     addons.push(await this.getTukUiRetailAddon().toPromise());
-  //     addons.push(await this.getElvUiRetailAddon().toPromise());
-  //   }
+    const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
+    if (this.isRetail(clientType)) {
+      addons.push(await this.getTukUiRetailAddon().toPromise());
+      addons.push(await this.getElvUiRetailAddon().toPromise());
+    }
 
-  //   return addons;
-  // };
+    return addons;
+  };
 
-  // private getTukUiRetailAddon() {
-  //   return this.getClientApiAddon("tukui");
-  // }
+  private getTukUiRetailAddon() {
+    return this.getClientApiAddon("tukui");
+  }
 
-  // private getElvUiRetailAddon() {
-  //   return this.getClientApiAddon("elvui");
-  // }
+  private getElvUiRetailAddon() {
+    return this.getClientApiAddon("elvui");
+  }
 
-  // private getClientApiAddon(addonName: string): Observable<TukUiAddon> {
-  //   const url = new URL(CLIENT_API_URL);
-  //   url.searchParams.append("ui", addonName);
+  private getClientApiAddon(addonName: string): Observable<TukUiAddon> {
+    const url = new URL(CLIENT_API_URL);
+    url.searchParams.append("ui", addonName);
 
-  //   return this._httpClient.get<TukUiAddon>(url.toString());
-  // }
+    return this._httpClient.get<TukUiAddon>(url.toString());
+  }
 
   private isRetail(clientType: WowClientType) {
     switch (clientType) {

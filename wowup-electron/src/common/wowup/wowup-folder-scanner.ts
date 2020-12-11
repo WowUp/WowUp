@@ -84,14 +84,21 @@ export class WowUpFolderScanner {
     matchingFiles = _.orderBy(matchingFiles, [(f) => f.toLowerCase()], ["asc"]);
 
     const limit = pLimit(4);
-    const tasks = _.map(matchingFiles, (file) => limit(() => this.hashFile(file)));
+    const tasks = _.map(matchingFiles, (file) =>
+      limit(async () => {
+        return { hash: await this.hashFile(file), file };
+      })
+    );
     const fileFingerprints = await Promise.all(tasks);
 
-    const hashConcat = _.orderBy(fileFingerprints).join("");
+    const fingerprintList = _.map(fileFingerprints, (ff) => ff.hash);
+    const hashConcat = _.orderBy(fingerprintList).join("");
     const fingerprint = this.hashString(hashConcat);
 
+    // log.info(this._folderPath, fingerprint);
+
     const result: WowUpScanResult = {
-      fileFingerprints,
+      fileFingerprints: fingerprintList,
       fingerprint,
       path: this._folderPath,
       folderName: path.basename(this._folderPath),

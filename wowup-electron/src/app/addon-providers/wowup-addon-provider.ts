@@ -24,6 +24,10 @@ import { map } from "rxjs/operators";
 
 const API_URL = AppConfig.wowUpHubUrl;
 
+export interface GetAddonBatchResponse {
+  addons: WowUpAddonRepresentation[];
+}
+
 export class WowUpAddonProvider implements AddonProvider {
   public readonly name = ADDON_PROVIDER_HUB;
   public readonly forceIgnore = false;
@@ -34,18 +38,23 @@ export class WowUpAddonProvider implements AddonProvider {
   constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
-    const url = new URL(`${API_URL}/addons`);
-    const addons = await this._httpClient.get<WowUpAddonRepresentation[]>(url.toString()).toPromise();
+    const gameType = this.getWowGameType(clientType);
+    const url = new URL(`${API_URL}/addons/batch/${gameType}`);
+    const response = await this._httpClient
+      .post<GetAddonBatchResponse>(url.toString(), {
+        addonIds: _.map(addonIds, (id) => parseInt(id, 10)),
+      })
+      .toPromise();
 
-    // TODO
-    return [];
+    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon));
+    return searchResults;
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/featured/${gameType}`);
     const addons = await this._httpClient.get<WowUpGetAddonsResponse>(url.toString()).toPromise();
-    console.debug("WOWUP FEAT", addons);
+
     const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
     return searchResults;
   }
@@ -113,8 +122,6 @@ export class WowUpAddonProvider implements AddonProvider {
           this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
       );
     }
-
-    const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
 
     for (let addonFolder of addonFolders) {
       var scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
