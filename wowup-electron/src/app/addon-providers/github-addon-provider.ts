@@ -27,6 +27,7 @@ export class GitHubAddonProvider implements AddonProvider {
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
   public readonly allowChannelChange = false;
+  public readonly allowEdit = false;
   public enabled = true;
 
   constructor(private _httpClient: HttpClient) {}

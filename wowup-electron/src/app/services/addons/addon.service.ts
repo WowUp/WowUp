@@ -121,6 +121,7 @@ export class AddonService {
       return {
         providerName: provider.name,
         enabled: provider.enabled,
+        canEdit: provider.allowEdit,
       };
     });
   }

@@ -20,6 +20,7 @@ export class RaiderIoAddonProvider implements AddonProvider {
   public readonly forceIgnore = true;
   public readonly allowReinstall = false;
   public readonly allowChannelChange = false;
+  public readonly allowEdit = false;
   public enabled = true;
 
   constructor() {}
