@@ -46,6 +46,7 @@
       "BACKINGUP": "Sikkerhetskopierer",
       "COMPLETE": "Installert",
       "DOWNLOADING": "Laster Ned",
+      "ERROR": "Error",
       "INSTALLING": "Installerer",
       "PENDING": "Venter",
       "UNINSTALLING": "Avinstallerer",

@@ -46,6 +46,7 @@
       "BACKINGUP": "Backup wird erstellt",
       "COMPLETE": "Vollständig",
       "DOWNLOADING": "Herunterladen...",
+      "ERROR": "Error",
       "INSTALLING": "Installieren...",
       "PENDING": "Ausstehend",
       "UNINSTALLING": "Deinstallieren...",

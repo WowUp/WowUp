@@ -46,6 +46,7 @@
       "BACKINGUP": "Backup in corso",
       "COMPLETE": "Installato",
       "DOWNLOADING": "Download in corso",
+      "ERROR": "Error",
       "INSTALLING": "Installazione in corso",
       "PENDING": "In sospeso",
       "UNINSTALLING": "Disinstallazione in corso",

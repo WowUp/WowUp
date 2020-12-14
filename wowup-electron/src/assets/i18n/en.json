@@ -46,6 +46,7 @@
       "BACKINGUP": "Backing Up",
       "COMPLETE": "Installed",
       "DOWNLOADING": "Downloading",
+      "ERROR": "Error",
       "INSTALLING": "Installing",
       "PENDING": "Pending",
       "UNINSTALLING": "Uninstalling",

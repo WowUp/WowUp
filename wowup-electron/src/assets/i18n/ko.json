@@ -46,6 +46,7 @@
       "BACKINGUP": "백업 중",
       "COMPLETE": "설치됨",
       "DOWNLOADING": "다운로드 중",
+      "ERROR": "Error",
       "INSTALLING": "설치 중",
       "PENDING": "일시정지됨",
       "UNINSTALLING": "삭제 중",

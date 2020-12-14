@@ -39,6 +39,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonFolder } from "../../models/wowup/addon-folder";
+import { InstallError } from "../../errors";
 
 export enum ScanUpdateType {
   Start,
@@ -71,11 +72,13 @@ export class AddonService {
   private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
   private readonly _addonRemovedSrc = new Subject<string>();
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
+  private readonly _installErrorSrc = new Subject<Error>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
   public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
+  public readonly installError$ = this._installErrorSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -89,8 +92,14 @@ export class AddonService {
   ) {
     this._addonProviders = addonProviderFactory.getAll();
 
-    this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe((addonName) => {
-      console.log("Install complete", addonName);
+    this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
+      next: (addonName) => {
+        console.log("Install complete", addonName);
+      },
+      error: (error) => {
+        console.error(error);
+        this._installErrorSrc.next(error);
+      },
     });
 
     // Attempt to remove addons for clients that were lost
@@ -323,6 +332,7 @@ export class AddonService {
 
     let downloadedFilePath = "";
     let unzippedDirectory = "";
+
     try {
       downloadedFilePath = await this._downloadService.downloadZipFile(
         addon.downloadUrl,
@@ -395,9 +405,23 @@ export class AddonService {
       this.reconcileExternalIds(addon, queueItem.originalAddon);
 
       queueItem.completion.resolve();
+
+      onUpdate?.call(this, AddonInstallState.Complete, 100);
+      this._addonInstalledSrc.next({
+        addon,
+        installState: AddonInstallState.Complete,
+        progress: 100,
+      });
     } catch (err) {
       console.error(err);
       queueItem.completion.reject(err);
+
+      onUpdate?.call(this, AddonInstallState.Error, 100);
+      this._addonInstalledSrc.next({
+        addon,
+        installState: AddonInstallState.Error,
+        progress: 100,
+      });
     } finally {
       const unzippedDirectoryExists = await this._fileService.pathExists(unzippedDirectory);
 
@@ -411,13 +435,6 @@ export class AddonService {
         await this._fileService.remove(downloadedFilePath);
       }
     }
-
-    onUpdate?.call(this, AddonInstallState.Complete, 100);
-    this._addonInstalledSrc.next({
-      addon,
-      installState: AddonInstallState.Complete,
-      progress: 100,
-    });
 
     return addon.name;
   };

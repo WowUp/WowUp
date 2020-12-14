@@ -46,6 +46,7 @@
       "BACKINGUP": "正在備份",
       "COMPLETE": "已安裝",
       "DOWNLOADING": "正在下載",
+      "ERROR": "Error",
       "INSTALLING": "正在安裝",
       "PENDING": "等待中",
       "UNINSTALLING": "正在解除安裝",

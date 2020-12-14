@@ -46,6 +46,7 @@
       "BACKINGUP": "Резервное копирование",
       "COMPLETE": "Установлена",
       "DOWNLOADING": "Загружается",
+      "ERROR": "Error",
       "INSTALLING": "Устанавливается",
       "PENDING": "В ожидании",
       "UNINSTALLING": "Удаляется",
