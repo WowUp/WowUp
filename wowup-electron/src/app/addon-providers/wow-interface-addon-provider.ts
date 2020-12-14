@@ -27,6 +27,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
   public readonly allowChannelChange = false;
+  public readonly allowEdit = true;
   public enabled = true;
 
   constructor(

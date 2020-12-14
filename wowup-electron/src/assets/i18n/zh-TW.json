@@ -46,6 +46,7 @@
       "BACKINGUP": "正在備份",
       "COMPLETE": "已安裝",
       "DOWNLOADING": "正在下載",
+      "ERROR": "Error",
       "INSTALLING": "正在安裝",
       "PENDING": "等待中",
       "UNINSTALLING": "正在解除安裝",
@@ -125,6 +126,7 @@
         "INSTALL_FAILED": "安裝插件時出現了一些錯誤，請重試。\n\n如果一直出現此訊息，可以加入 Discord #wowup-support 頻道尋求幫助（英語）。",
         "INVALID_URL": "輸入的 URL 無效。有效 URL 示例：\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "未找到插件，請檢查 URL 是否指向正確的頁面。\n\n從 GitHub 安裝時，請檢查是否存在帶有 zip 包的 release tag。",
+        "NO_SEARCH_RESULTS": "No search results were found.",
         "TITLE": "插件安裝失敗"
       },
       "IMPORT_BUTTON": "匯入",

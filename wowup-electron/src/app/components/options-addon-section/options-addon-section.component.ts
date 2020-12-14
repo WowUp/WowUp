@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MatSelectChange } from "@angular/material/select";
 import { FormControl } from "@angular/forms";
-import { find } from "lodash";
+import { filter } from "lodash";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { AddonService } from "../../services/addons/addon.service";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
@@ -19,7 +19,7 @@ export class OptionsAddonSectionComponent implements OnInit {
   constructor(private _addonService: AddonService, private _wowupService: WowUpService) {}
 
   ngOnInit(): void {
-    this.addonProviderStates = this._addonService.getAddonProviderStates();
+    this.addonProviderStates = filter(this._addonService.getAddonProviderStates(), (provider) => provider.canEdit);
     this.enabledAddonProviders.setValue(this.getEnabledProviderNames());
     console.debug("addonProviderStates", this.addonProviderStates);
   }
@@ -27,7 +27,11 @@ export class OptionsAddonSectionComponent implements OnInit {
   public onProviderStateSelectionChange(event: MatSelectionListChange) {
     console.debug(event);
     event.options.forEach((option) => {
-      this._wowupService.setAddonProviderState({ providerName: option.value, enabled: option.selected });
+      this._wowupService.setAddonProviderState({
+        providerName: option.value,
+        enabled: option.selected,
+        canEdit: true,
+      });
       this._addonService.setProviderEnabled(option.value, option.selected);
     });
   }

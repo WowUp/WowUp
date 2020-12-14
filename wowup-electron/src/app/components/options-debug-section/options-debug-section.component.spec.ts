@@ -21,24 +21,30 @@ describe("OptionsDebugSectionComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [OptionsDebugSectionComponent],
-      imports: [HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
+      imports: [
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
+    })
+      .overrideComponent(OptionsDebugSectionComponent, {
+        set: {
+          providers: [
+            { provide: AddonService, useValue: addonServiceSpy },
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+          ],
         },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
-    }).overrideComponent(OptionsDebugSectionComponent, {
-      set: {
-      providers: [
-          { provide: AddonService, useValue: addonServiceSpy },
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-      ]},
-    }).compileComponents();
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(OptionsDebugSectionComponent);
     component = fixture.componentInstance;
@@ -53,14 +59,14 @@ describe("OptionsDebugSectionComponent", () => {
   });
 
   it("Should call logDebugData", fakeAsync(() => {
-    const button = fixture.debugElement.nativeElement.querySelector("button[action='LogDebugData']");
+    const button = fixture.debugElement.nativeElement.querySelector("#dump-debug-btn");
     button.click();
     tick();
     expect(addonServiceSpy.logDebugData).toHaveBeenCalled();
   }));
 
   it("Should call showLogFiles", fakeAsync(() => {
-    const button = fixture.debugElement.nativeElement.querySelector("button[action='ShowLogFiles']");
+    const button = fixture.debugElement.nativeElement.querySelector("#show-log-btn");
     button.click();
     tick();
     expect(wowUpServiceSpy.showLogsFolder).toHaveBeenCalled();

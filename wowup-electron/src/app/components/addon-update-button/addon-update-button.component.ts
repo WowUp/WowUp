@@ -57,7 +57,8 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   public getIsButtonActive() {
     return (
       this.listItem?.installState !== AddonInstallState.Unknown &&
-      this.listItem?.installState !== AddonInstallState.Complete
+      this.listItem?.installState !== AddonInstallState.Complete &&
+      this.listItem?.installState !== AddonInstallState.Error
     );
   }
 
@@ -109,6 +110,8 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
         return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
       case AddonInstallState.Pending:
         return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
+      case AddonInstallState.Error:
+        return this._translateService.instant("COMMON.ADDON_STATUS.ERROR");
       default:
         return "";
     }

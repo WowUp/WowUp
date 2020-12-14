@@ -37,6 +37,7 @@ export class WowUpAddonProvider implements AddonProvider {
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
   public readonly allowChannelChange = false;
+  public readonly allowEdit = true;
   public enabled = true;
 
   constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}
@@ -149,6 +150,22 @@ export class WowUpAddonProvider implements AddonProvider {
     }
   }
 
+  public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
+    const t1 = Date.now();
+
+    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
+
+    const scanResults: AppWowUpScanResult[] = await this._electronService.ipcRenderer.invoke(
+      WOWUP_GET_SCAN_RESULTS,
+      filePaths
+    );
+
+    console.debug("scan delta", Date.now() - t1);
+    console.debug("WowUpGetScanResultsResponse", scanResults);
+
+    return scanResults;
+  };
+
   private hasMatchingFingerprint(scanResult: WowUpScanResult, release: WowUpAddonReleaseRepresentation) {
     return release.addonFolders.some((addonFolder) => addonFolder.fingerprint == scanResult.fingerprint);
   }
@@ -164,22 +181,6 @@ export class WowUpAddonProvider implements AddonProvider {
       fingerprints,
     });
   }
-
-  private getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
-    const t1 = Date.now();
-
-    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-
-    const scanResults: AppWowUpScanResult[] = await this._electronService.ipcRenderer.invoke(
-      WOWUP_GET_SCAN_RESULTS,
-      filePaths
-    );
-
-    console.debug("scan delta", Date.now() - t1);
-    console.debug("WowUpGetScanResultsResponse", scanResults);
-
-    return scanResults;
-  };
 
   private getSearchResult(representation: WowUpAddonRepresentation): AddonSearchResult {
     const release = _.first(representation.releases);

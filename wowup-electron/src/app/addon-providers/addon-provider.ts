@@ -11,6 +11,7 @@ export interface AddonProvider {
   forceIgnore: boolean;
   allowReinstall: boolean;
   allowChannelChange: boolean;
+  allowEdit: boolean;
 
   getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]>;
 

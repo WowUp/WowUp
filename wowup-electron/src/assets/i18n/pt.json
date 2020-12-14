@@ -46,6 +46,7 @@
       "BACKINGUP": "Fazendo Backup",
       "COMPLETE": "Instalado",
       "DOWNLOADING": "Baixando",
+      "ERROR": "Error",
       "INSTALLING": "Instalando",
       "PENDING": "Pendente",
       "UNINSTALLING": "Desinstalando",
@@ -125,6 +126,7 @@
         "INSTALL_FAILED": "Algo deu errado ao tentar instalar o Addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wowup-support.",
         "INVALID_URL": "O valor fornecido não é uma URL válida. Exemplos de URLs de Addon válidos são:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "O Addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o Addon.",
+        "NO_SEARCH_RESULTS": "No search results were found.",
         "TITLE": "Instalação do Addon Falhou"
       },
       "IMPORT_BUTTON": "Importar",

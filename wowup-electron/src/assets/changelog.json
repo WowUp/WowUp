@@ -1,6 +1,18 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.7",
+      "changes": [
+        "Use new icon for mac build (alphabitnz)",
+        "Some addon providers can no longer be turned off",
+        "Add better error handling for install/update errors",
+        "Add a new error description when importing from URL",
+        "Move debug option to the bottom of the list",
+        "Fix missing version number in About page",
+        "Improve the dump debug button to include new Hub provider"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.6",
       "changes": [
         "Hub provider now supports searching",
