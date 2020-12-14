@@ -1,11 +1,8 @@
-<div
-  class="tab-container"
-  [ngClass]="{
+<div class="tab-container" [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }"
->
+  }">
   <div class="nav-container">
     <div class="theme-logo">
       <img [src]="wowUpService.getThemeLogoPath()" />
@@ -21,10 +18,10 @@
               {{ "PAGES.OPTIONS.TABS.APPLICATION" | translate }}
             </button>
             <button mat-list-item (click)="optionTabIndex = 2">
-              {{ "PAGES.OPTIONS.TABS.DEBUG" | translate }}
+              {{ "PAGES.OPTIONS.TABS.ADDONS" | translate }}
             </button>
             <button mat-list-item (click)="optionTabIndex = 3">
-              {{ "PAGES.OPTIONS.TABS.ADDONS" | translate }}
+              {{ "PAGES.OPTIONS.TABS.DEBUG" | translate }}
             </button>
           </mat-action-list>
         </div>
@@ -40,11 +37,11 @@
             <mat-tab label="Application">
               <app-options-app-section></app-options-app-section>
             </mat-tab>
-            <mat-tab label="Debug">
-              <app-options-debug-section></app-options-debug-section>
-            </mat-tab>
             <mat-tab label="Addons">
               <app-options-addon-section></app-options-addon-section>
+            </mat-tab>
+            <mat-tab label="Debug">
+              <app-options-debug-section></app-options-debug-section>
             </mat-tab>
           </mat-tab-group>
         </div>
