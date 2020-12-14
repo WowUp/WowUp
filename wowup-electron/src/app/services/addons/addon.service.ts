@@ -6,6 +6,7 @@ import { AddonSearchResultDependency } from "../../models/wowup/addon-search-res
 import { Toc } from "../../models/wowup/toc";
 import {
   ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
@@ -40,6 +41,7 @@ import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { InstallError } from "../../errors";
+import { WowUpAddonProvider } from "app/addon-providers/wowup-addon-provider";
 
 export enum ScanUpdateType {
   Start,
@@ -445,19 +447,32 @@ export class AddonService {
   }
 
   public async logDebugData() {
-    const curseProvider = this._addonProviders.find((p) => p.name === "Curse") as CurseAddonProvider;
+    const curseProvider = this._addonProviders.find((p) => p.name === ADDON_PROVIDER_CURSEFORGE) as CurseAddonProvider;
+    const hubProvider = this._addonProviders.find((p) => p.name === ADDON_PROVIDER_HUB) as WowUpAddonProvider;
 
+    const clientMap = {};
     const clientTypes = await this._warcraftService.getWowClientTypes();
     for (let clientType of clientTypes) {
+      const clientTypeName = this._warcraftService.getClientFolderName(clientType);
       const addonFolders = await this._warcraftService.listAddons(clientType);
-      const scanResults = await curseProvider.getScanResults(addonFolders);
-      const map = {};
 
-      scanResults.forEach((sr) => (map[sr.folderName] = sr.fingerprint));
+      const curseMap = {};
+      const curseScanResults = await curseProvider.getScanResults(addonFolders);
+      curseScanResults.forEach((sr) => (curseMap[sr.folderName] = sr.fingerprint));
 
-      console.log(`clientType ${this._warcraftService.getClientDisplayName(clientType)} addon fingerprints`);
-      console.log(map);
+      const hubMap = {};
+      const hubScanResults = await hubProvider.getScanResults(addonFolders);
+      hubScanResults.forEach((sr) => (hubMap[sr.folderName] = sr.fingerprint));
+
+      clientMap[clientTypeName] = {
+        curse: curseMap,
+        hub: hubMap,
+      };
+
+      console.log(`clientType ${clientTypeName} addon fingerprints`);
     }
+
+    console.log(JSON.stringify(clientMap));
   }
 
   private async getLatestGameVersion(baseDir: string, installedFolders: string[]) {
