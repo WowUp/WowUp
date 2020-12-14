@@ -1,12 +1,16 @@
 {
   "ChangeLogs": [
     {
-      "Version": "2.1.0-beta.5",
+      "Version": "2.1.0-beta.6",
       "changes": [
-        "Hub provider now supports updating",
-        "Return to the official TukUI API",
-        "Reduce unused analytics"
+        "Hub provider now supports searching",
+        "Increase the number of 'featured addons' from hub",
+        "Add some logging for hub fingerprints"
       ]
+    },
+    {
+      "Version": "2.1.0-beta.5",
+      "changes": ["Hub provider now supports updating", "Return to the official TukUI API", "Reduce unused analytics"]
     },
     {
       "Version": "2.1.0-beta.4",
