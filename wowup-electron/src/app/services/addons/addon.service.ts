@@ -40,8 +40,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonFolder } from "../../models/wowup/addon-folder";
-import { InstallError } from "../../errors";
-import { WowUpAddonProvider } from "app/addon-providers/wowup-addon-provider";
+import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 
 export enum ScanUpdateType {
   Start,

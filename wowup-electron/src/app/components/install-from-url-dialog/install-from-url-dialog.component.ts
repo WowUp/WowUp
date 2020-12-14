@@ -9,7 +9,7 @@ import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { roundDownloadCount, shortenDownloadCount } from "../../utils/number.utils";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
-import { NO_SEARCH_RESULTS_ERROR } from "common/constants";
+import { NO_SEARCH_RESULTS_ERROR } from "../../../common/constants";
 
 @Component({
   selector: "app-install-from-url-dialog",
@@ -120,7 +120,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
       } else if (err.code && err.code === "EOPENBREAKER") {
         // Provider circuit breaker is open
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.FAILED_TO_CONNECT");
-      } else if(message === NO_SEARCH_RESULTS_ERROR){
+      } else if (message === NO_SEARCH_RESULTS_ERROR) {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_SEARCH_RESULTS");
       }
 
