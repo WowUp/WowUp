@@ -8,3 +8,8 @@ export interface WowUpGetAddonsResponse {
   addons: WowUpAddonRepresentation[];
   count: number;
 }
+
+export interface WowUpSearchAddonsResponse {
+  addons: WowUpAddonRepresentation[];
+  count: number;
+}

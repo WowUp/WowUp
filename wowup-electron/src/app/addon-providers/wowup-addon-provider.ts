@@ -13,7 +13,11 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
-import { WowUpGetAddonResponse, WowUpGetAddonsResponse } from "../models/wowup-api/api-responses";
+import {
+  WowUpGetAddonResponse,
+  WowUpGetAddonsResponse,
+  WowUpSearchAddonsResponse,
+} from "../models/wowup-api/api-responses";
 import { ElectronService } from "../services";
 import { AddonProvider } from "./addon-provider";
 import { getEnumName } from "../utils/enum.utils";
@@ -52,7 +56,7 @@ export class WowUpAddonProvider implements AddonProvider {
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(clientType);
-    const url = new URL(`${API_URL}/addons/featured/${gameType}`);
+    const url = new URL(`${API_URL}/addons/featured/${gameType}?count=30`);
     const addons = await this._httpClient.get<WowUpGetAddonsResponse>(url.toString()).toPromise();
 
     const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
@@ -60,8 +64,13 @@ export class WowUpAddonProvider implements AddonProvider {
   }
 
   async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    // TODO
-    return [];
+    const gameType = this.getWowGameType(clientType);
+    const url = new URL(`${API_URL}/addons/search/${gameType}?query=${query}&limit=10`);
+
+    const addons = await this._httpClient.get<WowUpSearchAddonsResponse>(url.toString()).toPromise();
+    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
+
+    return searchResults;
   }
 
   async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
@@ -109,7 +118,7 @@ export class WowUpAddonProvider implements AddonProvider {
 
     console.debug("ScanResults", scanResults.length);
     const fingerprints = scanResults.map((result) => result.fingerprint);
-    console.debug("fingerprintRequest", fingerprints);
+    console.log("fingerprintRequest", fingerprints);
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints).toPromise();
 
     console.debug("fingerprintResponse", fingerprintResponse);
