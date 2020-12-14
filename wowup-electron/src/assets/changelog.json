@@ -5,7 +5,8 @@
       "changes": [
         "Hub provider now supports searching",
         "Increase the number of 'featured addons' from hub",
-        "Add some logging for hub fingerprints"
+        "Add some logging for hub fingerprints",
+        "Update Electron"
       ]
     },
     {
