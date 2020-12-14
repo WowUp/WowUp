@@ -13,14 +13,11 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 export class AboutComponent implements OnInit {
   @Input("tabIndex") tabIndex: number;
 
-  public version = "";
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;
 
   constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 
-  ngOnInit(): void {
-    this.electronService.getVersionNumber()
-  }
+  ngOnInit(): void {}
 
   formatChanges(changeLog: ChangeLog): string {
     return changeLog.changes.join("\n");
