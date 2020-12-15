@@ -4,12 +4,12 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count, plural, one{un addon} other{{count} addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Scansione degli addons completata...",
+      "ADDON_SCAN_COMPLETED": "Scansione degli addons completata.",
       "ADDON_SCAN_STARTED": "Scansione degli addons iniziata...",
       "ADDON_SCAN_UPDATE": "Scansionando {count, plural, one{una cartella} other{{count} cartelle}}..."
     },
     "SYSTEM_TRAY": {
-      "CHECK_UPDATE": "Controlla Aggiornamenti...",
+      "CHECK_UPDATE": "Controlla Aggiornamenti",
       "QUIT_ACTION": "Chiudi",
       "SHOW_ACTION": "Mostra"
     },
@@ -195,17 +195,17 @@
       },
       "FILTER_LABEL": "Filtra",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "Supporta questo autore",
+        "GENERIC": "Supporta questo autore {platform}",
+        "GITHUB": "Supporta questo autore su GitHub",
+        "PATREON": "Supporta questo autore su Patreon",
+        "PAYPAL": "Supporta questo autore su PayPal"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Questo addon ha più di un provider",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
         "JOIN_DISCORD": "Contattaci su Discord",
-        "PATREON_SUPPORT": "Supporta WowUp con il Patreon",
+        "PATREON_SUPPORT": "Supporta WowUp su Patreon",
         "SEARCH_RESULTS": "{count, plural, =1{Un risultato} other{{count} risultati}}",
         "VIEW_GITHUB": "Controlla il codice su GitHub",
         "VIEW_GUIDE": "Controlla la nostra guida per vedere cosa può fare Wowup"
