@@ -591,6 +591,10 @@ export class AddonService {
     );
   }
 
+  public getInstallBasePath(addon: Addon) {
+    return this._warcraftService.getAddonFolderPath(addon.clientType);
+  }
+
   public getFullInstallPath(addon: Addon) {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
     const installedFolders = this.getInstalledFolders(addon);

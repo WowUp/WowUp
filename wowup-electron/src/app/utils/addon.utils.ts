@@ -26,6 +26,10 @@ export function needsInstall(addon: Addon): boolean {
   return !addon.installedVersion;
 }
 
+export function getFolderList(addon: Addon): string[] {
+  return addon.installedFolders.split(",").map((folder) => folder.trim());
+}
+
 export function getGameVersion(gameVersion: string): string {
   if (!gameVersion) {
     return gameVersion;

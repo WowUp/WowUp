@@ -223,7 +223,7 @@
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
     </button>
     <!-- SHOW FOLDER -->
-    <button mat-menu-item (click)="onShowFolder(listItem.addon)">
+    <button mat-menu-item [matMenuTriggerFor]="addonFolders">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
     </button>
     <!-- VIEW IN PROVIDER -->
@@ -260,6 +260,11 @@
           {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ALPHA_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
       </mat-radio-group>
+    </mat-menu>
+    <mat-menu #addonFolders="matMenu" class="addon-context-menu">
+      <div *ngFor="let folder of addonUtils.getFolderList(listItem.addon)">
+        <button mat-menu-item (click)="onShowFolder(listItem.addon, folder)">{{folder}}</button>
+      </div>
     </mat-menu>
     <mat-menu #addonProviders="matMenu" class="addon-context-menu">
       <mat-radio-group class="vertical-radio-group" [value]="listItem.addon.providerName"
