@@ -4,6 +4,7 @@ import * as async from "async";
 import * as path from "path";
 import * as admZip from "adm-zip";
 import * as pLimit from "p-limit";
+import * as nodeDiskInfo from "node-disk-info";
 import { map } from "lodash";
 import { readdir, stat } from "fs";
 import axios from "axios";
@@ -25,6 +26,7 @@ import {
   CREATE_DIRECTORY_CHANNEL,
   STAT_FILES_CHANNEL,
   CREATE_TRAY_MENU_CHANNEL,
+  LIST_DISKS_WIN32,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -174,6 +176,17 @@ export function initializeIpcHanders(window: BrowserWindow) {
 
   ipcMain.handle(CREATE_TRAY_MENU_CHANNEL, async (evt, config: SystemTrayConfig) => {
     return createTray(window, config);
+  });
+
+  ipcMain.handle(LIST_DISKS_WIN32, async (evt, config: SystemTrayConfig) => {
+    const diskInfos = await nodeDiskInfo.getDiskInfo();
+    // Cant pass complex objects over the wire, make them simple
+    return diskInfos.map((di) => {
+      return {
+        mounted: di.mounted,
+        filesystem: di.filesystem,
+      };
+    });
   });
 
   ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {

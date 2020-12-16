@@ -416,7 +416,7 @@ export class WarcraftService {
 
   private getImplementation(): WarcraftServiceImpl {
     if (this._electronService.isWin) {
-      return new WarcraftServiceWin();
+      return new WarcraftServiceWin(this._electronService, this._fileService);
     }
 
     if (this._electronService.isMac) {
