@@ -40,6 +40,8 @@ export interface Addon {
   screenshotUrls?: string[];
   releasedAt?: Date;
   externalIds?: AddonExternalId[];
+  externalLatestReleaseId?: string;
+  latestChangelog?: string;
   dependencies?: AddonDependency[];
   missingDependencies?: string[];
 }

@@ -83,6 +83,18 @@ img {
   margin-left: 1em !important;
 }
 
+.mt-1 {
+  margin-top: 0.25em !important;
+}
+
+.mt-2 {
+  margin-top: 0.5em !important;
+}
+
+.mt-3 {
+  margin-top: 1em !important;
+}
+
 .no-reg-drag {
   -webkit-app-region: no-drag;
 }
@@ -254,6 +266,18 @@ img {
 }
 .text-left {
   text-align: left;
+}
+
+.addon-changelog {
+  max-height: 300px;
+
+  a {
+    color: $purple-1;
+
+    &:visited {
+      color: $purple-1;
+    }
+  }
 }
 
 .addon-table {

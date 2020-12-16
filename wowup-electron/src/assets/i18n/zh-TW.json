@@ -103,7 +103,10 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "By {authorName}",
+      "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 個依賴項",
+      "DESCRIPTION_TAB": "Description",
+      "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："
     },
@@ -210,6 +213,7 @@
         "VIEW_GITHUB": "在 GitHub 上檢視原始碼",
         "VIEW_GUIDE": "訪問指南，探索 WowUp 的功能（英語）"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "重新掃描",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "掃描客戶端資料夾中已安裝的插件",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新掃描過程將會猜測已經安裝了哪些插件，可能會重置已知插件資訊。如果特定插件無法識別或顯示不正確，請使用此功能。掃描不會刪除插件本身，只會刪除 WowUp 記錄的插件資訊。\n\n掃描需要花費一些時間。",

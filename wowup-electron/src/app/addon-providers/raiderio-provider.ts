@@ -25,6 +25,10 @@ export class RaiderIoAddonProvider implements AddonProvider {
 
   constructor() {}
 
+  public async getChangelog(addon: Addon): Promise<string> {
+    return '';
+  }
+  
   public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     return [];
   }

@@ -114,6 +114,16 @@ export class AddonService {
       });
   }
 
+  public async getChangelog(addon: Addon) {
+    const provider = this.getProvider(addon.providerName);
+    const changelog = await provider.getChangelog(addon);
+
+    addon.latestChangelog = changelog;
+    this.saveAddon(addon);
+
+    return changelog;
+  }
+
   public isForceIgnore(addon: Addon) {
     return addon.providerName === ADDON_PROVIDER_UNKNOWN || this.getProvider(addon.providerName).forceIgnore;
   }
@@ -720,6 +730,7 @@ export class AddonService {
       addon.latestVersion = latestFile.version;
       addon.releasedAt = latestFile.releaseDate;
       addon.downloadUrl = latestFile.downloadUrl;
+      addon.externalLatestReleaseId = latestFile.externalId;
       addon.name = result.name;
       addon.author = result.author;
       addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);

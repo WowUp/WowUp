@@ -103,7 +103,10 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "제작자: {authorName}",
+      "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "이 애드온은 {dependencyCount}개의 다른 애드온을 참조합니다.",
+      "DESCRIPTION_TAB": "Description",
+      "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "브라우저에서 열기",
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "
     },
@@ -210,6 +213,7 @@
         "VIEW_GITHUB": "GitHub에서 코드 확인",
         "VIEW_GUIDE": "WowUp 가이드 문서 보기"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "디렉토리 재탐색",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "설치된 애드온 목록 확인을 위해 클라이언트 디렉토리를 탐색합니다",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "설치된 애드온을 찾기 위해 재탐색을 할 경우, 애드온 정보가 초기화될 수 있습니다. 특정 애드온이 인식되지 않았거나 버전 정보가 올바르게 표시되지 않을 경우에만 사용하세요. 탐색 작업 중 애드온이 삭제되지는 않으며, WowUp의 정보와 매칭작업만 이루어집니다.\n\n탐색 작업에 시간이 소요될 수 있습니다.",

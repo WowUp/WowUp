@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import { Subscription } from "rxjs";
+import { BehaviorSubject, from, Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
@@ -27,6 +27,9 @@ export interface AddonDetailModel {
 export class AddonDetailComponent implements OnInit, OnDestroy {
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
+  private readonly _changelogSrc = new BehaviorSubject<string>("");
+
+  public readonly changelog$ = this._changelogSrc.asObservable();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -52,7 +55,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
           }
 
           this._cdRef.detectChanges();
-        })
+        }),
+      from(this.getChangelog()).subscribe((changelog) => this._changelogSrc.next(changelog))
     );
   }
 
@@ -72,6 +76,21 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
 
   getMissingDependencies() {
     return this.model.listItem?.addon?.missingDependencies ?? [];
+  }
+
+  hasChangelog() {
+    return !!this.model.listItem?.addon?.latestChangelog;
+  }
+
+  async getChangelog() {
+    let changelog = this.model.listItem?.addon?.latestChangelog;
+    if (changelog) {
+      return changelog;
+    }
+
+    changelog = await this._addonService.getChangelog(this.model.listItem?.addon);
+
+    return changelog;
   }
 
   get statusText() {

@@ -103,7 +103,10 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Por {authorName}",
+      "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "Este addon tiene {dependencyCount} {dependencyCount, plural, one{dependencia requerida} other{dependencias requeridas}}",
+      "DESCRIPTION_TAB": "Description",
+      "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "Ver en el navegador",
       "VIEW_ON_PROVIDER_PREFIX": "Ver en"
     },
@@ -210,6 +213,7 @@
         "VIEW_GITHUB": "Eche un vistazo al código en GitHub",
         "VIEW_GUIDE": "Descubra de lo que es capaz WowUp con nuestra guía"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "Reescanear Carpetas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Vuelve a buscar addons instalados en la carpeta del juego",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "WowUp intentará averiguar qué addons están instalados actualmente. Al hacerlo, la información sobre los addons ya conocidos se podría reiniciar. Utilice esta función cuando ciertos addons no sean reconocidos o las versiones de los addons no se reconozcan correctamente. Este escaneo no elimina los addons instalados, sólo la información que WowUp tiene acerca de ellos.\n\nEl escaneo puede tardar un poco.",

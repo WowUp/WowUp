@@ -150,6 +150,10 @@ export class WowUpAddonProvider implements AddonProvider {
     }
   }
 
+  public async getChangelog(addon: Addon): Promise<string> {
+    return "";
+  }
+
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
     const t1 = Date.now();
 
