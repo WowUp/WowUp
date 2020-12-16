@@ -10,6 +10,7 @@ import * as SearchResult from "../../utils/search-result.utils";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
+import { ADDON_PROVIDER_UNKNOWN } from "common/constants";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -59,6 +60,18 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  isUnknownProvider() {
+    return this.model.listItem?.addon?.providerName === ADDON_PROVIDER_UNKNOWN;
+  }
+
+  isMissingUnknownDependencies() {
+    return this.model.listItem?.addon?.missingDependencies.length;
+  }
+
+  getMissingDependencies() {
+    return this.model.listItem?.addon?.missingDependencies ?? [];
   }
 
   get statusText() {

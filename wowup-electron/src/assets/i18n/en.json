@@ -105,7 +105,8 @@
       "BY_AUTHOR": "By {authorName}",
       "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}",
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
-      "VIEW_ON_PROVIDER_PREFIX": "View on"
+      "VIEW_ON_PROVIDER_PREFIX": "View on",
+      "MISSING_DEPENDENCIES": "Missing dependencies"
     },
     "ALERT": {
       "ERROR_TITLE": "Error",
@@ -170,6 +171,7 @@
       "OPTIONS_TAB_TITLE": "Options"
     },
     "MY_ADDONS": {
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "ADDON_CONTEXT_MENU": {
         "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "Alpha",

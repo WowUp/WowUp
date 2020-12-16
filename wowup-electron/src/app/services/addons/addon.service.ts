@@ -787,7 +787,9 @@ export class AddonService {
       const unmatchedFolders = addonFolders.filter((af) => this.isAddonFolderUnmatched(matchedAddonFolderNames, af));
       console.debug("unmatchedFolders", unmatchedFolders);
 
-      const unmatchedAddons = unmatchedFolders.map((uf) => this.createUnmatchedAddon(uf, clientType));
+      const unmatchedAddons = unmatchedFolders.map((uf) =>
+        this.createUnmatchedAddon(uf, clientType, matchedAddonFolderNames)
+      );
 
       console.debug("unmatchedAddons", unmatchedAddons);
 
@@ -1050,7 +1052,13 @@ export class AddonService {
     };
   }
 
-  private createUnmatchedAddon(addonFolder: AddonFolder, clientType: WowClientType): Addon {
+  private createUnmatchedAddon(
+    addonFolder: AddonFolder,
+    clientType: WowClientType,
+    matchedAddonFolderNames: string[]
+  ): Addon {
+    const tocMissingDependencies = _.difference(addonFolder.toc?.dependencyList, matchedAddonFolderNames);
+
     return {
       id: uuidv4(),
       name: addonFolder.toc?.title || addonFolder.name,
@@ -1074,6 +1082,7 @@ export class AddonService {
       screenshotUrls: [],
       isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+      missingDependencies: tocMissingDependencies,
     };
   }
 

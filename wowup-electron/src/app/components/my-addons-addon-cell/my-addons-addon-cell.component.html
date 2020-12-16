@@ -16,14 +16,10 @@
     </div>
   </div>
   <div>
-    <a *ngIf="listItem.isUnMatched() === false" class="addon-title hover-text-2 mat-subheading-2"
-      (click)="viewDetails()" [ngClass]="{ 'text-3': listItem.isIgnored }">{{
-      listItem.addon.name
-    }}</a>
-    <div *ngIf="listItem.isUnMatched() === true" class="mat-subheading-2 m-0"
+    <a class="addon-title hover-text-2 mat-subheading-2" (click)="viewDetails()"
       [ngClass]="{ 'text-3': listItem.isIgnored }">{{
       listItem.addon.name
-    }}</div>
+      }}</a>
     <div *ngIf="listItem.addon.fundingLinks" class="addon-funding row">
       <div *ngFor="let link of listItem.addon.fundingLinks" [ngSwitch]="link.platform.toUpperCase()">
         <a *ngSwitchCase="'PATREON'" appExternalLink [href]="link.url"
@@ -60,7 +56,8 @@
         <mat-icon class="auto-update-icon" svgIcon="fas:link"></mat-icon>
       </div>
       <div *ngIf="listItem.isLoadOnDemand === true" class="mr-2">
-        <mat-icon class="auto-update-icon" [matTooltip]="'Required dependency missing'" [style.color]="'#ff9800'"
+        <mat-icon class="auto-update-icon"
+          [matTooltip]="'PAGES.MY_ADDONS.REQUIRED_DEPENDENCY_MISSING_TOOLTIP' | translate" [style.color]="'#ff9800'"
           svgIcon="fas:exclamation-triangle">
         </mat-icon>
       </div>
