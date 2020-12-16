@@ -18,6 +18,7 @@ import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
+import { BLIZZARD_AGENT_PATH_KEY } from "../../../common/constants";
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = "_retail_";
@@ -77,7 +78,7 @@ export class WarcraftService {
   ) {
     this._impl = this.getImplementation();
 
-    from(this._impl.getBlizzardAgentPath())
+    from(this.loadBlizzardAgentPath())
       .pipe(
         map((productDbPath) => (this._productDbPath = productDbPath)),
         map(() => this.scanProducts()),
@@ -427,5 +428,17 @@ export class WarcraftService {
     }
 
     throw new Error("No warcraft service implementation found");
+  }
+
+  private async loadBlizzardAgentPath() {
+    const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
+    if (storedAgentPath) {
+      return storedAgentPath;
+    }
+
+    const agentPath = await this._impl.getBlizzardAgentPath();
+    this._preferenceStorageService.set(BLIZZARD_AGENT_PATH_KEY, agentPath);
+
+    return agentPath;
   }
 }
