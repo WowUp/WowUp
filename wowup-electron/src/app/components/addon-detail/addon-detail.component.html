@@ -46,7 +46,7 @@
     <!-- SUMMARY -->
     <mat-tab-group mat-stretch-tabs>
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
-        <div class="mat-caption addon-detail-summary mt-3">{{ summary }}</div>
+        <div class="mat-caption addon-summary mt-3" [innerHTML]="summary"></div>
       </mat-tab>
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
         <div class="mat-caption addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
