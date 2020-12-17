@@ -719,11 +719,14 @@ export class AddonService {
       const addon = addons.find((addon) => addon.externalId === result?.externalId);
       const latestFile = this.getLatestFile(result, addon?.channelType);
 
+      addon.summary = result.summary;
+
       if (
         !result ||
         !latestFile ||
         (latestFile.version === addon.latestVersion && latestFile.releaseDate === addon.releasedAt)
       ) {
+        this._addonStorage.set(addon.id, addon);
         continue;
       }
 
