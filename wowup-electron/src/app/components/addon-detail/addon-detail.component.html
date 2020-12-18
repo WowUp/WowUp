@@ -1,13 +1,16 @@
 <div class="addon-detail-view">
   <div class="row align-items-start">
+    <div *ngIf="defaultImageUrl" class="row justify-content-center bg-secondary-4 mr-3 icon">
+      <img class="image" [src]="defaultImageUrl" alt="Addon Picture" />
+    </div>
     <h3 mat-dialog-title class="flex-grow-1">{{ title }}</h3>
     <mat-icon class="close-icon" color="accent" [mat-dialog-close]="true" [ngStyle]="{ cursor: 'pointer' }"
       svgIcon="fas:times">
     </mat-icon>
   </div>
-  <div *ngIf="defaultImageUrl" class="row justify-content-center image-row bg-secondary-4">
+  <!-- <div *ngIf="defaultImageUrl" class="row justify-content-center image-row bg-secondary-4">
     <img class="image" [src]="defaultImageUrl" alt="Addon Picture" />
-  </div>
+  </div> -->
 
   <div mat-dialog-content>
     <div class="row align-items-start">
