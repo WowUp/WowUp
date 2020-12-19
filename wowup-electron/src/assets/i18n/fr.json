@@ -1,6 +1,6 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Mise à jour automatique de \r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Mise à jour automatique de {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
     "STATUS_TEXT": {
@@ -46,7 +46,7 @@
       "BACKINGUP": "Sauvegarde",
       "COMPLETE": "Installé",
       "DOWNLOADING": "Téléchargement",
-      "ERROR": "Error",
+      "ERROR": "Erreur",
       "INSTALLING": "Installation",
       "PENDING": "En attente",
       "UNINSTALLING": "Désinstallation",
@@ -198,11 +198,11 @@
       },
       "FILTER_LABEL": "Filter",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "Supporter ce créateur",
+        "GENERIC": "Supporter ce créateur sur {platform}",
+        "GITHUB": "Supporter ce créateur sur GitHub",
+        "PATREON": "Supporter ce créateur sur Patreon",
+        "PAYPAL": "Support ce créateur sur PayPal"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Cet addon a de multiples fournisseurs",
       "PAGE_CONTEXT_FOOTER": {
@@ -256,9 +256,9 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
-          "INPUT_LABEL": "Providers"
+          "DESCRIPTION": "Sélectionnez quels fournisseurs vous voulez utiliser pour la recherche et l'installation de nouveaux addons.",
+          "FIELD_LABEL": "Activer les fournisseurs d'addons",
+          "INPUT_LABEL": "Fournisseurs"
         },
         "TITLE": "Addons"
       },
@@ -270,7 +270,7 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Lorsque vous fermez la fenêtre WowUp, minimise dans la barre d'état système.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimiser à la fermeture",
         "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
-        "SCALE_LABEL": "Scale",
+        "SCALE_LABEL": "Echelle",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changer la langue par défaut nécessite le redémarrage de l'application.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Définir une langue par défaut",
         "SET_LANGUAGE_DESCRIPTION": "Sélectionner une langue pour l'application.",
