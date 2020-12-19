@@ -1,6 +1,19 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.8",
+      "changes": [
+        "Add new changelog tab to the details dialog",
+        "Add missing dependencies to 'unknown' addons",
+        "Add support for displaying full description page for Hub addons",
+        "Add support for displaying full description for WowInterface addons",
+        "Show folder context menu item will now list all associated folders",
+        "Cache the blizzard product path to avoid checking all drives every startup",
+        "Move the blizzard product search to the background process on Windows",
+        "Description, icon, and changelog are updated without requiring a new addon version"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.7",
       "changes": [
         "Use new icon for mac build (alphabitnz)",
