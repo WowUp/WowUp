@@ -83,6 +83,18 @@ img {
   margin-left: 1em !important;
 }
 
+.mt-1 {
+  margin-top: 0.25em !important;
+}
+
+.mt-2 {
+  margin-top: 0.5em !important;
+}
+
+.mt-3 {
+  margin-top: 1em !important;
+}
+
 .no-reg-drag {
   -webkit-app-region: no-drag;
 }
@@ -254,6 +266,42 @@ img {
 }
 .text-left {
   text-align: left;
+}
+
+.addon-summary {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: inherit;
+  * {
+    white-space: pre-wrap;
+  }
+  img {
+    max-width: 100%;
+  }
+
+  a {
+    color: $white-2;
+
+    &:visited {
+      color: $white-3;
+    }
+  }
+}
+
+.addon-changelog {
+  white-space: pre-wrap;
+  font-size: inherit;
+  font-family: inherit;
+  * {
+    white-space: pre-wrap;
+  }
+  a {
+    color: $purple-1;
+
+    &:visited {
+      color: $purple-1;
+    }
+  }
 }
 
 .addon-table {

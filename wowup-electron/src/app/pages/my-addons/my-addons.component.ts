@@ -18,6 +18,7 @@ import { MatRadioChange } from "@angular/material/radio";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
+import { join } from "path";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import * as _ from "lodash";
 import { BehaviorSubject, from, Subscription } from "rxjs";
@@ -390,10 +391,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onShowFolder(addon: Addon) {
+  public onShowFolder(addon: Addon, folder: string) {
     try {
-      const addonPath = this.addonService.getFullInstallPath(addon);
-      this.electronService.shell.openPath(addonPath);
+      const addonPath = this.addonService.getInstallBasePath(addon);
+      const folderPath = join(addonPath, folder);
+      this.electronService.shell.openPath(folderPath);
     } catch (err) {
       console.error(err);
     }

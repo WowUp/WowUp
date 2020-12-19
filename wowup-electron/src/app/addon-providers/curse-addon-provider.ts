@@ -66,6 +66,28 @@ export class CurseAddonProvider implements AddonProvider {
     });
   }
 
+  public async getChangelog(addon: Addon): Promise<string> {
+    const url = new URL(`${API_URL}/addon/${addon.externalId}/file/${addon.externalLatestReleaseId}/changelog`);
+    let changelogResponse = await this._httpClient.get(url.toString(), { responseType: "text" }).toPromise();
+    changelogResponse = this.removeHtml(changelogResponse);
+
+    console.debug("changelogResponse", changelogResponse);
+
+    return changelogResponse;
+  }
+
+  // Replace 'a' tags with their content to not allow linking
+  private removeHtml(str: string) {
+    var tmp = document.createElement("div");
+    tmp.innerHTML = str;
+
+    const aTags = tmp.getElementsByTagName("a");
+    for (const tag of Array.from(aTags)) {
+      tag.replaceWith(tag.innerText);
+    }
+    return tmp.innerHTML;
+  }
+
   public async scan(
     clientType: WowClientType,
     addonChannelType: AddonChannelType,
@@ -375,6 +397,7 @@ export class CurseAddonProvider implements AddonProvider {
           gameVersion: this.getGameVersion(lf),
           releaseDate: new Date(lf.fileDate),
           dependencies: lf.dependencies.map(this.createAddonSearchResultDependency),
+          externalId: lf.id.toString(),
         };
       });
 
@@ -558,6 +581,7 @@ export class CurseAddonProvider implements AddonProvider {
       summary: scanResult.searchResult.summary,
       releasedAt: new Date(latestVersion.fileDate),
       isLoadOnDemand: false,
+      externalLatestReleaseId: latestVersion.id.toString(),
     };
   }
 }

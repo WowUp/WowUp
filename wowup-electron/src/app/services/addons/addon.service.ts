@@ -114,6 +114,16 @@ export class AddonService {
       });
   }
 
+  public async getChangelog(addon: Addon) {
+    const provider = this.getProvider(addon.providerName);
+    const changelog = await provider.getChangelog(addon);
+
+    addon.latestChangelog = changelog;
+    this.saveAddon(addon);
+
+    return changelog;
+  }
+
   public isForceIgnore(addon: Addon) {
     return addon.providerName === ADDON_PROVIDER_UNKNOWN || this.getProvider(addon.providerName).forceIgnore;
   }
@@ -591,6 +601,10 @@ export class AddonService {
     );
   }
 
+  public getInstallBasePath(addon: Addon) {
+    return this._warcraftService.getAddonFolderPath(addon.clientType);
+  }
+
   public getFullInstallPath(addon: Addon) {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
     const installedFolders = this.getInstalledFolders(addon);
@@ -705,17 +719,23 @@ export class AddonService {
       const addon = addons.find((addon) => addon.externalId === result?.externalId);
       const latestFile = this.getLatestFile(result, addon?.channelType);
 
+      addon.summary = result.summary;
+      addon.thumbnailUrl = result.thumbnailUrl;
+      addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
+
       if (
         !result ||
         !latestFile ||
         (latestFile.version === addon.latestVersion && latestFile.releaseDate === addon.releasedAt)
       ) {
+        this._addonStorage.set(addon.id, addon);
         continue;
       }
 
       addon.latestVersion = latestFile.version;
       addon.releasedAt = latestFile.releaseDate;
       addon.downloadUrl = latestFile.downloadUrl;
+      addon.externalLatestReleaseId = latestFile.externalId;
       addon.name = result.name;
       addon.author = result.author;
       addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
@@ -726,7 +746,6 @@ export class AddonService {
         addon.gameVersion = AddonUtils.getGameVersion(addon.gameVersion);
       }
 
-      addon.thumbnailUrl = result.thumbnailUrl;
       addon.externalUrl = result.externalUrl;
 
       this._addonStorage.set(addon.id, addon);
@@ -783,7 +802,9 @@ export class AddonService {
       const unmatchedFolders = addonFolders.filter((af) => this.isAddonFolderUnmatched(matchedAddonFolderNames, af));
       console.debug("unmatchedFolders", unmatchedFolders);
 
-      const unmatchedAddons = unmatchedFolders.map((uf) => this.createUnmatchedAddon(uf, clientType));
+      const unmatchedAddons = unmatchedFolders.map((uf) =>
+        this.createUnmatchedAddon(uf, clientType, matchedAddonFolderNames)
+      );
 
       console.debug("unmatchedAddons", unmatchedAddons);
 
@@ -1046,7 +1067,13 @@ export class AddonService {
     };
   }
 
-  private createUnmatchedAddon(addonFolder: AddonFolder, clientType: WowClientType): Addon {
+  private createUnmatchedAddon(
+    addonFolder: AddonFolder,
+    clientType: WowClientType,
+    matchedAddonFolderNames: string[]
+  ): Addon {
+    const tocMissingDependencies = _.difference(addonFolder.toc?.dependencyList, matchedAddonFolderNames);
+
     return {
       id: uuidv4(),
       name: addonFolder.toc?.title || addonFolder.name,
@@ -1070,6 +1097,7 @@ export class AddonService {
       screenshotUrls: [],
       isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+      missingDependencies: tocMissingDependencies,
     };
   }
 

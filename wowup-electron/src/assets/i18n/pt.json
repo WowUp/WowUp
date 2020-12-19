@@ -103,7 +103,10 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Por {authorName}",
+      "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "Este Addon tem {dependencyCount} {dependencyCount, plural, one{dependência necessária} other{dependências necessárias}}",
+      "DESCRIPTION_TAB": "Description",
+      "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "Visualizar no navegador",
       "VIEW_ON_PROVIDER_PREFIX": "Ver em"
     },
@@ -210,6 +213,7 @@
         "VIEW_GITHUB": "Olhe o código no GitHub",
         "VIEW_GUIDE": "Olhe o nosso guia para ver o que o WowUp pode fazer"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "Re-escanear pastas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Procura por Addons instalados",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Fazer um novo escaneamento irá tentar conseguir quais Addons você tem instalado, mas fazer isso pode resetar a informação dos Addons conhecidos.",

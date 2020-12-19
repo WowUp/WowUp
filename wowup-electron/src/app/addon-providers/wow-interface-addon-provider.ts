@@ -16,6 +16,7 @@ import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { FileService } from "../services/files/file.service";
 import { AddonProvider } from "./addon-provider";
+import { convertBbcode } from "../utils/bbcode.utils";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -61,6 +62,10 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     }
 
     return searchResults;
+  }
+
+  public async getChangelog(addon: Addon): Promise<string> {
+    return "";
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
@@ -187,11 +192,12 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       name: response.title,
       providerName: this.name,
       thumbnailUrl: this.getThumbnailUrl(response),
-      summary: response.description,
+      summary: convertBbcode(response.description),
       screenshotUrls: response.images?.map((img) => img.imageUrl),
       downloadCount: response.downloads,
       releasedAt: new Date(response.lastUpdate),
       isLoadOnDemand: false,
+      latestChangelog: convertBbcode(response.changeLog),
     };
   }
 
@@ -204,6 +210,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         folders: folderName ? [folderName] : [],
         gameVersion: "",
         releaseDate: new Date(response.lastUpdate),
+        changelog: convertBbcode(response.changeLog),
       };
 
       return {
@@ -215,7 +222,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         providerName: this.name,
         downloadCount: response.downloads,
         files: [searchResultFile],
-        summary: response.description.substr(0, 100),
+        summary: convertBbcode(response.description),
       };
     } catch (err) {
       console.error("Failed to create addon search result", err);

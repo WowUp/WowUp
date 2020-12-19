@@ -26,6 +26,7 @@ export const CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
+export const LIST_DISKS_WIN32 = "list-disks-win32";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
@@ -45,6 +46,7 @@ export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
 export const ADDON_PROVIDERS_KEY = "addon_providers";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
+export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";

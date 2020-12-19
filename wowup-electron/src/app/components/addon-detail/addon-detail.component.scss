@@ -1,5 +1,14 @@
 @import "../../../variables.scss";
 
+.icon {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+
+  img {
+    height: 100%;
+  }
+}
 .image-row {
   margin-bottom: 16px;
   border-radius: 4px;
@@ -11,9 +20,9 @@
   }
 }
 .addon-detail-view {
-  width: 35vw;
+  width: 60vw;
   min-width: 380px;
-  max-width: 600px;
+  max-width: 80vw;
 
   .icon-link {
     width: 24px;
@@ -29,5 +38,27 @@
 
   .sub-text {
     color: $white-2;
+  }
+}
+
+.funding-link-container {
+  h3 {
+    color: $artifact;
+  }
+  .addon-funding {
+    background-color: $dark-4;
+    border-radius: 4px;
+    padding: 0.5em;
+    a {
+      margin-right: 1em;
+    }
+    .funding-icon {
+      width: 28px;
+      height: 28px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

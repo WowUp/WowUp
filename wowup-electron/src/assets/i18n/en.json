@@ -103,7 +103,10 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "By {authorName}",
+      "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}",
+      "DESCRIPTION_TAB": "Description",
+      "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
@@ -210,6 +213,7 @@
         "VIEW_GITHUB": "Check out the code on GitHub",
         "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "Re-Scan Folders",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scan your client folder for installed addons",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Doing a re-scan will attempt to guess which addons you currently have installed, doing so may reset known addon information. Use this function when certain addons are not recognized or addon versions are not being shown correctly. This scan will never delete your installed addons, only what WowUp knows about them.\n\nScanning may take a few moments.",

@@ -50,6 +50,10 @@ export class TukUiAddonProvider implements AddonProvider {
     });
   }
 
+  public async getChangelog(addon: Addon): Promise<string> {
+    return '';
+  }
+  
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     let results: AddonSearchResult[] = [];
 

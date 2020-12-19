@@ -54,6 +54,10 @@ export class GitHubAddonProvider implements AddonProvider {
   public async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
     return [];
   }
+  
+  public async getChangelog(addon: Addon): Promise<string> {
+    return '';
+  }
 
   public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
     const repoPath = addonUri.pathname;
