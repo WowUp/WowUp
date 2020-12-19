@@ -3,6 +3,11 @@
     {
       "Version": "2.1.0-beta.8",
       "changes": [
+        "French locale updates (Zazou)",
+        "German locale updates (Glow)",
+        "Italian locale updates (Bito)",
+        "Spanish locale updates (SkollVargr)",
+        "Russian locale updates (Medok)",
         "Add new changelog tab to the details dialog",
         "Add missing dependencies to 'unknown' addons",
         "Add support for displaying full description page for Hub addons",
