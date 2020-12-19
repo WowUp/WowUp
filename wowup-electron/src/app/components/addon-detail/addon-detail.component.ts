@@ -1,4 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import {
+  AfterViewChecked,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ComponentFactoryResolver,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, from, Subscription } from "rxjs";
@@ -10,7 +22,9 @@ import * as SearchResult from "../../utils/search-result.utils";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
-import { ADDON_PROVIDER_UNKNOWN } from "common/constants";
+import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
+import { capitalizeString } from "../../utils/string.utils";
+import { ElectronService } from "app/services";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -24,18 +38,22 @@ export interface AddonDetailModel {
   styleUrls: ["./addon-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddonDetailComponent implements OnInit, OnDestroy {
+export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked {
+  @ViewChild("descriptionContainer", { read: ElementRef }) descriptionContainer: ElementRef;
+
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
   private readonly _changelogSrc = new BehaviorSubject<string>("");
 
   public readonly changelog$ = this._changelogSrc.asObservable();
+  public readonly capitalizeString = capitalizeString;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
     private _addonService: AddonService,
     private _translateService: TranslateService,
-    private _cdRef: ChangeDetectorRef
+    private _cdRef: ChangeDetectorRef,
+    private _electronService: ElectronService
   ) {
     this._dependencies = this.getDependencies();
 
@@ -62,9 +80,47 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {}
 
+  ngAfterViewChecked() {
+    console.debug("VIEW CHK");
+    const container: HTMLDivElement = this.descriptionContainer.nativeElement;
+    const aTags = container.getElementsByTagName("a");
+    for (let tag of Array.from(aTags)) {
+      if (tag.getAttribute("clk")) {
+        continue;
+      }
+
+      tag.setAttribute("clk", "1");
+      tag.addEventListener("click", this.onOpenLink, false);
+    }
+  }
+
   ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
+
+  onOpenLink = (e: MouseEvent) => {
+    e.preventDefault();
+
+    // Go up the call chain to find the tag
+    const path = (e as any).path as HTMLElement[];
+    let anchor: HTMLAnchorElement = undefined;
+    for (let element of path) {
+      if (element.tagName !== "A") {
+        continue;
+      }
+
+      anchor = element as HTMLAnchorElement;
+      break;
+    }
+
+    if (!anchor) {
+      console.warn("No anchor in path");
+      return false;
+    }
+
+    this._electronService.shell.openExternal(anchor.href);
+    return false;
+  };
 
   isUnknownProvider() {
     return this.model.listItem?.addon?.providerName === ADDON_PROVIDER_UNKNOWN;
@@ -82,15 +138,32 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
     return !!this.model.listItem?.addon?.latestChangelog;
   }
 
-  async getChangelog() {
-    let changelog = this.model.listItem?.addon?.latestChangelog;
-    if (changelog) {
-      return changelog;
+  getDescription() {
+    const summary = this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
+
+    const dom = new DOMParser().parseFromString(summary, "text/html");
+    const aTags = dom.getElementsByTagName("a");
+    for (let tag of Array.from(aTags)) {
+      // tag.setAttribute("appExternalLink", "");
     }
 
-    changelog = await this._addonService.getChangelog(this.model.listItem?.addon);
+    return summary;
+  }
 
-    return changelog;
+  async getChangelog() {
+    let changelog = this.model.listItem?.addon?.latestChangelog;
+    if (!changelog) {
+      changelog = await this._addonService.getChangelog(this.model.listItem?.addon);
+    }
+
+    const div = document.createElement("div");
+    div.innerHTML = changelog;
+    const aTags = div.getElementsByTagName("a");
+    for (let tag of Array.from(aTags)) {
+      tag.setAttribute("appExternalLink", "");
+    }
+
+    return div.innerHTML;
   }
 
   get statusText() {
@@ -135,16 +208,16 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
 
   get defaultImageUrl(): string {
     if (this.model.listItem?.addon) {
-      if (this.model.listItem?.addon?.screenshotUrls?.length) {
-        return this.model.listItem?.addon.screenshotUrls[0];
-      }
+      // if (this.model.listItem?.addon?.screenshotUrls?.length) {
+      //   return this.model.listItem?.addon.screenshotUrls[0];
+      // }
       return this.model.listItem?.addon.thumbnailUrl || "";
     }
 
     if (this.model.searchResult) {
-      if (this.model.searchResult?.screenshotUrls?.length) {
-        return this.model.searchResult.screenshotUrls[0];
-      }
+      // if (this.model.searchResult?.screenshotUrls?.length) {
+      //   return this.model.searchResult.screenshotUrls[0];
+      // }
       return this.model.searchResult?.thumbnailUrl || "";
     }
 
@@ -181,6 +254,14 @@ export class AddonDetailComponent implements OnInit, OnDestroy {
     return this.model.searchResult
       ? this.getLatestSearchResultFile().version
       : this.model.listItem.addon.installedVersion;
+  }
+
+  getFundingLinks() {
+    return this.model.listItem?.addon?.fundingLinks;
+  }
+
+  hasFundingLinks() {
+    return !!this.model.listItem?.addon?.fundingLinks?.length;
   }
 
   getExternalId() {

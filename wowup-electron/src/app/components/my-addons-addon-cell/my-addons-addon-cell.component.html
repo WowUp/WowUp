@@ -24,7 +24,7 @@
       <div *ngFor="let link of listItem.addon.fundingLinks" [ngSwitch]="link.platform.toUpperCase()">
         <a *ngSwitchCase="'PATREON'" appExternalLink [href]="link.url"
           [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.PATREON' | translate">
-          <img class="funding-icon" src="assets/images/patreon_logo_small.png" />
+          <img class="funding-icon" src="assets/images/patreon_logo_white.png" />
         </a>
         <a *ngSwitchCase="'GITHUB'" appExternalLink [href]="link.url"
           [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GITHUB' | translate">

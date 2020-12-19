@@ -720,6 +720,8 @@ export class AddonService {
       const latestFile = this.getLatestFile(result, addon?.channelType);
 
       addon.summary = result.summary;
+      addon.thumbnailUrl = result.thumbnailUrl;
+      addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
 
       if (
         !result ||
@@ -744,7 +746,6 @@ export class AddonService {
         addon.gameVersion = AddonUtils.getGameVersion(addon.gameVersion);
       }
 
-      addon.thumbnailUrl = result.thumbnailUrl;
       addon.externalUrl = result.externalUrl;
 
       this._addonStorage.set(addon.id, addon);

@@ -40,3 +40,25 @@
     color: $white-2;
   }
 }
+
+.funding-link-container {
+  h3 {
+    color: $artifact;
+  }
+  .addon-funding {
+    background-color: $dark-4;
+    border-radius: 4px;
+    padding: 0.5em;
+    a {
+      margin-right: 1em;
+    }
+    .funding-icon {
+      width: 28px;
+      height: 28px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}

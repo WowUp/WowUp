@@ -198,6 +198,7 @@ export class WowUpAddonProvider implements AddonProvider {
         releaseDate: release.published_at,
         version: release.tag_name,
         dependencies: [],
+        changelog: release.body,
       });
     }
 

@@ -269,20 +269,32 @@ img {
 }
 
 .addon-summary {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: inherit;
+  * {
+    white-space: pre-wrap;
+  }
   img {
     max-width: 100%;
   }
 
   a {
-    color: $purple-1;
+    color: $white-2;
 
     &:visited {
-      color: $purple-1;
+      color: $white-3;
     }
   }
 }
 
 .addon-changelog {
+  white-space: pre-wrap;
+  font-size: inherit;
+  font-family: inherit;
+  * {
+    white-space: pre-wrap;
+  }
   a {
     color: $purple-1;
 
