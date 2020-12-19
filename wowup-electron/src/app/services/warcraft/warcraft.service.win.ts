@@ -1,11 +1,9 @@
-import { LIST_DISKS_WIN32 } from "common/constants";
-import * as nodeDiskInfo from "node-disk-info";
 import * as path from "path";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { FileUtils } from "../../utils/file.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
+import { LIST_DISKS_WIN32 } from "../../../common/constants";
 
 // BLIZZARD STRINGS
 const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";

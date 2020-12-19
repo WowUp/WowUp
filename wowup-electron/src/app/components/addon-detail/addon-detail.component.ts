@@ -24,7 +24,7 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
 import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { capitalizeString } from "../../utils/string.utils";
-import { ElectronService } from "app/services";
+import { ElectronService } from "../../services";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
