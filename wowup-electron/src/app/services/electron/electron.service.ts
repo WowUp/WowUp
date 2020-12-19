@@ -131,9 +131,11 @@ export class ElectronService {
 
     this._zoomFactorChangeSrc.next(this.getZoomFactor());
 
-    this.appOptions = (<any>minimist(this.remote.process.argv.slice(1), {
-      boolean: ["hidden", "quit"],
-    })) as AppOptions;
+    if (this.remote?.process?.argv) {
+      this.appOptions = (<any>minimist(this.remote.process.argv.slice(1), {
+        boolean: ["hidden", "quit"],
+      })) as AppOptions;
+    }
 
     console.log("appOptions", this.appOptions);
   }
@@ -242,8 +244,8 @@ export class ElectronService {
   };
 
   public getZoomFactor(): number {
-    const currentWindow = this.remote.getCurrentWindow();
-    return currentWindow.webContents.zoomFactor;
+    const currentWindow = this.remote?.getCurrentWindow();
+    return currentWindow?.webContents?.zoomFactor || 1;
   }
 
   private getNextZoomInFactor(): number {
