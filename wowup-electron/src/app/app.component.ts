@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { filter } from "rxjs/operators";
+import { filter, switchMap } from "rxjs/operators";
 import { map, join } from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
@@ -25,10 +25,8 @@ import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
 import { getZoomDirection, ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "./entities/addon";
-import { WowClientType } from "./models/warcraft/wow-client-type";
-import { AddonChannelType } from "./models/wowup/addon-channel-type";
-
-const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
+import { AppConfig } from "environments/environment";
+import { from, interval, Subscription } from "rxjs";
 
 @Component({
   selector: "app-root",
@@ -37,7 +35,7 @@ const AUTO_UPDATE_PERIOD_MS = 60 * 60 * 1000; // 1 hour
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  private _autoUpdateInterval?: number;
+  private _autoUpdateInterval?: Subscription;
 
   @HostListener("document:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -90,7 +88,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
     this.onAutoUpdateInterval();
-    this._autoUpdateInterval = window.setInterval(this.onAutoUpdateInterval, AUTO_UPDATE_PERIOD_MS);
+    this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
+      .pipe(switchMap(() => from(this.onAutoUpdateInterval())))
+      .subscribe();
   }
 
   openDialog(): void {
