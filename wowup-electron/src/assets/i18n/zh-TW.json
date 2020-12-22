@@ -3,6 +3,9 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自動更新了 {count} 個插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自動更新",
+    "PROVIDERS": {
+      "UNKNOWN": "Unknown"
+    },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "插件掃描完成...",
       "ADDON_SCAN_STARTED": "開始插件掃描...",
@@ -106,6 +109,7 @@
       "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 個依賴項",
       "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："

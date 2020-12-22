@@ -74,6 +74,8 @@
   <div class="table-container bg-secondary-2 flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0">
     <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
       [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
+
+      <!-- ADDON -->
       <ng-container matColumnDef="addon.name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER" | translate }}
@@ -85,6 +87,7 @@
         </td>
       </ng-container>
 
+      <!-- STATUS -->
       <ng-container matColumnDef="sortOrder">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER" | translate }}
@@ -94,6 +97,7 @@
         </td>
       </ng-container>
 
+      <!-- INSTALLED AT -->
       <ng-container matColumnDef="installedAt">
         <th class="installed-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER" | translate }}
@@ -105,6 +109,7 @@
         </td>
       </ng-container>
 
+      <!-- LATEST VERSION -->
       <ng-container matColumnDef="addon.latestVersion">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER" | translate }}
@@ -115,6 +120,7 @@
         </td>
       </ng-container>
 
+      <!-- RELEASED AT -->
       <ng-container matColumnDef="addon.releasedAt">
         <th class="released-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER" | translate }}
@@ -126,6 +132,7 @@
         </td>
       </ng-container>
 
+      <!-- GAME VERSION -->
       <ng-container matColumnDef="addon.gameVersion">
         <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER" | translate }}
@@ -135,6 +142,7 @@
         </td>
       </ng-container>
 
+      <!-- EXTERNAL CHANNEL -->
       <ng-container matColumnDef="addon.externalChannel">
         <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL" | translate }}
@@ -144,17 +152,19 @@
         </td>
       </ng-container>
 
+      <!-- PROVIDER NAME -->
       <ng-container matColumnDef="addon.providerName">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding">
           <div class="row">
-            {{ element.addon.providerName }}
+            {{ getProviderName(element) | async }}
           </div>
         </td>
       </ng-container>
 
+      <!-- AUTHOR -->
       <ng-container matColumnDef="addon.author">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           <div class="author-column">

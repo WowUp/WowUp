@@ -3,6 +3,9 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",
+    "PROVIDERS": {
+      "UNKNOWN": "Unknown"
+    },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "애드온 탐색 완료",
       "ADDON_SCAN_STARTED": "애드온 탐색 시작",
@@ -106,6 +109,7 @@
       "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "이 애드온은 {dependencyCount}개의 다른 애드온을 참조합니다.",
       "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "브라우저에서 열기",
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "

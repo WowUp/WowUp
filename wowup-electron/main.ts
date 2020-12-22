@@ -6,46 +6,40 @@ import {
   MenuItem,
   MenuItemConstructorOptions,
   powerMonitor,
+  screen,
+  Rectangle,
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
-import * as os from "os";
-import * as path from "path";
-import * as url from "url";
+import { type as osType, release as osRelease, arch as osArch } from "os";
+import { join } from "path";
+import { format as urlFormat } from "url";
+import { inspect } from "util";
 import * as platform from "./platform";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
-import "./ipc-events";
-import { initializeIpcHanders } from "./ipc-events";
+import { initializeIpcHandlers } from "./ipc-events";
 import {
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
   DEFAULT_BG_COLOR,
   DEFAULT_LIGHT_BG_COLOR,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
+  WINDOW_BOUNDS_KEY,
+  WINDOW_MAXIMIZED_KEY,
+  WINDOW_MINIMIZED_KEY,
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
-import { windowStateManager } from "./window-state";
 
-const startedAt = Date.now();
-const preferenceStore = new Store({ name: "preferences" });
-const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
-
-let appIsQuitting = false;
-let win: BrowserWindow = null;
-
-// APP MENU SETUP
-const appMenuTemplate: Array<MenuItemConstructorOptions | MenuItem> = getAppMenu();
-
-const appMenu = Menu.buildFromTemplate(appMenuTemplate);
-Menu.setApplicationMenu(appMenu);
-
-const LOG_PATH = path.join(app.getPath("userData"), "logs");
+// LOGGING SETUP
+// Override the default log path so they aren't a pain to find on Mac
+const LOG_PATH = join(app.getPath("userData"), "logs");
 app.setAppLogsPath(LOG_PATH);
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
-  return path.join(LOG_PATH, variables.fileName);
+  return join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
 
+// ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {
   log.error("uncaughtException", error);
 });
@@ -54,8 +48,31 @@ process.on("unhandledRejection", (error) => {
   log.error("unhandledRejection", error);
 });
 
+// VARIABLES
+const startedAt = Date.now();
+const preferenceStore = new Store({ name: "preferences" });
+const argv = require("minimist")(process.argv.slice(1), {
+  boolean: ["serve", "hidden"],
+}) as AppOptions;
+const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
+const USER_AGENT = getUserAgent();
+log.info("USER_AGENT", USER_AGENT);
+const WINDOW_DEFAULT_WIDTH = 1280;
+const WINDOW_DEFAULT_HEIGHT = 720;
+const WINDOW_MIN_WIDTH = 940;
+const WINDOW_MIN_HEIGHT = 500;
+const MIN_VISIBLE_ON_SCREEN = 32;
+
+let appIsQuitting = false;
+let win: BrowserWindow = null;
+
+// APP MENU SETUP
+Menu.setApplicationMenu(Menu.buildFromTemplate(getAppMenu()));
+
+// Set the app ID so that our notifications work correctly on Windows
 app.setAppUserModelId("io.wowup.jliddev");
 
+// HARDWARE ACCELERATION SETUP
 if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
   log.info("Hardware acceleration disabled");
   app.disableHardwareAcceleration();
@@ -63,48 +80,126 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
   log.info("Hardware acceleration enabled");
 }
 
+app.allowRendererProcessReuse = false;
+
+// Some servers don't supply good CORS headers for us, so we ignore them.
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 
-const portableStr = isPortable ? " portable;" : "";
-const USER_AGENT = `WowUp-Client/${app.getVersion()} (${os.type()}; ${os.release()}; ${os.arch()}; ${portableStr} +https://wowup.io)`;
-log.info("USER_AGENT", USER_AGENT);
+// Only allow one instance of the app to run at a time, focus running window if user opens a 2nd time
+// Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
+const singleInstanceLock = app.requestSingleInstanceLock();
+if (!singleInstanceLock) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (!win) {
+      log.warn("Second instance launched, but no window found");
+      return;
+    }
 
-const argv = require("minimist")(process.argv.slice(1), {
-  boolean: ["serve", "hidden"],
-}) as AppOptions;
+    if (win.isMinimized()) {
+      win.restore();
+    } else if (!win.isVisible() && !platform.isMac) {
+      win.show();
+    }
 
-function canStartHidden() {
-  return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
+    win.focus();
+  });
 }
 
-function createWindow(): BrowserWindow {
-  const savedTheme = preferenceStore.get(CURRENT_THEME_KEY) as string;
-  const backgroundColor = savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+// Added 400 ms to fix the black background issue while using transparent window. More details at https://github.com/electron/electron/issues/15947
+if (app.isReady()) {
+  log.info(`App already ready: ${Date.now() - startedAt}ms`);
+} else {
+  app.once("ready", () => {
+    log.info(`App ready: ${Date.now() - startedAt}ms`);
+    // setTimeout(() => {
+    createWindow();
+    // }, 400);
+  });
+}
 
+app.on("before-quit", () => {
+  saveWindowConfig(win);
+  win = null;
+  appIsQuitting = true;
+});
+
+// Quit when all windows are closed.
+app.on("window-all-closed", () => {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  // if (process.platform !== "darwin") {
+  app.quit();
+  // }
+});
+
+app.on("activate", () => {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (platform.isMac) {
+    app.dock.show();
+    win?.show();
+  }
+
+  if (win === null) {
+    createWindow();
+  }
+});
+
+app.on("child-process-gone", (e, details) => {
+  log.warn("child-process-gone", inspect(details));
+  if (details.reason === "killed") {
+    app.quit();
+  }
+});
+
+powerMonitor.on("resume", () => {
+  log.info("powerMonitor resume");
+});
+
+powerMonitor.on("suspend", () => {
+  log.info("powerMonitor suspend");
+});
+
+powerMonitor.on("lock-screen", () => {
+  log.info("powerMonitor lock-screen");
+});
+
+powerMonitor.on("unlock-screen", () => {
+  log.info("powerMonitor unlock-screen");
+});
+
+function createWindow(): BrowserWindow {
   // Main object for managing window state
   // Initialize with a window name and default size
-  const mainWindowManager = windowStateManager("main", {
-    width: 900,
-    height: 600,
-  });
+  // const mainWindowManager = windowStateManager("main", {
+  //   width: 900,
+  //   height: 600,
+  // });
 
   const windowOptions: BrowserWindowConstructorOptions = {
-    width: mainWindowManager.width,
-    height: mainWindowManager.height,
-    x: mainWindowManager.x,
-    y: mainWindowManager.y,
-    backgroundColor,
+    width: WINDOW_DEFAULT_WIDTH,
+    height: WINDOW_DEFAULT_HEIGHT,
+    minWidth: WINDOW_MIN_WIDTH,
+    minHeight: WINDOW_MIN_HEIGHT,
+    transparent: false,
+    resizable: true,
+    backgroundColor: getBackgroundColor(),
     title: "WowUp",
     titleBarStyle: "hidden",
     webPreferences: {
-      // preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: true,
-      allowRunningInsecureContent: argv.serve ? true : false,
+      preload: join(__dirname, "preload.js"),
+      nodeIntegration: true, // TODO remove this
+      allowRunningInsecureContent: argv.serve,
       webSecurity: false,
+      nativeWindowOpen: true,
       enableRemoteModule: true,
     },
-    minWidth: 940,
-    minHeight: 550,
     show: false,
   };
 
@@ -114,17 +209,28 @@ function createWindow(): BrowserWindow {
 
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
-    windowOptions.icon = path.join(__dirname, "assets", "wowup_logo_512np.png");
+    windowOptions.icon = join(__dirname, "assets", "wowup_logo_512np.png");
   }
+
+  setWindowBounds(windowOptions);
 
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
-  initializeIpcHanders(win);
+
+  if (preferenceStore.get(WINDOW_MAXIMIZED_KEY, false)) {
+    win.maximize();
+  }
+
+  if (preferenceStore.get(WINDOW_MINIMIZED_KEY, false)) {
+    win.minimize();
+  }
+
+  initializeIpcHandlers(win);
   initializeAppUpdater(win);
   initializeAppUpdateIpcHandlers(win);
 
   // Keep track of window state
-  mainWindowManager.monitorState(win);
+  // mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
 
@@ -153,11 +259,11 @@ function createWindow(): BrowserWindow {
   });
 
   win.once("show", () => {
-    if (mainWindowManager.isFullScreen) {
-      win.setFullScreen(true);
-    } else if (mainWindowManager.isMaximized) {
-      win.maximize();
-    }
+    // if (mainWindowManager.isFullScreen) {
+    //   win.setFullScreen(true);
+    // } else if (mainWindowManager.isMaximized) {
+    //   win.maximize();
+    // }
   });
 
   if (platform.isMac) {
@@ -172,6 +278,14 @@ function createWindow(): BrowserWindow {
     });
   }
 
+  win.on("close", () => {
+    if (!win) {
+      return;
+    }
+
+    saveWindowConfig(win);
+  });
+
   win.once("closed", () => {
     win = null;
   });
@@ -184,8 +298,8 @@ function createWindow(): BrowserWindow {
     win.loadURL("http://localhost:4200");
   } else {
     win.loadURL(
-      url.format({
-        pathname: path.join(__dirname, "dist/index.html"),
+      urlFormat({
+        pathname: join(__dirname, "dist/index.html"),
         protocol: "file:",
         slashes: true,
       })
@@ -195,82 +309,72 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
-try {
-  // Adapted from https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
-  const singleInstanceLock = app.requestSingleInstanceLock();
-  if (!singleInstanceLock) {
-    app.quit();
-  } else {
-    app.on("second-instance", () => {
-      // Someone tried to run a second instance, we should focus our window.
-      if (win) {
-        if (win.isMinimized()) {
-          win.restore();
-        } else if (!win.isVisible() && !platform.isMac) {
-          win.show();
-        }
-        win.focus();
-      }
-    });
+function saveWindowConfig(browserWindow: BrowserWindow) {
+  try {
+    if (!browserWindow) {
+      return;
+    }
+
+    preferenceStore.set(WINDOW_MAXIMIZED_KEY, browserWindow.isMaximized());
+    preferenceStore.set(WINDOW_MINIMIZED_KEY, browserWindow.isMinimized());
+
+    if (!preferenceStore.get(WINDOW_MAXIMIZED_KEY, false) && !preferenceStore.get(WINDOW_MINIMIZED_KEY, false)) {
+      preferenceStore.set(WINDOW_BOUNDS_KEY, browserWindow.getBounds());
+    }
+  } catch (e) {
+    log.error(e);
+  }
+}
+
+// Lifted from Discord to check where to display the window
+function setWindowBounds(windowOptions: BrowserWindowConstructorOptions) {
+  const savedBounds = preferenceStore.get(WINDOW_BOUNDS_KEY) as Rectangle;
+  if (!savedBounds) {
+    windowOptions.center = true;
+    return;
   }
 
-  app.allowRendererProcessReuse = false;
+  savedBounds.width = Math.max(WINDOW_MIN_WIDTH, savedBounds.width);
+  savedBounds.height = Math.max(WINDOW_MIN_HEIGHT, savedBounds.height);
 
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-  app.on("ready", () => {
-    log.info(`App ready: ${Date.now() - startedAt}ms`);
-    setTimeout(() => {
-      createWindow();
-    }, 400);
-  });
+  let isVisibleOnAnyScreen = false;
 
-  app.on("before-quit", () => {
-    appIsQuitting = true;
-  });
+  const displays = screen.getAllDisplays();
+  for (const display of displays) {
+    const displayBound = display.workArea;
+    displayBound.x += MIN_VISIBLE_ON_SCREEN;
+    displayBound.y += MIN_VISIBLE_ON_SCREEN;
+    displayBound.width -= 2 * MIN_VISIBLE_ON_SCREEN;
+    displayBound.height -= 2 * MIN_VISIBLE_ON_SCREEN;
+    isVisibleOnAnyScreen = doRectanglesOverlap(savedBounds, displayBound);
 
-  // Quit when all windows are closed.
-  app.on("window-all-closed", () => {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    // if (process.platform !== "darwin") {
-    app.quit();
-    // }
-  });
-
-  app.on("activate", () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (platform.isMac) {
-      app.dock.show();
-      win?.show();
+    if (isVisibleOnAnyScreen) {
+      break;
     }
+  }
 
-    if (win === null) {
-      createWindow();
-    }
-  });
+  if (isVisibleOnAnyScreen) {
+    windowOptions.width = savedBounds.width;
+    windowOptions.height = savedBounds.height;
+    windowOptions.x = savedBounds.x;
+    windowOptions.y = savedBounds.y;
+  } else {
+    windowOptions.center = true;
+  }
+}
 
-  powerMonitor.on("resume", () => {
-    log.info("powerMonitor resume");
-  });
+function getBackgroundColor() {
+  const savedTheme = preferenceStore.get(CURRENT_THEME_KEY) as string;
+  return savedTheme && savedTheme.indexOf("light") !== -1 ? DEFAULT_LIGHT_BG_COLOR : DEFAULT_BG_COLOR;
+}
 
-  powerMonitor.on("suspend", () => {
-    log.info("powerMonitor suspend");
-  });
+function canStartHidden() {
+  return argv.hidden || app.getLoginItemSettings().wasOpenedAsHidden;
+}
 
-  powerMonitor.on("lock-screen", () => {
-    log.info("powerMonitor lock-screen");
-  });
-
-  powerMonitor.on("unlock-screen", () => {
-    log.info("powerMonitor unlock-screen");
-  });
-} catch (e) {
-  // Catch Error
-  // throw e;
+function getUserAgent() {
+  const portableStr = isPortable ? " portable;" : "";
+  return `WowUp-Client/${app.getVersion()} (${osType()}; ${osRelease()}; ${osArch()}; ${portableStr} +https://wowup.io)`;
 }
 
 function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
@@ -357,4 +461,25 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
   }
 
   return [];
+}
+
+function doRectanglesOverlap(a: Rectangle, b: Rectangle) {
+  const ax1 = a.x + a.width;
+  const bx1 = b.x + b.width;
+  const ay1 = a.y + a.height;
+  const by1 = b.y + b.height; // clamp a to b, see if it is non-empty
+
+  const cx0 = a.x < b.x ? b.x : a.x;
+  const cx1 = ax1 < bx1 ? ax1 : bx1;
+
+  if (cx1 - cx0 > 0) {
+    const cy0 = a.y < b.y ? b.y : a.y;
+    const cy1 = ay1 < by1 ? ay1 : by1;
+
+    if (cy1 - cy0 > 0) {
+      return true;
+    }
+  }
+
+  return false;
 }

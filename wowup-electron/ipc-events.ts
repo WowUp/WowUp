@@ -41,7 +41,7 @@ import { DownloadRequest } from "./src/common/models/download-request";
 import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
 import { createTray } from "./system-tray";
 
-export function initializeIpcHanders(window: BrowserWindow) {
+export function initializeIpcHandlers(window: BrowserWindow) {
   ipcMain.handle(
     SHOW_DIRECTORY,
     async (evt, filePath: string): Promise<string> => {

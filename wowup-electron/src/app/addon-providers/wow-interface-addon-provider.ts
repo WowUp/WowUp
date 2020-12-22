@@ -65,7 +65,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   }
 
   public async getChangelog(addon: Addon): Promise<string> {
-    return "";
+    return addon.latestChangelog || "";
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
