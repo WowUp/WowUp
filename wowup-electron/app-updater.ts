@@ -48,6 +48,10 @@ export function initializeAppUpdater(win: BrowserWindow) {
   });
 
   autoUpdater.on("error", (e) => {
+    if (e.message.indexOf("dev-app-update.yml") !== -1) {
+      return;
+    }
+    
     log.error(APP_UPDATE_ERROR, e);
     win.webContents.send(APP_UPDATE_ERROR, e);
   });

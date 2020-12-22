@@ -2,7 +2,8 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { filter, switchMap } from "rxjs/operators";
+import { interval, Subscription } from "rxjs";
+import { filter, tap } from "rxjs/operators";
 import { map, join } from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
@@ -23,10 +24,9 @@ import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
-import { getZoomDirection, ZoomDirection } from "./utils/zoom.utils";
+import { getZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "./entities/addon";
-import { AppConfig } from "environments/environment";
-import { from, interval, Subscription } from "rxjs";
+import { AppConfig } from "../environments/environment";
 
 @Component({
   selector: "app-root",
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.onAutoUpdateInterval();
     this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
-      .pipe(switchMap(() => from(this.onAutoUpdateInterval())))
+      .pipe(tap(async () => await this.onAutoUpdateInterval()))
       .subscribe();
   }
 
@@ -107,26 +107,29 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private onAutoUpdateInterval = async () => {
-    console.debug("Auto update");
-    const updatedAddons = await this._addonService.processAutoUpdates();
+    try {
+      const updatedAddons = await this._addonService.processAutoUpdates();
 
-    if (!updatedAddons || updatedAddons.length === 0) {
-      this.checkQuitEnabled();
-      return;
-    }
-
-    if (this.wowUpService.enableSystemNotifications) {
-      // Windows notification only shows so many chars
-      if (this.getAddonNamesLength(updatedAddons) > 60) {
-        await this.showManyAddonsAutoUpdated(updatedAddons);
-      } else {
-        await this.showFewAddonsAutoUpdated(updatedAddons);
+      if (!updatedAddons || updatedAddons.length === 0) {
+        this.checkQuitEnabled();
+        return;
       }
-    } else {
-      this.checkQuitEnabled();
-    }
 
-    this._sessionService.autoUpdateComplete();
+      if (this.wowUpService.enableSystemNotifications) {
+        // Windows notification only shows so many chars
+        if (this.getAddonNamesLength(updatedAddons) > 60) {
+          await this.showManyAddonsAutoUpdated(updatedAddons);
+        } else {
+          await this.showFewAddonsAutoUpdated(updatedAddons);
+        }
+      } else {
+        this.checkQuitEnabled();
+      }
+
+      this._sessionService.autoUpdateComplete();
+    } catch (e) {
+      console.error("Error during auto update", e);
+    }
   };
 
   private async showManyAddonsAutoUpdated(updatedAddons: Addon[]) {
