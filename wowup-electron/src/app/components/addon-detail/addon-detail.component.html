@@ -34,26 +34,9 @@
     </div>
 
     <div *ngIf="hasFundingLinks()" class="funding-link-container ">
-      <h3 class="m-0">Support this author</h3>
-      <div class="row  addon-funding align-items-center">
-        <div *ngFor="let link of getFundingLinks()" [ngSwitch]="link.platform.toUpperCase()">
-          <a *ngSwitchCase="'PATREON'" appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.PATREON' | translate">
-            <img class="funding-icon" src="assets/images/patreon_logo_white.png" />
-          </a>
-          <a *ngSwitchCase="'GITHUB'" appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GITHUB' | translate">
-            <img class="funding-icon" src="assets/images/github_logo_small.png" />
-          </a>
-          <a *ngSwitchCase="'CUSTOM'" appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.CUSTOM' | translate">
-            <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
-          </a>
-          <a *ngSwitchDefault appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC' | translate:{'platform': capitalizeString(link.platform)}">
-            <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
-          </a>
-        </div>
+      <h3 class="m-0">{{ 'DIALOGS.ADDON_DETAILS.FUNDING_LINK_TITLE' | translate }}</h3>
+      <div class="row align-items-center">
+        <app-funding-button *ngFor="let link of getFundingLinks()" [funding]="link"></app-funding-button>
       </div>
     </div>
     <!-- MISSING DEPENDENCIES -->
@@ -71,12 +54,12 @@
       </span>
     </div>
     <!-- SUMMARY -->
-    <mat-tab-group mat-stretch-tabs>
+    <mat-tab-group *ngIf="isUnknownProvider() === false" mat-stretch-tabs>
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
-        <div #descriptionContainer class="mat-caption addon-summary mt-3" [innerHtml]="getDescription()"></div>
+        <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="getDescription()"></div>
       </mat-tab>
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
-        <div class="mat-caption addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
+        <div #changelogContainer class="addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
       </mat-tab>
     </mat-tab-group>
   </div>

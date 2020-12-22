@@ -71,8 +71,6 @@ export class CurseAddonProvider implements AddonProvider {
     let changelogResponse = await this._httpClient.get(url.toString(), { responseType: "text" }).toPromise();
     changelogResponse = this.removeHtml(changelogResponse);
 
-    console.debug("changelogResponse", changelogResponse);
-
     return changelogResponse;
   }
 
@@ -156,10 +154,6 @@ export class CurseAddonProvider implements AddonProvider {
     if (clientType === WowClientType.None) {
       return;
     }
-
-    scanResults.forEach((result) => {
-      console.debug(result.folderName, result.fingerprint);
-    });
 
     const fingerprintResponse = await this.getAddonsByFingerprintsW(scanResults.map((result) => result.fingerprint));
 

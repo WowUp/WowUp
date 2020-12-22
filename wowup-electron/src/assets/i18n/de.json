@@ -3,6 +3,9 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisch aktualisiert\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{Addon} other{Addons}} automatisch aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
+    "PROVIDERS": {
+      "UNKNOWN": "Unknown"
+    },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Addon-Scan abgeschlossen...",
       "ADDON_SCAN_STARTED": "Addon-Scan gestartet...",
@@ -106,6 +109,7 @@
       "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"

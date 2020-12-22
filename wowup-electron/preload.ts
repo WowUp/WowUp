@@ -1,18 +1,9 @@
-// import { Titlebar, Color } from 'custom-electron-titlebar'
+if (!process.isMainFrame) {
+  throw new Error("Preload scripts should not be running in a subframe");
+}
 
-// window.addEventListener('DOMContentLoaded', () => {
-//     new Titlebar({
-//         backgroundColor: Color.fromHex('#ECECEC'),
-//         menu: null,
-//         icon: './assets/wowup_logo_512np.png'
-//     });
-
-//     const replaceText = (selector, text) => {
-//         const element = document.getElementById(selector)
-//         if (element) element.innerText = text
-//     }
-
-//     for (const type of ['chrome', 'node', 'electron']) {
-//         replaceText(`${type}-version`, process.versions[type])
-//     }
-// });
+if (window.open === null) {
+  console.log("NO OPENER");
+} else {
+  console.log("HAS OPENER");
+}
