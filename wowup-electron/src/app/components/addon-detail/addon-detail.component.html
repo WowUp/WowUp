@@ -34,26 +34,9 @@
     </div>
 
     <div *ngIf="hasFundingLinks()" class="funding-link-container ">
-      <h3 class="m-0">Support this author</h3>
-      <div class="row  addon-funding align-items-center">
-        <div *ngFor="let link of getFundingLinks()" [ngSwitch]="link.platform.toUpperCase()">
-          <a *ngSwitchCase="'PATREON'" appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.PATREON' | translate">
-            <img class="funding-icon" src="assets/images/patreon_logo_white.png" />
-          </a>
-          <a *ngSwitchCase="'GITHUB'" appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GITHUB' | translate">
-            <img class="funding-icon" src="assets/images/github_logo_small.png" />
-          </a>
-          <a *ngSwitchCase="'CUSTOM'" appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.CUSTOM' | translate">
-            <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
-          </a>
-          <a *ngSwitchDefault appExternalLink [href]="link.url"
-            [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC' | translate:{'platform': capitalizeString(link.platform)}">
-            <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
-          </a>
-        </div>
+      <h3 class="m-0">{{ 'DIALOGS.ADDON_DETAILS.FUNDING_LINK_TITLE' | translate }}</h3>
+      <div class="row align-items-center">
+        <app-funding-button *ngFor="let link of getFundingLinks()" [funding]="link"></app-funding-button>
       </div>
     </div>
     <!-- MISSING DEPENDENCIES -->

@@ -109,6 +109,7 @@
       "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "Cet addon a {dependencyCount} {dependencyCount, plural, one{dépendance requise} other{dépendances requises}}",
       "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"

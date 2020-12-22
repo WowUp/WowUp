@@ -1,0 +1,6 @@
+<a mat-raised-button color="primary" class="funding-button" appExternalLink
+  [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC' | translate:{platform:getFundingName()}"
+  [href]="funding.url">
+  <img class="funding-icon" [src]="getFundingIcon()" />
+  <span>{{ getFundingName() }}</span>
+</a>

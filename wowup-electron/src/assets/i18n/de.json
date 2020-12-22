@@ -109,6 +109,7 @@
       "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"
