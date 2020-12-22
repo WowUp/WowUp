@@ -1,9 +1,13 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component } from "@angular/core";
+import { interval, Subscription } from "rxjs";
+import { filter, tap } from "rxjs/operators";
+
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
-import { filter } from "rxjs/operators";
+
+import { AppConfig } from "../../../environments/environment";
 import { ElectronService } from "../../services";
+import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
@@ -14,14 +18,15 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./home.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements AfterViewInit, OnDestroy {
+  private _appUpdateInterval: Subscription;
+
   public selectedIndex = 0;
   public hasWowClient = false;
 
   constructor(
     public electronService: ElectronService,
     private _sessionService: SessionService,
-    private _snackBar: MatSnackBar,
     private _translateService: TranslateService,
     private _addonService: AddonService,
     private _warcraftService: WarcraftService,
@@ -43,12 +48,16 @@ export class HomeComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // check for an app update every hour
-    window.setInterval(() => {
-      this.checkForAppUpdate();
-    }, 60 * 60 * 1000);
+    // check for an app update every so often
+    this._appUpdateInterval = interval(AppConfig.appUpdateIntervalMs)
+      .pipe(tap(async () => this.checkForAppUpdate()))
+      .subscribe();
 
     this.checkForAppUpdate();
+  }
+
+  ngOnDestroy() {
+    this._appUpdateInterval.unsubscribe();
   }
 
   onSelectedIndexChange(index: number) {
