@@ -56,10 +56,10 @@
     <!-- SUMMARY -->
     <mat-tab-group mat-stretch-tabs>
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
-        <div #descriptionContainer class="mat-caption addon-summary mt-3" [innerHtml]="getDescription()"></div>
+        <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="getDescription()"></div>
       </mat-tab>
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
-        <div class="mat-caption addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
+        <div #changelogContainer class="addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
       </mat-tab>
     </mat-tab-group>
   </div>

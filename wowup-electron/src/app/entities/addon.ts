@@ -41,6 +41,7 @@ export interface Addon {
   releasedAt?: Date;
   externalIds?: AddonExternalId[];
   externalLatestReleaseId?: string;
+  latestChangelogVersion?: string;
   latestChangelog?: string;
   dependencies?: AddonDependency[];
   missingDependencies?: string[];
