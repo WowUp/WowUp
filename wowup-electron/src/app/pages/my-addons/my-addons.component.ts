@@ -203,6 +203,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  // Get the translated value of the provider name (unknown)
+  // If the key is returned there's nothing to translate return the normal name
+  public getProviderName(viewModel: AddonViewModel) {
+    const key = `APP.PROVIDERS.${viewModel.addon.providerName.toUpperCase()}`;
+    return this._translateService.get(key).pipe(map((tx) => (tx === key ? viewModel.addon.providerName : tx)));
+  }
+
   public isLatestUpdateColumnVisible(): boolean {
     return this.columns.find((column) => column.name === "addon.latestVersion").visible;
   }
