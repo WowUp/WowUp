@@ -54,7 +54,7 @@
       </span>
     </div>
     <!-- SUMMARY -->
-    <mat-tab-group mat-stretch-tabs>
+    <mat-tab-group *ngIf="isUnknownProvider() === false" mat-stretch-tabs>
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
         <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="getDescription()"></div>
       </mat-tab>

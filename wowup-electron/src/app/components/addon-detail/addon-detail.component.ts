@@ -82,13 +82,17 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit(): void {}
 
   ngAfterViewChecked() {
-    const descriptionContainer: HTMLDivElement = this.descriptionContainer.nativeElement;
-    const changelogContainer: HTMLDivElement = this.changelogContainer.nativeElement;
+    const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
+    const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
     this.formatLinks(descriptionContainer);
     this.formatLinks(changelogContainer);
   }
 
   formatLinks(container: HTMLDivElement) {
+    if (!container) {
+      return;
+    }
+    
     const aTags = container.getElementsByTagName("a");
     for (let tag of Array.from(aTags)) {
       if (tag.getAttribute("clk")) {
