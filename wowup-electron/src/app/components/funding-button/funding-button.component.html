@@ -1,6 +1,9 @@
-<a mat-raised-button color="primary" class="funding-button" appExternalLink
-  [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC' | translate:{platform:getFundingName()}"
-  [href]="funding.url">
+<a *ngIf="size === 'large'" mat-raised-button color="primary" class="funding-button large" appExternalLink
+  [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC' | translate:{platform:getFundingName()}" [href]="funding.url">
   <img class="funding-icon" [src]="getFundingIcon()" />
   <span>{{ getFundingName() }}</span>
+</a>
+<a *ngIf="size === 'small'" class="funding-button small" appExternalLink
+  [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC' | translate:{platform:getFundingName()}" [href]="funding.url">
+  <img class="funding-icon" [src]="getFundingIcon()" />
 </a>

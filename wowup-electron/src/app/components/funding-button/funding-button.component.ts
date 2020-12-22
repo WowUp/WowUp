@@ -8,6 +8,7 @@ import { AddonFundingLink } from "../../entities/addon";
 })
 export class FundingButtonComponent implements OnInit {
   @Input("funding") funding: AddonFundingLink;
+  @Input("size") size: "large" | "small" = "large";
 
   constructor() {}
 

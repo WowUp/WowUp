@@ -8,12 +8,28 @@
   }
 }
 .funding-button {
-  //   background-color: $dark-3;
-  margin-right: 0.5em;
-
-  .funding-icon {
-    height: 20px;
-    width: 20px;
+  &.large {
     margin-right: 0.5em;
+    .funding-icon {
+      height: 20px;
+      width: 20px;
+      margin-right: 0.5em;
+    }
+  }
+
+  &.small {
+    padding: 0.25em;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+      background-color: $dark-3;
+    }
+    .funding-icon {
+      height: 15px;
+      width: 15px;
+    }
   }
 }
