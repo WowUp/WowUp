@@ -4,7 +4,7 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{Addon} other{Addons}} automatisch aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
     "PROVIDERS": {
-      "UNKNOWN": "Unknown"
+      "UNKNOWN": "Unbekannt"
     },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Addon-Scan abgeschlossen...",
@@ -109,8 +109,8 @@
       "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "DESCRIPTION_TAB": "Description",
+      "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",
       "FUNDING_LINK_TITLE": "Support this author",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"
     },
@@ -217,7 +217,7 @@
         "VIEW_GITHUB": "Schaue Dir den Code auf GitHub an",
         "VIEW_GUIDE": "Schaue Dir unseren Guide an, um zu sehen, was WowUp kann"
       },
-      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Erforderliche Abhängigkeiten fehlen",
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scanne Deinen Client-Ordner nach installierten Addons",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Wenn Du ein erneutes scannen durchführst, können deine Addon-Informationen verloren gehen. Dieser Vorgang braucht einen Moment.",
