@@ -2,7 +2,6 @@ import { interval, Subscription } from "rxjs";
 import { filter, tap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AppConfig } from "../../../environments/environment";
