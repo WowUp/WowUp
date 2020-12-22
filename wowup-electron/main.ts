@@ -340,7 +340,7 @@ function setWindowBounds(windowOptions: BrowserWindowConstructorOptions) {
   let isVisibleOnAnyScreen = false;
 
   const displays = screen.getAllDisplays();
-  for (let display of displays) {
+  for (const display of displays) {
     const displayBound = display.workArea;
     displayBound.x += MIN_VISIBLE_ON_SCREEN;
     displayBound.y += MIN_VISIBLE_ON_SCREEN;
