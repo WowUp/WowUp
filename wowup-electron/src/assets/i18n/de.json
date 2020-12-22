@@ -110,6 +110,7 @@
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "DESCRIPTION_TAB": "Description",
       "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",
+      "FUNDING_LINK_TITLE": "Support this author",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"
     },

@@ -40,6 +40,7 @@ export interface AddonDetailModel {
 })
 export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild("descriptionContainer", { read: ElementRef }) descriptionContainer: ElementRef;
+  @ViewChild("changelogContainer", { read: ElementRef }) changelogContainer: ElementRef;
 
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
@@ -81,8 +82,17 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit(): void {}
 
   ngAfterViewChecked() {
-    console.debug("VIEW CHK");
-    const container: HTMLDivElement = this.descriptionContainer.nativeElement;
+    const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
+    const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
+    this.formatLinks(descriptionContainer);
+    this.formatLinks(changelogContainer);
+  }
+
+  formatLinks(container: HTMLDivElement) {
+    if (!container) {
+      return;
+    }
+    
     const aTags = container.getElementsByTagName("a");
     for (let tag of Array.from(aTags)) {
       if (tag.getAttribute("clk")) {
@@ -151,19 +161,24 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   async getChangelog() {
+    let changelog = "";
+    if (this.model.listItem) {
+      changelog = await this.getMyAddonChangelog();
+    }
+
+    return changelog;
+  }
+
+  private async getMyAddonChangelog() {
+    const changelogVersion = this.model.listItem?.addon?.latestChangelogVersion;
+    const latestVersion = this.model.listItem?.addon?.latestVersion;
     let changelog = this.model.listItem?.addon?.latestChangelog;
-    if (!changelog) {
+    console.debug(changelogVersion, latestVersion);
+    if (!changelog || changelogVersion !== latestVersion) {
       changelog = await this._addonService.getChangelog(this.model.listItem?.addon);
     }
 
-    const div = document.createElement("div");
-    div.innerHTML = changelog;
-    const aTags = div.getElementsByTagName("a");
-    for (let tag of Array.from(aTags)) {
-      tag.setAttribute("appExternalLink", "");
-    }
-
-    return div.innerHTML;
+    return changelog;
   }
 
   get statusText() {

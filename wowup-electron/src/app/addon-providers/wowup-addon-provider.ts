@@ -119,7 +119,7 @@ export class WowUpAddonProvider implements AddonProvider {
 
     console.debug("ScanResults", scanResults.length);
     const fingerprints = scanResults.map((result) => result.fingerprint);
-    console.log("fingerprintRequest", fingerprints);
+    console.log("fingerprintRequest", JSON.stringify(fingerprints));
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints).toPromise();
 
     console.debug("fingerprintResponse", fingerprintResponse);
@@ -151,7 +151,7 @@ export class WowUpAddonProvider implements AddonProvider {
   }
 
   public async getChangelog(addon: Addon): Promise<string> {
-    return "";
+    return addon.latestChangelog || "";
   }
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
@@ -251,6 +251,7 @@ export class WowUpAddonProvider implements AddonProvider {
       isLoadOnDemand: false,
       releasedAt: scanResult.exactMatch?.matched_release?.published_at,
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+      latestChangelog: scanResult.exactMatch?.matched_release?.body,
     };
   }
 

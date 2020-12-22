@@ -51,9 +51,9 @@ export class TukUiAddonProvider implements AddonProvider {
   }
 
   public async getChangelog(addon: Addon): Promise<string> {
-    return '';
+    return addon.latestChangelog || "";
   }
-  
+
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     let results: AddonSearchResult[] = [];
 
@@ -166,9 +166,14 @@ export class TukUiAddonProvider implements AddonProvider {
           screenshotUrls: [tukUiAddon.screenshot_url],
           releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
           isLoadOnDemand: false,
+          latestChangelog: this.formatChangelog(tukUiAddon.changelog),
         };
       }
     }
+  }
+
+  private formatChangelog(changelog: string) {
+    return `<a href="${changelog}">${changelog}</a>`;
   }
 
   private async searchAddons(addonName: string, clientType: WowClientType) {

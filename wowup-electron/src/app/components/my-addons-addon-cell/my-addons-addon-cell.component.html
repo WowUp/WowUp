@@ -21,24 +21,8 @@
       listItem.addon.name
       }}</a>
     <div *ngIf="listItem.addon.fundingLinks" class="addon-funding row">
-      <div *ngFor="let link of listItem.addon.fundingLinks" [ngSwitch]="link.platform.toUpperCase()">
-        <a *ngSwitchCase="'PATREON'" appExternalLink [href]="link.url"
-          [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.PATREON' | translate">
-          <img class="funding-icon" src="assets/images/patreon_logo_white.png" />
-        </a>
-        <a *ngSwitchCase="'GITHUB'" appExternalLink [href]="link.url"
-          [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GITHUB' | translate">
-          <img class="funding-icon" src="assets/images/github_logo_small.png" />
-        </a>
-        <a *ngSwitchCase="'CUSTOM'" appExternalLink [href]="link.url"
-          [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.CUSTOM' | translate">
-          <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
-        </a>
-        <a *ngSwitchDefault appExternalLink [href]="link.url"
-          [matTooltip]="'PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC' | translate:{'platform': capitalizeString(link.platform)}">
-          <img class="funding-icon" src="assets/images/custom_funding_logo_small.png" />
-        </a>
-      </div>
+      <app-funding-button *ngFor="let link of listItem.addon.fundingLinks" [funding]="link" size="small">
+      </app-funding-button>
     </div>
     <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
       <div *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" class="mr-2">

@@ -115,13 +115,23 @@ export class AddonService {
   }
 
   public async getChangelog(addon: Addon) {
-    const provider = this.getProvider(addon.providerName);
-    const changelog = await provider.getChangelog(addon);
+    try {
+      const provider = this.getProvider(addon.providerName);
+      if (!provider) {
+        return "";
+      }
 
-    addon.latestChangelog = changelog;
-    this.saveAddon(addon);
+      const changelog = await provider.getChangelog(addon);
 
-    return changelog;
+      addon.latestChangelogVersion = addon.latestVersion;
+      addon.latestChangelog = changelog;
+      this.saveAddon(addon);
+
+      return changelog;
+    } catch (e) {
+      console.error("Failed to get changelog", e);
+      return "";
+    }
   }
 
   public isForceIgnore(addon: Addon) {
@@ -659,6 +669,7 @@ export class AddonService {
 
       this._addonStorage.removeAllForClientType(clientType);
       addons = this.updateAddons(addons, newAddons);
+      console.debug("ADDONS", addons);
       this._addonStorage.saveAll(addons);
     }
 
