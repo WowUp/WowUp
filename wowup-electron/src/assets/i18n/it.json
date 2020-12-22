@@ -3,6 +3,9 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggiornato\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count, plural, one{un addon} other{{count} addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
+    "PROVIDERS": {
+      "UNKNOWN": "Sconosciuto"
+    },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Scansione degli addons completata.",
       "ADDON_SCAN_STARTED": "Scansione degli addons iniziata...",
