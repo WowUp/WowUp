@@ -186,9 +186,13 @@ export class CurseAddonProvider implements AddonProvider {
 
     console.log(`Wowup Fetching fingerprints`, JSON.stringify(fingerprints));
 
-    return this._circuitBreaker.postJson<CurseFingerprintsResponse>(url, {
-      fingerprints,
-    });
+    return this._circuitBreaker.postJson<CurseFingerprintsResponse>(
+      url,
+      {
+        fingerprints,
+      },
+      AppConfig.wowUpHubHttpTimeoutMs
+    );
   }
 
   private async getAddonsByFingerprints(fingerprints: number[]): Promise<CurseFingerprintsResponse> {

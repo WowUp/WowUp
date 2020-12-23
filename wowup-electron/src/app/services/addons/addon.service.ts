@@ -591,7 +591,6 @@ export class AddonService {
 
       try {
         // Copy contents from unzipped new directory to existing addon folder location
-        console.log("COPY", unzipLocation);
         await this._fileService.copy(unzippedFilePath, unzipLocation);
       } catch (err) {
         console.error(`Failed to copy addon directory ${unzipLocation}`);
