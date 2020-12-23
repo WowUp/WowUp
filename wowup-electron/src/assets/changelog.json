@@ -1,6 +1,21 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.9",
+      "changes": [
+        "German locale updates (Glow)",
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "Auto update loop improvements",
+        "App update loop improvements",
+        "Rework window restore code",
+        "Improve the funding links in details dialog",
+        "Hide tabs on the details dialog for 'unknown' addons",
+        "Fix an issue with changelogs not updating for CurseForge addons",
+        "Fix many changelog display issues"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.8",
       "changes": [
         "French locale updates (Zazou)",
