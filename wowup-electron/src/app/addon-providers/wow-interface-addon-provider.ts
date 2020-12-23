@@ -1,9 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import * as _ from "lodash";
-import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
-import { first, map, timeout } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
@@ -12,18 +11,16 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
-import { FileService } from "../services/files/file.service";
 import { AddonProvider } from "./addon-provider";
 import { convertBbcode } from "../utils/bbcode.utils";
+import { CircuitBreakerWrapper, NetworkService } from "app/services/network/network.service";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
-const CHANGELOG_FETCH_TIMEOUT_MS = 1500;
 
 export class WowInterfaceAddonProvider implements AddonProvider {
-  private readonly _circuitBreaker: CircuitBreaker<[addonId: string], AddonDetailsResponse>;
+  private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   public readonly name = ADDON_PROVIDER_WOWINTERFACE;
   public readonly forceIgnore = false;
@@ -35,19 +32,9 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   constructor(
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
-    private _electronService: ElectronService,
-    private _fileService: FileService
+    private _networkService: NetworkService
   ) {
-    this._circuitBreaker = new CircuitBreaker(this.getAddonDetails, {
-      resetTimeout: 60000,
-    });
-
-    this._circuitBreaker.on("open", () => {
-      console.log(`${this.name} circuit breaker open`);
-    });
-    this._circuitBreaker.on("close", () => {
-      console.log(`${this.name} circuit breaker close`);
-    });
+    this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
@@ -84,7 +71,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
       throw new Error(`Addon ID not found ${addonUri}`);
     }
 
-    var addon = await this._circuitBreaker.fire(addonId);
+    var addon = await this.getAddonDetails(addonId);
     if (addon == null) {
       throw new Error(`Bad addon api response ${addonUri}`);
     }
@@ -102,7 +89,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   }
 
   public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    return from(this._circuitBreaker.fire(addonId)).pipe(
+    return from(this.getAddonDetails(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );
   }
@@ -129,7 +116,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
         continue;
       }
 
-      const details = await this._circuitBreaker.fire(addonFolder.toc.wowInterfaceId);
+      const details = await this.getAddonDetails(addonFolder.toc.wowInterfaceId);
 
       addonFolder.matchingAddon = this.toAddon(details, clientType, addonChannelType, addonFolder);
     }
@@ -152,17 +139,11 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     throw new Error(`Unhandled URL: ${addonUri}`);
   }
 
-  private getAddonDetails = (addonId: string): Promise<AddonDetailsResponse> => {
+  private getAddonDetails = async (addonId: string): Promise<AddonDetailsResponse> => {
     const url = new URL(`${API_URL}/filedetails/${addonId}.json`);
 
-    return this._httpClient
-      .get<AddonDetailsResponse[]>(url.toString())
-      .pipe(
-        first(),
-        timeout(CHANGELOG_FETCH_TIMEOUT_MS),
-        map((responses) => _.first(responses))
-      )
-      .toPromise();
+    const responses = await this._circuitBreaker.getJson<AddonDetailsResponse[]>(url);
+    return _.first(responses);
   };
 
   private getThumbnailUrl(response: AddonDetailsResponse) {

@@ -136,7 +136,6 @@ export class WowUpFolderScanner {
     try {
       nativePath = this.getRealPath(fileInfo);
     } catch (e) {
-      log.debug(`Include file path does not exist: ${fileInfo}`);
       return;
     }
 

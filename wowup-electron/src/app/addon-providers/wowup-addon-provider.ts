@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Observable, of } from "rxjs";
+import { from, Observable } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 import { ADDON_PROVIDER_HUB, WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
 import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
@@ -25,6 +25,7 @@ import * as _ from "lodash";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { getGameVersion } from "../utils/addon.utils";
 import { map } from "rxjs/operators";
+import { CircuitBreakerWrapper, NetworkService } from "app/services/network/network.service";
 
 const API_URL = AppConfig.wowUpHubUrl;
 
@@ -33,6 +34,8 @@ export interface GetAddonBatchResponse {
 }
 
 export class WowUpAddonProvider implements AddonProvider {
+  private readonly _circuitBreaker: CircuitBreakerWrapper;
+
   public readonly name = ADDON_PROVIDER_HUB;
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
@@ -40,16 +43,26 @@ export class WowUpAddonProvider implements AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  constructor(private _httpClient: HttpClient, private _electronService: ElectronService) {}
+  constructor(
+    private _httpClient: HttpClient,
+    private _electronService: ElectronService,
+    _networkService: NetworkService
+  ) {
+    this._circuitBreaker = _networkService.getCircuitBreaker(
+      `${this.name}_main`,
+      AppConfig.defaultHttpResetTimeoutMs,
+      AppConfig.wowUpHubHttpTimeoutMs
+    );
+  }
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/batch/${gameType}`);
-    const response = await this._httpClient
-      .post<GetAddonBatchResponse>(url.toString(), {
-        addonIds: _.map(addonIds, (id) => parseInt(id, 10)),
-      })
-      .toPromise();
+    const addonIdList = _.map(addonIds, (id) => parseInt(id, 10));
+
+    const response = await this._circuitBreaker.postJson<GetAddonBatchResponse>(url, {
+      addonIds: addonIdList,
+    });
 
     const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon));
     return searchResults;
@@ -58,7 +71,7 @@ export class WowUpAddonProvider implements AddonProvider {
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/featured/${gameType}?count=30`);
-    const addons = await this._httpClient.get<WowUpGetAddonsResponse>(url.toString()).toPromise();
+    const addons = await this._circuitBreaker.getJson<WowUpGetAddonsResponse>(url);
 
     const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
     return searchResults;
@@ -68,7 +81,7 @@ export class WowUpAddonProvider implements AddonProvider {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/search/${gameType}?query=${query}&limit=10`);
 
-    const addons = await this._httpClient.get<WowUpSearchAddonsResponse>(url.toString()).toPromise();
+    const addons = await this._circuitBreaker.getJson<WowUpSearchAddonsResponse>(url);
     const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
 
     return searchResults;
@@ -91,7 +104,7 @@ export class WowUpAddonProvider implements AddonProvider {
 
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     const url = new URL(`${API_URL}/addons/${addonId}`);
-    return this._httpClient.get<WowUpGetAddonResponse>(url.toString()).pipe(
+    return from(this._circuitBreaker.getJson<WowUpGetAddonResponse>(url)).pipe(
       map((result) => {
         return this.getSearchResult(result.addon);
       })
@@ -120,7 +133,7 @@ export class WowUpAddonProvider implements AddonProvider {
     console.debug("ScanResults", scanResults.length);
     const fingerprints = scanResults.map((result) => result.fingerprint);
     console.log("fingerprintRequest", JSON.stringify(fingerprints));
-    const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints).toPromise();
+    const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints);
 
     console.debug("fingerprintResponse", fingerprintResponse);
 
@@ -180,10 +193,10 @@ export class WowUpAddonProvider implements AddonProvider {
     return release.game_type === this.getWowGameType(clientType);
   }
 
-  private getAddonsByFingerprints(fingerprints: string[]): Observable<GetAddonsByFingerprintResponse> {
+  private getAddonsByFingerprints(fingerprints: string[]): Promise<GetAddonsByFingerprintResponse> {
     const url = `${API_URL}/addons/fingerprint`;
 
-    return this._httpClient.post<any>(url, {
+    return this._circuitBreaker.postJson<any>(url, {
       fingerprints,
     });
   }

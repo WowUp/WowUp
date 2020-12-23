@@ -10,4 +10,7 @@ export const AppConfig = {
   },
   autoUpdateIntervalMs: 3600000, // 1 hour
   appUpdateIntervalMs: 3600000, // 1 hour
+  defaultHttpTimeoutMs: 2000,
+  defaultHttpResetTimeoutMs: 60000,
+  wowUpHubHttpTimeoutMs: 10000,
 };

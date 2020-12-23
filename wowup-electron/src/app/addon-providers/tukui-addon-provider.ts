@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import * as _ from "lodash";
-import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
 import { map, switchMap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
@@ -13,25 +12,24 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { CachingService } from "../services/caching/caching-service";
-import { NetworkService } from "../services/network/network.service";
+import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { AddonProvider } from "./addon-provider";
 import { AppConfig } from "../../environments/environment";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
 const WOWUP_API_URL = AppConfig.wowUpHubUrl;
-const CHANGELOG_FETCH_TIMEOUT_MS = 1500;
 const CHANGELOG_CACHE_TTL_MS = 30 * 60 * 1000;
 
 export class TukUiAddonProvider implements AddonProvider {
-  private readonly _circuitBreaker: CircuitBreaker<[clientType: WowClientType], TukUiAddon[]>;
-  private readonly _changelogCircuitBreaker: CircuitBreaker<[clientType: TukUiAddon], string>;
+  private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   public readonly name = ADDON_PROVIDER_TUKUI;
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
   public readonly allowChannelChange = false;
   public readonly allowEdit = true;
+
   public enabled = true;
 
   constructor(
@@ -39,20 +37,13 @@ export class TukUiAddonProvider implements AddonProvider {
     private _cachingService: CachingService,
     private _networkService: NetworkService
   ) {
-    this._circuitBreaker = this._networkService.getCircuitBreaker<[clientType: WowClientType], TukUiAddon[]>(
-      `${this.name}_main`,
-      this.fetchApiResults
-    );
-
-    this._changelogCircuitBreaker = this._networkService.getCircuitBreaker<[clientType: TukUiAddon], string>(
-      `${this.name}_changelog`,
-      this.fetchChangelogHtml
-    );
+    this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
     const addons = await this.getAllAddons(clientType);
-    return _.find(addons, (addon) => addon.id.toString() === externalId)?.changelog;
+    const addon = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
+    return await this.formatChangelog(addon);
   }
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
@@ -182,7 +173,7 @@ export class TukUiAddonProvider implements AddonProvider {
   private async formatChangelog(addon: TukUiAddon) {
     if (["-1", "-2"].includes(addon.id.toString())) {
       try {
-        return await this._changelogCircuitBreaker.fire(addon);
+        return await this.fetchChangelogHtml(addon);
       } catch (e) {
         console.error("Failed to get changelog", e);
       }
@@ -198,10 +189,7 @@ export class TukUiAddonProvider implements AddonProvider {
       return cachedChangelog;
     }
 
-    const html = await this._httpClient
-      .get(addon.changelog, { responseType: "text" })
-      .pipe(timeout(CHANGELOG_FETCH_TIMEOUT_MS))
-      .toPromise();
+    const html = await this._circuitBreaker.getText(addon.changelog);
 
     this._cachingService.set(cacheKey, html, CHANGELOG_CACHE_TTL_MS);
 
@@ -253,7 +241,7 @@ export class TukUiAddonProvider implements AddonProvider {
     }
 
     try {
-      const addons = await this._circuitBreaker.fire(clientType);
+      const addons = await this.fetchApiResults(clientType);
 
       this._cachingService.set(cacheKey, addons);
       return addons;
@@ -278,10 +266,11 @@ export class TukUiAddonProvider implements AddonProvider {
     const url = new URL(API_URL);
     url.searchParams.append(query, "all");
 
-    const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
+    const addons = await this._circuitBreaker.getJson<TukUiAddon[]>(url);
+
     if (this.isRetail(clientType)) {
-      addons.push(await this.getTukUiRetailAddon().toPromise());
-      addons.push(await this.getElvUiRetailAddon().toPromise());
+      addons.push(await this.getTukUiRetailAddon());
+      addons.push(await this.getElvUiRetailAddon());
     }
 
     return addons;
@@ -295,11 +284,11 @@ export class TukUiAddonProvider implements AddonProvider {
     return this.getClientApiAddon("elvui");
   }
 
-  private getClientApiAddon(addonName: string): Observable<TukUiAddon> {
+  private getClientApiAddon(addonName: string): Promise<TukUiAddon> {
     const url = new URL(CLIENT_API_URL);
     url.searchParams.append("ui", addonName);
 
-    return this._httpClient.get<TukUiAddon>(url.toString());
+    return this._circuitBreaker.getJson<TukUiAddon>(url);
   }
 
   private isRetail(clientType: WowClientType) {

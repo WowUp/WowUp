@@ -10,7 +10,6 @@ import { RaiderIoAddonProvider } from "../../addon-providers/raiderio-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpService } from "../wowup/wowup.service";
-import { FileService } from "../files/file.service";
 import { NetworkService } from "../network/network.service";
 
 @Injectable({
@@ -23,7 +22,6 @@ export class AddonProviderFactory {
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
-    private _fileService: FileService,
     private _wowupService: WowUpService,
     private _networkService: NetworkService
   ) {}
@@ -33,7 +31,7 @@ export class AddonProviderFactory {
   }
 
   public createCurseAddonProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(this._httpClient, this._cachingService, this._electronService);
+    return new CurseAddonProvider(this._httpClient, this._cachingService, this._electronService, this._networkService);
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
@@ -41,12 +39,7 @@ export class AddonProviderFactory {
   }
 
   public createWowInterfaceAddonProvider(): WowInterfaceAddonProvider {
-    return new WowInterfaceAddonProvider(
-      this._httpClient,
-      this._cachingService,
-      this._electronService,
-      this._fileService
-    );
+    return new WowInterfaceAddonProvider(this._httpClient, this._cachingService, this._networkService);
   }
 
   public createGitHubAddonProvider(): GitHubAddonProvider {
@@ -54,7 +47,7 @@ export class AddonProviderFactory {
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
-    return new WowUpAddonProvider(this._httpClient, this._electronService);
+    return new WowUpAddonProvider(this._httpClient, this._electronService, this._networkService);
   }
 
   public getAll(): AddonProvider[] {

@@ -4,7 +4,6 @@ import { AddonSearchResultDependency } from "../models/wowup/addon-search-result
 import { CurseDependency } from "../../common/curse/curse-dependency";
 import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
 import * as _ from "lodash";
-import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
 import { first, map, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
@@ -32,17 +31,13 @@ import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { AddonProvider } from "./addon-provider";
 import { AppConfig } from "../../environments/environment";
+import { CircuitBreakerWrapper, NetworkService } from "app/services/network/network.service";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_MS = 30 * 60 * 1000;
-const CHANGELOG_FETCH_TIMEOUT_MS = 1500;
 
 export class CurseAddonProvider implements AddonProvider {
-  private readonly _circuitBreaker: CircuitBreaker<[clientType: () => Promise<any>], any>;
-
-  private getCircuitBreaker<T>() {
-    return this._circuitBreaker as CircuitBreaker<[clientType: () => Promise<T>], T>;
-  }
+  private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   public readonly name = ADDON_PROVIDER_CURSEFORGE;
   public readonly forceIgnore = false;
@@ -54,22 +49,13 @@ export class CurseAddonProvider implements AddonProvider {
   constructor(
     private _httpClient: HttpClient,
     private _cachingService: CachingService,
-    private _electronService: ElectronService
+    private _electronService: ElectronService,
+    _networkService: NetworkService
   ) {
-    this._circuitBreaker = new CircuitBreaker((action) => this.sendRequest(action), {
-      resetTimeout: 60000,
-    });
-
-    this._circuitBreaker.on("open", () => {
-      console.log(`${this.name} circuit breaker open`);
-    });
-    this._circuitBreaker.on("close", () => {
-      console.log(`${this.name} circuit breaker close`);
-    });
+    this._circuitBreaker = _networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    console.debug("GET CHANGE LOG");
     const cacheKey = `changelog_${externalId}_${externalReleaseId}`;
     const cachedChangelog = this._cachingService.get<string>(cacheKey);
     if (cachedChangelog) {
@@ -78,10 +64,7 @@ export class CurseAddonProvider implements AddonProvider {
 
     try {
       const url = new URL(`${API_URL}/addon/${externalId}/file/${externalReleaseId}/changelog`);
-      const changelogResponse = await this._httpClient
-        .get(url.toString(), { responseType: "text" })
-        .pipe(first(), timeout(CHANGELOG_FETCH_TIMEOUT_MS))
-        .toPromise();
+      const changelogResponse = await this._circuitBreaker.getText(url);
 
       this._cachingService.set(cacheKey, changelogResponse, CHANGELOG_CACHE_TTL_MS);
 
@@ -201,24 +184,14 @@ export class CurseAddonProvider implements AddonProvider {
     return gameVersionFlavor === this.getGameVersionFlavor(clientType);
   }
 
-  private async getAddonsByFingerprintsW(fingerprints: number[]) {
+  private getAddonsByFingerprintsW(fingerprints: number[]) {
     const url = `${AppConfig.wowUpHubUrl}/curseforge/addons/fingerprint`;
 
     console.log(`Wowup Fetching fingerprints`, JSON.stringify(fingerprints));
 
-    return await this._httpClient
-      .post<CurseFingerprintsResponse>(url, {
-        fingerprints,
-      })
-      .toPromise();
-
-    // If CurseForge API is ever fixed, put this back.
-    // return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
-    //   async () =>
-    //     await this._httpClient
-    //       .post<CurseFingerprintsResponse>(url, fingerprints)
-    //       .toPromise()
-    // );
+    return this._circuitBreaker.postJson<CurseFingerprintsResponse>(url, {
+      fingerprints,
+    });
   }
 
   private async getAddonsByFingerprints(fingerprints: number[]): Promise<CurseFingerprintsResponse> {
@@ -226,9 +199,7 @@ export class CurseAddonProvider implements AddonProvider {
 
     console.log(`Curse Fetching fingerprints`, JSON.stringify(fingerprints));
 
-    return await this.getCircuitBreaker<CurseFingerprintsResponse>().fire(
-      async () => await this._httpClient.post<CurseFingerprintsResponse>(url, fingerprints).toPromise()
-    );
+    return await this._circuitBreaker.postJson(url, fingerprints);
   }
 
   private async getAllIds(addonIds: number[]): Promise<CurseSearchResult[]> {
@@ -238,9 +209,7 @@ export class CurseAddonProvider implements AddonProvider {
 
     const url = `${API_URL}/addon`;
 
-    return await this.getCircuitBreaker<CurseSearchResult[]>().fire(
-      async () => await this._httpClient.post<CurseSearchResult[]>(url, addonIds).toPromise()
-    );
+    return await this._circuitBreaker.postJson<CurseSearchResult[]>(url, addonIds);
   }
 
   private sendRequest<T>(action: () => Promise<T>): Promise<T> {
@@ -354,19 +323,13 @@ export class CurseAddonProvider implements AddonProvider {
     url.searchParams.set("gameId", "1");
     url.searchParams.set("searchFilter", query);
 
-    return await this.getCircuitBreaker<CurseSearchResult[]>().fire(
-      async () => await this._httpClient.get<CurseSearchResult[]>(url.toString()).toPromise()
-    );
+    return await this._circuitBreaker.getJson<CurseSearchResult[]>(url);
   }
 
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     const url = `${API_URL}/addon/${addonId}`;
 
-    return from(
-      this.getCircuitBreaker<CurseSearchResult>().fire(
-        async () => await this._httpClient.get<CurseSearchResult>(url).toPromise()
-      )
-    ).pipe(
+    return from(this._circuitBreaker.getJson<CurseSearchResult>(url)).pipe(
       map((result) => {
         if (!result) {
           return null;
@@ -470,9 +433,7 @@ export class CurseAddonProvider implements AddonProvider {
       updatedCount: 0,
     };
 
-    const result = await this.getCircuitBreaker<CurseGetFeaturedResponse>().fire(
-      async () => await this._httpClient.post<CurseGetFeaturedResponse>(url, body).toPromise()
-    );
+    const result = await this._circuitBreaker.postJson<CurseGetFeaturedResponse>(url, body);
 
     if (!result) {
       return [];
