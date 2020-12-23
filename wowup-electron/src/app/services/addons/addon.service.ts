@@ -133,6 +133,10 @@ export class AddonService {
       return "";
     }
 
+    if (addon.latestChangelog && addon.latestChangelogVersion === addon.latestVersion) {
+      return addon.latestChangelog;
+    }
+
     try {
       const provider = this.getProvider(addon.providerName);
       if (!provider) {

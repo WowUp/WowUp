@@ -6,7 +6,7 @@ import * as admZip from "adm-zip";
 import * as pLimit from "p-limit";
 import * as nodeDiskInfo from "node-disk-info";
 import { map } from "lodash";
-import { readdir, stat } from "fs";
+import { readdir } from "fs";
 import axios from "axios";
 import * as log from "electron-log";
 
@@ -45,7 +45,6 @@ export function initializeIpcHandlers(window: BrowserWindow) {
   ipcMain.handle(
     SHOW_DIRECTORY,
     async (evt, filePath: string): Promise<string> => {
-      log.info(SHOW_DIRECTORY, filePath);
       return await shell.openPath(filePath);
     }
   );
@@ -63,8 +62,6 @@ export function initializeIpcHandlers(window: BrowserWindow) {
   );
 
   ipcMain.handle(LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
-    log.info(LIST_DIRECTORIES_CHANNEL, filePath);
-
     return new Promise((resolve, reject) => {
       readdir(filePath, { withFileTypes: true }, (err, files) => {
         if (err) {
@@ -94,8 +91,6 @@ export function initializeIpcHandlers(window: BrowserWindow) {
   });
 
   ipcMain.handle(PATH_EXISTS_CHANNEL, async (evt, filePath: string) => {
-    log.info(PATH_EXISTS_CHANNEL, filePath);
-
     try {
       await fs.access(filePath);
     } catch (e) {
@@ -137,8 +132,6 @@ export function initializeIpcHandlers(window: BrowserWindow) {
   );
 
   ipcMain.handle(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
-    log.info(UNZIP_FILE_CHANNEL, arg);
-
     const zip = new admZip(arg.zipFilePath);
     await new Promise((resolve, reject) => {
       zip.extractAllToAsync(arg.outputFolder, true, (err) => {
@@ -152,15 +145,12 @@ export function initializeIpcHandlers(window: BrowserWindow) {
   ipcMain.handle(
     COPY_FILE_CHANNEL,
     async (evt, arg: CopyFileRequest): Promise<boolean> => {
-      log.info("Copy File", arg);
       await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
       return true;
     }
   );
 
   ipcMain.handle(DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
-    log.info("Delete File/Dir", filePath);
-
     await fs.remove(filePath);
 
     return true;
@@ -198,8 +188,6 @@ export function initializeIpcHandlers(window: BrowserWindow) {
         method: "GET",
         responseType: "stream",
       });
-
-      log.info("Starting download");
 
       // const totalLength = headers["content-length"];
       // Progress is not shown anywhere

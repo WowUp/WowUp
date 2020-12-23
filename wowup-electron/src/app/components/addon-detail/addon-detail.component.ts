@@ -150,15 +150,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   getDescription() {
-    const summary = this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
-
-    const dom = new DOMParser().parseFromString(summary, "text/html");
-    const aTags = dom.getElementsByTagName("a");
-    for (let tag of Array.from(aTags)) {
-      // tag.setAttribute("appExternalLink", "");
-    }
-
-    return summary;
+    return this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
   }
 
   async getChangelog() {
@@ -172,31 +164,17 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   private async getSearchResultChangelog() {
-    const file = first(this.model.searchResult.files);
-    let changelog = file.changelog;
-    if (!changelog) {
-      changelog = await this._addonService.getChangelogForSearchResult(
-        this._sessionService.selectedClientType,
-        this.model.searchResult
-      );
-    }
-
-    return changelog;
+    return await this._addonService.getChangelogForSearchResult(
+      this._sessionService.selectedClientType,
+      this.model.searchResult
+    );
   }
 
   private async getMyAddonChangelog() {
-    const changelogVersion = this.model.listItem?.addon?.latestChangelogVersion;
-    const latestVersion = this.model.listItem?.addon?.latestVersion;
-    let changelog = this.model.listItem?.addon?.latestChangelog;
-    console.debug(changelogVersion, latestVersion);
-    if (!changelog || changelogVersion !== latestVersion) {
-      changelog = await this._addonService.getChangelogForAddon(
-        this._sessionService.selectedClientType,
-        this.model.listItem?.addon
-      );
-    }
-
-    return changelog;
+    return await this._addonService.getChangelogForAddon(
+      this._sessionService.selectedClientType,
+      this.model.listItem?.addon
+    );
   }
 
   get statusText() {
