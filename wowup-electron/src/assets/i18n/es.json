@@ -4,7 +4,7 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
     "PROVIDERS": {
-      "UNKNOWN": "Unknown"
+      "UNKNOWN": "Desconocido"
     },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Escaneo de addons completado.",
@@ -106,11 +106,11 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Por {authorName}",
-      "CHANGELOG_TAB": "Changelog",
+      "CHANGELOG_TAB": "Listado de Cambios",
       "DEPENDENCY_TEXT": "Este addon tiene {dependencyCount} {dependencyCount, plural, one{dependencia requerida} other{dependencias requeridas}}",
-      "DESCRIPTION_TAB": "Description",
-      "FUNDING_LINK_TITLE": "Support this author",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
+      "DESCRIPTION_TAB": "Descripción",
+      "FUNDING_LINK_TITLE": "Apoyar a este autor",
+      "MISSING_DEPENDENCIES": "Dependencias no encontradas",
       "VIEW_IN_BROWSER_BUTTON": "Ver en el navegador",
       "VIEW_ON_PROVIDER_PREFIX": "Ver en"
     },
@@ -217,7 +217,7 @@
         "VIEW_GITHUB": "Eche un vistazo al código en GitHub",
         "VIEW_GUIDE": "Descubra de lo que es capaz WowUp con nuestra guía"
       },
-      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Dependencia requerida no encontrada",
       "RESCAN_FOLDERS_BUTTON": "Reescanear Carpetas",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Vuelve a buscar addons instalados en la carpeta del juego",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "WowUp intentará averiguar qué addons están instalados actualmente. Al hacerlo, la información sobre los addons ya conocidos se podría reiniciar. Utilice esta función cuando ciertos addons no sean reconocidos o las versiones de los addons no se reconozcan correctamente. Este escaneo no elimina los addons instalados, sólo la información que WowUp tiene acerca de ellos.\n\nEl escaneo puede tardar un poco.",
