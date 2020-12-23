@@ -109,8 +109,8 @@
       "CHANGELOG_TAB": "Список изменений",
       "DEPENDENCY_TEXT": "Эта модификация имеет {dependencyCount} {dependencyCount, plural, one{необходимую} other{необходимых}} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}",
       "DESCRIPTION_TAB": "Описание",
-      "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
       "FUNDING_LINK_TITLE": "Support this author",
+      "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },

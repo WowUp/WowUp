@@ -109,8 +109,8 @@
       "CHANGELOG_TAB": "Changelog",
       "DEPENDENCY_TEXT": "Questo addon ha {dependencyCount, plural, one{una dipendenza} other{{dependencyCount} dipendenze}} {dependencyCount, plural, one{richiesta} other{richieste}}",
       "DESCRIPTION_TAB": "Descrizione",
-      "MISSING_DEPENDENCIES": "DIpendenze mancanti",
       "FUNDING_LINK_TITLE": "Support this author",
+      "MISSING_DEPENDENCIES": "DIpendenze mancanti",
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser",
       "VIEW_ON_PROVIDER_PREFIX": "Visualizza su"
     },
