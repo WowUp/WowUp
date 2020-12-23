@@ -6,7 +6,7 @@ import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
 import * as _ from "lodash";
 import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { first, map, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import {
   ADDON_PROVIDER_CURSEFORGE,
@@ -34,6 +34,8 @@ import { AddonProvider } from "./addon-provider";
 import { AppConfig } from "../../environments/environment";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
+const CHANGELOG_CACHE_TTL_MS = 30 * 60 * 1000;
+const CHANGELOG_FETCH_TIMEOUT_MS = 1500;
 
 export class CurseAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[clientType: () => Promise<any>], any>;
@@ -67,11 +69,27 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   public async getChangelog(addon: Addon): Promise<string> {
-    const url = new URL(`${API_URL}/addon/${addon.externalId}/file/${addon.externalLatestReleaseId}/changelog`);
-    let changelogResponse = await this._httpClient.get(url.toString(), { responseType: "text" }).toPromise();
-    changelogResponse = this.removeHtml(changelogResponse);
+    const cacheKey = `changelog_${addon.externalId}_${addon.externalLatestReleaseId}`;
+    const cachedChangelog = this._cachingService.get<string>(cacheKey);
+    if (cachedChangelog) {
+      return cachedChangelog;
+    }
 
-    return changelogResponse;
+    try {
+      const url = new URL(`${API_URL}/addon/${addon.externalId}/file/${addon.externalLatestReleaseId}/changelog`);
+      const changelogResponse = await this._httpClient
+        .get(url.toString(), { responseType: "text" })
+        .pipe(first(), timeout(CHANGELOG_FETCH_TIMEOUT_MS))
+        .toPromise();
+
+      this._cachingService.set(cacheKey, changelogResponse, CHANGELOG_CACHE_TTL_MS);
+
+      return changelogResponse;
+    } catch (e) {
+      console.error("Failed to get changelog", e);
+    }
+
+    return "";
   }
 
   // Replace 'a' tags with their content to not allow linking

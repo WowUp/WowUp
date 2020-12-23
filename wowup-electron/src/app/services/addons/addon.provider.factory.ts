@@ -11,6 +11,7 @@ import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { FileService } from "../files/file.service";
+import { NetworkService } from "../network/network.service";
 
 @Injectable({
   providedIn: "root",
@@ -23,7 +24,8 @@ export class AddonProviderFactory {
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
     private _fileService: FileService,
-    private _wowupService: WowUpService
+    private _wowupService: WowUpService,
+    private _networkService: NetworkService
   ) {}
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
@@ -35,7 +37,7 @@ export class AddonProviderFactory {
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
-    return new TukUiAddonProvider(this._httpClient, this._cachingService, this._electronService, this._fileService);
+    return new TukUiAddonProvider(this._httpClient, this._cachingService, this._networkService);
   }
 
   public createWowInterfaceAddonProvider(): WowInterfaceAddonProvider {
@@ -74,7 +76,6 @@ export class AddonProviderFactory {
 
   private setProviderState = (provider: AddonProvider) => {
     const state = this._wowupService.getAddonProviderState(provider.name);
-    console.debug("STATE", state);
     if (state) {
       provider.enabled = state.enabled;
     }

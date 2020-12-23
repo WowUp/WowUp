@@ -3,14 +3,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ComponentFactoryResolver,
   ElementRef,
   Inject,
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewContainerRef,
 } from "@angular/core";
+import { first } from "lodash";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, from, Subscription } from "rxjs";
@@ -92,7 +91,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     if (!container) {
       return;
     }
-    
+
     const aTags = container.getElementsByTagName("a");
     for (let tag of Array.from(aTags)) {
       if (tag.getAttribute("clk")) {
@@ -161,9 +160,21 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   async getChangelog() {
-    let changelog = "";
     if (this.model.listItem) {
-      changelog = await this.getMyAddonChangelog();
+      return await this.getMyAddonChangelog();
+    } else if (this.model.searchResult) {
+      return await this.getSearchResultChangelog();
+    }
+
+    return "";
+  }
+
+  private async getSearchResultChangelog() {
+    const file = first(this.model.searchResult.files);
+    const latestVersion = file.version;
+    let changelog = file.changelog;
+    if (!changelog) {
+      changelog = await this._addonService.getChangelog(this.model.listItem?.addon);
     }
 
     return changelog;

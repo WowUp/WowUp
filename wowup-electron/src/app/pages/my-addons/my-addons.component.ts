@@ -626,8 +626,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isBusy = true;
     this.enableControls = false;
 
-    console.debug("LAZY LOAD");
-
     await this.addonService.backfillAddons();
 
     const selectedClientSubscription = this._sessionService.selectedClientType$

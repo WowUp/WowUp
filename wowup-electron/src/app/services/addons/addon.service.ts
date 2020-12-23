@@ -115,6 +115,9 @@ export class AddonService {
   }
 
   public async getChangelog(addon: Addon) {
+    if(!addon){
+      return '';
+    }
     try {
       const provider = this.getProvider(addon.providerName);
       if (!provider) {
