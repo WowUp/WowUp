@@ -18,7 +18,6 @@ export class CachingService {
   async transaction<T>(key: string, missingAction: () => Promise<T>, ttlSec = 600): Promise<T> {
     const cached = this.get<T>(key);
     if (cached) {
-      console.debug(`Use cache: ${key}`);
       return cached;
     }
 

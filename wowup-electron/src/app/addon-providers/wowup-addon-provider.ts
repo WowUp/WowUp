@@ -170,8 +170,6 @@ export class WowUpAddonProvider implements AddonProvider {
   }
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
-    const t1 = Date.now();
-
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
     const scanResults: AppWowUpScanResult[] = await this._electronService.ipcRenderer.invoke(
@@ -179,7 +177,6 @@ export class WowUpAddonProvider implements AddonProvider {
       filePaths
     );
 
-    console.debug("scan delta", Date.now() - t1);
     console.debug("WowUpGetScanResultsResponse", scanResults);
 
     return scanResults;
