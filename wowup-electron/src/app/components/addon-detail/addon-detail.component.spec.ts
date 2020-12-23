@@ -13,6 +13,7 @@ import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { Addon } from "../../entities/addon";
 import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { SessionService } from "../../services/session/session.service";
 
 describe("AddonDetailComponent", () => {
   let component: AddonDetailComponent;
@@ -20,12 +21,14 @@ describe("AddonDetailComponent", () => {
   let addonService: AddonService;
   let dialogModel: AddonDetailModel;
   let addonServiceSpy: any;
+  let sessionServiceSpy: any;
 
   beforeEach(async () => {
-    addonServiceSpy = jasmine.createSpyObj("AddonService", ["logDebugData"], {
+    addonServiceSpy = jasmine.createSpyObj("AddonService", ["logDebugData", "getChangelogForAddon"], {
       addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
       getChangelog: () => "",
     });
+
 
     const viewModel = new AddonViewModel({
       installedVersion: "1.0.0",
@@ -57,7 +60,7 @@ describe("AddonDetailComponent", () => {
     })
       .overrideComponent(AddonDetailComponent, {
         set: {
-          providers: [{ provide: AddonService, useValue: addonServiceSpy }],
+          providers: [{ provide: AddonService, useValue: addonServiceSpy }, { provide: SessionService, useValue: {} }],
         },
       })
       .compileComponents();
