@@ -1,6 +1,19 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.10",
+
+      "changes": [
+        "German locale updates (Glow)",
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "Changelog fetching should work on 'Get Addons' page",
+        "Improve cache related things",
+        "Improve http related things"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.9",
       "changes": [
         "German locale updates (Glow)",
