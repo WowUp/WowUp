@@ -5,7 +5,7 @@ import { CurseDependency } from "../../common/curse/curse-dependency";
 import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
-import { first, map, timeout } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import {
   ADDON_PROVIDER_CURSEFORGE,
@@ -34,7 +34,7 @@ import { AppConfig } from "../../environments/environment";
 import { CircuitBreakerWrapper, NetworkService } from "app/services/network/network.service";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
-const CHANGELOG_CACHE_TTL_MS = 30 * 60 * 1000;
+const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
 export class CurseAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
@@ -56,19 +56,16 @@ export class CurseAddonProvider implements AddonProvider {
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    const cacheKey = `changelog_${externalId}_${externalReleaseId}`;
-    const cachedChangelog = this._cachingService.get<string>(cacheKey);
-    if (cachedChangelog) {
-      return cachedChangelog;
-    }
-
     try {
-      const url = new URL(`${API_URL}/addon/${externalId}/file/${externalReleaseId}/changelog`);
-      const changelogResponse = await this._circuitBreaker.getText(url);
-
-      this._cachingService.set(cacheKey, changelogResponse, CHANGELOG_CACHE_TTL_MS);
-
-      return changelogResponse;
+      const cacheKey = `${this.name}_changelog_${externalId}_${externalReleaseId}`;
+      return await this._cachingService.transaction(
+        cacheKey,
+        () => {
+          const url = new URL(`${API_URL}/addon/${externalId}/file/${externalReleaseId}/changelog`);
+          return this._circuitBreaker.getText(url);
+        },
+        CHANGELOG_CACHE_TTL_SEC
+      );
     } catch (e) {
       console.error("Failed to get changelog", e);
     }
@@ -421,10 +418,6 @@ export class CurseAddonProvider implements AddonProvider {
 
   private async getFeaturedAddonList(): Promise<CurseSearchResult[]> {
     const url = `${API_URL}/addon/featured`;
-    const cachedResponse = this._cachingService.get<CurseGetFeaturedResponse>(url);
-    if (cachedResponse) {
-      return cachedResponse.Popular;
-    }
 
     const body = {
       gameId: 1,
@@ -433,13 +426,13 @@ export class CurseAddonProvider implements AddonProvider {
       updatedCount: 0,
     };
 
-    const result = await this._circuitBreaker.postJson<CurseGetFeaturedResponse>(url, body);
+    const result = await this._cachingService.transaction(url, () =>
+      this._circuitBreaker.postJson<CurseGetFeaturedResponse>(url, body)
+    );
 
     if (!result) {
       return [];
     }
-
-    this._cachingService.set(url, result);
 
     return result.Popular;
   }

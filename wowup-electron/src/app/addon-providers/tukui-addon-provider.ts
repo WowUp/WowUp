@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
-import { map, switchMap, timeout } from "rxjs/operators";
+import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
@@ -19,7 +19,7 @@ import { AppConfig } from "../../environments/environment";
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
 const WOWUP_API_URL = AppConfig.wowUpHubUrl;
-const CHANGELOG_CACHE_TTL_MS = 30 * 60 * 1000;
+const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
 export class TukUiAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
@@ -183,16 +183,12 @@ export class TukUiAddonProvider implements AddonProvider {
   }
 
   private fetchChangelogHtml = async (addon: TukUiAddon): Promise<string> => {
-    const cacheKey = `tukui_changelog_${addon.id}`;
-    const cachedChangelog = this._cachingService.get<string>(cacheKey);
-    if (cachedChangelog) {
-      return cachedChangelog;
-    }
-
-    const html = await this._circuitBreaker.getText(addon.changelog);
-
-    this._cachingService.set(cacheKey, html, CHANGELOG_CACHE_TTL_MS);
-
+    const cacheKey = `${this.name}_changelog_${addon.id}`;
+    const html = await this._cachingService.transaction(
+      cacheKey,
+      () => this._circuitBreaker.getText(addon.changelog),
+      CHANGELOG_CACHE_TTL_SEC
+    );
     return html;
   };
 
@@ -234,16 +230,9 @@ export class TukUiAddonProvider implements AddonProvider {
       return [];
     }
 
-    const cacheKey = this.getCacheKey(clientType);
-    const cachedAddons = this._cachingService.get<TukUiAddon[]>(cacheKey);
-    if (cachedAddons) {
-      return cachedAddons;
-    }
-
     try {
-      const addons = await this.fetchApiResults(clientType);
-
-      this._cachingService.set(cacheKey, addons);
+      const cacheKey = `${this.name}_all_addons_${this.getAddonsSuffixWowUp(clientType)}`;
+      const addons = await this._cachingService.transaction(cacheKey, () => this.fetchApiResults(clientType));
       return addons;
     } catch (err) {
       console.error(err);
@@ -325,20 +314,6 @@ export class TukUiAddonProvider implements AddonProvider {
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
         return "retail";
-      default:
-        return "";
-    }
-  }
-
-  private getCacheKey(clientType: WowClientType) {
-    switch (clientType) {
-      case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
-        return "tukui_classic_addons";
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-      case WowClientType.Beta:
-        return "tukui_addons";
       default:
         return "";
     }

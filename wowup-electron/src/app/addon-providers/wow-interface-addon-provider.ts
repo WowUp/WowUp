@@ -18,6 +18,7 @@ import { CircuitBreakerWrapper, NetworkService } from "app/services/network/netw
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
+const DETAILS_HTTP_CACHE_TTL_SEC = 5 * 60;
 
 export class WowInterfaceAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
@@ -142,7 +143,12 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   private getAddonDetails = async (addonId: string): Promise<AddonDetailsResponse> => {
     const url = new URL(`${API_URL}/filedetails/${addonId}.json`);
 
-    const responses = await this._circuitBreaker.getJson<AddonDetailsResponse[]>(url);
+    const responses = await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<AddonDetailsResponse[]>(url),
+      DETAILS_HTTP_CACHE_TTL_SEC
+    );
+
     return _.first(responses);
   };
 
