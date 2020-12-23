@@ -25,7 +25,7 @@ import * as _ from "lodash";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { getGameVersion } from "../utils/addon.utils";
 import { map } from "rxjs/operators";
-import { CircuitBreakerWrapper, NetworkService } from "app/services/network/network.service";
+import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 
 const API_URL = AppConfig.wowUpHubUrl;
 

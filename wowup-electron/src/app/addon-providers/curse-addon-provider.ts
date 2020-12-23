@@ -31,7 +31,7 @@ import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { AddonProvider } from "./addon-provider";
 import { AppConfig } from "../../environments/environment";
-import { CircuitBreakerWrapper, NetworkService } from "app/services/network/network.service";
+import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;

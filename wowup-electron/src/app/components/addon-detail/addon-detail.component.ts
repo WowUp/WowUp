@@ -24,7 +24,7 @@ import { AddonService } from "../../services/addons/addon.service";
 import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { capitalizeString } from "../../utils/string.utils";
 import { ElectronService } from "../../services";
-import { SessionService } from "app/services/session/session.service";
+import { SessionService } from "../../services/session/session.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;

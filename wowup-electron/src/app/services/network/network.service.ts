@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AppConfig } from "environments/environment";
+import { AppConfig } from "../../../environments/environment";
 import * as CircuitBreaker from "opossum";
 import { Subject } from "rxjs";
 import { first, tap, timeout } from "rxjs/operators";

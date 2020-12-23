@@ -14,7 +14,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { CachingService } from "../services/caching/caching-service";
 import { AddonProvider } from "./addon-provider";
 import { convertBbcode } from "../utils/bbcode.utils";
-import { CircuitBreakerWrapper, NetworkService } from "app/services/network/network.service";
+import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
