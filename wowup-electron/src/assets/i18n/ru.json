@@ -4,7 +4,7 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "PROVIDERS": {
-      "UNKNOWN": "Unknown"
+      "UNKNOWN": "Неизвестно"
     },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Сканирование модификаций завершено...",
@@ -106,11 +106,11 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "От {authorName}",
-      "CHANGELOG_TAB": "Changelog",
+      "CHANGELOG_TAB": "Список изменений",
       "DEPENDENCY_TEXT": "Эта модификация имеет {dependencyCount} {dependencyCount, plural, one{необходимую} other{необходимых}} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}",
-      "DESCRIPTION_TAB": "Description",
+      "DESCRIPTION_TAB": "Описание",
+      "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
       "FUNDING_LINK_TITLE": "Support this author",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },
@@ -217,7 +217,7 @@
         "VIEW_GITHUB": "Просмотреть код на GitHub",
         "VIEW_GUIDE": "Просмотрите наше руководство чтобы узнать что может WowUp"
       },
-      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Нет необходимой зависимости",
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может попытаться угадать какие модификации уже установилены, это действие может обнулить известную о модификации информацию. Используйте эту функцию если не определяются некоторые модификации или их версии не отображаются корректно. Это действие никогда не удалит ваши установленные модификации, лишь то что WowUp знает о них.\n\nЭта процедура займёт немного времени.",
