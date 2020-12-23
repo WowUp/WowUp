@@ -24,6 +24,7 @@ import { AddonService } from "../../services/addons/addon.service";
 import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { capitalizeString } from "../../utils/string.utils";
 import { ElectronService } from "../../services";
+import { SessionService } from "app/services/session/session.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -53,7 +54,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _addonService: AddonService,
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
-    private _electronService: ElectronService
+    private _electronService: ElectronService,
+    private _sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
 
@@ -171,10 +173,12 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getSearchResultChangelog() {
     const file = first(this.model.searchResult.files);
-    const latestVersion = file.version;
     let changelog = file.changelog;
     if (!changelog) {
-      changelog = await this._addonService.getChangelog(this.model.listItem?.addon);
+      changelog = await this._addonService.getChangelogForSearchResult(
+        this._sessionService.selectedClientType,
+        this.model.searchResult
+      );
     }
 
     return changelog;
@@ -186,7 +190,10 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     let changelog = this.model.listItem?.addon?.latestChangelog;
     console.debug(changelogVersion, latestVersion);
     if (!changelog || changelogVersion !== latestVersion) {
-      changelog = await this._addonService.getChangelog(this.model.listItem?.addon);
+      changelog = await this._addonService.getChangelogForAddon(
+        this._sessionService.selectedClientType,
+        this.model.listItem?.addon
+      );
     }
 
     return changelog;

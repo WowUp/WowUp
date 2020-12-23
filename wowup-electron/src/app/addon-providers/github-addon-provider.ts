@@ -55,7 +55,7 @@ export class GitHubAddonProvider implements AddonProvider {
     return [];
   }
   
-  public async getChangelog(addon: Addon): Promise<string> {
+  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
     return '';
   }
 

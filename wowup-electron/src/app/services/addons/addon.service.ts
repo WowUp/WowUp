@@ -113,18 +113,33 @@ export class AddonService {
         console.debug("reconcileOrphanAddons complete");
       });
   }
+  public async getChangelogForSearchResult(clientType: WowClientType, searchResult: AddonSearchResult) {
+    try {
+      const provider = this.getProvider(searchResult.providerName);
+      if (!provider) {
+        return "";
+      }
 
-  public async getChangelog(addon: Addon) {
-    if(!addon){
-      return '';
+      const latestFile = this.getLatestFile(searchResult, AddonChannelType.Stable);
+      return await provider.getChangelog(clientType, searchResult.externalId, latestFile.externalId);
+    } catch (e) {
+      console.error("Failed to get searchResult changelog", e);
+      return "";
     }
+  }
+
+  public async getChangelogForAddon(clientType: WowClientType, addon: Addon) {
+    if (!addon) {
+      return "";
+    }
+
     try {
       const provider = this.getProvider(addon.providerName);
       if (!provider) {
         return "";
       }
 
-      const changelog = await provider.getChangelog(addon);
+      const changelog = await provider.getChangelog(clientType, addon.externalId, addon.externalLatestReleaseId);
 
       addon.latestChangelogVersion = addon.latestVersion;
       addon.latestChangelog = changelog;
@@ -132,7 +147,7 @@ export class AddonService {
 
       return changelog;
     } catch (e) {
-      console.error("Failed to get changelog", e);
+      console.error("Failed to get addon changelog", e);
       return "";
     }
   }

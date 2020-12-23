@@ -37,7 +37,7 @@ export interface AddonProvider {
 
   scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void>;
 
-  getChangelog(addon: Addon): Promise<string>;
+  getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string>;
 }
 
 export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO";

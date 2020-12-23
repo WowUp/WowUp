@@ -68,15 +68,16 @@ export class CurseAddonProvider implements AddonProvider {
     });
   }
 
-  public async getChangelog(addon: Addon): Promise<string> {
-    const cacheKey = `changelog_${addon.externalId}_${addon.externalLatestReleaseId}`;
+  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+    console.debug("GET CHANGE LOG");
+    const cacheKey = `changelog_${externalId}_${externalReleaseId}`;
     const cachedChangelog = this._cachingService.get<string>(cacheKey);
     if (cachedChangelog) {
       return cachedChangelog;
     }
 
     try {
-      const url = new URL(`${API_URL}/addon/${addon.externalId}/file/${addon.externalLatestReleaseId}/changelog`);
+      const url = new URL(`${API_URL}/addon/${externalId}/file/${externalReleaseId}/changelog`);
       const changelogResponse = await this._httpClient
         .get(url.toString(), { responseType: "text" })
         .pipe(first(), timeout(CHANGELOG_FETCH_TIMEOUT_MS))

@@ -150,8 +150,10 @@ export class WowUpAddonProvider implements AddonProvider {
     }
   }
 
-  public async getChangelog(addon: Addon): Promise<string> {
-    return addon.latestChangelog || "";
+  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+    const addon = await this.getById(externalId, clientType).toPromise();
+    const latestFile = _.first(addon.files);
+    return latestFile.changelog;
   }
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {

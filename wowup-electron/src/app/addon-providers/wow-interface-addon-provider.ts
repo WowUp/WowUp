@@ -3,7 +3,7 @@ import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import * as _ from "lodash";
 import * as CircuitBreaker from "opossum";
 import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { first, map, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
@@ -20,6 +20,7 @@ import { convertBbcode } from "../utils/bbcode.utils";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
+const CHANGELOG_FETCH_TIMEOUT_MS = 1500;
 
 export class WowInterfaceAddonProvider implements AddonProvider {
   private readonly _circuitBreaker: CircuitBreaker<[addonId: string], AddonDetailsResponse>;
@@ -64,8 +65,9 @@ export class WowInterfaceAddonProvider implements AddonProvider {
     return searchResults;
   }
 
-  public async getChangelog(addon: Addon): Promise<string> {
-    return addon.latestChangelog || "";
+  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+    const addon = await this.getAddonDetails(externalId);
+    return addon.changeLog;
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
@@ -155,7 +157,11 @@ export class WowInterfaceAddonProvider implements AddonProvider {
 
     return this._httpClient
       .get<AddonDetailsResponse[]>(url.toString())
-      .pipe(map((responses) => _.first(responses)))
+      .pipe(
+        first(),
+        timeout(CHANGELOG_FETCH_TIMEOUT_MS),
+        map((responses) => _.first(responses))
+      )
       .toPromise();
   };
 
