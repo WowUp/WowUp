@@ -106,9 +106,9 @@
   "DIALOGS": {
     "ADDON_DETAILS": {
       "BY_AUTHOR": "Von {authorName}",
-      "CHANGELOG_TAB": "Changelog",
+      "CHANGELOG_TAB": "Änderungsverlauf",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
-      "DESCRIPTION_TAB": "Description",
+      "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
