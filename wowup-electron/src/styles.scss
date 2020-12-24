@@ -272,36 +272,6 @@ img {
   img {
     max-width: 100%;
   }
-
-  a {
-    color: $white-2;
-
-    &:visited {
-      color: $white-3;
-    }
-  }
-}
-
-.addon-changelog {
-  // font-size: inherit;
-  // font-family: inherit;
-  // line-height: 15px;
-
-  // h1,
-  // h2,
-  // h3,
-  // p,
-  // ul {
-  //   margin: 0;
-  // }
-
-  a {
-    color: $purple-1;
-
-    &:visited {
-      color: $purple-1;
-    }
-  }
 }
 
 .addon-summary,

@@ -18,9 +18,9 @@ $md-wowup-pallette: (
   700: #303f9f,
   800: #283593,
   900: #1a237e,
-  A100: #8c9eff,
-  A200: #536dfe,
-  A400: #3d5afe,
+  A100: $wowup-purple-1,
+  A200: $wowup-control,
+  A400: $wowup-purple-3,
   A700: #6874bb,
   contrast: (
     50: #000000,
@@ -149,6 +149,17 @@ $wowup-light-theme: mat-light-theme(
   background: $dark-3;
 }
 
+.addon-summary,
+.addon-changelog {
+  a {
+    color: $wowup-control;
+
+    &:visited {
+      color: $wowup-control;
+    }
+  }
+}
+
 .mat-input-element {
   caret-color: $white-3 !important;
   color: $white-1 !important;
@@ -264,6 +275,17 @@ $horde-theme-light: mat-light-theme(
   ::-webkit-scrollbar-corner {
     background: $dark-3;
   }
+
+  .addon-summary,
+  .addon-changelog {
+    a {
+      color: $horde-control;
+
+      &:visited {
+        color: $horde-control;
+      }
+    }
+  }
 }
 
 // Alliance theme
@@ -364,6 +386,17 @@ $alliance-theme-light: mat-light-theme(
   ::-webkit-scrollbar-corner {
     background: $dark-3;
   }
+
+  .addon-summary,
+  .addon-changelog {
+    a {
+      color: $alliance-control;
+
+      &:visited {
+        color: $alliance-control;
+      }
+    }
+  }
 }
 
 // DARK THEME
@@ -389,15 +422,15 @@ $alliance-theme-light: mat-light-theme(
   .hover-bg-secondary:hover {
     background-color: $dark-1 !important;
   }
-  
+
   .hover-bg-secondary-2:hover {
     background-color: $dark-2 !important;
   }
-  
+
   .hover-bg-secondary-3:hover {
     background-color: $dark-3 !important;
   }
-  
+
   .hover-bg-secondary-4:hover {
     background-color: $dark-4 !important;
   }
