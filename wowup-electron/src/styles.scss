@@ -273,10 +273,6 @@ img {
     max-width: 100%;
   }
 
-  strong {
-    font-weight: 400;
-  }
-
   a {
     color: $white-2;
 
@@ -305,6 +301,16 @@ img {
     &:visited {
       color: $purple-1;
     }
+  }
+}
+
+.addon-summary,
+.addon-changelog {
+  strong,
+  b {
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
   }
 }
 
