@@ -58,7 +58,9 @@
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
         <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="getDescription()"></div>
       </mat-tab>
+      <!-- CHANGELOG -->
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
+        <app-progress-spinner *ngIf="fetchingChangelog === true"></app-progress-spinner>
         <div #changelogContainer class="addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
       </mat-tab>
     </mat-tab-group>

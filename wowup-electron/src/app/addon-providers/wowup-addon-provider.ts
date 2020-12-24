@@ -39,7 +39,7 @@ export class WowUpAddonProvider implements AddonProvider {
   public readonly name = ADDON_PROVIDER_HUB;
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
-  public readonly allowChannelChange = false;
+  public readonly allowChannelChange = true;
   public readonly allowEdit = true;
   public enabled = true;
 
@@ -106,6 +106,7 @@ export class WowUpAddonProvider implements AddonProvider {
     const url = new URL(`${API_URL}/addons/${addonId}`);
     return from(this._circuitBreaker.getJson<WowUpGetAddonResponse>(url)).pipe(
       map((result) => {
+        console.debug("Result", result);
         return this.getSearchResult(result.addon);
       })
     );
@@ -164,6 +165,7 @@ export class WowUpAddonProvider implements AddonProvider {
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+    console.debug("GET CHANGELOG");
     const addon = await this.getById(externalId, clientType).toPromise();
     const latestFile = _.first(addon.files);
     return latestFile.changelog;
@@ -198,21 +200,27 @@ export class WowUpAddonProvider implements AddonProvider {
     });
   }
 
+  private getAddonReleaseChannel(file: WowUpAddonReleaseRepresentation) {
+    return file.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable;
+  }
+
+  private getSearchResultFile(file: WowUpAddonReleaseRepresentation) {
+    return {
+      channelType: this.getAddonReleaseChannel(file),
+      downloadUrl: file.download_url,
+      folders: [],
+      gameVersion: getGameVersion(file.game_version),
+      releaseDate: file.published_at,
+      version: file.tag_name,
+      dependencies: [],
+      changelog: file.body,
+    };
+  }
+
   private getSearchResult(representation: WowUpAddonRepresentation): AddonSearchResult {
-    const release = _.first(representation.releases);
-    const searchResultFiles: AddonSearchResultFile[] = [];
-    if (release) {
-      searchResultFiles.push({
-        channelType: AddonChannelType.Stable,
-        downloadUrl: release.download_url,
-        folders: [],
-        gameVersion: getGameVersion(release.game_version),
-        releaseDate: release.published_at,
-        version: release.tag_name,
-        dependencies: [],
-        changelog: release.body,
-      });
-    }
+    const searchResultFiles: AddonSearchResultFile[] = _.map(representation.releases, (release) =>
+      this.getSearchResultFile(release)
+    );
 
     return {
       author: representation.owner_name,

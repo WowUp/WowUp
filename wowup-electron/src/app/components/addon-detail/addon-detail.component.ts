@@ -12,8 +12,8 @@ import {
 import { first } from "lodash";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import { BehaviorSubject, from, Subscription } from "rxjs";
-import { filter } from "rxjs/operators";
+import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { filter, switchMap, tap } from "rxjs/operators";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
@@ -48,6 +48,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public readonly changelog$ = this._changelogSrc.asObservable();
   public readonly capitalizeString = capitalizeString;
+  public fetchingChangelog = true;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -75,9 +76,14 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
           }
 
           this._cdRef.detectChanges();
-        }),
-      from(this.getChangelog()).subscribe((changelog) => this._changelogSrc.next(changelog))
+        })
     );
+
+    const changelogSub = from(this.getChangelog())
+      .pipe(tap(() => (this.fetchingChangelog = false)))
+      .subscribe((changelog) => this._changelogSrc.next(changelog));
+
+    this._subscriptions.push(changelogSub);
   }
 
   ngOnInit(): void {}
@@ -153,7 +159,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     return this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
   }
 
-  async getChangelog() {
+  getChangelog = async () => {
     if (this.model.listItem) {
       return await this.getMyAddonChangelog();
     } else if (this.model.searchResult) {
@@ -161,7 +167,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
 
     return "";
-  }
+  };
 
   private async getSearchResultChangelog() {
     return await this._addonService.getChangelogForSearchResult(

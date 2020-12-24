@@ -113,6 +113,7 @@ export class AddonService {
         console.debug("reconcileOrphanAddons complete");
       });
   }
+
   public async getChangelogForSearchResult(clientType: WowClientType, searchResult: AddonSearchResult) {
     try {
       const provider = this.getProvider(searchResult.providerName);
@@ -841,6 +842,12 @@ export class AddonService {
       console.debug("unmatchedAddons", unmatchedAddons);
 
       addonList.push(...unmatchedAddons);
+
+      //Clear the changelogs since they wont always be latest
+      addonList.forEach((addon) => {
+        addon.latestChangelog = undefined;
+        addon.latestChangelogVersion = undefined;
+      });
 
       return addonList;
     } finally {
