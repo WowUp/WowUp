@@ -203,7 +203,7 @@
       "FILTER_LABEL": "Filtra",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Supporta questo autore",
-        "GENERIC": "Supporta questo autore {platform}",
+        "GENERIC": "Supporta questo autore su {platform}",
         "GITHUB": "Supporta questo autore su GitHub",
         "PATREON": "Supporta questo autore su Patreon",
         "PAYPAL": "Supporta questo autore su PayPal"
