@@ -123,18 +123,6 @@ $wowup-light-theme: mat-light-theme(
   background-color: $purple-2;
 }
 
-.text-1 {
-  color: $white-1;
-}
-
-.text-2 {
-  color: $white-2;
-}
-
-.text-3 {
-  color: $white-3;
-}
-
 ::-webkit-scrollbar-track {
   background-color: $dark-2;
 }
@@ -175,6 +163,22 @@ $wowup-light-theme: mat-light-theme(
 
 .default-theme-light-theme {
   @include angular-material-color($wowup-light-theme);
+}
+
+.text-1 {
+  color: $white-1;
+}
+
+.text-2 {
+  color: $white-2;
+}
+
+.text-3 {
+  color: $white-3;
+}
+
+.wowup-snackbar {
+  background-color: $dark-4;
 }
 
 // Horde theme
@@ -504,5 +508,9 @@ $alliance-theme-light: mat-light-theme(
   }
   .mat-form-field.mat-focused .mat-form-field-label {
     color: $lt-text-2 !important;
+  }
+
+  .wowup-snackbar {
+    background-color: $white-1 !important;
   }
 }
