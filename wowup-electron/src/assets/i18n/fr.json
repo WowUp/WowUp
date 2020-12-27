@@ -105,8 +105,11 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "Par {authorName}",
       "CHANGELOG_TAB": "Changelog",
+      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
+      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
       "DEPENDENCY_TEXT": "Cet addon a {dependencyCount} {dependencyCount, plural, one{dépendance requise} other{dépendances requises}}",
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",

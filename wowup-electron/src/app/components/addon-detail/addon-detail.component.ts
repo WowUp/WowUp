@@ -9,11 +9,10 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { first } from "lodash";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
-import { filter, switchMap, tap } from "rxjs/operators";
+import { filter, first, switchMap, tap } from "rxjs/operators";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
@@ -25,6 +24,7 @@ import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { capitalizeString } from "../../utils/string.utils";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -56,7 +56,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
     private _electronService: ElectronService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    private _snackBar: MatSnackBar
   ) {
     this._dependencies = this.getDependencies();
 
@@ -113,6 +114,21 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  onClickExternalId() {
+    this._translateService
+      .get("DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_SNACKBAR")
+      .pipe(
+        first(),
+        tap((text) => {
+          this._snackBar.open(text, undefined, {
+            duration: 2000,
+            panelClass: ["wowup-snackbar", "text-1"],
+          });
+        })
+      )
+      .subscribe();
   }
 
   onOpenLink = (e: MouseEvent) => {
