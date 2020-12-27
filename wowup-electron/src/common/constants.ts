@@ -47,9 +47,6 @@ export const ADDON_PROVIDERS_KEY = "addon_providers";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
 export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
-export const WINDOW_MAXIMIZED_KEY = "window_maximized";
-export const WINDOW_MINIMIZED_KEY = "window_minimized";
-export const WINDOW_BOUNDS_KEY = "window_bounds";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
@@ -76,3 +73,10 @@ export const DEFAULT_LIGHT_BG_COLOR = "#ebedef";
 export const ERROR_ADDON_ALREADY_INSTALLED = "ERROR_ADDON_ALREADY_INSTALLED";
 export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
 export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
+
+// VALUES
+export const WINDOW_DEFAULT_WIDTH = 1280;
+export const WINDOW_DEFAULT_HEIGHT = 720;
+export const WINDOW_MIN_WIDTH = 940;
+export const WINDOW_MIN_HEIGHT = 500;
+export const MIN_VISIBLE_ON_SCREEN = 32;
