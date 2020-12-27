@@ -228,7 +228,7 @@ export class WowUpAddonProvider implements AddonProvider {
       externalUrl: representation.repository,
       name: representation.repository_name,
       providerName: this.name,
-      thumbnailUrl: representation.owner_image_url,
+      thumbnailUrl: representation.image_url,
       downloadCount: representation.total_download_count,
       files: searchResultFiles,
       releasedAt: new Date(),
