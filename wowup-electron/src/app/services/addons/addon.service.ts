@@ -114,14 +114,18 @@ export class AddonService {
       });
   }
 
-  public async getChangelogForSearchResult(clientType: WowClientType, searchResult: AddonSearchResult) {
+  public async getChangelogForSearchResult(
+    clientType: WowClientType,
+    channelType: AddonChannelType,
+    searchResult: AddonSearchResult
+  ) {
     try {
       const provider = this.getProvider(searchResult.providerName);
       if (!provider) {
         return "";
       }
 
-      const latestFile = this.getLatestFile(searchResult, AddonChannelType.Stable);
+      const latestFile = this.getLatestFile(searchResult, channelType);
       return await provider.getChangelog(clientType, searchResult.externalId, latestFile.externalId);
     } catch (e) {
       console.error("Failed to get searchResult changelog", e);
@@ -685,13 +689,16 @@ export class AddonService {
   }
 
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
+    if (clientType === WowClientType.None) {
+      return [];
+    }
+
     let addons = this._addonStorage.getAllForClientType(clientType);
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
-
       this._addonStorage.removeAllForClientType(clientType);
+
       addons = this.updateAddons(addons, newAddons);
-      console.debug("ADDONS", addons);
       this._addonStorage.saveAll(addons);
     }
 

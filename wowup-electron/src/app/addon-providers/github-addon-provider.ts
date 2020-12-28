@@ -13,6 +13,7 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider } from "./addon-provider";
+import { AssetMissingError, ClassicAssetMissingError, NoReleaseFoundError } from "../errors";
 
 interface GitHubRepoParts {
   repository: string;
@@ -54,9 +55,9 @@ export class GitHubAddonProvider implements AddonProvider {
   public async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
     return [];
   }
-  
+
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    return '';
+    return "";
   }
 
   public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
@@ -69,13 +70,18 @@ export class GitHubAddonProvider implements AddonProvider {
     const latestRelease = this.getLatestRelease(results);
     if (!latestRelease) {
       console.log("latestRelease results", results);
-      throw new Error(`No release found in ${addonUri}`);
+      throw new NoReleaseFoundError(addonUri.toString());
     }
 
     const asset = this.getValidAsset(latestRelease, clientType);
     console.log("latestRelease", latestRelease);
     if (asset == null) {
-      throw new Error(`No release assets found in ${addonUri}`);
+      if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(clientType)) {
+        throw new ClassicAssetMissingError(addonUri.toString());
+      } else {
+        throw new AssetMissingError(addonUri.toString());
+      }
+      // throw new Error(`No release assets found in ${addonUri}`);
     }
 
     var repository = await this.getRepository(repoPath).toPromise();
