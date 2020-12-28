@@ -16,6 +16,7 @@ import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { Subject } from "rxjs";
 import { PreferenceChange } from "./models/wowup/preference-change";
 import { MatModule } from "./mat-module";
+import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -32,6 +33,7 @@ describe("AppComponent", () => {
   let fileServiceSpy: any;
   let analyticsService: AnalyticsService;
   let analyticsServiceSpy: any;
+  let preferenceStorageSpy: PreferenceStorageService;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
@@ -44,6 +46,7 @@ describe("AppComponent", () => {
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""]);
     fileServiceSpy = jasmine.createSpyObj("FileService", [""]);
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", ["trackStartup"]);
+    preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", ["get"], {});
 
     await TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -79,6 +82,7 @@ describe("AppComponent", () => {
           { provide: SessionService, useValue: sessionServiceSpy },
           { provide: FileService, useValue: fileServiceSpy },
           { provide: AnalyticsService, useValue: analyticsServiceSpy },
+          { provide: PreferenceStorageService, useValue: preferenceStorageSpy },
         ]},
     }).compileComponents();
 

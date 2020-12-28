@@ -1,3 +1,4 @@
+import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { ElectronService } from "./electron.service";
 
 class StubbedElectronService extends ElectronService {
@@ -7,8 +8,14 @@ class StubbedElectronService extends ElectronService {
 }
 
 describe("ElectronService", () => {
+  let preferenceStorageSpy: PreferenceStorageService;
+
+  beforeEach(async () => {
+    preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", [""], {});
+  });
+
   it("should be created", () => {
-    const service: ElectronService = new StubbedElectronService();
+    const service: ElectronService = new StubbedElectronService(preferenceStorageSpy);
     expect(service).toBeTruthy();
   });
 });

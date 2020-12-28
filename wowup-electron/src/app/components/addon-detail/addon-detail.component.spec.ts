@@ -14,6 +14,7 @@ import { Addon } from "../../entities/addon";
 import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { SessionService } from "../../services/session/session.service";
+import { ElectronService } from "../../services";
 
 describe("AddonDetailComponent", () => {
   let component: AddonDetailComponent;
@@ -21,7 +22,8 @@ describe("AddonDetailComponent", () => {
   let addonService: AddonService;
   let dialogModel: AddonDetailModel;
   let addonServiceSpy: any;
-  let sessionServiceSpy: any;
+  let electronServiceSpy: ElectronService;
+  let sessionServiceSpy: SessionService;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["logDebugData", "getChangelogForAddon"], {
@@ -29,6 +31,8 @@ describe("AddonDetailComponent", () => {
       getChangelog: () => "",
     });
 
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType"], {});
 
     const viewModel = new AddonViewModel({
       installedVersion: "1.0.0",
@@ -60,7 +64,14 @@ describe("AddonDetailComponent", () => {
     })
       .overrideComponent(AddonDetailComponent, {
         set: {
-          providers: [{ provide: AddonService, useValue: addonServiceSpy }, { provide: SessionService, useValue: {} }],
+          providers: [
+            { provide: AddonService, useValue: addonServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+            {
+              provide: ElectronService,
+              useValue: electronServiceSpy,
+            },
+          ],
         },
       })
       .compileComponents();

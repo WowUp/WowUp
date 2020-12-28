@@ -25,7 +25,7 @@ describe("AddonInstallButtonComponent", () => {
     }, {
       addonInstalled$ : new Subject<AddonUpdateEvent>().asObservable(),
     });
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType"], {
       selectedClientType: WowClientType.Retail,
     });
 
