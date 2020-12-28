@@ -56,7 +56,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, this._sessionService.selectedClientType)
+      this._addonService.installPotentialAddon(this.addon, this._sessionService.getSelectedClientType())
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
@@ -98,7 +98,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.selectedClientType);
+      const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.getSelectedClientType());
       if (!importedAddon) {
         throw new Error("Addon not found");
       }
@@ -136,7 +136,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
   }
 
   private addonExists(externalId: string) {
-    return this._addonService.isInstalled(externalId, this._sessionService.selectedClientType);
+    return this._addonService.isInstalled(externalId, this._sessionService.getSelectedClientType());
   }
 
   private getUrlFromQuery(): URL | undefined {

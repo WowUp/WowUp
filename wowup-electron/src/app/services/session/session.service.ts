@@ -32,14 +32,18 @@ export class SessionService {
 
   public onInstalledClientsChange(installedClientTypes: WowClientType[]) {
     if (!installedClientTypes.length) {
-      this._selectedClientTypeSrc.next(WowClientType.None);
-    }
-
-    if (installedClientTypes.indexOf(this.selectedClientType) !== -1) {
+      this.setSelectedClientType(WowClientType.None);
       return;
     }
 
-    this.selectedClientType = ldFirst(installedClientTypes);
+    if (
+      this.getSelectedClientType() !== WowClientType.None &&
+      installedClientTypes.indexOf(this.getSelectedClientType()) !== -1
+    ) {
+      return;
+    }
+
+    this.setSelectedClientType(ldFirst(installedClientTypes));
   }
 
   public autoUpdateComplete() {
@@ -63,12 +67,12 @@ export class SessionService {
     this._selectedHomeTabSrc.next(tabIndex);
   }
 
-  public set selectedClientType(clientType: WowClientType) {
-    this._wowUpService.lastSelectedClientType = clientType;
+  public setSelectedClientType(clientType: WowClientType) {
+    this._wowUpService.setLastSelectedClientType(clientType);
     this._selectedClientTypeSrc.next(clientType);
   }
 
-  public get selectedClientType() {
+  public getSelectedClientType() {
     return this._selectedClientTypeSrc.value;
   }
 
@@ -78,13 +82,13 @@ export class SessionService {
       first((installedClientTypes) => installedClientTypes.length > 0),
       map((installedClientTypes) => {
         console.log("installedClientTypes", installedClientTypes);
-        const lastSelectedType = this._wowUpService.lastSelectedClientType;
+        const lastSelectedType = this._wowUpService.getLastSelectedClientType();
         console.log("lastSelectedType", lastSelectedType);
         let initialClientType = installedClientTypes.length ? installedClientTypes[0] : WowClientType.None;
 
         // If the user has no stored type, or the type is no longer found just set it.
         if (lastSelectedType == WowClientType.None || !installedClientTypes.some((ct) => ct == lastSelectedType)) {
-          this._wowUpService.lastSelectedClientType = initialClientType;
+          this._wowUpService.setLastSelectedClientType(initialClientType);
         } else {
           initialClientType = lastSelectedType;
         }

@@ -187,7 +187,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getSearchResultChangelog() {
     return await this._addonService.getChangelogForSearchResult(
-      this._sessionService.selectedClientType,
+      this._sessionService.getSelectedClientType(),
       this.model.channelType,
       this.model.searchResult
     );
@@ -195,7 +195,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getMyAddonChangelog() {
     return await this._addonService.getChangelogForAddon(
-      this._sessionService.selectedClientType,
+      this._sessionService.getSelectedClientType(),
       this.model.listItem?.addon
     );
   }

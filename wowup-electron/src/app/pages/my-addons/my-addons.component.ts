@@ -431,7 +431,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClientChange() {
-    this._sessionService.selectedClientType = this.selectedClient;
+    this._sessionService.setSelectedClientType(this.selectedClient);
   }
 
   public onRemoveAddon(addon: Addon) {
