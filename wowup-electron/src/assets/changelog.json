@@ -1,5 +1,27 @@
 {
-  "ChangeLogs": [{
+  "ChangeLogs": [
+    {
+      "Version": "2.1.0-beta.11",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "Add a spinner to loading of changelogs",
+        "Add beta support for Hub addons",
+        "Improve bold fonts on addon changelog/summary",
+        "Improve the addon ID display in details",
+        "Improve Hub support for changelogs and classic",
+        "Improve changelog support for different channels",
+        "Improve Import by URL error dialogs",
+        "Fix some color issues",
+        "Fix an issue with Hub addons showing the wrong icon",
+        "Fix an issue with zoom factor not being properly restored between runs",
+        "Fix an issue where the app is in a weird state when manually removing all clients",
+        "Revert some changes to the window restore code",
+        "Use new ico file on Mac",
+        "Update to latest Electron"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.10",
       "changes": [
         "German locale updates (Glow)",
