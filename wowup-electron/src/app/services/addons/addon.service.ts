@@ -685,13 +685,16 @@ export class AddonService {
   }
 
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
+    if (clientType === WowClientType.None) {
+      return [];
+    }
+
     let addons = this._addonStorage.getAllForClientType(clientType);
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
-
       this._addonStorage.removeAllForClientType(clientType);
+
       addons = this.updateAddons(addons, newAddons);
-      console.debug("ADDONS", addons);
       this._addonStorage.saveAll(addons);
     }
 
