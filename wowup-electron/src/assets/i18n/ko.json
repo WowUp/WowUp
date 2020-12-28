@@ -105,8 +105,11 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "제작자: {authorName}",
       "CHANGELOG_TAB": "Changelog",
+      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
+      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
       "DEPENDENCY_TEXT": "이 애드온은 {dependencyCount}개의 다른 애드온을 참조합니다.",
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
@@ -129,10 +132,13 @@
       "DESCRIPTION": "URL 주소로 직접 설치를 하려면 아래 입력란에 애드온 URL을 붙여넣으세요.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
+        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
         "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wowup-support 채널에서 도움을 요청해보세요.",
         "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "애드온을 찾을 수 없습니다. 입력하신 주소가 올바른 애드온 페이지를 가리키고 있는지 확인해주세요.\n\nGithub에서 설치할 때는, 애드온을 zip 파일로 묶은 릴리즈 태그가 존재하는 저장소인지 확인하세요.",
+        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
         "NO_SEARCH_RESULTS": "No search results were found.",
         "TITLE": "애드온 설치 실패"
       },

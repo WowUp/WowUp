@@ -22,8 +22,11 @@
       <div *ngIf="isUnknownProvider() === false">
         <div class="row align-items-center">
           <div class="mr-2">
-            <div>{{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ provider }}</div>
-            <div class="sub-text text-right selectable text-2">{{ getExternalId() }}</div>
+            <div class="text-right">{{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ provider }}
+            </div>
+            <div class="sub-text text-right id-link selectable text-2" [cdkCopyToClipboard]="getExternalId()"
+              [matTooltip]="'DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_TOOLTIP' | translate" (click)="onClickExternalId()">{{ 'DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate }} {{
+              getExternalId() }}</div>
           </div>
           <a class="icon-link" appExternalLink [href]="externalUrl"
             [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate">

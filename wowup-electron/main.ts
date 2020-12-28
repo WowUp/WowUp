@@ -6,8 +6,6 @@ import {
   MenuItem,
   MenuItemConstructorOptions,
   powerMonitor,
-  screen,
-  Rectangle,
 } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
@@ -24,11 +22,13 @@ import {
   DEFAULT_BG_COLOR,
   DEFAULT_LIGHT_BG_COLOR,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
-  WINDOW_BOUNDS_KEY,
-  WINDOW_MAXIMIZED_KEY,
-  WINDOW_MINIMIZED_KEY,
+  WINDOW_DEFAULT_HEIGHT,
+  WINDOW_DEFAULT_WIDTH,
+  WINDOW_MIN_HEIGHT,
+  WINDOW_MIN_WIDTH,
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
+import { windowStateManager } from "./window-state";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -57,11 +57,6 @@ const argv = require("minimist")(process.argv.slice(1), {
 const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
 const USER_AGENT = getUserAgent();
 log.info("USER_AGENT", USER_AGENT);
-const WINDOW_DEFAULT_WIDTH = 1280;
-const WINDOW_DEFAULT_HEIGHT = 720;
-const WINDOW_MIN_WIDTH = 940;
-const WINDOW_MIN_HEIGHT = 500;
-const MIN_VISIBLE_ON_SCREEN = 32;
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
@@ -124,7 +119,6 @@ if (app.isReady()) {
 }
 
 app.on("before-quit", () => {
-  saveWindowConfig(win);
   win = null;
   appIsQuitting = true;
 });
@@ -177,16 +171,19 @@ powerMonitor.on("unlock-screen", () => {
 function createWindow(): BrowserWindow {
   // Main object for managing window state
   // Initialize with a window name and default size
-  // const mainWindowManager = windowStateManager("main", {
-  //   width: 900,
-  //   height: 600,
-  // });
-
-  const windowOptions: BrowserWindowConstructorOptions = {
+  const mainWindowManager = windowStateManager("main", {
     width: WINDOW_DEFAULT_WIDTH,
     height: WINDOW_DEFAULT_HEIGHT,
+  });
+
+  const windowOptions: BrowserWindowConstructorOptions = {
+    width: mainWindowManager.width,
+    height: mainWindowManager.height,
+    x: mainWindowManager.x,
+    y: mainWindowManager.y,
     minWidth: WINDOW_MIN_WIDTH,
     minHeight: WINDOW_MIN_HEIGHT,
+    center: mainWindowManager.centered === true,
     transparent: false,
     resizable: true,
     backgroundColor: getBackgroundColor(),
@@ -212,25 +209,15 @@ function createWindow(): BrowserWindow {
     windowOptions.icon = join(__dirname, "assets", "wowup_logo_512np.png");
   }
 
-  setWindowBounds(windowOptions);
-
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
-
-  if (preferenceStore.get(WINDOW_MAXIMIZED_KEY, false)) {
-    win.maximize();
-  }
-
-  if (preferenceStore.get(WINDOW_MINIMIZED_KEY, false)) {
-    win.minimize();
-  }
 
   initializeIpcHandlers(win);
   initializeAppUpdater(win);
   initializeAppUpdateIpcHandlers(win);
 
   // Keep track of window state
-  // mainWindowManager.monitorState(win);
+  mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
 
@@ -259,11 +246,11 @@ function createWindow(): BrowserWindow {
   });
 
   win.once("show", () => {
-    // if (mainWindowManager.isFullScreen) {
-    //   win.setFullScreen(true);
-    // } else if (mainWindowManager.isMaximized) {
-    //   win.maximize();
-    // }
+    if (mainWindowManager.isFullScreen) {
+      win.setFullScreen(true);
+    } else if (mainWindowManager.isMaximized) {
+      win.maximize();
+    }
   });
 
   if (platform.isMac) {
@@ -277,14 +264,6 @@ function createWindow(): BrowserWindow {
       app.dock.hide();
     });
   }
-
-  win.on("close", () => {
-    if (!win) {
-      return;
-    }
-
-    saveWindowConfig(win);
-  });
 
   win.once("closed", () => {
     win = null;
@@ -307,60 +286,6 @@ function createWindow(): BrowserWindow {
   }
 
   return win;
-}
-
-function saveWindowConfig(browserWindow: BrowserWindow) {
-  try {
-    if (!browserWindow) {
-      return;
-    }
-
-    preferenceStore.set(WINDOW_MAXIMIZED_KEY, browserWindow.isMaximized());
-    preferenceStore.set(WINDOW_MINIMIZED_KEY, browserWindow.isMinimized());
-
-    if (!preferenceStore.get(WINDOW_MAXIMIZED_KEY, false) && !preferenceStore.get(WINDOW_MINIMIZED_KEY, false)) {
-      preferenceStore.set(WINDOW_BOUNDS_KEY, browserWindow.getBounds());
-    }
-  } catch (e) {
-    log.error(e);
-  }
-}
-
-// Lifted from Discord to check where to display the window
-function setWindowBounds(windowOptions: BrowserWindowConstructorOptions) {
-  const savedBounds = preferenceStore.get(WINDOW_BOUNDS_KEY) as Rectangle;
-  if (!savedBounds) {
-    windowOptions.center = true;
-    return;
-  }
-
-  savedBounds.width = Math.max(WINDOW_MIN_WIDTH, savedBounds.width);
-  savedBounds.height = Math.max(WINDOW_MIN_HEIGHT, savedBounds.height);
-
-  let isVisibleOnAnyScreen = false;
-
-  const displays = screen.getAllDisplays();
-  for (const display of displays) {
-    const displayBound = display.workArea;
-    displayBound.x += MIN_VISIBLE_ON_SCREEN;
-    displayBound.y += MIN_VISIBLE_ON_SCREEN;
-    displayBound.width -= 2 * MIN_VISIBLE_ON_SCREEN;
-    displayBound.height -= 2 * MIN_VISIBLE_ON_SCREEN;
-    isVisibleOnAnyScreen = doRectanglesOverlap(savedBounds, displayBound);
-
-    if (isVisibleOnAnyScreen) {
-      break;
-    }
-  }
-
-  if (isVisibleOnAnyScreen) {
-    windowOptions.width = savedBounds.width;
-    windowOptions.height = savedBounds.height;
-    windowOptions.x = savedBounds.x;
-    windowOptions.y = savedBounds.y;
-  } else {
-    windowOptions.center = true;
-  }
 }
 
 function getBackgroundColor() {
@@ -461,25 +386,4 @@ function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
   }
 
   return [];
-}
-
-function doRectanglesOverlap(a: Rectangle, b: Rectangle) {
-  const ax1 = a.x + a.width;
-  const bx1 = b.x + b.width;
-  const ay1 = a.y + a.height;
-  const by1 = b.y + b.height; // clamp a to b, see if it is non-empty
-
-  const cx0 = a.x < b.x ? b.x : a.x;
-  const cx1 = ax1 < bx1 ? ax1 : bx1;
-
-  if (cx1 - cx0 > 0) {
-    const cy0 = a.y < b.y ? b.y : a.y;
-    const cy1 = ay1 < by1 ? ay1 : by1;
-
-    if (cy1 - cy0 > 0) {
-      return true;
-    }
-  }
-
-  return false;
 }

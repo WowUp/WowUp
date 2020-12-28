@@ -14,6 +14,7 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
 import {
+  WowUpGetAddonReleaseResponse,
   WowUpGetAddonResponse,
   WowUpGetAddonsResponse,
   WowUpSearchAddonsResponse,
@@ -112,6 +113,11 @@ export class WowUpAddonProvider implements AddonProvider {
     );
   }
 
+  getReleaseById(addonId: string, releaseId: string): Observable<WowUpGetAddonReleaseResponse> {
+    const url = new URL(`${API_URL}/addons/${addonId}/releases/${releaseId}`);
+    return from(this._circuitBreaker.getJson<WowUpGetAddonReleaseResponse>(url));
+  }
+
   isValidAddonUri(addonUri: URL): boolean {
     // TODO
     return false;
@@ -166,9 +172,8 @@ export class WowUpAddonProvider implements AddonProvider {
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
     console.debug("GET CHANGELOG");
-    const addon = await this.getById(externalId, clientType).toPromise();
-    const latestFile = _.first(addon.files);
-    return latestFile.changelog;
+    const addon = await this.getReleaseById(externalId, externalReleaseId).toPromise();
+    return addon?.release?.body ?? "";
   }
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
@@ -204,7 +209,7 @@ export class WowUpAddonProvider implements AddonProvider {
     return file.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable;
   }
 
-  private getSearchResultFile(file: WowUpAddonReleaseRepresentation) {
+  private getSearchResultFile(file: WowUpAddonReleaseRepresentation): AddonSearchResultFile {
     return {
       channelType: this.getAddonReleaseChannel(file),
       downloadUrl: file.download_url,
@@ -214,6 +219,7 @@ export class WowUpAddonProvider implements AddonProvider {
       version: file.tag_name,
       dependencies: [],
       changelog: file.body,
+      externalId: file.id.toString(),
     };
   }
 
@@ -228,7 +234,7 @@ export class WowUpAddonProvider implements AddonProvider {
       externalUrl: representation.repository,
       name: representation.repository_name,
       providerName: this.name,
-      thumbnailUrl: representation.owner_image_url,
+      thumbnailUrl: representation.image_url || representation.owner_image_url,
       downloadCount: representation.total_download_count,
       files: searchResultFiles,
       releasedAt: new Date(),
@@ -272,6 +278,7 @@ export class WowUpAddonProvider implements AddonProvider {
       releasedAt: scanResult.exactMatch?.matched_release?.published_at,
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
       latestChangelog: scanResult.exactMatch?.matched_release?.body,
+      externalLatestReleaseId: scanResult?.exactMatch?.matched_release?.id?.toString(),
     };
   }
 

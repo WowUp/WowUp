@@ -105,8 +105,11 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "Por {authorName}",
       "CHANGELOG_TAB": "Changelog",
+      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
+      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
       "DEPENDENCY_TEXT": "Este Addon tem {dependencyCount} {dependencyCount, plural, one{dependência necessária} other{dependências necessárias}}",
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
@@ -129,10 +132,13 @@
       "DESCRIPTION": "Se você deseja instalar um Addon diretamente de uma URL, cole-a abaixo para iniciar.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} de {provider}",
       "ERROR": {
+        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "Não foi possível conectar à API, por favor espere um pouco e tente novamente.",
         "INSTALL_FAILED": "Algo deu errado ao tentar instalar o Addon, por favor tente novamente.\n\nSe esta mensagem continuar aparecendo, você pode conseguir ajuda no Discord no canal #wowup-support.",
         "INVALID_URL": "O valor fornecido não é uma URL válida. Exemplos de URLs de Addon válidos são:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "O Addon não foi encontrado, tenha certeza de que a URL está apontando para a página correta.\n\nQuanto estiver instalando do github, certifique-se de que o repositório possui uma tag release com um arquivo zip contendo o Addon.",
+        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
         "NO_SEARCH_RESULTS": "No search results were found.",
         "TITLE": "Instalação do Addon Falhou"
       },

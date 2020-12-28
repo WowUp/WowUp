@@ -41,6 +41,13 @@
   }
 }
 
+.id-link {
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
 .funding-link-container {
   h3 {
     color: $artifact;

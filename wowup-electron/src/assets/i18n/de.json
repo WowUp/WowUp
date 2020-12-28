@@ -105,8 +105,11 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "Von {authorName}",
       "CHANGELOG_TAB": "Änderungsverlauf",
+      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
+      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Support this author",
@@ -129,10 +132,13 @@
       "DESCRIPTION": "Möchtest du ein Addon über eine URL installieren, füge diese unten ein.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
+        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
         "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #wowup-support nach Hilfe fragen.",
         "INVALID_URL": "Die eingetragene URL ist ungültig. Beispiele für gültige URLs sind:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Es wurde kein Addon gefunden. Stelle sicher, dass die URL zur richtigen Website führt.\n\nSolltest Du versuchen ein Addon von GitHub zu installieren, stelle sicher, dass das Repository Release-Tags mit einem ZIP-Archiv, welches das Addon enthält, besitzt.",
+        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
         "NO_SEARCH_RESULTS": "Es wurden keine Suchergebnisse gefunden.",
         "TITLE": "Installation fehlgeschlagen"
       },
