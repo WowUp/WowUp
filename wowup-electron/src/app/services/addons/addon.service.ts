@@ -114,14 +114,18 @@ export class AddonService {
       });
   }
 
-  public async getChangelogForSearchResult(clientType: WowClientType, searchResult: AddonSearchResult) {
+  public async getChangelogForSearchResult(
+    clientType: WowClientType,
+    channelType: AddonChannelType,
+    searchResult: AddonSearchResult
+  ) {
     try {
       const provider = this.getProvider(searchResult.providerName);
       if (!provider) {
         return "";
       }
 
-      const latestFile = this.getLatestFile(searchResult, AddonChannelType.Stable);
+      const latestFile = this.getLatestFile(searchResult, channelType);
       return await provider.getChangelog(clientType, searchResult.externalId, latestFile.externalId);
     } catch (e) {
       console.error("Failed to get searchResult changelog", e);
