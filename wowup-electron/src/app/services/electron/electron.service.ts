@@ -5,6 +5,7 @@ import {
   APP_UPDATE_CHECK_START,
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_START_DOWNLOAD,
+  ZOOM_FACTOR_KEY,
 } from "../../../common/constants";
 import * as minimist from "minimist";
 // If you import a module but never use any of the imported values other than as TypeScript types,
@@ -19,6 +20,7 @@ import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
 import { AppOptions } from "../../../common/wowup/app-options";
 import { ZoomDirection, ZOOM_SCALE } from "../../utils/zoom.utils";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
 
 @Injectable({
   providedIn: "root",
@@ -62,7 +64,7 @@ export class ElectronService {
     this.remote.app.setLoginItemSettings(settings);
   }
 
-  constructor() {
+  constructor(private _preferenceStorageService: PreferenceStorageService) {
     // Conditional imports
     if (!this.isElectron) {
       return;
@@ -241,6 +243,7 @@ export class ElectronService {
     const currentWindow = this.remote.getCurrentWindow();
     currentWindow.webContents.zoomFactor = zoomFactor;
     this._zoomFactorChangeSrc.next(zoomFactor);
+    this._preferenceStorageService.set(ZOOM_FACTOR_KEY, zoomFactor);
   };
 
   public getZoomFactor(): number {

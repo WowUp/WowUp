@@ -47,6 +47,7 @@ export const ADDON_PROVIDERS_KEY = "addon_providers";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
 export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
+export const ZOOM_FACTOR_KEY = "zoom_factor";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";

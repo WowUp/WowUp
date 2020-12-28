@@ -14,6 +14,7 @@ import {
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
+  ZOOM_FACTOR_KEY,
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
@@ -27,6 +28,7 @@ import { SessionService } from "./services/session/session.service";
 import { getZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "./entities/addon";
 import { AppConfig } from "../environments/environment";
+import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 
 @Component({
   selector: "app-root",
@@ -56,11 +58,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     private _addonService: AddonService,
     private _iconService: IconService,
     private _sessionService: SessionService,
+    private _preferenceStore: PreferenceStorageService,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
   ) {}
 
   ngOnInit(): void {
+    const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY) as string);
+    if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
+      this._electronService.setZoomFactor(zoomFactor);
+    }
+
     this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
 
     this.wowUpService.preferenceChange$.pipe(filter((pref) => pref.key === CURRENT_THEME_KEY)).subscribe((pref) => {
