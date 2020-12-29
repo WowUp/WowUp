@@ -45,6 +45,11 @@
           svgIcon="fas:exclamation-triangle">
         </mat-icon>
       </div>
+      <div *ngIf="hasIgnoreReason() === true" class="mr-2">
+        <mat-icon class="auto-update-icon" [matTooltip]="getIgnoreTooltipKey() | translate" [style.color]="'#ff9800'"
+          [svgIcon]="getIgnoreIcon()">
+        </mat-icon>
+      </div>
       {{ listItem.addon.installedVersion }}
       <div class="update-available row" *ngIf="showUpdateToVersion && listItem.needsUpdate">
         <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>

@@ -196,6 +196,7 @@
         "SHOW_FOLDER": "Vis Mappe",
         "STABLE_ADDON_CHANNEL": "Stable"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
         "TITLE": "Change Addon Provider?"

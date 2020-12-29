@@ -16,7 +16,7 @@ export class MyAddonsAddonCellComponent implements OnInit {
   @Output() onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
 
   public readonly capitalizeString = capitalizeString;
-  
+
   public addonUtils = AddonUtils;
 
   constructor() {}
@@ -33,6 +33,32 @@ export class MyAddonsAddonCellComponent implements OnInit {
 
   hasRequiredDependencies() {
     return this.getRequireDependencyCount() > 0;
+  }
+
+  hasIgnoreReason() {
+    return !!this.listItem?.addon?.ignoreReason;
+  }
+
+  getIgnoreTooltipKey() {
+    switch (this.listItem.addon.ignoreReason) {
+      case "git_repo":
+        return "PAGES.MY_ADDONS.ADDON_IS_CODE_REPOSITORY";
+      case "missing_dependency":
+      case "unknown":
+      default:
+        return "";
+    }
+  }
+
+  getIgnoreIcon() {
+    switch (this.listItem.addon.ignoreReason) {
+      case "git_repo":
+        return "fas:code";
+      case "missing_dependency":
+      case "unknown":
+      default:
+        return "";
+    }
   }
 
   get dependencyTooltip() {

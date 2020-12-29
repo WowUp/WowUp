@@ -196,6 +196,7 @@
         "SHOW_FOLDER": "Mostra Cartella",
         "STABLE_ADDON_CHANNEL": "Stabile"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Vuoi cambiare il provider dell'addon {addonName} con {providerName}? Questa operazione disinstallerà il tuo addon esistente e lo sostituirà con una copia dal nuovo provider.",
         "TITLE": "Cambiare Provider dell'Addon?"

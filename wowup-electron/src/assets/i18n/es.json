@@ -196,6 +196,7 @@
         "SHOW_FOLDER": "Mostrar Carpeta",
         "STABLE_ADDON_CHANNEL": "Estable"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "¿Quiere cambiar el proveedor del addon {addonName} a {providerName}? Esta operación desinstalará el addon existente y lo reemplazará con la versión disponible en el nuevo proveedor.",
         "TITLE": "¿Cambiar Proveedor del Addon?"

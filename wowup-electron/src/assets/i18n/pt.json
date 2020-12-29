@@ -196,6 +196,7 @@
         "SHOW_FOLDER": "Mostrar Pasta",
         "STABLE_ADDON_CHANNEL": "Estável"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Deseja alterar o provedor de Addons de {addonName} para {providerName}? Esta operação irá desinstalar seu Addon existente e substituí-lo por uma cópia do novo provedor.",
         "TITLE": "Alterar provedor de Addons?"

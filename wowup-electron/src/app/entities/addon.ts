@@ -45,4 +45,5 @@ export interface Addon {
   latestChangelog?: string;
   dependencies?: AddonDependency[];
   missingDependencies?: string[];
+  ignoreReason?: AddonIgnoreReason
 }

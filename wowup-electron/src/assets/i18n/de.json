@@ -196,6 +196,7 @@
         "SHOW_FOLDER": "Dateiordner anzeigen",
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Möchtest Du den Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
         "TITLE": "Addon-Anbieter wechseln?"

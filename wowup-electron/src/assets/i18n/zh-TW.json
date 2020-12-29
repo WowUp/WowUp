@@ -196,6 +196,7 @@
         "SHOW_FOLDER": "開啟資料夾",
         "STABLE_ADDON_CHANNEL": "穩定版"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "是否將 {addonName} 的提供方修改為 {providerName}？此操作將會用 {providerName} 的版本替換現有版本。",
         "TITLE": "修改插件提供方？"

@@ -803,6 +803,16 @@ export class AddonService {
     return addons.filter((addon) => addon.providerName === addonProvider.name).map((addon) => addon.externalId);
   }
 
+  private async removeGitFolders(addonFolders: AddonFolder[]) {
+    for (const addonFolder of addonFolders) {
+      const directories = await this._fileService.listDirectories(addonFolder.path);
+      const hasGitFolder = !!directories.find((dir) => dir.toLowerCase() === ".git");
+      if (hasGitFolder) {
+        addonFolder.ignoreReason = "git_repo";
+      }
+    }
+  }
+
   private async scanAddons(clientType: WowClientType): Promise<Addon[]> {
     if (clientType === WowClientType.None) {
       return [];
@@ -816,6 +826,8 @@ export class AddonService {
       const defaultAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
       const addonFolders = await this._warcraftService.listAddons(clientType);
 
+      await this.removeGitFolders(addonFolders);
+
       this._scanUpdateSrc.next({
         type: ScanUpdateType.Update,
         currentCount: 0,
@@ -824,7 +836,7 @@ export class AddonService {
 
       for (let provider of this._addonProviders) {
         try {
-          const validFolders = addonFolders.filter((af) => !af.matchingAddon && af.toc);
+          const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.toc);
           await provider.scan(clientType, defaultAddonChannel, validFolders);
         } catch (err) {
           console.error(err);
@@ -1160,6 +1172,7 @@ export class AddonService {
       isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
       missingDependencies: tocMissingDependencies,
+      ignoreReason: addonFolder.ignoreReason,
     };
   }
 

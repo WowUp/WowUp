@@ -196,6 +196,7 @@
         "SHOW_FOLDER": "Показать папку",
         "STABLE_ADDON_CHANNEL": "Стабильная"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Хотите изменить источник модификаций для {addonName} на {providerName}? Это действие удалит существующую модификацию и заменит её копией из нового источника.",
         "TITLE": "Изменить источник модификации?"
