@@ -32,7 +32,7 @@ describe("AddonDetailComponent", () => {
     });
 
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType"], {});
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {});
 
     const viewModel = new AddonViewModel({
       installedVersion: "1.0.0",

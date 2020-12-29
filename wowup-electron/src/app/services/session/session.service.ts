@@ -5,6 +5,8 @@ import { first as ldFirst } from "lodash";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
 
 @Injectable({
   providedIn: "root",
@@ -15,6 +17,7 @@ export class SessionService {
   private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
   private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
   private readonly _autoUpdateCompleteSrc = new BehaviorSubject(0);
+  private _selectedDetailTabType: DetailsTabType;
 
   public readonly selectedClientType$ = this._selectedClientTypeSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
@@ -22,12 +25,28 @@ export class SessionService {
   public readonly pageContextText$ = this._pageContextTextSrc.asObservable();
   public readonly autoUpdateComplete$ = this._autoUpdateCompleteSrc.asObservable();
 
-  constructor(private _warcraftService: WarcraftService, private _wowUpService: WowUpService) {
+  constructor(
+    private _warcraftService: WarcraftService,
+    private _wowUpService: WowUpService,
+    private _preferenceStorageService: PreferenceStorageService
+  ) {
+    this._selectedDetailTabType =
+      this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
+
     this.loadInitialClientType().pipe(first()).subscribe();
 
     this._warcraftService.installedClientTypes$
       .pipe(filter((clientTypes) => !!clientTypes))
       .subscribe((clientTypes) => this.onInstalledClientsChange(clientTypes));
+  }
+
+  public getSelectedDetailsTab(): DetailsTabType {
+    return this._selectedDetailTabType;
+  }
+
+  public setSelectedDetailsTab(tabType: DetailsTabType) {
+    this._selectedDetailTabType = tabType;
+    this._preferenceStorageService.set(SELECTED_DETAILS_TAB_KEY, tabType);
   }
 
   public onInstalledClientsChange(installedClientTypes: WowClientType[]) {

@@ -25,6 +25,7 @@ import { capitalizeString } from "../../utils/string.utils";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -49,6 +50,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public readonly changelog$ = this._changelogSrc.asObservable();
   public readonly capitalizeString = capitalizeString;
   public fetchingChangelog = true;
+  public selectedTabIndex = 0;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -56,8 +58,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
     private _electronService: ElectronService,
-    private _sessionService: SessionService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    public sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
 
@@ -87,13 +89,27 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._subscriptions.push(changelogSub);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
+  }
 
   ngAfterViewChecked() {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
     const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
     this.formatLinks(descriptionContainer);
     this.formatLinks(changelogContainer);
+  }
+
+  onSelectedTabChange(evt: MatTabChangeEvent) {
+    this.sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
+  }
+
+  getSelectedTabTypeFromIndex(index: number): DetailsTabType {
+    return index === 0 ? "description" : "changelog";
+  }
+
+  getSelectedTabTypeIndex(tabType: DetailsTabType): number {
+    return tabType === "description" ? 0 : 1;
   }
 
   formatLinks(container: HTMLDivElement) {
@@ -187,7 +203,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getSearchResultChangelog() {
     return await this._addonService.getChangelogForSearchResult(
-      this._sessionService.getSelectedClientType(),
+      this.sessionService.getSelectedClientType(),
       this.model.channelType,
       this.model.searchResult
     );
@@ -195,7 +211,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getMyAddonChangelog() {
     return await this._addonService.getChangelogForAddon(
-      this._sessionService.getSelectedClientType(),
+      this.sessionService.getSelectedClientType(),
       this.model.listItem?.addon
     );
   }

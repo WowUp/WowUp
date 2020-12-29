@@ -25,7 +25,8 @@
             <div class="text-right">{{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ provider }}
             </div>
             <div class="sub-text text-right id-link selectable text-2" [cdkCopyToClipboard]="getExternalId()"
-              [matTooltip]="'DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_TOOLTIP' | translate" (click)="onClickExternalId()">{{ 'DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate }} {{
+              [matTooltip]="'DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_TOOLTIP' | translate" (click)="onClickExternalId()">{{
+              'DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate }} {{
               getExternalId() }}</div>
           </div>
           <a class="icon-link" appExternalLink [href]="externalUrl"
@@ -57,7 +58,8 @@
       </span>
     </div>
     <!-- SUMMARY -->
-    <mat-tab-group *ngIf="isUnknownProvider() === false" mat-stretch-tabs>
+    <mat-tab-group *ngIf="isUnknownProvider() === false" mat-stretch-tabs [selectedIndex]="selectedTabIndex"
+      (selectedTabChange)="onSelectedTabChange($event)">
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
         <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="getDescription()"></div>
       </mat-tab>

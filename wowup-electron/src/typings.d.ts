@@ -7,3 +7,5 @@ interface Window {
   process: any;
   require: any;
 }
+
+declare type DetailsTabType = "description" | "changelog";
