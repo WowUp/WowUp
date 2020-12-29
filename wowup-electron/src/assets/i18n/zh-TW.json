@@ -1,10 +1,10 @@
 {
   "APP": {
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自動更新",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自動更新了 {count} 個插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自動更新",
     "PROVIDERS": {
-      "UNKNOWN": "Unknown"
+      "UNKNOWN": "未知"
     },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "插件掃描完成...",
@@ -49,7 +49,7 @@
       "BACKINGUP": "正在備份",
       "COMPLETE": "已安裝",
       "DOWNLOADING": "正在下載",
-      "ERROR": "Error",
+      "ERROR": "错误",
       "INSTALLING": "正在安裝",
       "PENDING": "等待中",
       "UNINSTALLING": "正在解除安裝",
@@ -105,15 +105,15 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "ADDON_ID_PREFIX": "Addon ID:",
+      "ADDON_ID_PREFIX": "插件 ID：",
       "BY_AUTHOR": "By {authorName}",
-      "CHANGELOG_TAB": "Changelog",
-      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
-      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
+      "CHANGELOG_TAB": "更新記錄",
+      "COPY_ADDON_ID_SNACKBAR": "插件 ID 已複製到剪貼簿",
+      "COPY_ADDON_ID_TOOLTIP": "複製插件 ID",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 個依賴項",
-      "DESCRIPTION_TAB": "Description",
-      "FUNDING_LINK_TITLE": "Support this author",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
+      "DESCRIPTION_TAB": "描述",
+      "FUNDING_LINK_TITLE": "支援插件作者",
+      "MISSING_DEPENDENCIES": "缺失的依賴項",
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："
     },
@@ -132,14 +132,14 @@
       "DESCRIPTION": "如需直接從某 URL 安裝插件，請將其貼上到下面以開始安裝。",
       "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下載",
       "ERROR": {
-        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
-        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
+        "ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要有效的 zip 檔案。",
+        "CLASSIC_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以 “-classic” 結尾的有效的 zip 檔案。",
         "FAILED_TO_CONNECT": "無法連線 API，請稍後重試。",
         "INSTALL_FAILED": "安裝插件時出現了一些錯誤，請重試。\n\n如果一直出現此訊息，可以加入 Discord #wowup-support 頻道尋求幫助（英語）。",
         "INVALID_URL": "輸入的 URL 無效。有效 URL 示例：\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "未找到插件，請檢查 URL 是否指向正確的頁面。\n\n從 GitHub 安裝時，請檢查是否存在帶有 zip 包的 release tag。",
-        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
-        "NO_SEARCH_RESULTS": "No search results were found.",
+        "NO_RELEASE_FOUND": "未找到釋出版本 {message}.\n\n要通過 WowUp 下載插件，需要帶有 zip 附件的釋出版本。",
+        "NO_SEARCH_RESULTS": "无搜索结果。",
         "TITLE": "插件安裝失敗"
       },
       "IMPORT_BUTTON": "匯入",
@@ -157,7 +157,7 @@
   },
   "PAGES": {
     "ABOUT": {
-      "ATTRIBUTIONS_TITLE": "Attributions",
+      "ATTRIBUTIONS_TITLE": "圖源",
       "CHANGE_LOG_SECTION_LABEL": "更新記錄",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "訪問網站！"
@@ -223,7 +223,7 @@
         "VIEW_GITHUB": "在 GitHub 上檢視原始碼",
         "VIEW_GUIDE": "訪問指南，探索 WowUp 的功能（英語）"
       },
-      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "缺失必要的依賴項",
       "RESCAN_FOLDERS_BUTTON": "重新掃描",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "掃描客戶端資料夾中已安裝的插件",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新掃描過程將會猜測已經安裝了哪些插件，可能會重置已知插件資訊。如果特定插件無法識別或顯示不正確，請使用此功能。掃描不會刪除插件本身，只會刪除 WowUp 記錄的插件資訊。\n\n掃描需要花費一些時間。",
