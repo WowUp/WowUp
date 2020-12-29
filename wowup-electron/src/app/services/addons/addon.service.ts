@@ -188,7 +188,14 @@ export class AddonService {
   }
 
   public async search(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    var searchTasks = this.getEnabledAddonProviders().map((p) => p.searchByQuery(query, clientType));
+    var searchTasks = this.getEnabledAddonProviders().map(async (p) => {
+      try {
+        return await p.searchByQuery(query, clientType);
+      } catch (e) {
+        console.error(`Failed during search: ${p.name}`, e);
+        return [];
+      }
+    });
     var searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackAction("addon-search", {
@@ -990,7 +997,16 @@ export class AddonService {
   }
 
   public getFeaturedAddons(clientType: WowClientType): Observable<AddonSearchResult[]> {
-    return forkJoin(this.getEnabledAddonProviders().map((p) => p.getFeaturedAddons(clientType))).pipe(
+    return forkJoin(
+      this.getEnabledAddonProviders().map(async (p) => {
+        try {
+          return await p.getFeaturedAddons(clientType);
+        } catch (e) {
+          console.error(`Failed to get featured addons: ${p.name}`, e);
+          return [];
+        }
+      })
+    ).pipe(
       map((results) => {
         return _.orderBy(results.flat(1), ["downloadCount"]).reverse();
       })
