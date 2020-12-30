@@ -1,9 +1,9 @@
-import { HttpClient } from "@angular/common/http";
-import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
+
+import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import { Addon } from "../entities/addon";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
@@ -14,11 +14,10 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { AddonProvider } from "./addon-provider";
-import { AppConfig } from "../../environments/environment";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
-const WOWUP_API_URL = AppConfig.wowUpHubUrl;
+// const WOWUP_API_URL = AppConfig.wowUpHubUrl;
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
 export class TukUiAddonProvider implements AddonProvider {
@@ -32,11 +31,7 @@ export class TukUiAddonProvider implements AddonProvider {
 
   public enabled = true;
 
-  constructor(
-    private _httpClient: HttpClient,
-    private _cachingService: CachingService,
-    private _networkService: NetworkService
-  ) {
+  constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
@@ -240,15 +235,15 @@ export class TukUiAddonProvider implements AddonProvider {
     }
   };
 
-  private fetchApiResultsWowUp = async (clientType: WowClientType) => {
-    const clientTypeName = this.getAddonsSuffixWowUp(clientType);
-    const url = new URL(`${WOWUP_API_URL}/tukui/${clientTypeName}`);
+  // private fetchApiResultsWowUp = async (clientType: WowClientType) => {
+  //   const clientTypeName = this.getAddonsSuffixWowUp(clientType);
+  //   const url = new URL(`${WOWUP_API_URL}/tukui/${clientTypeName}`);
 
-    const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
-    console.debug("WowUpTukui", addons);
+  //   const addons = await this._httpClient.get<TukUiAddon[]>(url.toString()).toPromise();
+  //   console.debug("WowUpTukui", addons);
 
-    return addons;
-  };
+  //   return addons;
+  // };
 
   private fetchApiResults = async (clientType: WowClientType) => {
     const query = this.getAddonsSuffix(clientType);

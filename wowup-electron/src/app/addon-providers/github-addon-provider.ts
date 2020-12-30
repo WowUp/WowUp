@@ -1,9 +1,12 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
-import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
 import * as _ from "lodash";
 import { forkJoin, Observable } from "rxjs";
 import { map } from "rxjs/operators";
+
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+
+import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
 import { Addon } from "../entities/addon";
+import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
@@ -13,7 +16,6 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider } from "./addon-provider";
-import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../errors";
 
 interface GitHubRepoParts {
   repository: string;

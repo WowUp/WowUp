@@ -1,20 +1,20 @@
-import { HttpClient } from "@angular/common/http";
-import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
-import * as _ from "lodash";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { v4 as uuidv4 } from "uuid";
-import { Addon } from "../entities/addon";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { AddonFolder } from "../models/wowup/addon-folder";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { CachingService } from "../services/caching/caching-service";
-import { AddonProvider } from "./addon-provider";
-import { convertBbcode } from "../utils/bbcode.utils";
-import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
+import * as _ from 'lodash';
+import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
+
+import { ADDON_PROVIDER_WOWINTERFACE } from '../../common/constants';
+import { Addon } from '../entities/addon';
+import { WowClientType } from '../models/warcraft/wow-client-type';
+import { AddonDetailsResponse } from '../models/wow-interface/addon-details-response';
+import { AddonChannelType } from '../models/wowup/addon-channel-type';
+import { AddonFolder } from '../models/wowup/addon-folder';
+import { AddonSearchResult } from '../models/wowup/addon-search-result';
+import { AddonSearchResultFile } from '../models/wowup/addon-search-result-file';
+import { CachingService } from '../services/caching/caching-service';
+import { CircuitBreakerWrapper, NetworkService } from '../services/network/network.service';
+import { convertBbcode } from '../utils/bbcode.utils';
+import { AddonProvider } from './addon-provider';
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -30,11 +30,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  constructor(
-    private _httpClient: HttpClient,
-    private _cachingService: CachingService,
-    private _networkService: NetworkService
-  ) {
+  constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 

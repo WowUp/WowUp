@@ -8,13 +8,14 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { HomeComponent } from "./home.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { MatModule } from "../../mat-module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { AddonScanError, AddonSyncError } from "../../errors";
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
@@ -26,25 +27,27 @@ describe("HomeComponent", () => {
   let sessionService: SessionService;
   let sessionServiceSpy: any;
   let addonService: AddonService;
-  let addonServiceSpy: any;
+  let addonServiceSpy: AddonService;
   let warcraftService: WarcraftService;
   let warcraftServiceSpy: any;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
       scanUpdate$: new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown }).asObservable(),
-    })
+      syncError$: new Subject<AddonSyncError>(),
+      scanError$: new Subject<AddonScanError>(),
+    });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypes$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
-    })
+    });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin : false,
-      isLinux : true,
+      isWin: false,
+      isLinux: true,
       isMax: false,
     });
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
-      checkForAppUpdate : async () => null,
-    })
+      checkForAppUpdate: async () => null,
+    });
 
     await TestBed.configureTestingModule({
       declarations: [HomeComponent],
@@ -62,22 +65,23 @@ describe("HomeComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-      providers: [
-        MatSnackBar,
-      ],
+      providers: [MatSnackBar],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).overrideComponent(HomeComponent, {
-      set: {
-        providers: [
-          { provide: AddonService, useValue: addonServiceSpy },
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
-          { provide: WarcraftService, useValue: warcraftServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(HomeComponent, {
+        set: {
+          providers: [
+            { provide: AddonService, useValue: addonServiceSpy },
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+            { provide: WarcraftService, useValue: warcraftServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;

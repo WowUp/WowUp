@@ -1,4 +1,5 @@
 import { Observable } from "rxjs";
+
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";

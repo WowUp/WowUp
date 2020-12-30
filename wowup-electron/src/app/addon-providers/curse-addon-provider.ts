@@ -1,37 +1,37 @@
-import { HttpClient } from "@angular/common/http";
-import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
-import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
-import { CurseDependency } from "../../common/curse/curse-dependency";
-import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
+
 import {
   ADDON_PROVIDER_CURSEFORGE,
   CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
+import { CurseDependency } from "../../common/curse/curse-dependency";
+import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
 import { CurseFile } from "../../common/curse/curse-file";
 import { CurseMatch } from "../../common/curse/curse-match";
 import { CurseReleaseType } from "../../common/curse/curse-release-type";
 import { CurseScanResult } from "../../common/curse/curse-scan-result";
 import { CurseSearchResult } from "../../common/curse/curse-search-result";
+import { AppConfig } from "../../environments/environment";
 import { Addon } from "../entities/addon";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
 import { CurseGetFeaturedResponse } from "../models/curse/curse-get-featured-response";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
-import { AddonProvider } from "./addon-provider";
-import { AppConfig } from "../../environments/environment";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
+import { AddonProvider } from "./addon-provider";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
@@ -47,7 +47,6 @@ export class CurseAddonProvider implements AddonProvider {
   public enabled = true;
 
   constructor(
-    private _httpClient: HttpClient,
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     _networkService: NetworkService

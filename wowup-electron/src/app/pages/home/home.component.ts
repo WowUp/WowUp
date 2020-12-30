@@ -10,7 +10,7 @@ import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { AddonSyncError, GitHubLimitError } from "../../errors";
+import { AddonScanError, AddonSyncError, GitHubLimitError } from "../../errors";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
@@ -44,9 +44,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this._addonService.syncError$.subscribe((error) => {
-      this.onAddonSyncError(error);
-    });
+    this._addonService.syncError$.subscribe(this.onAddonSyncError);
+    this._addonService.scanError$.subscribe(this.onAddonScanError);
 
     this._addonService.scanUpdate$
       .pipe(filter((update) => update.type !== ScanUpdateType.Unknown))
@@ -70,16 +69,28 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this._sessionService.selectedHomeTab = index;
   }
 
-  private onAddonSyncError(error: AddonSyncError) {
-    let errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
-      providerName: error.getProviderName(),
+  private onAddonScanError = (error: AddonScanError) => {
+    const durationMs = 4000;
+    const errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SCAN_ERROR", {
+      providerName: error.providerName,
     });
-    let durationMs = 4000;
 
-    if (error.getInnerError() instanceof GitHubLimitError) {
-      const err = error.getInnerError() as GitHubLimitError;
-      const max = err.getRateLimitMax();
-      const reset = new Date(err.getRateLimitReset() * 1000).toLocaleString();
+    this._snackBar.open(errorMessage, undefined, {
+      duration: durationMs,
+      panelClass: ["wowup-snackbar", "snackbar-error", "text-1"],
+    });
+  };
+
+  private onAddonSyncError = (error: AddonSyncError) => {
+    const durationMs = 4000;
+    let errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
+      providerName: error.providerName,
+    });
+
+    if (error.innerError instanceof GitHubLimitError) {
+      const err = error.innerError as GitHubLimitError;
+      const max = err.rateLimitMax;
+      const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
       errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
         max,
         reset,
@@ -90,7 +101,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       duration: durationMs,
       panelClass: ["wowup-snackbar", "snackbar-error", "text-1"],
     });
-  }
+  };
 
   private onScanUpdate = (update: ScanUpdate) => {
     switch (update.type) {

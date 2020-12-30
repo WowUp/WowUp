@@ -1,15 +1,15 @@
 import * as _ from "lodash";
 import { Observable } from "rxjs";
-import { find, filter } from "lodash";
 import { v4 as uuidv4 } from "uuid";
+
+import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
-import { AddonProvider } from "./addon-provider";
-import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
 import { getEnumName } from "../utils/enum.utils";
+import { AddonProvider } from "./addon-provider";
 
 export class RaiderIoAddonProvider implements AddonProvider {
   private readonly _scanWebsite = "https://raider.io";
@@ -26,9 +26,9 @@ export class RaiderIoAddonProvider implements AddonProvider {
   constructor() {}
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    return '';
+    return "";
   }
-  
+
   public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     return [];
   }
@@ -74,12 +74,12 @@ export class RaiderIoAddonProvider implements AddonProvider {
     addonFolders: AddonFolder[]
   ): Promise<void> {
     console.debug("RAIDER IO CLIENT SCAN");
-    const raiderIo = find(addonFolders, (addonFolder) => this.isRaiderIo(addonFolder));
+    const raiderIo = _.find(addonFolders, (addonFolder) => this.isRaiderIo(addonFolder));
     if (!raiderIo) {
       return;
     }
 
-    const dependencies = filter(addonFolders, (addonFolder) => this.isRaiderIoDependant(addonFolder));
+    const dependencies = _.filter(addonFolders, (addonFolder) => this.isRaiderIoDependant(addonFolder));
     console.debug("RAIDER IO CLIENT FOUND", dependencies);
 
     const rioAddonFolders = [raiderIo, ...dependencies];

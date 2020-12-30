@@ -1,9 +1,13 @@
+import * as fs from "fs";
+import * as _ from "lodash";
+import * as path from "path";
+import { BehaviorSubject, forkJoin, from, Observable, Subject } from "rxjs";
+import { filter, map, mergeMap, switchMap } from "rxjs/operators";
+import * as slug from "slug";
+import { v4 as uuidv4 } from "uuid";
+
 import { Injectable } from "@angular/core";
-import { AddonProviderState } from "../../models/wowup/addon-provider-state";
-import { AddonDependency } from "../../models/wowup/addon-dependency";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
-import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
-import { Toc } from "../../models/wowup/toc";
+
 import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_HUB,
@@ -13,24 +17,25 @@ import {
   ADDON_PROVIDER_WOWINTERFACE,
   ERROR_ADDON_ALREADY_INSTALLED,
 } from "../../../common/constants";
-import * as fs from "fs";
-import * as _ from "lodash";
-import * as path from "path";
-import { BehaviorSubject, forkJoin, from, Observable, Subject } from "rxjs";
-import { filter, map, mergeMap, switchMap } from "rxjs/operators";
-import * as slug from "slug";
-import { v4 as uuidv4 } from "uuid";
 import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { Addon, AddonExternalId } from "../../entities/addon";
+import { AddonScanError, AddonSyncError } from "../../errors";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { AddonDependency } from "../../models/wowup/addon-dependency";
+import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { getEnumName } from "../../utils/enum.utils";
+import { Toc } from "../../models/wowup/toc";
 import * as AddonUtils from "../../utils/addon.utils";
+import { getEnumName } from "../../utils/enum.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
@@ -39,9 +44,6 @@ import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import { AddonFolder } from "../../models/wowup/addon-folder";
-import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
-import { AddonSyncError } from "app/errors";
 
 export enum ScanUpdateType {
   Start,
@@ -76,6 +78,7 @@ export class AddonService {
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
   private readonly _installErrorSrc = new Subject<Error>();
   private readonly _syncErrorSrc = new Subject<AddonSyncError>();
+  private readonly _scanErrorSrc = new Subject<AddonScanError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
@@ -83,6 +86,7 @@ export class AddonService {
   public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
   public readonly installError$ = this._installErrorSrc.asObservable();
   public readonly syncError$ = this._syncErrorSrc.asObservable();
+  public readonly scanError$ = this._scanErrorSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -840,12 +844,13 @@ export class AddonService {
         totalCount: addonFolders.length,
       });
 
-      for (let provider of this._addonProviders) {
+      for (const provider of this._addonProviders) {
         try {
           const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.toc);
           await provider.scan(clientType, defaultAddonChannel, validFolders);
-        } catch (err) {
-          console.error(err);
+        } catch (e) {
+          console.error(e);
+          this._scanErrorSrc.next(new AddonScanError(provider.name, e));
         }
       }
 
