@@ -35,6 +35,12 @@ export class TukUiAddonProvider implements AddonProvider {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
+  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
+    const addons = await this.getAllAddons(clientType);
+    const addon = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
+    return addon.small_desc;
+  }
+
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
     const addons = await this.getAllAddons(clientType);
     const addon = _.find(addons, (addon) => addon.id.toString() === externalId.toString());

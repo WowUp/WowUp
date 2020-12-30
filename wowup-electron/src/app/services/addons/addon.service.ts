@@ -121,6 +121,15 @@ export class AddonService {
       });
   }
 
+  public async getFullDescription(clientType: WowClientType, providerName: string, externalId: string) {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return "";
+    }
+
+    return await provider.getDescription(clientType, externalId);
+  }
+
   public async getChangelogForSearchResult(
     clientType: WowClientType,
     channelType: AddonChannelType,

@@ -1,3 +1,4 @@
+import { CachingService } from "app/services/caching/caching-service";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -29,6 +30,7 @@ import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";
 
 const API_URL = AppConfig.wowUpHubUrl;
+const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
 export interface GetAddonBatchResponse {
   addons: WowUpAddonRepresentation[];
@@ -44,12 +46,33 @@ export class WowUpAddonProvider implements AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  constructor(private _electronService: ElectronService, _networkService: NetworkService) {
+  constructor(
+    private _electronService: ElectronService,
+    private _networkService: NetworkService,
+    private _cachingService: CachingService
+  ) {
     this._circuitBreaker = _networkService.getCircuitBreaker(
       `${this.name}_main`,
       AppConfig.defaultHttpResetTimeoutMs,
       AppConfig.wowUpHubHttpTimeoutMs
     );
+  }
+
+  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
+    try {
+      const cacheKey = `${this.name}_description_${externalId}`;
+      return await this._cachingService.transaction(
+        cacheKey,
+        async () => {
+          const response = await this.getAddonById(externalId);
+          return response.addon?.description;
+        },
+        CHANGELOG_CACHE_TTL_SEC
+      );
+    } catch (e) {
+      console.error("Failed to get changelog", e);
+    }
+    return "";
   }
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
@@ -184,6 +207,11 @@ export class WowUpAddonProvider implements AddonProvider {
 
     return scanResults;
   };
+
+  private async getAddonById(addonId: number | string) {
+    const url = new URL(`${API_URL}/addons/${addonId}`);
+    return await this._circuitBreaker.getJson<WowUpGetAddonResponse>(url);
+  }
 
   private hasMatchingFingerprint(scanResult: WowUpScanResult, release: WowUpAddonReleaseRepresentation) {
     return release.addonFolders.some((addonFolder) => addonFolder.fingerprint == scanResult.fingerprint);

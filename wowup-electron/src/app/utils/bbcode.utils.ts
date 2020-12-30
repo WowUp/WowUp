@@ -78,6 +78,14 @@ const bbpreset = createPreset({
     attrs: node.attrs,
     content: node.content,
   }),
+  img: (node, { render }) =>
+    toNode(
+      "img",
+      {
+        src: render(node.content),
+      },
+      null
+    ),
   url: (node, { render }, options) => ({
     tag: "a",
     attrs: {

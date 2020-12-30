@@ -8,6 +8,10 @@ export interface WowUpGetAddonReleaseResponse {
   release: WowUpAddonReleaseRepresentation;
 }
 
+export interface WowUpGetAddonResponse {
+  addon: WowUpAddonRepresentation;
+}
+
 export interface WowUpGetAddonsResponse {
   addons: WowUpAddonRepresentation[];
   count: number;

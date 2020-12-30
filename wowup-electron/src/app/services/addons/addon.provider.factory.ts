@@ -47,7 +47,7 @@ export class AddonProviderFactory {
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
-    return new WowUpAddonProvider(this._electronService, this._networkService);
+    return new WowUpAddonProvider(this._electronService, this._networkService, this._cachingService);
   }
 
   public getAll(): AddonProvider[] {

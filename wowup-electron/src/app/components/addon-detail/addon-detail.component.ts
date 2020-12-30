@@ -20,7 +20,12 @@ import * as SearchResult from "../../utils/search-result.utils";
 import { AddonViewModel } from "../../business-objects/my-addon-list-item";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
-import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
+import {
+  ADDON_PROVIDER_GITHUB,
+  ADDON_PROVIDER_HUB,
+  ADDON_PROVIDER_TUKUI,
+  ADDON_PROVIDER_UNKNOWN,
+} from "../../../common/constants";
 import { capitalizeString } from "../../utils/string.utils";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
@@ -46,10 +51,13 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
   private readonly _changelogSrc = new BehaviorSubject<string>("");
+  private readonly _descriptionSrc = new BehaviorSubject<string>("");
 
   public readonly changelog$ = this._changelogSrc.asObservable();
+  public readonly description$ = this._descriptionSrc.asObservable();
   public readonly capitalizeString = capitalizeString;
   public fetchingChangelog = true;
+  public fetchingFullDescription = false;
   public selectedTabIndex = 0;
 
   constructor(
@@ -86,7 +94,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       .pipe(tap(() => (this.fetchingChangelog = false)))
       .subscribe((changelog) => this._changelogSrc.next(changelog));
 
-    this._subscriptions.push(changelogSub);
+    const fullDescriptionSub = from(this.getFullDescription())
+      .pipe(tap(() => (this.fetchingFullDescription = false)))
+      .subscribe((description) => this._descriptionSrc.next(description));
+
+    this._subscriptions.push(changelogSub, fullDescriptionSub);
   }
 
   ngOnInit(): void {
@@ -199,6 +211,25 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
 
     return "";
+  };
+
+  getFullDescription = async () => {
+    const externalId = this.model.searchResult?.externalId ?? this.model.listItem?.addon?.externalId;
+    const providerName = this.model.searchResult?.providerName ?? this.model.listItem?.addon?.providerName;
+
+    if (providerName === ADDON_PROVIDER_GITHUB) {
+      return this.model.listItem?.addon?.summary;
+    }
+
+    try {
+      return await this._addonService.getFullDescription(
+        this.sessionService.getSelectedClientType(),
+        providerName,
+        externalId
+      );
+    } catch (e) {
+      return "";
+    }
   };
 
   private async getSearchResultChangelog() {

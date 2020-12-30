@@ -61,7 +61,8 @@
     <mat-tab-group *ngIf="isUnknownProvider() === false" mat-stretch-tabs [selectedIndex]="selectedTabIndex"
       (selectedTabChange)="onSelectedTabChange($event)">
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
-        <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="getDescription()"></div>
+        <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
+        <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="description$ | async"></div>
       </mat-tab>
       <!-- CHANGELOG -->
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">

@@ -39,6 +39,10 @@ export class GitHubAddonProvider implements AddonProvider {
 
   constructor(private _httpClient: HttpClient) {}
 
+  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
+    return "";
+  }
+
   public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
     var searchResults: AddonSearchResult[] = [];
 

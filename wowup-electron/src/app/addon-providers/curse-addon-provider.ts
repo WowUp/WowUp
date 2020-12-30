@@ -54,6 +54,24 @@ export class CurseAddonProvider implements AddonProvider {
     this._circuitBreaker = _networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
+  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
+    try {
+      const cacheKey = `${this.name}_description_${externalId}`;
+      return await this._cachingService.transaction(
+        cacheKey,
+        () => {
+          const url = new URL(`${API_URL}/addon/${externalId}/description`);
+          return this._circuitBreaker.getText(url);
+        },
+        CHANGELOG_CACHE_TTL_SEC
+      );
+    } catch (e) {
+      console.error("Failed to get changelog", e);
+    }
+
+    return "";
+  }
+
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
     try {
       const cacheKey = `${this.name}_changelog_${externalId}_${externalReleaseId}`;
