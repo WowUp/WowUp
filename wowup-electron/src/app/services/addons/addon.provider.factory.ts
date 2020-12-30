@@ -31,15 +31,15 @@ export class AddonProviderFactory {
   }
 
   public createCurseAddonProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(this._httpClient, this._cachingService, this._electronService, this._networkService);
+    return new CurseAddonProvider(this._cachingService, this._electronService, this._networkService);
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
-    return new TukUiAddonProvider(this._httpClient, this._cachingService, this._networkService);
+    return new TukUiAddonProvider(this._cachingService, this._networkService);
   }
 
   public createWowInterfaceAddonProvider(): WowInterfaceAddonProvider {
-    return new WowInterfaceAddonProvider(this._httpClient, this._cachingService, this._networkService);
+    return new WowInterfaceAddonProvider(this._cachingService, this._networkService);
   }
 
   public createGitHubAddonProvider(): GitHubAddonProvider {
@@ -47,7 +47,7 @@ export class AddonProviderFactory {
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
-    return new WowUpAddonProvider(this._httpClient, this._electronService, this._networkService);
+    return new WowUpAddonProvider(this._electronService, this._networkService);
   }
 
   public getAll(): AddonProvider[] {
