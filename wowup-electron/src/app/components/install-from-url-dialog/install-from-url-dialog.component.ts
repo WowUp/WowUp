@@ -136,8 +136,8 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
           message: err.message,
         });
       } else if (err instanceof GitHubLimitError) {
-        const max = err.getRateLimitMax();
-        const reset = new Date(err.getRateLimitReset() * 1000).toLocaleString();
+        const max = err.rateLimitMax;
+        const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
         message = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
           max,
           reset,

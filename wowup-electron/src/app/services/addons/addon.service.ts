@@ -41,7 +41,7 @@ import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
-import { AddonSyncError } from "app/errors";
+import { AddonScanError, AddonSyncError } from "app/errors";
 
 export enum ScanUpdateType {
   Start,
@@ -76,6 +76,7 @@ export class AddonService {
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
   private readonly _installErrorSrc = new Subject<Error>();
   private readonly _syncErrorSrc = new Subject<AddonSyncError>();
+  private readonly _scanErrorSrc = new Subject<AddonScanError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
@@ -83,6 +84,7 @@ export class AddonService {
   public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
   public readonly installError$ = this._installErrorSrc.asObservable();
   public readonly syncError$ = this._syncErrorSrc.asObservable();
+  public readonly scanError$ = this._scanErrorSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -840,12 +842,13 @@ export class AddonService {
         totalCount: addonFolders.length,
       });
 
-      for (let provider of this._addonProviders) {
+      for (const provider of this._addonProviders) {
         try {
           const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.toc);
           await provider.scan(clientType, defaultAddonChannel, validFolders);
-        } catch (err) {
-          console.error(err);
+        } catch (e) {
+          console.error(e);
+          this._scanErrorSrc.next(new AddonScanError(provider.name, e));
         }
       }
 
