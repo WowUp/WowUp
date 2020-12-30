@@ -10,6 +10,8 @@ import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { AddonSyncError, GitHubLimitError } from "../../errors";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-home",
@@ -29,7 +31,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _translateService: TranslateService,
     private _addonService: AddonService,
     private _warcraftService: WarcraftService,
-    private _wowupService: WowUpService
+    private _wowupService: WowUpService,
+    private _snackBar: MatSnackBar
   ) {
     this._warcraftService.installedClientTypes$.subscribe((clientTypes) => {
       if (clientTypes === undefined) {
@@ -39,6 +42,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         this.hasWowClient = clientTypes.length > 0;
         this.selectedIndex = this.hasWowClient ? 0 : 3;
       }
+    });
+
+    this._addonService.syncError$.subscribe((error) => {
+      this.onAddonSyncError(error);
     });
 
     this._addonService.scanUpdate$
@@ -61,6 +68,28 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   onSelectedIndexChange(index: number) {
     this._sessionService.selectedHomeTab = index;
+  }
+
+  private onAddonSyncError(error: AddonSyncError) {
+    let errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
+      providerName: error.getProviderName(),
+    });
+    let durationMs = 4000;
+
+    if (error.getInnerError() instanceof GitHubLimitError) {
+      const err = error.getInnerError() as GitHubLimitError;
+      const max = err.getRateLimitMax();
+      const reset = new Date(err.getRateLimitReset() * 1000).toLocaleString();
+      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
+        max,
+        reset,
+      });
+    }
+
+    this._snackBar.open(errorMessage, undefined, {
+      duration: durationMs,
+      panelClass: ["wowup-snackbar", "snackbar-error", "text-1"],
+    });
   }
 
   private onScanUpdate = (update: ScanUpdate) => {

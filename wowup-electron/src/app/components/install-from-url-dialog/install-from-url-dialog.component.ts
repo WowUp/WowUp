@@ -10,7 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { roundDownloadCount, shortenDownloadCount } from "../../utils/number.utils";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { NO_SEARCH_RESULTS_ERROR } from "../../../common/constants";
-import { AssetMissingError, ClassicAssetMissingError, NoReleaseFoundError } from "../../errors";
+import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../../errors";
 
 @Component({
   selector: "app-install-from-url-dialog",
@@ -124,11 +124,24 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
       } else if (message === NO_SEARCH_RESULTS_ERROR) {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_SEARCH_RESULTS");
       } else if (err instanceof ClassicAssetMissingError) {
-        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.CLASSIC_ASSET_NOT_FOUND", { message: err.message});
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.CLASSIC_ASSET_NOT_FOUND", {
+          message: err.message,
+        });
       } else if (err instanceof AssetMissingError) {
-        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.ASSET_NOT_FOUND", { message: err.message});
-      } else if( err instanceof NoReleaseFoundError){
-        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_RELEASE_FOUND", { message: err.message});
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.ASSET_NOT_FOUND", {
+          message: err.message,
+        });
+      } else if (err instanceof NoReleaseFoundError) {
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_RELEASE_FOUND", {
+          message: err.message,
+        });
+      } else if (err instanceof GitHubLimitError) {
+        const max = err.getRateLimitMax();
+        const reset = new Date(err.getRateLimitReset() * 1000).toLocaleString();
+        message = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
+          max,
+          reset,
+        });
       }
 
       this.showErrorMessage(message);

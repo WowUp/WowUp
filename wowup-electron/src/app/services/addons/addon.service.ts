@@ -41,6 +41,7 @@ import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
+import { AddonSyncError } from "app/errors";
 
 export enum ScanUpdateType {
   Start,
@@ -74,12 +75,14 @@ export class AddonService {
   private readonly _addonRemovedSrc = new Subject<string>();
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
   private readonly _installErrorSrc = new Subject<Error>();
+  private readonly _syncErrorSrc = new Subject<AddonSyncError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
   public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
   public readonly installError$ = this._installErrorSrc.asObservable();
+  public readonly syncError$ = this._syncErrorSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -743,16 +746,19 @@ export class AddonService {
   }
 
   private async syncAddons(clientType: WowClientType, addons: Addon[]) {
-    try {
-      for (let provider of this.getEnabledAddonProviders()) {
-        await this.syncProviderAddons(clientType, addons, provider);
-      }
+    let didSync = true;
 
-      return true;
-    } catch (err) {
-      console.error(err);
-      return false;
+    for (const provider of this.getEnabledAddonProviders()) {
+      try {
+        await this.syncProviderAddons(clientType, addons, provider);
+      } catch (e) {
+        console.error(`Failed to sync from provider: ${provider.name}`, e);
+        this._syncErrorSrc.next(new AddonSyncError(provider.name, e));
+        didSync = false;
+      }
     }
+
+    return didSync;
   }
 
   private async syncProviderAddons(clientType: WowClientType, addons: Addon[], addonProvider: AddonProvider) {

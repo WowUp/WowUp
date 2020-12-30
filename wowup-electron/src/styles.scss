@@ -429,13 +429,8 @@ img {
   }
 }
 
-snack-bar-container {
-  &.center-text {
-    span {
-      margin: auto;
-      text-align: center;
-    }
-  }
+.snackbar-error {
+  border: 2px solid red;
 }
 
 // MATERIAL OVERRIDES

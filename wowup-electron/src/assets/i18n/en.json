@@ -94,7 +94,9 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}",
+      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Loading..."
