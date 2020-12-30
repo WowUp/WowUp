@@ -94,7 +94,9 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}"
+      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
+      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."

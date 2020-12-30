@@ -94,7 +94,9 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Errore nel cambio di provider per {addonName} con {providerName}"
+      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "CHANGE_PROVIDER_ERROR": "Errore nel cambio di provider per {addonName} con {providerName}",
+      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
