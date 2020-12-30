@@ -94,7 +94,7 @@
       }
     },
     "ERRORS": {
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
+      "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut."
