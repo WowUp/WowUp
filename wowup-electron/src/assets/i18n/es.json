@@ -94,10 +94,10 @@
       }
     },
     "ERRORS": {
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "ADDON_SCAN_ERROR": "Ocurrió un error al comparar sus carpetas de addons con {providerName}. Por favor, inténtelo de nuevo más tarde.",
+      "ADDON_SYNC_ERROR": "Ocurrió un error al comprobar actualizaciones desde: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Error al cambiar el proveedor del addon {addonName} a {providerName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
+      "GITHUB_LIMIT_ERROR": "Ha alcanzado el límite de {max} peticiones a la API de GitHub.\nPor favor, espere hasta {reset} e inténtelo de nuevo."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Cargando..."
@@ -108,11 +108,11 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "ADDON_ID_PREFIX": "Addon ID:",
+      "ADDON_ID_PREFIX": "ID del addon:",
       "BY_AUTHOR": "Por {authorName}",
       "CHANGELOG_TAB": "Listado de Cambios",
-      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
-      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
+      "COPY_ADDON_ID_SNACKBAR": "El ID del addon se ha copiado al portapapeles",
+      "COPY_ADDON_ID_TOOLTIP": "Copia el ID del addon al portapapeles",
       "DEPENDENCY_TEXT": "Este addon tiene {dependencyCount} {dependencyCount, plural, one{dependencia requerida} other{dependencias requeridas}}",
       "DESCRIPTION_TAB": "Descripción",
       "FUNDING_LINK_TITLE": "Apoyar a este autor",
@@ -135,13 +135,13 @@
       "DESCRIPTION": "Si desea instalar un addon directamente desde una URL, péguelo a continuación para comenzar.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{descarga} other{descargas}} en {provider}",
       "ERROR": {
-        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
-        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
+        "ASSET_NOT_FOUND": "No se encontró el recurso a descargar {message}.\n\nEs necesario que la publicación contenga un archivo zip válido para que WowUp pueda descargarlo.",
+        "CLASSIC_ASSET_NOT_FOUND": "No se encontró el recurso a descargar desde {message}.\n\nEs necesario un archivo zip válido con el sufijo '-classic' para que WowUp pueda descargarlo.",
         "FAILED_TO_CONNECT": "No se pudo conectar con la API. Por favor, espere un momento y vuelva a intentarlo.",
         "INSTALL_FAILED": "Ocurrió un error al intentar instalar el addon. Por favor, inténtelo de nuevo.\n\nSi se sigue mostrando este mensaje, puede obtener ayuda en Discord en el canal #wowup-support.",
         "INVALID_URL": "El valor introducido no es una URL válida. Ejemplos de URLs válidas:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "No se encontró el addon, asegúrese de que la URL apunta a la página correcta.\n\nSi está instalando desde GitHub, asegúrese de que el repositorio tiene una release tag con un archivo zip conteniendo el addon.",
-        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
+        "NO_RELEASE_FOUND": "No se encontraron publicaciones para {message}.\n\nSe requiere una versión válida con los recursos contenidos en un archivo zip para que WowUp pueda descargarla.",
         "NO_SEARCH_RESULTS": "No se encontraron resultados.",
         "TITLE": "Falló la Instalación del Addon"
       },
@@ -199,7 +199,7 @@
         "SHOW_FOLDER": "Mostrar Carpeta",
         "STABLE_ADDON_CHANNEL": "Estable"
       },
-      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
+      "ADDON_IS_CODE_REPOSITORY": "El addon parece ser un repositorio de código",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "¿Quiere cambiar el proveedor del addon {addonName} a {providerName}? Esta operación desinstalará el addon existente y lo reemplazará con la versión disponible en el nuevo proveedor.",
         "TITLE": "¿Cambiar Proveedor del Addon?"
