@@ -1,6 +1,16 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.13",
+      "changes": [
+        "German locale updates (Glow)",
+        "Chinese locale updates (CyanoHao)",
+        "Addon details dialog will remember which tab you last selected",
+        "Folders containing a .git folder will now be marked as Unknown provider",
+        "Fix an issue where get addons could get stuck in a spinner forever"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.12",
       "changes": [
         "Italian locale updates (Bito)",
