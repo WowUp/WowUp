@@ -1,4 +1,3 @@
-import { CachingService } from "app/services/caching/caching-service";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -24,6 +23,7 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
 import { ElectronService } from "../services";
+import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
