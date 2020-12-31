@@ -1,5 +1,16 @@
 {
   "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "LABEL": "Edit"
+      },
+      "VIEW": {
+        "LABEL": "View",
+        "ZOOM_IN": "Zoom In",
+        "ZOOM_OUT": "Zoom Out",
+        "ZOOM_RESET": "Reset Zoom"
+      }
+    },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自动更新",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自动更新了 {count} 个插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自动更新",

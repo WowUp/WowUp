@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
@@ -8,15 +8,20 @@ import { map, join } from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
+  CREATE_APP_MENU_CHANNEL,
   CREATE_TRAY_MENU_CHANNEL,
   CURRENT_THEME_KEY,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
+  MENU_ZOOM_IN_CHANNEL,
+  MENU_ZOOM_OUT_CHANNEL,
+  MENU_ZOOM_RESET_CHANNEL,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
+import { MenuConfig } from "../common/wowup/menu-config";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -25,7 +30,7 @@ import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
-import { getZoomDirection } from "./utils/zoom.utils";
+import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "./entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
@@ -36,14 +41,14 @@ import { PreferenceStorageService } from "./services/storage/preference-storage.
   styleUrls: ["./app.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: Subscription;
 
-  @HostListener("document:keydown", ["$event"])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    const zoomDirection = getZoomDirection(event);
-    this._electronService.applyZoom(zoomDirection);
-  }
+  // @HostListener("document:keydown", ["$event"])
+  // handleKeyboardEvent(event: KeyboardEvent) {
+  //   const zoomDirection = getZoomDirection(event);
+  //   this._electronService.applyZoom(zoomDirection);
+  // }
 
   public get quitEnabled() {
     return this._electronService.appOptions.quit;
@@ -84,9 +89,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         );
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });
+
+    this._electronService.ipcRenderer.on(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this._electronService.ipcRenderer.on(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this._electronService.ipcRenderer.on(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
   ngAfterViewInit(): void {
+    this.createAppMenu();
     this.createSystemTray();
 
     if (this._analyticsService.shouldPromptTelemetry) {
@@ -100,6 +110,24 @@ export class AppComponent implements OnInit, AfterViewInit {
       .pipe(tap(async () => await this.onAutoUpdateInterval()))
       .subscribe();
   }
+
+  ngOnDestroy(): void {
+    this._electronService.ipcRenderer.off(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this._electronService.ipcRenderer.off(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this._electronService.ipcRenderer.off(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+  }
+
+  onMenuZoomIn = () => {
+    this._electronService.applyZoom(ZoomDirection.ZoomIn);
+  };
+
+  onMenuZoomOut = () => {
+    this._electronService.applyZoom(ZoomDirection.ZoomOut);
+  };
+
+  onMenuZoomReset = () => {
+    this._electronService.applyZoom(ZoomDirection.ZoomReset);
+  };
 
   openDialog(): void {
     const dialogRef = this._dialog.open(TelemetryDialogComponent, {
@@ -193,6 +221,33 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     console.debug("checkQuitEnabled");
     this._electronService.quitApplication();
+  }
+
+  private async createAppMenu() {
+    console.log("Creating app menu");
+
+    const editKey = "APP.APP_MENU.EDIT.LABEL";
+    const viewKey = "APP.APP_MENU.VIEW.LABEL";
+    const zoomInKey = "APP.APP_MENU.VIEW.ZOOM_IN";
+    const zoomOutKey = "APP.APP_MENU.VIEW.ZOOM_OUT";
+    const zoomResetKey = "APP.APP_MENU.VIEW.ZOOM_RESET";
+
+    const result = await this.translate.get([editKey, viewKey, zoomInKey, zoomOutKey, zoomResetKey]).toPromise();
+
+    const config: MenuConfig = {
+      editLabel: result[editKey],
+      viewLabel: result[viewKey],
+      zoomInLabel: result[zoomInKey],
+      zoomOutLabel: result[zoomOutKey],
+      zoomResetLabel: result[zoomResetKey],
+    };
+
+    try {
+      const trayCreated = await this._electronService.invoke(CREATE_APP_MENU_CHANNEL, config);
+      console.log("App menu created", trayCreated);
+    } catch (e) {
+      console.error("Failed to create tray", e);
+    }
   }
 
   private async createSystemTray() {

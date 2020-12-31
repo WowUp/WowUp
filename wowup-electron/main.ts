@@ -1,12 +1,4 @@
-import {
-  app,
-  BrowserWindow,
-  BrowserWindowConstructorOptions,
-  Menu,
-  MenuItem,
-  MenuItemConstructorOptions,
-  powerMonitor,
-} from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
 import { type as osType, release as osRelease, arch as osArch } from "os";
@@ -29,6 +21,7 @@ import {
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
+import { createAppMenu } from "./app-menu";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -62,7 +55,7 @@ let appIsQuitting = false;
 let win: BrowserWindow = null;
 
 // APP MENU SETUP
-Menu.setApplicationMenu(Menu.buildFromTemplate(getAppMenu()));
+createAppMenu(win);
 
 // Set the app ID so that our notifications work correctly on Windows
 app.setAppUserModelId("io.wowup.jliddev");
@@ -300,90 +293,4 @@ function canStartHidden() {
 function getUserAgent() {
   const portableStr = isPortable ? " portable;" : "";
   return `WowUp-Client/${app.getVersion()} (${osType()}; ${osRelease()}; ${osArch()}; ${portableStr} +https://wowup.io)`;
-}
-
-function getAppMenu(): Array<MenuItemConstructorOptions | MenuItem> {
-  if (platform.isMac) {
-    return [
-      {
-        label: app.name,
-        submenu: [{ role: "quit" }],
-      },
-      {
-        label: "Edit",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-      {
-        label: "View",
-        submenu: [
-          { role: "reload" },
-          { role: "forceReload" },
-          { role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
-          { type: "separator" },
-          // { role: "resetZoom" },
-          // { role: "zoomIn", accelerator: "CommandOrControl+=" },
-          // { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ];
-  } else if (platform.isWin) {
-    return [
-      {
-        label: "View",
-        submenu: [
-          // { role: "resetZoom" },
-          { role: "toggleDevTools" },
-          // { role: "zoomIn", accelerator: "CommandOrControl+=" },
-          // { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ];
-  } else if (platform.isLinux) {
-    return [
-      {
-        label: app.name,
-        submenu: [{ role: "quit" }],
-      },
-      {
-        label: "Edit",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-      {
-        label: "View",
-        submenu: [
-          { role: "reload" },
-          { role: "forceReload" },
-          { role: "toggleDevTools" },
-          { type: "separator" },
-          // { role: "resetZoom" },
-          // { role: "zoomIn", accelerator: "CommandOrControl+=" },
-          // { role: "zoomOut" },
-          { type: "separator" },
-          { role: "togglefullscreen" },
-        ],
-      },
-    ];
-  }
-
-  return [];
 }

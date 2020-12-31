@@ -27,6 +27,10 @@ export const WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
 export const GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
 export const LIST_DISKS_WIN32 = "list-disks-win32";
+export const CREATE_APP_MENU_CHANNEL = "create-app-menu";
+export const MENU_ZOOM_OUT_CHANNEL = "menu-zoom-out";
+export const MENU_ZOOM_IN_CHANNEL = "menu-zoom-in";
+export const MENU_ZOOM_RESET_CHANNEL = "menu-zoom-reset";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
@@ -72,9 +76,9 @@ export const DEFAULT_BG_COLOR = "#444444";
 export const DEFAULT_LIGHT_BG_COLOR = "#ebedef";
 
 // ERRORS
-export const ERROR_ADDON_ALREADY_INSTALLED = "ERROR_ADDON_ALREADY_INSTALLED";
-export const NO_SEARCH_RESULTS_ERROR = "NO_SEARCH_RESULTS";
-export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "NO_LATEST_SEARCH_RESULT_FILES";
+export const ERROR_ADDON_ALREADY_INSTALLED = "error-addon-already-installed";
+export const NO_SEARCH_RESULTS_ERROR = "no-search-results";
+export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "no-latest-search-result-files";
 
 // VALUES
 export const WINDOW_DEFAULT_WIDTH = 1280;

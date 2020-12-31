@@ -1,5 +1,16 @@
 {
   "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "LABEL": "Edit"
+      },
+      "VIEW": {
+        "LABEL": "View",
+        "ZOOM_IN": "Zoom In",
+        "ZOOM_OUT": "Zoom Out",
+        "ZOOM_RESET": "Reset Zoom"
+      }
+    },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",

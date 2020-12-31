@@ -27,6 +27,7 @@ import {
   STAT_FILES_CHANNEL,
   CREATE_TRAY_MENU_CHANNEL,
   LIST_DISKS_WIN32,
+  CREATE_APP_MENU_CHANNEL,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -39,7 +40,9 @@ import { DownloadStatus } from "./src/common/models/download-status";
 import { DownloadStatusType } from "./src/common/models/download-status-type";
 import { DownloadRequest } from "./src/common/models/download-request";
 import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
+import { MenuConfig } from "./src/common/wowup/menu-config";
 import { createTray } from "./system-tray";
+import { createAppMenu } from "./app-menu";
 
 export function initializeIpcHandlers(window: BrowserWindow) {
   ipcMain.handle(
@@ -166,6 +169,10 @@ export function initializeIpcHandlers(window: BrowserWindow) {
 
   ipcMain.handle(CREATE_TRAY_MENU_CHANNEL, async (evt, config: SystemTrayConfig) => {
     return createTray(window, config);
+  });
+
+  ipcMain.handle(CREATE_APP_MENU_CHANNEL, async (evt, config: MenuConfig) => {
+    return createAppMenu(window, config);
   });
 
   ipcMain.handle(LIST_DISKS_WIN32, async (evt, config: SystemTrayConfig) => {

@@ -1,5 +1,16 @@
 {
   "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "LABEL": "Edit"
+      },
+      "VIEW": {
+        "LABEL": "View",
+        "ZOOM_IN": "Zoom In",
+        "ZOOM_OUT": "Zoom Out",
+        "ZOOM_RESET": "Reset Zoom"
+      }
+    },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
