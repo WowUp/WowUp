@@ -2,13 +2,13 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "LABEL": "Edit"
+        "LABEL": "Править"
       },
       "VIEW": {
-        "LABEL": "View",
-        "ZOOM_IN": "Zoom In",
-        "ZOOM_OUT": "Zoom Out",
-        "ZOOM_RESET": "Reset Zoom"
+        "LABEL": "Просмотр",
+        "ZOOM_IN": "Приблизить",
+        "ZOOM_OUT": "Отдалить",
+        "ZOOM_RESET": "Сброс масштабирования"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Автоматически обновлены\r\n{addonNames}",
@@ -105,10 +105,10 @@
       }
     },
     "ERRORS": {
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
+      "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
+      "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
@@ -210,7 +210,7 @@
         "SHOW_FOLDER": "Показать папку",
         "STABLE_ADDON_CHANNEL": "Стабильная"
       },
-      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
+      "ADDON_IS_CODE_REPOSITORY": "Модификация является репозиторием кода",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Хотите изменить источник модификаций для {addonName} на {providerName}? Это действие удалит существующую модификацию и заменит её копией из нового источника.",
         "TITLE": "Изменить источник модификации?"
