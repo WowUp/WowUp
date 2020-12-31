@@ -1,6 +1,21 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.14",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Add new alert for errors during addon update check",
+        "Add new alert for errors during addon scan",
+        "Add special error text for hitting the GitHub api limit",
+        "Add support for full descriptions from CurseForge",
+        "Add new logic to deselect the addon row when clicking outside the table",
+        "The View menu on Mac has returned with zoom actions"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.13",
       "changes": [
         "German locale updates (Glow)",
