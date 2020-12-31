@@ -250,6 +250,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadAddons(this.selectedClient);
   }
 
+  public unselectAll() {
+    this.sortedListItems.forEach((item) => {
+      item.selected = false;
+    });
+  }
+
   public onRowClicked(event: MouseEvent, row: AddonViewModel, index: number) {
     if ((event.ctrlKey && !this.electronService.isMac) || (event.metaKey && this.electronService.isMac)) {
       row.selected = !row.selected;
@@ -615,6 +621,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public getChannelTypeLocaleKey(channelType: string) {
     return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType?.toUpperCase()}`;
+  }
+
+  public onTableBlur(evt: any) {
+    evt.stopPropagation();
+
+    const ePath = evt.path as HTMLElement[];
+    const tableElem = ePath.find((tag) => tag.tagName === "TABLE");
+    if (tableElem) {
+      return;
+    }
+
+    this.unselectAll();
   }
 
   private async lazyLoad() {
