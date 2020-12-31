@@ -2,13 +2,13 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "LABEL": "Edit"
+        "LABEL": "Edición"
       },
       "VIEW": {
-        "LABEL": "View",
-        "ZOOM_IN": "Zoom In",
-        "ZOOM_OUT": "Zoom Out",
-        "ZOOM_RESET": "Reset Zoom"
+        "LABEL": "Ver",
+        "ZOOM_IN": "Ampliar",
+        "ZOOM_OUT": "Reducir",
+        "ZOOM_RESET": "Restablecer Zoom"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}",
@@ -38,7 +38,7 @@
       "DOWNLOADED_TOOLTIP": "Instalar actualización de WowUp",
       "INSTALL_MESSAGE": "¿Quiere reiniciar WowUp para instalar la actualización?",
       "INSTALL_TITLE": "Actualización de WowUp Preparada",
-      "NOT_AVAILABLE": "La última versión de WowUp ya se encuentra instalada",
+      "NOT_AVAILABLE": "La versión más reciente de WowUp ya se encuentra instalada",
       "PORTABLE_DOWNLOAD_MESSAGE": "¿Quiere descargar manualmente la última versión portable?\n\nTendrá que cerrar la aplicación y copiar los archivos de la nueva versión manualmente.",
       "PORTABLE_DOWNLOAD_TITLE": "Descarga Manual Requerida",
       "SNACKBAR_ACTION": "Actualizar",
