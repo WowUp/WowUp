@@ -105,10 +105,10 @@
       }
     },
     "ERRORS": {
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
+      "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
+      "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
@@ -210,7 +210,7 @@
         "SHOW_FOLDER": "Dateiordner anzeigen",
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
-      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
+      "ADDON_IS_CODE_REPOSITORY": "Addon scheint ein Code-Repository zu sein",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Möchtest Du den Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
         "TITLE": "Addon-Anbieter wechseln?"
