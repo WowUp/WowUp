@@ -44,7 +44,7 @@ function getConstrainedCoordinates(window: BrowserWindow) {
 export function windowStateManager(windowName: string, { width, height }: { width: number; height: number }) {
   let window: BrowserWindow;
   let windowState: WindowState;
-  const saveState$ = new Subject<void>();
+  // const saveState$ = new Subject<void>();
 
   function setState() {
     let setDefaults = false;
@@ -79,13 +79,9 @@ export function windowStateManager(windowName: string, { width, height }: { widt
   }
 
   function saveState() {
-    log.info("saving window state");
     const bounds = window.getBounds();
 
-    if (!window.isMaximized() && !window.isFullScreen()) {
-      windowState = { ...windowState, ...bounds };
-    }
-
+    windowState = { ...windowState, ...bounds };
     windowState.isMaximized = window.isMaximized();
     windowState.isFullScreen = window.isFullScreen();
     preferenceStore.set(`${windowName}-window-state`, windowState);
@@ -95,12 +91,12 @@ export function windowStateManager(windowName: string, { width, height }: { widt
     window = win;
 
     win.on("close", saveState);
-    win.on("resize", () => saveState$.next());
-    win.on("move", () => saveState$.next());
-    win.on("closed", () => saveState$.unsubscribe());
+    // win.on("resize", () => saveState$.next());
+    // win.on("move", () => saveState$.next());
+    // win.on("closed", () => saveState$.unsubscribe());
   }
 
-  saveState$.pipe(debounceTime(500)).subscribe(() => saveState());
+  // saveState$.pipe(debounceTime(500)).subscribe(() => saveState());
 
   setState();
 
@@ -135,6 +131,8 @@ function doRectanglesOverlap(a: Rectangle, b: Rectangle) {
 function isVisibleOnScreen(windowState: WindowState) {
   let isVisibleOnAnyScreen = false;
 
+  log.info(windowState);
+
   const displays = screen.getAllDisplays();
   for (const display of displays) {
     const displayBound = display.workArea;
@@ -144,6 +142,7 @@ function isVisibleOnScreen(windowState: WindowState) {
     displayBound.height -= 2 * MIN_VISIBLE_ON_SCREEN;
     isVisibleOnAnyScreen = doRectanglesOverlap(windowState, displayBound);
 
+    log.info("isVisibleOnAnyScreen", displayBound, isVisibleOnAnyScreen);
     if (isVisibleOnAnyScreen) {
       break;
     }
