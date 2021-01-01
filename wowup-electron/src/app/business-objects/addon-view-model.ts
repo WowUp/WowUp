@@ -6,7 +6,6 @@ import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
-import { AddonService } from "app/services/addons/addon.service";
 
 export class AddonViewModel {
   public addon: Addon;

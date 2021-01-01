@@ -35,7 +35,7 @@ describe("MyAddonsAddonCellComponent", () => {
     fixture = TestBed.createComponent(MyAddonsAddonCellComponent);
     component = fixture.componentInstance;
 
-    component.listItem = new AddonViewModel({}, {
+    component.listItem = new AddonViewModel({
       name: "Teelo's Test Tool",
       dependencies: [],
     } as Addon);
