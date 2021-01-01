@@ -2,12 +2,12 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "LABEL": "Edit"
+        "LABEL": "Modifica"
       },
       "VIEW": {
-        "LABEL": "View",
-        "ZOOM_IN": "Zoom In",
-        "ZOOM_OUT": "Zoom Out",
+        "LABEL": "Visualizzazione",
+        "ZOOM_IN": "Zoom Più",
+        "ZOOM_OUT": "Zoom Meno",
         "ZOOM_RESET": "Reset Zoom"
       }
     },
@@ -105,10 +105,10 @@
       }
     },
     "ERRORS": {
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "ADDON_SCAN_ERROR": "Errore nel sincronizzare le cartelle dell'addon con {providerName}, per favore riprovare più tardi.",
+      "ADDON_SYNC_ERROR": "Errore nel controllare gli aggioranementi da: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Errore nel cambio di provider per {addonName} con {providerName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
+      "GITHUB_LIMIT_ERROR": "Hai raggiunto il limite di {max} richieste per la tua API di GitHub.\nPer favore attendere fino a {reset} e riprovare."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
