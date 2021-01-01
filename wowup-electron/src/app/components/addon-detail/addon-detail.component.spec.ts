@@ -9,7 +9,7 @@ import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { Addon } from "../../entities/addon";
 import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
@@ -34,7 +34,7 @@ describe("AddonDetailComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {});
 
-    const viewModel = new AddonViewModel({
+    const viewModel = new AddonViewModel(addonServiceSpy, {
       installedVersion: "1.0.0",
       externalId: "52001",
     } as Addon);

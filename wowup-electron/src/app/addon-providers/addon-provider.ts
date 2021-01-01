@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 
 import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
@@ -6,7 +6,7 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 
-export interface AddonProvider {
+export abstract class AddonProvider {
   name: AddonProviderType;
   enabled: boolean;
   forceIgnore: boolean;
@@ -14,32 +14,62 @@ export interface AddonProvider {
   allowChannelChange: boolean;
   allowEdit: boolean;
 
-  getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]>;
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
+    return [];
+  }
 
-  getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]>;
+  async getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]> {
+    return [];
+  }
 
-  searchByQuery(query: string, clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]>;
+  async searchByQuery(
+    query: string,
+    clientType: WowClientType,
+    channelType?: AddonChannelType
+  ): Promise<AddonSearchResult[]> {
+    return [];
+  }
 
-  searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult>;
+  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
+    return undefined;
+  }
 
-  searchByName(
+  async searchByName(
     addonName: string,
     folderName: string,
     clientType: WowClientType,
     nameOverride?: string
-  ): Promise<AddonSearchResult[]>;
+  ): Promise<AddonSearchResult[]> {
+    return [];
+  }
 
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult>;
+  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+    return of(undefined);
+  }
 
-  isValidAddonUri(addonUri: URL): boolean;
-  isValidAddonId(addonId: string): boolean;
+  isValidAddonUri(addonUri: URL): boolean {
+    return false;
+  }
 
-  onPostInstall(addon: Addon): void;
+  isValidAddonId(addonId: string): boolean {
+    return false;
+  }
 
-  scan(clientType: WowClientType, addonChannelType: AddonChannelType, addonFolders: AddonFolder[]): Promise<void>;
+  onPostInstall(addon: Addon): void {}
 
-  getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string>;
-  getDescription(clientType: WowClientType, externalId: string): Promise<string>;
+  async scan(
+    clientType: WowClientType,
+    addonChannelType: AddonChannelType,
+    addonFolders: AddonFolder[]
+  ): Promise<void> {}
+
+  async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+    return "";
+  }
+
+  async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
+    return "";
+  }
 }
 
 export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO";

@@ -20,7 +20,7 @@ const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
 const DETAILS_HTTP_CACHE_TTL_SEC = 5 * 60;
 
-export class WowInterfaceAddonProvider implements AddonProvider {
+export class WowInterfaceAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   public readonly name = ADDON_PROVIDER_WOWINTERFACE;
@@ -31,6 +31,7 @@ export class WowInterfaceAddonProvider implements AddonProvider {
   public enabled = true;
 
   constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+    super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 

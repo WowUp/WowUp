@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angu
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonService } from "../../services/addons/addon.service";
@@ -63,7 +63,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public getIsButtonDisabled() {
-    return this.listItem?.isUpToDate || this.listItem?.installState < AddonInstallState.Unknown;
+    return this.listItem?.isUpToDate() || this.listItem?.installState < AddonInstallState.Unknown;
   }
 
   public getButtonText() {

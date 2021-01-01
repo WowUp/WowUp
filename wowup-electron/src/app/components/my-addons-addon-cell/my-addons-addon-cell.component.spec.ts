@@ -4,7 +4,7 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { Addon } from "../../entities/addon";
 import { MatModule } from "../../mat-module";
 
@@ -28,14 +28,14 @@ describe("MyAddonsAddonCellComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyAddonsAddonCellComponent);
     component = fixture.componentInstance;
 
-    component.listItem = new AddonViewModel({
+    component.listItem = new AddonViewModel({}, {
       name: "Teelo's Test Tool",
       dependencies: [],
     } as Addon);

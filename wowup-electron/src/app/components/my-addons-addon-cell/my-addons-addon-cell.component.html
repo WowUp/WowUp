@@ -8,29 +8,29 @@
         {{ listItem.thumbnailLetter }}
       </div>
     </div>
-    <div *ngIf="listItem.isBetaChannel || listItem.isAlphaChannel" class="channel bg-secondary-3" [ngClass]="{
-        beta: listItem.isBetaChannel,
-        alpha: listItem.isAlphaChannel
+    <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3" [ngClass]="{
+        beta: listItem.isBetaChannel(),
+        alpha: listItem.isAlphaChannel()
       }">
-      {{ listItem.isAlphaChannel ? "Alpha" : "Beta" }}
+      {{ listItem.isAlphaChannel() ? "Alpha" : "Beta" }}
     </div>
   </div>
   <div>
     <a class="addon-title hover-text-2 mat-subheading-2" (click)="viewDetails()"
-      [ngClass]="{ 'text-3': listItem.isIgnored }">{{
+      [ngClass]="{ 'text-3': listItem.addon.isIgnored }">{{
       listItem.addon.name
       }}</a>
     <div *ngIf="listItem.addon.fundingLinks" class="addon-funding row">
       <app-funding-button *ngFor="let link of listItem.addon.fundingLinks" [funding]="link" size="small">
       </app-funding-button>
     </div>
-    <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.isIgnored }">
+    <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.addon.isIgnored }">
       <div *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" class="mr-2">
         <mat-icon class="auto-update-icon" svgIcon="fas:code-branch"
           [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
         </mat-icon>
       </div>
-      <div *ngIf="this.listItem.isAutoUpdate === true" class="mr-2">
+      <div *ngIf="listItem.addon.autoUpdateEnabled === true" class="mr-2">
         <mat-icon class="auto-update-icon text-2"
           [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate" svgIcon="far:clock">
         </mat-icon>

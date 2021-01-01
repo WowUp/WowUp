@@ -6,6 +6,7 @@ import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
+import { AddonService } from "app/services/addons/addon.service";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -39,33 +40,25 @@ export class AddonViewModel {
     return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
   }
 
-  get isAutoUpdate() {
-    return this.addon.autoUpdateEnabled;
-  }
-
-  get isUpToDate() {
-    return !this.isInstalling && !AddonUtils.needsUpdate(this.addon);
-  }
-
-  get isIgnored() {
-    return this.addon.isIgnored;
-  }
-
-  get isStableChannel() {
-    return this.addon.channelType === AddonChannelType.Stable;
-  }
-
-  get isBetaChannel() {
-    return this.addon.channelType === AddonChannelType.Beta;
-  }
-
-  get isAlphaChannel() {
-    return this.addon.channelType === AddonChannelType.Alpha;
-  }
-
   constructor(addon?: Addon) {
     this.addon = addon;
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
+  }
+
+  public isUpToDate() {
+    return !this.isInstalling && !AddonUtils.needsUpdate(this.addon);
+  }
+
+  public isStableChannel() {
+    return this.addon.channelType === AddonChannelType.Stable;
+  }
+
+  public isBetaChannel() {
+    return this.addon.channelType === AddonChannelType.Beta;
+  }
+
+  public isAlphaChannel() {
+    return this.addon.channelType === AddonChannelType.Alpha;
   }
 
   public isUnMatched() {
@@ -81,7 +74,7 @@ export class AddonViewModel {
   }
 
   public get sortOrder(): AddonStatusSortOrder {
-    if (this.isIgnored) {
+    if (this.addon.isIgnored) {
       return AddonStatusSortOrder.Ignored;
     }
 
@@ -93,7 +86,7 @@ export class AddonViewModel {
       return AddonStatusSortOrder.Update;
     }
 
-    if (this.isUpToDate) {
+    if (this.isUpToDate()) {
       return AddonStatusSortOrder.UpToDate;
     }
 
@@ -101,11 +94,11 @@ export class AddonViewModel {
   }
 
   public getStateTextTranslationKey() {
-    if (this.isUpToDate) {
+    if (this.isUpToDate()) {
       return "COMMON.ADDON_STATE.UPTODATE";
     }
 
-    if (this.isIgnored) {
+    if (this.addon.isIgnored) {
       return "COMMON.ADDON_STATE.IGNORED";
     }
 
@@ -117,7 +110,7 @@ export class AddonViewModel {
       return "COMMON.ADDON_STATE.INSTALL";
     }
 
-    console.warn("Unhandled display state", this.isUpToDate, JSON.stringify(this, null, 2));
+    console.warn("Unhandled display state", this.isUpToDate(), JSON.stringify(this, null, 2));
     return "COMMON.ADDON_STATE.UNKNOWN";
   }
 

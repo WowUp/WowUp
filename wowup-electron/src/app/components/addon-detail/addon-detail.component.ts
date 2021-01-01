@@ -17,7 +17,7 @@ import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import * as SearchResult from "../../utils/search-result.utils";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
 import {
@@ -252,7 +252,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       return "";
     }
 
-    if (this.model.listItem.isUpToDate) {
+    if (this.model.listItem.isUpToDate()) {
       return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
     }
 

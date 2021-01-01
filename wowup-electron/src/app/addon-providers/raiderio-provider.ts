@@ -1,17 +1,14 @@
 import * as _ from "lodash";
-import { Observable } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
-import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
-import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";
 
-export class RaiderIoAddonProvider implements AddonProvider {
+export class RaiderIoAddonProvider extends AddonProvider {
   private readonly _scanWebsite = "https://raider.io";
   private readonly _scanAddonProvider = "raiderio-client";
   private readonly _scanFolderName = "RaiderIO";
@@ -23,54 +20,9 @@ export class RaiderIoAddonProvider implements AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  constructor() {}
-
-  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
-    return "";
+  constructor() {
+    super();
   }
-
-  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    return "";
-  }
-
-  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
-    return undefined;
-  }
-
-  public async searchByName(
-    addonName: string,
-    folderName: string,
-    clientType: WowClientType,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    return undefined;
-  }
-
-  public isValidAddonUri(addonUri: URL): boolean {
-    return false;
-  }
-
-  public isValidAddonId(addonId: string): boolean {
-    return false;
-  }
-
-  public onPostInstall(addon: Addon): void {}
 
   public async scan(
     clientType: WowClientType,

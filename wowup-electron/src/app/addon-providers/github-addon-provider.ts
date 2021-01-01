@@ -5,14 +5,12 @@ import { map } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
-import { Addon } from "../entities/addon";
 import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider } from "./addon-provider";
@@ -29,7 +27,7 @@ const HEADER_RATE_LIMIT_REMAINING = "x-ratelimit-remaining";
 const HEADER_RATE_LIMIT_RESET = "x-ratelimit-reset";
 const HEADER_RATE_LIMIT_USED = "x-ratelimit-used";
 
-export class GitHubAddonProvider implements AddonProvider {
+export class GitHubAddonProvider extends AddonProvider {
   public readonly name = ADDON_PROVIDER_GITHUB;
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
@@ -37,10 +35,8 @@ export class GitHubAddonProvider implements AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  constructor(private _httpClient: HttpClient) {}
-
-  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
-    return "";
+  constructor(private _httpClient: HttpClient) {
+    super();
   }
 
   public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
@@ -56,18 +52,6 @@ export class GitHubAddonProvider implements AddonProvider {
     }
 
     return searchResults;
-  }
-
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    return "";
   }
 
   public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
@@ -182,14 +166,6 @@ export class GitHubAddonProvider implements AddonProvider {
   public isValidAddonId(addonId: string): boolean {
     return addonId.indexOf("/") !== -1;
   }
-
-  public onPostInstall(addon: Addon): void {}
-
-  public async scan(
-    clientType: WowClientType,
-    addonChannelType: AddonChannelType,
-    addonFolders: AddonFolder[]
-  ): Promise<void> {}
 
   private getLatestRelease(releases: GitHubRelease[]): GitHubRelease {
     let sortedReleases = _.filter(releases, (r) => !r.draft);

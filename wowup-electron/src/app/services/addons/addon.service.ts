@@ -457,6 +457,7 @@ export class AddonService {
         console.log("Addon removed existing directories", removedDirectoryNames);
       }
 
+      addon.installedExternalReleaseId = addon.externalLatestReleaseId;
       addon.installedVersion = addon.latestVersion;
       addon.installedAt = new Date();
       addon.installedFolders = unzippedDirectoryNames.join(",");
@@ -789,7 +790,9 @@ export class AddonService {
       addon.thumbnailUrl = result.thumbnailUrl;
       addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
 
-      if (
+      if (latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
+        continue;
+      } else if (
         !result ||
         !latestFile ||
         (latestFile.version === addon.latestVersion && latestFile.releaseDate === addon.releasedAt)

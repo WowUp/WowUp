@@ -16,9 +16,8 @@ export function hasMultipleProviders(addon: Addon): boolean {
 
 export function needsUpdate(addon: Addon): boolean {
   return (
-    addon.installedVersion !== addon.latestVersion ||
-    (addon.providerName !== ADDON_PROVIDER_TUKUI &&
-      new Date(addon.updatedAt).getTime() < new Date(addon.releasedAt).getTime())
+    (addon.externalLatestReleaseId && addon.externalLatestReleaseId !== addon.installedExternalReleaseId) ||
+    addon.installedVersion !== addon.latestVersion
   );
 }
 

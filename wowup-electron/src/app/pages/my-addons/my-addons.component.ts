@@ -1,3 +1,8 @@
+import * as _ from "lodash";
+import { join } from "path";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
+
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
   AfterViewInit,
@@ -18,28 +23,25 @@ import { MatRadioChange } from "@angular/material/radio";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
-import { join } from "path";
-import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import * as _ from "lodash";
-import { BehaviorSubject, from, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
+import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { Addon } from "../../entities/addon";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
-import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
-import * as AddonUtils from "../../utils/addon.utils";
-import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 
 @Component({
   selector: "app-my-addons",
@@ -321,7 +323,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       const listItems = _.filter(
         this._displayAddonsSrc.value,
-        (listItem) => !listItem.isIgnored && !listItem.isInstalling && (listItem.needsInstall || listItem.needsUpdate)
+        (listItem) =>
+          !listItem.addon.isIgnored && !listItem.isInstalling && (listItem.needsInstall || listItem.needsUpdate)
       );
 
       await Promise.all(
@@ -863,7 +866,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private onDataSourceChange = (sortedListItems: AddonViewModel[]) => {
     this.sortedListItems = sortedListItems;
     this.enableUpdateAll = this.sortedListItems.some(
-      (li) => !li.isIgnored && !li.isInstalling && (li.needsInstall || li.needsUpdate)
+      (li) => !li.addon.isIgnored && !li.isInstalling && (li.needsInstall || li.needsUpdate)
     );
     this.enableControls = this.calculateControlState();
     this.setPageContextText();

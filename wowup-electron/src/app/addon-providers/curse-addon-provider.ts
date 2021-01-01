@@ -36,7 +36,7 @@ import { AddonProvider } from "./addon-provider";
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
-export class CurseAddonProvider implements AddonProvider {
+export class CurseAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   public readonly name = ADDON_PROVIDER_CURSEFORGE;
@@ -51,6 +51,8 @@ export class CurseAddonProvider implements AddonProvider {
     private _electronService: ElectronService,
     _networkService: NetworkService
   ) {
+    super();
+
     this._circuitBreaker = _networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
@@ -557,9 +559,10 @@ export class CurseAddonProvider implements AddonProvider {
       externalUrl: scanResult.searchResult.websiteUrl,
       externalId: scanResult.searchResult.id.toString(),
       gameVersion: gameVersion,
-      installedAt: new Date(),
+      installedAt: new Date(scanResult.addonFolder.fileStats.birthtimeMs),
       installedFolders: folderList,
       installedVersion: currentVersion.displayName,
+      installedExternalReleaseId: currentVersion.id.toString(),
       isIgnored: false,
       latestVersion: latestVersion.displayName,
       providerName: this.name,
@@ -570,6 +573,7 @@ export class CurseAddonProvider implements AddonProvider {
       releasedAt: new Date(latestVersion.fileDate),
       isLoadOnDemand: false,
       externalLatestReleaseId: latestVersion.id.toString(),
+      updatedAt: scanResult.addonFolder.fileStats.birthtime,
     };
   }
 }

@@ -20,7 +20,7 @@ const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
 // const WOWUP_API_URL = AppConfig.wowUpHubUrl;
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
-export class TukUiAddonProvider implements AddonProvider {
+export class TukUiAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   public readonly name = ADDON_PROVIDER_TUKUI;
@@ -32,6 +32,7 @@ export class TukUiAddonProvider implements AddonProvider {
   public enabled = true;
 
   constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+    super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
@@ -144,7 +145,7 @@ export class TukUiAddonProvider implements AddonProvider {
           externalId: tukUiAddon.id,
           externalUrl: tukUiAddon.web_url,
           gameVersion: tukUiAddon.patch,
-          installedAt: new Date(),
+          installedAt: addonFolder.fileStats.birthtime,
           installedFolders: addonFolder.name,
           installedVersion: addonFolder.toc.version,
           latestVersion: tukUiAddon.version,

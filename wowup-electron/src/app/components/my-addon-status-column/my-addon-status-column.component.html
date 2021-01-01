@@ -1,6 +1,6 @@
 <div class="row">
   <app-addon-update-button *ngIf="showStatusText === false" [listItem]="listItem"></app-addon-update-button>
-  <div *ngIf="showStatusText === true" class="status-text" [ngClass]="{ ignored: listItem.isIgnored }">
+  <div *ngIf="showStatusText === true" class="status-text" [ngClass]="{ ignored: listItem.addon.isIgnored }">
     {{ getStatusText() | translate }}
   </div>
 </div>

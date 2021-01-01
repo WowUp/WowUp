@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import * as AddonUtils from "../../utils/addon.utils";
 import { capitalizeString } from "../../utils/string.utils";
 

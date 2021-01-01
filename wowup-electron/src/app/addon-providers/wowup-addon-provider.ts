@@ -36,7 +36,7 @@ export interface GetAddonBatchResponse {
   addons: WowUpAddonRepresentation[];
 }
 
-export class WowUpAddonProvider implements AddonProvider {
+export class WowUpAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   public readonly name = ADDON_PROVIDER_HUB;
@@ -51,6 +51,8 @@ export class WowUpAddonProvider implements AddonProvider {
     private _networkService: NetworkService,
     private _cachingService: CachingService
   ) {
+    super();
+
     this._circuitBreaker = _networkService.getCircuitBreaker(
       `${this.name}_main`,
       AppConfig.defaultHttpResetTimeoutMs,
@@ -292,6 +294,7 @@ export class WowUpAddonProvider implements AddonProvider {
       installedAt: new Date(),
       installedFolders: folderList,
       installedVersion: scanResult.exactMatch.matched_release.tag_name,
+      installedExternalReleaseId: scanResult.exactMatch.matched_release.id.toString(),
       isIgnored: false,
       latestVersion: scanResult.exactMatch.matched_release.tag_name,
       providerName: this.name,

@@ -17,6 +17,7 @@ export interface Addon {
   name: string;
   downloadUrl?: string;
   installedVersion?: string;
+  installedExternalReleaseId?: string;
   latestVersion?: string;
   installedAt?: Date;
   externalId?: string;
