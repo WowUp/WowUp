@@ -2,17 +2,17 @@ import { from, interval, Subscription } from "rxjs";
 import { filter, first, switchMap, tap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AppConfig } from "../../../environments/environment";
+import { AddonScanError, AddonSyncError, GitHubLimitError } from "../../errors";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { AddonScanError, AddonSyncError, GitHubLimitError } from "../../errors";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { WowClientType } from "app/models/warcraft/wow-client-type";
 
 @Component({
   selector: "app-home",
