@@ -5,6 +5,11 @@ import {
   APP_UPDATE_CHECK_START,
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_START_DOWNLOAD,
+  MAXIMIZE_WINDOW,
+  MINIMIZE_WINDOW,
+  WINDOW_MAXIMIZED,
+  WINDOW_MINIMIZED,
+  WINDOW_UNMAXIMIZED,
   ZOOM_FACTOR_KEY,
 } from "../../../common/constants";
 import * as minimist from "minimist";
@@ -98,23 +103,35 @@ export class ElectronService {
 
     const currentWindow = this.remote?.getCurrentWindow();
 
-    currentWindow?.on("minimize", () => {
+    this.ipcRenderer.on(WINDOW_MINIMIZED, () => {
       this._windowMinimizedSrc.next(true);
     });
 
-    currentWindow?.on("restore", () => {
-      this._windowMinimizedSrc.next(false);
-    });
-
-    currentWindow?.on("maximize", () => {
+    this.ipcRenderer.on(WINDOW_MAXIMIZED, () => {
       this._windowMaximizedSrc.next(true);
     });
 
-    currentWindow?.on("unmaximize", () => {
+    this.ipcRenderer.on(WINDOW_UNMAXIMIZED, () => {
       this._windowMaximizedSrc.next(false);
     });
 
-    this._windowMaximizedSrc.next(currentWindow?.isMaximized() || false);
+    // currentWindow?.on("minimize", () => {
+    //   this._windowMinimizedSrc.next(true);
+    // });
+
+    // currentWindow?.on("restore", () => {
+    //   this._windowMinimizedSrc.next(false);
+    // });
+
+    // currentWindow?.on("maximize", () => {
+    //   this._windowMaximizedSrc.next(true);
+    // });
+
+    // currentWindow?.on("unmaximize", () => {
+    //   this._windowMaximizedSrc.next(false);
+    // });
+
+    // this._windowMaximizedSrc.next(currentWindow?.isMaximized() || false);
 
     currentWindow?.webContents.setVisualZoomLevelLimits(1, 1);
 
@@ -147,15 +164,18 @@ export class ElectronService {
   }
 
   public minimizeWindow() {
-    this.remote.getCurrentWindow().minimize();
+    this.invoke(MINIMIZE_WINDOW);
+    // this.remote.getCurrentWindow().minimize();
   }
 
   public maximizeWindow() {
-    this.remote.getCurrentWindow().maximize();
+    this.invoke(MAXIMIZE_WINDOW);
+    // this.remote.getCurrentWindow().maximize();
   }
 
   public unmaximizeWindow() {
-    this.remote.getCurrentWindow().unmaximize();
+    this.invoke(MAXIMIZE_WINDOW);
+    // this.remote.getCurrentWindow().unmaximize();
   }
 
   public hideWindow() {

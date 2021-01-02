@@ -2,12 +2,16 @@ import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import {ElectronService} from "../../services";
+import { ElectronService } from "../../services";
 import { UpdateCheckResult } from "electron-updater";
 import { AppConfig } from "../../../environments/environment";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import {
+  CenteredSnackbarComponent,
+  CenteredSnackbarComponentData,
+} from "../centered-snackbar/centered-snackbar.component";
 
 @Component({
   selector: "app-footer",
@@ -85,14 +89,19 @@ export class FooterComponent implements OnInit {
       }
     } catch (e) {
       console.error(e);
-      this.showSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR", ["error-text"]);
+      this.showSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR", ["snackbar-error"]);
     }
   }
 
   private showSnackbar(localeKey: string, classes: string[] = []) {
-    this._snackBar.open(this._translateService.instant(localeKey), null, {
-      duration: 2000,
-      panelClass: ["center-text", ...classes],
+    const message = this._translateService.instant(localeKey);
+    const data: CenteredSnackbarComponentData = {
+      message,
+    };
+    this._snackBar.openFromComponent(CenteredSnackbarComponent, {
+      duration: 5000,
+      panelClass: ["wowup-snackbar", "text-1", ...classes],
+      data,
     });
   }
 

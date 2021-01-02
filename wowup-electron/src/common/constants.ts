@@ -31,6 +31,11 @@ export const CREATE_APP_MENU_CHANNEL = "create-app-menu";
 export const MENU_ZOOM_OUT_CHANNEL = "menu-zoom-out";
 export const MENU_ZOOM_IN_CHANNEL = "menu-zoom-in";
 export const MENU_ZOOM_RESET_CHANNEL = "menu-zoom-reset";
+export const MAXIMIZE_WINDOW = "maximize-window";
+export const MINIMIZE_WINDOW = "minimize-window";
+export const WINDOW_MAXIMIZED = "window-maximized";
+export const WINDOW_UNMAXIMIZED = "window-unmaximized";
+export const WINDOW_MINIMIZED = "window-minimized";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";

@@ -33,6 +33,7 @@ import { AboutComponent } from "../about/about.component";
 import { GetAddonsComponent } from "../get-addons/get-addons.component";
 import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
+import { CenteredSnackbarComponent } from "../../components/centered-snackbar/centered-snackbar.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
 
@@ -67,6 +68,7 @@ import { HomeComponent } from "./home.component";
     OptionsDebugSectionComponent,
     OptionsAddonSectionComponent,
     FundingButtonComponent,
+    CenteredSnackbarComponent,
   ],
   imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule, ReactiveFormsModule],
   providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe],

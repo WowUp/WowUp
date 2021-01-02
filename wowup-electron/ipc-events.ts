@@ -28,6 +28,8 @@ import {
   CREATE_TRAY_MENU_CHANNEL,
   LIST_DISKS_WIN32,
   CREATE_APP_MENU_CHANNEL,
+  MINIMIZE_WINDOW,
+  MAXIMIZE_WINDOW,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -173,6 +175,22 @@ export function initializeIpcHandlers(window: BrowserWindow) {
 
   ipcMain.handle(CREATE_APP_MENU_CHANNEL, async (evt, config: MenuConfig) => {
     return createAppMenu(window, config);
+  });
+
+  ipcMain.handle(MINIMIZE_WINDOW, () => {
+    if (window?.minimizable) {
+      window.minimize();
+    }
+  });
+
+  ipcMain.handle(MAXIMIZE_WINDOW, () => {
+    if (window?.maximizable) {
+      if (window.isMaximized()) {
+        window.unmaximize();
+      } else {
+        window.maximize();
+      }
+    }
   });
 
   ipcMain.handle(LIST_DISKS_WIN32, async (evt, config: SystemTrayConfig) => {

@@ -16,8 +16,11 @@ import {
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
+  WINDOW_MAXIMIZED,
+  WINDOW_MINIMIZED,
   WINDOW_MIN_HEIGHT,
   WINDOW_MIN_WIDTH,
+  WINDOW_UNMAXIMIZED,
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
@@ -161,7 +164,13 @@ powerMonitor.on("unlock-screen", () => {
   log.info("powerMonitor unlock-screen");
 });
 
+let lastCrash = 0;
+
 function createWindow(): BrowserWindow {
+  if (win) {
+    win.destroy();
+  }
+
   // Main object for managing window state
   // Initialize with a window name and default size
   const mainWindowManager = windowStateManager("main", {
@@ -217,8 +226,24 @@ function createWindow(): BrowserWindow {
   // See https://www.electronjs.org/docs/api/web-contents#event-render-process-gone
   win.webContents.on("render-process-gone", (evt, details) => {
     log.error("webContents render-process-gone");
-    log.error(evt);
     log.error(details);
+
+    // If something killed the process, quit
+    if (details.reason === "killed") {
+      app.quit();
+      return;
+    }
+
+    // If process crashes too quickly, kill the app
+    const crashTime = Date.now();
+    if (crashTime - lastCrash < 5000) {
+      log.error("Crash loop detected");
+      app.quit();
+      return;
+    }
+
+    lastCrash = crashTime;
+    log.info("Restarting main window");
   });
 
   // See https://www.electronjs.org/docs/api/web-contents#event-unresponsive
@@ -260,6 +285,18 @@ function createWindow(): BrowserWindow {
 
   win.once("closed", () => {
     win = null;
+  });
+
+  win.on("maximize", () => {
+    win?.webContents?.send(WINDOW_MAXIMIZED);
+  });
+
+  win.on("unmaximize", () => {
+    win?.webContents?.send(WINDOW_UNMAXIMIZED);
+  });
+
+  win.on("minimize", () => {
+    win?.webContents?.send(WINDOW_MINIMIZED);
   });
 
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);

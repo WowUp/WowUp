@@ -6,6 +6,8 @@ import {
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
+  MAXIMIZE_WINDOW,
+  MINIMIZE_WINDOW,
 } from "../../../common/constants";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../environments/environment";
@@ -23,11 +25,7 @@ export class TitlebarComponent implements OnInit, OnDestroy {
 
   private _subscriptions: Subscription[] = [];
 
-  constructor(
-    public electronService: ElectronService,
-    private _wowUpService: WowUpService,
-    private _ngZone: NgZone,
-  ) {
+  constructor(public electronService: ElectronService, private _wowUpService: WowUpService, private _ngZone: NgZone) {
     const windowMaximizedSubscription = this.electronService.windowMaximized$.subscribe((maximized) => {
       this._ngZone.run(() => (this.isMaximized = maximized));
     });
@@ -69,18 +67,12 @@ export class TitlebarComponent implements OnInit, OnDestroy {
   }
 
   onDblClick() {
-    const win = this.electronService.remote.getCurrentWindow();
-
     if (this.electronService.isMac) {
       const action = this.electronService.remote.systemPreferences.getUserDefault("AppleActionOnDoubleClick", "string");
       if (action === "Maximize") {
-        if (win.isMaximized()) {
-          win.unmaximize();
-        } else {
-          win.maximize();
-        }
+        this.electronService.invoke(MAXIMIZE_WINDOW);
       } else if (action === "Minimize") {
-        win.minimize();
+        this.electronService.invoke(MINIMIZE_WINDOW);
       }
     }
   }
