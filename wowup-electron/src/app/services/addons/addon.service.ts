@@ -98,8 +98,10 @@ export class AddonService {
     private _tocService: TocService,
     addonProviderFactory: AddonProviderFactory
   ) {
+    // Create our base set of addon providers
     this._addonProviders = addonProviderFactory.getAll();
 
+    // Setup our install queue pump here
     this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
       next: (addonName) => {
         console.log("Install complete", addonName);

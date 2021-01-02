@@ -1,16 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MAT_SNACK_BAR_DATA } from "@angular/material/snack-bar";
+import { MatModule } from "../../mat-module";
 
-import { CenteredSnackbarComponent } from './centered-snackbar.component';
+import { CenteredSnackbarComponent, CenteredSnackbarComponentData } from "./centered-snackbar.component";
 
-describe('CenteredSnackbarComponent', () => {
+describe("CenteredSnackbarComponent", () => {
   let component: CenteredSnackbarComponent;
   let fixture: ComponentFixture<CenteredSnackbarComponent>;
+  let dialogData: CenteredSnackbarComponentData;
 
   beforeEach(async () => {
+    dialogData = {
+      message: "TEST MESSAGE",
+    };
+
     await TestBed.configureTestingModule({
-      declarations: [ CenteredSnackbarComponent ]
-    })
-    .compileComponents();
+      declarations: [CenteredSnackbarComponent],
+      imports: [MatModule],
+      providers: [{ provide: MAT_SNACK_BAR_DATA, useValue: dialogData }],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +27,7 @@ describe('CenteredSnackbarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
