@@ -81,6 +81,10 @@ export class SessionService {
     this._statusTextSrc.next(text);
   }
 
+  public getSelectedHomeTab() {
+    return this._selectedHomeTabSrc.value;
+  }
+
   public set selectedHomeTab(tabIndex: number) {
     this._pageContextTextSrc.next("");
     this._selectedHomeTabSrc.next(tabIndex);

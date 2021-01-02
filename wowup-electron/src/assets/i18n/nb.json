@@ -193,6 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Om",
       "GET_ADDONS_TAB_TITLE": "Få Utvidelser",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "Mine Utvidelser",
       "OPTIONS_TAB_TITLE": "Alternativer"
     },

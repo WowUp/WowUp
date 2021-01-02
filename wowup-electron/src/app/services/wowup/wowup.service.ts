@@ -36,6 +36,7 @@ import {
   ALLIANCE_THEME,
   ALLIANCE_LIGHT_THEME,
   DEFAULT_LIGHT_THEME,
+  ADDON_MIGRATION_VERSION_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -319,6 +320,15 @@ export class WowUpService {
   public getClientDefaultAddonChannelKey(clientType: WowClientType) {
     const typeName = getEnumName(WowClientType, clientType);
     return `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
+  }
+
+  public shouldMigrateAddons() {
+    const migrateVersion = this._preferenceStorageService.get(ADDON_MIGRATION_VERSION_KEY);
+    return migrateVersion !== this._electronService.getVersionNumber();
+  }
+
+  public setMigrationVersion() {
+    this._preferenceStorageService.set(ADDON_MIGRATION_VERSION_KEY, this._electronService.getVersionNumber());
   }
 
   public getDefaultAddonChannel(clientType: WowClientType): AddonChannelType {

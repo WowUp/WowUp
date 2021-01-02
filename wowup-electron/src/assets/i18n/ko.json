@@ -193,6 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "프로그램 소개",
       "GET_ADDONS_TAB_TITLE": "애드온 찾기",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "내 애드온",
       "OPTIONS_TAB_TITLE": "설정"
     },

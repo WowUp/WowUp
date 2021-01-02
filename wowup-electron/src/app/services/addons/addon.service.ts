@@ -714,6 +714,10 @@ export class AddonService {
     }
   }
 
+  public async getAllAddons(clientType: WowClientType) {
+    return this._addonStorage.getAllForClientType(clientType);
+  }
+
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
     if (clientType === WowClientType.None) {
       return [];
@@ -834,6 +838,30 @@ export class AddonService {
       if (hasGitFolder) {
         addonFolder.ignoreReason = "git_repo";
       }
+    }
+  }
+
+  public async migrate(clientType: WowClientType) {
+    const existingAddons = await this.getAllAddons(clientType);
+    if (!existingAddons.length) {
+      console.log(`Skipping client type: ${clientType} no addons found`);
+      return;
+    }
+
+    const scannedAddons = await this.scanAddons(clientType);
+    for (const addon of existingAddons) {
+      const scannedAddon = _.find(
+        scannedAddons,
+        (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName
+      );
+
+      if (!scannedAddon) {
+        console.log(`No scanned addon found ${addon.name}`);
+        continue;
+      }
+
+      addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
+      this.saveAddon(addon);
     }
   }
 

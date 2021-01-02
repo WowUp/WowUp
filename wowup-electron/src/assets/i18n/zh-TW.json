@@ -193,6 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "關於",
       "GET_ADDONS_TAB_TITLE": "獲取插件",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "我的插件",
       "OPTIONS_TAB_TITLE": "選項"
     },

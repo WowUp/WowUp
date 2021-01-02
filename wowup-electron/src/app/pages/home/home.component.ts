@@ -1,7 +1,7 @@
-import { interval, Subscription } from "rxjs";
-import { filter, tap } from "rxjs/operators";
+import { from, interval, Subscription } from "rxjs";
+import { filter, first, switchMap, tap } from "rxjs/operators";
 
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AppConfig } from "../../../environments/environment";
@@ -12,6 +12,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { AddonScanError, AddonSyncError, GitHubLimitError } from "../../errors";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { WowClientType } from "app/models/warcraft/wow-client-type";
 
 @Component({
   selector: "app-home",
@@ -24,6 +25,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   public selectedIndex = 0;
   public hasWowClient = false;
+  public appReady = false;
+  public preloadSpinnerKey = "COMMON.PROGRESS_SPINNER.LOADING";
 
   constructor(
     public electronService: ElectronService,
@@ -32,7 +35,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _addonService: AddonService,
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _cdRef: ChangeDetectorRef
   ) {
     this._warcraftService.installedClientTypes$.subscribe((clientTypes) => {
       if (clientTypes === undefined) {
@@ -43,6 +47,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         this.selectedIndex = this.hasWowClient ? 0 : 3;
       }
     });
+
+    this._warcraftService.installedClientTypes$
+      .pipe(
+        first((clientTypes) => !!clientTypes),
+        switchMap((clientTypes) => from(this.migrateAddons(clientTypes)))
+      )
+      .subscribe(() => {
+        this.appReady = true;
+        this._cdRef.detectChanges();
+      });
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
     this._addonService.scanError$.subscribe(this.onAddonScanError);
@@ -63,6 +77,29 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this._appUpdateInterval.unsubscribe();
+  }
+
+  private async migrateAddons(clientTypes: WowClientType[]) {
+    if (!clientTypes || !this._wowupService.shouldMigrateAddons()) {
+      return clientTypes;
+    }
+
+    this.preloadSpinnerKey = "PAGES.HOME.MIGRATING_ADDONS";
+    this._cdRef.detectChanges();
+
+    console.log("Migrating addons");
+
+    try {
+      for (const clientType of clientTypes) {
+        await this._addonService.migrate(clientType);
+      }
+
+      this._wowupService.setMigrationVersion();
+    } catch (e) {
+      console.error(`Failed to migrate addons`, e);
+    }
+
+    return clientTypes;
   }
 
   onSelectedIndexChange(index: number) {

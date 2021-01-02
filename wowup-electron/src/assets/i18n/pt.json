@@ -193,6 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Sobre",
       "GET_ADDONS_TAB_TITLE": "Obtenha Addons",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "Meus Addons",
       "OPTIONS_TAB_TITLE": "Opções"
     },

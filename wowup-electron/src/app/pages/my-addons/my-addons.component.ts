@@ -154,15 +154,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     public warcraftService: WarcraftService,
     public wowUpService: WowUpService
   ) {
-    _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
-      this.isSelectedTab = tabIndex === this.tabIndex;
-      if (!this.isSelectedTab) {
-        return;
-      }
-
-      this.setPageContextText();
-      this.lazyLoad();
-    });
+    _sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange);
 
     const addonInstalledSubscription = this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent);
 
@@ -192,6 +184,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         col.visible = state.visible;
       }
     });
+
+    this.onSelectedTabChange(this._sessionService.getSelectedHomeTab());
   }
 
   public ngOnDestroy(): void {
@@ -204,6 +198,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.onRefresh();
     });
   }
+
+  public onSelectedTabChange = (tabIndex: number) => {
+    this.isSelectedTab = tabIndex === this.tabIndex;
+    if (!this.isSelectedTab) {
+      return;
+    }
+
+    this.setPageContextText();
+    this.lazyLoad();
+  };
 
   // Get the translated value of the provider name (unknown)
   // If the key is returned there's nothing to translate return the normal name

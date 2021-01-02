@@ -193,6 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "Meine Addons",
       "OPTIONS_TAB_TITLE": "Einstellungen"
     },
