@@ -4,7 +4,7 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Mise à jour automatique de {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
     "PROVIDERS": {
-      "UNKNOWN": "Unknown"
+      "UNKNOWN": "Inconnu"
     },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Analyse des addons terminée...",
@@ -107,13 +107,13 @@
     "ADDON_DETAILS": {
       "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "Par {authorName}",
-      "CHANGELOG_TAB": "Changelog",
-      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
-      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
+      "CHANGELOG_TAB": "Notes de mise à jour ",
+      "COPY_ADDON_ID_SNACKBAR": "ID de l'addon copé dans le presse-papier",
+      "COPY_ADDON_ID_TOOLTIP": "Copier l'ID de l'addon dans le presse-papier,
       "DEPENDENCY_TEXT": "Cet addon a {dependencyCount} {dependencyCount, plural, one{dépendance requise} other{dépendances requises}}",
       "DESCRIPTION_TAB": "Description",
-      "FUNDING_LINK_TITLE": "Support this author",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
+      "FUNDING_LINK_TITLE": "Supporter cet auteur",
+      "MISSING_DEPENDENCIES": "Dépendances manquantes",
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
@@ -223,7 +223,7 @@
         "VIEW_GITHUB": "Voir le code sur Github",
         "VIEW_GUIDE": "Consultez notre guide pour voir toutes les fonctionnalités de WowUp"
       },
-      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Dépendances requises manquantes",
       "RESCAN_FOLDERS_BUTTON": "Réanalyser les dossiers",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Analysez votre dossier client pour trouver les addons installés",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Faire une nouvelle analyse tentera de deviner les addons que vous avez actuellement installés, cela pourrait réinitialiser les informations connues des addons. Utilisez cette fonction lorsque certains addons ne sont pas reconnus ou que les versions des addons ne s'affichent pas correctement. Cette analyse ne supprimera jamais vos addons installés, seulement ce que WowUp sait à leur sujet.\n\nL'analyse peut prendre un peu de temps.",
