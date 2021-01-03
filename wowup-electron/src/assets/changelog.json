@@ -6,7 +6,8 @@
         "App will now migrate addon shchema on every version change",
         "Add new code to attempt to restart window if it crashes",
         "Fix a bug with window maximize/unmaximize and minimize",
-        "Fix the style of the app update check snackbar"
+        "Fix the style of the app update check snackbar",
+        "Fix an issue with external channel displaying a bad value"
       ]
     },
     {
