@@ -682,7 +682,7 @@ export class AddonService {
     if (!folders) {
       return [];
     }
-    
+
     return folders
       .split(",")
       .map((f) => f.trim())
@@ -869,6 +869,7 @@ export class AddonService {
       }
 
       addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
+      addon.externalChannel = scannedAddon.externalChannel;
       this.saveAddon(addon);
     }
   }
