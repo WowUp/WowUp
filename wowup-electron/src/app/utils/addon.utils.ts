@@ -1,6 +1,6 @@
-import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
-import { orderBy, filter } from "lodash";
+import { orderBy, filter, map } from "lodash";
 import { Addon, AddonExternalId } from "../entities/addon";
+import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
 
 export function getAllProviders(addon: Addon): AddonExternalId[] {
   return orderBy(addon.externalIds, ["providerName"], ["asc"]);
@@ -12,6 +12,12 @@ export function getProviders(addon: Addon): AddonExternalId[] {
 
 export function hasMultipleProviders(addon: Addon): boolean {
   return getProviders(addon).length > 0;
+}
+
+export function getAddonDependencies(addon: Addon, dependencyType: AddonDependencyType = undefined) {
+  return dependencyType == undefined
+    ? addon.dependencies
+    : filter(addon.dependencies, (dep) => dep.type === dependencyType);
 }
 
 export function needsUpdate(addon: Addon): boolean {
@@ -26,7 +32,7 @@ export function needsInstall(addon: Addon): boolean {
 }
 
 export function getFolderList(addon: Addon): string[] {
-  return addon.installedFolders.split(",").map((folder) => folder.trim());
+  return map(addon.installedFolders?.split(","), (folder) => folder.trim());
 }
 
 export function getGameVersion(gameVersion: string): string {

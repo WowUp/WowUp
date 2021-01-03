@@ -123,6 +123,10 @@ export class AddonService {
       });
   }
 
+  public isSameAddon(addon1: Addon, addon2: Addon) {
+    return addon1.externalId === addon2.externalId && addon1.providerName === addon2.providerName;
+  }
+
   public async getFullDescription(clientType: WowClientType, providerName: string, externalId: string) {
     const provider = this.getProvider(providerName);
     if (!provider) {
@@ -675,6 +679,10 @@ export class AddonService {
 
   public getInstalledFolders(addon: Addon): string[] {
     const folders = addon?.installedFolders || "";
+    if (!folders) {
+      return [];
+    }
+    
     return folders
       .split(",")
       .map((f) => f.trim())
