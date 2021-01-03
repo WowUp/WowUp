@@ -1200,6 +1200,7 @@ export class AddonService {
       dependencies,
       externalChannel: getEnumName(AddonChannelType, latestFile.channelType),
       isLoadOnDemand: false,
+      externalLatestReleaseId: latestFile.externalId,
     };
   }
 
