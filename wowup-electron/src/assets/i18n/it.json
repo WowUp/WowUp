@@ -38,7 +38,7 @@
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
       "INSTALL_TITLE": "Aggiornamento di WowUp pronto",
-      "NOT_AVAILABLE": "WowUp è aggiornato",
+      "NOT_AVAILABLE": "L'ultima versione di WowUp è già installata",
       "PORTABLE_DOWNLOAD_MESSAGE": "Vuoi scaricare manualmente l'ultima versione portatile?\n\nDovrai chiudere l'applicazione manualmente e sovrascrivere la nuova versione.",
       "PORTABLE_DOWNLOAD_TITLE": "Richiesto Download Manuale",
       "SNACKBAR_ACTION": "Aggiorna",
