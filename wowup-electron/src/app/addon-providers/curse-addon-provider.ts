@@ -228,7 +228,7 @@ export class CurseAddonProvider extends AddonProvider {
     }
 
     const url = `${API_URL}/addon`;
-
+    console.log(`Fetching addon info ${url}`);
     return await this._circuitBreaker.postJson<CurseSearchResult[]>(url, addonIds);
   }
 

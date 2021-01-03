@@ -1,8 +1,8 @@
 import * as path from "path";
 import * as fs from "fs";
 import * as _ from "lodash";
-import * as async from "async";
 import * as log from "electron-log";
+import * as pLimit from "p-limit";
 import { CurseScanResult } from "./curse-scan-result";
 import { readDirRecursive, readFile } from "../../../file.utils";
 
@@ -73,23 +73,26 @@ export class CurseFolderScanner {
 
   async scanFolder(folderPath: string): Promise<CurseScanResult> {
     const fileList = await readDirRecursive(folderPath);
-    fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp)); 
+    fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
     // log.debug("listAllFiles", folderPath, fileList.length);
 
     let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
     matchingFiles = _.orderBy(matchingFiles, [(f) => f.toLowerCase()], ["asc"]);
     // log.debug("matchingFiles", matchingFiles.length);
 
-    let individualFingerprints = await async.mapLimit<string, number>(matchingFiles, 4, async (path, callback) => {
-      try {
-        const fileHash = await this.getFileHash(path);
-        callback(undefined, fileHash);
-      } catch (e) {
-        log.error(`Failed to get filehash: ${path}`, e);
-        callback(undefined, -1);
-      }
-    });
-
+    const limit = pLimit(4);
+    const tasks = _.map(matchingFiles, (path) =>
+      limit(async () => {
+        try {
+          return await this.getFileHash(path);
+        } catch (e) {
+          log.error(`Failed to get filehash: ${path}`, e);
+          return -1;
+        }
+      })
+    );
+    
+    let individualFingerprints = await Promise.all(tasks);
     individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
@@ -109,7 +112,7 @@ export class CurseFolderScanner {
     const parentDir = path.normalize(path.dirname(folderPath) + path.sep);
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
-    
+
     for (let filePath of filePaths) {
       const input = filePath.toLowerCase().replace(parentDir.toLowerCase(), "");
 
@@ -146,7 +149,7 @@ export class CurseFolderScanner {
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
-    if (!inclusions || !inclusions.length)  {
+    if (!inclusions || !inclusions.length) {
       return;
     }
 

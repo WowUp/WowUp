@@ -1,6 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.16",
+      "changes": [
+        "App will now migrate addon shchema on every version change",
+        "Add new code to attempt to restart window if it crashes",
+        "Fix a bug with window maximize/unmaximize and minimize",
+        "Fix the style of the app update check snackbar"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.15",
       "changes": [
         "Italian locale updates (Bito)",

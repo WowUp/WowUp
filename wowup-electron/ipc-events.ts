@@ -1,6 +1,5 @@
 import { BrowserWindow, ipcMain, shell } from "electron";
 import * as fs from "fs-extra";
-import * as async from "async";
 import * as path from "path";
 import * as admZip from "adm-zip";
 import * as pLimit from "p-limit";
@@ -82,16 +81,17 @@ export function initializeIpcHandlers(window: BrowserWindow) {
 
   ipcMain.handle(STAT_FILES_CHANNEL, async (evt, filePaths: string[]) => {
     const results: { [path: string]: fs.Stats } = {};
-    await async.eachLimit<string>(filePaths, 3, (path, cb) => {
-      fs.stat(path, (err, stats) => {
-        if (err) {
-          return cb(err);
-        }
+    const limit = pLimit(3);
+    const tasks = map(filePaths, (path) =>
+      limit(async () => {
+        const stats = await fs.stat(path);
+        return { path, stats };
+      })
+    );
 
-        results[path] = stats;
-        cb();
-      });
-    });
+    const taskResults = await Promise.all(tasks);
+    taskResults.forEach((r) => (results[r.path] = r.stats));
+
     return results;
   });
 
@@ -113,13 +113,9 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
       // Scan addon folders in parallel for speed!?
       try {
-        const results = await async.mapLimit<string, CurseScanResult>(filePaths, 2, async (folder, callback) => {
-          const scanResult = await new CurseFolderScanner().scanFolder(folder);
-
-          callback(undefined, scanResult);
-        });
-
-        return results;
+        const limit = pLimit(2);
+        const tasks = map(filePaths, (folder) => limit(() => new CurseFolderScanner().scanFolder(folder)));
+        return await Promise.all(tasks);
       } catch (e) {
         log.error("Failed during curse scan", e);
         throw e;
