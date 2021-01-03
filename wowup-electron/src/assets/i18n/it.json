@@ -172,7 +172,7 @@
   "PAGES": {
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Riconoscimenti",
-      "CHANGE_LOG_SECTION_LABEL": "Registro delle Modifiche",
+      "CHANGE_LOG_SECTION_LABEL": "Changelog",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Dai un'occhiata al sito!"
     },
@@ -193,7 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Informazioni",
       "GET_ADDONS_TAB_TITLE": "Ottieni Addons",
-      "MIGRATING_ADDONS": "Migrating addons...",
+      "MIGRATING_ADDONS": "Trasferimento degli addons in corso...",
       "MY_ADDONS_TAB_TITLE": "I Miei Addons",
       "OPTIONS_TAB_TITLE": "Opzioni"
     },
