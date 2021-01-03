@@ -42,6 +42,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
+import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-my-addons",
@@ -627,7 +628,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public getChannelTypeLocaleKey(channelType: string) {
-    return `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType?.toUpperCase()}`;
+    return channelType ? `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelType.toUpperCase()}` : "COMMON.ADDON_STATUS.ERROR";
   }
 
   public onTableBlur(evt: any) {

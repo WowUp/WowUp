@@ -1,3 +1,4 @@
+import { getEnumName } from "app/utils/enum.utils";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
@@ -158,6 +159,7 @@ export class TukUiAddonProvider extends AddonProvider {
           releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
           isLoadOnDemand: false,
           latestChangelog: await this.formatChangelog(tukUiAddon),
+          externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
         };
       }
     }

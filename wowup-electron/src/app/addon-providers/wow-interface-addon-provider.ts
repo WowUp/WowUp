@@ -1,3 +1,4 @@
+import { getEnumName } from "app/utils/enum.utils";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -192,6 +193,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       releasedAt: new Date(response.lastUpdate),
       isLoadOnDemand: false,
       latestChangelog: convertBbcode(response.changeLog),
+      externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
     };
   }
 

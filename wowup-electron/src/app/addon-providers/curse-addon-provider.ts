@@ -1,3 +1,4 @@
+import { getEnumName } from "app/utils/enum.utils";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -574,6 +575,7 @@ export class CurseAddonProvider extends AddonProvider {
       isLoadOnDemand: false,
       externalLatestReleaseId: latestVersion.id.toString(),
       updatedAt: scanResult.addonFolder.fileStats.birthtime,
+      externalChannel: getEnumName(AddonChannelType, channelType),
     };
   }
 }

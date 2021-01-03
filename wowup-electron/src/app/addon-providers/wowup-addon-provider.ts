@@ -303,7 +303,7 @@ export class WowUpAddonProvider extends AddonProvider {
       fundingLinks: [...scanResult.exactMatch.funding_links],
       isLoadOnDemand: false,
       releasedAt: scanResult.exactMatch?.matched_release?.published_at,
-      externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+      externalChannel: getEnumName(AddonChannelType, channelType),
       latestChangelog: scanResult.exactMatch?.matched_release?.body,
       externalLatestReleaseId: scanResult?.exactMatch?.matched_release?.id?.toString(),
     };
