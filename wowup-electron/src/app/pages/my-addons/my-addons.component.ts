@@ -42,7 +42,6 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-my-addons",

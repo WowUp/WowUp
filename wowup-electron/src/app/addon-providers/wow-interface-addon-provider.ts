@@ -1,4 +1,3 @@
-import { getEnumName } from "app/utils/enum.utils";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -16,6 +15,7 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { convertBbcode } from "../utils/bbcode.utils";
 import { AddonProvider } from "./addon-provider";
+import { getEnumName } from "../utils/enum.utils";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";

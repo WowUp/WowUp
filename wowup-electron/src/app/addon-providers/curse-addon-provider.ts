@@ -1,4 +1,3 @@
-import { getEnumName } from "app/utils/enum.utils";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -33,6 +32,7 @@ import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { AddonProvider } from "./addon-provider";
+import { getEnumName } from "../utils/enum.utils";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;

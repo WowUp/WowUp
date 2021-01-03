@@ -1,4 +1,3 @@
-import { getEnumName } from "app/utils/enum.utils";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
@@ -14,6 +13,7 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
+import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";
 
 const API_URL = "https://www.tukui.org/api.php";
