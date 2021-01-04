@@ -193,7 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "О программе",
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
-      "MIGRATING_ADDONS": "Migrating addons...",
+      "MIGRATING_ADDONS": "Перенос модификаций...",
       "MY_ADDONS_TAB_TITLE": "Мои модификации",
       "OPTIONS_TAB_TITLE": "Настройки"
     },
