@@ -19,30 +19,36 @@ describe("AboutComponent", () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
       getThemeLogoPath: () => "",
     });
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", {
-      getVersionNumber: () => '2.0.0',
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", [], {
+      getVersionNumber: () => Promise.resolve("2.0.0"),
     });
 
     await TestBed.configureTestingModule({
       declarations: [AboutComponent],
-      imports: [HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
+      imports: [
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
+    })
+      .overrideComponent(AboutComponent, {
+        set: {
+          providers: [
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: ElectronService, useValue: electronServiceSpy },
+          ],
         },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
-    }).overrideComponent(AboutComponent, {
-      set: {
-        providers: [
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
-        ]},
-    }).compileComponents();
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(AboutComponent);
     component = fixture.componentInstance;

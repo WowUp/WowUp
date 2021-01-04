@@ -1,6 +1,25 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.17",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow)",
+        "WowUp addon updates (Linaori)",
+        "When installing the same addon that's marked as 'unknown' it will be removed",
+        "Fix an issue that left external channels in 'error' state",
+        "Fix an issue with newly installed addons showing update on restart",
+        "Fix an issue with the update snackbar and using non default theme",
+        "Fix an issue causing 'no addons' to appear before initial load",
+        "Fix an issue causing the loading spinner for descriptions not to show",
+        "Fix an issue that allowed the install button to be hit multiple times",
+        "Fix an issue with copy/past/select all on Mac",
+        "Start fixing things for next major electron version"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.16",
       "changes": [
         "App will now migrate addon shchema on every version change",

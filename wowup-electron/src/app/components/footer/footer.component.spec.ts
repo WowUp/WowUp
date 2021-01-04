@@ -8,7 +8,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
 import { OverlayModule } from "@angular/cdk/overlay";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, of, Subject } from "rxjs";
 import { UpdateCheckResult } from "electron-updater";
 import { MatModule } from "../../mat-module";
 
@@ -23,7 +23,8 @@ describe("FooterComponent", () => {
   let sessionServiceSpy: any;
 
   beforeEach(async () => {
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
+    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [], {
+      getApplicationVersion: () => Promise.resolve("TESTV"),
       wowupUpdateCheck$: new Subject<UpdateCheckResult>().asObservable(),
       wowupUpdateDownloaded$: new Subject<any>().asObservable(),
       wowupUpdateCheckInProgress$: new Subject<boolean>().asObservable(),
@@ -51,16 +52,19 @@ describe("FooterComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-    }).overrideComponent(FooterComponent, {
-      set: {
-        providers: [
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(FooterComponent, {
+        set: {
+          providers: [
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(FooterComponent);
     component = fixture.componentInstance;

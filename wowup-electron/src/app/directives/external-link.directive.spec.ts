@@ -6,8 +6,7 @@ import { ElectronService } from "../services";
 @Component({
   template: `<a appExternalLink href="http://localhost:2020/">test link</a>`,
 })
-class TestAppExternalLinkComponent {
-}
+class TestAppExternalLinkComponent {}
 
 describe("ExternalLinkDirective", () => {
   let component: TestAppExternalLinkComponent;
@@ -18,16 +17,17 @@ describe("ExternalLinkDirective", () => {
 
   beforeEach(async () => {
     shellSpy = jasmine.createSpyObj("Shell", ["openExternal"]);
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [], {shell: shellSpy});
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["openExternal"], { shell: shellSpy });
 
     await TestBed.configureTestingModule({
       declarations: [TestAppExternalLinkComponent, ExternalLinkDirective],
-    }).overrideComponent(TestAppExternalLinkComponent, {
-      set: {
-        providers: [
-          { provide: ElectronService, useValue: electronServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(TestAppExternalLinkComponent, {
+        set: {
+          providers: [{ provide: ElectronService, useValue: electronServiceSpy }],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(TestAppExternalLinkComponent);
     component = fixture.componentInstance;
@@ -44,6 +44,6 @@ describe("ExternalLinkDirective", () => {
     let a = fixture.debugElement.nativeElement.querySelector("a");
     a.click();
     fixture.detectChanges();
-    expect(shellSpy.openExternal).toHaveBeenCalledWith("http://localhost:2020/");
+    expect(electronServiceSpy.openExternal).toHaveBeenCalledWith("http://localhost:2020/");
   });
 });

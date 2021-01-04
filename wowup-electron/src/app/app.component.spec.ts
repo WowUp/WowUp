@@ -39,8 +39,9 @@ describe("AppComponent", () => {
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke"], {
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on"], {
       appOptions: { quit: null },
+      getAppOptions: () => Promise.resolve({}),
       ipcRenderer: {
         on: () => {},
       },
