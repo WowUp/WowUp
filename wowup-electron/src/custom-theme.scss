@@ -165,24 +165,6 @@ $wowup-light-theme: mat-light-theme(
   @include angular-material-color($wowup-light-theme);
 }
 
-.text-1 {
-  color: $white-1;
-}
-
-.text-2 {
-  color: $white-2;
-}
-
-.text-3 {
-  color: $white-3;
-}
-
-.wowup-snackbar {
-  background-color: $dark-4;
-}
-
-
-
 // Horde theme
 $horde-pallette: (
   50: #e8eaf6,
@@ -439,6 +421,22 @@ $alliance-theme-light: mat-light-theme(
 
   .hover-bg-secondary-4:hover {
     background-color: $dark-4 !important;
+  }
+
+  .text-1 {
+    color: $white-1;
+  }
+  
+  .text-2 {
+    color: $white-2;
+  }
+  
+  .text-3 {
+    color: $white-3;
+  }
+
+  .wowup-snackbar {
+    background-color: $dark-4;
   }
 }
 
