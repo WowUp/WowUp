@@ -57,7 +57,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public readonly description$ = this._descriptionSrc.asObservable();
   public readonly capitalizeString = capitalizeString;
   public fetchingChangelog = true;
-  public fetchingFullDescription = false;
+  public fetchingFullDescription = true;
   public selectedTabIndex = 0;
 
   constructor(
