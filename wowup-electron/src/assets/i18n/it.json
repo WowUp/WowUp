@@ -38,7 +38,7 @@
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
       "INSTALL_TITLE": "Aggiornamento di WowUp pronto",
-      "NOT_AVAILABLE": "WowUp è aggiornato",
+      "NOT_AVAILABLE": "L'ultima versione di WowUp è già installata",
       "PORTABLE_DOWNLOAD_MESSAGE": "Vuoi scaricare manualmente l'ultima versione portatile?\n\nDovrai chiudere l'applicazione manualmente e sovrascrivere la nuova versione.",
       "PORTABLE_DOWNLOAD_TITLE": "Richiesto Download Manuale",
       "SNACKBAR_ACTION": "Aggiorna",
@@ -172,7 +172,7 @@
   "PAGES": {
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Riconoscimenti",
-      "CHANGE_LOG_SECTION_LABEL": "Registro delle Modifiche",
+      "CHANGE_LOG_SECTION_LABEL": "Changelog",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Dai un'occhiata al sito!"
     },
@@ -193,7 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Informazioni",
       "GET_ADDONS_TAB_TITLE": "Ottieni Addons",
-      "MIGRATING_ADDONS": "Migrating addons...",
+      "MIGRATING_ADDONS": "Trasferimento degli addons in corso...",
       "MY_ADDONS_TAB_TITLE": "I Miei Addons",
       "OPTIONS_TAB_TITLE": "Opzioni"
     },
