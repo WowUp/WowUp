@@ -96,6 +96,15 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   public async onInstallUpdateClick() {
-    await this._addonService.installPotentialAddon(this.addonSearchResult, this._sessionService.getSelectedClientType());
+    this.disableButton = true;
+    try {
+      await this._addonService.installPotentialAddon(
+        this.addonSearchResult,
+        this._sessionService.getSelectedClientType()
+      );
+    } catch (e) {
+      console.error("onInstallUpdateClick failed", e);
+      this.disableButton = false;
+    }
   }
 }
