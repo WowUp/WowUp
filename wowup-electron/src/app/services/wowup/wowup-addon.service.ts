@@ -3,7 +3,6 @@ import { ElectronService } from "..";
 import { Addon } from "../../entities/addon";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
-const Handlebars = require("handlebars");
 
 class WowUpAddonData {
   public updatesAvailableCount: number;
@@ -41,7 +40,7 @@ export class WowUpAddonService {
       };
 
       if (!this.compiledTemplate) {
-        this.compiledTemplate = Handlebars.compile(templateContents);
+        this.compiledTemplate = window.libs.handlebars.compile(templateContents);
       }
 
       await this._fileService.writeFile(dataFile, this.compiledTemplate(wowUpAddonData));

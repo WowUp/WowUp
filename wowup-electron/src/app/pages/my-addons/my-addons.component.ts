@@ -415,7 +415,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       const addonPath = this.addonService.getInstallBasePath(addon);
       const folderPath = join(addonPath, folder);
-      this.electronService.shell.openPath(folderPath);
+      this.electronService.openPath(folderPath);
     } catch (err) {
       console.error(err);
     }

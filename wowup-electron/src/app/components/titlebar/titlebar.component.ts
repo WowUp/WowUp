@@ -55,20 +55,16 @@ export class TitlebarComponent implements OnInit, OnDestroy {
   }
 
   onClickClose() {
-    if (this._wowUpService.collapseToTray) {
-      this.electronService.hideWindow();
-    } else {
-      this.electronService.closeWindow();
-    }
-  }
-
-  onClickDebug() {
-    this.electronService.remote.getCurrentWebContents().openDevTools();
+    this.electronService.closeWindow();
   }
 
   onDblClick() {
     if (this.electronService.isMac) {
-      const action = this.electronService.remote.systemPreferences.getUserDefault("AppleActionOnDoubleClick", "string");
+      const action = this.electronService.getUserDefaultSystemPreference(
+        "AppleActionOnDoubleClick",
+        "string"
+      ) as string;
+
       if (action === "Maximize") {
         this.electronService.invoke(MAXIMIZE_WINDOW);
       } else if (action === "Minimize") {

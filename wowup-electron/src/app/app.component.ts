@@ -1,4 +1,12 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnDestroy,
+  OnInit,
+} from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
@@ -50,9 +58,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   //   this._electronService.applyZoom(zoomDirection);
   // }
 
-  public get quitEnabled() {
-    return this._electronService.appOptions.quit;
-  }
+  public quitEnabled?: boolean;
 
   constructor(
     private _analyticsService: AnalyticsService,
@@ -64,6 +70,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _iconService: IconService,
     private _sessionService: SessionService,
     private _preferenceStore: PreferenceStorageService,
+    private _cdRef: ChangeDetectorRef,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
   ) {}
@@ -90,9 +97,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });
 
-    this._electronService.ipcRenderer.on(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.ipcRenderer.on(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.ipcRenderer.on(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this._electronService.on(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this._electronService.on(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this._electronService.on(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+
+    this._electronService.getAppOptions().then((appOptions) => {
+      this.quitEnabled = appOptions.quit;
+      this._cdRef.detectChanges();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -112,9 +124,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this._electronService.ipcRenderer.off(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.ipcRenderer.off(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.ipcRenderer.off(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this._electronService.off(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this._electronService.off(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this._electronService.off(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
   onMenuZoomIn = () => {
@@ -214,8 +226,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.checkQuitEnabled();
   };
 
-  private checkQuitEnabled() {
-    if (!this._electronService.appOptions.quit) {
+  private async checkQuitEnabled() {
+    const appOptions = await this._electronService.getAppOptions();
+    if (!appOptions.quit) {
       return;
     }
 

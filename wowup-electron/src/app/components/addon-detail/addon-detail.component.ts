@@ -179,7 +179,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       return false;
     }
 
-    this._electronService.shell.openExternal(anchor.href);
+    this._electronService.openExternal(anchor.href);
     return false;
   };
 

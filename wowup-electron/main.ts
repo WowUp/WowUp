@@ -25,6 +25,7 @@ import {
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
 import { createAppMenu } from "./app-menu";
+import { MainChannels } from "./src/common/wowup";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -193,11 +194,11 @@ function createWindow(): BrowserWindow {
     titleBarStyle: "hidden",
     webPreferences: {
       preload: join(__dirname, "preload.js"),
-      nodeIntegration: true, // TODO remove this
+      nodeIntegration: true,
       allowRunningInsecureContent: argv.serve,
       webSecurity: false,
       nativeWindowOpen: true,
-      enableRemoteModule: true,
+      enableRemoteModule: true, // This is only required for electron store https://github.com/sindresorhus/electron-store/issues/152
     },
     show: false,
   };
@@ -222,6 +223,10 @@ function createWindow(): BrowserWindow {
   mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
+
+  win.webContents.on("zoom-changed", (evt, zoomDirection) => {
+    sendEventToContents(win, "zoom-changed", zoomDirection);
+  });
 
   // See https://www.electronjs.org/docs/api/web-contents#event-render-process-gone
   win.webContents.on("render-process-gone", (evt, details) => {
@@ -269,19 +274,24 @@ function createWindow(): BrowserWindow {
     } else if (mainWindowManager.isMaximized) {
       win.maximize();
     }
+
+    win.webContents.openDevTools();
   });
 
-  if (platform.isMac) {
-    win.on("close", (e) => {
-      if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
-        return;
-      }
+  win.on("close", (e) => {
+    if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
+      return;
+    }
 
-      e.preventDefault();
-      win.hide();
+    win.hide();
+
+    if (platform.isMac) {
       app.dock.hide();
-    });
-  }
+    } else {
+      win.setSkipTaskbar(true);
+    }
+    e.preventDefault();
+  });
 
   win.once("closed", () => {
     win = null;
@@ -316,6 +326,10 @@ function createWindow(): BrowserWindow {
   }
 
   return win;
+}
+
+function sendEventToContents(window: BrowserWindow, event: MainChannels, ...args: any[]) {
+  window?.webContents?.send(event, args);
 }
 
 function getBackgroundColor() {

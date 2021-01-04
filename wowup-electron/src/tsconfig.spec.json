@@ -6,6 +6,6 @@
     "types": ["jasmine", "node"]
   },
   "files": ["test.ts", "polyfills-test.ts", "./typings.d.ts"],
-  "include": ["**/*.spec.ts", "**/*.d.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts", "./common/wowup.d.ts"],
   "exclude": ["dist", "release", "node_modules"]
 }

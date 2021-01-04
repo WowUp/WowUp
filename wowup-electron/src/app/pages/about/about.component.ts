@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
+import { from } from "rxjs";
 import * as ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
 import { ElectronService } from "../../services";
@@ -14,6 +15,7 @@ export class AboutComponent implements OnInit {
   @Input("tabIndex") tabIndex: number;
 
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;
+  public versionNumber = from(this.electronService.getVersionNumber());
 
   constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 

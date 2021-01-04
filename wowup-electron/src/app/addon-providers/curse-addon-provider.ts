@@ -155,7 +155,7 @@ export class CurseAddonProvider extends AddonProvider {
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: CurseScanResult[] = await this._electronService.ipcRenderer.invoke(
+    const scanResults: CurseScanResult[] = await this._electronService.invoke(
       CURSE_GET_SCAN_RESULTS,
       filePaths
     );

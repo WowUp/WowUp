@@ -124,7 +124,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   }
 
   private async selectWowClientPath(clientType: WowClientType): Promise<string> {
-    const dialogResult = await this._electronService.remote.dialog.showOpenDialog({
+    const dialogResult = await this._electronService.showOpenDialog({
       properties: ["openDirectory"],
     });
 

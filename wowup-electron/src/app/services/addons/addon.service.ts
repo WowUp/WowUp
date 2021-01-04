@@ -482,6 +482,7 @@ export class AddonService {
 
       await this.backfillAddon(addon);
       this.reconcileExternalIds(addon, queueItem.originalAddon);
+      await this.reconcileAddonFolders(addon);
 
       queueItem.completion.resolve();
 
@@ -970,7 +971,21 @@ export class AddonService {
     addon.externalIds = externalIds;
   }
 
-  private reconcileUnmatchedAddons(addon: Addon) {}
+  private async reconcileAddonFolders(addon: Addon) {
+    let existingAddons = await this.getAddons(addon.clientType);
+    existingAddons = _.filter(
+      existingAddons,
+      (ea) => ea.id !== addon.id && _.intersection(addon.installedFolderList, ea.installedFolderList).length > 0
+    );
+
+    console.debug("reconcileAddonFolders", existingAddons);
+
+    for (const existingAddon of existingAddons) {
+      if (existingAddon.providerName === ADDON_PROVIDER_UNKNOWN) {
+        await this.removeAddon(existingAddon, false, false);
+      }
+    }
+  }
 
   /**
    * This should verify that a folder that did not have a match, is actually unmatched

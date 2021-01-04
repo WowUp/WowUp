@@ -12,6 +12,7 @@ import {
   CenteredSnackbarComponent,
   CenteredSnackbarComponentData,
 } from "../centered-snackbar/centered-snackbar.component";
+import { from } from "rxjs";
 
 @Component({
   selector: "app-footer",
@@ -25,6 +26,7 @@ export class FooterComponent implements OnInit {
   public isCheckingForUpdates = false;
   public isWowUpdateDownloading = false;
   public updateIconTooltip = "APP.WOWUP_UPDATE.TOOLTIP";
+  public versionNumber = from(this.wowUpService.getApplicationVersion());
 
   constructor(
     private _dialog: MatDialog,
@@ -84,7 +86,7 @@ export class FooterComponent implements OnInit {
     try {
       result = await this.wowUpService.checkForAppUpdate();
 
-      if (result === null || this.wowUpService.isSameVersion(result)) {
+      if (result === null || (await this.wowUpService.isSameVersion(result))) {
         this.showSnackbar("APP.WOWUP_UPDATE.NOT_AVAILABLE");
       }
     } catch (e) {
@@ -118,7 +120,7 @@ export class FooterComponent implements OnInit {
         return;
       }
 
-      this._electronService.shell.openExternal(
+      this._electronService.openExternal(
         `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
       );
     });

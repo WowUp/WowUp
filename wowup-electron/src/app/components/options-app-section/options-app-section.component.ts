@@ -102,17 +102,18 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
 
-    if (this.electronService.remote) {
-      this.updateScale();
-      const currentWindow = this.electronService.remote.getCurrentWindow();
-      currentWindow.webContents.on("zoom-changed", (event, arg) => {
-        this.updateScale();
-      });
-    }
+    this.initScale;
 
     this.electronService.zoomFactor$.subscribe((zoomFactor) => {
       this.currentScale = zoomFactor;
       this._cdRef.detectChanges();
+    });
+  }
+
+  private async initScale() {
+    await this.updateScale();
+    this.electronService.onRendererEvent("zoom-changed", (event, arg) => {
+      this.updateScale();
     });
   }
 
@@ -189,7 +190,7 @@ export class OptionsAppSectionComponent implements OnInit {
     this.currentScale = newScale;
   };
 
-  private updateScale() {
-    this.currentScale = this.electronService.getZoomFactor();
+  private async updateScale() {
+    this.currentScale = await this.electronService.getZoomFactor();
   }
 }

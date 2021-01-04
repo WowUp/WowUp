@@ -80,7 +80,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async migrateAddons(clientTypes: WowClientType[]) {
-    if (!clientTypes || !this._wowupService.shouldMigrateAddons()) {
+    if (!clientTypes || !(await this._wowupService.shouldMigrateAddons())) {
       return clientTypes;
     }
 
@@ -94,7 +94,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         await this._addonService.migrate(clientType);
       }
 
-      this._wowupService.setMigrationVersion();
+      await this._wowupService.setMigrationVersion();
     } catch (e) {
       console.error(`Failed to migrate addons`, e);
     }

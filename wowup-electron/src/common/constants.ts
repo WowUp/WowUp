@@ -13,7 +13,7 @@ export const CREATE_DIRECTORY_CHANNEL = "create-directory";
 export const DELETE_DIRECTORY_CHANNEL = "delete-directory";
 export const STAT_DIRECTORY_CHANNEL = "stat-directory";
 export const LIST_DIRECTORIES_CHANNEL = "list-directories";
-export const STAT_FILES_CHANNEL = "stat_files";
+export const STAT_FILES_CHANNEL = "stat-files";
 export const PATH_EXISTS_CHANNEL = "path-exists";
 export const LIST_FILES_CHANNEL = "list-files";
 export const READ_FILE_CHANNEL = "read-file";
@@ -36,6 +36,9 @@ export const MINIMIZE_WINDOW = "minimize-window";
 export const WINDOW_MAXIMIZED = "window-maximized";
 export const WINDOW_UNMAXIMIZED = "window-unmaximized";
 export const WINDOW_MINIMIZED = "window-minimized";
+export const CLOSE_WINDOW = "close-window";
+export const RESTART_APP = "restart-app";
+export const QUIT_APP = "quit-app";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";

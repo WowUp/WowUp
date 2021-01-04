@@ -49,8 +49,6 @@ import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 
-const autoLaunch = require("auto-launch");
-
 @Injectable({
   providedIn: "root",
 })
@@ -77,10 +75,6 @@ export class WowUpService {
 
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
-  public readonly applicationVersion: string;
-
-  public readonly isBetaBuild: boolean;
-
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
 
   public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
@@ -97,13 +91,13 @@ export class WowUpService {
     private _fileService: FileService,
     private _translateService: TranslateService
   ) {
-    this.setDefaultPreferences();
+    this.setDefaultPreferences()
+      .then(() => console.debug("Set default preferences"))
+      .catch((e) => console.error("Failed to set default preferences", e));
 
-    this.applicationVersion =
-      _electronService.remote.app.getVersion() + `${this._electronService.isPortable ? " (portable)" : ""}`;
-    this.isBetaBuild = this.applicationVersion.toLowerCase().indexOf("beta") != -1;
-
-    this.createDownloadDirectory().then(() => this.cleanupDownloads());
+    this.createDownloadDirectory()
+      .then(() => this.cleanupDownloads())
+      .catch((e) => console.error("Failed to create download directory", e));
 
     this._electronService.ipcEventReceived$.subscribe((evt) => {
       switch (evt) {
@@ -128,7 +122,17 @@ export class WowUpService {
 
     this.setAutoStartup();
 
-    console.log("loginItemSettings", this._electronService.loginItemSettings);
+    console.log("loginItemSettings", this._electronService.getLoginItemSettings());
+  }
+
+  async getApplicationVersion(): Promise<string> {
+    const appVersion = await this._electronService.invoke("get-app-version");
+    return appVersion + `${this._electronService.isPortable ? " (portable)" : ""}`;
+  }
+
+  async isBetaBuild() {
+    const appVersion = await this.getApplicationVersion();
+    return appVersion.toLowerCase().indexOf("beta") != -1;
   }
 
   /**
@@ -137,7 +141,7 @@ export class WowUpService {
    */
   async initializeLanguage() {
     console.log("Language setup start");
-    const langCode = this.currentLanguage || this._electronService.locale;
+    const langCode = this.currentLanguage || (await this._electronService.getLocale());
 
     this._translateService.setDefaultLang("en");
     try {
@@ -322,13 +326,14 @@ export class WowUpService {
     return `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
   }
 
-  public shouldMigrateAddons() {
+  public async shouldMigrateAddons() {
     const migrateVersion = this._preferenceStorageService.get(ADDON_MIGRATION_VERSION_KEY);
-    return migrateVersion !== this._electronService.getVersionNumber();
+    return migrateVersion !== (await this._electronService.getVersionNumber());
   }
 
-  public setMigrationVersion() {
-    this._preferenceStorageService.set(ADDON_MIGRATION_VERSION_KEY, this._electronService.getVersionNumber());
+  public async setMigrationVersion() {
+    const versionNumber = await this._electronService.getVersionNumber();
+    this._preferenceStorageService.set(ADDON_MIGRATION_VERSION_KEY, versionNumber);
   }
 
   public getDefaultAddonChannel(clientType: WowClientType): AddonChannelType {
@@ -362,7 +367,7 @@ export class WowUpService {
     const updateCheckResult: UpdateCheckResult = await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
 
     // only notify things when the version changes
-    if (!this.isSameVersion(updateCheckResult)) {
+    if (!(await this.isSameVersion(updateCheckResult))) {
       this._availableVersion = updateCheckResult.updateInfo.version;
       this._wowupUpdateCheckSrc.next(updateCheckResult);
     }
@@ -370,8 +375,9 @@ export class WowUpService {
     return updateCheckResult;
   }
 
-  public isSameVersion(updateCheckResult: UpdateCheckResult) {
-    return updateCheckResult && updateCheckResult.updateInfo?.version === this._electronService.getVersionNumber();
+  public async isSameVersion(updateCheckResult: UpdateCheckResult) {
+    const appVersion = await this._electronService.getVersionNumber();
+    return updateCheckResult && updateCheckResult.updateInfo?.version === appVersion;
   }
 
   public async downloadUpdate() {
@@ -415,12 +421,12 @@ export class WowUpService {
     return `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
   }
 
-  private setDefaultPreferences() {
+  private async setDefaultPreferences() {
     this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
     this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
     this.setDefaultPreference(CURRENT_THEME_KEY, DEFAULT_THEME);
-    this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, this.getDefaultReleaseChannel());
+    this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, await this.getDefaultReleaseChannel());
     this.setDefaultClientPreferences();
   }
 
@@ -435,8 +441,9 @@ export class WowUpService {
     });
   }
 
-  private getDefaultReleaseChannel() {
-    return this.isBetaBuild ? WowUpReleaseChannelType.Beta : WowUpReleaseChannelType.Stable;
+  private async getDefaultReleaseChannel() {
+    const isBetaBuild = await this.isBetaBuild();
+    return isBetaBuild ? WowUpReleaseChannelType.Beta : WowUpReleaseChannelType.Stable;
   }
 
   /**
@@ -462,7 +469,7 @@ export class WowUpService {
 
   private setAutoStartup() {
     if (this._electronService.isLinux) {
-      var autoLauncher = new autoLaunch({
+      var autoLauncher = new window.libs.autoLaunch({
         name: "WowUp",
         isHidden: this.startMinimized,
       });
@@ -473,11 +480,11 @@ export class WowUpService {
         autoLauncher.disable();
       }
     } else {
-      this._electronService.loginItemSettings = {
+      this._electronService.setLoginItemSettings({
         openAtLogin: this.startWithSystem,
         openAsHidden: this._electronService.isMac ? this.startMinimized : false,
         args: this._electronService.isWin ? (this.startMinimized ? ["--hidden"] : []) : [],
-      };
+      });
     }
   }
 }

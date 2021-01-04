@@ -26,15 +26,15 @@ export class FileService {
   constructor(private _electronService: ElectronService) {}
 
   public async getAssetFilePath(fileName: string) {
-    return await this._electronService.ipcRenderer.invoke(GET_ASSET_FILE_PATH, fileName);
+    return await this._electronService.invoke(GET_ASSET_FILE_PATH, fileName);
   }
 
   public async createDirectory(directoryPath: string) {
-    return await this._electronService.ipcRenderer.invoke(CREATE_DIRECTORY_CHANNEL, directoryPath);
+    return await this._electronService.invoke(CREATE_DIRECTORY_CHANNEL, directoryPath);
   }
 
   public async showDirectory(sourceDir: string) {
-    return await this._electronService.ipcRenderer.invoke(SHOW_DIRECTORY, sourceDir);
+    return await this._electronService.invoke(SHOW_DIRECTORY, sourceDir);
   }
 
   public async pathExists(sourcePath: string): Promise<boolean> {
@@ -42,7 +42,7 @@ export class FileService {
       return Promise.resolve(false);
     }
 
-    return await this._electronService.ipcRenderer.invoke(PATH_EXISTS_CHANNEL, sourcePath);
+    return await this._electronService.invoke(PATH_EXISTS_CHANNEL, sourcePath);
   }
 
   /**
@@ -53,7 +53,7 @@ export class FileService {
       throw new Error("remove sourcePath required");
     }
 
-    return await this._electronService.ipcRenderer.invoke(DELETE_DIRECTORY_CHANNEL, sourcePath);
+    return await this._electronService.invoke(DELETE_DIRECTORY_CHANNEL, sourcePath);
   }
 
   /**
@@ -66,7 +66,7 @@ export class FileService {
       responseKey: uuidv4(),
     };
 
-    await this._electronService.ipcRenderer.invoke(COPY_FILE_CHANNEL, request);
+    await this._electronService.invoke(COPY_FILE_CHANNEL, request);
 
     return destinationFilePath;
   }
@@ -79,24 +79,19 @@ export class FileService {
   }
 
   public async readFile(sourcePath: string): Promise<string> {
-    return await this._electronService.ipcRenderer.invoke(READ_FILE_CHANNEL, sourcePath);
+    return await this._electronService.invoke(READ_FILE_CHANNEL, sourcePath);
   }
 
   public async writeFile(sourcePath: string, contents: string): Promise<string> {
-    return await this._electronService.ipcRenderer.invoke(WRITE_FILE_CHANNEL, sourcePath, contents);
+    return await this._electronService.invoke(WRITE_FILE_CHANNEL, sourcePath, contents);
   }
 
   public async listDirectories(sourcePath: string): Promise<string[]> {
-    return await this._electronService.ipcRenderer.invoke(LIST_DIRECTORIES_CHANNEL, sourcePath);
+    return await this._electronService.invoke(LIST_DIRECTORIES_CHANNEL, sourcePath);
   }
 
-  public async statFiles(
-    filePaths: string[]
-  ): Promise<{ [path: string]: fs.Stats }> {
-    return await this._electronService.ipcRenderer.invoke(
-      STAT_FILES_CHANNEL,
-      filePaths
-    );
+  public async statFiles(filePaths: string[]): Promise<{ [path: string]: fs.Stats }> {
+    return await this._electronService.invoke(STAT_FILES_CHANNEL, filePaths);
   }
 
   public listEntries(sourcePath: string, filter: string) {
@@ -123,6 +118,6 @@ export class FileService {
       responseKey: uuidv4(),
     };
 
-    return await this._electronService.ipcRenderer.invoke(UNZIP_FILE_CHANNEL, request);
+    return await this._electronService.invoke(UNZIP_FILE_CHANNEL, request);
   }
 }

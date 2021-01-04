@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, shell } from "electron";
+import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell } from "electron";
 import * as fs from "fs-extra";
 import * as path from "path";
 import * as admZip from "adm-zip";
@@ -29,6 +29,9 @@ import {
   CREATE_APP_MENU_CHANNEL,
   MINIMIZE_WINDOW,
   MAXIMIZE_WINDOW,
+  CLOSE_WINDOW,
+  RESTART_APP,
+  QUIT_APP,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -44,20 +47,28 @@ import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
 import { MenuConfig } from "./src/common/wowup/menu-config";
 import { createTray } from "./system-tray";
 import { createAppMenu } from "./app-menu";
+import { RendererChannels } from "./src/common/wowup";
+
+function handle(
+  channel: RendererChannels,
+  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
+) {
+  ipcMain.handle(channel, listener);
+}
 
 export function initializeIpcHandlers(window: BrowserWindow) {
-  ipcMain.handle(
+  handle(
     SHOW_DIRECTORY,
     async (evt, filePath: string): Promise<string> => {
       return await shell.openPath(filePath);
     }
   );
 
-  ipcMain.handle(GET_ASSET_FILE_PATH, async (evt, fileName: string) => {
+  handle(GET_ASSET_FILE_PATH, async (evt, fileName: string) => {
     return path.join(__dirname, "assets", fileName);
   });
 
-  ipcMain.handle(
+  handle(
     CREATE_DIRECTORY_CHANNEL,
     async (evt, directoryPath: string): Promise<boolean> => {
       await fs.ensureDir(directoryPath);
@@ -65,7 +76,41 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     }
   );
 
-  ipcMain.handle(LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
+  handle("get-zoom-factor", (evt) => {
+    return window?.webContents?.getZoomFactor();
+  });
+
+  handle("set-zoom-limits", (evt, minimumLevel: number, maximumLevel: number) => {
+    return window.webContents?.setVisualZoomLevelLimits(minimumLevel, maximumLevel);
+  });
+
+  handle("set-zoom-factor", (evt, zoomFactor: number) => {
+    if (window?.webContents) {
+      window.webContents.zoomFactor = zoomFactor;
+    }
+  });
+
+  handle("get-app-version", () => {
+    return app.getVersion();
+  });
+
+  handle("get-locale", async () => {
+    return `${app.getLocale()}`;
+  });
+
+  handle("get-launch-args", () => {
+    return process.argv;
+  });
+
+  handle("get-login-item-settings", () => {
+    return app.getLoginItemSettings();
+  });
+
+  handle("set-login-item-settings", (evt, settings: Settings) => {
+    return app.setLoginItemSettings(settings);
+  });
+
+  handle(LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
     return new Promise((resolve, reject) => {
       readdir(filePath, { withFileTypes: true }, (err, files) => {
         if (err) {
@@ -79,7 +124,7 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     });
   });
 
-  ipcMain.handle(STAT_FILES_CHANNEL, async (evt, filePaths: string[]) => {
+  handle(STAT_FILES_CHANNEL, async (evt, filePaths: string[]) => {
     const results: { [path: string]: fs.Stats } = {};
     const limit = pLimit(3);
     const tasks = map(filePaths, (path) =>
@@ -95,7 +140,7 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     return results;
   });
 
-  ipcMain.handle(PATH_EXISTS_CHANNEL, async (evt, filePath: string) => {
+  handle(PATH_EXISTS_CHANNEL, async (evt, filePath: string) => {
     try {
       await fs.access(filePath);
     } catch (e) {
@@ -108,7 +153,7 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     return true;
   });
 
-  ipcMain.handle(
+  handle(
     CURSE_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
       // Scan addon folders in parallel for speed!?
@@ -123,7 +168,7 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     }
   );
 
-  ipcMain.handle(
+  handle(
     WOWUP_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
       const limit = pLimit(2);
@@ -132,7 +177,7 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     }
   );
 
-  ipcMain.handle(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
+  handle(UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
     const zip = new admZip(arg.zipFilePath);
     await new Promise((resolve, reject) => {
       zip.extractAllToAsync(arg.outputFolder, true, (err) => {
@@ -143,7 +188,7 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     return arg.outputFolder;
   });
 
-  ipcMain.handle(
+  handle(
     COPY_FILE_CHANNEL,
     async (evt, arg: CopyFileRequest): Promise<boolean> => {
       await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
@@ -151,35 +196,35 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     }
   );
 
-  ipcMain.handle(DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
+  handle(DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
     await fs.remove(filePath);
 
     return true;
   });
 
-  ipcMain.handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
+  handle(READ_FILE_CHANNEL, async (evt, filePath: string) => {
     return await fs.readFile(filePath, { encoding: "utf-8" });
   });
 
-  ipcMain.handle(WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
+  handle(WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
     return await fs.writeFile(filePath, contents, { encoding: "utf-8" });
   });
 
-  ipcMain.handle(CREATE_TRAY_MENU_CHANNEL, async (evt, config: SystemTrayConfig) => {
+  handle(CREATE_TRAY_MENU_CHANNEL, async (evt, config: SystemTrayConfig) => {
     return createTray(window, config);
   });
 
-  ipcMain.handle(CREATE_APP_MENU_CHANNEL, async (evt, config: MenuConfig) => {
+  handle(CREATE_APP_MENU_CHANNEL, async (evt, config: MenuConfig) => {
     return createAppMenu(window, config);
   });
 
-  ipcMain.handle(MINIMIZE_WINDOW, () => {
+  handle(MINIMIZE_WINDOW, () => {
     if (window?.minimizable) {
       window.minimize();
     }
   });
 
-  ipcMain.handle(MAXIMIZE_WINDOW, () => {
+  handle(MAXIMIZE_WINDOW, () => {
     if (window?.maximizable) {
       if (window.isMaximized()) {
         window.unmaximize();
@@ -189,7 +234,20 @@ export function initializeIpcHandlers(window: BrowserWindow) {
     }
   });
 
-  ipcMain.handle(LIST_DISKS_WIN32, async (evt, config: SystemTrayConfig) => {
+  handle(CLOSE_WINDOW, () => {
+    window?.close();
+  });
+
+  handle(RESTART_APP, () => {
+    app.relaunch();
+    app.quit();
+  });
+
+  handle(QUIT_APP, () => {
+    app.quit();
+  });
+
+  handle(LIST_DISKS_WIN32, async (evt, config: SystemTrayConfig) => {
     const diskInfos = await nodeDiskInfo.getDiskInfo();
     // Cant pass complex objects over the wire, make them simple
     return diskInfos.map((di) => {
