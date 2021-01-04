@@ -193,7 +193,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Acerca de",
       "GET_ADDONS_TAB_TITLE": "Obtener Addons",
-      "MIGRATING_ADDONS": "Migrating addons...",
+      "MIGRATING_ADDONS": "Migrando lista de addons...",
       "MY_ADDONS_TAB_TITLE": "Mis Addons",
       "OPTIONS_TAB_TITLE": "Opciones"
     },
@@ -255,10 +255,10 @@
         "ADDON_UPDATE_BUTTON": "Actualizar",
         "AUTHOR_COLUMN_HEADER": "Autor/es",
         "AUTO_UPDATE_ICON_TOOLTIP": "Actualización automática habilitada",
-        "GAME_VERSION_COLUMN_HEADER": "Versión del Juego",
+        "GAME_VERSION_COLUMN_HEADER": "Versión de WoW",
         "LATEST_VERSION_COLUMN_HEADER": "Última Versión",
         "PROVIDER_COLUMN_HEADER": "Proveedor",
-        "PROVIDER_RELEASE_CHANNEL": "Canal de Actualización",
+        "PROVIDER_RELEASE_CHANNEL": "Canal",
         "RELEASED_AT_COLUMN_HEADER": "Publicado",
         "STATUS_COLUMN_HEADER": "Estado",
         "UPDATED_AT_COLUMN_HEADER": "Actualizado"
