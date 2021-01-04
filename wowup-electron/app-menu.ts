@@ -54,18 +54,18 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
       label: app.name,
       submenu: [{ role: "quit" }],
     },
-    // {
-    //   label: config.editLabel,
-    //   submenu: [
-    //     { role: "undo" },
-    //     { role: "redo" },
-    //     { type: "separator" },
-    //     { role: "cut" },
-    //     { role: "copy" },
-    //     { role: "paste" },
-    //     { role: "selectAll" },
-    //   ],
-    // },
+    {
+      label: config.editLabel,
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "selectAll" },
+      ],
+    },
     viewMenu,
   ];
 }
