@@ -181,6 +181,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       gameVersion: addonFolder.toc.interface,
       installedAt: new Date(),
       installedFolders: addonFolder.name,
+      installedFolderList: [addonFolder.name],
       installedVersion: addonFolder.toc?.version,
       isIgnored: false,
       latestVersion: response.version,

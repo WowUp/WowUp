@@ -276,7 +276,8 @@ export class WowUpAddonProvider extends AddonProvider {
     scanResult: AppWowUpScanResult
   ): Addon {
     const authors = scanResult.exactMatch.owner_name;
-    const folderList = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name).join(", ");
+    const folders = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name);
+    const folderList = folders.join(", ");
 
     let channelType = addonChannelType;
 
@@ -293,6 +294,7 @@ export class WowUpAddonProvider extends AddonProvider {
       gameVersion: scanResult.exactMatch.matched_release.game_version,
       installedAt: new Date(),
       installedFolders: folderList,
+      installedFolderList: folders,
       installedVersion: scanResult.exactMatch.matched_release.tag_name,
       installedExternalReleaseId: scanResult.exactMatch.matched_release.id.toString(),
       isIgnored: false,

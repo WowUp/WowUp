@@ -533,7 +533,8 @@ export class CurseAddonProvider extends AddonProvider {
 
     const authors = scanResult.searchResult.authors.map((author) => author.name).join(", ");
 
-    const folderList = scanResult.exactMatch.file.modules.map((module) => module.foldername).join(",");
+    const folders = scanResult.exactMatch.file.modules.map((module) => module.foldername);
+    const folderList = folders.join(",");
 
     const latestFiles = this.getLatestFiles(scanResult.searchResult, clientType);
 
@@ -562,6 +563,7 @@ export class CurseAddonProvider extends AddonProvider {
       gameVersion: gameVersion,
       installedAt: new Date(scanResult.addonFolder.fileStats.birthtimeMs),
       installedFolders: folderList,
+      installedFolderList: folders,
       installedVersion: currentVersion.displayName,
       installedExternalReleaseId: currentVersion.id.toString(),
       isIgnored: false,

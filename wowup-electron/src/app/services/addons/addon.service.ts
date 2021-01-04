@@ -466,6 +466,7 @@ export class AddonService {
       addon.installedExternalReleaseId = addon.externalLatestReleaseId;
       addon.installedVersion = addon.latestVersion;
       addon.installedAt = new Date();
+      addon.installedFolderList = unzippedDirectoryNames;
       addon.installedFolders = unzippedDirectoryNames.join(",");
 
       const gameVersion = await this.getLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
@@ -870,6 +871,12 @@ export class AddonService {
 
       addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
       addon.externalChannel = scannedAddon.externalChannel;
+
+      // Fill in any addons where this is missing
+      if (!addon.installedFolderList) {
+        addon.installedFolderList = scannedAddon.installedFolderList;
+      }
+
       this.saveAddon(addon);
     }
   }
@@ -1230,6 +1237,7 @@ export class AddonService {
       releasedAt: new Date(),
       installedAt: addonFolder.fileStats?.mtime || new Date(),
       installedFolders: addonFolder.name,
+      installedFolderList: [addonFolder.name],
       summary: "",
       screenshotUrls: [],
       isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",

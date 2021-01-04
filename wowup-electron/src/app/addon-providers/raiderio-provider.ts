@@ -39,7 +39,8 @@ export class RaiderIoAddonProvider extends AddonProvider {
     console.debug("RAIDER IO CLIENT FOUND", dependencies);
 
     const rioAddonFolders = [raiderIo, ...dependencies];
-    const installedFolders = rioAddonFolders.map((addonFolder) => addonFolder.name).join(",");
+    const installedFolderList = rioAddonFolders.map((addonFolder) => addonFolder.name);
+    const installedFolders = installedFolderList.join(",");
 
     for (const rioAddonFolder of rioAddonFolders) {
       rioAddonFolder.matchingAddon = {
@@ -56,6 +57,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
         gameVersion: rioAddonFolder.toc.interface,
         installedAt: new Date(),
         installedFolders: installedFolders,
+        installedFolderList: installedFolderList,
         installedVersion: rioAddonFolder.toc.version || raiderIo.toc.version,
         latestVersion: raiderIo.toc.version,
         providerName: this.name,

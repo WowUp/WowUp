@@ -29,6 +29,7 @@ export interface Addon {
   gameVersion?: string;
   author?: string;
   installedFolders?: string;
+  installedFolderList?: string[];
   isIgnored: boolean;
   isLoadOnDemand: boolean;
   autoUpdateEnabled: boolean;

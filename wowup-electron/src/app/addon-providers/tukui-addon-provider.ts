@@ -148,6 +148,7 @@ export class TukUiAddonProvider extends AddonProvider {
           gameVersion: tukUiAddon.patch,
           installedAt: addonFolder.fileStats.birthtime,
           installedFolders: addonFolder.name,
+          installedFolderList: [addonFolder.name],
           installedVersion: addonFolder.toc.version,
           latestVersion: tukUiAddon.version,
           providerName: this.name,
