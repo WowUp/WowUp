@@ -725,13 +725,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.enableControls = false;
     this._cdRef.detectChanges();
 
-    console.log("Load-addons", clientType);
+    if (clientType === WowClientType.None) {
+      return;
+    }
 
     try {
       const addons = await this.addonService.getAddons(clientType, rescan);
-      this.isBusy = false;
+      const rowData = this.formatAddons(addons);
       this.enableControls = this.calculateControlState();
-      this._displayAddonsSrc.next(this.formatAddons(addons));
+
+      this.isBusy = false;
+      this._displayAddonsSrc.next(rowData);
       this.setPageContextText();
       this._cdRef.detectChanges();
       await this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons);
