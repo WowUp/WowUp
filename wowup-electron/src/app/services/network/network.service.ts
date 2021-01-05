@@ -11,6 +11,8 @@ export interface CircuitBreakerChangeEvent {
   state: "open" | "closed";
 }
 
+const CACHE_CONTROL_HEADERS = { "Cache-Control": "no-cache", Pragma: "no-cache" };
+
 export class CircuitBreakerWrapper {
   private readonly _name: string;
   private readonly _cb: CircuitBreaker;
@@ -44,7 +46,7 @@ export class CircuitBreakerWrapper {
   public getJson<T>(url: URL | string, timeoutMs?: number): Promise<T> {
     return this.fire(() =>
       this._httpClient
-        .get<T>(url.toString())
+        .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS } })
         .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
         .toPromise()
     );
@@ -53,7 +55,7 @@ export class CircuitBreakerWrapper {
   public getText(url: URL | string, timeoutMs?: number): Promise<string> {
     return this.fire(() =>
       this._httpClient
-        .get(url.toString(), { responseType: "text" })
+        .get(url.toString(), { responseType: "text", headers: { ...CACHE_CONTROL_HEADERS } })
         .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
         .toPromise()
     );
