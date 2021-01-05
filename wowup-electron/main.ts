@@ -274,8 +274,6 @@ function createWindow(): BrowserWindow {
     } else if (mainWindowManager.isMaximized) {
       win.maximize();
     }
-
-    win.webContents.openDevTools();
   });
 
   win.on("close", (e) => {
