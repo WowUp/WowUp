@@ -50,7 +50,7 @@ export class TukUiAddonProvider implements AddonProvider {
     try {
       const addons = await this.getAllAddons(clientType);
       results = addons
-        .filter((addon) => _.some(addonIds, (aid) => aid === addon.id))
+        .filter((addon) => _.some(addonIds, (aid) => aid.toString() === addon.id.toString()))
         .map((addon) => this.toSearchResult(addon, ""));
     } catch (err) {
       // _analyticsService.Track(ex, "Failed to search TukUi");
@@ -141,7 +141,7 @@ export class TukUiAddonProvider implements AddonProvider {
           name: tukUiAddon.name,
           author: tukUiAddon.author,
           downloadUrl: tukUiAddon.url,
-          externalId: tukUiAddon.id,
+          externalId: tukUiAddon.id.toString(),
           externalUrl: tukUiAddon.web_url,
           gameVersion: tukUiAddon.patch,
           installedAt: new Date(),
@@ -181,7 +181,7 @@ export class TukUiAddonProvider implements AddonProvider {
 
     return {
       author: addon.author,
-      externalId: addon.id,
+      externalId: addon.id.toString(),
       name: addon.name,
       thumbnailUrl: addon.screenshot_url,
       externalUrl: addon.web_url,
@@ -223,7 +223,7 @@ export class TukUiAddonProvider implements AddonProvider {
     //   addons.push(await this.getTukUiRetailAddon().toPromise());
     //   addons.push(await this.getElvUiRetailAddon().toPromise());
     // }
-    console.debug("WowUpTukui",addons);
+    console.debug("WowUpTukui", addons);
 
     return addons;
   };

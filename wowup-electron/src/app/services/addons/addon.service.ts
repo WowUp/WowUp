@@ -585,7 +585,7 @@ export class AddonService {
     _.forEach(newAddons, (newAddon) => {
       const existingAddon = _.find(
         existingAddons,
-        (ea) => ea.externalId == newAddon.externalId && ea.providerName == newAddon.providerName
+        (ea) => ea.externalId.toString() === newAddon.externalId.toString() && ea.providerName == newAddon.providerName
       );
 
       if (!existingAddon) {
@@ -630,8 +630,10 @@ export class AddonService {
 
     const searchResults = await addonProvider.getAll(clientType, providerAddonIds);
     for (let result of searchResults) {
-      const addon = addons.find((addon) => addon.externalId === result?.externalId);
+      const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
       const latestFile = this.getLatestFile(result, addon?.channelType);
+
+      this.setExternalIdString(addon);
 
       if (
         !result ||
@@ -659,6 +661,16 @@ export class AddonService {
 
       this._addonStorage.set(addon.id, addon);
     }
+  }
+
+  // Legacy TukUI/ElvUI ids were ints, correct them
+  private setExternalIdString(addon: Addon) {
+    if (typeof addon.externalId === "string") {
+      return;
+    }
+
+    addon.externalId = `${addon.externalId}`;
+    this._addonStorage.set(addon.id, addon);
   }
 
   private getExternalIdsForProvider(addonProvider: AddonProvider, addons: Addon[]): string[] {
@@ -903,7 +915,7 @@ export class AddonService {
       thumbnailUrl: searchResult.thumbnailUrl,
       latestVersion: latestFile.version,
       clientType: clientType,
-      externalId: searchResult.externalId,
+      externalId: searchResult.externalId.toString(),
       gameVersion: AddonUtils.getGameVersion(latestFile.gameVersion),
       author: searchResult.author,
       downloadUrl: latestFile.downloadUrl,
