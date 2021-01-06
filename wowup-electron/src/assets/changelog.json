@@ -1,6 +1,17 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.19",
+      "changes": [
+        "Pull in yesterday's Prod hotfix",
+        "Add Czech translations (Bito)",
+        "Add a funding link for Ko-fi",
+        "Fix a bug causing funding links not to show for Hub addons",
+        "Fix a bug with light themes and funding links",
+        "Fix an issue with the pre-load banner always being purple"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.18",
       "changes": ["Turn off devtools by default"]
     },
