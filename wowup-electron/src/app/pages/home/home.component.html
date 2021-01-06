@@ -1,5 +1,5 @@
 <div *ngIf="appReady === false" class="page-container bg-secondary-3" [ngClass]="{ linux: electronService.isLinux }">
-  <div class="tab-bar-placeholder"></div>
+  <div class="tab-bar-placeholder bg-primary"></div>
   <div class="preload-container">
     <app-progress-spinner [message]="preloadSpinnerKey | translate">
     </app-progress-spinner>
