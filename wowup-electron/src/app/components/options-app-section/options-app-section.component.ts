@@ -38,6 +38,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public currentLanguage: string = "";
   public languages: LocaleListItem[] = [
     { localeId: "en", label: "English" },
+    { localeId: "cs", label: "Čestina" },
     { localeId: "de", label: "Deutsch" },
     { localeId: "es", label: "Español" },
     { localeId: "fr", label: "Français" },
