@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { SessionService } from "app/services/session/session.service";
+import { WowUpService } from "app/services/wowup/wowup.service";
 import { AddonFundingLink } from "../../entities/addon";
 
 @Component({
@@ -10,12 +12,47 @@ export class FundingButtonComponent implements OnInit {
   @Input("funding") funding: AddonFundingLink;
   @Input("size") size: "large" | "small" = "large";
 
+  public isFontIcon = false;
+  public iconSrc = "";
+  public tooltipKey = "";
+  public fundingName = "";
+
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.isFontIcon = this.getIsFontIcon();
+    this.iconSrc = this.isFontIcon ? this.getFontIcon() : this.getFundingIcon();
+    this.fundingName = this.getFundingName();
+    this.tooltipKey = this.getFundingLocaleKey(this.fundingName);
+  }
 
   getTooltipKey() {
     return `PAGES.MY_ADDONS.FUNDING_TOOLTIP.${this.funding.platform.toUpperCase()}`;
+  }
+
+  getIsFontIcon(): boolean {
+    switch (this.funding.platform) {
+      case "PATREON":
+      case "GITHUB":
+        return true;
+      case "LIBERAPAY":
+      case "CUSTOM":
+      default:
+        return true;
+    }
+  }
+
+  getFontIcon() {
+    switch (this.funding.platform) {
+      case "PATREON":
+        return "fab:patreon";
+      case "GITHUB":
+        return "fab:github";
+      case "LIBERAPAY":
+      case "CUSTOM":
+      default:
+        return "fas:coins";
+    }
   }
 
   getFundingIcon() {
@@ -32,6 +69,12 @@ export class FundingButtonComponent implements OnInit {
     }
   }
 
+  getFundingLocaleKey(fundingName: string) {
+    return fundingName && fundingName.toUpperCase() !== "CUSTOM"
+      ? "PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC"
+      : "PAGES.MY_ADDONS.FUNDING_TOOLTIP.CUSTOM";
+  }
+
   getFundingName() {
     switch (this.funding.platform) {
       case "LIBERAPAY":
@@ -42,6 +85,8 @@ export class FundingButtonComponent implements OnInit {
         return "GitHub";
       case "PAYPAL":
         return "PayPal";
+      case "KO_FI":
+        return "Ko-fi";
       case "CUSTOM":
       default:
         return "Custom";

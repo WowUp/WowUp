@@ -111,6 +111,16 @@ img {
   }
 }
 
+.text-light {
+  color: $white-1;
+}
+
+.text-light-hover {
+  &:hover {
+    color: $white-1 !important;
+  }
+}
+
 .mat-tab-label,
 .mat-tab-label-content,
 .mat-select-value,

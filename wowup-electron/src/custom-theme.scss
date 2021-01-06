@@ -123,6 +123,10 @@ $wowup-light-theme: mat-light-theme(
   background-color: $purple-2;
 }
 
+.hover-primary-3:hover {
+  background-color: $purple-3;
+}
+
 ::-webkit-scrollbar-track {
   background-color: $dark-2;
 }
@@ -246,6 +250,10 @@ $horde-theme-light: mat-light-theme(
     background-color: $horde-red-2 !important;
   }
 
+  .hover-primary-3:hover {
+    background-color: $purple-3 !important;
+  }
+
   .mat-form-field-ripple {
     background-color: $horde-red-2 !important;
   }
@@ -354,6 +362,10 @@ $alliance-theme-light: mat-light-theme(
   }
 
   .hover-primary-2:hover {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  .hover-primary-3:hover {
     background-color: $alliance-blue-3 !important;
   }
 
@@ -426,11 +438,11 @@ $alliance-theme-light: mat-light-theme(
   .text-1 {
     color: $white-1;
   }
-  
+
   .text-2 {
     color: $white-2;
   }
-  
+
   .text-3 {
     color: $white-3;
   }
