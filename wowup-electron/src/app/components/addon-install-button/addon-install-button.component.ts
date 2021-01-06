@@ -33,7 +33,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     let isInstalled = this._addonService.isInstalled(
       this.addonSearchResult.externalId,
-      this._sessionService.selectedClientType
+      this._sessionService.getSelectedClientType()
     );
     this.disableButton = isInstalled;
     this.buttonText = this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown);
@@ -96,6 +96,15 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   public async onInstallUpdateClick() {
-    await this._addonService.installPotentialAddon(this.addonSearchResult, this._sessionService.selectedClientType);
+    this.disableButton = true;
+    try {
+      await this._addonService.installPotentialAddon(
+        this.addonSearchResult,
+        this._sessionService.getSelectedClientType()
+      );
+    } catch (e) {
+      console.error("onInstallUpdateClick failed", e);
+      this.disableButton = false;
+    }
   }
 }

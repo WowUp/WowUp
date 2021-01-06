@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angu
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonService } from "../../services/addons/addon.service";
@@ -57,12 +57,13 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   public getIsButtonActive() {
     return (
       this.listItem?.installState !== AddonInstallState.Unknown &&
-      this.listItem?.installState !== AddonInstallState.Complete
+      this.listItem?.installState !== AddonInstallState.Complete &&
+      this.listItem?.installState !== AddonInstallState.Error
     );
   }
 
   public getIsButtonDisabled() {
-    return this.listItem?.isUpToDate || this.listItem?.installState < AddonInstallState.Unknown;
+    return this.listItem?.isUpToDate() || this.listItem?.installState < AddonInstallState.Unknown;
   }
 
   public getButtonText() {
@@ -109,6 +110,8 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
         return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
       case AddonInstallState.Pending:
         return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
+      case AddonInstallState.Error:
+        return this._translateService.instant("COMMON.ADDON_STATUS.ERROR");
       default:
         return "";
     }

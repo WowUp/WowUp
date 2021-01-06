@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import * as AddonUtils from "../../utils/addon.utils";
+import { capitalizeString } from "../../utils/string.utils";
 
 @Component({
   selector: "app-my-addons-addon-cell",
@@ -13,6 +14,8 @@ export class MyAddonsAddonCellComponent implements OnInit {
   @Input() showUpdateToVersion = false;
 
   @Output() onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
+
+  public readonly capitalizeString = capitalizeString;
 
   public addonUtils = AddonUtils;
 
@@ -30,6 +33,32 @@ export class MyAddonsAddonCellComponent implements OnInit {
 
   hasRequiredDependencies() {
     return this.getRequireDependencyCount() > 0;
+  }
+
+  hasIgnoreReason() {
+    return !!this.listItem?.addon?.ignoreReason;
+  }
+
+  getIgnoreTooltipKey() {
+    switch (this.listItem.addon.ignoreReason) {
+      case "git_repo":
+        return "PAGES.MY_ADDONS.ADDON_IS_CODE_REPOSITORY";
+      case "missing_dependency":
+      case "unknown":
+      default:
+        return "";
+    }
+  }
+
+  getIgnoreIcon() {
+    switch (this.listItem.addon.ignoreReason) {
+      case "git_repo":
+        return "fas:code";
+      case "missing_dependency":
+      case "unknown":
+      default:
+        return "";
+    }
   }
 
   get dependencyTooltip() {

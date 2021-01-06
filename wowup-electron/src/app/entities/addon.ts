@@ -7,11 +7,17 @@ export interface AddonExternalId {
   id: string;
 }
 
+export interface AddonFundingLink {
+  platform: string;
+  url: string;
+}
+
 export interface Addon {
   id: string;
   name: string;
   downloadUrl?: string;
   installedVersion?: string;
+  installedExternalReleaseId?: string;
   latestVersion?: string;
   installedAt?: Date;
   externalId?: string;
@@ -23,18 +29,23 @@ export interface Addon {
   gameVersion?: string;
   author?: string;
   installedFolders?: string;
+  installedFolderList?: string[];
   isIgnored: boolean;
+  isLoadOnDemand: boolean;
   autoUpdateEnabled: boolean;
   clientType: WowClientType;
   channelType: AddonChannelType;
   updatedAt?: Date;
-  patreonFundingLink?: string;
-  githubFundingLink?: string;
-  customFundingLink?: string;
+  fundingLinks?: AddonFundingLink[];
   downloadCount?: number;
   summary?: string;
   screenshotUrls?: string[];
   releasedAt?: Date;
   externalIds?: AddonExternalId[];
+  externalLatestReleaseId?: string;
+  latestChangelogVersion?: string;
+  latestChangelog?: string;
   dependencies?: AddonDependency[];
+  missingDependencies?: string[];
+  ignoreReason?: AddonIgnoreReason;
 }

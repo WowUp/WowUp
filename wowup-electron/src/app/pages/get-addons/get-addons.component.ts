@@ -83,11 +83,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public get defaultAddonChannelKey() {
-    return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.selectedClientType);
+    return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.getSelectedClientType());
   }
 
   public get defaultAddonChannel() {
-    return this._wowUpService.getDefaultAddonChannel(this._sessionService.selectedClientType);
+    return this._wowUpService.getDefaultAddonChannel(this._sessionService.getSelectedClientType());
   }
 
   public query = "";
@@ -251,7 +251,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   onClientChange() {
-    this._sessionService.selectedClientType = this.selectedClient;
+    this._sessionService.setSelectedClientType(this.selectedClient);
   }
 
   onRefresh() {
@@ -301,6 +301,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private async loadPopularAddons(clientType: WowClientType) {
     if (clientType === WowClientType.None) {
+      return;
+    }
+
+    if (this._addonService.getEnabledAddonProviders().length === 0) {
+      this.setDataSource([]);
+      this.isBusy = false;
+      this._cdRef.detectChanges();
       return;
     }
 

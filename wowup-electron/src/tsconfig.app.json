@@ -6,6 +6,7 @@
     "baseUrl": "",
     "types": []
   },
+  "files": ["./typings.d.ts", "./common/wowup.d.ts"],
   "include": ["main.ts", "polyfill.ts"],
   "exclude": ["**/*.spec.ts"],
   "angularCompilerOptions": {

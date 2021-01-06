@@ -6,8 +6,9 @@ import {
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
+  MAXIMIZE_WINDOW,
+  MINIMIZE_WINDOW,
 } from "../../../common/constants";
-import { platform } from "os";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../environments/environment";
 import { ElectronService } from "../../services/electron/electron.service";
@@ -19,11 +20,6 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./titlebar.component.scss"],
 })
 export class TitlebarComponent implements OnInit, OnDestroy {
-  // TODO use electron service
-  public isMac = platform() === "darwin";
-  public isWindows = platform() === "win32";
-  public isLinux = platform() === "linux";
-  public userAgent = platform();
   public isProd = AppConfig.production;
   public isMaximized = false;
 
@@ -59,30 +55,20 @@ export class TitlebarComponent implements OnInit, OnDestroy {
   }
 
   onClickClose() {
-    if (this._wowUpService.collapseToTray) {
-      this.electronService.hideWindow();
-    } else {
-      this.electronService.closeWindow();
-    }
-  }
-
-  onClickDebug() {
-    this.electronService.remote.getCurrentWebContents().openDevTools();
+    this.electronService.closeWindow();
   }
 
   onDblClick() {
-    const win = this.electronService.remote.getCurrentWindow();
+    if (this.electronService.isMac) {
+      const action = this.electronService.getUserDefaultSystemPreference(
+        "AppleActionOnDoubleClick",
+        "string"
+      ) as string;
 
-    if (this.isMac) {
-      const action = this.electronService.remote.systemPreferences.getUserDefault("AppleActionOnDoubleClick", "string");
       if (action === "Maximize") {
-        if (win.isMaximized()) {
-          win.unmaximize();
-        } else {
-          win.maximize();
-        }
+        this.electronService.invoke(MAXIMIZE_WINDOW);
       } else if (action === "Minimize") {
-        win.minimize();
+        this.electronService.invoke(MINIMIZE_WINDOW);
       }
     }
   }

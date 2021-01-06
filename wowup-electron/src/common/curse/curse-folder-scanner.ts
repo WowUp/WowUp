@@ -1,19 +1,54 @@
 import * as path from "path";
 import * as fs from "fs";
 import * as _ from "lodash";
-import * as async from "async";
 import * as log from "electron-log";
+import * as pLimit from "p-limit";
 import { CurseScanResult } from "./curse-scan-result";
 import { readDirRecursive, readFile } from "../../../file.utils";
 
 const nativeAddon = require("../../../build/Release/addon.node");
+
+const INVALID_PATH_CHARS = [
+  "|",
+  "\0",
+  "\u0001",
+  "\u0002",
+  "\u0003",
+  "\u0004",
+  "\u0005",
+  "\u0006",
+  "\b",
+  "\t",
+  "\n",
+  "\v",
+  "\f",
+  "\r",
+  "\u000e",
+  "\u000f",
+  "\u0010",
+  "\u0011",
+  "\u0012",
+  "\u0013",
+  "\u0014",
+  "\u0015",
+  "\u0016",
+  "\u0017",
+  "\u0018",
+  "\u0019",
+  "\u001a",
+  "\u001b",
+  "\u001c",
+  "\u001d",
+  "\u001e",
+  "\u001f",
+];
 
 export class CurseFolderScanner {
   // This map is required for solving for case sensitive mismatches from addon authors on Linux
   private _fileMap: { [key: string]: string } = {};
 
   private get tocFileCommentsRegex() {
-    return /\s*#.*$/gm;
+    return /\s*#.*$/gim;
   }
 
   private get tocFileIncludesRegex() {
@@ -21,41 +56,43 @@ export class CurseFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^\/]+)[\\\/]\1\.toc$/i;
+    return /^([^\/]+)[\\\/]\1\.toc$/gim;
   }
 
   private get bindingsXmlRegex() {
-    return /^[^\/\\]+[\/\\]Bindings\.xml$/i;
+    return /^[^\/\\]+[\/\\]Bindings\.xml$/gim;
   }
 
   private get bindingsXmlIncludesRegex() {
-    return /<(?:Include|Script)\s+file=[\""\""']((?:(?<!\.\.).)+)[\""\""']\s*\/>/gi;
+    return /<(?:Include|Script)\s+file=[\""\""']((?:(?<!\.\.).)+)[\""\""']\s*\/>/gis;
   }
 
   private get bindingsXmlCommentsRegex() {
-    return /<!--.*?-->/gs;
+    return /<!--.*?-->/gims;
   }
 
   async scanFolder(folderPath: string): Promise<CurseScanResult> {
     const fileList = await readDirRecursive(folderPath);
     fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
-
     // log.debug("listAllFiles", folderPath, fileList.length);
 
     let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
-    matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
+    matchingFiles = _.orderBy(matchingFiles, [(f) => f.toLowerCase()], ["asc"]);
     // log.debug("matchingFiles", matchingFiles.length);
 
-    let individualFingerprints = await async.mapLimit<string, number>(matchingFiles, 4, async (path, callback) => {
-      try {
-        const fileHash = await this.getFileHash(path);
-        callback(undefined, fileHash);
-      } catch (e) {
-        log.error(`Failed to get filehash: ${path}`, e);
-        callback(undefined, -1);
-      }
-    });
-
+    const limit = pLimit(4);
+    const tasks = _.map(matchingFiles, (path) =>
+      limit(async () => {
+        try {
+          return await this.getFileHash(path);
+        } catch (e) {
+          log.error(`Failed to get filehash: ${path}`, e);
+          return -1;
+        }
+      })
+    );
+    
+    let individualFingerprints = await Promise.all(tasks);
     individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
@@ -72,9 +109,10 @@ export class CurseFolderScanner {
   }
 
   private async getMatchingFiles(folderPath: string, filePaths: string[]): Promise<string[]> {
-    const parentDir = path.dirname(folderPath) + path.sep;
+    const parentDir = path.normalize(path.dirname(folderPath) + path.sep);
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
+
     for (let filePath of filePaths) {
       const input = filePath.toLowerCase().replace(parentDir.toLowerCase(), "");
 
@@ -98,8 +136,6 @@ export class CurseFolderScanner {
     try {
       nativePath = this.getRealPath(fileInfo);
     } catch (e) {
-      log.error(`Include file path does not exist: ${fileInfo}`);
-      log.error(e);
       return;
     }
 
@@ -119,18 +155,27 @@ export class CurseFolderScanner {
 
     const dirname = path.dirname(nativePath);
     for (let include of inclusions) {
+      if (this.hasInvalidPathChars(include)) {
+        log.debug(`Invalid include file ${nativePath}`);
+        break;
+      }
+
       const fileName = path.join(dirname, include.replace(/\\/g, path.sep));
       await this.processIncludeFile(matchingFileList, fileName);
     }
+  }
+
+  private hasInvalidPathChars(path: string) {
+    return INVALID_PATH_CHARS.some((c) => path.indexOf(c) !== -1);
   }
 
   private getFileInclusionMatches(fileInfo: string, fileContent: string): string[] | null {
     const ext = path.extname(fileInfo);
     switch (ext) {
       case ".xml":
-        return this.matchAll(fileContent, this.bindingsXmlIncludesRegex);
+        return this.ripMatch(fileContent, () => this.bindingsXmlIncludesRegex);
       case ".toc":
-        return this.matchAll(fileContent, this.tocFileIncludesRegex);
+        return this.ripMatch(fileContent, () => this.tocFileIncludesRegex);
       default:
         return null;
     }
@@ -146,6 +191,28 @@ export class CurseFolderScanner {
       default:
         return fileContent;
     }
+  }
+
+  /**
+   *  Recreate a strange behavior for .net regex regarding how it treats
+   *  lines that end in \r\t vs lines with \r\n\t
+   */
+  private ripMatch(str: string, regex: () => RegExp): string[] {
+    const splitStrings = str.split("\n");
+    const matches = [];
+    try {
+      for (const splitStr of splitStrings) {
+        const trimmedStr = splitStr.trim();
+        const match = regex().exec(trimmedStr);
+        if (match && match.length > 1) {
+          matches.push(match[1]);
+        }
+      }
+    } catch (e) {
+      log.error(e);
+    }
+
+    return matches.map((s) => s.trim());
   }
 
   private matchAll(str: string, regex: RegExp): string[] {

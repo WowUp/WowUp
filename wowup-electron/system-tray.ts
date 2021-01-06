@@ -23,11 +23,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
     {
       label: config.showLabel || "Show",
       click: () => {
-        window.show();
-
-        if (platform.isMac) {
-          app.dock.show();
-        }
+        restoreWindow(window);
       },
     },
     // Removing this for now per discussion with zak
@@ -45,7 +41,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
 
   if (platform.isWin) {
     _trayRef.on("click", () => {
-      window.show();
+      restoreWindow(window);
     });
   }
 
@@ -53,4 +49,14 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   _trayRef.setContextMenu(contextMenu);
 
   return true;
+}
+
+function restoreWindow(window: BrowserWindow) {
+  window?.show();
+
+  if (platform.isMac) {
+    app.dock.show();
+  } else {
+    window?.setSkipTaskbar(false);
+  }
 }

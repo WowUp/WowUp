@@ -1,42 +1,54 @@
 <div class="addon-detail-view">
   <div class="row align-items-start">
+    <div *ngIf="defaultImageUrl" class="row justify-content-center bg-secondary-4 mr-3 icon">
+      <img class="image" [src]="defaultImageUrl" alt="Addon Picture" />
+    </div>
     <h3 mat-dialog-title class="flex-grow-1">{{ title }}</h3>
-    <mat-icon
-      class="close-icon"
-      color="accent"
-      [mat-dialog-close]="true"
-      [ngStyle]="{ cursor: 'pointer' }"
-      svgIcon="fas:times"
-    >
+    <mat-icon class="close-icon" color="accent" [mat-dialog-close]="true" [ngStyle]="{ cursor: 'pointer' }"
+      svgIcon="fas:times">
     </mat-icon>
   </div>
-  <div *ngIf="defaultImageUrl" class="row justify-content-center image-row bg-secondary-4">
+  <!-- <div *ngIf="defaultImageUrl" class="row justify-content-center image-row bg-secondary-4">
     <img class="image" [src]="defaultImageUrl" alt="Addon Picture" />
-  </div>
+  </div> -->
 
   <div mat-dialog-content>
     <div class="row align-items-start">
       <div class="mat-subheading-1 flex-grow-1 mr-3">
         <div translate [translateParams]="{ authorName: subtitle }">DIALOGS.ADDON_DETAILS.BY_AUTHOR</div>
-        <div class="sub-text">{{ getVersion() }}</div>
+        <div class="sub-text text-2">{{ getVersion() }}</div>
       </div>
 
-      <div>
+      <div *ngIf="isUnknownProvider() === false">
         <div class="row align-items-center">
           <div class="mr-2">
-            <div>{{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ provider }}</div>
-            <div class="sub-text text-right selectable">{{ getExternalId() }}</div>
+            <div class="text-right">{{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ provider }}
+            </div>
+            <div class="sub-text text-right id-link selectable text-2" [cdkCopyToClipboard]="getExternalId()"
+              [matTooltip]="'DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_TOOLTIP' | translate" (click)="onClickExternalId()">{{
+              'DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate }} {{
+              getExternalId() }}</div>
           </div>
-          <a
-            class="icon-link"
-            appExternalLink
-            [href]="externalUrl"
-            [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate"
-          >
+          <a class="icon-link" appExternalLink [href]="externalUrl"
+            [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate">
             <mat-icon class="open-in-browser-icon" color="accent" svgIcon="fas:external-link-alt"></mat-icon>
           </a>
         </div>
       </div>
+    </div>
+
+    <div *ngIf="hasFundingLinks()" class="funding-link-container ">
+      <h3 class="m-0">{{ 'DIALOGS.ADDON_DETAILS.FUNDING_LINK_TITLE' | translate }}</h3>
+      <div class="row align-items-center">
+        <app-funding-button *ngFor="let link of getFundingLinks()" [funding]="link"></app-funding-button>
+      </div>
+    </div>
+    <!-- MISSING DEPENDENCIES -->
+    <div *ngIf="isUnknownProvider() && isMissingUnknownDependencies()">
+      <h3>{{'DIALOGS.ADDON_DETAILS.MISSING_DEPENDENCIES' | translate}}</h3>
+      <ul>
+        <li *ngFor="let dependency of getMissingDependencies()">{{dependency}}</li>
+      </ul>
     </div>
     <!-- DEPENDENCIES -->
     <div *ngIf="hasRequiredDependencies()" class="addon-dependencies row align-items-center">
@@ -46,14 +58,22 @@
       </span>
     </div>
     <!-- SUMMARY -->
-    <div class="mat-caption addon-detail-summary">{{ summary }}</div>
+    <mat-tab-group *ngIf="isUnknownProvider() === false" mat-stretch-tabs [selectedIndex]="selectedTabIndex"
+      (selectedTabChange)="onSelectedTabChange($event)">
+      <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
+        <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
+        <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="description$ | async"></div>
+      </mat-tab>
+      <!-- CHANGELOG -->
+      <mat-tab [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
+        <app-progress-spinner *ngIf="fetchingChangelog === true"></app-progress-spinner>
+        <div #changelogContainer class="addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
-  <div mat-dialog-actions class="row align-items-center justify-content-end">
-    <app-addon-install-button
-      *ngIf="showInstallButton"
-      [addonSearchResult]="model.searchResult"
-      (onViewUpdated)="onInstallUpdated()"
-    >
+  <div *ngIf="isUnknownProvider() === false" mat-dialog-actions class="row align-items-center justify-content-end">
+    <app-addon-install-button *ngIf="showInstallButton" [addonSearchResult]="model.searchResult"
+      (onViewUpdated)="onInstallUpdated()">
     </app-addon-install-button>
     <app-addon-update-button *ngIf="showUpdateButton" [listItem]="model.listItem"></app-addon-update-button>
   </div>

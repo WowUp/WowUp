@@ -34,3 +34,14 @@ export function readFile(sourcePath: string): Promise<string> {
     });
   });
 }
+
+export function readFileAsBuffer(sourcePath: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    fs.readFile(sourcePath, {}, (err, data) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(data);
+    });
+  });
+}

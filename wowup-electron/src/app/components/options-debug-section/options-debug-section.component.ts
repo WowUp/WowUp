@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { AddonService } from "../../services/addons/addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
@@ -8,7 +8,13 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./options-debug-section.component.scss"],
 })
 export class OptionsDebugSectionComponent implements OnInit {
-  constructor(private _addonService: AddonService, private _wowupService: WowUpService) {}
+  public dumpingDebugData = false;
+
+  constructor(
+    private _cdRef: ChangeDetectorRef,
+    private _addonService: AddonService,
+    private _wowupService: WowUpService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -17,6 +23,11 @@ export class OptionsDebugSectionComponent implements OnInit {
   };
 
   public async onLogDebugData() {
+    this.dumpingDebugData = true;
+
     await this._addonService.logDebugData();
+
+    this.dumpingDebugData = false;
+    this._cdRef.detectChanges();
   }
 }

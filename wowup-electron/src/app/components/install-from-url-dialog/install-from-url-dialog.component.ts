@@ -9,6 +9,8 @@ import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
 import { roundDownloadCount, shortenDownloadCount } from "../../utils/number.utils";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
+import { NO_SEARCH_RESULTS_ERROR } from "../../../common/constants";
+import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../../errors";
 
 @Component({
   selector: "app-install-from-url-dialog",
@@ -54,7 +56,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, this._sessionService.selectedClientType)
+      this._addonService.installPotentialAddon(this.addon, this._sessionService.getSelectedClientType())
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
@@ -96,9 +98,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.selectedClientType);
-
-      console.debug(importedAddon);
+      const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.getSelectedClientType());
       if (!importedAddon) {
         throw new Error("Addon not found");
       }
@@ -121,6 +121,27 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
       } else if (err.code && err.code === "EOPENBREAKER") {
         // Provider circuit breaker is open
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.FAILED_TO_CONNECT");
+      } else if (message === NO_SEARCH_RESULTS_ERROR) {
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_SEARCH_RESULTS");
+      } else if (err instanceof ClassicAssetMissingError) {
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.CLASSIC_ASSET_NOT_FOUND", {
+          message: err.message,
+        });
+      } else if (err instanceof AssetMissingError) {
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.ASSET_NOT_FOUND", {
+          message: err.message,
+        });
+      } else if (err instanceof NoReleaseFoundError) {
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_RELEASE_FOUND", {
+          message: err.message,
+        });
+      } else if (err instanceof GitHubLimitError) {
+        const max = err.rateLimitMax;
+        const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
+        message = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
+          max,
+          reset,
+        });
       }
 
       this.showErrorMessage(message);
@@ -128,7 +149,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
   }
 
   private addonExists(externalId: string) {
-    return this._addonService.isInstalled(externalId, this._sessionService.selectedClientType);
+    return this._addonService.isInstalled(externalId, this._sessionService.getSelectedClientType());
   }
 
   private getUrlFromQuery(): URL | undefined {

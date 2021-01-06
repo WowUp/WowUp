@@ -10,14 +10,7 @@
         <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.LOG_FILES_DESCRIPTION" | translate }}</small>
       </div>
       <div>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="onShowLogs()"
-          appUserActionTracker
-          category="Options"
-          action="ShowLogFiles"
-        >
+        <button id="show-log-btn" mat-flat-button color="primary" (click)="onShowLogs()">
           {{ "PAGES.OPTIONS.DEBUG.LOG_FILES_BUTTON" | translate }}
         </button>
       </div>
@@ -31,15 +24,14 @@
         <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION" | translate }}</small>
       </div>
       <div>
-        <button
-          mat-flat-button
-          color="primary"
-          (click)="onLogDebugData()"
-          appUserActionTracker
-          category="Options"
-          action="LogDebugData"
-        >
-          {{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON" | translate }}
+        <button id="dump-debug-btn" mat-flat-button color="primary" (click)="onLogDebugData()"
+          [disabled]="dumpingDebugData === true">
+          <span *ngIf="dumpingDebugData === false">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON" | translate }}</span>
+          <div *ngIf="dumpingDebugData === true" [style.height]="'37px'" [style.width]="'100px'"
+            class="row align-items-center justify-content-center">
+            <mat-spinner [diameter]="30" color="warn" mode="indeterminate">
+            </mat-spinner>
+          </div>
         </button>
       </div>
     </div>
