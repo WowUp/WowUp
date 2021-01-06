@@ -54,7 +54,9 @@ export class TukUiAddonProvider extends AddonProvider {
 
     try {
       const addons = await this.getAllAddons(clientType);
-      const filteredAddons = addons.filter((addon) => _.some(addonIds, (aid) => aid === addon.id));
+      const filteredAddons = addons.filter((addon) =>
+        _.some(addonIds, (aid) => aid.toString() === addon.id.toString())
+      );
       results = await this.mapAddonsToSearchResults(filteredAddons);
     } catch (err) {
       // _analyticsService.Track(ex, "Failed to search TukUi");
@@ -143,7 +145,7 @@ export class TukUiAddonProvider extends AddonProvider {
           name: tukUiAddon.name,
           author: tukUiAddon.author,
           downloadUrl: tukUiAddon.url,
-          externalId: tukUiAddon.id,
+          externalId: tukUiAddon.id.toString(),
           externalUrl: tukUiAddon.web_url,
           gameVersion: tukUiAddon.patch,
           installedAt: addonFolder.fileStats.birthtime,
@@ -219,7 +221,7 @@ export class TukUiAddonProvider extends AddonProvider {
 
     return {
       author: addon.author,
-      externalId: addon.id,
+      externalId: addon.id.toString(),
       name: addon.name,
       thumbnailUrl: addon.screenshot_url,
       externalUrl: addon.web_url,

@@ -213,6 +213,10 @@
       ]
     },
     {
+      "Version": "2.0.3",
+      "changes": ["Fix an issue with legacy TukUI/ElvUI external IDs saved as ints"]
+    },
+    {
       "Version": "2.0.2",
       "changes": ["Fix an issue with a hardcoded hub URL"]
     },
