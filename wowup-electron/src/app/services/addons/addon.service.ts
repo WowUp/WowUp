@@ -1212,6 +1212,7 @@ export class AddonService {
     }
 
     const dependencies = _.map(latestFile.dependencies, this.createAddonDependency);
+    const fundingLinks = Array.isArray(searchResult.fundingLinks) ? [...searchResult.fundingLinks] : [];
 
     return {
       id: uuidv4(),
@@ -1235,6 +1236,7 @@ export class AddonService {
       externalChannel: getEnumName(AddonChannelType, latestFile.channelType),
       isLoadOnDemand: false,
       externalLatestReleaseId: latestFile.externalId,
+      fundingLinks,
     };
   }
 
