@@ -2,20 +2,20 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "LABEL": "Edit"
+        "LABEL": "Éditer"
       },
       "VIEW": {
-        "LABEL": "View",
-        "ZOOM_IN": "Zoom In",
-        "ZOOM_OUT": "Zoom Out",
-        "ZOOM_RESET": "Reset Zoom"
+        "LABEL": "Voir",
+        "ZOOM_IN": "Zoomer",
+        "ZOOM_OUT": "Dézoomer",
+        "ZOOM_RESET": "Réinitialiser le zoom"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Mise à jour automatique de \r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Mise à jour automatique de {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
     "PROVIDERS": {
-      "UNKNOWN": "Unknown"
+      "UNKNOWN": "Inconnu"
     },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Analyse des addons terminée...",
@@ -119,15 +119,15 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "ADDON_ID_PREFIX": "Addon ID:",
+      "ADDON_ID_PREFIX": "ID de l'addon :",
       "BY_AUTHOR": "Par {authorName}",
-      "CHANGELOG_TAB": "Changelog",
-      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
-      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
+      "CHANGELOG_TAB": "Notes de mise à jour",
+      "COPY_ADDON_ID_SNACKBAR": "ID de l'addon copié dans le presse-papier",
+      "COPY_ADDON_ID_TOOLTIP": "Copier l'ID de l'addon dans le presse-papier",
       "DEPENDENCY_TEXT": "Cet addon a {dependencyCount} {dependencyCount, plural, one{dépendance requise} other{dépendances requises}}",
       "DESCRIPTION_TAB": "Description",
-      "FUNDING_LINK_TITLE": "Support this author",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
+      "FUNDING_LINK_TITLE": "Supporter cet auteur",
+      "MISSING_DEPENDENCIES": "Dépendances manquantes",
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
