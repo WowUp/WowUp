@@ -1,4 +1,4 @@
-import { AddonFundingLink } from "app/entities/addon";
+import { AddonFundingLink } from "../../entities/addon";
 import { AddonSearchResultFile } from "./addon-search-result-file";
 
 export interface AddonSearchResult {

@@ -156,6 +156,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onAutoUpdateInterval = async () => {
     try {
+      console.log("onAutoUpdateInterval");
       const updatedAddons = await this._addonService.processAutoUpdates();
 
       if (!updatedAddons || updatedAddons.length === 0) {

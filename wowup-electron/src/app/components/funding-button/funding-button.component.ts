@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { SessionService } from "app/services/session/session.service";
-import { WowUpService } from "app/services/wowup/wowup.service";
 import { AddonFundingLink } from "../../entities/addon";
 
 @Component({
