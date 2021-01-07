@@ -106,7 +106,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       allowToggle: true,
     },
     {
-      name: "addon.releasedAt",
+      name: "releasedAt",
       display: "PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER",
       visible: true,
       allowToggle: true,

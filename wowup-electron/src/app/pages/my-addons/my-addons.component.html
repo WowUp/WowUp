@@ -122,14 +122,14 @@
       </ng-container>
 
       <!-- RELEASED AT -->
-      <ng-container matColumnDef="addon.releasedAt">
+      <ng-container matColumnDef="releasedAt">
         <th class="released-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding"
           [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: { d: element.addon.releasedAt }"
           matTooltipPosition="above" matTooltipShowDelay="500">
-          {{ element.addon.releasedAt | relativeDuration }}
+          {{ element.releasedAt | relativeDuration }}
         </td>
       </ng-container>
 

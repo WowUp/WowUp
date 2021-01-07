@@ -15,14 +15,13 @@ export class AddonViewModel {
   public installProgress: number = 0;
   public stateTextTranslationKey: string = "";
   public selected: boolean = false;
+  public releasedAt: number = 0;
+  public installedAt: number = 0;
 
   get isLoadOnDemand() {
     return this.addon?.isLoadOnDemand;
   }
 
-  get installedAt() {
-    return new Date(this.addon?.installedAt);
-  }
   get hasThumbnail() {
     return !!this.addon.thumbnailUrl;
   }
@@ -41,6 +40,8 @@ export class AddonViewModel {
 
   constructor(addon?: Addon) {
     this.addon = addon;
+    this.installedAt = addon.installedAt ? new Date(addon.installedAt).getTime() : 0;
+    this.releasedAt = addon.releasedAt ? new Date(addon.releasedAt).getTime() : 0;
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
   }
 
