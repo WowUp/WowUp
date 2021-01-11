@@ -105,6 +105,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.quitEnabled = appOptions.quit;
       this._cdRef.detectChanges();
     });
+
+    this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe(() => {
+      this._autoUpdateInterval?.unsubscribe();
+      this._autoUpdateInterval = undefined;
+      this.initializeAutoUpdate();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -117,10 +123,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this._analyticsService.trackStartup();
     }
 
-    this.onAutoUpdateInterval();
-    this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
-      .pipe(tap(async () => await this.onAutoUpdateInterval()))
-      .subscribe();
+    this.initializeAutoUpdate();
   }
 
   ngOnDestroy(): void {
@@ -154,6 +157,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  private async initializeAutoUpdate() {
+    if (this._autoUpdateInterval) {
+      return;
+    }
+
+    await this.onAutoUpdateInterval();
+    this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
+      .pipe(tap(async () => await this.onAutoUpdateInterval()))
+      .subscribe();
+  }
+
   private onAutoUpdateInterval = async () => {
     try {
       console.log("onAutoUpdateInterval");
@@ -174,10 +188,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.checkQuitEnabled();
       }
-
-      this._sessionService.autoUpdateComplete();
     } catch (e) {
       console.error("Error during auto update", e);
+    } finally {
+      this._sessionService.autoUpdateComplete();
     }
   };
 

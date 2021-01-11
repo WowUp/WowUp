@@ -194,6 +194,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public ngAfterViewInit(): void {
     this._sessionService.autoUpdateComplete$.subscribe(() => {
+      console.log("Checking for addon updates...");
       this._cdRef.markForCheck();
       this.onRefresh();
     });

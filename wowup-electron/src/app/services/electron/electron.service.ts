@@ -7,6 +7,10 @@ import {
   CLOSE_WINDOW,
   MAXIMIZE_WINDOW,
   MINIMIZE_WINDOW,
+  POWER_MONITOR_LOCK,
+  POWER_MONITOR_RESUME,
+  POWER_MONITOR_SUSPEND,
+  POWER_MONITOR_UNLOCK,
   QUIT_APP,
   RESTART_APP,
   WINDOW_MAXIMIZED,
@@ -38,6 +42,7 @@ export class ElectronService {
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
   private readonly _ipcEventReceivedSrc = new BehaviorSubject("");
   private readonly _zoomFactorChangeSrc = new BehaviorSubject(1.0);
+  private readonly _powerMonitorSrc = new BehaviorSubject("");
 
   private _appVersion = "";
 
@@ -45,6 +50,7 @@ export class ElectronService {
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
   public readonly ipcEventReceived$ = this._ipcEventReceivedSrc.asObservable();
   public readonly zoomFactor$ = this._zoomFactorChangeSrc.asObservable();
+  public readonly powerMonitor$ = this._powerMonitorSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -61,6 +67,9 @@ export class ElectronService {
     }
 
     console.log("Platform", process.platform, this.isLinux);
+
+    window.addEventListener("online", this.onWindowOnline);
+    window.addEventListener("offline", this.onWindowOffline);
 
     this.invoke("get-app-version")
       .then((version) => {
@@ -98,6 +107,26 @@ export class ElectronService {
       this._windowMaximizedSrc.next(false);
     });
 
+    this.onRendererEvent(POWER_MONITOR_LOCK, () => {
+      console.log("POWER_MONITOR_LOCK received");
+      this._powerMonitorSrc.next(POWER_MONITOR_LOCK);
+    });
+
+    this.onRendererEvent(POWER_MONITOR_UNLOCK, () => {
+      console.log("POWER_MONITOR_UNLOCK received");
+      this._powerMonitorSrc.next(POWER_MONITOR_UNLOCK);
+    });
+
+    this.onRendererEvent(POWER_MONITOR_SUSPEND, () => {
+      console.log("POWER_MONITOR_SUSPEND received");
+      this._powerMonitorSrc.next(POWER_MONITOR_SUSPEND);
+    });
+
+    this.onRendererEvent(POWER_MONITOR_RESUME, () => {
+      console.log("POWER_MONITOR_RESUME received");
+      this._powerMonitorSrc.next(POWER_MONITOR_RESUME);
+    });
+
     this.invoke("set-zoom-limits", 1, 1).catch((e) => {
       console.error("Failed to set zoom limits", e);
     });
@@ -118,6 +147,14 @@ export class ElectronService {
     this.getZoomFactor()
       .then((zoom) => this._zoomFactorChangeSrc.next(zoom))
       .catch((e) => console.error("Failed to set initial zoom"));
+  }
+
+  private onWindowOnline(evt: Event) {
+    console.log("Window online...");
+  }
+
+  private onWindowOffline(evt: Event) {
+    console.warn("Window offline...");
   }
 
   public getLoginItemSettings(): Promise<LoginItemSettings> {
@@ -226,7 +263,6 @@ export class ElectronService {
   }
 
   public async invoke(channel: RendererChannels, ...args: any[]): Promise<any> {
-    console.debug("invoke", channel);
     return await window.wowup.rendererInvoke(channel, ...args);
   }
 

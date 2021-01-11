@@ -39,6 +39,10 @@ export const WINDOW_MINIMIZED = "window-minimized";
 export const CLOSE_WINDOW = "close-window";
 export const RESTART_APP = "restart-app";
 export const QUIT_APP = "quit-app";
+export const POWER_MONITOR_RESUME = "power-monitor-resume";
+export const POWER_MONITOR_SUSPEND = "power-monitor-suspend";
+export const POWER_MONITOR_LOCK = "power-monitor-lock";
+export const POWER_MONITOR_UNLOCK = "power-monitor-unlock";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";

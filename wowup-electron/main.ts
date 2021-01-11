@@ -13,6 +13,9 @@ import {
   CURRENT_THEME_KEY,
   DEFAULT_BG_COLOR,
   DEFAULT_LIGHT_BG_COLOR,
+  POWER_MONITOR_LOCK,
+  POWER_MONITOR_RESUME,
+  POWER_MONITOR_UNLOCK,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
@@ -151,18 +154,22 @@ app.on("child-process-gone", (e, details) => {
 
 powerMonitor.on("resume", () => {
   log.info("powerMonitor resume");
+  win?.webContents?.send(POWER_MONITOR_RESUME);
 });
 
 powerMonitor.on("suspend", () => {
   log.info("powerMonitor suspend");
+  win?.webContents?.send(POWER_MONITOR_RESUME);
 });
 
 powerMonitor.on("lock-screen", () => {
   log.info("powerMonitor lock-screen");
+  win?.webContents?.send(POWER_MONITOR_LOCK);
 });
 
 powerMonitor.on("unlock-screen", () => {
   log.info("powerMonitor unlock-screen");
+  win?.webContents?.send(POWER_MONITOR_UNLOCK);
 });
 
 let lastCrash = 0;

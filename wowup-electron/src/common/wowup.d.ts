@@ -20,7 +20,11 @@ declare type MainChannels =
   | "app-update-not-available"
   | "window-minimized"
   | "window-unmaximized"
-  | "window-maximized";
+  | "window-maximized"
+  | "power-monitor-resume"
+  | "power-monitor-suspend"
+  | "power-monitor-lock"
+  | "power-monitor-unlock";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
