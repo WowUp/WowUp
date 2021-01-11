@@ -26,6 +26,8 @@ import {
   MENU_ZOOM_IN_CHANNEL,
   MENU_ZOOM_OUT_CHANNEL,
   MENU_ZOOM_RESET_CHANNEL,
+  POWER_MONITOR_RESUME,
+  POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
@@ -106,10 +108,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this._cdRef.detectChanges();
     });
 
-    this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe(() => {
+    this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
+      console.log("Stopping auto update...");
       this._autoUpdateInterval?.unsubscribe();
       this._autoUpdateInterval = undefined;
-      this.initializeAutoUpdate();
+
+      if (evt === POWER_MONITOR_RESUME || evt === POWER_MONITOR_UNLOCK) {
+        this.initializeAutoUpdate();
+      }
     });
   }
 
