@@ -13,6 +13,7 @@ import {
   POWER_MONITOR_UNLOCK,
   QUIT_APP,
   RESTART_APP,
+  WINDOW_LEAVE_FULLSCREEN,
   WINDOW_MAXIMIZED,
   WINDOW_MINIMIZED,
   WINDOW_UNMAXIMIZED,
@@ -207,6 +208,10 @@ export class ElectronService {
 
   public closeWindow() {
     this.invoke(CLOSE_WINDOW);
+  }
+
+  public leaveFullScreen() {
+    this.invoke(WINDOW_LEAVE_FULLSCREEN);
   }
 
   public showNotification(title: string, options?: NotificationOptions) {

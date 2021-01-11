@@ -54,10 +54,9 @@ import { PreferenceStorageService } from "./services/storage/preference-storage.
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: Subscription;
 
-  // @HostListener("document:keydown", ["$event"])
-  // handleKeyboardEvent(event: KeyboardEvent) {
-  //   const zoomDirection = getZoomDirection(event);
-  //   this._electronService.applyZoom(zoomDirection);
+  // @HostListener("document:fullscreenchange", ["$event"])
+  // handleKeyboardEvent(event: Event) {
+  //   console.debug("fullscreenchange", event);
   // }
 
   public quitEnabled?: boolean;

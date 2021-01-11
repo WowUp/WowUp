@@ -19,6 +19,8 @@ import {
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
+  WINDOW_ENTER_FULLSCREEN,
+  WINDOW_LEAVE_FULLSCREEN,
   WINDOW_MAXIMIZED,
   WINDOW_MINIMIZED,
   WINDOW_MIN_HEIGHT,
@@ -312,6 +314,14 @@ function createWindow(): BrowserWindow {
 
   win.on("minimize", () => {
     win?.webContents?.send(WINDOW_MINIMIZED);
+  });
+
+  win.on("enter-full-screen", () => {
+    win?.webContents?.send(WINDOW_ENTER_FULLSCREEN);
+  });
+
+  win.on("leave-full-screen", () => {
+    win?.webContents?.send(WINDOW_LEAVE_FULLSCREEN);
   });
 
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);

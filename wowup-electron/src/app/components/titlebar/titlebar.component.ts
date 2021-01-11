@@ -8,11 +8,15 @@ import {
   HORDE_THEME,
   MAXIMIZE_WINDOW,
   MINIMIZE_WINDOW,
+  WINDOW_ENTER_FULLSCREEN,
+  WINDOW_LEAVE_FULLSCREEN,
 } from "../../../common/constants";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../environments/environment";
 import { ElectronService } from "../../services/electron/electron.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { MatSnackBar, MatSnackBarRef } from "@angular/material/snack-bar";
+import { CenteredSnackbarComponent } from "../centered-snackbar/centered-snackbar.component";
 
 @Component({
   selector: "app-titlebar",
@@ -24,13 +28,39 @@ export class TitlebarComponent implements OnInit, OnDestroy {
   public isMaximized = false;
 
   private _subscriptions: Subscription[] = [];
+  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent>;
 
-  constructor(public electronService: ElectronService, private _wowUpService: WowUpService, private _ngZone: NgZone) {
+  public isFullscreen = false;
+
+  constructor(
+    public electronService: ElectronService,
+    private _wowUpService: WowUpService,
+    private _ngZone: NgZone,
+    private _snackBar: MatSnackBar
+  ) {
     const windowMaximizedSubscription = this.electronService.windowMaximized$.subscribe((maximized) => {
       this._ngZone.run(() => (this.isMaximized = maximized));
     });
 
     this._subscriptions = [windowMaximizedSubscription];
+
+    this.electronService.on(WINDOW_ENTER_FULLSCREEN, () => {
+      this.isFullscreen = true;
+      this._snackBarRef = this._snackBar.openFromComponent(CenteredSnackbarComponent, {
+        duration: 5000,
+        panelClass: ["wowup-snackbar", "text-1"],
+        data: {
+          message: `Press F11 to exit full screen`,
+        },
+        verticalPosition: "top",
+      });
+    });
+
+    this.electronService.on(WINDOW_LEAVE_FULLSCREEN, () => {
+      this.isFullscreen = false;
+      this._snackBarRef?.dismiss();
+      this._snackBarRef = undefined;
+    });
   }
 
   ngOnInit(): void {}

@@ -32,6 +32,7 @@ import {
   CLOSE_WINDOW,
   RESTART_APP,
   QUIT_APP,
+  WINDOW_LEAVE_FULLSCREEN,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -256,6 +257,10 @@ export function initializeIpcHandlers(window: BrowserWindow) {
         filesystem: di.filesystem,
       };
     });
+  });
+
+  handle(WINDOW_LEAVE_FULLSCREEN, () => {
+    window?.setFullScreen(false);
   });
 
   ipcMain.on(DOWNLOAD_FILE_CHANNEL, async (evt, arg: DownloadRequest) => {

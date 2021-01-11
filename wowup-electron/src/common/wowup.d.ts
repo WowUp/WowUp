@@ -59,7 +59,8 @@ declare type RendererChannels =
   | "get-locale"
   | "get-launch-args"
   | "get-login-item-settings"
-  | "set-login-item-settings";
+  | "set-login-item-settings"
+  | "leave-full-screen";
 
 declare global {
   interface Window {
