@@ -281,6 +281,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     const zoomOutKey = "APP.APP_MENU.VIEW.ZOOM_OUT";
     const zoomResetKey = "APP.APP_MENU.VIEW.ZOOM_RESET";
 
+    // WINDOW MENU
+    const windowKey = "APP.APP_MENU.WINDOW.LABEL";
+    const windowCloseKey = "APP.APP_MENU.WINDOW.CLOSE";
+
     const result = await this.translate
       .get([
         editKey,
@@ -299,6 +303,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         toggleFullScreenKey,
         undoKey,
         pasteKey,
+        windowKey,
+        windowCloseKey,
       ])
       .toPromise();
 
@@ -319,6 +325,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       toggleDevToolsLabel: result[toggleDevToolsKey],
       toggleFullScreenLabel: result[toggleFullScreenKey],
       undoLabel: result[undoKey],
+      windowLabel: result[windowKey],
+      windowCloseLabel: result[windowCloseKey],
     };
 
     try {

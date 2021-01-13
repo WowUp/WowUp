@@ -20,6 +20,10 @@
         "ZOOM_IN": "Zoom In",
         "ZOOM_OUT": "Zoom Out",
         "ZOOM_RESET": "Reset Zoom"
+      },
+      "WINDOW": {
+        "LABEL": "Window",
+        "CLOSE": "Close"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",

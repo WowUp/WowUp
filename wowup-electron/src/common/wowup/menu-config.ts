@@ -15,4 +15,6 @@ export interface MenuConfig {
   copyLabel: string;
   pasteLabel: string;
   selectAllLabel: string;
+  windowLabel: string;
+  windowCloseLabel: string;
 }

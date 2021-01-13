@@ -50,7 +50,7 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
   viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
 
   console.debug(config);
-  
+
   return [
     {
       label: app.name,
@@ -69,6 +69,10 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
       ],
     },
     viewMenu,
+    {
+      label: config.windowLabel,
+      submenu: [{ label: config.windowCloseLabel, role: "close" }],
+    },
   ];
 }
 
