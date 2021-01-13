@@ -14,7 +14,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { convertBbcode } from "../utils/bbcode.utils";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 import { getEnumName } from "../utils/enum.utils";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
@@ -41,11 +41,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return convertBbcode(addon.description);
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
-    var searchResults: AddonSearchResult[] = [];
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+    const searchResults: AddonSearchResult[] = [];
 
     for (let addonId of addonIds) {
-      var result = await this.getById(addonId, clientType).toPromise();
+      const result = await this.getById(addonId, clientType).toPromise();
       if (result == null) {
         continue;
       }
@@ -53,7 +53,10 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       searchResults.push(result);
     }
 
-    return searchResults;
+    return {
+      errors: [],
+      searchResults: searchResults,
+    };
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {

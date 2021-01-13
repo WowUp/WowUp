@@ -44,6 +44,7 @@ import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import { CustomError } from "ts-custom-error";
 
 export enum ScanUpdateType {
   Start,
@@ -783,7 +784,12 @@ export class AddonService {
         await this.syncProviderAddons(clientType, addons, provider);
       } catch (e) {
         console.error(`Failed to sync from provider: ${provider.name}`, e);
-        this._syncErrorSrc.next(new AddonSyncError(provider.name, e));
+        this._syncErrorSrc.next(
+          new AddonSyncError({
+            providerName: provider.name,
+            innerError: e,
+          })
+        );
         didSync = false;
       }
     }
@@ -797,8 +803,24 @@ export class AddonService {
       return;
     }
 
-    const searchResults = await addonProvider.getAll(clientType, providerAddonIds);
-    for (let result of searchResults) {
+    const getAllResults = await addonProvider.getAll(clientType, providerAddonIds);
+    for (const error of getAllResults.errors) {
+      const addonId = (error as any).addonId;
+      let addon: Addon;
+      if (addonId) {
+        addon = _.find(addons, (a) => a.externalId === addonId);
+      }
+
+      this._syncErrorSrc.next(
+        new AddonSyncError({
+          providerName: addonProvider.name,
+          innerError: error,
+          addonName: addon?.name,
+        })
+      );
+    }
+
+    for (let result of getAllResults.searchResults) {
       const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
       const latestFile = this.getLatestFile(result, addon?.channelType);
 
@@ -921,7 +943,12 @@ export class AddonService {
           await provider.scan(clientType, defaultAddonChannel, validFolders);
         } catch (e) {
           console.error(e);
-          this._scanErrorSrc.next(new AddonScanError(provider.name, e));
+          this._scanErrorSrc.next(
+            new AddonScanError({
+              providerName: provider.name,
+              innerError: e,
+            })
+          );
         }
       }
 

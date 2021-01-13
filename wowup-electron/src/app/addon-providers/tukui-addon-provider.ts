@@ -14,7 +14,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -49,7 +49,7 @@ export class TukUiAddonProvider extends AddonProvider {
     return await this.formatChangelog(addon);
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
     let results: AddonSearchResult[] = [];
 
     try {
@@ -62,7 +62,10 @@ export class TukUiAddonProvider extends AddonProvider {
       // _analyticsService.Track(ex, "Failed to search TukUi");
     }
 
-    return results;
+    return {
+      errors: [],
+      searchResults: results,
+    };
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {

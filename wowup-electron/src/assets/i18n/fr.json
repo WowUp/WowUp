@@ -122,7 +122,8 @@
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Impossible de changer le fournisseur {providerName} pour l´addon {addonName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again."
+      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Chargement..."

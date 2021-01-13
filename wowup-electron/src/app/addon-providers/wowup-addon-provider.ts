@@ -27,7 +27,7 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = AppConfig.wowUpHubUrl;
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
@@ -77,7 +77,7 @@ export class WowUpAddonProvider extends AddonProvider {
     return "";
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/batch/${gameType}`);
     const addonIdList = _.map(addonIds, (id) => parseInt(id, 10));
@@ -87,7 +87,11 @@ export class WowUpAddonProvider extends AddonProvider {
     });
 
     const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon));
-    return searchResults;
+
+    return {
+      errors: [],
+      searchResults,
+    };
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {

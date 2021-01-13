@@ -31,7 +31,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 import { getEnumName } from "../utils/enum.utils";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
@@ -155,10 +155,7 @@ export class CurseAddonProvider extends AddonProvider {
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: CurseScanResult[] = await this._electronService.invoke(
-      CURSE_GET_SCAN_RESULTS,
-      filePaths
-    );
+    const scanResults: CurseScanResult[] = await this._electronService.invoke(CURSE_GET_SCAN_RESULTS, filePaths);
 
     const appScanResults: AppCurseScanResult[] = scanResults.map((scanResult) => {
       const addonFolder = addonFolders.find((af) => af.path === scanResult.directory);
@@ -237,9 +234,12 @@ export class CurseAddonProvider extends AddonProvider {
     return action.call(this);
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
     if (!addonIds.length) {
-      return [];
+      return {
+        searchResults: [],
+        errors: [],
+      };
     }
 
     const addonResults: AddonSearchResult[] = [];
@@ -257,7 +257,10 @@ export class CurseAddonProvider extends AddonProvider {
       }
     }
 
-    return addonResults;
+    return {
+      errors: [],
+      searchResults: addonResults,
+    };
   }
 
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {

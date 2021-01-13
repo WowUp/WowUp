@@ -1,11 +1,19 @@
 import * as _ from "lodash";
-import { forkJoin, Observable } from "rxjs";
+import { forkJoin, from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
-import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../errors";
+import {
+  AssetMissingError,
+  ClassicAssetMissingError,
+  GitHubError,
+  GitHubFetchReleasesError,
+  GitHubFetchRepositoryError,
+  GitHubLimitError,
+  NoReleaseFoundError,
+} from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
@@ -13,7 +21,7 @@ import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 
 interface GitHubRepoParts {
   repository: string;
@@ -39,19 +47,32 @@ export class GitHubAddonProvider extends AddonProvider {
     super();
   }
 
-  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
-    var searchResults: AddonSearchResult[] = [];
+  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+    const searchResults: AddonSearchResult[] = [];
+    const errors: Error[] = [];
 
-    for (let addonId of addonIds) {
-      var result = await this.getById(addonId, clientType).toPromise();
-      if (result == null) {
-        continue;
+    for (const addonId of addonIds) {
+      try {
+        const result = await this.getByIdAsync(addonId, clientType);
+        if (result == null) {
+          continue;
+        }
+
+        searchResults.push(result);
+      } catch (e) {
+        // If we're at the limit, just give up the loop
+        if (e instanceof GitHubLimitError) {
+          throw e;
+        }
+
+        errors.push(e);
       }
-
-      searchResults.push(result);
     }
 
-    return searchResults;
+    return {
+      errors,
+      searchResults,
+    };
   }
 
   public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
@@ -115,48 +136,51 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    return forkJoin([this.getReleases(addonId), this.getRepository(addonId)]).pipe(
-      map(([releases, repository]) => {
-        if (!releases?.length) {
-          return undefined;
-        }
+    return from(this.getByIdAsync(addonId, clientType));
+  }
 
-        const latestRelease = this.getLatestRelease(releases);
-        if (!latestRelease) {
-          return undefined;
-        }
+  private async getByIdAsync(addonId: string, clientType: WowClientType) {
+    const repository = await this.getRepository(addonId);
+    const releases = await this.getReleases(addonId);
 
-        const asset = this.getValidAsset(latestRelease, clientType);
-        if (!asset) {
-          return undefined;
-        }
+    if (!releases?.length) {
+      return undefined;
+    }
 
-        const author = repository.owner.login;
-        const authorImageUrl = repository.owner.avatar_url;
-        const addonName = this.getAddonName(addonId);
+    const latestRelease = this.getLatestRelease(releases);
+    if (!latestRelease) {
+      return undefined;
+    }
 
-        var searchResultFile: AddonSearchResultFile = {
-          channelType: AddonChannelType.Stable,
-          downloadUrl: asset.browser_download_url,
-          folders: [addonName],
-          gameVersion: "",
-          version: asset.name,
-          releaseDate: new Date(asset.created_at),
-        };
+    const asset = this.getValidAsset(latestRelease, clientType);
+    if (!asset) {
+      return undefined;
+    }
 
-        var searchResult: AddonSearchResult = {
-          author: author,
-          externalId: addonId,
-          externalUrl: repository.html_url,
-          files: [searchResultFile],
-          name: addonName,
-          providerName: this.name,
-          thumbnailUrl: authorImageUrl,
-        };
+    const author = repository.owner.login;
+    const authorImageUrl = repository.owner.avatar_url;
+    const addonName = this.getAddonName(addonId);
 
-        return searchResult;
-      })
-    );
+    var searchResultFile: AddonSearchResultFile = {
+      channelType: AddonChannelType.Stable,
+      downloadUrl: asset.browser_download_url,
+      folders: [addonName],
+      gameVersion: "",
+      version: asset.name,
+      releaseDate: new Date(asset.created_at),
+    };
+
+    var searchResult: AddonSearchResult = {
+      author: author,
+      externalId: addonId,
+      externalUrl: repository.html_url,
+      files: [searchResultFile],
+      name: addonName,
+      providerName: this.name,
+      thumbnailUrl: authorImageUrl,
+    };
+
+    return searchResult;
   }
 
   public isValidAddonUri(addonUri: URL): boolean {
@@ -215,9 +239,19 @@ export class GitHubAddonProvider extends AddonProvider {
     return addonId.split("/").filter((str) => !!str)[1];
   }
 
-  private getReleases(repositoryPath: string): Promise<GitHubRelease[]> {
+  private async getReleases(repositoryPath: string): Promise<GitHubRelease[]> {
     const parsed = this.parseRepoPath(repositoryPath);
-    return this.getReleasesByParts(parsed);
+    try {
+      return await this.getReleasesByParts(parsed);
+    } catch (e) {
+      console.error(`Failed to get GitHub releases`, e);
+      // If some other internal handler already handled this, use that error
+      if (e instanceof GitHubError) {
+        throw e;
+      }
+
+      throw new GitHubFetchReleasesError(repositoryPath, e);
+    }
   }
 
   private getReleasesByParts(repoParts: GitHubRepoParts): Promise<GitHubRelease[]> {
@@ -225,9 +259,19 @@ export class GitHubAddonProvider extends AddonProvider {
     return this.getWithRateLimit<GitHubRelease[]>(url);
   }
 
-  private getRepository(repositoryPath: string): Promise<GitHubRepository> {
+  private async getRepository(repositoryPath: string): Promise<GitHubRepository> {
     const parsed = this.parseRepoPath(repositoryPath);
-    return this.getRepositoryByParts(parsed);
+    try {
+      return await this.getRepositoryByParts(parsed);
+    } catch (e) {
+      console.error(`Failed to get GitHub repository`, e);
+      // If some other internal handler already handled this, use that error
+      if (e instanceof GitHubError) {
+        throw e;
+      }
+
+      throw new GitHubFetchRepositoryError(repositoryPath, e);
+    }
   }
 
   private getRepositoryByParts(repoParts: GitHubRepoParts): Promise<GitHubRepository> {

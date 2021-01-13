@@ -122,7 +122,8 @@
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
       "CHANGE_PROVIDER_ERROR": "Nepodařilo se změnit poskytovatele {providerName} pro addon {addonName}",
-      "GITHUB_LIMIT_ERROR": "Dosáhli jste limitu {max} požadavků na GitHub API.\nVyčkejte prosím do {reset} a pak to zkuste znovu."
+      "GITHUB_LIMIT_ERROR": "Dosáhli jste limitu {max} požadavků na GitHub API.\nVyčkejte prosím do {reset} a pak to zkuste znovu.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Nahrávám..."

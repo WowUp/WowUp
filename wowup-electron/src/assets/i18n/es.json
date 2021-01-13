@@ -122,7 +122,8 @@
       "ADDON_SCAN_ERROR": "Ocurrió un error al comparar sus carpetas de addons con {providerName}. Por favor, inténtelo de nuevo más tarde.",
       "ADDON_SYNC_ERROR": "Ocurrió un error al comprobar actualizaciones desde: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Error al cambiar el proveedor del addon {addonName} a {providerName}",
-      "GITHUB_LIMIT_ERROR": "Ha alcanzado el límite de {max} peticiones a la API de GitHub.\nPor favor, espere hasta {reset} e inténtelo de nuevo."
+      "GITHUB_LIMIT_ERROR": "Ha alcanzado el límite de {max} peticiones a la API de GitHub.\nPor favor, espere hasta {reset} e inténtelo de nuevo.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Cargando..."

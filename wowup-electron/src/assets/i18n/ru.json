@@ -122,7 +122,8 @@
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
-      "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова."
+      "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."

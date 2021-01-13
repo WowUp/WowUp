@@ -6,6 +6,11 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 
+export interface GetAllResult {
+  searchResults: AddonSearchResult[];
+  errors: Error[];
+}
+
 export abstract class AddonProvider {
   name: AddonProviderType;
   enabled: boolean;
@@ -14,8 +19,11 @@ export abstract class AddonProvider {
   allowChannelChange: boolean;
   allowEdit: boolean;
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
-    return [];
+  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+    return {
+      errors: [],
+      searchResults: [],
+    };
   }
 
   async getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]> {

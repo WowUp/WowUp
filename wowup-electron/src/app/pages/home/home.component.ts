@@ -6,7 +6,13 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AppConfig } from "../../../environments/environment";
-import { AddonScanError, AddonSyncError, GitHubLimitError } from "../../errors";
+import {
+  AddonScanError,
+  AddonSyncError,
+  GitHubFetchReleasesError,
+  GitHubFetchRepositoryError,
+  GitHubLimitError,
+} from "../../errors";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
@@ -131,6 +137,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
         max,
         reset,
+      });
+    } else if (
+      error.innerError instanceof GitHubFetchRepositoryError ||
+      error.innerError instanceof GitHubFetchReleasesError
+    ) {
+      const err = error.innerError as GitHubFetchRepositoryError;
+      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
+        addonName: error.addonName,
       });
     }
 
