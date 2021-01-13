@@ -2,21 +2,21 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "COPY": "Copy",
-        "CUT": "Cut",
+        "COPY": "Kopieren",
+        "CUT": "Ausschneiden",
         "LABEL": "Bearbeiten",
-        "PASTE": "Paste",
-        "REDO": "Redo",
-        "SELECT_ALL": "SelectAll",
-        "UNDO": "Undo"
+        "PASTE": "Einfügen",
+        "REDO": "Wiederholen",
+        "SELECT_ALL": "Alls auswählen",
+        "UNDO": "Rückgängig machen"
       },
       "QUIT": "Quit",
       "VIEW": {
-        "FORCE_RELOAD": "Force Reload",
+        "FORCE_RELOAD": "Neuladen erzwingen",
         "LABEL": "Ansicht",
-        "RELOAD": "Reload",
-        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
-        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "RELOAD": "Neu laden",
+        "TOGGLE_DEV_TOOLS": "Aktiviere Entwicklungs Werkzeug",
+        "TOGGLE_FULL_SCREEN": "Vollbild umschalten",
         "ZOOM_IN": "Hineinzoomen",
         "ZOOM_OUT": "Rauszoomen",
         "ZOOM_RESET": "Zoom zurücksetzen"
