@@ -2,10 +2,21 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "LABEL": "Edit"
+        "COPY": "Copy",
+        "CUT": "Cut",
+        "LABEL": "Edit",
+        "PASTE": "Paste",
+        "REDO": "Redo",
+        "SELECT_ALL": "SelectAll",
+        "UNDO": "Undo"
       },
+      "QUIT": "Quit",
       "VIEW": {
+        "FORCE_RELOAD": "Force Reload",
         "LABEL": "View",
+        "RELOAD": "Reload",
+        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
+        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
         "ZOOM_IN": "Zoom In",
         "ZOOM_OUT": "Zoom Out",
         "ZOOM_RESET": "Reset Zoom"
@@ -15,8 +26,6 @@
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
-    "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "PROVIDERS": {
       "UNKNOWN": "Unknown"
     },
@@ -37,6 +46,8 @@
       "GROUP_LIGHT": "Light",
       "HORDE": "Horde"
     },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Install WowUp update",
       "INSTALL_MESSAGE": "Do you want to restart WowUp and install the update?",

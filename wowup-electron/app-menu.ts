@@ -19,9 +19,9 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
   const viewMenu: MenuItemConstructorOptions = {
     label: config.viewLabel,
     submenu: [
-      { role: "reload" },
-      { role: "forceReload" },
-      { role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
+      { label: config.reloadLabel, role: "reload" },
+      { label: config.forceReloadLabel, role: "forceReload" },
+      { label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
       { type: "separator" },
     ],
   };
@@ -47,23 +47,23 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
     );
   }
 
-  viewMenuArr.push({ type: "separator" }, { role: "togglefullscreen" });
+  viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
 
   return [
     {
       label: app.name,
-      submenu: [{ role: "quit" }],
+      submenu: [{ label: config.quitLabel, role: "quit" }],
     },
     {
       label: config.editLabel,
       submenu: [
-        { role: "undo" },
-        { role: "redo" },
+        { label: config.undoLabel, role: "undo" },
+        { label: config.redoLabel, role: "redo" },
         { type: "separator" },
-        { role: "cut" },
-        { role: "copy" },
-        { role: "paste" },
-        { role: "selectAll" },
+        { label: config.copyLabel, role: "cut" },
+        { label: config.copyLabel, role: "copy" },
+        { label: config.pasteLabel, role: "paste" },
+        { label: config.selectAllLabel, role: "selectAll" },
       ],
     },
     viewMenu,
@@ -74,32 +74,32 @@ function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Me
   return [
     {
       label: app.name,
-      submenu: [{ role: "quit" }],
+      submenu: [{ label: config.quitLabel, role: "quit" }],
     },
     {
       label: "Edit",
       submenu: [
-        { role: "undo" },
-        { role: "redo" },
+        { label: config.undoLabel, role: "undo" },
+        { label: config.redoLabel, role: "redo" },
         { type: "separator" },
-        { role: "cut" },
-        { role: "copy" },
-        { role: "paste" },
-        { role: "selectAll" },
+        { label: config.cutLabel, role: "cut" },
+        { label: config.copyLabel, role: "copy" },
+        { label: config.pasteLabel, role: "paste" },
+        { label: config.selectAllLabel, role: "selectAll" },
       ],
     },
     {
       label: "View",
       submenu: [
-        { role: "reload" },
-        { role: "forceReload" },
-        { role: "toggleDevTools" },
+        { label: config.reloadLabel, role: "reload" },
+        { label: config.forceReloadLabel, role: "forceReload" },
+        { label: config.toggleDevToolsLabel, role: "toggleDevTools" },
         { type: "separator" },
         // { role: "resetZoom" },
         // { role: "zoomIn", accelerator: "CommandOrControl+=" },
         // { role: "zoomOut" },
-        { type: "separator" },
-        { role: "togglefullscreen" },
+        // { type: "separator" },
+        { label: config.toggleFullScreenLabel, role: "togglefullscreen" },
       ],
     },
   ];
@@ -108,7 +108,7 @@ function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Me
 function createWindowsMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
   const viewMenu: MenuItemConstructorOptions = {
     label: config.viewLabel,
-    submenu: [{ role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" }],
+    submenu: [{ label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" }],
   };
 
   const viewMenuArr = viewMenu.submenu as MenuItemConstructorOptions[];
@@ -132,7 +132,7 @@ function createWindowsMenuItems(win: BrowserWindow, config?: MenuConfig): Array<
     );
   }
 
-  viewMenuArr.push({ type: "separator" }, { role: "togglefullscreen" });
+  viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
 
   return [viewMenu];
 }

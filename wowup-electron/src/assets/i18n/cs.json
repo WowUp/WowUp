@@ -2,10 +2,21 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "LABEL": "Upravit"
+        "COPY": "Copy",
+        "CUT": "Cut",
+        "LABEL": "Upravit",
+        "PASTE": "Paste",
+        "REDO": "Redo",
+        "SELECT_ALL": "SelectAll",
+        "UNDO": "Undo"
       },
+      "QUIT": "Quit",
       "VIEW": {
+        "FORCE_RELOAD": "Force Reload",
         "LABEL": "Zobrazit",
+        "RELOAD": "Reload",
+        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
+        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
         "ZOOM_IN": "Přiblížit",
         "ZOOM_OUT": "Oddálit",
         "ZOOM_RESET": "Resetovat přiblížení"
@@ -14,6 +25,7 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticky aktualizovány\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon byl aktualizován} =2{addony byly aktualizovány} =3{addony byly aktualizovány} =4{addony byly aktualizovány} other{addonů bylo aktualizováno}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatické aktualizace",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
     "PROVIDERS": {
       "UNKNOWN": "Neznámý"
     },
@@ -34,6 +46,8 @@
       "GROUP_LIGHT": "Světlý",
       "HORDE": "Horda"
     },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Nainstalovat aktualizaci WowUp",
       "INSTALL_MESSAGE": "Chcete restartovat WowUp and nainstalovat aktualizaci?",

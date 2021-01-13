@@ -2,10 +2,21 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "LABEL": "Modifica"
+        "COPY": "Copy",
+        "CUT": "Cut",
+        "LABEL": "Modifica",
+        "PASTE": "Paste",
+        "REDO": "Redo",
+        "SELECT_ALL": "SelectAll",
+        "UNDO": "Undo"
       },
+      "QUIT": "Quit",
       "VIEW": {
+        "FORCE_RELOAD": "Force Reload",
         "LABEL": "Visualizzazione",
+        "RELOAD": "Reload",
+        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
+        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
         "ZOOM_IN": "Zoom Più",
         "ZOOM_OUT": "Zoom Meno",
         "ZOOM_RESET": "Reset Zoom"
@@ -14,6 +25,7 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggiornato\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count, plural, one{un addon} other{{count} addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
     "PROVIDERS": {
       "UNKNOWN": "Sconosciuto"
     },
@@ -34,6 +46,8 @@
       "GROUP_LIGHT": "Chiaro",
       "HORDE": "Orda"
     },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",

@@ -259,13 +259,47 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private async createAppMenu() {
     console.log("Creating app menu");
 
+    // APP MENU
+    const quitKey = "APP.APP_MENU.QUIT";
+
+    // EDIT MENU
     const editKey = "APP.APP_MENU.EDIT.LABEL";
+    const copyKey = "APP.APP_MENU.EDIT.COPY";
+    const cutKey = "APP.APP_MENU.EDIT.CUT";
+    const pasteKey = "APP.APP_MENU.EDIT.PASTE";
+    const redoKey = "APP.APP_MENU.EDIT.REDO";
+    const selectAllKey = "APP.APP_MENU.EDIT.SELECT_ALL";
+    const undoKey = "APP.APP_MENU.EDIT.UNDO";
+
+    // VIEW MENU
     const viewKey = "APP.APP_MENU.VIEW.LABEL";
+    const forceReloadKey = "APP.APP_MENU.VIEW.FORCE_RELOAD";
+    const reloadKey = "APP.APP_MENU.VIEW.RELOAD";
+    const toggleDevToolsKey = "APP.APP_MENU.VIEW.TOGGLE_DEV_TOOLS";
+    const toggleFullScreenKey = "APP.APP_MENU.VIEW.TOGGLE_FULL_SCREEN";
     const zoomInKey = "APP.APP_MENU.VIEW.ZOOM_IN";
     const zoomOutKey = "APP.APP_MENU.VIEW.ZOOM_OUT";
     const zoomResetKey = "APP.APP_MENU.VIEW.ZOOM_RESET";
 
-    const result = await this.translate.get([editKey, viewKey, zoomInKey, zoomOutKey, zoomResetKey]).toPromise();
+    const result = await this.translate
+      .get([
+        editKey,
+        viewKey,
+        zoomInKey,
+        zoomOutKey,
+        zoomResetKey,
+        copyKey,
+        cutKey,
+        forceReloadKey,
+        quitKey,
+        redoKey,
+        reloadKey,
+        selectAllKey,
+        toggleDevToolsKey,
+        toggleFullScreenKey,
+        undoKey,
+      ])
+      .toPromise();
 
     const config: MenuConfig = {
       editLabel: result[editKey],
@@ -273,6 +307,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       zoomInLabel: result[zoomInKey],
       zoomOutLabel: result[zoomOutKey],
       zoomResetLabel: result[zoomResetKey],
+      copyLabel: result[copyKey],
+      cutLabel: result[cutKey],
+      forceReloadLabel: result[forceReloadKey],
+      pasteLabel: result[pasteKey],
+      quitLabel: result[quitKey],
+      redoLabel: result[redoKey],
+      reloadLabel: result[reloadKey],
+      selectAllLabel: result[selectAllKey],
+      toggleDevToolsLabel: result[toggleDevToolsKey],
+      toggleFullScreenLabel: result[toggleFullScreenKey],
+      undoLabel: result[undoKey],
     };
 
     try {
