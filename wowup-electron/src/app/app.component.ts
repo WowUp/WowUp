@@ -298,6 +298,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         toggleDevToolsKey,
         toggleFullScreenKey,
         undoKey,
+        pasteKey,
       ])
       .toPromise();
 

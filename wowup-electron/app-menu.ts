@@ -49,6 +49,8 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
 
   viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
 
+  console.debug(config);
+  
   return [
     {
       label: app.name,
@@ -60,7 +62,7 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
         { label: config.undoLabel, role: "undo" },
         { label: config.redoLabel, role: "redo" },
         { type: "separator" },
-        { label: config.copyLabel, role: "cut" },
+        { label: config.cutLabel, role: "cut" },
         { label: config.copyLabel, role: "copy" },
         { label: config.pasteLabel, role: "paste" },
         { label: config.selectAllLabel, role: "selectAll" },
