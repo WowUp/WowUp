@@ -1,6 +1,21 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.20",
+      "changes": [
+        "Italian locale updates (Bito)",
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow)",
+        "Add new button and display when entering f11 fullscreen mode",
+        "Add some new code to disable background checks depending on power state",
+        "Add the ability to translate the menu items on Mac",
+        "Add new error messages for GitHub related errors",
+        "Add the ability to paste a zip file link into 'Install From URL' dialog",
+        "Fix an issue with 'My Addons' tab not auto updating the UI with updates",
+        "Update Electron"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.19",
       "changes": [
         "Pull in yesterday's Prod hotfix",
