@@ -24,6 +24,8 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
   public showInstallSuccess = false;
   public query = "";
   public addon?: AddonSearchResult;
+  public hasThumbnail = false;
+  public thumbnailLetter = "";
 
   private _installSubscription?: Subscription;
 
@@ -87,6 +89,8 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     this.addon = undefined;
     this.showInstallSuccess = false;
     this.showInstallSpinner = false;
+    this.hasThumbnail = false;
+    this.thumbnailLetter = "";
 
     if (!this.query) {
       return;
@@ -104,6 +108,8 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
       }
 
       this.addon = importedAddon;
+      this.hasThumbnail = !!this.addon.thumbnailUrl;
+      this.thumbnailLetter = this.addon.name.charAt(0).toUpperCase();
 
       if (this.addonExists(importedAddon.externalId)) {
         this.showInstallSuccess = true;

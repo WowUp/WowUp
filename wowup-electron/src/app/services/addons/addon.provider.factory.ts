@@ -7,6 +7,7 @@ import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { RaiderIoAddonProvider } from "../../addon-providers/raiderio-provider";
+import { ZipAddonProvider } from "../../addon-providers/zip-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpService } from "../wowup/wowup.service";
@@ -50,6 +51,10 @@ export class AddonProviderFactory {
     return new WowUpAddonProvider(this._electronService, this._networkService, this._cachingService);
   }
 
+  public createZipAddonProvider(): ZipAddonProvider {
+    return new ZipAddonProvider(this._httpClient);
+  }
+
   public getAll(): AddonProvider[] {
     if (this._providers.length === 0) {
       this._providers = [
@@ -59,6 +64,7 @@ export class AddonProviderFactory {
         this.createTukUiAddonProvider(),
         this.createWowInterfaceAddonProvider(),
         this.createGitHubAddonProvider(),
+        this.createZipAddonProvider(),
       ];
 
       this._providers.forEach(this.setProviderState);

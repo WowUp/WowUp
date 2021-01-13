@@ -399,6 +399,7 @@ export class AddonService {
       throw new Error("Addon not found or invalid");
     }
 
+    const addonProvider = this.getProvider(addon.providerName);
     const downloadFileName = `${slug(addon.name)}.zip`;
 
     onUpdate?.call(this, AddonInstallState.Downloading, 25);
@@ -469,10 +470,16 @@ export class AddonService {
       addon.installedAt = new Date();
       addon.installedFolderList = unzippedDirectoryNames;
       addon.installedFolders = unzippedDirectoryNames.join(",");
+      addon.isIgnored = addonProvider.forceIgnore;
 
-      const gameVersion = await this.getLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
+      const allTocFiles = await this.getAllTocs(unzippedDirectory, unzippedDirectoryNames);
+      const gameVersion = this.getLatestGameVersion(allTocFiles);
       if (gameVersion) {
         addon.gameVersion = gameVersion;
+      }
+
+      if (!addon.author) {
+        addon.author = this.getBestGuessAuthor(allTocFiles);
       }
 
       this._addonStorage.set(addon.id, addon);
@@ -554,14 +561,14 @@ export class AddonService {
     console.log(JSON.stringify(clientMap));
   }
 
-  private async getLatestGameVersion(baseDir: string, installedFolders: string[]) {
-    const versions = [];
+  private async getAllTocs(baseDir: string, installedFolders: string[]) {
+    const tocs: Toc[] = [];
 
     for (let dir of installedFolders) {
       const dirPath = path.join(baseDir, dir);
 
-      const tocFile = this._fileService.listFiles(dirPath, "*.toc")[0];
-      if (tocFile == null) {
+      const tocFile = _.first(this._fileService.listFiles(dirPath, "*.toc"));
+      if (!tocFile) {
         continue;
       }
 
@@ -571,9 +578,19 @@ export class AddonService {
         continue;
       }
 
-      versions.push(toc.interface);
+      tocs.push(toc);
     }
 
+    return tocs;
+  }
+
+  private getBestGuessAuthor(tocs: Toc[]) {
+    const authors = _.map(tocs, (toc) => toc.author).filter((author) => !!author);
+    return _.maxBy(authors, (author) => author.length);
+  }
+
+  private getLatestGameVersion(tocs: Toc[]) {
+    const versions = _.map(tocs, (toc) => toc.interface);
     return AddonUtils.getGameVersion(_.orderBy(versions, null, "desc")[0] || "");
   }
 

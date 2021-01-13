@@ -100,11 +100,11 @@ export class GitHubAddonProvider extends AddonProvider {
         // throw new Error(`No release assets found in ${addonUri}`);
       }
 
-      var repository = await this.getRepository(repoPath);
-      var author = repository.owner.login;
-      var authorImageUrl = repository.owner.avatar_url;
+      const repository = await this.getRepository(repoPath);
+      const author = repository.owner.login;
+      const authorImageUrl = repository.owner.avatar_url;
 
-      var potentialAddon: AddonSearchResult = {
+      const potentialAddon: AddonSearchResult = {
         author: author,
         downloadCount: asset.download_count,
         externalId: this.createExternalId(addonUri),

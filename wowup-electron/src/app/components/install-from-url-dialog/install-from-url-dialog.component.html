@@ -17,7 +17,13 @@
     <mat-spinner diameter="50"></mat-spinner>
   </div>
   <div *ngIf="isBusy === false && addon !== undefined" class="addon-container">
-    <div class="addon-thumb" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'"></div>
+    <div *ngIf="hasThumbnail === true" class="addon-thumb" [style.backgroundImage]="'url(' + addon.thumbnailUrl + ')'">
+    </div>
+    <div *ngIf="hasThumbnail === false" class="addon-thumb">
+      <div class="addon-logo-letter text-3">
+        {{ thumbnailLetter }}
+      </div>
+    </div>
     <div class="addon-info">
       <h4>{{ addon.name }}</h4>
       <p>{{ addon.author }}</p>

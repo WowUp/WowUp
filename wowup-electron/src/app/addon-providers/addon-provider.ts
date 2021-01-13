@@ -18,6 +18,7 @@ export abstract class AddonProvider {
   allowReinstall: boolean;
   allowChannelChange: boolean;
   allowEdit: boolean;
+  allowViewAtSource: boolean = true;
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
     return {
@@ -80,4 +81,4 @@ export abstract class AddonProvider {
   }
 }
 
-export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO";
+export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO" | "Zip";
