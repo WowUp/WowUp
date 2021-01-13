@@ -15,6 +15,6 @@
     "lib": ["es2017", "es2016", "es2015", "dom"]
   },
   "files": ["src/main.ts", "src/polyfills.ts"],
-  "include": ["src/**/*.d.ts"],
+  "include": ["src/**/*.d.ts", "src/common/wowup.d.ts"],
   "exclude": ["node_modules"]
 }

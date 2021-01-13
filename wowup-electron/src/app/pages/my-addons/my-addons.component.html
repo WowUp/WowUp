@@ -2,7 +2,7 @@
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }">
+  }" (click)="onTableBlur($event)">
   <div class="control-container bg-secondary-3">
     <div class="select-container">
       <mat-form-field>
@@ -73,7 +73,10 @@
 
   <div class="table-container bg-secondary-2 flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0">
     <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
-      [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
+      [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8"
+      (click)="onTableBlur($event)">
+
+      <!-- ADDON -->
       <ng-container matColumnDef="addon.name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER" | translate }}
@@ -85,6 +88,7 @@
         </td>
       </ng-container>
 
+      <!-- STATUS -->
       <ng-container matColumnDef="sortOrder">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER" | translate }}
@@ -94,6 +98,7 @@
         </td>
       </ng-container>
 
+      <!-- INSTALLED AT -->
       <ng-container matColumnDef="installedAt">
         <th class="installed-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER" | translate }}
@@ -105,6 +110,7 @@
         </td>
       </ng-container>
 
+      <!-- LATEST VERSION -->
       <ng-container matColumnDef="addon.latestVersion">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER" | translate }}
@@ -115,17 +121,19 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="addon.releasedAt">
+      <!-- RELEASED AT -->
+      <ng-container matColumnDef="releasedAt">
         <th class="released-at-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding"
           [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: { d: element.addon.releasedAt }"
           matTooltipPosition="above" matTooltipShowDelay="500">
-          {{ element.addon.releasedAt | relativeDuration }}
+          {{ element.releasedAt | relativeDuration }}
         </td>
       </ng-container>
 
+      <!-- GAME VERSION -->
       <ng-container matColumnDef="addon.gameVersion">
         <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER" | translate }}
@@ -135,6 +143,7 @@
         </td>
       </ng-container>
 
+      <!-- EXTERNAL CHANNEL -->
       <ng-container matColumnDef="addon.externalChannel">
         <th class="game-version-cell" mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL" | translate }}
@@ -144,24 +153,19 @@
         </td>
       </ng-container>
 
+      <!-- PROVIDER NAME -->
       <ng-container matColumnDef="addon.providerName">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
           {{ "PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
         </th>
         <td mat-cell *matCellDef="let element" class="cell-padding">
-          <div class="row" *ngIf="element.addon.providerName !== 'WowUp'">
-            {{ element.addon.providerName }}
-          </div>
-          <div *ngIf="element.addon.providerName === 'WowUp'" class="addon-provider">
-            <div class="addon-provider-name">
-              {{ element.addon.providerSource }}
-            </div>
-            <img class="provider-logo" [matTooltip]="'Sourced from ' + element.addon.providerName"
-              src="assets/icons/favicon.256x256.png" />
+          <div class="row">
+            {{ getProviderName(element) | async }}
           </div>
         </td>
       </ng-container>
 
+      <!-- AUTHOR -->
       <ng-container matColumnDef="addon.author">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           <div class="author-column">
@@ -187,6 +191,7 @@
   </div>
 </div>
 
+<!-- ADDON CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #addonContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu"></div>
 <mat-menu #contextMenu="matMenu" class="addon-context-menu">
@@ -208,29 +213,48 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    <div class="mat-menu-item">
+    <!-- IGNORE -->
+    <div *ngIf="addonService.isForceIgnore(listItem.addon) === false" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.isIgnored" (change)="onClickIgnoreAddon($event, listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
+    <!-- AUTO UPDATE -->
     <div *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
-    <button mat-menu-item [matMenuTriggerFor]="addonChannels">
+    <!-- CHANNEL SUBMENU -->
+    <button *ngIf="addonService.canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
     </button>
+    <!-- PROVIDER SUBMENU -->
     <button *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonProviders">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.PROVIDER_SUBMENU_TITLE" | translate }}
     </button>
-    <button mat-menu-item (click)="onShowFolder(listItem.addon)">
+    <!-- SHOW FOLDER -->
+    <button mat-menu-item [matMenuTriggerFor]="addonFolders">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
     </button>
-    <button mat-menu-item (click)="onReInstallAddon(listItem)">
+    <!-- VIEW IN PROVIDER -->
+    <a *ngIf="listItem.isUnMatched() === false" mat-menu-item appExternalLink [href]="listItem.addon.externalUrl"
+      (click)="closeContextMenu()">
+      <div class="row align-items-center">
+        <div class="flex-grow-1 mr-3">
+          {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{listItem.addon.providerName}}
+        </div>
+        <div>
+          <mat-icon class="open-in-browser-icon" svgIcon="fas:external-link-alt"></mat-icon>
+        </div>
+      </div>
+    </a>
+    <!-- REINSTALL -->
+    <button *ngIf="addonService.canReinstall(listItem.addon)" mat-menu-item (click)="onReInstallAddon(listItem)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
     </button>
     <mat-divider></mat-divider>
+    <!-- REMOVE -->
     <button mat-menu-item (click)="onRemoveAddon(listItem.addon)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}
     </button>
@@ -248,6 +272,11 @@
         </mat-radio-button>
       </mat-radio-group>
     </mat-menu>
+    <mat-menu #addonFolders="matMenu" class="addon-context-menu">
+      <div *ngFor="let folder of addonUtils.getFolderList(listItem.addon)">
+        <button mat-menu-item (click)="onShowFolder(listItem.addon, folder)">{{folder}}</button>
+      </div>
+    </mat-menu>
     <mat-menu #addonProviders="matMenu" class="addon-context-menu">
       <mat-radio-group class="vertical-radio-group" [value]="listItem.addon.providerName"
         (change)="onSelectedProviderChange($event, listItem)">
@@ -260,6 +289,7 @@
   </ng-template>
 </mat-menu>
 
+<!-- MULTI ADDON CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #addonMultiContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="multiContextMenu"></div>
 <mat-menu #multiContextMenu="matMenu" class="addon-context-menu">
@@ -303,6 +333,7 @@
   </ng-template>
 </mat-menu>
 
+<!-- COLUMN SHOW/HIDE MENU -->
 <div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
 </div>

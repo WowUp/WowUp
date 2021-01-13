@@ -28,7 +28,7 @@ export class DownloadService {
 
       const eventHandler = (_evt: any, arg: DownloadStatus) => {
         if (arg.type !== DownloadStatusType.Progress) {
-          this._electronService.ipcRenderer.off(request.responseKey, eventHandler);
+          this._electronService.off(request.responseKey, eventHandler);
         }
 
         switch (arg.type) {
@@ -46,8 +46,8 @@ export class DownloadService {
         }
       };
 
-      this._electronService.ipcRenderer.on(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(DOWNLOAD_FILE_CHANNEL, request);
+      this._electronService.on(request.responseKey, eventHandler);
+      this._electronService.send(DOWNLOAD_FILE_CHANNEL, request);
     });
   }
 }

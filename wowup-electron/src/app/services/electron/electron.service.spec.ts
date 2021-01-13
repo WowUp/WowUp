@@ -1,11 +1,21 @@
-import { TestBed } from "@angular/core/testing";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { ElectronService } from "./electron.service";
 
+class StubbedElectronService extends ElectronService {
+  public get isElectron(): boolean {
+    return false;
+  }
+}
+
 describe("ElectronService", () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  let preferenceStorageSpy: PreferenceStorageService;
+
+  beforeEach(async () => {
+    preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", [""], {});
+  });
 
   it("should be created", () => {
-    const service: ElectronService = new ElectronService();
+    const service: ElectronService = new StubbedElectronService(preferenceStorageSpy);
     expect(service).toBeTruthy();
   });
 });

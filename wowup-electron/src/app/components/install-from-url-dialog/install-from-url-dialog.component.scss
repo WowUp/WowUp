@@ -9,6 +9,10 @@
   align-items: center;
   justify-content: center;
 }
+.addon-logo-letter {
+  font-size: 2em;
+  font-weight: 400;
+}
 .addon-container {
   display: flex;
   flex-direction: row;
@@ -22,6 +26,9 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .addon-info {
     flex-grow: 1;

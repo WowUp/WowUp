@@ -21,6 +21,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatListModule } from "@angular/material/list";
 import { MatBadgeModule } from "@angular/material/badge";
+import { ClipboardModule } from "@angular/cdk/clipboard";
 
 @NgModule({
   exports: [
@@ -46,6 +47,7 @@ import { MatBadgeModule } from "@angular/material/badge";
     MatSidenavModule,
     MatListModule,
     MatBadgeModule,
+    ClipboardModule,
   ],
   imports: [
     MatSliderModule,
@@ -70,6 +72,7 @@ import { MatBadgeModule } from "@angular/material/badge";
     MatSidenavModule,
     MatListModule,
     MatBadgeModule,
+    ClipboardModule,
   ],
 })
 export class MatModule {}

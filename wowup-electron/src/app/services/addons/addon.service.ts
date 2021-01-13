@@ -1,14 +1,3 @@
-import { Injectable } from "@angular/core";
-import { AddonDependency } from "../../models/wowup/addon-dependency";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
-import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
-import { Toc } from "../../models/wowup/toc";
-import {
-  ADDON_PROVIDER_CURSEFORGE,
-  ADDON_PROVIDER_TUKUI,
-  ADDON_PROVIDER_WOWINTERFACE,
-  ERROR_ADDON_ALREADY_INSTALLED,
-} from "../../../common/constants";
 import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
@@ -16,17 +5,37 @@ import { BehaviorSubject, forkJoin, from, Observable, Subject } from "rxjs";
 import { filter, map, mergeMap, switchMap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
+
+import { Injectable } from "@angular/core";
+
+import {
+  ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_HUB,
+  ADDON_PROVIDER_RAIDERIO,
+  ADDON_PROVIDER_TUKUI,
+  ADDON_PROVIDER_UNKNOWN,
+  ADDON_PROVIDER_WOWINTERFACE,
+  ERROR_ADDON_ALREADY_INSTALLED,
+} from "../../../common/constants";
 import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { Addon, AddonExternalId } from "../../entities/addon";
+import { AddonScanError, AddonSyncError } from "../../errors";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { AddonDependency } from "../../models/wowup/addon-dependency";
+import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { getEnumName } from "../../utils/enum.utils";
+import { Toc } from "../../models/wowup/toc";
 import * as AddonUtils from "../../utils/addon.utils";
+import { getEnumName } from "../../utils/enum.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
@@ -35,6 +44,7 @@ import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import { CustomError } from "ts-custom-error";
 
 export enum ScanUpdateType {
   Start,
@@ -67,11 +77,17 @@ export class AddonService {
   private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
   private readonly _addonRemovedSrc = new Subject<string>();
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
+  private readonly _installErrorSrc = new Subject<Error>();
+  private readonly _syncErrorSrc = new Subject<AddonSyncError>();
+  private readonly _scanErrorSrc = new Subject<AddonScanError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
   public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
+  public readonly installError$ = this._installErrorSrc.asObservable();
+  public readonly syncError$ = this._syncErrorSrc.asObservable();
+  public readonly scanError$ = this._scanErrorSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -81,17 +97,20 @@ export class AddonService {
     private _downloadService: DownloadService,
     private _fileService: FileService,
     private _tocService: TocService,
-    private _addonProviderFactory: AddonProviderFactory
+    addonProviderFactory: AddonProviderFactory
   ) {
-    this._addonProviders = [
-      this._addonProviderFactory.createCurseAddonProvider(),
-      this._addonProviderFactory.createTukUiAddonProvider(),
-      this._addonProviderFactory.createWowInterfaceAddonProvider(),
-      this._addonProviderFactory.createGitHubAddonProvider(),
-    ];
+    // Create our base set of addon providers
+    this._addonProviders = addonProviderFactory.getAll();
 
-    this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe((addonName) => {
-      console.log("Install complete", addonName);
+    // Setup our install queue pump here
+    this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
+      next: (addonName) => {
+        console.log("Install complete", addonName);
+      },
+      error: (error) => {
+        console.error(error);
+        this._installErrorSrc.next(error);
+      },
     });
 
     // Attempt to remove addons for clients that were lost
@@ -105,12 +124,101 @@ export class AddonService {
       });
   }
 
+  public isSameAddon(addon1: Addon, addon2: Addon) {
+    return addon1.externalId === addon2.externalId && addon1.providerName === addon2.providerName;
+  }
+
+  public async getFullDescription(clientType: WowClientType, providerName: string, externalId: string) {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return "";
+    }
+
+    return await provider.getDescription(clientType, externalId);
+  }
+
+  public async getChangelogForSearchResult(
+    clientType: WowClientType,
+    channelType: AddonChannelType,
+    searchResult: AddonSearchResult
+  ) {
+    try {
+      const provider = this.getProvider(searchResult.providerName);
+      if (!provider) {
+        return "";
+      }
+
+      const latestFile = this.getLatestFile(searchResult, channelType);
+      return await provider.getChangelog(clientType, searchResult.externalId, latestFile.externalId);
+    } catch (e) {
+      console.error("Failed to get searchResult changelog", e);
+      return "";
+    }
+  }
+
+  public async getChangelogForAddon(clientType: WowClientType, addon: Addon) {
+    if (!addon) {
+      return "";
+    }
+
+    if (addon.latestChangelog && addon.latestChangelogVersion === addon.latestVersion) {
+      return addon.latestChangelog;
+    }
+
+    try {
+      const provider = this.getProvider(addon.providerName);
+      if (!provider) {
+        return "";
+      }
+
+      const changelog = await provider.getChangelog(clientType, addon.externalId, addon.externalLatestReleaseId);
+
+      addon.latestChangelogVersion = addon.latestVersion;
+      addon.latestChangelog = changelog;
+      this.saveAddon(addon);
+
+      return changelog;
+    } catch (e) {
+      console.error("Failed to get addon changelog", e);
+      return "";
+    }
+  }
+
+  public isForceIgnore(addon: Addon) {
+    return addon.providerName === ADDON_PROVIDER_UNKNOWN || this.getProvider(addon.providerName).forceIgnore;
+  }
+
+  public canReinstall(addon: Addon) {
+    return addon.providerName !== ADDON_PROVIDER_UNKNOWN && this.getProvider(addon.providerName).allowReinstall;
+  }
+
+  public canChangeChannel(addon: Addon) {
+    return addon.providerName !== ADDON_PROVIDER_UNKNOWN && this.getProvider(addon.providerName).allowChannelChange;
+  }
+
+  public getAddonProviderStates(): AddonProviderState[] {
+    return _.map(this._addonProviders, (provider) => {
+      return {
+        providerName: provider.name,
+        enabled: provider.enabled,
+        canEdit: provider.allowEdit,
+      };
+    });
+  }
+
   public saveAddon(addon: Addon) {
     this._addonStorage.set(addon.id, addon);
   }
 
   public async search(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    var searchTasks = this._addonProviders.map((p) => p.searchByQuery(query, clientType));
+    var searchTasks = this.getEnabledAddonProviders().map(async (p) => {
+      try {
+        return await p.searchByQuery(query, clientType);
+      } catch (e) {
+        console.error(`Failed during search: ${p.name}`, e);
+        return [];
+      }
+    });
     var searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackAction("addon-search", {
@@ -178,16 +286,23 @@ export class AddonService {
         addon.clientType
       ).toPromise();
 
+      if (!dependencyAddon) {
+        console.warn(
+          `No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName} CT: ${addon.clientType}`
+        );
+        continue;
+      }
+
       this._addonStorage.set(dependencyAddon.id, dependencyAddon);
 
       await this.installAddon(dependencyAddon.id);
     }
   }
 
-  public async processAutoUpdates(): Promise<number> {
+  public async processAutoUpdates(): Promise<Addon[]> {
     const autoUpdateAddons = this.getAutoUpdateEnabledAddons();
     const clientTypeGroups = _.groupBy(autoUpdateAddons, (addon) => addon.clientType);
-    let updateCt = 0;
+    const updatedAddons = [];
 
     for (let clientTypeStr in clientTypeGroups) {
       const clientType: WowClientType = parseInt(clientTypeStr, 10);
@@ -204,14 +319,14 @@ export class AddonService {
 
         try {
           await this.updateAddon(addon.id);
-          updateCt += 1;
+          updatedAddons.push(addon);
         } catch (err) {
           console.error(err);
         }
       }
     }
 
-    return updateCt;
+    return updatedAddons;
   }
 
   public canUpdateAddon(addon: Addon) {
@@ -284,6 +399,7 @@ export class AddonService {
       throw new Error("Addon not found or invalid");
     }
 
+    const addonProvider = this.getProvider(addon.providerName);
     const downloadFileName = `${slug(addon.name)}.zip`;
 
     onUpdate?.call(this, AddonInstallState.Downloading, 25);
@@ -295,6 +411,7 @@ export class AddonService {
 
     let downloadedFilePath = "";
     let unzippedDirectory = "";
+
     try {
       downloadedFilePath = await this._downloadService.downloadZipFile(
         addon.downloadUrl,
@@ -348,13 +465,21 @@ export class AddonService {
         console.log("Addon removed existing directories", removedDirectoryNames);
       }
 
+      addon.installedExternalReleaseId = addon.externalLatestReleaseId;
       addon.installedVersion = addon.latestVersion;
       addon.installedAt = new Date();
+      addon.installedFolderList = unzippedDirectoryNames;
       addon.installedFolders = unzippedDirectoryNames.join(",");
+      addon.isIgnored = addonProvider.forceIgnore;
 
-      const gameVersion = await this.getLatestGameVersion(unzippedDirectory, unzippedDirectoryNames);
+      const allTocFiles = await this.getAllTocs(unzippedDirectory, unzippedDirectoryNames);
+      const gameVersion = this.getLatestGameVersion(allTocFiles);
       if (gameVersion) {
         addon.gameVersion = gameVersion;
+      }
+
+      if (!addon.author) {
+        addon.author = this.getBestGuessAuthor(allTocFiles);
       }
 
       this._addonStorage.set(addon.id, addon);
@@ -365,11 +490,26 @@ export class AddonService {
 
       await this.backfillAddon(addon);
       this.reconcileExternalIds(addon, queueItem.originalAddon);
+      await this.reconcileAddonFolders(addon);
 
       queueItem.completion.resolve();
+
+      onUpdate?.call(this, AddonInstallState.Complete, 100);
+      this._addonInstalledSrc.next({
+        addon,
+        installState: AddonInstallState.Complete,
+        progress: 100,
+      });
     } catch (err) {
       console.error(err);
       queueItem.completion.reject(err);
+
+      onUpdate?.call(this, AddonInstallState.Error, 100);
+      this._addonInstalledSrc.next({
+        addon,
+        installState: AddonInstallState.Error,
+        progress: 100,
+      });
     } finally {
       const unzippedDirectoryExists = await this._fileService.pathExists(unzippedDirectory);
 
@@ -384,40 +524,51 @@ export class AddonService {
       }
     }
 
-    onUpdate?.call(this, AddonInstallState.Complete, 100);
-    this._addonInstalledSrc.next({
-      addon,
-      installState: AddonInstallState.Complete,
-      progress: 100,
-    });
-
     return addon.name;
   };
 
-  public async logDebugData() {
-    const curseProvider = this._addonProviders.find((p) => p.name === "Curse") as CurseAddonProvider;
-
-    const clientTypes = await this._warcraftService.getWowClientTypes();
-    for (let clientType of clientTypes) {
-      const addonFolders = await this._warcraftService.listAddons(clientType);
-      const scanResults = await curseProvider.getScanResults(addonFolders);
-      const map = {};
-
-      scanResults.forEach((sr) => (map[sr.folderName] = sr.fingerprint));
-
-      console.log(`clientType ${this._warcraftService.getClientDisplayName(clientType)} addon fingerprints`);
-      console.log(map);
-    }
+  public isValidProviderName(providerName: string) {
+    const providerNames = this._addonProviders.map((provider) => provider.name);
+    return _.includes(providerNames, providerName);
   }
 
-  private async getLatestGameVersion(baseDir: string, installedFolders: string[]) {
-    const versions = [];
+  public async logDebugData() {
+    const curseProvider = this._addonProviders.find((p) => p.name === ADDON_PROVIDER_CURSEFORGE) as CurseAddonProvider;
+    const hubProvider = this._addonProviders.find((p) => p.name === ADDON_PROVIDER_HUB) as WowUpAddonProvider;
+
+    const clientMap = {};
+    const clientTypes = await this._warcraftService.getWowClientTypes();
+    for (let clientType of clientTypes) {
+      const clientTypeName = this._warcraftService.getClientFolderName(clientType);
+      const addonFolders = await this._warcraftService.listAddons(clientType);
+
+      const curseMap = {};
+      const curseScanResults = await curseProvider.getScanResults(addonFolders);
+      curseScanResults.forEach((sr) => (curseMap[sr.folderName] = sr.fingerprint));
+
+      const hubMap = {};
+      const hubScanResults = await hubProvider.getScanResults(addonFolders);
+      hubScanResults.forEach((sr) => (hubMap[sr.folderName] = sr.fingerprint));
+
+      clientMap[clientTypeName] = {
+        curse: curseMap,
+        hub: hubMap,
+      };
+
+      console.log(`clientType ${clientTypeName} addon fingerprints`);
+    }
+
+    console.log(JSON.stringify(clientMap));
+  }
+
+  private async getAllTocs(baseDir: string, installedFolders: string[]) {
+    const tocs: Toc[] = [];
 
     for (let dir of installedFolders) {
       const dirPath = path.join(baseDir, dir);
 
-      const tocFile = this._fileService.listFiles(dirPath, "*.toc")[0];
-      if (tocFile == null) {
+      const tocFile = _.first(this._fileService.listFiles(dirPath, "*.toc"));
+      if (!tocFile) {
         continue;
       }
 
@@ -427,9 +578,19 @@ export class AddonService {
         continue;
       }
 
-      versions.push(toc.interface);
+      tocs.push(toc);
     }
 
+    return tocs;
+  }
+
+  private getBestGuessAuthor(tocs: Toc[]) {
+    const authors = _.map(tocs, (toc) => toc.author).filter((author) => !!author);
+    return _.maxBy(authors, (author) => author.length);
+  }
+
+  private getLatestGameVersion(tocs: Toc[]) {
+    const versions = _.map(tocs, (toc) => toc.interface);
     return AddonUtils.getGameVersion(_.orderBy(versions, null, "desc")[0] || "");
   }
 
@@ -485,7 +646,6 @@ export class AddonService {
 
       try {
         // Copy contents from unzipped new directory to existing addon folder location
-        console.log("COPY", unzipLocation);
         await this._fileService.copy(unzippedFilePath, unzipLocation);
       } catch (err) {
         console.error(`Failed to copy addon directory ${unzipLocation}`);
@@ -498,17 +658,25 @@ export class AddonService {
     return this._addonStorage.get(addonId);
   }
 
-  public async getAddonByUrl(url: URL, clientType: WowClientType) {
+  public async getAddonByUrl(url: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
     const provider = this.getAddonProvider(url);
+    if (!provider) {
+      console.warn(`No provider found for urlL: ${url}`);
+      return undefined;
+    }
 
     return await provider.searchByUrl(url, clientType);
   }
 
-  public getAddon(externalId: string, providerName: string, clientType: WowClientType) {
+  public getAddon(externalId: string, providerName: string, clientType: WowClientType): Observable<Addon | undefined> {
     const targetAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
     const provider = this.getProvider(providerName);
     return provider.getById(externalId, clientType).pipe(
       map((searchResult) => {
+        if (!searchResult) {
+          return undefined;
+        }
+
         let latestFile = this.getLatestFile(searchResult, targetAddonChannel);
         if (!latestFile) {
           latestFile = searchResult.files[0];
@@ -519,6 +687,10 @@ export class AddonService {
     );
   }
 
+  public getInstallBasePath(addon: Addon) {
+    return this._warcraftService.getAddonFolderPath(addon.clientType);
+  }
+
   public getFullInstallPath(addon: Addon) {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
     const installedFolders = this.getInstalledFolders(addon);
@@ -527,6 +699,10 @@ export class AddonService {
 
   public getInstalledFolders(addon: Addon): string[] {
     const folders = addon?.installedFolders || "";
+    if (!folders) {
+      return [];
+    }
+
     return folders
       .split(",")
       .map((f) => f.trim())
@@ -566,12 +742,20 @@ export class AddonService {
     }
   }
 
+  public async getAllAddons(clientType: WowClientType) {
+    return this._addonStorage.getAllForClientType(clientType);
+  }
+
   public async getAddons(clientType: WowClientType, rescan = false): Promise<Addon[]> {
+    if (clientType === WowClientType.None) {
+      return [];
+    }
+
     let addons = this._addonStorage.getAllForClientType(clientType);
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
-
       this._addonStorage.removeAllForClientType(clientType);
+
       addons = this.updateAddons(addons, newAddons);
       this._addonStorage.saveAll(addons);
     }
@@ -610,16 +794,24 @@ export class AddonService {
   }
 
   private async syncAddons(clientType: WowClientType, addons: Addon[]) {
-    try {
-      for (let provider of this._addonProviders) {
-        await this.syncProviderAddons(clientType, addons, provider);
-      }
+    let didSync = true;
 
-      return true;
-    } catch (err) {
-      console.error(err);
-      return false;
+    for (const provider of this.getEnabledAddonProviders()) {
+      try {
+        await this.syncProviderAddons(clientType, addons, provider);
+      } catch (e) {
+        console.error(`Failed to sync from provider: ${provider.name}`, e);
+        this._syncErrorSrc.next(
+          new AddonSyncError({
+            providerName: provider.name,
+            innerError: e,
+          })
+        );
+        didSync = false;
+      }
     }
+
+    return didSync;
   }
 
   private async syncProviderAddons(clientType: WowClientType, addons: Addon[], addonProvider: AddonProvider) {
@@ -628,24 +820,48 @@ export class AddonService {
       return;
     }
 
-    const searchResults = await addonProvider.getAll(clientType, providerAddonIds);
-    for (let result of searchResults) {
+    const getAllResults = await addonProvider.getAll(clientType, providerAddonIds);
+    for (const error of getAllResults.errors) {
+      const addonId = (error as any).addonId;
+      let addon: Addon;
+      if (addonId) {
+        addon = _.find(addons, (a) => a.externalId === addonId);
+      }
+
+      this._syncErrorSrc.next(
+        new AddonSyncError({
+          providerName: addonProvider.name,
+          innerError: error,
+          addonName: addon?.name,
+        })
+      );
+    }
+
+    for (let result of getAllResults.searchResults) {
       const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
       const latestFile = this.getLatestFile(result, addon?.channelType);
 
       this.setExternalIdString(addon);
 
-      if (
+      addon.summary = result.summary;
+      addon.thumbnailUrl = result.thumbnailUrl;
+      addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
+
+      if (latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
+        continue;
+      } else if (
         !result ||
         !latestFile ||
         (latestFile.version === addon.latestVersion && latestFile.releaseDate === addon.releasedAt)
       ) {
+        this._addonStorage.set(addon.id, addon);
         continue;
       }
 
       addon.latestVersion = latestFile.version;
       addon.releasedAt = latestFile.releaseDate;
       addon.downloadUrl = latestFile.downloadUrl;
+      addon.externalLatestReleaseId = latestFile.externalId;
       addon.name = result.name;
       addon.author = result.author;
       addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
@@ -656,7 +872,6 @@ export class AddonService {
         addon.gameVersion = AddonUtils.getGameVersion(addon.gameVersion);
       }
 
-      addon.thumbnailUrl = result.thumbnailUrl;
       addon.externalUrl = result.externalUrl;
 
       this._addonStorage.set(addon.id, addon);
@@ -677,6 +892,47 @@ export class AddonService {
     return addons.filter((addon) => addon.providerName === addonProvider.name).map((addon) => addon.externalId);
   }
 
+  private async removeGitFolders(addonFolders: AddonFolder[]) {
+    for (const addonFolder of addonFolders) {
+      const directories = await this._fileService.listDirectories(addonFolder.path);
+      const hasGitFolder = !!directories.find((dir) => dir.toLowerCase() === ".git");
+      if (hasGitFolder) {
+        addonFolder.ignoreReason = "git_repo";
+      }
+    }
+  }
+
+  public async migrate(clientType: WowClientType) {
+    const existingAddons = await this.getAllAddons(clientType);
+    if (!existingAddons.length) {
+      console.log(`Skipping client type: ${clientType} no addons found`);
+      return;
+    }
+
+    const scannedAddons = await this.scanAddons(clientType);
+    for (const addon of existingAddons) {
+      const scannedAddon = _.find(
+        scannedAddons,
+        (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName
+      );
+
+      if (!scannedAddon) {
+        console.log(`No scanned addon found ${addon.name}`);
+        continue;
+      }
+
+      addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
+      addon.externalChannel = scannedAddon.externalChannel;
+
+      // Fill in any addons where this is missing
+      if (!addon.installedFolderList) {
+        addon.installedFolderList = scannedAddon.installedFolderList;
+      }
+
+      this.saveAddon(addon);
+    }
+  }
+
   private async scanAddons(clientType: WowClientType): Promise<Addon[]> {
     if (clientType === WowClientType.None) {
       return [];
@@ -690,22 +946,32 @@ export class AddonService {
       const defaultAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
       const addonFolders = await this._warcraftService.listAddons(clientType);
 
+      await this.removeGitFolders(addonFolders);
+
       this._scanUpdateSrc.next({
         type: ScanUpdateType.Update,
         currentCount: 0,
         totalCount: addonFolders.length,
       });
 
-      for (let provider of this._addonProviders) {
+      for (const provider of this._addonProviders) {
         try {
-          const validFolders = addonFolders.filter((af) => !af.matchingAddon && af.toc);
+          const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.toc);
           await provider.scan(clientType, defaultAddonChannel, validFolders);
-        } catch (err) {
-          console.error(err);
+        } catch (e) {
+          console.error(e);
+          this._scanErrorSrc.next(
+            new AddonScanError({
+              providerName: provider.name,
+              innerError: e,
+            })
+          );
         }
       }
 
       const matchedAddonFolders = addonFolders.filter((addonFolder) => !!addonFolder.matchingAddon);
+      const matchedAddonFolderNames = matchedAddonFolders.map((mf) => mf.name);
+
       matchedAddonFolders.forEach((maf) => this.setExternalIds(maf.matchingAddon, maf.toc));
       const matchedGroups = _.groupBy(
         matchedAddonFolders,
@@ -714,9 +980,28 @@ export class AddonService {
 
       console.log(Object.keys(matchedGroups));
 
-      return Object.values(matchedGroups).map(
+      const addonList = Object.values(matchedGroups).map(
         (value) => _.orderBy(value, (v) => v.matchingAddon.externalIds.length).reverse()[0].matchingAddon
       );
+
+      const unmatchedFolders = addonFolders.filter((af) => this.isAddonFolderUnmatched(matchedAddonFolderNames, af));
+      console.debug("unmatchedFolders", unmatchedFolders);
+
+      const unmatchedAddons = unmatchedFolders.map((uf) =>
+        this.createUnmatchedAddon(uf, clientType, matchedAddonFolderNames)
+      );
+
+      console.debug("unmatchedAddons", unmatchedAddons);
+
+      addonList.push(...unmatchedAddons);
+
+      //Clear the changelogs since they wont always be latest
+      addonList.forEach((addon) => {
+        addon.latestChangelog = undefined;
+        addon.latestChangelogVersion = undefined;
+      });
+
+      return addonList;
     } finally {
       this._scanUpdateSrc.next({
         type: ScanUpdateType.Complete,
@@ -742,8 +1027,47 @@ export class AddonService {
     addon.externalIds = externalIds;
   }
 
+  private async reconcileAddonFolders(addon: Addon) {
+    let existingAddons = await this.getAddons(addon.clientType);
+    existingAddons = _.filter(
+      existingAddons,
+      (ea) => ea.id !== addon.id && _.intersection(addon.installedFolderList, ea.installedFolderList).length > 0
+    );
+
+    console.debug("reconcileAddonFolders", existingAddons);
+
+    for (const existingAddon of existingAddons) {
+      if (existingAddon.providerName === ADDON_PROVIDER_UNKNOWN) {
+        await this.removeAddon(existingAddon, false, false);
+      }
+    }
+  }
+
+  /**
+   * This should verify that a folder that did not have a match, is actually unmatched
+   * This will happen for any sub folders of TukUI or WowInterface addons
+   */
+  private isAddonFolderUnmatched(matchedFolderNames: string[], addonFolder: AddonFolder) {
+    if (addonFolder.matchingAddon) {
+      return false;
+    }
+
+    // if the folder is load on demand, it 'should' be a sub folder
+    const isLoadOnDemand = addonFolder.toc?.loadOnDemand === "1";
+    if (isLoadOnDemand && this.allItemsMatch(addonFolder.toc.dependencyList, matchedFolderNames)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /** Check if all primitives in subset are in the superset (strings, ints) */
+  private allItemsMatch(subset: any[], superset: any[]) {
+    return _.difference(subset, superset).length === 0;
+  }
+
   public insertExternalId(externalIds: AddonExternalId[], providerName: string, addonId?: string) {
-    if (!addonId) {
+    if (!addonId || providerName === ADDON_PROVIDER_RAIDERIO) {
       return;
     }
 
@@ -825,7 +1149,16 @@ export class AddonService {
   }
 
   public getFeaturedAddons(clientType: WowClientType): Observable<AddonSearchResult[]> {
-    return forkJoin(this._addonProviders.map((p) => p.getFeaturedAddons(clientType))).pipe(
+    return forkJoin(
+      this.getEnabledAddonProviders().map(async (p) => {
+        try {
+          return await p.getFeaturedAddons(clientType);
+        } catch (e) {
+          console.error(`Failed to get featured addons: ${p.name}`, e);
+          return [];
+        }
+      })
+    ).pipe(
       map((results) => {
         return _.orderBy(results.flat(1), ["downloadCount"]).reverse();
       })
@@ -838,6 +1171,17 @@ export class AddonService {
 
   public isInstalled(externalId: string, clientType: WowClientType) {
     return !!this.getByExternalId(externalId, clientType);
+  }
+
+  public setProviderEnabled(providerName: string, enabled: boolean) {
+    const provider = this.getProvider(providerName);
+    if (provider) {
+      provider.enabled = enabled;
+    }
+  }
+
+  private getProvider(providerName: string) {
+    return this._addonProviders.find((provider) => provider.name === providerName);
   }
 
   public async backfillAddons() {
@@ -883,15 +1227,19 @@ export class AddonService {
     );
   }
 
-  private getProvider(providerName: string) {
-    return this._addonProviders.find((provider) => provider.name === providerName);
-  }
-
   private getAddonProvider(addonUri: URL): AddonProvider {
-    return this._addonProviders.find((provider) => provider.isValidAddonUri(addonUri));
+    return this.getEnabledAddonProviders().find((provider) => provider.isValidAddonUri(addonUri));
   }
 
-  private getLatestFile(searchResult: AddonSearchResult, channelType: AddonChannelType): AddonSearchResultFile {
+  private getLatestFile(
+    searchResult: AddonSearchResult,
+    channelType: AddonChannelType
+  ): AddonSearchResultFile | undefined {
+    if (!searchResult?.files) {
+      console.warn("Search result had no files", searchResult);
+      return undefined;
+    }
+
     let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
     files = _.orderBy(files, ["releaseDate"]).reverse();
     return _.first(files);
@@ -908,6 +1256,7 @@ export class AddonService {
     }
 
     const dependencies = _.map(latestFile.dependencies, this.createAddonDependency);
+    const fundingLinks = Array.isArray(searchResult.fundingLinks) ? [...searchResult.fundingLinks] : [];
 
     return {
       id: uuidv4(),
@@ -929,6 +1278,45 @@ export class AddonService {
       screenshotUrls: searchResult.screenshotUrls,
       dependencies,
       externalChannel: getEnumName(AddonChannelType, latestFile.channelType),
+      isLoadOnDemand: false,
+      externalLatestReleaseId: latestFile.externalId,
+      fundingLinks,
+    };
+  }
+
+  private createUnmatchedAddon(
+    addonFolder: AddonFolder,
+    clientType: WowClientType,
+    matchedAddonFolderNames: string[]
+  ): Addon {
+    const tocMissingDependencies = _.difference(addonFolder.toc?.dependencyList, matchedAddonFolderNames);
+
+    return {
+      id: uuidv4(),
+      name: addonFolder.toc?.title || addonFolder.name,
+      thumbnailUrl: "",
+      latestVersion: addonFolder.toc?.version || "",
+      installedVersion: addonFolder.toc?.version || "",
+      clientType: clientType,
+      externalId: "",
+      gameVersion: addonFolder.toc?.interface || "",
+      author: addonFolder.toc?.author || "",
+      downloadUrl: "",
+      externalUrl: "",
+      providerName: ADDON_PROVIDER_UNKNOWN,
+      channelType: AddonChannelType.Stable,
+      isIgnored: true,
+      autoUpdateEnabled: false,
+      releasedAt: new Date(),
+      installedAt: addonFolder.fileStats?.mtime || new Date(),
+      installedFolders: addonFolder.name,
+      installedFolderList: [addonFolder.name],
+      summary: "",
+      screenshotUrls: [],
+      isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",
+      externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+      missingDependencies: tocMissingDependencies,
+      ignoreReason: addonFolder.ignoreReason,
     };
   }
 
@@ -938,6 +1326,10 @@ export class AddonService {
       type: dependency.type,
     };
   };
+
+  public getEnabledAddonProviders() {
+    return _.filter(this._addonProviders, (provider) => provider.enabled);
+  }
 
   private trackInstallAction(installType: InstallType, addon: Addon) {
     this._analyticsService.trackAction(`addon-install-action`, {

@@ -11,7 +11,7 @@ export class ExternalLinkDirective {
 
     const target = $event.path.find((t) => t.tagName === "A");
 
-    this._electronService.shell.openExternal(target.href);
+    this._electronService.openExternal(target.href);
   }
 
   constructor(private _electronService: ElectronService) {}

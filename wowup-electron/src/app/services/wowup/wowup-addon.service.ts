@@ -3,7 +3,6 @@ import { ElectronService } from "..";
 import { Addon } from "../../entities/addon";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
-const Handlebars = require("handlebars");
 
 class WowUpAddonData {
   public updatesAvailableCount: number;
@@ -23,11 +22,12 @@ export class WowUpAddonService {
   ) {}
 
   public async persistUpdateInformationToWowUpAddon(addons: Addon[]) {
-    const wowupAddon = addons.find((addon: Addon) => addon.name === "WowUp.Addon");
+    const wowupAddon = addons.find((addon: Addon) => addon.name === "Addon Update Notifications (by WowUp)");
     if (!wowupAddon) {
       return;
     }
 
+    console.log('Found the WowUp addon notification addon, trying to sync updates available to data.lua');
     try {
       const templatePath = await this._fileService.getAssetFilePath("WowUpAddon/data.lua.hbs");
       const templateContents = await this._fileService.readFile(templatePath);
@@ -41,10 +41,12 @@ export class WowUpAddonService {
       };
 
       if (!this.compiledTemplate) {
-        this.compiledTemplate = Handlebars.compile(templateContents);
+        this.compiledTemplate = window.libs.handlebars.compile(templateContents);
       }
 
       await this._fileService.writeFile(dataFile, this.compiledTemplate(wowUpAddonData));
+
+      console.log('Available update data synced to data.lua');
     } catch (e) {
       console.log(e);
     }

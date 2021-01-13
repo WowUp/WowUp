@@ -2,18 +2,58 @@ import * as _ from "lodash";
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
-import { readDirRecursive, readFile } from "../../../file.utils";
+import * as pLimit from "p-limit";
+import * as log from "electron-log";
+import { readDirRecursive, readFile, readFileAsBuffer } from "../../../file.utils";
 import { WowUpScanResult } from "./wowup-scan-result";
+
+const INVALID_PATH_CHARS = [
+  "|",
+  "\0",
+  "\u0001",
+  "\u0002",
+  "\u0003",
+  "\u0004",
+  "\u0005",
+  "\u0006",
+  "\b",
+  "\t",
+  "\n",
+  "\v",
+  "\f",
+  "\r",
+  "\u000e",
+  "\u000f",
+  "\u0010",
+  "\u0011",
+  "\u0012",
+  "\u0013",
+  "\u0014",
+  "\u0015",
+  "\u0016",
+  "\u0017",
+  "\u0018",
+  "\u0019",
+  "\u001a",
+  "\u001b",
+  "\u001c",
+  "\u001d",
+  "\u001e",
+  "\u001f",
+];
 
 export class WowUpFolderScanner {
   private _folderPath = "";
+
+  // This map is required for solving for case sensitive mismatches from addon authors on Linux
+  private _fileMap: { [key: string]: string } = {};
 
   constructor(folderPath: string) {
     this._folderPath = folderPath;
   }
 
   private get tocFileCommentsRegex() {
-    return /\s*#.*$/gm;
+    return /\s*#.*$/gim;
   }
 
   private get tocFileIncludesRegex() {
@@ -33,53 +73,46 @@ export class WowUpFolderScanner {
   }
 
   private get bindingsXmlCommentsRegex() {
-    return /<!--.*?-->/gs;
+    return /<!--.*?-->/gis;
   }
 
   public async scanFolder(): Promise<WowUpScanResult> {
-    const folderPath = this._folderPath;
-    const files = await readDirRecursive(folderPath);
-    console.log("listAllFiles", folderPath, files.length);
+    const files = await readDirRecursive(this._folderPath);
+    files.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
 
-    let matchingFiles = await this.getMatchingFiles(folderPath, files);
-    matchingFiles = _.sortBy(matchingFiles, (f) => f.toLowerCase());
+    let matchingFiles = await this.getMatchingFiles(this._folderPath, files);
+    matchingFiles = _.orderBy(matchingFiles, [(f) => f.toLowerCase()], ["asc"]);
 
-    const tocFile = this.getTocFile(folderPath);
+    const limit = pLimit(4);
+    const tasks = _.map(matchingFiles, (file) =>
+      limit(async () => {
+        return { hash: await this.hashFile(file), file };
+      })
+    );
+    const fileFingerprints = await Promise.all(tasks);
 
-    let fileFingerprints: string[] = [];
-    for (let file of matchingFiles) {
-      const fileHash = await this.hashFile(file);
-      fileFingerprints.push(fileHash);
-    }
-
-    const hashConcat = _.orderBy(fileFingerprints).join("");
+    const fingerprintList = _.map(fileFingerprints, (ff) => ff.hash);
+    const hashConcat = _.orderBy(fingerprintList).join("");
     const fingerprint = this.hashString(hashConcat);
 
+    // log.info(this._folderPath, fingerprint);
+
     const result: WowUpScanResult = {
-      fileFingerprints,
+      fileFingerprints: fingerprintList,
       fingerprint,
-      path: folderPath,
-      folderName: path.basename(folderPath),
+      path: this._folderPath,
+      folderName: path.basename(this._folderPath),
       fileCount: matchingFiles.length,
     };
 
     return result;
   }
 
-  private getTocFile(directory: string) {
-    const baseFiles = fs.readdirSync(directory);
-    const tocFile = baseFiles.find((file) => path.extname(file) === ".toc");
-    if (!tocFile) {
-      console.warn("No toc file: " + directory);
-      return "";
-    }
-    return path.join(directory, tocFile);
-  }
-
   private async getMatchingFiles(folderPath: string, filePaths: string[]): Promise<string[]> {
-    const parentDir = path.dirname(folderPath) + path.sep;
+    const parentDir = path.normalize(path.dirname(folderPath) + path.sep);
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
+
     for (let filePath of filePaths) {
       const input = filePath.toLowerCase().replace(parentDir.toLowerCase(), "");
 
@@ -99,25 +132,41 @@ export class WowUpFolderScanner {
   }
 
   private async processIncludeFile(matchingFileList: string[], fileInfo: string) {
-    if (!fs.existsSync(fileInfo) || matchingFileList.indexOf(fileInfo) !== -1) {
+    let nativePath = "";
+    try {
+      nativePath = this.getRealPath(fileInfo);
+    } catch (e) {
       return;
     }
 
-    matchingFileList.push(fileInfo);
+    if (!fs.existsSync(nativePath) || matchingFileList.indexOf(nativePath) !== -1) {
+      return;
+    }
 
-    let input = await readFile(fileInfo);
-    input = this.removeComments(fileInfo, input);
+    matchingFileList.push(nativePath);
 
-    const inclusions = this.getFileInclusionMatches(fileInfo, input);
+    let input = await readFile(nativePath);
+    input = this.removeComments(nativePath, input);
+
+    const inclusions = this.getFileInclusionMatches(nativePath, input);
     if (!inclusions || !inclusions.length) {
       return;
     }
 
-    const dirname = path.dirname(fileInfo);
+    const dirname = path.dirname(nativePath);
     for (let include of inclusions) {
+      if (this.hasInvalidPathChars(include)) {
+        log.debug(`Invalid include file ${nativePath}`);
+        break;
+      }
+
       const fileName = path.join(dirname, include.replace(/\\/g, path.sep));
       await this.processIncludeFile(matchingFileList, fileName);
     }
+  }
+
+  private hasInvalidPathChars(path: string) {
+    return INVALID_PATH_CHARS.some((c) => path.indexOf(c) !== -1);
   }
 
   private removeComments(fileInfo: string, fileContent: string): string {
@@ -157,31 +206,23 @@ export class WowUpFolderScanner {
     return matches;
   }
 
-  private hashString(str: string) {
+  private hashString(str: string | crypto.BinaryLike) {
     const md5 = crypto.createHash("md5");
     md5.update(str);
     return md5.digest("hex");
   }
 
-  private hashFile(filePath: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const fileStream = fs.createReadStream(filePath);
-      const hash = crypto.createHash("md5");
-      hash.setEncoding("hex");
+  private async hashFile(filePath: string): Promise<string> {
+    const text = await readFileAsBuffer(filePath);
+    return this.hashString(text);
+  }
 
-      fileStream.on("end", function () {
-        hash.end();
-        const hashStr = hash.read();
-        fileStream.destroy();
-        resolve(hashStr);
-      });
-
-      fileStream.on("error", (error) => {
-        console.error(error);
-        reject(error);
-      });
-
-      fileStream.pipe(hash);
-    });
+  private getRealPath(filePath: string) {
+    const lowerPath = filePath.toLowerCase();
+    const matchedPath = this._fileMap[lowerPath];
+    if (!matchedPath) {
+      throw new Error(`Path not found: ${lowerPath}`);
+    }
+    return matchedPath;
   }
 }

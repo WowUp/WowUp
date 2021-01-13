@@ -6,12 +6,17 @@ import {
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
+  MAXIMIZE_WINDOW,
+  MINIMIZE_WINDOW,
+  WINDOW_ENTER_FULLSCREEN,
+  WINDOW_LEAVE_FULLSCREEN,
 } from "../../../common/constants";
-import { platform } from "os";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../environments/environment";
 import { ElectronService } from "../../services/electron/electron.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { MatSnackBar, MatSnackBarRef } from "@angular/material/snack-bar";
+import { CenteredSnackbarComponent } from "../centered-snackbar/centered-snackbar.component";
 
 @Component({
   selector: "app-titlebar",
@@ -19,22 +24,43 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./titlebar.component.scss"],
 })
 export class TitlebarComponent implements OnInit, OnDestroy {
-  // TODO use electron service
-  public isMac = platform() === "darwin";
-  public isWindows = platform() === "win32";
-  public isLinux = platform() === "linux";
-  public userAgent = platform();
   public isProd = AppConfig.production;
   public isMaximized = false;
 
   private _subscriptions: Subscription[] = [];
+  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent>;
 
-  constructor(public electronService: ElectronService, private _wowUpService: WowUpService, private _ngZone: NgZone) {
+  public isFullscreen = false;
+
+  constructor(
+    public electronService: ElectronService,
+    private _wowUpService: WowUpService,
+    private _ngZone: NgZone,
+    private _snackBar: MatSnackBar
+  ) {
     const windowMaximizedSubscription = this.electronService.windowMaximized$.subscribe((maximized) => {
       this._ngZone.run(() => (this.isMaximized = maximized));
     });
 
     this._subscriptions = [windowMaximizedSubscription];
+
+    this.electronService.on(WINDOW_ENTER_FULLSCREEN, () => {
+      this.isFullscreen = true;
+      this._snackBarRef = this._snackBar.openFromComponent(CenteredSnackbarComponent, {
+        duration: 5000,
+        panelClass: ["wowup-snackbar", "text-1"],
+        data: {
+          message: `Press F11 to exit full screen`,
+        },
+        verticalPosition: "top",
+      });
+    });
+
+    this.electronService.on(WINDOW_LEAVE_FULLSCREEN, () => {
+      this.isFullscreen = false;
+      this._snackBarRef?.dismiss();
+      this._snackBarRef = undefined;
+    });
   }
 
   ngOnInit(): void {}
@@ -59,30 +85,20 @@ export class TitlebarComponent implements OnInit, OnDestroy {
   }
 
   onClickClose() {
-    if (this._wowUpService.collapseToTray) {
-      this.electronService.hideWindow();
-    } else {
-      this.electronService.closeWindow();
-    }
-  }
-
-  onClickDebug() {
-    this.electronService.remote.getCurrentWebContents().openDevTools();
+    this.electronService.closeWindow();
   }
 
   onDblClick() {
-    const win = this.electronService.remote.getCurrentWindow();
+    if (this.electronService.isMac) {
+      const action = this.electronService.getUserDefaultSystemPreference(
+        "AppleActionOnDoubleClick",
+        "string"
+      ) as string;
 
-    if (this.isMac) {
-      const action = this.electronService.remote.systemPreferences.getUserDefault("AppleActionOnDoubleClick", "string");
       if (action === "Maximize") {
-        if (win.isMaximized()) {
-          win.unmaximize();
-        } else {
-          win.maximize();
-        }
+        this.electronService.invoke(MAXIMIZE_WINDOW);
       } else if (action === "Minimize") {
-        win.minimize();
+        this.electronService.invoke(MINIMIZE_WINDOW);
       }
     }
   }

@@ -1,13 +1,15 @@
-<div class="page-container bg-secondary-3" [ngClass]="{ linux: electronService.isLinux }">
+<div *ngIf="appReady === false" class="page-container bg-secondary-3" [ngClass]="{ linux: electronService.isLinux }">
+  <div class="tab-bar-placeholder bg-primary"></div>
+  <div class="preload-container">
+    <app-progress-spinner [message]="preloadSpinnerKey | translate">
+    </app-progress-spinner>
+  </div>
+</div>
+<div *ngIf="appReady === true" class="page-container bg-secondary-3" [ngClass]="{ linux: electronService.isLinux }">
   <div class="tabs">
-    <mat-tab-group
-      mat-align-tabs="center"
-      animationDuration="0ms"
-      [backgroundColor]="'primary'"
-      [disablePagination]="true"
-      [(selectedIndex)]="selectedIndex"
-      (selectedIndexChange)="onSelectedIndexChange($event)"
-    >
+    <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [backgroundColor]="'primary'"
+      [disablePagination]="true" [(selectedIndex)]="selectedIndex"
+      (selectedIndexChange)="onSelectedIndexChange($event)">
       <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.MY_ADDONS_TAB_TITLE' | translate">
         <app-my-addons [tabIndex]="0"></app-my-addons>
       </mat-tab>

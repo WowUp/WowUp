@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 
 @Component({
   selector: "app-my-addon-status-column",
@@ -13,7 +13,7 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
   @Output() onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   public get showStatusText() {
-    return this.listItem?.isUpToDate || this.listItem?.isIgnored;
+    return this.listItem?.isUpToDate() || this.listItem?.addon.isIgnored;
   }
 
   constructor(private _translateService: TranslateService, private _ngzone: NgZone) {}
@@ -27,11 +27,11 @@ export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
       return "";
     }
 
-    if (this.listItem?.isIgnored) {
+    if (this.listItem?.addon.isIgnored) {
       return "COMMON.ADDON_STATE.IGNORED";
     }
 
-    if (this.listItem?.isUpToDate) {
+    if (this.listItem?.isUpToDate()) {
       return "COMMON.ADDON_STATE.UPTODATE";
     }
 

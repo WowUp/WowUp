@@ -5,6 +5,7 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
+import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -14,10 +15,13 @@ export class AddonViewModel {
   public installProgress: number = 0;
   public stateTextTranslationKey: string = "";
   public selected: boolean = false;
+  public releasedAt: number = 0;
+  public installedAt: number = 0;
 
-  get installedAt() {
-    return new Date(this.addon?.installedAt);
+  get isLoadOnDemand() {
+    return this.addon?.isLoadOnDemand;
   }
+
   get hasThumbnail() {
     return !!this.addon.thumbnailUrl;
   }
@@ -34,33 +38,31 @@ export class AddonViewModel {
     return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
   }
 
-  get isAutoUpdate() {
-    return this.addon.autoUpdateEnabled;
+  constructor(addon?: Addon) {
+    this.addon = addon;
+    this.installedAt = addon.installedAt ? new Date(addon.installedAt).getTime() : 0;
+    this.releasedAt = addon.releasedAt ? new Date(addon.releasedAt).getTime() : 0;
+    this.stateTextTranslationKey = this.getStateTextTranslationKey();
   }
 
-  get isUpToDate() {
+  public isUpToDate() {
     return !this.isInstalling && !AddonUtils.needsUpdate(this.addon);
   }
 
-  get isIgnored() {
-    return this.addon.isIgnored;
-  }
-
-  get isStableChannel() {
+  public isStableChannel() {
     return this.addon.channelType === AddonChannelType.Stable;
   }
 
-  get isBetaChannel() {
+  public isBetaChannel() {
     return this.addon.channelType === AddonChannelType.Beta;
   }
 
-  get isAlphaChannel() {
+  public isAlphaChannel() {
     return this.addon.channelType === AddonChannelType.Alpha;
   }
 
-  constructor(addon?: Addon) {
-    this.addon = addon;
-    this.stateTextTranslationKey = this.getStateTextTranslationKey();
+  public isUnMatched() {
+    return this.addon.providerName === ADDON_PROVIDER_UNKNOWN;
   }
 
   public clone() {
@@ -72,7 +74,7 @@ export class AddonViewModel {
   }
 
   public get sortOrder(): AddonStatusSortOrder {
-    if (this.isIgnored) {
+    if (this.addon.isIgnored) {
       return AddonStatusSortOrder.Ignored;
     }
 
@@ -84,7 +86,7 @@ export class AddonViewModel {
       return AddonStatusSortOrder.Update;
     }
 
-    if (this.isUpToDate) {
+    if (this.isUpToDate()) {
       return AddonStatusSortOrder.UpToDate;
     }
 
@@ -92,11 +94,11 @@ export class AddonViewModel {
   }
 
   public getStateTextTranslationKey() {
-    if (this.isUpToDate) {
+    if (this.isUpToDate()) {
       return "COMMON.ADDON_STATE.UPTODATE";
     }
 
-    if (this.isIgnored) {
+    if (this.addon.isIgnored) {
       return "COMMON.ADDON_STATE.IGNORED";
     }
 
@@ -108,7 +110,7 @@ export class AddonViewModel {
       return "COMMON.ADDON_STATE.INSTALL";
     }
 
-    console.warn("Unhandled display state", this.isUpToDate, JSON.stringify(this, null, 2));
+    console.warn("Unhandled display state", this.isUpToDate(), JSON.stringify(this, null, 2));
     return "COMMON.ADDON_STATE.UNKNOWN";
   }
 

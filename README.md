@@ -11,6 +11,14 @@
 Thanks to the announcement that Twitch is giving the Curse addon client to yet another company I wanted to try and create something the community can believe in.
 If you have any ideas/requests for the feature list let me know!
 
+### [Chocolatey](https://chocolatey.org)
+
+You can also install the latest version via Chocolatey package manager:
+
+```cmd
+choco install wowup
+```
+
 ### Upcoming Features
 - [x] Create feature List
 - [x] Scan for already installed addons

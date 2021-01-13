@@ -83,6 +83,22 @@ img {
   margin-left: 1em !important;
 }
 
+.mt-1 {
+  margin-top: 0.25em !important;
+}
+
+.mt-2 {
+  margin-top: 0.5em !important;
+}
+
+.mt-3 {
+  margin-top: 1em !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .no-reg-drag {
   -webkit-app-region: no-drag;
 }
@@ -92,6 +108,16 @@ img {
 
   &:hover {
     cursor: pointer !important;
+  }
+}
+
+.text-light {
+  color: $white-1;
+}
+
+.text-light-hover {
+  &:hover {
+    color: $white-1 !important;
   }
 }
 
@@ -256,6 +282,22 @@ img {
   text-align: left;
 }
 
+.addon-summary {
+  img {
+    max-width: 100%;
+  }
+}
+
+.addon-summary,
+.addon-changelog {
+  strong,
+  b {
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+  }
+}
+
 .addon-table {
   width: 100%;
   height: 100%;
@@ -401,13 +443,8 @@ img {
   }
 }
 
-snack-bar-container {
-  &.center-text {
-    span {
-      margin: auto;
-      text-align: center;
-    }
-  }
+.snackbar-error {
+  border: 2px solid red;
 }
 
 // MATERIAL OVERRIDES

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
@@ -17,6 +17,7 @@ import {
   HORDE_LIGHT_THEME,
   HORDE_THEME,
 } from "../../../common/constants";
+import { ZOOM_SCALE } from "../../utils/zoom.utils";
 
 interface LocaleListItem {
   localeId: string;
@@ -36,8 +37,11 @@ export class OptionsAppSectionComponent implements OnInit {
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage: string = "";
+  public zoomScale = ZOOM_SCALE;
+  public currentScale = 1;
   public languages: LocaleListItem[] = [
     { localeId: "en", label: "English" },
+    { localeId: "cs", label: "Čestina" },
     { localeId: "de", label: "Deutsch" },
     { localeId: "es", label: "Español" },
     { localeId: "fr", label: "Français" },
@@ -52,26 +56,29 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public themeGroups: ThemeGroup[] = [
     {
-      name: 'APP.THEME.GROUP_DARK', themes: [
+      name: "APP.THEME.GROUP_DARK",
+      themes: [
         { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_THEME },
-      ]
+      ],
     },
     {
-      name: 'APP.THEME.GROUP_LIGHT', themes: [
+      name: "APP.THEME.GROUP_LIGHT",
+      themes: [
         { display: "APP.THEME.DEFAULT", class: DEFAULT_LIGHT_THEME },
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_LIGHT_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_LIGHT_THEME },
-      ]
+      ],
     },
-  ]
+  ];
 
   constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
-    private _electronService: ElectronService,
     private _translateService: TranslateService,
+    private _cdRef: ChangeDetectorRef,
+    public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService
   ) {}
@@ -81,7 +88,7 @@ export class OptionsAppSectionComponent implements OnInit {
       this.telemetryEnabled = enabled;
     });
 
-    const minimizeOnCloseKey = this._electronService.isWin
+    const minimizeOnCloseKey = this.electronService.isWin
       ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
       : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
 
@@ -95,6 +102,20 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startWithSystem = this.wowupService.startWithSystem;
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
+
+    this.initScale;
+
+    this.electronService.zoomFactor$.subscribe((zoomFactor) => {
+      this.currentScale = zoomFactor;
+      this._cdRef.detectChanges();
+    });
+  }
+
+  private async initScale() {
+    await this.updateScale();
+    this.electronService.onRendererEvent("zoom-changed", (event, arg) => {
+      this.updateScale();
+    });
   }
 
   onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
@@ -141,7 +162,7 @@ export class OptionsAppSectionComponent implements OnInit {
       }
 
       this.wowupService.useHardwareAcceleration = evt.checked;
-      this._electronService.restartApplication();
+      this.electronService.restartApplication();
     });
   };
 
@@ -160,7 +181,17 @@ export class OptionsAppSectionComponent implements OnInit {
       }
 
       this.wowupService.currentLanguage = evt.value;
-      this._electronService.restartApplication();
+      this.electronService.restartApplication();
     });
   };
+
+  public onScaleChange = (evt: MatSelectChange) => {
+    const newScale = evt.value;
+    this.electronService.setZoomFactor(newScale);
+    this.currentScale = newScale;
+  };
+
+  private async updateScale() {
+    this.currentScale = await this.electronService.getZoomFactor();
+  }
 }

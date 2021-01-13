@@ -1,3 +1,4 @@
+import { AddonFundingLink } from "../../entities/addon";
 import { AddonSearchResultFile } from "./addon-search-result-file";
 
 export interface AddonSearchResult {
@@ -13,4 +14,5 @@ export interface AddonSearchResult {
   summary?: string;
   thumbnailUrl: string;
   releasedAt?: Date;
+  fundingLinks?: AddonFundingLink[];
 }
