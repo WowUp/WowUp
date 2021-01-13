@@ -8,6 +8,7 @@ import { TitlebarComponent } from "./titlebar.component";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ElectronService } from "../../services";
 import { BehaviorSubject } from "rxjs";
+import { MatModule } from "../../mat-module";
 
 describe("TitlebarComponent", () => {
   let component: TitlebarComponent;
@@ -18,7 +19,7 @@ describe("TitlebarComponent", () => {
   let wowUpServiceSpy: any;
 
   beforeEach(async () => {
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["on"], {
       windowMaximized$: new BehaviorSubject(false).asObservable(),
     });
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
@@ -30,6 +31,7 @@ describe("TitlebarComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [TitlebarComponent],
       imports: [
+        MatModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {
