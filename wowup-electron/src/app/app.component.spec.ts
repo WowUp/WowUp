@@ -1,5 +1,5 @@
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 
 import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
@@ -42,6 +42,7 @@ describe("AppComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on"], {
       appOptions: { quit: null },
       getAppOptions: () => Promise.resolve({}),
+      powerMonitor$: new Observable(),
       ipcRenderer: {
         on: () => {},
       },
@@ -49,7 +50,7 @@ describe("AppComponent", () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       preferenceChange$: new Subject<PreferenceChange>().asObservable(),
     });
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", [""]);
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["autoUpdateComplete"]);
     fileServiceSpy = jasmine.createSpyObj("FileService", [""]);
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", ["trackStartup"]);
     preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", ["get"], {});
