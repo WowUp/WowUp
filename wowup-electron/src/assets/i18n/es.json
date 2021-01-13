@@ -2,21 +2,21 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "COPY": "Copy",
-        "CUT": "Cut",
+        "COPY": "Copiar",
+        "CUT": "Cortar",
         "LABEL": "Edición",
-        "PASTE": "Paste",
-        "REDO": "Redo",
-        "SELECT_ALL": "SelectAll",
-        "UNDO": "Undo"
+        "PASTE": "Pegar",
+        "REDO": "Rehacer",
+        "SELECT_ALL": "Seleccionar Todo",
+        "UNDO": "Deshacer"
       },
-      "QUIT": "Quit",
+      "QUIT": "Salir",
       "VIEW": {
-        "FORCE_RELOAD": "Force Reload",
+        "FORCE_RELOAD": "Forzar Recarga",
         "LABEL": "Ver",
-        "RELOAD": "Reload",
-        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
-        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "RELOAD": "Recargar",
+        "TOGGLE_DEV_TOOLS": "Alternar Herramientas Desarrollo",
+        "TOGGLE_FULL_SCREEN": "Alternar Pantalla Completa",
         "ZOOM_IN": "Ampliar",
         "ZOOM_OUT": "Reducir",
         "ZOOM_RESET": "Restablecer Zoom"
@@ -25,7 +25,7 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Abandonar modo de pantalla completa",
     "PROVIDERS": {
       "UNKNOWN": "Desconocido"
     },
@@ -47,7 +47,7 @@
       "HORDE": "Horda"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Pantalla completa",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Instalar actualización de WowUp",
       "INSTALL_MESSAGE": "¿Quiere reiniciar WowUp para instalar la actualización?",
@@ -71,7 +71,7 @@
       "UPTODATE": "Actualizado"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Respaldando",
+      "BACKINGUP": "Copiando",
       "COMPLETE": "Instalado",
       "DOWNLOADING": "Descargando",
       "ERROR": "Error",
