@@ -289,9 +289,7 @@ function createWindow(): BrowserWindow {
     if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
       return;
     }
-
     win.hide();
-
     if (platform.isMac) {
       app.dock.hide();
     } else {
@@ -324,6 +322,11 @@ function createWindow(): BrowserWindow {
     win?.webContents?.send(WINDOW_LEAVE_FULLSCREEN);
   });
 
+  win.webContents.on("did-fail-load", async () => {
+    log.info("did-fail-load");
+    loadMainUrl(win);
+  });
+
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
     require("electron-reload")(__dirname, {
@@ -331,16 +334,20 @@ function createWindow(): BrowserWindow {
     });
     win.loadURL("http://localhost:4200");
   } else {
-    win.loadURL(
-      urlFormat({
-        pathname: join(__dirname, "dist/index.html"),
-        protocol: "file:",
-        slashes: true,
-      })
-    );
+    loadMainUrl(win);
   }
 
   return win;
+}
+
+function loadMainUrl(window: BrowserWindow) {
+  window?.loadURL(
+    urlFormat({
+      pathname: join(__dirname, "dist/index.html"),
+      protocol: "file:",
+      slashes: true,
+    })
+  );
 }
 
 function sendEventToContents(window: BrowserWindow, event: MainChannels, ...args: any[]) {

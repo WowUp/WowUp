@@ -71,7 +71,12 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
     viewMenu,
     {
       label: config.windowLabel,
-      submenu: [{ label: config.windowCloseLabel, role: "close" }],
+      submenu: [
+        {
+          label: config.windowCloseLabel,
+          role: "close" /*click: () => win?.close(), accelerator: "CommandOrControl+w"*/,
+        },
+      ],
     },
   ];
 }

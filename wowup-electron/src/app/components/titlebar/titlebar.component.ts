@@ -17,6 +17,7 @@ import { ElectronService } from "../../services/electron/electron.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { MatSnackBar, MatSnackBarRef } from "@angular/material/snack-bar";
 import { CenteredSnackbarComponent } from "../centered-snackbar/centered-snackbar.component";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-titlebar",
@@ -36,7 +37,8 @@ export class TitlebarComponent implements OnInit, OnDestroy {
     public electronService: ElectronService,
     private _wowUpService: WowUpService,
     private _ngZone: NgZone,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _translateService: TranslateService
   ) {
     const windowMaximizedSubscription = this.electronService.windowMaximized$.subscribe((maximized) => {
       this._ngZone.run(() => (this.isMaximized = maximized));
@@ -46,11 +48,13 @@ export class TitlebarComponent implements OnInit, OnDestroy {
 
     this.electronService.on(WINDOW_ENTER_FULLSCREEN, () => {
       this.isFullscreen = true;
+      const localeKey = this.electronService.isMac ? "APP.FULLSCREEN_SNACKBAR.MAC" : "APP.FULLSCREEN_SNACKBAR.WINDOWS";
+      const message = this._translateService.instant(localeKey);
       this._snackBarRef = this._snackBar.openFromComponent(CenteredSnackbarComponent, {
         duration: 5000,
         panelClass: ["wowup-snackbar", "text-1"],
         data: {
-          message: `Press F11 to exit full screen`,
+          message,
         },
         verticalPosition: "top",
       });
