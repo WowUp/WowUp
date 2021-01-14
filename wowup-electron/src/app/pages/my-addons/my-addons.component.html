@@ -215,13 +215,13 @@
     <mat-divider></mat-divider>
     <!-- IGNORE -->
     <div *ngIf="addonService.isForceIgnore(listItem.addon) === false" class="mat-menu-item">
-      <mat-checkbox [checked]="listItem.addon.isIgnored" (change)="onClickIgnoreAddon($event, listItem)">
+      <mat-checkbox [checked]="listItem.addon.isIgnored" (click)="onClickIgnoreAddon(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
     <!-- AUTO UPDATE -->
     <div *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item">
-      <mat-checkbox [checked]="listItem.addon.autoUpdateEnabled" (change)="onClickAutoUpdateAddon($event, listItem)">
+      <mat-checkbox [checked]="listItem.addon.autoUpdateEnabled" (click)="onClickAutoUpdateAddon(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
