@@ -77,7 +77,7 @@ export abstract class AddonProvider {
     return "";
   }
 
-  async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
+  async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
     return "";
   }
 }

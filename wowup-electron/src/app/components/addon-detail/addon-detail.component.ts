@@ -232,7 +232,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       return await this._addonService.getFullDescription(
         this.sessionService.getSelectedClientType(),
         providerName,
-        externalId
+        externalId,
+        this.model?.listItem?.addon
       );
     } catch (e) {
       return "";

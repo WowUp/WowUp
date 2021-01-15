@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { join } from "path";
 
 import { HttpClient } from "@angular/common/http";
 
@@ -10,6 +11,11 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider } from "./addon-provider";
+import { FileService } from "app/services/files/file.service";
+import { TocService } from "app/services/toc/toc.service";
+import { Addon } from "app/entities/addon";
+import { WarcraftService } from "app/services/warcraft/warcraft.service";
+import { Toc } from "app/models/wowup/toc";
 
 const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed"];
 
@@ -22,7 +28,12 @@ export class ZipAddonProvider extends AddonProvider {
   public readonly canShowChangelog = false;
   public enabled = true;
 
-  constructor(private _httpClient: HttpClient) {
+  constructor(
+    private _httpClient: HttpClient,
+    private _fileService: FileService,
+    private _tocService: TocService,
+    private _warcraftService: WarcraftService
+  ) {
     super();
   }
 
@@ -32,6 +43,56 @@ export class ZipAddonProvider extends AddonProvider {
 
   isValidAddonId(addonId: string): boolean {
     return false;
+  }
+
+  async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
+    if (!addon) {
+      return "";
+    }
+
+    const folders = addon.installedFolderList;
+    const clientAddonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
+    const allTocs = await this.getAllTocs(clientAddonFolderPath, folders);
+
+    const primaryToc = this.getPrimaryToc(allTocs);
+    const lines = _.map(Object.entries(primaryToc), ([key, value]) => {
+      if (typeof value === "string" && !!value) {
+        return `${key}: ${value}`;
+      }
+      return "";
+    })
+      .filter((str) => !!str)
+      .map((str) => `<p>${str}</p>`)
+      .join("");
+
+    return lines;
+  }
+
+  private getPrimaryToc(tocs: Toc[]) {
+    return _.maxBy(tocs, (toc) => Object.values(toc).join("").length);
+  }
+
+  private async getAllTocs(baseDir: string, installedFolders: string[]) {
+    const tocs: Toc[] = [];
+
+    for (let dir of installedFolders) {
+      const dirPath = join(baseDir, dir);
+
+      const tocFile = _.first(this._fileService.listFiles(dirPath, "*.toc"));
+      if (!tocFile) {
+        continue;
+      }
+
+      const tocPath = join(dirPath, tocFile);
+      const toc = await this._tocService.parse(tocPath);
+      if (!toc.interface) {
+        continue;
+      }
+
+      tocs.push(toc);
+    }
+
+    return tocs;
   }
 
   async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {

@@ -57,7 +57,7 @@ export class CurseAddonProvider extends AddonProvider {
     this._circuitBreaker = _networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
+  public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
     try {
       const cacheKey = `${this.name}_description_${externalId}`;
       return await this._cachingService.transaction(

@@ -136,13 +136,13 @@ export class AddonService {
     return addon1.externalId === addon2.externalId && addon1.providerName === addon2.providerName;
   }
 
-  public async getFullDescription(clientType: WowClientType, providerName: string, externalId: string) {
+  public async getFullDescription(clientType: WowClientType, providerName: string, externalId: string, addon?: Addon) {
     const provider = this.getProvider(providerName);
     if (!provider) {
       return "";
     }
 
-    return await provider.getDescription(clientType, externalId);
+    return await provider.getDescription(clientType, externalId, addon);
   }
 
   public async getChangelogForSearchResult(

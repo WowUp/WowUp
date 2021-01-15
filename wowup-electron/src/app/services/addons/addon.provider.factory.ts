@@ -12,6 +12,9 @@ import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { NetworkService } from "../network/network.service";
+import { FileService } from "../files/file.service";
+import { TocService } from "../toc/toc.service";
+import { WarcraftService } from "../warcraft/warcraft.service";
 
 @Injectable({
   providedIn: "root",
@@ -24,7 +27,10 @@ export class AddonProviderFactory {
     private _electronService: ElectronService,
     private _httpClient: HttpClient,
     private _wowupService: WowUpService,
-    private _networkService: NetworkService
+    private _networkService: NetworkService,
+    private _fileService: FileService,
+    private _tocService: TocService,
+    private _warcraftService: WarcraftService
   ) {}
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
@@ -52,7 +58,7 @@ export class AddonProviderFactory {
   }
 
   public createZipAddonProvider(): ZipAddonProvider {
-    return new ZipAddonProvider(this._httpClient);
+    return new ZipAddonProvider(this._httpClient, this._fileService, this._tocService, this._warcraftService);
   }
 
   public getAll(): AddonProvider[] {

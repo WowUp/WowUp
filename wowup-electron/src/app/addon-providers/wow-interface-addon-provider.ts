@@ -36,9 +36,9 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(clientType: WowClientType, externalId: string): Promise<string> {
-    const addon = await this.getAddonDetails(externalId);
-    return convertBbcode(addon.description);
+  public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
+    const addonDetails = await this.getAddonDetails(externalId);
+    return convertBbcode(addonDetails.description);
   }
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
