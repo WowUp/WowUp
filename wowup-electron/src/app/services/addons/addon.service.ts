@@ -752,7 +752,6 @@ export class AddonService {
     }
 
     let addons = this._addonStorage.getAllForClientType(clientType);
-    addons = _.filter(addons, (addon) => addon.isIgnored === false);
 
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
@@ -762,7 +761,10 @@ export class AddonService {
       this._addonStorage.saveAll(addons);
     }
 
-    await this.syncAddons(clientType, addons);
+    // Only sync non-ignored addons
+    const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
+
+    await this.syncAddons(clientType, notIgnored);
 
     return addons;
   }
