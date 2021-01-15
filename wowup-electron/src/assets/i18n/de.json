@@ -10,7 +10,7 @@
         "SELECT_ALL": "Alls auswählen",
         "UNDO": "Rückgängig"
       },
-      "QUIT": "Quit",
+      "QUIT": "Beenden",
       "VIEW": {
         "FORCE_RELOAD": "Neuladen erzwingen",
         "LABEL": "Ansicht",
@@ -25,7 +25,7 @@
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisch aktualisiert\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{Addon} other{Addons}} automatisch aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Vollbildmodus verlassen",
     "PROVIDERS": {
       "UNKNOWN": "Unbekannt"
     },
@@ -47,7 +47,7 @@
       "HORDE": "Horde"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Vollbild",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp Update installieren",
       "INSTALL_MESSAGE": "Möchtest Du WowUp neu starten, um das Update zu installieren?",
@@ -123,7 +123,7 @@
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Aktualisierungen für {addonName} konnten nicht überprüft werden.\nBitte überprüfe, ob das Repository korrekt ist, oder setze dieses Addon so, dass es ignoriert wird."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
