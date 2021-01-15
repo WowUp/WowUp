@@ -26,10 +26,14 @@ describe("AddonDetailComponent", () => {
   let sessionServiceSpy: SessionService;
 
   beforeEach(async () => {
-    addonServiceSpy = jasmine.createSpyObj("AddonService", ["logDebugData", "getChangelogForAddon"], {
-      addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
-      getChangelog: () => "",
-    });
+    addonServiceSpy = jasmine.createSpyObj(
+      "AddonService",
+      ["logDebugData", "getChangelogForAddon", "canShowChangelog"],
+      {
+        addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
+        getChangelog: () => "",
+      }
+    );
 
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {});

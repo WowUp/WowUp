@@ -1,21 +1,21 @@
 import * as _ from "lodash";
+import { join } from "path";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { join } from "path";
 
 import { HttpClient } from "@angular/common/http";
 
 import { ADDON_PROVIDER_ZIP } from "../../common/constants";
+import { Addon } from "../entities/addon";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { Toc } from "../models/wowup/toc";
+import { FileService } from "../services/files/file.service";
+import { TocService } from "../services/toc/toc.service";
+import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { AddonProvider } from "./addon-provider";
-import { FileService } from "app/services/files/file.service";
-import { TocService } from "app/services/toc/toc.service";
-import { Addon } from "app/entities/addon";
-import { WarcraftService } from "app/services/warcraft/warcraft.service";
-import { Toc } from "app/models/wowup/toc";
 
 const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed"];
 
