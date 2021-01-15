@@ -19,6 +19,7 @@ export class ZipAddonProvider extends AddonProvider {
   public readonly allowReinstall = false;
   public readonly allowChannelChange = false;
   public readonly allowEdit = false;
+  public readonly canShowChangelog = false;
   public enabled = true;
 
   constructor(private _httpClient: HttpClient) {

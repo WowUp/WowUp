@@ -124,6 +124,14 @@ export class AddonService {
       });
   }
 
+  public canShowChangelog(providerName: string) {
+    return this.getProvider(providerName).canShowChangelog;
+  }
+
+  public canShowAddonChangelog(addon: Addon) {
+    return this.canShowChangelog(addon.providerName);
+  }
+
   public isSameAddon(addon1: Addon, addon2: Addon) {
     return addon1.externalId === addon2.externalId && addon1.providerName === addon2.providerName;
   }

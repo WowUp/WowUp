@@ -24,7 +24,7 @@
           <div class="mr-2">
             <div class="text-right">{{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ provider }}
             </div>
-            <div class="sub-text text-right id-link selectable text-2" [cdkCopyToClipboard]="getExternalId()"
+            <div class="sub-text text-right id-link selectable text-2" [cdkCopyToClipboard]="getFullExternalId()"
               [matTooltip]="'DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_TOOLTIP' | translate" (click)="onClickExternalId()">{{
               'DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate }} {{
               getExternalId() }}</div>
@@ -65,7 +65,7 @@
         <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="description$ | async"></div>
       </mat-tab>
       <!-- CHANGELOG -->
-      <mat-tab [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
+      <mat-tab *ngIf="canShowChangelog === true" [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
         <app-progress-spinner *ngIf="fetchingChangelog === true"></app-progress-spinner>
         <div #changelogContainer class="addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
       </mat-tab>

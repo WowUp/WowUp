@@ -18,7 +18,8 @@ export abstract class AddonProvider {
   allowReinstall: boolean;
   allowChannelChange: boolean;
   allowEdit: boolean;
-  allowViewAtSource: boolean = true;
+  allowViewAtSource = true;
+  canShowChangelog = true;
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
     return {

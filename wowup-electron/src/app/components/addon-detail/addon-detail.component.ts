@@ -12,6 +12,7 @@ import {
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { last } from "lodash";
 import { filter, first, switchMap, tap } from "rxjs/operators";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
@@ -59,6 +60,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public fetchingChangelog = true;
   public fetchingFullDescription = true;
   public selectedTabIndex = 0;
+  public canShowChangelog = true;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -102,6 +104,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngOnInit(): void {
+    this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
     this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
   }
 
@@ -157,6 +160,10 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
         })
       )
       .subscribe();
+  }
+
+  getProviderName() {
+    return this.model.listItem?.addon?.providerName ?? this.model.searchResult?.providerName;
   }
 
   onOpenLink = (e: MouseEvent) => {
@@ -345,8 +352,17 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     return !!this.model.listItem?.addon?.fundingLinks?.length;
   }
 
-  getExternalId() {
+  getFullExternalId() {
     return this.model.searchResult ? this.model.searchResult.externalId : this.model.listItem.addon.externalId;
+  }
+
+  getExternalId() {
+    const externalId = this.getFullExternalId();
+    if (externalId.indexOf("/") !== -1) {
+      return `...${last(externalId.split("/"))}`;
+    }
+
+    return externalId;
   }
 
   private getLatestSearchResultFile() {
