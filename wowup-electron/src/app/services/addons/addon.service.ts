@@ -752,6 +752,8 @@ export class AddonService {
     }
 
     let addons = this._addonStorage.getAllForClientType(clientType);
+    addons = _.filter(addons, (addon) => addon.isIgnored === false);
+
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(clientType);
       this._addonStorage.removeAllForClientType(clientType);
