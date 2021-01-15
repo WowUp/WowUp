@@ -322,7 +322,7 @@ function createWindow(): BrowserWindow {
     win?.webContents?.send(WINDOW_LEAVE_FULLSCREEN);
   });
 
-  win.webContents.on("did-fail-load", async () => {
+  win.webContents.on("did-fail-load", () => {
     log.info("did-fail-load");
     loadMainUrl(win);
   });
