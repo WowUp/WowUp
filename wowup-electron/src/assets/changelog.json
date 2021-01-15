@@ -1,6 +1,22 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.21",
+      "changes": [
+        "German locale updates (Glow)",
+        "Fix an issue with the Cmd + w not closing the window on Mac",
+        "Fix an issue with Ctr + r or view > refresh breaking the app",
+        "Fix an issue with view > force reload breaking the app",
+        "Fix an issue with 'Ignore' context menu item not being clickable the full width of the menu",
+        "Fix an issue with 'Auto Update' context menu item not being clickable the full width of the menu",
+        "Fix an issue with 'Ignored' addons not being ignored when checking for updates",
+        "Add localization to the full screen menu toast",
+        "Add OS specific hotkey to the full screen menu toast",
+        "Add the ability to hide the changelog for zip url installs",
+        "Add description logic for zip url installs"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.20",
       "changes": [
         "Italian locale updates (Bito)",
