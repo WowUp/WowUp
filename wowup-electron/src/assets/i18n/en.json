@@ -22,18 +22,18 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
-        "LABEL": "Window",
-        "CLOSE": "Close"
+        "CLOSE": "Close",
+        "LABEL": "Window"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automatically updated {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Auto Updates",
-    "FULLSCREEN_SNACKBAR": {
-      "WINDOWS": "Press F11 to exit full screen",
-      "MAC": "Press ^⌘F to exit full screen"
-    },
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Unknown"
     },

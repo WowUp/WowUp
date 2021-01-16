@@ -20,12 +20,20 @@
         "ZOOM_IN": "Приблизить",
         "ZOOM_OUT": "Отдалить",
         "ZOOM_RESET": "Сброс масштабирования"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Автоматически обновлены\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Неизвестно"
     },
