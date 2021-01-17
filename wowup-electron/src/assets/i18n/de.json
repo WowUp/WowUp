@@ -7,7 +7,7 @@
         "LABEL": "Bearbeiten",
         "PASTE": "Einfügen",
         "REDO": "Wiederholen",
-        "SELECT_ALL": "Alls auswählen",
+        "SELECT_ALL": "Alles auswählen",
         "UNDO": "Rückgängig"
       },
       "QUIT": "Beenden",
@@ -15,15 +15,15 @@
         "FORCE_RELOAD": "Neuladen erzwingen",
         "LABEL": "Ansicht",
         "RELOAD": "Neu laden",
-        "TOGGLE_DEV_TOOLS": "Aktiviere Entwicklungs Werkzeug",
+        "TOGGLE_DEV_TOOLS": "Entwicklungs Werkzeug umschalten",
         "TOGGLE_FULL_SCREEN": "Vollbild umschalten",
         "ZOOM_IN": "Hineinzoomen",
         "ZOOM_OUT": "Rauszoomen",
         "ZOOM_RESET": "Zoom zurücksetzen"
       },
       "WINDOW": {
-        "CLOSE": "Close",
-        "LABEL": "Window"
+        "CLOSE": "Schließen",
+        "LABEL": "Fenster"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisch aktualisiert\r\n{addonNames}",
@@ -31,8 +31,8 @@
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Vollbildmodus verlassen",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "Drücke ^⌘F um den Vollbildmodus zu verlassen",
+      "WINDOWS": "Drücke F11 um den Vollbildmodus zu verlassen"
     },
     "PROVIDERS": {
       "UNKNOWN": "Unbekannt"
