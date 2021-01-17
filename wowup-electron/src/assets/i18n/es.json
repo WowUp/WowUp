@@ -22,8 +22,8 @@
         "ZOOM_RESET": "Restablecer Zoom"
       },
       "WINDOW": {
-        "CLOSE": "Close",
-        "LABEL": "Window"
+        "CLOSE": "Cerrar",
+        "LABEL": "Ventana"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}",
@@ -31,8 +31,8 @@
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Abandonar modo de pantalla completa",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "Pulse ^⌘F para salir del modo de pantalla completa",
+      "WINDOWS": "Pulse F11 para salir del modo de pantalla completa"
     },
     "PROVIDERS": {
       "UNKNOWN": "Desconocido"
