@@ -244,6 +244,7 @@ function createWindow(): BrowserWindow {
 
     // If something killed the process, quit
     if (details.reason === "killed") {
+      win?.destroy();
       app.quit();
       return;
     }
@@ -252,6 +253,7 @@ function createWindow(): BrowserWindow {
     const crashTime = Date.now();
     if (crashTime - lastCrash < 5000) {
       log.error("Crash loop detected");
+      win?.destroy();
       app.quit();
       return;
     }

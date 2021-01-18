@@ -19,6 +19,7 @@ import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { POWER_MONITOR_RESUME, POWER_MONITOR_UNLOCK } from "common/constants";
 
 @Component({
   selector: "app-home",
@@ -73,6 +74,23 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
+      console.log("Stopping app update check...");
+      this.destroyAppUpdateCheck();
+
+      if (evt === POWER_MONITOR_RESUME || evt === POWER_MONITOR_UNLOCK) {
+        this.initAppUpdateCheck();
+      }
+    });
+
+    this.initAppUpdateCheck();
+  }
+
+  ngOnDestroy() {
+    this._appUpdateInterval.unsubscribe();
+  }
+
+  private initAppUpdateCheck() {
     // check for an app update every so often
     this._appUpdateInterval = interval(AppConfig.appUpdateIntervalMs)
       .pipe(tap(async () => this.checkForAppUpdate()))
@@ -81,8 +99,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.checkForAppUpdate();
   }
 
-  ngOnDestroy() {
-    this._appUpdateInterval.unsubscribe();
+  private destroyAppUpdateCheck() {
+    this._appUpdateInterval?.unsubscribe();
+    this._appUpdateInterval = undefined;
   }
 
   private async migrateAddons(clientTypes: WowClientType[]) {
