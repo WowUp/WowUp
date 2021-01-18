@@ -20,12 +20,20 @@
         "ZOOM_IN": "Ampliar",
         "ZOOM_OUT": "Reducir",
         "ZOOM_RESET": "Restablecer Zoom"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon actualizado} other{addons actualizados}} automáticamente.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Actualizaciones Automáticas",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Abandonar modo de pantalla completa",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Desconocido"
     },

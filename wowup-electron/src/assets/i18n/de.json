@@ -20,12 +20,20 @@
         "ZOOM_IN": "Hineinzoomen",
         "ZOOM_OUT": "Rauszoomen",
         "ZOOM_RESET": "Zoom zurücksetzen"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatisch aktualisiert\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{Addon} other{Addons}} automatisch aktualisiert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatische Updates",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Vollbildmodus verlassen",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Unbekannt"
     },

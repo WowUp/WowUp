@@ -20,12 +20,20 @@
         "ZOOM_IN": "Zoom In",
         "ZOOM_OUT": "Zoom Out",
         "ZOOM_RESET": "Reset Zoom"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自动更新",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自动更新了 {count} 个插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自动更新",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
     "PROVIDERS": {
       "UNKNOWN": "未知"
     },

@@ -20,12 +20,20 @@
         "ZOOM_IN": "Přiblížit",
         "ZOOM_OUT": "Oddálit",
         "ZOOM_RESET": "Resetovat přiblížení"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticky aktualizovány\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon byl aktualizován} =2{addony byly aktualizovány} =3{addony byly aktualizovány} =4{addony byly aktualizovány} other{addonů bylo aktualizováno}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatické aktualizace",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Neznámý"
     },
