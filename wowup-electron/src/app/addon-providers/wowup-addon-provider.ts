@@ -86,7 +86,7 @@ export class WowUpAddonProvider extends AddonProvider {
       addonIds: addonIdList,
     });
 
-    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon));
+    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, clientType));
 
     return {
       errors: [],
@@ -99,7 +99,7 @@ export class WowUpAddonProvider extends AddonProvider {
     const url = new URL(`${API_URL}/addons/featured/${gameType}?count=30`);
     const addons = await this._circuitBreaker.getJson<WowUpGetAddonsResponse>(url);
 
-    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
+    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, clientType));
     return searchResults;
   }
 
@@ -108,7 +108,7 @@ export class WowUpAddonProvider extends AddonProvider {
     const url = new URL(`${API_URL}/addons/search/${gameType}?query=${query}&limit=10`);
 
     const addons = await this._circuitBreaker.getJson<WowUpSearchAddonsResponse>(url);
-    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon));
+    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, clientType));
 
     return searchResults;
   }
@@ -133,7 +133,7 @@ export class WowUpAddonProvider extends AddonProvider {
     return from(this._circuitBreaker.getJson<WowUpGetAddonResponse>(url)).pipe(
       map((result) => {
         console.debug("Result", result);
-        return this.getSearchResult(result.addon);
+        return this.getSearchResult(result.addon, clientType);
       })
     );
   }
@@ -250,8 +250,10 @@ export class WowUpAddonProvider extends AddonProvider {
     };
   }
 
-  private getSearchResult(representation: WowUpAddonRepresentation): AddonSearchResult {
-    const searchResultFiles: AddonSearchResultFile[] = _.map(representation.releases, (release) =>
+  private getSearchResult(representation: WowUpAddonRepresentation, clientType: WowClientType): AddonSearchResult {
+    const wowGameType = this.getWowGameType(clientType);
+    const clientReleases = _.filter(representation.releases, (release) => release.game_type === wowGameType);
+    const searchResultFiles: AddonSearchResultFile[] = _.map(clientReleases, (release) =>
       this.getSearchResultFile(release)
     );
 
