@@ -1,6 +1,16 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.22",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Italian locale updates (Bito)",
+        "Stop app update check timer when computer sleeps or is locked",
+        "Fix an issue with the hub not caring about client type"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.21",
       "changes": [
         "German locale updates (Glow)",

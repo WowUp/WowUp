@@ -5,6 +5,7 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, N
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
+import { POWER_MONITOR_RESUME, POWER_MONITOR_UNLOCK } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import {
   AddonScanError,
@@ -19,7 +20,6 @@ import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { POWER_MONITOR_RESUME, POWER_MONITOR_UNLOCK } from "common/constants";
 
 @Component({
   selector: "app-home",

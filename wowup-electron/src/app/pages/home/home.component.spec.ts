@@ -8,7 +8,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { HomeComponent } from "./home.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -44,6 +44,7 @@ describe("HomeComponent", () => {
       isWin: false,
       isLinux: true,
       isMax: false,
+      powerMonitor$: new Observable(),
     });
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
       checkForAppUpdate: async () => null,
