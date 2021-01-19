@@ -22,17 +22,17 @@
         "ZOOM_RESET": "Reset Zoom"
       },
       "WINDOW": {
-        "CLOSE": "Close",
-        "LABEL": "Window"
+        "CLOSE": "Chiudi",
+        "LABEL": "Finestra"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticamente aggiornato\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Automaticamente {count, plural, =1{aggiornato} other{aggiornati}} {count, plural, one{un addon} other{{count} addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Aggiornamenti Automatici",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Esci dalla modalità schermo intero",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "Premere ^⌘F per uscire dalla modalità schermo intero",
+      "WINDOWS": "Premere F11 per uscire dalla modalità schermo intero"
     },
     "PROVIDERS": {
       "UNKNOWN": "Sconosciuto"
@@ -55,7 +55,7 @@
       "HORDE": "Orda"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Schermo Intero",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installa l'aggiornamento di WowUp",
       "INSTALL_MESSAGE": "Vuoi riavviare WowUp per installare l'aggiornamento?",
@@ -131,7 +131,7 @@
       "ADDON_SYNC_ERROR": "Errore nel controllare gli aggioranementi da: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Errore nel cambio di provider per {addonName} con {providerName}",
       "GITHUB_LIMIT_ERROR": "Hai raggiunto il limite di {max} richieste per la tua API di GitHub.\nPer favore attendere fino a {reset} e riprovare.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Errore nel controllare gli aggiornamenti per {addonName}.\nPer favore controllare che la repository sia corretta o impostare questo addon per essere ignorato."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Caricamento in corso..."
