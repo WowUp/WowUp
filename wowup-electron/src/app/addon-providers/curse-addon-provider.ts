@@ -31,8 +31,9 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
-import { AddonProvider, GetAllResult } from "./addon-provider";
+import { WowUpApiService } from "../services/wowup-api/wowup-api.service";
 import { getEnumName } from "../utils/enum.utils";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
@@ -50,6 +51,7 @@ export class CurseAddonProvider extends AddonProvider {
   constructor(
     private _cachingService: CachingService,
     private _electronService: ElectronService,
+    private _wowupApiService: WowUpApiService,
     _networkService: NetworkService
   ) {
     super();

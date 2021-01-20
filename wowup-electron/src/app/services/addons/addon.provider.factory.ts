@@ -15,6 +15,7 @@ import { NetworkService } from "../network/network.service";
 import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
+import { WowUpApiService } from "../wowup-api/wowup-api.service";
 
 @Injectable({
   providedIn: "root",
@@ -30,7 +31,8 @@ export class AddonProviderFactory {
     private _networkService: NetworkService,
     private _fileService: FileService,
     private _tocService: TocService,
-    private _warcraftService: WarcraftService
+    private _warcraftService: WarcraftService,
+    private _wowupApiService: WowUpApiService
   ) {}
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
@@ -38,7 +40,12 @@ export class AddonProviderFactory {
   }
 
   public createCurseAddonProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(this._cachingService, this._electronService, this._networkService);
+    return new CurseAddonProvider(
+      this._cachingService,
+      this._electronService,
+      this._wowupApiService,
+      this._networkService
+    );
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {

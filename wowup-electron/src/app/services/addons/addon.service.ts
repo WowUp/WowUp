@@ -44,7 +44,6 @@ import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import { CustomError } from "ts-custom-error";
 
 export enum ScanUpdateType {
   Start,
