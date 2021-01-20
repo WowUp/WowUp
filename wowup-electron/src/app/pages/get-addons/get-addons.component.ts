@@ -217,8 +217,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       });
 
     const dataSourceSub = this.dataSource.connect().subscribe((data) => {
-      console.debug("get addons activeSortDirection", this.sort);
-
       this.setPageContextText();
     });
 

@@ -1,3 +1,4 @@
+import { CurseAuthor } from "common/curse/curse-author";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -200,18 +201,20 @@ export class CurseAddonProvider extends AddonProvider {
     return gameVersionFlavor === this.getGameVersionFlavor(clientType);
   }
 
-  private getAddonsByFingerprintsW(fingerprints: number[]) {
+  private async getAddonsByFingerprintsW(fingerprints: number[]) {
     const url = `${AppConfig.wowUpHubUrl}/curseforge/addons/fingerprint`;
 
     console.log(`Wowup Fetching fingerprints`, JSON.stringify(fingerprints));
 
-    return this._circuitBreaker.postJson<CurseFingerprintsResponse>(
+    const response = await this._circuitBreaker.postJson<CurseFingerprintsResponse>(
       url,
       {
         fingerprints,
       },
       AppConfig.wowUpHubHttpTimeoutMs
     );
+
+    return response;
   }
 
   private async getAddonsByFingerprints(fingerprints: number[]): Promise<CurseFingerprintsResponse> {
@@ -229,7 +232,11 @@ export class CurseAddonProvider extends AddonProvider {
 
     const url = `${API_URL}/addon`;
     console.log(`Fetching addon info ${url}`);
-    return await this._circuitBreaker.postJson<CurseSearchResult[]>(url, addonIds);
+    const response = await this._circuitBreaker.postJson<CurseSearchResult[]>(url, addonIds);
+
+    await this.removeBlockedItems(response);
+
+    return response;
   }
 
   private sendRequest<T>(action: () => Promise<T>): Promise<T> {
@@ -268,24 +275,13 @@ export class CurseAddonProvider extends AddonProvider {
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     const addons = await this.getFeaturedAddonList();
     const filteredAddons = this.filterFeaturedAddons(addons, clientType);
+
+    await this.removeBlockedItems(filteredAddons);
+
     return filteredAddons.map((addon) => {
       const latestFiles = this.getLatestFiles(addon, clientType);
       return this.getAddonSearchResult(addon, latestFiles);
     });
-  }
-
-  private filterFeaturedAddons(results: CurseSearchResult[], clientType: WowClientType) {
-    const clientTypeStr = this.getGameVersionFlavor(clientType);
-
-    return results.filter((r) => r.latestFiles.some((lf) => this.isClientType(lf, clientTypeStr)));
-  }
-
-  private isClientType(file: CurseFile, clientTypeStr: string) {
-    return (
-      file.releaseType === CurseReleaseType.Release &&
-      file.gameVersionFlavor === clientTypeStr &&
-      file.isAlternate === false
-    );
   }
 
   async searchByQuery(
@@ -294,11 +290,14 @@ export class CurseAddonProvider extends AddonProvider {
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
     channelType = channelType || AddonChannelType.Stable;
-    var searchResults: AddonSearchResult[] = [];
+    const searchResults: AddonSearchResult[] = [];
 
-    var response = await this.getSearchResults(query);
+    const response = await this.getSearchResults(query);
+
+    await this.removeBlockedItems(response);
+
     for (let result of response) {
-      var latestFiles = this.getLatestFiles(result, clientType);
+      const latestFiles = this.getLatestFiles(result, clientType);
       if (!latestFiles.length) {
         continue;
       }
@@ -330,6 +329,8 @@ export class CurseAddonProvider extends AddonProvider {
   private async searchBySlug(slug: string, clientType: WowClientType) {
     const searchWord = _.first(slug.split("-"));
     const response = await this.getSearchResults(searchWord);
+
+    await this.removeBlockedItems(response);
 
     const match = _.find(response, (res) => res.slug === slug);
     if (!match) {
@@ -420,6 +421,47 @@ export class CurseAddonProvider extends AddonProvider {
       console.error(e);
       return null;
     }
+  }
+
+  private async removeBlockedItems(searchResults: CurseSearchResult[]) {
+    const blockedResults: number[] = [];
+
+    for (const result of searchResults) {
+      for (const author of result.authors) {
+        const isBlocked = await this.isBlockedAuthor(author);
+        if (isBlocked) {
+          console.debug(`Blocked addon: ${result.name}`);
+          blockedResults.push(result.id);
+          break;
+        }
+      }
+    }
+
+    _.remove(searchResults, (sr) => blockedResults.includes(sr.id));
+  }
+
+  private async isBlockedAuthor(author: CurseAuthor) {
+    try {
+      const blockList = await this._wowupApiService.getBlockList().toPromise();
+      const blockedAuthorIds = _.map(blockList.curse.authors, (author) => author.authorId);
+      return blockedAuthorIds.includes(author.id.toString()) || blockedAuthorIds.includes(author.userId.toString());
+    } catch (e) {
+      return false;
+    }
+  }
+
+  private filterFeaturedAddons(results: CurseSearchResult[], clientType: WowClientType) {
+    const clientTypeStr = this.getGameVersionFlavor(clientType);
+
+    return results.filter((r) => r.latestFiles.some((lf) => this.isClientType(lf, clientTypeStr)));
+  }
+
+  private isClientType(file: CurseFile, clientTypeStr: string) {
+    return (
+      file.releaseType === CurseReleaseType.Release &&
+      file.gameVersionFlavor === clientTypeStr &&
+      file.isAlternate === false
+    );
   }
 
   private createAddonSearchResultDependency = (dependency: CurseDependency): AddonSearchResultDependency => {

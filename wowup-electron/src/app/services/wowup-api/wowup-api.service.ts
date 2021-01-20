@@ -1,10 +1,10 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { from, Observable, of } from "rxjs";
 import { tap } from "rxjs/operators";
 import { AppConfig } from "../../../environments/environment";
 import { BlockListRepresentation } from "../../models/wowup-api/block-list";
 import { CachingService } from "../caching/caching-service";
+import { CircuitBreakerWrapper, NetworkService } from "../network/network.service";
 
 const API_URL = AppConfig.wowUpApiUrl;
 const BLOCKLIST_CACHE_KEY = "wowup-blocklist";
@@ -13,7 +13,11 @@ const BLOCKLIST_CACHE_KEY = "wowup-blocklist";
   providedIn: "root",
 })
 export class WowUpApiService {
-  constructor(private _httpClient: HttpClient, private _cacheService: CachingService) {}
+  private readonly _circuitBreaker: CircuitBreakerWrapper;
+
+  constructor(private _networkService: NetworkService, private _cacheService: CachingService) {
+    this._circuitBreaker = this._networkService.getCircuitBreaker(`WowUpApiService_main`);
+  }
 
   public getBlockList(): Observable<BlockListRepresentation> {
     const cached = this._cacheService.get<BlockListRepresentation>(BLOCKLIST_CACHE_KEY);
@@ -23,7 +27,7 @@ export class WowUpApiService {
 
     const url = new URL(`${API_URL}/blocklist`);
 
-    return this._httpClient.get<BlockListRepresentation>(url.toString()).pipe(
+    return from(this._circuitBreaker.getJson<BlockListRepresentation>(url)).pipe(
       tap((response) => {
         console.log("BlockList", response);
         this._cacheService.set(BLOCKLIST_CACHE_KEY, response);
