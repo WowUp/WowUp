@@ -430,7 +430,6 @@ export class CurseAddonProvider extends AddonProvider {
       for (const author of result.authors) {
         const isBlocked = await this.isBlockedAuthor(author);
         if (isBlocked) {
-          console.debug(`Blocked addon: ${result.name}`);
           blockedResults.push(result.id);
           break;
         }
