@@ -31,6 +31,7 @@ import { MatCheckboxChange } from "@angular/material/checkbox";
 import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
 import * as SearchResults from "../../utils/search-result.utils";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { ADDON_PROVIDER_HUB } from "common/constants";
 
 @Component({
   selector: "app-get-addons",
@@ -147,6 +148,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       name: this.sort.active,
       direction: this.sort.direction,
     };
+
+    this.setDataSource(this.sortAddons(this.dataSource.data, this.sort.active, this.sort.direction));
   }
 
   onStatusColumnUpdated() {
@@ -230,14 +233,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private setDataSource(items: GetAddonListItem[]) {
     this.dataSource.data = items;
-    this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
-      if (prop === "releasedAt") {
-        return SearchResults.getLatestFile(item.searchResult, this.defaultAddonChannel)?.releaseDate;
-      }
-      let value = _.get(item, prop);
-      return typeof value === "string" ? value.toLowerCase() : value;
-    };
-    this.dataSource.sort = this.sort;
+    // this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
+    //   if (prop === "releasedAt") {
+    //     return SearchResults.getLatestFile(item.searchResult, this.defaultAddonChannel)?.releaseDate;
+    //   }
+    //   let value = _.get(item, prop);
+    //   console.debug(value);
+    //   return typeof value === "string" ? value.toLowerCase() : value;
+    // };
+    // this.dataSource.sort = this.sort;
     this.loadSortOrder();
   }
 
@@ -313,6 +317,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
+        console.debug(addons);
         const listItems = this.formatAddons(addons);
         this.setDataSource(listItems);
         this.isBusy = false;
@@ -324,7 +329,21 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
-    return addons.map((addon) => new GetAddonListItem(addon));
+    const addonList = addons.map((addon) => new GetAddonListItem(addon, this.defaultAddonChannel));
+    return this.sortAddons(addonList);
+  }
+
+  private sortAddons(addons: GetAddonListItem[], sort?: string, dir?: string) {
+    console.debug(sort || this.activeSort, dir || this.activeSortDirection);
+    if (sort === "providerName") {
+      return _.orderBy(addons, [sort || this.activeSort], [(dir || this.activeSortDirection) as any]);
+    }
+
+    return _.orderBy(
+      addons,
+      [(sr) => (sr.providerName === ADDON_PROVIDER_HUB ? 1 : 0), sort || this.activeSort],
+      ["desc", (dir || this.activeSortDirection) as any]
+    );
   }
 
   private setPageContextText() {
