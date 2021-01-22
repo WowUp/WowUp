@@ -1,3 +1,7 @@
+import * as _ from "lodash";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,17 +12,20 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
+import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
+import { MatMenuTrigger } from "@angular/material/menu";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
-import * as _ from "lodash";
-import { Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+
+import { ADDON_PROVIDER_HUB } from "../../../common/constants";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
+import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";
 import { ElectronService } from "../../services";
@@ -26,12 +33,6 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { MatMenuTrigger } from "@angular/material/menu";
-import { MatCheckboxChange } from "@angular/material/checkbox";
-import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
-import * as SearchResults from "../../utils/search-result.utils";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { ADDON_PROVIDER_HUB } from "common/constants";
 
 @Component({
   selector: "app-get-addons",
