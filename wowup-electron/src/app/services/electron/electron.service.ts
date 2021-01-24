@@ -170,6 +170,7 @@ export class ElectronService {
     const launchArgs = await this.invoke("get-launch-args");
     return (<any>minimist(launchArgs.slice(1), {
       boolean: ["hidden", "quit"],
+      string: ["install"]
     })) as AppOptions;
   }
 

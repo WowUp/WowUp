@@ -103,6 +103,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.on(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
 
     this._electronService.getAppOptions().then((appOptions) => {
+      if (appOptions.install != null) {
+        var addonURL = new URL(appOptions.install);
+        this._addonService.getAddonByUrl(addonURL, this._sessionService.getSelectedClientType()).then((addon) => {
+          this._addonService.installPotentialAddon(addon, this._sessionService.getSelectedClientType());
+        });
+      }
+      
       this.quitEnabled = appOptions.quit;
       this._cdRef.detectChanges();
     });

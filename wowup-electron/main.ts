@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, powerMonitor } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
 import { type as osType, release as osRelease, arch as osArch } from "os";
@@ -55,6 +55,7 @@ const startedAt = Date.now();
 const preferenceStore = new Store({ name: "preferences" });
 const argv = require("minimist")(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
+  string: ["install"]
 }) as AppOptions;
 const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
 const USER_AGENT = getUserAgent();
@@ -102,6 +103,10 @@ if (!singleInstanceLock) {
     }
 
     win.focus();
+
+    if (argv.install != null) {
+      win.webContents.send("request-install-by-url", argv.install);
+    }
   });
 }
 

@@ -121,6 +121,14 @@ export class AddonService {
       .subscribe(() => {
         console.debug("reconcileOrphanAddons complete");
       });
+
+      window.wowup.onRendererEvent("request-install-by-url", async (evt, url : string) => {
+        if (url != null) {
+          var addonURL = new URL(url);
+          var addon = await this.getAddonByUrl(addonURL, _wowUpService.getLastSelectedClientType());
+          await this.installPotentialAddon(addon, _wowUpService.getLastSelectedClientType());
+        }
+      });
   }
 
   public canShowChangelog(providerName: string) {
