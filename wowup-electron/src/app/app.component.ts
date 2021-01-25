@@ -29,6 +29,7 @@ import {
   POWER_MONITOR_RESUME,
   POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
+  REQUEST_INSTALL_FROM_URL
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { MenuConfig } from "../common/wowup/menu-config";
@@ -44,6 +45,7 @@ import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "./entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
+import { InstallFromUrlDialogComponent } from "./components/install-from-url-dialog/install-from-url-dialog.component";
 
 @Component({
   selector: "app-root",
@@ -101,15 +103,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.on(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this._electronService.on(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this._electronService.on(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this._electronService.on(REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
 
     this._electronService.getAppOptions().then((appOptions) => {
-      if (appOptions.install != null) {
-        var addonURL = new URL(appOptions.install);
-        this._addonService.getAddonByUrl(addonURL, this._sessionService.getSelectedClientType()).then((addon) => {
-          this._addonService.installPotentialAddon(addon, this._sessionService.getSelectedClientType());
-        });
-      }
-      
+      this.openInstallFromUrlDialog(appOptions.install);      
       this.quitEnabled = appOptions.quit;
       this._cdRef.detectChanges();
     });
@@ -156,6 +153,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.applyZoom(ZoomDirection.ZoomReset);
   };
 
+  onRequestInstallFromUrl = (evt, path?: string) => {
+    this.openInstallFromUrlDialog(path);
+  }
+
   openDialog(): void {
     const dialogRef = this._dialog.open(TelemetryDialogComponent, {
       disableClose: true,
@@ -167,6 +168,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         this._analyticsService.trackStartup();
       }
     });
+  }
+
+  openInstallFromUrlDialog(path?: string): void {
+    if (!path)
+      return;
+    var dialogRef = this._dialog.open(InstallFromUrlDialogComponent);
+    dialogRef.componentInstance.query = path;
   }
 
   private async initializeAutoUpdate() {

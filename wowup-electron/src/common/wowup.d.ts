@@ -25,7 +25,7 @@ declare type MainChannels =
   | "power-monitor-suspend"
   | "power-monitor-lock"
   | "power-monitor-unlock"
-  | "request-install-by-url";
+  | "request-install-from-url";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =

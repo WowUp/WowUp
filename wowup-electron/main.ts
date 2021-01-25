@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserWindowConstructorOptions, ipcMain, powerMonitor } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log";
 import * as Store from "electron-store";
 import { type as osType, release as osRelease, arch as osArch } from "os";
@@ -26,6 +26,7 @@ import {
   WINDOW_MIN_HEIGHT,
   WINDOW_MIN_WIDTH,
   WINDOW_UNMAXIMIZED,
+  REQUEST_INSTALL_FROM_URL
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
@@ -105,7 +106,7 @@ if (!singleInstanceLock) {
     win.focus();
 
     if (argv.install != null) {
-      win.webContents.send("request-install-by-url", argv.install);
+      win.webContents.send(REQUEST_INSTALL_FROM_URL, argv.install);
     }
   });
 }

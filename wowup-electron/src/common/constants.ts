@@ -46,6 +46,7 @@ export const POWER_MONITOR_RESUME = "power-monitor-resume";
 export const POWER_MONITOR_SUSPEND = "power-monitor-suspend";
 export const POWER_MONITOR_LOCK = "power-monitor-lock";
 export const POWER_MONITOR_UNLOCK = "power-monitor-unlock";
+export const REQUEST_INSTALL_FROM_URL = "request-install-from-url";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
