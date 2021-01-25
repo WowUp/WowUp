@@ -2,7 +2,14 @@
   "ChangeLogs": [
     {
       "Version": "2.1.0-beta.23",
-      "changes": ["Promote Hub addons", "Add support for addon blocklist"]
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Promote Hub addons",
+        "Add new ui for the WowUp update notifications",
+        "Add support for addon blocklist",
+        "Add support for GitHub addon description",
+        "Add support for GitHub addon changelog"
+      ]
     },
     {
       "Version": "2.1.0-beta.22",
