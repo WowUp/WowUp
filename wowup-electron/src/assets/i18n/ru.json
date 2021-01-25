@@ -2,37 +2,37 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "COPY": "Copy",
-        "CUT": "Cut",
+        "COPY": "Копировать",
+        "CUT": "Вырезать",
         "LABEL": "Править",
-        "PASTE": "Paste",
-        "REDO": "Redo",
-        "SELECT_ALL": "SelectAll",
-        "UNDO": "Undo"
+        "PASTE": "Вставить",
+        "REDO": "Повторить",
+        "SELECT_ALL": "Выбрать всё",
+        "UNDO": "Отменить"
       },
-      "QUIT": "Quit",
+      "QUIT": "Выход",
       "VIEW": {
-        "FORCE_RELOAD": "Force Reload",
+        "FORCE_RELOAD": "Принудительная перезагрузка",
         "LABEL": "Просмотр",
-        "RELOAD": "Reload",
-        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
-        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "RELOAD": "Перезагрузка",
+        "TOGGLE_DEV_TOOLS": "Переключить инструменты разработчика",
+        "TOGGLE_FULL_SCREEN": "Переключить полноэкранный режим",
         "ZOOM_IN": "Приблизить",
         "ZOOM_OUT": "Отдалить",
         "ZOOM_RESET": "Сброс масштабирования"
       },
       "WINDOW": {
-        "CLOSE": "Close",
-        "LABEL": "Window"
+        "CLOSE": "Закрыть",
+        "LABEL": "Окно"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Автоматически обновлены\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Автоматически {count, plural, one{обновлена} other{обновлено}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Выйти из полноэкранного режима",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "Нажмите ^⌘F чтобы выйти из полнокэранного режима",
+      "WINDOWS": "Нажмите F11 чтобы выйти из полнокэранного режима"
     },
     "PROVIDERS": {
       "UNKNOWN": "Неизвестно"
@@ -55,7 +55,7 @@
       "HORDE": "Орда"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Полный экран",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
       "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
@@ -131,7 +131,7 @@
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
       "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Не удалось проверить обновления для {addonName}.\nУбедитесь что хранилище указано верно или установите игнорирование на эту модификацию."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
