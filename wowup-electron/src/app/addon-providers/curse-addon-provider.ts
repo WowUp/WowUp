@@ -1,4 +1,3 @@
-import { CurseAuthor } from "common/curse/curse-author";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -10,6 +9,7 @@ import {
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
+import { CurseAuthor } from "../../common/curse/curse-author";
 import { CurseDependency } from "../../common/curse/curse-dependency";
 import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
 import { CurseFile } from "../../common/curse/curse-file";
@@ -430,7 +430,6 @@ export class CurseAddonProvider extends AddonProvider {
       for (const author of result.authors) {
         const isBlocked = await this.isBlockedAuthor(author);
         if (isBlocked) {
-          console.debug(`Blocked addon: ${result.name}`);
           blockedResults.push(result.id);
           break;
         }

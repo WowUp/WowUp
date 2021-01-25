@@ -15,4 +15,5 @@ export interface AddonSearchResult {
   thumbnailUrl: string;
   releasedAt?: Date;
   fundingLinks?: AddonFundingLink[];
+  changelog?: string;
 }
