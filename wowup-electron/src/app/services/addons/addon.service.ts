@@ -1292,6 +1292,8 @@ export class AddonService {
       isLoadOnDemand: false,
       externalLatestReleaseId: latestFile.externalId,
       fundingLinks,
+      latestChangelog: latestFile.changelog,
+      latestChangelogVersion: latestFile.version,
     };
   }
 
