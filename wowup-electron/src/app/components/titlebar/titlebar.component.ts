@@ -6,10 +6,10 @@ import {
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
-  MAXIMIZE_WINDOW,
-  MINIMIZE_WINDOW,
-  WINDOW_ENTER_FULLSCREEN,
-  WINDOW_LEAVE_FULLSCREEN,
+  IPC_MAXIMIZE_WINDOW,
+  IPC_MINIMIZE_WINDOW,
+  IPC_WINDOW_ENTER_FULLSCREEN,
+  IPC_WINDOW_LEAVE_FULLSCREEN,
 } from "../../../common/constants";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../environments/environment";
@@ -46,7 +46,7 @@ export class TitlebarComponent implements OnInit, OnDestroy {
 
     this._subscriptions = [windowMaximizedSubscription];
 
-    this.electronService.on(WINDOW_ENTER_FULLSCREEN, () => {
+    this.electronService.on(IPC_WINDOW_ENTER_FULLSCREEN, () => {
       this.isFullscreen = true;
       const localeKey = this.electronService.isMac ? "APP.FULLSCREEN_SNACKBAR.MAC" : "APP.FULLSCREEN_SNACKBAR.WINDOWS";
       const message = this._translateService.instant(localeKey);
@@ -60,7 +60,7 @@ export class TitlebarComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.electronService.on(WINDOW_LEAVE_FULLSCREEN, () => {
+    this.electronService.on(IPC_WINDOW_LEAVE_FULLSCREEN, () => {
       this.isFullscreen = false;
       this._snackBarRef?.dismiss();
       this._snackBarRef = undefined;
@@ -100,9 +100,9 @@ export class TitlebarComponent implements OnInit, OnDestroy {
       ) as string;
 
       if (action === "Maximize") {
-        this.electronService.invoke(MAXIMIZE_WINDOW);
+        this.electronService.invoke(IPC_MAXIMIZE_WINDOW);
       } else if (action === "Minimize") {
-        this.electronService.invoke(MINIMIZE_WINDOW);
+        this.electronService.invoke(IPC_MINIMIZE_WINDOW);
       }
     }
   }

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
-  CURSE_GET_SCAN_RESULTS,
+  IPC_CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
@@ -158,7 +158,7 @@ export class CurseAddonProvider extends AddonProvider {
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: CurseScanResult[] = await this._electronService.invoke(CURSE_GET_SCAN_RESULTS, filePaths);
+    const scanResults: CurseScanResult[] = await this._electronService.invoke(IPC_CURSE_GET_SCAN_RESULTS, filePaths);
 
     const appScanResults: AppCurseScanResult[] = scanResults.map((scanResult) => {
       const addonFolder = addonFolders.find((af) => af.path === scanResult.directory);

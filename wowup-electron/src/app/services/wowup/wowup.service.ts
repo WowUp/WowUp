@@ -37,6 +37,7 @@ import {
   ALLIANCE_LIGHT_THEME,
   DEFAULT_LIGHT_THEME,
   ADDON_MIGRATION_VERSION_KEY,
+  IPC_GET_APP_VERSION,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -126,7 +127,7 @@ export class WowUpService {
   }
 
   async getApplicationVersion(): Promise<string> {
-    const appVersion = await this._electronService.invoke("get-app-version");
+    const appVersion = await this._electronService.invoke(IPC_GET_APP_VERSION);
     return appVersion + `${this._electronService.isPortable ? " (portable)" : ""}`;
   }
 

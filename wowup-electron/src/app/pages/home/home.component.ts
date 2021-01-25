@@ -5,7 +5,7 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, N
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
-import { POWER_MONITOR_RESUME, POWER_MONITOR_UNLOCK } from "../../../common/constants";
+import { IPC_POWER_MONITOR_RESUME, IPC_POWER_MONITOR_UNLOCK } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import {
   AddonScanError,
@@ -78,7 +78,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.log("Stopping app update check...");
       this.destroyAppUpdateCheck();
 
-      if (evt === POWER_MONITOR_RESUME || evt === POWER_MONITOR_UNLOCK) {
+      if (evt === IPC_POWER_MONITOR_RESUME || evt === IPC_POWER_MONITOR_UNLOCK) {
         this.initAppUpdateCheck();
       }
     });

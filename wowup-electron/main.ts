@@ -13,19 +13,20 @@ import {
   CURRENT_THEME_KEY,
   DEFAULT_BG_COLOR,
   DEFAULT_LIGHT_BG_COLOR,
-  POWER_MONITOR_LOCK,
-  POWER_MONITOR_RESUME,
-  POWER_MONITOR_UNLOCK,
+  IPC_POWER_MONITOR_LOCK,
+  IPC_POWER_MONITOR_RESUME,
+  IPC_POWER_MONITOR_SUSPEND,
+  IPC_POWER_MONITOR_UNLOCK,
+  IPC_WINDOW_ENTER_FULLSCREEN,
+  IPC_WINDOW_LEAVE_FULLSCREEN,
+  IPC_WINDOW_MAXIMIZED,
+  IPC_WINDOW_MINIMIZED,
+  IPC_WINDOW_UNMAXIMIZED,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
-  WINDOW_ENTER_FULLSCREEN,
-  WINDOW_LEAVE_FULLSCREEN,
-  WINDOW_MAXIMIZED,
-  WINDOW_MINIMIZED,
   WINDOW_MIN_HEIGHT,
   WINDOW_MIN_WIDTH,
-  WINDOW_UNMAXIMIZED,
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
@@ -156,22 +157,22 @@ app.on("child-process-gone", (e, details) => {
 
 powerMonitor.on("resume", () => {
   log.info("powerMonitor resume");
-  win?.webContents?.send(POWER_MONITOR_RESUME);
+  win?.webContents?.send(IPC_POWER_MONITOR_RESUME);
 });
 
 powerMonitor.on("suspend", () => {
   log.info("powerMonitor suspend");
-  win?.webContents?.send(POWER_MONITOR_RESUME);
+  win?.webContents?.send(IPC_POWER_MONITOR_SUSPEND);
 });
 
 powerMonitor.on("lock-screen", () => {
   log.info("powerMonitor lock-screen");
-  win?.webContents?.send(POWER_MONITOR_LOCK);
+  win?.webContents?.send(IPC_POWER_MONITOR_LOCK);
 });
 
 powerMonitor.on("unlock-screen", () => {
   log.info("powerMonitor unlock-screen");
-  win?.webContents?.send(POWER_MONITOR_UNLOCK);
+  win?.webContents?.send(IPC_POWER_MONITOR_UNLOCK);
 });
 
 let lastCrash = 0;
@@ -305,23 +306,23 @@ function createWindow(): BrowserWindow {
   });
 
   win.on("maximize", () => {
-    win?.webContents?.send(WINDOW_MAXIMIZED);
+    win?.webContents?.send(IPC_WINDOW_MAXIMIZED);
   });
 
   win.on("unmaximize", () => {
-    win?.webContents?.send(WINDOW_UNMAXIMIZED);
+    win?.webContents?.send(IPC_WINDOW_UNMAXIMIZED);
   });
 
   win.on("minimize", () => {
-    win?.webContents?.send(WINDOW_MINIMIZED);
+    win?.webContents?.send(IPC_WINDOW_MINIMIZED);
   });
 
   win.on("enter-full-screen", () => {
-    win?.webContents?.send(WINDOW_ENTER_FULLSCREEN);
+    win?.webContents?.send(IPC_WINDOW_ENTER_FULLSCREEN);
   });
 
   win.on("leave-full-screen", () => {
-    win?.webContents?.send(WINDOW_LEAVE_FULLSCREEN);
+    win?.webContents?.send(IPC_WINDOW_LEAVE_FULLSCREEN);
   });
 
   win.webContents.on("did-fail-load", () => {
