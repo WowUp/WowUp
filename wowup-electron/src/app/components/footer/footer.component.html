@@ -20,9 +20,9 @@
   <div class="row align-items-center text-1">
     <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
     <p>v{{ versionNumber | async }}</p>
-    <button *ngIf="isWowUpUpdateAvailable && !isWowUpdateDownloading" class="footer-button update-button ml-3"
+    <button *ngIf="isWowUpUpdateAvailable && !isWowUpdateDownloading" class="footer-button update-button ml-3 text-1"
       matTooltip="{{ updateIconTooltip | translate }}" [disabled]="isUpdatingWowUp" (click)="onClickUpdateWowup()">
-      <mat-icon svgIcon="fas:arrow-up"></mat-icon>
+      <h4>{{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}</h4>
     </button>
     <button *ngIf="isWowUpdateDownloading" class="footer-button downloading-button text-2 ml-3 animate">
       <mat-icon svgIcon="fas:angle-double-down"></mat-icon>

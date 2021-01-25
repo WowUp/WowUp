@@ -56,10 +56,17 @@ footer {
     background-color: transparent;
 
     &.update-button {
-      background-color: green;
+      background-color: rgb(0, 128, 0);
+      // border: 1px solid rgb(0, 128, 0);
+      // color: rgb(0, 128, 0);
+
+      h4 {
+        margin: 0;
+        padding: 0;
+      }
 
       &:hover {
-        background-color: darkgreen;
+        background-color: rgba(0, 128, 0, 0.1);
         cursor: pointer;
       }
 
