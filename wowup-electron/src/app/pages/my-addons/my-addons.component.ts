@@ -547,10 +547,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClickIgnoreAddon(listItem: AddonViewModel): void {
-    this.onClickIgnoreAddons(!listItem.addon.isIgnored, [listItem]);
+    this.onClickIgnoreAddons([listItem]);
   }
 
-  public onClickIgnoreAddons(isIgnored: boolean, listItems: AddonViewModel[]): void {
+  public onClickIgnoreAddons(listItems: AddonViewModel[]): void {
+    const isIgnored = _.every(listItems, (listItem) => listItem.addon.isIgnored === false);
     listItems.forEach((listItem) => {
       // if provider is not valid (Unknown) then ignore this
       if (!this.addonService.isValidProviderName(listItem.addon.providerName)) {
@@ -570,20 +571,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClickAutoUpdateAddon(listItem: AddonViewModel): void {
-    this.onClickAutoUpdateAddons(
-      {
-        checked: !listItem.addon.autoUpdateEnabled,
-        source: undefined,
-      },
-      [listItem]
-    );
+    this.onClickAutoUpdateAddons([listItem]);
   }
 
-  public onClickAutoUpdateAddons(autoUpdateChange: MatCheckboxChange, listItems: AddonViewModel[]): void {
+  public onClickAutoUpdateAddons(listItems: AddonViewModel[]): void {
+    const isAutoUpdate = _.every(listItems, (listItem) => listItem.addon.autoUpdateEnabled === false);
     try {
       listItems.forEach((listItem) => {
-        listItem.addon.autoUpdateEnabled = autoUpdateChange.checked;
-        if (autoUpdateChange.checked) {
+        listItem.addon.autoUpdateEnabled = isAutoUpdate;
+        if (isAutoUpdate) {
           listItem.addon.isIgnored = false;
         }
         this.addonService.saveAddon(listItem.addon);
