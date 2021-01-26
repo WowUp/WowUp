@@ -614,7 +614,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       try {
-        const externalId = _.find(listItem.addon.externalIds, (extid) => extid.providerName === evt.value);
+        const externalId = _.find(listItem.addon.externalIds, (extId) => extId.providerName === evt.value);
         await this.addonService.setProvider(
           listItem.addon,
           externalId.id,
