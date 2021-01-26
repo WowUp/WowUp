@@ -6,71 +6,66 @@ import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
+import { AddonDependency } from "app/models/wowup/addon-dependency";
 
 export class AddonViewModel {
   public addon: Addon;
 
   public installState: AddonInstallState = AddonInstallState.Unknown;
-  public isInstalling: boolean = false;
-  public installProgress: number = 0;
-  public stateTextTranslationKey: string = "";
-  public selected: boolean = false;
-  public releasedAt: number = 0;
-  public installedAt: number = 0;
-
-  get isLoadOnDemand() {
-    return this.addon?.isLoadOnDemand;
-  }
-
-  get hasThumbnail() {
-    return !!this.addon.thumbnailUrl;
-  }
-
-  get thumbnailLetter() {
-    return this.addon.name.charAt(0).toUpperCase();
-  }
-
-  get needsInstall() {
-    return !this.isInstalling && AddonUtils.needsInstall(this.addon);
-  }
-
-  get needsUpdate() {
-    return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
-  }
+  public isInstalling = false;
+  public installProgress = 0;
+  public stateTextTranslationKey = "";
+  public selected = false;
+  public releasedAt = 0;
+  public installedAt = 0;
+  public isLoadOnDemand = false;
+  public hasThumbnail = false;
+  public thumbnailLetter = "";
 
   constructor(addon?: Addon) {
     this.addon = addon;
     this.installedAt = addon.installedAt ? new Date(addon.installedAt).getTime() : 0;
     this.releasedAt = addon.releasedAt ? new Date(addon.releasedAt).getTime() : 0;
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
+    this.isLoadOnDemand = addon.isLoadOnDemand;
+    this.hasThumbnail = !!addon.thumbnailUrl;
+    this.thumbnailLetter = this.addon.name.charAt(0).toUpperCase();
   }
 
-  public isUpToDate() {
+  public isUpToDate(): boolean {
     return !this.isInstalling && !AddonUtils.needsUpdate(this.addon);
   }
 
-  public isStableChannel() {
+  public isStableChannel(): boolean {
     return this.addon.channelType === AddonChannelType.Stable;
   }
 
-  public isBetaChannel() {
+  public isBetaChannel(): boolean {
     return this.addon.channelType === AddonChannelType.Beta;
   }
 
-  public isAlphaChannel() {
+  public isAlphaChannel(): boolean {
     return this.addon.channelType === AddonChannelType.Alpha;
   }
 
-  public isUnMatched() {
+  public isUnMatched(): boolean {
     return this.addon.providerName === ADDON_PROVIDER_UNKNOWN;
   }
 
-  public clone() {
+  public clone(): AddonViewModel {
     return new AddonViewModel(this.addon);
   }
 
-  public onClicked() {
+  public onClicked(): void {
     this.selected = !this.selected;
+  }
+
+  public needsInstall(): boolean {
+    return !this.isInstalling && AddonUtils.needsInstall(this.addon);
+  }
+
+  public needsUpdate(): boolean {
+    return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
   }
 
   public get sortOrder(): AddonStatusSortOrder {
@@ -78,11 +73,11 @@ export class AddonViewModel {
       return AddonStatusSortOrder.Ignored;
     }
 
-    if (this.needsInstall) {
+    if (this.needsInstall()) {
       return AddonStatusSortOrder.Install;
     }
 
-    if (this.needsUpdate || this.isInstalling) {
+    if (this.needsUpdate() || this.isInstalling) {
       return AddonStatusSortOrder.Update;
     }
 
@@ -93,7 +88,7 @@ export class AddonViewModel {
     return AddonStatusSortOrder.Unknown;
   }
 
-  public getStateTextTranslationKey() {
+  public getStateTextTranslationKey(): string {
     if (this.isUpToDate()) {
       return "COMMON.ADDON_STATE.UPTODATE";
     }
@@ -102,11 +97,11 @@ export class AddonViewModel {
       return "COMMON.ADDON_STATE.IGNORED";
     }
 
-    if (this.needsUpdate) {
+    if (this.needsUpdate()) {
       return "COMMON.ADDON_STATE.UPDATE";
     }
 
-    if (this.needsInstall) {
+    if (this.needsInstall()) {
       return "COMMON.ADDON_STATE.INSTALL";
     }
 
@@ -114,7 +109,7 @@ export class AddonViewModel {
     return "COMMON.ADDON_STATE.UNKNOWN";
   }
 
-  public getDependencies(dependencyType: AddonDependencyType = undefined) {
+  public getDependencies(dependencyType: AddonDependencyType = undefined): AddonDependency[] {
     return dependencyType == undefined
       ? this.addon.dependencies
       : _.filter(this.addon.dependencies, (dep) => dep.type === dependencyType);

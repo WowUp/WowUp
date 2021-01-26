@@ -123,11 +123,11 @@ export class AddonService {
       });
   }
 
-  public canShowChangelog(providerName: string) {
-    return this.getProvider(providerName).canShowChangelog;
+  public canShowChangelog(providerName: string): boolean {
+    return this.getProvider(providerName)?.canShowChangelog ?? false;
   }
 
-  public canShowAddonChangelog(addon: Addon) {
+  public canShowAddonChangelog(addon: Addon): boolean {
     return this.canShowChangelog(addon.providerName);
   }
 
