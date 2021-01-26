@@ -245,6 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Spalten anzeigen"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "Filter",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Unterstütze den Autor",

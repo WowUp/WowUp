@@ -245,6 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "顯示列表項"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "篩選",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "支援作者",

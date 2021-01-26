@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { join } from "path";
-import { BehaviorSubject, Subscription } from "rxjs";
+import { BehaviorSubject, Subject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
@@ -37,6 +37,7 @@ import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
@@ -61,11 +62,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("table", { static: false, read: ElementRef }) table: ElementRef;
 
   private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>([]);
+  private readonly _operationErrorSrc = new Subject<Error>();
 
   private subscriptions: Subscription[] = [];
   private isSelectedTab: boolean = false;
   private _lazyLoaded: boolean = false;
   private _automaticSort: boolean = false;
+
+  public readonly operationError$ = this._operationErrorSrc.asObservable();
 
   public sortedListItems: AddonViewModel[] = [];
   public spinnerMessage = "";
@@ -148,6 +152,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _cdRef: ChangeDetectorRef,
     private _wowUpAddonService: WowUpAddonService,
     private _translateService: TranslateService,
+    private _snackbarService: SnackbarService,
     public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
@@ -173,6 +178,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnInit(): void {
+    this.subscriptions.push(
+      this.operationError$.subscribe({
+        next: (error) => {
+          this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
+        },
+      })
+    );
     const columnStates = this.wowUpService.myAddonsHiddenColumns;
     this.columns.forEach((col) => {
       if (!col.allowToggle) {
@@ -552,20 +564,31 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClickAutoUpdateAddon(listItem: AddonViewModel) {
-    this.onClickAutoUpdateAddons(!listItem.addon.autoUpdateEnabled, [listItem]);
+    this.onClickAutoUpdateAddons(
+      {
+        checked: !listItem.addon.autoUpdateEnabled,
+        source: undefined,
+      },
+      [listItem]
+    );
   }
 
-  public onClickAutoUpdateAddons(isAutoUpdate: boolean, listItems: AddonViewModel[]) {
-    listItems.forEach((listItem) => {
-      listItem.addon.autoUpdateEnabled = isAutoUpdate;
-      if (isAutoUpdate) {
-        listItem.addon.isIgnored = false;
-      }
-      this.addonService.saveAddon(listItem.addon);
-    });
+  public onClickAutoUpdateAddons(autoUpdateChange: MatCheckboxChange, listItems: AddonViewModel[]) {
+    try {
+      listItems.forEach((listItem) => {
+        listItem.addon.autoUpdateEnabled = autoUpdateChange.checked;
+        if (autoUpdateChange.checked) {
+          listItem.addon.isIgnored = false;
+        }
+        this.addonService.saveAddon(listItem.addon);
+      });
 
-    if (!this.sort.active) {
-      this.sortTable(this.dataSource);
+      if (!this.sort.active) {
+        this.sortTable(this.dataSource);
+      }
+    } catch (e) {
+      console.error(e);
+      this._operationErrorSrc.next(e);
     }
   }
 

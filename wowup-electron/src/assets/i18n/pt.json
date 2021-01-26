@@ -245,6 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Exibir Colunas"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "Filtrar",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Support this author",

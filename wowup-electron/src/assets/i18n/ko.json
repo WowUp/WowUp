@@ -245,6 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "컬럼 보기"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "필터",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Support this author",

@@ -245,6 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Vis Kolonner"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "Filter",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Support this author",
