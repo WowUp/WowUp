@@ -3,7 +3,7 @@ import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
-import { LIST_DISKS_WIN32 } from "../../../common/constants";
+import { IPC_LIST_DISKS_WIN32 } from "../../../common/constants";
 
 // BLIZZARD STRINGS
 const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";
@@ -14,7 +14,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
 
   async getBlizzardAgentPath(): Promise<string> {
     try {
-      const diskInfo = await this._electronService.invoke(LIST_DISKS_WIN32);
+      const diskInfo = await this._electronService.invoke(IPC_LIST_DISKS_WIN32);
       console.debug("diskInfo", diskInfo);
       const driveNames = diskInfo.map((i) => i.mounted);
 

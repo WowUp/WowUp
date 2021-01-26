@@ -12,7 +12,9 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "prettier",
+        "prettier/@typescript-eslint"
       ],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
@@ -47,9 +49,11 @@
         "@typescript-eslint/no-unsafe-member-access": 0,
         "@typescript-eslint/no-unsafe-assignment": 0,
         "@typescript-eslint/no-unsafe-return": 0,
-        "@typescript-eslint/no-floating-promises": 0,
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-misused-promises": "error",
         "@angular-eslint/use-injectable-provided-in": "error",
-        "@angular-eslint/no-attribute-decorator": "error"
+        "@angular-eslint/no-attribute-decorator": "error",
+        "no-var": "error"
       }
     },
     {

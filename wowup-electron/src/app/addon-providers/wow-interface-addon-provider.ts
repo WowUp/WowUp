@@ -78,7 +78,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       throw new Error(`Addon ID not found ${addonUri}`);
     }
 
-    var addon = await this.getAddonDetails(addonId);
+    const addon = await this.getAddonDetails(addonId);
     if (addon == null) {
       throw new Error(`Bad addon api response ${addonUri}`);
     }
@@ -203,7 +203,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
   private toAddonSearchResult(response: AddonDetailsResponse, folderName?: string): AddonSearchResult {
     try {
-      var searchResultFile: AddonSearchResultFile = {
+      const searchResultFile: AddonSearchResultFile = {
         channelType: AddonChannelType.Stable,
         version: response.version,
         downloadUrl: response.downloadUri,

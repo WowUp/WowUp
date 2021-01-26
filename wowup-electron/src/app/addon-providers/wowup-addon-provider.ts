@@ -3,7 +3,7 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
-import { ADDON_PROVIDER_HUB, WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { ADDON_PROVIDER_HUB, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
 import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
 import { AppConfig } from "../../environments/environment";
 import { Addon } from "../entities/addon";
@@ -179,7 +179,7 @@ export class WowUpAddonProvider extends AddonProvider {
     }
 
     for (let addonFolder of addonFolders) {
-      var scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
+      const scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
       if (!scanResult.exactMatch) {
         continue;
       }
@@ -204,7 +204,7 @@ export class WowUpAddonProvider extends AddonProvider {
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
-    const scanResults: AppWowUpScanResult[] = await this._electronService.invoke(WOWUP_GET_SCAN_RESULTS, filePaths);
+    const scanResults: AppWowUpScanResult[] = await this._electronService.invoke(IPC_WOWUP_GET_SCAN_RESULTS, filePaths);
 
     console.debug("WowUpGetScanResultsResponse", scanResults);
 

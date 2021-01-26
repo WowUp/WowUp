@@ -123,11 +123,11 @@ export class AddonService {
       });
   }
 
-  public canShowChangelog(providerName: string) {
-    return this.getProvider(providerName).canShowChangelog;
+  public canShowChangelog(providerName: string): boolean {
+    return this.getProvider(providerName)?.canShowChangelog ?? false;
   }
 
-  public canShowAddonChangelog(addon: Addon) {
+  public canShowAddonChangelog(addon: Addon): boolean {
     return this.canShowChangelog(addon.providerName);
   }
 
@@ -218,7 +218,7 @@ export class AddonService {
   }
 
   public async search(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    var searchTasks = this.getEnabledAddonProviders().map(async (p) => {
+    const searchTasks = this.getEnabledAddonProviders().map(async (p) => {
       try {
         return await p.searchByQuery(query, clientType);
       } catch (e) {
@@ -226,7 +226,8 @@ export class AddonService {
         return [];
       }
     });
-    var searchResults = await Promise.all(searchTasks);
+
+    const searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackAction("addon-search", {
       clientType: getEnumName(WowClientType, clientType),
@@ -282,7 +283,7 @@ export class AddonService {
       onUpdate?.call(this, AddonInstallState.Installing, percent);
 
       // If the dependency is already installed, skip it
-      var existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.clientType);
+      const existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.clientType);
       if (existingAddon) {
         continue;
       }
@@ -1292,6 +1293,8 @@ export class AddonService {
       isLoadOnDemand: false,
       externalLatestReleaseId: latestFile.externalId,
       fundingLinks,
+      latestChangelog: latestFile.changelog,
+      latestChangelogVersion: latestFile.version,
     };
   }
 

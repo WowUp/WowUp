@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
-  CURSE_GET_SCAN_RESULTS,
+  IPC_CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
@@ -96,18 +96,6 @@ export class CurseAddonProvider extends AddonProvider {
     return "";
   }
 
-  // Replace 'a' tags with their content to not allow linking
-  private removeHtml(str: string) {
-    var tmp = document.createElement("div");
-    tmp.innerHTML = str;
-
-    const aTags = tmp.getElementsByTagName("a");
-    for (const tag of Array.from(aTags)) {
-      tag.replaceWith(tag.innerText);
-    }
-    return tmp.innerHTML;
-  }
-
   public async scan(
     clientType: WowClientType,
     addonChannelType: AddonChannelType,
@@ -132,10 +120,10 @@ export class CurseAddonProvider extends AddonProvider {
     const matchedScanResultIds = matchedScanResults.map((sr) => sr.exactMatch.id);
     const addonIds = _.uniq(matchedScanResultIds);
 
-    var addonResults = await this.getAllIds(addonIds);
+    const addonResults = await this.getAllIds(addonIds);
 
-    for (let addonFolder of addonFolders) {
-      var scanResult = scanResults.find((sr) => sr.addonFolder.name === addonFolder.name);
+    for (const addonFolder of addonFolders) {
+      const scanResult = scanResults.find((sr) => sr.addonFolder.name === addonFolder.name);
       if (!scanResult.exactMatch) {
         continue;
       }
@@ -158,7 +146,7 @@ export class CurseAddonProvider extends AddonProvider {
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: CurseScanResult[] = await this._electronService.invoke(CURSE_GET_SCAN_RESULTS, filePaths);
+    const scanResults: CurseScanResult[] = await this._electronService.invoke(IPC_CURSE_GET_SCAN_RESULTS, filePaths);
 
     const appScanResults: AppCurseScanResult[] = scanResults.map((scanResult) => {
       const addonFolder = addonFolders.find((af) => af.path === scanResult.directory);
@@ -176,7 +164,7 @@ export class CurseAddonProvider extends AddonProvider {
 
     const fingerprintResponse = await this.getAddonsByFingerprintsW(scanResults.map((result) => result.fingerprint));
 
-    for (let scanResult of scanResults) {
+    for (const scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
       scanResult.exactMatch = fingerprintResponse.exactMatches.find(
         (exactMatch) =>
@@ -254,7 +242,7 @@ export class CurseAddonProvider extends AddonProvider {
     const addonResults: AddonSearchResult[] = [];
     const searchResults = await this.getAllIds(addonIds.map((id) => parseInt(id, 10)));
 
-    for (let result of searchResults) {
+    for (const result of searchResults) {
       const latestFiles = this.getLatestFiles(result, clientType);
       if (!latestFiles.length) {
         continue;
@@ -296,7 +284,7 @@ export class CurseAddonProvider extends AddonProvider {
 
     await this.removeBlockedItems(response);
 
-    for (let result of response) {
+    for (const result of response) {
       const latestFiles = this.getLatestFiles(result, clientType);
       if (!latestFiles.length) {
         continue;

@@ -4,19 +4,27 @@ import {
   APP_UPDATE_CHECK_START,
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_START_DOWNLOAD,
-  CLOSE_WINDOW,
-  MAXIMIZE_WINDOW,
-  MINIMIZE_WINDOW,
-  POWER_MONITOR_LOCK,
-  POWER_MONITOR_RESUME,
-  POWER_MONITOR_SUSPEND,
-  POWER_MONITOR_UNLOCK,
-  QUIT_APP,
-  RESTART_APP,
-  WINDOW_LEAVE_FULLSCREEN,
-  WINDOW_MAXIMIZED,
-  WINDOW_MINIMIZED,
-  WINDOW_UNMAXIMIZED,
+  IPC_CLOSE_WINDOW,
+  IPC_GET_APP_VERSION,
+  IPC_GET_LAUNCH_ARGS,
+  IPC_GET_LOCALE,
+  IPC_GET_LOGIN_ITEM_SETTINGS,
+  IPC_GET_ZOOM_FACTOR,
+  IPC_SET_LOGIN_ITEM_SETTINGS,
+  IPC_SET_ZOOM_FACTOR,
+  IPC_SET_ZOOM_LIMITS,
+  IPC_MAXIMIZE_WINDOW,
+  IPC_MINIMIZE_WINDOW,
+  IPC_POWER_MONITOR_LOCK,
+  IPC_POWER_MONITOR_RESUME,
+  IPC_POWER_MONITOR_SUSPEND,
+  IPC_POWER_MONITOR_UNLOCK,
+  IPC_QUIT_APP,
+  IPC_RESTART_APP,
+  IPC_WINDOW_LEAVE_FULLSCREEN,
+  IPC_WINDOW_MAXIMIZED,
+  IPC_WINDOW_MINIMIZED,
+  IPC_WINDOW_UNMAXIMIZED,
   ZOOM_FACTOR_KEY,
 } from "../../../common/constants";
 import * as minimist from "minimist";
@@ -72,7 +80,7 @@ export class ElectronService {
     window.addEventListener("online", this.onWindowOnline);
     window.addEventListener("offline", this.onWindowOffline);
 
-    this.invoke("get-app-version")
+    this.invoke(IPC_GET_APP_VERSION)
       .then((version) => {
         this._appVersion = version;
       })
@@ -96,39 +104,39 @@ export class ElectronService {
       this._ipcEventReceivedSrc.next(APP_UPDATE_DOWNLOADED);
     });
 
-    this.onRendererEvent(WINDOW_MINIMIZED, () => {
+    this.onRendererEvent(IPC_WINDOW_MINIMIZED, () => {
       this._windowMinimizedSrc.next(true);
     });
 
-    this.onRendererEvent(WINDOW_MAXIMIZED, () => {
+    this.onRendererEvent(IPC_WINDOW_MAXIMIZED, () => {
       this._windowMaximizedSrc.next(true);
     });
 
-    this.onRendererEvent(WINDOW_UNMAXIMIZED, () => {
+    this.onRendererEvent(IPC_WINDOW_UNMAXIMIZED, () => {
       this._windowMaximizedSrc.next(false);
     });
 
-    this.onRendererEvent(POWER_MONITOR_LOCK, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_LOCK, () => {
       console.log("POWER_MONITOR_LOCK received");
-      this._powerMonitorSrc.next(POWER_MONITOR_LOCK);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_LOCK);
     });
 
-    this.onRendererEvent(POWER_MONITOR_UNLOCK, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_UNLOCK, () => {
       console.log("POWER_MONITOR_UNLOCK received");
-      this._powerMonitorSrc.next(POWER_MONITOR_UNLOCK);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_UNLOCK);
     });
 
-    this.onRendererEvent(POWER_MONITOR_SUSPEND, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_SUSPEND, () => {
       console.log("POWER_MONITOR_SUSPEND received");
-      this._powerMonitorSrc.next(POWER_MONITOR_SUSPEND);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_SUSPEND);
     });
 
-    this.onRendererEvent(POWER_MONITOR_RESUME, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_RESUME, () => {
       console.log("POWER_MONITOR_RESUME received");
-      this._powerMonitorSrc.next(POWER_MONITOR_RESUME);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_RESUME);
     });
 
-    this.invoke("set-zoom-limits", 1, 1).catch((e) => {
+    this.invoke(IPC_SET_ZOOM_LIMITS, 1, 1).catch((e) => {
       console.error("Failed to set zoom limits", e);
     });
 
@@ -159,15 +167,15 @@ export class ElectronService {
   }
 
   public getLoginItemSettings(): Promise<LoginItemSettings> {
-    return this.invoke("get-login-item-settings");
+    return this.invoke(IPC_GET_LOGIN_ITEM_SETTINGS);
   }
 
   public setLoginItemSettings(settings: Settings) {
-    return this.invoke("set-login-item-settings", settings);
+    return this.invoke(IPC_SET_LOGIN_ITEM_SETTINGS, settings);
   }
 
   public async getAppOptions(): Promise<AppOptions> {
-    const launchArgs = await this.invoke("get-launch-args");
+    const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
     return (<any>minimist(launchArgs.slice(1), {
       boolean: ["hidden", "quit"],
       string: ["install"]
@@ -179,40 +187,40 @@ export class ElectronService {
   }
 
   public async getLocale() {
-    const locale = await this.invoke("get-locale");
+    const locale = await this.invoke(IPC_GET_LOCALE);
     return locale.split("-")[0];
   }
 
   public getVersionNumber(): Promise<string> {
-    return this.invoke("get-app-version");
+    return this.invoke(IPC_GET_APP_VERSION);
   }
 
   public minimizeWindow() {
-    this.invoke(MINIMIZE_WINDOW);
+    this.invoke(IPC_MINIMIZE_WINDOW);
   }
 
   public maximizeWindow() {
-    this.invoke(MAXIMIZE_WINDOW);
+    this.invoke(IPC_MAXIMIZE_WINDOW);
   }
 
   public unmaximizeWindow() {
-    this.invoke(MAXIMIZE_WINDOW);
+    this.invoke(IPC_MAXIMIZE_WINDOW);
   }
 
   public restartApplication() {
-    this.invoke(RESTART_APP);
+    this.invoke(IPC_RESTART_APP);
   }
 
   public quitApplication() {
-    this.invoke(QUIT_APP);
+    this.invoke(IPC_QUIT_APP);
   }
 
   public closeWindow() {
-    this.invoke(CLOSE_WINDOW);
+    this.invoke(IPC_CLOSE_WINDOW);
   }
 
   public leaveFullScreen() {
-    this.invoke(WINDOW_LEAVE_FULLSCREEN);
+    this.invoke(IPC_WINDOW_LEAVE_FULLSCREEN);
   }
 
   public showNotification(title: string, options?: NotificationOptions) {
@@ -310,13 +318,13 @@ export class ElectronService {
   };
 
   public setZoomFactor = async (zoomFactor: number) => {
-    await this.invoke("set-zoom-factor", zoomFactor);
+    await this.invoke(IPC_SET_ZOOM_FACTOR, zoomFactor);
     this._zoomFactorChangeSrc.next(zoomFactor);
     this._preferenceStorageService.set(ZOOM_FACTOR_KEY, zoomFactor);
   };
 
   public getZoomFactor(): Promise<number> {
-    return this.invoke("get-zoom-factor");
+    return this.invoke(IPC_GET_ZOOM_FACTOR);
   }
 
   private async getNextZoomInFactor(): Promise<number> {

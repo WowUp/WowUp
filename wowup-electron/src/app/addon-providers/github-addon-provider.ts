@@ -164,16 +164,17 @@ export class GitHubAddonProvider extends AddonProvider {
     console.debug("latestRelease", latestRelease);
     console.debug("asset", asset);
 
-    var searchResultFile: AddonSearchResultFile = {
+    const searchResultFile: AddonSearchResultFile = {
       channelType: AddonChannelType.Stable,
       downloadUrl: asset.browser_download_url,
       folders: [addonName],
       gameVersion: "",
       version: asset.name,
       releaseDate: new Date(asset.created_at),
+      changelog: latestRelease.body,
     };
 
-    var searchResult: AddonSearchResult = {
+    const searchResult: AddonSearchResult = {
       author: author,
       externalId: addonId,
       externalUrl: repository.html_url,

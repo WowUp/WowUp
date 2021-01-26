@@ -1,18 +1,18 @@
 import * as platform from "./platform";
 import { app, BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions } from "electron";
-import { MENU_ZOOM_IN_CHANNEL, MENU_ZOOM_OUT_CHANNEL, MENU_ZOOM_RESET_CHANNEL } from "./src/common/constants";
+import { IPC_MENU_ZOOM_IN_CHANNEL, IPC_MENU_ZOOM_OUT_CHANNEL, IPC_MENU_ZOOM_RESET_CHANNEL } from "./src/common/constants";
 import { MenuConfig } from "./src/common/wowup/menu-config";
 
 function onMenuZoomIn(win: BrowserWindow) {
-  win?.webContents.send(MENU_ZOOM_IN_CHANNEL);
+  win?.webContents.send(IPC_MENU_ZOOM_IN_CHANNEL);
 }
 
 function onMenuZoomOut(win: BrowserWindow) {
-  win?.webContents.send(MENU_ZOOM_OUT_CHANNEL);
+  win?.webContents.send(IPC_MENU_ZOOM_OUT_CHANNEL);
 }
 
 function onMenuZoomReset(win: BrowserWindow) {
-  win?.webContents.send(MENU_ZOOM_RESET_CHANNEL);
+  win?.webContents.send(IPC_MENU_ZOOM_RESET_CHANNEL);
 }
 
 function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
