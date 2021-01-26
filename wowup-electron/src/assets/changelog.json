@@ -1,6 +1,17 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.24",
+      "changes": [
+        "German locale updates (Glow)",
+        "Italian locale updates (Bito)",
+        "Fix an issue with multi select auto update checkbox",
+        "Fix an issue with multi select ignore checkbox",
+        "Update Electron",
+        "Some code cleanup"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.23",
       "changes": [
         "Russian locale updates (Medok)",
