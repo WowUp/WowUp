@@ -6,7 +6,7 @@ import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
-import { AddonDependency } from "app/models/wowup/addon-dependency";
+import { AddonDependency } from "../models/wowup/addon-dependency";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -29,7 +29,7 @@ export class AddonViewModel {
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
     this.isLoadOnDemand = addon.isLoadOnDemand;
     this.hasThumbnail = !!addon.thumbnailUrl;
-    this.thumbnailLetter = this.addon.name.charAt(0).toUpperCase();
+    this.thumbnailLetter = this.addon.name?.charAt(0).toUpperCase() ?? "";
   }
 
   public isUpToDate(): boolean {
