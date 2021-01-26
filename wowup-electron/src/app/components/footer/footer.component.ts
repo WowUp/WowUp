@@ -8,7 +8,7 @@ import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { from } from "rxjs";
-import { SnackbarService } from "app/services/snackbar/snackbar.service";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-footer",

@@ -136,16 +136,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (platform.isMac) {
-    app.dock.show();
-    win?.show();
-  }
-
-  if (win === null) {
-    createWindow();
-  }
+  void onActivate();
 });
 
 app.on("child-process-gone", (e, details) => {
@@ -327,7 +318,7 @@ function createWindow(): BrowserWindow {
 
   win.webContents.on("did-fail-load", () => {
     log.info("did-fail-load");
-    loadMainUrl(win);
+    loadMainUrl(win).catch((e) => log.error(e));
   });
 
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
@@ -335,22 +326,35 @@ function createWindow(): BrowserWindow {
     require("electron-reload")(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`),
     });
-    win.loadURL("http://localhost:4200");
+    win.loadURL("http://localhost:4200").catch((e) => log.error(e));
   } else {
-    loadMainUrl(win);
+    loadMainUrl(win).catch((e) => log.error(e));
   }
 
   return win;
 }
 
 function loadMainUrl(window: BrowserWindow) {
-  window?.loadURL(
+  return window?.loadURL(
     urlFormat({
       pathname: join(__dirname, "dist/index.html"),
       protocol: "file:",
       slashes: true,
     })
   );
+}
+
+async function onActivate() {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (platform.isMac) {
+    await app.dock.show();
+    win?.show();
+  }
+
+  if (win === null) {
+    createWindow();
+  }
 }
 
 function sendEventToContents(window: BrowserWindow, event: MainChannels, ...args: any[]) {

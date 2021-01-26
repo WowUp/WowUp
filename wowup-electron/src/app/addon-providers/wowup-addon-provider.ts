@@ -179,7 +179,7 @@ export class WowUpAddonProvider extends AddonProvider {
     }
 
     for (let addonFolder of addonFolders) {
-      var scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
+      const scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
       if (!scanResult.exactMatch) {
         continue;
       }
