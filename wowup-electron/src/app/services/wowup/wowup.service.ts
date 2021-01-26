@@ -470,7 +470,7 @@ export class WowUpService {
 
   private setAutoStartup() {
     if (this._electronService.isLinux) {
-      var autoLauncher = new window.libs.autoLaunch({
+      const autoLauncher = new window.libs.autoLaunch({
         name: "WowUp",
         isHidden: this.startMinimized,
       });

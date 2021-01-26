@@ -203,7 +203,7 @@ export class TukUiAddonProvider extends AddonProvider {
   };
 
   private async searchAddons(addonName: string, clientType: WowClientType) {
-    var addons = await this.getAllAddons(clientType);
+    const addons = await this.getAllAddons(clientType);
     return addons.filter((addon) => addon.name.toLowerCase() === addonName.toLowerCase());
   }
 

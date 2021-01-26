@@ -33,7 +33,9 @@ describe("LocaleTest", () => {
           }),
         ],
         providers: [],
-      }).compileComponents();
+      })
+        .compileComponents()
+        .catch((e) => console.error(e));
     })
   );
 

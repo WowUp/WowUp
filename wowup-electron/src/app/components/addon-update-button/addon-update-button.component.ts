@@ -44,17 +44,17 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
   }
 
-  public getActionLabel() {
+  public getActionLabel(): string {
     return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${this.listItem?.addon.providerName}|${
       this.listItem?.addon.externalId
     }|${this.listItem?.addon.name}`;
   }
 
-  public getInstallProgress() {
+  public getInstallProgress(): number {
     return this.listItem?.installProgress || 0;
   }
 
-  public getIsButtonActive() {
+  public getIsButtonActive(): boolean {
     return (
       this.listItem?.installState !== AddonInstallState.Unknown &&
       this.listItem?.installState !== AddonInstallState.Complete &&
@@ -62,11 +62,11 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     );
   }
 
-  public getIsButtonDisabled() {
+  public getIsButtonDisabled(): boolean {
     return this.listItem?.isUpToDate() || this.listItem?.installState < AddonInstallState.Unknown;
   }
 
-  public getButtonText() {
+  public getButtonText(): string {
     if (this.listItem?.installState !== AddonInstallState.Unknown) {
       return this.getInstallStateText(this.listItem?.installState);
     }
@@ -74,20 +74,24 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     return this.getStatusText();
   }
 
-  public onInstallUpdateClick() {
-    if (this.listItem.needsUpdate) {
-      this._addonService.updateAddon(this.listItem.addon.id);
-    } else {
-      this._addonService.installAddon(this.listItem.addon.id);
+  public async onInstallUpdateClick(): Promise<void> {
+    try {
+      if (this.listItem.needsUpdate()) {
+        await this._addonService.updateAddon(this.listItem.addon.id);
+      } else {
+        await this._addonService.installAddon(this.listItem.addon.id);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
-  public getStatusText() {
-    if (this.listItem?.needsInstall) {
+  public getStatusText(): string {
+    if (this.listItem?.needsInstall()) {
       return this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_INSTALL_BUTTON");
     }
 
-    if (this.listItem?.needsUpdate) {
+    if (this.listItem?.needsUpdate()) {
       return this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_UPDATE_BUTTON");
     }
 
