@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.25",
+      "changes": ["Spanish locale updates (SkollVargr)", "Fix an issue with gold update text"]
+    },
+    {
       "Version": "2.1.0-beta.24",
       "changes": [
         "German locale updates (Glow)",
