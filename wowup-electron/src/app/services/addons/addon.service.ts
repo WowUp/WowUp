@@ -218,7 +218,7 @@ export class AddonService {
   }
 
   public async search(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    var searchTasks = this.getEnabledAddonProviders().map(async (p) => {
+    const searchTasks = this.getEnabledAddonProviders().map(async (p) => {
       try {
         return await p.searchByQuery(query, clientType);
       } catch (e) {
@@ -226,7 +226,8 @@ export class AddonService {
         return [];
       }
     });
-    var searchResults = await Promise.all(searchTasks);
+
+    const searchResults = await Promise.all(searchTasks);
 
     await this._analyticsService.trackAction("addon-search", {
       clientType: getEnumName(WowClientType, clientType),
@@ -282,7 +283,7 @@ export class AddonService {
       onUpdate?.call(this, AddonInstallState.Installing, percent);
 
       // If the dependency is already installed, skip it
-      var existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.clientType);
+      const existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.clientType);
       if (existingAddon) {
         continue;
       }
