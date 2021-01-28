@@ -55,8 +55,9 @@ function restoreWindow(window: BrowserWindow) {
   window?.show();
   window?.setSkipTaskbar(false);
 
-  // if (platform.isMac) {
-  //   app.dock.show();
+  if (platform.isMac) {
+    app.dock.show();
+  }
   // } else {
   //   window?.setSkipTaskbar(false);
   // }

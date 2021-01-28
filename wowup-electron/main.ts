@@ -287,10 +287,9 @@ function createWindow(): BrowserWindow {
     win.hide();
     win.setSkipTaskbar(true);
 
-    // if (platform.isMac) {
-    //   app.dock.hide();
-    // } else {
-    // }
+    if (platform.isMac) {
+      app.dock.hide();
+    }
   });
 
   win.once("closed", () => {
