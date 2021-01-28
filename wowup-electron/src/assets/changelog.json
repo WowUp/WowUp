@@ -1,8 +1,11 @@
 {
-  "ChangeLogs": [
-    {
+  "ChangeLogs": [{
       "Version": "2.1.0-beta.26",
-      "changes": ["Russian locale updates (Medok)"]
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Update Angular",
+        "Some code cleanup"
+      ]
     },
     {
       "Version": "2.1.0-beta.25",
