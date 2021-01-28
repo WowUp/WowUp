@@ -60,6 +60,7 @@ export class CurseAddonProvider extends AddonProvider {
     this._circuitBreaker = _networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
     try {
       const cacheKey = `${this.name}_description_${externalId}`;
@@ -275,9 +276,9 @@ export class CurseAddonProvider extends AddonProvider {
   async searchByQuery(
     query: string,
     clientType: WowClientType,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
-    channelType = channelType || AddonChannelType.Stable;
     const searchResults: AddonSearchResult[] = [];
 
     const response = await this.getSearchResults(query);
@@ -303,15 +304,6 @@ export class CurseAddonProvider extends AddonProvider {
       return null;
     }
     return await this.searchBySlug(slugMatch[1], clientType);
-  }
-
-  searchByName(
-    addonName: string,
-    folderName: string,
-    clientType: WowClientType,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    throw new Error("Method not implemented.");
   }
 
   private async searchBySlug(slug: string, clientType: WowClientType) {
@@ -366,10 +358,6 @@ export class CurseAddonProvider extends AddonProvider {
 
   isValidAddonId(addonId: string): boolean {
     return !!addonId && !isNaN(parseInt(addonId, 10));
-  }
-
-  onPostInstall(addon: Addon): void {
-    throw new Error("Method not implemented.");
   }
 
   private getAddonSearchResult(result: CurseSearchResult, latestFiles: CurseFile[] = []): AddonSearchResult {

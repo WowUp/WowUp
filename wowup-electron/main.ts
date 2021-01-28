@@ -283,13 +283,14 @@ function createWindow(): BrowserWindow {
     if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
       return;
     }
-    win.hide();
-    if (platform.isMac) {
-      app.dock.hide();
-    } else {
-      win.setSkipTaskbar(true);
-    }
     e.preventDefault();
+    win.hide();
+    win.setSkipTaskbar(true);
+
+    // if (platform.isMac) {
+    //   app.dock.hide();
+    // } else {
+    // }
   });
 
   win.once("closed", () => {

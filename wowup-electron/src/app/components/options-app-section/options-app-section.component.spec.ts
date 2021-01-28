@@ -38,7 +38,7 @@ describe("OptionsAppSectionComponent", () => {
       isMac: false,
       zoomFactor$: new BehaviorSubject(1.0).asObservable(),
     });
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
+    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", ["getStartWithSystem"], {
       collapseToTray: false,
       useHardwareAcceleration: false,
       startWithSystem: false,

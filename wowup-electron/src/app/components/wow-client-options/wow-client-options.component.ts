@@ -142,7 +142,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
     const clientRelativePath = this._warcraftService.getClientRelativePath(clientType, selectedPath);
 
-    if (this._warcraftService.setWowFolderPath(clientType, clientRelativePath)) {
+    const didSetWowPath = await this._warcraftService.setWowFolderPath(clientType, clientRelativePath);
+    if (didSetWowPath) {
       return clientRelativePath;
     }
 

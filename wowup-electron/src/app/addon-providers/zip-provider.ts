@@ -75,10 +75,11 @@ export class ZipAddonProvider extends AddonProvider {
   private async getAllTocs(baseDir: string, installedFolders: string[]) {
     const tocs: Toc[] = [];
 
-    for (let dir of installedFolders) {
+    for (const dir of installedFolders) {
       const dirPath = join(baseDir, dir);
 
-      const tocFile = _.first(this._fileService.listFiles(dirPath, "*.toc"));
+      const tocFiles = await this._fileService.listFiles(dirPath, "*.toc");
+      const tocFile = _.first(tocFiles);
       if (!tocFile) {
         continue;
       }
@@ -97,7 +98,7 @@ export class ZipAddonProvider extends AddonProvider {
 
   async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {
-      throw new Error(`Invalid zip URL ${addonUri}`);
+      throw new Error(`Invalid zip URL ${addonUri.toString()}`);
     }
 
     await this.validateUrlContentType(addonUri);
@@ -121,7 +122,7 @@ export class ZipAddonProvider extends AddonProvider {
     const addonUri = new URL(addonId);
 
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {
-      throw new Error(`Invalid zip URL ${addonUri}`);
+      throw new Error(`Invalid zip URL ${addonUri.toString()}`);
     }
 
     return from(this.validateUrlContentType(addonUri)).pipe(
