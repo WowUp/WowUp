@@ -1,6 +1,4 @@
 import { Injectable } from "@angular/core";
-import * as fs from "fs";
-import * as globrex from "globrex";
 import { v4 as uuidv4 } from "uuid";
 import {
   IPC_COPY_FILE_CHANNEL,
@@ -14,9 +12,13 @@ import {
   IPC_SHOW_DIRECTORY,
   IPC_STAT_FILES_CHANNEL,
   IPC_UNZIP_FILE_CHANNEL,
+  IPC_LIST_ENTRIES,
+  IPC_LIST_FILES_CHANNEL,
+  IPC_READDIR,
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
+import { FsDirent, FsStats } from "../../../common/models/ipc-events";
 import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
@@ -25,24 +27,20 @@ import { ElectronService } from "../electron/electron.service";
 export class FileService {
   constructor(private _electronService: ElectronService) {}
 
-  public async getAssetFilePath(fileName: string) {
-    return await this._electronService.invoke(IPC_GET_ASSET_FILE_PATH, fileName);
+  public getAssetFilePath(fileName: string): Promise<string> {
+    return this._electronService.invoke<string>(IPC_GET_ASSET_FILE_PATH, fileName);
   }
 
-  public async createDirectory(directoryPath: string) {
-    return await this._electronService.invoke(IPC_CREATE_DIRECTORY_CHANNEL, directoryPath);
+  public createDirectory(directoryPath: string): Promise<boolean> {
+    return this._electronService.invoke<boolean>(IPC_CREATE_DIRECTORY_CHANNEL, directoryPath);
   }
 
-  public async showDirectory(sourceDir: string) {
-    return await this._electronService.invoke(IPC_SHOW_DIRECTORY, sourceDir);
+  public showDirectory(sourceDir: string): Promise<string> {
+    return this._electronService.invoke<string>(IPC_SHOW_DIRECTORY, sourceDir);
   }
 
-  public async pathExists(sourcePath: string): Promise<boolean> {
-    if (!sourcePath) {
-      return Promise.resolve(false);
-    }
-
-    return await this._electronService.invoke(IPC_PATH_EXISTS_CHANNEL, sourcePath);
+  public pathExists(sourcePath: string): Promise<boolean> {
+    return this._electronService.invoke(IPC_PATH_EXISTS_CHANNEL, sourcePath);
   }
 
   /**
@@ -71,7 +69,7 @@ export class FileService {
     return destinationFilePath;
   }
 
-  public async deleteIfExists(filePath: string) {
+  public async deleteIfExists(filePath: string): Promise<void> {
     const pathExists = await this.pathExists(filePath);
     if (pathExists) {
       await this.remove(filePath);
@@ -90,23 +88,20 @@ export class FileService {
     return await this._electronService.invoke(IPC_LIST_DIRECTORIES_CHANNEL, sourcePath);
   }
 
-  public async statFiles(filePaths: string[]): Promise<{ [path: string]: fs.Stats }> {
-    return await this._electronService.invoke(IPC_STAT_FILES_CHANNEL, filePaths);
+  public readdir(dirPath: string): Promise<string[]> {
+    return this._electronService.invoke(IPC_READDIR, dirPath);
   }
 
-  public listEntries(sourcePath: string, filter: string) {
-    const globFilter = globrex(filter);
-
-    return fs.readdirSync(sourcePath, { withFileTypes: true }).filter((entry) => !!globFilter.regex.test(entry.name));
+  public statFiles(filePaths: string[]): Promise<{ [path: string]: FsStats }> {
+    return this._electronService.invoke(IPC_STAT_FILES_CHANNEL, filePaths);
   }
 
-  public listFiles(sourcePath: string, filter: string) {
-    const globFilter = globrex(filter);
+  public listEntries(sourcePath: string, filter: string): Promise<FsDirent[]> {
+    return this._electronService.invoke<FsDirent[]>(IPC_LIST_ENTRIES, sourcePath, filter);
+  }
 
-    return fs
-      .readdirSync(sourcePath, { withFileTypes: true })
-      .filter((entry) => !!globFilter.regex.test(entry.name))
-      .map((entry) => entry.name);
+  public listFiles(sourcePath: string, filter: string): Promise<string[]> {
+    return this._electronService.invoke<string[]>(IPC_LIST_FILES_CHANNEL, sourcePath, filter);
   }
 
   public async unzipFile(zipFilePath: string, outputFolder: string): Promise<string> {

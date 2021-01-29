@@ -245,7 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Показать колонки"
       },
-      "ERROR_SNACKBAR": "An error occurred",
+      "ERROR_SNACKBAR": "Произошла ошибка",
       "FILTER_LABEL": "Фильтр",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Поддержать этого автора",

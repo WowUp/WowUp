@@ -62,6 +62,9 @@ declare type RendererChannels =
   | "get-login-item-settings"
   | "set-login-item-settings"
   | "leave-full-screen"
+  | "list-entries"
+  | "list-files"
+  | "readdir"
   | "set-as-default-protocol-client"
   | "remove-as-default-protocol-client";
 

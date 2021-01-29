@@ -55,10 +55,11 @@ export const IPC_GET_LOCALE = "get-locale";
 export const IPC_GET_LAUNCH_ARGS = "get-launch-args";
 export const IPC_GET_LOGIN_ITEM_SETTINGS = "get-login-item-settings";
 export const IPC_SET_LOGIN_ITEM_SETTINGS = "set-login-item-settings";
+export const IPC_LIST_ENTRIES = "list-entries";
+export const IPC_READDIR = "readdir";
 export const IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT = "set-as-default-protocol-client";
 export const IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT = "remove-as-default-protocol-client";
 export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
-
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";

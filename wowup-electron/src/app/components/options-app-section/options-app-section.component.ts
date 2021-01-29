@@ -31,13 +31,13 @@ interface LocaleListItem {
 })
 export class OptionsAppSectionComponent implements OnInit {
   public collapseToTray = false;
-  public minimizeOnCloseDescription: string = "";
+  public minimizeOnCloseDescription = "";
   public startMinimized = false;
   public startWithSystem = false;
   public protocolRegistered = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
-  public currentLanguage: string = "";
+  public currentLanguage = "";
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
   public languages: LocaleListItem[] = [
@@ -100,12 +100,12 @@ export class OptionsAppSectionComponent implements OnInit {
     this.telemetryEnabled = this._analyticsService.telemetryEnabled;
     this.collapseToTray = this.wowupService.collapseToTray;
     this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
-    this.startWithSystem = this.wowupService.startWithSystem;
+    this.startWithSystem = this.wowupService.getStartWithSystem();
     this.startMinimized = this.wowupService.startMinimized;
     this.protocolRegistered = this.wowupService.protocolRegistered;
     this.currentLanguage = this.wowupService.currentLanguage;
 
-    this.initScale;
+    this.initScale().catch((e) => console.error(e));
 
     this.electronService.zoomFactor$.subscribe((zoomFactor) => {
       this.currentScale = zoomFactor;
@@ -115,25 +115,25 @@ export class OptionsAppSectionComponent implements OnInit {
 
   private async initScale() {
     await this.updateScale();
-    this.electronService.onRendererEvent("zoom-changed", (event, arg) => {
-      this.updateScale();
+    this.electronService.onRendererEvent("zoom-changed", () => {
+      this.updateScale().catch((e) => console.error(e));
     });
   }
 
-  onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
+  onEnableSystemNotifications = (evt: MatSlideToggleChange): void => {
     this.wowupService.enableSystemNotifications = evt.checked;
   };
 
-  onTelemetryChange = (evt: MatSlideToggleChange) => {
+  onTelemetryChange = (evt: MatSlideToggleChange): void => {
     this._analyticsService.telemetryEnabled = evt.checked;
   };
 
-  onCollapseChange = (evt: MatSlideToggleChange) => {
+  onCollapseChange = (evt: MatSlideToggleChange): void => {
     this.wowupService.collapseToTray = evt.checked;
   };
 
-  onStartWithSystemChange = (evt: MatSlideToggleChange) => {
-    this.wowupService.startWithSystem = evt.checked;
+  onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setStartWithSystem(evt.checked);
     if (!evt.checked) {
       this.startMinimized = false;
     } else {
@@ -141,15 +141,15 @@ export class OptionsAppSectionComponent implements OnInit {
     }
   };
 
-  onStartMinimizedChange = (evt: MatSlideToggleChange) => {
-    this.wowupService.startMinimized = evt.checked;
+  onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setStartMinimized(evt.checked);
   };
 
   onProtocolResgisteredChange = (evt: MatSlideToggleChange) => {
     this.wowupService.protocolRegistered = evt.checked;
   }
+  onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
 
-  onUseHardwareAccelerationChange = (evt: MatSlideToggleChange) => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"),
@@ -172,7 +172,7 @@ export class OptionsAppSectionComponent implements OnInit {
     });
   };
 
-  onCurrentLanguageChange = (evt: MatSelectChange) => {
+  onCurrentLanguageChange = (evt: MatSelectChange): void => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"),
@@ -191,9 +191,9 @@ export class OptionsAppSectionComponent implements OnInit {
     });
   };
 
-  public onScaleChange = (evt: MatSelectChange) => {
+  public onScaleChange = async (evt: MatSelectChange): Promise<void> => {
     const newScale = evt.value;
-    this.electronService.setZoomFactor(newScale);
+    await this.electronService.setZoomFactor(newScale);
     this.currentScale = newScale;
   };
 

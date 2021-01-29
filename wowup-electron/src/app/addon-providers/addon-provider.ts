@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Observable, of } from "rxjs";
 
 import { Addon } from "../entities/addon";
@@ -5,6 +6,8 @@ import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
+
+export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO" | "Zip";
 
 export interface GetAllResult {
   searchResults: AddonSearchResult[];
@@ -21,36 +24,36 @@ export abstract class AddonProvider {
   allowViewAtSource = true;
   canShowChangelog = true;
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
-    return {
+  getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+    return Promise.resolve({
       errors: [],
       searchResults: [],
-    };
+    });
   }
 
-  async getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]> {
-    return [];
+  getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]> {
+    return Promise.resolve([]);
   }
 
-  async searchByQuery(
+  searchByQuery(
     query: string,
     clientType: WowClientType,
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
-    return [];
+    return Promise.resolve([]);
   }
 
-  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
-    return undefined;
+  searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
+    return Promise.resolve(undefined);
   }
 
-  async searchByName(
+  searchByName(
     addonName: string,
     folderName: string,
     clientType: WowClientType,
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
-    return [];
+    return Promise.resolve([]);
   }
 
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
@@ -73,13 +76,11 @@ export abstract class AddonProvider {
     addonFolders: AddonFolder[]
   ): Promise<void> {}
 
-  async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    return "";
+  getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+    return Promise.resolve("");
   }
 
   async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
-    return "";
+    return Promise.resolve("");
   }
 }
-
-export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO" | "Zip";
