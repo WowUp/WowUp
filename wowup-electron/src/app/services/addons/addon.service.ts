@@ -76,6 +76,7 @@ export class AddonService {
   private readonly _addonRemovedSrc = new Subject<string>();
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
   private readonly _installErrorSrc = new Subject<Error>();
+  private readonly _syncCompletedSrc = new Subject<any>();
   private readonly _syncErrorSrc = new Subject<AddonSyncError>();
   private readonly _scanErrorSrc = new Subject<AddonScanError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
@@ -84,6 +85,7 @@ export class AddonService {
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
   public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
   public readonly installError$ = this._installErrorSrc.asObservable();
+  public readonly syncSuccess$ = this._syncCompletedSrc.asObservable();
   public readonly syncError$ = this._syncErrorSrc.asObservable();
   public readonly scanError$ = this._scanErrorSrc.asObservable();
 
@@ -829,6 +831,8 @@ export class AddonService {
         didSync = false;
       }
     }
+
+    this._syncCompletedSrc.next();
 
     return didSync;
   }

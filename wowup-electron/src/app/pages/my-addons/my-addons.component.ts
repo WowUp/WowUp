@@ -780,7 +780,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         this._displayAddonsSrc.next(rowData);
         this.setPageContextText();
         this._cdRef.detectChanges();
-        return from(this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons));
+        return from([]);
       }),
       catchError((e) => {
         console.error(e);

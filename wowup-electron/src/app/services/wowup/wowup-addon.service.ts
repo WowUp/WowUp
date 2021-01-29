@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
-import { ElectronService } from "..";
 import { Addon } from "../../entities/addon";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
-import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 
 class WowUpAddonVersion {
   public name: string;
@@ -46,21 +45,35 @@ export class WowUpAddonService {
   private compiledFiles = {};
 
   constructor(
-    private _electronService: ElectronService,
     private _addonService: AddonService,
     private _fileService: FileService,
   ) {
-    _addonService.addonInstalled$.subscribe(async (event) => {
-      if (event.installState !== AddonInstallState.Complete) {
-        return;
-      }
-
-      const addons = this._addonService.getAllAddons(event.addon.clientType);
-      await this.persistUpdateInformationToWowUpAddon(addons);
-    })
+    _addonService.syncSuccess$.subscribe(async () => {
+      console.log('Updating known versions in WowUpAddon via syncSuccess event');
+      await this.updateForAllClientTypes();
+    });
   }
 
-  public async persistUpdateInformationToWowUpAddon(addons: Addon[]) {
+  private async updateForAllClientTypes() {
+    const updatableAddons = [
+      WowClientType.Retail,
+      WowClientType.RetailPtr,
+      WowClientType.Beta,
+      WowClientType.Classic,
+      WowClientType.ClassicPtr,
+    ]
+
+    for (let clientType of updatableAddons) {
+      const addons = this._addonService.getAllAddons(clientType);
+      if (addons.length === 0) {
+        continue;
+      }
+
+      await this.persistUpdateInformationToWowUpAddon(addons);
+    }
+  }
+
+  private async persistUpdateInformationToWowUpAddon(addons: Addon[]) {
     const wowUpAddon = addons.find((addon: Addon) => addon.name === "Addon Update Notifications (by WowUp)");
     if (!wowUpAddon) {
       return;
