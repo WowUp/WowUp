@@ -143,8 +143,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     app.removeAsDefaultProtocolClient(APP_PROTOCOL_NAME);
   })
 
-  
-
   handle(IPC_LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
     return new Promise((resolve, reject) => {
       readdir(filePath, { withFileTypes: true }, (err, files) => {
