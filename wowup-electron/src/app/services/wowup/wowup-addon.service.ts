@@ -19,14 +19,30 @@ class WowUpAddonData {
   public wowUpAddonVersion: string;
 }
 
+enum WowUpAddonFileType {
+  Raw,
+  HandlebarsTemplate,
+}
+
+class WowUpAddonFileProcessing {
+  public type: WowUpAddonFileType;
+  public filename: string;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class WowUpAddonService {
-  readonly filenames = [
-    'data.lua',
-    'wowup_data_addon.toc',
-  ];
+  readonly files: WowUpAddonFileProcessing[] = [{
+    filename: 'data.lua',
+    type: WowUpAddonFileType.HandlebarsTemplate,
+  }, {
+    filename: 'wowup_data_addon.toc',
+    type: WowUpAddonFileType.HandlebarsTemplate,
+  }, {
+    filename: 'ldbicon.tga',
+    type: WowUpAddonFileType.Raw,
+  }];
   private compiledFiles = {};
 
   constructor(
@@ -71,15 +87,24 @@ export class WowUpAddonService {
       const dataAddonPath = await this._addonService.getFullInstallPath(wowUpAddon) + "/../wowup_data_addon/";
       await this._fileService.createDirectory(dataAddonPath);
 
-      for (let filename of this.filenames) {
-        let templatePath = await this._fileService.getAssetFilePath("WowUpAddon/" + filename + ".hbs");
-        let templateContents = await this._fileService.readFile(templatePath);
+      for (let file of this.files) {
+        let designatedPath = dataAddonPath + "/" + file.filename;
+        switch (file.type) {
+          case WowUpAddonFileType.HandlebarsTemplate:
+            let templatePath = await this._fileService.getAssetFilePath("WowUpAddon/" + file.filename + ".hbs");
+            let templateContents = await this._fileService.readFile(templatePath);
 
-        if (!this.compiledFiles[filename]) {
-          this.compiledFiles[filename] = window.libs.handlebars.compile(templateContents);
+            if (!this.compiledFiles[file.filename]) {
+              this.compiledFiles[file.filename] = window.libs.handlebars.compile(templateContents);
+            }
+
+            await this._fileService.writeFile(designatedPath, this.compiledFiles[file.filename](wowUpAddonData));
+            break;
+          case WowUpAddonFileType.Raw:
+            let filePath = await this._fileService.getAssetFilePath("WowUpAddon/" + file.filename);
+            await this._fileService.copy(filePath, designatedPath);
+            break;
         }
-
-        await this._fileService.writeFile(dataAddonPath + "/" + filename, this.compiledFiles[filename](wowUpAddonData));
       }
 
       console.log('Available update data synced to wowup_data_addon/{data.lua,wowup_data_addon.toc}');
