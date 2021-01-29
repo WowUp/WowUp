@@ -2,7 +2,7 @@
   "ChangeLogs": [
     {
       "Version": "2.1.0-beta.27",
-      "changes": ["French locale updates (Zazou)"]
+      "changes": ["French locale updates (Zazou)", "Move the zip file provider up in priority"]
     },
     {
       "Version": "2.1.0-beta.26",
