@@ -71,13 +71,13 @@ export class AddonProviderFactory {
   public getAll(): AddonProvider[] {
     if (this._providers.length === 0) {
       this._providers = [
+        this.createZipAddonProvider(),
         this.createRaiderIoAddonProvider(),
         this.createWowUpAddonProvider(),
         this.createCurseAddonProvider(),
         this.createTukUiAddonProvider(),
         this.createWowInterfaceAddonProvider(),
         this.createGitHubAddonProvider(),
-        this.createZipAddonProvider(),
       ];
 
       this._providers.forEach(this.setProviderState);

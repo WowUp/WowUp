@@ -17,7 +17,7 @@ import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { AddonProvider } from "./addon-provider";
 
-const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed"];
+const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed", "application/octet-stream"];
 
 export class ZipAddonProvider extends AddonProvider {
   public readonly name = ADDON_PROVIDER_ZIP;
