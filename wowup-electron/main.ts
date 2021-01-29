@@ -6,6 +6,7 @@ import { join } from "path";
 import { format as urlFormat } from "url";
 import { inspect } from "util";
 import * as platform from "./platform";
+import * as minimist from "minimist";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import { initializeIpcHandlers } from "./ipc-events";
 import {
@@ -56,9 +57,8 @@ process.on("unhandledRejection", (error) => {
 // VARIABLES
 const startedAt = Date.now();
 const preferenceStore = new Store({ name: "preferences" });
-const argv = require("minimist")(process.argv.slice(1), {
-  boolean: ["serve", "hidden"],
-  string: ["install"]
+const argv = minimist(process.argv.slice(1), {
+  boolean: ["serve", "hidden"]
 }) as AppOptions;
 const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
 const USER_AGENT = getUserAgent();
@@ -107,14 +107,18 @@ if (!singleInstanceLock) {
 
     win.focus();
     
+    //Couldn't find a better way T_T
+    let argv;
     var uriArgv = args.find(x => x.includes(APP_PROTOCOL_NAME + "://"));
     if (!uriArgv) {
-      return;
+      argv = minimist(args,{
+        string: ["install"]
+      }) as AppOptions;
+    } else {
+      argv = minimist(uriArgv.split(APP_PROTOCOL_NAME + "://").join("").split("/").join("").split(";"), {
+        string: ["install"]
+      }) as AppOptions;
     }
-    let argv = require("minimist")(uriArgv.split(APP_PROTOCOL_NAME + "://").join("").split("/").join("").split(";"), {
-      boolean: ["serve", "hidden"],
-      string: ["install"]
-    }) as AppOptions;
     
     if (!argv.install)
       return;
