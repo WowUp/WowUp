@@ -3,6 +3,7 @@ import { ElectronService } from "..";
 import { Addon } from "../../entities/addon";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
 
 class WowUpAddonVersion {
   public name: string;
@@ -31,8 +32,17 @@ export class WowUpAddonService {
   constructor(
     private _electronService: ElectronService,
     private _addonService: AddonService,
-    private _fileService: FileService
-  ) {}
+    private _fileService: FileService,
+  ) {
+    _addonService.addonInstalled$.subscribe(async (event) => {
+      if (event.installState !== AddonInstallState.Complete) {
+        return;
+      }
+
+      const addons = this._addonService.getAllAddons(event.addon.clientType);
+      await this.persistUpdateInformationToWowUpAddon(addons);
+    })
+  }
 
   public async persistUpdateInformationToWowUpAddon(addons: Addon[]) {
     const wowUpAddon = addons.find((addon: Addon) => addon.name === "Addon Update Notifications (by WowUp)");
