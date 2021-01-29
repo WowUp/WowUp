@@ -4,19 +4,27 @@ import {
   APP_UPDATE_CHECK_START,
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_START_DOWNLOAD,
-  CLOSE_WINDOW,
-  MAXIMIZE_WINDOW,
-  MINIMIZE_WINDOW,
-  POWER_MONITOR_LOCK,
-  POWER_MONITOR_RESUME,
-  POWER_MONITOR_SUSPEND,
-  POWER_MONITOR_UNLOCK,
-  QUIT_APP,
-  RESTART_APP,
-  WINDOW_LEAVE_FULLSCREEN,
-  WINDOW_MAXIMIZED,
-  WINDOW_MINIMIZED,
-  WINDOW_UNMAXIMIZED,
+  IPC_CLOSE_WINDOW,
+  IPC_GET_APP_VERSION,
+  IPC_GET_LAUNCH_ARGS,
+  IPC_GET_LOCALE,
+  IPC_GET_LOGIN_ITEM_SETTINGS,
+  IPC_GET_ZOOM_FACTOR,
+  IPC_SET_LOGIN_ITEM_SETTINGS,
+  IPC_SET_ZOOM_FACTOR,
+  IPC_SET_ZOOM_LIMITS,
+  IPC_MAXIMIZE_WINDOW,
+  IPC_MINIMIZE_WINDOW,
+  IPC_POWER_MONITOR_LOCK,
+  IPC_POWER_MONITOR_RESUME,
+  IPC_POWER_MONITOR_SUSPEND,
+  IPC_POWER_MONITOR_UNLOCK,
+  IPC_QUIT_APP,
+  IPC_RESTART_APP,
+  IPC_WINDOW_LEAVE_FULLSCREEN,
+  IPC_WINDOW_MAXIMIZED,
+  IPC_WINDOW_MINIMIZED,
+  IPC_WINDOW_UNMAXIMIZED,
   ZOOM_FACTOR_KEY,
 } from "../../../common/constants";
 import * as minimist from "minimist";
@@ -72,7 +80,7 @@ export class ElectronService {
     window.addEventListener("online", this.onWindowOnline);
     window.addEventListener("offline", this.onWindowOffline);
 
-    this.invoke("get-app-version")
+    this.invoke(IPC_GET_APP_VERSION)
       .then((version) => {
         this._appVersion = version;
       })
@@ -96,125 +104,126 @@ export class ElectronService {
       this._ipcEventReceivedSrc.next(APP_UPDATE_DOWNLOADED);
     });
 
-    this.onRendererEvent(WINDOW_MINIMIZED, () => {
+    this.onRendererEvent(IPC_WINDOW_MINIMIZED, () => {
       this._windowMinimizedSrc.next(true);
     });
 
-    this.onRendererEvent(WINDOW_MAXIMIZED, () => {
+    this.onRendererEvent(IPC_WINDOW_MAXIMIZED, () => {
       this._windowMaximizedSrc.next(true);
     });
 
-    this.onRendererEvent(WINDOW_UNMAXIMIZED, () => {
+    this.onRendererEvent(IPC_WINDOW_UNMAXIMIZED, () => {
       this._windowMaximizedSrc.next(false);
     });
 
-    this.onRendererEvent(POWER_MONITOR_LOCK, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_LOCK, () => {
       console.log("POWER_MONITOR_LOCK received");
-      this._powerMonitorSrc.next(POWER_MONITOR_LOCK);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_LOCK);
     });
 
-    this.onRendererEvent(POWER_MONITOR_UNLOCK, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_UNLOCK, () => {
       console.log("POWER_MONITOR_UNLOCK received");
-      this._powerMonitorSrc.next(POWER_MONITOR_UNLOCK);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_UNLOCK);
     });
 
-    this.onRendererEvent(POWER_MONITOR_SUSPEND, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_SUSPEND, () => {
       console.log("POWER_MONITOR_SUSPEND received");
-      this._powerMonitorSrc.next(POWER_MONITOR_SUSPEND);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_SUSPEND);
     });
 
-    this.onRendererEvent(POWER_MONITOR_RESUME, () => {
+    this.onRendererEvent(IPC_POWER_MONITOR_RESUME, () => {
       console.log("POWER_MONITOR_RESUME received");
-      this._powerMonitorSrc.next(POWER_MONITOR_RESUME);
+      this._powerMonitorSrc.next(IPC_POWER_MONITOR_RESUME);
     });
 
-    this.invoke("set-zoom-limits", 1, 1).catch((e) => {
+    this.invoke(IPC_SET_ZOOM_LIMITS, 1, 1).catch((e) => {
       console.error("Failed to set zoom limits", e);
     });
 
-    window.wowup.onRendererEvent("zoom-changed", async (evt, zoomDirection: string) => {
-      switch (zoomDirection) {
-        case "in":
-          this.setZoomFactor(await this.getNextZoomInFactor());
-          break;
-        case "out":
-          this.setZoomFactor(await this.getNextZoomOutFactor());
-          break;
-        default:
-          break;
-      }
+    window.wowup.onRendererEvent("zoom-changed", (_evt, zoomDirection: string) => {
+      this.onWindowZoomChanged(zoomDirection).catch((e) => console.error(e));
     });
 
     this.getZoomFactor()
       .then((zoom) => this._zoomFactorChangeSrc.next(zoom))
-      .catch((e) => console.error("Failed to set initial zoom"));
+      .catch(() => console.error("Failed to set initial zoom"));
   }
 
-  private onWindowOnline(evt: Event) {
+  private async onWindowZoomChanged(zoomDirection: string) {
+    if (zoomDirection === "in") {
+      const factor = await this.getNextZoomInFactor();
+      await this.setZoomFactor(factor);
+    } else if (zoomDirection === "out") {
+      const factor = await this.getNextZoomOutFactor();
+      await this.setZoomFactor(factor);
+    }
+  }
+
+  private onWindowOnline = () => {
     console.log("Window online...");
-  }
+  };
 
-  private onWindowOffline(evt: Event) {
+  private onWindowOffline = () => {
     console.warn("Window offline...");
-  }
+  };
 
   public getLoginItemSettings(): Promise<LoginItemSettings> {
-    return this.invoke("get-login-item-settings");
+    return this.invoke(IPC_GET_LOGIN_ITEM_SETTINGS);
   }
 
-  public setLoginItemSettings(settings: Settings) {
-    return this.invoke("set-login-item-settings", settings);
+  public setLoginItemSettings(settings: Settings): Promise<void> {
+    return this.invoke(IPC_SET_LOGIN_ITEM_SETTINGS, settings);
   }
 
   public async getAppOptions(): Promise<AppOptions> {
-    const launchArgs = await this.invoke("get-launch-args");
+    const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
     return (<any>minimist(launchArgs.slice(1), {
       boolean: ["hidden", "quit"],
     })) as AppOptions;
   }
 
-  public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
+  public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
     window.wowup.onRendererEvent(channel, listener);
   }
 
-  public async getLocale() {
-    const locale = await this.invoke("get-locale");
+  public async getLocale(): Promise<string> {
+    const locale = await this.invoke<string>(IPC_GET_LOCALE);
     return locale.split("-")[0];
   }
 
   public getVersionNumber(): Promise<string> {
-    return this.invoke("get-app-version");
+    return this.invoke(IPC_GET_APP_VERSION);
   }
 
-  public minimizeWindow() {
-    this.invoke(MINIMIZE_WINDOW);
+  public async minimizeWindow(): Promise<void> {
+    await this.invoke(IPC_MINIMIZE_WINDOW);
   }
 
-  public maximizeWindow() {
-    this.invoke(MAXIMIZE_WINDOW);
+  public async maximizeWindow(): Promise<void> {
+    await this.invoke(IPC_MAXIMIZE_WINDOW);
   }
 
-  public unmaximizeWindow() {
-    this.invoke(MAXIMIZE_WINDOW);
+  public async unmaximizeWindow(): Promise<void> {
+    await this.invoke(IPC_MAXIMIZE_WINDOW);
   }
 
-  public restartApplication() {
-    this.invoke(RESTART_APP);
+  public async restartApplication(): Promise<void> {
+    await this.invoke(IPC_RESTART_APP);
   }
 
-  public quitApplication() {
-    this.invoke(QUIT_APP);
+  public async quitApplication(): Promise<void> {
+    await this.invoke(IPC_QUIT_APP);
   }
 
-  public closeWindow() {
-    this.invoke(CLOSE_WINDOW);
+  public async closeWindow(): Promise<void> {
+    await this.invoke(IPC_CLOSE_WINDOW);
   }
 
-  public leaveFullScreen() {
-    this.invoke(WINDOW_LEAVE_FULLSCREEN);
+  public async leaveFullScreen(): Promise<void> {
+    await this.invoke(IPC_WINDOW_LEAVE_FULLSCREEN);
   }
 
-  public showNotification(title: string, options?: NotificationOptions) {
+  public showNotification(title: string, options?: NotificationOptions): Notification {
     return new Notification(title, options);
   }
 
@@ -222,7 +231,7 @@ export class ElectronService {
     return window.wowup.isDefaultProtocolClient(protocol);
   }
 
-  public setHandleProtocol(protocol: string, enable: boolean) {
+  public setHandleProtocol(protocol: string, enable: boolean): boolean {
     if (enable) {
       return window.wowup.setAsDefaultProtocolClient(protocol);
     } else {
@@ -237,7 +246,7 @@ export class ElectronService {
   public getUserDefaultSystemPreference(
     key: string,
     type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
-  ) {
+  ): any {
     return window.wowup.systemPreferences.getUserDefault(key, type);
   }
 
@@ -267,23 +276,23 @@ export class ElectronService {
     });
   }
 
-  public async invoke(channel: RendererChannels, ...args: any[]): Promise<any> {
+  public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
     return await window.wowup.rendererInvoke(channel, ...args);
   }
 
-  public on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
+  public on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
     window.wowup.rendererOn(channel, listener);
   }
 
-  public off(event: string | symbol, listener: (...args: any[]) => void) {
+  public off(event: string | symbol, listener: (...args: any[]) => void): void {
     window.wowup.rendererOff(event, listener);
   }
 
-  public send(channel: string, ...args: any[]) {
+  public send(channel: string, ...args: any[]): void {
     window.wowup.rendererSend(channel, ...args);
   }
 
-  public openExternal(url: string, options?: OpenExternalOptions) {
+  public openExternal(url: string, options?: OpenExternalOptions): Promise<void> {
     return window.wowup.openExternal(url, options);
   }
 
@@ -291,16 +300,16 @@ export class ElectronService {
     return window.wowup.openPath(path);
   }
 
-  public applyZoom = async (zoomDirection: ZoomDirection) => {
+  public applyZoom = async (zoomDirection: ZoomDirection): Promise<void> => {
     switch (zoomDirection) {
       case ZoomDirection.ZoomIn:
-        this.setZoomFactor(await this.getNextZoomInFactor());
+        await this.setZoomFactor(await this.getNextZoomInFactor());
         break;
       case ZoomDirection.ZoomOut:
-        this.setZoomFactor(await this.getNextZoomOutFactor());
+        await this.setZoomFactor(await this.getNextZoomOutFactor());
         break;
       case ZoomDirection.ZoomReset:
-        this.setZoomFactor(1.0);
+        await this.setZoomFactor(1.0);
         break;
       case ZoomDirection.ZoomUnknown:
       default:
@@ -308,19 +317,19 @@ export class ElectronService {
     }
   };
 
-  public setZoomFactor = async (zoomFactor: number) => {
-    await this.invoke("set-zoom-factor", zoomFactor);
+  public setZoomFactor = async (zoomFactor: number): Promise<void> => {
+    await this.invoke(IPC_SET_ZOOM_FACTOR, zoomFactor);
     this._zoomFactorChangeSrc.next(zoomFactor);
     this._preferenceStorageService.set(ZOOM_FACTOR_KEY, zoomFactor);
   };
 
   public getZoomFactor(): Promise<number> {
-    return this.invoke("get-zoom-factor");
+    return this.invoke(IPC_GET_ZOOM_FACTOR);
   }
 
   private async getNextZoomInFactor(): Promise<number> {
     const windowZoomFactor = await this.getZoomFactor();
-    let zoomFactor = Math.round(windowZoomFactor * 100) / 100;
+    const zoomFactor = Math.round(windowZoomFactor * 100) / 100;
     let zoomIndex = ZOOM_SCALE.indexOf(zoomFactor);
     if (zoomIndex == -1) {
       return 1.0;
@@ -331,7 +340,7 @@ export class ElectronService {
 
   private async getNextZoomOutFactor(): Promise<number> {
     const windowZoomFactor = await this.getZoomFactor();
-    let zoomFactor = Math.round(windowZoomFactor * 100) / 100;
+    const zoomFactor = Math.round(windowZoomFactor * 100) / 100;
     let zoomIndex = ZOOM_SCALE.indexOf(zoomFactor);
     if (zoomIndex == -1) {
       return 1.0;

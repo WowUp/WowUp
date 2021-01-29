@@ -245,6 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Mostra Colonne"
       },
+      "ERROR_SNACKBAR": "C'è stato un errore",
       "FILTER_LABEL": "Filtra",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Supporta questo autore",

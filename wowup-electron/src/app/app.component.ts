@@ -16,18 +16,18 @@ import { map, join } from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
-  CREATE_APP_MENU_CHANNEL,
-  CREATE_TRAY_MENU_CHANNEL,
+  IPC_CREATE_APP_MENU_CHANNEL,
+  IPC_CREATE_TRAY_MENU_CHANNEL,
   CURRENT_THEME_KEY,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
-  MENU_ZOOM_IN_CHANNEL,
-  MENU_ZOOM_OUT_CHANNEL,
-  MENU_ZOOM_RESET_CHANNEL,
-  POWER_MONITOR_RESUME,
-  POWER_MONITOR_UNLOCK,
+  IPC_MENU_ZOOM_IN_CHANNEL,
+  IPC_MENU_ZOOM_OUT_CHANNEL,
+  IPC_MENU_ZOOM_RESET_CHANNEL,
+  IPC_POWER_MONITOR_RESUME,
+  IPC_POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
@@ -98,9 +98,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });
 
-    this._electronService.on(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.on(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.on(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this._electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this._electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
 
     this._electronService.getAppOptions().then((appOptions) => {
       this.quitEnabled = appOptions.quit;
@@ -112,7 +112,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this._autoUpdateInterval?.unsubscribe();
       this._autoUpdateInterval = undefined;
 
-      if (evt === POWER_MONITOR_RESUME || evt === POWER_MONITOR_UNLOCK) {
+      if (evt === IPC_POWER_MONITOR_RESUME || evt === IPC_POWER_MONITOR_UNLOCK) {
         this.initializeAutoUpdate();
       }
     });
@@ -132,9 +132,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this._electronService.off(MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.off(MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.off(MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this._electronService.off(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this._electronService.off(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this._electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
   onMenuZoomIn = () => {
@@ -330,7 +330,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(CREATE_APP_MENU_CHANNEL, config);
+      const trayCreated = await this._electronService.invoke(IPC_CREATE_APP_MENU_CHANNEL, config);
       console.log("App menu created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);
@@ -348,7 +348,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(CREATE_TRAY_MENU_CHANNEL, config);
+      const trayCreated = await this._electronService.invoke(IPC_CREATE_TRAY_MENU_CHANNEL, config);
       console.log("Tray created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);

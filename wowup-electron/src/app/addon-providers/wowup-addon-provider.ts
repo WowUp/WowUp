@@ -3,7 +3,7 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
-import { ADDON_PROVIDER_HUB, WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { ADDON_PROVIDER_HUB, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
 import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
 import { AppConfig } from "../../environments/environment";
 import { Addon } from "../entities/addon";
@@ -48,8 +48,8 @@ export class WowUpAddonProvider extends AddonProvider {
 
   constructor(
     private _electronService: ElectronService,
-    private _networkService: NetworkService,
-    private _cachingService: CachingService
+    private _cachingService: CachingService,
+    _networkService: NetworkService
   ) {
     super();
 
@@ -60,6 +60,7 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
     try {
       const cacheKey = `${this.name}_description_${externalId}`;
@@ -113,26 +114,20 @@ export class WowUpAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
+  isValidAddonUri(addonUri: URL): boolean {
     // TODO
-    return undefined;
+    return false;
   }
 
-  async searchByName(
-    addonName: string,
-    folderName: string,
-    clientType: WowClientType,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    // TODO
-    return [];
+  isValidAddonId(addonId: string): boolean {
+    const idNumber = parseInt(addonId, 10);
+    return !isNaN(idNumber) && isFinite(idNumber) && idNumber > 0;
   }
 
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     const url = new URL(`${API_URL}/addons/${addonId}`);
     return from(this._circuitBreaker.getJson<WowUpGetAddonResponse>(url)).pipe(
       map((result) => {
-        console.debug("Result", result);
         return this.getSearchResult(result.addon, clientType);
       })
     );
@@ -143,33 +138,16 @@ export class WowUpAddonProvider extends AddonProvider {
     return from(this._circuitBreaker.getJson<WowUpGetAddonReleaseResponse>(url));
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
-    // TODO
-    return false;
-  }
-
-  isValidAddonId(addonId: string): boolean {
-    return true;
-  }
-
-  onPostInstall(addon: Addon): void {
-    throw new Error("Method not implemented.");
-  }
-
   async scan(clientType: WowClientType, addonChannelType: any, addonFolders: AddonFolder[]): Promise<void> {
-    console.debug("WowUp scan start");
     console.time("WowUpScan");
     const scanResults = await this.getScanResults(addonFolders);
     console.timeEnd("WowUpScan");
 
-    console.debug("ScanResults", scanResults.length);
     const fingerprints = scanResults.map((result) => result.fingerprint);
     console.log("fingerprintRequest", JSON.stringify(fingerprints));
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints);
 
-    console.debug("fingerprintResponse", fingerprintResponse);
-
-    for (let scanResult of scanResults) {
+    for (const scanResult of scanResults) {
       // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
       scanResult.exactMatch = fingerprintResponse.exactMatches.find(
         (exactMatch) =>
@@ -178,8 +156,8 @@ export class WowUpAddonProvider extends AddonProvider {
       );
     }
 
-    for (let addonFolder of addonFolders) {
-      var scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
+    for (const addonFolder of addonFolders) {
+      const scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
       if (!scanResult.exactMatch) {
         continue;
       }
@@ -196,7 +174,6 @@ export class WowUpAddonProvider extends AddonProvider {
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    console.debug("GET CHANGELOG");
     const addon = await this.getReleaseById(externalId, externalReleaseId).toPromise();
     return addon?.release?.body ?? "";
   }
@@ -204,9 +181,7 @@ export class WowUpAddonProvider extends AddonProvider {
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
-    const scanResults: AppWowUpScanResult[] = await this._electronService.invoke(WOWUP_GET_SCAN_RESULTS, filePaths);
-
-    console.debug("WowUpGetScanResultsResponse", scanResults);
+    const scanResults: AppWowUpScanResult[] = await this._electronService.invoke(IPC_WOWUP_GET_SCAN_RESULTS, filePaths);
 
     return scanResults;
   };
@@ -282,8 +257,7 @@ export class WowUpAddonProvider extends AddonProvider {
     const authors = scanResult.exactMatch.owner_name;
     const folders = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name);
     const folderList = folders.join(", ");
-
-    let channelType = addonChannelType;
+    const channelType = addonChannelType;
 
     return {
       id: uuidv4(),

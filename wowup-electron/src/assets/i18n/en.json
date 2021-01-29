@@ -108,7 +108,7 @@
       "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{count}",
+      "e+0": "few",
       "e+1": "{count}",
       "e+2": "{count}",
       "e+3": "{count} thousand",
@@ -245,6 +245,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Show Columns"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "Filter",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Support this author",

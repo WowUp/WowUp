@@ -53,10 +53,12 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
 
 function restoreWindow(window: BrowserWindow) {
   window?.show();
+  window?.setSkipTaskbar(false);
 
   if (platform.isMac) {
     app.dock.show();
-  } else {
-    window?.setSkipTaskbar(false);
   }
+  // } else {
+  //   window?.setSkipTaskbar(false);
+  // }
 }
