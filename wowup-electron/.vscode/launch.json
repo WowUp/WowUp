@@ -24,7 +24,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
-      "args": [".", "--install=test"],
+      "args": ["."],
       "outputCapture": "std"
     }
   ]
