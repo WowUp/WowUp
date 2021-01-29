@@ -26,6 +26,8 @@ import {
   IPC_WINDOW_MINIMIZED,
   IPC_WINDOW_UNMAXIMIZED,
   ZOOM_FACTOR_KEY,
+  IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
 } from "../../../common/constants";
 import * as minimist from "minimist";
 // If you import a module but never use any of the imported values other than as TypeScript types,
@@ -172,6 +174,14 @@ export class ElectronService {
 
   public setLoginItemSettings(settings: Settings) {
     return this.invoke(IPC_SET_LOGIN_ITEM_SETTINGS, settings);
+  }
+
+  public setAsDefaultProtocolClient() {
+    this.invoke(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT);
+  }
+
+  public removeAsDefaultProtocolClient() {
+    this.invoke(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT);
   }
 
   public async getAppOptions(): Promise<AppOptions> {

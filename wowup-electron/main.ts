@@ -27,7 +27,8 @@ import {
   WINDOW_DEFAULT_WIDTH,
   WINDOW_MIN_HEIGHT,
   WINDOW_MIN_WIDTH,
-  REQUEST_INSTALL_FROM_URL
+  IPC_REQUEST_INSTALL_FROM_URL,
+  APP_PROTOCOL_NAME
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
@@ -91,7 +92,7 @@ const singleInstanceLock = app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
   app.quit();
 } else {
-  app.on("second-instance", () => {
+  app.on("second-instance", (evt, args) => {
     // Someone tried to run a second instance, we should focus our window.
     if (!win) {
       log.warn("Second instance launched, but no window found");
@@ -105,10 +106,19 @@ if (!singleInstanceLock) {
     }
 
     win.focus();
-
-    if (argv.install != null) {
-      win.webContents.send(REQUEST_INSTALL_FROM_URL, argv.install);
+    
+    var uriArgv = args.find(x => x.includes(APP_PROTOCOL_NAME + "://"));
+    if (!uriArgv) {
+      return;
     }
+    let argv = require("minimist")(uriArgv.split(APP_PROTOCOL_NAME + "://").join("").split("/").join("").split(";"), {
+      boolean: ["serve", "hidden"],
+      string: ["install"]
+    }) as AppOptions;
+    
+    if (!argv.install)
+      return;
+    win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, argv.install);
   });
 }
 

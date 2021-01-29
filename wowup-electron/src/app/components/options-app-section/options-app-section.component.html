@@ -139,4 +139,15 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <!-- APP PROTOCOL -->
+  <div class="row row align-items-center">
+    <div class="flex-grow-1">
+      <div>
+        {{ "PAGES.OPTIONS.APPLICATION.PROTOCOL_LABEL" | translate }}
+      </div>
+      <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.PROTOCOL_DESCRIPTION" | translate }}</small>
+    </div>
+    <mat-slide-toggle [(checked)]="protocolRegistered" (change)="onProtocolResgisteredChange($event)">
+    </mat-slide-toggle>
+  </div>
 </div>

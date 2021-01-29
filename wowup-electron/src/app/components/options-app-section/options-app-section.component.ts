@@ -34,6 +34,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public minimizeOnCloseDescription: string = "";
   public startMinimized = false;
   public startWithSystem = false;
+  public protocolRegistered = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage: string = "";
@@ -101,6 +102,7 @@ export class OptionsAppSectionComponent implements OnInit {
     this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
     this.startWithSystem = this.wowupService.startWithSystem;
     this.startMinimized = this.wowupService.startMinimized;
+    this.protocolRegistered = this.wowupService.protocolRegistered;
     this.currentLanguage = this.wowupService.currentLanguage;
 
     this.initScale;
@@ -142,6 +144,10 @@ export class OptionsAppSectionComponent implements OnInit {
   onStartMinimizedChange = (evt: MatSlideToggleChange) => {
     this.wowupService.startMinimized = evt.checked;
   };
+
+  onProtocolResgisteredChange = (evt: MatSlideToggleChange) => {
+    this.wowupService.protocolRegistered = evt.checked;
+  }
 
   onUseHardwareAccelerationChange = (evt: MatSlideToggleChange) => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {

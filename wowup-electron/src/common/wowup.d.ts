@@ -61,7 +61,9 @@ declare type RendererChannels =
   | "get-launch-args"
   | "get-login-item-settings"
   | "set-login-item-settings"
-  | "leave-full-screen";
+  | "leave-full-screen"
+  | "set-as-default-protocol-client"
+  | "remove-as-default-protocol-client";
 
 declare global {
   interface Window {

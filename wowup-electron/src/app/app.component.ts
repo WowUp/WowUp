@@ -29,7 +29,7 @@ import {
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
-  REQUEST_INSTALL_FROM_URL
+  IPC_REQUEST_INSTALL_FROM_URL
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { MenuConfig } from "../common/wowup/menu-config";
@@ -103,7 +103,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this._electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
-	this._electronService.on(REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
+	  this._electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
 
     this._electronService.getAppOptions().then((appOptions) => {
       this.openInstallFromUrlDialog(appOptions.install);      

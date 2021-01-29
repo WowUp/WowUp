@@ -38,6 +38,7 @@ import {
   DEFAULT_LIGHT_THEME,
   ADDON_MIGRATION_VERSION_KEY,
   IPC_GET_APP_VERSION,
+  PROTOCOL_REGISTERED_PREFERENCE_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -234,6 +235,19 @@ export class WowUpService {
     this._preferenceChangeSrc.next({ key, value: value.toString() });
 
     this.setAutoStartup();
+  }
+
+  public get protocolRegistered() {
+    const preference = this._preferenceStorageService.findByKey(PROTOCOL_REGISTERED_PREFERENCE_KEY);
+    return preference === "true";
+  }
+
+  public set protocolRegistered(value: boolean) {
+    const key = PROTOCOL_REGISTERED_PREFERENCE_KEY;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+
+    this.registerProtocol();
   }
 
   public get wowUpReleaseChannel() {
@@ -486,6 +500,14 @@ export class WowUpService {
         openAsHidden: this._electronService.isMac ? this.startMinimized : false,
         args: this._electronService.isWin ? (this.startMinimized ? ["--hidden"] : []) : [],
       });
+    }
+  }
+
+  private registerProtocol() {
+    if (this.protocolRegistered) {
+      this._electronService.setAsDefaultProtocolClient();
+    } else {
+      this._electronService.removeAsDefaultProtocolClient();
     }
   }
 }

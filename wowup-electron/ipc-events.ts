@@ -41,6 +41,9 @@ import {
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOGIN_ITEM_SETTINGS,
   IPC_SET_LOGIN_ITEM_SETTINGS,
+  IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
+  APP_PROTOCOL_NAME,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -118,6 +121,14 @@ export function initializeIpcHandlers(window: BrowserWindow) {
   handle(IPC_SET_LOGIN_ITEM_SETTINGS, (evt, settings: Settings) => {
     return app.setLoginItemSettings(settings);
   });
+
+  handle(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT, () => {
+    app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+  });
+
+  handle(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, () => {
+    app.removeAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+  })
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
     return new Promise((resolve, reject) => {
