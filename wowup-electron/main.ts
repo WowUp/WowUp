@@ -115,11 +115,18 @@ if (!singleInstanceLock) {
         string: ["install"]
       }) as AppOptions;
     } else {
+      var searchParams = new URLSearchParams(uriArgv);
+      var install = searchParams.get('install');
+      log.info("SearchParams result:");
+      log.info(searchParams);
+      log.info(install);
       argv = minimist(uriArgv.split(APP_PROTOCOL_NAME + "://").join("").split("/").join("").split(";"), {
         string: ["install"]
       }) as AppOptions;
     }
     
+    
+
     if (!argv.install)
       return;
     win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, argv.install);
