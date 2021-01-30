@@ -115,9 +115,10 @@
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
           {{ "PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER" | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="cell-padding"
-          [ngClass]="{ 'addon-update-available': element.needsUpdate() }">
-          {{ element.addon.latestVersion }}
+        <td mat-cell *matCellDef="let element" class="cell-padding">
+          <span [ngClass]="{ 'bg-secondary-4 text-2 rounded px-1': element.needsUpdate() }">
+            {{ element.addon.latestVersion }}
+          </span>
         </td>
       </ng-container>
 
@@ -305,8 +306,7 @@
     </mat-checkbox>
     <!-- AUTO UPDATE -->
     <mat-checkbox class="mat-menu-item" [indeterminate]="isIndeterminate(listItems, 'addon.autoUpdateEnabled')"
-      [checked]="isAllItemsSelected(listItems, 'addon.autoUpdateEnabled')"
-      (click)="onClickAutoUpdateAddons(listItems)">
+      [checked]="isAllItemsSelected(listItems, 'addon.autoUpdateEnabled')" (click)="onClickAutoUpdateAddons(listItems)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
     </mat-checkbox>
     <!-- CHANNEL -->

@@ -11,19 +11,19 @@ export class CachingService {
     return this._cache.get<T>(key);
   }
 
-  set<T>(key: string, value: T, ttlSec = 600) {
+  set<T>(key: string, value: T, ttlSec = 600): boolean {
     return this._cache.set<T>(key, value, ttlSec);
   }
 
   async transaction<T>(key: string, missingAction: () => Promise<T>, ttlSec = 600): Promise<T> {
     const cached = this.get<T>(key);
-    if (cached) {
+    if (cached !== undefined && cached !== null) {
       return cached;
     }
 
     const result = await missingAction?.call(this);
 
-    if (result) {
+    if (result !== undefined && result !== null) {
       this.set(key, result, ttlSec);
     }
 

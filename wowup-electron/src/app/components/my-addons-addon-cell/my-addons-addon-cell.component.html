@@ -51,9 +51,9 @@
         </mat-icon>
       </div>
       {{ listItem.addon.installedVersion }}
-      <div class="update-available row" *ngIf="showUpdateToVersion && listItem.needsUpdate()">
+      <div *ngIf="showUpdateToVersion && listItem.needsUpdate()" class="text-1  row">
         <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
-        <div>{{ listItem.addon.latestVersion }}</div>
+        <div class="bg-secondary-4 text-2 rounded px-1">{{ listItem.addon.latestVersion }}</div>
       </div>
     </div>
   </div>

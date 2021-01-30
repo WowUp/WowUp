@@ -51,8 +51,28 @@ img {
   -webkit-app-region: no-drag;
 }
 
+.rounded {
+  border-radius: 4px;
+}
+
 .p-0 {
   padding: 0 !important;
+}
+
+.p-1 {
+  padding: 0.25em !important;
+}
+
+.pl-1 {
+  padding-left: 0.25em;
+}
+
+.pr-1 {
+  padding-right: 0.25em;
+}
+
+.px-1 {
+  padding: 0 0.25em;
 }
 
 .m-0 {
@@ -362,7 +382,7 @@ img {
     }
 
     .addon-update-available {
-      color: $artifact;
+      color: $rare-color;
     }
   }
 }

@@ -151,6 +151,7 @@
       "DESCRIPTION_TAB": "Описание",
       "FUNDING_LINK_TITLE": "Поддержать этого автора",
       "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
       "VIEW_ON_PROVIDER_PREFIX": "Посмотреть на"
     },
