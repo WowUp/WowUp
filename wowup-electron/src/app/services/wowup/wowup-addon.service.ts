@@ -59,24 +59,28 @@ export class WowUpAddonService {
     private _addonService: AddonService,
     private _fileService: FileService,
     private _warcraftService: WarcraftService
-  ) {
-    _addonService.syncSuccess$.subscribe(() => {
-      console.log("Updating known versions in WowUpAddon via syncSuccess event");
-      this.updateForAllClientTypes().catch((e) => console.error(e));
-    });
-  }
+  ) {}
 
-  private async updateForAllClientTypes() {
+  public async updateForAllClientTypes(): Promise<void> {
     const availableClients = await this._warcraftService.getWowClientTypes();
 
     for (const clientType of availableClients) {
-      const addons = this._addonService.getAllAddons(clientType);
-      if (addons.length === 0) {
-        continue;
+      try {
+        await this.updateForClientType(clientType);
+      } catch (e) {
+        console.error(e);
       }
-
-      await this.persistUpdateInformationToWowUpAddon(clientType, addons);
     }
+  }
+
+  public async updateForClientType(clientType: WowClientType): Promise<void> {
+    const addons = this._addonService.getAllAddons(clientType);
+    if (addons.length === 0) {
+      console.log(`WowUpAddonService: No addons to sync`);
+      return;
+    }
+
+    await this.persistUpdateInformationToWowUpAddon(clientType, addons);
   }
 
   private async persistUpdateInformationToWowUpAddon(clientType: WowClientType, addons: Addon[]) {
@@ -101,7 +105,7 @@ export class WowUpAddonService {
         this._warcraftService.getAddonFolderPath(clientType),
         WOWUP_DATA_ADDON_FOLDER_NAME
       );
-      
+
       await this._fileService.createDirectory(dataAddonPath);
 
       for (const file of this.files) {

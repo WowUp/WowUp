@@ -200,7 +200,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.autoUpdateComplete$.subscribe(() => {
       console.log("Checking for addon updates...");
       this._cdRef.markForCheck();
-      this.onRefresh();
+      this.loadAddons(this.selectedClient).subscribe();
     });
   }
 
@@ -258,7 +258,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   public onRefresh(): void {
-    this.loadAddons(this.selectedClient).subscribe();
+    this.loadAddons(this.selectedClient)
+      .pipe(switchMap(() => from(this._wowUpAddonService.updateForClientType(this.selectedClient))))
+      .subscribe();
   }
 
   public unselectAll(): void {
