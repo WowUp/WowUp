@@ -151,6 +151,7 @@
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支持插件作者",
       "MISSING_DEPENDENCIES": "缺失的依赖项",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看",
       "VIEW_ON_PROVIDER_PREFIX": "在该网站上查看："
     },

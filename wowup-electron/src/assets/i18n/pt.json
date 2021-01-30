@@ -151,6 +151,7 @@
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Missing dependencies",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Visualizar no navegador",
       "VIEW_ON_PROVIDER_PREFIX": "Ver em"
     },

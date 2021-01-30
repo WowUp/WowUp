@@ -2,37 +2,37 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "COPY": "Copy",
-        "CUT": "Cut",
+        "COPY": "Copier",
+        "CUT": "Couper",
         "LABEL": "Éditer",
-        "PASTE": "Paste",
-        "REDO": "Redo",
-        "SELECT_ALL": "SelectAll",
-        "UNDO": "Undo"
+        "PASTE": "Coller",
+        "REDO": "Refaire",
+        "SELECT_ALL": "Tout sélectionner",
+        "UNDO": "Annuler"
       },
-      "QUIT": "Quit",
+      "QUIT": "Quitter",
       "VIEW": {
-        "FORCE_RELOAD": "Force Reload",
+        "FORCE_RELOAD": "Forcer le rechargement",
         "LABEL": "Voir",
-        "RELOAD": "Reload",
-        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
-        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "RELOAD": "Recharger",
+        "TOGGLE_DEV_TOOLS": "Afficher les outils de développement",
+        "TOGGLE_FULL_SCREEN": "Afficher en plein écran",
         "ZOOM_IN": "Zoomer",
         "ZOOM_OUT": "Dézoomer",
         "ZOOM_RESET": "Réinitialiser le zoom"
       },
       "WINDOW": {
-        "CLOSE": "Close",
-        "LABEL": "Window"
+        "CLOSE": "Fermer",
+        "LABEL": "Fenêtre"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Mise à jour automatique de \r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Mise à jour automatique de {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Quitter le mode plein écran",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "Appuyez sur ^⌘F pour quitter le mode plein écran",
+      "WINDOWS": "Appuyez sur F11 pour quitter le mode plein écran"
     },
     "PROVIDERS": {
       "UNKNOWN": "Inconnu"
@@ -55,7 +55,7 @@
       "HORDE": "Horde"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Plein écran",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
       "INSTALL_MESSAGE": "Voulez-vous redémarrer WowUp pour installer la mise à jour ?",
@@ -127,10 +127,10 @@
       }
     },
     "ERRORS": {
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "ADDON_SCAN_ERROR": "Une erreur s'est produite lors de la correspondance de vos dossiers d'addons avec {providerName}, merci de réessayer plus tard.",
+      "ADDON_SYNC_ERROR": "Une erreur s'est produite lors de la vérification des mises à jour depuis : {providerName}",
       "CHANGE_PROVIDER_ERROR": "Impossible de changer le fournisseur {providerName} pour l´addon {addonName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
+      "GITHUB_LIMIT_ERROR": "Vous avez atteint la limite de {max} requêtes API Github.\nMerci d'attendre {reset} et de réessayer.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
@@ -151,6 +151,7 @@
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Supporter cet auteur",
       "MISSING_DEPENDENCIES": "Dépendances manquantes",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
@@ -176,7 +177,7 @@
         "INVALID_URL": "La valeure rentrée n'est pas une URL valide. Exemples d'URL valides:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Aucun addon n'a été trouvé, assurez-vous que votre URL pointe vers la bonne page.\n\nLors de l'installation à partir de github, veuillez vous assurer que le référentiel a une balise de version avec une archive zip contenant l'addon.",
         "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
-        "NO_SEARCH_RESULTS": "No search results were found.",
+        "NO_SEARCH_RESULTS": "La recherche n'a retourné aucun résultat.",
         "TITLE": "Echec de l'installation de l'addon"
       },
       "IMPORT_BUTTON": "Importer",
@@ -216,7 +217,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "À propos de",
       "GET_ADDONS_TAB_TITLE": "Obtenir des Addons",
-      "MIGRATING_ADDONS": "Migrating addons...",
+      "MIGRATING_ADDONS": "Migration des addons...",
       "MY_ADDONS_TAB_TITLE": "Mes Addons",
       "OPTIONS_TAB_TITLE": "Options"
     },
@@ -252,7 +253,7 @@
         "GENERIC": "Supporter ce créateur sur {platform}",
         "GITHUB": "Supporter ce créateur sur GitHub",
         "PATREON": "Supporter ce créateur sur Patreon",
-        "PAYPAL": "Support ce créateur sur PayPal"
+        "PAYPAL": "Supporter ce créateur sur PayPal"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Cet addon a de multiples fournisseurs",
       "PAGE_CONTEXT_FOOTER": {

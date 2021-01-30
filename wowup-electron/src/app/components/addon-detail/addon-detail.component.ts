@@ -1,3 +1,7 @@
+import { last } from "lodash";
+import { BehaviorSubject, from, Subscription } from "rxjs";
+import { filter, tap } from "rxjs/operators";
+
 import {
   AfterViewChecked,
   ChangeDetectionStrategy,
@@ -10,28 +14,21 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
-import { BehaviorSubject, from, of, Subscription } from "rxjs";
-import { last } from "lodash";
-import { filter, first, switchMap, tap } from "rxjs/operators";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
-import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
-import * as SearchResult from "../../utils/search-result.utils";
-import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonSearchResult } from "../../models/wowup/addon-search-result";
-import { AddonService } from "../../services/addons/addon.service";
-import {
-  ADDON_PROVIDER_GITHUB,
-  ADDON_PROVIDER_HUB,
-  ADDON_PROVIDER_TUKUI,
-  ADDON_PROVIDER_UNKNOWN,
-} from "../../../common/constants";
-import { capitalizeString } from "../../utils/string.utils";
-import { ElectronService } from "../../services";
-import { SessionService } from "../../services/session/session.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTabChangeEvent } from "@angular/material/tabs";
+
+import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
+import { AddonFundingLink } from "../../entities/addon";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { AddonDependency } from "../../models/wowup/addon-dependency";
+import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
+import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
+import * as SearchResult from "../../utils/search-result.utils";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -56,84 +53,171 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public readonly changelog$ = this._changelogSrc.asObservable();
   public readonly description$ = this._descriptionSrc.asObservable();
-  public readonly capitalizeString = capitalizeString;
   public fetchingChangelog = true;
   public fetchingFullDescription = true;
   public selectedTabIndex = 0;
+  public requiredDependencyCount = 0;
   public canShowChangelog = true;
+  public hasIconUrl = false;
+  public thumbnailLetter = "";
+  public hasChangeLog = false;
+  public showInstallButton = false;
+  public showUpdateButton = false;
+  public hasRequiredDependencies = false;
+  public title = "";
+  public subtitle = "";
+  public provider = "";
+  public summary = "";
+  public externalUrl = "";
+  public defaultImageUrl = "";
+  public version = "";
+  public fundingLinks: AddonFundingLink[] = [];
+  public hasFundingLinks = false;
+  public fullExternalId = "";
+  public externalId = "";
+  public displayExternalId = "";
+  public isUnknownProvider = false;
+  public isMissingUnknownDependencies = false;
+  public missingDependencies: string[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
     private _addonService: AddonService,
-    private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
     private _electronService: ElectronService,
-    private _snackBar: MatSnackBar,
+    private _snackbarService: SnackbarService,
     public sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
 
-    this._subscriptions.push(
-      this._addonService.addonInstalled$
-        .pipe(
-          filter(
-            (evt) =>
-              evt.addon.id === this.model.listItem?.addon.id ||
-              evt.addon.externalId === this.model.searchResult?.externalId
-          )
+    const addonInstalledSub = this._addonService.addonInstalled$
+      .pipe(
+        filter(
+          (evt) =>
+            evt.addon.id === this.model.listItem?.addon.id ||
+            evt.addon.externalId === this.model.searchResult?.externalId
         )
-        .subscribe((evt) => {
-          if (this.model.listItem) {
-            this.model.listItem.addon = evt.addon;
-            this.model.listItem.installState = evt.installState;
-          }
+      )
+      .subscribe((evt) => {
+        if (this.model.listItem) {
+          this.model.listItem.addon = evt.addon;
+          this.model.listItem.installState = evt.installState;
+        }
 
-          this._cdRef.detectChanges();
-        })
-    );
+        this._cdRef.detectChanges();
+      });
 
     const changelogSub = from(this.getChangelog())
       .pipe(tap(() => (this.fetchingChangelog = false)))
-      .subscribe((changelog) => this._changelogSrc.next(changelog));
+      .subscribe((changelog) => {
+        this.hasChangeLog = !!changelog;
+        this._changelogSrc.next(changelog);
+      });
 
     const fullDescriptionSub = from(this.getFullDescription())
       .pipe(tap(() => (this.fetchingFullDescription = false)))
       .subscribe((description) => this._descriptionSrc.next(description));
 
-    this._subscriptions.push(changelogSub, fullDescriptionSub);
+    this._subscriptions.push(changelogSub, fullDescriptionSub, addonInstalledSub);
   }
 
   ngOnInit(): void {
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
+
     this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
+
+    this.thumbnailLetter = this.getThumbnailLetter();
+
+    this.showInstallButton = !!this.model.searchResult;
+
+    this.showUpdateButton = !!this.model.listItem;
+
+    this.title = this.model.listItem?.addon?.name || this.model.searchResult?.name || "UNKNOWN";
+
+    this.subtitle = this.model.listItem?.addon?.author || this.model.searchResult?.author || "UNKNOWN";
+
+    this.provider = this.model.listItem?.addon?.providerName || this.model.searchResult?.providerName || "UNKNOWN";
+
+    this.summary = this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
+
+    this.externalUrl = this.model.listItem?.addon?.externalUrl || this.model.searchResult?.externalUrl || "UNKNOWN";
+
+    this.defaultImageUrl = this.model.listItem?.addon?.thumbnailUrl || this.model.searchResult?.thumbnailUrl || "";
+
+    this.hasIconUrl = !!this.defaultImageUrl;
+
+    this.hasRequiredDependencies = this._dependencies.length > 0;
+
+    this.requiredDependencyCount = this._dependencies.length;
+
+    this.version = this.model.searchResult
+      ? this.getLatestSearchResultFile().version
+      : this.model.listItem.addon.installedVersion;
+
+    this.fundingLinks = this.model.listItem?.addon?.fundingLinks ?? [];
+
+    this.hasFundingLinks = !!this.model.listItem?.addon?.fundingLinks?.length;
+
+    this.fullExternalId = this.model.searchResult
+      ? this.model.searchResult.externalId
+      : this.model.listItem.addon.externalId;
+
+    this.displayExternalId = this.getDisplayExternalId(this.fullExternalId);
+
+    this.isUnknownProvider = this.model.listItem?.addon?.providerName === ADDON_PROVIDER_UNKNOWN;
+
+    this.missingDependencies = this.model.listItem?.addon?.missingDependencies ?? [];
+    this.isMissingUnknownDependencies = !!this.missingDependencies.length;
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
     const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
     this.formatLinks(descriptionContainer);
     this.formatLinks(changelogContainer);
   }
 
-  onSelectedTabChange(evt: MatTabChangeEvent) {
+  ngOnDestroy(): void {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  onInstallUpdated(): void {
+    this._cdRef.detectChanges();
+  }
+
+  onSelectedTabChange(evt: MatTabChangeEvent): void {
     this.sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
   }
 
-  getSelectedTabTypeFromIndex(index: number): DetailsTabType {
+  onClickExternalId(): void {
+    this._snackbarService.showSuccessSnackbar("DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_SNACKBAR", {
+      timeout: 2000,
+    });
+  }
+
+  private getSelectedTabTypeFromIndex(index: number): DetailsTabType {
     return index === 0 ? "description" : "changelog";
   }
 
-  getSelectedTabTypeIndex(tabType: DetailsTabType): number {
+  private getSelectedTabTypeIndex(tabType: DetailsTabType): number {
     return tabType === "description" ? 0 : 1;
   }
 
-  formatLinks(container: HTMLDivElement) {
+  private getThumbnailLetter(): string {
+    return this.model?.listItem?.thumbnailLetter ?? this.model.searchResult?.name?.charAt(0).toUpperCase();
+  }
+
+  private getProviderName(): string {
+    return this.model.listItem?.addon?.providerName ?? this.model.searchResult?.providerName;
+  }
+
+  private formatLinks(container: HTMLDivElement): void {
     if (!container) {
       return;
     }
 
     const aTags = container.getElementsByTagName("a");
-    for (let tag of Array.from(aTags)) {
+    for (const tag of Array.from(aTags)) {
       if (tag.getAttribute("clk")) {
         continue;
       }
@@ -143,36 +227,13 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
   }
 
-  ngOnDestroy(): void {
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
-  }
-
-  onClickExternalId() {
-    this._translateService
-      .get("DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_SNACKBAR")
-      .pipe(
-        first(),
-        tap((text) => {
-          this._snackBar.open(text, undefined, {
-            duration: 2000,
-            panelClass: ["wowup-snackbar", "text-1"],
-          });
-        })
-      )
-      .subscribe();
-  }
-
-  getProviderName() {
-    return this.model.listItem?.addon?.providerName ?? this.model.searchResult?.providerName;
-  }
-
-  onOpenLink = (e: MouseEvent) => {
+  private onOpenLink = (e: MouseEvent): boolean => {
     e.preventDefault();
 
     // Go up the call chain to find the tag
     const path = (e as any).path as HTMLElement[];
     let anchor: HTMLAnchorElement = undefined;
-    for (let element of path) {
+    for (const element of path) {
       if (element.tagName !== "A") {
         continue;
       }
@@ -186,41 +247,21 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       return false;
     }
 
-    this._electronService.openExternal(anchor.href);
+    this._electronService.openExternal(anchor.href).catch((e) => console.error(e));
     return false;
   };
 
-  isUnknownProvider() {
-    return this.model.listItem?.addon?.providerName === ADDON_PROVIDER_UNKNOWN;
-  }
-
-  isMissingUnknownDependencies() {
-    return this.model.listItem?.addon?.missingDependencies.length;
-  }
-
-  getMissingDependencies() {
-    return this.model.listItem?.addon?.missingDependencies ?? [];
-  }
-
-  hasChangelog() {
-    return !!this.model.listItem?.addon?.latestChangelog;
-  }
-
-  getDescription() {
-    return this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
-  }
-
-  getChangelog = async () => {
+  private getChangelog = (): Promise<string> => {
     if (this.model.listItem) {
-      return await this.getMyAddonChangelog();
+      return this.getMyAddonChangelog();
     } else if (this.model.searchResult) {
-      return await this.getSearchResultChangelog();
+      return this.getSearchResultChangelog();
     }
 
-    return "";
+    return Promise.resolve("");
   };
 
-  getFullDescription = async () => {
+  private getFullDescription = async (): Promise<string> => {
     const externalId = this.model.searchResult?.externalId ?? this.model.listItem?.addon?.externalId;
     const providerName = this.model.searchResult?.providerName ?? this.model.listItem?.addon?.providerName;
 
@@ -240,6 +281,20 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
   };
 
+  private getDependencies(): AddonDependency[] {
+    if (this.model.searchResult) {
+      return SearchResult.getDependencyType(
+        this.model.searchResult,
+        this.model.channelType,
+        AddonDependencyType.Required
+      );
+    } else if (this.model.listItem) {
+      return this.model.listItem.getDependencies(AddonDependencyType.Required);
+    }
+
+    return [];
+  }
+
   private async getSearchResultChangelog() {
     return await this._addonService.getChangelogForSearchResult(
       this.sessionService.getSelectedClientType(),
@@ -255,110 +310,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     );
   }
 
-  get statusText() {
-    if (!this.model.listItem) {
-      return "";
-    }
-
-    if (this.model.listItem.isUpToDate()) {
-      return this._translateService.instant("COMMON.ADDON_STATE.UPTODATE");
-    }
-
-    return "";
-  }
-
-  get showInstallButton() {
-    return !!this.model.searchResult;
-  }
-
-  get showUpdateButton() {
-    return this.model.listItem;
-  }
-
-  get title() {
-    return this.model.listItem?.addon?.name || this.model.searchResult?.name || "UNKNOWN";
-  }
-
-  get subtitle() {
-    return this.model.listItem?.addon?.author || this.model.searchResult?.author || "UNKNOWN";
-  }
-
-  get provider() {
-    return this.model.listItem?.addon?.providerName || this.model.searchResult?.providerName || "UNKNOWN";
-  }
-
-  get summary() {
-    return this.model.listItem?.addon?.summary || this.model.searchResult?.summary || "";
-  }
-
-  get externalUrl() {
-    return this.model.listItem?.addon?.externalUrl || this.model.searchResult?.externalUrl || "UNKNOWN";
-  }
-
-  get defaultImageUrl(): string {
-    if (this.model.listItem?.addon) {
-      // if (this.model.listItem?.addon?.screenshotUrls?.length) {
-      //   return this.model.listItem?.addon.screenshotUrls[0];
-      // }
-      return this.model.listItem?.addon.thumbnailUrl || "";
-    }
-
-    if (this.model.searchResult) {
-      // if (this.model.searchResult?.screenshotUrls?.length) {
-      //   return this.model.searchResult.screenshotUrls[0];
-      // }
-      return this.model.searchResult?.thumbnailUrl || "";
-    }
-
-    return "";
-  }
-
-  onInstallUpdated() {
-    this._cdRef.detectChanges();
-  }
-
-  getDependencies() {
-    if (this.model.searchResult) {
-      return SearchResult.getDependencyType(
-        this.model.searchResult,
-        this.model.channelType,
-        AddonDependencyType.Required
-      );
-    } else if (this.model.listItem) {
-      return this.model.listItem.getDependencies(AddonDependencyType.Required);
-    }
-
-    return [];
-  }
-
-  hasRequiredDependencies() {
-    return this._dependencies.length > 0;
-  }
-
-  getRequiredDependencyCount() {
-    return this._dependencies.length;
-  }
-
-  getVersion() {
-    return this.model.searchResult
-      ? this.getLatestSearchResultFile().version
-      : this.model.listItem.addon.installedVersion;
-  }
-
-  getFundingLinks() {
-    return this.model.listItem?.addon?.fundingLinks;
-  }
-
-  hasFundingLinks() {
-    return !!this.model.listItem?.addon?.fundingLinks?.length;
-  }
-
-  getFullExternalId() {
-    return this.model.searchResult ? this.model.searchResult.externalId : this.model.listItem.addon.externalId;
-  }
-
-  getExternalId() {
-    const externalId = this.getFullExternalId();
+  private getDisplayExternalId(externalId: string): string {
     if (externalId.indexOf("/") !== -1) {
       return `...${last(externalId.split("/"))}`;
     }

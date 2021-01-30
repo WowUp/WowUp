@@ -186,9 +186,9 @@ export class AddonService {
 
       const changelog = await provider.getChangelog(clientType, addon.externalId, addon.externalLatestReleaseId);
 
-      addon.latestChangelogVersion = addon.latestVersion;
-      addon.latestChangelog = changelog;
-      this.saveAddon(addon);
+      // addon.latestChangelogVersion = addon.latestVersion;
+      // addon.latestChangelog = changelog;
+      // this.saveAddon(addon);
 
       return changelog;
     } catch (e) {

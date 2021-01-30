@@ -63,17 +63,10 @@ export class WowUpAddonProvider extends AddonProvider {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
     try {
-      const cacheKey = `${this.name}_description_${externalId}`;
-      return await this._cachingService.transaction(
-        cacheKey,
-        async () => {
-          const response = await this.getAddonById(externalId);
-          return response.addon?.description;
-        },
-        CHANGELOG_CACHE_TTL_SEC
-      );
+      const response = await this.getAddonById(externalId);
+      return response.addon?.description;
     } catch (e) {
-      console.error("Failed to get changelog", e);
+      console.error("Failed to get description", e);
     }
     return "";
   }
@@ -98,7 +91,12 @@ export class WowUpAddonProvider extends AddonProvider {
   public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/featured/${gameType}?count=30`);
-    const addons = await this._circuitBreaker.getJson<WowUpGetAddonsResponse>(url);
+
+    const addons = await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WowUpGetAddonsResponse>(url),
+      CHANGELOG_CACHE_TTL_SEC
+    );
 
     const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, clientType));
     return searchResults;
@@ -108,7 +106,11 @@ export class WowUpAddonProvider extends AddonProvider {
     const gameType = this.getWowGameType(clientType);
     const url = new URL(`${API_URL}/addons/search/${gameType}?query=${query}&limit=10`);
 
-    const addons = await this._circuitBreaker.getJson<WowUpSearchAddonsResponse>(url);
+    const addons = await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WowUpSearchAddonsResponse>(url),
+      CHANGELOG_CACHE_TTL_SEC
+    );
     const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, clientType));
 
     return searchResults;
@@ -126,16 +128,26 @@ export class WowUpAddonProvider extends AddonProvider {
 
   getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
     const url = new URL(`${API_URL}/addons/${addonId}`);
-    return from(this._circuitBreaker.getJson<WowUpGetAddonResponse>(url)).pipe(
+    const task = this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WowUpGetAddonResponse>(url),
+      CHANGELOG_CACHE_TTL_SEC
+    );
+
+    return from(task).pipe(
       map((result) => {
         return this.getSearchResult(result.addon, clientType);
       })
     );
   }
 
-  getReleaseById(addonId: string, releaseId: string): Observable<WowUpGetAddonReleaseResponse> {
+  async getReleaseById(addonId: string, releaseId: string): Promise<WowUpGetAddonReleaseResponse> {
     const url = new URL(`${API_URL}/addons/${addonId}/releases/${releaseId}`);
-    return from(this._circuitBreaker.getJson<WowUpGetAddonReleaseResponse>(url));
+    return await this._cachingService.transaction(
+      url.toString(),
+      async () => this._circuitBreaker.getJson<WowUpGetAddonReleaseResponse>(url),
+      CHANGELOG_CACHE_TTL_SEC
+    );
   }
 
   async scan(clientType: WowClientType, addonChannelType: any, addonFolders: AddonFolder[]): Promise<void> {
@@ -174,8 +186,15 @@ export class WowUpAddonProvider extends AddonProvider {
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    const addon = await this.getReleaseById(externalId, externalReleaseId).toPromise();
-    return addon?.release?.body ?? "";
+    console.debug("getChangelog");
+    try {
+      const addon = await this.getReleaseById(externalId, externalReleaseId);
+      return addon?.release?.body ?? "";
+    } catch (e) {
+      console.error("Failed to get changelog", e);
+    }
+
+    return "";
   }
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
@@ -188,7 +207,11 @@ export class WowUpAddonProvider extends AddonProvider {
 
   private async getAddonById(addonId: number | string) {
     const url = new URL(`${API_URL}/addons/${addonId}`);
-    return await this._circuitBreaker.getJson<WowUpGetAddonResponse>(url);
+    return await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WowUpGetAddonResponse>(url),
+      CHANGELOG_CACHE_TTL_SEC
+    );
   }
 
   private hasMatchingFingerprint(scanResult: WowUpScanResult, release: WowUpAddonReleaseRepresentation) {
