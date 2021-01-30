@@ -95,6 +95,10 @@ img {
   margin-top: 1em !important;
 }
 
+.mb-1 {
+  margin-bottom: 0.25em !important;
+}
+
 .text-center {
   text-align: center;
 }
@@ -272,6 +276,9 @@ img {
 
   &.justify-content-end {
     justify-content: flex-end;
+  }
+  &.justify-content-between {
+    justify-content: space-between;
   }
 }
 

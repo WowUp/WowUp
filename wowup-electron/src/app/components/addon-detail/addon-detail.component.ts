@@ -61,6 +61,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public fetchingFullDescription = true;
   public selectedTabIndex = 0;
   public canShowChangelog = true;
+  public hasIconUrl = false;
+  public thumbnailLetter = "";
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -106,6 +108,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit(): void {
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
     this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
+    this.thumbnailLetter = this.getThumbnailLetter();
+    this.hasIconUrl = !!this.defaultImageUrl;
   }
 
   ngAfterViewChecked() {
@@ -127,13 +131,17 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     return tabType === "description" ? 0 : 1;
   }
 
-  formatLinks(container: HTMLDivElement) {
+  getThumbnailLetter(): string {
+    return this.model?.listItem?.thumbnailLetter ?? this.model.searchResult?.name?.charAt(0).toUpperCase();
+  }
+
+  formatLinks(container: HTMLDivElement): void {
     if (!container) {
       return;
     }
 
     const aTags = container.getElementsByTagName("a");
-    for (let tag of Array.from(aTags)) {
+    for (const tag of Array.from(aTags)) {
       if (tag.getAttribute("clk")) {
         continue;
       }

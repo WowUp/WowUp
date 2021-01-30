@@ -1,9 +1,24 @@
 <div class="addon-detail-view">
-  <div class="row align-items-start">
-    <div *ngIf="defaultImageUrl" class="row justify-content-center bg-secondary-4 mr-3 icon">
-      <img class="image" [src]="defaultImageUrl" alt="Addon Picture" />
+  <div class="row align-items-start mb-1">
+    <div class="row justify-content-center bg-secondary-4 mr-3 icon flex-shrink-0"
+      [matTooltip]="('DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate) + getExternalId()"
+      [cdkCopyToClipboard]="getFullExternalId()" (click)="onClickExternalId()">
+      <div *ngIf="hasIconUrl === false" class=" text-3">
+        {{ thumbnailLetter }}
+      </div>
+
+      <img *ngIf="hasIconUrl === true" class="image" [src]="defaultImageUrl" alt="Addon Picture" />
     </div>
-    <h3 mat-dialog-title class="flex-grow-1">{{ title }}</h3>
+
+    <div class="flex-grow-1 mr-1">
+      <h3 class="m-0 title">{{ title }}</h3>
+      <div translate class="mr-3" [translateParams]="{ authorName: subtitle }">DIALOGS.ADDON_DETAILS.BY_AUTHOR</div>
+      <div class="sub-text text-2">{{ getVersion() }}</div>
+      <!-- <div class="sub-text id-link selectable text-2" [cdkCopyToClipboard]="getFullExternalId()"
+        [matTooltip]="'DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_TOOLTIP' | translate" (click)="onClickExternalId()">{{
+        'DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate }} {{
+        getExternalId() }}</div> -->
+    </div>
     <mat-icon class="close-icon" color="accent" [mat-dialog-close]="true" [ngStyle]="{ cursor: 'pointer' }"
       svgIcon="fas:times">
     </mat-icon>
@@ -14,12 +29,12 @@
 
   <div mat-dialog-content>
     <div class="row align-items-start">
-      <div class="mat-subheading-1 flex-grow-1 mr-3">
+      <!-- <div class="mat-subheading-1 flex-grow-1 mr-3">
         <div translate [translateParams]="{ authorName: subtitle }">DIALOGS.ADDON_DETAILS.BY_AUTHOR</div>
         <div class="sub-text text-2">{{ getVersion() }}</div>
-      </div>
+      </div> -->
 
-      <div *ngIf="isUnknownProvider() === false">
+      <!-- <div *ngIf="isUnknownProvider() === false">
         <div class="row align-items-center">
           <div class="mr-2">
             <div class="text-right">{{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ provider }}
@@ -34,7 +49,7 @@
             <mat-icon class="open-in-browser-icon" color="accent" svgIcon="fas:external-link-alt"></mat-icon>
           </a>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div *ngIf="hasFundingLinks()" class="funding-link-container ">
@@ -58,7 +73,7 @@
       </span>
     </div>
     <!-- SUMMARY -->
-    <mat-tab-group *ngIf="isUnknownProvider() === false" mat-stretch-tabs [selectedIndex]="selectedTabIndex"
+    <mat-tab-group *ngIf="isUnknownProvider() === false" class="scroller" mat-stretch-tabs [selectedIndex]="selectedTabIndex"
       (selectedTabChange)="onSelectedTabChange($event)">
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
         <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
@@ -71,10 +86,23 @@
       </mat-tab>
     </mat-tab-group>
   </div>
-  <div *ngIf="isUnknownProvider() === false" mat-dialog-actions class="row align-items-center justify-content-end">
-    <app-addon-install-button *ngIf="showInstallButton" [addonSearchResult]="model.searchResult"
-      (onViewUpdated)="onInstallUpdated()">
-    </app-addon-install-button>
-    <app-addon-update-button *ngIf="showUpdateButton" [listItem]="model.listItem"></app-addon-update-button>
+  <div *ngIf="isUnknownProvider() === false" mat-dialog-actions class="row align-items-center justify-content-between">
+    <div>
+      <!-- <div class="sub-text text-right id-link selectable text-2" [cdkCopyToClipboard]="getFullExternalId()"
+        [matTooltip]="'DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_TOOLTIP' | translate" (click)="onClickExternalId()">{{
+        'DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate }} {{
+        getExternalId() }}</div> -->
+    </div>
+    <div class="row align-items-center ">
+      <a mat-button color="primary" class="mr-3" appExternalLink [href]="externalUrl"
+        [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate">{{
+        "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }}
+        {{ provider }}
+      </a>
+      <app-addon-install-button *ngIf="showInstallButton" [addonSearchResult]="model.searchResult"
+        (onViewUpdated)="onInstallUpdated()">
+      </app-addon-install-button>
+      <app-addon-update-button *ngIf="showUpdateButton" [listItem]="model.listItem"></app-addon-update-button>
+    </div>
   </div>
 </div>

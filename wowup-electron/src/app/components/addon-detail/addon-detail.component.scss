@@ -1,10 +1,22 @@
 @import "../../../variables.scss";
-
+.title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: initial;
+}
 .icon {
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   overflow: hidden;
 
+  div {
+    font-size: 2em;
+    font-weight: 400;
+    text-align: center;
+    line-height: 60px;
+  }
   img {
     height: 100%;
   }
