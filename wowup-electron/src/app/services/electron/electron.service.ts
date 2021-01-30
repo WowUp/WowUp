@@ -28,8 +28,10 @@ import {
   ZOOM_FACTOR_KEY,
   IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
+  APP_PROTOCOL_NAME,
 } from "../../../common/constants";
 import * as minimist from "minimist";
+import * as log from "electron-log";
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
 import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExternalOptions, Settings } from "electron";
@@ -187,10 +189,21 @@ export class ElectronService {
 
   public async getAppOptions(): Promise<AppOptions> {
     const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
-    return (<any>minimist(launchArgs.slice(1), {
+    let opts = (<any>minimist(launchArgs.slice(1), {
       boolean: ["hidden", "quit"],
       string: ["install"]
     })) as AppOptions;
+
+    launchArgs.slice(1).forEach(arg => {
+      try {
+        var url = new URL(arg);
+        if (url && url.protocol == APP_PROTOCOL_NAME + ":") {
+          opts = { install: url.searchParams.get('install') } as AppOptions;
+        }
+      } catch { }
+    });
+    
+    return opts;
   }
 
   public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {

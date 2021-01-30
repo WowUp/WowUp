@@ -106,7 +106,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 	  this._electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
 
     this._electronService.getAppOptions().then((appOptions) => {
-      this.openInstallFromUrlDialog(appOptions.install);      
+      this.openInstallFromUrlDialog(appOptions.install);
       this.quitEnabled = appOptions.quit;
       this._cdRef.detectChanges();
     });

@@ -107,28 +107,20 @@ if (!singleInstanceLock) {
 
     win.focus();
     
-    //Couldn't find a better way T_T
-    let argv;
-    var uriArgv = args.find(x => x.includes(APP_PROTOCOL_NAME + "://"));
-    if (!uriArgv) {
-      argv = minimist(args,{
-        string: ["install"]
-      }) as AppOptions;
-    } else {
-      var searchParams = new URLSearchParams(uriArgv);
-      var install = searchParams.get('install');
-      log.info("SearchParams result:");
-      log.info(searchParams);
-      log.info(install);
-      argv = minimist(uriArgv.split(APP_PROTOCOL_NAME + "://").join("").split("/").join("").split(";"), {
-        string: ["install"]
-      }) as AppOptions;
-    }
-    
-    
+    args.slice(1).forEach(arg => {
+      try {
+        var url = new URL(arg);
+        if (url && url.protocol == APP_PROTOCOL_NAME + ":") {
+          win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, url.searchParams.get('install'));
+          return;
+        }
+      } catch { }
+    });
 
-    if (!argv.install)
-      return;
+    let argv = minimist(args.slice(1), {
+        string: ["install"]
+    }) as AppOptions;
+
     win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, argv.install);
   });
 }
