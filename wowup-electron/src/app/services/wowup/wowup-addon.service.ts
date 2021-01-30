@@ -1,93 +1,93 @@
+import * as path from "path";
+
 import { Injectable } from "@angular/core";
+
 import { Addon } from "../../entities/addon";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-
-class WowUpAddonVersion {
-  public name: string;
-  public currentVersion: string;
-  public newVersion: string;
-}
-
-class WowUpAddonData {
-  public updatesAvailable: WowUpAddonVersion[];
-  public generatedAt: string;
-  public interfaceVersion: string;
-  public wowUpAddonName: string;
-  public wowUpAddonVersion: string;
-}
+import { WarcraftService } from "../warcraft/warcraft.service";
 
 enum WowUpAddonFileType {
   Raw,
   HandlebarsTemplate,
 }
 
-class WowUpAddonFileProcessing {
-  public type: WowUpAddonFileType;
-  public filename: string;
+interface WowUpAddonVersion {
+  name: string;
+  currentVersion: string;
+  newVersion: string;
 }
+
+interface WowUpAddonData {
+  updatesAvailable: WowUpAddonVersion[];
+  generatedAt: string;
+  interfaceVersion: string;
+  wowUpAddonName: string;
+  wowUpAddonVersion: string;
+}
+
+interface WowUpAddonFileProcessing {
+  type: WowUpAddonFileType;
+  filename: string;
+}
+
+const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
+const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 @Injectable({
   providedIn: "root",
 })
 export class WowUpAddonService {
-  readonly files: WowUpAddonFileProcessing[] = [{
-    filename: 'data.lua',
-    type: WowUpAddonFileType.HandlebarsTemplate,
-  }, {
-    filename: 'wowup_data_addon.toc',
-    type: WowUpAddonFileType.HandlebarsTemplate,
-  }, {
-    filename: 'ldbicon.tga',
-    type: WowUpAddonFileType.Raw,
-  }];
+  readonly files: WowUpAddonFileProcessing[] = [
+    {
+      filename: "data.lua",
+      type: WowUpAddonFileType.HandlebarsTemplate,
+    },
+    {
+      filename: "wowup_data_addon.toc",
+      type: WowUpAddonFileType.HandlebarsTemplate,
+    },
+    {
+      filename: "ldbicon.tga",
+      type: WowUpAddonFileType.Raw,
+    },
+  ];
   private compiledFiles = {};
 
   constructor(
     private _addonService: AddonService,
     private _fileService: FileService,
+    private _warcraftService: WarcraftService
   ) {
-    _addonService.syncSuccess$.subscribe(async () => {
-      console.log('Updating known versions in WowUpAddon via syncSuccess event');
-      await this.updateForAllClientTypes();
+    _addonService.syncSuccess$.subscribe(() => {
+      console.log("Updating known versions in WowUpAddon via syncSuccess event");
+      this.updateForAllClientTypes().catch((e) => console.error(e));
     });
   }
 
   private async updateForAllClientTypes() {
-    const updatableAddons = [
-      WowClientType.Retail,
-      WowClientType.RetailPtr,
-      WowClientType.Beta,
-      WowClientType.Classic,
-      WowClientType.ClassicPtr,
-    ]
+    const availableClients = await this._warcraftService.getWowClientTypes();
 
-    for (let clientType of updatableAddons) {
+    for (const clientType of availableClients) {
       const addons = this._addonService.getAllAddons(clientType);
       if (addons.length === 0) {
         continue;
       }
 
-      await this.persistUpdateInformationToWowUpAddon(addons);
+      await this.persistUpdateInformationToWowUpAddon(clientType, addons);
     }
   }
 
-  private async persistUpdateInformationToWowUpAddon(addons: Addon[]) {
+  private async persistUpdateInformationToWowUpAddon(clientType: WowClientType, addons: Addon[]) {
     const wowUpAddon = addons.find((addon: Addon) => addon.name === "Addon Update Notifications (by WowUp)");
     if (!wowUpAddon) {
       return;
     }
 
-    console.log('Found the WowUp addon notification addon, trying to sync updates available to wowup_data_addon');
+    console.log("Found the WowUp addon notification addon, trying to sync updates available to wowup_data_addon");
     try {
-      const availableUpdates = addons.filter(
-        (addon: Addon) => !addon.isIgnored && !addon.autoUpdateEnabled && addon.latestVersion !== addon.installedVersion
-      ).map((addon: Addon) => ({
-        name: addon.name,
-        currentVersion: addon.installedVersion,
-        newVersion: addon.latestVersion,
-      } as WowUpAddonVersion));
+      const availableUpdates = addons.filter(this.canUpdateAddon).map(this.getAddonVersion);
 
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailable: availableUpdates,
@@ -97,32 +97,64 @@ export class WowUpAddonService {
         wowUpAddonVersion: wowUpAddon.installedVersion,
       };
 
-      const dataAddonPath = await this._addonService.getFullInstallPath(wowUpAddon) + "/../wowup_data_addon/";
+      const dataAddonPath = path.join(
+        this._warcraftService.getAddonFolderPath(clientType),
+        WOWUP_DATA_ADDON_FOLDER_NAME
+      );
+      
       await this._fileService.createDirectory(dataAddonPath);
 
-      for (let file of this.files) {
-        let designatedPath = dataAddonPath + "/" + file.filename;
+      for (const file of this.files) {
+        const designatedPath = path.join(dataAddonPath, file.filename);
         switch (file.type) {
           case WowUpAddonFileType.HandlebarsTemplate:
-            let templatePath = await this._fileService.getAssetFilePath("WowUpAddon/" + file.filename + ".hbs");
-            let templateContents = await this._fileService.readFile(templatePath);
-
-            if (!this.compiledFiles[file.filename]) {
-              this.compiledFiles[file.filename] = window.libs.handlebars.compile(templateContents);
-            }
-
-            await this._fileService.writeFile(designatedPath, this.compiledFiles[file.filename](wowUpAddonData));
+            await this.handleHandlebarsTemplateFileType(file, designatedPath, wowUpAddonData);
             break;
           case WowUpAddonFileType.Raw:
-            let filePath = await this._fileService.getAssetFilePath("WowUpAddon/" + file.filename);
-            await this._fileService.copy(filePath, designatedPath);
+            await this.handleRawFileType(file, designatedPath);
+            break;
+          default:
             break;
         }
       }
 
-      console.log('Available update data synced to wowup_data_addon/{data.lua,wowup_data_addon.toc}');
+      console.log("Available update data synced to wowup_data_addon/{data.lua,wowup_data_addon.toc}");
     } catch (e) {
       console.log(e);
     }
+  }
+
+  private getAddonVersion = (addon: Addon): WowUpAddonVersion => {
+    return {
+      name: addon.name,
+      currentVersion: addon.installedVersion,
+      newVersion: addon.latestVersion,
+    };
+  };
+
+  private canUpdateAddon = (addon: Addon) => {
+    return !addon.isIgnored && !addon.autoUpdateEnabled && addon.latestVersion !== addon.installedVersion;
+  };
+
+  private async handleHandlebarsTemplateFileType(
+    file: WowUpAddonFileProcessing,
+    designatedPath: string,
+    wowUpAddonData: WowUpAddonData
+  ) {
+    const assetPath = path.join(WOWUP_ASSET_FOLDER_NAME, `${file.filename}.hbs`);
+    const templatePath = await this._fileService.getAssetFilePath(assetPath);
+    const templateContents = await this._fileService.readFile(templatePath);
+
+    if (!this.compiledFiles[file.filename]) {
+      this.compiledFiles[file.filename] = window.libs.handlebars.compile(templateContents);
+    }
+
+    await this._fileService.writeFile(designatedPath, this.compiledFiles[file.filename](wowUpAddonData));
+  }
+
+  private async handleRawFileType(file: WowUpAddonFileProcessing, designatedPath: string) {
+    const assetPath = path.join(WOWUP_ASSET_FOLDER_NAME, file.filename);
+    const filePath = await this._fileService.getAssetFilePath(assetPath);
+    await this._fileService.copy(filePath, designatedPath);
   }
 }

@@ -772,7 +772,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     return from(this.addonService.getAddons(clientType, rescan)).pipe(
-      switchMap((addons) => {
+      map((addons) => {
         const rowData = this.formatAddons(addons);
         this.enableControls = this.calculateControlState();
 
@@ -780,7 +780,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         this._displayAddonsSrc.next(rowData);
         this.setPageContextText();
         this._cdRef.detectChanges();
-        return from([]);
       }),
       catchError((e) => {
         console.error(e);
