@@ -19,6 +19,7 @@ import { FileService } from "./services/files/file.service";
 import { SessionService } from "./services/session/session.service";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { WowUpService } from "./services/wowup/wowup.service";
+import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -36,10 +37,14 @@ describe("AppComponent", () => {
   let analyticsService: AnalyticsService;
   let analyticsServiceSpy: any;
   let preferenceStorageSpy: PreferenceStorageService;
+  let wowUpAddonServiceSpy: WowUpAddonService;
 
   beforeEach(async () => {
+    wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", ["updateForClientType"], {
+      persistUpdateInformationToWowUpAddon: () => {},
+    });
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on"], {
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on", "off"], {
       appOptions: { quit: null },
       getAppOptions: () => Promise.resolve({}),
       powerMonitor$: new Observable(),
@@ -88,6 +93,7 @@ describe("AppComponent", () => {
             { provide: FileService, useValue: fileServiceSpy },
             { provide: AnalyticsService, useValue: analyticsServiceSpy },
             { provide: PreferenceStorageService, useValue: preferenceStorageSpy },
+            { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
           ],
         },
       })

@@ -12,6 +12,10 @@ import { BehaviorSubject, of, Subject } from "rxjs";
 import { UpdateCheckResult } from "electron-updater";
 import { MatModule } from "../../mat-module";
 
+import { MatIcon } from "@angular/material/icon";
+import { MatIconTestingModule } from "@angular/material/icon/testing";
+
+/** Fix icon warning? https://stackoverflow.com/a/62277810 */
 describe("FooterComponent", () => {
   let component: FooterComponent;
   let fixture: ComponentFixture<FooterComponent>;
@@ -37,9 +41,10 @@ describe("FooterComponent", () => {
     });
 
     await TestBed.configureTestingModule({
-      declarations: [FooterComponent],
+      declarations: [FooterComponent, MatIcon],
       imports: [
         MatModule,
+        MatIconTestingModule,
         OverlayModule,
         HttpClientModule,
         TranslateModule.forRoot({

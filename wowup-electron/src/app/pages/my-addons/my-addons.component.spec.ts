@@ -37,28 +37,33 @@ describe("MyAddonsComponent", () => {
   let warcraftServiceSpy: any;
 
   beforeEach(async () => {
-    wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", {
+    wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", ["updateForClientType"], {
       persistUpdateInformationToWowUpAddon: () => {},
     });
-    addonServiceSpy = jasmine.createSpyObj("AddonService", {
-      getAddons: Promise.resolve([]),
-    }, {
-      addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
-      addonRemoved$: new Subject<string>().asObservable(),
-    })
+    addonServiceSpy = jasmine.createSpyObj(
+      "AddonService",
+      {
+        getAddons: Promise.resolve([]),
+        backfillAddons: Promise.resolve(undefined),
+      },
+      {
+        addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
+        addonRemoved$: new Subject<string>().asObservable(),
+      }
+    );
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
-      myAddonsSortOrder: {name: "test sort", direction: "asc"} as SortOrder,
-    })
+      myAddonsSortOrder: { name: "test sort", direction: "asc" } as SortOrder,
+    });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedHomeTab"], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
       autoUpdateComplete$: new BehaviorSubject(0).asObservable(),
-    })
+    });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
-    })
+    });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin : false,
-      isLinux : true,
+      isWin: false,
+      isLinux: true,
       isMac: false,
     });
 
@@ -79,23 +84,24 @@ describe("MyAddonsComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-      providers: [
-        MatDialog,
-      ],
+      providers: [MatDialog],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).overrideComponent(MyAddonsComponent, {
-      set: {
-        providers: [
-          { provide: AddonService, useValue: addonServiceSpy },
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
-          { provide: WarcraftService, useValue: warcraftServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(MyAddonsComponent, {
+        set: {
+          providers: [
+            { provide: AddonService, useValue: addonServiceSpy },
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
+            { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+            { provide: WarcraftService, useValue: warcraftServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MyAddonsComponent);
     component = fixture.componentInstance;

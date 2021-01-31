@@ -1,5 +1,6 @@
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatModule } from "../../mat-module";
 import { AddonService } from "../../services/addons/addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { createTranslateModule } from "../../utils/test.utils";
@@ -27,7 +28,7 @@ describe("OptionsAddonSectionComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [OptionsAddonSectionComponent],
-      imports: [HttpClientModule, createTranslateModule()],
+      imports: [HttpClientModule, MatModule, createTranslateModule()],
     })
       .overrideComponent(OptionsAddonSectionComponent, {
         set: {

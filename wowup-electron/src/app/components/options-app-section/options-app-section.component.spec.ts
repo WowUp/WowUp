@@ -32,12 +32,18 @@ describe("OptionsAppSectionComponent", () => {
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
       telemetryEnabled$: new BehaviorSubject(false).asObservable(),
     });
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin: false,
-      isLinux: true,
-      isMac: false,
-      zoomFactor$: new BehaviorSubject(1.0).asObservable(),
-    });
+    electronServiceSpy = jasmine.createSpyObj(
+      "ElectronService",
+      {
+        getZoomFactor: Promise.resolve(1.0),
+      },
+      {
+        isWin: false,
+        isLinux: true,
+        isMac: false,
+        zoomFactor$: new BehaviorSubject(1.0).asObservable(),
+      }
+    );
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", ["getStartWithSystem"], {
       collapseToTray: false,
       useHardwareAcceleration: false,

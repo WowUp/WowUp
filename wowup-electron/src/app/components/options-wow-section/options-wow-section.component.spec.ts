@@ -8,6 +8,12 @@ import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { OptionsWowSectionComponent } from "./options-wow-section.component";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { WowClientOptionsComponent } from "../wow-client-options/wow-client-options.component";
+import { ElectronService } from "../../services/electron/electron.service";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { BehaviorSubject } from "rxjs";
+import { InstalledProduct } from "../../models/warcraft/installed-product";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 
 describe("OptionsWowSectionComponent", () => {
   let component: OptionsWowSectionComponent;
@@ -16,14 +22,34 @@ describe("OptionsWowSectionComponent", () => {
   let wowUpServiceSpy: any;
   let warcraftService: WarcraftService;
   let warcraftServiceSpy: any;
+  let electronService: ElectronService;
 
   beforeEach(async () => {
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
-      wowUpReleaseChannel: WowUpReleaseChannelType.Stable,
-    })
+    warcraftServiceSpy = jasmine.createSpyObj(
+      "WarcraftService",
+      {
+        getClientFolderName: (clientType: WowClientType) => clientType.toString(),
+        getClientLocation: (clientType: WowClientType) => clientType.toString(),
+      },
+      {
+        products$: new BehaviorSubject<InstalledProduct[]>([]).asObservable(),
+      }
+    );
+
+    wowUpServiceSpy = jasmine.createSpyObj(
+      "WowUpService",
+      {
+        getDefaultAddonChannel: () => AddonChannelType.Stable,
+        getDefaultAutoUpdate: () => false,
+      },
+      {
+        wowUpReleaseChannel: WowUpReleaseChannelType.Stable,
+      }
+    );
+    electronService = jasmine.createSpyObj("ElectronService", [""], {});
 
     await TestBed.configureTestingModule({
-      declarations: [OptionsWowSectionComponent],
+      declarations: [OptionsWowSectionComponent, WowClientOptionsComponent],
       imports: [
         HttpClientModule,
         MatDialogModule,
@@ -37,18 +63,20 @@ describe("OptionsWowSectionComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-      providers: [
-        MatDialog,
-      ]
-    }).overrideComponent(OptionsWowSectionComponent, {
-      set: {
-        providers: [
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: WarcraftService, useValue: warcraftServiceSpy },
-        ]},
-    }).compileComponents();
+      providers: [MatDialog],
+    })
+      .overrideComponent(OptionsWowSectionComponent, {
+        set: {
+          providers: [
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: WarcraftService, useValue: warcraftServiceSpy },
+            { provide: ElectronService, useValue: electronService },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(OptionsWowSectionComponent);
     component = fixture.componentInstance;
