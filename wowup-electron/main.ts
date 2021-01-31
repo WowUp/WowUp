@@ -109,7 +109,7 @@ if (!singleInstanceLock) {
     
     args.slice(1).forEach(arg => {
       try {
-        var url = new URL(arg);
+        const url = new URL(arg);
         if (url && url.protocol == APP_PROTOCOL_NAME + ":") {
           win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, url.searchParams.get("install"));
           return;
