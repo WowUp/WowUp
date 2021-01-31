@@ -59,7 +59,15 @@ export class WowUpAddonService {
     private _addonService: AddonService,
     private _fileService: FileService,
     private _warcraftService: WarcraftService
-  ) {}
+  ) {
+    _addonService.addonInstalled$.subscribe((update) => {
+      this.updateForClientType(update.addon.clientType).catch((e) => console.error(e));
+    });
+
+    _addonService.addonRemoved$.subscribe(() => {
+      this.updateForAllClientTypes().catch((e) => console.error(e));
+    });
+  }
 
   public async updateForAllClientTypes(): Promise<void> {
     const availableClients = await this._warcraftService.getWowClientTypes();
