@@ -1,22 +1,25 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { AddonService } from "../../services/addons/addon.service";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { Subject } from "rxjs";
-import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { Subject } from "rxjs";
+
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+
+import { httpLoaderFactory } from "../../app.module";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { Addon } from "../../entities/addon";
 import { MatModule } from "../../mat-module";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { SessionService } from "../../services/session/session.service";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ElectronService } from "../../services";
-import { MatIcon } from "@angular/material/icon";
-import { MatIconTestingModule } from "@angular/material/icon/testing";
+import { AddonService } from "../../services/addons/addon.service";
+import { IconService } from "../../services/icons/icon.service";
+import { SessionService } from "../../services/session/session.service";
+import { overrideIconModule } from "../../tests/mock-mat-icon";
+import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
+
 describe("AddonDetailComponent", () => {
   let component: AddonDetailComponent;
   let fixture: ComponentFixture<AddonDetailComponent>;
@@ -27,6 +30,7 @@ describe("AddonDetailComponent", () => {
   let sessionServiceSpy: SessionService;
 
   beforeEach(async () => {
+    console.log("AddonDetailComponent");
     addonServiceSpy = jasmine.createSpyObj(
       "AddonService",
       ["logDebugData", "getChangelogForAddon", "canShowChangelog"],
@@ -46,13 +50,12 @@ describe("AddonDetailComponent", () => {
 
     dialogModel = { listItem: viewModel } as AddonDetailModel;
 
-    await TestBed.configureTestingModule({
-      declarations: [AddonDetailComponent, MatIcon],
+    let testBed = TestBed.configureTestingModule({
+      declarations: [AddonDetailComponent],
       imports: [
         MatModule,
         HttpClientModule,
         NoopAnimationsModule,
-        MatIconTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -67,24 +70,30 @@ describe("AddonDetailComponent", () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [{ provide: MAT_DIALOG_DATA, useValue: dialogModel }],
-    })
-      .overrideComponent(AddonDetailComponent, {
-        set: {
-          providers: [
-            { provide: AddonService, useValue: addonServiceSpy },
-            { provide: SessionService, useValue: sessionServiceSpy },
-            {
-              provide: ElectronService,
-              useValue: electronServiceSpy,
-            },
-          ],
-        },
-      })
-      .compileComponents();
+    });
+
+    testBed = overrideIconModule(testBed).overrideComponent(AddonDetailComponent, {
+      set: {
+        providers: [
+          { provide: AddonService, useValue: addonServiceSpy },
+          { provide: SessionService, useValue: sessionServiceSpy },
+          {
+            provide: ElectronService,
+            useValue: electronServiceSpy,
+          },
+          {
+            provide: IconService,
+          },
+        ],
+      },
+    });
+
+    await testBed.compileComponents();
 
     fixture = TestBed.createComponent(AddonDetailComponent);
     component = fixture.componentInstance;
     addonService = fixture.debugElement.injector.get(AddonService);
+    const icons = fixture.debugElement.injector.get(IconService);
 
     fixture.detectChanges();
   });

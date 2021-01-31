@@ -4,8 +4,6 @@ import { BehaviorSubject } from "rxjs";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
-import { MatIcon } from "@angular/material/icon";
-import { MatIconTestingModule } from "@angular/material/icon/testing";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -18,6 +16,8 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { WowClientOptionsComponent } from "./wow-client-options.component";
 import { FormsModule } from "@angular/forms";
+import { IconService } from "../../services/icons/icon.service";
+import { overrideIconModule } from "../../tests/mock-mat-icon";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
@@ -45,13 +45,12 @@ describe("WowClientOptionsComponent", () => {
       }
     );
 
-    await TestBed.configureTestingModule({
-      declarations: [WowClientOptionsComponent, MatIcon],
+    let testBed = TestBed.configureTestingModule({
+      declarations: [WowClientOptionsComponent],
       imports: [
         MatModule,
         FormsModule,
         HttpClientModule,
-        MatIconTestingModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
@@ -66,23 +65,27 @@ describe("WowClientOptionsComponent", () => {
         }),
       ],
       providers: [MatDialog],
-    })
-      .overrideComponent(WowClientOptionsComponent, {
-        set: {
-          providers: [
-            { provide: WowUpService, useValue: wowUpServiceSpy },
-            { provide: ElectronService, useValue: electronServiceSpy },
-            { provide: WarcraftService, useValue: warcraftServiceSpy },
-          ],
-        },
-      })
-      .compileComponents();
+    });
+
+    testBed = overrideIconModule(testBed).overrideComponent(WowClientOptionsComponent, {
+      set: {
+        providers: [
+          { provide: WowUpService, useValue: wowUpServiceSpy },
+          { provide: ElectronService, useValue: electronServiceSpy },
+          { provide: WarcraftService, useValue: warcraftServiceSpy },
+          { provide: IconService },
+        ],
+      },
+    });
+
+    await testBed.compileComponents();
 
     fixture = TestBed.createComponent(WowClientOptionsComponent);
     component = fixture.componentInstance;
     wowUpService = fixture.debugElement.injector.get(WowUpService);
     electronService = fixture.debugElement.injector.get(ElectronService);
     warcraftService = fixture.debugElement.injector.get(WarcraftService);
+    const icons = fixture.debugElement.injector.get(IconService);
 
     component.clientType = WowClientType.Retail;
 

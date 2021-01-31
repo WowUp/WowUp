@@ -6,8 +6,6 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
-import { MatIcon } from "@angular/material/icon";
-import { MatIconTestingModule } from "@angular/material/icon/testing";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -20,6 +18,8 @@ import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { GetAddonsComponent } from "./get-addons.component";
+import { IconService } from "../../services/icons/icon.service";
+import { overrideIconModule } from "../../tests/mock-mat-icon";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -51,12 +51,11 @@ describe("GetAddonsComponent", () => {
       isMac: false,
     });
 
-    await TestBed.configureTestingModule({
-      declarations: [GetAddonsComponent, MatIcon],
+    let testBed = TestBed.configureTestingModule({
+      declarations: [GetAddonsComponent],
       imports: [
         MatModule,
         OverlayModule,
-        MatIconTestingModule,
         BrowserAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
@@ -73,19 +72,22 @@ describe("GetAddonsComponent", () => {
       ],
       providers: [MatDialog],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-      .overrideComponent(GetAddonsComponent, {
-        set: {
-          providers: [
-            { provide: AddonService, useValue: addonServiceSpy },
-            { provide: WowUpService, useValue: wowUpServiceSpy },
-            { provide: ElectronService, useValue: electronServiceSpy },
-            { provide: SessionService, useValue: sessionServiceSpy },
-            { provide: WarcraftService, useValue: warcraftServiceSpy },
-          ],
-        },
-      })
-      .compileComponents();
+    });
+
+    testBed = overrideIconModule(testBed).overrideComponent(GetAddonsComponent, {
+      set: {
+        providers: [
+          { provide: AddonService, useValue: addonServiceSpy },
+          { provide: WowUpService, useValue: wowUpServiceSpy },
+          { provide: ElectronService, useValue: electronServiceSpy },
+          { provide: SessionService, useValue: sessionServiceSpy },
+          { provide: WarcraftService, useValue: warcraftServiceSpy },
+          { provide: IconService },
+        ],
+      },
+    });
+
+    await testBed.compileComponents();
 
     fixture = TestBed.createComponent(GetAddonsComponent);
     component = fixture.componentInstance;
@@ -94,6 +96,7 @@ describe("GetAddonsComponent", () => {
     electronService = fixture.debugElement.injector.get(ElectronService);
     sessionService = fixture.debugElement.injector.get(SessionService);
     warcraftService = fixture.debugElement.injector.get(WarcraftService);
+    const icons = fixture.debugElement.injector.get(IconService);
 
     fixture.detectChanges();
   });
