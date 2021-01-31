@@ -189,7 +189,9 @@ export class ElectronService {
 
   public async getAppOptions(): Promise<AppOptions> {
     const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
-    let opts = (<any>minimist(launchArgs.slice(1), {
+    let opts;
+
+    opts = (<any>minimist(launchArgs.slice(1), {
       boolean: ["hidden", "quit"],
       string: ["install"]
     })) as AppOptions;
@@ -198,11 +200,11 @@ export class ElectronService {
       try {
         var url = new URL(arg);
         if (url && url.protocol == APP_PROTOCOL_NAME + ":") {
-          opts = { install: url.searchParams.get('install') } as AppOptions;
+          opts = <any>{ install: url.searchParams.get("install") } as AppOptions;
         }
       } catch { }
     });
-    
+
     return opts;
   }
 

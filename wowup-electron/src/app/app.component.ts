@@ -153,8 +153,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.applyZoom(ZoomDirection.ZoomReset);
   };
 
-  onRequestInstallFromUrl = (evt, path?: string) => {
-    this.openInstallFromUrlDialog(path);
+  onRequestInstallFromUrl = async (evt, path?: string) => {
+    await this.openInstallFromUrlDialog(path);
   }
 
   openDialog(): void {
@@ -170,10 +170,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  openInstallFromUrlDialog(path?: string): void {
+  private async openInstallFromUrlDialog(path?: string) {
     if (!path)
       return;
-    var dialogRef = this._dialog.open(InstallFromUrlDialogComponent);
+    var dialogRef = await this._dialog.open(InstallFromUrlDialogComponent);
     dialogRef.componentInstance.query = path;
   }
 

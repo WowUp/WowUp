@@ -111,7 +111,7 @@ if (!singleInstanceLock) {
       try {
         var url = new URL(arg);
         if (url && url.protocol == APP_PROTOCOL_NAME + ":") {
-          win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, url.searchParams.get('install'));
+          win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, url.searchParams.get("install"));
           return;
         }
       } catch { }
