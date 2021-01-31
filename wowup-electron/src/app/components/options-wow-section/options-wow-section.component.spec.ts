@@ -14,6 +14,8 @@ import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { BehaviorSubject } from "rxjs";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("OptionsWowSectionComponent", () => {
   let component: OptionsWowSectionComponent;
@@ -51,6 +53,8 @@ describe("OptionsWowSectionComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [OptionsWowSectionComponent, WowClientOptionsComponent],
       imports: [
+        MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         MatDialogModule,
         TranslateModule.forRoot({

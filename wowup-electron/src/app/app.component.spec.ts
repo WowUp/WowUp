@@ -20,6 +20,7 @@ import { SessionService } from "./services/session/session.service";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -40,9 +41,13 @@ describe("AppComponent", () => {
   let wowUpAddonServiceSpy: WowUpAddonService;
 
   beforeEach(async () => {
-    wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", ["updateForClientType"], {
-      persistUpdateInformationToWowUpAddon: () => {},
-    });
+    wowUpAddonServiceSpy = jasmine.createSpyObj(
+      "WowUpAddonService",
+      ["updateForClientType", "updateForAllClientTypes"],
+      {
+        persistUpdateInformationToWowUpAddon: () => {},
+      }
+    );
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on", "off"], {
       appOptions: { quit: null },
@@ -68,6 +73,7 @@ describe("AppComponent", () => {
         RouterTestingModule,
         HttpClientModule,
         MatModule,
+        NoopAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

@@ -6,7 +6,8 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { httpLoaderFactory } from "../../app.module";
 import { MatModule } from "../../mat-module";
-
+import { MatIcon } from "@angular/material/icon";
+import { MatIconTestingModule } from "@angular/material/icon/testing";
 import { FundingButtonComponent } from "./funding-button.component";
 
 describe("FundingButtonComponent", () => {
@@ -15,11 +16,12 @@ describe("FundingButtonComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FundingButtonComponent],
+      declarations: [FundingButtonComponent, MatIcon],
       imports: [
         MatModule,
         HttpClientModule,
         NoopAnimationsModule,
+        MatIconTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

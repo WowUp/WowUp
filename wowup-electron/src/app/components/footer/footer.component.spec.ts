@@ -14,6 +14,7 @@ import { MatModule } from "../../mat-module";
 
 import { MatIcon } from "@angular/material/icon";
 import { MatIconTestingModule } from "@angular/material/icon/testing";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 /** Fix icon warning? https://stackoverflow.com/a/62277810 */
 describe("FooterComponent", () => {
@@ -44,6 +45,7 @@ describe("FooterComponent", () => {
       declarations: [FooterComponent, MatIcon],
       imports: [
         MatModule,
+        NoopAnimationsModule,
         MatIconTestingModule,
         OverlayModule,
         HttpClientModule,

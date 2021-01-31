@@ -15,7 +15,8 @@ import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { SessionService } from "../../services/session/session.service";
 import { ElectronService } from "../../services";
-
+import { MatIcon } from "@angular/material/icon";
+import { MatIconTestingModule } from "@angular/material/icon/testing";
 describe("AddonDetailComponent", () => {
   let component: AddonDetailComponent;
   let fixture: ComponentFixture<AddonDetailComponent>;
@@ -46,11 +47,12 @@ describe("AddonDetailComponent", () => {
     dialogModel = { listItem: viewModel } as AddonDetailModel;
 
     await TestBed.configureTestingModule({
-      declarations: [AddonDetailComponent],
+      declarations: [AddonDetailComponent, MatIcon],
       imports: [
         MatModule,
         HttpClientModule,
         NoopAnimationsModule,
+        MatIconTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

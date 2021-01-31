@@ -6,6 +6,7 @@ import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("ProgressSpinnerComponent", () => {
   let component: ProgressSpinnerComponent;
@@ -16,6 +17,7 @@ describe("ProgressSpinnerComponent", () => {
       declarations: [ProgressSpinnerComponent],
       imports: [
         MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {
@@ -27,7 +29,7 @@ describe("ProgressSpinnerComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();

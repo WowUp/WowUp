@@ -1,24 +1,28 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AddonService } from "../../services/addons/addon.service";
-import { SessionService } from "../../services/session/session.service";
-import { MatDialog } from "@angular/material/dialog";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { ElectronService } from "../../services";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { OverlayModule } from "@angular/cdk/overlay";
-import { MyAddonsComponent } from "./my-addons.component";
-import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { BehaviorSubject, Subject } from "rxjs";
+
+import { OverlayModule } from "@angular/cdk/overlay";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatDialog } from "@angular/material/dialog";
+import { MatIcon } from "@angular/material/icon";
+import { MatIconTestingModule } from "@angular/material/icon/testing";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+
+import { httpLoaderFactory } from "../../app.module";
+import { MatModule } from "../../mat-module";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { SortOrder } from "../../models/wowup/sort-order";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatModule } from "../../mat-module";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { MyAddonsComponent } from "./my-addons.component";
 
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
@@ -57,6 +61,7 @@ describe("MyAddonsComponent", () => {
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedHomeTab"], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
       autoUpdateComplete$: new BehaviorSubject(0).asObservable(),
+      selectedClientType$: new BehaviorSubject(WowClientType.Retail).asObservable(),
     });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
@@ -68,11 +73,12 @@ describe("MyAddonsComponent", () => {
     });
 
     await TestBed.configureTestingModule({
-      declarations: [MyAddonsComponent],
+      declarations: [MyAddonsComponent, MatIcon],
       imports: [
         MatModule,
         OverlayModule,
         HttpClientModule,
+        MatIconTestingModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {

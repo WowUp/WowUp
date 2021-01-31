@@ -1,15 +1,19 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { AddonService, } from "../../services/addons/addon.service";
-import { SessionService } from "../../services/session/session.service";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { InstallFromUrlDialogComponent } from "./install-from-url-dialog.component";
+
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialogRef } from "@angular/material/dialog";
-import { DownloadCountPipe } from "../../pipes/download-count.pipe";
-import { MatModule } from "../../mat-module";
+import { MatIcon } from "@angular/material/icon";
+import { MatIconTestingModule } from "@angular/material/icon/testing";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+
+import { httpLoaderFactory } from "../../app.module";
+import { MatModule } from "../../mat-module";
+import { DownloadCountPipe } from "../../pipes/download-count.pipe";
+import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { InstallFromUrlDialogComponent } from "./install-from-url-dialog.component";
 
 describe("InstallFromUrlDialogComponent", () => {
   let component: InstallFromUrlDialogComponent;
@@ -21,10 +25,11 @@ describe("InstallFromUrlDialogComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [InstallFromUrlDialogComponent],
+      declarations: [InstallFromUrlDialogComponent, MatIcon],
       imports: [
         MatModule,
         HttpClientModule,
+        MatIconTestingModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
@@ -36,17 +41,20 @@ describe("InstallFromUrlDialogComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-    }).overrideComponent(InstallFromUrlDialogComponent, {
-      set: {
-        providers: [
-          DownloadCountPipe,
-          { provide: MatDialogRef, useValue: {} },
-          { provide: AddonService, useValue: addonServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(InstallFromUrlDialogComponent, {
+        set: {
+          providers: [
+            DownloadCountPipe,
+            { provide: MatDialogRef, useValue: {} },
+            { provide: AddonService, useValue: addonServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(InstallFromUrlDialogComponent);
     component = fixture.componentInstance;

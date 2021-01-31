@@ -10,6 +10,7 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { Subject } from "rxjs";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { ProgressButtonComponent } from "../progress-button/progress-button.component";
 
 describe("AddonInstallButtonComponent", () => {
   let component: AddonInstallButtonComponent;
@@ -20,17 +21,21 @@ describe("AddonInstallButtonComponent", () => {
   let sessionServiceSpy: any;
 
   beforeEach(async () => {
-    addonServiceSpy = jasmine.createSpyObj("AddonService", {
-      isInstalled: () => false,
-    }, {
-      addonInstalled$ : new Subject<AddonUpdateEvent>().asObservable(),
-    });
+    addonServiceSpy = jasmine.createSpyObj(
+      "AddonService",
+      {
+        isInstalled: () => false,
+      },
+      {
+        addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
+      }
+    );
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType"], {
       selectedClientType: WowClientType.Retail,
     });
 
     await TestBed.configureTestingModule({
-      declarations: [AddonInstallButtonComponent],
+      declarations: [AddonInstallButtonComponent, ProgressButtonComponent],
       imports: [
         HttpClientModule,
         TranslateModule.forRoot({
@@ -43,15 +48,18 @@ describe("AddonInstallButtonComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-    }).overrideComponent(AddonInstallButtonComponent, {
-      set: {
-        providers: [
-          { provide: AddonService, useValue: addonServiceSpy },
-          { provide: SessionService, useValue: sessionServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(AddonInstallButtonComponent, {
+        set: {
+          providers: [
+            { provide: AddonService, useValue: addonServiceSpy },
+            { provide: SessionService, useValue: sessionServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(AddonInstallButtonComponent);
     component = fixture.componentInstance;

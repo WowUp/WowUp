@@ -1,18 +1,23 @@
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { BehaviorSubject } from "rxjs";
+
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
-import { WowUpService } from "../../services/wowup/wowup.service";
+import { MatIcon } from "@angular/material/icon";
+import { MatIconTestingModule } from "@angular/material/icon/testing";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { ElectronService } from "../../services";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
+
 import { httpLoaderFactory } from "../../app.module";
-import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { WowClientOptionsComponent } from "./wow-client-options.component";
-import { BehaviorSubject } from "rxjs";
+import { MatModule } from "../../mat-module";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatModule } from "../../mat-module";
+import { ElectronService } from "../../services";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { WowClientOptionsComponent } from "./wow-client-options.component";
+import { FormsModule } from "@angular/forms";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
@@ -28,19 +33,25 @@ describe("WowClientOptionsComponent", () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
       getDefaultAddonChannel: (clientType: WowClientType) => clientType.toString(),
       getDefaultAutoUpdate: (clientType: WowClientType) => clientType.toString(),
-    })
-    warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", {
-      getClientFolderName: (clientType: WowClientType) => clientType.toString(),
-      getClientLocation: (clientType: WowClientType) => clientType.toString(),
-    }, {
-      products$: new BehaviorSubject<InstalledProduct[]>([]).asObservable(),
-    })
+    });
+    warcraftServiceSpy = jasmine.createSpyObj(
+      "WarcraftService",
+      {
+        getClientFolderName: (clientType: WowClientType) => clientType.toString(),
+        getClientLocation: (clientType: WowClientType) => clientType.toString(),
+      },
+      {
+        products$: new BehaviorSubject<InstalledProduct[]>([]).asObservable(),
+      }
+    );
 
     await TestBed.configureTestingModule({
-      declarations: [WowClientOptionsComponent],
+      declarations: [WowClientOptionsComponent, MatIcon],
       imports: [
         MatModule,
+        FormsModule,
         HttpClientModule,
+        MatIconTestingModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
@@ -52,19 +63,20 @@ describe("WowClientOptionsComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-      providers: [
-        MatDialog,
-      ]
-    }).overrideComponent(WowClientOptionsComponent, {
-      set: {
-        providers: [
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: WarcraftService, useValue: warcraftServiceSpy },
-        ]},
-    }).compileComponents();
+      providers: [MatDialog],
+    })
+      .overrideComponent(WowClientOptionsComponent, {
+        set: {
+          providers: [
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: WarcraftService, useValue: warcraftServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(WowClientOptionsComponent);
     component = fixture.componentInstance;

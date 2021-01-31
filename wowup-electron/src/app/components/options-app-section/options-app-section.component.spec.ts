@@ -13,6 +13,7 @@ import { BehaviorSubject } from "rxjs";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../mat-module";
 import { createTranslateModule } from "../../utils/test.utils";
+import { FormsModule } from "@angular/forms";
 
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
@@ -36,6 +37,7 @@ describe("OptionsAppSectionComponent", () => {
       "ElectronService",
       {
         getZoomFactor: Promise.resolve(1.0),
+        onRendererEvent: () => undefined,
       },
       {
         isWin: false,
@@ -55,7 +57,7 @@ describe("OptionsAppSectionComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [OptionsAppSectionComponent],
       providers: [MatDialog, ElectronService],
-      imports: [HttpClientModule, MatModule, BrowserAnimationsModule, createTranslateModule()],
+      imports: [HttpClientModule, FormsModule, MatModule, BrowserAnimationsModule, createTranslateModule()],
     })
       .overrideComponent(OptionsAppSectionComponent, {
         set: {

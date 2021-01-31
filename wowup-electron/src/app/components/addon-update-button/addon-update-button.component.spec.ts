@@ -12,6 +12,7 @@ import { AddonUpdateButtonComponent } from "./addon-update-button.component";
 import { Subject } from "rxjs";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { MatModule } from "../../mat-module";
+import { ProgressButtonComponent } from "../progress-button/progress-button.component";
 describe("AddonUpdateButtonComponent", () => {
   let component: AddonUpdateButtonComponent;
   let fixture: ComponentFixture<AddonUpdateButtonComponent>;
@@ -23,14 +24,11 @@ describe("AddonUpdateButtonComponent", () => {
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
       addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
-    })
+    });
 
     await TestBed.configureTestingModule({
-      declarations: [AddonUpdateButtonComponent],
-      providers: [
-        MatDialog,
-        ElectronService,
-      ],
+      declarations: [AddonUpdateButtonComponent, ProgressButtonComponent],
+      providers: [MatDialog, ElectronService],
       imports: [
         MatModule,
         HttpClientModule,
@@ -45,16 +43,19 @@ describe("AddonUpdateButtonComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-    }).overrideComponent(AddonUpdateButtonComponent, {
-      set: {
-        providers: [
-          MatDialog,
-          { provide: AddonService, useValue: addonServiceSpy },
-          { provide: AnalyticsService, useValue: analyticsServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(AddonUpdateButtonComponent, {
+        set: {
+          providers: [
+            MatDialog,
+            { provide: AddonService, useValue: addonServiceSpy },
+            { provide: AnalyticsService, useValue: analyticsServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(AddonUpdateButtonComponent);
     component = fixture.componentInstance;
