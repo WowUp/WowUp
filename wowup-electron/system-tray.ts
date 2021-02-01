@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, nativeImage, Tray } from "electron";
 import * as path from "path";
 import * as platform from "./platform";
+import { WOWUP_LOGO_FILENAME } from "./src/common/constants";
 import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
 
 let _trayRef: Tray;
@@ -9,7 +10,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   _trayRef?.destroy();
 
   console.log("Creating tray");
-  const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
+  const trayIconPath = path.join(__dirname, "assets", WOWUP_LOGO_FILENAME);
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
   _trayRef = new Tray(icon);

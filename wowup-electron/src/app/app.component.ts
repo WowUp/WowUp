@@ -29,6 +29,7 @@ import {
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
+  WOWUP_LOGO_FILENAME,
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
 import { MenuConfig } from "../common/wowup/menu-config";
@@ -201,7 +202,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private async showManyAddonsAutoUpdated(updatedAddons: Addon[]) {
-    const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
+    const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
     const translated = await this.translate
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {
         count: updatedAddons.length,
@@ -219,7 +220,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private async showFewAddonsAutoUpdated(updatedAddons: Addon[]) {
     const addonNames = map(updatedAddons, (addon) => addon.name);
     const addonText = join(addonNames, "\r\n");
-    const iconPath = await this._fileService.getAssetFilePath("wowup_logo_512np.png");
+    const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
     const translated = await this.translate
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"], {
         addonNames: addonText,

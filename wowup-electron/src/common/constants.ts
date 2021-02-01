@@ -112,3 +112,4 @@ export const WINDOW_DEFAULT_HEIGHT = 720;
 export const WINDOW_MIN_WIDTH = 940;
 export const WINDOW_MIN_HEIGHT = 500;
 export const MIN_VISIBLE_ON_SCREEN = 32;
+export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
