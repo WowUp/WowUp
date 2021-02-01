@@ -1,15 +1,15 @@
 import * as path from "path";
+import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
 import { Addon } from "../../entities/addon";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { getEnumName } from "../../utils/enum.utils";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
-import { filter } from "rxjs/operators";
-import { AddonInstallState } from "app/models/wowup/addon-install-state";
-import { getEnumName } from "app/utils/enum.utils";
 
 enum WowUpAddonFileType {
   Raw,
