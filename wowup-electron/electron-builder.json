@@ -59,7 +59,7 @@
     "entitlements": "./electron-build/entitlements.mac.plist"
   },
   "linux": {
-    "icon": "dist/assets/icons",
+    "icon": "electron-build/icon.icns",
     "target": ["AppImage"]
   }
 }
