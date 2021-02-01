@@ -7,6 +7,8 @@ import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
+import { filter } from "rxjs/operators";
+import { AddonInstallState } from "app/models/wowup/addon-install-state";
 
 enum WowUpAddonFileType {
   Raw,
@@ -60,11 +62,15 @@ export class WowUpAddonService {
     private _fileService: FileService,
     private _warcraftService: WarcraftService
   ) {
-    _addonService.addonInstalled$.subscribe((update) => {
-      this.updateForClientType(update.addon.clientType).catch((e) => console.error(e));
-    });
+    _addonService.addonInstalled$
+      .pipe(filter((update) => update.installState === AddonInstallState.Complete))
+      .subscribe((update) => {
+        console.debug("addonInstalled");
+        this.updateForClientType(update.addon.clientType).catch((e) => console.error(e));
+      });
 
     _addonService.addonRemoved$.subscribe(() => {
+      console.debug("addonRemoved");
       this.updateForAllClientTypes().catch((e) => console.error(e));
     });
   }
