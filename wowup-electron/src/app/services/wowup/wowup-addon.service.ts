@@ -9,6 +9,7 @@ import { FileService } from "../files/file.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { filter } from "rxjs/operators";
 import { AddonInstallState } from "app/models/wowup/addon-install-state";
+import { getEnumName } from "app/utils/enum.utils";
 
 enum WowUpAddonFileType {
   Raw,
@@ -90,7 +91,7 @@ export class WowUpAddonService {
   public async updateForClientType(clientType: WowClientType): Promise<void> {
     const addons = this._addonService.getAllAddons(clientType);
     if (addons.length === 0) {
-      console.log(`WowUpAddonService: No addons to sync`);
+      console.log(`WowUpAddonService: No addons to sync ${getEnumName(WowClientType, clientType)}`);
       return;
     }
 

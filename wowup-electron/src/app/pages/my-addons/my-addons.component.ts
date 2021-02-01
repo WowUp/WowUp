@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { join } from "path";
 import { BehaviorSubject, from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, map, switchMap, tap } from "rxjs/operators";
+import { catchError, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
@@ -258,8 +258,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   public onRefresh(): void {
-    this.loadAddons(this.selectedClient)
-      .pipe(switchMap(() => from(this._wowUpAddonService.updateForClientType(this.selectedClient))))
+    from(this.addonService.syncClientAddons(this.selectedClient))
+      .pipe(
+        switchMap(() => this.loadAddons(this.selectedClient)),
+        switchMap(() => from(this._wowUpAddonService.updateForClientType(this.selectedClient)))
+      )
       .subscribe();
   }
 

@@ -170,13 +170,18 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     await this.onAutoUpdateInterval();
     this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
-      .pipe(tap(() => this.onAutoUpdateInterval().catch((e) => console.error(e))))
+      .pipe(
+        tap(() => {
+          this.onAutoUpdateInterval().catch((e) => console.error(e));
+        })
+      )
       .subscribe();
   }
 
   private onAutoUpdateInterval = async () => {
     try {
       console.log("onAutoUpdateInterval");
+      await this._addonService.syncAllClients();
       const updatedAddons = await this._addonService.processAutoUpdates();
 
       await this._wowupAddonService.updateForAllClientTypes();

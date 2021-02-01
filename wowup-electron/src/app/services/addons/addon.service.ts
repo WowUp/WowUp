@@ -779,9 +779,51 @@ export class AddonService {
     // Only sync non-ignored addons
     const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
 
-    await this.syncAddons(clientType, notIgnored);
-
     return addons;
+  }
+
+  public async syncAllClients(): Promise<void> {
+    const clientTypes = await this._warcraftService.getWowClientTypes();
+    for (const clientType of clientTypes) {
+      try {
+        await this.syncClientAddons(clientType);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  public async syncClientAddons(clientType: WowClientType): Promise<void> {
+    try {
+      const addons = this._addonStorage.getAllForClientType(clientType);
+      const validAddons = _.filter(addons, (addon) => addon.isIgnored === false);
+
+      await this.syncAddons(clientType, validAddons);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  public async syncAddons(clientType: WowClientType, addons: Addon[]): Promise<boolean> {
+    console.debug(`syncAddons ${getEnumName(WowClientType, clientType)}`);
+    let didSync = true;
+
+    for (const provider of this.getEnabledAddonProviders()) {
+      try {
+        await this.syncProviderAddons(clientType, addons, provider);
+      } catch (e) {
+        console.error(`Failed to sync from provider: ${provider.name}`, e);
+        this._syncErrorSrc.next(
+          new AddonSyncError({
+            providerName: provider.name,
+            innerError: e,
+          })
+        );
+        didSync = false;
+      }
+    }
+
+    return didSync;
   }
 
   private updateAddons(existingAddons: Addon[], newAddons: Addon[]) {
@@ -812,28 +854,8 @@ export class AddonService {
     );
   }
 
-  private async syncAddons(clientType: WowClientType, addons: Addon[]) {
-    let didSync = true;
-
-    for (const provider of this.getEnabledAddonProviders()) {
-      try {
-        await this.syncProviderAddons(clientType, addons, provider);
-      } catch (e) {
-        console.error(`Failed to sync from provider: ${provider.name}`, e);
-        this._syncErrorSrc.next(
-          new AddonSyncError({
-            providerName: provider.name,
-            innerError: e,
-          })
-        );
-        didSync = false;
-      }
-    }
-
-    return didSync;
-  }
-
   private async syncProviderAddons(clientType: WowClientType, addons: Addon[], addonProvider: AddonProvider) {
+    // console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;

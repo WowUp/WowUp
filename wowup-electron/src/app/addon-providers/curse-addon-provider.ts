@@ -106,16 +106,11 @@ export class CurseAddonProvider extends AddonProvider {
       return;
     }
 
-    console.debug("Curse scan start");
     console.time("CFScan");
     const scanResults = await this.getScanResults(addonFolders);
     console.timeEnd("CFScan");
 
-    console.debug("ScanResults", scanResults.length);
-
     await this.mapAddonFolders(scanResults, clientType);
-
-    console.debug("mapAddonFolders");
 
     const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
     const matchedScanResultIds = matchedScanResults.map((sr) => sr.exactMatch.id);
@@ -220,7 +215,7 @@ export class CurseAddonProvider extends AddonProvider {
     }
 
     const url = `${API_URL}/addon`;
-    console.log(`Fetching addon info ${url}`);
+    console.log(`Fetching addon info ${url} ${addonIds.length}`);
     const response = await this._circuitBreaker.postJson<CurseSearchResult[]>(url, addonIds);
 
     await this.removeBlockedItems(response);
