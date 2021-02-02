@@ -127,6 +127,12 @@ img {
   -webkit-app-region: no-drag;
 }
 
+.no-link {
+  pointer-events: none;
+  text-decoration: none;
+  color: inherit !important;
+}
+
 .pointer {
   pointer-events: all !important;
 

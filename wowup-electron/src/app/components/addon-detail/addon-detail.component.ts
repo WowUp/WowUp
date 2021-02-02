@@ -13,8 +13,9 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { MatTabChangeEvent } from "@angular/material/tabs";
+import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
@@ -29,6 +30,7 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
+import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -82,10 +84,12 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
+    private _dialog: MatDialog,
     private _addonService: AddonService,
     private _cdRef: ChangeDetectorRef,
     private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
+    private _translateService: TranslateService,
     public sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
@@ -222,6 +226,10 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
         continue;
       }
 
+      if (tag.href.toLowerCase().indexOf("http") === -1 || tag.href.toLowerCase().indexOf("localhost") !== -1) {
+        tag.classList.add("no-link");
+      }
+
       tag.setAttribute("clk", "1");
       tag.addEventListener("click", this.onOpenLink, false);
     }
@@ -247,9 +255,33 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       return false;
     }
 
-    this._electronService.openExternal(anchor.href).catch((e) => console.error(e));
+    if (anchor.href.toLowerCase().indexOf("http") !== 0 || anchor.href.toLowerCase().indexOf("localhost") !== -1) {
+      console.warn(`Unhandled relative path: ${anchor.href}`);
+      return false;
+    }
+
+    this.confirmLinkNavigation(anchor.href);
+
+    // this._electronService.openExternal(anchor.href).catch((e) => console.error(e));
     return false;
   };
+
+  private confirmLinkNavigation(href: string) {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("APP.LINK_NAVIGATION.TITLE"),
+        message: this._translateService.instant("APP.LINK_NAVIGATION.MESSAGE", { url: href }),
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) {
+        return;
+      }
+
+      this._electronService.openExternal(href).catch((e) => console.error(e));
+    });
+  }
 
   private getChangelog = (): Promise<string> => {
     if (this.model.listItem) {

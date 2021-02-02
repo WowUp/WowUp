@@ -1,5 +1,9 @@
 {
   "APP": {
+    "LINK_NAVIGATION": {
+      "TITLE": "You are about to leave WowUp",
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?"
+    },
     "APP_MENU": {
       "EDIT": {
         "COPY": "Copy",

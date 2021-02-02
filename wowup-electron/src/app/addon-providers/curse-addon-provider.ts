@@ -64,7 +64,7 @@ export class CurseAddonProvider extends AddonProvider {
   public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
     try {
       const cacheKey = `${this.name}_description_${externalId}`;
-      return await this._cachingService.transaction(
+      let description = await this._cachingService.transaction(
         cacheKey,
         () => {
           const url = new URL(`${API_URL}/addon/${externalId}/description`);
@@ -72,6 +72,10 @@ export class CurseAddonProvider extends AddonProvider {
         },
         CHANGELOG_CACHE_TTL_SEC
       );
+
+      description = this.standardizeDescription(description);
+
+      return description;
     } catch (e) {
       console.error("Failed to get changelog", e);
     }
@@ -106,16 +110,11 @@ export class CurseAddonProvider extends AddonProvider {
       return;
     }
 
-    console.debug("Curse scan start");
     console.time("CFScan");
     const scanResults = await this.getScanResults(addonFolders);
     console.timeEnd("CFScan");
 
-    console.debug("ScanResults", scanResults.length);
-
     await this.mapAddonFolders(scanResults, clientType);
-
-    console.debug("mapAddonFolders");
 
     const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
     const matchedScanResultIds = matchedScanResults.map((sr) => sr.exactMatch.id);
@@ -157,6 +156,36 @@ export class CurseAddonProvider extends AddonProvider {
 
     return appScanResults;
   };
+
+  /** We want to pull all the A tags and fix what we can */
+  private standardizeDescription(description: string): string {
+    let descriptionCpy = `${description}`;
+    const hrefRegex = /<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1/g;
+    const results = descriptionCpy.matchAll(hrefRegex);
+    const resultArr = [...results];
+    for (const result of resultArr) {
+      try {
+        const href = result[2];
+        if (!href) {
+          continue;
+        }
+
+        if (href.toLowerCase().indexOf("/linkout") === 0) {
+          descriptionCpy = this.rebuildLinkOut(descriptionCpy, href);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return descriptionCpy;
+  }
+
+  private rebuildLinkOut(description: string, href: string) {
+    const url = new URL(`https://www.curseforge.com${href}`);
+    const remoteUrl = url.searchParams.get("remoteUrl");
+    const destination = window.decodeURIComponent(remoteUrl);
+    return description.replace(href, destination);
+  }
 
   private async mapAddonFolders(scanResults: AppCurseScanResult[], clientType: WowClientType) {
     if (clientType === WowClientType.None) {
