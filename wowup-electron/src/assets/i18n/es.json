@@ -34,6 +34,10 @@
       "MAC": "Pulse ^⌘F para salir del modo de pantalla completa",
       "WINDOWS": "Pulse F11 para salir del modo de pantalla completa"
     },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Desconocido"
     },

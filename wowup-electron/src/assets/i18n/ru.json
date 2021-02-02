@@ -34,6 +34,10 @@
       "MAC": "Нажмите ^⌘F чтобы выйти из полнокэранного режима",
       "WINDOWS": "Нажмите F11 чтобы выйти из полнокэранного режима"
     },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Неизвестно"
     },

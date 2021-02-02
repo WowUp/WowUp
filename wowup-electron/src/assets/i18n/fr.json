@@ -34,6 +34,10 @@
       "MAC": "Appuyez sur ^⌘F pour quitter le mode plein écran",
       "WINDOWS": "Appuyez sur F11 pour quitter le mode plein écran"
     },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Inconnu"
     },

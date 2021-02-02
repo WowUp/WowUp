@@ -1,9 +1,5 @@
 {
   "APP": {
-    "LINK_NAVIGATION": {
-      "TITLE": "You are about to leave WowUp",
-      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?"
-    },
     "APP_MENU": {
       "EDIT": {
         "COPY": "Copy",
@@ -37,6 +33,10 @@
     "FULLSCREEN_SNACKBAR": {
       "MAC": "Press ^⌘F to exit full screen",
       "WINDOWS": "Press F11 to exit full screen"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
     },
     "PROVIDERS": {
       "UNKNOWN": "Unknown"
