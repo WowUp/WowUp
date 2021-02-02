@@ -35,8 +35,8 @@
       "WINDOWS": "Drücke F11 um den Vollbildmodus zu verlassen"
     },
     "LINK_NAVIGATION": {
-      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
-      "TITLE": "You are about to leave WowUp"
+      "MESSAGE": "{url}\n\nMöchtest Du diese Seite eines Drittanbieters wirklich in deinem Standardbrowser öffnen?",
+      "TITLE": "Du bist dabei WowUp zu verlassen"
     },
     "PROVIDERS": {
       "UNKNOWN": "Unbekannt"
