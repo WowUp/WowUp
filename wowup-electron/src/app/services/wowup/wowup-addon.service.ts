@@ -37,6 +37,7 @@ interface WowUpAddonFileProcessing {
 
 const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
 const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
+const WOWUP_ADODN_FOLDER_NAME = "WowUp";
 
 @Injectable({
   providedIn: "root",
@@ -70,8 +71,8 @@ export class WowUpAddonService {
         this.updateForClientType(update.addon.clientType).catch((e) => console.error(e));
       });
 
-    _addonService.addonRemoved$.subscribe(() => {
-      console.debug("addonRemoved");
+    _addonService.addonRemoved$.subscribe((addon) => {
+      console.debug("addonRemoved", addon);
       this.updateForAllClientTypes().catch((e) => console.error(e));
     });
   }
@@ -99,8 +100,9 @@ export class WowUpAddonService {
   }
 
   private async persistUpdateInformationToWowUpAddon(clientType: WowClientType, addons: Addon[]) {
-    const wowUpAddon = addons.find((addon: Addon) => addon.name === "Addon Update Notifications (by WowUp)");
+    const wowUpAddon = addons.find((addon: Addon) => addon.installedFolderList.includes(WOWUP_ADODN_FOLDER_NAME));
     if (!wowUpAddon) {
+      console.debug("WowUp Addon not found");
       return;
     }
 

@@ -14,6 +14,7 @@ import {
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
   ADDON_PROVIDER_WOWINTERFACE,
+  ADDON_PROVIDER_ZIP,
   ERROR_ADDON_ALREADY_INSTALLED,
 } from "../../../common/constants";
 import { AddonProvider } from "../../addon-providers/addon-provider";
@@ -494,6 +495,11 @@ export class AddonService {
         addon.author = this.getBestGuessAuthor(allTocFiles);
       }
 
+      // If this is a zip file addon, try to pull the name out of the toc
+      if (addonProvider.name === ADDON_PROVIDER_ZIP) {
+        addon.name = this.getBestGuessTitle(allTocFiles);
+      }
+
       this._addonStorage.set(addon.id, addon);
 
       this.trackInstallAction(queueItem.installType, addon);
@@ -595,6 +601,11 @@ export class AddonService {
     }
 
     return tocs;
+  }
+
+  private getBestGuessTitle(tocs: Toc[]) {
+    const titles = _.map(tocs, (toc) => toc.title).filter((title) => !!title);
+    return _.maxBy(titles, (title) => title.length);
   }
 
   private getBestGuessAuthor(tocs: Toc[]) {
