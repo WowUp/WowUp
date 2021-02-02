@@ -183,8 +183,8 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="hover-bg-secondary-2"
         (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
 
-      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns" tabindex="0"
-        class="hover-bg-secondary-2" [ngClass]="{ 'bg-secondary-4': row.selected }"
+      <tr mat-row *matRowDef="let row; let i = index; columns: displayedColumns" tabindex="0" class=""
+        [ngClass]="{ 'bg-secondary-4 hover-bg-secondary-5': row.selected, 'hover-bg-secondary-2': !row.selected }"
         (click)="onRowClicked($event, row, i)" (dblclick)="openDetailDialog(row)"
         (contextmenu)="onCellContext($event, row)" (keydown.control.a)="selectAllRows($event)"
         (keydown.meta.a)="selectAllRows($event)"></tr>
