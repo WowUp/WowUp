@@ -208,7 +208,7 @@
       <div>
         <div class="addon-name">{{ listItem.addon.name }}</div>
         <div class="addon-version">{{ listItem.addon.installedVersion }}</div>
-        <div class="addon-update-available" *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion">
+        <div class="addon-update-available bg-secondary-4 text-2 rounded px-1" *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion">
           {{ listItem.addon.latestVersion }}
         </div>
       </div>

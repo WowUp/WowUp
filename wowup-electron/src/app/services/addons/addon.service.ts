@@ -318,24 +318,33 @@ export class AddonService {
     const updatedAddons = [];
 
     for (const clientTypeStr in clientTypeGroups) {
-      const clientType: WowClientType = parseInt(clientTypeStr, 10);
+      try {
+        const clientUpdates = await this.autoUpdateClient(clientTypeStr, clientTypeGroups[clientTypeStr]);
+        updatedAddons.push(...clientUpdates);
+      } catch (e) {
+        console.error(`Failed to auto update ${clientTypeStr}`, e);
+      }
+    }
 
-      const synced = await this.syncAddons(clientType, clientTypeGroups[clientType]);
-      if (!synced) {
+    return updatedAddons;
+  }
+
+  private async autoUpdateClient(clientTypeStr: string, addons: Addon[]) {
+    const updatedAddons: Addon[] = [];
+    const clientType: WowClientType = parseInt(clientTypeStr, 10);
+
+    await this.syncAddons(clientType, addons);
+
+    for (const addon of addons) {
+      if (!this.canUpdateAddon(addon)) {
         continue;
       }
 
-      for (const addon of clientTypeGroups[clientType]) {
-        if (!this.canUpdateAddon(addon)) {
-          continue;
-        }
-
-        try {
-          await this.updateAddon(addon.id);
-          updatedAddons.push(addon);
-        } catch (err) {
-          console.error(err);
-        }
+      try {
+        await this.updateAddon(addon.id);
+        updatedAddons.push(addon);
+      } catch (err) {
+        console.error(err);
       }
     }
 

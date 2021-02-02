@@ -593,6 +593,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!this.sort.active) {
         this.sortTable(this.dataSource);
       }
+
+      if (isAutoUpdate) {
+        this.addonService.processAutoUpdates().catch((e) => console.error(e));
+      }
     } catch (e) {
       console.error(e);
       this._operationErrorSrc.next(e);
