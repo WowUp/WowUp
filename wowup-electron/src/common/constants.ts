@@ -113,3 +113,4 @@ export const WINDOW_MIN_WIDTH = 940;
 export const WINDOW_MIN_HEIGHT = 500;
 export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
+export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowup_white_lg_nopad.png";
