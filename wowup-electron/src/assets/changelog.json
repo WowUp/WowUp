@@ -1,6 +1,24 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.28",
+      "changes": [
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "Italian locale updates (Bito)",
+        "Add new icon for Mac/Windows (Glow)",
+        "Add/Fix support for the latest WowUp addon (Linaori/Glow)",
+        "Update the details panel layout to give more room (Medok)",
+        "Add a new prompt for opening external links from descriptions/changelogs",
+        "Add a new hover color for addons that are selected",
+        "Fix the update available color on light theme to be readable",
+        "Fix some http caching issues",
+        "Fix some issues with addon sync happening a lot",
+        "Fix some issues with relative CurseForge links"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.27",
       "changes": ["French locale updates (Zazou)", "Move the zip file provider up in priority"]
     },
