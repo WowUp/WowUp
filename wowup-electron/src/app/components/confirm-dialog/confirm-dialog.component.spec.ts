@@ -6,6 +6,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("ConfirmDialogComponent", () => {
   let component: ConfirmDialogComponent;
@@ -16,6 +17,7 @@ describe("ConfirmDialogComponent", () => {
       declarations: [ConfirmDialogComponent],
       imports: [
         MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {
@@ -27,12 +29,12 @@ describe("ConfirmDialogComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
-      ]
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmDialogComponent);

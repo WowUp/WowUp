@@ -19,6 +19,7 @@ import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepte
 import { MatModule } from "./mat-module";
 import { HomeModule } from "./pages/home/home.module";
 import { AnalyticsService } from "./services/analytics/analytics.service";
+import { WowUpApiService } from "./services/wowup-api/wowup-api.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { SharedModule } from "./shared/shared.module";
 
@@ -61,7 +62,7 @@ export function initializeApp(wowupService: WowUpService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [WowUpService],
+      deps: [WowUpService, WowUpApiService],
       multi: true,
     },
     {

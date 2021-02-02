@@ -1,21 +1,25 @@
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { BehaviorSubject } from "rxjs";
+
+import { OverlayModule } from "@angular/cdk/overlay";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { GetAddonsComponent } from "./get-addons.component";
+import { MatDialog } from "@angular/material/dialog";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+
+import { httpLoaderFactory } from "../../app.module";
+import { MatModule } from "../../mat-module";
+import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { MatDialog } from "@angular/material/dialog";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { ElectronService } from "../../services";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { httpLoaderFactory } from "../../app.module";
-import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { OverlayModule } from "@angular/cdk/overlay";
-import { BehaviorSubject } from "rxjs";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatModule } from "../../mat-module";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { GetAddonsComponent } from "./get-addons.component";
+import { IconService } from "../../services/icons/icon.service";
+import { overrideIconModule } from "../../tests/mock-mat-icon";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -34,20 +38,20 @@ describe("GetAddonsComponent", () => {
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       getAddonsHiddenColumns: [],
-    })
+    });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
-    })
+    });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
-    })
+    });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin : false,
-      isLinux : true,
+      isWin: false,
+      isLinux: true,
       isMac: false,
     });
 
-    await TestBed.configureTestingModule({
+    let testBed = TestBed.configureTestingModule({
       declarations: [GetAddonsComponent],
       imports: [
         MatModule,
@@ -64,13 +68,13 @@ describe("GetAddonsComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-      providers: [
-        MatDialog,
-      ],
+      providers: [MatDialog],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).overrideComponent(GetAddonsComponent, {
+    });
+
+    testBed = overrideIconModule(testBed).overrideComponent(GetAddonsComponent, {
       set: {
         providers: [
           { provide: AddonService, useValue: addonServiceSpy },
@@ -78,8 +82,12 @@ describe("GetAddonsComponent", () => {
           { provide: ElectronService, useValue: electronServiceSpy },
           { provide: SessionService, useValue: sessionServiceSpy },
           { provide: WarcraftService, useValue: warcraftServiceSpy },
-        ]},
-    }).compileComponents();
+          { provide: IconService },
+        ],
+      },
+    });
+
+    await testBed.compileComponents();
 
     fixture = TestBed.createComponent(GetAddonsComponent);
     component = fixture.componentInstance;
@@ -88,6 +96,7 @@ describe("GetAddonsComponent", () => {
     electronService = fixture.debugElement.injector.get(ElectronService);
     sessionService = fixture.debugElement.injector.get(SessionService);
     warcraftService = fixture.debugElement.injector.get(WarcraftService);
+    const icons = fixture.debugElement.injector.get(IconService);
 
     fixture.detectChanges();
   });

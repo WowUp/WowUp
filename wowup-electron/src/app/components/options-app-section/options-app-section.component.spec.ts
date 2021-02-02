@@ -13,6 +13,7 @@ import { BehaviorSubject } from "rxjs";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../mat-module";
 import { createTranslateModule } from "../../utils/test.utils";
+import { FormsModule } from "@angular/forms";
 
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
@@ -32,12 +33,19 @@ describe("OptionsAppSectionComponent", () => {
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
       telemetryEnabled$: new BehaviorSubject(false).asObservable(),
     });
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin: false,
-      isLinux: true,
-      isMac: false,
-      zoomFactor$: new BehaviorSubject(1.0).asObservable(),
-    });
+    electronServiceSpy = jasmine.createSpyObj(
+      "ElectronService",
+      {
+        getZoomFactor: Promise.resolve(1.0),
+        onRendererEvent: () => undefined,
+      },
+      {
+        isWin: false,
+        isLinux: true,
+        isMac: false,
+        zoomFactor$: new BehaviorSubject(1.0).asObservable(),
+      }
+    );
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", ["getStartWithSystem"], {
       collapseToTray: false,
       useHardwareAcceleration: false,
@@ -49,7 +57,7 @@ describe("OptionsAppSectionComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [OptionsAppSectionComponent],
       providers: [MatDialog, ElectronService],
-      imports: [HttpClientModule, MatModule, BrowserAnimationsModule, createTranslateModule()],
+      imports: [HttpClientModule, FormsModule, MatModule, BrowserAnimationsModule, createTranslateModule()],
     })
       .overrideComponent(OptionsAppSectionComponent, {
         set: {

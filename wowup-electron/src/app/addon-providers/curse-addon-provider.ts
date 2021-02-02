@@ -249,7 +249,7 @@ export class CurseAddonProvider extends AddonProvider {
     }
 
     const url = `${API_URL}/addon`;
-    console.log(`Fetching addon info ${url}`);
+    console.log(`Fetching addon info ${url} ${addonIds.length}`);
     const response = await this._circuitBreaker.postJson<CurseSearchResult[]>(url, addonIds);
 
     await this.removeBlockedItems(response);

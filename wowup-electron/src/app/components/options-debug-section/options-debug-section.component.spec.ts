@@ -6,6 +6,8 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { httpLoaderFactory } from "../../app.module";
+import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("OptionsDebugSectionComponent", () => {
   let component: OptionsDebugSectionComponent;
@@ -22,6 +24,8 @@ describe("OptionsDebugSectionComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [OptionsDebugSectionComponent],
       imports: [
+        MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

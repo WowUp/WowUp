@@ -19,6 +19,8 @@ import { FileService } from "./services/files/file.service";
 import { SessionService } from "./services/session/session.service";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { WowUpService } from "./services/wowup/wowup.service";
+import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("AppComponent", () => {
   let component: AppComponent;
@@ -36,10 +38,18 @@ describe("AppComponent", () => {
   let analyticsService: AnalyticsService;
   let analyticsServiceSpy: any;
   let preferenceStorageSpy: PreferenceStorageService;
+  let wowUpAddonServiceSpy: WowUpAddonService;
 
   beforeEach(async () => {
+    wowUpAddonServiceSpy = jasmine.createSpyObj(
+      "WowUpAddonService",
+      ["updateForClientType", "updateForAllClientTypes"],
+      {
+        persistUpdateInformationToWowUpAddon: () => {},
+      }
+    );
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on"], {
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on", "off"], {
       appOptions: { quit: null },
       getAppOptions: () => Promise.resolve({}),
       powerMonitor$: new Observable(),
@@ -63,6 +73,7 @@ describe("AppComponent", () => {
         RouterTestingModule,
         HttpClientModule,
         MatModule,
+        NoopAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -88,6 +99,7 @@ describe("AppComponent", () => {
             { provide: FileService, useValue: fileServiceSpy },
             { provide: AnalyticsService, useValue: analyticsServiceSpy },
             { provide: PreferenceStorageService, useValue: preferenceStorageSpy },
+            { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
           ],
         },
       })

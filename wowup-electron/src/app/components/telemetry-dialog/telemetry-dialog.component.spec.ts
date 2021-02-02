@@ -6,6 +6,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("TelemetryDialogComponent", () => {
   let component: TelemetryDialogComponent;
@@ -16,6 +17,7 @@ describe("TelemetryDialogComponent", () => {
       declarations: [TelemetryDialogComponent],
       imports: [
         MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {
@@ -27,11 +29,9 @@ describe("TelemetryDialogComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-      providers: [
-        {provide: MatDialogRef, useValue: {} },
-      ]
+      providers: [{ provide: MatDialogRef, useValue: {} }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TelemetryDialogComponent);

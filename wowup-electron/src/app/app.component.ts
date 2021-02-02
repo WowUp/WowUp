@@ -45,6 +45,7 @@ import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "./entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
+import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 
 @Component({
   selector: "app-root",
@@ -73,6 +74,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _sessionService: SessionService,
     private _preferenceStore: PreferenceStorageService,
     private _cdRef: ChangeDetectorRef,
+    private _wowupAddonService: WowUpAddonService,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
   ) {}
@@ -167,20 +169,26 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this._autoUpdateInterval) {
       return;
     }
-
     await this.onAutoUpdateInterval();
     this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
-      .pipe(tap(async () => await this.onAutoUpdateInterval()))
+      .pipe(
+        tap(() => {
+          this.onAutoUpdateInterval().catch((e) => console.error(e));
+        })
+      )
       .subscribe();
   }
 
   private onAutoUpdateInterval = async () => {
     try {
       console.log("onAutoUpdateInterval");
+      await this._addonService.syncAllClients();
       const updatedAddons = await this._addonService.processAutoUpdates();
 
+      await this._wowupAddonService.updateForAllClientTypes();
+
       if (!updatedAddons || updatedAddons.length === 0) {
-        this.checkQuitEnabled();
+        await this.checkQuitEnabled();
         return;
       }
 
@@ -192,7 +200,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           await this.showFewAddonsAutoUpdated(updatedAddons);
         }
       } else {
-        this.checkQuitEnabled();
+        await this.checkQuitEnabled();
       }
     } catch (e) {
       console.error("Error during auto update", e);
