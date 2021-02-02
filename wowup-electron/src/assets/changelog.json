@@ -15,7 +15,8 @@
         "Fix the update available color on light theme to be readable",
         "Fix some http caching issues",
         "Fix some issues with addon sync happening a lot",
-        "Fix some issues with relative CurseForge links"
+        "Fix some issues with relative CurseForge links",
+        "Fix an issue with failing to sync an addon blocking auto updates"
       ]
     },
     {
