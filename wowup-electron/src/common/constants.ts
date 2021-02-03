@@ -4,7 +4,8 @@ export const ADDON_PROVIDER_GITHUB = "GitHub";
 export const ADDON_PROVIDER_RAIDERIO = "RaiderIO";
 export const ADDON_PROVIDER_TUKUI = "TukUI";
 export const ADDON_PROVIDER_UNKNOWN = "Unknown";
-export const ADDON_PROVIDER_HUB = "Hub";
+export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
+export const ADDON_PROVIDER_HUB = "WowUpHub";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
 // IPC CHANNELS

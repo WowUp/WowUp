@@ -10,6 +10,7 @@ import { Injectable } from "@angular/core";
 import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_HUB,
+  ADDON_PROVIDER_HUB_LEGACY,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
@@ -972,6 +973,10 @@ export class AddonService {
 
     const scannedAddons = await this.scanAddons(clientType);
     for (const addon of existingAddons) {
+      if (addon.providerName === ADDON_PROVIDER_HUB_LEGACY) {
+        addon.providerName = ADDON_PROVIDER_HUB;
+      }
+
       const scannedAddon = _.find(
         scannedAddons,
         (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName

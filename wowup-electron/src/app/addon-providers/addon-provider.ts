@@ -7,7 +7,7 @@ import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 
-export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "Hub" | "RaiderIO" | "Zip";
+export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "WowUpHub" | "RaiderIO" | "Zip";
 
 export interface GetAllResult {
   searchResults: AddonSearchResult[];
