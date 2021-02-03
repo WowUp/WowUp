@@ -35,8 +35,8 @@
       "WINDOWS": "Premere F11 per uscire dalla modalità schermo intero"
     },
     "LINK_NAVIGATION": {
-      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
-      "TITLE": "You are about to leave WowUp"
+      "MESSAGE": "{url}\n\nSei sicuro di voler aprire questa pagina di terze parti sul tuo browser predefinito?",
+      "TITLE": "Stai per lasciare WowUp"
     },
     "PROVIDERS": {
       "UNKNOWN": "Sconosciuto"
