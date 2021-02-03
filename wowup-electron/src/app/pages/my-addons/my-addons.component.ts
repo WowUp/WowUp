@@ -258,10 +258,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   public onRefresh(): void {
+    this.isBusy = true;
     from(this.addonService.syncClientAddons(this.selectedClient))
       .pipe(
         switchMap(() => this.loadAddons(this.selectedClient)),
-        switchMap(() => from(this._wowUpAddonService.updateForClientType(this.selectedClient)))
+        switchMap(() => from(this._wowUpAddonService.updateForClientType(this.selectedClient))),
+        tap(() => {
+          this.isBusy = false;
+        })
       )
       .subscribe();
   }
