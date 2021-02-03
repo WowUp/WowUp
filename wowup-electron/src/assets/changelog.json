@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.29",
+      "changes": ["German locale updates (Glow)", "Fix the activity indicator when checking for updates"]
+    },
+    {
       "Version": "2.1.0-beta.28",
       "changes": [
         "German locale updates (Glow)",
