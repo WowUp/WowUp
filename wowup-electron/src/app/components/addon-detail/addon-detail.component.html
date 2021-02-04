@@ -47,7 +47,7 @@
     </div>
     <!-- SUMMARY -->
     <mat-tab-group #tabs *ngIf="isUnknownProvider === false" class="scroller" mat-stretch-tabs
-      (selectedTabChange)="onSelectedTabChange($event)">
+      [selectedIndex]="selectedTabIndex" (selectedTabChange)="onSelectedTabChange($event)">
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
         <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
         <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="description$ | async"></div>

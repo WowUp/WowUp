@@ -131,6 +131,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit(): void {
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
 
+    this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
+    
     this.thumbnailLetter = this.getThumbnailLetter();
 
     this.showInstallButton = !!this.model.searchResult;
@@ -176,11 +178,10 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   ngAfterViewInit(): void {
-    this.tabGroup.selectedIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
     of(true)
       .pipe(
         delay(200),
-        map(() => this.providerLink.nativeElement.focus())
+        map(() => this.providerLink?.nativeElement?.focus())
       )
       .subscribe();
 
