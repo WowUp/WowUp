@@ -1,9 +1,7 @@
 name: Build WowUp Electron
 on:
   # - push
-  create:
-    tags:
-      - v*
+  workflow_dispatch:
 
 jobs:
   create-release:
