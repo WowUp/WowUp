@@ -1,335 +1,46 @@
 {
   "ChangeLogs": [
     {
-      "Version": "2.1.0-beta.30",
-      "changes": [
-        "Russian locale updates (Medok)",
-        "Italian locale updates (Bito)",
-        "Spanish locale updates (SkollVargr)",
-        "Fancy preload animation"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.29",
-      "changes": ["German locale updates (Glow)", "Fix the activity indicator when checking for updates"]
-    },
-    {
-      "Version": "2.1.0-beta.28",
+      "Version": "2.1.0",
       "changes": [
         "German locale updates (Glow)",
         "Russian locale updates (Medok)",
-        "Spanish locale updates (SkollVargr)",
         "Italian locale updates (Bito)",
-        "Add new icon for Mac/Windows (Glow)",
-        "Add/Fix support for the latest WowUp addon (Linaori/Glow)",
-        "Update the details panel layout to give more room (Medok)",
-        "Add a new prompt for opening external links from descriptions/changelogs",
-        "Add a new hover color for addons that are selected",
-        "Fix the update available color on light theme to be readable",
-        "Fix some http caching issues",
-        "Fix some issues with addon sync happening a lot",
-        "Fix some issues with relative CurseForge links",
-        "Fix an issue with failing to sync an addon blocking auto updates"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.27",
-      "changes": ["French locale updates (Zazou)", "Move the zip file provider up in priority"]
-    },
-    {
-      "Version": "2.1.0-beta.26",
-      "changes": ["Russian locale updates (Medok)", "Update Angular", "Some code cleanup"]
-    },
-    {
-      "Version": "2.1.0-beta.25",
-      "changes": ["Spanish locale updates (SkollVargr)", "Fix an issue with gold update text"]
-    },
-    {
-      "Version": "2.1.0-beta.24",
-      "changes": [
-        "German locale updates (Glow)",
-        "Italian locale updates (Bito)",
-        "Fix an issue with multi select auto update checkbox",
-        "Fix an issue with multi select ignore checkbox",
-        "Update Electron",
-        "Some code cleanup"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.23",
-      "changes": [
-        "Russian locale updates (Medok)",
-        "Promote Hub addons",
-        "Add new ui for the WowUp update notifications",
-        "Add support for addon blocklist",
-        "Add support for GitHub addon description",
-        "Add support for GitHub addon changelog"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.22",
-      "changes": [
-        "German locale updates (Glow)",
-        "Spanish locale updates (SkollVargr)",
-        "Italian locale updates (Bito)",
-        "Stop app update check timer when computer sleeps or is locked",
-        "Fix an issue with the hub not caring about client type"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.21",
-      "changes": [
-        "German locale updates (Glow)",
-        "Fix an issue with the Cmd + w not closing the window on Mac",
-        "Fix an issue with Ctr + r or view > refresh breaking the app",
-        "Fix an issue with view > force reload breaking the app",
-        "Fix an issue with 'Ignore' context menu item not being clickable the full width of the menu",
-        "Fix an issue with 'Auto Update' context menu item not being clickable the full width of the menu",
-        "Fix an issue with 'Ignored' addons not being ignored when checking for updates",
-        "Add localization to the full screen menu toast",
-        "Add OS specific hotkey to the full screen menu toast",
-        "Add the ability to hide the changelog for zip url installs",
-        "Add description logic for zip url installs"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.20",
-      "changes": [
-        "Italian locale updates (Bito)",
-        "Spanish locale updates (SkollVargr)",
-        "German locale updates (Glow)",
-        "Add new button and display when entering f11 fullscreen mode",
-        "Add some new code to disable background checks depending on power state",
-        "Add the ability to translate the menu items on Mac",
-        "Add new error messages for GitHub related errors",
-        "Add the ability to paste a zip file link into 'Install From URL' dialog",
-        "Fix an issue with 'My Addons' tab not auto updating the UI with updates",
-        "Update Electron"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.19",
-      "changes": [
-        "Pull in yesterday's Prod hotfix",
-        "Add Czech translations (pkejval)",
         "French locale updates (Zazou)",
-        "Add a funding link for Ko-fi",
-        "Fix a bug causing funding links not to show for Hub addons",
-        "Fix a bug with light themes and funding links",
-        "Fix an issue with the pre-load banner always being purple",
-        "Change how sorting works for Updated At and Released At column"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.18",
-      "changes": ["Turn off devtools by default"]
-    },
-    {
-      "Version": "2.1.0-beta.17",
-      "changes": [
-        "Italian locale updates (Bito)",
-        "Russian locale updates (Medok)",
         "Spanish locale updates (SkollVargr)",
-        "German locale updates (Glow)",
-        "WowUp addon updates (Linaori)",
-        "When installing the same addon that's marked as 'unknown' it will be removed",
-        "Fix an issue that left external channels in 'error' state",
-        "Fix an issue with newly installed addons showing update on restart",
-        "Fix an issue with the update snackbar and using non default theme",
-        "Fix an issue causing 'no addons' to appear before initial load",
-        "Fix an issue causing the loading spinner for descriptions not to show",
-        "Fix an issue that allowed the install button to be hit multiple times",
-        "Fix an issue with copy/past/select all on Mac",
-        "Start fixing things for next major electron version"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.16",
-      "changes": [
-        "App will now migrate addon shchema on every version change",
-        "Add new code to attempt to restart window if it crashes",
-        "Fix a bug with window maximize/unmaximize and minimize",
-        "Fix the style of the app update check snackbar",
-        "Fix an issue with external channel displaying a bad value"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.15",
-      "changes": [
-        "Italian locale updates (Bito)",
-        "German locale updates (Glow)",
-        "Fix an issue with curse addons with the same version names not properly showing update needed",
-        "Increase the HTTP timeouts globally due to CurseForge slowness",
-        "Tweak the window restore code again"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.14",
-      "changes": [
-        "Italian locale updates (Bito)",
-        "Russian locale updates (Medok)",
-        "German locale updates (Glow)",
-        "Spanish locale updates (SkollVargr)",
-        "Add new alert for errors during addon update check",
-        "Add new alert for errors during addon scan",
-        "Add special error text for hitting the GitHub api limit",
-        "Add support for full descriptions from CurseForge",
-        "Add new logic to deselect the addon row when clicking outside the table",
-        "The View menu on Mac has returned with zoom actions"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.13",
-      "changes": [
-        "German locale updates (Glow)",
-        "Chinese locale updates (CyanoHao)",
-        "Addon details dialog will remember which tab you last selected",
-        "Folders containing a .git folder will now be marked as Unknown provider",
-        "Fix an issue where get addons could get stuck in a spinner forever"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.12",
-      "changes": [
-        "Italian locale updates (Bito)",
-        "Russian locale updates (Medok)",
-        "Add a spinner to loading of changelogs",
-        "Add beta support for Hub addons",
-        "Improve bold fonts on addon changelog/summary",
-        "Improve the addon ID display in details",
-        "Improve Hub support for changelogs and classic",
-        "Improve changelog support for different channels",
-        "Improve Import by URL error dialogs",
-        "Fix some color issues",
-        "Fix an issue with Hub addons showing the wrong icon",
-        "Fix an issue with zoom factor not being properly restored between runs",
-        "Fix an issue where the app is in a weird state when manually removing all clients",
-        "Revert some changes to the window restore code",
-        "Use new ico file on Mac",
-        "Update to latest Electron"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.10",
-      "changes": [
-        "German locale updates (Glow)",
-        "Italian locale updates (Bito)",
-        "Russian locale updates (Medok)",
-        "Spanish locale updates (SkollVargr)",
-        "Changelog fetching should work on 'Get Addons' page",
-        "Improve cache related things",
-        "Improve http related things"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.9",
-      "changes": [
-        "German locale updates (Glow)",
-        "Italian locale updates (Bito)",
-        "Russian locale updates (Medok)",
-        "Auto update loop improvements",
-        "App update loop improvements",
-        "Rework window restore code",
-        "Improve the funding links in details dialog",
-        "Hide tabs on the details dialog for 'unknown' addons",
-        "Fix an issue with changelogs not updating for CurseForge addons",
-        "Fix many changelog display issues"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.8",
-      "changes": [
-        "French locale updates (Zazou)",
-        "German locale updates (Glow)",
-        "Italian locale updates (Bito)",
-        "Spanish locale updates (SkollVargr)",
-        "Russian locale updates (Medok)",
-        "Add new changelog tab to the details dialog",
-        "Add missing dependencies to 'unknown' addons",
-        "Add support for displaying full description page for Hub addons",
-        "Add support for displaying full description for WowInterface addons",
-        "Show folder context menu item will now list all associated folders",
-        "Cache the blizzard product path to avoid checking all drives every startup",
-        "Move the blizzard product search to the background process on Windows",
-        "Description, icon, and changelog are updated without requiring a new addon version"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.7",
-      "changes": [
-        "Use new icon for mac build (alphabitnz)",
-        "Some addon providers can no longer be turned off",
-        "Add better error handling for install/update errors",
-        "Add a new error description when importing from URL",
-        "Move debug option to the bottom of the list",
-        "Fix missing version number in About page",
-        "Improve the dump debug button to include new Hub provider"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.6",
-      "changes": [
-        "Hub provider now supports searching",
-        "Increase the number of 'featured addons' from hub",
-        "Add some logging for hub fingerprints",
-        "Update Electron"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.5",
-      "changes": ["Hub provider now supports updating", "Return to the official TukUI API", "Reduce unused analytics"]
-    },
-    {
-      "Version": "2.1.0-beta.4",
-      "changes": [
-        "German locale updates (Glow)",
-        "Russian locale updates (Medok)",
         "Chinese locale updates (CyanoHao)",
         "Portuguese locale updates (danielschmitz)",
+        "Added Czech translations (pkejval)",
+        "Added view on provider link added to context menu (stevietv)",
+        "Added the ability to turn providers on and off (Linaori)",
+        "Added support for the latest version of the WowUp addon (Linaori)",
+        "Added the new Hub provider",
+        "Added support for full descriptions for all providers.",
+        "Added support for changelogs for most providers.",
+        "Added the showing of unmatched addon folders to 'My Addons'",
+        "Added support for ignoring development directories",
+        "Added auto updated addon names to the notification when possible",
+        "Added the ability to install a zip file URL directly",
+        "Added support for identifying Raider.io addon updated by their own app",
+        "Added a new error descriptions when importing from URL",
+        "Added better error handling for install/update errors",
+        "Added a new app icon",
+        "Added localization support to the system menus on mac",
+        "Added indicator for entering fullscreen (f11) mode",
+        "Added new app update button and update notification toast",
+        "Standardize the zoom scale (strayge)",
         "Change the default 'No' button in confirm boxes to match theme (jar349)",
-        "Add 'Get Addons' support for new Hub provider",
-        "Fix an internal bug with the CurseForge fingerprint scanner",
-        "Several Hub scanning improvements",
-        "Use the shorter TukUI route",
-        "Use the new API database"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.3",
-      "changes": [
-        "Russian locale updates (Medok)",
-        "Italian locale updates (Bito)",
-        "Spanish locale updates (SkollVargr)",
-        "German locale updates (Glow)",
-        "Turned on the WowUp Hub provider"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.2",
-      "changes": [
-        "Russian locale updates (Medok)",
-        "Italian locale updates (Bito)",
+        "Show folder context menu item will now list all associated folders",
         "Mac app is now notarized",
-        "Auto updated addon names will show up in the notification when possible",
-        "Add support for identifying Raider.io addon updated by their own app",
-        "Add support for new TukUI api mirror",
-        "Fix some issues with bad CurseForge dependencies",
-        "Fix some locale test related issues",
-        "Fix an issue when an addon provider cannot be found for a URL",
-        "Fix an issue with the context menu not closing when clicking the addon URL",
-        "Fix an issue when scanning a folder that does not contain a toc file",
-        "Minor UI updates"
-      ]
-    },
-    {
-      "Version": "2.1.0-beta.1",
-      "changes": [
-        "German locale updates (Glow)",
-        "View on provider link added to context menu (stevietv)",
-        "Get all the tests to run again (Linaori)",
-        "Add the ability to turn providers on and off (Linaori)",
-        "Bind all the zoom controls to the same scale (strayge)",
-        "Add the showing of unmatched addon folders to 'My Addons'"
+        "Improved scanning speed",
+        "Improved http caching strategy",
+        "Fix an issue with sorting some columns by date incorrectly",
+        "Fix some issues with wow install path scanning",
+        "Fix issues with the background auto update loop",
+        "Fix an issue with Ctr + r or view > refresh or view > force reload breaking the app",
+        "Fix an issue with 'Ignore' context menu item not being clickable the full width of the menu",
+        "Fix an issue with 'Auto Update' context menu item not being clickable the full width of the menu",
+        "Many more bug fixes"
       ]
     },
     {
