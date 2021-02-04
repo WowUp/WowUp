@@ -1,6 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.0-beta.30",
+      "changes": [
+        "Russian locale updates (Medok)",
+        "Italian locale updates (Bito)",
+        "Spanish locale updates (SkollVargr)",
+        "Fancy preload animation"
+      ]
+    },
+    {
       "Version": "2.1.0-beta.29",
       "changes": ["German locale updates (Glow)", "Fix the activity indicator when checking for updates"]
     },
