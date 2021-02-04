@@ -7,7 +7,9 @@ import { AddonInstallButtonComponent } from "../../components/addon-install-butt
 import { AddonProviderBadgeComponent } from "../../components/addon-provider-badge/addon-provider-badge.component";
 import { AddonUpdateButtonComponent } from "../../components/addon-update-button/addon-update-button.component";
 import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
+import { CenteredSnackbarComponent } from "../../components/centered-snackbar/centered-snackbar.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { FundingButtonComponent } from "../../components/funding-button/funding-button.component";
 import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
@@ -21,19 +23,17 @@ import { ProgressButtonComponent } from "../../components/progress-button/progre
 import { ProgressSpinnerComponent } from "../../components/progress-spinner/progress-spinner.component";
 import { TelemetryDialogComponent } from "../../components/telemetry-dialog/telemetry-dialog.component";
 import { WowClientOptionsComponent } from "../../components/wow-client-options/wow-client-options.component";
-import { FundingButtonComponent } from "../../components/funding-button/funding-button.component";
 import { DirectiveModule } from "../../directive.module";
 import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
 import { InterfaceFormatPipe } from "../../pipes/interface-format.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from "../../shared.module";
 import { AboutComponent } from "../about/about.component";
 import { GetAddonsComponent } from "../get-addons/get-addons.component";
 import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
-import { CenteredSnackbarComponent } from "../../components/centered-snackbar/centered-snackbar.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
 

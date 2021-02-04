@@ -46,8 +46,8 @@
       </span>
     </div>
     <!-- SUMMARY -->
-    <mat-tab-group *ngIf="isUnknownProvider === false" class="scroller" mat-stretch-tabs
-      [selectedIndex]="selectedTabIndex" (selectedTabChange)="onSelectedTabChange($event)">
+    <mat-tab-group #tabs *ngIf="isUnknownProvider === false" class="scroller" mat-stretch-tabs
+      (selectedTabChange)="onSelectedTabChange($event)">
       <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
         <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
         <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="description$ | async"></div>
@@ -65,7 +65,7 @@
     <div>
     </div>
     <div class="row align-items-center ">
-      <a mat-button color="primary" class="mr-3" appExternalLink [href]="externalUrl"
+      <a #providerLink mat-button color="primary" class="mr-3 text-1" appExternalLink [href]="externalUrl"
         [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate">{{
         "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }}
         {{ provider }}

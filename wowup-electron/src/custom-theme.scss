@@ -449,7 +449,7 @@ $alliance-theme-light: mat-light-theme(
   }
 
   .text-1 {
-    color: $white-1;
+    color: $white-1 !important;
   }
 
   .text-2 {

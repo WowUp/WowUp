@@ -1,9 +1,10 @@
 import { last } from "lodash";
-import { BehaviorSubject, from, Subscription } from "rxjs";
-import { filter, tap } from "rxjs/operators";
+import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { delay, filter, map, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -14,7 +15,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
-import { MatTabChangeEvent } from "@angular/material/tabs";
+import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
@@ -44,9 +45,11 @@ export interface AddonDetailModel {
   styleUrls: ["./addon-detail.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
   @ViewChild("descriptionContainer", { read: ElementRef }) descriptionContainer: ElementRef;
   @ViewChild("changelogContainer", { read: ElementRef }) changelogContainer: ElementRef;
+  @ViewChild("providerLink", { read: ElementRef }) providerLink: ElementRef;
+  @ViewChild("tabs", { static: false }) tabGroup: MatTabGroup;
 
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
@@ -128,8 +131,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   ngOnInit(): void {
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
 
-    this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
-
     this.thumbnailLetter = this.getThumbnailLetter();
 
     this.showInstallButton = !!this.model.searchResult;
@@ -172,6 +173,19 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     this.missingDependencies = this.model.listItem?.addon?.missingDependencies ?? [];
     this.isMissingUnknownDependencies = !!this.missingDependencies.length;
+  }
+
+  ngAfterViewInit(): void {
+    this.tabGroup.selectedIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
+    of(true)
+      .pipe(
+        delay(200),
+        map(() => this.providerLink.nativeElement.focus())
+      )
+      .subscribe();
+
+    // window.setTimeout(() => {
+    // }, 200);
   }
 
   ngAfterViewChecked(): void {
