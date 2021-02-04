@@ -21,7 +21,11 @@ jobs:
     inputs:
       versionSpec: $(node_version)
     displayName: 'Install Node.js'
-  - script: node -v
+  - script: |
+      node -v
+      npm install -g @angular/cli
+      cd ./wowup-electron
+      npm i
     env:
       GH_TOKEN: $(GITHUB_TOKEN)
 
