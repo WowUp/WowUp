@@ -35,8 +35,8 @@
       "WINDOWS": "Нажмите F11 чтобы выйти из полнокэранного режима"
     },
     "LINK_NAVIGATION": {
-      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
-      "TITLE": "You are about to leave WowUp"
+      "MESSAGE": "{url}\n\nВы уверены, что хотите открыть эту стороннюю ссылку в браузере по умолчанию?",
+      "TITLE": "Вы собираетесь покинуть WowUp"
     },
     "PROVIDERS": {
       "UNKNOWN": "Неизвестно"
