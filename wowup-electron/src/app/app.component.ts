@@ -10,9 +10,9 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { interval, Subscription } from "rxjs";
-import { filter, tap } from "rxjs/operators";
-import { map, join } from "lodash";
+import { from, interval, of, Subscription } from "rxjs";
+import { catchError, delay, filter, first, map, switchMap, tap } from "rxjs/operators";
+import * as _ from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
@@ -62,6 +62,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   // }
 
   public quitEnabled?: boolean;
+  public showPreLoad = true;
 
   constructor(
     private _analyticsService: AnalyticsService,
@@ -80,9 +81,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY) as string);
+    const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
-      this._electronService.setZoomFactor(zoomFactor);
+      this._electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
     }
 
     this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
@@ -105,10 +106,21 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this._electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
 
-    this._electronService.getAppOptions().then((appOptions) => {
-      this.quitEnabled = appOptions.quit;
-      this._cdRef.detectChanges();
-    });
+    from(this._electronService.getAppOptions())
+      .pipe(
+        first(),
+        delay(3000),
+        map((appOptions) => {
+          this.showPreLoad = false;
+          this.quitEnabled = appOptions.quit;
+          this._cdRef.detectChanges();
+        }),
+        catchError((err) => {
+          console.error(err);
+          return of(undefined);
+        })
+      )
+      .subscribe();
 
     this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping auto update...");
@@ -116,22 +128,30 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this._autoUpdateInterval = undefined;
 
       if (evt === IPC_POWER_MONITOR_RESUME || evt === IPC_POWER_MONITOR_UNLOCK) {
-        this.initializeAutoUpdate();
+        this.initializeAutoUpdate().catch((e) => console.error(e));
       }
     });
   }
 
   ngAfterViewInit(): void {
-    this.createAppMenu();
-    this.createSystemTray();
-
-    if (this._analyticsService.shouldPromptTelemetry) {
-      this.openDialog();
-    } else {
-      this._analyticsService.trackStartup();
-    }
-
-    this.initializeAutoUpdate();
+    from(this.createAppMenu())
+      .pipe(
+        first(),
+        switchMap(() => from(this.createSystemTray())),
+        map(() => {
+          if (this._analyticsService.shouldPromptTelemetry) {
+            this.openDialog();
+          } else {
+            this._analyticsService.trackStartup();
+          }
+        }),
+        switchMap(() => from(this.initializeAutoUpdate())),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -140,16 +160,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
-  onMenuZoomIn = () => {
-    this._electronService.applyZoom(ZoomDirection.ZoomIn);
+  onMenuZoomIn = (): void => {
+    this._electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
   };
 
-  onMenuZoomOut = () => {
-    this._electronService.applyZoom(ZoomDirection.ZoomOut);
+  onMenuZoomOut = (): void => {
+    this._electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
   };
 
-  onMenuZoomReset = () => {
-    this._electronService.applyZoom(ZoomDirection.ZoomReset);
+  onMenuZoomReset = (): void => {
+    this._electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
   };
 
   openDialog(): void {
@@ -226,8 +246,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async showFewAddonsAutoUpdated(updatedAddons: Addon[]) {
-    const addonNames = map(updatedAddons, (addon) => addon.name);
-    const addonText = join(addonNames, "\r\n");
+    const addonNames = _.map(updatedAddons, (addon) => addon.name);
+    const addonText = _.join(addonNames, "\r\n");
     const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
     const translated = await this.translate
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"], {
@@ -244,15 +264,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getAddonNames(addons: Addon[]) {
-    return map(addons, (addon) => addon.name);
+    return _.map(addons, (addon) => addon.name);
   }
 
   private getAddonNamesLength(addons: Addon[]) {
-    return join(this.getAddonNames(addons), " ").length;
+    return _.join(this.getAddonNames(addons), " ").length;
   }
 
   private onAutoUpdateNotificationClosed = () => {
-    this.checkQuitEnabled();
+    this.checkQuitEnabled().catch((e) => console.error(e));
   };
 
   private async checkQuitEnabled() {
@@ -262,7 +282,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     console.debug("checkQuitEnabled");
-    this._electronService.quitApplication();
+    this._electronService.quitApplication().catch((e) => console.error(e));
   }
 
   private async createAppMenu() {
