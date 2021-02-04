@@ -43,8 +43,8 @@ jobs:
       versionSpec: $(node_version)
     displayName: 'Install Node.js'
   - script: |
-      node -v
       npm install -g @angular/cli
+  - script: |
       cd ./wowup-electron
       npm i
       npm run electron:publish
