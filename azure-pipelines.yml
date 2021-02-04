@@ -22,6 +22,8 @@ jobs:
       versionSpec: $(node_version)
     displayName: 'Install Node.js'
   - script: node -v
+    env:
+      GH_TOKEN: $(GITHUB_TOKEN)
 
 # - job: Windows
 #   pool:
