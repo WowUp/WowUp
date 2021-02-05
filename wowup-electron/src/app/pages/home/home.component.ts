@@ -109,7 +109,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async migrateAddons(clientTypes: WowClientType[]) {
-    if (!clientTypes) {
+    if (!clientTypes || !(await this._wowupService.shouldMigrateAddons())) {
       return clientTypes;
     }
 
