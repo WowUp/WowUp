@@ -42,8 +42,7 @@ jobs:
     inputs:
       versionSpec: $(node_version)
     displayName: 'Install Node.js'
-  - script: |
-      npm install -g @angular/cli
+  - script: npm install -g @angular/cli
   - script: cd ./wowup-electron && npm i
   - script: npm run electron:publish
     env:
