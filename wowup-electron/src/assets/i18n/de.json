@@ -271,7 +271,7 @@
       "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Erforderliche Abhängigkeiten fehlen",
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scanne Deinen Client-Ordner nach installierten Addons",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Ein neuer Scan auszuführen wird nach bereits installierten Addons scannen. Dies kann bekannte Addon-Informationen zurücksetzen.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Ein neuer Scan wird nach bereits installierten Addons suchen. Dies kann bekannte Addon-Informationen zurücksetzen. Dieser Vorgang braucht einen Moment.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Neuen Scan starten?",
       "SPINNER": {
         "GATHERING_ADDONS": "Addons werden gesammelt...",
