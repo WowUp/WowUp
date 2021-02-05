@@ -965,6 +965,7 @@ export class AddonService {
   }
 
   public async migrate(clientType: WowClientType): Promise<void> {
+    console.log(`Migrating: ${getEnumName(WowClientType, clientType)}`);
     const existingAddons = this.getAllAddons(clientType);
     if (!existingAddons.length) {
       console.log(`Skipping client type: ${clientType} no addons found`);
@@ -973,30 +974,36 @@ export class AddonService {
 
     const scannedAddons = await this.scanAddons(clientType);
     for (const addon of existingAddons) {
-      if (addon.providerName === ADDON_PROVIDER_HUB_LEGACY) {
-        addon.providerName = ADDON_PROVIDER_HUB;
-      }
+      this.migrateAddon(addon, scannedAddons);
+    }
+  }
 
-      const scannedAddon = _.find(
-        scannedAddons,
-        (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName
-      );
-
-      if (!scannedAddon) {
-        console.log(`No scanned addon found ${addon.name}`);
-        continue;
-      }
-
-      addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
-      addon.externalChannel = scannedAddon.externalChannel;
-
-      // Fill in any addons where this is missing
-      if (!addon.installedFolderList) {
-        addon.installedFolderList = scannedAddon.installedFolderList;
-      }
-
+  private migrateAddon(addon: Addon, scannedAddons: Addon[]): void {
+    if (addon.providerName === ADDON_PROVIDER_HUB_LEGACY) {
+      console.log(`Updating legacy hub name: ${addon.name}`);
+      addon.providerName = ADDON_PROVIDER_HUB;
       this.saveAddon(addon);
     }
+
+    const scannedAddon = _.find(
+      scannedAddons,
+      (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName
+    );
+
+    if (!scannedAddon) {
+      console.log(`No scanned addon found ${addon.name}`);
+      return;
+    }
+
+    addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
+    addon.externalChannel = scannedAddon.externalChannel;
+
+    // Fill in any addons where this is missing
+    if (!addon.installedFolderList) {
+      addon.installedFolderList = scannedAddon.installedFolderList;
+    }
+
+    this.saveAddon(addon);
   }
 
   private async scanAddons(clientType: WowClientType): Promise<Addon[]> {

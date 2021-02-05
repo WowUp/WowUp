@@ -55,16 +55,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this._warcraftService.installedClientTypes$
-      .pipe(
-        first((clientTypes) => !!clientTypes),
-        switchMap((clientTypes) => from(this.migrateAddons(clientTypes)))
-      )
-      .subscribe(() => {
-        this.appReady = true;
-        this._cdRef.detectChanges();
-      });
-
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
     this._addonService.scanError$.subscribe(this.onAddonScanError);
 
@@ -84,19 +74,33 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     });
 
     this.initAppUpdateCheck();
+
+    this._warcraftService.installedClientTypes$
+      .pipe(
+        first((clientTypes) => !!clientTypes),
+        switchMap((clientTypes) => from(this.migrateAddons(clientTypes)))
+      )
+      .subscribe(() => {
+        this.appReady = true;
+        this.detectChanges();
+      });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this._appUpdateInterval.unsubscribe();
   }
 
   private initAppUpdateCheck() {
     // check for an app update every so often
     this._appUpdateInterval = interval(AppConfig.appUpdateIntervalMs)
-      .pipe(tap(async () => this.checkForAppUpdate()))
+      .pipe(
+        tap(() => {
+          this.checkForAppUpdate().catch((e) => console.error(e));
+        })
+      )
       .subscribe();
 
-    this.checkForAppUpdate();
+    this.checkForAppUpdate().catch((e) => console.error(e));
   }
 
   private destroyAppUpdateCheck() {
@@ -105,12 +109,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async migrateAddons(clientTypes: WowClientType[]) {
-    if (!clientTypes || !(await this._wowupService.shouldMigrateAddons())) {
+    if (!clientTypes) {
       return clientTypes;
     }
 
     this.preloadSpinnerKey = "PAGES.HOME.MIGRATING_ADDONS";
-    this._cdRef.detectChanges();
+    this.detectChanges();
 
     console.log("Migrating addons");
 
@@ -126,6 +130,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     return clientTypes;
   }
+
+  private detectChanges = () => {
+    try {
+      this._cdRef.detectChanges();
+    } catch (e) {
+      console.warn(e);
+    }
+  };
 
   onSelectedIndexChange(index: number) {
     this._sessionService.selectedHomeTab = index;
