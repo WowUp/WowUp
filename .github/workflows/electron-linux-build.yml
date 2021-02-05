@@ -1,4 +1,4 @@
-name: Build WowUp Electron
+name: Build WowUp Electron Linux
 on:
   # - push
   workflow_dispatch:
