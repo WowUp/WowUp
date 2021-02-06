@@ -339,7 +339,7 @@
         "THEME_DESCRIPTION": "Ändere das Farbschema nach deinen Wünschen",
         "THEME_LABEL": "Farbschema",
         "TITLE": "Anwendung",
-        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Möchtest Du die Anwendung neustarten?",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Möchtest Du die Anwendung neu starten?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Das Deaktivieren der Hardwarebeschleunigung kann FPS-Probleme und Probleme bei der Darstellung beheben. Eine Änderung dieser Einstellung benötigt einen Neustart der Anwendung.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Beim Deaktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Beim Aktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
