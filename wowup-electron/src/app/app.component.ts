@@ -29,7 +29,7 @@ import {
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
-  IPC_REQUEST_INSTALL_FROM_URL
+  IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
 import { SystemTrayConfig } from "../common/wowup/system-tray-config";
