@@ -129,7 +129,7 @@ export class TukUiAddonProvider extends AddonProvider {
     addonFolders: AddonFolder[]
   ): Promise<void> {
     const allAddons = await this.getAllAddons(clientType);
-    for (let addonFolder of addonFolders) {
+    for (const addonFolder of addonFolders) {
       let tukUiAddon: TukUiAddon;
       if (addonFolder.toc?.tukUiProjectId) {
         tukUiAddon = _.find(allAddons, (addon) => addon.id.toString() === addonFolder.toc.tukUiProjectId);
@@ -271,7 +271,6 @@ export class TukUiAddonProvider extends AddonProvider {
       addons.push(await this.getTukUiRetailAddon());
       addons.push(await this.getElvUiRetailAddon());
     }
-
     return addons;
   };
 
@@ -283,11 +282,14 @@ export class TukUiAddonProvider extends AddonProvider {
     return this.getClientApiAddon("elvui");
   }
 
-  private getClientApiAddon(addonName: string): Promise<TukUiAddon> {
+  private async getClientApiAddon(addonName: string): Promise<TukUiAddon> {
     const url = new URL(CLIENT_API_URL);
     url.searchParams.append("ui", addonName);
 
-    return this._circuitBreaker.getJson<TukUiAddon>(url);
+    const result = await this._circuitBreaker.getJson<TukUiAddon>(url);
+    result.id = result.id.toString(); // For some reason addons from this route have numeric ids not strings
+
+    return result;
   }
 
   private isRetail(clientType: WowClientType) {
