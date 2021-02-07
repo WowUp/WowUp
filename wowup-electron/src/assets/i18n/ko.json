@@ -1,7 +1,46 @@
 {
   "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "COPY": "Copy",
+        "CUT": "Cut",
+        "LABEL": "Edit",
+        "PASTE": "Paste",
+        "REDO": "Redo",
+        "SELECT_ALL": "SelectAll",
+        "UNDO": "Undo"
+      },
+      "QUIT": "Quit",
+      "VIEW": {
+        "FORCE_RELOAD": "Force Reload",
+        "LABEL": "View",
+        "RELOAD": "Reload",
+        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
+        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "ZOOM_IN": "Zoom In",
+        "ZOOM_OUT": "Zoom Out",
+        "ZOOM_RESET": "Reset Zoom"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
+      }
+    },
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
+    "PROVIDERS": {
+      "UNKNOWN": "Unknown"
+    },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "애드온 탐색 완료",
       "ADDON_SCAN_STARTED": "애드온 탐색 시작",
@@ -19,6 +58,8 @@
       "GROUP_LIGHT": "라이트모드",
       "HORDE": "호드"
     },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
       "INSTALL_MESSAGE": "업데이트를 설치하기 위해 프로그램을 재시작할까요?",
@@ -45,6 +86,7 @@
       "BACKINGUP": "백업 중",
       "COMPLETE": "설치됨",
       "DOWNLOADING": "다운로드 중",
+      "ERROR": "Error",
       "INSTALLING": "설치 중",
       "PENDING": "일시정지됨",
       "UNINSTALLING": "삭제 중",
@@ -89,7 +131,11 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "{addonName} 애드온 제공자를 {providerName}로 변경하는 과정에서 오류가 발생했습니다"
+      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
+      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "CHANGE_PROVIDER_ERROR": "{addonName} 애드온 제공자를 {providerName}로 변경하는 과정에서 오류가 발생했습니다",
+      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "불러오는 중..."
@@ -100,8 +146,16 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "제작자: {authorName}",
+      "CHANGELOG_TAB": "Changelog",
+      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
+      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
       "DEPENDENCY_TEXT": "이 애드온은 {dependencyCount}개의 다른 애드온을 참조합니다.",
+      "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Support this author",
+      "MISSING_DEPENDENCIES": "Missing dependencies",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "브라우저에서 열기",
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "
     },
@@ -120,10 +174,14 @@
       "DESCRIPTION": "URL 주소로 직접 설치를 하려면 아래 입력란에 애드온 URL을 붙여넣으세요.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
+        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
         "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wowup-support 채널에서 도움을 요청해보세요.",
         "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "애드온을 찾을 수 없습니다. 입력하신 주소가 올바른 애드온 페이지를 가리키고 있는지 확인해주세요.\n\nGithub에서 설치할 때는, 애드온을 zip 파일로 묶은 릴리즈 태그가 존재하는 저장소인지 확인하세요.",
+        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
+        "NO_SEARCH_RESULTS": "No search results were found.",
         "TITLE": "애드온 설치 실패"
       },
       "IMPORT_BUTTON": "가져오기",
@@ -141,6 +199,7 @@
   },
   "PAGES": {
     "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "변경 이력",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "웹사이트로 이동"
@@ -162,6 +221,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "프로그램 소개",
       "GET_ADDONS_TAB_TITLE": "애드온 찾기",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "내 애드온",
       "OPTIONS_TAB_TITLE": "설정"
     },
@@ -179,6 +239,7 @@
         "SHOW_FOLDER": "디렉토리 보기",
         "STABLE_ADDON_CHANNEL": "안정"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "{addonName} 애드온의 제공자를 {providerName}로 변경하시겠습니까? 애드온이 먼저 삭제된 후, 새 제공자의 버전으로 다시 설치됩니다",
         "TITLE": "애드온 제공자를 변경할까요?"
@@ -189,7 +250,15 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "컬럼 보기"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "필터",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Support this author",
+        "GENERIC": "Support this author on {platform}",
+        "GITHUB": "Support this author on GitHub",
+        "PATREON": "Support this author on Patreon",
+        "PAYPAL": "Support this author on PayPal"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "복수의 제공자가 존재합니다",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",
@@ -199,6 +268,7 @@
         "VIEW_GITHUB": "GitHub에서 코드 확인",
         "VIEW_GUIDE": "WowUp 가이드 문서 보기"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "디렉토리 재탐색",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "설치된 애드온 목록 확인을 위해 클라이언트 디렉토리를 탐색합니다",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "설치된 애드온을 찾기 위해 재탐색을 할 경우, 애드온 정보가 초기화될 수 있습니다. 특정 애드온이 인식되지 않았거나 버전 정보가 올바르게 표시되지 않을 경우에만 사용하세요. 탐색 작업 중 애드온이 삭제되지는 않으며, WowUp의 정보와 매칭작업만 이루어집니다.\n\n탐색 작업에 시간이 소요될 수 있습니다.",
@@ -239,6 +309,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "현재 언어",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "애드온 자동업데이트 등과 같은 다양한 시스템 알림 팝업 활성화 여부",
@@ -246,6 +324,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "창을 닫으면 메뉴바로 최소화",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "창을 닫으면 시스템 트레이로 최소화",
         "MINIMIZE_ON_CLOSE_LABEL": "종료 시 최소화",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "기본 언어를 바꾸려면 애플리케이션을 다시 시작해야 합니다.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "새 기본 언어 설정",
         "SET_LANGUAGE_DESCRIPTION": "언어를 선택하세요.",
@@ -275,6 +355,7 @@
         "TITLE": "디버그"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "애플리케이션",
         "CLIENTS": "클라이언트",
         "DEBUG": "디버그"

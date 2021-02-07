@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import * as log from "electron-log";
-import { autoUpdater } from "electron-updater";
+import { autoUpdater, UpdateCheckResult } from "electron-updater";
 import {
   APP_UPDATE_AVAILABLE,
   APP_UPDATE_CHECK_END,
@@ -13,7 +13,7 @@ import {
   APP_UPDATE_START_DOWNLOAD,
 } from "./src/common/constants";
 
-export const checkForUpdates = async function checkForUpdates(win: BrowserWindow) {
+export const checkForUpdates = async (win: BrowserWindow): Promise<UpdateCheckResult> => {
   let result = null;
 
   try {
@@ -27,7 +27,7 @@ export const checkForUpdates = async function checkForUpdates(win: BrowserWindow
 };
 
 // Example: https://github.com/electron-userland/electron-builder/blob/docs/encapsulated%20manual%20update%20via%20menu.js
-export function initializeAppUpdater(win: BrowserWindow) {
+export function initializeAppUpdater(win: BrowserWindow): void {
   autoUpdater.logger = log;
   autoUpdater.autoDownload = false;
   // autoUpdater.allowPrerelease = true;
@@ -48,12 +48,16 @@ export function initializeAppUpdater(win: BrowserWindow) {
   });
 
   autoUpdater.on("error", (e) => {
+    if (e.message.indexOf("dev-app-update.yml") !== -1) {
+      return;
+    }
+
     log.error(APP_UPDATE_ERROR, e);
     win.webContents.send(APP_UPDATE_ERROR, e);
   });
 }
 
-export function initializeAppUpdateIpcHandlers(win: BrowserWindow) {
+export function initializeAppUpdateIpcHandlers(win: BrowserWindow): void {
   ipcMain.handle(APP_UPDATE_START_DOWNLOAD, async () => {
     log.info(APP_UPDATE_START_DOWNLOAD);
     win.webContents.send(APP_UPDATE_START_DOWNLOAD);
@@ -62,10 +66,10 @@ export function initializeAppUpdateIpcHandlers(win: BrowserWindow) {
 
   // Used this solution for Mac support
   // https://github.com/electron-userland/electron-builder/issues/1604#issuecomment-372091881
-  ipcMain.handle(APP_UPDATE_INSTALL, async () => {
+  ipcMain.handle(APP_UPDATE_INSTALL, () => {
     log.info(APP_UPDATE_INSTALL);
     app.removeAllListeners("window-all-closed");
-    var browserWindows = BrowserWindow.getAllWindows();
+    const browserWindows = BrowserWindow.getAllWindows();
     browserWindows.forEach(function (browserWindow) {
       browserWindow.removeAllListeners("close");
     });

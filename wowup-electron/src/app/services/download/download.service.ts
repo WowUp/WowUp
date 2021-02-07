@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { v4 as uuidv4 } from "uuid";
-import { DOWNLOAD_FILE_CHANNEL } from "../../../common/constants";
+import { IPC_DOWNLOAD_FILE_CHANNEL } from "../../../common/constants";
 import { DownloadRequest } from "../../../common/models/download-request";
 import { DownloadStatus } from "../../../common/models/download-status";
 import { DownloadStatusType } from "../../../common/models/download-status-type";
@@ -28,7 +28,7 @@ export class DownloadService {
 
       const eventHandler = (_evt: any, arg: DownloadStatus) => {
         if (arg.type !== DownloadStatusType.Progress) {
-          this._electronService.ipcRenderer.off(request.responseKey, eventHandler);
+          this._electronService.off(request.responseKey, eventHandler);
         }
 
         switch (arg.type) {
@@ -46,8 +46,8 @@ export class DownloadService {
         }
       };
 
-      this._electronService.ipcRenderer.on(request.responseKey, eventHandler);
-      this._electronService.ipcRenderer.send(DOWNLOAD_FILE_CHANNEL, request);
+      this._electronService.on(request.responseKey, eventHandler);
+      this._electronService.send(IPC_DOWNLOAD_FILE_CHANNEL, request);
     });
   }
 }

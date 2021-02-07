@@ -1,5 +1,26 @@
 @import "../../../variables.scss";
+.title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: initial;
+}
+.icon {
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
 
+  div {
+    font-size: 2em;
+    font-weight: 400;
+    text-align: center;
+    line-height: 60px;
+  }
+  img {
+    height: 100%;
+  }
+}
 .image-row {
   margin-bottom: 16px;
   border-radius: 4px;
@@ -11,9 +32,9 @@
   }
 }
 .addon-detail-view {
-  width: 35vw;
+  width: 60vw;
   min-width: 380px;
-  max-width: 600px;
+  max-width: 80vw;
 
   .icon-link {
     width: 24px;
@@ -21,13 +42,41 @@
   }
 
   .addon-dependencies {
-    background-color: $dark-4;
-    color: $artifact;
+    // background-color: $dark-4;
+    // color: $artifact;
     padding: 0.5em;
     margin-bottom: 0.5em;
   }
 
   .sub-text {
     color: $white-2;
+  }
+}
+
+.id-link {
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.funding-link-container {
+  h3 {
+  }
+  .addon-funding {
+    background-color: $dark-4;
+    border-radius: 4px;
+    padding: 0.5em;
+    a {
+      margin-right: 1em;
+    }
+    .funding-icon {
+      width: 28px;
+      height: 28px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

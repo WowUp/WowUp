@@ -4,10 +4,8 @@ import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 import * as _ from "lodash";
-import { map } from "lodash";
 import * as path from "path";
-import { from, Subscription } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { Subscription } from "rxjs";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { ElectronService } from "../../services";
@@ -109,7 +107,9 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   async onSelectClientPath() {
     const selectedPath = await this.selectWowClientPath(this.clientType);
     if (selectedPath) {
+      console.debug("selectedPath", selectedPath);
       this.clientLocation = selectedPath;
+      this._cdRef.detectChanges();
     }
   }
 
@@ -124,7 +124,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   }
 
   private async selectWowClientPath(clientType: WowClientType): Promise<string> {
-    const dialogResult = await this._electronService.remote.dialog.showOpenDialog({
+    const dialogResult = await this._electronService.showOpenDialog({
       properties: ["openDirectory"],
     });
 
@@ -142,7 +142,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
     const clientRelativePath = this._warcraftService.getClientRelativePath(clientType, selectedPath);
 
-    if (this._warcraftService.setWowFolderPath(clientType, clientRelativePath)) {
+    const didSetWowPath = await this._warcraftService.setWowFolderPath(clientType, clientRelativePath);
+    if (didSetWowPath) {
       return clientRelativePath;
     }
 

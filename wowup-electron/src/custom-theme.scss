@@ -18,9 +18,9 @@ $md-wowup-pallette: (
   700: #303f9f,
   800: #283593,
   900: #1a237e,
-  A100: #8c9eff,
-  A200: #536dfe,
-  A400: #3d5afe,
+  A100: $wowup-purple-1,
+  A200: $wowup-control,
+  A400: $wowup-purple-3,
   A700: #6874bb,
   contrast: (
     50: #000000,
@@ -119,20 +119,16 @@ $wowup-light-theme: mat-light-theme(
   background-color: $dark-4;
 }
 
+.hover-bg-secondary-5:hover {
+  background-color: $dark-5;
+}
+
 .hover-primary-2:hover {
   background-color: $purple-2;
 }
 
-.text-1 {
-  color: $white-1;
-}
-
-.text-2 {
-  color: $white-2;
-}
-
-.text-3 {
-  color: $white-3;
+.hover-primary-3:hover {
+  background-color: $purple-3;
 }
 
 ::-webkit-scrollbar-track {
@@ -147,6 +143,17 @@ $wowup-light-theme: mat-light-theme(
 
 ::-webkit-scrollbar-corner {
   background: $dark-3;
+}
+
+.addon-summary,
+.addon-changelog {
+  a {
+    color: $wowup-control;
+
+    &:visited {
+      color: $wowup-control;
+    }
+  }
 }
 
 .mat-input-element {
@@ -247,6 +254,10 @@ $horde-theme-light: mat-light-theme(
     background-color: $horde-red-2 !important;
   }
 
+  .hover-primary-3:hover {
+    background-color: $purple-3 !important;
+  }
+
   .mat-form-field-ripple {
     background-color: $horde-red-2 !important;
   }
@@ -263,6 +274,17 @@ $horde-theme-light: mat-light-theme(
 
   ::-webkit-scrollbar-corner {
     background: $dark-3;
+  }
+
+  .addon-summary,
+  .addon-changelog {
+    a {
+      color: $horde-control;
+
+      &:visited {
+        color: $horde-control;
+      }
+    }
   }
 }
 
@@ -344,6 +366,10 @@ $alliance-theme-light: mat-light-theme(
   }
 
   .hover-primary-2:hover {
+    background-color: $alliance-blue-2 !important;
+  }
+
+  .hover-primary-3:hover {
     background-color: $alliance-blue-3 !important;
   }
 
@@ -363,6 +389,17 @@ $alliance-theme-light: mat-light-theme(
 
   ::-webkit-scrollbar-corner {
     background: $dark-3;
+  }
+
+  .addon-summary,
+  .addon-changelog {
+    a {
+      color: $alliance-control;
+
+      &:visited {
+        color: $alliance-control;
+      }
+    }
   }
 }
 
@@ -389,17 +426,42 @@ $alliance-theme-light: mat-light-theme(
   .hover-bg-secondary:hover {
     background-color: $dark-1 !important;
   }
-  
+
   .hover-bg-secondary-2:hover {
     background-color: $dark-2 !important;
   }
-  
+
   .hover-bg-secondary-3:hover {
     background-color: $dark-3 !important;
   }
-  
+
   .hover-bg-secondary-4:hover {
     background-color: $dark-4 !important;
+  }
+
+  .hover-bg-secondary-5:hover {
+    background-color: $dark-5 !important;
+  }
+
+  .hover-border-secondary-2:hover {
+    box-sizing: border-box;
+    border: 5px solid white;
+  }
+
+  .text-1 {
+    color: $white-1 !important;
+  }
+
+  .text-2 {
+    color: $white-2;
+  }
+
+  .text-3 {
+    color: $white-3;
+  }
+
+  .wowup-snackbar {
+    background-color: $dark-4;
   }
 }
 
@@ -437,6 +499,10 @@ $alliance-theme-light: mat-light-theme(
     background-color: $lt-secondary-4 !important;
   }
 
+  .hover-bg-secondary-5:hover {
+    background-color: $lt-secondary-5 !important;
+  }
+
   .text-1 {
     color: $lt-text-1 !important;
   }
@@ -472,4 +538,20 @@ $alliance-theme-light: mat-light-theme(
   .mat-form-field.mat-focused .mat-form-field-label {
     color: $lt-text-2 !important;
   }
+
+  .wowup-snackbar {
+    background-color: $white-1 !important;
+  }
+}
+
+.text-light-1 {
+  color: $white-1;
+}
+
+.text-light-2 {
+  color: $white-2;
+}
+
+.text-light-3 {
+  color: $white-3;
 }

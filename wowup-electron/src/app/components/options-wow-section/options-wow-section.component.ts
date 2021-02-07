@@ -33,7 +33,7 @@ export class OptionsWowSectionComponent implements OnInit {
   }
 
   public onReScan = () => {
-    this._warcraftService.scanProducts();
+    this._warcraftService.scanProducts().catch((e) => console.error(e));
   };
 
   public onWowUpChannelChange(evt: MatSelectChange) {

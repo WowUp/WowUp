@@ -1,7 +1,46 @@
 {
   "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "COPY": "Copy",
+        "CUT": "Cut",
+        "LABEL": "Edit",
+        "PASTE": "Paste",
+        "REDO": "Redo",
+        "SELECT_ALL": "SelectAll",
+        "UNDO": "Undo"
+      },
+      "QUIT": "Quit",
+      "VIEW": {
+        "FORCE_RELOAD": "Force Reload",
+        "LABEL": "View",
+        "RELOAD": "Reload",
+        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
+        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "ZOOM_IN": "Zoom In",
+        "ZOOM_OUT": "Zoom Out",
+        "ZOOM_RESET": "Reset Zoom"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
+      }
+    },
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{utvidelse} other{utvidelse}} ble automatisk oppdatert.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatiske Oppdateringer",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
+    "PROVIDERS": {
+      "UNKNOWN": "Unknown"
+    },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Addon scan completed...",
       "ADDON_SCAN_STARTED": "Addon scan started...",
@@ -19,6 +58,8 @@
       "GROUP_LIGHT": "Light",
       "HORDE": "Horde"
     },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
       "INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
@@ -45,6 +86,7 @@
       "BACKINGUP": "Sikkerhetskopierer",
       "COMPLETE": "Installert",
       "DOWNLOADING": "Laster Ned",
+      "ERROR": "Error",
       "INSTALLING": "Installerer",
       "PENDING": "Venter",
       "UNINSTALLING": "Avinstallerer",
@@ -89,7 +131,11 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}"
+      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
+      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}",
+      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laster..."
@@ -100,8 +146,16 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "Av {authorName}",
+      "CHANGELOG_TAB": "Changelog",
+      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
+      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
       "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, one{dependency} other{dependencies}}",
+      "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Support this author",
+      "MISSING_DEPENDENCIES": "Missing dependencies",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser",
       "VIEW_ON_PROVIDER_PREFIX": "View on"
     },
@@ -120,10 +174,14 @@
       "DESCRIPTION": "Hvis du vil installere en utvidelse direkte fra en URL kan du lime den inn i feltet nedenfor.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{download} other{downloads}} on {provider}",
       "ERROR": {
+        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "Cannot connect to API, please wait a bit and try again.",
         "INSTALL_FAILED": "Something went wrong when trying to install the addon, please try again.\n\nIf this message keeps showing up, you can get help on Discord in the #wowup-support channel.",
         "INVALID_URL": "The given value is not a valid URL. Examples of valid addon URLs are:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "No addon was found, make sure your URL is pointing to the correct page.\n\nWhen installing from github, please make sure the repository has a release tag with a zip archive containing the addon.",
+        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
+        "NO_SEARCH_RESULTS": "No search results were found.",
         "TITLE": "Addon Installation Failed"
       },
       "IMPORT_BUTTON": "Importer",
@@ -141,6 +199,7 @@
   },
   "PAGES": {
     "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "Endringslogg",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Besøk nettsiden!"
@@ -162,6 +221,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Om",
       "GET_ADDONS_TAB_TITLE": "Få Utvidelser",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "Mine Utvidelser",
       "OPTIONS_TAB_TITLE": "Alternativer"
     },
@@ -179,6 +239,7 @@
         "SHOW_FOLDER": "Vis Mappe",
         "STABLE_ADDON_CHANNEL": "Stable"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Do you want to change the addon provider for {addonName} to {providerName}? This operation will uninstall your existing addon and replace it with a copy from the new provider.",
         "TITLE": "Change Addon Provider?"
@@ -189,7 +250,15 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Vis Kolonner"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "Filter",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Support this author",
+        "GENERIC": "Support this author on {platform}",
+        "GITHUB": "Support this author on GitHub",
+        "PATREON": "Support this author on Patreon",
+        "PAYPAL": "Support this author on PayPal"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "This addon has multiple providers",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{utvidelse} other{utvidelser}}",
@@ -199,6 +268,7 @@
         "VIEW_GITHUB": "Check out the code on GitHub",
         "VIEW_GUIDE": "Check out our guide to see what WowUp can do"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "Skann Mapper",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Skann klientens mapper etter installerte utvidelser",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Ved å skanne på nytt kan utvidelsesinformasjonen bli resatt imens vi prøver å finne ut av hva du har installert. Dette kan ta et øyeblikk.",
@@ -239,6 +309,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
+          "FIELD_LABEL": "Enabled Addon Providers",
+          "INPUT_LABEL": "Providers"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
@@ -246,6 +324,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Når WowUp-vinduet lukkes, minimer til oppgavelinjens varselområde.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimer ved lukking",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Scale",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
         "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",
@@ -275,6 +355,7 @@
         "TITLE": "Debug"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"

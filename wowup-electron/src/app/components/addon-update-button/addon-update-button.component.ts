@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angu
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
-import { AddonViewModel } from "../../business-objects/my-addon-list-item";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonService } from "../../services/addons/addon.service";
@@ -44,28 +44,29 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
   }
 
-  public getActionLabel() {
+  public getActionLabel(): string {
     return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${this.listItem?.addon.providerName}|${
       this.listItem?.addon.externalId
     }|${this.listItem?.addon.name}`;
   }
 
-  public getInstallProgress() {
+  public getInstallProgress(): number {
     return this.listItem?.installProgress || 0;
   }
 
-  public getIsButtonActive() {
+  public getIsButtonActive(): boolean {
     return (
       this.listItem?.installState !== AddonInstallState.Unknown &&
-      this.listItem?.installState !== AddonInstallState.Complete
+      this.listItem?.installState !== AddonInstallState.Complete &&
+      this.listItem?.installState !== AddonInstallState.Error
     );
   }
 
-  public getIsButtonDisabled() {
-    return this.listItem?.isUpToDate || this.listItem?.installState < AddonInstallState.Unknown;
+  public getIsButtonDisabled(): boolean {
+    return this.listItem?.isUpToDate() || this.listItem?.installState < AddonInstallState.Unknown;
   }
 
-  public getButtonText() {
+  public getButtonText(): string {
     if (this.listItem?.installState !== AddonInstallState.Unknown) {
       return this.getInstallStateText(this.listItem?.installState);
     }
@@ -73,20 +74,24 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     return this.getStatusText();
   }
 
-  public onInstallUpdateClick() {
-    if (this.listItem.needsUpdate) {
-      this._addonService.updateAddon(this.listItem.addon.id);
-    } else {
-      this._addonService.installAddon(this.listItem.addon.id);
+  public async onInstallUpdateClick(): Promise<void> {
+    try {
+      if (this.listItem.needsUpdate()) {
+        await this._addonService.updateAddon(this.listItem.addon.id);
+      } else {
+        await this._addonService.installAddon(this.listItem.addon.id);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
-  public getStatusText() {
-    if (this.listItem?.needsInstall) {
+  public getStatusText(): string {
+    if (this.listItem?.needsInstall()) {
       return this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_INSTALL_BUTTON");
     }
 
-    if (this.listItem?.needsUpdate) {
+    if (this.listItem?.needsUpdate()) {
       return this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_UPDATE_BUTTON");
     }
 
@@ -109,6 +114,8 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
         return this._translateService.instant("COMMON.ADDON_STATUS.INSTALLING");
       case AddonInstallState.Pending:
         return this._translateService.instant("COMMON.ADDON_STATUS.PENDING");
+      case AddonInstallState.Error:
+        return this._translateService.instant("COMMON.ADDON_STATUS.ERROR");
       default:
         return "";
     }

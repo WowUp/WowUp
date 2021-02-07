@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { remote } from "electron";
+import { from } from "rxjs";
 import * as ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
 import { ElectronService } from "../../services";
@@ -14,14 +14,12 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 export class AboutComponent implements OnInit {
   @Input("tabIndex") tabIndex: number;
 
-  public version = "";
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;
+  public versionNumber = from(this.electronService.getVersionNumber());
 
   constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 
-  ngOnInit(): void {
-    this.version = remote.app.getVersion();
-  }
+  ngOnInit(): void {}
 
   formatChanges(changeLog: ChangeLog): string {
     return changeLog.changes.join("\n");

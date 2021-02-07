@@ -96,6 +96,8 @@ export class AnalyticsService {
     this._insights = new ApplicationInsights({
       config: {
         instrumentationKey: AppConfig.azure.applicationInsightsKey,
+        disableAjaxTracking: true,
+        disableFetchTracking: true,
       },
     });
     this._insights.loadAppInsights();

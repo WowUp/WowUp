@@ -51,8 +51,28 @@ img {
   -webkit-app-region: no-drag;
 }
 
+.rounded {
+  border-radius: 4px;
+}
+
 .p-0 {
   padding: 0 !important;
+}
+
+.p-1 {
+  padding: 0.25em !important;
+}
+
+.pl-1 {
+  padding-left: 0.25em;
+}
+
+.pr-1 {
+  padding-right: 0.25em;
+}
+
+.px-1 {
+  padding: 0 0.25em;
 }
 
 .m-0 {
@@ -83,8 +103,34 @@ img {
   margin-left: 1em !important;
 }
 
+.mt-1 {
+  margin-top: 0.25em !important;
+}
+
+.mt-2 {
+  margin-top: 0.5em !important;
+}
+
+.mt-3 {
+  margin-top: 1em !important;
+}
+
+.mb-1 {
+  margin-bottom: 0.25em !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .no-reg-drag {
   -webkit-app-region: no-drag;
+}
+
+.no-link {
+  pointer-events: none;
+  text-decoration: none;
+  color: inherit !important;
 }
 
 .pointer {
@@ -92,6 +138,16 @@ img {
 
   &:hover {
     cursor: pointer !important;
+  }
+}
+
+.text-light {
+  color: $white-1;
+}
+
+.text-light-hover {
+  &:hover {
+    color: $white-1 !important;
   }
 }
 
@@ -247,6 +303,9 @@ img {
   &.justify-content-end {
     justify-content: flex-end;
   }
+  &.justify-content-between {
+    justify-content: space-between;
+  }
 }
 
 .text-right {
@@ -254,6 +313,22 @@ img {
 }
 .text-left {
   text-align: left;
+}
+
+.addon-summary {
+  img {
+    max-width: 100%;
+  }
+}
+
+.addon-summary,
+.addon-changelog {
+  strong,
+  b {
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+  }
 }
 
 .addon-table {
@@ -313,7 +388,7 @@ img {
     }
 
     .addon-update-available {
-      color: $artifact;
+      display: inline-block;
     }
   }
 }
@@ -401,13 +476,12 @@ img {
   }
 }
 
-snack-bar-container {
-  &.center-text {
-    span {
-      margin: auto;
-      text-align: center;
-    }
-  }
+.snackbar-error {
+  border: 2px solid red;
+}
+
+.snackbar-success {
+  border: 2px solid green;
 }
 
 // MATERIAL OVERRIDES
@@ -445,4 +519,21 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
 }

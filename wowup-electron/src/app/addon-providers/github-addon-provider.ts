@@ -1,17 +1,27 @@
-import { HttpClient } from "@angular/common/http";
 import * as _ from "lodash";
-import { forkJoin, Observable } from "rxjs";
+import { forkJoin, from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { Addon } from "../entities/addon";
+
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+
+import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
+import {
+  AssetMissingError,
+  ClassicAssetMissingError,
+  GitHubError,
+  GitHubFetchReleasesError,
+  GitHubFetchRepositoryError,
+  GitHubLimitError,
+  NoReleaseFoundError,
+} from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 
 interface GitHubRepoParts {
   repository: string;
@@ -20,33 +30,49 @@ interface GitHubRepoParts {
 
 const API_URL = "https://api.github.com/repos";
 const RELEASE_CONTENT_TYPES = ["application/x-zip-compressed", "application/zip"];
+const HEADER_RATE_LIMIT_MAX = "x-ratelimit-limit";
+const HEADER_RATE_LIMIT_REMAINING = "x-ratelimit-remaining";
+const HEADER_RATE_LIMIT_RESET = "x-ratelimit-reset";
+const HEADER_RATE_LIMIT_USED = "x-ratelimit-used";
 
-export class GitHubAddonProvider implements AddonProvider {
-  public readonly name = "GitHub";
+export class GitHubAddonProvider extends AddonProvider {
+  public readonly name = ADDON_PROVIDER_GITHUB;
+  public readonly forceIgnore = false;
+  public readonly allowReinstall = true;
+  public readonly allowChannelChange = false;
+  public readonly allowEdit = false;
+  public enabled = true;
 
-  constructor(private _httpClient: HttpClient) {}
+  constructor(private _httpClient: HttpClient) {
+    super();
+  }
 
-  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<AddonSearchResult[]> {
-    var searchResults: AddonSearchResult[] = [];
+  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+    const searchResults: AddonSearchResult[] = [];
+    const errors: Error[] = [];
 
-    for (let addonId of addonIds) {
-      var result = await this.getById(addonId, clientType).toPromise();
-      if (result == null) {
-        continue;
+    for (const addonId of addonIds) {
+      try {
+        const result = await this.getByIdAsync(addonId, clientType);
+        if (result == null) {
+          continue;
+        }
+
+        searchResults.push(result);
+      } catch (e) {
+        // If we're at the limit, just give up the loop
+        if (e instanceof GitHubLimitError) {
+          throw e;
+        }
+
+        errors.push(e);
       }
-
-      searchResults.push(result);
     }
 
-    return searchResults;
-  }
-
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
+    return {
+      errors,
+      searchResults,
+    };
   }
 
   public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
@@ -55,34 +81,44 @@ export class GitHubAddonProvider implements AddonProvider {
       throw new Error(`Invalid URL: ${addonUri}`);
     }
 
-    const results = await this.getReleases(repoPath).toPromise();
-    const latestRelease = this.getLatestRelease(results);
-    if (!latestRelease) {
-      console.log("latestRelease results", results);
-      throw new Error(`No release found in ${addonUri}`);
+    try {
+      const results = await this.getReleases(repoPath);
+      const latestRelease = this.getLatestRelease(results);
+      if (!latestRelease) {
+        console.log("latestRelease results", results);
+        throw new NoReleaseFoundError(addonUri.toString());
+      }
+
+      const asset = this.getValidAsset(latestRelease, clientType);
+      console.log("latestRelease", latestRelease);
+      if (asset == null) {
+        if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(clientType)) {
+          throw new ClassicAssetMissingError(addonUri.toString());
+        } else {
+          throw new AssetMissingError(addonUri.toString());
+        }
+        // throw new Error(`No release assets found in ${addonUri}`);
+      }
+
+      const repository = await this.getRepository(repoPath);
+      const author = repository.owner.login;
+      const authorImageUrl = repository.owner.avatar_url;
+
+      const potentialAddon: AddonSearchResult = {
+        author: author,
+        downloadCount: asset.download_count,
+        externalId: this.createExternalId(addonUri),
+        externalUrl: repository.html_url,
+        name: repository.name,
+        providerName: this.name,
+        thumbnailUrl: authorImageUrl,
+      };
+
+      return potentialAddon;
+    } catch (e) {
+      console.error("searchByUrl failed", e);
+      throw e;
     }
-
-    const asset = this.getValidAsset(latestRelease, clientType);
-    console.log("latestRelease", latestRelease);
-    if (asset == null) {
-      throw new Error(`No release assets found in ${addonUri}`);
-    }
-
-    var repository = await this.getRepository(repoPath).toPromise();
-    var author = repository.owner.login;
-    var authorImageUrl = repository.owner.avatar_url;
-
-    var potentialAddon: AddonSearchResult = {
-      author: author,
-      downloadCount: asset.download_count,
-      externalId: this.createExternalId(addonUri),
-      externalUrl: repository.html_url,
-      name: repository.name,
-      providerName: this.name,
-      thumbnailUrl: authorImageUrl,
-    };
-
-    return potentialAddon;
   }
 
   private createExternalId(addonUri: URL) {
@@ -100,48 +136,56 @@ export class GitHubAddonProvider implements AddonProvider {
   }
 
   public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    return forkJoin([this.getReleases(addonId), this.getRepository(addonId)]).pipe(
-      map(([releases, repository]) => {
-        if (!releases?.length) {
-          return undefined;
-        }
+    return from(this.getByIdAsync(addonId, clientType));
+  }
 
-        const latestRelease = this.getLatestRelease(releases);
-        if (!latestRelease) {
-          return undefined;
-        }
+  private async getByIdAsync(addonId: string, clientType: WowClientType) {
+    const repository = await this.getRepository(addonId);
+    const releases = await this.getReleases(addonId);
 
-        const asset = this.getValidAsset(latestRelease, clientType);
-        if (!asset) {
-          return undefined;
-        }
+    if (!releases?.length) {
+      return undefined;
+    }
 
-        const author = repository.owner.login;
-        const authorImageUrl = repository.owner.avatar_url;
-        const addonName = this.getAddonName(addonId);
+    const latestRelease = this.getLatestRelease(releases);
+    if (!latestRelease) {
+      return undefined;
+    }
 
-        var searchResultFile: AddonSearchResultFile = {
-          channelType: AddonChannelType.Stable,
-          downloadUrl: asset.browser_download_url,
-          folders: [addonName],
-          gameVersion: "",
-          version: asset.name,
-          releaseDate: new Date(asset.created_at),
-        };
+    const asset = this.getValidAsset(latestRelease, clientType);
+    if (!asset) {
+      return undefined;
+    }
 
-        var searchResult: AddonSearchResult = {
-          author: author,
-          externalId: addonId,
-          externalUrl: repository.html_url,
-          files: [searchResultFile],
-          name: addonName,
-          providerName: this.name,
-          thumbnailUrl: authorImageUrl,
-        };
+    const author = repository.owner.login;
+    const authorImageUrl = repository.owner.avatar_url;
+    const addonName = this.getAddonName(addonId);
 
-        return searchResult;
-      })
-    );
+    console.debug("latestRelease", latestRelease);
+    console.debug("asset", asset);
+
+    const searchResultFile: AddonSearchResultFile = {
+      channelType: AddonChannelType.Stable,
+      downloadUrl: asset.browser_download_url,
+      folders: [addonName],
+      gameVersion: "",
+      version: asset.name,
+      releaseDate: new Date(asset.created_at),
+      changelog: latestRelease.body,
+    };
+
+    const searchResult: AddonSearchResult = {
+      author: author,
+      externalId: addonId,
+      externalUrl: repository.html_url,
+      files: [searchResultFile],
+      name: addonName,
+      providerName: this.name,
+      thumbnailUrl: authorImageUrl,
+      summary: repository.description,
+    };
+
+    return searchResult;
   }
 
   public isValidAddonUri(addonUri: URL): boolean {
@@ -151,14 +195,6 @@ export class GitHubAddonProvider implements AddonProvider {
   public isValidAddonId(addonId: string): boolean {
     return addonId.indexOf("/") !== -1;
   }
-
-  public onPostInstall(addon: Addon): void {}
-
-  public async scan(
-    clientType: WowClientType,
-    addonChannelType: AddonChannelType,
-    addonFolders: AddonFolder[]
-  ): Promise<void> {}
 
   private getLatestRelease(releases: GitHubRelease[]): GitHubRelease {
     let sortedReleases = _.filter(releases, (r) => !r.draft);
@@ -208,24 +244,70 @@ export class GitHubAddonProvider implements AddonProvider {
     return addonId.split("/").filter((str) => !!str)[1];
   }
 
-  private getReleases(repositoryPath: string): Observable<GitHubRelease[]> {
+  private async getReleases(repositoryPath: string): Promise<GitHubRelease[]> {
     const parsed = this.parseRepoPath(repositoryPath);
-    return this.getReleasesByParts(parsed);
+    try {
+      return await this.getReleasesByParts(parsed);
+    } catch (e) {
+      console.error(`Failed to get GitHub releases`, e);
+      // If some other internal handler already handled this, use that error
+      if (e instanceof GitHubError) {
+        throw e;
+      }
+
+      throw new GitHubFetchReleasesError(repositoryPath, e);
+    }
   }
 
-  private getReleasesByParts(repoParts: GitHubRepoParts): Observable<GitHubRelease[]> {
+  private getReleasesByParts(repoParts: GitHubRepoParts): Promise<GitHubRelease[]> {
     const url = `${API_URL}/${repoParts.owner}/${repoParts.repository}/releases`;
-    return this._httpClient.get<GitHubRelease[]>(url.toString());
+    return this.getWithRateLimit<GitHubRelease[]>(url);
   }
 
-  private getRepository(repositoryPath: string): Observable<GitHubRepository> {
+  private async getRepository(repositoryPath: string): Promise<GitHubRepository> {
     const parsed = this.parseRepoPath(repositoryPath);
-    return this.getRepositoryByParts(parsed);
+    try {
+      return await this.getRepositoryByParts(parsed);
+    } catch (e) {
+      console.error(`Failed to get GitHub repository`, e);
+      // If some other internal handler already handled this, use that error
+      if (e instanceof GitHubError) {
+        throw e;
+      }
+
+      throw new GitHubFetchRepositoryError(repositoryPath, e);
+    }
   }
 
-  private getRepositoryByParts(repoParts: GitHubRepoParts): Observable<GitHubRepository> {
+  private getRepositoryByParts(repoParts: GitHubRepoParts): Promise<GitHubRepository> {
     const url = `${API_URL}/${repoParts.owner}/${repoParts.repository}`;
-    return this._httpClient.get<GitHubRepository>(url.toString());
+    return this.getWithRateLimit<GitHubRepository>(url);
+  }
+
+  private handleRateLimitError(response: HttpErrorResponse) {
+    if (response.status === 403) {
+      const rateLimitMax = this.getIntHeader(response.headers, HEADER_RATE_LIMIT_MAX);
+      const rateLimitUsed = this.getIntHeader(response.headers, HEADER_RATE_LIMIT_USED);
+      const rateLimitRemaining = this.getIntHeader(response.headers, HEADER_RATE_LIMIT_REMAINING);
+      const rateLimitReset = this.getIntHeader(response.headers, HEADER_RATE_LIMIT_RESET);
+
+      if (rateLimitRemaining === 0) {
+        throw new GitHubLimitError(rateLimitMax, rateLimitUsed, rateLimitRemaining, rateLimitReset);
+      }
+    }
+  }
+
+  private getIntHeader(headers: HttpHeaders, key: string) {
+    return parseInt(headers.get(key), 10);
+  }
+
+  private async getWithRateLimit<T>(url: URL | string, defaultValue = undefined): Promise<T> {
+    try {
+      return await this._httpClient.get<T>(url.toString()).toPromise();
+    } catch (e) {
+      this.handleRateLimitError(e);
+      throw e;
+    }
   }
 
   private parseRepoPath(repositoryPath: string): GitHubRepoParts {

@@ -1,7 +1,46 @@
 {
   "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "COPY": "Copier",
+        "CUT": "Couper",
+        "LABEL": "Éditer",
+        "PASTE": "Coller",
+        "REDO": "Refaire",
+        "SELECT_ALL": "Tout sélectionner",
+        "UNDO": "Annuler"
+      },
+      "QUIT": "Quitter",
+      "VIEW": {
+        "FORCE_RELOAD": "Forcer le rechargement",
+        "LABEL": "Voir",
+        "RELOAD": "Recharger",
+        "TOGGLE_DEV_TOOLS": "Afficher les outils de développement",
+        "TOGGLE_FULL_SCREEN": "Afficher en plein écran",
+        "ZOOM_IN": "Zoomer",
+        "ZOOM_OUT": "Dézoomer",
+        "ZOOM_RESET": "Réinitialiser le zoom"
+      },
+      "WINDOW": {
+        "CLOSE": "Fermer",
+        "LABEL": "Fenêtre"
+      }
+    },
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Mise à jour automatique de \r\n{addonNames}",
     "AUTO_UPDATE_NOTIFICATION_BODY": "Mise à jour automatique de {count} {count, plural, =1{addon} other{addons}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Mises à jour Auto",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Quitter le mode plein écran",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Appuyez sur ^⌘F pour quitter le mode plein écran",
+      "WINDOWS": "Appuyez sur F11 pour quitter le mode plein écran"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
+    "PROVIDERS": {
+      "UNKNOWN": "Inconnu"
+    },
     "STATUS_TEXT": {
       "ADDON_SCAN_COMPLETED": "Analyse des addons terminée...",
       "ADDON_SCAN_STARTED": "Début de l'analyse des addons...",
@@ -19,6 +58,8 @@
       "GROUP_LIGHT": "Clair",
       "HORDE": "Horde"
     },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Plein écran",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Installer la mise à jour WowUp",
       "INSTALL_MESSAGE": "Voulez-vous redémarrer WowUp pour installer la mise à jour ?",
@@ -45,6 +86,7 @@
       "BACKINGUP": "Sauvegarde",
       "COMPLETE": "Installé",
       "DOWNLOADING": "Téléchargement",
+      "ERROR": "Erreur",
       "INSTALLING": "Installation",
       "PENDING": "En attente",
       "UNINSTALLING": "Désinstallation",
@@ -89,7 +131,11 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "Impossible de changer le fournisseur {providerName} pour l´addon {addonName}"
+      "ADDON_SCAN_ERROR": "Une erreur s'est produite lors de la correspondance de vos dossiers d'addons avec {providerName}, merci de réessayer plus tard.",
+      "ADDON_SYNC_ERROR": "Une erreur s'est produite lors de la vérification des mises à jour depuis : {providerName}",
+      "CHANGE_PROVIDER_ERROR": "Impossible de changer le fournisseur {providerName} pour l´addon {addonName}",
+      "GITHUB_LIMIT_ERROR": "Vous avez atteint la limite de {max} requêtes API Github.\nMerci d'attendre {reset} et de réessayer.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Chargement..."
@@ -100,8 +146,16 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "ID de l'addon :",
       "BY_AUTHOR": "Par {authorName}",
+      "CHANGELOG_TAB": "Notes de mise à jour",
+      "COPY_ADDON_ID_SNACKBAR": "ID de l'addon copié dans le presse-papier",
+      "COPY_ADDON_ID_TOOLTIP": "Copier l'ID de l'addon dans le presse-papier",
       "DEPENDENCY_TEXT": "Cet addon a {dependencyCount} {dependencyCount, plural, one{dépendance requise} other{dépendances requises}}",
+      "DESCRIPTION_TAB": "Description",
+      "FUNDING_LINK_TITLE": "Supporter cet auteur",
+      "MISSING_DEPENDENCIES": "Dépendances manquantes",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },
@@ -120,10 +174,14 @@
       "DESCRIPTION": "Si vous voulez installer un addon directement à partir d'une URL, collez-là ci-dessous.",
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{téléchargement} other{téléchargements}} sur {provider}",
       "ERROR": {
+        "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "Impossible de se connecter à l'API, veuillez patienter quelques instants et réessayer.",
         "INSTALL_FAILED": "Une erreur s'est produite lors de la tentative d'installation de l'addon, veuillez réessayer.\n\nSi ce message persiste, vous pouvez obtenir de l'aide sur Discord dans le canal #wowup-support.",
         "INVALID_URL": "La valeure rentrée n'est pas une URL valide. Exemples d'URL valides:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Aucun addon n'a été trouvé, assurez-vous que votre URL pointe vers la bonne page.\n\nLors de l'installation à partir de github, veuillez vous assurer que le référentiel a une balise de version avec une archive zip contenant l'addon.",
+        "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
+        "NO_SEARCH_RESULTS": "La recherche n'a retourné aucun résultat.",
         "TITLE": "Echec de l'installation de l'addon"
       },
       "IMPORT_BUTTON": "Importer",
@@ -141,6 +199,7 @@
   },
   "PAGES": {
     "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Attributions",
       "CHANGE_LOG_SECTION_LABEL": "Journal des modifications",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Découvrez le site web !"
@@ -162,6 +221,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "À propos de",
       "GET_ADDONS_TAB_TITLE": "Obtenir des Addons",
+      "MIGRATING_ADDONS": "Migration des addons...",
       "MY_ADDONS_TAB_TITLE": "Mes Addons",
       "OPTIONS_TAB_TITLE": "Options"
     },
@@ -179,6 +239,7 @@
         "SHOW_FOLDER": "Afficher le dossier",
         "STABLE_ADDON_CHANNEL": "Stable"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Souhaitez-vous changer le fournisseur d´addons pour {addonName} par {providerName}? Cette opération désinstallera l´addon existant et le remplacera par une copie du nouveau fournisseur.",
         "TITLE": "Changer de fournisseur d´addon"
@@ -189,7 +250,15 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Afficher les colonnes"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "Filter",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Supporter ce créateur",
+        "GENERIC": "Supporter ce créateur sur {platform}",
+        "GITHUB": "Supporter ce créateur sur GitHub",
+        "PATREON": "Supporter ce créateur sur Patreon",
+        "PAYPAL": "Supporter ce créateur sur PayPal"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "Cet addon a de multiples fournisseurs",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
@@ -199,6 +268,7 @@
         "VIEW_GITHUB": "Voir le code sur Github",
         "VIEW_GUIDE": "Consultez notre guide pour voir toutes les fonctionnalités de WowUp"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Required dependency missing",
       "RESCAN_FOLDERS_BUTTON": "Réanalyser les dossiers",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Analysez votre dossier client pour trouver les addons installés",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Faire une nouvelle analyse tentera de deviner les addons que vous avez actuellement installés, cela pourrait réinitialiser les informations connues des addons. Utilisez cette fonction lorsque certains addons ne sont pas reconnus ou que les versions des addons ne s'affichent pas correctement. Cette analyse ne supprimera jamais vos addons installés, seulement ce que WowUp sait à leur sujet.\n\nL'analyse peut prendre un peu de temps.",
@@ -239,6 +309,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Sélectionnez quels fournisseurs vous voulez utiliser pour la recherche et l'installation de nouveaux addons.",
+          "FIELD_LABEL": "Activer les fournisseurs d'addons",
+          "INPUT_LABEL": "Fournisseurs"
+        },
+        "TITLE": "Addons"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Langue actuelle",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activer les fenêtres contextuelles système comme la mise à jour auto des addons.",
@@ -246,6 +324,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Lorsque vous fermez la fenêtre WowUp, minimise dans la barre des menus",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Lorsque vous fermez la fenêtre WowUp, minimise dans la barre d'état système.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimiser à la fermeture",
+        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
+        "SCALE_LABEL": "Echelle",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changer la langue par défaut nécessite le redémarrage de l'application.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Définir une langue par défaut",
         "SET_LANGUAGE_DESCRIPTION": "Sélectionner une langue pour l'application.",
@@ -275,6 +355,7 @@
         "TITLE": "Déboguage"
       },
       "TABS": {
+        "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"

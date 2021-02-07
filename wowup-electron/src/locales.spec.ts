@@ -4,7 +4,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService }
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 
-const LOCALES = ["de", "en", "es", "fr", "it", "ko", "nb", "pt", "ru", "zh-TW", "zh"];
+const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pt", "ru", "zh-TW", "zh"];
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -33,7 +33,9 @@ describe("LocaleTest", () => {
           }),
         ],
         providers: [],
-      }).compileComponents();
+      })
+        .compileComponents()
+        .catch((e) => console.error(e));
     })
   );
 

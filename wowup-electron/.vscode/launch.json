@@ -2,6 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Electron Main Renderer",
+      "type": "node",
+      "request": "launch",
+      "protocol": "inspector",
+      // Prelaunch task compiles main.ts for Electron & starts Angular dev server.
+      "preLaunchTask": "Build.All",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "runtimeArgs": ["--serve", ".", "--remote-debugging-port=9222"],
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      }
+    },
+    {
       "name": "Debug Main Process",
       "type": "node",
       "request": "launch",

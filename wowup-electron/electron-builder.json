@@ -4,6 +4,7 @@
   "directories": {
     "output": "release/"
   },
+  "afterSign": "./electron-build/after-sign.js",
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
@@ -51,12 +52,14 @@
     "deleteAppDataOnUninstall": true
   },
   "mac": {
-    "icon": "dist/assets/icons",
+    "icon": "electron-build/icon.icns",
     "category": "public.app-category.games",
-    "target": ["default"]
+    "target": ["default"],
+    "hardenedRuntime": true,
+    "entitlements": "./electron-build/entitlements.mac.plist"
   },
   "linux": {
-    "icon": "dist/assets/icons",
+    "icon": "electron-build/icon.icns",
     "target": ["AppImage"]
   }
 }

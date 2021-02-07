@@ -1,0 +1,381 @@
+{
+  "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "COPY": "Copy",
+        "CUT": "Cut",
+        "LABEL": "Upravit",
+        "PASTE": "Paste",
+        "REDO": "Redo",
+        "SELECT_ALL": "SelectAll",
+        "UNDO": "Undo"
+      },
+      "QUIT": "Quit",
+      "VIEW": {
+        "FORCE_RELOAD": "Force Reload",
+        "LABEL": "Zobrazit",
+        "RELOAD": "Reload",
+        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
+        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "ZOOM_IN": "Přiblížit",
+        "ZOOM_OUT": "Oddálit",
+        "ZOOM_RESET": "Resetovat přiblížení"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
+      }
+    },
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automaticky aktualizovány\r\n{addonNames}",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} {count, plural, =1{addon byl aktualizován} =2{addony byly aktualizovány} =3{addony byly aktualizovány} =4{addony byly aktualizovány} other{addonů bylo aktualizováno}}.",
+    "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatické aktualizace",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
+    "PROVIDERS": {
+      "UNKNOWN": "Neznámý"
+    },
+    "STATUS_TEXT": {
+      "ADDON_SCAN_COMPLETED": "Hledání addonů dokončeno...",
+      "ADDON_SCAN_STARTED": "Hledám addony...",
+      "ADDON_SCAN_UPDATE": "Prohledávám {count} {count, plural, =1{složku} =2{složky} =3{složky} =4{složky} other{složek}}..."
+    },
+    "SYSTEM_TRAY": {
+      "CHECK_UPDATE": "Zjistit aktualizace...",
+      "QUIT_ACTION": "Konec",
+      "SHOW_ACTION": "Ukázat"
+    },
+    "THEME": {
+      "ALLIANCE": "Alliance",
+      "DEFAULT": "WowUp",
+      "GROUP_DARK": "Tmavý",
+      "GROUP_LIGHT": "Světlý",
+      "HORDE": "Horda"
+    },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WOWUP_UPDATE": {
+      "DOWNLOADED_TOOLTIP": "Nainstalovat aktualizaci WowUp",
+      "INSTALL_MESSAGE": "Chcete restartovat WowUp and nainstalovat aktualizaci?",
+      "INSTALL_TITLE": "Aktualizace WowUp je připravena",
+      "NOT_AVAILABLE": "Nejnovější verze WowUp je již nainstalována",
+      "PORTABLE_DOWNLOAD_MESSAGE": "Chcete ručně stáhnout nejnovější přenosnou (portable) verzi?\n\nMusíte vypnout aplikaci a ručně nakopírovat novou verzi.",
+      "PORTABLE_DOWNLOAD_TITLE": "Vyžadováno ruční stažení",
+      "SNACKBAR_ACTION": "Aktualizovat",
+      "SNACKBAR_TEXT": "Nová verze WowUp je k dispozici",
+      "TOOLTIP": "Aktualizace WowUp je k dospozici",
+      "UPDATE_ERROR": "Nepodařilo se stáhnout aktualizaci WowUp"
+    }
+  },
+  "COMMON": {
+    "ADDON_STATE": {
+      "IGNORED": "Ignorován",
+      "INSTALL": "Instalovat",
+      "UNINSTALL": "Odinstalovat",
+      "UNKNOWN": "",
+      "UPDATE": "Aktualizovat",
+      "UPTODATE": "Aktuální"
+    },
+    "ADDON_STATUS": {
+      "BACKINGUP": "Zálohuji",
+      "COMPLETE": "Nainstalován",
+      "DOWNLOADING": "Stahuji",
+      "ERROR": "Chyba",
+      "INSTALLING": "Instaluji",
+      "PENDING": "Čekající",
+      "UNINSTALLING": "Odinstalovávaný",
+      "UPDATING": "Aktualizuji..."
+    },
+    "CLIENT_TYPES": {
+      "BETA": "Beta",
+      "CLASSIC": "Classic",
+      "CLASSICPTR": "Classic PTR",
+      "RETAIL": "Retail",
+      "RETAILPTR": "Retail PTR"
+    },
+    "DATES": {
+      "DATETIME_SHORT": "{d, date, short} {d, time, short}",
+      "DAYS_AGO": "Před {count} {count, plural, =1{dnem} other{dny}}",
+      "HOURS_AGO": "Před {count} {count, plural, =1{hodinou} other{hodinami}}",
+      "JUST_NOW": "Právě teď",
+      "MONTHS_AGO": "Před {count} {count, plural, =1{měsícem} other{měsíci}}",
+      "YEARS_AGO": "Před {count} {count, plural, =1{rokem} other{roky}}",
+      "YESTERDAY": "Včera"
+    },
+    "DEPENDENCY": {
+      "TOOLTIP": "{dependencyCount} {dependencyCount, plural, =1{závislost vyžadována} other{závislostí vyžadováno}}"
+    },
+    "DOWNLOAD_COUNT": {
+      "e+0": "{count}",
+      "e+1": "{count}",
+      "e+2": "{count}",
+      "e+3": "{count} tisíc",
+      "e+4": "{count} tisíc",
+      "e+5": "{count} tisíc",
+      "e+6": "{count} miliónů",
+      "e+7": "{count} miliónů",
+      "e+8": "{count} miliónů",
+      "e+9": "{count} miliard"
+    },
+    "ENUM": {
+      "ADDON_CHANNEL_TYPE": {
+        "ALPHA": "Alpha",
+        "BETA": "Beta",
+        "STABLE": "Stabilní"
+      }
+    },
+    "ERRORS": {
+      "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
+      "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
+      "CHANGE_PROVIDER_ERROR": "Nepodařilo se změnit poskytovatele {providerName} pro addon {addonName}",
+      "GITHUB_LIMIT_ERROR": "Dosáhli jste limitu {max} požadavků na GitHub API.\nVyčkejte prosím do {reset} a pak to zkuste znovu.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
+    },
+    "PROGRESS_SPINNER": {
+      "LOADING": "Nahrávám..."
+    },
+    "SEARCH": {
+      "NO_ADDONS": "Žádné addony nebyly nalezeny"
+    }
+  },
+  "DIALOGS": {
+    "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "ID addonu:",
+      "BY_AUTHOR": "Od {authorName}",
+      "CHANGELOG_TAB": "Změny",
+      "COPY_ADDON_ID_SNACKBAR": "ID addonu zkopírováno do schránky",
+      "COPY_ADDON_ID_TOOLTIP": "Zkopíruje ID addonu do schránky",
+      "DEPENDENCY_TEXT": "Tento addon má {dependencyCount} {dependencyCount, plural, =1{závislost} =2{závislosti} =3{závislosti} =4{závislosti} other{závislostí}}",
+      "DESCRIPTION_TAB": "Popis",
+      "FUNDING_LINK_TITLE": "Podpořte autora",
+      "MISSING_DEPENDENCIES": "Chybějící závislosti",
+      "NO_CHANGELOG_TEXT": "No changelog available",
+      "VIEW_IN_BROWSER_BUTTON": "Zobrazit v prohlížeči",
+      "VIEW_ON_PROVIDER_PREFIX": "Zobrazit na"
+    },
+    "ALERT": {
+      "ERROR_TITLE": "Chyba",
+      "POSITIVE_BUTTON": "OK"
+    },
+    "CONFIRM": {
+      "NEGATIVE_BUTTON": "Ne",
+      "POSITIVE_BUTTON": "Ano"
+    },
+    "INSTALL_FROM_URL": {
+      "ADDON_URL_INPUT_LABEL": "URL adresa addonu",
+      "ADDON_URL_INPUT_PLACEHOLDER": "GitHub nebo WowInterface URL adresa",
+      "CLOSE_BUTTON": "Zavřít",
+      "DESCRIPTION": "Pokud chcete instalovat addon přímo z URL adresy, vložte ji sem.",
+      "DOWNLOAD_COUNT": "{textCount} stažení z {provider}",
+      "ERROR": {
+        "ASSET_NOT_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor musí být k dispozici, aby ho WowUp mohl stáhnout.",
+        "CLASSIC_ASSET_NOT_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor s názvem končícím s '-classic' musí být k dispozici, aby ho WowUp mohl stáhnout.",
+        "FAILED_TO_CONNECT": "Nemohu se připojit k API. Chvíli počkejte a pak to zkuste znovu.",
+        "INSTALL_FAILED": "Něco se nepovedlo při instalaci addonu, zkuste to prosím znovu.\n\nPokud se tato zpráva opakuje, kontaktujte nás na Discordu na kanále #wowup-support.",
+        "INVALID_URL": "Zadaná hodnota není platná URL adresa. Příklady platných URL adres jsou:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "NO_ADDON_FOUND": "Žádný addon na zadané URL adrese nebyl nalezen. Ujistěte se, že URL adresa odkazuje na správnou stránku.\n\nPři instalaci z GitHubu se ujistěte, že repozitář obsahuje release tag s zipem obsahujícím addon.",
+        "NO_RELEASE_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor musí být k dispozici, aby ho WowUp mohl stáhnout.",
+        "NO_SEARCH_RESULTS": "Hledání neodpovídá žádný addon.",
+        "TITLE": "Instalace addonu se nepodařila"
+      },
+      "IMPORT_BUTTON": "Importovat",
+      "INSTALL_BUTTON": "Instalovat",
+      "INSTALL_SUCCESS_LABEL": "Úspěšně nainstalováno!",
+      "SUPPORTED_SOURCES": "Podporuje WowInterface a GitHub",
+      "TITLE": "URL adresa pro instalaci addonu"
+    },
+    "TELEMETRY": {
+      "DESCRIPTION": "Chcete nám pomoci dále vylepšovat WowUp posíláním anonymních dat o instalaci a případných chybách?",
+      "NEGATIVE_BUTTON": "Ne. Děkuji.",
+      "POSITIVE_BUTTON": "Jasně!",
+      "TITLE": "Telemetrie WowUp"
+    }
+  },
+  "PAGES": {
+    "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "Atributy",
+      "CHANGE_LOG_SECTION_LABEL": "Změny",
+      "TITLE": "WowUp.io",
+      "WEBSITE_LINK_LABEL": "Navštivte naše webové stránky!"
+    },
+    "GET_ADDONS": {
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Instalovat z URL adresy",
+      "REFRESH_BUTTON": "Aktualizovat",
+      "SEARCH_LABEL": "Hledat",
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "AUTHOR_COLUMN_HEADER": "Autor(ři)",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Stažení",
+        "PROVIDER_COLUMN_HEADER": "Poskytovatel",
+        "RELEASED_AT_COLUMN_HEADER": "Vydáno",
+        "STATUS_COLUMN_HEADER": "Stav"
+      }
+    },
+    "HOME": {
+      "ABOUT_TAB_TITLE": "O programu",
+      "GET_ADDONS_TAB_TITLE": "Stáhnout nové addony",
+      "MIGRATING_ADDONS": "Migruji addony...",
+      "MY_ADDONS_TAB_TITLE": "Moje addony",
+      "OPTIONS_TAB_TITLE": "Nastavení"
+    },
+    "MY_ADDONS": {
+      "ADDON_CONTEXT_MENU": {
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon vybrán} =2{addony vybrány} =3{addony vybrány} =4{addony vybrány} other{addonů vybráno}}",
+        "ALPHA_ADDON_CHANNEL": "Alpha",
+        "AUTO_UPDATE_ADDON_BUTTON": "Automaticky aktualizovat",
+        "BETA_ADDON_CHANNEL": "Beta",
+        "CHANNEL_SUBMENU_TITLE": "Kanál aktualizací",
+        "IGNORE_ADDON_BUTTON": "Ignorovat",
+        "PROVIDER_SUBMENU_TITLE": "Poskytovatelé",
+        "REINSTALL_ADDON_BUTTON": "Přeinstalovat",
+        "REMOVE_ADDON_BUTTON": "Odebrat",
+        "SHOW_FOLDER": "Zobrazit složku",
+        "STABLE_ADDON_CHANNEL": "Stabilní"
+      },
+      "ADDON_IS_CODE_REPOSITORY": "Jedná se o addon z repozitáře kódu",
+      "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
+        "MESSAGE": "Opravdu chcete změnit poskytovatele pro {addonName} na {providerName}? Tato operace odinstaluje existující addon a nainstaluje verzi od nového poskytovatele.",
+        "TITLE": "Změnit poskytovatele addonu?"
+      },
+      "CHECK_UPDATES_BUTTON": "Zkontrolovat aktualizace",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "WowUp zkontroluje, zda neexistují novější verze addonů",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "COLUMNS_CONTEXT_MENU": {
+        "TITLE": "Zobraz sloupce"
+      },
+      "ERROR_SNACKBAR": "An error occurred",
+      "FILTER_LABEL": "Filtrovat",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "Podpořte autora",
+        "GENERIC": "Podpořte autora na {platform}",
+        "GITHUB": "Podpořte autora na GitHubu",
+        "PATREON": "Podpořte autora na Patreonu",
+        "PAYPAL": "Podpořte autora pomocí PayPalu"
+      },
+      "MULTIPLE_PROVIDERS_TOOLTIP": "Tento addon má více poskytovatelů",
+      "PAGE_CONTEXT_FOOTER": {
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} =2{addony} =3{addony} =4{addony} other{addonů}}",
+        "JOIN_DISCORD": "Pokecejte s námi na Discordu",
+        "PATREON_SUPPORT": "Podpořte WowUp na Patreonu",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{výsledek} =2{výsledky} =3{výsledky} =4{výsledky} other{výsledků}}",
+        "VIEW_GITHUB": "Koukněte na kód na GitHubu",
+        "VIEW_GUIDE": "Koukněte na našeho průvodce funkcemi WowUp"
+      },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Požadovaná závislost chybí",
+      "RESCAN_FOLDERS_BUTTON": "Prohledat složky",
+      "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Prohledá složku WoW clienta pro nalezení aktuálně instalovaných addonů",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Prohledáním složky může dojít k resetování informací o addonech. Používejte tuto funkci pouze v případech, kdy nejsou některé addony správně načteny v seznamu, případně když nejsou zobrazeny správné verze addonů. Prohledání složky nikdy nevymaže instalované addony, jen zaktualizuje informace, které má WowUp uložené o instalovaných addonech.\n\nProhledání může trvat delší dobu.",
+      "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Spustit prohledání?",
+      "SPINNER": {
+        "GATHERING_ADDONS": "Zjišťuji informace o addonech...",
+        "UPDATING": "Aktualizuji {updateCount}/{addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "Aktualizuji {updateCount}/{addonCount}\n{clientType}: {addonName}"
+      },
+      "TABLE": {
+        "ADDON_COLUMN_HEADER": "Addon",
+        "ADDON_INSTALL_BUTTON": "Instalovat",
+        "ADDON_UPDATE_BUTTON": "Aktualizovat",
+        "AUTHOR_COLUMN_HEADER": "Autor(ři)",
+        "AUTO_UPDATE_ICON_TOOLTIP": "Automatická aktualizace povolena",
+        "GAME_VERSION_COLUMN_HEADER": "Verze hry",
+        "LATEST_VERSION_COLUMN_HEADER": "Nejnovější verze",
+        "PROVIDER_COLUMN_HEADER": "Poskytovatel",
+        "PROVIDER_RELEASE_CHANNEL": "Kanál poskytovatele",
+        "RELEASED_AT_COLUMN_HEADER": "Vydáno",
+        "STATUS_COLUMN_HEADER": "Stav",
+        "UPDATED_AT_COLUMN_HEADER": "Aktualizováno"
+      },
+      "UNINSTALL_POPUP": {
+        "CONFIRMATION_ACTION_EXPLANATION": "Odstraněním addonu ve WowUp dojde i k odstranění addonu z herního clienta (Interface/Addons). Uživatelské nastavení ve složce WTF zůstane zachováno.",
+        "CONFIRMATION_LESS_THAN_THREE": "Opravdu chcete odebrat {count} {count, plural, =1{addon} =2{addony} =3{addony} =4{addony} other{addonů}}?",
+        "CONFIRMATION_MORE_THAN_THREE": "Opravdu chcete odebrat {count} {count, plural, =1{addon} =2{addony} =3{addony} =4{addony} other{addonů}}?",
+        "CONFIRMATION_ONE": "Opravdu chcete odebrat {addonName}?",
+        "DEPENDENCY_MESSAGE": "{addonName} má {dependencyCount} {dependencyCount, plural, =1{závislost} =2{závislosti} =3{závislosti} =4{závislosti} other{závislostí}}. Chcete je také odebrat?",
+        "DEPENDENCY_TITLE": "Odebrat závislosti addonu?",
+        "TITLE": "Odebrat {count, plural, =1{addon} =2{addony} =3{addony} =4{addony} other{addonů}}?"
+      },
+      "UPDATE_ALL_BUTTON": "Aktualizovat vše",
+      "UPDATE_ALL_BUTTON_TOOLTIP": "Zaktualizuje všechny addony vybraného clienta",
+      "UPDATE_ALL_CONTEXT_MENU": {
+        "UPDATE_ALL_CLIENTS_BUTTON": "Aktualizovat všechny clienty",
+        "UPDATE_RETAIL_CLASSIC_BUTTON": "Aktualizovat Retail/Classic"
+      }
+    },
+    "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "Vyberte poskytovatele addonů, kteří budou použiti pro vyhledávání a instalaci addonů",
+          "FIELD_LABEL": "Povolení poskytovatelé addonů",
+          "INPUT_LABEL": "Poskytovatelé addonů"
+        },
+        "TITLE": "Addony"
+      },
+      "APPLICATION": {
+        "CURRENT_LANGUAGE_LABEL": "Jazyk",
+        "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Povolí různé systémové notifikace, např. po automatické aktualizaci addonů.",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Povolit systémové notifikace",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Minimalizovat do lišty při uzavírání WowUp okna.",
+        "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Minimalizovat do lišty při uzavírání WowUp okna.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimalizovat místo vypnutí",
+        "SCALE_DESCRIPTION": "Změní % přiblížení pro celou aplikaci.",
+        "SCALE_LABEL": "% přiblížení",
+        "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Aby se změna jazyku projevila, je třeba restartovat WowUp.",
+        "SET_LANGUAGE_CONFIRMATION_LABEL": "Nastavuji nový výchozí jazyk aplikace",
+        "SET_LANGUAGE_DESCRIPTION": "Vyberte jazyk",
+        "SET_LANGUAGE_LABEL": "Nastavit výchozí jazyk",
+        "START_MINIMIZED_DESCRIPTION": "WowUp se spustí minimalizovaně v systrayi",
+        "START_MINIMIZED_LABEL": "Spustit WowUp minimalizovaný",
+        "START_WITH_SYSTEM_DESCRIPTION": "WowUp se spustí automaticky po spuštění systému.",
+        "START_WITH_SYSTEM_LABEL": "Spustit WowUp po spuštění",
+        "TELEMETRY_DESCRIPTION": "Pomozte nám vylepšit WowUp odesíláním anonymních informací o instalaci a chybách.",
+        "TELEMETRY_LABEL": "Telemetrie",
+        "THEME_DESCRIPTION": "Přizpůsobte si barevné schéma",
+        "THEME_LABEL": "Barevné schéma",
+        "TITLE": "Aplikace",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Chcete restartovat aplikaci?",
+        "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Vypnutím hardwarové akcelerace můžete vyřešit problémy s FPS či případné problémy s vykreslením WowUp. Změna tohoto nastavení vyžaduje restartování aplikace.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Vypnutí hardwarové akcelerace vyžaduje restartování aplikace.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Zaputí hardwarové akcelerace vyžaduje restartování aplikace.",
+        "USE_HARDWARE_ACCELERATION_LABEL": "Zapnout hardwarovou akceleraci"
+      },
+      "DEBUG": {
+        "DEBUG_DATA_BUTTON": "Uložit debugovací data",
+        "DEBUG_DATA_DESCRIPTION": "Zaloguje debugovací data do logovacího souboru pro případnou diagnostiku problémů s aplikací. Pro zvědavce: Tato data naleznete v nejnovějším logovacím souboru.",
+        "DEBUG_DATA_LABEL": "Debug data",
+        "LOG_FILES_BUTTON": "Zobraz logovací soubory",
+        "LOG_FILES_DESCRIPTION": "Otevře složku s logovacími soubory.",
+        "LOG_FILES_LABEL": "Logovací soubory",
+        "TITLE": "Debug aplikace"
+      },
+      "TABS": {
+        "ADDONS": "Addony",
+        "APPLICATION": "Aplikace",
+        "CLIENTS": "WoW klienti",
+        "DEBUG": "Debug aplikace"
+      },
+      "WOW": {
+        "AUTO_UPDATE_DESCRIPTION": "Nově instalované addony budou automaticky označeny k automatické aktualizaci pomocí WowUp.",
+        "AUTO_UPDATE_LABEL": "Automatické aktualizace",
+        "CLEAR_INSTALL_LOCATION_DIALOG": {
+          "MESSAGE": "Opravdu chcete vyčistit složku pro instalaci addonů v klientu {clientName}? Toto vymaže pouze informace o addonech, které má uložené WowUp.\n\nAddony nebudou vymazány.",
+          "TITLE": "Vyčistit složku?"
+        },
+        "CLIENT_TYPE_INPUT_HINT": "Složka, která obsahuje složku \"{clientFolderName}\" pro {clientTypeName} klienta",
+        "CLIENT_TYPE_PATH_LABEL": "Cesta k {clientTypeName} klientu",
+        "DEFAULT_ADDON_CHANNEL_LABEL": "Výchozí kanál aktualizací addonů",
+        "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanál aktualizací addonů",
+        "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Vybrat",
+        "RESCAN_CLIENTS_BUTTON": "Znovu vyhledat",
+        "RESCAN_CLIENTS_LABEL": "Pokusí se znovu vyhledat všechny instalace hry World of Warcraft",
+        "TITLE": "World of Warcraft"
+      }
+    }
+  }
+}

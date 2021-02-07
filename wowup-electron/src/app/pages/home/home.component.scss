@@ -21,3 +21,15 @@
   flex-grow: 1;
   overflow: hidden;
 }
+.preload-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+.tab-bar-placeholder {
+  height: 48px;
+  width: 100%;
+}

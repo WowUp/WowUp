@@ -1,0 +1,11 @@
+<a *ngIf="size === 'large'" mat-raised-button color="primary" class="funding-button large" appExternalLink
+  [matTooltip]="tooltipKey | translate:{platform:fundingName}" [href]="funding.url">
+  <mat-icon *ngIf="isFontIcon === true" [svgIcon]="iconSrc"></mat-icon>
+  <img *ngIf="isFontIcon === false" class="funding-icon" [src]="iconSrc" />
+  <span>{{ fundingName }}</span>
+</a>
+<a *ngIf="size === 'small'" class="funding-button small text-1 hover-primary-2 text-light-hover" appExternalLink
+  [matTooltip]="tooltipKey | translate:{platform:fundingName}" [href]="funding.url">
+  <mat-icon *ngIf="isFontIcon === true" [svgIcon]="iconSrc"></mat-icon>
+  <img *ngIf="isFontIcon === false" class="funding-icon" [src]="iconSrc" />
+</a>

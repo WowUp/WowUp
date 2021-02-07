@@ -1,14 +1,16 @@
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import "reflect-metadata";
+import "../polyfills";
+
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ErrorHandler, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-// NG Translate
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import "reflect-metadata";
-import "../polyfills";
+
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { FooterComponent } from "./components/footer/footer.component";
@@ -19,8 +21,9 @@ import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepte
 import { MatModule } from "./mat-module";
 import { HomeModule } from "./pages/home/home.module";
 import { AnalyticsService } from "./services/analytics/analytics.service";
+import { WowUpApiService } from "./services/wowup-api/wowup-api.service";
 import { WowUpService } from "./services/wowup/wowup.service";
-import { SharedModule } from "./shared/shared.module";
+import { SharedModule } from "./shared.module";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -61,7 +64,7 @@ export function initializeApp(wowupService: WowUpService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [WowUpService],
+      deps: [WowUpService, WowUpApiService],
       multi: true,
     },
     {

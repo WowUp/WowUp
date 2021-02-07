@@ -1,3 +1,7 @@
+import * as _ from "lodash";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,17 +12,20 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
+import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
+import { MatMenuTrigger } from "@angular/material/menu";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
-import * as _ from "lodash";
-import { Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+
+import { ADDON_PROVIDER_HUB } from "../../../common/constants";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
+import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";
 import { ElectronService } from "../../services";
@@ -26,11 +33,6 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { MatMenuTrigger } from "@angular/material/menu";
-import { MatCheckboxChange } from "@angular/material/checkbox";
-import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
-import * as SearchResults from "../../utils/search-result.utils";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 
 @Component({
   selector: "app-get-addons",
@@ -83,11 +85,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public get defaultAddonChannelKey() {
-    return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.selectedClientType);
+    return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.getSelectedClientType());
   }
 
   public get defaultAddonChannel() {
-    return this._wowUpService.getDefaultAddonChannel(this._sessionService.selectedClientType);
+    return this._wowUpService.getDefaultAddonChannel(this._sessionService.getSelectedClientType());
   }
 
   public query = "";
@@ -147,6 +149,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       name: this.sort.active,
       direction: this.sort.direction,
     };
+
+    this.setDataSource(this.sortAddons(this.dataSource.data, this.sort.active, this.sort.direction));
   }
 
   onStatusColumnUpdated() {
@@ -217,8 +221,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       });
 
     const dataSourceSub = this.dataSource.connect().subscribe((data) => {
-      console.debug("get addons activeSortDirection", this.sort);
-
       this.setPageContextText();
     });
 
@@ -232,14 +234,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   private setDataSource(items: GetAddonListItem[]) {
     this.dataSource.data = items;
-    this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
-      if (prop === "releasedAt") {
-        return SearchResults.getLatestFile(item.searchResult, this.defaultAddonChannel)?.releaseDate;
-      }
-      let value = _.get(item, prop);
-      return typeof value === "string" ? value.toLowerCase() : value;
-    };
-    this.dataSource.sort = this.sort;
+    // this.dataSource.sortingDataAccessor = (item: GetAddonListItem, prop: string) => {
+    //   if (prop === "releasedAt") {
+    //     return SearchResults.getLatestFile(item.searchResult, this.defaultAddonChannel)?.releaseDate;
+    //   }
+    //   let value = _.get(item, prop);
+    //   console.debug(value);
+    //   return typeof value === "string" ? value.toLowerCase() : value;
+    // };
+    // this.dataSource.sort = this.sort;
     this.loadSortOrder();
   }
 
@@ -251,7 +254,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   onClientChange() {
-    this._sessionService.selectedClientType = this.selectedClient;
+    this._sessionService.setSelectedClientType(this.selectedClient);
   }
 
   onRefresh() {
@@ -304,10 +307,18 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this._addonService.getEnabledAddonProviders().length === 0) {
+      this.setDataSource([]);
+      this.isBusy = false;
+      this._cdRef.detectChanges();
+      return;
+    }
+
     this.isBusy = true;
 
     this._addonService.getFeaturedAddons(clientType).subscribe({
       next: (addons) => {
+        console.debug(addons);
         const listItems = this.formatAddons(addons);
         this.setDataSource(listItems);
         this.isBusy = false;
@@ -319,7 +330,21 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
-    return addons.map((addon) => new GetAddonListItem(addon));
+    const addonList = addons.map((addon) => new GetAddonListItem(addon, this.defaultAddonChannel));
+    return this.sortAddons(addonList);
+  }
+
+  private sortAddons(addons: GetAddonListItem[], sort?: string, dir?: string) {
+    console.debug(sort || this.activeSort, dir || this.activeSortDirection);
+    if (sort === "providerName") {
+      return _.orderBy(addons, [sort || this.activeSort], [(dir || this.activeSortDirection) as any]);
+    }
+
+    return _.orderBy(
+      addons,
+      [(sr) => (sr.providerName === ADDON_PROVIDER_HUB ? 1 : 0), sort || this.activeSort],
+      ["desc", (dir || this.activeSortDirection) as any]
+    );
   }
 
   private setPageContextText() {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
@@ -17,6 +17,7 @@ import {
   HORDE_LIGHT_THEME,
   HORDE_THEME,
 } from "../../../common/constants";
+import { ZOOM_SCALE } from "../../utils/zoom.utils";
 
 interface LocaleListItem {
   localeId: string;
@@ -30,14 +31,17 @@ interface LocaleListItem {
 })
 export class OptionsAppSectionComponent implements OnInit {
   public collapseToTray = false;
-  public minimizeOnCloseDescription: string = "";
+  public minimizeOnCloseDescription = "";
   public startMinimized = false;
   public startWithSystem = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
-  public currentLanguage: string = "";
+  public currentLanguage = "";
+  public zoomScale = ZOOM_SCALE;
+  public currentScale = 1;
   public languages: LocaleListItem[] = [
     { localeId: "en", label: "English" },
+    { localeId: "cs", label: "Čestina" },
     { localeId: "de", label: "Deutsch" },
     { localeId: "es", label: "Español" },
     { localeId: "fr", label: "Français" },
@@ -52,26 +56,29 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public themeGroups: ThemeGroup[] = [
     {
-      name: 'APP.THEME.GROUP_DARK', themes: [
+      name: "APP.THEME.GROUP_DARK",
+      themes: [
         { display: "APP.THEME.DEFAULT", class: DEFAULT_THEME },
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_THEME },
-      ]
+      ],
     },
     {
-      name: 'APP.THEME.GROUP_LIGHT', themes: [
+      name: "APP.THEME.GROUP_LIGHT",
+      themes: [
         { display: "APP.THEME.DEFAULT", class: DEFAULT_LIGHT_THEME },
         { display: "APP.THEME.ALLIANCE", class: ALLIANCE_LIGHT_THEME },
         { display: "APP.THEME.HORDE", class: HORDE_LIGHT_THEME },
-      ]
+      ],
     },
-  ]
+  ];
 
   constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
-    private _electronService: ElectronService,
     private _translateService: TranslateService,
+    private _cdRef: ChangeDetectorRef,
+    public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService
   ) {}
@@ -81,7 +88,7 @@ export class OptionsAppSectionComponent implements OnInit {
       this.telemetryEnabled = enabled;
     });
 
-    const minimizeOnCloseKey = this._electronService.isWin
+    const minimizeOnCloseKey = this.electronService.isWin
       ? "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS"
       : "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_DESCRIPTION_MAC";
 
@@ -92,25 +99,39 @@ export class OptionsAppSectionComponent implements OnInit {
     this.telemetryEnabled = this._analyticsService.telemetryEnabled;
     this.collapseToTray = this.wowupService.collapseToTray;
     this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
-    this.startWithSystem = this.wowupService.startWithSystem;
+    this.startWithSystem = this.wowupService.getStartWithSystem();
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
+
+    this.initScale().catch((e) => console.error(e));
+
+    this.electronService.zoomFactor$.subscribe((zoomFactor) => {
+      this.currentScale = zoomFactor;
+      this._cdRef.detectChanges();
+    });
   }
 
-  onEnableSystemNotifications = (evt: MatSlideToggleChange) => {
+  private async initScale() {
+    await this.updateScale();
+    this.electronService.onRendererEvent("zoom-changed", () => {
+      this.updateScale().catch((e) => console.error(e));
+    });
+  }
+
+  onEnableSystemNotifications = (evt: MatSlideToggleChange): void => {
     this.wowupService.enableSystemNotifications = evt.checked;
   };
 
-  onTelemetryChange = (evt: MatSlideToggleChange) => {
+  onTelemetryChange = (evt: MatSlideToggleChange): void => {
     this._analyticsService.telemetryEnabled = evt.checked;
   };
 
-  onCollapseChange = (evt: MatSlideToggleChange) => {
+  onCollapseChange = (evt: MatSlideToggleChange): void => {
     this.wowupService.collapseToTray = evt.checked;
   };
 
-  onStartWithSystemChange = (evt: MatSlideToggleChange) => {
-    this.wowupService.startWithSystem = evt.checked;
+  onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setStartWithSystem(evt.checked);
     if (!evt.checked) {
       this.startMinimized = false;
     } else {
@@ -118,11 +139,11 @@ export class OptionsAppSectionComponent implements OnInit {
     }
   };
 
-  onStartMinimizedChange = (evt: MatSlideToggleChange) => {
-    this.wowupService.startMinimized = evt.checked;
+  onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setStartMinimized(evt.checked);
   };
 
-  onUseHardwareAccelerationChange = (evt: MatSlideToggleChange) => {
+  onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"),
@@ -141,11 +162,11 @@ export class OptionsAppSectionComponent implements OnInit {
       }
 
       this.wowupService.useHardwareAcceleration = evt.checked;
-      this._electronService.restartApplication();
+      this.electronService.restartApplication();
     });
   };
 
-  onCurrentLanguageChange = (evt: MatSelectChange) => {
+  onCurrentLanguageChange = (evt: MatSelectChange): void => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"),
@@ -160,7 +181,17 @@ export class OptionsAppSectionComponent implements OnInit {
       }
 
       this.wowupService.currentLanguage = evt.value;
-      this._electronService.restartApplication();
+      this.electronService.restartApplication();
     });
   };
+
+  public onScaleChange = async (evt: MatSelectChange): Promise<void> => {
+    const newScale = evt.value;
+    await this.electronService.setZoomFactor(newScale);
+    this.currentScale = newScale;
+  };
+
+  private async updateScale() {
+    this.currentScale = await this.electronService.getZoomFactor();
+  }
 }

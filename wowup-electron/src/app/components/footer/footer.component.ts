@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import {ElectronService} from "../../services";
+import { ElectronService } from "../../services";
 import { UpdateCheckResult } from "electron-updater";
 import { AppConfig } from "../../../environments/environment";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { from } from "rxjs";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-footer",
@@ -21,6 +22,7 @@ export class FooterComponent implements OnInit {
   public isCheckingForUpdates = false;
   public isWowUpdateDownloading = false;
   public updateIconTooltip = "APP.WOWUP_UPDATE.TOOLTIP";
+  public versionNumber = from(this.wowUpService.getApplicationVersion());
 
   constructor(
     private _dialog: MatDialog,
@@ -29,7 +31,7 @@ export class FooterComponent implements OnInit {
     private _cdRef: ChangeDetectorRef,
     public wowUpService: WowUpService,
     public sessionService: SessionService,
-    private _snackBar: MatSnackBar,
+    private _snackBarService: SnackbarService,
     private _electronService: ElectronService
   ) {}
 
@@ -37,6 +39,7 @@ export class FooterComponent implements OnInit {
     this.wowUpService.wowupUpdateCheck$.subscribe((updateCheckResult) => {
       console.debug("updateCheckResult", updateCheckResult);
       this.isWowUpUpdateAvailable = true;
+      this._snackBarService.showSuccessSnackbar("APP.WOWUP_UPDATE.SNACKBAR_TEXT");
       this._cdRef.detectChanges();
     });
 
@@ -80,20 +83,13 @@ export class FooterComponent implements OnInit {
     try {
       result = await this.wowUpService.checkForAppUpdate();
 
-      if (result === null || this.wowUpService.isSameVersion(result)) {
-        this.showSnackbar("APP.WOWUP_UPDATE.NOT_AVAILABLE");
+      if (result === null || (await this.wowUpService.isSameVersion(result))) {
+        this._snackBarService.showSnackbar("APP.WOWUP_UPDATE.NOT_AVAILABLE");
       }
     } catch (e) {
       console.error(e);
-      this.showSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR", ["error-text"]);
+      this._snackBarService.showErrorSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR");
     }
-  }
-
-  private showSnackbar(localeKey: string, classes: string[] = []) {
-    this._snackBar.open(this._translateService.instant(localeKey), null, {
-      duration: 2000,
-      panelClass: ["center-text", ...classes],
-    });
   }
 
   private portableUpdate() {
@@ -109,7 +105,7 @@ export class FooterComponent implements OnInit {
         return;
       }
 
-      this._electronService.shell.openExternal(
+      this._electronService.openExternal(
         `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
       );
     });

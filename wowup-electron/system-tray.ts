@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, nativeImage, Tray } from "electron";
 import * as path from "path";
 import * as platform from "./platform";
+import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "./src/common/constants";
 import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
 
 let _trayRef: Tray;
@@ -9,7 +10,8 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   _trayRef?.destroy();
 
   console.log("Creating tray");
-  const trayIconPath = path.join(__dirname, "assets", "wowup_logo_512np.png");
+  const trayIconFile = platform.isMac ? WOWUP_LOGO_MAC_SYSTEM_TRAY : WOWUP_LOGO_FILENAME;
+  const trayIconPath = path.join(__dirname, "assets", trayIconFile);
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
   _trayRef = new Tray(icon);
@@ -23,11 +25,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
     {
       label: config.showLabel || "Show",
       click: () => {
-        window.show();
-
-        if (platform.isMac) {
-          app.dock.show();
-        }
+        restoreWindow(window);
       },
     },
     // Removing this for now per discussion with zak
@@ -45,7 +43,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
 
   if (platform.isWin) {
     _trayRef.on("click", () => {
-      window.show();
+      restoreWindow(window);
     });
   }
 
@@ -53,4 +51,16 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   _trayRef.setContextMenu(contextMenu);
 
   return true;
+}
+
+function restoreWindow(window: BrowserWindow) {
+  window?.show();
+  window?.setSkipTaskbar(false);
+
+  if (platform.isMac) {
+    app.dock.show();
+  }
+  // } else {
+  //   window?.setSkipTaskbar(false);
+  // }
 }

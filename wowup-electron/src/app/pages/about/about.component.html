@@ -8,9 +8,9 @@
   </div>
   <div class="about">
     <div class="header text-1">
-      <img class="logo" src="assets/wowup_logo_512np.png" />
+      <img class="logo mt-3" src="assets/wowup_logo_purple.png" />
       <h2>{{ "PAGES.ABOUT.TITLE" | translate }}</h2>
-      <div class="version text-2">v{{ version }}</div>
+      <div class="version text-2">v{{ versionNumber | async }}</div>
       <div class="link-container">
         <a appExternalLink mat-stroked-button href="https://wowup.io" appUserActionTracker category="About"
           action="ViewWebsite">
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="changelog-container  header-2 text-1">
-      <h2>Attributions</h2>
+      <h2>{{ "PAGES.ABOUT.ATTRIBUTIONS_TITLE" | translate }}</h2>
       <ul class="change-log-list">
         <li class="changelog bg-secondary-4 border-primary">
           <p><a appExternalLink href="https://vectorified.com/wow-alliance-icon">Wow Alliance Icon</a></p>

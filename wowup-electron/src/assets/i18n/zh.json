@@ -1,11 +1,50 @@
 {
   "APP": {
+    "APP_MENU": {
+      "EDIT": {
+        "COPY": "Copy",
+        "CUT": "Cut",
+        "LABEL": "Edit",
+        "PASTE": "Paste",
+        "REDO": "Redo",
+        "SELECT_ALL": "SelectAll",
+        "UNDO": "Undo"
+      },
+      "QUIT": "Quit",
+      "VIEW": {
+        "FORCE_RELOAD": "Force Reload",
+        "LABEL": "View",
+        "RELOAD": "Reload",
+        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
+        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
+        "ZOOM_IN": "Zoom In",
+        "ZOOM_OUT": "Zoom Out",
+        "ZOOM_RESET": "Reset Zoom"
+      },
+      "WINDOW": {
+        "CLOSE": "Close",
+        "LABEL": "Window"
+      }
+    },
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自动更新",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自动更新了 {count} 个插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自动更新",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "FULLSCREEN_SNACKBAR": {
+      "MAC": "Press ^⌘F to exit full screen",
+      "WINDOWS": "Press F11 to exit full screen"
+    },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
+    "PROVIDERS": {
+      "UNKNOWN": "未知"
+    },
     "STATUS_TEXT": {
-      "ADDON_SCAN_COMPLETED": "Addon scan completed...",
-      "ADDON_SCAN_STARTED": "Addon scan started...",
-      "ADDON_SCAN_UPDATE": "Scanning {count} folders..."
+      "ADDON_SCAN_COMPLETED": "插件扫描完成...",
+      "ADDON_SCAN_STARTED": "开始插件扫描...",
+      "ADDON_SCAN_UPDATE": "正在扫描 {count} 个文件夹..."
     },
     "SYSTEM_TRAY": {
       "CHECK_UPDATE": "检查更新...",
@@ -19,6 +58,8 @@
       "GROUP_LIGHT": "亮色",
       "HORDE": "部落"
     },
+    "WINDOW_TITLE": "WowUp.io",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
       "INSTALL_MESSAGE": "是否重新启动 WowUp 以完成更新？",
@@ -37,7 +78,7 @@
       "IGNORED": "忽略",
       "INSTALL": "安装",
       "UNINSTALL": "卸载",
-      "UNKNOWN": "",
+      "UNKNOWN": "未知",
       "UPDATE": "更新",
       "UPTODATE": "已安装最新版"
     },
@@ -45,6 +86,7 @@
       "BACKINGUP": "正在备份",
       "COMPLETE": "已安装",
       "DOWNLOADING": "正在下载",
+      "ERROR": "错误",
       "INSTALLING": "正在安装",
       "PENDING": "等待中",
       "UNINSTALLING": "正在卸载",
@@ -89,7 +131,11 @@
       }
     },
     "ERRORS": {
-      "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的提供方修改为 {providerName}"
+      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
+      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的提供方修改为 {providerName}",
+      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "正在加载..."
@@ -100,8 +146,16 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
+      "ADDON_ID_PREFIX": "插件 ID：",
       "BY_AUTHOR": "By {authorName}",
+      "CHANGELOG_TAB": "更新记录",
+      "COPY_ADDON_ID_SNACKBAR": "插件 ID 已复制到剪贴板",
+      "COPY_ADDON_ID_TOOLTIP": "复制插件 ID",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 个依赖项",
+      "DESCRIPTION_TAB": "描述",
+      "FUNDING_LINK_TITLE": "支持插件作者",
+      "MISSING_DEPENDENCIES": "缺失的依赖项",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看",
       "VIEW_ON_PROVIDER_PREFIX": "在该网站上查看："
     },
@@ -120,10 +174,14 @@
       "DESCRIPTION": "如需直接从某 URL 安装插件，请将其粘贴到下面以开始安装。",
       "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下载",
       "ERROR": {
+        "ASSET_NOT_FOUND": "未找到可下载的附件 {message}。\n\n要通过 WowUp 下载插件，发布页面（Releases）上需要有效的 zip 文件。",
+        "CLASSIC_ASSET_NOT_FOUND": "未找到可下载的附件 {message}。\n\n要通过 WowUp 下载插件，发布页面（Releases）上需要文件名以 “-classic” 结尾的有效的 zip 文件。",
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
         "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wowup-support 频道寻求帮助（英语）。",
         "INVALID_URL": "输入的 URL 无效。有效 URL 示例：\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "未找到插件，请检查 URL 是否指向正确的页面。\n\n从 GitHub 安装时，请检查是否存在带有 zip 包的 release tag。",
+        "NO_RELEASE_FOUND": "未找到发布版本 {message}.\n\n要通过 WowUp 下载插件，需要带有 zip 附件的发布版本。",
+        "NO_SEARCH_RESULTS": "无搜索结果。",
         "TITLE": "插件安装失败"
       },
       "IMPORT_BUTTON": "导入",
@@ -141,6 +199,7 @@
   },
   "PAGES": {
     "ABOUT": {
+      "ATTRIBUTIONS_TITLE": "图源",
       "CHANGE_LOG_SECTION_LABEL": "更新记录",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "访问网站！"
@@ -162,6 +221,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "关于",
       "GET_ADDONS_TAB_TITLE": "获取插件",
+      "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "我的插件",
       "OPTIONS_TAB_TITLE": "选项"
     },
@@ -173,12 +233,13 @@
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
-        "PROVIDER_SUBMENU_TITLE": "Providers",
+        "PROVIDER_SUBMENU_TITLE": "提供方",
         "REINSTALL_ADDON_BUTTON": "重新安装",
         "REMOVE_ADDON_BUTTON": "删除",
         "SHOW_FOLDER": "打开文件夹",
         "STABLE_ADDON_CHANNEL": "稳定版"
       },
+      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "是否将 {addonName} 的提供方修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
         "TITLE": "修改插件提供方？"
@@ -189,7 +250,15 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "显示列表项"
       },
+      "ERROR_SNACKBAR": "An error occurred",
       "FILTER_LABEL": "筛选",
+      "FUNDING_TOOLTIP": {
+        "CUSTOM": "支持作者",
+        "GENERIC": "在 {platform} 上支持作者",
+        "GITHUB": "在 GitHub 上支持作者",
+        "PATREON": "通过 Patreon 支持作者",
+        "PAYPAL": "通过 PayPal 支持作者"
+      },
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个提供方",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 个插件",
@@ -199,6 +268,7 @@
         "VIEW_GITHUB": "在 GitHub 上查看源代码",
         "VIEW_GUIDE": "访问指南，探索 WowUp 的功能（英语）"
       },
+      "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "缺失必要的依赖项",
       "RESCAN_FOLDERS_BUTTON": "重新扫描",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "扫描客户端文件夹中已安装的附加组件",
       "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "重新扫描过程将会猜测已经安装了哪些插件，可能会重置已知插件信息。如果特定插件无法识别或显示不正确，请使用此功能。扫描不会删除插件本身，只会删除 WowUp 记录的插件信息。\n\n扫描需要花费一些时间。",
@@ -239,6 +309,14 @@
       }
     },
     "OPTIONS": {
+      "ADDON": {
+        "ENABLED_PROVIDERS": {
+          "DESCRIPTION": "选择从哪些提供方搜索和安装新插件",
+          "FIELD_LABEL": "启用插件提供方",
+          "INPUT_LABEL": "提供方"
+        },
+        "TITLE": "插件"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "当前语言",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "启用各种系统通知弹窗，如自动更新插件通知。",
@@ -246,6 +324,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "关闭 WowUp 窗口时，最小化到菜单栏。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "关闭 WowUp 窗口时，最小化到系统托盘。",
         "MINIMIZE_ON_CLOSE_LABEL": "关闭时最小化",
+        "SCALE_DESCRIPTION": "修改整个应用程序的缩放系数。",
+        "SCALE_LABEL": "界面缩放",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改默认语言需要重新启动客户端。",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "设置新的默认语言",
         "SET_LANGUAGE_DESCRIPTION": "选择要使用的语言",
@@ -275,6 +355,7 @@
         "TITLE": "调试"
       },
       "TABS": {
+        "ADDONS": "插件",
         "APPLICATION": "应用程序",
         "CLIENTS": "客户端",
         "DEBUG": "调试"
