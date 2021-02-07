@@ -117,6 +117,7 @@ export class WarcraftService {
     return [...this._allClientTypes];
   }
 
+  /** Get a list of installed client types */
   public async getWowClientTypes(): Promise<WowClientType[]> {
     const clients: WowClientType[] = [];
 

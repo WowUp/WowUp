@@ -7,6 +7,7 @@ import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { Addon } from "../../entities/addon";
 import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("MyAddonsAddonCellComponent", () => {
   let component: MyAddonsAddonCellComponent;
@@ -17,6 +18,7 @@ describe("MyAddonsAddonCellComponent", () => {
       declarations: [MyAddonsAddonCellComponent],
       imports: [
         MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

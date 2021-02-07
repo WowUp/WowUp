@@ -39,7 +39,7 @@ export class FooterComponent implements OnInit {
     this.wowUpService.wowupUpdateCheck$.subscribe((updateCheckResult) => {
       console.debug("updateCheckResult", updateCheckResult);
       this.isWowUpUpdateAvailable = true;
-      this._snackBarService.showSuccessSnackbar("APP.WOWUP_UPDATE.SNACKBAR_TEXT", ["snackbar-success"]);
+      this._snackBarService.showSuccessSnackbar("APP.WOWUP_UPDATE.SNACKBAR_TEXT");
       this._cdRef.detectChanges();
     });
 

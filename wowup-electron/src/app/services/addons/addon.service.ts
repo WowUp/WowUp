@@ -10,10 +10,12 @@ import { Injectable } from "@angular/core";
 import {
   ADDON_PROVIDER_CURSEFORGE,
   ADDON_PROVIDER_HUB,
+  ADDON_PROVIDER_HUB_LEGACY,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
   ADDON_PROVIDER_WOWINTERFACE,
+  ADDON_PROVIDER_ZIP,
   ERROR_ADDON_ALREADY_INSTALLED,
 } from "../../../common/constants";
 import { AddonProvider } from "../../addon-providers/addon-provider";
@@ -184,9 +186,9 @@ export class AddonService {
 
       const changelog = await provider.getChangelog(clientType, addon.externalId, addon.externalLatestReleaseId);
 
-      addon.latestChangelogVersion = addon.latestVersion;
-      addon.latestChangelog = changelog;
-      this.saveAddon(addon);
+      // addon.latestChangelogVersion = addon.latestVersion;
+      // addon.latestChangelog = changelog;
+      // this.saveAddon(addon);
 
       return changelog;
     } catch (e) {
@@ -317,24 +319,33 @@ export class AddonService {
     const updatedAddons = [];
 
     for (const clientTypeStr in clientTypeGroups) {
-      const clientType: WowClientType = parseInt(clientTypeStr, 10);
+      try {
+        const clientUpdates = await this.autoUpdateClient(clientTypeStr, clientTypeGroups[clientTypeStr]);
+        updatedAddons.push(...clientUpdates);
+      } catch (e) {
+        console.error(`Failed to auto update ${clientTypeStr}`, e);
+      }
+    }
 
-      const synced = await this.syncAddons(clientType, clientTypeGroups[clientType]);
-      if (!synced) {
+    return updatedAddons;
+  }
+
+  private async autoUpdateClient(clientTypeStr: string, addons: Addon[]) {
+    const updatedAddons: Addon[] = [];
+    const clientType: WowClientType = parseInt(clientTypeStr, 10);
+
+    await this.syncAddons(clientType, addons);
+
+    for (const addon of addons) {
+      if (!this.canUpdateAddon(addon)) {
         continue;
       }
 
-      for (const addon of clientTypeGroups[clientType]) {
-        if (!this.canUpdateAddon(addon)) {
-          continue;
-        }
-
-        try {
-          await this.updateAddon(addon.id);
-          updatedAddons.push(addon);
-        } catch (err) {
-          console.error(err);
-        }
+      try {
+        await this.updateAddon(addon.id);
+        updatedAddons.push(addon);
+      } catch (err) {
+        console.error(err);
       }
     }
 
@@ -494,6 +505,11 @@ export class AddonService {
         addon.author = this.getBestGuessAuthor(allTocFiles);
       }
 
+      // If this is a zip file addon, try to pull the name out of the toc
+      if (addonProvider.name === ADDON_PROVIDER_ZIP) {
+        addon.name = this.getBestGuessTitle(allTocFiles);
+      }
+
       this._addonStorage.set(addon.id, addon);
 
       this.trackInstallAction(queueItem.installType, addon);
@@ -595,6 +611,11 @@ export class AddonService {
     }
 
     return tocs;
+  }
+
+  private getBestGuessTitle(tocs: Toc[]) {
+    const titles = _.map(tocs, (toc) => toc.title).filter((title) => !!title);
+    return _.maxBy(titles, (title) => title.length);
   }
 
   private getBestGuessAuthor(tocs: Toc[]) {
@@ -779,9 +800,51 @@ export class AddonService {
     // Only sync non-ignored addons
     const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
 
-    await this.syncAddons(clientType, notIgnored);
-
     return addons;
+  }
+
+  public async syncAllClients(): Promise<void> {
+    const clientTypes = await this._warcraftService.getWowClientTypes();
+    for (const clientType of clientTypes) {
+      try {
+        await this.syncClientAddons(clientType);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  public async syncClientAddons(clientType: WowClientType): Promise<void> {
+    try {
+      const addons = this._addonStorage.getAllForClientType(clientType);
+      const validAddons = _.filter(addons, (addon) => addon.isIgnored === false);
+
+      await this.syncAddons(clientType, validAddons);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  public async syncAddons(clientType: WowClientType, addons: Addon[]): Promise<boolean> {
+    console.debug(`syncAddons ${getEnumName(WowClientType, clientType)}`);
+    let didSync = true;
+
+    for (const provider of this.getEnabledAddonProviders()) {
+      try {
+        await this.syncProviderAddons(clientType, addons, provider);
+      } catch (e) {
+        console.error(`Failed to sync from provider: ${provider.name}`, e);
+        this._syncErrorSrc.next(
+          new AddonSyncError({
+            providerName: provider.name,
+            innerError: e,
+          })
+        );
+        didSync = false;
+      }
+    }
+
+    return didSync;
   }
 
   private updateAddons(existingAddons: Addon[], newAddons: Addon[]) {
@@ -812,28 +875,8 @@ export class AddonService {
     );
   }
 
-  private async syncAddons(clientType: WowClientType, addons: Addon[]) {
-    let didSync = true;
-
-    for (const provider of this.getEnabledAddonProviders()) {
-      try {
-        await this.syncProviderAddons(clientType, addons, provider);
-      } catch (e) {
-        console.error(`Failed to sync from provider: ${provider.name}`, e);
-        this._syncErrorSrc.next(
-          new AddonSyncError({
-            providerName: provider.name,
-            innerError: e,
-          })
-        );
-        didSync = false;
-      }
-    }
-
-    return didSync;
-  }
-
   private async syncProviderAddons(clientType: WowClientType, addons: Addon[], addonProvider: AddonProvider) {
+    // console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;
@@ -922,6 +965,7 @@ export class AddonService {
   }
 
   public async migrate(clientType: WowClientType): Promise<void> {
+    console.log(`Migrating: ${getEnumName(WowClientType, clientType)}`);
     const existingAddons = this.getAllAddons(clientType);
     if (!existingAddons.length) {
       console.log(`Skipping client type: ${clientType} no addons found`);
@@ -930,26 +974,36 @@ export class AddonService {
 
     const scannedAddons = await this.scanAddons(clientType);
     for (const addon of existingAddons) {
-      const scannedAddon = _.find(
-        scannedAddons,
-        (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName
-      );
+      this.migrateAddon(addon, scannedAddons);
+    }
+  }
 
-      if (!scannedAddon) {
-        console.log(`No scanned addon found ${addon.name}`);
-        continue;
-      }
-
-      addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
-      addon.externalChannel = scannedAddon.externalChannel;
-
-      // Fill in any addons where this is missing
-      if (!addon.installedFolderList) {
-        addon.installedFolderList = scannedAddon.installedFolderList;
-      }
-
+  private migrateAddon(addon: Addon, scannedAddons: Addon[]): void {
+    if (addon.providerName === ADDON_PROVIDER_HUB_LEGACY) {
+      console.log(`Updating legacy hub name: ${addon.name}`);
+      addon.providerName = ADDON_PROVIDER_HUB;
       this.saveAddon(addon);
     }
+
+    const scannedAddon = _.find(
+      scannedAddons,
+      (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName
+    );
+
+    if (!scannedAddon) {
+      console.log(`No scanned addon found ${addon.name}`);
+      return;
+    }
+
+    addon.installedExternalReleaseId = scannedAddon.externalLatestReleaseId;
+    addon.externalChannel = scannedAddon.externalChannel;
+
+    // Fill in any addons where this is missing
+    if (!addon.installedFolderList) {
+      addon.installedFolderList = scannedAddon.installedFolderList;
+    }
+
+    this.saveAddon(addon);
   }
 
   private async scanAddons(clientType: WowClientType): Promise<Addon[]> {

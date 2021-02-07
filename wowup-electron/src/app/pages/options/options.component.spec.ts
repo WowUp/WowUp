@@ -7,6 +7,8 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("OptionsComponent", () => {
   let component: OptionsComponent;
@@ -17,38 +19,50 @@ describe("OptionsComponent", () => {
   let wowUpServiceSpy: any;
 
   beforeEach(async () => {
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
-      getThemeLogoPath: () => "",
-    }, {
-      currentTheme: "horde ofc",
-    });
+    wowUpServiceSpy = jasmine.createSpyObj(
+      "WowUpService",
+      {
+        getThemeLogoPath: () => "",
+      },
+      {
+        currentTheme: "horde ofc",
+      }
+    );
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      isWin : false,
-      isLinux : true,
+      isWin: false,
+      isLinux: true,
       isMac: false,
     });
 
     await TestBed.configureTestingModule({
       declarations: [OptionsComponent],
-      imports: [HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
-        },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
+      imports: [
+        MatModule,
+        NoopAnimationsModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).overrideComponent(OptionsComponent, {
-      set: {
-        providers: [
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(OptionsComponent, {
+        set: {
+          providers: [
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: ElectronService, useValue: electronServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(OptionsComponent);
     component = fixture.componentInstance;

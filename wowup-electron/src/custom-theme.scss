@@ -119,6 +119,10 @@ $wowup-light-theme: mat-light-theme(
   background-color: $dark-4;
 }
 
+.hover-bg-secondary-5:hover {
+  background-color: $dark-5;
+}
+
 .hover-primary-2:hover {
   background-color: $purple-2;
 }
@@ -435,8 +439,17 @@ $alliance-theme-light: mat-light-theme(
     background-color: $dark-4 !important;
   }
 
+  .hover-bg-secondary-5:hover {
+    background-color: $dark-5 !important;
+  }
+
+  .hover-border-secondary-2:hover {
+    box-sizing: border-box;
+    border: 5px solid white;
+  }
+
   .text-1 {
-    color: $white-1;
+    color: $white-1 !important;
   }
 
   .text-2 {
@@ -486,6 +499,10 @@ $alliance-theme-light: mat-light-theme(
     background-color: $lt-secondary-4 !important;
   }
 
+  .hover-bg-secondary-5:hover {
+    background-color: $lt-secondary-5 !important;
+  }
+
   .text-1 {
     color: $lt-text-1 !important;
   }
@@ -525,4 +542,16 @@ $alliance-theme-light: mat-light-theme(
   .wowup-snackbar {
     background-color: $white-1 !important;
   }
+}
+
+.text-light-1 {
+  color: $white-1;
+}
+
+.text-light-2 {
+  color: $white-2;
+}
+
+.text-light-3 {
+  color: $white-3;
 }

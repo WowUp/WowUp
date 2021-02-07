@@ -6,18 +6,4 @@
   <app-footer></app-footer>
 </div>
 
-<div
-  *ngIf="quitEnabled === true"
-  class="pre-load-container"
-  style="
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    color: white;
-    justify-content: center;
-    align-items: center;
-  "
->
-  <img class="logo" src="assets/wowup_logo_512np.png" style="width: 200px" />
-</div>
+<app-animated-logo *ngIf="showPreLoad === true || quitEnabled === true"></app-animated-logo>

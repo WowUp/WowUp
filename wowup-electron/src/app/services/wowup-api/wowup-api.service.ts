@@ -17,6 +17,7 @@ export class WowUpApiService {
 
   constructor(private _networkService: NetworkService, private _cacheService: CachingService) {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`WowUpApiService_main`);
+    this.getBlockList().subscribe();
   }
 
   public getBlockList(): Observable<BlockListRepresentation> {
@@ -29,7 +30,6 @@ export class WowUpApiService {
 
     return from(this._circuitBreaker.getJson<BlockListRepresentation>(url)).pipe(
       tap((response) => {
-        console.log("BlockList", response);
         this._cacheService.set(BLOCKLIST_CACHE_KEY, response);
       })
     );

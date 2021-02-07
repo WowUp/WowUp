@@ -4,7 +4,8 @@ export const ADDON_PROVIDER_GITHUB = "GitHub";
 export const ADDON_PROVIDER_RAIDERIO = "RaiderIO";
 export const ADDON_PROVIDER_TUKUI = "TukUI";
 export const ADDON_PROVIDER_UNKNOWN = "Unknown";
-export const ADDON_PROVIDER_HUB = "Hub";
+export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
+export const ADDON_PROVIDER_HUB = "WowUpHub";
 export const ADDON_PROVIDER_ZIP = "Zip";
 export const APP_PROTOCOL_NAME = "wowup";
 
@@ -117,3 +118,5 @@ export const WINDOW_DEFAULT_HEIGHT = 720;
 export const WINDOW_MIN_WIDTH = 940;
 export const WINDOW_MIN_HEIGHT = 500;
 export const MIN_VISIBLE_ON_SCREEN = 32;
+export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
+export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowup_white_lg_nopad.png";

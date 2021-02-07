@@ -34,6 +34,10 @@
       "MAC": "Press ^⌘F to exit full screen",
       "WINDOWS": "Press F11 to exit full screen"
     },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Unknown"
     },
@@ -151,6 +155,7 @@
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
       "MISSING_DEPENDENCIES": "Missing dependencies",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "브라우저에서 열기",
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "
     },

@@ -34,6 +34,10 @@
       "MAC": "Press ^⌘F to exit full screen",
       "WINDOWS": "Press F11 to exit full screen"
     },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Neznámý"
     },
@@ -151,6 +155,7 @@
       "DESCRIPTION_TAB": "Popis",
       "FUNDING_LINK_TITLE": "Podpořte autora",
       "MISSING_DEPENDENCIES": "Chybějící závislosti",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Zobrazit v prohlížeči",
       "VIEW_ON_PROVIDER_PREFIX": "Zobrazit na"
     },

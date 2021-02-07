@@ -34,6 +34,10 @@
       "MAC": "Appuyez sur ^⌘F pour quitter le mode plein écran",
       "WINDOWS": "Appuyez sur F11 pour quitter le mode plein écran"
     },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
+      "TITLE": "You are about to leave WowUp"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Inconnu"
     },
@@ -151,6 +155,7 @@
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Supporter cet auteur",
       "MISSING_DEPENDENCIES": "Dépendances manquantes",
+      "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Voir dans le navigateur",
       "VIEW_ON_PROVIDER_PREFIX": "Voir sur"
     },

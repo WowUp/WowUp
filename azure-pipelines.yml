@@ -1,0 +1,76 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  tags:
+    include:
+    - v*
+
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-latest'
+  strategy:
+    matrix:
+      node_14_x:
+        node_version: 14.x
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(node_version)
+    displayName: 'Install Node.js'
+  - script: |
+      node -v
+      npm install -g @angular/cli
+      cd ./wowup-electron
+      npm i
+      npm run electron:publish
+    env:
+      GH_TOKEN: $(GITHUB_TOKEN)
+
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  strategy:
+    matrix:
+      node_14_x:
+        node_version: 14.x
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(node_version)
+    displayName: 'Install Node.js'
+  - script: npm install -g @angular/cli
+  - script: cd ./wowup-electron && npm i && npm run electron:publish
+    env:
+      GH_TOKEN: $(GITHUB_TOKEN)
+      CSC_LINK: $(WINDOWS_CSC_LINK)
+      CSC_KEY_PASSWORD: $(WINDOWS_CSC_KEY_PASSWORD)
+
+- job: MacOS
+  pool:
+    vmImage: 'macOS-latest'
+  strategy:
+    matrix:
+      node_14_x:
+        node_version: 14.x
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(node_version)
+    displayName: 'Install Node.js'
+  - script: |
+      node -v
+      npm install -g @angular/cli
+      cd ./wowup-electron
+      npm i
+      npm run electron:publish
+    env:
+      GH_TOKEN: $(GITHUB_TOKEN)
+      CSC_LINK: $(MACOS_CERT)
+      CSC_KEY_PASSWORD: $(MACOS_CERT_PASSWORD)
+      NOTARIZE_APPLE_ID: $(NOTARIZE_APPLE_ID)
+      NOTARIZE_APPLE_PASSWORD: $(NOTARIZE_APPLE_PASSWORD)
+      NOTARIZE_APPLE_TEAM_ID: $(NOTARIZE_APPLE_TEAM_ID)

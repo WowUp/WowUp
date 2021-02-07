@@ -6,6 +6,8 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("AboutComponent", () => {
   let component: AboutComponent;
@@ -26,6 +28,8 @@ describe("AboutComponent", () => {
     await TestBed.configureTestingModule({
       declarations: [AboutComponent],
       imports: [
+        MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

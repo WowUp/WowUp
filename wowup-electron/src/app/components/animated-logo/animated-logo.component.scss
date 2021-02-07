@@ -1,0 +1,15 @@
+.pre-load-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  justify-content: center;
+  align-items: center;
+
+  .logo {
+    width: 150px;
+    // border-radius: 10%;
+    animation: pulse 2s infinite;
+  }
+}

@@ -30,6 +30,7 @@ import {
   WINDOW_MIN_WIDTH,
   IPC_REQUEST_INSTALL_FROM_URL,
   APP_PROTOCOL_NAME
+  WOWUP_LOGO_FILENAME,
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
@@ -229,7 +230,7 @@ function createWindow(): BrowserWindow {
 
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
-    windowOptions.icon = join(__dirname, "assets", "wowup_logo_512np.png");
+    windowOptions.icon = join(__dirname, "assets", WOWUP_LOGO_FILENAME);
   }
 
   // Create the browser window.

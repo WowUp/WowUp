@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { join } from "path";
 import { BehaviorSubject, from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, map, switchMap, tap } from "rxjs/operators";
+import { catchError, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
@@ -200,7 +200,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.autoUpdateComplete$.subscribe(() => {
       console.log("Checking for addon updates...");
       this._cdRef.markForCheck();
-      this.onRefresh();
+      this.loadAddons(this.selectedClient).subscribe();
     });
   }
 
@@ -258,7 +258,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   public onRefresh(): void {
-    this.loadAddons(this.selectedClient).subscribe();
+    this.isBusy = true;
+    this.enableControls = false;
+    from(this.addonService.syncClientAddons(this.selectedClient))
+      .pipe(
+        switchMap(() => this.loadAddons(this.selectedClient)),
+        switchMap(() => from(this._wowUpAddonService.updateForClientType(this.selectedClient))),
+        tap(() => {
+          this.isBusy = false;
+          this.enableControls = true;
+        })
+      )
+      .subscribe();
   }
 
   public unselectAll(): void {
@@ -588,6 +599,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!this.sort.active) {
         this.sortTable(this.dataSource);
       }
+
+      if (isAutoUpdate) {
+        this.addonService.processAutoUpdates().catch((e) => console.error(e));
+      }
     } catch (e) {
       console.error(e);
       this._operationErrorSrc.next(e);
@@ -772,7 +787,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     return from(this.addonService.getAddons(clientType, rescan)).pipe(
-      switchMap((addons) => {
+      map((addons) => {
         const rowData = this.formatAddons(addons);
         this.enableControls = this.calculateControlState();
 
@@ -780,7 +795,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         this._displayAddonsSrc.next(rowData);
         this.setPageContextText();
         this._cdRef.detectChanges();
-        return from(this._wowUpAddonService.persistUpdateInformationToWowUpAddon(addons));
       }),
       catchError((e) => {
         console.error(e);

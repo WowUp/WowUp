@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.1.0-beta.27",
+  "version": "2.1.1",
   "description": "World of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
@@ -32,7 +32,7 @@
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
     "electron:local": "npm run build:prod && npx electron .",
     "electron:build": "npm run build:prod && electron-builder build",
-    "electron:publish": "npm run lint && npm run electron:build && electron-builder --publish onTagOrDraft",
+    "electron:publish": "npm run lint && npm run electron:build && electron-builder --publish always",
     "electron:publish:linux": "docker-compose -f linux-compose.yml up",
     "electron:publish:never": "npm run electron:build && electron-builder --publish never",
     "test": "ng test --watch=false",

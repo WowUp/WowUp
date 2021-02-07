@@ -34,6 +34,10 @@
       "MAC": "Drücke ^⌘F um den Vollbildmodus zu verlassen",
       "WINDOWS": "Drücke F11 um den Vollbildmodus zu verlassen"
     },
+    "LINK_NAVIGATION": {
+      "MESSAGE": "{url}\n\nMöchtest Du diese Seite eines Drittanbieters wirklich in deinem Standardbrowser öffnen?",
+      "TITLE": "Du bist dabei WowUp zu verlassen"
+    },
     "PROVIDERS": {
       "UNKNOWN": "Unbekannt"
     },
@@ -151,6 +155,7 @@
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Unterstütze diesen Autor",
       "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",
+      "NO_CHANGELOG_TEXT": "Kein Änderungsverlauf verfügbar",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
       "VIEW_ON_PROVIDER_PREFIX": "Anzeigen auf"
     },
@@ -216,7 +221,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
-      "MIGRATING_ADDONS": "Migriere Addons...",
+      "MIGRATING_ADDONS": "Addons werden migriert...",
       "MY_ADDONS_TAB_TITLE": "Meine Addons",
       "OPTIONS_TAB_TITLE": "Einstellungen"
     },
@@ -260,16 +265,16 @@
         "JOIN_DISCORD": "Rede mit uns auf Discord",
         "PATREON_SUPPORT": "Unterstütze WowUp auf Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, =1{Treffer} other{Treffer}}",
-        "VIEW_GITHUB": "Schaue Dir den Code auf GitHub an",
-        "VIEW_GUIDE": "Schaue Dir unseren Guide an, um zu sehen, was WowUp kann"
+        "VIEW_GITHUB": "Schau Dir den Code auf GitHub an",
+        "VIEW_GUIDE": "Schau Dir unseren Guide an, um zu sehen, was WowUp kann"
       },
       "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Erforderliche Abhängigkeiten fehlen",
       "RESCAN_FOLDERS_BUTTON": "Ordner erneut scannen",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Scanne Deinen Client-Ordner nach installierten Addons",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Wenn Du ein erneutes scannen durchführst, können deine Addon-Informationen verloren gehen. Dieser Vorgang braucht einen Moment.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Ein neuer Scan wird nach bereits installierten Addons suchen. Dies kann bekannte Addon-Informationen zurücksetzen. Dieser Vorgang braucht einen Moment.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Neuen Scan starten?",
       "SPINNER": {
-        "GATHERING_ADDONS": "Addons sammeln...",
+        "GATHERING_ADDONS": "Addons werden gesammelt...",
         "UPDATING": "{updateCount}/{addonCount} aktualisiert",
         "UPDATING_WITH_ADDON_NAME": "{updateCount}/{addonCount} aktualisiert\n{clientType}: {addonName}"
       },
@@ -288,7 +293,7 @@
         "UPDATED_AT_COLUMN_HEADER": "Aktualisiert vor"
       },
       "UNINSTALL_POPUP": {
-        "CONFIRMATION_ACTION_EXPLANATION": "Dadurch werden alle zugehörigen Ordner aus dem World of Warcraft Interface-Ordner entfernt. Die Charakter Einstellungen des Addons werden nicht entfernt.",
+        "CONFIRMATION_ACTION_EXPLANATION": "Dadurch werden alle zugehörigen Ordner aus dem World of Warcraft Interface-Ordner entfernt. Die Charakter-Einstellungen des Addons werden nicht entfernt.",
         "CONFIRMATION_LESS_THAN_THREE": "Bist Du sicher, dass Du die folgenden {count} Addons entfernen möchtest?",
         "CONFIRMATION_MORE_THAN_THREE": "Bist Du sicher, dass Du die ausgewählten {count} Addons entfernen möchtest?",
         "CONFIRMATION_ONE": "Bist Du sicher, dass Du {addonName} entfernen möchtest?",
@@ -306,8 +311,8 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Wähle aus, welche Addon-Anbieter zur Suche und Installation neuer Addons genutzt werden soll",
-          "FIELD_LABEL": "Aktiviere Addon-Anbieter",
+          "DESCRIPTION": "Wähle aus, welche Addon-Anbieter zur Suche und Installation neuer Addons genutzt werden können",
+          "FIELD_LABEL": "Aktivierte Addon-Anbieter",
           "INPUT_LABEL": "Anbieter"
         },
         "TITLE": "Addons"
@@ -318,10 +323,10 @@
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen WowUp in die Menüleiste minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters in den Benachrichtigungsbereich der Taskleiste minimieren.",
-        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schliessen",
         "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquries",
         "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
-        "SCALE_DESCRIPTION": "Ändere den Zoomfaktor für die komplette App.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schließen",
+        "SCALE_DESCRIPTION": "Den Zoomfaktor für die ganze Anwendung verändern.",
         "SCALE_LABEL": "Skalierung",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Zum Ändern der Standardsprache muss die Anwendung neu gestartet werden.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Festlegen einer neuen Standardsprache",
@@ -336,10 +341,10 @@
         "THEME_DESCRIPTION": "Ändere das Farbschema nach deinen Wünschen",
         "THEME_LABEL": "Farbschema",
         "TITLE": "Anwendung",
-        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Neustart der Anwendung?",
+        "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Möchtest Du die Anwendung neu starten?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Das Deaktivieren der Hardwarebeschleunigung kann FPS-Probleme und Probleme bei der Darstellung beheben. Eine Änderung dieser Einstellung benötigt einen Neustart der Anwendung.",
-        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Bei Deaktivierung der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
-        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Bei Aktivierung der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
+        "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Beim Deaktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
+        "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Beim Aktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Hardwarebeschleunigung aktivieren"
       },
       "DEBUG": {
@@ -353,7 +358,7 @@
       },
       "TABS": {
         "ADDONS": "Addons",
-        "APPLICATION": "Applikation",
+        "APPLICATION": "Anwendung",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"
       },
@@ -361,7 +366,7 @@
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf 'Automatisches Update' eingestellt",
         "AUTO_UPDATE_LABEL": "Automatisch aktualisieren",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Bist Du dir sicher, dass Du den Installationspfad für {clientName} löschen möchtest? Dies wird alle gespeicherten Addon-Informationen für diesen Client entfernen.\n\nDeine Addon-Ordner werden nicht entfernt.",
+          "MESSAGE": "Bist Du sicher, dass Du den Installationspfad für {clientName} löschen möchtest? Dies wird alle gespeicherten Addon-Informationen für diesen Client entfernen.\n\nDeine Addon-Ordner werden nicht entfernt.",
           "TITLE": "Installationspfad löschen?"
         },
         "CLIENT_TYPE_INPUT_HINT": "Der Ordner, der den {clientTypeName} Client-Ordner \"{clientFolderName}\" enthält",

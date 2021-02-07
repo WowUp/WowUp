@@ -51,8 +51,28 @@ img {
   -webkit-app-region: no-drag;
 }
 
+.rounded {
+  border-radius: 4px;
+}
+
 .p-0 {
   padding: 0 !important;
+}
+
+.p-1 {
+  padding: 0.25em !important;
+}
+
+.pl-1 {
+  padding-left: 0.25em;
+}
+
+.pr-1 {
+  padding-right: 0.25em;
+}
+
+.px-1 {
+  padding: 0 0.25em;
 }
 
 .m-0 {
@@ -95,12 +115,22 @@ img {
   margin-top: 1em !important;
 }
 
+.mb-1 {
+  margin-bottom: 0.25em !important;
+}
+
 .text-center {
   text-align: center;
 }
 
 .no-reg-drag {
   -webkit-app-region: no-drag;
+}
+
+.no-link {
+  pointer-events: none;
+  text-decoration: none;
+  color: inherit !important;
 }
 
 .pointer {
@@ -273,6 +303,9 @@ img {
   &.justify-content-end {
     justify-content: flex-end;
   }
+  &.justify-content-between {
+    justify-content: space-between;
+  }
 }
 
 .text-right {
@@ -355,7 +388,7 @@ img {
     }
 
     .addon-update-available {
-      color: $artifact;
+      display: inline-block;
     }
   }
 }
@@ -486,4 +519,21 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
 }

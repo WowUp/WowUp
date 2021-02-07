@@ -9,6 +9,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { ElectronService } from "../../services";
 import { BehaviorSubject } from "rxjs";
 import { MatModule } from "../../mat-module";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("TitlebarComponent", () => {
   let component: TitlebarComponent;
@@ -22,16 +23,21 @@ describe("TitlebarComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["on"], {
       windowMaximized$: new BehaviorSubject(false).asObservable(),
     });
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
-      getThemeLogoPath: () => "",
-    }, {
-      currentTheme: "horde ofc",
-    });
+    wowUpServiceSpy = jasmine.createSpyObj(
+      "WowUpService",
+      {
+        getThemeLogoPath: () => "",
+      },
+      {
+        currentTheme: "horde ofc",
+      }
+    );
 
     await TestBed.configureTestingModule({
       declarations: [TitlebarComponent],
       imports: [
         MatModule,
+        NoopAnimationsModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {
@@ -43,16 +49,19 @@ describe("TitlebarComponent", () => {
             provide: TranslateCompiler,
             useClass: TranslateMessageFormatCompiler,
           },
-        })
+        }),
       ],
-    }).overrideComponent(TitlebarComponent, {
-      set: {
-        providers: [
-          OverlayContainer,
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-        ]},
-    }).compileComponents();
+    })
+      .overrideComponent(TitlebarComponent, {
+        set: {
+          providers: [
+            OverlayContainer,
+            { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: WowUpService, useValue: wowUpServiceSpy },
+          ],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(TitlebarComponent);
     component = fixture.componentInstance;
