@@ -107,7 +107,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this._electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
-	  this._electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
+	this._electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
 
     from(this._electronService.getAppOptions())
       .pipe(
@@ -116,7 +116,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         map((appOptions) => {
           this.showPreLoad = false;
           this.quitEnabled = appOptions.quit;
-		  this.openInstallFromUrlDialog(appOptions.install);
+		      this.openInstallFromUrlDialog(appOptions.install);
           this._cdRef.detectChanges();
         }),
         catchError((err) => {

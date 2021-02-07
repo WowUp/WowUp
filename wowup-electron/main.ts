@@ -29,7 +29,7 @@ import {
   WINDOW_MIN_HEIGHT,
   WINDOW_MIN_WIDTH,
   IPC_REQUEST_INSTALL_FROM_URL,
-  APP_PROTOCOL_NAME
+  APP_PROTOCOL_NAME,
   WOWUP_LOGO_FILENAME,
 } from "./src/common/constants";
 import { AppOptions } from "./src/common/wowup/app-options";
