@@ -135,7 +135,7 @@
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Aktualisierungen für {addonName} konnten nicht überprüft werden.\nBitte überprüfe, ob das Repository korrekt ist, oder setze dieses Addon so, dass es ignoriert wird."
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Aktualisierungen für {addonName} konnten nicht überprüft werden.\nBitte überprüfen, ob das Repository korrekt ist, oder stelle das Addon auf 'Ignoriert' ein."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
@@ -150,7 +150,7 @@
       "BY_AUTHOR": "Von {authorName}",
       "CHANGELOG_TAB": "Änderungsverlauf",
       "COPY_ADDON_ID_SNACKBAR": "Addon ID in die Zwischenablage kopiert",
-      "COPY_ADDON_ID_TOOLTIP": "Kopiere die Addon ID in die Zwischenablage",
+      "COPY_ADDON_ID_TOOLTIP": "Addon ID in die Zwischenablage kopieren",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Unterstütze diesen Autor",
