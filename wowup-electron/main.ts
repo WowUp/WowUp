@@ -114,7 +114,7 @@ if (!singleInstanceLock) {
           win.webContents.send(IPC_REQUEST_INSTALL_FROM_URL, url.searchParams.get("install"));
           return;
         }
-      } catch { }
+      } catch { log.info("Failed to load as URI: " + arg); }
     });
 
     const argv = minimist(args.slice(1), {
