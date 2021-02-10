@@ -1269,8 +1269,18 @@ export class AddonService {
       const addons = this._addonStorage.getAllForClientType(clientType);
       for (const addon of addons) {
         await this.backfillAddon(addon);
+        await this.backfillAddonInstalledFolderList(addon);
       }
     }
+  }
+
+  private async backfillAddonInstalledFolderList(addon: Addon): Promise<void> {
+    if (addon.installedFolderList) {
+      return;
+    }
+
+    addon.installedFolderList = addon.installedFolders?.split(",") ?? [];
+    this.saveAddon(addon);
   }
 
   public async backfillAddon(addon: Addon): Promise<void> {
