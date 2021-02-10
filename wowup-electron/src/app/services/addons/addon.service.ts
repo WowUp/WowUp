@@ -1269,12 +1269,12 @@ export class AddonService {
       const addons = this._addonStorage.getAllForClientType(clientType);
       for (const addon of addons) {
         await this.backfillAddon(addon);
-        await this.backfillAddonInstalledFolderList(addon);
+        this.backfillAddonInstalledFolderList(addon);
       }
     }
   }
 
-  private async backfillAddonInstalledFolderList(addon: Addon): Promise<void> {
+  private backfillAddonInstalledFolderList(addon: Addon): void {
     if (addon.installedFolderList) {
       return;
     }

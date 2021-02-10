@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.2",
+      "changes": ["Always backfill install folder list"]
+    },
+    {
       "Version": "2.1.1",
       "changes": ["Fix an issue with fresh TukUI/ElvUI installs"]
     },
