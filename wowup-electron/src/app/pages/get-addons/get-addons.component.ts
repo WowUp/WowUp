@@ -33,9 +33,9 @@ import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { ADDON_PROVIDER_HUB } from "common/constants";
-import { SnackbarService } from "app/services/snackbar/snackbar.service";
-import { GenericProviderError } from "app/errors";
+import { ADDON_PROVIDER_HUB } from "../../../common/constants";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
+import { GenericProviderError } from "../../errors";
 
 class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
   constructor(private subject: BehaviorSubject<GetAddonListItem[]>) {
@@ -131,8 +131,8 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource = new AddonListItemDataSource(this._dataSubject);
 
     const sortOrder = this._wowUpService.getAddonsSortOrder;
-    this.activeSort = sortOrder.name;
-    this.activeSortDirection = sortOrder.direction;
+    this.activeSort = sortOrder?.name ?? "";
+    this.activeSortDirection = sortOrder?.direction ?? "";
 
     _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this._isSelectedTab = tabIndex === this.tabIndex;
