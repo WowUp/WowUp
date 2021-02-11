@@ -8,8 +8,9 @@
       <mat-form-field>
         <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
         <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
-          [disabled]="isBusy === true">
-          <mat-option [value]="clientType.value" *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
+          [disabled]="(isBusy$ | async) === true">
+          <mat-option [value]="clientType.value"
+            *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
             {{ clientType.display | translate }}
           </mat-option>
         </mat-select>
@@ -39,16 +40,17 @@
     </div>
   </div>
 
-  <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
+  <div class="spinner-container flex-grow-1" *ngIf="(isBusy$ | async) === true">
     <app-progress-spinner> </app-progress-spinner>
   </div>
 
-  <div *ngIf="isBusy === false && dataSource.data.length === 0" class="no-addons-container flex-grow-1 text-1">
+  <div *ngIf="(isBusy$ | async) === false && (hasData$ | async) === false"
+    class="no-addons-container flex-grow-1 text-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <div class="table-container flex-grow-1" [hidden]="isBusy === true || dataSource.data.length === 0">
-    <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
+  <div class="table-container flex-grow-1" [hidden]="(isBusy$ | async) === true || (hasData$ | async) === false">
+    <table #table mat-table matSort (matSortChange)="onSortChange($event)" [dataSource]="dataSource"
       [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
       <ng-container matColumnDef="name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef>
