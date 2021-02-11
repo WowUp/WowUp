@@ -140,6 +140,7 @@
     "PROGRESS_SPINNER": {
       "LOADING": "正在載入..."
     },
+    "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "未找到插件"
     }

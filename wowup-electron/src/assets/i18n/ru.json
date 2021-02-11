@@ -140,6 +140,7 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
     },
+    "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Модификаций не найдено"
     }

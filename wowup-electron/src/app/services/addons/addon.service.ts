@@ -22,7 +22,7 @@ import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { Addon, AddonExternalId } from "../../entities/addon";
-import { AddonScanError, AddonSyncError } from "../../errors";
+import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependency } from "../../models/wowup/addon-dependency";
@@ -80,7 +80,7 @@ export class AddonService {
   private readonly _installErrorSrc = new Subject<Error>();
   private readonly _syncErrorSrc = new Subject<AddonSyncError>();
   private readonly _scanErrorSrc = new Subject<AddonScanError>();
-  private readonly _searchErrorSrc = new Subject<Error>();
+  private readonly _searchErrorSrc = new Subject<GenericProviderError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
@@ -231,7 +231,7 @@ export class AddonService {
         return await p.searchByQuery(query, clientType);
       } catch (e) {
         console.error(`Failed during search: ${p.name}`, e);
-        this._searchErrorSrc.next(e);
+        this._searchErrorSrc.next(new GenericProviderError(e, p.name));
         return [];
       }
     });
@@ -1236,6 +1236,7 @@ export class AddonService {
           return await p.getFeaturedAddons(clientType);
         } catch (e) {
           console.error(`Failed to get featured addons: ${p.name}`, e);
+          this._searchErrorSrc.next(new GenericProviderError(e, p.name));
           return [];
         }
       })

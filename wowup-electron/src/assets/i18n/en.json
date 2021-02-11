@@ -140,6 +140,7 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Loading..."
     },
+    "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "No addons found"
     }

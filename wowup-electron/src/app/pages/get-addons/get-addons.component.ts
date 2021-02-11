@@ -35,6 +35,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ADDON_PROVIDER_HUB } from "common/constants";
 import { SnackbarService } from "app/services/snackbar/snackbar.service";
+import { GenericProviderError } from "app/errors";
 
 class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
   constructor(private subject: BehaviorSubject<GetAddonListItem[]>) {
@@ -145,8 +146,8 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this._subscriptions.push(
-      this._addonService.searchError$.subscribe(() => {
-        this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
+      this._addonService.searchError$.subscribe((error) => {
+        this.displayError(error);
       })
     );
 
@@ -277,7 +278,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
         }),
         catchError((error) => {
           console.error(error);
-          this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
+          this.displayError(error);
           this._dataSubject.next([]);
           this._isBusySubject.next(false);
           return of(undefined);
@@ -322,18 +323,21 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this._isBusySubject.next(true);
 
-    this._addonService.getFeaturedAddons(clientType).subscribe({
-      next: (addons) => {
+    this._addonService
+      .getFeaturedAddons(clientType)
+      .pipe(
+        catchError((error) => {
+          console.error(`getFeaturedAddons failed`, error);
+          return of([]);
+        })
+      )
+      .subscribe((addons) => {
         console.debug(addons);
         const listItems = this.formatAddons(addons);
         this._dataSubject.next(listItems);
         // this.setDataSource(listItems);
         this._isBusySubject.next(false);
-      },
-      error: (err) => {
-        console.error(err);
-      },
-    });
+      });
   }
 
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
@@ -361,5 +365,17 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
         : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);
+  }
+
+  private displayError(error: Error) {
+    if (error instanceof GenericProviderError) {
+      this._snackbarService.showErrorSnackbar("COMMON.PROVIDER_ERROR", {
+        localeArgs: {
+          providerName: error.message,
+        },
+      });
+    } else {
+      this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
+    }
   }
 }

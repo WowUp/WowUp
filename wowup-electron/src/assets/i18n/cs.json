@@ -140,6 +140,7 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Nahrávám..."
     },
+    "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Žádné addony nebyly nalezeny"
     }
