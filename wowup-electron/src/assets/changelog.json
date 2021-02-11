@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.1",
+      "changes": ["Rework sorting to be simpler in 'Get Addons'", "Add better error reporting for 'Get Addons'"]
+    },
+    {
       "Version": "2.1.2",
       "changes": ["Always backfill install folder list"]
     },
