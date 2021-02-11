@@ -2,7 +2,7 @@
   "ChangeLogs": [
     {
       "Version": "2.2.0-beta.1",
-      "changes": ["Rework sorting to be simpler in 'Get Addons'", "Add better error reporting for 'Get Addons'"]
+      "changes": ["Rework sorting to be simpler in 'Get Addons'", "Add better error reporting for 'Get Addons'", "Update Angular"]
     },
     {
       "Version": "2.1.2",
