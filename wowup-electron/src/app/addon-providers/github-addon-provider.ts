@@ -1,6 +1,5 @@
 import * as _ from "lodash";
-import { forkJoin, from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { from, Observable } from "rxjs";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
@@ -78,7 +77,7 @@ export class GitHubAddonProvider extends AddonProvider {
   public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
     const repoPath = addonUri.pathname;
     if (!repoPath) {
-      throw new Error(`Invalid URL: ${addonUri}`);
+      throw new Error(`Invalid URL: ${addonUri.toString()}`);
     }
 
     try {
@@ -124,15 +123,6 @@ export class GitHubAddonProvider extends AddonProvider {
   private createExternalId(addonUri: URL) {
     const parsed = this.parseRepoPath(addonUri.pathname);
     return `${parsed.owner}/${parsed.repository}`;
-  }
-
-  public async searchByName(
-    addonName: string,
-    folderName: string,
-    clientType: WowClientType,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    return [];
   }
 
   public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
@@ -301,7 +291,7 @@ export class GitHubAddonProvider extends AddonProvider {
     return parseInt(headers.get(key), 10);
   }
 
-  private async getWithRateLimit<T>(url: URL | string, defaultValue = undefined): Promise<T> {
+  private async getWithRateLimit<T>(url: URL | string): Promise<T> {
     try {
       return await this._httpClient.get<T>(url.toString()).toPromise();
     } catch (e) {
