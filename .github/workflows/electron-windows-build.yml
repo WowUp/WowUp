@@ -48,7 +48,3 @@ jobs:
           CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
         run: cd ./wowup-electron && npm i && npm run electron:publish
-
-      - name: Upload Wait?
-        if: matrix.os == 'windows-latest'
-        run: timeout /t 5 /nobreak
