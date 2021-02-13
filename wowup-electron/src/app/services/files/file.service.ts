@@ -84,8 +84,8 @@ export class FileService {
     return await this._electronService.invoke(IPC_WRITE_FILE_CHANNEL, sourcePath, contents);
   }
 
-  public async listDirectories(sourcePath: string): Promise<string[]> {
-    return await this._electronService.invoke(IPC_LIST_DIRECTORIES_CHANNEL, sourcePath);
+  public async listDirectories(sourcePath: string, scanSymlinks = false): Promise<string[]> {
+    return await this._electronService.invoke(IPC_LIST_DIRECTORIES_CHANNEL, sourcePath, scanSymlinks);
   }
 
   public readdir(dirPath: string): Promise<string[]> {

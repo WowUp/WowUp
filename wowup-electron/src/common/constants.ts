@@ -66,6 +66,7 @@ export const DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX = "_default_addon_channel";
 export const DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX = "_default_auto_update";
 export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_client_type";
 export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY = "use_hardware_acceleration";
+export const USE_SYMLINK_MODE_PREFERENCE_KEY = "use_symlink_mode";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";

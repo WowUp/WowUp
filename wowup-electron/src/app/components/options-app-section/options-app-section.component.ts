@@ -18,6 +18,8 @@ import {
   HORDE_THEME,
 } from "../../../common/constants";
 import { ZOOM_SCALE } from "../../utils/zoom.utils";
+import { catchError, map, switchMap } from "rxjs/operators";
+import { from, of } from "rxjs";
 
 interface LocaleListItem {
   localeId: string;
@@ -34,6 +36,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public minimizeOnCloseDescription = "";
   public startMinimized = false;
   public startWithSystem = false;
+  public useSymlinkMode = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage = "";
@@ -102,6 +105,7 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startWithSystem = this.wowupService.getStartWithSystem();
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
+    this.useSymlinkMode = this.wowupService.useSymlinkMode;
 
     this.initScale().catch((e) => console.error(e));
 
@@ -155,15 +159,58 @@ export class OptionsAppSectionComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        evt.source.checked = !evt.source.checked;
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.checked = !evt.source.checked;
+            return of(undefined);
+          }
 
-      this.wowupService.useHardwareAcceleration = evt.checked;
-      this.electronService.restartApplication();
+          this.wowupService.useHardwareAcceleration = evt.checked;
+          return from(this.electronService.restartApplication());
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  };
+
+  onSymlinkModeChange = (evt: MatSlideToggleChange): void => {
+    if (evt.checked === false) {
+      this.wowupService.useSymlinkMode = false;
+      return;
+    }
+
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL"),
+        message: this._translateService.instant(
+          "PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION"
+        ),
+      },
     });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        map((result) => {
+          if (!result) {
+            evt.source.checked = !evt.source.checked;
+            return of(undefined);
+          }
+
+          this.wowupService.useSymlinkMode = evt.checked;
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   };
 
   onCurrentLanguageChange = (evt: MatSelectChange): void => {
@@ -174,15 +221,24 @@ export class OptionsAppSectionComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        evt.source.value = this.wowupService.currentLanguage;
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.value = this.wowupService.currentLanguage;
+            return of(undefined);
+          }
 
-      this.wowupService.currentLanguage = evt.value;
-      this.electronService.restartApplication();
-    });
+          this.wowupService.currentLanguage = evt.value;
+          return from(this.electronService.restartApplication());
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   };
 
   public onScaleChange = async (evt: MatSelectChange): Promise<void> => {

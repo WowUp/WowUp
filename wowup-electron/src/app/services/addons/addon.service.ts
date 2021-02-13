@@ -571,7 +571,7 @@ export class AddonService {
     const clientTypes = await this._warcraftService.getWowClientTypes();
     for (const clientType of clientTypes) {
       const clientTypeName = this._warcraftService.getClientFolderName(clientType);
-      const addonFolders = await this._warcraftService.listAddons(clientType);
+      const addonFolders = await this._warcraftService.listAddons(clientType, this._wowUpService.useSymlinkMode);
 
       const curseMap = {};
       const curseScanResults = await curseProvider.getScanResults(addonFolders);
@@ -1020,7 +1020,7 @@ export class AddonService {
 
     try {
       const defaultAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
-      const addonFolders = await this._warcraftService.listAddons(clientType);
+      const addonFolders = await this._warcraftService.listAddons(clientType, this._wowUpService.useSymlinkMode);
 
       await this.removeGitFolders(addonFolders);
 

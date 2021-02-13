@@ -37,6 +37,7 @@ import {
   DEFAULT_LIGHT_THEME,
   ADDON_MIGRATION_VERSION_KEY,
   IPC_GET_APP_VERSION,
+  USE_SYMLINK_MODE_PREFERENCE_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
@@ -190,6 +191,17 @@ export class WowUpService {
 
   public set useHardwareAcceleration(value: boolean) {
     const key = USE_HARDWARE_ACCELERATION_PREFERENCE_KEY;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
+  }
+
+  public get useSymlinkMode(): boolean {
+    const preference = this._preferenceStorageService.findByKey(USE_SYMLINK_MODE_PREFERENCE_KEY);
+    return preference === "true";
+  }
+
+  public set useSymlinkMode(value: boolean) {
+    const key = USE_SYMLINK_MODE_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
@@ -424,6 +436,7 @@ export class WowUpService {
     this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
     this.setDefaultPreference(CURRENT_THEME_KEY, DEFAULT_THEME);
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, await this.getDefaultReleaseChannel());
+    this.setDefaultPreference(USE_SYMLINK_MODE_PREFERENCE_KEY, false);
     this.setDefaultClientPreferences();
   }
 

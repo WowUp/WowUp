@@ -344,7 +344,11 @@
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬件加速可能会提高 FPS 并修复其他渲染问题。更改此项需要重新启动。",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "禁用硬件加速需要重新启动 WowUp。",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "启用硬件加速需要重新启动 WowUp。",
-        "USE_HARDWARE_ACCELERATION_LABEL": "启用硬件加速"
+        "USE_HARDWARE_ACCELERATION_LABEL": "启用硬件加速",
+        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "转储调试数据",

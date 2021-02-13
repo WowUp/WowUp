@@ -97,6 +97,19 @@
     </div>
     <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DESCRIPTION" | translate }}</small>
   </div>
+  <!-- SYMLINK SUPPORT -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [(checked)]="useSymlinkMode" (change)="onSymlinkModeChange($event)">
+      </mat-slide-toggle>
+    </div>
+    <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT_DESCRIPTION" | translate }}</small>
+  </div>
   <!-- START WITH SYSTEM -->
   <div class="toggle">
     <div class="row align-items-center">
