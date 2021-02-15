@@ -140,7 +140,7 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Cargando..."
     },
-    "PROVIDER_ERROR": "Error contacting {providerName}",
+    "PROVIDER_ERROR": "Error al contactar con {providerName}",
     "SEARCH": {
       "NO_ADDONS": "No se encontraron addons"
     }
@@ -345,10 +345,10 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Desactivar la aceleración por hardware requiere reinicar la aplicación.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Activar la aceleración por hardware requiere reinicar la aplicación.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Activar aceleración por hardware",
-        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
+        "USE_SYMLINK_SUPPORT": "Activar soporte de enlaces simbólicos (symlink)",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Activar el soporte de enlaces simbólicos permite a WowUp reconocerlos durante el reescaneo. Advertencia: Si no sabe lo que es un enlace simbólico, no necesita activar esto. Al actualizar addons, los enlaces simbólicos serán reemplazados por copias de las carpetas y el enlace se perderá.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "¿Activar soporte de enlaces simbólicos?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons. Advertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Eliminar datos de depuración",
@@ -366,7 +366,7 @@
         "DEBUG": "Depuración"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada.",
+        "AUTO_UPDATE_DESCRIPTION": "Los addons instalados después de activar esta opción se configurarán para actualizarse automáticamente de forma predeterminada. No afecta a los addons instalados con anterioridad.",
         "AUTO_UPDATE_LABEL": "Actualización automática",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "¿Quiere borrar la ruta de instalación de la versión {clientName}? Esto eliminará toda la información sobre los addons almacenada para este cliente de WoW.\n\nLas carpetas de los addons no serán eliminadas.",
