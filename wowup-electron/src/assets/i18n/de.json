@@ -345,10 +345,10 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Beim Deaktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Beim Aktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Hardwarebeschleunigung aktivieren",
-        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
+        "USE_SYMLINK_SUPPORT": "Symlink-Unterstützung aktivieren",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Durch Aktivieren der Symlink-Unterstützung kann WowUp Symlinks erkennen, wenn ein erneuter Scan durchgeführt wird. Warnung: Wenn du nicht weißt, was ein Symlink ist, brauchst du dies nicht. Beim Aktualisieren werden Symlinks derzeit durch einen tatsächlichen Ordner ersetzt und der Link geht verloren.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Symlink-Unterstützung aktivieren?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren / Installieren ersetzt."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten speichern",
