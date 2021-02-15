@@ -72,7 +72,7 @@
   </div>
 
   <div class="table-container bg-secondary-2 flex-grow-1" [hidden]="isBusy === true || sortedListItems.length === 0">
-    <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
+    <table #table mat-table matSort (matSortChange)="onSortChange($event)" [dataSource]="dataSource"
       [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8"
       (click)="onTableBlur($event)">
 

@@ -22,7 +22,7 @@ import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { Addon, AddonExternalId } from "../../entities/addon";
-import { AddonScanError, AddonSyncError } from "../../errors";
+import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependency } from "../../models/wowup/addon-dependency";
@@ -80,6 +80,7 @@ export class AddonService {
   private readonly _installErrorSrc = new Subject<Error>();
   private readonly _syncErrorSrc = new Subject<AddonSyncError>();
   private readonly _scanErrorSrc = new Subject<AddonScanError>();
+  private readonly _searchErrorSrc = new Subject<GenericProviderError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
@@ -88,6 +89,7 @@ export class AddonService {
   public readonly installError$ = this._installErrorSrc.asObservable();
   public readonly syncError$ = this._syncErrorSrc.asObservable();
   public readonly scanError$ = this._scanErrorSrc.asObservable();
+  public readonly searchError$ = this._searchErrorSrc.asObservable();
 
   constructor(
     private _addonStorage: AddonStorageService,
@@ -224,11 +226,12 @@ export class AddonService {
   }
 
   public async search(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    const searchTasks = this.getEnabledAddonProviders().map(async (p) => {
+    const searchTasks: Promise<AddonSearchResult[]>[] = this.getEnabledAddonProviders().map(async (p) => {
       try {
         return await p.searchByQuery(query, clientType);
       } catch (e) {
         console.error(`Failed during search: ${p.name}`, e);
+        this._searchErrorSrc.next(new GenericProviderError(e, p.name));
         return [];
       }
     });
@@ -568,7 +571,7 @@ export class AddonService {
     const clientTypes = await this._warcraftService.getWowClientTypes();
     for (const clientType of clientTypes) {
       const clientTypeName = this._warcraftService.getClientFolderName(clientType);
-      const addonFolders = await this._warcraftService.listAddons(clientType);
+      const addonFolders = await this._warcraftService.listAddons(clientType, this._wowUpService.useSymlinkMode);
 
       const curseMap = {};
       const curseScanResults = await curseProvider.getScanResults(addonFolders);
@@ -1017,7 +1020,7 @@ export class AddonService {
 
     try {
       const defaultAddonChannel = this._wowUpService.getDefaultAddonChannel(clientType);
-      const addonFolders = await this._warcraftService.listAddons(clientType);
+      const addonFolders = await this._warcraftService.listAddons(clientType, this._wowUpService.useSymlinkMode);
 
       await this.removeGitFolders(addonFolders);
 
@@ -1233,6 +1236,7 @@ export class AddonService {
           return await p.getFeaturedAddons(clientType);
         } catch (e) {
           console.error(`Failed to get featured addons: ${p.name}`, e);
+          this._searchErrorSrc.next(new GenericProviderError(e, p.name));
           return [];
         }
       })
@@ -1269,8 +1273,18 @@ export class AddonService {
       const addons = this._addonStorage.getAllForClientType(clientType);
       for (const addon of addons) {
         await this.backfillAddon(addon);
+        this.backfillAddonInstalledFolderList(addon);
       }
     }
+  }
+
+  private backfillAddonInstalledFolderList(addon: Addon): void {
+    if (addon.installedFolderList) {
+      return;
+    }
+
+    addon.installedFolderList = addon.installedFolders?.split(",") ?? [];
+    this.saveAddon(addon);
   }
 
   public async backfillAddon(addon: Addon): Promise<void> {

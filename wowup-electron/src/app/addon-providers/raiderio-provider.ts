@@ -24,7 +24,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
     super();
   }
 
-  public async scan(
+  public scan(
     clientType: WowClientType,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
@@ -71,6 +71,8 @@ export class RaiderIoAddonProvider extends AddonProvider {
         externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
       };
     }
+
+    return Promise.resolve(undefined);
   }
 
   private isRaiderIo(addonFolder: AddonFolder) {

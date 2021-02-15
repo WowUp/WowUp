@@ -44,7 +44,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
     const searchResults: AddonSearchResult[] = [];
 
-    for (let addonId of addonIds) {
+    for (const addonId of addonIds) {
       const result = await this.getById(addonId, clientType).toPromise();
       if (result == null) {
         continue;
@@ -64,23 +64,23 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return addon.changeLog;
   }
 
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
+  public getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
+    return Promise.resolve([]);
   }
 
-  async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
+  searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
+    return Promise.resolve([]);
   }
 
   async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
-      throw new Error(`Addon ID not found ${addonUri}`);
+      throw new Error(`Addon ID not found ${addonUri.toString()}`);
     }
 
     const addon = await this.getAddonDetails(addonId);
     if (addon == null) {
-      throw new Error(`Bad addon api response ${addonUri}`);
+      throw new Error(`Bad addon api response ${addonUri.toString()}`);
     }
 
     return this.toAddonSearchResult(addon);
@@ -118,7 +118,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    for (let addonFolder of addonFolders) {
+    for (const addonFolder of addonFolders) {
       if (!addonFolder?.toc?.wowInterfaceId) {
         continue;
       }
@@ -143,7 +143,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       return infoUrlMatch[1];
     }
 
-    throw new Error(`Unhandled URL: ${addonUri}`);
+    throw new Error(`Unhandled URL: ${addonUri.toString()}`);
   }
 
   private getAddonDetails = async (addonId: string): Promise<AddonDetailsResponse> => {

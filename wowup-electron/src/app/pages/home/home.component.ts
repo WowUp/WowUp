@@ -109,7 +109,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async migrateAddons(clientTypes: WowClientType[]) {
-    if (!clientTypes || !(await this._wowupService.shouldMigrateAddons())) {
+    const shouldMigrate = await this._wowupService.shouldMigrateAddons();
+    if (!clientTypes || !shouldMigrate) {
       return clientTypes;
     }
 
@@ -162,7 +163,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     });
 
     if (error.innerError instanceof GitHubLimitError) {
-      const err = error.innerError as GitHubLimitError;
+      const err = error.innerError;
       const max = err.rateLimitMax;
       const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
       errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {

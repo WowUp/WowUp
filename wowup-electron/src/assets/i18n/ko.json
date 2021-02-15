@@ -140,6 +140,7 @@
     "PROGRESS_SPINNER": {
       "LOADING": "불러오는 중..."
     },
+    "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "애드온을 찾을 수 없습니다"
     }
@@ -345,7 +346,11 @@
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "FPS 문제 등 렌더링 이슈를 겪고 있다면 하드웨어 가속을 비활성화해보세요. 변경 시 재시작이 필요합니다",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "하드웨어 가속을 비활성화 하려면 재시작이 필요합니다.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "하드웨어 가속을 활성화 하려면 재시작이 필요합니다.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "하드웨어 가속 활성화"
+        "USE_HARDWARE_ACCELERATION_LABEL": "하드웨어 가속 활성화",
+        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "디버그 데이터 덤프",

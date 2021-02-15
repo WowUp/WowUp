@@ -20,7 +20,7 @@ import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
-import { MatSort } from "@angular/material/sort";
+import { MatSort, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -44,6 +44,18 @@ import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 
+class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
+  constructor(private subject: BehaviorSubject<AddonViewModel[]>) {
+    super();
+  }
+
+  connect(): BehaviorSubject<any[]> {
+    return this.subject;
+  }
+
+  disconnect(): void {}
+}
+
 @Component({
   selector: "app-my-addons",
   templateUrl: "./my-addons.component.html",
@@ -61,20 +73,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatSort, { static: false }) sort: MatSort;
   @ViewChild("table", { static: false, read: ElementRef }) table: ElementRef;
 
-  private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>([]);
+  // private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>([]);
   private readonly _operationErrorSrc = new Subject<Error>();
 
   private subscriptions: Subscription[] = [];
   private isSelectedTab = false;
   private _lazyLoaded = false;
-  private _automaticSort = false;
+  private _dataSubject = new BehaviorSubject<AddonViewModel[]>([]);
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
   public sortedListItems: AddonViewModel[] = [];
   public spinnerMessage = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
-  public dataSource = new MatTableDataSource<AddonViewModel>([]);
+  public dataSource: ListItemDataSource;
   public filter = "";
   public enableUpdateAll = false;
   public activeSort = "sortOrder";
@@ -85,6 +97,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public overlayRef: OverlayRef | null;
   public isBusy = true;
   public enableControls = true;
+  public data$ = this._dataSubject.asObservable();
 
   public columns: ColumnState[] = [
     {
@@ -159,11 +172,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     public warcraftService: WarcraftService,
     public wowUpService: WowUpService
   ) {
+    this.dataSource = new ListItemDataSource(this._dataSubject);
+
+    const sortOrder = this.wowUpService.myAddonsSortOrder;
+    this.activeSort = sortOrder?.name ?? "";
+    this.activeSortDirection = sortOrder?.direction ?? "";
+
     this.subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
       this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent),
       this.addonService.addonRemoved$.subscribe(this.onAddonRemoved),
-      this._displayAddonsSrc.subscribe(this.onDisplayAddonsChange),
+      // this._displayAddonsSrc.subscribe(this.onDisplayAddonsChange),
       this.dataSource.connect().subscribe(this.onDataSourceChange)
     );
   }
@@ -225,37 +244,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.columns.find((column) => column.name === "addon.latestVersion").visible;
   }
 
-  public onSortChange(): void {
-    if (this._automaticSort) {
-      return;
-    }
-
-    if (this.table) {
-      this.table.nativeElement.scrollIntoView({ behavior: "smooth" });
-    }
-
+  public onSortChange(sort: Sort): void {
+    const sortedData = this.sortAddons(this._dataSubject.value.slice(), sort);
     this.wowUpService.myAddonsSortOrder = {
       name: this.sort.active,
       direction: this.sort.direction,
     };
-  }
 
-  /**
-   * This method should recall the stored column sort state
-   * this method needs _automaticSort to prevent the sort from changing
-   */
-  private loadSortOrder = () => {
-    const sortOrder = this.wowUpService.myAddonsSortOrder;
-    if (sortOrder && this.sort) {
-      this.activeSort = sortOrder.name;
-      this.activeSortDirection = sortOrder.direction;
-      this._automaticSort = true;
-      this.sort.active = sortOrder.name;
-      this.sort.direction = sortOrder.direction;
-      this.sort.sortChange.emit();
-      this._automaticSort = false;
-    }
-  };
+    this.activeSort = this.sort.active;
+    this.activeSortDirection = this.sort.direction;
+
+    this._dataSubject.next(sortedData);
+  }
 
   public onRefresh(): void {
     this.isBusy = true;
@@ -337,12 +337,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.filterAddons();
   }
 
+  // TODO change this to rely on addon service now view models
   public async onUpdateAll(): Promise<void> {
     this.enableControls = false;
 
     try {
       const listItems = _.filter(
-        this._displayAddonsSrc.value,
+        this._dataSubject.value,
         (listItem) =>
           !listItem.addon.isIgnored && !listItem.isInstalling && (listItem.needsInstall() || listItem.needsUpdate())
       );
@@ -391,7 +392,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     event.preventDefault();
     this.updateContextMenuPosition(event);
 
-    const selectedItems = this._displayAddonsSrc.value.filter((item) => item.selected);
+    const selectedItems = this._dataSubject.value.filter((item) => item.selected);
     if (selectedItems.length > 1) {
       this.multiContextMenu.menuData = { listItems: selectedItems };
       this.multiContextMenu.menu.focusFirstItem("mouse");
@@ -575,10 +576,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       this.addonService.saveAddon(listItem.addon);
     });
-
-    if (!this.sort.active) {
-      this.sortTable(this.dataSource);
-    }
   }
 
   public onClickAutoUpdateAddon(listItem: AddonViewModel): void {
@@ -595,10 +592,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.addonService.saveAddon(listItem.addon);
       });
-
-      if (!this.sort.active) {
-        this.sortTable(this.dataSource);
-      }
 
       if (isAutoUpdate) {
         this.addonService.processAutoUpdates().catch((e) => console.error(e));
@@ -709,10 +702,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.push(selectedClientSubscription);
   }
 
-  private sortTable(dataSource: MatTableDataSource<AddonViewModel>): void {
-    this.dataSource.data = this.sortListItems(dataSource.data, dataSource.sort);
-  }
-
   private async updateAllWithSpinner(...clientTypes: WowClientType[]): Promise<void> {
     this.isBusy = true;
     this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS");
@@ -777,6 +766,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextMenuPosition.y = `${event.clientY}px`;
   }
 
+  private sortAddons(addons: AddonViewModel[], sort?: Sort) {
+    console.debug(sort);
+    const direction = (sort?.direction as "asc" | "desc") ?? (this.activeSortDirection as "asc" | "desc");
+    const active = sort?.active ?? this.activeSort;
+
+    if (active === "sortOrder") {
+      return _.orderBy(addons, [active, "addon.name"], [direction, "asc"]);
+    }
+
+    return _.orderBy(addons, [active], [direction]);
+  }
+
   private loadAddons(clientType: WowClientType, rescan = false): Observable<void> {
     this.isBusy = true;
     this.enableControls = false;
@@ -791,8 +792,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         const rowData = this.formatAddons(addons);
         this.enableControls = this.calculateControlState();
 
+        this._dataSubject.next(this.sortAddons(rowData));
         this.isBusy = false;
-        this._displayAddonsSrc.next(rowData);
+        // this._displayAddonsSrc.next(rowData);
         this.setPageContextText();
         this._cdRef.detectChanges();
       }),
@@ -809,28 +811,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private formatAddons(addons: Addon[]): AddonViewModel[] {
-    const listItems = addons.map((addon) => this.createAddonListItem(addon));
-
-    return this.sortListItems(listItems);
-  }
-
-  private sortListItems(listItems: AddonViewModel[], sort?: MatSort) {
-    if (!sort || !sort.active || sort.direction === "") {
-      return _.orderBy(
-        listItems,
-        ["sortOrder", "addon.name"].map((column) => {
-          return (row) => {
-            const value = _.get(row, column);
-            return typeof value === "string" ? value.toLowerCase() : value;
-          };
-        })
-      );
-    }
-    return _.orderBy(
-      listItems,
-      [(listItem) => _.get(listItem, sort.active, "")],
-      [sort.direction === "asc" ? "asc" : "desc"]
-    );
+    return addons.map((addon) => this.createAddonListItem(addon));
   }
 
   private filterListItem = (item: AddonViewModel, filter: string) => {
@@ -855,14 +836,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setPageContextText() {
-    if (!this._displayAddonsSrc.value?.length) {
+    const itemsLength = this._dataSubject.value.length;
+    if (itemsLength === 0) {
       return;
     }
 
     this._sessionService.setContextText(
       this.tabIndex,
       this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED", {
-        count: this._displayAddonsSrc.value.length,
+        count: itemsLength,
       })
     );
   }
@@ -885,7 +867,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
-    let listItems: AddonViewModel[] = [].concat(this._displayAddonsSrc.value);
+    let listItems: AddonViewModel[] = this._dataSubject.value.slice();
     const listItemIdx = listItems.findIndex((li) => li.addon.id === evt.addon.id);
     const listItem = this.createAddonListItem(evt.addon);
     listItem.isInstalling = [
@@ -901,34 +883,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       listItems[listItemIdx] = listItem;
     } else {
       listItems.push(listItem);
-      listItems = this.sortListItems(listItems);
+      listItems = this.sortAddons(listItems);
     }
 
-    this._ngZone.run(() => {
-      this._displayAddonsSrc.next(listItems);
-    });
+    this._dataSubject.next(listItems);
   };
 
   private onAddonRemoved = (addonId: string) => {
-    const addons: AddonViewModel[] = [].concat(this._displayAddonsSrc.value);
+    const addons: AddonViewModel[] = this._dataSubject.value.slice();
     const listItemIdx = addons.findIndex((li) => li.addon.id === addonId);
     addons.splice(listItemIdx, 1);
 
-    this._ngZone.run(() => {
-      this._displayAddonsSrc.next(addons);
-    });
-  };
-
-  private onDisplayAddonsChange = (items: AddonViewModel[]) => {
-    this.dataSource.data = items;
-    this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string) => {
-      const value = _.get(data, sortHeaderId);
-      return typeof value === "string" ? value.toLowerCase() : value;
-    };
-
-    this.dataSource.filterPredicate = this.filterListItem;
-    this.dataSource.sort = this.sort;
-    this.loadSortOrder();
+    this._dataSubject.next(addons);
   };
 
   private onDataSourceChange = (sortedListItems: AddonViewModel[]) => {
@@ -952,10 +918,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private calculateControlState(): boolean {
-    if (!this._displayAddonsSrc.value) {
+    if (!this._dataSubject.value) {
       return true;
     }
 
-    return !this._displayAddonsSrc.value.some((item) => item.isInstalling);
+    return !this._dataSubject.value.some((item) => item.isInstalling);
   }
 }

@@ -67,6 +67,36 @@ import { createTray } from "./system-tray";
 import { createAppMenu } from "./app-menu";
 import { RendererChannels } from "./src/common/wowup";
 
+interface SymlinkDir {
+  original: fs.Dirent;
+  originalPath: string;
+  realPath: string;
+  isDir: boolean;
+}
+
+async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<SymlinkDir[]> {
+  // Find and resolve symlinks found and return the folder names as
+  const symlinks = _.filter(files, (file) => file.isSymbolicLink());
+  const symlinkDirs: SymlinkDir[] = _.map(symlinks, (sym) => {
+    return {
+      original: sym,
+      originalPath: path.join(basePath, sym.name),
+      realPath: "",
+      isDir: false,
+    };
+  });
+
+  for (const symlinkDir of symlinkDirs) {
+    const realPath = await fs.realpath(symlinkDir.originalPath);
+    const lstat = await fs.lstat(realPath);
+
+    symlinkDir.realPath = realPath;
+    symlinkDir.isDir = lstat.isDirectory();
+  }
+
+  return _.filter(symlinkDirs, (symDir) => symDir.isDir);
+}
+
 function handle(
   channel: RendererChannels,
   listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
@@ -143,18 +173,17 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     app.removeAsDefaultProtocolClient(APP_PROTOCOL_NAME);
   })
 
-  handle(IPC_LIST_DIRECTORIES_CHANNEL, (evt, filePath: string) => {
-    return new Promise((resolve, reject) => {
-      readdir(filePath, { withFileTypes: true }, (err, files) => {
-        if (err) {
-          return reject(err);
-        }
+  handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
+    const files = await fs.readdir(filePath, { withFileTypes: true });
+    let symlinkNames: string[] = [];
+    if (scanSymlinks === true) {
+      log.info("Scanning symlinks");
+      const symlinkDirs = await getSymlinkDirs(filePath, files);
+      symlinkNames = _.map(symlinkDirs, (symLink) => symLink.original.name);
+    }
 
-        const directories = files.filter((file) => file.isDirectory()).map((file) => file.name);
-
-        resolve(directories);
-      });
-    });
+    const directories = files.filter((file) => file.isDirectory()).map((file) => file.name);
+    return [...directories, ...symlinkNames];
   });
 
   handle(IPC_STAT_FILES_CHANNEL, async (evt, filePaths: string[]) => {

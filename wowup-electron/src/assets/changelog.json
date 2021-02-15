@@ -1,6 +1,22 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.2",
+      "changes": ["Rework sorting to be simpler in 'My Addons'", "Add optional symlink support"]
+    },
+    {
+      "Version": "2.2.0-beta.1",
+      "changes": [
+        "Rework sorting to be simpler in 'Get Addons'",
+        "Add better error reporting for 'Get Addons'",
+        "Update Angular/Electron"
+      ]
+    },
+    {
+      "Version": "2.1.2",
+      "changes": ["Always backfill install folder list"]
+    },
+    {
       "Version": "2.1.1",
       "changes": ["Fix an issue with fresh TukUI/ElvUI installs"]
     },

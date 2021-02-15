@@ -201,7 +201,7 @@ export class WarcraftService {
     return installedProducts;
   }
 
-  public async listAddons(clientType: WowClientType): Promise<AddonFolder[]> {
+  public async listAddons(clientType: WowClientType, scanSymlinks = false): Promise<AddonFolder[]> {
     const addonFolders: AddonFolder[] = [];
     if (clientType === WowClientType.None) {
       return addonFolders;
@@ -215,7 +215,7 @@ export class WarcraftService {
       return addonFolders;
     }
 
-    const directories = await this._fileService.listDirectories(addonFolderPath);
+    const directories = await this._fileService.listDirectories(addonFolderPath, scanSymlinks);
     const dirPaths = directories.map((dir) => path.join(addonFolderPath, dir));
     const dirStats = await this._fileService.statFiles(dirPaths);
 

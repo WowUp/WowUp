@@ -1,5 +1,5 @@
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
@@ -49,6 +49,9 @@ describe("GetAddonsComponent", () => {
       isWin: false,
       isLinux: true,
       isMac: false,
+    });
+    addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
+      searchError$: new Subject<Error>(),
     });
 
     let testBed = TestBed.configureTestingModule({

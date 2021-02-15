@@ -8,7 +8,7 @@ const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 
 export class WarcraftServiceMac implements WarcraftServiceImpl {
   public async getBlizzardAgentPath(): Promise<string> {
-    const agentPath = join(name, BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
+    const agentPath = join(BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
     const exists = await FileUtils.exists(agentPath);
     return exists ? agentPath : "";
   }
