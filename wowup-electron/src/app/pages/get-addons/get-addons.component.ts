@@ -48,7 +48,6 @@ const PAGESIZE = 20;
 // This is a derivative of the following example but with a subject as a data source
 // https://stackblitz.com/edit/cdk-virtual-table-sticky-header?file=src%2Fapp%2Fapp.component.ts
 class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
-  private readonly _visibleData: BehaviorSubject<GetAddonListItem[]> = new BehaviorSubject([]);
   private readonly _offsetChangeSrc = new BehaviorSubject(0);
 
   // Keep track of the last start position to prevent re-calculation
@@ -85,14 +84,8 @@ class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
     this.viewport.setRenderedContentOffset(this.offset);
     this._offsetChangeSrc.next(this.offset);
     // For some reason the first element is not shown
-    this._visibleData.next([{ ..._.first(slicedData) }, ...slicedData]);
+    this.data = [{ ..._.first(slicedData) }, ...slicedData];
   }
-
-  connect(): BehaviorSubject<any[]> {
-    return this._visibleData;
-  }
-
-  disconnect(): void {}
 }
 
 /**
