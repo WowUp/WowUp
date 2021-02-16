@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, from, of, Subscription } from "rxjs";
 import { catchError, filter, first, map } from "rxjs/operators";
 
 import {
@@ -36,17 +36,76 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { ADDON_PROVIDER_HUB } from "../../../common/constants";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { GenericProviderError } from "../../errors";
+import {
+  CdkVirtualScrollViewport,
+  FixedSizeVirtualScrollStrategy,
+  VIRTUAL_SCROLL_STRATEGY,
+} from "@angular/cdk/scrolling";
 
+const ROW_HEIGHT = 62;
+const PAGESIZE = 20;
+
+// This is a derivative of the following example but with a subject as a data source
+// https://stackblitz.com/edit/cdk-virtual-table-sticky-header?file=src%2Fapp%2Fapp.component.ts
 class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
-  constructor(private subject: BehaviorSubject<GetAddonListItem[]>) {
+  private readonly _visibleData: BehaviorSubject<GetAddonListItem[]> = new BehaviorSubject([]);
+  private readonly _offsetChangeSrc = new BehaviorSubject(0);
+
+  // Keep track of the last start position to prevent re-calculation
+  public currentStart = 0;
+
+  // Current vertical offset in pixels
+  public offset = 0;
+
+  // Notify any listeners when the offset changes
+  public offsetChange$ = this._offsetChangeSrc.asObservable();
+
+  constructor(private subject: BehaviorSubject<GetAddonListItem[]>, private viewport: CdkVirtualScrollViewport) {
     super();
+
+    subject.subscribe((data) => {
+      this.viewport.setTotalContentSize(ROW_HEIGHT * data.length);
+      this.handleNewData(0);
+    });
+
+    this.viewport.elementScrolled().subscribe((evt: any) => {
+      const start = Math.floor(evt.currentTarget.scrollTop / ROW_HEIGHT);
+      if (start !== this.currentStart) {
+        this.currentStart = start;
+        this.handleNewData(start);
+      }
+    });
+  }
+
+  handleNewData(start: number) {
+    const end = start + PAGESIZE;
+    const data = [...this.subject.value];
+    const slicedData = _.slice(data, start, end);
+    this.offset = ROW_HEIGHT * start;
+    this.viewport.setRenderedContentOffset(this.offset);
+    this._offsetChangeSrc.next(this.offset);
+    // For some reason the first element is not shown
+    this._visibleData.next([{ ..._.first(slicedData) }, ...slicedData]);
   }
 
   connect(): BehaviorSubject<any[]> {
-    return this.subject;
+    return this._visibleData;
   }
 
   disconnect(): void {}
+}
+
+/**
+ * Virtual Scroll Strategy
+ */
+export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy {
+  constructor() {
+    super(ROW_HEIGHT, 1000, 2000);
+  }
+
+  attach(viewport: CdkVirtualScrollViewport): void {
+    this.onDataLengthChanged();
+  }
 }
 
 @Component({
@@ -54,6 +113,7 @@ class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
   templateUrl: "./get-addons.component.html",
   styleUrls: ["./get-addons.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{ provide: VIRTUAL_SCROLL_STRATEGY, useClass: CustomVirtualScrollStrategy }],
 })
 export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input("tabIndex") tabIndex: number;
@@ -61,17 +121,19 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("table", { read: ElementRef }) table: ElementRef;
   @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
+  @ViewChild("viewport") viewport: CdkVirtualScrollViewport;
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab = false;
   private _lazyLoaded = false;
   private _automaticSort = false;
-
   private _dataSubject = new BehaviorSubject<GetAddonListItem[]>([]);
   private _isBusySubject = new BehaviorSubject<boolean>(true);
+
   public dataSource: AddonListItemDataSource;
   public activeSort = "downloadCount";
   public activeSortDirection = "desc";
+  public placeholderHeight = 0;
 
   columns: ColumnState[] = [
     { name: "name", display: "PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER", visible: true },
@@ -116,6 +178,11 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
   public isBusy$ = this._isBusySubject.asObservable();
   public data$ = this._dataSubject.asObservable();
   public hasData$ = this.data$.pipe(map((data) => data.length > 0));
+  public readonly showTable$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
+    map(([isBusy, hasData]) => {
+      return isBusy === false && hasData === true;
+    })
+  );
 
   constructor(
     private _addonService: AddonService,
@@ -128,8 +195,6 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
     public electronService: ElectronService,
     public warcraftService: WarcraftService
   ) {
-    this.dataSource = new AddonListItemDataSource(this._dataSubject);
-
     const sortOrder = this._wowUpService.getAddonsSortOrder;
     this.activeSort = sortOrder?.name ?? "";
     this.activeSortDirection = sortOrder?.direction ?? "";
@@ -169,7 +234,20 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
     this._subscriptions = [];
   }
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    this.dataSource = new AddonListItemDataSource(this._dataSubject, this.viewport);
+    this.dataSource.offsetChange$.subscribe((offset) => {
+      this.placeholderHeight = offset;
+    });
+
+    this.viewport.renderedRangeStream.subscribe((value) => {
+      console.debug("renderedRangeStream", value);
+    });
+  }
+
+  placeholderWhen(index: number, _: any) {
+    return index == 0;
+  }
 
   onSortChange(sort: Sort): void {
     const sortedData = this.sortAddons(this._dataSubject.value.slice(), sort);

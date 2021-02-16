@@ -49,7 +49,8 @@
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <div class="table-container flex-grow-1" [hidden]="(isBusy$ | async) === true || (hasData$ | async) === false">
+  <cdk-virtual-scroll-viewport #viewport class="table-container flex-grow-1" itemSize="62"
+    [hidden]="(showTable$ | async) === false">
     <table #table mat-table matSort (matSortChange)="onSortChange($event)" [dataSource]="dataSource"
       [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
       <ng-container matColumnDef="name">
@@ -122,10 +123,16 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="hover-bg-secondary-2"
         (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
+
+      <!-- cdkVirtualScrollViewport uses transform: translateY to correct for all elements that are removed. 
+      We will use a plcaholder row in the table instead because the translate causes problems with the sticky header -->
+      <tr [style.height.px]="placeholderHeight" mat-row
+        *matRowDef="let row; let index = index; columns: []; when: placeholderWhen"></tr>
+
       <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="hover-bg-secondary-2"
-        (dblclick)="onDoubleClickRow(row)"></tr>
+        (dblclick)="onDoubleClickRow(row)">{{i}}</tr>
     </table>
-  </div>
+  </cdk-virtual-scroll-viewport>
 </div>
 
 <!-- COLUMNS CONTEXT MENU -->

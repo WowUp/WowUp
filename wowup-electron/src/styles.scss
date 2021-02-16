@@ -51,6 +51,10 @@ img {
   -webkit-app-region: no-drag;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .rounded {
   border-radius: 4px;
 }
