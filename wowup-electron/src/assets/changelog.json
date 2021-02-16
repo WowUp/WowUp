@@ -1,6 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.3",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Fix filtering for My Addons page",
+        "Add virtual rows to Get Addons page (faster loading)"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.2",
       "changes": ["Rework sorting to be simpler in 'My Addons'", "Add optional symlink support"]
     },
