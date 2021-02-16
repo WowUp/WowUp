@@ -241,7 +241,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  placeholderWhen(index: number, _: any) {
+  placeholderWhen(index: number, _: any): boolean {
     return index == 0;
   }
 
@@ -282,6 +282,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private lazyLoad() {
     if (this._lazyLoaded) {
+      this.viewport.elementRef.nativeElement.dispatchEvent(new CustomEvent("scroll"));
       return;
     }
 

@@ -47,13 +47,20 @@ import { stringIncludes } from "../../utils/string.utils";
 class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
   constructor(private subject: BehaviorSubject<AddonViewModel[]>) {
     super();
+
+    subject.subscribe((data) => {
+      this.data = data;
+    });
   }
 
-  connect(): BehaviorSubject<any[]> {
-    return this.subject;
-  }
-
-  disconnect(): void {}
+  _filterData = (data: AddonViewModel[]): AddonViewModel[] => {
+    const canonicalFilter = this.filter.trim().toLowerCase();
+    const filterData = this.subject?.value ?? [];
+    const results = _.filter(filterData, (model) => {
+      return model.addon.name.toLowerCase().indexOf(canonicalFilter) !== -1;
+    });
+    return results;
+  };
 }
 
 @Component({
