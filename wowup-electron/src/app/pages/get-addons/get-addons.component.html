@@ -49,7 +49,7 @@
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <cdk-virtual-scroll-viewport #viewport class="table-container flex-grow-1" itemSize="62"
+  <cdk-virtual-scroll-viewport #viewport class="table-container" itemSize="62"
     [hidden]="(showTable$ | async) === false">
     <table #table mat-table matSort (matSortChange)="onSortChange($event)" [dataSource]="dataSource"
       [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">

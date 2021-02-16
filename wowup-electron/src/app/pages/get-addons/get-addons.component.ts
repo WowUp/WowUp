@@ -3,6 +3,7 @@ import { BehaviorSubject, combineLatest, from, of, Subscription } from "rxjs";
 import { catchError, filter, first, map } from "rxjs/operators";
 
 import {
+  AfterViewChecked,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -56,6 +57,10 @@ class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
   // Current vertical offset in pixels
   public offset = 0;
 
+  public lastTop = 0;
+
+  public scrollElement: any = undefined;
+
   // Notify any listeners when the offset changes
   public offsetChange$ = this._offsetChangeSrc.asObservable();
 
@@ -68,12 +73,19 @@ class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
     });
 
     this.viewport.elementScrolled().subscribe((evt: any) => {
+      this.scrollElement = evt.currentTarget;
       const start = Math.floor(evt.currentTarget.scrollTop / ROW_HEIGHT);
       if (start !== this.currentStart) {
+        this.lastTop = evt.currentTarget.scrollTop;
         this.currentStart = start;
         this.handleNewData(start);
       }
     });
+  }
+
+  resume() {
+    this.viewport.getElementRef().nativeElement.scrollTop = this.lastTop;
+    this.viewport.getElementRef().nativeElement.dispatchEvent(new CustomEvent("scroll"));
   }
 
   handleNewData(start: number) {
@@ -108,7 +120,7 @@ export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy 
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: VIRTUAL_SCROLL_STRATEGY, useClass: CustomVirtualScrollStrategy }],
 })
-export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, AfterViewChecked {
   @Input("tabIndex") tabIndex: number;
 
   @ViewChild(MatSort) sort: MatSort;
@@ -122,6 +134,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
   private _automaticSort = false;
   private _dataSubject = new BehaviorSubject<GetAddonListItem[]>([]);
   private _isBusySubject = new BehaviorSubject<boolean>(true);
+  private _resumeTable = false;
 
   public dataSource: AddonListItemDataSource;
   public activeSort = "downloadCount";
@@ -202,6 +215,14 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  ngAfterViewChecked(): void {
+    // Wait for the tab to have a height, then if we need to resume the table do so
+    if (this._resumeTable && this.viewport.elementRef.nativeElement.scrollHeight > 0) {
+      this._resumeTable = false;
+      this.dataSource.resume();
+    }
+  }
+
   ngOnInit(): void {
     this._subscriptions.push(
       this._addonService.searchError$.subscribe((error) => {
@@ -275,7 +296,8 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private lazyLoad() {
     if (this._lazyLoaded) {
-      this.viewport.elementRef.nativeElement.dispatchEvent(new CustomEvent("scroll"));
+      // Since we've already loaded the table before, mark that we want to resume scroll position
+      this._resumeTable = true;
       return;
     }
 
