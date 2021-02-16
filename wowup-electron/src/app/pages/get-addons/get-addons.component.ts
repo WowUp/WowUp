@@ -239,10 +239,6 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource.offsetChange$.subscribe((offset) => {
       this.placeholderHeight = offset;
     });
-
-    this.viewport.renderedRangeStream.subscribe((value) => {
-      console.debug("renderedRangeStream", value);
-    });
   }
 
   placeholderWhen(index: number, _: any) {
@@ -393,7 +389,6 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (this._addonService.getEnabledAddonProviders().length === 0) {
       this._dataSubject.next([]);
-      // this.setDataSource([]);
       this._isBusySubject.next(false);
       this._cdRef.detectChanges();
       return;
@@ -410,10 +405,9 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy {
         })
       )
       .subscribe((addons) => {
-        console.debug(addons);
+        console.debug(`Loaded ${addons?.length ?? 0} addons`);
         const listItems = this.formatAddons(addons);
         this._dataSubject.next(listItems);
-        // this.setDataSource(listItems);
         this._isBusySubject.next(false);
       });
   }
