@@ -135,7 +135,7 @@
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Aktualisierungen für {addonName} konnten nicht überprüft werden.\nBitte überprüfe, ob das Repository korrekt ist, oder setze dieses Addon so, dass es ignoriert wird."
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Aktualisierungen für {addonName} konnten nicht überprüft werden.\nBitte überprüfen, ob das Repository korrekt ist, oder stelle das Addon auf 'Ignoriert' ein."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
@@ -151,7 +151,7 @@
       "BY_AUTHOR": "Von {authorName}",
       "CHANGELOG_TAB": "Änderungsverlauf",
       "COPY_ADDON_ID_SNACKBAR": "Addon ID in die Zwischenablage kopiert",
-      "COPY_ADDON_ID_TOOLTIP": "Kopiere die Addon ID in die Zwischenablage",
+      "COPY_ADDON_ID_TOOLTIP": "Addon ID in die Zwischenablage kopieren",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Unterstütze diesen Autor",
@@ -345,10 +345,10 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Beim Deaktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Beim Aktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Hardwarebeschleunigung aktivieren",
-        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
+        "USE_SYMLINK_SUPPORT": "Symlink-Unterstützung aktivieren",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Durch Aktivieren der Symlink-Unterstützung kann WowUp Symlinks erkennen, wenn ein erneuter Scan durchgeführt wird. Warnung: Wenn du nicht weißt, was ein Symlink ist, brauchst du dies nicht. Beim Aktualisieren werden Symlinks derzeit durch einen tatsächlichen Ordner ersetzt und der Link geht verloren.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Symlink-Unterstützung aktivieren?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren / Installieren ersetzt."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten speichern",
