@@ -22,11 +22,12 @@ import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { Addon, AddonExternalId } from "../../entities/addon";
-import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
+import { AddonScanError, AddonSyncError, GenericProviderError, SourceRemovedAddonError } from "../../errors";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonDependency } from "../../models/wowup/addon-dependency";
 import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+import { AddonWarningType } from "../../models/wowup/addon-warning-type";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
@@ -893,6 +894,13 @@ export class AddonService {
         addon = _.find(addons, (a) => a.externalId === addonId);
       }
 
+      if (error instanceof SourceRemovedAddonError) {
+        addon.warningType = AddonWarningType.MissingOnProvider;
+        this._addonStorage.set(addon.id, addon);
+        console.debug("SOURCE REMOVED", addon);
+      }
+
+      console.debug("SYNC ERROR F");
       this._syncErrorSrc.next(
         new AddonSyncError({
           providerName: addonProvider.name,

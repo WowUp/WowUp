@@ -208,7 +208,8 @@
       <div>
         <div class="addon-name">{{ listItem.addon.name }}</div>
         <div class="addon-version">{{ listItem.addon.installedVersion }}</div>
-        <div class="addon-update-available bg-secondary-4 text-2 rounded px-1" *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion">
+        <div class="addon-update-available bg-secondary-4 text-2 rounded px-1"
+          *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion">
           {{ listItem.addon.latestVersion }}
         </div>
       </div>
@@ -221,7 +222,7 @@
       </mat-checkbox>
     </div>
     <!-- AUTO UPDATE -->
-    <div *ngIf="listItem.addon.isIgnored === false" class="mat-menu-item">
+    <div *ngIf="canSetAutoUpdate(listItem)" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.autoUpdateEnabled" (click)="onClickAutoUpdateAddon(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
@@ -251,7 +252,7 @@
       </div>
     </a>
     <!-- REINSTALL -->
-    <button *ngIf="addonService.canReinstall(listItem.addon)" mat-menu-item (click)="onReInstallAddon(listItem)">
+    <button *ngIf="canReInstall(listItem)" mat-menu-item (click)="onReInstallAddon(listItem)">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REINSTALL_ADDON_BUTTON" | translate }}
     </button>
     <mat-divider></mat-divider>

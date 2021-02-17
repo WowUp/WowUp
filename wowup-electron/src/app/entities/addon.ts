@@ -1,6 +1,7 @@
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonDependency } from "../models/wowup/addon-dependency";
+import { AddonWarningType } from "../models/wowup/addon-warning-type";
 
 export interface AddonExternalId {
   providerName: string;
@@ -32,6 +33,7 @@ export interface Addon {
   installedFolderList?: string[];
   isIgnored: boolean;
   isLoadOnDemand: boolean;
+  warningType?: AddonWarningType;
   autoUpdateEnabled: boolean;
   clientType: WowClientType;
   channelType: AddonChannelType;

@@ -48,7 +48,9 @@ describe("AppComponent", () => {
         persistUpdateInformationToWowUpAddon: () => {},
       }
     );
-    addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
+    addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"], {
+      syncError$: new Subject(),
+    });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on", "off"], {
       appOptions: { quit: null },
       getAppOptions: () => Promise.resolve({}),

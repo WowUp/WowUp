@@ -80,7 +80,8 @@
       "UNINSTALL": "삭제",
       "UNKNOWN": "",
       "UPDATE": "업데이트",
-      "UPTODATE": "최신"
+      "UPTODATE": "최신",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "백업 중",
@@ -91,6 +92,12 @@
       "PENDING": "일시정지됨",
       "UNINSTALLING": "삭제 중",
       "UPDATING": "업데이트 중..."
+    },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
     },
     "CLIENT_TYPES": {
       "BETA": "베타",
@@ -133,6 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "{addonName} 애드온 제공자를 {providerName}로 변경하는 과정에서 오류가 발생했습니다",
       "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."

@@ -80,7 +80,8 @@
       "UNINSTALL": "Uninstall",
       "UNKNOWN": "",
       "UPDATE": "Update",
-      "UPTODATE": "Up to date"
+      "UPTODATE": "Up to date",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backing Up",
@@ -91,6 +92,12 @@
       "PENDING": "Pending",
       "UNINSTALLING": "Uninstalling",
       "UPDATING": "Updating..."
+    },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -133,6 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from {providerName}, please try again later.",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}",
       "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."

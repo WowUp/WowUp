@@ -1,5 +1,9 @@
 @import "../../../variables.scss";
 
+.text-warning {
+  color: $warn-color !important;
+}
+
 .addon-column {
   padding-top: 0.5em;
   padding-bottom: 0.5em;
@@ -59,10 +63,13 @@
       text-decoration: underline;
     }
 
+    &.text-warning:hover {
+      cursor: inherit;
+      text-decoration: none;
+    }
   }
 
   .addon-version {
-
     .update-available {
     }
   }

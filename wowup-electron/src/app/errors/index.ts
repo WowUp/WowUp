@@ -60,6 +60,12 @@ export class AddonSyncError extends CustomError {
 
 export class GenericProviderError extends ErrorContainer {}
 
+export class SourceRemovedAddonError extends ErrorContainer {
+  constructor(public addonId: string, innerError: Error) {
+    super(innerError);
+  }
+}
+
 export class GitHubError extends ErrorContainer {}
 
 export class GitHubLimitError extends GitHubError {

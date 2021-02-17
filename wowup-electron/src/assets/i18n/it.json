@@ -80,7 +80,8 @@
       "UNINSTALL": "Disinstalla",
       "UNKNOWN": "Sconosciuto",
       "UPDATE": "Aggiorna",
-      "UPTODATE": "Aggiornato"
+      "UPTODATE": "Aggiornato",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup in corso",
@@ -91,6 +92,12 @@
       "PENDING": "In sospeso",
       "UNINSTALLING": "Disinstallazione in corso",
       "UPDATING": "Aggiornamento in corso..."
+    },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -133,6 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "Errore nel sincronizzare le cartelle dell'addon con {providerName}, per favore riprovare più tardi.",
       "ADDON_SYNC_ERROR": "Errore nel controllare gli aggioranementi da: {providerName}",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "Errore nel cambio di provider per {addonName} con {providerName}",
       "GITHUB_LIMIT_ERROR": "Hai raggiunto il limite di {max} richieste per la tua API di GitHub.\nPer favore attendere fino a {reset} e riprovare.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Errore nel controllare gli aggiornamenti per {addonName}.\nPer favore controllare che la repository sia corretta o impostare questo addon per essere ignorato."

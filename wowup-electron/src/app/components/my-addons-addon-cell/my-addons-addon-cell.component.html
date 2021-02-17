@@ -17,7 +17,7 @@
   </div>
   <div>
     <a class="addon-title hover-text-2 mat-subheading-2" (click)="viewDetails()"
-      [ngClass]="{ 'text-3': listItem.addon.isIgnored }">{{
+      [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
       listItem.addon.name
       }}</a>
     <div *ngIf="listItem.addon.fundingLinks" class="addon-funding row">
@@ -40,8 +40,13 @@
         <mat-icon class="auto-update-icon" svgIcon="fas:link"></mat-icon>
       </div>
       <div *ngIf="listItem.isLoadOnDemand === true" class="mr-2">
-        <mat-icon class="auto-update-icon"
-          [matTooltip]="'PAGES.MY_ADDONS.REQUIRED_DEPENDENCY_MISSING_TOOLTIP' | translate" [style.color]="'#ff9800'"
+        <mat-icon class="auto-update-icon text-warning"
+          [matTooltip]="'PAGES.MY_ADDONS.REQUIRED_DEPENDENCY_MISSING_TOOLTIP' | translate"
+          svgIcon="fas:exclamation-triangle">
+        </mat-icon>
+      </div>
+      <div *ngIf="hasWarning()" class="mr-2">
+        <mat-icon class="auto-update-icon text-warning" [matTooltip]="getWarningText()"
           svgIcon="fas:exclamation-triangle">
         </mat-icon>
       </div>

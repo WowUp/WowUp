@@ -80,7 +80,8 @@
       "UNINSTALL": "Удалить",
       "UNKNOWN": "",
       "UPDATE": "Обновить",
-      "UPTODATE": "Актуальная"
+      "UPTODATE": "Актуальная",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Резервное копирование",
@@ -91,6 +92,12 @@
       "PENDING": "В ожидании",
       "UNINSTALLING": "Удаляется",
       "UPDATING": "Обновляется..."
+    },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",
@@ -133,6 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
       "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Не удалось проверить обновления для {addonName}.\nУбедитесь что хранилище указано верно или установите игнорирование на эту модификацию."

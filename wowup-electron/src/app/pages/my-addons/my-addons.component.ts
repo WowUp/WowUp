@@ -323,7 +323,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  public canSetAutoUpdate(listItem: AddonViewModel): boolean {
+    return listItem.addon.isIgnored === false && listItem.addon.warningType === undefined;
+  }
+
+  public canReInstall(listItem: AddonViewModel): boolean {
+    return listItem.addon.warningType === undefined && this.addonService.canReinstall(listItem.addon);
+  }
+
   public openDetailDialog(listItem: AddonViewModel): void {
+    // If this addon is in warning state, we wont be able to get details
+    if (listItem.addon.warningType !== undefined) {
+      return;
+    }
+
     const data: AddonDetailModel = {
       listItem: listItem.clone(),
     };

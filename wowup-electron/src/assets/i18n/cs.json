@@ -80,7 +80,8 @@
       "UNINSTALL": "Odinstalovat",
       "UNKNOWN": "",
       "UPDATE": "Aktualizovat",
-      "UPTODATE": "Aktuální"
+      "UPTODATE": "Aktuální",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Zálohuji",
@@ -91,6 +92,12 @@
       "PENDING": "Čekající",
       "UNINSTALLING": "Odinstalovávaný",
       "UPDATING": "Aktualizuji..."
+    },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -133,6 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "Nepodařilo se změnit poskytovatele {providerName} pro addon {addonName}",
       "GITHUB_LIMIT_ERROR": "Dosáhli jste limitu {max} požadavků na GitHub API.\nVyčkejte prosím do {reset} a pak to zkuste znovu.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."

@@ -46,6 +46,8 @@ import { Addon } from "./entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
+import { SnackbarService } from "./services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-root",
@@ -76,6 +78,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _preferenceStore: PreferenceStorageService,
     private _cdRef: ChangeDetectorRef,
     private _wowupAddonService: WowUpAddonService,
+    private _snackbarService: SnackbarService,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
   ) {}
@@ -101,6 +104,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         );
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });
+
+    this._addonService.syncError$.subscribe(this.onAddonSyncError);
 
     this._electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
@@ -284,6 +289,41 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     console.debug("checkQuitEnabled");
     this._electronService.quitApplication().catch((e) => console.error(e));
   }
+
+  private onAddonSyncError = (error: AddonSyncError) => {
+    console.debug("onAddonSyncError", error);
+    const durationMs = 4000;
+    let errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
+      providerName: error.providerName,
+    });
+
+    if (error.addonName) {
+      errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_FULL_ERROR", {
+        providerName: error.providerName,
+        addonName: error.addonName,
+      });
+    }
+
+    if (error.innerError instanceof GitHubLimitError) {
+      const err = error.innerError;
+      const max = err.rateLimitMax;
+      const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
+      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
+        max,
+        reset,
+      });
+    } else if (
+      error.innerError instanceof GitHubFetchRepositoryError ||
+      error.innerError instanceof GitHubFetchReleasesError
+    ) {
+      const err = error.innerError as GitHubFetchRepositoryError;
+      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
+        addonName: error.addonName,
+      });
+    }
+
+    this._snackbarService.showErrorSnackbar(errorMessage);
+  };
 
   private async createAppMenu() {
     console.log("Creating app menu");

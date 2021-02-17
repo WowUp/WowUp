@@ -3,8 +3,11 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
+import { HttpErrorResponse } from "@angular/common/http";
+
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import { Addon } from "../entities/addon";
+import { SourceRemovedAddonError } from "../errors";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
 import { AddonChannelType } from "../models/wowup/addon-channel-type";
@@ -14,8 +17,8 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { convertBbcode } from "../utils/bbcode.utils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
 import { getEnumName } from "../utils/enum.utils";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -37,31 +40,53 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   }
 
   public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
-    const addonDetails = await this.getAddonDetails(externalId);
-    return convertBbcode(addonDetails.description);
+    try {
+      const addonDetails = await this.getAddonDetails(externalId);
+      return convertBbcode(addonDetails.description);
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
   }
 
   async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
     const searchResults: AddonSearchResult[] = [];
+    const errors: Error[] = [];
 
     for (const addonId of addonIds) {
-      const result = await this.getById(addonId, clientType).toPromise();
-      if (result == null) {
-        continue;
-      }
+      try {
+        const result = await this.getById(addonId, clientType).toPromise();
+        if (result == null) {
+          continue;
+        }
 
-      searchResults.push(result);
+        searchResults.push(result);
+      } catch (error) {
+        console.error(error);
+        // Check if the addon 404d which means its deleted or missing.
+        if (error instanceof HttpErrorResponse && error.status === 404) {
+          errors.push(new SourceRemovedAddonError(addonId, error));
+        } else {
+          error.addonId = addonId;
+          errors.push(error);
+        }
+      }
     }
 
     return {
-      errors: [],
-      searchResults: searchResults,
+      errors,
+      searchResults,
     };
   }
 
   public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    const addon = await this.getAddonDetails(externalId);
-    return addon.changeLog;
+    try {
+      const addon = await this.getAddonDetails(externalId);
+      return addon.changeLog;
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
   }
 
   public getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {

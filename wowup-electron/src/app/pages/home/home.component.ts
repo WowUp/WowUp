@@ -55,7 +55,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this._addonService.syncError$.subscribe(this.onAddonSyncError);
     this._addonService.scanError$.subscribe(this.onAddonScanError);
 
     this._addonService.scanUpdate$
@@ -156,35 +155,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     });
   };
 
-  private onAddonSyncError = (error: AddonSyncError) => {
-    const durationMs = 4000;
-    let errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
-      providerName: error.providerName,
-    });
-
-    if (error.innerError instanceof GitHubLimitError) {
-      const err = error.innerError;
-      const max = err.rateLimitMax;
-      const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
-      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
-        max,
-        reset,
-      });
-    } else if (
-      error.innerError instanceof GitHubFetchRepositoryError ||
-      error.innerError instanceof GitHubFetchReleasesError
-    ) {
-      const err = error.innerError as GitHubFetchRepositoryError;
-      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
-        addonName: error.addonName,
-      });
-    }
-
-    this._snackBar.open(errorMessage, undefined, {
-      duration: durationMs,
-      panelClass: ["wowup-snackbar", "snackbar-error", "text-1"],
-    });
-  };
+  
 
   private onScanUpdate = (update: ScanUpdate) => {
     switch (update.type) {
