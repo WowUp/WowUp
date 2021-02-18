@@ -2,7 +2,10 @@
   "ChangeLogs": [
     {
       "Version": "2.2.0-beta.4",
-      "changes": ["Add the ability to handle and mark addons deleted from WowInterface"]
+      "changes": [
+        "German locale updates (Glow/maestrohdude)",
+        "Add the ability to handle and mark addons deleted from WowInterface"
+      ]
     },
     {
       "Version": "2.2.0-beta.3",
