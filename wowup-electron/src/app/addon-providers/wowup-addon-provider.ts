@@ -1,3 +1,4 @@
+import { SourceRemovedAddonError } from "app/errors";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -82,8 +83,16 @@ export class WowUpAddonProvider extends AddonProvider {
 
     const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, clientType));
 
+    const missingAddonIds = _.filter(
+      addonIds,
+      (addonId) => _.find(searchResults, (sr) => sr.externalId === addonId) === undefined
+    );
+
+    const deletedErrors = _.map(missingAddonIds, (addonId) => new SourceRemovedAddonError(addonId, undefined));
+
+    console.debug("deletedErrors", deletedErrors);
     return {
-      errors: [],
+      errors: [...deletedErrors],
       searchResults,
     };
   }

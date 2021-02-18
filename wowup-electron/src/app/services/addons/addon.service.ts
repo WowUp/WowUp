@@ -880,7 +880,7 @@ export class AddonService {
   }
 
   private async syncProviderAddons(clientType: WowClientType, addons: Addon[], addonProvider: AddonProvider) {
-    console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
+    // console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;
@@ -910,6 +910,9 @@ export class AddonService {
 
     for (const result of getAllResults.searchResults) {
       const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
+      if (!addon) {
+        continue;
+      }
       const latestFile = this.getLatestFile(result, addon?.channelType);
 
       this.setExternalIdString(addon);
