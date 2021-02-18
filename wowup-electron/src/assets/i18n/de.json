@@ -354,16 +354,16 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Beim Aktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Hardwarebeschleunigung aktivieren",
         "USE_SYMLINK_SUPPORT": "Symlink-Unterstützung aktivieren",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Durch Aktivieren der Symlink-Unterstützung kann WowUp Symlinks erkennen, wenn ein erneuter Scan durchgeführt wird. Warnung: Wenn du nicht weißt, was ein Symlink ist, brauchst du dies nicht. Beim Aktualisieren werden Symlinks derzeit durch einen tatsächlichen Ordner ersetzt und der Link geht verloren.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Durch das Aktivieren der Symlink-Unterstützung kann WowUp Symlinks erkennen, wenn ein erneuter Scan durchgeführt wird. Warnung: Wenn Du nicht weißt, was ein Symlink ist, brauchst Du dies nicht. Beim Aktualisieren werden Symlinks derzeit durch einen tatsächlichen Ordner ersetzt und der Link geht verloren.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Symlink-Unterstützung aktivieren?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren / Installieren ersetzt."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Debug-Daten speichern",
         "DEBUG_DATA_DESCRIPTION": "Protokolliere Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies findest Du in Deiner aktuellen Protokolldatei (für Neugierige).",
         "DEBUG_DATA_LABEL": "Debug-Daten",
         "LOG_FILES_BUTTON": "Log-Dateien anzeigen",
-        "LOG_FILES_DESCRIPTION": "Öffne den Ordner, der Deine letzten Log-Dateien enthält.",
+        "LOG_FILES_DESCRIPTION": "Den Ordner öffnen, der Deine letzten Log-Dateien enthält.",
         "LOG_FILES_LABEL": "Log-Dateien",
         "TITLE": "Debuggen"
       },
