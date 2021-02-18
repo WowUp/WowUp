@@ -50,7 +50,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   @ViewChild("changelogContainer", { read: ElementRef }) changelogContainer: ElementRef;
   @ViewChild("providerLink", { read: ElementRef }) providerLink: ElementRef;
   @ViewChild("tabs", { static: false }) tabGroup: MatTabGroup;
-  @ViewChild("title", { read: ElementRef }) titleRef: ElementRef;
 
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];

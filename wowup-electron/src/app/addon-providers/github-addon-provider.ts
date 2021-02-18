@@ -12,6 +12,7 @@ import {
   GitHubFetchRepositoryError,
   GitHubLimitError,
   NoReleaseFoundError,
+  SourceRemovedAddonError,
 } from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
@@ -62,6 +63,10 @@ export class GitHubAddonProvider extends AddonProvider {
         // If we're at the limit, just give up the loop
         if (e instanceof GitHubLimitError) {
           throw e;
+        }
+
+        if (e instanceof SourceRemovedAddonError) {
+          e.addonId = addonId;
         }
 
         errors.push(e);
@@ -261,7 +266,7 @@ export class GitHubAddonProvider extends AddonProvider {
     } catch (e) {
       console.error(`Failed to get GitHub repository`, e);
       // If some other internal handler already handled this, use that error
-      if (e instanceof GitHubError) {
+      if (e instanceof GitHubError || e instanceof SourceRemovedAddonError) {
         throw e;
       }
 
@@ -287,6 +292,12 @@ export class GitHubAddonProvider extends AddonProvider {
     }
   }
 
+  private handleNotFoundError(response: HttpErrorResponse) {
+    if (response.status === 404) {
+      throw new SourceRemovedAddonError("", response);
+    }
+  }
+
   private getIntHeader(headers: HttpHeaders, key: string) {
     return parseInt(headers.get(key), 10);
   }
@@ -296,6 +307,7 @@ export class GitHubAddonProvider extends AddonProvider {
       return await this._httpClient.get<T>(url.toString()).toPromise();
     } catch (e) {
       this.handleRateLimitError(e);
+      this.handleNotFoundError(e);
       throw e;
     }
   }

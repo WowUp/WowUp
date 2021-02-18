@@ -880,7 +880,7 @@ export class AddonService {
   }
 
   private async syncProviderAddons(clientType: WowClientType, addons: Addon[], addonProvider: AddonProvider) {
-    // console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
+    console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;
@@ -897,10 +897,8 @@ export class AddonService {
       if (error instanceof SourceRemovedAddonError) {
         addon.warningType = AddonWarningType.MissingOnProvider;
         this._addonStorage.set(addon.id, addon);
-        console.debug("SOURCE REMOVED", addon);
       }
 
-      console.debug("SYNC ERROR F");
       this._syncErrorSrc.next(
         new AddonSyncError({
           providerName: addonProvider.name,
