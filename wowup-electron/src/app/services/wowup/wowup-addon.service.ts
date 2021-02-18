@@ -100,7 +100,9 @@ export class WowUpAddonService {
   }
 
   private async persistUpdateInformationToWowUpAddon(clientType: WowClientType, addons: Addon[]) {
-    const wowUpAddon = addons.find((addon: Addon) => addon.installedFolderList.includes(WOWUP_ADODN_FOLDER_NAME));
+    const wowUpAddon = addons.find((addon: Addon) =>
+      (addon.installedFolderList ?? []).includes(WOWUP_ADODN_FOLDER_NAME)
+    );
     if (!wowUpAddon) {
       console.debug("WowUp Addon not found");
       return;
