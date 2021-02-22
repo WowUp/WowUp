@@ -94,10 +94,10 @@
       "UPDATING": "Aktualisieren..."
     },
     "ADDON_WARNING": {
-      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
-      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
+      "GENERIC_DESCRIPTION": "Wir haben ein Problem mit diesem Addon festgestellt. Wir können dieses Addon nicht mehr aktualisieren oder Details bereitstellen.",
+      "GENERIC_TOOLTIP": "Wir haben ein Problem mit diesem Addon festgestellt",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "Dieses Addon scheint entweder vom Autor oder vom Addon-Anbieter entfernt worden zu sein.<br>Wir können dieses Addon nicht mehr aktualisieren oder Details bereitstellen.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "Dieses Addon scheint vom Anbieter entfernt worden zu sein"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -140,7 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
-      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
+      "ADDON_SYNC_FULL_ERROR": "Beim Überprüfen auf Aktualisierungen von {addonName} von {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Aktualisierungen für {addonName} konnten nicht überprüft werden.\nBitte überprüfen, ob das Repository korrekt ist, oder stelle das Addon auf 'Ignoriert' ein."
@@ -148,7 +148,7 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Laden..."
     },
-    "PROVIDER_ERROR": "Error contacting {providerName}",
+    "PROVIDER_ERROR": "Fehler beim Verbinden mit {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Keine Addons gefunden"
     }
