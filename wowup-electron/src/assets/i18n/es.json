@@ -81,7 +81,7 @@
       "UNKNOWN": "",
       "UPDATE": "Actualizar",
       "UPTODATE": "Actualizado",
-      "WARNING": "Warning"
+      "WARNING": "Advertencia"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Copiando",
@@ -94,10 +94,10 @@
       "UPDATING": "Actualizando"
     },
     "ADDON_WARNING": {
-      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
-      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
+      "GENERIC_DESCRIPTION": "Se ha detectado un problema con este addon. No es posible actualizarlo ni proveer detalles.",
+      "GENERIC_TOOLTIP": "Se ha detectado un problema con este addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "Este addon parece haber sido eliminado por el autor o el proveedor.<br>No es posible actualizarlo ni proveer detalles.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "Este addon parece haber sido eliminado por el proveedor"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -140,7 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "Ocurrió un error al comparar sus carpetas de addons con {providerName}. Por favor, inténtelo de nuevo más tarde.",
       "ADDON_SYNC_ERROR": "Ocurrió un error al comprobar actualizaciones desde: {providerName}",
-      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
+      "ADDON_SYNC_FULL_ERROR": "Ocurrió un error al buscar actualizaciones de {addonName} desde {providerName}. Por favor, inténtelo de nuevo más tarde.",
       "CHANGE_PROVIDER_ERROR": "Error al cambiar el proveedor del addon {addonName} a {providerName}",
       "GITHUB_LIMIT_ERROR": "Ha alcanzado el límite de {max} peticiones a la API de GitHub.\nPor favor, espere hasta {reset} e inténtelo de nuevo.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Falló la comprobación de actualizaciones de {addonName}.\nPor favor, compruebe que el repositorio sea correcto o establezca este addon como ignorado."
@@ -254,7 +254,7 @@
         "TITLE": "¿Cambiar proveedor del addon?"
       },
       "CHECK_UPDATES_BUTTON": "Buscar actualizaciones",
-      "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons",
+      "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons instalados",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Mostrar Columna"
@@ -354,9 +354,9 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Activar la aceleración por hardware requiere reinicar la aplicación.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Activar aceleración por hardware",
         "USE_SYMLINK_SUPPORT": "Activar soporte de enlaces simbólicos (symlink)",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Activar el soporte de enlaces simbólicos permite a WowUp reconocerlos durante el reescaneo. Advertencia: Si no sabe lo que es un enlace simbólico, no necesita activar esto. Al actualizar addons, los enlaces simbólicos serán reemplazados por copias de las carpetas y el enlace se perderá.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Activar el soporte de enlaces simbólicos permite a WowUp reconocerlos durante el reescaneo.\n\nAdvertencia: Si no sabe lo que es un enlace simbólico, no necesita activar esto. Al actualizar addons, los enlaces simbólicos serán reemplazados por copias de las carpetas y el enlace se perderá.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "¿Activar soporte de enlaces simbólicos?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons. Advertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Eliminar datos de depuración",
