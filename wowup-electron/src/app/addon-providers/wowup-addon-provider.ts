@@ -1,4 +1,3 @@
-import { SourceRemovedAddonError } from "app/errors";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -8,6 +7,7 @@ import { ADDON_PROVIDER_HUB, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/con
 import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
 import { AppConfig } from "../../environments/environment";
 import { Addon } from "../entities/addon";
+import { SourceRemovedAddonError } from "../errors";
 import { WowClientType } from "../models/warcraft/wow-client-type";
 import { WowUpAddonReleaseRepresentation, WowUpAddonRepresentation } from "../models/wowup-api/addon-representations";
 import {
