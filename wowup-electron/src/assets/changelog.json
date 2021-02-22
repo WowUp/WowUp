@@ -1,6 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.5",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow/maestrohdude)",
+        "Pull Hub addon names from their toc values to be more consistent",
+        "Handle removed addons from Hub"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.4",
       "changes": [
         "German locale updates (Glow/maestrohdude)",
