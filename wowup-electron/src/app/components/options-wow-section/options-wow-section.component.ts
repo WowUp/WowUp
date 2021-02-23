@@ -1,5 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { MatSelectChange } from "@angular/material/select";
+import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
+import { Observable } from "rxjs";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
@@ -16,6 +19,7 @@ export class OptionsWowSectionComponent implements OnInit {
     (clientType) => clientType !== WowClientType.None
   ) as WowClientType[];
 
+  public wowInstallations$: Observable<WowInstallation[]>;
   public wowUpReleaseChannel: WowUpReleaseChannelType;
 
   public wowUpReleaseChannels: {
@@ -26,7 +30,13 @@ export class OptionsWowSectionComponent implements OnInit {
     name: getEnumName(WowUpReleaseChannelType, type),
   }));
 
-  constructor(private _warcraftService: WarcraftService, private _wowupService: WowUpService) {}
+  constructor(
+    private _warcraftService: WarcraftService,
+    private _wowupService: WowUpService,
+    private _warcraftInstallationService: WarcraftInstallationService
+  ) {
+    this.wowInstallations$ = _warcraftInstallationService.wowInstallations$;
+  }
 
   ngOnInit(): void {
     this.wowUpReleaseChannel = this._wowupService.wowUpReleaseChannel;

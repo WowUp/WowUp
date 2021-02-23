@@ -8,6 +8,17 @@
         {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_LABEL" | translate }}
       </div>
       <button
+        mat-stroked-button
+        (click)="onReScan()"
+        appUserActionTracker
+        category="Options"
+        action="ScanInstalls"
+        class="mr-3"
+      >
+        {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON" | translate }}
+      </button>
+
+      <button
         mat-flat-button
         color="primary"
         (click)="onReScan()"
@@ -15,10 +26,10 @@
         category="Options"
         action="ScanInstalls"
       >
-        {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON" | translate }}
+        {{ "PAGES.OPTIONS.WOW.ADD_CLIENT_BUTTON" | translate }}
       </button>
     </div>
-    <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes" [clientType]="clientType">
+    <app-wow-client-options class="client-section" *ngFor="let installation of wowInstallations$ | async" [installationId]="installation.id">
     </app-wow-client-options>
   </div>
 </div>

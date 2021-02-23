@@ -3,8 +3,6 @@ import * as Store from "electron-store";
 import { Addon } from "../../entities/addon";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 
-const PREFERENCE_PREFIX = "preferences";
-
 @Injectable({
   providedIn: "root",
 })
@@ -15,7 +13,7 @@ export class AddonStorageService {
 
   constructor() {}
 
-  public query<T>(action: (store: Store) => T) {
+  public query<T>(action: (store: Store) => T): T {
     return action(this._store);
   }
 
@@ -31,11 +29,11 @@ export class AddonStorageService {
     return addons;
   }
 
-  public saveAll(addons: Addon[]) {
+  public saveAll(addons: Addon[]): void {
     addons.forEach((addon) => this.set(addon.id, addon));
   }
 
-  public set(key: string, value: Addon) {
+  public set(key: string, value: Addon): void {
     this._store.set(key, value);
   }
 
@@ -43,20 +41,20 @@ export class AddonStorageService {
     return this._store.get(key) as Addon;
   }
 
-  public removeAll(...addons: Addon[]) {
+  public removeAll(...addons: Addon[]): void {
     addons.forEach((addon) => this.remove(addon));
   }
 
-  public remove(addon: Addon) {
+  public remove(addon: Addon): void {
     this._store.delete(addon.id);
   }
 
-  public removeAllForClientType(clientType: WowClientType) {
-    const addons = this.getAllForClientType(clientType);
+  public removeAllForInstallation(installationId: string): void {
+    const addons = this.getAllForInstallation(installationId);
     addons.forEach((addon) => this._store.delete(addon.id));
   }
 
-  public getByExternalId(externalId: string, clientType: WowClientType) {
+  public getByExternalId(externalId: string, clientType: WowClientType): Addon {
     const addons: Addon[] = [];
 
     for (const result of this._store) {
@@ -70,13 +68,13 @@ export class AddonStorageService {
     return addons[0];
   }
 
-  public getAllForClientType(clientType: WowClientType, validator?: (addon: Addon) => boolean) {
+  public getAllForInstallation(installationId: string, validator?: (addon: Addon) => boolean): Addon[] {
     const addons: Addon[] = [];
 
     this.query((store) => {
       for (const result of store) {
         const addon = result[1] as Addon;
-        if (addon.clientType === clientType && (!validator || validator(addon))) {
+        if (addon.installationId === installationId && (!validator || validator(addon))) {
           addons.push(addon);
         }
       }

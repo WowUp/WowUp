@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { WowInstallation } from "app/models/wowup/wow-installation";
 import { Observable, of } from "rxjs";
 
 import { Addon } from "../entities/addon";
@@ -24,39 +25,39 @@ export abstract class AddonProvider {
   allowViewAtSource = true;
   canShowChangelog = true;
 
-  getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     return Promise.resolve({
       errors: [],
       searchResults: [],
     });
   }
 
-  getFeaturedAddons(clientType: WowClientType, channelType?: AddonChannelType): Promise<AddonSearchResult[]> {
+  getFeaturedAddons(installation: WowInstallation, channelType?: AddonChannelType): Promise<AddonSearchResult[]> {
     return Promise.resolve([]);
   }
 
   searchByQuery(
     query: string,
-    clientType: WowClientType,
+    installation: WowInstallation,
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
     return Promise.resolve([]);
   }
 
-  searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
+  searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
     return Promise.resolve(undefined);
   }
 
   searchByName(
     addonName: string,
     folderName: string,
-    clientType: WowClientType,
+    installation: WowInstallation,
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
     return Promise.resolve([]);
   }
 
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     return of(undefined);
   }
 
@@ -71,16 +72,16 @@ export abstract class AddonProvider {
   onPostInstall(addon: Addon): void {}
 
   async scan(
-    clientType: WowClientType,
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {}
 
-  getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+  getChangelog(installation: WowInstallation, externalId: string, externalReleaseId: string): Promise<string> {
     return Promise.resolve("");
   }
 
-  async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
+  async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     return Promise.resolve("");
   }
 }

@@ -50,4 +50,5 @@ export interface Addon {
   dependencies?: AddonDependency[];
   missingDependencies?: string[];
   ignoreReason?: AddonIgnoreReason;
+  installationId?: string;
 }

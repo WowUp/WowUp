@@ -1,3 +1,4 @@
+import { WowInstallation } from "app/models/wowup/wow-installation";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -61,7 +62,7 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
+  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     try {
       const cacheKey = `${this.name}_description_${externalId}`;
       let description = await this._cachingService.transaction(
@@ -83,7 +84,11 @@ export class CurseAddonProvider extends AddonProvider {
     return "";
   }
 
-  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+  public async getChangelog(
+    installation: WowInstallation,
+    externalId: string,
+    externalReleaseId: string
+  ): Promise<string> {
     try {
       const cacheKey = `${this.name}_changelog_${externalId}_${externalReleaseId}`;
       return await this._cachingService.transaction(
@@ -102,7 +107,7 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   public async scan(
-    clientType: WowClientType,
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
@@ -114,7 +119,7 @@ export class CurseAddonProvider extends AddonProvider {
     const scanResults = await this.getScanResults(addonFolders);
     console.timeEnd("CFScan");
 
-    await this.mapAddonFolders(scanResults, clientType);
+    await this.mapAddonFolders(scanResults, installation);
 
     const matchedScanResults = scanResults.filter((sr) => !!sr.exactMatch);
     const matchedScanResultIds = matchedScanResults.map((sr) => sr.exactMatch.id);
@@ -134,7 +139,7 @@ export class CurseAddonProvider extends AddonProvider {
       }
 
       try {
-        const newAddon = this.getAddon(clientType, scanResult);
+        const newAddon = this.getAddon(installation, scanResult);
 
         addonFolder.matchingAddon = newAddon;
       } catch (err) {
@@ -187,8 +192,8 @@ export class CurseAddonProvider extends AddonProvider {
     return description.replace(href, destination);
   }
 
-  private async mapAddonFolders(scanResults: AppCurseScanResult[], clientType: WowClientType) {
-    if (clientType === WowClientType.None) {
+  private async mapAddonFolders(scanResults: AppCurseScanResult[], installation: WowInstallation) {
+    if (!installation) {
       return;
     }
 
@@ -198,7 +203,7 @@ export class CurseAddonProvider extends AddonProvider {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
       scanResult.exactMatch = fingerprintResponse.exactMatches.find(
         (exactMatch) =>
-          this.isGameVersionFlavor(exactMatch.file.gameVersionFlavor, clientType) &&
+          this.isGameVersionFlavor(exactMatch.file.gameVersionFlavor, installation.clientType) &&
           this.hasMatchingFingerprint(scanResult, exactMatch)
       );
 
@@ -261,7 +266,7 @@ export class CurseAddonProvider extends AddonProvider {
     return action.call(this);
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     if (!addonIds.length) {
       return {
         searchResults: [],
@@ -273,7 +278,7 @@ export class CurseAddonProvider extends AddonProvider {
     const searchResults = await this.getAllIds(addonIds.map((id) => parseInt(id, 10)));
 
     for (const result of searchResults) {
-      const latestFiles = this.getLatestFiles(result, clientType);
+      const latestFiles = this.getLatestFiles(result, installation.clientType);
       if (!latestFiles.length) {
         continue;
       }
@@ -290,21 +295,21 @@ export class CurseAddonProvider extends AddonProvider {
     };
   }
 
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
+  public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
     const addons = await this.getFeaturedAddonList();
-    const filteredAddons = this.filterFeaturedAddons(addons, clientType);
+    const filteredAddons = this.filterFeaturedAddons(addons, installation.clientType);
 
     await this.removeBlockedItems(filteredAddons);
 
     return filteredAddons.map((addon) => {
-      const latestFiles = this.getLatestFiles(addon, clientType);
+      const latestFiles = this.getLatestFiles(addon, installation.clientType);
       return this.getAddonSearchResult(addon, latestFiles);
     });
   }
 
   async searchByQuery(
     query: string,
-    clientType: WowClientType,
+    installation: WowInstallation,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
@@ -315,7 +320,7 @@ export class CurseAddonProvider extends AddonProvider {
     await this.removeBlockedItems(response);
 
     for (const result of response) {
-      const latestFiles = this.getLatestFiles(result, clientType);
+      const latestFiles = this.getLatestFiles(result, installation.clientType);
       if (!latestFiles.length) {
         continue;
       }
@@ -326,13 +331,13 @@ export class CurseAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
+  async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     const slugRegex = /\/addons\/(.*?)(\/|$)/gi;
     const slugMatch = slugRegex.exec(addonUri.pathname);
     if (!slugMatch) {
       return null;
     }
-    return await this.searchBySlug(slugMatch[1], clientType);
+    return await this.searchBySlug(slugMatch[1], installation.clientType);
   }
 
   private async searchBySlug(slug: string, clientType: WowClientType) {
@@ -362,7 +367,7 @@ export class CurseAddonProvider extends AddonProvider {
     return await this._circuitBreaker.getJson<CurseSearchResult[]>(url);
   }
 
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     const url = `${API_URL}/addon/${addonId}`;
 
     return from(this._circuitBreaker.getJson<CurseSearchResult>(url)).pipe(
@@ -371,7 +376,7 @@ export class CurseAddonProvider extends AddonProvider {
           return null;
         }
 
-        const latestFiles = this.getLatestFiles(result, clientType);
+        const latestFiles = this.getLatestFiles(result, installation.clientType);
         if (!latestFiles?.length) {
           return null;
         }
@@ -579,7 +584,7 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
-  private getAddon(clientType: WowClientType, scanResult: AppCurseScanResult): Addon {
+  private getAddon(installation: WowInstallation, scanResult: AppCurseScanResult): Addon {
     const currentVersion = scanResult.exactMatch.file;
 
     const authors = scanResult.searchResult.authors.map((author) => author.name).join(", ");
@@ -587,7 +592,7 @@ export class CurseAddonProvider extends AddonProvider {
     const folders = scanResult.exactMatch.file.modules.map((module) => module.foldername);
     const folderList = folders.join(",");
 
-    const latestFiles = this.getLatestFiles(scanResult.searchResult, clientType);
+    const latestFiles = this.getLatestFiles(scanResult.searchResult, installation.clientType);
 
     const gameVersion = currentVersion.gameVersion[0] || scanResult.addonFolder.toc.interface;
 
@@ -607,7 +612,7 @@ export class CurseAddonProvider extends AddonProvider {
       name: scanResult.searchResult.name,
       channelType,
       autoUpdateEnabled: false,
-      clientType,
+      clientType: installation.clientType,
       downloadUrl: latestVersion.downloadUrl,
       externalUrl: scanResult.searchResult.websiteUrl,
       externalId: scanResult.searchResult.id.toString(),
@@ -629,6 +634,7 @@ export class CurseAddonProvider extends AddonProvider {
       externalLatestReleaseId: latestVersion.id.toString(),
       updatedAt: scanResult.addonFolder.fileStats.birthtime,
       externalChannel: getEnumName(AddonChannelType, channelType),
+      installationId: installation.id,
     };
   }
 }

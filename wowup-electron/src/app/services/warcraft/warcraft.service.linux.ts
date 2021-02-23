@@ -2,8 +2,8 @@ import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 
 export class WarcraftServiceLinux implements WarcraftServiceImpl {
-  public async getBlizzardAgentPath(): Promise<string> {
-    return "";
+  public getBlizzardAgentPath(): Promise<string> {
+    return Promise.resolve("");
   }
 
   public getExecutableName(clientType: WowClientType): string {

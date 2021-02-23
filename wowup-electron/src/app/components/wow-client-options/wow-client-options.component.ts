@@ -3,6 +3,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
+import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
 import * as _ from "lodash";
 import * as path from "path";
 import { Subscription } from "rxjs";
@@ -21,8 +23,9 @@ import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.compone
   styleUrls: ["./wow-client-options.component.scss"],
 })
 export class WowClientOptionsComponent implements OnInit, OnDestroy {
-  @Input("clientType") clientType: WowClientType;
+  @Input("installationId") installationId: string;
 
+  private installation: WowInstallation;
   private subscriptions: Subscription[] = [];
 
   public readonly addonChannelInfos: {
@@ -43,42 +46,49 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
     private _cdRef: ChangeDetectorRef,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _warcraftInstallationService: WarcraftInstallationService
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
 
-    const warcraftProductSubscription = this._warcraftService.products$.subscribe((products) => {
-      const product = products.find((p) => p.clientType === this.clientType);
-      if (product) {
-        this.clientLocation = product.location;
-        this._cdRef.detectChanges();
-      }
-    });
+    // const warcraftProductSubscription = this._warcraftService.products$.subscribe((products) => {
+    //   const product = products.find((p) => p.clientType === this.clientType);
+    //   if (product) {
+    //     this.clientLocation = product.location;
+    //     this._cdRef.detectChanges();
+    //   }
+    // });
 
-    this.subscriptions.push(warcraftProductSubscription);
+    // this.subscriptions.push(warcraftProductSubscription);
   }
 
   ngOnInit(): void {
-    this.selectedAddonChannelType = this._wowupService.getDefaultAddonChannel(this.clientType);
-    this.clientAutoUpdate = this._wowupService.getDefaultAutoUpdate(this.clientType);
-    this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(WowClientType, this.clientType).toUpperCase()}`;
-    this.clientFolderName = this._warcraftService.getClientFolderName(this.clientType);
-    this.clientLocation = this._warcraftService.getClientLocation(this.clientType);
+    this.installation = this._warcraftInstallationService.getWowInstallation(this.installationId);
+    this.selectedAddonChannelType = this.installation.defaultAddonChannelType;
+    this.clientAutoUpdate = this.installation.defaultAutoUpdate;
+    this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(
+      WowClientType,
+      this.installation.clientType
+    ).toUpperCase()}`;
+    this.clientFolderName = this.installation.label;
+    this.clientLocation = this.installation.location;
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onDefaultAddonChannelChange(evt: MatSelectChange) {
-    this._wowupService.setDefaultAddonChannel(this.clientType, evt.value);
+  onDefaultAddonChannelChange(evt: MatSelectChange): void {
+    this.installation.defaultAddonChannelType = evt.value;
+    this._warcraftInstallationService.updateWowInstallation(this.installation);
   }
 
-  onDefaultAutoUpdateChange(evt: MatSlideToggleChange) {
-    this._wowupService.setDefaultAutoUpdate(this.clientType, evt.checked);
+  onDefaultAutoUpdateChange(evt: MatSlideToggleChange): void {
+    this.installation.defaultAutoUpdate = evt.checked;
+    this._warcraftInstallationService.updateWowInstallation(this.installation);
   }
 
-  public async clearInstallPath() {
+  public async clearInstallPath(): Promise<void> {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.TITLE"),
@@ -95,7 +105,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
 
     try {
-      await this._warcraftService.removeWowFolderPath(this.clientType).toPromise();
+      // await this._warcraftService.removeWowFolderPath(this.clientType).toPromise();
       this.clientLocation = "";
       this._cdRef.detectChanges();
       console.debug("Remove client location complete");
@@ -104,8 +114,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onSelectClientPath() {
-    const selectedPath = await this.selectWowClientPath(this.clientType);
+  async onSelectClientPath(): Promise<void> {
+    const selectedPath = await this.selectWowClientPath(this.installation.clientType);
     if (selectedPath) {
       console.debug("selectedPath", selectedPath);
       this.clientLocation = selectedPath;

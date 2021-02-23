@@ -5,7 +5,7 @@ import { ColumnState } from "../../models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
 import { join } from "path";
-import { Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import {
   APP_UPDATE_CHECK_END,
   APP_UPDATE_CHECK_FOR_UPDATE,
@@ -38,10 +38,12 @@ import {
   ADDON_MIGRATION_VERSION_KEY,
   IPC_GET_APP_VERSION,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
+  WOW_INSTALLATIONS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { PreferenceChange } from "../../models/wowup/preference-change";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
@@ -49,41 +51,31 @@ import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { WarcraftService } from "../warcraft/warcraft.service";
+import { filter, map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
 })
 export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
-
   private readonly _wowupUpdateDownloadInProgressSrc = new Subject<boolean>();
-
   private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
-
   private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
-
   private readonly _wowupUpdateCheckInProgressSrc = new Subject<boolean>();
 
   private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
-
   public readonly applicationFolderPath: string = remote.app.getPath("userData");
-
   public readonly applicationLogsFolderPath: string = remote.app.getPath("logs");
-
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, "downloads");
-
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
-
   public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
-
   public readonly wowupUpdateDownloadInProgress$ = this._wowupUpdateDownloadInProgressSrc.asObservable();
-
   public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
-
   public readonly wowupUpdateCheckInProgress$ = this._wowupUpdateCheckInProgressSrc.asObservable();
 
   constructor(
@@ -290,6 +282,8 @@ export class WowUpService {
     this._preferenceStorageService.set(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY, clientType);
   }
 
+  
+
   public get enableSystemNotifications(): boolean {
     return this._preferenceStorageService.findByKey(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY) === true.toString();
   }
@@ -343,29 +337,6 @@ export class WowUpService {
   public async setMigrationVersion(): Promise<void> {
     const versionNumber = await this._electronService.getVersionNumber();
     this._preferenceStorageService.set(ADDON_MIGRATION_VERSION_KEY, versionNumber);
-  }
-
-  public getDefaultAddonChannel(clientType: WowClientType): AddonChannelType {
-    const key = this.getClientDefaultAddonChannelKey(clientType);
-    const preference = this._preferenceStorageService.findByKey(key);
-    return parseInt(preference, 10) as AddonChannelType;
-  }
-
-  public setDefaultAddonChannel(clientType: WowClientType, channelType: AddonChannelType): void {
-    const key = this.getClientDefaultAddonChannelKey(clientType);
-    this._preferenceStorageService.set(key, channelType);
-    this._preferenceChangeSrc.next({ key, value: channelType.toString() });
-  }
-
-  public getDefaultAutoUpdate(clientType: WowClientType): boolean {
-    const key = this.getClientDefaultAutoUpdateKey(clientType);
-    const preference = this._preferenceStorageService.findByKey(key);
-    return preference === true.toString();
-  }
-
-  public setDefaultAutoUpdate(clientType: WowClientType, autoUpdate: boolean): void {
-    const key = this.getClientDefaultAutoUpdateKey(clientType);
-    this._preferenceStorageService.set(key, autoUpdate);
   }
 
   public async showLogsFolder(): Promise<void> {

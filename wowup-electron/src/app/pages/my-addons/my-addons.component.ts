@@ -43,6 +43,8 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
+import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
 
 class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
   constructor(private subject: BehaviorSubject<AddonViewModel[]>) {
@@ -100,11 +102,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public activeSortDirection = "asc";
   public addonUtils = AddonUtils;
   public selectedClient = WowClientType.None;
+  public selectedInstallation: WowInstallation = undefined;
   public wowClientType = WowClientType;
   public overlayRef: OverlayRef | null;
   public isBusy = true;
   public enableControls = true;
   public data$ = this._dataSubject.asObservable();
+  public wowInstallations$: Observable<WowInstallation[]>;
+  public selectedInstallationId: string;
 
   public columns: ColumnState[] = [
     {
@@ -177,8 +182,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     public electronService: ElectronService,
     public overlay: Overlay,
     public warcraftService: WarcraftService,
-    public wowUpService: WowUpService
+    public wowUpService: WowUpService,
+    public warcraftInstallationService: WarcraftInstallationService
   ) {
+    this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
+
+    this.wowInstallations$.subscribe((i) => {
+      console.debug("WOW INSTALLS CH", i);
+    });
+
     this.dataSource = new ListItemDataSource(this._dataSubject);
 
     const sortOrder = this.wowUpService.myAddonsSortOrder;
@@ -226,7 +238,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.autoUpdateComplete$.subscribe(() => {
       console.log("Checking for addon updates...");
       this._cdRef.markForCheck();
-      this.loadAddons(this.selectedClient).subscribe();
+      this.loadAddons(this.selectedInstallation).subscribe();
     });
   }
 
@@ -267,10 +279,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public onRefresh(): void {
     this.isBusy = true;
     this.enableControls = false;
-    from(this.addonService.syncClientAddons(this.selectedClient))
+    from(this.addonService.syncInstallationAddons(this.selectedInstallation))
       .pipe(
-        switchMap(() => this.loadAddons(this.selectedClient)),
-        switchMap(() => from(this._wowUpAddonService.updateForClientType(this.selectedClient))),
+        switchMap(() => this.loadAddons(this.selectedInstallation)),
+        switchMap(() => from(this._wowUpAddonService.updateForInstallation(this.selectedInstallation))),
         tap(() => {
           this.isBusy = false;
           this.enableControls = true;
@@ -385,17 +397,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onUpdateAllRetailClassic(): void {
-    this.updateAllWithSpinner(WowClientType.Retail, WowClientType.Classic).catch((e) => console.error(e));
+    const installations = this.warcraftInstallationService
+      .getWowInstallations()
+      .filter(
+        (installation) =>
+          installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.Classic
+      );
+    this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }
 
   public onUpdateAllClients(): void {
-    this.updateAllWithSpinner(
-      WowClientType.Retail,
-      WowClientType.RetailPtr,
-      WowClientType.Beta,
-      WowClientType.ClassicPtr,
-      WowClientType.Classic
-    ).catch((e) => console.error(e));
+    this.updateAllWithSpinner(...this.warcraftInstallationService.getWowInstallations()).catch((e) => console.error(e));
   }
 
   public onHeaderContext(event: MouseEvent): void {
@@ -476,14 +488,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .afterClosed()
       .pipe(
         switchMap((result) => {
-          return result ? from(this.loadAddons(this.selectedClient, true)) : of(undefined);
+          return result ? from(this.loadAddons(this.selectedInstallation, true)) : of(undefined);
         })
       )
       .subscribe();
   }
 
   public onClientChange(): void {
-    this._sessionService.setSelectedClientType(this.selectedClient);
+    this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
   }
 
   public onRemoveAddon(addon: Addon): void {
@@ -648,7 +660,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
           const externalId = _.find(listItem.addon.externalIds, (extId) => extId.providerName === evt.value);
           return from(
-            this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, this.selectedClient)
+            this.addonService.setProvider(
+              listItem.addon,
+              externalId.id,
+              externalId.providerName,
+              this.selectedInstallation
+            )
           );
         }),
         catchError((e) => {
@@ -672,7 +689,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.addonService.saveAddon(listItem.addon);
     });
 
-    this.loadAddons(this.selectedClient).subscribe();
+    this.loadAddons(this.selectedInstallation).subscribe();
   }
 
   public isIndeterminate(listItems: AddonViewModel[], prop: string): boolean {
@@ -710,19 +727,29 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     await this.addonService.backfillAddons();
 
-    const selectedClientSubscription = this._sessionService.selectedClientType$
+    const selectedInstallationSub = this._sessionService.selectedWowInstallation$
       .pipe(
-        switchMap((clientType) => {
-          this.selectedClient = clientType;
-          return this.loadAddons(this.selectedClient);
+        switchMap((installation) => {
+          this.selectedInstallation = installation;
+          this.selectedInstallationId = installation.id;
+          return this.loadAddons(this.selectedInstallation);
         })
       )
       .subscribe();
 
-    this.subscriptions.push(selectedClientSubscription);
+    // const selectedClientSubscription = this._sessionService.selectedClientType$
+    //   .pipe(
+    //     switchMap((clientType) => {
+    //       this.selectedClient = clientType;
+    //       return this.loadAddons(this.selectedClient);
+    //     })
+    //   )
+    //   .subscribe();
+
+    this.subscriptions.push(selectedInstallationSub);
   }
 
-  private async updateAllWithSpinner(...clientTypes: WowClientType[]): Promise<void> {
+  private async updateAllWithSpinner(...installations: WowInstallation[]): Promise<void> {
     this.isBusy = true;
     this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS");
 
@@ -730,8 +757,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     let updatedCt = 0;
 
     try {
-      for (const clientType of clientTypes) {
-        addons = addons.concat(await this.addonService.getAddons(clientType));
+      for (const installation of installations) {
+        addons = addons.concat(await this.addonService.getAddons(installation));
       }
 
       // Only care about the ones that need to be updated/installed
@@ -740,7 +767,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       );
 
       if (addons.length === 0) {
-        await this.loadAddons(this.selectedClient).toPromise();
+        await this.loadAddons(this.selectedInstallation).toPromise();
         return;
       }
 
@@ -762,7 +789,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         await this.addonService.updateAddon(addon.id);
       }
 
-      await this.loadAddons(this.selectedClient).toPromise();
+      await this.loadAddons(this.selectedInstallation).toPromise();
     } catch (err) {
       console.error("Failed to update classic/retail", err);
       this.isBusy = false;
@@ -798,16 +825,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return _.orderBy(addons, [active], [direction]);
   }
 
-  private loadAddons(clientType: WowClientType, rescan = false): Observable<void> {
+  private loadAddons(installation: WowInstallation, rescan = false): Observable<void> {
     this.isBusy = true;
     this.enableControls = false;
     this._cdRef.detectChanges();
 
-    if (clientType === WowClientType.None) {
+    if (!installation) {
       return of(undefined);
     }
 
-    return from(this.addonService.getAddons(clientType, rescan)).pipe(
+    return from(this.addonService.getAddons(installation, rescan)).pipe(
       map((addons) => {
         const rowData = this.formatAddons(addons);
         this.enableControls = this.calculateControlState();

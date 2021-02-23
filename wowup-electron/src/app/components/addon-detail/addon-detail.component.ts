@@ -318,7 +318,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     try {
       return await this._addonService.getFullDescription(
-        this.sessionService.getSelectedClientType(),
+        this.sessionService.getSelectedWowInstallation(),
         providerName,
         externalId,
         this.model?.listItem?.addon
@@ -344,7 +344,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getSearchResultChangelog() {
     return await this._addonService.getChangelogForSearchResult(
-      this.sessionService.getSelectedClientType(),
+      this.sessionService.getSelectedWowInstallation(),
       this.model.channelType,
       this.model.searchResult
     );
@@ -352,7 +352,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getMyAddonChangelog() {
     return await this._addonService.getChangelogForAddon(
-      this.sessionService.getSelectedClientType(),
+      this.sessionService.getSelectedWowInstallation(),
       this.model.listItem?.addon
     );
   }

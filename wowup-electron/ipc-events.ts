@@ -46,6 +46,7 @@ import {
   IPC_LIST_ENTRIES,
   IPC_LIST_FILES_CHANNEL,
   IPC_READDIR,
+  IPC_READ_FILE_BUFFER_CHANNEL,
 } from "./src/common/constants";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
@@ -313,6 +314,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(IPC_READ_FILE_CHANNEL, async (evt, filePath: string) => {
     return await fs.readFile(filePath, { encoding: "utf-8" });
+  });
+
+  handle(IPC_READ_FILE_BUFFER_CHANNEL, async (evt, filePath: string) => {
+    return await fs.readFile(filePath);
   });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {

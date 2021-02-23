@@ -386,6 +386,7 @@
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
         "RESCAN_CLIENTS_BUTTON": "Re-Scan",
+        "ADD_CLIENT_BUTTON": "Add New",
         "RESCAN_CLIENTS_LABEL": "Rescan installed World of Warcraft products",
         "TITLE": "World of Warcraft"
       }

@@ -1,15 +1,17 @@
 import { join } from "path";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { FileUtils } from "../../utils/file.utils";
+import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 
 const BLIZZARD_AGENT_PATH = "/Users/Shared/Battle.net/Agent";
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 
 export class WarcraftServiceMac implements WarcraftServiceImpl {
+  constructor(private _fileService: FileService) {}
+
   public async getBlizzardAgentPath(): Promise<string> {
     const agentPath = join(BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
-    const exists = await FileUtils.exists(agentPath);
+    const exists = await this._fileService.pathExists(agentPath);
     return exists ? agentPath : "";
   }
 

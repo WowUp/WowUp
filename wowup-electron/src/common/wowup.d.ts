@@ -63,7 +63,8 @@ declare type RendererChannels =
   | "leave-full-screen"
   | "list-entries"
   | "list-files"
-  | "readdir";
+  | "readdir"
+  | "read-file-buffer";
 
 declare global {
   interface Window {

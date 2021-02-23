@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { BehaviorSubject, combineLatest, from, of, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } from "rxjs";
 import { catchError, filter, first, map } from "rxjs/operators";
 
 import {
@@ -42,6 +42,8 @@ import {
   FixedSizeVirtualScrollStrategy,
   VIRTUAL_SCROLL_STRATEGY,
 } from "@angular/cdk/scrolling";
+import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
 
 const ROW_HEIGHT = 62;
 const PAGESIZE = 20;
@@ -170,16 +172,21 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
   }
 
   public get defaultAddonChannelKey(): string {
-    return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.getSelectedClientType());
+    return "";
+    // return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.getSelectedWowInstallation());
   }
 
   public get defaultAddonChannel(): AddonChannelType {
-    return this._wowUpService.getDefaultAddonChannel(this._sessionService.getSelectedClientType());
+    return AddonChannelType.Stable;
+    // return this._wowUpService.getDefaultAddonChannel(this._sessionService.getSelectedClientType());
   }
 
   public query = "";
   public selectedClient = WowClientType.None;
+  public selectedInstallation: WowInstallation = undefined;
+  public selectedInstallationId = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
+  public wowInstallations$: Observable<WowInstallation[]>;
 
   public isBusy$ = this._isBusySubject.asObservable();
   public data$ = this._dataSubject.asObservable();
@@ -199,8 +206,11 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
     public electronService: ElectronService,
-    public warcraftService: WarcraftService
+    public warcraftService: WarcraftService,
+    public warcraftInstallationService: WarcraftInstallationService
   ) {
+    this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
+
     const sortOrder = this._wowUpService.getAddonsSortOrder;
     this.activeSort = sortOrder?.name ?? "";
     this.activeSortDirection = sortOrder?.direction ?? "";
@@ -303,9 +313,10 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
 
     this._lazyLoaded = true;
 
-    const selectedClientSubscription = this._sessionService.selectedClientType$.subscribe((clientType) => {
-      this.selectedClient = clientType;
-      this.loadPopularAddons(this.selectedClient);
+    const selectedInstallationSub = this._sessionService.selectedWowInstallation$.subscribe((installation) => {
+      this.selectedInstallation = installation;
+      this.selectedInstallationId = installation.id;
+      this.loadPopularAddons(this.selectedInstallation);
     });
 
     const addonRemovedSubscription = this._addonService.addonRemoved$.subscribe(() => {
@@ -322,12 +333,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
       this.setPageContextText();
     });
 
-    this._subscriptions = [
-      selectedClientSubscription,
-      addonRemovedSubscription,
-      channelTypeSubscription,
-      dataSourceSub,
-    ];
+    this._subscriptions = [selectedInstallationSub, addonRemovedSubscription, channelTypeSubscription, dataSourceSub];
   }
 
   onInstallFromUrl(): void {
@@ -338,11 +344,11 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
   }
 
   onClientChange(): void {
-    this._sessionService.setSelectedClientType(this.selectedClient);
+    this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
   }
 
   onRefresh(): void {
-    this.loadPopularAddons(this.selectedClient);
+    this.loadPopularAddons(this.selectedInstallation);
   }
 
   onClearSearch(): void {
@@ -354,11 +360,11 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     this._isBusySubject.next(true);
 
     if (!this.query) {
-      this.loadPopularAddons(this.selectedClient);
+      this.loadPopularAddons(this.selectedInstallation);
       return;
     }
 
-    from(this._addonService.search(this.query, this.selectedClient))
+    from(this._addonService.search(this.query, this.selectedInstallation))
       .pipe(
         first(),
         map((searchResults) => {
@@ -398,8 +404,8 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     dialogRef.afterClosed().subscribe();
   }
 
-  private loadPopularAddons(clientType: WowClientType) {
-    if (clientType === WowClientType.None) {
+  private loadPopularAddons(installation: WowInstallation) {
+    if (!installation) {
       return;
     }
 
@@ -413,7 +419,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     this._isBusySubject.next(true);
 
     this._addonService
-      .getFeaturedAddons(clientType)
+      .getFeaturedAddons(installation)
       .pipe(
         catchError((error) => {
           console.error(`getFeaturedAddons failed`, error);
