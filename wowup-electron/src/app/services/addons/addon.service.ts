@@ -426,6 +426,8 @@ export class AddonService {
       throw new Error("Addon not found or invalid");
     }
 
+    console.log(`Started update for "${addon.name}" at version "${addon.installedVersion}" to "${addon.latestVersion}"`);
+
     const addonProvider = this.getProvider(addon.providerName);
     const downloadFileName = `${slug(addon.name)}.zip`;
 
@@ -532,6 +534,7 @@ export class AddonService {
         installState: AddonInstallState.Complete,
         progress: 100,
       });
+      console.log(`Finished update for "${addon.name}" at version "${addon.installedVersion}"`);
     } catch (err) {
       console.error(err);
       queueItem.completion.reject(err);
