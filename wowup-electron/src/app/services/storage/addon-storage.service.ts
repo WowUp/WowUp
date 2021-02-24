@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { IPC_ADDONS_SAVE_ALL } from "common/constants";
 import * as Store from "electron-store";
 import { Addon } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
@@ -57,12 +56,12 @@ export class AddonStorageService {
     addons.forEach((addon) => this._store.delete(addon.id));
   }
 
-  public getByExternalId(externalId: string, clientType: WowClientType): Addon {
+  public getByExternalId(externalId: string, installationId: string): Addon {
     const addons: Addon[] = [];
 
     for (const result of this._store) {
       const addon = result[1] as Addon;
-      if (addon.clientType === clientType && addon.externalId === externalId) {
+      if (addon.installationId === installationId && addon.externalId === externalId) {
         addons.push(addon);
         break;
       }

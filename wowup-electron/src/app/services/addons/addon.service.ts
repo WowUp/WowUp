@@ -257,7 +257,7 @@ export class AddonService {
     installation: WowInstallation,
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
   ): Promise<void> {
-    const existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, installation.clientType);
+    const existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, installation.id);
     if (existingAddon) {
       throw new Error("Addon already installed");
     }
@@ -296,7 +296,7 @@ export class AddonService {
       onUpdate?.call(this, AddonInstallState.Installing, percent);
 
       // If the dependency is already installed, skip it
-      const existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.clientType);
+      const existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.installationId);
       if (existingAddon) {
         continue;
       }
@@ -787,7 +787,7 @@ export class AddonService {
 
   private async removeDependencies(addon: Addon) {
     for (const dependency of addon.dependencies) {
-      const dependencyAddon = this.getByExternalId(dependency.externalAddonId, addon.clientType);
+      const dependencyAddon = this.getByExternalId(dependency.externalAddonId, addon.installationId);
       if (!dependencyAddon) {
         console.log(`${addon.name}: Dependency not found ${dependency.externalAddonId}`);
         continue;
@@ -1290,12 +1290,12 @@ export class AddonService {
     );
   }
 
-  public getByExternalId(externalId: string, clientType: WowClientType): Addon {
-    return this._addonStorage.getByExternalId(externalId, clientType);
+  public getByExternalId(externalId: string, installationId: string): Addon {
+    return this._addonStorage.getByExternalId(externalId, installationId);
   }
 
   public isInstalled(externalId: string, installation: WowInstallation): boolean {
-    return !!this.getByExternalId(externalId, installation.clientType);
+    return !!this.getByExternalId(externalId, installation.id);
   }
 
   public setProviderEnabled(providerName: string, enabled: boolean): void {
