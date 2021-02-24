@@ -166,10 +166,7 @@ export class WarcraftInstallationService {
     const typeName = getEnumName(WowClientType, clientType);
     const currentInstallations = this.getWowInstallationsByClientType(clientType);
 
-    let label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
-    if (currentInstallations.length > 0) {
-      label += `${currentInstallations.length + 1}`;
-    }
+    const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
 
     const installation: WowInstallation = {
       id: uuidv4(),
@@ -191,10 +188,7 @@ export class WarcraftInstallationService {
       const typeName = getEnumName(WowClientType, product.clientType);
       const currentInstallations = this.getWowInstallationsByClientType(product.clientType);
 
-      let label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
-      if (currentInstallations.length > 0) {
-        label += `${currentInstallations.length + 1}`;
-      }
+      const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
 
       const fullProductPath = this.getFullProductPath(product.location, product.clientType);
       const wowInstallation: WowInstallation = {
@@ -215,6 +209,15 @@ export class WarcraftInstallationService {
     }
 
     this._wowInstallationsSrc.next(this.getWowInstallations());
+  }
+
+  private async getNewInstallLabel(typeName: string, installCt: number): Promise<string> {
+    let label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
+    if (installCt > 0) {
+      label += ` ${installCt + 1}`;
+    }
+
+    return label;
   }
 
   private async migrateAllLegacyInstallations(blizzardAgentPath: string): Promise<string> {

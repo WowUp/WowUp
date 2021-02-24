@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-title class="row">
-    <div *ngIf="editMode === false" class="flex-grow-1">{{ installationModel.label }}</div>
-    <mat-form-field *ngIf="editMode === true" class="no-input-border">
+    <div *ngIf="(editMode$ | async) === false" class="flex-grow-1">{{ installationModel.label }}</div>
+    <mat-form-field *ngIf="(editMode$ | async) === true" class="no-input-border">
       <input matInput [(ngModel)]="installationModel.label" />
     </mat-form-field>
   </mat-card-title>
