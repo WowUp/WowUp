@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { filter, map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import * as path from "path";
@@ -26,10 +26,12 @@ import { ElectronService } from "../electron/electron.service";
 })
 export class WarcraftInstallationService {
   private readonly _wowInstallationsSrc = new BehaviorSubject<WowInstallation[]>([]);
+  private readonly _legacyInstallationSrc = new Subject<WowInstallation[]>();
 
   private _blizzardAgentPath = "";
 
   public readonly wowInstallations$ = this._wowInstallationsSrc.asObservable();
+  public readonly legacyInstallationSrc$ = this._legacyInstallationSrc.asObservable();
 
   public get blizzardAgentPath(): string {
     return `${this._blizzardAgentPath}`;
@@ -94,6 +96,7 @@ export class WarcraftInstallationService {
     storedInstallations.splice(matchIndex, 1, wowInstallation);
 
     this.setWowInstallations(storedInstallations);
+    this._wowInstallationsSrc.next(storedInstallations);
   }
 
   public async selectWowClientPath(): Promise<string> {
@@ -125,7 +128,7 @@ export class WarcraftInstallationService {
     return selectedPath;
   }
 
-  public addInstallation(installation: WowInstallation): void {
+  public addInstallation(installation: WowInstallation, notify = true): void {
     const existingInstallations = this.getWowInstallations();
     const exists = _.findIndex(existingInstallations, (inst) => inst.location === installation.location) !== -1;
     if (exists) {
@@ -134,9 +137,11 @@ export class WarcraftInstallationService {
 
     existingInstallations.push(installation);
 
-    console.debug("ADDED INSTALL");
     this.setWowInstallations(existingInstallations);
-    this._wowInstallationsSrc.next(existingInstallations);
+
+    if (notify) {
+      this._wowInstallationsSrc.next(existingInstallations);
+    }
   }
 
   public removeWowInstallation(installation: WowInstallation): void {
@@ -194,7 +199,7 @@ export class WarcraftInstallationService {
       };
 
       try {
-        this.addInstallation(wowInstallation);
+        this.addInstallation(wowInstallation, false);
       } catch (e) {
         // Ignore duplicate error
       }
@@ -213,20 +218,27 @@ export class WarcraftInstallationService {
   }
 
   private async migrateAllLegacyInstallations(blizzardAgentPath: string): Promise<string> {
+    const legacyInstallations: WowInstallation[] = [];
     for (const clientType of this._warcraftService.getAllClientTypes()) {
       try {
-        await this.migrateLegacyInstallations(clientType);
+        const legacyInstallation = await this.migrateLegacyInstallations(clientType);
+        if (legacyInstallation) {
+          legacyInstallations.push(legacyInstallation);
+        }
       } catch (e) {
         console.error(e);
       }
     }
 
+    console.debug("migrateAllLegacyInstallations", legacyInstallations);
+    this._legacyInstallationSrc.next(legacyInstallations);
+
     return blizzardAgentPath;
   }
 
-  private async migrateLegacyInstallations(clientType: WowClientType) {
+  private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation> {
     if (clientType === WowClientType.None) {
-      return;
+      return undefined;
     }
 
     const typeName = getEnumName(WowClientType, clientType);
@@ -234,14 +246,14 @@ export class WarcraftInstallationService {
     const existingInstallations = this.getWowInstallationsByClientType(clientType);
     if (existingInstallations.length > 0) {
       console.debug(`Existing install exists for: ${typeName}`);
-      return;
+      return undefined;
     }
 
     const legacyLocationKey = this._warcraftService.getLegacyClientLocationKey(clientType);
     const legacyLocation = this._preferenceStorageService.findByKey(legacyLocationKey);
     if (!legacyLocation) {
       console.debug(`Legacy ${typeName}: nothing to migrate`);
-      return;
+      return undefined;
     }
 
     console.debug(`Migrating legacy ${typeName} installation`);
@@ -268,7 +280,9 @@ export class WarcraftInstallationService {
       selected: false,
     };
 
-    this.addInstallation(installation);
+    this.addInstallation(installation, false);
+
+    return installation;
   }
 
   private getFullProductPath(location: string, clientType: WowClientType): string {

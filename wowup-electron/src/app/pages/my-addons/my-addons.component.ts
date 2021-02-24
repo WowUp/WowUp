@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { join } from "path";
 import { BehaviorSubject, from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, first, map, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
@@ -89,6 +89,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private isSelectedTab = false;
   private _lazyLoaded = false;
   private _dataSubject = new BehaviorSubject<AddonViewModel[]>([]);
+  private _isRefreshing = false;
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
@@ -278,15 +279,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onRefresh(): void {
+    if (this._isRefreshing) {
+      return;
+    }
+
+    this._isRefreshing = true;
     this.isBusy = true;
     this.enableControls = false;
     from(this.addonService.syncInstallationAddons(this.selectedInstallation))
       .pipe(
+        tap(() => console.debug("onRefresh")),
         switchMap(() => this.loadAddons(this.selectedInstallation)),
         switchMap(() => from(this._wowUpAddonService.updateForInstallation(this.selectedInstallation))),
         tap(() => {
           this.isBusy = false;
           this.enableControls = true;
+          this._isRefreshing = false;
         })
       )
       .subscribe();
@@ -690,6 +698,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.addonService.saveAddon(listItem.addon);
     });
 
+    console.debug("onSelectedAddonsChannelChange");
     this.loadAddons(this.selectedInstallation).subscribe();
   }
 
@@ -722,6 +731,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
+    console.debug("LAZY LOAD");
+
     this._lazyLoaded = true;
     this.isBusy = true;
     this.enableControls = false;
@@ -730,6 +741,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const selectedInstallationSub = this._sessionService.selectedWowInstallation$
       .pipe(
+        debounceTime(300),
         switchMap((installation) => {
           this.selectedInstallation = installation;
           this.selectedInstallationId = installation.id;
@@ -815,7 +827,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private sortAddons(addons: AddonViewModel[], sort?: Sort) {
-    console.debug(sort);
     const direction = (sort?.direction as "asc" | "desc") ?? (this.activeSortDirection as "asc" | "desc");
     const active = sort?.active ?? this.activeSort;
 
@@ -835,6 +846,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return of(undefined);
     }
 
+    console.debug("LOAD ADDONS");
     return from(this.addonService.getAddons(installation, rescan)).pipe(
       map((addons) => {
         const rowData = this.formatAddons(addons);

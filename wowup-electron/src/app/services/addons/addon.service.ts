@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as path from "path";
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from "rxjs";
-import { catchError, filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { catchError, filter, first, map, mergeMap, switchMap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
 
@@ -132,6 +132,38 @@ export class AddonService {
       .subscribe(() => {
         console.debug("reconcileOrphanAddons complete");
       });
+
+    this._warcraftInstallationService.legacyInstallationSrc$
+      .pipe(
+        first(),
+        map((installations) => this.handleLegacyInstallations(installations))
+      )
+      .subscribe(() => console.log(`Legacy installation addons finished`));
+  }
+
+  private handleLegacyInstallations(installations: WowInstallation[]): void {
+    if (installations.length === 0) {
+      console.debug(`No legacy addons to migrate`);
+      return;
+    }
+
+    console.debug("handleLegacyInstallations", installations);
+    const allAddons = this._addonStorage.getAll();
+
+    for (const addon of allAddons) {
+      // Legacy addons will not have an installationId
+      if (addon.installationId) {
+        continue;
+      }
+
+      const installation = _.find(installations, (inst) => inst.clientType === addon.clientType);
+      if (!installation) {
+        continue;
+      }
+
+      addon.installationId = installation.id;
+      this.saveAddon(addon);
+    }
   }
 
   public canShowChangelog(providerName: string): boolean {
@@ -336,7 +368,7 @@ export class AddonService {
         const clientUpdates = await this.autoUpdateClient(installation, installationIdGroups[installationId]);
         updatedAddons.push(...clientUpdates);
       } catch (e) {
-        console.error(`Failed to auto update install: ${installation.label}`, e);
+        console.error(`Failed to auto update install: ${installation?.label}`, e);
       }
     }
 
@@ -1244,7 +1276,7 @@ export class AddonService {
     for (const addon of addons) {
       // ignore legacy addons for now
       if (!addon.installationId) {
-        console.debug(`Skipping legacy addon [${getEnumName(WowClientType, addon.clientType)}]: ${addon.name}`);
+        // console.debug(`Skipping legacy addon [${getEnumName(WowClientType, addon.clientType)}]: ${addon.name}`);
         continue;
       }
 
