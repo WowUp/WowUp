@@ -5,10 +5,10 @@ import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
-import { Addon } from "../entities/addon";
+import { Addon } from "../../common/entities/addon";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";

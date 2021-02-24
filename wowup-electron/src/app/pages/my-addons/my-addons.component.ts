@@ -28,8 +28,8 @@ import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
-import { Addon } from "../../entities/addon";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { Addon } from "../../../common/entities/addon";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
@@ -199,6 +199,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
+      this._sessionService.addonsChanged$.subscribe(() => this.onRefresh()),
       this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent),
       this.addonService.addonRemoved$.subscribe(this.onAddonRemoved),
       // this._displayAddonsSrc.subscribe(this.onDisplayAddonsChange),

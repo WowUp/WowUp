@@ -1,4 +1,4 @@
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 
 const WOW_RETAIL_NAME = "Wow.exe";

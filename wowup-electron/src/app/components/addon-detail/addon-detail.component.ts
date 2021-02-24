@@ -20,10 +20,10 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonFundingLink } from "../../entities/addon";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { AddonDependency } from "../../models/wowup/addon-dependency";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+import { AddonFundingLink } from "../../../common/entities/addon";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { AddonDependency } from "../../../common/wowup/addon-dependency";
+import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { ElectronService } from "../../services";

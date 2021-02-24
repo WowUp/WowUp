@@ -378,7 +378,7 @@
         "DEBUG": "Debug"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Newly installed addons will be set to auto update by default",
+        "AUTO_UPDATE_DESCRIPTION": "All existing and newly installed addons will be set to auto update by default",
         "AUTO_UPDATE_LABEL": "Auto Update",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Are you sure you want to remove the installation at \"{location}\"? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",

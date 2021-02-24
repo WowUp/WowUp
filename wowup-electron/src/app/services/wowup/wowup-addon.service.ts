@@ -3,7 +3,7 @@ import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
-import { Addon } from "../../entities/addon";
+import { Addon } from "../../../common/entities/addon";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";

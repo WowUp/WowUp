@@ -21,13 +21,12 @@ import {
 import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
-import { Addon, AddonExternalId } from "../../entities/addon";
+import { Addon, AddonExternalId } from "../../../common/entities/addon";
 import { AddonScanError, AddonSyncError, GenericProviderError, SourceRemovedAddonError } from "../../errors";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { AddonDependency } from "../../models/wowup/addon-dependency";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
-import { AddonWarningType } from "../../models/wowup/addon-warning-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonDependency } from "../../../common/wowup/addon-dependency";
+import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
+import { AddonWarningType } from "../../../common/wowup/addon-warning-type";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
@@ -48,6 +47,7 @@ import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WowInstallation } from "app/models/wowup/wow-installation";
+import { AddonChannelType } from "common/wowup/addon-channel-type";
 
 export enum ScanUpdateType {
   Start,
@@ -813,7 +813,7 @@ export class AddonService {
       this._addonStorage.removeAllForInstallation(installation.id);
 
       addons = this.updateAddons(addons, newAddons);
-      this._addonStorage.saveAll(addons);
+      await this._addonStorage.saveAll(addons);
     }
 
     // Only sync non-ignored addons
@@ -1031,6 +1031,23 @@ export class AddonService {
     }
 
     this.saveAddon(addon);
+  }
+
+  public async setInstallationAutoUpdate(installation: WowInstallation): Promise<void> {
+    const addons = this._addonStorage.getAllForInstallation(installation.id);
+    if (addons.length === 0) {
+      console.log(`No addons were found to set auto update: ${installation.location}`);
+      return;
+    }
+
+    console.log(`Setting ${addons.length} addons to auto update: ${installation.defaultAutoUpdate.toString()}`);
+
+    for (const addon of addons) {
+      addon.autoUpdateEnabled = installation.defaultAutoUpdate;
+    }
+
+    await this._addonStorage.saveAll(addons);
+    console.log(`Auto update set complete`);
   }
 
   private async scanAddons(installation: WowInstallation): Promise<Addon[]> {

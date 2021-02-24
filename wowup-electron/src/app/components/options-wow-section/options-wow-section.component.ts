@@ -4,7 +4,7 @@ import { ElectronService } from "app/services";
 import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
 import { from, Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";

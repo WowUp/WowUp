@@ -1,69 +1,69 @@
-import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell } from "electron";
-import * as fs from "fs-extra";
-import * as path from "path";
-import * as _ from "lodash";
 import * as admZip from "adm-zip";
-import * as pLimit from "p-limit";
-import * as nodeDiskInfo from "node-disk-info";
-import { map } from "lodash";
-import { readdir } from "fs";
 import axios from "axios";
+import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell } from "electron";
 import * as log from "electron-log";
+import * as Store from "electron-store";
+import * as fs from "fs-extra";
 import * as globrex from "globrex";
+import * as _ from "lodash";
+import * as nodeDiskInfo from "node-disk-info";
+import * as pLimit from "p-limit";
+import * as path from "path";
 
+import { createAppMenu } from "./app-menu";
 import {
-  IPC_LIST_DIRECTORIES_CHANNEL,
-  IPC_SHOW_DIRECTORY,
-  IPC_PATH_EXISTS_CHANNEL,
-  IPC_CURSE_GET_SCAN_RESULTS,
-  IPC_WOWUP_GET_SCAN_RESULTS,
-  IPC_UNZIP_FILE_CHANNEL,
-  IPC_COPY_FILE_CHANNEL,
-  IPC_DELETE_DIRECTORY_CHANNEL,
-  IPC_READ_FILE_CHANNEL,
-  IPC_WRITE_FILE_CHANNEL,
-  IPC_GET_ASSET_FILE_PATH,
-  IPC_DOWNLOAD_FILE_CHANNEL,
-  IPC_CREATE_DIRECTORY_CHANNEL,
-  IPC_STAT_FILES_CHANNEL,
-  IPC_CREATE_TRAY_MENU_CHANNEL,
-  IPC_LIST_DISKS_WIN32,
-  IPC_CREATE_APP_MENU_CHANNEL,
-  IPC_MINIMIZE_WINDOW,
-  IPC_MAXIMIZE_WINDOW,
+  IPC_ADDONS_SAVE_ALL,
   IPC_CLOSE_WINDOW,
-  IPC_RESTART_APP,
-  IPC_QUIT_APP,
-  IPC_WINDOW_LEAVE_FULLSCREEN,
-  IPC_GET_ZOOM_FACTOR,
-  IPC_SET_ZOOM_LIMITS,
-  IPC_SET_ZOOM_FACTOR,
+  IPC_COPY_FILE_CHANNEL,
+  IPC_CREATE_APP_MENU_CHANNEL,
+  IPC_CREATE_DIRECTORY_CHANNEL,
+  IPC_CREATE_TRAY_MENU_CHANNEL,
+  IPC_CURSE_GET_SCAN_RESULTS,
+  IPC_DELETE_DIRECTORY_CHANNEL,
+  IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_GET_APP_VERSION,
-  IPC_GET_LOCALE,
+  IPC_GET_ASSET_FILE_PATH,
   IPC_GET_LAUNCH_ARGS,
+  IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
-  IPC_SET_LOGIN_ITEM_SETTINGS,
+  IPC_GET_ZOOM_FACTOR,
+  IPC_LIST_DIRECTORIES_CHANNEL,
+  IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
   IPC_LIST_FILES_CHANNEL,
-  IPC_READDIR,
+  IPC_MAXIMIZE_WINDOW,
+  IPC_MINIMIZE_WINDOW,
+  IPC_PATH_EXISTS_CHANNEL,
+  IPC_QUIT_APP,
   IPC_READ_FILE_BUFFER_CHANNEL,
+  IPC_READ_FILE_CHANNEL,
+  IPC_READDIR,
+  IPC_RESTART_APP,
+  IPC_SET_LOGIN_ITEM_SETTINGS,
+  IPC_SET_ZOOM_FACTOR,
+  IPC_SET_ZOOM_LIMITS,
+  IPC_SHOW_DIRECTORY,
+  IPC_STAT_FILES_CHANNEL,
+  IPC_UNZIP_FILE_CHANNEL,
+  IPC_WINDOW_LEAVE_FULLSCREEN,
+  IPC_WOWUP_GET_SCAN_RESULTS,
+  IPC_WRITE_FILE_CHANNEL,
 } from "./src/common/constants";
-import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
-
-import { WowUpFolderScanner } from "./src/common/wowup/wowup-folder-scanner";
-import { WowUpScanResult } from "./src/common/wowup/wowup-scan-result";
-import { UnzipRequest } from "./src/common/models/unzip-request";
-import { FsDirent, FsStats } from "./src/common/models/ipc-events";
+import { CurseScanResult } from "./src/common/curse/curse-scan-result";
 import { CopyFileRequest } from "./src/common/models/copy-file-request";
+import { DownloadRequest } from "./src/common/models/download-request";
 import { DownloadStatus } from "./src/common/models/download-status";
 import { DownloadStatusType } from "./src/common/models/download-status-type";
-import { DownloadRequest } from "./src/common/models/download-request";
-import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
-import { MenuConfig } from "./src/common/wowup/menu-config";
-import { createTray } from "./system-tray";
-import { createAppMenu } from "./app-menu";
+import { FsDirent, FsStats } from "./src/common/models/ipc-events";
+import { UnzipRequest } from "./src/common/models/unzip-request";
 import { RendererChannels } from "./src/common/wowup";
+import { MenuConfig } from "./src/common/wowup/menu-config";
+import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
+import { WowUpFolderScanner } from "./src/common/wowup/wowup-folder-scanner";
+import { WowUpScanResult } from "./src/common/wowup/wowup-scan-result";
+import { Addon } from "./src/common/entities/addon";
+import { createTray } from "./system-tray";
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -71,6 +71,8 @@ interface SymlinkDir {
   realPath: string;
   isDir: boolean;
 }
+
+const addonStore = new Store({ name: "addons" });
 
 async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<SymlinkDir[]> {
   // Find and resolve symlinks found and return the folder names as
@@ -136,6 +138,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     }
   });
 
+  handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
+    _.forEach(addons, (addon) => addonStore.set(addon.id, addon));
+  });
+
   handle(IPC_GET_APP_VERSION, () => {
     return app.getVersion();
   });
@@ -180,7 +186,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_STAT_FILES_CHANNEL, async (evt, filePaths: string[]) => {
     const results: { [path: string]: FsStats } = {};
     const limit = pLimit(3);
-    const tasks = map(filePaths, (path) =>
+    const tasks = _.map(filePaths, (path) =>
       limit(async () => {
         const stats = await fs.stat(path);
         const fsStats: FsStats = {
@@ -269,7 +275,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       // Scan addon folders in parallel for speed!?
       try {
         const limit = pLimit(2);
-        const tasks = map(filePaths, (folder) => limit(() => new CurseFolderScanner().scanFolder(folder)));
+        const tasks = _.map(filePaths, (folder) => limit(() => new CurseFolderScanner().scanFolder(folder)));
         return await Promise.all(tasks);
       } catch (e) {
         log.error("Failed during curse scan", e);
@@ -282,7 +288,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     IPC_WOWUP_GET_SCAN_RESULTS,
     async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
       const limit = pLimit(2);
-      const tasks = map(filePaths, (folder) => limit(() => new WowUpFolderScanner(folder).scanFolder()));
+      const tasks = _.map(filePaths, (folder) => limit(() => new WowUpFolderScanner(folder).scanFolder()));
       return await Promise.all(tasks);
     }
   );

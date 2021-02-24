@@ -3,7 +3,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonWarningType } from "../../models/wowup/addon-warning-type";
+import { AddonWarningType } from "../../../common/wowup/addon-warning-type";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 
 @Component({

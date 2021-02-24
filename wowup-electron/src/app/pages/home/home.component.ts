@@ -8,7 +8,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { IPC_POWER_MONITOR_RESUME, IPC_POWER_MONITOR_UNLOCK } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import { AddonScanError } from "../../errors";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";

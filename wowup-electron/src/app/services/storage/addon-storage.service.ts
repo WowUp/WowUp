@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
+import { IPC_ADDONS_SAVE_ALL } from "common/constants";
 import * as Store from "electron-store";
-import { Addon } from "../../entities/addon";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { Addon } from "../../../common/entities/addon";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
   providedIn: "root",
@@ -11,7 +13,7 @@ export class AddonStorageService {
     name: "addons",
   });
 
-  constructor() {}
+  constructor(private _electronService: ElectronService) {}
 
   public query<T>(action: (store: Store) => T): T {
     return action(this._store);
@@ -29,8 +31,9 @@ export class AddonStorageService {
     return addons;
   }
 
-  public saveAll(addons: Addon[]): void {
-    addons.forEach((addon) => this.set(addon.id, addon));
+  public async saveAll(addons: Addon[]): Promise<void> {
+    await this._electronService.invoke(IPC_ADDONS_SAVE_ALL, addons);
+    // addons.forEach((addon) => this.set(addon.id, addon));
   }
 
   public set(key: string, value: Addon): void {

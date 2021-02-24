@@ -1,5 +1,5 @@
 import * as path from "path";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";

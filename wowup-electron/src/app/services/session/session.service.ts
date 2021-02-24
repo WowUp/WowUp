@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { filter, first, map } from "rxjs/operators";
 import * as _ from "lodash";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
@@ -19,6 +19,8 @@ export class SessionService {
   private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
   private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
   private readonly _autoUpdateCompleteSrc = new BehaviorSubject(0);
+  private readonly _addonsChangedSrc = new Subject<boolean>();
+
   private _selectedDetailTabType: DetailsTabType;
 
   public readonly selectedWowInstallation$ = this._selectedWowInstallationSrc.asObservable();
@@ -26,6 +28,7 @@ export class SessionService {
   public readonly selectedHomeTab$ = this._selectedHomeTabSrc.asObservable();
   public readonly pageContextText$ = this._pageContextTextSrc.asObservable();
   public readonly autoUpdateComplete$ = this._autoUpdateCompleteSrc.asObservable();
+  public readonly addonsChanged$ = this._addonsChangedSrc.asObservable();
 
   constructor(
     private _warcraftService: WarcraftService,
@@ -41,6 +44,10 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$
       .pipe(filter((installations) => installations.length > 0))
       .subscribe((installations) => this.onWowInstallationsChange(installations));
+  }
+
+  public notifyAddonsChanged(): void {
+    this._addonsChangedSrc.next(true);
   }
 
   public getSelectedDetailsTab(): DetailsTabType {

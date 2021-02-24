@@ -11,11 +11,11 @@ import {
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   WOW_INSTALLATIONS_KEY,
 } from "../../../common/constants";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftService } from "./warcraft.service";
-import { AddonChannelType } from "app/models/wowup/addon-channel-type";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { getEnumName } from "app/utils/enum.utils";
 import { TranslateService } from "@ngx-translate/core";
 import { FileService } from "../files/file.service";
@@ -242,7 +242,7 @@ export class WarcraftInstallationService {
       return;
     }
 
-    const legacyLocationKey = this._warcraftService.getClientLocationKey(clientType);
+    const legacyLocationKey = this._warcraftService.getLegacyClientLocationKey(clientType);
     const legacyLocation = this._preferenceStorageService.findByKey(legacyLocationKey);
     if (!legacyLocation) {
       console.debug(`Legacy ${typeName}: nothing to migrate`);

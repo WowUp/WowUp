@@ -6,8 +6,8 @@ import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 
 import { ADDON_PROVIDER_ZIP } from "../../common/constants";
-import { Addon } from "../entities/addon";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { Addon } from "../../common/entities/addon";
+import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { Toc } from "../models/wowup/toc";

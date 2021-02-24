@@ -1,7 +1,9 @@
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
-import { AddonDependency } from "../models/wowup/addon-dependency";
-import { AddonWarningType } from "../models/wowup/addon-warning-type";
+/// <reference path="../../typings.d.ts" />
+
+import { WowClientType } from "../warcraft/wow-client-type";
+import { AddonWarningType } from "../wowup/addon-warning-type";
+import { AddonChannelType } from "../wowup/addon-channel-type";
+import { AddonDependency } from "../wowup/addon-dependency";
 
 export interface AddonExternalId {
   providerName: string;

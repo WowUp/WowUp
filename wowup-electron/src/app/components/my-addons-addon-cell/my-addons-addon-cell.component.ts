@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
-import { AddonWarningType } from "../../models/wowup/addon-warning-type";
+import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
+import { AddonWarningType } from "../../../common/wowup/addon-warning-type";
 import * as AddonUtils from "../../utils/addon.utils";
 import { capitalizeString } from "../../utils/string.utils";
 

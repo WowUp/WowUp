@@ -3,7 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonService } from "../../services/addons/addon.service";
 import { AnalyticsService } from "../../services/analytics/analytics.service";

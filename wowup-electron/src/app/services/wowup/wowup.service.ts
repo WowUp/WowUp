@@ -40,8 +40,8 @@ import {
   USE_SYMLINK_MODE_PREFERENCE_KEY,
   WOW_INSTALLATIONS_KEY,
 } from "../../../common/constants";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { SortOrder } from "../../models/wowup/sort-order";
@@ -281,8 +281,6 @@ export class WowUpService {
   public setLastSelectedClientType(clientType: WowClientType): void {
     this._preferenceStorageService.set(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY, clientType);
   }
-
-  
 
   public get enableSystemNotifications(): boolean {
     return this._preferenceStorageService.findByKey(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY) === true.toString();
