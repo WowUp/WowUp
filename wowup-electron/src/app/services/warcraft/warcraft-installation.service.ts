@@ -21,14 +21,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { FileService } from "../files/file.service";
 import { ElectronService } from "../electron/electron.service";
 
-const CLIENT_RETAIL_FOLDER = "_retail_";
-const CLIENT_RETAIL_PTR_FOLDER = "_ptr_";
-const CLIENT_CLASSIC_FOLDER = "_classic_";
-const CLIENT_CLASSIC_PTR_FOLDER = "_classic_ptr_";
-const CLIENT_BETA_FOLDER = "_beta_";
-const ADDON_FOLDER_NAME = "AddOns";
-const INTERFACE_FOLDER_NAME = "Interface";
-
 @Injectable({
   providedIn: "root",
 })
@@ -294,21 +286,4 @@ export class WarcraftInstallationService {
     const legacyDefaultAutoUpdateKey = `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
     return this._preferenceStorageService.findByKey(legacyDefaultAutoUpdateKey) === true.toString();
   }
-
-  //   public getClientFolderName(clientType: WowClientType): string {
-  //     switch (clientType) {
-  //       case WowClientType.Retail:
-  //         return CLIENT_RETAIL_FOLDER;
-  //       case WowClientType.Classic:
-  //         return CLIENT_CLASSIC_FOLDER;
-  //       case WowClientType.RetailPtr:
-  //         return CLIENT_RETAIL_PTR_FOLDER;
-  //       case WowClientType.ClassicPtr:
-  //         return CLIENT_CLASSIC_PTR_FOLDER;
-  //       case WowClientType.Beta:
-  //         return CLIENT_BETA_FOLDER;
-  //       default:
-  //         return "";
-  //     }
-  //   }
 }

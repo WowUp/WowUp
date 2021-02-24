@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, forkJoin, from, Observable, Subject } from "rxjs";
-import { filter, first, map, mergeMap, switchMap } from "rxjs/operators";
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from "rxjs";
+import { catchError, filter, map, mergeMap, switchMap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
 
@@ -122,8 +122,12 @@ export class AddonService {
     // Attempt to remove addons for clients that were lost
     this._warcraftInstallationService.wowInstallations$
       .pipe(
-        filter((installations) => installations.length > 0)
-        // switchMap((clientTypes) => from(this.reconcileOrphanAddons(clientTypes)))
+        filter((installations) => installations.length > 0),
+        switchMap((clientTypes) => from(this.reconcileOrphanAddons(clientTypes))),
+        catchError((e) => {
+          console.error(`reconcileOrphanAddons failed`, e);
+          return of(undefined);
+        })
       )
       .subscribe(() => {
         console.debug("reconcileOrphanAddons complete");
@@ -764,11 +768,11 @@ export class AddonService {
   }
 
   public async removeAddon(addon: Addon, removeDependencies = false, removeDirectories = true): Promise<void> {
-    const installedDirectories = addon.installedFolders?.split(",") ?? [];
-    const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-    const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
-
     if (removeDirectories) {
+      const installedDirectories = addon.installedFolders?.split(",") ?? [];
+      const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+      const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
+
       for (const directory of installedDirectories) {
         const addonDirectory = path.join(addonFolderPath, directory);
         await this._fileService.remove(addonDirectory);
@@ -798,7 +802,7 @@ export class AddonService {
   }
 
   public getAllAddons(installation: WowInstallation): Addon[] {
-    return this._addonStorage.getAllForInstallation(installation.id);
+    return this._addonStorage.getAllForInstallationId(installation.id);
   }
 
   public async getAddons(installation: WowInstallation, rescan = false): Promise<Addon[]> {
@@ -806,7 +810,7 @@ export class AddonService {
       return [];
     }
 
-    let addons = this._addonStorage.getAllForInstallation(installation.id);
+    let addons = this._addonStorage.getAllForInstallationId(installation.id);
 
     if (rescan || addons.length === 0) {
       const newAddons = await this.scanAddons(installation);
@@ -835,7 +839,7 @@ export class AddonService {
 
   public async syncInstallationAddons(installation: WowInstallation): Promise<void> {
     try {
-      const addons = this._addonStorage.getAllForInstallation(installation.id);
+      const addons = this._addonStorage.getAllForInstallationId(installation.id);
       const validAddons = _.filter(addons, (addon) => addon.isIgnored === false);
 
       await this.syncAddons(installation, validAddons);
@@ -1034,7 +1038,7 @@ export class AddonService {
   }
 
   public async setInstallationAutoUpdate(installation: WowInstallation): Promise<void> {
-    const addons = this._addonStorage.getAllForInstallation(installation.id);
+    const addons = this._addonStorage.getAllForInstallationId(installation.id);
     if (addons.length === 0) {
       console.log(`No addons were found to set auto update: ${installation.location}`);
       return;
@@ -1234,17 +1238,23 @@ export class AddonService {
     await this.removeAddon(addon, false, false);
   }
 
-  public async reconcileOrphanAddons(localInstallations: WowInstallation[]): Promise<void> {
-    console.debug("reconcileOrphanAddons", localInstallations);
-    const installations = this._warcraftInstallationService.getWowInstallations();
-    const unusedInstallations = _.difference(installations, localInstallations);
-    console.debug("unusedClients", unusedInstallations);
+  public async reconcileOrphanAddons(installations: WowInstallation[]): Promise<void> {
+    const addons = [...this._addonStorage.getAll()];
 
-    for (const installation of unusedInstallations) {
-      const addons = this._addonStorage.getAllForInstallation(installation.id);
-      for (const addon of addons) {
-        await this.removeAddon(addon, false, false);
+    for (const addon of addons) {
+      // ignore legacy addons for now
+      if (!addon.installationId) {
+        console.debug(`Skipping legacy addon [${getEnumName(WowClientType, addon.clientType)}]: ${addon.name}`);
+        continue;
       }
+
+      const installation = _.find(installations, (installation) => installation.id === addon.installationId);
+      if (installation) {
+        continue;
+      }
+
+      console.debug(`Removing orphaned addon [${getEnumName(WowClientType, addon.clientType)}]: ${addon.name}`);
+      await this.removeAddon(addon, false, false);
     }
   }
 
@@ -1313,7 +1323,7 @@ export class AddonService {
     const installations = this._warcraftInstallationService.getWowInstallations();
 
     for (const installation of installations) {
-      const addons = this._addonStorage.getAllForInstallation(installation.id);
+      const addons = this._addonStorage.getAllForInstallationId(installation.id);
       for (const addon of addons) {
         await this.backfillAddon(addon);
         this.backfillAddonInstalledFolderList(addon);

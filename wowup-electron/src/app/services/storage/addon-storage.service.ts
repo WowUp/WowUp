@@ -52,7 +52,7 @@ export class AddonStorageService {
   }
 
   public removeAllForInstallation(installationId: string): void {
-    const addons = this.getAllForInstallation(installationId);
+    const addons = this.getAllForInstallationId(installationId);
     addons.forEach((addon) => this._store.delete(addon.id));
   }
 
@@ -70,17 +70,26 @@ export class AddonStorageService {
     return addons[0];
   }
 
-  public getAllForInstallation(installationId: string, validator?: (addon: Addon) => boolean): Addon[] {
+  public getAll(): Addon[] {
     const addons: Addon[] = [];
 
-    this.query((store) => {
-      for (const result of store) {
-        const addon = result[1] as Addon;
-        if (addon.installationId === installationId && (!validator || validator(addon))) {
-          addons.push(addon);
-        }
+    for (const result of this._store) {
+      const addon = result[1] as Addon;
+      addons.push(addon);
+    }
+
+    return addons;
+  }
+
+  public getAllForInstallationId(installationId: string, validator?: (addon: Addon) => boolean): Addon[] {
+    const addons: Addon[] = [];
+
+    for (const result of this._store) {
+      const addon = result[1] as Addon;
+      if (addon.installationId === installationId && (!validator || validator(addon))) {
+        addons.push(addon);
       }
-    });
+    }
 
     return addons;
   }
