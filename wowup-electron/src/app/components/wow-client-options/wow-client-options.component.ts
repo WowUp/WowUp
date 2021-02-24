@@ -8,6 +8,7 @@ import { WarcraftInstallationService } from "app/services/warcraft/warcraft-inst
 import * as _ from "lodash";
 import * as path from "path";
 import { Subscription } from "rxjs";
+import { map } from "rxjs/operators";
 import { WowClientType } from "../../models/warcraft/wow-client-type";
 import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { ElectronService } from "../../services";
@@ -26,6 +27,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   @Input("installationId") installationId: string;
 
   private installation: WowInstallation;
+  private installationModel: WowInstallation;
   private subscriptions: Subscription[] = [];
 
   public readonly addonChannelInfos: {
@@ -39,6 +41,17 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   public selectedAddonChannelType: AddonChannelType;
 
   public clientAutoUpdate: boolean;
+  public editMode = false;
+
+  public get installationLabel(): string {
+    return this.installation?.label ?? "";
+  }
+
+  public set installationLabel(input: string) {
+    if (this.installation) {
+      this.installation.label = input;
+    }
+  }
 
   constructor(
     private _dialog: MatDialog,
@@ -64,6 +77,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.installation = this._warcraftInstallationService.getWowInstallation(this.installationId);
+    this.installationModel = { ...this.installation };
     this.selectedAddonChannelType = this.installation.defaultAddonChannelType;
     this.clientAutoUpdate = this.installation.defaultAutoUpdate;
     this.clientTypeName = `COMMON.CLIENT_TYPES.${getEnumName(
@@ -86,6 +100,41 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   onDefaultAutoUpdateChange(evt: MatSlideToggleChange): void {
     this.installation.defaultAutoUpdate = evt.checked;
     this._warcraftInstallationService.updateWowInstallation(this.installation);
+  }
+
+  onClickCancel(): void {
+    this.installationModel = { ...this.installation };
+    this.editMode = false;
+  }
+
+  onClickSave(): void {
+    this.installation = { ...this.installationModel };
+    this._warcraftInstallationService.updateWowInstallation(this.installation);
+    this.editMode = false;
+  }
+
+  onClickRemove(): void {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.TITLE"),
+        message: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.MESSAGE", {
+          location: this._translateService.instant(this.installation.location),
+        }),
+      },
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        map((result) => {
+          if (!result) {
+            return;
+          }
+
+          this._warcraftInstallationService.removeWowInstallation(this.installation);
+        })
+      )
+      .subscribe();
   }
 
   public async clearInstallPath(): Promise<void> {
@@ -114,15 +163,6 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onSelectClientPath(): Promise<void> {
-    const selectedPath = await this.selectWowClientPath(this.installation.clientType);
-    if (selectedPath) {
-      console.debug("selectedPath", selectedPath);
-      this.clientLocation = selectedPath;
-      this._cdRef.detectChanges();
-    }
-  }
-
   private getAddonChannelInfos() {
     return getEnumList(AddonChannelType).map((type: AddonChannelType) => {
       const channelName = getEnumName(AddonChannelType, type).toUpperCase();
@@ -131,47 +171,5 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
         name: `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelName}`,
       };
     });
-  }
-
-  private async selectWowClientPath(clientType: WowClientType): Promise<string> {
-    const dialogResult = await this._electronService.showOpenDialog({
-      properties: ["openDirectory"],
-    });
-
-    if (dialogResult.canceled) {
-      return "";
-    }
-
-    const selectedPath = _.first(dialogResult.filePaths);
-    if (!selectedPath) {
-      console.warn("No path selected");
-      return "";
-    }
-
-    console.log("dialogResult", selectedPath);
-
-    const clientRelativePath = this._warcraftService.getClientRelativePath(clientType, selectedPath);
-
-    const didSetWowPath = await this._warcraftService.setWowFolderPath(clientType, clientRelativePath);
-    if (didSetWowPath) {
-      return clientRelativePath;
-    }
-
-    const clientFolderName = this._warcraftService.getClientFolderName(clientType);
-    const clientExecutableName = this._warcraftService.getExecutableName(clientType);
-    const clientExecutablePath = path.join(clientRelativePath, clientFolderName, clientExecutableName);
-    const dialogRef = this._dialog.open(AlertDialogComponent, {
-      data: {
-        title: `Alert`,
-        message: `Unable to set "${clientRelativePath}" as your ${getEnumName(
-          WowClientType,
-          clientType
-        )} folder.\nPath not found: "${clientExecutablePath}".`,
-      },
-    });
-
-    await dialogRef.afterClosed().toPromise();
-
-    return "";
   }
 }

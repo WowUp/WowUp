@@ -18,6 +18,7 @@ import {
   faCode,
   faCoins,
   faCompressArrowsAlt,
+  faPencilAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-icons";
@@ -47,10 +48,13 @@ export class IconService {
     this.addSvg(faPatreon);
     this.addSvg(faCoins);
     this.addSvg(faCompressArrowsAlt);
+    this.addSvg(faPencilAlt);
   }
 
-  async addSvg(icon: IconDefinition) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${icon.icon[0]} ${icon.icon[1]}"><path d="${icon.icon[4]}" /></svg>`;
+  addSvg(icon: IconDefinition): void {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${icon.icon[0]} ${
+      icon.icon[1]
+    }"><path d="${icon.icon[4].toString()}" /></svg>`;
 
     this._matIconRegistry.addSvgIconLiteralInNamespace(
       icon.prefix,

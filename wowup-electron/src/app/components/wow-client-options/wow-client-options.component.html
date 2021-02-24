@@ -1,12 +1,17 @@
 <mat-card>
-  <mat-card-title>{{ clientTypeName | translate }}</mat-card-title>
+  <mat-card-title class="row">
+    <div *ngIf="editMode === false" class="flex-grow-1">{{ installationModel.label }}</div>
+    <mat-form-field *ngIf="editMode === true" class="example-full-width">
+      <input matInput [(ngModel)]="installationModel.label" />
+    </mat-form-field>
+  </mat-card-title>
   <mat-card-content>
     <div class="row">
       <mat-form-field class="grow folder-input">
         <mat-label>{{
           "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL" | translate: { clientTypeName: (clientTypeName | translate) }
           }}</mat-label>
-        <input matInput disabled [value]="clientLocation" />
+        <input matInput disabled [value]="installationModel.location" />
         <mat-hint class="text-2">
           {{
           "PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT"
@@ -41,9 +46,21 @@
       </mat-slide-toggle>
     </div>
   </mat-card-content>
-  <mat-card-actions align="end">
-    <button mat-button color="warn" (click)="clearInstallPath()">Remove</button>
-    <button mat-button color="primary" (click)="onSelectClientPath()">{{
-      "PAGES.OPTIONS.WOW.OPEN_WOW_DIRECTORY_SELECT_BUTTON" | translate }}</button>
+  <mat-card-actions class="row">
+    <button *ngIf="editMode === true" mat-button color="warn" (click)="onClickRemove()">{{
+      "PAGES.OPTIONS.WOW.REMOVE_WOW_DIRECTORY_SELECT_BUTTON"
+      | translate }}</button>
+    <div class="flex-grow-1"></div>
+    <div *ngIf="editMode === true">
+      <button mat-button (click)="onClickCancel()">{{
+        "PAGES.OPTIONS.WOW.CANCEL_WOW_DIRECTORY_SELECT_BUTTON" | translate }}</button>
+      <button mat-button color="primary" (click)="onClickSave()">{{
+        "PAGES.OPTIONS.WOW.SAVE_WOW_DIRECTORY_SELECT_BUTTON" | translate }}</button>
+    </div>
+    <div *ngIf="editMode === false">
+      <button mat-button color="primary" (click)="editMode = true">{{
+        "PAGES.OPTIONS.WOW.EDIT_WOW_DIRECTORY_SELECT_BUTTON" | translate }}</button>
+
+    </div>
   </mat-card-actions>
 </mat-card>

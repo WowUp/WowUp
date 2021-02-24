@@ -95,6 +95,20 @@ export class WarcraftService {
     return this._impl.getExecutableName(clientType);
   }
 
+  public getExecutableExtension(): string {
+    return this._impl.getExecutableExtension();
+  }
+
+  public async isWowApplication(appPath: string): Promise<boolean> {
+    const pathExists = await this._fileService.pathExists(appPath);
+    if (!pathExists) {
+      return false;
+    }
+
+    const fileName = path.basename(appPath);
+    return this._impl.isWowApplication(fileName);
+  }
+
   public getFullExecutablePath(clientType: WowClientType): string {
     const clientLocation = this.getClientLocation(clientType);
     const clientFolder = this.getClientFolderName(clientType);

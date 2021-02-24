@@ -151,9 +151,13 @@
     "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "No addons found"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
+    },
     "ADDON_DETAILS": {
       "ADDON_ID_PREFIX": "Addon ID:",
       "BY_AUTHOR": "By {authorName}",
@@ -377,14 +381,18 @@
         "AUTO_UPDATE_DESCRIPTION": "Newly installed addons will be set to auto update by default",
         "AUTO_UPDATE_LABEL": "Auto Update",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "Are you sure you want to remove the installation at \"{location}\"? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Remove World of Warcraft Installation?"
         },
         "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Default Addon Channel",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "RESCAN_CLIENTS_BUTTON": "Re-Scan",
         "ADD_CLIENT_BUTTON": "Add New",
         "RESCAN_CLIENTS_LABEL": "Rescan installed World of Warcraft products",
