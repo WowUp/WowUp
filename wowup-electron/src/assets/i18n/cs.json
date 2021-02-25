@@ -151,7 +151,8 @@
     "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Žádné addony nebyly nalezeny"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -198,6 +199,9 @@
       "INSTALL_SUCCESS_LABEL": "Úspěšně nainstalováno!",
       "SUPPORTED_SOURCES": "Podporuje WowInterface a GitHub",
       "TITLE": "URL adresa pro instalaci addonu"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Chcete nám pomoci dále vylepšovat WowUp posíláním anonymních dat o instalaci a případných chybách?",
@@ -374,8 +378,10 @@
         "DEBUG": "Debug aplikace"
       },
       "WOW": {
+        "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "Nově instalované addony budou automaticky označeny k automatické aktualizaci pomocí WowUp.",
         "AUTO_UPDATE_LABEL": "Automatické aktualizace",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Opravdu chcete vyčistit složku pro instalaci addonů v klientu {clientName}? Toto vymaže pouze informace o addonech, které má uložené WowUp.\n\nAddony nebudou vymazány.",
           "TITLE": "Vyčistit složku?"
@@ -384,9 +390,12 @@
         "CLIENT_TYPE_PATH_LABEL": "Cesta k {clientTypeName} klientu",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Výchozí kanál aktualizací addonů",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanál aktualizací addonů",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Vybrat",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Znovu vyhledat",
         "RESCAN_CLIENTS_LABEL": "Pokusí se znovu vyhledat všechny instalace hry World of Warcraft",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "World of Warcraft"
       }
     }
