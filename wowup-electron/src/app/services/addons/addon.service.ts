@@ -72,6 +72,8 @@ interface InstallQueueItem {
   installType: InstallType;
 }
 
+const IGNORED_FOLDER_NAMES = ["__MACOSX"];
+
 @Injectable({
   providedIn: "root",
 })
@@ -521,6 +523,8 @@ export class AddonService {
       }
 
       const unzippedDirectoryNames = await this._fileService.listDirectories(unzippedDirectory);
+      _.remove(unzippedDirectoryNames, (dirName) => _.includes(IGNORED_FOLDER_NAMES, dirName));
+
       const existingDirectoryNames = this.getInstalledFolders(addon);
       const addedDirectoryNames = _.difference(unzippedDirectoryNames, existingDirectoryNames);
       const removedDirectoryNames = _.difference(existingDirectoryNames, unzippedDirectoryNames);
@@ -1435,6 +1439,8 @@ export class AddonService {
 
     const dependencies = _.map(latestFile.dependencies, this.createAddonDependency);
     const fundingLinks = Array.isArray(searchResult.fundingLinks) ? [...searchResult.fundingLinks] : [];
+
+    console.debug(`Create Addon: `, installation);
 
     return {
       id: uuidv4(),
