@@ -114,18 +114,18 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this.editMode = false;
   }
 
-  async onClickSave(): Promise<void> {
+  onClickSave(): void {
     this.isBusy = true;
     try {
-      const saveAutoUpdate = this.installationModel.defaultAutoUpdate !== this.installation.defaultAutoUpdate;
+      // const saveAutoUpdate = this.installationModel.defaultAutoUpdate !== this.installation.defaultAutoUpdate;
 
       this.installation = { ...this.installationModel };
       this._warcraftInstallationService.updateWowInstallation(this.installation);
 
-      if (saveAutoUpdate) {
-        await this._addonService.setInstallationAutoUpdate(this.installation);
-        this._sessionService.notifyAddonsChanged();
-      }
+      // if (saveAutoUpdate) {
+      //   await this._addonService.setInstallationAutoUpdate(this.installation);
+      //   this._sessionService.notifyAddonsChanged();
+      // }
     } catch (e) {
       console.error(e);
     } finally {
