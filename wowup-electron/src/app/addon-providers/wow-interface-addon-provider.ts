@@ -19,7 +19,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { convertBbcode } from "../utils/bbcode.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WowInstallation } from "../models/wowup/wow-installation";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";

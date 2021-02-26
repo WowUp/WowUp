@@ -1,17 +1,18 @@
+import * as _ from "lodash";
 import * as path from "path";
 import { BehaviorSubject, from } from "rxjs";
 import { filter, map } from "rxjs/operators";
-import * as _ from "lodash";
 
 import { Injectable } from "@angular/core";
 
 import { ElectronService } from "../";
 import { BLIZZARD_AGENT_PATH_KEY } from "../../../common/constants";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { ProductDb } from "../../models/warcraft/product-db";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { SelectItem } from "../../models/wowup/select-item";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
@@ -20,7 +21,6 @@ import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
-import { WowInstallation } from "app/models/wowup/wow-installation";
 
 // WOW STRINGS
 const CLIENT_RETAIL_FOLDER = "_retail_";

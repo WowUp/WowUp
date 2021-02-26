@@ -1,6 +1,8 @@
-import { Injectable } from "@angular/core";
-import { IPC_ADDONS_SAVE_ALL } from "common/constants";
 import * as Store from "electron-store";
+
+import { Injectable } from "@angular/core";
+
+import { IPC_ADDONS_SAVE_ALL } from "../../../common/constants";
 import { Addon } from "../../../common/entities/addon";
 import { ElectronService } from "../electron/electron.service";
 

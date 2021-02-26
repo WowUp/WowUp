@@ -1,15 +1,15 @@
-import { WowInstallation } from "app/models/wowup/wow-installation";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_HUB, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { Addon } from "../../common/entities/addon";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { WowUpScanResult } from "../../common/wowup/wowup-scan-result";
 import { AppConfig } from "../../environments/environment";
-import { Addon } from "../../common/entities/addon";
 import { SourceRemovedAddonError } from "../errors";
-import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { WowUpAddonReleaseRepresentation, WowUpAddonRepresentation } from "../models/wowup-api/addon-representations";
 import {
   WowUpGetAddonReleaseResponse,
@@ -19,11 +19,11 @@ import {
 } from "../models/wowup-api/api-responses";
 import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
 import { WowGameType } from "../models/wowup-api/wow-game-type";
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";

@@ -1,4 +1,3 @@
-import { WowInstallation } from "app/models/wowup/wow-installation";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
@@ -6,12 +5,13 @@ import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
-import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getEnumName } from "../utils/enum.utils";

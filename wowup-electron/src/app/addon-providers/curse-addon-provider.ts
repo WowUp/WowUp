@@ -1,4 +1,4 @@
-import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";

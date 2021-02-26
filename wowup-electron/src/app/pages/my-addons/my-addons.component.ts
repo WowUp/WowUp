@@ -24,27 +24,27 @@ import { MatSort, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
 
+import { Addon } from "../../../common/entities/addon";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
-import { Addon } from "../../../common/entities/addon";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
-import { WowInstallation } from "app/models/wowup/wow-installation";
-import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
 
 class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
   constructor(private subject: BehaviorSubject<AddonViewModel[]>) {
@@ -173,7 +173,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private _sessionService: SessionService,
-    private _ngZone: NgZone,
     private _dialog: MatDialog,
     private _cdRef: ChangeDetectorRef,
     private _wowUpAddonService: WowUpAddonService,

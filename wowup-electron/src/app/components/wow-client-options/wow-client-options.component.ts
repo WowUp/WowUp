@@ -1,20 +1,17 @@
+import * as _ from "lodash";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { map } from "rxjs/operators";
+
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
-import { WowInstallation } from "app/models/wowup/wow-installation";
-import { AddonService } from "app/services/addons/addon.service";
-import { SessionService } from "app/services/session/session.service";
-import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
-import * as _ from "lodash";
-import { BehaviorSubject, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
-import { ElectronService } from "../../services";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
+import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
@@ -66,8 +63,6 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   constructor(
     private _dialog: MatDialog,
-    private _sessionService: SessionService,
-    private _addonService: AddonService,
     private _translateService: TranslateService,
     private _warcraftInstallationService: WarcraftInstallationService
   ) {
@@ -86,6 +81,10 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.installation = this._warcraftInstallationService.getWowInstallation(this.installationId);
+    if (!this.installation) {
+      throw new Error(`Failed to find installation: ${this.installationId}`);
+    }
+
     this.installationModel = { ...this.installation };
     this.selectedAddonChannelType = this.installation.defaultAddonChannelType;
     this.clientAutoUpdate = this.installation.defaultAutoUpdate;

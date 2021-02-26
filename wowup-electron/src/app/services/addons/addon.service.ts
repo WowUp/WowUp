@@ -18,15 +18,16 @@ import {
   ADDON_PROVIDER_ZIP,
   ERROR_ADDON_ALREADY_INSTALLED,
 } from "../../../common/constants";
-import { AddonProvider } from "../../addon-providers/addon-provider";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
-import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { Addon, AddonExternalId } from "../../../common/entities/addon";
-import { AddonScanError, AddonSyncError, GenericProviderError, SourceRemovedAddonError } from "../../errors";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { AddonDependency } from "../../../common/wowup/addon-dependency";
 import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
 import { AddonWarningType } from "../../../common/wowup/addon-warning-type";
+import { AddonProvider } from "../../addon-providers/addon-provider";
+import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
+import { AddonScanError, AddonSyncError, GenericProviderError, SourceRemovedAddonError } from "../../errors";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
@@ -35,6 +36,7 @@ import { AddonSearchResultDependency } from "../../models/wowup/addon-search-res
 import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { Toc } from "../../models/wowup/toc";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
@@ -42,12 +44,10 @@ import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
+import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
-import { WowInstallation } from "app/models/wowup/wow-installation";
-import { AddonChannelType } from "common/wowup/addon-channel-type";
 
 export enum ScanUpdateType {
   Start,

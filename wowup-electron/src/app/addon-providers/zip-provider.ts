@@ -15,7 +15,7 @@ import { FileService } from "../services/files/file.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { AddonProvider } from "./addon-provider";
-import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WowInstallation } from "../models/wowup/wow-installation";
 
 const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed", "application/octet-stream"];
 

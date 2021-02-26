@@ -1,10 +1,11 @@
 import * as _ from "lodash";
+import * as path from "path";
 import { BehaviorSubject, Subject } from "rxjs";
 import { filter, map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
-import * as path from "path";
 
 import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 
 import {
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
@@ -12,14 +13,13 @@ import {
   WOW_INSTALLATIONS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { WowInstallation } from "../../models/wowup/wow-installation";
+import { getEnumName } from "../../utils/enum.utils";
+import { ElectronService } from "../electron/electron.service";
+import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftService } from "./warcraft.service";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
-import { getEnumName } from "app/utils/enum.utils";
-import { TranslateService } from "@ngx-translate/core";
-import { FileService } from "../files/file.service";
-import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
   providedIn: "root",

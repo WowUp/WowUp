@@ -8,13 +8,13 @@ import { TranslateService } from "@ngx-translate/core";
 import { IPC_POWER_MONITOR_RESUME, IPC_POWER_MONITOR_UNLOCK } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import { AddonScanError } from "../../errors";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { WowInstallation } from "app/models/wowup/wow-installation";
 
 @Component({
   selector: "app-home",
@@ -35,7 +35,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _sessionService: SessionService,
     private _translateService: TranslateService,
     private _addonService: AddonService,
-    private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
     private _snackBar: MatSnackBar,
     private _cdRef: ChangeDetectorRef,
@@ -75,7 +74,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._appUpdateInterval.unsubscribe();
+    this._appUpdateInterval?.unsubscribe();
   }
 
   private initAppUpdateCheck() {

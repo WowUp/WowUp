@@ -10,7 +10,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 
 import { httpLoaderFactory } from "../../app.module";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { Addon } from "../../entities/addon";
+import { Addon } from "../../../common/entities/addon";
 import { MatModule } from "../../mat-module";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ElectronService } from "../../services";
@@ -21,9 +21,6 @@ import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
 
 describe("AddonDetailComponent", () => {
-  let component: AddonDetailComponent;
-  let fixture: ComponentFixture<AddonDetailComponent>;
-  let addonService: AddonService;
   let dialogModel: AddonDetailModel;
   let addonServiceSpy: any;
   let electronServiceSpy: ElectronService;
@@ -41,7 +38,9 @@ describe("AddonDetailComponent", () => {
     );
 
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {});
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {
+      getSelectedWowInstallation: () => "description",
+    });
 
     const viewModel = new AddonViewModel({
       installedVersion: "1.0.0",
@@ -89,16 +88,10 @@ describe("AddonDetailComponent", () => {
     });
 
     await testBed.compileComponents();
-
-    fixture = TestBed.createComponent(AddonDetailComponent);
-    component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    const icons = fixture.debugElement.injector.get(IconService);
-
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(AddonDetailComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

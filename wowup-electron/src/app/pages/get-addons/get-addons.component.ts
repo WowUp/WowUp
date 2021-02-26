@@ -3,6 +3,11 @@ import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } fr
 import { catchError, filter, first, map } from "rxjs/operators";
 
 import {
+  CdkVirtualScrollViewport,
+  FixedSizeVirtualScrollStrategy,
+  VIRTUAL_SCROLL_STRATEGY,
+} from "@angular/cdk/scrolling";
+import {
   AfterViewChecked,
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -21,29 +26,24 @@ import { MatSort, Sort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { TranslateService } from "@ngx-translate/core";
 
+import { ADDON_PROVIDER_HUB } from "../../../common/constants";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { PotentialAddonViewDetailsEvent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { GenericProviderError } from "../../errors";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { ADDON_PROVIDER_HUB } from "../../../common/constants";
-import { SnackbarService } from "../../services/snackbar/snackbar.service";
-import { GenericProviderError } from "../../errors";
-import {
-  CdkVirtualScrollViewport,
-  FixedSizeVirtualScrollStrategy,
-  VIRTUAL_SCROLL_STRATEGY,
-} from "@angular/cdk/scrolling";
-import { WowInstallation } from "app/models/wowup/wow-installation";
-import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
 
 const ROW_HEIGHT = 62;
 const PAGESIZE = 20;
@@ -198,11 +198,11 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
   );
 
   constructor(
+    private _dialog: MatDialog,
+    private _cdRef: ChangeDetectorRef,
     private _addonService: AddonService,
     private _sessionService: SessionService,
-    private _dialog: MatDialog,
     private _wowUpService: WowUpService,
-    private _cdRef: ChangeDetectorRef,
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
     public electronService: ElectronService,

@@ -1,17 +1,18 @@
-import { Component, OnInit } from "@angular/core";
-import { WowInstallation } from "app/models/wowup/wow-installation";
-import { ElectronService } from "app/services";
-import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
+import * as _ from "lodash";
 import { from, Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
+
+import { Component, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
+
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
-import * as _ from "lodash";
-import { TranslateService } from "@ngx-translate/core";
-import { MatDialog } from "@angular/material/dialog";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 
 @Component({
@@ -37,7 +38,6 @@ export class OptionsWowSectionComponent implements OnInit {
 
   constructor(
     private _dialog: MatDialog,
-    private _electronService: ElectronService,
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
     private _warcraftInstallationService: WarcraftInstallationService,

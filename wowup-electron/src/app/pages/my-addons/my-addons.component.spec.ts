@@ -11,7 +11,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 
 import { httpLoaderFactory } from "../../app.module";
 import { MatModule } from "../../mat-module";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { ElectronService } from "../../services";
@@ -22,6 +22,7 @@ import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { MyAddonsComponent } from "./my-addons.component";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
@@ -38,6 +39,7 @@ describe("MyAddonsComponent", () => {
   let addonServiceSpy: any;
   let warcraftService: WarcraftService;
   let warcraftServiceSpy: any;
+  let warcraftInstallationService: WarcraftInstallationService;
 
   beforeEach(async () => {
     wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", ["updateForClientType"], {
@@ -61,6 +63,7 @@ describe("MyAddonsComponent", () => {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
       autoUpdateComplete$: new BehaviorSubject(0).asObservable(),
       selectedClientType$: new BehaviorSubject(WowClientType.Retail).asObservable(),
+      addonsChanged$: new BehaviorSubject([]),
     });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
@@ -69,6 +72,10 @@ describe("MyAddonsComponent", () => {
       isWin: false,
       isLinux: true,
       isMac: false,
+    });
+
+    warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
+      wowInstallations$: new BehaviorSubject<any[]>([]),
     });
 
     let testBed = TestBed.configureTestingModule({
@@ -103,6 +110,7 @@ describe("MyAddonsComponent", () => {
           { provide: ElectronService, useValue: electronServiceSpy },
           { provide: SessionService, useValue: sessionServiceSpy },
           { provide: WarcraftService, useValue: warcraftServiceSpy },
+          { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
         ],
       },
     });

@@ -22,7 +22,7 @@ import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import { WowInstallation } from "app/models/wowup/wow-installation";
+import { WowInstallation } from "../models/wowup/wow-installation";
 
 interface GitHubRepoParts {
   repository: string;

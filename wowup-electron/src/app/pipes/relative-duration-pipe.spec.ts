@@ -20,17 +20,20 @@ describe("RelativeDurationPipe", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestRelativeDurationComponent, RelativeDurationPipe],
-      imports: [HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
-        },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
+      imports: [
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestRelativeDurationComponent);

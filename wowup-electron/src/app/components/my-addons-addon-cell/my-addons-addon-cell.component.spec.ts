@@ -5,7 +5,7 @@ import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { Addon } from "../../entities/addon";
+import { Addon } from "../../../common/entities/addon";
 import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 

@@ -14,12 +14,8 @@ import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { MatModule } from "../../mat-module";
 import { ProgressButtonComponent } from "../progress-button/progress-button.component";
 describe("AddonUpdateButtonComponent", () => {
-  let component: AddonUpdateButtonComponent;
-  let fixture: ComponentFixture<AddonUpdateButtonComponent>;
-  let addonService: AddonService;
-  let addonServiceSpy: any;
-  let analyticsService: AnalyticsService;
-  let analyticsServiceSpy: any;
+  let addonServiceSpy: AddonService;
+  let analyticsServiceSpy: AnalyticsService;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
@@ -56,16 +52,10 @@ describe("AddonUpdateButtonComponent", () => {
         },
       })
       .compileComponents();
-
-    fixture = TestBed.createComponent(AddonUpdateButtonComponent);
-    component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    analyticsService = fixture.debugElement.injector.get(AnalyticsService);
-
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(AddonUpdateButtonComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

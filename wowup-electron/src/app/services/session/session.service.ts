@@ -1,14 +1,16 @@
-import { Injectable } from "@angular/core";
+import * as _ from "lodash";
 import { BehaviorSubject, Subject } from "rxjs";
 import { filter, first, map } from "rxjs/operators";
-import * as _ from "lodash";
+
+import { Injectable } from "@angular/core";
+
+import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { WowInstallation } from "../../models/wowup/wow-installation";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
-import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
-import { WowInstallation } from "app/models/wowup/wow-installation";
 
 @Injectable({
   providedIn: "root",
