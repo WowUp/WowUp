@@ -249,13 +249,15 @@ export class WowUpAddonProvider extends AddonProvider {
   }
 
   private getSearchResultFile(file: WowUpAddonReleaseRepresentation): AddonSearchResultFile {
+    const version = file?.toc_version ?? file.tag_name;
+
     return {
       channelType: this.getAddonReleaseChannel(file),
       downloadUrl: file.download_url,
       folders: [],
       gameVersion: getGameVersion(file.game_version),
       releaseDate: file.published_at,
-      version: file.tag_name,
+      version: version,
       dependencies: [],
       changelog: file.body,
       externalId: file.id.toString(),
@@ -298,6 +300,8 @@ export class WowUpAddonProvider extends AddonProvider {
     const folderList = folders.join(", ");
     const channelType = addonChannelType;
     const name = scanResult.exactMatch.matched_release?.toc_title ?? scanResult.exactMatch.repository_name;
+    const version =
+      scanResult.exactMatch.matched_release?.toc_version ?? scanResult.exactMatch.matched_release.tag_name;
 
     return {
       id: uuidv4(),
@@ -313,10 +317,10 @@ export class WowUpAddonProvider extends AddonProvider {
       installedAt: new Date(),
       installedFolders: folderList,
       installedFolderList: folders,
-      installedVersion: scanResult.exactMatch.matched_release.tag_name,
+      installedVersion: version,
       installedExternalReleaseId: scanResult.exactMatch.matched_release.id.toString(),
       isIgnored: false,
-      latestVersion: scanResult.exactMatch.matched_release.tag_name,
+      latestVersion: version,
       providerName: this.name,
       providerSource: scanResult.exactMatch.source,
       thumbnailUrl: scanResult.exactMatch.image_url,

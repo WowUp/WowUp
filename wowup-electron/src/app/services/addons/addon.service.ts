@@ -24,7 +24,7 @@ import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { AddonDependency } from "../../../common/wowup/addon-dependency";
 import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
 import { AddonWarningType } from "../../../common/wowup/addon-warning-type";
-import { AddonProvider } from "../../addon-providers/addon-provider";
+import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError, SourceRemovedAddonError } from "../../errors";
@@ -468,7 +468,9 @@ export class AddonService {
       throw new Error("Addon not found or invalid");
     }
 
-    console.log(`Started update for "${addon.name}" at version "${addon.installedVersion}" to "${addon.latestVersion}"`);
+    console.log(
+      `Started update for "${addon.name}" at version "${addon.installedVersion}" to "${addon.latestVersion}"`
+    );
 
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     const addonProvider = this.getProvider(addon.providerName);
@@ -929,14 +931,6 @@ export class AddonService {
     return newAddons;
   }
 
-  private addonsMatch(addon1: Addon, addon2: Addon): boolean {
-    return (
-      addon1.externalId == addon2.externalId &&
-      addon1.providerName == addon2.providerName &&
-      addon1.clientType == addon2.clientType
-    );
-  }
-
   private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
     // console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
@@ -944,8 +938,62 @@ export class AddonService {
       return;
     }
 
-    const getAllResults = await addonProvider.getAll(installation, providerAddonIds);
-    for (const error of getAllResults.errors) {
+    const getAllResult = await addonProvider.getAll(installation, providerAddonIds);
+    this.handleSyncErrors(getAllResult, addonProvider, addons);
+    this.handleSyncResults(getAllResult, addons);
+  }
+
+  private handleSyncResults(getAllResult: GetAllResult, addons: Addon[]) {
+    for (const result of getAllResult.searchResults) {
+      const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
+      if (!addon) {
+        continue;
+      }
+
+      try {
+        const latestFile = this.getLatestFile(result, addon?.channelType);
+
+        this.setExternalIdString(addon);
+
+        addon.summary = result.summary;
+        addon.thumbnailUrl = result.thumbnailUrl;
+        addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
+
+        // If the release ID hasn't changed we don't really need to update the whole record
+        if (!!latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
+          continue;
+        } else if (
+          !result ||
+          !latestFile ||
+          (latestFile.version === addon.latestVersion && latestFile.releaseDate === addon.releasedAt)
+        ) {
+          // There was nothing new to update to, just update what we need to
+          continue;
+        }
+
+        addon.latestVersion = latestFile.version;
+        addon.releasedAt = latestFile.releaseDate;
+        addon.downloadUrl = latestFile.downloadUrl;
+        addon.externalLatestReleaseId = latestFile.externalId;
+        addon.name = result.name;
+        addon.author = result.author;
+        addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
+
+        if (latestFile.gameVersion) {
+          addon.gameVersion = AddonUtils.getGameVersion(latestFile.gameVersion);
+        } else {
+          addon.gameVersion = AddonUtils.getGameVersion(addon.gameVersion);
+        }
+
+        addon.externalUrl = result.externalUrl;
+      } finally {
+        this._addonStorage.set(addon.id, addon);
+      }
+    }
+  }
+
+  private handleSyncErrors(getAllResult: GetAllResult, addonProvider: AddonProvider, addons: Addon[]) {
+    for (const error of getAllResult.errors) {
       const addonId = (error as any).addonId;
       let addon: Addon;
       if (addonId) {
@@ -964,49 +1012,6 @@ export class AddonService {
           addonName: addon?.name,
         })
       );
-    }
-
-    for (const result of getAllResults.searchResults) {
-      const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
-      if (!addon) {
-        continue;
-      }
-      const latestFile = this.getLatestFile(result, addon?.channelType);
-
-      this.setExternalIdString(addon);
-
-      addon.summary = result.summary;
-      addon.thumbnailUrl = result.thumbnailUrl;
-      addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
-
-      if (latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
-        continue;
-      } else if (
-        !result ||
-        !latestFile ||
-        (latestFile.version === addon.latestVersion && latestFile.releaseDate === addon.releasedAt)
-      ) {
-        this._addonStorage.set(addon.id, addon);
-        continue;
-      }
-
-      addon.latestVersion = latestFile.version;
-      addon.releasedAt = latestFile.releaseDate;
-      addon.downloadUrl = latestFile.downloadUrl;
-      addon.externalLatestReleaseId = latestFile.externalId;
-      addon.name = result.name;
-      addon.author = result.author;
-      addon.externalChannel = getEnumName(AddonChannelType, latestFile.channelType);
-
-      if (latestFile.gameVersion) {
-        addon.gameVersion = AddonUtils.getGameVersion(latestFile.gameVersion);
-      } else {
-        addon.gameVersion = AddonUtils.getGameVersion(addon.gameVersion);
-      }
-
-      addon.externalUrl = result.externalUrl;
-
-      this._addonStorage.set(addon.id, addon);
     }
   }
 

@@ -30,6 +30,7 @@ export interface WowUpAddonReleaseRepresentation {
   addonFolders?: WowUpAddonReleaseFolderRepresentation[];
   game_type: WowGameType;
   toc_title?: string;
+  toc_version?: string;
 }
 
 export interface WowUpAddonRepresentation {
