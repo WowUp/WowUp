@@ -1,4 +1,4 @@
-import { Addon } from "../../entities/addon";
+import { Addon } from "../../../common/entities/addon";
 import { AddonInstallState } from "./addon-install-state";
 
 export interface AddonUpdateEvent {

@@ -7,17 +7,16 @@
     <div class="select-container">
       <mat-form-field>
         <mat-label>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
-        <mat-select class="select pointer" [(value)]="selectedClient" (selectionChange)="onClientChange()"
+        <mat-select class="select pointer" [(value)]="selectedInstallationId" (selectionChange)="onClientChange()"
           [disabled]="enableControls === false">
-          <mat-option [value]="clientType.value"
-            *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
-            {{ clientType.display | translate }}
+          <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
+            {{ installation.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div class="right-container">
-      <div class="filter-container" *ngIf="selectedClient !== wowClientType.None">
+      <div class="filter-container" *ngIf="selectedInstallation !== undefined">
         <mat-form-field>
           <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
           <input matInput (keyup)="filterAddons()" [(ngModel)]="filter" />

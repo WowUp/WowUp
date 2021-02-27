@@ -10,7 +10,7 @@ class StubbedElectronService extends ElectronService {
 describe("ElectronService", () => {
   let preferenceStorageSpy: PreferenceStorageService;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", [""], {});
   });
 

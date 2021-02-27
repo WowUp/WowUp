@@ -15,6 +15,7 @@ import {
   IPC_LIST_ENTRIES,
   IPC_LIST_FILES_CHANNEL,
   IPC_READDIR,
+  IPC_READ_FILE_BUFFER_CHANNEL,
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
@@ -78,6 +79,10 @@ export class FileService {
 
   public async readFile(sourcePath: string): Promise<string> {
     return await this._electronService.invoke(IPC_READ_FILE_CHANNEL, sourcePath);
+  }
+
+  public async readFileBuffer(sourcePath: string): Promise<Buffer> {
+    return await this._electronService.invoke(IPC_READ_FILE_BUFFER_CHANNEL, sourcePath);
   }
 
   public async writeFile(sourcePath: string, contents: string): Promise<string> {

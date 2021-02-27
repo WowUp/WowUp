@@ -4,13 +4,14 @@ import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
-import { Addon } from "../entities/addon";
+import { Addon } from "../../common/entities/addon";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getEnumName } from "../utils/enum.utils";
@@ -37,23 +38,27 @@ export class TukUiAddonProvider extends AddonProvider {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
-    const addons = await this.getAllAddons(clientType);
+  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
+    const addons = await this.getAllAddons(installation.clientType);
     const addonMatch = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
     return addonMatch.small_desc;
   }
 
-  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    const addons = await this.getAllAddons(clientType);
+  public async getChangelog(
+    installation: WowInstallation,
+    externalId: string,
+    externalReleaseId: string
+  ): Promise<string> {
+    const addons = await this.getAllAddons(installation.clientType);
     const addon = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
     return await this.formatChangelog(addon);
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     let results: AddonSearchResult[] = [];
 
     try {
-      const addons = await this.getAllAddons(clientType);
+      const addons = await this.getAllAddons(installation.clientType);
       const filteredAddons = addons.filter((addon) =>
         _.some(addonIds, (aid) => aid.toString() === addon.id.toString())
       );
@@ -68,13 +73,13 @@ export class TukUiAddonProvider extends AddonProvider {
     };
   }
 
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    const tukUiAddons = await this.getAllAddons(clientType);
+  public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const tukUiAddons = await this.getAllAddons(installation.clientType);
     return await this.mapAddonsToSearchResults(tukUiAddons);
   }
 
-  async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    const addons = await this.getAllAddons(clientType);
+  async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const addons = await this.getAllAddons(installation.clientType);
     const canonQuery = query.toLowerCase();
     let similarAddons = _.filter(addons, (addon) => addon.name.toLowerCase().indexOf(canonQuery) !== -1);
     similarAddons = _.orderBy(similarAddons, ["downloads"]);
@@ -82,19 +87,19 @@ export class TukUiAddonProvider extends AddonProvider {
     return await this.mapAddonsToSearchResults(similarAddons);
   }
 
-  searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
+  searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     throw new Error("Method not implemented.");
   }
 
   async searchByName(
     addonName: string,
     folderName: string,
-    clientType: WowClientType,
+    installation: WowInstallation,
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
     const results: AddonSearchResult[] = [];
     try {
-      const addons = await this.searchAddons(addonName, clientType);
+      const addons = await this.searchAddons(addonName, installation.clientType);
       const searchResult = await this.toSearchResult(_.first(addons), folderName);
       if (searchResult) {
         results.push(searchResult);
@@ -106,8 +111,8 @@ export class TukUiAddonProvider extends AddonProvider {
     return results;
   }
 
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult | undefined> {
-    return from(this.getAllAddons(clientType)).pipe(
+  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
+    return from(this.getAllAddons(installation.clientType)).pipe(
       map((addons) => _.find(addons, (addon) => addon.id === addonId)),
       switchMap((match) => from(this.toSearchResult(match, "")))
     );
@@ -124,17 +129,17 @@ export class TukUiAddonProvider extends AddonProvider {
   onPostInstall(addon: Addon): void {}
 
   async scan(
-    clientType: WowClientType,
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    const allAddons = await this.getAllAddons(clientType);
+    const allAddons = await this.getAllAddons(installation.clientType);
     for (const addonFolder of addonFolders) {
       let tukUiAddon: TukUiAddon;
       if (addonFolder.toc?.tukUiProjectId) {
         tukUiAddon = _.find(allAddons, (addon) => addon.id.toString() === addonFolder.toc.tukUiProjectId);
       } else {
-        const results = await this.searchAddons(addonFolder.toc.title, clientType);
+        const results = await this.searchAddons(addonFolder.toc.title, installation.clientType);
         tukUiAddon = _.first(results);
       }
 
@@ -142,7 +147,7 @@ export class TukUiAddonProvider extends AddonProvider {
         addonFolder.matchingAddon = {
           autoUpdateEnabled: false,
           channelType: addonChannelType,
-          clientType: clientType,
+          clientType: installation.clientType,
           id: uuidv4(),
           isIgnored: false,
           name: tukUiAddon.name,
@@ -166,6 +171,7 @@ export class TukUiAddonProvider extends AddonProvider {
           isLoadOnDemand: false,
           latestChangelog: await this.formatChangelog(tukUiAddon),
           externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+          installationId: installation.id,
         };
       }
     }

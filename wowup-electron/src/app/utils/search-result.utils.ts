@@ -1,7 +1,7 @@
-import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
+import { AddonDependencyType } from "../../common/wowup/addon-dependency-type";
 import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import * as _ from "lodash";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 

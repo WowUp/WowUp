@@ -10,7 +10,7 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
   template: `<p>{{ number | downloadCount }}</p>`,
 })
 class TestDownloadCountComponent {
-  public number: number = 0;
+  public number = 0;
 }
 
 describe("DownloadCountPipe", () => {
@@ -20,19 +20,21 @@ describe("DownloadCountPipe", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestDownloadCountComponent, DownloadCountPipe],
-      imports: [HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
-        },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
+      imports: [
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
     }).compileComponents();
-
     fixture = TestBed.createComponent(TestDownloadCountComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -55,8 +57,8 @@ describe("DownloadCountPipe", () => {
     "e+9": 1000000000,
   };
 
-  for (let index in inputs) {
-    let number = inputs[index];
+  for (const index in inputs) {
+    const number: number = inputs[index];
     it(`should transform the number ${number} to ${index}`, () => {
       component.number = number;
       fixture.detectChanges();

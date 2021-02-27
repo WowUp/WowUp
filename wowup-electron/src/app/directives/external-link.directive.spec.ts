@@ -40,8 +40,8 @@ describe("ExternalLinkDirective", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should call openExternal on click", async () => {
-    let a = fixture.debugElement.nativeElement.querySelector("a");
+  it("should call openExternal on click", () => {
+    const a = fixture.debugElement.nativeElement.querySelector("a");
     a.click();
     fixture.detectChanges();
     expect(electronServiceSpy.openExternal).toHaveBeenCalledWith("http://localhost:2020/");

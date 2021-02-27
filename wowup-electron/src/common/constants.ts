@@ -19,6 +19,7 @@ export const IPC_STAT_FILES_CHANNEL = "stat-files";
 export const IPC_PATH_EXISTS_CHANNEL = "path-exists";
 export const IPC_LIST_FILES_CHANNEL = "list-files";
 export const IPC_READ_FILE_CHANNEL = "read-file";
+export const IPC_READ_FILE_BUFFER_CHANNEL = "read-file-buffer";
 export const IPC_WRITE_FILE_CHANNEL = "write-file";
 export const IPC_UNZIP_FILE_CHANNEL = "unzip-file";
 export const IPC_COPY_FILE_CHANNEL = "copy-file";
@@ -57,6 +58,7 @@ export const IPC_GET_LOGIN_ITEM_SETTINGS = "get-login-item-settings";
 export const IPC_SET_LOGIN_ITEM_SETTINGS = "set-login-item-settings";
 export const IPC_LIST_ENTRIES = "list-entries";
 export const IPC_READDIR = "readdir";
+export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
@@ -75,6 +77,7 @@ export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
 export const GET_ADDONS_HIDDEN_COLUMNS_KEY = "get_addons_hidden_columns";
 export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
 export const ADDON_PROVIDERS_KEY = "addon_providers";
+export const WOW_INSTALLATIONS_KEY = "wow_installations";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
 export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";

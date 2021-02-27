@@ -1,6 +1,6 @@
 import { orderBy, filter, map } from "lodash";
-import { Addon, AddonExternalId } from "../entities/addon";
-import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
+import { Addon, AddonExternalId } from "../../common/entities/addon";
+import { AddonDependencyType } from "../../common/wowup/addon-dependency-type";
 
 export function getAllProviders(addon: Addon): AddonExternalId[] {
   return orderBy(addon.externalIds, ["providerName"], ["asc"]);

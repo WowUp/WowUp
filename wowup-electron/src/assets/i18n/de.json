@@ -81,7 +81,7 @@
       "UNKNOWN": "Unbekannt",
       "UPDATE": "Aktualisieren",
       "UPTODATE": "Aktuell",
-      "WARNING": "Warning"
+      "WARNING": "Warnung"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup wird erstellt",
@@ -151,7 +151,8 @@
     "PROVIDER_ERROR": "Fehler beim Verbinden mit {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Keine Addons gefunden"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -198,6 +199,9 @@
       "INSTALL_SUCCESS_LABEL": "Installiert!",
       "SUPPORTED_SOURCES": "Unterstützt werden WowInterface und GitHub",
       "TITLE": "Installation eines Addons über eine externe URL"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Möchest Du helfen, WowUp zu verbessern, indem anonyme Installationsdaten und/oder Fehler gesendet werden?",
@@ -374,8 +378,10 @@
         "DEBUG": "Debug"
       },
       "WOW": {
+        "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "Neu installierte Addons werden standardmäßig auf 'Automatisches Update' eingestellt",
         "AUTO_UPDATE_LABEL": "Automatisch aktualisieren",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Bist Du sicher, dass Du den Installationspfad für {clientName} löschen möchtest? Dies wird alle gespeicherten Addon-Informationen für diesen Client entfernen.\n\nDeine Addon-Ordner werden nicht entfernt.",
           "TITLE": "Installationspfad löschen?"
@@ -384,9 +390,12 @@
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} Pfad",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard Addon-Kanal",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon-Kanal",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Auswählen",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Neu scannen",
         "RESCAN_CLIENTS_LABEL": "Installierte World of Warcraft-Produkte erneut durchsuchen",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "World of Warcraft"
       }
     }
