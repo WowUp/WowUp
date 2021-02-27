@@ -1,15 +1,16 @@
-import * as path from 'path';
-import { filter } from 'rxjs/operators';
+import * as path from "path";
+import { filter } from "rxjs/operators";
 
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
-import { Addon } from '../../../common/entities/addon';
-import { AddonInstallState } from '../../models/wowup/addon-install-state';
-import { WowInstallation } from '../../models/wowup/wow-installation';
-import { AddonService } from '../addons/addon.service';
-import { FileService } from '../files/file.service';
-import { WarcraftInstallationService } from '../warcraft/warcraft-installation.service';
-import { WarcraftService } from '../warcraft/warcraft.service';
+import { Addon } from "../../../common/entities/addon";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { WowInstallation } from "../../models/wowup/wow-installation";
+import { toInterfaceVersion } from "../../utils/addon.utils";
+import { AddonService } from "../addons/addon.service";
+import { FileService } from "../files/file.service";
+import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
+import { WarcraftService } from "../warcraft/warcraft.service";
 
 enum WowUpAddonFileType {
   Raw,
@@ -117,12 +118,15 @@ export class WowUpAddonService {
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailable: availableUpdates,
         generatedAt: new Date().toString(),
-        interfaceVersion: wowUpAddon.gameVersion,
+        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion),
         wowUpAddonName: wowUpAddon.installedFolders,
         wowUpAddonVersion: wowUpAddon.installedVersion,
       };
 
-      const dataAddonPath = path.join(this._warcraftService.getAddonFolderPath(installation), WOWUP_DATA_ADDON_FOLDER_NAME);
+      const dataAddonPath = path.join(
+        this._warcraftService.getAddonFolderPath(installation),
+        WOWUP_DATA_ADDON_FOLDER_NAME
+      );
 
       await this._fileService.createDirectory(dataAddonPath);
 

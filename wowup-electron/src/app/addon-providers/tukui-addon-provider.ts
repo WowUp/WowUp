@@ -14,6 +14,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { WowInstallation } from "../models/wowup/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
+import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 
@@ -155,7 +156,7 @@ export class TukUiAddonProvider extends AddonProvider {
           downloadUrl: tukUiAddon.url,
           externalId: tukUiAddon.id.toString(),
           externalUrl: tukUiAddon.web_url,
-          gameVersion: tukUiAddon.patch,
+          gameVersion: getGameVersion(tukUiAddon.patch),
           installedAt: addonFolder.fileStats.birthtime,
           installedFolders: addonFolder.name,
           installedFolderList: [addonFolder.name],
@@ -222,7 +223,7 @@ export class TukUiAddonProvider extends AddonProvider {
       channelType: AddonChannelType.Stable,
       folders: folderName ? [folderName] : [],
       downloadUrl: addon.url,
-      gameVersion: addon.patch,
+      gameVersion: getGameVersion(addon.patch),
       version: addon.version,
       releaseDate: new Date(`${addon.lastupdate} UTC`),
       changelog: await this.formatChangelog(addon),

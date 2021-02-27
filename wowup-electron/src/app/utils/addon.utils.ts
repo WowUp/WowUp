@@ -52,3 +52,26 @@ export function getGameVersion(gameVersion: string): string {
   ];
   return chunks.map((c) => parseInt(c, 10)).join(".");
 }
+
+export function toInterfaceVersion(version: string): string {
+  if (version.indexOf(".") === -1) {
+    return version;
+  }
+
+  const parts = version.split(".");
+  if (parts.length != 3) {
+    throw new Error(`Cannot convert ${version} to interface format`);
+  }
+
+  const paddedParts = parts.map((part, idx) => padInterfacePart(part, idx));
+
+  return paddedParts.join("");
+}
+
+function padInterfacePart(part: string, idx: number) {
+  const num = parseInt(part, 10);
+  if (idx === 0) {
+    return num;
+  }
+  return num >= 10 ? num : `0${num}`;
+}

@@ -7,19 +7,19 @@ import { HttpErrorResponse } from "@angular/common/http";
 
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
-import { SourceRemovedAddonError } from "../errors";
-import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
 import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { SourceRemovedAddonError } from "../errors";
+import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
+import { getGameVersion } from "../utils/addon.utils";
 import { convertBbcode } from "../utils/bbcode.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import { WowInstallation } from "../models/wowup/wow-installation";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -108,15 +108,6 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return this.toAddonSearchResult(addon);
   }
 
-  searchByName(
-    addonName: string,
-    folderName: string,
-    installation: WowInstallation,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    throw new Error("Method not implemented.");
-  }
-
   public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     return from(this.getAddonDetails(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
@@ -203,7 +194,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       downloadUrl: response.downloadUri,
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
-      gameVersion: addonFolder.toc.interface,
+      gameVersion: getGameVersion(addonFolder.toc.interface),
       installedAt: new Date(),
       installedFolders: addonFolder.name,
       installedFolderList: [addonFolder.name],

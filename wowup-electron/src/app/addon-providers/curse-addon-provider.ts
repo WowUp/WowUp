@@ -36,6 +36,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { WowUpApiService } from "../services/wowup-api/wowup-api.service";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
+import * as AddonUtils from "../utils/addon.utils";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
@@ -407,7 +408,7 @@ export class CurseAddonProvider extends AddonProvider {
           version: lf.displayName,
           downloadUrl: lf.downloadUrl,
           folders: this.getFolderNames(lf),
-          gameVersion: this.getGameVersion(lf),
+          gameVersion: AddonUtils.getGameVersion(this.getGameVersion(lf)),
           releaseDate: new Date(lf.fileDate),
           dependencies: lf.dependencies.map(this.createAddonSearchResultDependency),
           externalId: lf.id.toString(),
@@ -594,7 +595,9 @@ export class CurseAddonProvider extends AddonProvider {
 
     const latestFiles = this.getLatestFiles(scanResult.searchResult, installation.clientType);
 
-    const gameVersion = currentVersion.gameVersion[0] || scanResult.addonFolder.toc.interface;
+    const gameVersion = AddonUtils.getGameVersion(
+      currentVersion.gameVersion[0] || scanResult.addonFolder.toc.interface
+    );
 
     let channelType = this.getChannelType(scanResult.exactMatch.file.releaseType);
     let latestVersion = latestFiles.find((lf) => this.getChannelType(lf.releaseType) <= channelType);

@@ -313,7 +313,7 @@ export class WowUpAddonProvider extends AddonProvider {
       downloadUrl: scanResult.exactMatch.matched_release.download_url,
       externalUrl: scanResult.exactMatch.repository,
       externalId: scanResult.exactMatch.id.toString(),
-      gameVersion: scanResult.exactMatch.matched_release.game_version,
+      gameVersion: getGameVersion(scanResult.exactMatch.matched_release.game_version),
       installedAt: new Date(),
       installedFolders: folderList,
       installedFolderList: folders,

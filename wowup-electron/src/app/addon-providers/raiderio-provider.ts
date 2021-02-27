@@ -7,6 +7,7 @@ import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";
+import { getGameVersion } from "../utils/addon.utils";
 
 export class RaiderIoAddonProvider extends AddonProvider {
   private readonly _scanWebsite = "https://raider.io";
@@ -54,7 +55,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
         downloadUrl: "",
         externalId: this.name,
         externalUrl: this._scanWebsite,
-        gameVersion: rioAddonFolder.toc.interface,
+        gameVersion: getGameVersion(rioAddonFolder.toc.interface),
         installedAt: new Date(),
         installedFolders: installedFolders,
         installedFolderList: installedFolderList,

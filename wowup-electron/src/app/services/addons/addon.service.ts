@@ -551,7 +551,7 @@ export class AddonService {
       const allTocFiles = await this.getAllTocs(unzippedDirectory, unzippedDirectoryNames);
       const gameVersion = this.getLatestGameVersion(allTocFiles);
       if (gameVersion) {
-        addon.gameVersion = gameVersion;
+        addon.gameVersion = AddonUtils.getGameVersion(gameVersion);
       }
 
       if (!addon.author) {
@@ -1494,7 +1494,7 @@ export class AddonService {
       installedVersion: addonFolder.toc?.version || "",
       clientType: installation.clientType,
       externalId: "",
-      gameVersion: addonFolder.toc?.interface || "",
+      gameVersion: AddonUtils.getGameVersion(addonFolder.toc?.interface) || "",
       author: addonFolder.toc?.author || "",
       downloadUrl: "",
       externalUrl: "",
