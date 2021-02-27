@@ -40,25 +40,25 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {}
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this._installSubscription?.unsubscribe();
   }
 
-  onClose() {
+  onClose(): void {
     this.dialogRef.close();
   }
 
-  onClearSearch() {
+  onClearSearch(): void {
     this.query = "";
-    this.onImportUrl();
+    this.onImportUrl().catch((error) => console.error(error));
   }
 
-  onInstall() {
+  onInstall(): void {
     this.showInstallButton = false;
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, this._sessionService.getSelectedClientType())
+      this._addonService.installPotentialAddon(this.addon, this._sessionService.getSelectedWowInstallation())
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
@@ -85,7 +85,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     };
   }
 
-  async onImportUrl() {
+  async onImportUrl(): Promise<void> {
     this.addon = undefined;
     this.showInstallSuccess = false;
     this.showInstallSpinner = false;
@@ -102,7 +102,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.getSelectedClientType());
+      const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.getSelectedWowInstallation());
       if (!importedAddon) {
         throw new Error("Addon not found");
       }
@@ -155,7 +155,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
   }
 
   private addonExists(externalId: string) {
-    return this._addonService.isInstalled(externalId, this._sessionService.getSelectedClientType());
+    return this._addonService.isInstalled(externalId, this._sessionService.getSelectedWowInstallation());
   }
 
   private getUrlFromQuery(): URL | undefined {

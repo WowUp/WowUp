@@ -6,11 +6,11 @@ import { v4 as uuidv4 } from "uuid";
 import { HttpErrorResponse } from "@angular/common/http";
 
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
-import { Addon } from "../entities/addon";
+import { Addon } from "../../common/entities/addon";
 import { SourceRemovedAddonError } from "../errors";
-import { WowClientType } from "../models/warcraft/wow-client-type";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
@@ -19,6 +19,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { convertBbcode } from "../utils/bbcode.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
+import { WowInstallation } from "../models/wowup/wow-installation";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -39,7 +40,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
+  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     try {
       const addonDetails = await this.getAddonDetails(externalId);
       return convertBbcode(addonDetails.description);
@@ -49,13 +50,13 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     }
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const searchResults: AddonSearchResult[] = [];
     const errors: Error[] = [];
 
     for (const addonId of addonIds) {
       try {
-        const result = await this.getById(addonId, clientType).toPromise();
+        const result = await this.getById(addonId, installation).toPromise();
         if (result == null) {
           continue;
         }
@@ -79,7 +80,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     };
   }
 
-  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
+  public async getChangelog(
+    installation: WowInstallation,
+    externalId: string,
+    externalReleaseId: string
+  ): Promise<string> {
     try {
       const addon = await this.getAddonDetails(externalId);
       return addon.changeLog;
@@ -89,15 +94,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     }
   }
 
-  public getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return Promise.resolve([]);
-  }
-
-  searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return Promise.resolve([]);
-  }
-
-  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
+  async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
       throw new Error(`Addon ID not found ${addonUri.toString()}`);
@@ -114,13 +111,13 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   searchByName(
     addonName: string,
     folderName: string,
-    clientType: WowClientType,
+    installation: WowInstallation,
     nameOverride?: string
   ): Promise<AddonSearchResult[]> {
     throw new Error("Method not implemented.");
   }
 
-  public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     return from(this.getAddonDetails(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );
@@ -139,7 +136,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   }
 
   async scan(
-    clientType: WowClientType,
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
@@ -150,7 +147,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
       const details = await this.getAddonDetails(addonFolder.toc.wowInterfaceId);
 
-      addonFolder.matchingAddon = this.toAddon(details, clientType, addonChannelType, addonFolder);
+      addonFolder.matchingAddon = this.toAddon(details, installation, addonChannelType, addonFolder);
     }
   }
 
@@ -193,7 +190,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
   private toAddon(
     response: AddonDetailsResponse,
-    clientType: WowClientType,
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolder: AddonFolder
   ): Addon {
@@ -202,7 +199,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       author: response.author,
       autoUpdateEnabled: false,
       channelType: addonChannelType,
-      clientType: clientType,
+      clientType: installation.clientType,
       downloadUrl: response.downloadUri,
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
@@ -223,6 +220,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       isLoadOnDemand: false,
       latestChangelog: convertBbcode(response.changeLog),
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+      installationId: installation.id,
     };
   }
 

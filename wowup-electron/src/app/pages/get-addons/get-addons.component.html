@@ -7,11 +7,10 @@
     <div class="select-container">
       <mat-form-field>
         <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
-        <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
+        <mat-select class="select" [(value)]="selectedInstallationId" (selectionChange)="onClientChange()"
           [disabled]="(isBusy$ | async) === true">
-          <mat-option [value]="clientType.value"
-            *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
-            {{ clientType.display | translate }}
+          <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
+            {{ installation.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>

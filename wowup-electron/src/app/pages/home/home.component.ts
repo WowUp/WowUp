@@ -7,17 +7,12 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { IPC_POWER_MONITOR_RESUME, IPC_POWER_MONITOR_UNLOCK } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
-import {
-  AddonScanError,
-  AddonSyncError,
-  GitHubFetchReleasesError,
-  GitHubFetchRepositoryError,
-  GitHubLimitError,
-} from "../../errors";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonScanError } from "../../errors";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
@@ -40,19 +35,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _sessionService: SessionService,
     private _translateService: TranslateService,
     private _addonService: AddonService,
-    private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
     private _snackBar: MatSnackBar,
-    private _cdRef: ChangeDetectorRef
+    private _cdRef: ChangeDetectorRef,
+    private _warcraftInstallationService: WarcraftInstallationService
   ) {
-    this._warcraftService.installedClientTypes$.subscribe((clientTypes) => {
-      if (clientTypes === undefined) {
-        this.hasWowClient = false;
-        this.selectedIndex = 3;
-      } else {
-        this.hasWowClient = clientTypes.length > 0;
-        this.selectedIndex = this.hasWowClient ? 0 : 3;
-      }
+    this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
+      this.hasWowClient = installations.length > 0;
+      this.selectedIndex = this.hasWowClient ? 0 : 3;
     });
 
     this._addonService.scanError$.subscribe(this.onAddonScanError);
@@ -74,11 +64,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this.initAppUpdateCheck();
 
-    this._warcraftService.installedClientTypes$
-      .pipe(
-        first((clientTypes) => !!clientTypes),
-        switchMap((clientTypes) => from(this.migrateAddons(clientTypes)))
-      )
+    this._warcraftInstallationService.wowInstallations$
+      .pipe(first((installations) => installations.length > 0))
       .subscribe(() => {
         this.appReady = true;
         this.detectChanges();
@@ -86,7 +73,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._appUpdateInterval.unsubscribe();
+    this._appUpdateInterval?.unsubscribe();
   }
 
   private initAppUpdateCheck() {
@@ -107,10 +94,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this._appUpdateInterval = undefined;
   }
 
-  private async migrateAddons(clientTypes: WowClientType[]) {
+  private async migrateAddons(installations: WowInstallation[]) {
     const shouldMigrate = await this._wowupService.shouldMigrateAddons();
-    if (!clientTypes || !shouldMigrate) {
-      return clientTypes;
+    if (!installations || installations.length === 0 || !shouldMigrate) {
+      return installations;
     }
 
     this.preloadSpinnerKey = "PAGES.HOME.MIGRATING_ADDONS";
@@ -119,8 +106,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     console.log("Migrating addons");
 
     try {
-      for (const clientType of clientTypes) {
-        await this._addonService.migrate(clientType);
+      for (const installation of installations) {
+        await this._addonService.migrate(installation);
       }
 
       await this._wowupService.setMigrationVersion();
@@ -128,7 +115,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.error(`Failed to migrate addons`, e);
     }
 
-    return clientTypes;
+    return installations;
   }
 
   private detectChanges = () => {
@@ -139,7 +126,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  onSelectedIndexChange(index: number) {
+  onSelectedIndexChange(index: number): void {
     this._sessionService.selectedHomeTab = index;
   }
 
@@ -154,8 +141,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       panelClass: ["wowup-snackbar", "snackbar-error", "text-1"],
     });
   };
-
-  
 
   private onScanUpdate = (update: ScanUpdate) => {
     switch (update.type) {

@@ -1,5 +1,4 @@
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { BehaviorSubject } from "rxjs";
 
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
@@ -9,41 +8,25 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 
 import { httpLoaderFactory } from "../../app.module";
 import { MatModule } from "../../mat-module";
-import { InstalledProduct } from "../../models/warcraft/installed-product";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { ElectronService } from "../../services";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WowClientOptionsComponent } from "./wow-client-options.component";
 import { FormsModule } from "@angular/forms";
-import { IconService } from "../../services/icons/icon.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
   let fixture: ComponentFixture<WowClientOptionsComponent>;
-  let electronService: ElectronService;
-  let electronServiceSpy: any;
-  let wowUpService: WowUpService;
-  let wowUpServiceSpy: any;
-  let warcraftService: WarcraftService;
-  let warcraftServiceSpy: any;
+  let warcraftInstallationService: WarcraftInstallationService;
 
   beforeEach(async () => {
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
-      getDefaultAddonChannel: (clientType: WowClientType) => clientType.toString(),
-      getDefaultAutoUpdate: (clientType: WowClientType) => clientType.toString(),
-    });
-    warcraftServiceSpy = jasmine.createSpyObj(
-      "WarcraftService",
-      {
-        getClientFolderName: (clientType: WowClientType) => clientType.toString(),
-        getClientLocation: (clientType: WowClientType) => clientType.toString(),
+    warcraftInstallationService = jasmine.createSpyObj("warcraftInstallationService", ["getWowInstallations"], {
+      getWowInstallation: () => {
+        return {
+          clientType: WowClientType.Beta,
+        };
       },
-      {
-        products$: new BehaviorSubject<InstalledProduct[]>([]).asObservable(),
-      }
-    );
+    });
 
     let testBed = TestBed.configureTestingModule({
       declarations: [WowClientOptionsComponent],
@@ -66,29 +49,15 @@ describe("WowClientOptionsComponent", () => {
       ],
       providers: [MatDialog],
     });
-
     testBed = overrideIconModule(testBed).overrideComponent(WowClientOptionsComponent, {
       set: {
-        providers: [
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
-          { provide: WarcraftService, useValue: warcraftServiceSpy },
-          { provide: IconService },
-        ],
+        providers: [{ provide: WarcraftInstallationService, useValue: warcraftInstallationService }],
       },
     });
-
     await testBed.compileComponents();
-
     fixture = TestBed.createComponent(WowClientOptionsComponent);
     component = fixture.componentInstance;
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    warcraftService = fixture.debugElement.injector.get(WarcraftService);
-    const icons = fixture.debugElement.injector.get(IconService);
-
-    component.clientType = WowClientType.Retail;
-
+    component.installationId = "1";
     fixture.detectChanges();
   });
 

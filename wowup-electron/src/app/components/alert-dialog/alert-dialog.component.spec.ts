@@ -9,9 +9,6 @@ import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("AlertDialogComponent", () => {
-  let component: AlertDialogComponent;
-  let fixture: ComponentFixture<AlertDialogComponent>;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AlertDialogComponent],
@@ -36,13 +33,10 @@ describe("AlertDialogComponent", () => {
         { provide: MatDialogRef, useValue: {} },
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(AlertDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(AlertDialogComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

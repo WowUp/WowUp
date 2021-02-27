@@ -24,14 +24,6 @@ platformBrowserDynamic()
   })
   .catch((err) => console.error(err));
 
-// new WowUpTitlebar();
-
-// new Titlebar({
-//   backgroundColor: Color.fromHex('#6B69D6'),
-//   menu: null,
-//   icon: '/assets/wowup_logo_512np.png'
-// });
-
 document.addEventListener("click", (evt: any) => {
   if (evt.target.tagName === "A" && evt.target.href.startsWith("http")) {
     evt.preventDefault();

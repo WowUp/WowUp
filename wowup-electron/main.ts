@@ -54,7 +54,11 @@ process.on("unhandledRejection", (error) => {
 
 // VARIABLES
 const startedAt = Date.now();
+
+// https://github.com/sindresorhus/electron-store#initrenderer
+Store.initRenderer();
 const preferenceStore = new Store({ name: "preferences" });
+
 const argv = require("minimist")(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
 }) as AppOptions;

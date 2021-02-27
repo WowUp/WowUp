@@ -151,7 +151,8 @@
     "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "未找到插件"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -198,6 +199,9 @@
       "INSTALL_SUCCESS_LABEL": "安裝成功！",
       "SUPPORTED_SOURCES": "支援 WowInterface 和 GitHub",
       "TITLE": "從 URL 安裝"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "是否傳送匿名應用安裝資料和錯誤資訊以幫助改進 WowUp？",
@@ -374,8 +378,10 @@
         "DEBUG": "除錯"
       },
       "WOW": {
+        "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "新安裝的插件將預設設定為自動更新",
         "AUTO_UPDATE_LABEL": "自動更新",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",
           "TITLE": "忘記此路徑？"
@@ -384,9 +390,12 @@
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
         "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "瀏覽",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "重新掃描",
         "RESCAN_CLIENTS_LABEL": "重新掃描已安裝的《魔獸世界》客戶端",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "魔獸世界"
       }
     }

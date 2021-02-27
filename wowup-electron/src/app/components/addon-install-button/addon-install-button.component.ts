@@ -31,9 +31,9 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    let isInstalled = this._addonService.isInstalled(
+    const isInstalled = this._addonService.isInstalled(
       this.addonSearchResult.externalId,
-      this._sessionService.getSelectedClientType()
+      this._sessionService.getSelectedWowInstallation()
     );
     this.disableButton = isInstalled;
     this.buttonText = this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown);
@@ -95,12 +95,12 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     return this._translate.instant("COMMON.ADDON_STATE.INSTALL");
   }
 
-  public async onInstallUpdateClick() {
+  public async onInstallUpdateClick(): Promise<void> {
     this.disableButton = true;
     try {
       await this._addonService.installPotentialAddon(
         this.addonSearchResult,
-        this._sessionService.getSelectedClientType()
+        this._sessionService.getSelectedWowInstallation()
       );
     } catch (e) {
       console.error("onInstallUpdateClick failed", e);

@@ -23,7 +23,9 @@ import { HomeModule } from "./pages/home/home.module";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { WowUpApiService } from "./services/wowup-api/wowup-api.service";
 import { WowUpService } from "./services/wowup/wowup.service";
+import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { SharedModule } from "./shared.module";
+import { AddonService } from "./services/addons/addon.service";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -64,7 +66,7 @@ export function initializeApp(wowupService: WowUpService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [WowUpService, WowUpApiService],
+      deps: [WowUpService, WowUpApiService, AddonService, WarcraftInstallationService],
       multi: true,
     },
     {

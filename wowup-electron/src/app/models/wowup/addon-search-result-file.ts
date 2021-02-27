@@ -1,4 +1,4 @@
-import { AddonChannelType } from "./addon-channel-type";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { AddonSearchResultDependency } from "./addon-search-result-dependency";
 
 export interface AddonSearchResultFile {

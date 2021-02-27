@@ -42,7 +42,7 @@ import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
 import { ZoomDirection } from "./utils/zoom.utils";
-import { Addon } from "./entities/addon";
+import { Addon } from "../common/entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";

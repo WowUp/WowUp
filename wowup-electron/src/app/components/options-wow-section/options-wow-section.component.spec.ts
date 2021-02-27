@@ -1,30 +1,30 @@
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { BehaviorSubject } from "rxjs";
+
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { httpLoaderFactory } from "../../app.module";
-import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { OptionsWowSectionComponent } from "./options-wow-section.component";
-import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
-import { WowClientOptionsComponent } from "../wow-client-options/wow-client-options.component";
-import { ElectronService } from "../../services/electron/electron.service";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { BehaviorSubject } from "rxjs";
-import { InstalledProduct } from "../../models/warcraft/installed-product";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { httpLoaderFactory } from "../../app.module";
+import { MatModule } from "../../mat-module";
+import { InstalledProduct } from "../../models/warcraft/installed-product";
+import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
+import { WowClientOptionsComponent } from "../wow-client-options/wow-client-options.component";
+import { OptionsWowSectionComponent } from "./options-wow-section.component";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 
 describe("OptionsWowSectionComponent", () => {
   let component: OptionsWowSectionComponent;
   let fixture: ComponentFixture<OptionsWowSectionComponent>;
-  let wowUpService: WowUpService;
-  let wowUpServiceSpy: any;
-  let warcraftService: WarcraftService;
-  let warcraftServiceSpy: any;
-  let electronService: ElectronService;
+  let wowUpServiceSpy: WowUpService;
+  let warcraftServiceSpy: WarcraftService;
+  let warcraftInstallationService: WarcraftInstallationService;
 
   beforeEach(async () => {
     warcraftServiceSpy = jasmine.createSpyObj(
@@ -48,7 +48,10 @@ describe("OptionsWowSectionComponent", () => {
         wowUpReleaseChannel: WowUpReleaseChannelType.Stable,
       }
     );
-    electronService = jasmine.createSpyObj("ElectronService", [""], {});
+
+    warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
+      wowInstallations$: new BehaviorSubject<any[]>([]),
+    });
 
     await TestBed.configureTestingModule({
       declarations: [OptionsWowSectionComponent, WowClientOptionsComponent],
@@ -76,7 +79,7 @@ describe("OptionsWowSectionComponent", () => {
           providers: [
             { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: WarcraftService, useValue: warcraftServiceSpy },
-            { provide: ElectronService, useValue: electronService },
+            { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
           ],
         },
       })
@@ -84,8 +87,6 @@ describe("OptionsWowSectionComponent", () => {
 
     fixture = TestBed.createComponent(OptionsWowSectionComponent);
     component = fixture.componentInstance;
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    warcraftService = fixture.debugElement.injector.get(WarcraftService);
 
     fixture.detectChanges();
   });

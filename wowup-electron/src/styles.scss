@@ -79,6 +79,10 @@ img {
   padding: 0 0.25em;
 }
 
+.pt-3 {
+  padding-top: 1em;
+}
+
 .m-0 {
   margin: 0 !important;
 }
@@ -489,6 +493,12 @@ img {
 }
 
 // MATERIAL OVERRIDES
+
+.no-input-border {
+  .mat-form-field-infix {
+    border: none !important;
+  }
+}
 
 .mat-tooltip {
   font-size: 0.95em;

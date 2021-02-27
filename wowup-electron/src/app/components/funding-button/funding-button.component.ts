@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { AddonFundingLink } from "../../entities/addon";
+import { AddonFundingLink } from "../../../common/entities/addon";
 
 @Component({
   selector: "app-funding-button",
