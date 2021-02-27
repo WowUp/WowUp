@@ -26,7 +26,6 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   private readonly _editModeSrc = new BehaviorSubject(false);
   private readonly _isBusySrc = new BehaviorSubject(false);
   private installation: WowInstallation;
-  private installationModel: WowInstallation;
   private subscriptions: Subscription[] = [];
 
   public readonly addonChannelInfos: {
@@ -37,6 +36,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   public clientTypeName: string;
   public clientFolderName: string;
   public clientLocation: string;
+  public installationModel: WowInstallation;
   public selectedAddonChannelType: AddonChannelType;
   public editMode$ = this._editModeSrc.asObservable();
   public isBusy$ = this._isBusySrc.asObservable();
