@@ -66,7 +66,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this._warcraftInstallationService.wowInstallations$
       .pipe(first((installations) => installations.length > 0))
-      // TODO process migrations
       .subscribe(() => {
         this.appReady = true;
         this.detectChanges();
