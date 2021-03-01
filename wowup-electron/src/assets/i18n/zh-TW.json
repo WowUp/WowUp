@@ -2,41 +2,41 @@
   "APP": {
     "APP_MENU": {
       "EDIT": {
-        "COPY": "Copy",
-        "CUT": "Cut",
-        "LABEL": "Edit",
-        "PASTE": "Paste",
-        "REDO": "Redo",
-        "SELECT_ALL": "SelectAll",
-        "UNDO": "Undo"
+        "COPY": "複製",
+        "CUT": "剪下",
+        "LABEL": "編輯",
+        "PASTE": "貼上",
+        "REDO": "重做",
+        "SELECT_ALL": "全選",
+        "UNDO": "撤銷"
       },
-      "QUIT": "Quit",
+      "QUIT": "退出",
       "VIEW": {
-        "FORCE_RELOAD": "Force Reload",
-        "LABEL": "View",
-        "RELOAD": "Reload",
-        "TOGGLE_DEV_TOOLS": "Toggle Dev Tools",
-        "TOGGLE_FULL_SCREEN": "Toggle Full Screen",
-        "ZOOM_IN": "Zoom In",
-        "ZOOM_OUT": "Zoom Out",
-        "ZOOM_RESET": "Reset Zoom"
+        "FORCE_RELOAD": "強制重新整理",
+        "LABEL": "檢視",
+        "RELOAD": "重新整理",
+        "TOGGLE_DEV_TOOLS": "顯示/隱藏開發者工具",
+        "TOGGLE_FULL_SCREEN": "切換全螢幕模式",
+        "ZOOM_IN": "放大",
+        "ZOOM_OUT": "縮小",
+        "ZOOM_RESET": "原始大小"
       },
       "WINDOW": {
-        "CLOSE": "Close",
-        "LABEL": "Window"
+        "CLOSE": "關閉",
+        "LABEL": "視窗"
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "{addonNames}\r\n已自動更新",
     "AUTO_UPDATE_NOTIFICATION_BODY": "自動更新了 {count} 個插件。",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "自動更新",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "退出全螢幕模式",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "按下 ^⌘F 以退出全螢幕模式",
+      "WINDOWS": "按下 F11 以退出全螢幕模式"
     },
     "LINK_NAVIGATION": {
-      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
-      "TITLE": "You are about to leave WowUp"
+      "MESSAGE": "{url}\n\n是否要在預設瀏覽器中開啟此第三方網頁？",
+      "TITLE": "即將離開 WowUp"
     },
     "PROVIDERS": {
       "UNKNOWN": "未知"
@@ -59,7 +59,7 @@
       "HORDE": "部落"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 全螢幕模式",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "安裝 WowUp 更新",
       "INSTALL_MESSAGE": "是否重新啟動 WowUp 以完成更新？",
@@ -94,10 +94,10 @@
       "UPDATING": "正在更新..."
     },
     "ADDON_WARNING": {
-      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
-      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
+      "GENERIC_DESCRIPTION": "WowUp 檢測到此插件存在問題，無法更新此插件或提供詳細資訊。",
+      "GENERIC_TOOLTIP": "檢測到此插件存在問題",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 無法更新此插件或提供詳細資訊。",
+      "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -138,21 +138,21 @@
       }
     },
     "ERRORS": {
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
-      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
+      "ADDON_SCAN_ERROR": "在與 {providerName} 匹配插件資料夾時出現錯誤，請稍後再試。",
+      "ADDON_SYNC_ERROR": "從 {providerName} 上檢查更新時出現錯誤。",
+      "ADDON_SYNC_FULL_ERROR": "從 {providerName} 上檢查 {addonName} 的更新時出現錯誤，請稍後再試。",
       "CHANGE_PROVIDER_ERROR": "無法將 {addonName} 的提供方修改為 {providerName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
+      "GITHUB_LIMIT_ERROR": "GitHub API 請求次數達到 {max} 次的上限。\n請等到 {reset} 再試。",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "檢查 {addonName} 的更新失敗。\n請檢查更新源是否正確，或者忽略此插件。"
     },
     "PROGRESS_SPINNER": {
       "LOADING": "正在載入..."
     },
-    "PROVIDER_ERROR": "Error contacting {providerName}",
+    "PROVIDER_ERROR": "連線 {providerName} 時發生錯誤",
     "SEARCH": {
       "NO_ADDONS": "未找到插件"
     },
-    "WOW_EXE_SELECTION_NAME": "WoW Executable"
+    "WOW_EXE_SELECTION_NAME": "WoW 可執行檔案"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -165,7 +165,7 @@
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支援插件作者",
       "MISSING_DEPENDENCIES": "缺失的依賴項",
-      "NO_CHANGELOG_TEXT": "No changelog available",
+      "NO_CHANGELOG_TEXT": "更新記錄不可用",
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
       "VIEW_ON_PROVIDER_PREFIX": "在該網站上檢視："
     },
@@ -201,7 +201,7 @@
       "TITLE": "從 URL 安裝"
     },
     "SELECT_INSTALLATION": {
-      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
+      "INVALID_INSTALLATION_PATH": "此路徑可能不是有效的《魔獸世界》應用程式：\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "是否傳送匿名應用安裝資料和錯誤資訊以幫助改進 WowUp？",
@@ -234,7 +234,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "關於",
       "GET_ADDONS_TAB_TITLE": "獲取插件",
-      "MIGRATING_ADDONS": "Migrating addons...",
+      "MIGRATING_ADDONS": "正在遷移插件...",
       "MY_ADDONS_TAB_TITLE": "我的插件",
       "OPTIONS_TAB_TITLE": "選項"
     },
@@ -252,7 +252,7 @@
         "SHOW_FOLDER": "開啟資料夾",
         "STABLE_ADDON_CHANNEL": "穩定版"
       },
-      "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
+      "ADDON_IS_CODE_REPOSITORY": "插件似乎是代码仓库",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "是否將 {addonName} 的提供方修改為 {providerName}？此操作將會用 {providerName} 的版本替換現有版本。",
         "TITLE": "修改插件提供方？"
@@ -263,7 +263,7 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "顯示列表項"
       },
-      "ERROR_SNACKBAR": "An error occurred",
+      "ERROR_SNACKBAR": "出現錯誤",
       "FILTER_LABEL": "篩選",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "支援作者",
@@ -357,10 +357,10 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "禁用硬體加速需要重新啟動 WowUp。",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "啟用硬體加速需要重新啟動 WowUp。",
         "USE_HARDWARE_ACCELERATION_LABEL": "啟用硬體加速",
-        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
+        "USE_SYMLINK_SUPPORT": "啟用符號連結",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "啟用符號連結使得 WowUp 在重新掃描時識別符號連結。警告：如果您不知道什麼是符號連結，請禁用此項。在當前版本中，符號連結將會在更新插件時被刪除，並被替換為真正的資料夾。",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "啟用符號連結？",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。"
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "轉儲除錯資料",
@@ -378,10 +378,10 @@
         "DEBUG": "除錯"
       },
       "WOW": {
-        "ADD_CLIENT_BUTTON": "Add New",
+        "ADD_CLIENT_BUTTON": "新增",
         "AUTO_UPDATE_DESCRIPTION": "新安裝的插件將預設設定為自動更新",
         "AUTO_UPDATE_LABEL": "自動更新",
-        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "取消",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",
           "TITLE": "忘記此路徑？"
@@ -390,12 +390,12 @@
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
         "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
-        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "編輯",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "瀏覽",
-        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",
         "RESCAN_CLIENTS_BUTTON": "重新掃描",
         "RESCAN_CLIENTS_LABEL": "重新掃描已安裝的《魔獸世界》客戶端",
-        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "儲存",
         "TITLE": "魔獸世界"
       }
     }
