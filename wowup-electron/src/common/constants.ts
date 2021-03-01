@@ -36,6 +36,7 @@ export const IPC_MENU_ZOOM_IN_CHANNEL = "menu-zoom-in";
 export const IPC_MENU_ZOOM_RESET_CHANNEL = "menu-zoom-reset";
 export const IPC_MAXIMIZE_WINDOW = "maximize-window";
 export const IPC_MINIMIZE_WINDOW = "minimize-window";
+export const IPC_FOCUS_WINDOW = "focus-window";
 export const IPC_WINDOW_MAXIMIZED = "window-maximized";
 export const IPC_WINDOW_UNMAXIMIZED = "window-unmaximized";
 export const IPC_WINDOW_MINIMIZED = "window-minimized";

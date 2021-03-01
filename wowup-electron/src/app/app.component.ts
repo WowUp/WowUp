@@ -247,6 +247,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: iconPath,
     });
 
+    notification.addEventListener("click", this.onClickNotification, { once: true });
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
   }
 
@@ -265,8 +266,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: iconPath,
     });
 
+    notification.addEventListener("click", this.onClickNotification, { once: true });
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
   }
+
+  private onClickNotification = () => {
+    this._electronService.focusWindow().catch((e) => console.error(`Failed to focus window on notification click`, e));
+  };
 
   private getAddonNames(addons: Addon[]) {
     return _.map(addons, (addon) => addon.name);

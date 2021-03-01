@@ -65,7 +65,8 @@ declare type RendererChannels =
   | "list-files"
   | "readdir"
   | "read-file-buffer"
-  | "addons-save-all";
+  | "addons-save-all"
+  | "focus-window";
 
 declare global {
   interface Window {

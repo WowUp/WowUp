@@ -1,5 +1,7 @@
 import { app, BrowserWindow, Menu, nativeImage, Tray } from "electron";
+import * as log from "electron-log";
 import * as path from "path";
+
 import * as platform from "./platform";
 import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "./src/common/constants";
 import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
@@ -53,14 +55,11 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   return true;
 }
 
-function restoreWindow(window: BrowserWindow) {
+export function restoreWindow(window: BrowserWindow): void {
   window?.show();
   window?.setSkipTaskbar(false);
 
   if (platform.isMac) {
-    app.dock.show();
+    app.dock.show().catch((e) => log.error(`Failed to show on Mac dock`, e));
   }
-  // } else {
-  //   window?.setSkipTaskbar(false);
-  // }
 }

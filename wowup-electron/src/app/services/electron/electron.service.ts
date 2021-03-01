@@ -26,6 +26,7 @@ import {
   IPC_WINDOW_MINIMIZED,
   IPC_WINDOW_UNMAXIMIZED,
   ZOOM_FACTOR_KEY,
+  IPC_FOCUS_WINDOW,
 } from "../../../common/constants";
 import * as minimist from "minimist";
 // If you import a module but never use any of the imported values other than as TypeScript types,
@@ -259,6 +260,10 @@ export class ElectronService {
     const response = await this.sendIPCMessage<ValueRequest<TIN>, ValueResponse<TOUT>>(channel, request);
 
     return response.value;
+  }
+
+  public focusWindow(): Promise<void> {
+    return this.invoke(IPC_FOCUS_WINDOW);
   }
 
   public sendIPCMessage<TIN extends IpcRequest, TOUT extends IpcResponse>(

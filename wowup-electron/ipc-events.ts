@@ -48,6 +48,7 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
+  IPC_FOCUS_WINDOW,
 } from "./src/common/constants";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
 import { CurseScanResult } from "./src/common/curse/curse-scan-result";
@@ -63,7 +64,7 @@ import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
 import { WowUpFolderScanner } from "./src/common/wowup/wowup-folder-scanner";
 import { WowUpScanResult } from "./src/common/wowup/wowup-scan-result";
 import { Addon } from "./src/common/entities/addon";
-import { createTray } from "./system-tray";
+import { createTray, restoreWindow } from "./system-tray";
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -356,6 +357,11 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(IPC_CLOSE_WINDOW, () => {
     window?.close();
+  });
+
+  handle(IPC_FOCUS_WINDOW, () => {
+    restoreWindow(window);
+    window?.focus();
   });
 
   handle(IPC_RESTART_APP, () => {
