@@ -286,6 +286,12 @@ $horde-theme-light: mat-light-theme(
       }
     }
   }
+
+  .mat-button {
+    &.mat-primary {
+      color: $horde-control !important;
+    }
+  }
 }
 
 // Alliance theme
@@ -399,6 +405,12 @@ $alliance-theme-light: mat-light-theme(
       &:visited {
         color: $alliance-control;
       }
+    }
+  }
+
+  .mat-button {
+    &.mat-primary {
+      color: $alliance-control !important;
     }
   }
 }

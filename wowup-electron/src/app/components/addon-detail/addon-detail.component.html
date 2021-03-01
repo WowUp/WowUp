@@ -63,7 +63,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end" *ngIf="isUnknownProvider === false">
   <div class="row align-items-center ">
-    <a #providerLink mat-button color="primary" class="mr-3 text-1" appExternalLink [href]="externalUrl"
+    <a #providerLink mat-button class="mr-3 text-1" appExternalLink [href]="externalUrl"
       [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate">{{
       "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }}
       {{ provider }}
