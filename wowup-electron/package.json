@@ -48,7 +48,7 @@
     "pretty": "npx prettier --write . && ng lint --fix"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "11.0.0",
+    "@angular-builders/custom-webpack": "11.1.0",
     "@angular-devkit/build-angular": "0.1102.2",
     "@angular-eslint/builder": "1.2.0",
     "@angular-eslint/eslint-plugin": "1.2.0",
@@ -85,7 +85,7 @@
     "cross-env": "7.0.3",
     "dotenv": "8.2.0",
     "electron": "11.3.0",
-    "electron-builder": "22.10.4",
+    "electron-builder": "22.10.5",
     "electron-notarize": "1.0.0",
     "electron-reload": "1.5.0",
     "eslint": "7.19.0",
@@ -134,7 +134,7 @@
     "conf": "7.1.2",
     "electron-log": "4.3.2",
     "electron-store": "7.0.2",
-    "electron-updater": "4.3.5",
+    "electron-updater": "4.3.8",
     "fs-extra": "9.1.0",
     "globrex": "0.1.2",
     "handlebars": "4.7.6",
