@@ -10,6 +10,7 @@ import {
   Component,
   ElementRef,
   Inject,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -93,6 +94,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
+    private _ngZone: NgZone,
     public sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
@@ -177,17 +179,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.isMissingUnknownDependencies = !!this.missingDependencies.length;
   }
 
-  ngAfterViewInit(): void {
-    of(true)
-      .pipe(
-        delay(200),
-        map(() => this.providerLink?.nativeElement?.focus())
-      )
-      .subscribe();
-
-    // window.setTimeout(() => {
-    // }, 200);
-  }
+  ngAfterViewInit(): void {}
 
   ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
