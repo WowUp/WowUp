@@ -37,7 +37,7 @@ export function getFolderList(addon: Addon): string[] {
 
 export function getGameVersion(gameVersion: string): string {
   if (!gameVersion) {
-    return gameVersion;
+    return "";
   }
 
   if (gameVersion.toString().indexOf(".") !== -1) {
@@ -54,6 +54,10 @@ export function getGameVersion(gameVersion: string): string {
 }
 
 export function toInterfaceVersion(version: string): string {
+  if (!version) {
+    throw new Error("interface version empty or undefined");
+  }
+
   if (version.indexOf(".") === -1) {
     return version;
   }
