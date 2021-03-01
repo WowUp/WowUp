@@ -1,6 +1,6 @@
 import { last } from "lodash";
-import { BehaviorSubject, from, of, Subscription } from "rxjs";
-import { delay, filter, map, tap } from "rxjs/operators";
+import { BehaviorSubject, from, Subscription } from "rxjs";
+import { filter, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
@@ -10,7 +10,6 @@ import {
   Component,
   ElementRef,
   Inject,
-  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -94,7 +93,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
-    private _ngZone: NgZone,
     public sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
