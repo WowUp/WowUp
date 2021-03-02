@@ -44,7 +44,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
-import { DialogFactory } from "app/services/dialog/dialog.factory";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 
 class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
   public constructor(private subject: BehaviorSubject<AddonViewModel[]>) {

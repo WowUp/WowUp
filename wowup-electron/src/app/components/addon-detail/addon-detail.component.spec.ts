@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -19,12 +19,14 @@ import { IconService } from "../../services/icons/icon.service";
 import { SessionService } from "../../services/session/session.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;
   let addonServiceSpy: any;
   let electronServiceSpy: ElectronService;
   let sessionServiceSpy: SessionService;
+  let dialogFactory: DialogFactory;
 
   beforeEach(async () => {
     console.log("AddonDetailComponent");
@@ -36,6 +38,8 @@ describe("AddonDetailComponent", () => {
         getChangelog: () => "",
       }
     );
+
+    dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
 
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {
@@ -74,6 +78,7 @@ describe("AddonDetailComponent", () => {
     testBed = overrideIconModule(testBed).overrideComponent(AddonDetailComponent, {
       set: {
         providers: [
+          { provide: MatDialogRef, useValue: {} },
           { provide: AddonService, useValue: addonServiceSpy },
           { provide: SessionService, useValue: sessionServiceSpy },
           {
@@ -81,7 +86,8 @@ describe("AddonDetailComponent", () => {
             useValue: electronServiceSpy,
           },
           {
-            provide: IconService,
+            provide: DialogFactory,
+            useValue: dialogFactory,
           },
         ],
       },
