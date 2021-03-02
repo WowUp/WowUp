@@ -6,7 +6,7 @@ import { httpLoaderFactory } from "../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { Component } from "@angular/core";
 import { GetAddonListItem } from "../business-objects/get-addon-list-item";
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 
 @Component({
   template: `<p>{{ item | getAddonListItemFileProp: "version":channel }}</p>`,

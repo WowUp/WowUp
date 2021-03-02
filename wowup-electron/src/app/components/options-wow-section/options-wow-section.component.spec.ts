@@ -8,7 +8,7 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../../common/wowup/models";
 import { httpLoaderFactory } from "../../app.module";
 import { MatModule } from "../../mat-module";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
