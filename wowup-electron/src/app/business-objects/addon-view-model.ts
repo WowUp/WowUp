@@ -22,7 +22,7 @@ export class AddonViewModel {
   public hasThumbnail = false;
   public thumbnailLetter = "";
 
-  constructor(addon?: Addon) {
+  public constructor(addon?: Addon) {
     this.addon = addon;
     this.installedAt = addon.installedAt ? new Date(addon.installedAt).getTime() : 0;
     this.releasedAt = addon.releasedAt ? new Date(addon.releasedAt).getTime() : 0;

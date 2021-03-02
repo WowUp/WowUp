@@ -17,7 +17,7 @@ export class GetAddonListItem {
 
   public installState: AddonInstallState = AddonInstallState.Unknown;
 
-  constructor(searchResult: AddonSearchResult, defaultAddonChannel: AddonChannelType) {
+  public constructor(searchResult: AddonSearchResult, defaultAddonChannel: AddonChannelType) {
     this.searchResult = searchResult;
     this.author = this.searchResult.author;
     this.name = this.searchResult.name;

@@ -15,19 +15,19 @@ import { getEnumName } from "../../utils/enum.utils";
   styleUrls: ["./addon-update-button.component.scss"],
 })
 export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
-  @Input() listItem: AddonViewModel;
+  @Input() public listItem: AddonViewModel;
 
-  @Output() onViewUpdated: EventEmitter<boolean> = new EventEmitter();
+  @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   private _subscriptions: Subscription[] = [];
 
-  constructor(
+  public constructor(
     private _addonService: AddonService,
     private _analyticsService: AnalyticsService,
     private _translateService: TranslateService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const addonInstalledSub = this._addonService.addonInstalled$
       .pipe(filter((evt) => evt.addon.id === this.listItem.addon.id))
       .subscribe((evt) => {
@@ -39,7 +39,7 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     this._subscriptions.push(addonInstalledSub);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
     this._subscriptions = [];
   }

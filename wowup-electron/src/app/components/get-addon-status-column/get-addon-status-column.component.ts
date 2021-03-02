@@ -7,11 +7,11 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
   styleUrls: ["./get-addon-status-column.component.scss"],
 })
 export class GetAddonStatusColumnComponent {
-  @Input() addonSearchResult: AddonSearchResult;
+  @Input() public addonSearchResult: AddonSearchResult;
 
-  @Output() onInstallViewUpdated: EventEmitter<boolean> = new EventEmitter();
+  @Output() public onInstallViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
-  onInstallButtonUpdated() {
+  public onInstallButtonUpdated(): void {
     this.onInstallViewUpdated.emit(true);
   }
 }

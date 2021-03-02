@@ -76,7 +76,7 @@ export class OptionsAppSectionComponent implements OnInit {
     },
   ];
 
-  constructor(
+  public constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
     private _translateService: TranslateService,
@@ -86,7 +86,7 @@ export class OptionsAppSectionComponent implements OnInit {
     public wowupService: WowUpService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this._analyticsService.telemetryEnabled$.subscribe((enabled) => {
       this.telemetryEnabled = enabled;
     });
@@ -122,19 +122,19 @@ export class OptionsAppSectionComponent implements OnInit {
     });
   }
 
-  onEnableSystemNotifications = (evt: MatSlideToggleChange): void => {
+  public onEnableSystemNotifications = (evt: MatSlideToggleChange): void => {
     this.wowupService.enableSystemNotifications = evt.checked;
   };
 
-  onTelemetryChange = (evt: MatSlideToggleChange): void => {
+  public onTelemetryChange = (evt: MatSlideToggleChange): void => {
     this._analyticsService.telemetryEnabled = evt.checked;
   };
 
-  onCollapseChange = (evt: MatSlideToggleChange): void => {
+  public onCollapseChange = (evt: MatSlideToggleChange): void => {
     this.wowupService.collapseToTray = evt.checked;
   };
 
-  onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
+  public onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setStartWithSystem(evt.checked);
     if (!evt.checked) {
       this.startMinimized = false;
@@ -143,11 +143,11 @@ export class OptionsAppSectionComponent implements OnInit {
     }
   };
 
-  onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
+  public onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setStartMinimized(evt.checked);
   };
 
-  onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
+  public onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"),
@@ -179,7 +179,7 @@ export class OptionsAppSectionComponent implements OnInit {
       .subscribe();
   };
 
-  onSymlinkModeChange = (evt: MatSlideToggleChange): void => {
+  public onSymlinkModeChange = (evt: MatSlideToggleChange): void => {
     if (evt.checked === false) {
       this.wowupService.useSymlinkMode = false;
       return;
@@ -213,7 +213,7 @@ export class OptionsAppSectionComponent implements OnInit {
       .subscribe();
   };
 
-  onCurrentLanguageChange = (evt: MatSelectChange): void => {
+  public onCurrentLanguageChange = (evt: MatSelectChange): void => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"),

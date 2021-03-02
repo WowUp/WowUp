@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 import { AddonDetailComponent } from "../../components/addon-detail/addon-detail.component";
 import { AddonInstallButtonComponent } from "../../components/addon-install-button/addon-install-button.component";
-import { AddonProviderBadgeComponent } from "../../components/addon-provider-badge/addon-provider-badge.component";
 import { AddonUpdateButtonComponent } from "../../components/addon-update-button/addon-update-button.component";
 import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 import { CenteredSnackbarComponent } from "../../components/centered-snackbar/centered-snackbar.component";
@@ -57,7 +56,6 @@ import { HomeComponent } from "./home.component";
     WowClientOptionsComponent,
     InstallFromUrlDialogComponent,
     AddonDetailComponent,
-    AddonProviderBadgeComponent,
     AddonInstallButtonComponent,
     GetAddonStatusColumnComponent,
     MyAddonStatusColumnComponent,

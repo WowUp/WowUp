@@ -11,26 +11,28 @@ import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
   templateUrl: "./my-addon-status-column.component.html",
   styleUrls: ["./my-addon-status-column.component.scss"],
 })
-export class MyAddonStatusColumnComponent implements OnInit, OnDestroy {
-  @Input() listItem: AddonViewModel;
+export class MyAddonStatusColumnComponent implements OnInit {
+  @Input() public listItem: AddonViewModel;
 
-  @Output() onViewUpdated: EventEmitter<boolean> = new EventEmitter();
+  @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   public warningType?: AddonWarningType;
   public hasWarning = false;
   public showStatusText = false;
   public statusText = "";
 
-  constructor(private _dialog: MatDialog, private _translateService: TranslateService, private _ngzone: NgZone) {}
+  public constructor(
+    private _dialog: MatDialog,
+    private _translateService: TranslateService,
+    private _ngzone: NgZone
+  ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.warningType = this.listItem?.addon?.warningType;
     this.hasWarning = this.warningType !== undefined;
     this.showStatusText = this.listItem?.isUpToDate() || this.listItem?.addon.isIgnored;
     this.statusText = this.getStatusText();
   }
-
-  ngOnDestroy(): void {}
 
   public getStatusText(): string {
     if (!this.listItem) {

@@ -36,7 +36,7 @@ export class OptionsWowSectionComponent implements OnInit {
     name: getEnumName(WowUpReleaseChannelType, type),
   }));
 
-  constructor(
+  public constructor(
     private _dialog: MatDialog,
     private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
@@ -46,7 +46,7 @@ export class OptionsWowSectionComponent implements OnInit {
     this.wowInstallations$ = _warcraftInstallationService.wowInstallations$;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.wowUpReleaseChannel = this._wowupService.wowUpReleaseChannel;
   }
 

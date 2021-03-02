@@ -119,17 +119,17 @@ export class TukUiAddonProvider extends AddonProvider {
     );
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     return false;
   }
 
-  isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(addonId: string): boolean {
     return !!addonId && !isNaN(parseInt(addonId, 10));
   }
 
-  onPostInstall(addon: Addon): void {}
+  public onPostInstall(addon: Addon): void {}
 
-  async scan(
+  public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]

@@ -16,16 +16,15 @@ export class OptionsAddonSectionComponent implements OnInit {
   public enabledAddonProviders = new FormControl();
   public addonProviderStates: AddonProviderState[] = [];
 
-  constructor(private _addonService: AddonService, private _wowupService: WowUpService) {}
+  public constructor(private _addonService: AddonService, private _wowupService: WowUpService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.addonProviderStates = filter(this._addonService.getAddonProviderStates(), (provider) => provider.canEdit);
     this.enabledAddonProviders.setValue(this.getEnabledProviderNames());
     console.debug("addonProviderStates", this.addonProviderStates);
   }
 
-  public onProviderStateSelectionChange(event: MatSelectionListChange) {
-    console.debug(event);
+  public onProviderStateSelectionChange(event: MatSelectionListChange): void {
     event.options.forEach((option) => {
       this._wowupService.setAddonProviderState({
         providerName: option.value,

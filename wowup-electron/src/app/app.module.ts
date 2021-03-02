@@ -17,7 +17,7 @@ import { FooterComponent } from "./components/footer/footer.component";
 import { TitlebarComponent } from "./components/titlebar/titlebar.component";
 import { DirectiveModule } from "./directive.module";
 import { DefaultHeadersInterceptor } from "./interceptors/default-headers.interceptor";
-import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepter";
+import { ErrorHandlerInterceptor } from "./interceptors/error-handler-interceptor";
 import { MatModule } from "./mat-module";
 import { HomeModule } from "./pages/home/home.module";
 import { AnalyticsService } from "./services/analytics/analytics.service";
@@ -76,7 +76,7 @@ export function initializeApp(wowupService: WowUpService) {
     },
     {
       provide: ErrorHandler,
-      useClass: ErrorHandlerIntercepter,
+      useClass: ErrorHandlerInterceptor,
       deps: [AnalyticsService],
     },
   ],

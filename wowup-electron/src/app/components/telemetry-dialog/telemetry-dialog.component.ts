@@ -6,12 +6,10 @@ import { MatDialogRef } from "@angular/material/dialog";
   templateUrl: "./telemetry-dialog.component.html",
   styleUrls: ["./telemetry-dialog.component.scss"],
 })
-export class TelemetryDialogComponent implements OnInit {
-  constructor(public dialogRef: MatDialogRef<TelemetryDialogComponent>) {}
+export class TelemetryDialogComponent {
+  public constructor(public dialogRef: MatDialogRef<TelemetryDialogComponent>) {}
 
-  ngOnInit(): void {}
-
-  onNoClick(): void {
+  public onNoClick(): void {
     this.dialogRef.close();
   }
 }

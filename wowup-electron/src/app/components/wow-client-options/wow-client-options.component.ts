@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
@@ -21,7 +21,7 @@ import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.compone
   styleUrls: ["./wow-client-options.component.scss"],
 })
 export class WowClientOptionsComponent implements OnInit, OnDestroy {
-  @Input("installationId") installationId: string;
+  @Input("installationId") public installationId: string;
 
   private readonly _editModeSrc = new BehaviorSubject(false);
   private readonly _isBusySrc = new BehaviorSubject(false);
@@ -61,25 +61,15 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(
+  public constructor(
     private _dialog: MatDialog,
     private _translateService: TranslateService,
     private _warcraftInstallationService: WarcraftInstallationService
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
-
-    // const warcraftProductSubscription = this._warcraftService.products$.subscribe((products) => {
-    //   const product = products.find((p) => p.clientType === this.clientType);
-    //   if (product) {
-    //     this.clientLocation = product.location;
-    //     this._cdRef.detectChanges();
-    //   }
-    // });
-
-    // this.subscriptions.push(warcraftProductSubscription);
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.installation = this._warcraftInstallationService.getWowInstallation(this.installationId);
     if (!this.installation) {
       throw new Error(`Failed to find installation: ${this.installationId}`);
@@ -96,24 +86,24 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this.clientLocation = this.installation.location;
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onDefaultAddonChannelChange(evt: MatSelectChange): void {
+  public onDefaultAddonChannelChange(evt: MatSelectChange): void {
     this.installationModel.defaultAddonChannelType = evt.value;
   }
 
-  onDefaultAutoUpdateChange(evt: MatSlideToggleChange): void {
+  public onDefaultAutoUpdateChange(evt: MatSlideToggleChange): void {
     this.installationModel.defaultAutoUpdate = evt.checked;
   }
 
-  onClickCancel(): void {
+  public onClickCancel(): void {
     this.installationModel = { ...this.installation };
     this.editMode = false;
   }
 
-  onClickSave(): void {
+  public onClickSave(): void {
     this.isBusy = true;
     try {
       // const saveAutoUpdate = this.installationModel.defaultAutoUpdate !== this.installation.defaultAutoUpdate;
@@ -133,7 +123,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClickRemove(): void {
+  public onClickRemove(): void {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.TITLE"),
@@ -156,32 +146,6 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       )
       .subscribe();
   }
-
-  // public async clearInstallPath(): Promise<void> {
-  //   const dialogRef = this._dialog.open(ConfirmDialogComponent, {
-  //     data: {
-  //       title: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.TITLE"),
-  //       message: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.MESSAGE", {
-  //         clientName: this._translateService.instant(this.clientTypeName),
-  //       }),
-  //     },
-  //   });
-
-  //   const result = await dialogRef.afterClosed().toPromise();
-
-  //   if (!result) {
-  //     return;
-  //   }
-
-  //   try {
-  //     // await this._warcraftService.removeWowFolderPath(this.clientType).toPromise();
-  //     this.clientLocation = "";
-  //     this._cdRef.detectChanges();
-  //     console.debug("Remove client location complete");
-  //   } catch (e) {
-  //     console.error("Failed to remove location", e);
-  //   }
-  // }
 
   private getAddonChannelInfos() {
     return getEnumList(AddonChannelType).map((type: AddonChannelType) => {

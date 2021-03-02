@@ -13,9 +13,9 @@ import { SessionService } from "../../services/session/session.service";
   styleUrls: ["./addon-install-button.component.scss"],
 })
 export class AddonInstallButtonComponent implements OnInit, OnDestroy {
-  @Input() addonSearchResult: AddonSearchResult;
+  @Input() public addonSearchResult: AddonSearchResult;
 
-  @Output() onViewUpdated: EventEmitter<boolean> = new EventEmitter();
+  @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   private _subscriptions: Subscription[] = [];
 
@@ -24,13 +24,13 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   public progressValue = 0;
   public buttonText = "";
 
-  constructor(
+  public constructor(
     private _addonService: AddonService,
     private _sessionService: SessionService,
     private _translate: TranslateService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const isInstalled = this._addonService.isInstalled(
       this.addonSearchResult.externalId,
       this._sessionService.getSelectedWowInstallation()
@@ -57,7 +57,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     this._subscriptions.push(addonInstalledSub);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
     this._subscriptions = [];
   }

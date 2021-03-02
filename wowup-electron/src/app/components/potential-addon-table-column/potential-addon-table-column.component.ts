@@ -22,11 +22,11 @@ export interface PotentialAddonViewDetailsEvent {
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
 export class PotentialAddonTableColumnComponent implements OnChanges {
-  @Input("addon") addon: GetAddonListItem;
-  @Input() channel: AddonChannelType;
-  @Input() clientType: WowClientType;
+  @Input("addon") public addon: GetAddonListItem;
+  @Input() public channel: AddonChannelType;
+  @Input() public clientType: WowClientType;
 
-  @Output() onViewDetails: EventEmitter<PotentialAddonViewDetailsEvent> = new EventEmitter();
+  @Output() public onViewDetails: EventEmitter<PotentialAddonViewDetailsEvent> = new EventEmitter();
 
   private _latestChannelType: AddonChannelType = AddonChannelType.Stable;
   private _requiredDependencies: AddonSearchResultDependency[] = [];
@@ -39,23 +39,23 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     return this._latestChannelType === AddonChannelType.Alpha;
   }
 
-  public get hasThumbnail() {
+  public get hasThumbnail(): boolean {
     return !!this.addon.thumbnailUrl;
   }
 
-  public get thumbnailLetter() {
+  public get thumbnailLetter(): string {
     return this.addon.name.charAt(0).toUpperCase();
   }
 
-  get dependencyTooltip() {
+  public get dependencyTooltip() {
     return {
       dependencyCount: this.getRequiredDependencyCount(),
     };
   }
 
-  constructor(private _getAddonListItemFileProp: GetAddonListItemFilePropPipe) {}
+  public constructor(private _getAddonListItemFileProp: GetAddonListItemFilePropPipe) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes.clientType) {
       this._latestChannelType = this._getAddonListItemFileProp.transform(
         this.addon,
@@ -67,22 +67,22 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     }
   }
 
-  viewDetails() {
+  public viewDetails(): void {
     this.onViewDetails.emit({
       searchResult: this.addon.searchResult,
       channelType: this._latestChannelType,
     });
   }
 
-  getRequiredDependencyCount() {
+  public getRequiredDependencyCount(): number {
     return this._requiredDependencies.length;
   }
 
-  hasRequiredDependencies() {
+  public hasRequiredDependencies(): boolean {
     return this._requiredDependencies.length > 0;
   }
 
-  getRequiredDependencies() {
+  public getRequiredDependencies(): AddonSearchResultDependency[] {
     return SearchResults.getDependencyType(
       this.addon.searchResult,
       this._latestChannelType,
