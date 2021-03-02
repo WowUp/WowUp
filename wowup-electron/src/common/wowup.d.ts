@@ -1,13 +1,4 @@
-import {
-  IpcRendererEvent,
-  LoginItemSettings,
-  WebContents,
-  Settings,
-  LoginItemSettingsOptions,
-  OpenExternalOptions,
-  OpenDialogOptions,
-  OpenDialogReturnValue,
-} from "electron";
+import { IpcRendererEvent, OpenExternalOptions, OpenDialogOptions, OpenDialogReturnValue } from "electron";
 import { ElectronLog } from "electron-log";
 
 // Events that can be sent from main to renderer

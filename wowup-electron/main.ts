@@ -1,6 +1,5 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log";
-import * as Store from "electron-store";
 import { type as osType, release as osRelease, arch as osArch } from "os";
 import { join } from "path";
 import { format as urlFormat } from "url";
@@ -33,6 +32,7 @@ import { AppOptions } from "./src/common/wowup/app-options";
 import { windowStateManager } from "./window-state";
 import { createAppMenu } from "./app-menu";
 import { MainChannels } from "./src/common/wowup";
+import { preferenceStore } from "./stores";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -54,10 +54,6 @@ process.on("unhandledRejection", (error) => {
 
 // VARIABLES
 const startedAt = Date.now();
-
-// https://github.com/sindresorhus/electron-store#initrenderer
-Store.initRenderer();
-const preferenceStore = new Store({ name: "preferences" });
 
 const argv = require("minimist")(process.argv.slice(1), {
   boolean: ["serve", "hidden"],

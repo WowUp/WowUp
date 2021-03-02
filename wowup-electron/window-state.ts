@@ -1,47 +1,17 @@
 import { BrowserWindow, Rectangle, screen } from "electron";
 import * as log from "electron-log";
-import * as Store from "electron-store";
-import { minBy } from "lodash";
-import { Subject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
-import { MIN_VISIBLE_ON_SCREEN, WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH } from "./src/common/constants";
+import { MIN_VISIBLE_ON_SCREEN } from "./src/common/constants";
 import { WindowState } from "./src/common/models/window-state";
+import { preferenceStore } from "./stores";
 
-const preferenceStore = new Store({ name: "preferences" });
-
-function getNearestScreen(x: number, y: number) {
-  const displays = screen.getAllDisplays();
-  return minBy(displays, (display) => Math.hypot(display.bounds.x - x, display.bounds.y - y));
+interface WuWindowState extends WindowState {
+  monitorState: (win: BrowserWindow) => void;
 }
 
-function getMaxScreenX(display: Electron.Display) {
-  return display.bounds.x + display.bounds.width;
-}
-
-function getMaxScreenY(display: Electron.Display) {
-  return display.bounds.y + display.bounds.height;
-}
-
-function constrainCoordinate(n: number, min: number, max: number) {
-  if (n < min) {
-    return min;
-  } else if (n > max) {
-    return max;
-  }
-  return n;
-}
-
-function getConstrainedCoordinates(window: BrowserWindow) {
-  const bounds = window.getBounds();
-  const nearestScreen = getNearestScreen(bounds.x, bounds.y);
-
-  return {
-    x: constrainCoordinate(bounds.x, nearestScreen.bounds.x, getMaxScreenX(nearestScreen)),
-    y: constrainCoordinate(bounds.y, nearestScreen.bounds.y, getMaxScreenY(nearestScreen)),
-  };
-}
-
-export function windowStateManager(windowName: string, { width, height }: { width: number; height: number }) {
+export function windowStateManager(
+  windowName: string,
+  { width, height }: { width: number; height: number }
+): WuWindowState {
   let window: BrowserWindow;
   let windowState: WindowState;
   // const saveState$ = new Subject<void>();
@@ -54,15 +24,6 @@ export function windowStateManager(windowName: string, { width, height }: { widt
       setDefaults = true;
     } else {
       log.info("found window state:", windowState);
-
-      // const valid = screen.getAllDisplays().some((display) => {
-      //   return (
-      //     windowState.x >= display.bounds.x &&
-      //     windowState.y >= display.bounds.y &&
-      //     windowState.x + windowState.width <= display.bounds.x + display.bounds.width &&
-      //     windowState.y + windowState.height <= display.bounds.y + display.bounds.height
-      //   );
-      // });
 
       if (!isVisibleOnScreen(windowState)) {
         log.info("reset window state, bounds are outside displays");
@@ -91,12 +52,7 @@ export function windowStateManager(windowName: string, { width, height }: { widt
     window = win;
 
     win.on("close", saveState);
-    // win.on("resize", () => saveState$.next());
-    // win.on("move", () => saveState$.next());
-    // win.on("closed", () => saveState$.unsubscribe());
   }
-
-  // saveState$.pipe(debounceTime(500)).subscribe(() => saveState());
 
   setState();
 

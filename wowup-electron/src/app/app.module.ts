@@ -33,7 +33,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 export function initializeApp(wowupService: WowUpService) {
-  return async () => {
+  return async (): Promise<void> => {
     await wowupService.initializeLanguage();
   };
 }

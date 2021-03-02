@@ -2,7 +2,6 @@ import * as admZip from "adm-zip";
 import axios from "axios";
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell } from "electron";
 import * as log from "electron-log";
-import * as Store from "electron-store";
 import * as fs from "fs-extra";
 import * as globrex from "globrex";
 import * as _ from "lodash";
@@ -65,6 +64,7 @@ import { WowUpFolderScanner } from "./src/common/wowup/wowup-folder-scanner";
 import { WowUpScanResult } from "./src/common/wowup/wowup-scan-result";
 import { Addon } from "./src/common/entities/addon";
 import { createTray, restoreWindow } from "./system-tray";
+import { addonStore } from "./stores";
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -72,8 +72,6 @@ interface SymlinkDir {
   realPath: string;
   isDir: boolean;
 }
-
-const addonStore = new Store({ name: "addons" });
 
 async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<SymlinkDir[]> {
   // Find and resolve symlinks found and return the folder names as
@@ -373,7 +371,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     app.quit();
   });
 
-  handle(IPC_LIST_DISKS_WIN32, async (evt, config: SystemTrayConfig) => {
+  handle(IPC_LIST_DISKS_WIN32, async () => {
     const diskInfos = await nodeDiskInfo.getDiskInfo();
     // Cant pass complex objects over the wire, make them simple
     return diskInfos.map((di) => {

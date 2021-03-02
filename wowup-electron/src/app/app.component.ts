@@ -66,7 +66,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public quitEnabled?: boolean;
   public showPreLoad = true;
 
-  constructor(
+  public constructor(
     private _analyticsService: AnalyticsService,
     private _electronService: ElectronService,
     private _fileService: FileService,
@@ -83,7 +83,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     public wowUpService: WowUpService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
       this._electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
@@ -138,7 +138,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     from(this.createAppMenu())
       .pipe(
         first(),
@@ -159,25 +159,25 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._electronService.off(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this._electronService.off(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this._electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
-  onMenuZoomIn = (): void => {
+  public onMenuZoomIn = (): void => {
     this._electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
   };
 
-  onMenuZoomOut = (): void => {
+  public onMenuZoomOut = (): void => {
     this._electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
   };
 
-  onMenuZoomReset = (): void => {
+  public onMenuZoomReset = (): void => {
     this._electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
   };
 
-  openDialog(): void {
+  public openDialog(): void {
     const dialogRef = this._dialog.open(TelemetryDialogComponent, {
       disableClose: true,
     });
