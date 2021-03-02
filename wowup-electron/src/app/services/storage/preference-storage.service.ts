@@ -9,8 +9,6 @@ export class PreferenceStorageService {
     name: "preferences",
   });
 
-  constructor() {}
-
   public query<T>(action: (items: Store) => T): T {
     return action(this._store);
   }

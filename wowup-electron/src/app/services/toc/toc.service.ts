@@ -25,7 +25,7 @@ const TOC_X_WOWI_ID = "X-WoWI-ID"; // WowInterface
   providedIn: "root",
 })
 export class TocService {
-  constructor(private _fileService: FileService) {}
+  public constructor(private _fileService: FileService) {}
 
   public async parse(tocPath: string): Promise<Toc> {
     let tocText = await this._fileService.readFile(tocPath);

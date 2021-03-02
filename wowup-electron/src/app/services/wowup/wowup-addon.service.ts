@@ -44,7 +44,7 @@ const WOWUP_ADODN_FOLDER_NAME = "WowUp";
   providedIn: "root",
 })
 export class WowUpAddonService {
-  readonly files: WowUpAddonFileProcessing[] = [
+  public readonly files: WowUpAddonFileProcessing[] = [
     {
       filename: "data.lua",
       type: WowUpAddonFileType.HandlebarsTemplate,
@@ -60,7 +60,7 @@ export class WowUpAddonService {
   ];
   private compiledFiles = {};
 
-  constructor(
+  public constructor(
     private _addonService: AddonService,
     private _fileService: FileService,
     private _warcraftInstallationService: WarcraftInstallationService,

@@ -96,7 +96,7 @@ export class AddonService {
   public readonly scanError$ = this._scanErrorSrc.asObservable();
   public readonly searchError$ = this._searchErrorSrc.asObservable();
 
-  constructor(
+  public constructor(
     private _addonStorage: AddonStorageService,
     private _analyticsService: AnalyticsService,
     private _warcraftService: WarcraftService,

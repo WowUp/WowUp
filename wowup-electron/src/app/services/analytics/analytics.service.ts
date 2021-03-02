@@ -22,11 +22,11 @@ export class AnalyticsService {
     return this._installId;
   }
 
-  public get shouldPromptTelemetry() {
+  public get shouldPromptTelemetry(): boolean {
     return this._preferenceStorageService.get(TELEMETRY_ENABLED_KEY) === undefined;
   }
 
-  public get telemetryEnabled() {
+  public get telemetryEnabled(): boolean {
     const preference = this._preferenceStorageService.findByKey(TELEMETRY_ENABLED_KEY);
     const value = preference === true.toString();
 
@@ -36,7 +36,7 @@ export class AnalyticsService {
   }
 
   public set telemetryEnabled(value: boolean) {
-    console.log(`Set telemetry enabled: ${value}`);
+    console.log(`Set telemetry enabled: ${value.toString()}`);
 
     if (this._insights) {
       this._insights.appInsights.config.disableTelemetry = value;
@@ -46,7 +46,7 @@ export class AnalyticsService {
     this._telemetryEnabledSrc.next(value);
   }
 
-  constructor(private _preferenceStorageService: PreferenceStorageService) {
+  public constructor(private _preferenceStorageService: PreferenceStorageService) {
     this._installId = this.loadInstallId();
     this._telemetryEnabledSrc.next(this.telemetryEnabled);
     console.log("installId", this._installId);
@@ -56,7 +56,7 @@ export class AnalyticsService {
     this.track("app-startup");
   }
 
-  public trackError(error: Error) {
+  public trackError(error: Error): void {
     if (!this.telemetryEnabled) {
       return;
     }
@@ -64,7 +64,7 @@ export class AnalyticsService {
     this._insights?.trackException({ exception: error });
   }
 
-  private track(name: string, properties: object = undefined) {
+  private track(name: string, properties = undefined) {
     if (!this.telemetryEnabled) {
       return;
     }
@@ -72,7 +72,7 @@ export class AnalyticsService {
     this._insights?.trackEvent({ name, properties });
   }
 
-  public trackAction(name: string, properties: object = undefined) {
+  public trackAction(name: string, properties = undefined): void {
     this.track(name, properties);
   }
 

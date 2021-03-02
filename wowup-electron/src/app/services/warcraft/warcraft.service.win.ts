@@ -24,7 +24,7 @@ const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";
 const BLIZZARD_PRODUCT_DB_NAME = "product.db";
 
 export class WarcraftServiceWin implements WarcraftServiceImpl {
-  constructor(private _electronService: ElectronService, private _fileService: FileService) {}
+  public constructor(private _electronService: ElectronService, private _fileService: FileService) {}
 
   public getExecutableExtension(): string {
     return "exe";
@@ -34,7 +34,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
     return WOW_APP_NAMES.includes(appName);
   }
 
-  async getBlizzardAgentPath(): Promise<string> {
+  public async getBlizzardAgentPath(): Promise<string> {
     try {
       const diskInfo = await this._electronService.invoke(IPC_LIST_DISKS_WIN32);
       console.debug("diskInfo", diskInfo);

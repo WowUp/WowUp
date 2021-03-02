@@ -73,7 +73,7 @@ export class WarcraftService {
     })
   );
 
-  constructor(
+  public constructor(
     private _electronService: ElectronService,
     private _fileService: FileService,
     private _preferenceStorageService: PreferenceStorageService,

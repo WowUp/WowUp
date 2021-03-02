@@ -32,7 +32,7 @@ export class SessionService {
   public readonly autoUpdateComplete$ = this._autoUpdateCompleteSrc.asObservable();
   public readonly addonsChanged$ = this._addonsChangedSrc.asObservable();
 
-  constructor(
+  public constructor(
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService,
     private _warcraftInstallationService: WarcraftInstallationService,

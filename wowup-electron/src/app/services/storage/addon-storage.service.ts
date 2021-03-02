@@ -14,7 +14,7 @@ export class AddonStorageService {
     name: "addons",
   });
 
-  constructor(private _electronService: ElectronService) {}
+  public constructor(private _electronService: ElectronService) {}
 
   public query<T>(action: (store: Store) => T): T {
     return action(this._store);

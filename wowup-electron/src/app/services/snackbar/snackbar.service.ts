@@ -16,7 +16,7 @@ export interface SnackbarConfig {
   providedIn: "root",
 })
 export class SnackbarService {
-  constructor(private _translateService: TranslateService, private _snackBar: MatSnackBar) {}
+  public constructor(private _translateService: TranslateService, private _snackBar: MatSnackBar) {}
 
   public showSuccessSnackbar(localeKey: string, config?: SnackbarConfig): MatSnackBarRef<CenteredSnackbarComponent> {
     return this.showSnackbar(localeKey, {

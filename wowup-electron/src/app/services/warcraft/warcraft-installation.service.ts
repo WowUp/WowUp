@@ -37,7 +37,7 @@ export class WarcraftInstallationService {
     return `${this._blizzardAgentPath}`;
   }
 
-  constructor(
+  public constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _warcraftService: WarcraftService,
     private _translateService: TranslateService,

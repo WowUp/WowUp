@@ -26,7 +26,7 @@ import { ElectronService } from "../electron/electron.service";
   providedIn: "root",
 })
 export class FileService {
-  constructor(private _electronService: ElectronService) {}
+  public constructor(private _electronService: ElectronService) {}
 
   public getAssetFilePath(fileName: string): Promise<string> {
     return this._electronService.invoke<string>(IPC_GET_ASSET_FILE_PATH, fileName);

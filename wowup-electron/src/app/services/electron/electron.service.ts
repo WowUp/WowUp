@@ -70,7 +70,7 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
-  constructor(private _preferenceStorageService: PreferenceStorageService) {
+  public constructor(private _preferenceStorageService: PreferenceStorageService) {
     // Conditional imports
     if (!this.isElectron) {
       return;

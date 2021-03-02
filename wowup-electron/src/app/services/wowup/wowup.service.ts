@@ -78,7 +78,7 @@ export class WowUpService {
   public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
   public readonly wowupUpdateCheckInProgress$ = this._wowupUpdateCheckInProgressSrc.asObservable();
 
-  constructor(
+  public constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
@@ -119,12 +119,12 @@ export class WowUpService {
       .catch((e) => console.error(e));
   }
 
-  async getApplicationVersion(): Promise<string> {
+  public async getApplicationVersion(): Promise<string> {
     const appVersion = await this._electronService.invoke<string>(IPC_GET_APP_VERSION);
     return `${appVersion}${this._electronService.isPortable ? " (portable)" : ""}`;
   }
 
-  async isBetaBuild(): Promise<boolean> {
+  public async isBetaBuild(): Promise<boolean> {
     const appVersion = await this.getApplicationVersion();
     return appVersion.toLowerCase().indexOf("beta") != -1;
   }
@@ -133,7 +133,7 @@ export class WowUpService {
    * This is called before the app component is initialized in order to catch issues
    * with unsupported languages
    */
-  async initializeLanguage(): Promise<void> {
+  public async initializeLanguage(): Promise<void> {
     console.log("Language setup start");
     const langCode = this.currentLanguage || (await this._electronService.getLocale());
 
