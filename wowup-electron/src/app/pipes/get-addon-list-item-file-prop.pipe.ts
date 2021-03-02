@@ -8,11 +8,11 @@ import * as SearchResults from "../utils/search-result.utils";
   name: "getAddonListItemFileProp",
 })
 export class GetAddonListItemFilePropPipe implements PipeTransform {
-  transform(item: GetAddonListItem, prop: string, channel: AddonChannelType): any {
+  public transform(item: GetAddonListItem, prop: string, channel: AddonChannelType): any {
     let file = SearchResults.getLatestFile(item.searchResult, channel);
     if (!file) {
       file = _.first(_.orderBy(item.searchResult.files, "releaseDate", "desc"));
     }
-    return file && file.hasOwnProperty(prop) ? file[prop] : "";
+    return file && Object.prototype.hasOwnProperty.call(file, prop) ? file[prop] : "";
   }
 }

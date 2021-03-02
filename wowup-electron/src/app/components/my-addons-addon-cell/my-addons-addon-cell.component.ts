@@ -13,10 +13,10 @@ import { capitalizeString } from "../../utils/string.utils";
   styleUrls: ["./my-addons-addon-cell.component.scss"],
 })
 export class MyAddonsAddonCellComponent implements OnInit {
-  @Input("addon") listItem: AddonViewModel;
-  @Input() showUpdateToVersion = false;
+  @Input("addon") public listItem: AddonViewModel;
+  @Input() public showUpdateToVersion = false;
 
-  @Output() onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
+  @Output() public onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
 
   public readonly capitalizeString = capitalizeString;
 
@@ -24,33 +24,33 @@ export class MyAddonsAddonCellComponent implements OnInit {
   public warningType?: AddonWarningType;
   public warningText?: string;
 
-  constructor(private _translateService: TranslateService) {}
+  public constructor(private _translateService: TranslateService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.warningType = this.listItem.addon.warningType;
     this.warningText = this.getWarningText();
   }
 
-  viewDetails(): void {
+  public viewDetails(): void {
     if (this.hasWarning()) {
       return;
     }
     this.onViewDetails.emit(this.listItem);
   }
 
-  getRequireDependencyCount(): number {
+  public getRequireDependencyCount(): number {
     return this.listItem.getDependencies(AddonDependencyType.Required).length;
   }
 
-  hasRequiredDependencies(): boolean {
+  public hasRequiredDependencies(): boolean {
     return this.getRequireDependencyCount() > 0;
   }
 
-  hasIgnoreReason(): boolean {
+  public hasIgnoreReason(): boolean {
     return !!this.listItem?.addon?.ignoreReason;
   }
 
-  getIgnoreTooltipKey(): string {
+  public getIgnoreTooltipKey(): string {
     switch (this.listItem.addon.ignoreReason) {
       case "git_repo":
         return "PAGES.MY_ADDONS.ADDON_IS_CODE_REPOSITORY";
@@ -61,7 +61,7 @@ export class MyAddonsAddonCellComponent implements OnInit {
     }
   }
 
-  getIgnoreIcon(): string {
+  public getIgnoreIcon(): string {
     switch (this.listItem.addon.ignoreReason) {
       case "git_repo":
         return "fas:code";
@@ -72,17 +72,17 @@ export class MyAddonsAddonCellComponent implements OnInit {
     }
   }
 
-  get dependencyTooltip(): any {
+  public get dependencyTooltip(): any {
     return {
       dependencyCount: this.getRequireDependencyCount(),
     };
   }
 
-  hasWarning(): boolean {
+  public hasWarning(): boolean {
     return this.warningType !== undefined;
   }
 
-  getWarningText(): string {
+  public getWarningText(): string {
     if (!this.warningType) {
       return "";
     }
