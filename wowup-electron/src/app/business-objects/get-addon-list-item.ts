@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import * as SearchResults from "../utils/search-result.utils";

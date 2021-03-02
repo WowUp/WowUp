@@ -20,10 +20,7 @@ import {
 } from "../../../common/constants";
 import { Addon, AddonExternalId } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
-import { AddonDependency } from "../../../common/wowup/addon-dependency";
-import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
-import { AddonWarningType } from "../../../common/wowup/addon-warning-type";
+import { AddonChannelType, AddonDependency, AddonDependencyType, AddonWarningType } from "../../../common/wowup/models";
 import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";

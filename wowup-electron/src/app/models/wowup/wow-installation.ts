@@ -1,5 +1,5 @@
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../../common/wowup/models";
 
 export interface WowInstallation {
   id: string;

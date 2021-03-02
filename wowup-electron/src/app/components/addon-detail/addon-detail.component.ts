@@ -20,9 +20,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { AddonFundingLink } from "../../../common/entities/addon";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
-import { AddonDependency } from "../../../common/wowup/addon-dependency";
-import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
+import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";

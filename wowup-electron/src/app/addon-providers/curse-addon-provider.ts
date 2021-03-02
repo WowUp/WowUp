@@ -12,8 +12,7 @@ import {
 import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
 import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
-import { AddonDependencyType } from "../../common/wowup/addon-dependency-type";
+import { AddonChannelType, AddonDependencyType } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import {

@@ -38,12 +38,10 @@ import {
   ADDON_MIGRATION_VERSION_KEY,
   IPC_GET_APP_VERSION,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
-  WOW_INSTALLATIONS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../../common/wowup/models";
 import { PreferenceChange } from "../../models/wowup/preference-change";
-import { WowInstallation } from "../../models/wowup/wow-installation";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
@@ -51,8 +49,6 @@ import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
-import { filter, map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",

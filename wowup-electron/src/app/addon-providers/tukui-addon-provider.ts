@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";

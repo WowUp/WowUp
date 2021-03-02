@@ -9,7 +9,7 @@ import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../../common/wowup/models";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";

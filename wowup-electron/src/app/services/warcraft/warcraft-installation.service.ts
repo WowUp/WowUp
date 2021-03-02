@@ -13,7 +13,7 @@ import {
   WOW_INSTALLATIONS_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../../common/wowup/models";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";

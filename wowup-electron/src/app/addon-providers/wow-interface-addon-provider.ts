@@ -7,7 +7,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { SourceRemovedAddonError } from "../errors";
 import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
 import { AddonFolder } from "../models/wowup/addon-folder";

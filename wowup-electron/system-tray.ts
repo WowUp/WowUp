@@ -4,7 +4,7 @@ import * as path from "path";
 
 import * as platform from "./platform";
 import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "./src/common/constants";
-import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
+import { SystemTrayConfig } from "./src/common/wowup/models";
 
 let _trayRef: Tray;
 

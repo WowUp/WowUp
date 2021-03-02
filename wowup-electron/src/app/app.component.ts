@@ -31,8 +31,7 @@ import {
   ZOOM_FACTOR_KEY,
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
-import { SystemTrayConfig } from "../common/wowup/system-tray-config";
-import { MenuConfig } from "../common/wowup/menu-config";
+import { MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";

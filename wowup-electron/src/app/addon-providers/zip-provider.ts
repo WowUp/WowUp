@@ -7,7 +7,7 @@ import { HttpClient } from "@angular/common/http";
 
 import { ADDON_PROVIDER_ZIP } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { Toc } from "../models/wowup/toc";

@@ -1,4 +1,4 @@
-import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
+import { AddonDependencyType } from "../../../common/wowup/models";
 
 export interface AddonSearchResultDependency {
   externalAddonId: string;

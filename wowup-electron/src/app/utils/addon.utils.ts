@@ -1,6 +1,6 @@
 import { orderBy, filter, map } from "lodash";
 import { Addon, AddonExternalId } from "../../common/entities/addon";
-import { AddonDependencyType } from "../../common/wowup/addon-dependency-type";
+import { AddonDependency, AddonDependencyType } from "../../common/wowup/models";
 
 export function getAllProviders(addon: Addon): AddonExternalId[] {
   return orderBy(addon.externalIds, ["providerName"], ["asc"]);
@@ -14,7 +14,7 @@ export function hasMultipleProviders(addon: Addon): boolean {
   return getProviders(addon).length > 0;
 }
 
-export function getAddonDependencies(addon: Addon, dependencyType: AddonDependencyType = undefined) {
+export function getAddonDependencies(addon: Addon, dependencyType: AddonDependencyType = undefined): AddonDependency[] {
   return dependencyType == undefined
     ? addon.dependencies
     : filter(addon.dependencies, (dep) => dep.type === dependencyType);

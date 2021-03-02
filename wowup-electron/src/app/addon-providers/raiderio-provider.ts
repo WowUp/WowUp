@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
-import { AddonChannelType } from "../../common/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";

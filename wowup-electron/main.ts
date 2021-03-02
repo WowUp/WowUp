@@ -28,7 +28,7 @@ import {
   WINDOW_MIN_WIDTH,
   WOWUP_LOGO_FILENAME,
 } from "./src/common/constants";
-import { AppOptions } from "./src/common/wowup/app-options";
+import { AppOptions } from "./src/common/wowup/models";
 import { windowStateManager } from "./window-state";
 import { createAppMenu } from "./app-menu";
 import { MainChannels } from "./src/common/wowup";

@@ -38,7 +38,7 @@ import { IpcRequest } from "../../../common/models/ipc-request";
 import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
-import { AppOptions } from "../../../common/wowup/app-options";
+import { AppOptions } from "../../../common/wowup/models";
 import { ZoomDirection, ZOOM_SCALE } from "../../utils/zoom.utils";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { MainChannels, RendererChannels } from "../../../common/wowup";

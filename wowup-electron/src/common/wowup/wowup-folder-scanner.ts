@@ -5,7 +5,7 @@ import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
 import { readDirRecursive, readFile, readFileAsBuffer } from "../../../file.utils";
-import { WowUpScanResult } from "./wowup-scan-result";
+import { WowUpScanResult } from "./models";
 
 const INVALID_PATH_CHARS = [
   "|",
