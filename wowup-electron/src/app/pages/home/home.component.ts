@@ -1,5 +1,5 @@
-import { from, interval, Subscription } from "rxjs";
-import { filter, first, switchMap, tap } from "rxjs/operators";
+import { interval, Subscription } from "rxjs";
+import { filter, first, tap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -13,7 +13,6 @@ import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
 @Component({
@@ -30,7 +29,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   public appReady = false;
   public preloadSpinnerKey = "COMMON.PROGRESS_SPINNER.LOADING";
 
-  constructor(
+  public constructor(
     public electronService: ElectronService,
     private _sessionService: SessionService,
     private _translateService: TranslateService,
@@ -52,7 +51,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       .subscribe(this.onScanUpdate);
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping app update check...");
       this.destroyAppUpdateCheck();
@@ -72,7 +71,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._appUpdateInterval?.unsubscribe();
   }
 
@@ -126,7 +125,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  onSelectedIndexChange(index: number): void {
+  public onSelectedIndexChange(index: number): void {
     this._sessionService.selectedHomeTab = index;
   }
 

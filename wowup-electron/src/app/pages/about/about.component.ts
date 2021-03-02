@@ -11,17 +11,15 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./about.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutComponent implements OnInit {
-  @Input("tabIndex") tabIndex: number;
+export class AboutComponent {
+  @Input("tabIndex") public tabIndex: number;
 
   public changeLogs: ChangeLog[] = ChangeLogJson.ChangeLogs;
   public versionNumber = from(this.electronService.getVersionNumber());
 
-  constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
+  public constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 
-  ngOnInit(): void {}
-
-  formatChanges(changeLog: ChangeLog): string {
+  public formatChanges(changeLog: ChangeLog): string {
     return changeLog.changes.join("\n");
   }
 }

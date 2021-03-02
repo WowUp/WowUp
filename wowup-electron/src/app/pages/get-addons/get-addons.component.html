@@ -27,12 +27,10 @@
         </mat-form-field>
       </div>
       <div class="button-container">
-        <button mat-flat-button color="primary" (click)="onRefresh()" appUserActionTracker category="GetAddons"
-          action="Refresh">
+        <button mat-flat-button color="primary" (click)="onRefresh()">
           {{ "PAGES.GET_ADDONS.REFRESH_BUTTON" | translate }}
         </button>
-        <button mat-flat-button color="primary" (click)="onInstallFromUrl()" appUserActionTracker category="GetAddons"
-          action="InstallFromUrl">
+        <button mat-flat-button color="primary" (click)="onInstallFromUrl()">
           {{ "PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON" | translate }}
         </button>
       </div>

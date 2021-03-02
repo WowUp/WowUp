@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { ElectronService } from "../../services";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
@@ -8,13 +8,10 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./options.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OptionsComponent implements OnInit {
-  @Input("tabIndex") tabIndex: number;
+export class OptionsComponent {
+  @Input("tabIndex") public tabIndex: number;
 
   public optionTabIndex = 0;
 
-  constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
-
-  ngOnInit(): void {}
-
+  public constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
 }

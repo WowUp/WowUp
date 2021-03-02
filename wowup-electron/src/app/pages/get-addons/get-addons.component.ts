@@ -66,7 +66,7 @@ class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
   // Notify any listeners when the offset changes
   public offsetChange$ = this._offsetChangeSrc.asObservable();
 
-  constructor(private subject: BehaviorSubject<GetAddonListItem[]>, private viewport: CdkVirtualScrollViewport) {
+  public constructor(private subject: BehaviorSubject<GetAddonListItem[]>, private viewport: CdkVirtualScrollViewport) {
     super();
 
     subject.subscribe((data) => {
@@ -85,12 +85,12 @@ class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
     });
   }
 
-  resume() {
+  public resume() {
     this.viewport.getElementRef().nativeElement.scrollTop = this.lastTop;
     this.viewport.getElementRef().nativeElement.dispatchEvent(new CustomEvent("scroll"));
   }
 
-  handleNewData(start: number) {
+  public handleNewData(start: number) {
     const end = start + PAGESIZE;
     const data = [...this.subject.value];
     const slicedData = _.slice(data, start, end);
@@ -106,11 +106,11 @@ class AddonListItemDataSource extends MatTableDataSource<GetAddonListItem> {
  * Virtual Scroll Strategy
  */
 export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy {
-  constructor() {
+  public constructor() {
     super(ROW_HEIGHT, 1000, 2000);
   }
 
-  attach(viewport: CdkVirtualScrollViewport): void {
+  public attach(viewport: CdkVirtualScrollViewport): void {
     this.onDataLengthChanged();
   }
 }
@@ -123,12 +123,12 @@ export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy 
   providers: [{ provide: VIRTUAL_SCROLL_STRATEGY, useClass: CustomVirtualScrollStrategy }],
 })
 export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, AfterViewChecked {
-  @Input("tabIndex") tabIndex: number;
+  @Input("tabIndex") public tabIndex: number;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild("table", { read: ElementRef }) table: ElementRef;
-  @ViewChild("columnContextMenuTrigger") columnContextMenu: MatMenuTrigger;
-  @ViewChild("viewport") viewport: CdkVirtualScrollViewport;
+  @ViewChild(MatSort) public sort: MatSort;
+  @ViewChild("table", { read: ElementRef }) public table: ElementRef;
+  @ViewChild("columnContextMenuTrigger") public columnContextMenu: MatMenuTrigger;
+  @ViewChild("viewport") public viewport: CdkVirtualScrollViewport;
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab = false;
@@ -143,7 +143,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
   public activeSortDirection = "desc";
   public placeholderHeight = 0;
 
-  columns: ColumnState[] = [
+  public columns: ColumnState[] = [
     { name: "name", display: "PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER", visible: true },
     {
       name: "downloadCount",
@@ -197,7 +197,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     })
   );
 
-  constructor(
+  public constructor(
     private _dialog: MatDialog,
     private _cdRef: ChangeDetectorRef,
     private _addonService: AddonService,
@@ -225,7 +225,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     });
   }
 
-  ngAfterViewChecked(): void {
+  public ngAfterViewChecked(): void {
     // Wait for the tab to have a height, then if we need to resume the table do so
     if (this._resumeTable && this.viewport.elementRef.nativeElement.scrollHeight > 0) {
       this._resumeTable = false;
@@ -233,7 +233,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     }
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this._subscriptions.push(
       this._addonService.searchError$.subscribe((error) => {
         this.displayError(error);
@@ -253,23 +253,23 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
     this._subscriptions = [];
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.dataSource = new AddonListItemDataSource(this._dataSubject, this.viewport);
     this.dataSource.offsetChange$.subscribe((offset) => {
       this.placeholderHeight = offset;
     });
   }
 
-  placeholderWhen(index: number, _: any): boolean {
+  public placeholderWhen(index: number, _: any): boolean {
     return index == 0;
   }
 
-  onSortChange(sort: Sort): void {
+  public onSortChange(sort: Sort): void {
     const sortedData = this.sortAddons(this._dataSubject.value.slice(), sort);
     this._wowUpService.getAddonsSortOrder = {
       name: this.sort.active,
@@ -279,7 +279,7 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     this._dataSubject.next(sortedData);
   }
 
-  onStatusColumnUpdated(): void {
+  public onStatusColumnUpdated(): void {
     this._cdRef.detectChanges();
   }
 
@@ -336,27 +336,27 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
     this._subscriptions = [selectedInstallationSub, addonRemovedSubscription, channelTypeSubscription, dataSourceSub];
   }
 
-  onInstallFromUrl(): void {
+  public onInstallFromUrl(): void {
     const dialogRef = this._dialog.open(InstallFromUrlDialogComponent);
     dialogRef.afterClosed().subscribe(() => {
       console.log("The dialog was closed");
     });
   }
 
-  onClientChange(): void {
+  public onClientChange(): void {
     this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
   }
 
-  onRefresh(): void {
+  public onRefresh(): void {
     this.loadPopularAddons(this.selectedInstallation);
   }
 
-  onClearSearch(): void {
+  public onClearSearch(): void {
     this.query = "";
     this.onSearch();
   }
 
-  onSearch(): void {
+  public onSearch(): void {
     this._isBusySubject.next(true);
 
     if (!this.query) {
@@ -383,15 +383,15 @@ export class GetAddonsComponent implements OnInit, AfterViewInit, OnDestroy, Aft
       .subscribe();
   }
 
-  onDoubleClickRow(listItem: GetAddonListItem): void {
+  public onDoubleClickRow(listItem: GetAddonListItem): void {
     this.openDetailDialog(listItem.searchResult, this.defaultAddonChannel);
   }
 
-  onAddonColumnDetailDialog(event: PotentialAddonViewDetailsEvent): void {
+  public onAddonColumnDetailDialog(event: PotentialAddonViewDetailsEvent): void {
     this.openDetailDialog(event.searchResult, event.channelType);
   }
 
-  openDetailDialog(searchResult: AddonSearchResult, channelType: AddonChannelType): void {
+  public openDetailDialog(searchResult: AddonSearchResult, channelType: AddonChannelType): void {
     const data: AddonDetailModel = {
       searchResult: searchResult,
       channelType: channelType,
