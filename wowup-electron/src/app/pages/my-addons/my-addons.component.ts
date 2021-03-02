@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { join } from "path";
 import { BehaviorSubject, from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
@@ -11,7 +11,6 @@ import {
   Component,
   ElementRef,
   Input,
-  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -45,9 +44,10 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
+import { DialogFactory } from "app/services/dialog/dialog.factory";
 
 class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
-  constructor(private subject: BehaviorSubject<AddonViewModel[]>) {
+  public constructor(private subject: BehaviorSubject<AddonViewModel[]>) {
     super();
 
     subject.subscribe((data) => {
@@ -55,7 +55,7 @@ class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
     });
   }
 
-  _filterData = (data: AddonViewModel[]): AddonViewModel[] => {
+  public _filterData = (data: AddonViewModel[]): AddonViewModel[] => {
     const canonicalFilter = this.filter.trim().toLowerCase();
     const filterData = this.subject?.value ?? [];
     const results = _.filter(filterData, (model) => {
@@ -72,17 +72,16 @@ class ListItemDataSource extends MatTableDataSource<AddonViewModel> {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input("tabIndex") tabIndex: number;
+  @Input("tabIndex") public tabIndex: number;
 
-  @ViewChild("addonContextMenuTrigger", { static: false }) contextMenu: MatMenuTrigger;
-  @ViewChild("addonMultiContextMenuTrigger", { static: false }) multiContextMenu: MatMenuTrigger;
-  @ViewChild("columnContextMenuTrigger", { static: false }) columnContextMenu: MatMenuTrigger;
+  @ViewChild("addonContextMenuTrigger", { static: false }) public contextMenu: MatMenuTrigger;
+  @ViewChild("addonMultiContextMenuTrigger", { static: false }) public multiContextMenu: MatMenuTrigger;
+  @ViewChild("columnContextMenuTrigger", { static: false }) public columnContextMenu: MatMenuTrigger;
   @ViewChild("updateAllContextMenuTrigger", { static: false })
-  updateAllContextMenu: MatMenuTrigger;
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild("table", { static: false, read: ElementRef }) table: ElementRef;
+  public updateAllContextMenu: MatMenuTrigger;
+  @ViewChild(MatSort, { static: false }) public sort: MatSort;
+  @ViewChild("table", { static: false, read: ElementRef }) public table: ElementRef;
 
-  // private readonly _displayAddonsSrc = new BehaviorSubject<AddonViewModel[]>([]);
   private readonly _operationErrorSrc = new Subject<Error>();
 
   private subscriptions: Subscription[] = [];
@@ -171,9 +170,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.columns.filter((col) => col.visible).map((col) => col.name);
   }
 
-  constructor(
+  public constructor(
     private _sessionService: SessionService,
     private _dialog: MatDialog,
+    private _dialogFactory: DialogFactory,
     private _cdRef: ChangeDetectorRef,
     private _wowUpAddonService: WowUpAddonService,
     private _translateService: TranslateService,
@@ -507,22 +507,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onRemoveAddon(addon: Addon): void {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE", {
-      addonName: addon.name,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-
-    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title,
-        message: `${message1}\n\n${message2}`,
-      },
-    });
-
-    dialogRef
+    this._dialogFactory
+      .getRemoveAddonPrompt(addon.name)
       .afterClosed()
       .pipe(
         switchMap((result) => {
@@ -530,9 +516,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             return of(undefined);
           }
 
-          return this.addonService.getRequiredDependencies(addon).length
-            ? of(this.promptRemoveDependencies(addon))
-            : from(this.addonService.removeAddon(addon));
+          if (this.addonService.getRequiredDependencies(addon).length === 0) {
+            return from(this.addonService.removeAddon(addon));
+          } else {
+            return this._dialogFactory
+              .getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
+              .afterClosed()
+              .pipe(switchMap((result) => from(this.addonService.removeAddon(addon, result))));
+          }
         })
       )
       .subscribe();

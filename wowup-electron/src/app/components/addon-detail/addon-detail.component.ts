@@ -1,6 +1,6 @@
 import { last } from "lodash";
-import { BehaviorSubject, from, Subscription } from "rxjs";
-import { filter, tap } from "rxjs/operators";
+import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { filter, map, switchMap, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
@@ -14,20 +14,21 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
-import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonFundingLink } from "../../../common/entities/addon";
 import { AddonChannelType } from "../../../common/wowup/addon-channel-type";
 import { AddonDependency } from "../../../common/wowup/addon-dependency";
 import { AddonDependencyType } from "../../../common/wowup/addon-dependency-type";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
@@ -46,10 +47,10 @@ export interface AddonDetailModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
-  @ViewChild("descriptionContainer", { read: ElementRef }) descriptionContainer: ElementRef;
-  @ViewChild("changelogContainer", { read: ElementRef }) changelogContainer: ElementRef;
-  @ViewChild("providerLink", { read: ElementRef }) providerLink: ElementRef;
-  @ViewChild("tabs", { static: false }) tabGroup: MatTabGroup;
+  @ViewChild("descriptionContainer", { read: ElementRef }) public descriptionContainer: ElementRef;
+  @ViewChild("changelogContainer", { read: ElementRef }) public changelogContainer: ElementRef;
+  @ViewChild("providerLink", { read: ElementRef }) public providerLink: ElementRef;
+  @ViewChild("tabs", { static: false }) public tabGroup: MatTabGroup;
 
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
@@ -85,14 +86,16 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public isMissingUnknownDependencies = false;
   public missingDependencies: string[] = [];
 
-  constructor(
+  public constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
+    private _dialogRef: MatDialogRef<AddonDetailComponent>,
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _cdRef: ChangeDetectorRef,
     private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
+    private _dialogFactory: DialogFactory,
     public sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
@@ -128,7 +131,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._subscriptions.push(changelogSub, fullDescriptionSub, addonInstalledSub);
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
 
     this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
@@ -177,31 +180,63 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.isMissingUnknownDependencies = !!this.missingDependencies.length;
   }
 
-  ngAfterViewInit(): void {}
+  public ngAfterViewInit(): void {}
 
-  ngAfterViewChecked(): void {
+  public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
     const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
     this.formatLinks(descriptionContainer);
     this.formatLinks(changelogContainer);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onInstallUpdated(): void {
+  public onInstallUpdated(): void {
     this._cdRef.detectChanges();
   }
 
-  onSelectedTabChange(evt: MatTabChangeEvent): void {
+  public onSelectedTabChange(evt: MatTabChangeEvent): void {
     this.sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
   }
 
-  onClickExternalId(): void {
+  public onClickExternalId(): void {
     this._snackbarService.showSuccessSnackbar("DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_SNACKBAR", {
       timeout: 2000,
     });
+  }
+
+  public onClickRemoveAddon(): void {
+    this._dialogFactory
+      .getRemoveAddonPrompt(this.model.listItem.addon.name)
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            return of(false);
+          }
+
+          const addon = this.model.listItem.addon;
+          if (this._addonService.getRequiredDependencies(addon).length === 0) {
+            return from(this._addonService.removeAddon(addon)).pipe(map(() => true));
+          } else {
+            return this._dialogFactory
+              .getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
+              .afterClosed()
+              .pipe(
+                switchMap((result) => from(this._addonService.removeAddon(addon, result))),
+                map(() => true)
+              );
+          }
+        }),
+        map((shouldClose) => {
+          if (shouldClose) {
+            this._dialogRef.close();
+          }
+        })
+      )
+      .subscribe();
   }
 
   private getSelectedTabTypeFromIndex(index: number): DetailsTabType {
