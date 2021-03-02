@@ -28,7 +28,7 @@ export class ZipAddonProvider extends AddonProvider {
   public readonly canShowChangelog = false;
   public enabled = true;
 
-  constructor(
+  public constructor(
     private _httpClient: HttpClient,
     private _fileService: FileService,
     private _tocService: TocService,
@@ -37,15 +37,15 @@ export class ZipAddonProvider extends AddonProvider {
     super();
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     return addonUri.pathname?.toLowerCase()?.endsWith(".zip");
   }
 
-  isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(addonId: string): boolean {
     return false;
   }
 
-  async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
+  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     if (!addon) {
       return "";
     }
@@ -96,7 +96,7 @@ export class ZipAddonProvider extends AddonProvider {
     return tocs;
   }
 
-  async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
+  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {
       throw new Error(`Invalid zip URL ${addonUri.toString()}`);
     }
@@ -118,7 +118,7 @@ export class ZipAddonProvider extends AddonProvider {
     return potentialAddon;
   }
 
-  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     const addonUri = new URL(addonId);
 
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {

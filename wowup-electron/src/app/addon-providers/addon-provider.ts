@@ -3,7 +3,6 @@ import { WowInstallation } from "../models/wowup/wow-installation";
 import { Observable, of } from "rxjs";
 
 import { Addon } from "../../common/entities/addon";
-import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
@@ -16,27 +15,30 @@ export interface GetAllResult {
 }
 
 export abstract class AddonProvider {
-  name: AddonProviderType;
-  enabled: boolean;
-  forceIgnore: boolean;
-  allowReinstall: boolean;
-  allowChannelChange: boolean;
-  allowEdit: boolean;
-  allowViewAtSource = true;
-  canShowChangelog = true;
+  public name: AddonProviderType;
+  public enabled: boolean;
+  public forceIgnore: boolean;
+  public allowReinstall: boolean;
+  public allowChannelChange: boolean;
+  public allowEdit: boolean;
+  public allowViewAtSource = true;
+  public canShowChangelog = true;
 
-  getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+  public getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     return Promise.resolve({
       errors: [],
       searchResults: [],
     });
   }
 
-  getFeaturedAddons(installation: WowInstallation, channelType?: AddonChannelType): Promise<AddonSearchResult[]> {
+  public getFeaturedAddons(
+    installation: WowInstallation,
+    channelType?: AddonChannelType
+  ): Promise<AddonSearchResult[]> {
     return Promise.resolve([]);
   }
 
-  searchByQuery(
+  public searchByQuery(
     query: string,
     installation: WowInstallation,
     channelType?: AddonChannelType
@@ -44,11 +46,11 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
-  searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
+  public searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
     return Promise.resolve(undefined);
   }
 
-  searchByName(
+  public searchByName(
     addonName: string,
     folderName: string,
     installation: WowInstallation,
@@ -57,31 +59,31 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
-  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     return of(undefined);
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     return false;
   }
 
-  isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(addonId: string): boolean {
     return false;
   }
 
-  onPostInstall(addon: Addon): void {}
+  public onPostInstall(addon: Addon): void {}
 
-  async scan(
+  public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {}
 
-  getChangelog(installation: WowInstallation, externalId: string, externalReleaseId: string): Promise<string> {
+  public getChangelog(installation: WowInstallation, externalId: string, externalReleaseId: string): Promise<string> {
     return Promise.resolve("");
   }
 
-  async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
+  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     return Promise.resolve("");
   }
 }

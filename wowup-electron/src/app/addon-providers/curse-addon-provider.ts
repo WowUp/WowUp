@@ -51,7 +51,7 @@ export class CurseAddonProvider extends AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  constructor(
+  public constructor(
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _wowupApiService: WowUpApiService,
@@ -267,7 +267,7 @@ export class CurseAddonProvider extends AddonProvider {
     return action.call(this);
   }
 
-  async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     if (!addonIds.length) {
       return {
         searchResults: [],
@@ -308,7 +308,7 @@ export class CurseAddonProvider extends AddonProvider {
     });
   }
 
-  async searchByQuery(
+  public async searchByQuery(
     query: string,
     installation: WowInstallation,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -332,7 +332,7 @@ export class CurseAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     const slugRegex = /\/addons\/(.*?)(\/|$)/gi;
     const slugMatch = slugRegex.exec(addonUri.pathname);
     if (!slugMatch) {
@@ -368,7 +368,7 @@ export class CurseAddonProvider extends AddonProvider {
     return await this._circuitBreaker.getJson<CurseSearchResult[]>(url);
   }
 
-  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     const url = `${API_URL}/addon/${addonId}`;
 
     return from(this._circuitBreaker.getJson<CurseSearchResult>(url)).pipe(
@@ -387,11 +387,11 @@ export class CurseAddonProvider extends AddonProvider {
     );
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     return addonUri.host && addonUri.host.endsWith("curseforge.com") && addonUri.pathname.startsWith("/wow/addons");
   }
 
-  isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(addonId: string): boolean {
     return !!addonId && !isNaN(parseInt(addonId, 10));
   }
 

@@ -34,7 +34,7 @@ export class TukUiAddonProvider extends AddonProvider {
 
   public enabled = true;
 
-  constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+  public constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
     super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
@@ -55,7 +55,7 @@ export class TukUiAddonProvider extends AddonProvider {
     return await this.formatChangelog(addon);
   }
 
-  async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     let results: AddonSearchResult[] = [];
 
     try {
@@ -79,7 +79,7 @@ export class TukUiAddonProvider extends AddonProvider {
     return await this.mapAddonsToSearchResults(tukUiAddons);
   }
 
-  async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
+  public async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
     const addons = await this.getAllAddons(installation.clientType);
     const canonQuery = query.toLowerCase();
     let similarAddons = _.filter(addons, (addon) => addon.name.toLowerCase().indexOf(canonQuery) !== -1);
@@ -88,11 +88,11 @@ export class TukUiAddonProvider extends AddonProvider {
     return await this.mapAddonsToSearchResults(similarAddons);
   }
 
-  searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
+  public searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     throw new Error("Method not implemented.");
   }
 
-  async searchByName(
+  public async searchByName(
     addonName: string,
     folderName: string,
     installation: WowInstallation,
@@ -112,7 +112,7 @@ export class TukUiAddonProvider extends AddonProvider {
     return results;
   }
 
-  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
     return from(this.getAllAddons(installation.clientType)).pipe(
       map((addons) => _.find(addons, (addon) => addon.id === addonId)),
       switchMap((match) => from(this.toSearchResult(match, "")))

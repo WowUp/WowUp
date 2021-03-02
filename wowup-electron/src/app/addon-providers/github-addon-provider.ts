@@ -44,7 +44,7 @@ export class GitHubAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  constructor(private _httpClient: HttpClient) {
+  public constructor(private _httpClient: HttpClient) {
     super();
   }
 

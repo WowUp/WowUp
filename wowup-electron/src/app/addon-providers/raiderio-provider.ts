@@ -21,7 +21,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  constructor() {
+  public constructor() {
     super();
   }
 

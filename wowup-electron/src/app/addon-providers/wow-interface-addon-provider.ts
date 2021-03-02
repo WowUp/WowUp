@@ -35,7 +35,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+  public constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
     super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
@@ -50,7 +50,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     }
   }
 
-  async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const searchResults: AddonSearchResult[] = [];
     const errors: Error[] = [];
 
@@ -94,7 +94,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     }
   }
 
-  async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
       throw new Error(`Addon ID not found ${addonUri.toString()}`);
@@ -126,7 +126,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     throw new Error("Method not implemented.");
   }
 
-  async scan(
+  public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]

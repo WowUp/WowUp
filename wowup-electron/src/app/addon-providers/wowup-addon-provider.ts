@@ -48,7 +48,7 @@ export class WowUpAddonProvider extends AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  constructor(
+  public constructor(
     private _electronService: ElectronService,
     private _cachingService: CachingService,
     _networkService: NetworkService
@@ -73,7 +73,7 @@ export class WowUpAddonProvider extends AddonProvider {
     return "";
   }
 
-  async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const gameType = this.getWowGameType(installation.clientType);
     const url = new URL(`${API_URL}/addons/batch/${gameType}`);
     const addonIdList = _.map(addonIds, (id) => parseInt(id, 10));
@@ -112,7 +112,7 @@ export class WowUpAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
+  public async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(installation.clientType);
     const url = new URL(`${API_URL}/addons/search/${gameType}?query=${query}&limit=10`);
 
@@ -126,17 +126,17 @@ export class WowUpAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     // TODO
     return false;
   }
 
-  isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(addonId: string): boolean {
     const idNumber = parseInt(addonId, 10);
     return !isNaN(idNumber) && isFinite(idNumber) && idNumber > 0;
   }
 
-  getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     const url = new URL(`${API_URL}/addons/${addonId}`);
     const task = this._cachingService.transaction(
       url.toString(),
@@ -151,7 +151,7 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
-  async getReleaseById(addonId: string, releaseId: string): Promise<WowUpGetAddonReleaseResponse> {
+  public async getReleaseById(addonId: string, releaseId: string): Promise<WowUpGetAddonReleaseResponse> {
     const url = new URL(`${API_URL}/addons/${addonId}/releases/${releaseId}`);
     return await this._cachingService.transaction(
       url.toString(),
@@ -160,7 +160,7 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
-  async scan(installation: WowInstallation, addonChannelType: any, addonFolders: AddonFolder[]): Promise<void> {
+  public async scan(installation: WowInstallation, addonChannelType: any, addonFolders: AddonFolder[]): Promise<void> {
     console.time("WowUpScan");
     const scanResults = await this.getScanResults(addonFolders);
     console.timeEnd("WowUpScan");
