@@ -126,7 +126,7 @@ export class WowUpAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  public isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(): boolean {
     // TODO
     return false;
   }
@@ -160,7 +160,11 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
-  public async scan(installation: WowInstallation, addonChannelType: any, addonFolders: AddonFolder[]): Promise<void> {
+  public async scan(
+    installation: WowInstallation,
+    addonChannelType: AddonChannelType,
+    addonFolders: AddonFolder[]
+  ): Promise<void> {
     console.time("WowUpScan");
     const scanResults = await this.getScanResults(addonFolders);
     console.timeEnd("WowUpScan");

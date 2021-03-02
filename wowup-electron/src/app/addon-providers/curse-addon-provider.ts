@@ -1,4 +1,3 @@
-import { WowInstallation } from "../models/wowup/wow-installation";
 import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -10,33 +9,36 @@ import {
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
-import { CurseAuthor } from "../../common/curse/curse-author";
-import { CurseDependency } from "../../common/curse/curse-dependency";
-import { CurseDependencyType } from "../../common/curse/curse-dependency-type";
-import { CurseFile } from "../../common/curse/curse-file";
-import { CurseMatch } from "../../common/curse/curse-match";
-import { CurseReleaseType } from "../../common/curse/curse-release-type";
-import { CurseScanResult } from "../../common/curse/curse-scan-result";
-import { CurseSearchResult } from "../../common/curse/curse-search-result";
-import { AppConfig } from "../../environments/environment";
+import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
 import { Addon } from "../../common/entities/addon";
-import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
-import { CurseFingerprintsResponse } from "../models/curse/curse-fingerprint-response";
-import { CurseGetFeaturedResponse } from "../models/curse/curse-get-featured-response";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { AddonDependencyType } from "../../common/wowup/addon-dependency-type";
+import { AppConfig } from "../../environments/environment";
+import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
+import {
+  CurseAuthor,
+  CurseDependency,
+  CurseDependencyType,
+  CurseFile,
+  CurseFingerprintsResponse,
+  CurseGetFeaturedResponse,
+  CurseMatch,
+  CurseReleaseType,
+  CurseSearchResult,
+} from "../models/curse/curse-api";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { WowUpApiService } from "../services/wowup-api/wowup-api.service";
+import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import * as AddonUtils from "../utils/addon.utils";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
@@ -152,7 +154,10 @@ export class CurseAddonProvider extends AddonProvider {
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: CurseScanResult[] = await this._electronService.invoke(IPC_CURSE_GET_SCAN_RESULTS, filePaths);
+    const scanResults: CurseFolderScanResult[] = await this._electronService.invoke(
+      IPC_CURSE_GET_SCAN_RESULTS,
+      filePaths
+    );
 
     const appScanResults: AppCurseScanResult[] = scanResults.map((scanResult) => {
       const addonFolder = addonFolders.find((af) => af.path === scanResult.directory);

@@ -40,7 +40,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
+  public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const addonDetails = await this.getAddonDetails(externalId);
       return convertBbcode(addonDetails.description);
@@ -56,7 +56,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
     for (const addonId of addonIds) {
       try {
-        const result = await this.getById(addonId, installation).toPromise();
+        const result = await this.getById(addonId).toPromise();
         if (result == null) {
           continue;
         }
@@ -80,11 +80,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     };
   }
 
-  public async getChangelog(
-    installation: WowInstallation,
-    externalId: string,
-    externalReleaseId: string
-  ): Promise<string> {
+  public async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const addon = await this.getAddonDetails(externalId);
       return addon.changeLog;
@@ -94,7 +90,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     }
   }
 
-  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL): Promise<AddonSearchResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
       throw new Error(`Addon ID not found ${addonUri.toString()}`);
@@ -108,7 +104,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return this.toAddonSearchResult(addon);
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string): Observable<AddonSearchResult> {
     return from(this.getAddonDetails(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );
@@ -120,10 +116,6 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
   public isValidAddonId(addonId: string): boolean {
     return !!addonId && !isNaN(parseInt(addonId, 10));
-  }
-
-  public onPostInstall(addon: Addon): void {
-    throw new Error("Method not implemented.");
   }
 
   public async scan(

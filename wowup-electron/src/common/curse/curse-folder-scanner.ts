@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as log from "electron-log";
 import * as pLimit from "p-limit";
-import { CurseScanResult } from "./curse-scan-result";
+import { CurseFolderScanResult } from "./curse-folder-scan-result";
 import { readDirRecursive, readFile } from "../../../file.utils";
 
 const nativeAddon = require("../../../build/Release/addon.node");
@@ -71,7 +71,7 @@ export class CurseFolderScanner {
     return /<!--.*?-->/gims;
   }
 
-  public async scanFolder(folderPath: string): Promise<CurseScanResult> {
+  public async scanFolder(folderPath: string): Promise<CurseFolderScanResult> {
     const fileList = await readDirRecursive(folderPath);
     fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
     // log.debug("listAllFiles", folderPath, fileList.length);

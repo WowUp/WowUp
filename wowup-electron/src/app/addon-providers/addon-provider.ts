@@ -71,8 +71,6 @@ export abstract class AddonProvider {
     return false;
   }
 
-  public onPostInstall(addon: Addon): void {}
-
   public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,

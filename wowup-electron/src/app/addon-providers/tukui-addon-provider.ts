@@ -4,7 +4,6 @@ import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
-import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../common/wowup/addon-channel-type";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
@@ -39,17 +38,13 @@ export class TukUiAddonProvider extends AddonProvider {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
+  public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
     const addons = await this.getAllAddons(installation.clientType);
     const addonMatch = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
     return addonMatch.small_desc;
   }
 
-  public async getChangelog(
-    installation: WowInstallation,
-    externalId: string,
-    externalReleaseId: string
-  ): Promise<string> {
+  public async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
     const addons = await this.getAllAddons(installation.clientType);
     const addon = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
     return await this.formatChangelog(addon);
@@ -88,15 +83,10 @@ export class TukUiAddonProvider extends AddonProvider {
     return await this.mapAddonsToSearchResults(similarAddons);
   }
 
-  public searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
-    throw new Error("Method not implemented.");
-  }
-
   public async searchByName(
     addonName: string,
     folderName: string,
-    installation: WowInstallation,
-    nameOverride?: string
+    installation: WowInstallation
   ): Promise<AddonSearchResult[]> {
     const results: AddonSearchResult[] = [];
     try {
@@ -119,15 +109,13 @@ export class TukUiAddonProvider extends AddonProvider {
     );
   }
 
-  public isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(): boolean {
     return false;
   }
 
   public isValidAddonId(addonId: string): boolean {
     return !!addonId && !isNaN(parseInt(addonId, 10));
   }
-
-  public onPostInstall(addon: Addon): void {}
 
   public async scan(
     installation: WowInstallation,

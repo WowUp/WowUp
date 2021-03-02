@@ -41,7 +41,7 @@ export class ZipAddonProvider extends AddonProvider {
     return addonUri.pathname?.toLowerCase()?.endsWith(".zip");
   }
 
-  public isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(): boolean {
     return false;
   }
 
@@ -96,7 +96,7 @@ export class ZipAddonProvider extends AddonProvider {
     return tocs;
   }
 
-  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
+  public async searchByUrl(addonUri: URL): Promise<AddonSearchResult | undefined> {
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {
       throw new Error(`Invalid zip URL ${addonUri.toString()}`);
     }
@@ -118,7 +118,7 @@ export class ZipAddonProvider extends AddonProvider {
     return potentialAddon;
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string): Observable<AddonSearchResult> {
     const addonUri = new URL(addonId);
 
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {

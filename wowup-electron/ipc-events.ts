@@ -50,7 +50,7 @@ import {
   IPC_FOCUS_WINDOW,
 } from "./src/common/constants";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
-import { CurseScanResult } from "./src/common/curse/curse-scan-result";
+import { CurseFolderScanResult } from "./src/common/curse/curse-folder-scan-result";
 import { CopyFileRequest } from "./src/common/models/copy-file-request";
 import { DownloadRequest } from "./src/common/models/download-request";
 import { DownloadStatus } from "./src/common/models/download-status";
@@ -270,7 +270,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(
     IPC_CURSE_GET_SCAN_RESULTS,
-    async (evt, filePaths: string[]): Promise<CurseScanResult[]> => {
+    async (evt, filePaths: string[]): Promise<CurseFolderScanResult[]> => {
       // Scan addon folders in parallel for speed!?
       try {
         const limit = pLimit(2);
