@@ -61,15 +61,15 @@ export class WowUpFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^\/]+)[\\\/]\1\.toc$/i;
+    return /^([^/]+)[\\/]\1\.toc$/i;
   }
 
   private get bindingsXmlRegex() {
-    return /^[^\/\\]+[\/\\]Bindings\.xml$/i;
+    return /^[^/\\]+[/\\]Bindings\.xml$/i;
   }
 
   private get bindingsXmlIncludesRegex() {
-    return /<(?:Include|Script)\s+file=[\""\""']((?:(?<!\.\.).)+)[\""\""']\s*\/>/gi;
+    return /<(?:Include|Script)\s+file=["']((?:(?<!\.\.).)+)["']\s*\/>/gi;
   }
 
   private get bindingsXmlCommentsRegex() {
@@ -94,8 +94,6 @@ export class WowUpFolderScanner {
     const fingerprintList = _.map(fileFingerprints, (ff) => ff.hash);
     const hashConcat = _.orderBy(fingerprintList).join("");
     const fingerprint = this.hashString(hashConcat);
-
-    // log.info(this._folderPath, fingerprint);
 
     const result: WowUpScanResult = {
       fileFingerprints: fingerprintList,
@@ -123,7 +121,6 @@ export class WowUpFolderScanner {
       }
     }
 
-    // console.log('fileInfoList', fileInfoList.length)
     for (const fileInfo of fileInfoList) {
       await this.processIncludeFile(matchingFileList, fileInfo);
     }

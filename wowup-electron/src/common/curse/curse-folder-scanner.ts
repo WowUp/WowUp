@@ -56,15 +56,15 @@ export class CurseFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^\/]+)[\\\/]\1\.toc$/gim;
+    return /^([^/]+)[\\/]\1\.toc$/gim;
   }
 
   private get bindingsXmlRegex() {
-    return /^[^\/\\]+[\/\\]Bindings\.xml$/gim;
+    return /^[^/\\]+[/\\]Bindings\.xml$/gim;
   }
 
   private get bindingsXmlIncludesRegex() {
-    return /<(?:Include|Script)\s+file=[\""\""']((?:(?<!\.\.).)+)[\""\""']\s*\/>/gis;
+    return /<(?:Include|Script)\s+file=["']((?:(?<!\.\.).)+)["']\s*\/>/gis;
   }
 
   private get bindingsXmlCommentsRegex() {
@@ -91,7 +91,7 @@ export class CurseFolderScanner {
         }
       })
     );
-    
+
     let individualFingerprints = await Promise.all(tasks);
     individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
