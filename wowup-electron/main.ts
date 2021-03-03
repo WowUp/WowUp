@@ -42,6 +42,7 @@ log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
+log.info(`Electron: ${process.versions.electron}`);
 
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {
@@ -197,6 +198,7 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       nodeIntegration: true,
+      contextIsolation: false,
       allowRunningInsecureContent: argv.serve,
       webSecurity: false,
       nativeWindowOpen: true,
