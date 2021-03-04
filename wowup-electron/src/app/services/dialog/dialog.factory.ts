@@ -1,14 +1,31 @@
-import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
+import { Injectable } from "@angular/core";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 
-import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+import { AddonChannelType } from "../../../common/wowup/models";
+import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
+import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 
 @Injectable({
   providedIn: "root",
 })
 export class DialogFactory {
   public constructor(private _dialog: MatDialog, private _translateService: TranslateService) {}
+
+  public getPotentialAddonDetailsDialog(
+    searchResult: AddonSearchResult,
+    channelType: AddonChannelType
+  ): MatDialogRef<AddonDetailComponent, any> {
+    const data: AddonDetailModel = {
+      searchResult,
+      channelType,
+    };
+
+    return this._dialog.open(AddonDetailComponent, {
+      data,
+    });
+  }
 
   public getRemoveAddonPrompt(addonName: string): MatDialogRef<ConfirmDialogComponent, any> {
     const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });

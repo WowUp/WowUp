@@ -5,6 +5,11 @@
   flex-direction: column;
 }
 
+.wu-ag-table {
+  width: 100%;
+  height: calc(100% - 72px);
+}
+
 .control-container {
   display: flex;
   flex-direction: row;

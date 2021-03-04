@@ -22,6 +22,8 @@ import { IconService } from "../../services/icons/icon.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { DownloadCountPipe } from "../../pipes/download-count.pipe";
+import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -41,7 +43,7 @@ describe("GetAddonsComponent", () => {
 
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
-      getAddonsHiddenColumns: [],
+      getGetAddonsHiddenColumns: () => [],
     });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
@@ -65,7 +67,7 @@ describe("GetAddonsComponent", () => {
     });
 
     let testBed = TestBed.configureTestingModule({
-      declarations: [GetAddonsComponent],
+      declarations: [GetAddonsComponent, RelativeDurationPipe, DownloadCountPipe],
       imports: [
         MatModule,
         OverlayModule,
@@ -83,7 +85,7 @@ describe("GetAddonsComponent", () => {
           },
         }),
       ],
-      providers: [MatDialog],
+      providers: [MatDialog, RelativeDurationPipe, DownloadCountPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     });
 

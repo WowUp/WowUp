@@ -19,6 +19,7 @@ import {
   faCoins,
   faCompressArrowsAlt,
   faPencilAlt,
+  faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-icons";
@@ -30,6 +31,7 @@ export class IconService {
   public constructor(private _matIconRegistry: MatIconRegistry, private _sanitizer: DomSanitizer) {
     this.addSvg(faAngleDoubleDown);
     this.addSvg(faArrowUp);
+    this.addSvg(faArrowDown);
     this.addSvg(faSyncAlt);
     this.addSvg(faTimes);
     this.addSvg(faExternalLinkAlt);

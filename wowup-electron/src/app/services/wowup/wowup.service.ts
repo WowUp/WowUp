@@ -302,11 +302,11 @@ export class WowUpService {
     this._preferenceStorageService.setObject(MY_ADDONS_SORT_ORDER, sortOrder);
   }
 
-  public get getAddonsHiddenColumns(): ColumnState[] {
+  public getGetAddonsHiddenColumns(): ColumnState[] {
     return this._preferenceStorageService.getObject<ColumnState[]>(GET_ADDONS_HIDDEN_COLUMNS_KEY) || [];
   }
 
-  public set getAddonsHiddenColumns(columnStates: ColumnState[]) {
+  public setGetAddonsHiddenColumns(columnStates: ColumnState[]): void {
     this._preferenceStorageService.setObject(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 

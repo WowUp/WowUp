@@ -1,3 +1,5 @@
+import { AgRendererComponent } from "ag-grid-angular";
+import { IAfterGuiAttachedParams, ICellRendererParams } from "ag-grid-community";
 import * as _ from "lodash";
 
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
@@ -8,6 +10,7 @@ import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 import * as SearchResults from "../../utils/search-result.utils";
 
 export interface PotentialAddonViewDetailsEvent {
@@ -20,7 +23,7 @@ export interface PotentialAddonViewDetailsEvent {
   templateUrl: "./potential-addon-table-column.component.html",
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
-export class PotentialAddonTableColumnComponent implements OnChanges {
+export class PotentialAddonTableColumnComponent implements AgRendererComponent, OnChanges {
   @Input("addon") public addon: GetAddonListItem;
   @Input() public channel: AddonChannelType;
   @Input() public clientType: WowClientType;
@@ -52,7 +55,22 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     };
   }
 
-  public constructor(private _getAddonListItemFileProp: GetAddonListItemFilePropPipe) {}
+  public constructor(
+    private _getAddonListItemFileProp: GetAddonListItemFilePropPipe,
+    private _dialogFactory: DialogFactory
+  ) {}
+
+  public agInit(params: ICellRendererParams): void {
+    this.clientType = (params as any).clientType;
+    this.channel = (params as any).channel;
+    this.addon = params.data;
+  }
+
+  public refresh(params: ICellRendererParams): boolean {
+    return false;
+  }
+
+  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.clientType) {
@@ -67,10 +85,7 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
   }
 
   public viewDetails(): void {
-    this.onViewDetails.emit({
-      searchResult: this.addon.searchResult,
-      channelType: this._latestChannelType,
-    });
+    this._dialogFactory.getPotentialAddonDetailsDialog(this.addon.searchResult, this.channel);
   }
 
   public getRequiredDependencyCount(): number {

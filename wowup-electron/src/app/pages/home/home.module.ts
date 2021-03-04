@@ -1,3 +1,5 @@
+import { AgGridModule } from "ag-grid-angular";
+
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -22,6 +24,7 @@ import { ProgressButtonComponent } from "../../components/progress-button/progre
 import { ProgressSpinnerComponent } from "../../components/progress-spinner/progress-spinner.component";
 import { TelemetryDialogComponent } from "../../components/telemetry-dialog/telemetry-dialog.component";
 import { WowClientOptionsComponent } from "../../components/wow-client-options/wow-client-options.component";
+import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
 import { DirectiveModule } from "../../directive.module";
 import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
@@ -67,8 +70,21 @@ import { HomeComponent } from "./home.component";
     OptionsAddonSectionComponent,
     FundingButtonComponent,
     CenteredSnackbarComponent,
+    TableContextHeaderCellComponent,
   ],
-  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule, ReactiveFormsModule],
-  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe],
+  imports: [
+    CommonModule,
+    SharedModule,
+    HomeRoutingModule,
+    MatModule,
+    DirectiveModule,
+    ReactiveFormsModule,
+    AgGridModule.withComponents([
+      PotentialAddonTableColumnComponent,
+      GetAddonStatusColumnComponent,
+      TableContextHeaderCellComponent,
+    ]),
+  ],
+  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe, RelativeDurationPipe],
 })
 export class HomeModule {}
