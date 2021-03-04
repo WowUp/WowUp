@@ -1,6 +1,21 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.7",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Chinese locale updates (CyanoHao)",
+        "When clicking the auto update notification the app will now be focused",
+        "Add a new 'Remove' button to the addon details dialog",
+        "Using a new grid library for better performance",
+        "Fix an issue with the tab highlight not flexing properly in the details dialog",
+        "Fix some color issues with dialog buttons",
+        "Code cleanup",
+        "Update to Electron 12"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.6",
       "changes": [
         "German locale updates (Glow)",

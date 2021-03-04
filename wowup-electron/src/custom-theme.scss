@@ -168,28 +168,6 @@ $wowup-light-theme: mat-light-theme(
   color: $white-2 !important;
 }
 
-// GRID STYLES
-.ag-theme-material {
-  @include ag-theme-material(
-    (
-      foreground-color: $white-1,
-      background-color: $dark-3,
-      header-background-color: $dark-3,
-      row-hover-color: $dark-2,
-      row-border-color: rgba(255, 255, 255, 0.12),
-      border-color: rgba(255, 255, 255, 0.12),
-      secondary-border-color: rgba(255, 255, 255, 0.12),
-      selected-row-background-color: $dark-4
-    )
-  );
-
-  /* use theme parameters where possible */
-  // --ag-foreground-color: $white-1;
-  // --ag-data-color: $white-1;
-  // --ag-background-color: $dark-4;
-  // --ag-row-border-color: rgba(255, 255, 255, 0.12);
-}
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
@@ -501,6 +479,22 @@ $alliance-theme-light: mat-light-theme(
   .wowup-snackbar {
     background-color: $dark-4;
   }
+
+  // GRID STYLES
+  .ag-theme-material {
+    @include ag-theme-material(
+      (
+        foreground-color: $white-1,
+        background-color: $dark-3,
+        header-background-color: $dark-3,
+        row-hover-color: $dark-2,
+        row-border-color: rgba(255, 255, 255, 0.12),
+        border-color: rgba(255, 255, 255, 0.12),
+        secondary-border-color: rgba(255, 255, 255, 0.12),
+        selected-row-background-color: $dark-4,
+      )
+    );
+  }
 }
 
 // LIGHT THEME
@@ -579,6 +573,15 @@ $alliance-theme-light: mat-light-theme(
 
   .wowup-snackbar {
     background-color: $white-1 !important;
+  }
+
+  .ag-theme-material {
+    @include ag-theme-material(
+      (
+        row-hover-color: $lt-secondary-2,
+        selected-row-background-color: $lt-secondary-4,
+      )
+    );
   }
 }
 
