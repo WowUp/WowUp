@@ -102,10 +102,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public wowInstallations$: Observable<WowInstallation[]>;
 
   public isBusy$ = this._isBusySubject.asObservable();
+  public hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
 
-  public readonly showTable$ = combineLatest([this.isBusy$, this.rowData$]).pipe(
-    map(([isBusy, rowData]) => {
-      return isBusy === false && rowData.length > 0;
+  public readonly showTable$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
+    map(([isBusy, hasData]) => {
+      return isBusy === false && hasData === true;
     })
   );
 
