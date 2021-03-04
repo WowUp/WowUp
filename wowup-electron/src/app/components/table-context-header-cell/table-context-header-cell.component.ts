@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from "@angular/core";
+import { Component, NgZone } from "@angular/core";
 import { IHeaderAngularComp } from "ag-grid-angular";
 import { IHeaderParams, IAfterGuiAttachedParams } from "ag-grid-community";
 import { SessionService } from "../../services/session/session.service";
@@ -6,7 +6,7 @@ import { BehaviorSubject } from "rxjs";
 
 interface HeaderParams extends IHeaderParams {
   menuIcon: string;
-  onHeaderContext: () => void;
+  onHeaderContext: (event: MouseEvent) => void;
 }
 
 @Component({
