@@ -85,7 +85,7 @@
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backup wird erstellt",
-      "COMPLETE": "Vollständig",
+      "COMPLETE": "Installiert",
       "DOWNLOADING": "Herunterladen...",
       "ERROR": "Fehler",
       "INSTALLING": "Installieren...",
