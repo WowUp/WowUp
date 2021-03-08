@@ -81,7 +81,7 @@
       "UNKNOWN": "",
       "UPDATE": "Обновить",
       "UPTODATE": "Актуальная",
-      "WARNING": "Warning"
+      "WARNING": "Предупреждение"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Резервное копирование",
@@ -94,10 +94,10 @@
       "UPDATING": "Обновляется..."
     },
     "ADDON_WARNING": {
-      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
-      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
+      "GENERIC_DESCRIPTION": "Мы обнаружили неполадку с этой модификацией. Мы больше не способны обновлять эту модификацию или показывать её детали.",
+      "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация вероятно была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",
@@ -140,7 +140,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
-      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
+      "ADDON_SYNC_FULL_ERROR": "Произошла ошибка при проверке наличия обновлений для {addonName} из {providerName}, попробуйте позже.",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
       "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Не удалось проверить обновления для {addonName}.\nУбедитесь что хранилище указано верно или установите игнорирование на эту модификацию."
@@ -148,11 +148,11 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
     },
-    "PROVIDER_ERROR": "Error contacting {providerName}",
+    "PROVIDER_ERROR": "Ошибка при связи с {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Модификаций не найдено"
     },
-    "WOW_EXE_SELECTION_NAME": "WoW Executable"
+    "WOW_EXE_SELECTION_NAME": "Исполнительный файл WoW"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -201,7 +201,7 @@
       "TITLE": "Ссылка на установку модификации"
     },
     "SELECT_INSTALLATION": {
-      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
+      "INVALID_INSTALLATION_PATH": "Данный путь является неверным для приложения World of Warcraft:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Хотите помочь улучшить WowUp, анонимно отправляя данные об установке и ошибках?",
@@ -357,10 +357,10 @@
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Для отключения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Для включения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение",
-        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
+        "USE_SYMLINK_SUPPORT": "Включить поддержку символических ссылок",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Включение поддержки символических ссылок позволит WowUp распознавать их при повторном сканировании. Предупреждение: Если вы не знаете что такое символическая ссылка, то скорее всего вам это не нужно. При обновлении символические ссылки в настоящее время будут заменены фактической папкой, и ссылка будет потеряна.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Включить поддержку символических ссылок?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке вашей модификации. Предупреждение: они будут заменены при обновлении/установке."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
@@ -378,10 +378,10 @@
         "DEBUG": "Отладка"
       },
       "WOW": {
-        "ADD_CLIENT_BUTTON": "Add New",
+        "ADD_CLIENT_BUTTON": "Добавить новый",
         "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",
         "AUTO_UPDATE_LABEL": "Автообновление",
-        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Отмена",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Вы точно хотите очистить путь установки для {clientName}? Это удалит всю хранимую информацию модификации для этого клиента.\n\nПапки ваших модификаций не будут удалены.",
           "TITLE": "Очистить место установки?"
@@ -390,12 +390,12 @@
         "CLIENT_TYPE_PATH_LABEL": "Путь для {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Тип выпуска модификации",
-        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Изменить",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
-        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Удалить",
         "RESCAN_CLIENTS_BUTTON": "Повторное сканирование",
         "RESCAN_CLIENTS_LABEL": "Повторно найти установленные продукты World of Warcraft",
-        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Сохранить",
         "TITLE": "World of Warcraft"
       }
     }
