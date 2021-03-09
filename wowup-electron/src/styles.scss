@@ -369,13 +369,11 @@ img {
 .addon-context-menu {
   .addon-context-menu-header {
     padding: 0 16px 8px 16px;
-    color: $white-1;
     display: flex;
     flex-direction: row;
     align-items: center;
 
     .thumbnail {
-      background-color: $dark-2;
       width: 30px;
       height: 30px;
       margin-right: 16px;
@@ -386,6 +384,11 @@ img {
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+
+      img {
+        height: 100%;
+      }
 
       .thumbnail-letter {
         color: $white-4;
@@ -396,15 +399,12 @@ img {
 
     .addon-name {
       font-size: 1em;
-      // font-weight: bold;
-    }
-
-    .addon-version {
-      color: $white-2;
     }
 
     .addon-update-available {
-      display: inline-block;
+      mat-icon {
+        height: 10px;
+      }
     }
   }
 }
