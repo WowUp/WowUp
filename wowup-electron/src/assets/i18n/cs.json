@@ -77,6 +77,7 @@
     "ADDON_STATE": {
       "IGNORED": "Ignorován",
       "INSTALL": "Instalovat",
+      "PENDING": "Pending",
       "UNINSTALL": "Odinstalovat",
       "UNKNOWN": "",
       "UPDATE": "Aktualizovat",

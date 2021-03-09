@@ -77,6 +77,7 @@
     "ADDON_STATE": {
       "IGNORED": "忽略",
       "INSTALL": "安裝",
+      "PENDING": "Pending",
       "UNINSTALL": "解除安裝",
       "UNKNOWN": "未知",
       "UPDATE": "更新",

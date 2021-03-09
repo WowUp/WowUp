@@ -77,6 +77,7 @@
     "ADDON_STATE": {
       "IGNORED": "제외됨",
       "INSTALL": "설치",
+      "PENDING": "Pending",
       "UNINSTALL": "삭제",
       "UNKNOWN": "",
       "UPDATE": "업데이트",

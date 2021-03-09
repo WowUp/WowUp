@@ -77,12 +77,12 @@
     "ADDON_STATE": {
       "IGNORED": "Ignored",
       "INSTALL": "Install",
+      "PENDING": "Pending",
       "UNINSTALL": "Uninstall",
       "UNKNOWN": "",
       "UPDATE": "Update",
       "UPTODATE": "Up to date",
-      "WARNING": "Warning",
-      "PENDING": "Pending"
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backing Up",
