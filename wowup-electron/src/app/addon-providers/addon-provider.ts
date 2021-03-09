@@ -38,6 +38,10 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
+  public shouldMigrate(addon: Addon): boolean {
+    return false;
+  }
+
   public searchByQuery(
     query: string,
     installation: WowInstallation,

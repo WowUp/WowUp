@@ -108,6 +108,10 @@ export class CurseAddonProvider extends AddonProvider {
     return "";
   }
 
+  public shouldMigrate(addon: Addon): boolean {
+    return !addon.installedExternalReleaseId;
+  }
+
   public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,

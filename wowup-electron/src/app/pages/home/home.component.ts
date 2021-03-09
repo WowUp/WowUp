@@ -1,5 +1,5 @@
-import { interval, Subscription } from "rxjs";
-import { filter, first, tap } from "rxjs/operators";
+import { from, interval } from "rxjs";
+import { filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -22,7 +22,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
-  private _appUpdateInterval: Subscription;
+  private _appUpdateInterval?: number;
 
   public selectedIndex = 0;
   public hasWowClient = false;
@@ -64,7 +64,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this.initAppUpdateCheck();
 
     this._warcraftInstallationService.wowInstallations$
-      .pipe(first((installations) => installations.length > 0))
+      .pipe(
+        first((installations) => installations.length > 0),
+        switchMap((installations) => {
+          return from(this.migrateAddons(installations)).pipe(map(() => installations));
+        })
+      )
       .subscribe(() => {
         this.appReady = true;
         this.detectChanges();
@@ -72,24 +77,25 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._appUpdateInterval?.unsubscribe();
+    window.clearInterval(this._appUpdateInterval);
   }
 
   private initAppUpdateCheck() {
+    if (this._appUpdateInterval !== undefined) {
+      console.warn(`App update interval already exists`);
+      return;
+    }
+
     // check for an app update every so often
-    this._appUpdateInterval = interval(AppConfig.appUpdateIntervalMs)
-      .pipe(
-        tap(() => {
-          this.checkForAppUpdate().catch((e) => console.error(e));
-        })
-      )
-      .subscribe();
+    this._appUpdateInterval = window.setInterval(() => {
+      this.checkForAppUpdate().catch((e) => console.error(e));
+    }, AppConfig.appUpdateIntervalMs);
 
     this.checkForAppUpdate().catch((e) => console.error(e));
   }
 
   private destroyAppUpdateCheck() {
-    this._appUpdateInterval?.unsubscribe();
+    window.clearInterval(this._appUpdateInterval);
     this._appUpdateInterval = undefined;
   }
 

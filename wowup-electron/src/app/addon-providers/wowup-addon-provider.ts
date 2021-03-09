@@ -72,6 +72,10 @@ export class WowUpAddonProvider extends AddonProvider {
     return "";
   }
 
+  public shouldMigrate(addon: Addon): boolean {
+    return !addon.installedExternalReleaseId;
+  }
+
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const gameType = this.getWowGameType(installation.clientType);
     const url = new URL(`${API_URL}/addons/batch/${gameType}`);

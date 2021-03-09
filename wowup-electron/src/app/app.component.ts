@@ -55,7 +55,7 @@ import { SnackbarService } from "./services/snackbar/snackbar.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
-  private _autoUpdateInterval?: Subscription;
+  private _autoUpdateInterval?: number;
 
   // @HostListener("document:fullscreenchange", ["$event"])
   // handleKeyboardEvent(event: Event) {
@@ -128,7 +128,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping auto update...");
-      this._autoUpdateInterval?.unsubscribe();
+      window.clearInterval(this._autoUpdateInterval);
       this._autoUpdateInterval = undefined;
 
       if (evt === IPC_POWER_MONITOR_RESUME || evt === IPC_POWER_MONITOR_UNLOCK) {
@@ -190,17 +190,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async initializeAutoUpdate() {
-    if (this._autoUpdateInterval) {
+    if (this._autoUpdateInterval !== undefined) {
+      console.warn(`Auto addon update interval already exists`);
       return;
     }
+
+    this._autoUpdateInterval = window.setInterval(() => {
+      this.onAutoUpdateInterval().catch((e) => console.error(e));
+    }, AppConfig.autoUpdateIntervalMs);
+
     await this.onAutoUpdateInterval();
-    this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
-      .pipe(
-        tap(() => {
-          this.onAutoUpdateInterval().catch((e) => console.error(e));
-        })
-      )
-      .subscribe();
   }
 
   private onAutoUpdateInterval = async () => {

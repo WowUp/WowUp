@@ -1073,10 +1073,28 @@ export class AddonService {
       return;
     }
 
+    const needsMigration = _.some(existingAddons, (addon) => this.needsMigration(addon));
+    if (!needsMigration) {
+      console.log(`No addons needed to be migrated: ${installation.label}`);
+      return;
+    }
+
     const scannedAddons = await this.scanAddons(installation);
     for (const addon of existingAddons) {
       this.migrateAddon(addon, scannedAddons);
     }
+  }
+
+  private needsMigration(addon: Addon) {
+    const provider = this.getProvider(addon.providerName);
+
+    const migrationNeeded =
+      addon.providerName === ADDON_PROVIDER_HUB_LEGACY ||
+      !addon.installedFolderList ||
+      !addon.externalChannel ||
+      (provider?.shouldMigrate(addon) ?? false);
+
+    return migrationNeeded;
   }
 
   private migrateAddon(addon: Addon, scannedAddons: Addon[]): void {
