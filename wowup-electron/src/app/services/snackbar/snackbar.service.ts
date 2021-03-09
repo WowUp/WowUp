@@ -33,7 +33,7 @@ export class SnackbarService {
   }
 
   public showSnackbar(localeKey: string, config?: SnackbarConfig): MatSnackBarRef<CenteredSnackbarComponent> {
-    const message = this._translateService.instant(localeKey, config.localeArgs);
+    const message = this._translateService.instant(localeKey, config?.localeArgs);
     const data: CenteredSnackbarComponentData = {
       message,
     };
