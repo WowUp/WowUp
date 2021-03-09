@@ -71,9 +71,9 @@
   </div>
 
   <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="isBusy === true || hasData === false"
-    [rowData]="rowData" [columnDefs]="columnDefs" [columnTypes]="columnTypes" [rowSelection]="'multiple'"
-    [getRowNodeId]="getRowNodeId" [frameworkComponents]="frameworkComponents" [rowHeight]="65" [immutableData]="true"
-    [rowClassRules]="rowClassRules" (gridReady)="onGridReady($event)" (rowDoubleClicked)="onRowDoubleClicked($event)"
+    [rowData]="rowData" [columnDefs]="columnDefs" [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId"
+    [frameworkComponents]="frameworkComponents" [rowHeight]="65" [immutableData]="true" [rowClassRules]="rowClassRules"
+    (gridReady)="onGridReady($event)" (rowDoubleClicked)="onRowDoubleClicked($event)"
     (cellContextMenu)="onCellContext($event)">
   </ag-grid-angular>
 
