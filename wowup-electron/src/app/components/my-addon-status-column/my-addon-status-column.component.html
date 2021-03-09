@@ -1,5 +1,6 @@
 <div class="row">
-  <app-addon-update-button *ngIf="hasWarning === false && showStatusText === false" [listItem]="listItem">
+  <app-addon-update-button [hidden]="hasWarning === true || showStatusText === true" [listItem]="listItem"
+    [extInstallState]="installState" [value]="installProgress">
   </app-addon-update-button>
   <div *ngIf="hasWarning === false && showStatusText === true" class="status-text"
     [ngClass]="{ ignored: listItem.addon.isIgnored }">

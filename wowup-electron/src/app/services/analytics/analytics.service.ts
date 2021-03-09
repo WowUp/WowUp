@@ -49,10 +49,9 @@ export class AnalyticsService {
   public constructor(private _preferenceStorageService: PreferenceStorageService) {
     this._installId = this.loadInstallId();
     this._telemetryEnabledSrc.next(this.telemetryEnabled);
-    console.log("installId", this._installId);
   }
 
-  public trackStartup() {
+  public trackStartup(): void {
     this.track("app-startup");
   }
 

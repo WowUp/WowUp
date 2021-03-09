@@ -1,65 +1,74 @@
-<div class="addon-column row align-items-center">
-  <div class="thumbnail-container">
-    <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container bg-secondary-3">
-      <img [src]="listItem.addon.thumbnailUrl" loading="lazy" />
-    </div>
-    <div *ngIf="listItem.hasThumbnail === false" class="addon-logo-container">
-      <div class="addon-logo-letter text-3">
-        {{ listItem.thumbnailLetter }}
+<span>
+  <div class="addon-column row align-items-center">
+    <div class="thumbnail-container">
+      <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container bg-secondary-3">
+        <img [src]="listItem.addon.thumbnailUrl" loading="lazy" />
       </div>
-    </div>
-    <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3" [ngClass]="{
+      <div *ngIf="listItem.hasThumbnail === false" class="addon-logo-container">
+        <div class="addon-logo-letter text-3">
+          {{ listItem.thumbnailLetter }}
+        </div>
+      </div>
+      <!-- <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3" [ngClass]="{
         beta: listItem.isBetaChannel(),
         alpha: listItem.isAlphaChannel()
       }">
-      {{ listItem.isAlphaChannel() ? "Alpha" : "Beta" }}
+        {{ listItem.isAlphaChannel() ? "Alpha" : "Beta" }}
+      </div> -->
+    </div>
+    <div class="version-container">
+      <a class="addon-title hover-text-2" (click)="viewDetails()"
+        [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
+        listItem.addon.name
+        }}</a>
+      <div *ngIf="listItem.addon.fundingLinks" class="addon-funding">
+        <app-funding-button *ngFor="let link of listItem.addon.fundingLinks" [funding]="link" size="small">
+        </app-funding-button>
+      </div>
+      <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.addon.isIgnored }">
+        <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3 mr-2"
+          [ngClass]="{
+          beta: listItem.isBetaChannel(),
+          alpha: listItem.isAlphaChannel()
+        }">
+          {{ channelTranslationKey | translate }}
+        </div>
+        <div *ngIf="hasMultipleProviders === true" class="mr-2">
+          <mat-icon class="auto-update-icon" svgIcon="fas:code-branch"
+            [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
+          </mat-icon>
+        </div>
+        <div *ngIf="listItem.addon.autoUpdateEnabled === true" class="mr-2">
+          <mat-icon class="auto-update-icon text-2"
+            [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate" svgIcon="far:clock">
+          </mat-icon>
+        </div>
+        <div *ngIf="hasRequiredDependencies()" class="mr-2"
+          [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate: dependencyTooltip">
+          <mat-icon class="auto-update-icon" svgIcon="fas:link"></mat-icon>
+        </div>
+        <div *ngIf="listItem.isLoadOnDemand === true" class="mr-2">
+          <mat-icon class="auto-update-icon text-warning"
+            [matTooltip]="'PAGES.MY_ADDONS.REQUIRED_DEPENDENCY_MISSING_TOOLTIP' | translate"
+            svgIcon="fas:exclamation-triangle">
+          </mat-icon>
+        </div>
+        <div *ngIf="hasWarning()" class="mr-2">
+          <mat-icon class="auto-update-icon text-warning" [matTooltip]="getWarningText()"
+            svgIcon="fas:exclamation-triangle">
+          </mat-icon>
+        </div>
+        <div *ngIf="hasIgnoreReason() === true" class="mr-2">
+          <mat-icon class="auto-update-icon" [matTooltip]="getIgnoreTooltipKey() | translate" [style.color]="'#ff9800'"
+            [svgIcon]="getIgnoreIcon()">
+          </mat-icon>
+        </div>
+        {{ listItem.addon.installedVersion }}
+        <div *ngIf="showUpdateToVersion && listItem.needsUpdate()" class="text-1  row">
+          <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
+          <div class="bg-secondary-4 text-2 rounded px-1">{{ listItem.addon.latestVersion }}</div>
+        </div>
+      </div>
     </div>
   </div>
-  <div>
-    <a class="addon-title hover-text-2 mat-subheading-2" (click)="viewDetails()"
-      [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
-      listItem.addon.name
-      }}</a>
-    <div *ngIf="listItem.addon.fundingLinks" class="addon-funding row">
-      <app-funding-button *ngFor="let link of listItem.addon.fundingLinks" [funding]="link" size="small">
-      </app-funding-button>
-    </div>
-    <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.addon.isIgnored }">
-      <div *ngIf="addonUtils.hasMultipleProviders(listItem.addon)" class="mr-2">
-        <mat-icon class="auto-update-icon" svgIcon="fas:code-branch"
-          [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
-        </mat-icon>
-      </div>
-      <div *ngIf="listItem.addon.autoUpdateEnabled === true" class="mr-2">
-        <mat-icon class="auto-update-icon text-2"
-          [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate" svgIcon="far:clock">
-        </mat-icon>
-      </div>
-      <div *ngIf="hasRequiredDependencies()" class="mr-2"
-        [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate: dependencyTooltip">
-        <mat-icon class="auto-update-icon" svgIcon="fas:link"></mat-icon>
-      </div>
-      <div *ngIf="listItem.isLoadOnDemand === true" class="mr-2">
-        <mat-icon class="auto-update-icon text-warning"
-          [matTooltip]="'PAGES.MY_ADDONS.REQUIRED_DEPENDENCY_MISSING_TOOLTIP' | translate"
-          svgIcon="fas:exclamation-triangle">
-        </mat-icon>
-      </div>
-      <div *ngIf="hasWarning()" class="mr-2">
-        <mat-icon class="auto-update-icon text-warning" [matTooltip]="getWarningText()"
-          svgIcon="fas:exclamation-triangle">
-        </mat-icon>
-      </div>
-      <div *ngIf="hasIgnoreReason() === true" class="mr-2">
-        <mat-icon class="auto-update-icon" [matTooltip]="getIgnoreTooltipKey() | translate" [style.color]="'#ff9800'"
-          [svgIcon]="getIgnoreIcon()">
-        </mat-icon>
-      </div>
-      {{ listItem.addon.installedVersion }}
-      <div *ngIf="showUpdateToVersion && listItem.needsUpdate()" class="text-1  row">
-        <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
-        <div class="bg-secondary-4 text-2 rounded px-1">{{ listItem.addon.latestVersion }}</div>
-      </div>
-    </div>
-  </div>
-</div>
+</span>

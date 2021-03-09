@@ -26,7 +26,6 @@ export class TableContextHeaderCellComponent implements IHeaderAngularComp {
   public agInit(params: HeaderParams): void {
     this.params = params;
     this.params.column.addEventListener("sortChanged", this.onSortChanged);
-    console.debug("onHeaderContext", params.onHeaderContext);
     this.onSortChanged();
   }
 
@@ -42,7 +41,6 @@ export class TableContextHeaderCellComponent implements IHeaderAngularComp {
     }
 
     const nextSort = this.getNextSort(this.sorted$.value);
-    console.debug("onSortRequested", nextSort);
     this.params.setSort(nextSort, event.shiftKey);
   }
 
@@ -65,6 +63,5 @@ export class TableContextHeaderCellComponent implements IHeaderAngularComp {
     } else {
       this.sorted$.next("");
     }
-    console.debug("onSortChanged", this.params.displayName, this.sorted$.value);
   };
 }

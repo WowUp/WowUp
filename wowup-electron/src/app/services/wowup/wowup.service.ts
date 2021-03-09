@@ -86,7 +86,7 @@ export class WowUpService {
 
     this.createDownloadDirectory()
       .then(() => this.cleanupDownloads())
-      .then(() => console.debug("createDownloadDirectory complete"))
+      // .then(() => console.debug("createDownloadDirectory complete"))
       .catch((e) => console.error("Failed to create download directory", e));
 
     this._electronService.ipcEventReceived$.subscribe((evt) => {
@@ -286,11 +286,11 @@ export class WowUpService {
     this._preferenceStorageService.set(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, enabled);
   }
 
-  public get myAddonsHiddenColumns(): ColumnState[] {
+  public getMyAddonsHiddenColumns(): ColumnState[] {
     return this._preferenceStorageService.getObject<ColumnState[]>(MY_ADDONS_HIDDEN_COLUMNS_KEY) || [];
   }
 
-  public set myAddonsHiddenColumns(columnStates: ColumnState[]) {
+  public setMyAddonsHiddenColumns(columnStates: ColumnState[]): void {
     this._preferenceStorageService.setObject(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 

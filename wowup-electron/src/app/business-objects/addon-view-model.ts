@@ -19,6 +19,31 @@ export class AddonViewModel {
   public isLoadOnDemand = false;
   public hasThumbnail = false;
   public thumbnailLetter = "";
+  public showUpdate = false;
+
+  public get name(): string {
+    return this.addon?.name ?? "";
+  }
+
+  public get latestVersion(): string {
+    return this.addon?.latestVersion ?? "";
+  }
+
+  public get gameVersion(): string {
+    return this.addon?.gameVersion ?? "";
+  }
+
+  public get externalChannel(): string {
+    return this.addon?.externalChannel ?? "";
+  }
+
+  public get providerName(): string {
+    return this.addon?.providerName ?? "";
+  }
+
+  public get author(): string {
+    return this.addon?.author ?? "";
+  }
 
   public constructor(addon?: Addon) {
     this.addon = addon;

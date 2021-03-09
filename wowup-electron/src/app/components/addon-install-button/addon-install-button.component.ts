@@ -37,24 +37,6 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     );
     this.disableButton = isInstalled;
     this.buttonText = this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown);
-
-    const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(
-        filter(
-          (evt) =>
-            evt.addon.externalId === this.addonSearchResult.externalId &&
-            evt.addon.providerName === this.addonSearchResult.providerName
-        )
-      )
-      .subscribe((evt) => {
-        this.showProgress = this.getIsButtonActive(evt.installState);
-        this.disableButton = this.getIsButtonDisabled(evt.installState);
-        this.progressValue = evt.progress;
-        this.buttonText = this.getButtonText(evt.installState);
-        this.onViewUpdated.emit(true);
-      });
-
-    this._subscriptions.push(addonInstalledSub);
   }
 
   public ngOnDestroy(): void {
@@ -62,15 +44,15 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     this._subscriptions = [];
   }
 
-  public getIsButtonActive(installState: AddonInstallState) {
+  public getIsButtonActive(installState: AddonInstallState): boolean {
     return installState !== AddonInstallState.Unknown && installState !== AddonInstallState.Complete;
   }
 
-  public getIsButtonDisabled(installState: AddonInstallState) {
+  public getIsButtonDisabled(installState: AddonInstallState): boolean {
     return installState !== AddonInstallState.Unknown;
   }
 
-  public getInstallStateText(installState: AddonInstallState) {
+  public getInstallStateText(installState: AddonInstallState): string {
     switch (installState) {
       case AddonInstallState.BackingUp:
         return this._translate.instant("COMMON.ADDON_STATUS.BACKINGUP");
@@ -87,7 +69,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getButtonText(installState: AddonInstallState) {
+  public getButtonText(installState: AddonInstallState): string {
     if (installState !== AddonInstallState.Unknown) {
       return this.getInstallStateText(installState);
     }
@@ -100,11 +82,20 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     try {
       await this._addonService.installPotentialAddon(
         this.addonSearchResult,
-        this._sessionService.getSelectedWowInstallation()
+        this._sessionService.getSelectedWowInstallation(),
+        this.onInstallUpdate
       );
     } catch (e) {
       console.error("onInstallUpdateClick failed", e);
       this.disableButton = false;
     }
   }
+
+  private onInstallUpdate = (installState: AddonInstallState, progress: number): void => {
+    this.showProgress = this.getIsButtonActive(installState);
+    this.disableButton = this.getIsButtonDisabled(installState);
+    this.progressValue = progress;
+    this.buttonText = this.getButtonText(installState);
+    this.onViewUpdated.emit(true);
+  };
 }

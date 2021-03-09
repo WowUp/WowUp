@@ -3,7 +3,9 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonChannelType } from "../../../common/wowup/models";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
+import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 
@@ -12,6 +14,25 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 })
 export class DialogFactory {
   public constructor(private _dialog: MatDialog, private _translateService: TranslateService) {}
+
+  public getConfirmDialog(title: string, message: string): MatDialogRef<ConfirmDialogComponent, any> {
+    return this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title,
+        message,
+      },
+    });
+  }
+
+  public getErrorDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
+    return this._dialog.open(AlertDialogComponent, {
+      minWidth: 250,
+      data: {
+        title,
+        message,
+      },
+    });
+  }
 
   public getPotentialAddonDetailsDialog(
     searchResult: AddonSearchResult,
@@ -27,41 +48,18 @@ export class DialogFactory {
     });
   }
 
-  public getRemoveAddonPrompt(addonName: string): MatDialogRef<ConfirmDialogComponent, any> {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE", {
-      addonName,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
+  public getAddonDetailsDialog(listItem: AddonViewModel): MatDialogRef<AddonDetailComponent, any> {
+    // If this addon is in warning state, we wont be able to get details
+    if (listItem.addon.warningType !== undefined) {
+      return;
+    }
 
-    return this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title,
-        message: `${message1}\n\n${message2}`,
-      },
-    });
-  }
+    const data: AddonDetailModel = {
+      listItem: listItem.clone(),
+    };
 
-  public getRemoveDependenciesPrompt(
-    addonName: string,
-    dependencyCount: number
-  ): MatDialogRef<ConfirmDialogComponent, any> {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_TITLE");
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_MESSAGE", {
-      addonName,
-      dependencyCount,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-
-    return this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title,
-        message: `${message1}\n\n${message2}`,
-      },
+    return this._dialog.open(AddonDetailComponent, {
+      data,
     });
   }
 }

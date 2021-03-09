@@ -81,7 +81,8 @@
       "UNKNOWN": "",
       "UPDATE": "Update",
       "UPTODATE": "Up to date",
-      "WARNING": "Warning"
+      "WARNING": "Warning",
+      "PENDING": "Pending"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backing Up",

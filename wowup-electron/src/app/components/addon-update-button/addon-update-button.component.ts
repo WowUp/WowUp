@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
@@ -16,32 +16,43 @@ import { getEnumName } from "../../utils/enum.utils";
 })
 export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   @Input() public listItem: AddonViewModel;
+  @Input() public extInstallState?: AddonInstallState;
+  @Input() public value?: number;
 
   @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
   private _subscriptions: Subscription[] = [];
 
+  public installState = AddonInstallState.Unknown;
+  public installProgress = 0;
+  public providerName = "";
+  public externalId = "";
+
   public constructor(
     private _addonService: AddonService,
-    private _analyticsService: AnalyticsService,
-    private _translateService: TranslateService
-  ) {}
-
-  public ngOnInit(): void {
+    private _translateService: TranslateService,
+    private _ngZone: NgZone
+  ) {
     const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(filter((evt) => evt.addon.id === this.listItem.addon.id))
+      .pipe(filter((evt) => evt.addon.externalId === this.externalId && evt.addon.providerName === this.providerName))
       .subscribe((evt) => {
-        this.listItem.installState = evt.installState;
-        this.listItem.installProgress = evt.progress;
-        this.onViewUpdated.emit(true);
+        this._ngZone.run(() => {
+          this.installState = evt.installState;
+          this.installProgress = evt.progress;
+        });
       });
 
     this._subscriptions.push(addonInstalledSub);
   }
 
+  public ngOnInit(): void {
+    this.providerName = this.listItem.addon.providerName;
+    this.externalId = this.listItem.addon.externalId;
+    this.installProgress = this.value ?? 0;
+  }
+
   public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
-    this._subscriptions = [];
   }
 
   public getActionLabel(): string {
@@ -50,25 +61,21 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     }|${this.listItem?.addon.name}`;
   }
 
-  public getInstallProgress(): number {
-    return this.listItem?.installProgress || 0;
-  }
-
   public getIsButtonActive(): boolean {
     return (
-      this.listItem?.installState !== AddonInstallState.Unknown &&
-      this.listItem?.installState !== AddonInstallState.Complete &&
-      this.listItem?.installState !== AddonInstallState.Error
+      this.installState !== AddonInstallState.Unknown &&
+      this.installState !== AddonInstallState.Complete &&
+      this.installState !== AddonInstallState.Error
     );
   }
 
   public getIsButtonDisabled(): boolean {
-    return this.listItem?.isUpToDate() || this.listItem?.installState < AddonInstallState.Unknown;
+    return this.listItem?.isUpToDate() || this.installState < AddonInstallState.Unknown;
   }
 
   public getButtonText(): string {
-    if (this.listItem?.installState !== AddonInstallState.Unknown) {
-      return this.getInstallStateText(this.listItem?.installState);
+    if (this.installState !== AddonInstallState.Unknown) {
+      return this.getInstallStateText(this.installState);
     }
 
     return this.getStatusText();

@@ -23,6 +23,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { MyAddonsComponent } from "./my-addons.component";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
@@ -58,6 +59,7 @@ describe("MyAddonsComponent", () => {
     );
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       myAddonsSortOrder: { name: "test sort", direction: "asc" } as SortOrder,
+      getMyAddonsHiddenColumns: () => [],
     });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedHomeTab"], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
@@ -97,7 +99,7 @@ describe("MyAddonsComponent", () => {
           },
         }),
       ],
-      providers: [MatDialog],
+      providers: [MatDialog, RelativeDurationPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     });
 

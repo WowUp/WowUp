@@ -26,7 +26,6 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
-import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
@@ -93,7 +92,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
-    private _dialogFactory: DialogFactory,
     public sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
@@ -206,8 +204,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public onClickRemoveAddon(): void {
-    this._dialogFactory
-      .getRemoveAddonPrompt(this.model.listItem.addon.name)
+    this.getRemoveAddonPrompt(this.model.listItem.addon.name)
       .afterClosed()
       .pipe(
         switchMap((result) => {
@@ -219,8 +216,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
           if (this._addonService.getRequiredDependencies(addon).length === 0) {
             return from(this._addonService.removeAddon(addon)).pipe(map(() => true));
           } else {
-            return this._dialogFactory
-              .getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
+            return this.getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
               .afterClosed()
               .pipe(
                 switchMap((result) => from(this._addonService.removeAddon(addon, result))),
@@ -235,6 +231,44 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
         })
       )
       .subscribe();
+  }
+
+  private getRemoveAddonPrompt(addonName: string): MatDialogRef<ConfirmDialogComponent, any> {
+    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });
+    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE", {
+      addonName,
+    });
+    const message2: string = this._translateService.instant(
+      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+    );
+
+    return this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title,
+        message: `${message1}\n\n${message2}`,
+      },
+    });
+  }
+
+  private getRemoveDependenciesPrompt(
+    addonName: string,
+    dependencyCount: number
+  ): MatDialogRef<ConfirmDialogComponent, any> {
+    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_TITLE");
+    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_MESSAGE", {
+      addonName,
+      dependencyCount,
+    });
+    const message2: string = this._translateService.instant(
+      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+    );
+
+    return this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title,
+        message: `${message1}\n\n${message2}`,
+      },
+    });
   }
 
   private getSelectedTabTypeFromIndex(index: number): DetailsTabType {

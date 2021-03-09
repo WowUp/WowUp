@@ -37,26 +37,38 @@
         height: 100%;
       }
     }
+  }
 
-    .channel {
-      text-align: center;
-      font-weight: 400;
-      font-size: 0.8em;
+  .channel {
+    text-align: center;
+    padding: 0 4px;
 
-      &.beta {
-        color: $rare-color;
-      }
+    &.beta {
+      color: $rare-color;
+    }
 
-      &.alpha {
-        color: $epic-color;
-      }
+    &.alpha {
+      color: $epic-color;
     }
   }
 
+  .version-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 40px;
+  }
+
   .addon-title {
-    // word-break: break-all;
     white-space: normal;
     text-decoration: none;
+    word-break: break-all;
+    font-size: 16px;
+    line-height: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     &:hover {
       cursor: pointer;
@@ -70,8 +82,9 @@
   }
 
   .addon-version {
-    .update-available {
-    }
+    color: $white-2;
+    font-size: 14px;
+    line-height: 14px;
   }
   .upgrade-icon {
     height: 10px;
@@ -83,16 +96,8 @@
   }
 
   .addon-funding {
-    a {
-      margin-right: 1em;
-    }
-    .funding-icon {
-      width: 15px;
-      height: 15px;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
+    line-height: 22px;
+    display: flex;
+    flex-direction: row;
   }
 }

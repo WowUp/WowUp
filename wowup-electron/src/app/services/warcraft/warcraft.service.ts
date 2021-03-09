@@ -281,7 +281,6 @@ export class WarcraftService {
           clientType: this.getClientTypeForFolderName(p.client.name),
         }));
 
-      console.log("wowProducts", wowProducts);
       return wowProducts;
     } catch (e) {
       console.error(`failed to decode product db at ${productDbPath}`);

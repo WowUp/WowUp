@@ -1,9 +1,18 @@
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import { AgRendererComponent } from "ag-grid-angular";
+import { IAfterGuiAttachedParams, ICellRendererParams } from "ag-grid-community";
+import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
+
+import { Component, NgZone, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
-import { AddonViewModel } from "../../business-objects/addon-view-model";
+import { Addon } from "../../../common/entities/addon";
 import { AddonWarningType } from "../../../common/wowup/models";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonService } from "../../services/addons/addon.service";
+import * as AddonUtils from "../../utils/addon.utils";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 
 @Component({
@@ -11,49 +20,87 @@ import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
   templateUrl: "./my-addon-status-column.component.html",
   styleUrls: ["./my-addon-status-column.component.scss"],
 })
-export class MyAddonStatusColumnComponent implements OnInit {
-  @Input() public listItem: AddonViewModel;
+export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDestroy {
+  private _subscriptions: Subscription[] = [];
 
-  @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
-
+  public listItem: AddonViewModel;
   public warningType?: AddonWarningType;
   public hasWarning = false;
   public showStatusText = false;
   public statusText = "";
+  public isIgnored = false;
+  public installState?: AddonInstallState;
+  public installProgress?: number;
 
   public constructor(
     private _dialog: MatDialog,
+    private _addonService: AddonService,
     private _translateService: TranslateService,
-    private _ngzone: NgZone
-  ) {}
+    private _ngZone: NgZone
+  ) {
+    const addonInstalledSub = this._addonService.addonInstalled$
+      .pipe(
+        filter(
+          (evt) =>
+            evt.addon.externalId === this.listItem.addon.externalId &&
+            evt.addon.providerName === this.listItem.addon.providerName
+        )
+      )
+      .subscribe((evt) => {
+        this._ngZone.run(() => {
+          this.installState = evt.installState;
+          this.installProgress = evt.progress;
 
-  public ngOnInit(): void {
+          if (evt.installState !== AddonInstallState.Complete) {
+            this.showStatusText = false;
+          } else {
+            this.showStatusText = !AddonUtils.needsUpdate(evt.addon) || this.listItem?.addon.isIgnored;
+          }
+          this.statusText = this.getStatusText(evt.addon);
+        });
+      });
+
+    this._subscriptions.push(addonInstalledSub);
+  }
+
+  public agInit(params: ICellRendererParams): void {
+    this.listItem = params.data;
+
     this.warningType = this.listItem?.addon?.warningType;
     this.hasWarning = this.warningType !== undefined;
     this.showStatusText = this.listItem?.isUpToDate() || this.listItem?.addon.isIgnored;
-    this.statusText = this.getStatusText();
+    this.statusText = this.getStatusText(this.listItem?.addon);
+    this.isIgnored = this.listItem.addon.isIgnored;
   }
 
-  public getStatusText(): string {
-    if (!this.listItem) {
+  public ngOnDestroy(): void {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public refresh(params: ICellRendererParams): boolean {
+    return false;
+  }
+
+  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
+
+  public getStatusText(addon: Addon, installState = AddonInstallState.Unknown): string {
+    if (!addon) {
       return "";
     }
 
-    if (this.listItem?.addon.isIgnored) {
+    if (addon.isIgnored) {
       return "COMMON.ADDON_STATE.IGNORED";
     }
 
-    if (this.listItem?.isUpToDate()) {
+    if (installState === AddonInstallState.Pending) {
+      return "COMMON.ADDON_STATE.PENDING";
+    }
+
+    if (!AddonUtils.needsUpdate(addon)) {
       return "COMMON.ADDON_STATE.UPTODATE";
     }
 
     return this.listItem.stateTextTranslationKey;
-  }
-
-  public onUpdateButtonUpdated(): void {
-    this._ngzone.run(() => {
-      this.onViewUpdated.emit();
-    });
   }
 
   public getWarningDescriptionKey(): string {

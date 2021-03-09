@@ -1,40 +1,66 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AgRendererComponent } from "ag-grid-angular";
+import { ICellRendererParams } from "ag-grid-community";
+
+import { Component, Input } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
+import { AddonChannelType, AddonDependencyType, AddonWarningType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonDependencyType, AddonWarningType } from "../../../common/wowup/models";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 import * as AddonUtils from "../../utils/addon.utils";
 import { capitalizeString } from "../../utils/string.utils";
+
+interface MyAddonsAddonCellComponentParams extends ICellRendererParams {
+  showUpdateToVersion: boolean;
+}
 
 @Component({
   selector: "app-my-addons-addon-cell",
   templateUrl: "./my-addons-addon-cell.component.html",
   styleUrls: ["./my-addons-addon-cell.component.scss"],
 })
-export class MyAddonsAddonCellComponent implements OnInit {
+export class MyAddonsAddonCellComponent implements AgRendererComponent {
   @Input("addon") public listItem: AddonViewModel;
-  @Input() public showUpdateToVersion = false;
-
-  @Output() public onViewDetails: EventEmitter<AddonViewModel> = new EventEmitter();
 
   public readonly capitalizeString = capitalizeString;
 
-  public addonUtils = AddonUtils;
+  public showUpdateToVersion = false;
   public warningType?: AddonWarningType;
   public warningText?: string;
+  public hasMultipleProviders = false;
 
-  public constructor(private _translateService: TranslateService) {}
-
-  public ngOnInit(): void {
-    this.warningType = this.listItem.addon.warningType;
-    this.warningText = this.getWarningText();
+  public get dependencyTooltip(): any {
+    return {
+      dependencyCount: this.getRequireDependencyCount(),
+    };
   }
 
+  public get channelTranslationKey(): string {
+    return this.listItem.addon.channelType === AddonChannelType.Alpha
+      ? "COMMON.ENUM.ADDON_CHANNEL_TYPE.ALPHA"
+      : "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA";
+  }
+
+  public constructor(private _translateService: TranslateService, private _dialogFactory: DialogFactory) {}
+
+  public agInit(params: MyAddonsAddonCellComponentParams): void {
+    this.listItem = params.data;
+    this.showUpdateToVersion = this.listItem.showUpdate;
+
+    this.warningType = this.listItem.addon.warningType;
+    this.warningText = this.getWarningText();
+
+    this.hasMultipleProviders = AddonUtils.hasMultipleProviders(this.listItem.addon);
+  }
+
+  public refresh(): boolean {
+    return false;
+  }
+
+  public afterGuiAttached?(): void {}
+
   public viewDetails(): void {
-    if (this.hasWarning()) {
-      return;
-    }
-    this.onViewDetails.emit(this.listItem);
+    this._dialogFactory.getAddonDetailsDialog(this.listItem);
   }
 
   public getRequireDependencyCount(): number {
@@ -69,12 +95,6 @@ export class MyAddonsAddonCellComponent implements OnInit {
       default:
         return "";
     }
-  }
-
-  public get dependencyTooltip(): any {
-    return {
-      dependencyCount: this.getRequireDependencyCount(),
-    };
   }
 
   public hasWarning(): boolean {

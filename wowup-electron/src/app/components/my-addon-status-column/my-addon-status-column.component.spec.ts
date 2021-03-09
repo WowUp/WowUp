@@ -1,4 +1,5 @@
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { Subject } from "rxjs";
 
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
@@ -7,13 +8,28 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 
 import { httpLoaderFactory } from "../../app.module";
 import { MatModule } from "../../mat-module";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { AddonService } from "../../services/addons/addon.service";
 import { MyAddonStatusColumnComponent } from "./my-addon-status-column.component";
 
 describe("MyAddonStatusColumnComponent", () => {
   let component: MyAddonStatusColumnComponent;
   let fixture: ComponentFixture<MyAddonStatusColumnComponent>;
+  let addonServiceSpy: AddonService;
 
   beforeEach(async () => {
+    addonServiceSpy = jasmine.createSpyObj(
+      "AddonService",
+      {
+        getAddons: Promise.resolve([]),
+        backfillAddons: Promise.resolve(undefined),
+      },
+      {
+        addonInstalled$: new Subject<AddonUpdateEvent>().asObservable(),
+        addonRemoved$: new Subject<string>().asObservable(),
+      }
+    );
+
     await TestBed.configureTestingModule({
       declarations: [MyAddonStatusColumnComponent],
       providers: [MatDialog],
@@ -32,7 +48,13 @@ describe("MyAddonStatusColumnComponent", () => {
           },
         }),
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(MyAddonStatusColumnComponent, {
+        set: {
+          providers: [{ provide: AddonService, useValue: addonServiceSpy }],
+        },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {

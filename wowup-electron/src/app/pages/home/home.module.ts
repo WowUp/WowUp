@@ -25,6 +25,7 @@ import { ProgressSpinnerComponent } from "../../components/progress-spinner/prog
 import { TelemetryDialogComponent } from "../../components/telemetry-dialog/telemetry-dialog.component";
 import { WowClientOptionsComponent } from "../../components/wow-client-options/wow-client-options.component";
 import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
+import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
 import { DirectiveModule } from "../../directive.module";
 import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
@@ -71,6 +72,7 @@ import { HomeComponent } from "./home.component";
     FundingButtonComponent,
     CenteredSnackbarComponent,
     TableContextHeaderCellComponent,
+    CellWrapTextComponent,
   ],
   imports: [
     CommonModule,

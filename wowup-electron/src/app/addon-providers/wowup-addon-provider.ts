@@ -90,7 +90,6 @@ export class WowUpAddonProvider extends AddonProvider {
 
     const deletedErrors = _.map(missingAddonIds, (addonId) => new SourceRemovedAddonError(addonId, undefined));
 
-    console.debug("deletedErrors", deletedErrors);
     return {
       errors: [...deletedErrors],
       searchResults,

@@ -85,10 +85,6 @@ describe("AddonDetailComponent", () => {
             provide: ElectronService,
             useValue: electronServiceSpy,
           },
-          {
-            provide: DialogFactory,
-            useValue: dialogFactory,
-          },
         ],
       },
     });

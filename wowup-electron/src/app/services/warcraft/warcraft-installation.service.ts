@@ -230,7 +230,6 @@ export class WarcraftInstallationService {
       }
     }
 
-    console.debug("migrateAllLegacyInstallations", legacyInstallations);
     this._legacyInstallationSrc.next(legacyInstallations);
 
     return blizzardAgentPath;
@@ -245,18 +244,18 @@ export class WarcraftInstallationService {
 
     const existingInstallations = this.getWowInstallationsByClientType(clientType);
     if (existingInstallations.length > 0) {
-      console.debug(`Existing install exists for: ${typeName}`);
+      // console.debug(`Existing install exists for: ${typeName}`);
       return undefined;
     }
 
     const legacyLocationKey = this._warcraftService.getLegacyClientLocationKey(clientType);
     const legacyLocation = this._preferenceStorageService.findByKey(legacyLocationKey);
     if (!legacyLocation) {
-      console.debug(`Legacy ${typeName}: nothing to migrate`);
+      // console.debug(`Legacy ${typeName}: nothing to migrate`);
       return undefined;
     }
 
-    console.debug(`Migrating legacy ${typeName} installation`);
+    console.log(`Migrating legacy ${typeName} installation`);
 
     const legacyDefaultChannel = this.getLegacyDefaultAddonChannel(typeName);
     const legacyDefaultAutoUpdate = this.getLegacyDefaultAutoUpdate(typeName);
