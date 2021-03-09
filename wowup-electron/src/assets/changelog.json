@@ -1,6 +1,18 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.8",
+      "changes": [
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Fix an issue with the update available snackbar (Linaori)",
+        "Fix an issue with migrations no longer happening",
+        "Change the dark colors to be like discord, to match the light theme",
+        "Migrations made smarter/faster",
+        "The My Addons tab will now use the new grid library"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.7",
       "changes": [
         "German locale updates (Glow)",
