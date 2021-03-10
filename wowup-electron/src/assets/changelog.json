@@ -1,6 +1,18 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.9",
+      "changes": [
+        "German locale updates (Glow)",
+        "Chinese locale updates (CyanoHao)",
+        "My Addons tab should remember the sort direction again",
+        "Revert the color change",
+        "Add some padding to the sort header arrow",
+        "General grid ui tweaks",
+        "Fix an issue with the 'Update all clients' button not resetting the spinner text"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.8",
       "changes": [
         "German locale updates (Glow)",
