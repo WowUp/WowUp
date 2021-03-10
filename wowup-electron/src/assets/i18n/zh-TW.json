@@ -77,12 +77,12 @@
     "ADDON_STATE": {
       "IGNORED": "忽略",
       "INSTALL": "安裝",
-      "PENDING": "Pending",
+      "PENDING": "等待中",
       "UNINSTALL": "解除安裝",
       "UNKNOWN": "未知",
       "UPDATE": "更新",
       "UPTODATE": "已安裝最新版",
-      "WARNING": "Warning"
+      "WARNING": "警告"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "正在備份",
