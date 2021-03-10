@@ -57,8 +57,13 @@ describe("MyAddonsComponent", () => {
         addonRemoved$: new Subject<string>().asObservable(),
       }
     );
+
+    const testSortOrder: SortOrder = {
+      colId: "name",
+      sort: "asc",
+    };
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
-      myAddonsSortOrder: { name: "test sort", direction: "asc" } as SortOrder,
+      myAddonsSortOrder: testSortOrder,
       getMyAddonsHiddenColumns: () => [],
     });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedHomeTab"], {
