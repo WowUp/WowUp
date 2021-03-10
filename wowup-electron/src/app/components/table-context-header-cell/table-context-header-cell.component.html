@@ -1,6 +1,6 @@
 <div class="ag-cell-label-container" (click)="onSortRequested($event)" (contextmenu)="params.onHeaderContext($event); $event.preventDefault()">
   <div class="ag-header-cell-label">
-    <span class="ag-header-cell-text">
+    <span class="ag-header-cell-text mr-2">
       {{params.displayName}}
     </span>
     <span *ngIf="(sorted$ | async) === 'asc'" class="ag-header-icon ag-header-label-icon">

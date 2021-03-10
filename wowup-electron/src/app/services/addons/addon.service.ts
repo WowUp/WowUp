@@ -725,7 +725,13 @@ export class AddonService {
 
       if (await this._fileService.pathExists(currentAddonLocation)) {
         console.log("Backing up", currentAddonLocation);
+        // Create the backup dir first
+        await this._fileService.createDirectory(addonFolderBackupLocation);
+
+        // Copy current contents into the new backup dir, doing a rename has other implications so we copy
         await this._fileService.copy(currentAddonLocation, addonFolderBackupLocation);
+
+        // Delete the current version
         await this._fileService.remove(currentAddonLocation);
 
         backupFolders.push(addonFolderBackupLocation);

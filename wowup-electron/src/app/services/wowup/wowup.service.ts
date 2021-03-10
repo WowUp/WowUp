@@ -294,11 +294,11 @@ export class WowUpService {
     this._preferenceStorageService.setObject(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
-  public get myAddonsSortOrder(): SortOrder {
-    return this._preferenceStorageService.getObject<SortOrder>(MY_ADDONS_SORT_ORDER);
+  public getMyAddonsSortOrder(): SortOrder[] {
+    return this._preferenceStorageService.getObject<SortOrder[]>(MY_ADDONS_SORT_ORDER);
   }
 
-  public set myAddonsSortOrder(sortOrder: SortOrder) {
+  public setMyAddonsSortOrder(sortOrder: SortOrder[]): void {
     this._preferenceStorageService.setObject(MY_ADDONS_SORT_ORDER, sortOrder);
   }
 

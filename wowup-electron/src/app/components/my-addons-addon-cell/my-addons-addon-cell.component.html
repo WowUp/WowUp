@@ -1,5 +1,5 @@
-<span>
-  <div class="addon-column row align-items-center">
+<div style="padding: 4px 0;">
+  <div class="addon-column row align-items-center" style="min-height: 52px;">
     <div class="thumbnail-container">
       <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container bg-secondary-3">
         <img [src]="listItem.addon.thumbnailUrl" loading="lazy" />
@@ -17,10 +17,12 @@
       </div> -->
     </div>
     <div class="version-container">
-      <a class="addon-title hover-text-2" (click)="viewDetails()"
-        [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
-        listItem.addon.name
-        }}</a>
+      <div class="title-container">
+        <a class="addon-title hover-text-2" (click)="viewDetails()"
+          [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
+          listItem.addon.name
+          }}</a>
+      </div>
       <div *ngIf="listItem.addon.fundingLinks" class="addon-funding">
         <app-funding-button *ngFor="let link of listItem.addon.fundingLinks" [funding]="link" size="small">
         </app-funding-button>
@@ -71,4 +73,4 @@
       </div>
     </div>
   </div>
-</span>
+</div>

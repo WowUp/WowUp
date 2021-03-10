@@ -2,10 +2,12 @@ import {
   CellContextMenuEvent,
   ColDef,
   ColumnApi,
+  ColumnVisibleEvent,
   GridApi,
   GridReadyEvent,
   RowClassParams,
   RowDoubleClickedEvent,
+  SortChangedEvent,
 } from "ag-grid-community";
 import * as _ from "lodash";
 import { join } from "path";
@@ -84,6 +86,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public selectedInstallationId: string;
   public rowData: AddonViewModel[] = [];
   public filterInput$ = new Subject<string>();
+  public rowDataChange$ = new Subject<boolean>();
 
   // Grid
   public columnDefs: ColDef[] = [];
@@ -237,6 +240,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
+  public onSortChanged(evt: SortChangedEvent): void {
+    const sortModel = this.gridApi.getSortModel();
+    console.debug("onSortChanged", sortModel);
+    this.wowUpService.setMyAddonsSortOrder(sortModel);
+  }
+
+  public onColumnVisible(evt: ColumnVisibleEvent): void {
+    const columnState = evt.columnApi.getColumnState();
+    console.log("columnVisible", columnState);
+  }
+
+  public onRowDataChanged(): void {
+    this.rowDataChange$.next(true);
+  }
+
   public onGridReady(params: GridReadyEvent): void {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
@@ -250,6 +268,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         },
       ],
       defaultState: { sort: null },
+    });
+
+    this.loadSortOrder();
+
+    this.rowDataChange$.pipe(debounceTime(50)).subscribe(() => {
+      this.gridApi.redrawRows();
+      this.gridApi.resetRowHeights();
+      this._cdRef.detectChanges();
     });
   }
 
@@ -830,6 +856,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isBusy = false;
       this.enableControls = this.calculateControlState();
       this._cdRef.detectChanges();
+    } finally {
+      this.spinnerMessage = "";
     }
   }
 
@@ -859,8 +887,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.rowData = [];
-    this.gridApi.setRowData(this.rowData);
-    this._cdRef.detectChanges();
 
     try {
       const addons = await this.addonService.getAddons(installation, reScan);
@@ -869,8 +895,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.enableControls = this.calculateControlState();
 
       this.rowData = rowData;
-      this.gridApi.setRowData(this.rowData);
-      this.gridApi.redrawRows();
 
       this.isBusy = false;
       this.setPageContextText();
@@ -998,6 +1022,19 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return !this.addonService.isInstalling();
   }
 
+  private loadSortOrder() {
+    let savedSortOrder = this.wowUpService.getMyAddonsSortOrder();
+    if (!Array.isArray(savedSortOrder)) {
+      console.info(`Legacy or missing sort order fixed`);
+      this.wowUpService.setMyAddonsSortOrder([]);
+      savedSortOrder = [];
+    }
+
+    if (savedSortOrder.length > 0) {
+      this.gridApi.setSortModel(savedSortOrder);
+    }
+  }
+
   private createColumns(): ColDef[] {
     const baseColumn = {
       headerComponent: "contextHeader",
@@ -1013,9 +1050,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         field: "name",
         flex: 2,
-        minWidth: 150,
+        minWidth: 300,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER"),
         sortable: true,
+        autoHeight: true,
         cellRenderer: "myAddonRenderer",
         colId: "name",
         ...baseColumn,
@@ -1030,7 +1068,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         field: "installedAt",
-        width: 130,
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER"),
         valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.installedAt),
@@ -1038,7 +1075,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         field: "latestVersion",
-        minWidth: 150,
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER"),
         headerComponent: "contextHeader",
@@ -1049,7 +1085,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         field: "releasedAt",
-        minWidth: 150,
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
         valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.releasedAt),
@@ -1058,7 +1093,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         field: "gameVersion",
         sortable: true,
-        width: 140,
+        flex: 1,
+        minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER"),
         ...baseColumn,
       },
@@ -1066,19 +1102,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "externalChannel",
         sortable: true,
         flex: 1,
+        minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL"),
         ...baseColumn,
       },
       {
         field: "providerName",
         sortable: true,
-        width: 140,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER"),
         ...baseColumn,
       },
       {
         field: "author",
         sortable: true,
+        minWidth: 150,
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
         ...baseColumn,

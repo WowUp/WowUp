@@ -74,6 +74,7 @@
     [rowData]="rowData" [columnDefs]="columnDefs" [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId"
     [frameworkComponents]="frameworkComponents" [rowHeight]="65" [immutableData]="true" [rowClassRules]="rowClassRules"
     (gridReady)="onGridReady($event)" (rowDoubleClicked)="onRowDoubleClicked($event)"
+    (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
     (cellContextMenu)="onCellContext($event)">
   </ag-grid-angular>
 
@@ -82,7 +83,7 @@
 <!-- ADDON CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #addonContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu"></div>
-<mat-menu #contextMenu="matMenu" class="addon-context-menu bg-secondary-5 ">
+<mat-menu #contextMenu="matMenu" class="addon-context-menu bg-secondary-4">
   <ng-template matMenuContent let-listItem="listItem">
     <div class="addon-context-menu-header">
       <div *ngIf="listItem.hasThumbnail === true" class="thumbnail bg-secondary-3">
@@ -167,7 +168,7 @@
         </mat-radio-button>
       </mat-radio-group>
     </mat-menu>
-    <mat-menu #addonFolders="matMenu" class="addon-context-menu bg-secondary-5">
+    <mat-menu #addonFolders="matMenu" class="addon-context-menu bg-secondary-4">
       <div *ngFor="let folder of addonUtils.getFolderList(listItem.addon)">
         <button mat-menu-item (click)="onShowFolder(listItem.addon, folder)">{{folder}}</button>
       </div>
@@ -187,7 +188,7 @@
 <!-- MULTI ADDON CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #addonMultiContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="multiContextMenu"></div>
-<mat-menu #multiContextMenu="matMenu" class="addon-context-menu  bg-secondary-5">
+<mat-menu #multiContextMenu="matMenu" class="addon-context-menu  bg-secondary-4">
   <ng-template matMenuContent let-listItems="listItems">
     <div class="addon-context-menu-header" translate [translateParams]="{ count: listItems.length }">
       PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ADDONS_SELECTED
@@ -235,7 +236,7 @@
 <div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
 </div>
-<mat-menu #columnContextMenu="matMenu" class="addon-context-menu bg-secondary-5">
+<mat-menu #columnContextMenu="matMenu" class="addon-context-menu bg-secondary-4 text-1">
   <ng-template matMenuContent let-columns="columns">
     <div class="addon-context-menu-header">
       <div class="addon-name">
