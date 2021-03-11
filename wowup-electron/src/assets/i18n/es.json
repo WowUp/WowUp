@@ -77,7 +77,7 @@
     "ADDON_STATE": {
       "IGNORED": "Ignorado",
       "INSTALL": "Instalar",
-      "PENDING": "Pending",
+      "PENDING": "Pendiente",
       "UNINSTALL": "Desinstalar",
       "UNKNOWN": "",
       "UPDATE": "Actualizar",
