@@ -1,12 +1,17 @@
-import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import * as _ from "lodash";
-import { ColumnState } from "../../models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
+import * as _ from "lodash";
 import { join } from "path";
-import { BehaviorSubject, Subject } from "rxjs";
+import { Subject } from "rxjs";
+
+import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
 import {
+  ADDON_MIGRATION_VERSION_KEY,
+  ADDON_PROVIDERS_KEY,
+  ALLIANCE_LIGHT_THEME,
+  ALLIANCE_THEME,
   APP_UPDATE_CHECK_END,
   APP_UPDATE_CHECK_FOR_UPDATE,
   APP_UPDATE_CHECK_START,
@@ -14,37 +19,34 @@ import {
   APP_UPDATE_INSTALL,
   APP_UPDATE_START_DOWNLOAD,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  CURRENT_THEME_KEY,
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
+  DEFAULT_LIGHT_THEME,
+  DEFAULT_THEME,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
+  GET_ADDONS_HIDDEN_COLUMNS_KEY,
+  GET_ADDONS_SORT_ORDER,
+  HORDE_LIGHT_THEME,
+  HORDE_THEME,
+  IPC_GET_APP_VERSION,
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
+  MY_ADDONS_HIDDEN_COLUMNS_KEY,
+  MY_ADDONS_SORT_ORDER,
+  SELECTED_LANGUAGE_PREFERENCE_KEY,
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
-  WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
-  SELECTED_LANGUAGE_PREFERENCE_KEY,
-  MY_ADDONS_HIDDEN_COLUMNS_KEY,
-  MY_ADDONS_SORT_ORDER,
-  GET_ADDONS_HIDDEN_COLUMNS_KEY,
-  GET_ADDONS_SORT_ORDER,
-  CURRENT_THEME_KEY,
-  DEFAULT_THEME,
-  ADDON_PROVIDERS_KEY,
-  HORDE_THEME,
-  HORDE_LIGHT_THEME,
-  ALLIANCE_THEME,
-  ALLIANCE_LIGHT_THEME,
-  DEFAULT_LIGHT_THEME,
-  ADDON_MIGRATION_VERSION_KEY,
-  IPC_GET_APP_VERSION,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
+  WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/models";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
+import { ColumnState } from "../../models/wowup/column-state";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
-import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
@@ -81,7 +83,7 @@ export class WowUpService {
     private _translateService: TranslateService
   ) {
     this.setDefaultPreferences()
-      .then(() => console.debug("Set default preferences"))
+      // .then(() => console.debug("Set default preferences"))
       .catch((e) => console.error("Failed to set default preferences", e));
 
     this.createDownloadDirectory()
@@ -341,7 +343,8 @@ export class WowUpService {
     const updateCheckResult: UpdateCheckResult = await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
 
     // only notify things when the version changes
-    if (!(await this.isSameVersion(updateCheckResult))) {
+    const isSameVersion = await this.isSameVersion(updateCheckResult);
+    if (!isSameVersion) {
       this._availableVersion = updateCheckResult.updateInfo.version;
       this._wowupUpdateCheckSrc.next(updateCheckResult);
     }

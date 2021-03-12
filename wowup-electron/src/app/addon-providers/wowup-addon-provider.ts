@@ -172,7 +172,7 @@ export class WowUpAddonProvider extends AddonProvider {
     console.timeEnd("WowUpScan");
 
     const fingerprints = scanResults.map((result) => result.fingerprint);
-    console.log("fingerprintRequest", JSON.stringify(fingerprints));
+    console.log("[WowUpFingerprints]", JSON.stringify(fingerprints));
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints);
 
     for (const scanResult of scanResults) {

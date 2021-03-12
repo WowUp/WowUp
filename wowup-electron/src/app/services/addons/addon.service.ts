@@ -45,6 +45,7 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import { capitalizeString } from "app/utils/string.utils";
 
 export enum ScanUpdateType {
   Start,
@@ -143,7 +144,6 @@ export class AddonService {
   }
 
   public isInstalling(): boolean {
-    console.debug(`isInstalling`, this._activeInstalls);
     return this._activeInstalls > 0;
   }
 
@@ -154,11 +154,10 @@ export class AddonService {
 
   private handleLegacyInstallations(installations: WowInstallation[]): void {
     if (installations.length === 0) {
-      console.debug(`No legacy addons to migrate`);
+      console.debug(`No legacy installations to migrate`);
       return;
     }
 
-    console.debug("handleLegacyInstallations", installations);
     const allAddons = this._addonStorage.getAll();
 
     for (const addon of allAddons) {
@@ -483,8 +482,10 @@ export class AddonService {
         throw new Error("Addon not found or invalid");
       }
 
-      console.log(
-        `Started update for "${addon.name}" at version "${addon.installedVersion}" to "${addon.latestVersion}"`
+      this.logAddonAction(
+        `Addon${capitalizeString(queueItem.installType)}`,
+        addon,
+        `'${addon.installedVersion}' -> '${addon.latestVersion}'`
       );
 
       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
@@ -531,13 +532,15 @@ export class AddonService {
           await this.installUnzippedDirectory(unzippedDirectory, installation);
         } catch (err) {
           console.error(err);
+
+          this.logAddonAction("RestoreBackup", addon, ...directoriesToBeRemoved);
           await this.restoreAddonDirectories(directoriesToBeRemoved);
 
           throw err;
         }
 
         for (const directory of directoriesToBeRemoved) {
-          console.log("Removing backup", directory);
+          this.logAddonAction("AddonRemoveBackup", addon, directory);
           await this._fileService.deleteIfExists(directory);
         }
 
@@ -549,11 +552,11 @@ export class AddonService {
         const removedDirectoryNames = _.difference(existingDirectoryNames, unzippedDirectoryNames);
 
         if (existingDirectoryNames.length > 0) {
-          console.log("Addon added new directories", addedDirectoryNames);
+          this.logAddonAction("AddedDirs", addon, ...addedDirectoryNames);
         }
 
         if (removedDirectoryNames.length > 0) {
-          console.log("Addon removed existing directories", removedDirectoryNames);
+          this.logAddonAction("DiffDirs", addon, ...removedDirectoryNames);
         }
 
         addon.installedExternalReleaseId = addon.externalLatestReleaseId;
@@ -599,7 +602,8 @@ export class AddonService {
           installState: AddonInstallState.Complete,
           progress: 100,
         });
-        console.log(`Finished update for "${addon.name}" at version "${addon.installedVersion}"`);
+
+        this.logAddonAction(`Addon${capitalizeString(queueItem.installType)}Complete`, addon, addon.installedVersion);
       } catch (err) {
         console.error(err);
         queueItem.completion.reject(err);
@@ -628,7 +632,6 @@ export class AddonService {
       }
       return addon.name;
     } finally {
-      console.debug("DECREMENT", didFinish);
       if (!didFinish) {
         this._activeInstalls -= 1;
       }
@@ -720,11 +723,9 @@ export class AddonService {
       const currentAddonLocation = path.join(addonFolderPath, addonFolder);
       const addonFolderBackupLocation = path.join(addonFolderPath, `${addonFolder}-bak`);
 
-      console.log("Ensure existing backup is deleted", addonFolderBackupLocation);
       await this._fileService.deleteIfExists(addonFolderBackupLocation);
 
       if (await this._fileService.pathExists(currentAddonLocation)) {
-        console.log("Backing up", currentAddonLocation);
         // Create the backup dir first
         await this._fileService.createDirectory(addonFolderBackupLocation);
 
@@ -741,8 +742,13 @@ export class AddonService {
     return backupFolders;
   }
 
+  private logAddonAction(action: string, addon: Addon, ...extras: string[]) {
+    console.log(
+      `[${action}] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name} ${extras.join(" ")}`
+    );
+  }
+
   private async restoreAddonDirectories(directories: string[]) {
-    console.log("Attempting to restore addon directories based on backups");
     for (const directory of directories) {
       const originalLocation = directory.substring(0, directory.length - 4);
 
@@ -756,7 +762,6 @@ export class AddonService {
         }
 
         // Move the backup folder into the original location
-        console.log(`Attempting to roll back ${directory}`);
         await this._fileService.copy(directory, originalLocation);
       }
     }
@@ -786,7 +791,7 @@ export class AddonService {
   public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
     const provider = this.getAddonProvider(url);
     if (!provider) {
-      console.warn(`No provider found for urlL: ${url.toString()}`);
+      console.warn(`No provider found for url: ${url.toString()}`);
       return undefined;
     }
 
@@ -841,6 +846,8 @@ export class AddonService {
   }
 
   public async removeAddon(addon: Addon, removeDependencies = false, removeDirectories = true): Promise<void> {
+    console.log(`[RemoveAddon] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name}`);
+
     if (removeDirectories) {
       const installedDirectories = addon.installedFolders?.split(",") ?? [];
       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
@@ -848,6 +855,9 @@ export class AddonService {
 
       for (const directory of installedDirectories) {
         const addonDirectory = path.join(addonFolderPath, directory);
+        console.log(
+          `[RemoveAddonDirectory] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`
+        );
         await this._fileService.remove(addonDirectory);
       }
     }
@@ -1072,16 +1082,16 @@ export class AddonService {
   }
 
   public async migrate(installation: WowInstallation): Promise<void> {
-    console.log(`Migrating: ${installation.label}`);
+    console.log(`[MigrateInstall] ${installation.label}`);
     const existingAddons = this.getAllAddons(installation);
     if (!existingAddons.length) {
-      console.log(`Skipping client type: ${installation.label} no addons found`);
+      console.log(`[MigrateInstall] ${installation.label} no addons found`);
       return;
     }
 
     const needsMigration = _.some(existingAddons, (addon) => this.needsMigration(addon));
     if (!needsMigration) {
-      console.log(`No addons needed to be migrated: ${installation.label}`);
+      console.log(`[MigrateInstall] ${installation.label} No addons needed to be migrated`);
       return;
     }
 
@@ -1105,7 +1115,7 @@ export class AddonService {
 
   private migrateAddon(addon: Addon, scannedAddons: Addon[]): void {
     if (addon.providerName === ADDON_PROVIDER_HUB_LEGACY) {
-      console.log(`Updating legacy hub name: ${addon.name}`);
+      console.log(`[MigrateAddon] '${addon.name}' Updating legacy hub name`);
       addon.providerName = ADDON_PROVIDER_HUB;
       this.saveAddon(addon);
     }
@@ -1116,7 +1126,7 @@ export class AddonService {
     );
 
     if (!scannedAddon) {
-      console.log(`No scanned addon found ${addon.name}`);
+      console.log(`[MigrateAddon] '${addon.name}' No scanned addon found`);
       return;
     }
 
@@ -1193,20 +1203,15 @@ export class AddonService {
         (addonFolder) => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`
       );
 
-      console.log(Object.keys(matchedGroups));
-
       const addonList = Object.values(matchedGroups).map(
         (value) => _.orderBy(value, (v) => v.matchingAddon.externalIds.length).reverse()[0].matchingAddon
       );
 
       const unmatchedFolders = addonFolders.filter((af) => this.isAddonFolderUnmatched(matchedAddonFolderNames, af));
-      console.debug("unmatchedFolders", unmatchedFolders);
 
       const unmatchedAddons = unmatchedFolders.map((uf) =>
         this.createUnmatchedAddon(uf, installation, matchedAddonFolderNames)
       );
-
-      console.debug("unmatchedAddons", unmatchedAddons);
 
       addonList.push(...unmatchedAddons);
 
@@ -1250,8 +1255,6 @@ export class AddonService {
       existingAddons,
       (ea) => ea.id !== addon.id && _.intersection(addon.installedFolderList, ea.installedFolderList).length > 0
     );
-
-    console.debug("reconcileAddonFolders", existingAddons);
 
     for (const existingAddon of existingAddons) {
       if (existingAddon.providerName === ADDON_PROVIDER_UNKNOWN) {

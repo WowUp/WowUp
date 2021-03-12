@@ -68,6 +68,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private isSelectedTab = false;
   private _lazyLoaded = false;
   private _isRefreshing = false;
+  private _baseRowData: AddonViewModel[] = [];
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
@@ -159,11 +160,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public get enableUpdateAll(): boolean {
-    return _.some(this.rowData, (row) => AddonUtils.needsUpdate(row.addon));
+    return _.some(this._baseRowData, (row) => AddonUtils.needsUpdate(row.addon));
   }
 
   public get hasData(): boolean {
-    return this.rowData.length > 0;
+    return this._baseRowData.length > 0;
   }
 
   public constructor(
@@ -185,7 +186,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
 
     // When the search input changes debounce it a little before searching
-    const filterInputSub = this.filterInput$.pipe(debounceTime(200), distinctUntilChanged()).subscribe(() => {
+    const filterInputSub = this.filterInput$.pipe(debounceTime(200)).subscribe(() => {
       this.filterAddons();
     });
 
@@ -241,14 +242,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onSortChanged(evt: SortChangedEvent): void {
-    const sortModel = this.gridApi.getSortModel();
-    console.debug("onSortChanged", sortModel);
-    this.wowUpService.setMyAddonsSortOrder(sortModel);
-  }
-
-  public onColumnVisible(evt: ColumnVisibleEvent): void {
     const columnState = evt.columnApi.getColumnState();
-    console.log("columnVisible", columnState);
+    const minmialState = columnState.map((column) => {
+      return {
+        colId: column.colId,
+        sort: column.sort,
+      };
+    });
+    this.wowUpService.setMyAddonsSortOrder(minmialState);
   }
 
   public onRowDataChanged(): void {
@@ -273,9 +274,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadSortOrder();
 
     this.rowDataChange$.pipe(debounceTime(50)).subscribe(() => {
-      this.gridApi.redrawRows();
-      this.gridApi.resetRowHeights();
-      this._cdRef.detectChanges();
+      this.redrawRows();
     });
   }
 
@@ -297,7 +296,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.setPageContextText();
-    this.lazyLoad().catch((e) => console.error(e));
+    this.lazyLoad()
+      .then(() => {
+        this.redrawRows();
+      })
+      .catch((e) => console.error(e));
+    // window.setTimeout(() => {}, 50);
   };
 
   // Get the translated value of the provider name (unknown)
@@ -386,25 +390,26 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return listItem.addon.warningType === undefined && this.addonService.canReinstall(listItem.addon);
   }
 
+  /** Handle when the user enters new text into the filter box */
   public filterAddons(): void {
-    const filter = this.filter.trim().toLowerCase();
-    const filtered = _.filter(this.rowData, (row) => this.filterListItem(row, filter));
+    if (this.filter.length === 0) {
+      this.rowData = this._baseRowData;
+      this._cdRef.detectChanges();
+      return;
+    }
 
-    this.gridApi.setRowData(filtered);
-    // this.gridApi.setFilterModel({
-    //   name: {
-    //     filterType: "text",
-    //     type: "contains",
-    //     filter,
-    //   },
-    // });
-    // this.dataSource.filter = this.filter.trim().toLowerCase();
+    const filter = this.filter.trim().toLowerCase();
+    const filtered = _.filter(this._baseRowData, (row) => this.filterListItem(row, filter));
+
+    this.rowData = filtered;
+
+    this._cdRef.detectChanges();
   }
 
+  /** Handle when the user clicks the clear button on the filter input box */
   public onClearFilter(): void {
     this.filter = "";
-    this.gridApi.setRowData(this.rowData);
-    // this.gridApi.setFilterModel(null);
+    this.filterInput$.next(this.filter);
   }
 
   // TODO change this to rely on addon service now view models
@@ -517,7 +522,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.gridColumnApi.setColumnVisible(column.name, event.checked);
 
     if (column.name === "latestVersion") {
-      const updates = [...this.rowData];
+      const updates = [...this._baseRowData];
       updates.forEach((update) => (update.showUpdate = !event.checked));
       this.rowData = updates;
     }
@@ -642,7 +647,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickIgnoreAddons(listItems: AddonViewModel[]): void {
     const isIgnored = _.every(listItems, (listItem) => listItem.addon.isIgnored === false);
-    const rows = [...this.rowData];
+    const rows = [...this._baseRowData];
     try {
       for (const listItem of listItems) {
         const row = _.find(rows, (r) => r.addon.id === listItem.addon.id);
@@ -671,7 +676,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickAutoUpdateAddons(listItems: AddonViewModel[]): void {
     const isAutoUpdate = _.every(listItems, (listItem) => listItem.addon.autoUpdateEnabled === false);
-    const rows = [...this.rowData];
+    const rows = [...this._baseRowData];
     try {
       for (const listItem of listItems) {
         const row = _.find(rows, (r) => r.addon.id === listItem.addon.id);
@@ -886,7 +891,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    this.rowData = [];
+    this.rowData = this._baseRowData = [];
+    this._cdRef.detectChanges();
 
     try {
       const addons = await this.addonService.getAddons(installation, reScan);
@@ -894,7 +900,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       const rowData = this.formatAddons(addons);
       this.enableControls = this.calculateControlState();
 
-      this.rowData = rowData;
+      this._baseRowData = rowData;
+      this.rowData = this._baseRowData;
 
       this.isBusy = false;
       this.setPageContextText();
@@ -994,11 +1001,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // Reorder everything by name to act as a sub-sort
       this.rowData = _.orderBy(rows, (row) => row.addon.name);
-      this.gridApi.setRowData(this.rowData);
 
-      // Force the grid to redraw whatever row needs updated
-      const rowNode = this.gridApi.getRowNode(evt.addon.id);
-      this.gridApi.redrawRows({ rowNodes: [rowNode] });
+      // If the user is currently filtering the table, use that.
+      // if (this.filter) {
+      //   this.filterAddons();
+      // } else {
+      //   this.gridApi.setRowData(this.rowData);
+
+      //   // Force the grid to redraw whatever row needs updated
+      //   const rowNode = this.gridApi.getRowNode(evt.addon.id);
+      //   this.gridApi.redrawRows({ rowNodes: [rowNode] });
+      // }
 
       this.enableControls = this.calculateControlState();
     } finally {
@@ -1024,15 +1037,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private loadSortOrder() {
     let savedSortOrder = this.wowUpService.getMyAddonsSortOrder();
-    if (!Array.isArray(savedSortOrder)) {
+    if (!Array.isArray(savedSortOrder) || savedSortOrder.length < 2) {
       console.info(`Legacy or missing sort order fixed`);
       this.wowUpService.setMyAddonsSortOrder([]);
       savedSortOrder = [];
     }
 
     if (savedSortOrder.length > 0) {
-      this.gridApi.setSortModel(savedSortOrder);
+      this.gridColumnApi.setColumnState(savedSortOrder);
     }
+  }
+
+  private redrawRows() {
+    this.gridApi?.redrawRows();
+    this.gridApi?.resetRowHeights();
+    this._cdRef.detectChanges();
   }
 
   private createColumns(): ColDef[] {
@@ -1042,7 +1061,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         onHeaderContext: this.onHeaderContext,
       },
       cellStyle: {
-        lineHeight: "65px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
       },
     };
 

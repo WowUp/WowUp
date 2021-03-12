@@ -69,13 +69,11 @@ export class WowUpAddonService {
     _addonService.addonInstalled$
       .pipe(filter((update) => update.installState === AddonInstallState.Complete))
       .subscribe((update) => {
-        console.debug("addonInstalled");
         const installation = this._warcraftInstallationService.getWowInstallation(update.addon.installationId);
         this.updateForInstallation(installation).catch((e) => console.error(e));
       });
 
     _addonService.addonRemoved$.subscribe((addon) => {
-      console.debug("addonRemoved", addon);
       this.updateForAllClientTypes().catch((e) => console.error(e));
     });
   }

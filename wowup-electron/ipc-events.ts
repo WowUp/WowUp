@@ -116,6 +116,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(
     IPC_CREATE_DIRECTORY_CHANNEL,
     async (evt, directoryPath: string): Promise<boolean> => {
+      log.info(`[CreateDirectory] '${directoryPath}'`);
       await fs.ensureDir(directoryPath);
       return true;
     }
@@ -304,12 +305,14 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(
     IPC_COPY_FILE_CHANNEL,
     async (evt, arg: CopyFileRequest): Promise<boolean> => {
+      log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
       await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
       return true;
     }
   );
 
   handle(IPC_DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
+    log.info(`[FileRemove] ${filePath}`);
     await fs.remove(filePath);
 
     return true;
@@ -361,11 +364,13 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_RESTART_APP, () => {
+    log.info(`[RestartApp]`);
     app.relaunch();
     app.quit();
   });
 
   handle(IPC_QUIT_APP, () => {
+    log.info(`[QuitApp]`);
     app.quit();
   });
 
@@ -391,6 +396,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
       const savePath = path.join(arg.outputFolder, arg.fileName);
+      log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
       const { data, headers } = await axios({
         url: arg.url,

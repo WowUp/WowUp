@@ -188,7 +188,7 @@
 <!-- MULTI ADDON CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #addonMultiContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="multiContextMenu"></div>
-<mat-menu #multiContextMenu="matMenu" class="addon-context-menu  bg-secondary-4">
+<mat-menu #multiContextMenu="matMenu" class="addon-context-menu  bg-secondary-4 text-1">
   <ng-template matMenuContent let-listItems="listItems">
     <div class="addon-context-menu-header" translate [translateParams]="{ count: listItems.length }">
       PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ADDONS_SELECTED
