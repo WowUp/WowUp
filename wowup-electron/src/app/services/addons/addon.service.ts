@@ -36,6 +36,7 @@ import { Toc } from "../../models/wowup/toc";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
+import { capitalizeString } from "../../utils/string.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
@@ -45,7 +46,6 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import { capitalizeString } from "app/utils/string.utils";
 
 export enum ScanUpdateType {
   Start,
