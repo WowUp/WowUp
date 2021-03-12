@@ -1,7 +1,10 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
+
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
+import { Addon } from "../../../common/entities/addon";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonService } from "../../services/addons/addon.service";
@@ -27,8 +30,19 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   public constructor(
     private _addonService: AddonService,
     private _sessionService: SessionService,
-    private _translate: TranslateService
-  ) {}
+    private _translate: TranslateService,
+    private _ngZone: NgZone
+  ) {
+    const addonInstalledSub = this._addonService.addonInstalled$
+      .pipe(filter((evt) => this.isSameAddon(evt.addon)))
+      .subscribe((evt) => {
+        this._ngZone.run(() => {
+          this.onInstallUpdate(evt.installState, evt.progress);
+        });
+      });
+
+    this._subscriptions.push(addonInstalledSub);
+  }
 
   public ngOnInit(): void {
     const isInstalled = this._addonService.isInstalled(
@@ -41,7 +55,6 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
-    this._subscriptions = [];
   }
 
   public getIsButtonActive(installState: AddonInstallState): boolean {
@@ -82,14 +95,20 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     try {
       await this._addonService.installPotentialAddon(
         this.addonSearchResult,
-        this._sessionService.getSelectedWowInstallation(),
-        this.onInstallUpdate
+        this._sessionService.getSelectedWowInstallation()
       );
     } catch (e) {
       console.error("onInstallUpdateClick failed", e);
       this.disableButton = false;
     }
   }
+
+  private isSameAddon = (addon: Addon): boolean => {
+    return (
+      addon.externalId === this.addonSearchResult.externalId &&
+      addon.providerName === this.addonSearchResult.providerName
+    );
+  };
 
   private onInstallUpdate = (installState: AddonInstallState, progress: number): void => {
     this.showProgress = this.getIsButtonActive(installState);
