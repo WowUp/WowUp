@@ -59,17 +59,34 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
   public getExecutableName(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
-        return "Wow.exe";
+        return WOW_RETAIL_NAME;
       case WowClientType.Classic:
-        return "WowClassic.exe";
+        return WOW_CLASSIC_NAME;
       case WowClientType.RetailPtr:
-        return "WowT.exe";
+        return WOW_RETAIL_PTR_NAME;
       case WowClientType.ClassicPtr:
-        return "WowClassicT.exe";
+        return WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
-        return "WowB.exe";
+        return WOW_RETAIL_BETA_NAME;
       default:
         return "";
+    }
+  }
+
+  public getClientType(executableName: string): WowClientType {
+    switch (executableName) {
+      case WOW_RETAIL_NAME:
+        return WowClientType.Retail;
+      case WOW_CLASSIC_NAME:
+        return WowClientType.Classic;
+      case WOW_RETAIL_PTR_NAME:
+        return WowClientType.RetailPtr;
+      case WOW_CLASSIC_PTR_NAME:
+        return WowClientType.ClassicPtr;
+      case WOW_RETAIL_BETA_NAME:
+        return WowClientType.Beta;
+      default:
+        return WowClientType.None;
     }
   }
 }

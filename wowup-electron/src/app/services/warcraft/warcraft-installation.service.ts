@@ -158,8 +158,8 @@ export class WarcraftInstallationService {
   }
 
   public async createWowInstallationForPath(applicationPath: string): Promise<WowInstallation> {
-    const clientDir = path.dirname(applicationPath);
-    const clientType = this._warcraftService.getClientTypeForFolderName(clientDir);
+    const binaryName = path.basename(applicationPath);
+    const clientType = this._warcraftService.getClientTypeForBinary(binaryName);
     const typeName = getEnumName(WowClientType, clientType);
     const currentInstallations = this.getWowInstallationsByClientType(clientType);
 

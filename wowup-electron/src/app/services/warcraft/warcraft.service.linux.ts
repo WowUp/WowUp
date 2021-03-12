@@ -44,4 +44,21 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
         return "";
     }
   }
+
+  public getClientType(executableName: string): WowClientType {
+    switch (executableName) {
+      case WOW_RETAIL_NAME:
+        return WowClientType.Retail;
+      case WOW_CLASSIC_NAME:
+        return WowClientType.Classic;
+      case WOW_RETAIL_PTR_NAME:
+        return WowClientType.RetailPtr;
+      case WOW_CLASSIC_PTR_NAME:
+        return WowClientType.ClassicPtr;
+      case WOW_RETAIL_BETA_NAME:
+        return WowClientType.Beta;
+      default:
+        return WowClientType.None;
+    }
+  }
 }

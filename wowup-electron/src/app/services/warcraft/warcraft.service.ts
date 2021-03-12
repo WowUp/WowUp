@@ -214,21 +214,8 @@ export class WarcraftService {
     return await this._fileService.pathExists(executablePath);
   }
 
-  public getClientTypeForFolderName(folderName: string): WowClientType {
-    switch (folderName) {
-      case CLIENT_RETAIL_FOLDER:
-        return WowClientType.Retail;
-      case CLIENT_RETAIL_PTR_FOLDER:
-        return WowClientType.RetailPtr;
-      case CLIENT_CLASSIC_FOLDER:
-        return WowClientType.Classic;
-      case CLIENT_CLASSIC_PTR_FOLDER:
-        return WowClientType.ClassicPtr;
-      case CLIENT_BETA_FOLDER:
-        return WowClientType.Beta;
-      default:
-        return WowClientType.Retail;
-    }
+  public getClientTypeForBinary(binaryName: string): WowClientType {
+    return this._impl.getClientType(binaryName);
   }
 
   public getClientFolderName(clientType: WowClientType): string {
@@ -319,5 +306,22 @@ export class WarcraftService {
     this._preferenceStorageService.set(BLIZZARD_AGENT_PATH_KEY, agentPath);
 
     return agentPath;
+  }
+
+  private getClientTypeForFolderName(folderName: string): WowClientType {
+    switch (folderName) {
+      case CLIENT_RETAIL_FOLDER:
+        return WowClientType.Retail;
+      case CLIENT_RETAIL_PTR_FOLDER:
+        return WowClientType.RetailPtr;
+      case CLIENT_CLASSIC_FOLDER:
+        return WowClientType.Classic;
+      case CLIENT_CLASSIC_PTR_FOLDER:
+        return WowClientType.ClassicPtr;
+      case CLIENT_BETA_FOLDER:
+        return WowClientType.Beta;
+      default:
+        return WowClientType.Retail;
+    }
   }
 }

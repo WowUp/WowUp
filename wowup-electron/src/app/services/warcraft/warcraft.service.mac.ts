@@ -40,17 +40,34 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
   public getExecutableName(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
-        return "World of Warcraft.app";
+        return WOW_RETAIL_NAME;
       case WowClientType.Classic:
-        return "World of Warcraft Classic.app";
+        return WOW_CLASSIC_NAME;
       case WowClientType.RetailPtr:
-        return "World of Warcraft Test.app";
+        return WOW_RETAIL_NAME;
       case WowClientType.ClassicPtr:
-        return "World of Warcraft Classic Test.app";
+        return WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
-        return "World of Warcraft Beta.app";
+        return WOW_RETAIL_BETA_NAME;
       default:
         return "";
+    }
+  }
+
+  public getClientType(executableName: string): WowClientType {
+    switch (executableName) {
+      case WOW_RETAIL_NAME:
+        return WowClientType.Retail;
+      case WOW_CLASSIC_NAME:
+        return WowClientType.Classic;
+      case WOW_RETAIL_PTR_NAME:
+        return WowClientType.RetailPtr;
+      case WOW_CLASSIC_PTR_NAME:
+        return WowClientType.ClassicPtr;
+      case WOW_RETAIL_BETA_NAME:
+        return WowClientType.Beta;
+      default:
+        return WowClientType.None;
     }
   }
 }
