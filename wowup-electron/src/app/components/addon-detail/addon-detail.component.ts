@@ -1,6 +1,6 @@
 import { last } from "lodash";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
-import { filter, map, switchMap, tap } from "rxjs/operators";
+import { filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
@@ -93,7 +93,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
-    public sessionService: SessionService
+    private _sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
 
@@ -118,7 +118,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public ngOnInit(): void {
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
 
-    this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
+    this.selectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab());
 
     this.thumbnailLetter = this.getThumbnailLetter();
 
@@ -182,7 +182,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public onSelectedTabChange(evt: MatTabChangeEvent): void {
-    this.sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
+    this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
   }
 
   public onClickExternalId(): void {
@@ -195,6 +195,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.getRemoveAddonPrompt(this.model.listItem.addon.name)
       .afterClosed()
       .pipe(
+        first(),
         switchMap((result) => {
           if (!result) {
             return of(false);
@@ -349,13 +350,16 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(first())
+      .subscribe((result) => {
+        if (!result) {
+          return;
+        }
 
-      this._electronService.openExternal(href).catch((e) => console.error(e));
-    });
+        this._electronService.openExternal(href).catch((e) => console.error(e));
+      });
   }
 
   private getChangelog = (): Promise<string> => {
@@ -378,7 +382,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     try {
       return await this._addonService.getFullDescription(
-        this.sessionService.getSelectedWowInstallation(),
+        this._sessionService.getSelectedWowInstallation(),
         providerName,
         externalId,
         this.model?.listItem?.addon
@@ -404,7 +408,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getSearchResultChangelog() {
     return await this._addonService.getChangelogForSearchResult(
-      this.sessionService.getSelectedWowInstallation(),
+      this._sessionService.getSelectedWowInstallation(),
       this.model.channelType,
       this.model.searchResult
     );
@@ -412,7 +416,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getMyAddonChangelog() {
     return await this._addonService.getChangelogForAddon(
-      this.sessionService.getSelectedWowInstallation(),
+      this._sessionService.getSelectedWowInstallation(),
       this.model.listItem?.addon
     );
   }

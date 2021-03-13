@@ -1,12 +1,12 @@
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import { Addon } from "../../../common/entities/addon";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 
@@ -31,15 +31,11 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     private _addonService: AddonService,
     private _sessionService: SessionService,
     private _translate: TranslateService,
-    private _ngZone: NgZone
+    private _cdRef: ChangeDetectorRef
   ) {
     const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(filter((evt) => this.isSameAddon(evt.addon)))
-      .subscribe((evt) => {
-        this._ngZone.run(() => {
-          this.onInstallUpdate(evt.installState, evt.progress);
-        });
-      });
+      .pipe(filter(this.isSameAddon))
+      .subscribe(this.onAddonInstalledUpdate);
 
     this._subscriptions.push(addonInstalledSub);
   }
@@ -103,18 +99,19 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     }
   }
 
-  private isSameAddon = (addon: Addon): boolean => {
-    return (
-      addon.externalId === this.addonSearchResult.externalId &&
-      addon.providerName === this.addonSearchResult.providerName
-    );
+  private onAddonInstalledUpdate = (evt: AddonUpdateEvent): void => {
+    this.showProgress = this.getIsButtonActive(evt.installState);
+    this.disableButton = this.getIsButtonDisabled(evt.installState);
+    this.progressValue = evt.progress;
+    this.buttonText = this.getButtonText(evt.installState);
+    this.onViewUpdated.emit(true);
+    this._cdRef.detectChanges();
   };
 
-  private onInstallUpdate = (installState: AddonInstallState, progress: number): void => {
-    this.showProgress = this.getIsButtonActive(installState);
-    this.disableButton = this.getIsButtonDisabled(installState);
-    this.progressValue = progress;
-    this.buttonText = this.getButtonText(installState);
-    this.onViewUpdated.emit(true);
+  private isSameAddon = (evt: AddonUpdateEvent): boolean => {
+    return (
+      evt.addon.externalId === this.addonSearchResult.externalId &&
+      evt.addon.providerName === this.addonSearchResult.providerName
+    );
   };
 }
