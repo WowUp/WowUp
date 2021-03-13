@@ -1098,11 +1098,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "latestVersion",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER"),
-        headerComponent: "contextHeader",
-        cellRenderer: "wrapTextCell",
-        headerComponentParams: {
-          onHeaderContext: this.onHeaderContext,
-        },
+        ...baseColumn,
       },
       {
         field: "releasedAt",
