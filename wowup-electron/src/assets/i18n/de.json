@@ -302,9 +302,9 @@
         "LATEST_VERSION_COLUMN_HEADER": "Aktuelle Version",
         "PROVIDER_COLUMN_HEADER": "Anbieter",
         "PROVIDER_RELEASE_CHANNEL": "Anbieter-Kanal",
-        "RELEASED_AT_COLUMN_HEADER": "Veröffentlicht vor",
+        "RELEASED_AT_COLUMN_HEADER": "Veröffentlicht",
         "STATUS_COLUMN_HEADER": "Status",
-        "UPDATED_AT_COLUMN_HEADER": "Aktualisiert vor"
+        "UPDATED_AT_COLUMN_HEADER": "Aktualisiert"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Dadurch werden alle zugehörigen Ordner aus dem World of Warcraft Interface-Ordner entfernt. Die Charakter-Einstellungen des Addons werden nicht entfernt.",
