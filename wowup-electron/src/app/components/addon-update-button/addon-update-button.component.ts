@@ -1,12 +1,14 @@
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
-import { AddonViewModel } from "../../business-objects/addon-view-model";
+
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AddonService } from "../../services/addons/addon.service";
-import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { getEnumName } from "../../utils/enum.utils";
 
 @Component({
@@ -31,16 +33,11 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   public constructor(
     private _addonService: AddonService,
     private _translateService: TranslateService,
-    private _ngZone: NgZone
+    private _cdRef: ChangeDetectorRef
   ) {
     const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(filter((evt) => evt.addon.externalId === this.externalId && evt.addon.providerName === this.providerName))
-      .subscribe((evt) => {
-        this._ngZone.run(() => {
-          this.installState = evt.installState;
-          this.installProgress = evt.progress;
-        });
-      });
+      .pipe(filter(this.isSameAddon))
+      .subscribe(this.onAddonInstalledUpdate);
 
     this._subscriptions.push(addonInstalledSub);
   }
@@ -108,6 +105,16 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
 
     return this._translateService.instant(this.listItem.stateTextTranslationKey);
   }
+
+  private onAddonInstalledUpdate = (evt: AddonUpdateEvent) => {
+    this.installState = evt.installState;
+    this.installProgress = evt.progress;
+    this._cdRef.detectChanges();
+  };
+
+  private isSameAddon = (evt: AddonUpdateEvent) => {
+    return evt.addon.externalId === this.externalId && evt.addon.providerName === this.providerName;
+  };
 
   private getInstallStateText(installState: AddonInstallState) {
     switch (installState) {

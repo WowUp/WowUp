@@ -19,7 +19,7 @@ import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
-import { AddonFundingLink } from "../../../common/entities/addon";
+import { Addon, AddonFundingLink } from "../../../common/entities/addon";
 import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
@@ -30,6 +30,7 @@ import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -97,21 +98,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._dependencies = this.getDependencies();
 
     const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(
-        filter(
-          (evt) =>
-            evt.addon.id === this.model.listItem?.addon.id ||
-            evt.addon.externalId === this.model.searchResult?.externalId
-        )
-      )
-      .subscribe((evt) => {
-        if (this.model.listItem) {
-          this.model.listItem.addon = evt.addon;
-          this.model.listItem.installState = evt.installState;
-        }
-
-        this._cdRef.detectChanges();
-      });
+      .pipe(filter(this.isSameAddon))
+      .subscribe(this.onAddonInstalledUpdate);
 
     const changelogSub = from(this.getChangelog())
       .pipe(tap(() => (this.fetchingChangelog = false)))
@@ -306,6 +294,21 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       tag.addEventListener("click", this.onOpenLink, false);
     }
   }
+
+  private onAddonInstalledUpdate = (evt: AddonUpdateEvent): void => {
+    if (this.model.listItem) {
+      this.model.listItem.addon = evt.addon;
+      this.model.listItem.installState = evt.installState;
+    }
+
+    this._cdRef.detectChanges();
+  };
+
+  private isSameAddon = (evt: AddonUpdateEvent): boolean => {
+    return (
+      evt.addon.id === this.model.listItem?.addon.id || evt.addon.externalId === this.model.searchResult?.externalId
+    );
+  };
 
   private onOpenLink = (e: MouseEvent): boolean => {
     e.preventDefault();
