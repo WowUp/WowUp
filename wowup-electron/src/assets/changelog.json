@@ -1,6 +1,16 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.11",
+      "changes": [
+        "German locale updates (Glow)",
+        "Fix Latest Version column vertical alignment",
+        "Fix an issue with update button getting stuck in details dialog",
+        "Clicking a selected single row should now de-select it",
+        "Ctrl + Mouse Wheel should now zoom as it used to"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.10",
       "changes": [
         "Spanish locale updates (SkollVargr)",
