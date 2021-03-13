@@ -74,7 +74,7 @@
     [rowData]="rowData" [columnDefs]="columnDefs" [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId"
     [frameworkComponents]="frameworkComponents" [rowHeight]="65" [immutableData]="true" [rowClassRules]="rowClassRules"
     (gridReady)="onGridReady($event)" (rowDoubleClicked)="onRowDoubleClicked($event)"
-    (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
+    (rowClicked)="onRowClicked($event)" (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
     (cellContextMenu)="onCellContext($event)">
   </ag-grid-angular>
 

@@ -6,7 +6,9 @@ import {
   GridApi,
   GridReadyEvent,
   RowClassParams,
+  RowClickedEvent,
   RowDoubleClickedEvent,
+  RowNode,
   SortChangedEvent,
 } from "ag-grid-community";
 import * as _ from "lodash";
@@ -344,31 +346,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  public onRowClicked(event: MouseEvent, row: AddonViewModel, index: number): void {
-    if ((event.ctrlKey && !this.electronService.isMac) || (event.metaKey && this.electronService.isMac)) {
-      row.selected = !row.selected;
-      return;
-    }
+  private _lastSelectionState: RowNode[] = [];
 
-    if (event.shiftKey) {
-      const startIdx = this.sortedListItems.findIndex((item) => item.selected);
-      this.sortedListItems.forEach((item, i) => {
-        if (i >= startIdx && i <= index) {
-          item.selected = true;
-        } else {
-          item.selected = false;
-        }
-      });
-      return;
-    }
+  public onRowClicked(event: RowClickedEvent): void {
+    const selectedNodes = event.api.getSelectedNodes();
 
-    this.sortedListItems.forEach((item) => {
-      if (item.addon.id === row.addon.id) {
-        item.selected = !item.selected;
-      } else {
-        item.selected = false;
-      }
-    });
+    if (
+      selectedNodes.length === 1 &&
+      this._lastSelectionState.length === 1 &&
+      event.node.data.addon.id === this._lastSelectionState[0].data.addon.id
+    ) {
+      event.node.setSelected(false);
+      this._lastSelectionState = [];
+    } else {
+      this._lastSelectionState = [...selectedNodes];
+    }
   }
 
   public selectAllRows(event: KeyboardEvent): void {
@@ -672,6 +664,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
     this._dialogFactory.getAddonDetailsDialog(evt.data);
+    evt.node.setSelected(true);
   }
 
   public onClickAutoUpdateAddons(listItems: AddonViewModel[]): void {
