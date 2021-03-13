@@ -57,10 +57,22 @@ import { SnackbarService } from "./services/snackbar/snackbar.service";
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: number;
 
-  // @HostListener("document:fullscreenchange", ["$event"])
-  // handleKeyboardEvent(event: Event) {
-  //   console.debug("fullscreenchange", event);
-  // }
+  @HostListener("mousewheel", ["$event"])
+  public async handleKeyboardEvent(event: any): Promise<void> {
+    if (!event.ctrlKey) {
+      return;
+    }
+
+    try {
+      if (event.wheelDelta > 0) {
+        await this._electronService.applyZoom(ZoomDirection.ZoomIn);
+      } else {
+        await this._electronService.applyZoom(ZoomDirection.ZoomOut);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   public quitEnabled?: boolean;
   public showPreLoad = true;
