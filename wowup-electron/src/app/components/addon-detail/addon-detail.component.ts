@@ -24,13 +24,13 @@ import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../..
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { AddonUpdateEvent } from "app/models/wowup/addon-update-event";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
