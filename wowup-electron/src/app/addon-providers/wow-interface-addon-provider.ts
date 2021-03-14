@@ -83,9 +83,9 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const addon = await this.getAddonDetails(externalId);
-      return addon.changeLog;
+      return convertBbcode(addon.changeLog);
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to get addon changelog`, error);
       return "";
     }
   }
