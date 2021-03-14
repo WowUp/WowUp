@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
+import * as stringSimilarity from "string-similarity";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
@@ -75,10 +76,12 @@ export class TukUiAddonProvider extends AddonProvider {
   }
 
   public async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
-    const addons = await this.getAllAddons(installation.clientType);
-    const canonQuery = query.toLowerCase();
-    let similarAddons = _.filter(addons, (addon) => addon.name.toLowerCase().indexOf(canonQuery) !== -1);
-    similarAddons = _.orderBy(similarAddons, ["downloads"]);
+    const searchResults = await this.searchAddons(query, installation.clientType);
+
+    // const addons = await this.getAllAddons(installation.clientType);
+    // const canonQuery = query.toLowerCase();
+    // let similarAddons = _.filter(addons, (addon) => addon.name.toLowerCase().indexOf(canonQuery) !== -1);
+    const similarAddons = _.orderBy(searchResults, ["downloads"]);
 
     return await this.mapAddonsToSearchResults(similarAddons);
   }
@@ -201,9 +204,17 @@ export class TukUiAddonProvider extends AddonProvider {
     return html;
   };
 
-  private async searchAddons(addonName: string, clientType: WowClientType) {
+  private async searchAddons(addonName: string, clientType: WowClientType): Promise<TukUiAddon[]> {
+    const canonAddonName = addonName.toLowerCase();
     const addons = await this.getAllAddons(clientType);
-    return addons.filter((addon) => addon.name.toLowerCase() === addonName.toLowerCase());
+    const matches = addons
+      .map((addon) => {
+        const similarity = stringSimilarity.compareTwoStrings(canonAddonName, addon.name.toLowerCase());
+        return { addon, similarity };
+      })
+      .filter((result) => result.similarity > 0.7);
+
+    return _.orderBy(matches, (match) => match.similarity, "desc").map((match) => match.addon);
   }
 
   private async toSearchResult(addon: TukUiAddon, folderName?: string): Promise<AddonSearchResult | undefined> {
