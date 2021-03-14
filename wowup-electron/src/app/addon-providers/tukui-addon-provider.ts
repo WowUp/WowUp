@@ -175,13 +175,17 @@ export class TukUiAddonProvider extends AddonProvider {
     return results;
   }
 
-  private async formatChangelog(addon: TukUiAddon) {
+  private async formatChangelog(addon: TukUiAddon): Promise<string | undefined> {
     if (["-1", "-2"].includes(addon.id.toString())) {
       try {
         return await this.fetchChangelogHtml(addon);
       } catch (e) {
         console.error("Failed to get changelog", e);
       }
+    }
+
+    if (!addon.changelog) {
+      return undefined;
     }
 
     return `<a href="${addon.changelog}">${addon.changelog}</a>`;
