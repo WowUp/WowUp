@@ -9,14 +9,15 @@
           {{ thumbnailLetter }}
         </div>
       </div>
-      <div *ngIf="isBetaChannel || isAlphaChannel" class="channel"
-        [ngClass]="{ beta: isBetaChannel, alpha: isAlphaChannel }">
-        {{ isAlphaChannel ? "Alpha" : "Beta" }}
-      </div>
+
     </div>
     <div style="display: flex; flex-direction: column; justify-content: space-between; min-height: 40px">
       <a class="addon-title hover-text-2 " (click)="viewDetails()">{{ addon.name }}</a>
       <div class="addon-version text-2">
+        <div *ngIf="isBetaChannel || isAlphaChannel" class="channel mr-2"
+          [ngClass]="{ beta: isBetaChannel, alpha: isAlphaChannel }">
+          {{ channelTranslationKey | translate }}
+        </div>
         <span *ngIf="hasRequiredDependencies()" class="dependency-icon mr-1"
           [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate: dependencyTooltip">
           <mat-icon svgIcon="fas:link"></mat-icon>

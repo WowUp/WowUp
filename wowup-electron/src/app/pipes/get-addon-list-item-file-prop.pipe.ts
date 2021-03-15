@@ -9,10 +9,7 @@ import * as SearchResults from "../utils/search-result.utils";
 })
 export class GetAddonListItemFilePropPipe implements PipeTransform {
   public transform(item: GetAddonListItem, prop: string, channel: AddonChannelType): any {
-    let file = SearchResults.getLatestFile(item.searchResult, channel);
-    if (!file) {
-      file = _.first(_.orderBy(item.searchResult.files, "releaseDate", "desc"));
-    }
+    const file = SearchResults.getLatestFile(item.searchResult, channel);
     return file && Object.prototype.hasOwnProperty.call(file, prop) ? file[prop] : "";
   }
 }

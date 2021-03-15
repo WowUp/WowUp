@@ -14,6 +14,7 @@ export class GetAddonListItem {
   public thumbnailUrl: string;
   public author: string;
   public providerName: string;
+  public latestAddonChannel: AddonChannelType;
 
   public installState: AddonInstallState = AddonInstallState.Unknown;
 
@@ -24,6 +25,10 @@ export class GetAddonListItem {
     this.providerName = this.searchResult.providerName;
     this.thumbnailUrl = this.searchResult.thumbnailUrl;
     this.downloadCount = this.searchResult.downloadCount || 0;
-    this.releasedAt = new Date(SearchResults.getLatestFile(searchResult, defaultAddonChannel)?.releaseDate).getTime();
+
+    const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
+    this.latestAddonChannel = latestFile.channelType;
+    
+    this.releasedAt = new Date(latestFile?.releaseDate).getTime();
   }
 }

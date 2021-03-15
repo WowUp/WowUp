@@ -46,6 +46,7 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import * as SearchResults from "../../utils/search-result.utils";
 
 export enum ScanUpdateType {
   Start,
@@ -213,7 +214,7 @@ export class AddonService {
         return "";
       }
 
-      const latestFile = this.getLatestFile(searchResult, channelType);
+      const latestFile = SearchResults.getLatestFile(searchResult, channelType);
       return await provider.getChangelog(installation, searchResult.externalId, latestFile.externalId);
     } catch (e) {
       console.error("Failed to get searchResult changelog", e);
@@ -811,11 +812,7 @@ export class AddonService {
           return undefined;
         }
 
-        let latestFile = this.getLatestFile(searchResult, targetAddonChannel);
-        if (!latestFile) {
-          latestFile = searchResult.files[0];
-        }
-
+        const latestFile = SearchResults.getLatestFile(searchResult, targetAddonChannel);
         return this.createAddon(latestFile.folders[0], searchResult, latestFile, installation);
       })
     );
@@ -993,7 +990,7 @@ export class AddonService {
       }
 
       try {
-        const latestFile = this.getLatestFile(result, addon?.channelType);
+        const latestFile = SearchResults.getLatestFile(result, addon?.channelType);
 
         this.setExternalIdString(addon);
 
@@ -1474,19 +1471,19 @@ export class AddonService {
     return this.getEnabledAddonProviders().find((provider) => provider.isValidAddonUri(addonUri));
   }
 
-  private getLatestFile(
-    searchResult: AddonSearchResult,
-    channelType: AddonChannelType
-  ): AddonSearchResultFile | undefined {
-    if (!searchResult?.files) {
-      console.warn("Search result had no files", searchResult);
-      return undefined;
-    }
+  // private getLatestFile(
+  //   searchResult: AddonSearchResult,
+  //   channelType: AddonChannelType
+  // ): AddonSearchResultFile | undefined {
+  //   if (!searchResult?.files) {
+  //     console.warn("Search result had no files", searchResult);
+  //     return undefined;
+  //   }
 
-    let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
-    files = _.orderBy(files, ["releaseDate"]).reverse();
-    return _.first(files);
-  }
+  //   let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
+  //   files = _.orderBy(files, ["releaseDate"]).reverse();
+  //   return _.first(files);
+  // }
 
   private createAddon(
     folderName: string,

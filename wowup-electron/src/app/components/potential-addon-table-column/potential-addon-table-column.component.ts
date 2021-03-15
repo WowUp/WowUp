@@ -55,6 +55,12 @@ export class PotentialAddonTableColumnComponent implements AgRendererComponent, 
     };
   }
 
+  public get channelTranslationKey(): string {
+    return this._latestChannelType === AddonChannelType.Alpha
+      ? "COMMON.ENUM.ADDON_CHANNEL_TYPE.ALPHA"
+      : "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA";
+  }
+
   public constructor(
     private _getAddonListItemFileProp: GetAddonListItemFilePropPipe,
     private _dialogFactory: DialogFactory
@@ -64,6 +70,7 @@ export class PotentialAddonTableColumnComponent implements AgRendererComponent, 
     this.clientType = (params as any).clientType;
     this.channel = (params as any).channel;
     this.addon = params.data;
+    this._latestChannelType = this.addon.latestAddonChannel;
   }
 
   public refresh(params: ICellRendererParams): boolean {
@@ -74,11 +81,15 @@ export class PotentialAddonTableColumnComponent implements AgRendererComponent, 
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.clientType) {
-      this._latestChannelType = this._getAddonListItemFileProp.transform(
-        this.addon,
-        "channelType",
-        this.channel
-      ) as AddonChannelType;
+      if (this.addon.latestAddonChannel !== this.channel) {
+        this._latestChannelType = this.addon.latestAddonChannel;
+      } else {
+        this._latestChannelType = this._getAddonListItemFileProp.transform(
+          this.addon,
+          "channelType",
+          this.channel
+        ) as AddonChannelType;
+      }
 
       this._requiredDependencies = this.getRequiredDependencies();
     }
