@@ -18,6 +18,10 @@ export class GetAddonListItem {
 
   public installState: AddonInstallState = AddonInstallState.Unknown;
 
+  public get externalId(): string {
+    return this.searchResult.externalId;
+  }
+
   public constructor(searchResult: AddonSearchResult, defaultAddonChannel: AddonChannelType) {
     this.searchResult = searchResult;
     this.author = this.searchResult.author;
@@ -28,7 +32,7 @@ export class GetAddonListItem {
 
     const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
     this.latestAddonChannel = latestFile.channelType;
-    
+
     this.releasedAt = new Date(latestFile?.releaseDate).getTime();
   }
 }

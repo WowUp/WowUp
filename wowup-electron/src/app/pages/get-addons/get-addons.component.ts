@@ -1,4 +1,12 @@
-import { ColDef, ColumnApi, GridApi, GridReadyEvent, RowDoubleClickedEvent } from "ag-grid-community";
+import {
+  ColDef,
+  ColumnApi,
+  GridApi,
+  GridReadyEvent,
+  RowClickedEvent,
+  RowDoubleClickedEvent,
+  RowNode,
+} from "ag-grid-community";
 import * as _ from "lodash";
 import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } from "rxjs";
 import { catchError, filter, first, map } from "rxjs/operators";
@@ -50,6 +58,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _lazyLoaded = false;
   private _isBusySubject = new BehaviorSubject<boolean>(true);
   private _rowDataSrc = new BehaviorSubject<GetAddonListItem[]>([]);
+  private _lastSelectionState: RowNode[] = [];
 
   public columnDefs: ColDef[] = [];
   public rowData$ = this._rowDataSrc.asObservable();
@@ -159,8 +168,25 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.columnDefs = this.createColumns();
   }
 
+  public onRowClicked(event: RowClickedEvent): void {
+    const selectedNodes = event.api.getSelectedNodes();
+
+    if (
+      selectedNodes.length === 1 &&
+      this._lastSelectionState.length === 1 &&
+      event.node.data.externalId === this._lastSelectionState[0].data.externalId &&
+      event.node.data.providerName === this._lastSelectionState[0].data.providerName
+    ) {
+      event.node.setSelected(false);
+      this._lastSelectionState = [];
+    } else {
+      this._lastSelectionState = [...selectedNodes];
+    }
+  }
+
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
     this.openDetailDialog(evt.data.searchResult, this.defaultAddonChannel);
+    evt.node.setSelected(true);
   }
 
   public onGridReady(params: GridReadyEvent): void {

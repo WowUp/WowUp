@@ -49,7 +49,7 @@
   <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="(showTable$ | async) === false"
     [rowData]="rowData$ | async" [columnDefs]="columnDefs" [columnTypes]="columnTypes" [rowSelection]="'single'"
     [frameworkComponents]="frameworkComponents" [rowHeight]="63" (rowDoubleClicked)="onRowDoubleClicked($event)"
-    (gridReady)="onGridReady($event)">
+    (rowClicked)="onRowClicked($event)" (gridReady)="onGridReady($event)">
   </ag-grid-angular>
 
 </div>

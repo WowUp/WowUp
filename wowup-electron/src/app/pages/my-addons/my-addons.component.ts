@@ -71,6 +71,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private _lazyLoaded = false;
   private _isRefreshing = false;
   private _baseRowData: AddonViewModel[] = [];
+  private _lastSelectionState: RowNode[] = [];
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
@@ -344,23 +345,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sortedListItems.forEach((item) => {
       item.selected = false;
     });
-  }
-
-  private _lastSelectionState: RowNode[] = [];
-
-  public onRowClicked(event: RowClickedEvent): void {
-    const selectedNodes = event.api.getSelectedNodes();
-
-    if (
-      selectedNodes.length === 1 &&
-      this._lastSelectionState.length === 1 &&
-      event.node.data.addon.id === this._lastSelectionState[0].data.addon.id
-    ) {
-      event.node.setSelected(false);
-      this._lastSelectionState = [];
-    } else {
-      this._lastSelectionState = [...selectedNodes];
-    }
   }
 
   public selectAllRows(event: KeyboardEvent): void {
@@ -660,6 +644,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickAutoUpdateAddon(listItem: AddonViewModel): void {
     this.onClickAutoUpdateAddons([listItem]);
+  }
+
+  public onRowClicked(event: RowClickedEvent): void {
+    const selectedNodes = event.api.getSelectedNodes();
+
+    if (
+      selectedNodes.length === 1 &&
+      this._lastSelectionState.length === 1 &&
+      event.node.data.addon.id === this._lastSelectionState[0].data.addon.id
+    ) {
+      event.node.setSelected(false);
+      this._lastSelectionState = [];
+    } else {
+      this._lastSelectionState = [...selectedNodes];
+    }
   }
 
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
