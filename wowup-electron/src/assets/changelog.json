@@ -1,6 +1,19 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.12",
+      "changes": [
+        "Fix an issue with WowInterface changelogs not handling BBCode",
+        "Fix an issue with changelog showing up as 'undefined'",
+        "Fix an issue with newly installed addons not showing up in my addons filter",
+        "Fix an issue when an addon has no releases in a the default channel",
+        "Fix alpha/beta display on get addons tab",
+        "Add some fuzzy text matching for TukUI addon searching/matching",
+        "Add single row de-select to get addons tab",
+        "Tweak the details dialog header style"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.11",
       "changes": [
         "German locale updates (Glow)",
