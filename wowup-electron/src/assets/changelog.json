@@ -8,6 +8,7 @@
         "Fix an issue with newly installed addons not showing up in my addons filter",
         "Fix an issue when an addon has no releases in a the default channel",
         "Fix alpha/beta display on get addons tab",
+        "Fix an issue with Update buttons getting out of sync when updating multiple addons",
         "Add some fuzzy text matching for TukUI addon searching/matching",
         "Add single row de-select to get addons tab",
         "Tweak the details dialog header style"
