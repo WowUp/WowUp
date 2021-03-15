@@ -11,9 +11,9 @@
     </div>
 
     <div class="flex-grow-1 mr-1">
-      <h3 class="m-0 title">{{ title }}</h3>
-      <div class="mr-3">{{ 'DIALOGS.ADDON_DETAILS.BY_AUTHOR' | translate:{ authorName: subtitle } }}</div>
-      <div class="sub-text text-2">{{ version }}</div>
+      <h2 class="m-0 title">{{ title }}</h2>
+      <h3 class="m-0">{{ 'DIALOGS.ADDON_DETAILS.BY_AUTHOR' | translate:{ authorName: subtitle } }}</h3>
+      <h4 class="m-0 text-2">{{ version }}</h4>
     </div>
     <mat-icon class="close-icon" color="accent" [mat-dialog-close]="true" [ngStyle]="{ cursor: 'pointer' }"
       svgIcon="fas:times">
