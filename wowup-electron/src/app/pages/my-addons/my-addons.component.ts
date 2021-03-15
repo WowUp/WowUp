@@ -542,10 +542,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           } else {
             return this.getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
               .afterClosed()
-              .pipe(switchMap((result) => from(this.addonService.removeAddon(addon, result))));
+              .pipe(
+                switchMap((result) => from(this.addonService.removeAddon(addon, result))),
+                switchMap(() => from(this.loadAddons(this.selectedInstallation)))
+              );
           }
-        }),
-        switchMap(() => from(this.loadAddons(this.selectedInstallation)))
+        })
       )
       .subscribe();
   }
