@@ -982,7 +982,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      const rows = [...this.rowData];
+      const rows = [...this._baseRowData];
       const idx = rows.findIndex((r) => r.addon.id === evt.addon.id);
 
       // If we have a new addon, just put it at the end
@@ -993,7 +993,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       // Reorder everything by name to act as a sub-sort
-      this.rowData = _.orderBy(rows, (row) => row.addon.name);
+      this._baseRowData = _.orderBy(rows, (row) => row.addon.name);
+      this.rowData = this._baseRowData;
 
       // If the user is currently filtering the table, use that.
       // if (this.filter) {
