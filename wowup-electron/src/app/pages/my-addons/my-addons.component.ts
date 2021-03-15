@@ -981,19 +981,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      const rows = [...this._baseRowData];
-      const idx = rows.findIndex((r) => r.addon.id === evt.addon.id);
+      const idx = this._baseRowData.findIndex((r) => r.addon.id === evt.addon.id);
 
       // If we have a new addon, just put it at the end
       if (idx === -1) {
-        rows.push(new AddonViewModel(evt.addon));
+        this._baseRowData.push(new AddonViewModel(evt.addon));
+        this._baseRowData = _.orderBy(this._baseRowData, (row) => row.addon.name);
       } else {
-        rows.splice(idx, 1, new AddonViewModel(evt.addon));
+        this._baseRowData.splice(idx, 1, new AddonViewModel(evt.addon));
       }
 
       // Reorder everything by name to act as a sub-sort
-      this._baseRowData = _.orderBy(rows, (row) => row.addon.name);
-      this.rowData = this._baseRowData;
+      this.rowData = [...this._baseRowData];
 
       // If the user is currently filtering the table, use that.
       // if (this.filter) {

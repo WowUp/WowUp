@@ -46,6 +46,12 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
     this.providerName = this.listItem.addon.providerName;
     this.externalId = this.listItem.addon.externalId;
     this.installProgress = this.value ?? 0;
+
+    const installStatus = this._addonService.getInstallStatus(this.listItem.addon.id);
+    if (installStatus) {
+      this.installProgress = installStatus.progress;
+      this.installState = installStatus.installState;
+    }
   }
 
   public ngOnDestroy(): void {
