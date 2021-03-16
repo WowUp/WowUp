@@ -2,7 +2,6 @@ import {
   CellContextMenuEvent,
   ColDef,
   ColumnApi,
-  ColumnVisibleEvent,
   GridApi,
   GridReadyEvent,
   RowClassParams,
@@ -14,7 +13,7 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, distinctUntilChanged, map, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";

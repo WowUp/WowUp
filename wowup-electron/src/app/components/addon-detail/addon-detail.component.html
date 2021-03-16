@@ -51,14 +51,15 @@
     <!-- SUMMARY -->
     <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
       <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
-      <div #descriptionContainer class="addon-summary mt-3" [innerHtml]="description$ | async"></div>
+      <div #descriptionContainer class="markdown-body addon-summary text-1 mt-3" [innerHtml]="description$ | async"></div>
     </mat-tab>
     <!-- CHANGELOG -->
     <mat-tab *ngIf="canShowChangelog === true" [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
       <app-progress-spinner *ngIf="fetchingChangelog === true"></app-progress-spinner>
-      <div *ngIf="fetchingChangelog === false && hasChangeLog === false" class="mt-3">{{'DIALOGS.ADDON_DETAILS.NO_CHANGELOG_TEXT' |
+      <div *ngIf="fetchingChangelog === false && hasChangeLog === false" class="mt-3">
+        {{'DIALOGS.ADDON_DETAILS.NO_CHANGELOG_TEXT' |
         translate}}</div>
-      <div #changelogContainer class="addon-changelog mt-3" [innerHTML]="changelog$ | async"></div>
+      <div #changelogContainer class="markdown-body addon-changelog text-1 mt-3" [innerHTML]="changelog$ | async"></div>
     </mat-tab>
   </mat-tab-group>
 </mat-dialog-content>

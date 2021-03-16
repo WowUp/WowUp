@@ -482,6 +482,10 @@ $alliance-theme-light: mat-light-theme(
     border: 5px solid white;
   }
 
+  --text-1-color: #ffffff;
+  --text-2-color: #dcddde;
+  --text-3-color: #cccccc;
+
   .text-1 {
     color: $white-1 !important;
   }
@@ -502,6 +506,22 @@ $alliance-theme-light: mat-light-theme(
     background-color: $dark-1;
   }
 
+  .addon-summary,
+  .addon-changelog {
+    h1,
+    h2 {
+      border-bottom: 1px solid $dark-1;
+    }
+
+    hr {
+      background-color: $dark-1;
+    }
+
+    code {
+      background-color: $dark-4;
+    }
+  }
+
   // GRID STYLES
   .ag-theme-material {
     @include ag-theme-material(
@@ -514,7 +534,7 @@ $alliance-theme-light: mat-light-theme(
         border-color: rgba(255, 255, 255, 0.12),
         secondary-border-color: rgba(255, 255, 255, 0.12),
         selected-row-background-color: $dark-4,
-        range-selection-border-color: transparent
+        range-selection-border-color: transparent,
       )
     );
   }
@@ -557,6 +577,10 @@ $alliance-theme-light: mat-light-theme(
   .hover-bg-secondary-5:hover {
     background-color: $lt-secondary-5 !important;
   }
+
+  --text-1-color: #000000;
+  --text-2-color: #666666;
+  --text-3-color: #888888;
 
   .text-1 {
     color: $lt-text-1 !important;
