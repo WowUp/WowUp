@@ -4,6 +4,7 @@
       "Version": "2.2.0-beta.13",
       "changes": [
         "Fix an issue with the my addons filter clearing when cancelling a dialog",
+        "Fix an issue with Linux and the new wow installation handling",
         "Improve the details dialog css"
       ]
     },
