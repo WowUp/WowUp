@@ -1,6 +1,13 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.13",
+      "changes": [
+        "Fix an issue with the my addons filter clearing when cancelling a dialog",
+        "Improve the details dialog css"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.12",
       "changes": [
         "Fix an issue with WowInterface changelogs not handling BBCode",
