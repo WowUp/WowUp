@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, from, Subject } from "rxjs";
 import { filter, map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
@@ -44,10 +44,10 @@ export class WarcraftInstallationService {
     private _fileService: FileService,
     private _electronService: ElectronService
   ) {
-    this._warcraftService.blizzardAgent$
+    from(this._warcraftService.getBlizzardAgentPath())
       .pipe(
-        filter((blizzardAgentPath) => !!blizzardAgentPath),
         tap((blizzardAgentPath) => {
+          // On Linux this will be empty, as we dont know where the blizz database is
           this._blizzardAgentPath = blizzardAgentPath;
         }),
         switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
@@ -179,6 +179,12 @@ export class WarcraftInstallationService {
   }
 
   public async importWowInstallations(blizzardAgentPath: string): Promise<void> {
+    if (!blizzardAgentPath) {
+      console.log(`Cannot import wow installations, no agent path`);
+      this._wowInstallationsSrc.next(this.getWowInstallations());
+      return;
+    }
+
     const installedProducts = await this._warcraftService.getInstalledProducts(blizzardAgentPath);
 
     for (const product of Array.from(installedProducts.values())) {
@@ -218,6 +224,11 @@ export class WarcraftInstallationService {
   }
 
   private async migrateAllLegacyInstallations(blizzardAgentPath: string): Promise<string> {
+    if (!blizzardAgentPath) {
+      console.info(`Unable to migrate legacy installations, no agent path`);
+      return;
+    }
+
     const legacyInstallations: WowInstallation[] = [];
     for (const clientType of this._warcraftService.getAllClientTypes()) {
       try {

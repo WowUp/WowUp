@@ -20,6 +20,9 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
     return "";
   }
 
+  /**
+   * On Linux we dont know where to look for the wow agent, if there is any.
+   */
   public getBlizzardAgentPath(): Promise<string> {
     return Promise.resolve("");
   }

@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, from } from "rxjs";
+import { BehaviorSubject, from, Subject } from "rxjs";
 import { filter, map } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
@@ -44,7 +44,6 @@ const BETA_LOCATION_KEY = "wow_beta_location";
 export class WarcraftService {
   private readonly _impl: WarcraftServiceImpl;
   private readonly _productsSrc = new BehaviorSubject<InstalledProduct[]>([]);
-  private readonly _blizzardAgentPathSrc = new BehaviorSubject("");
   private readonly _installedClientTypesSrc = new BehaviorSubject<WowClientType[] | undefined>(undefined);
   private readonly _allClientTypes = getEnumList<WowClientType>(WowClientType).filter(
     (clientType) => clientType !== WowClientType.None
@@ -54,7 +53,6 @@ export class WarcraftService {
 
   public readonly products$ = this._productsSrc.asObservable();
   public readonly productsReady$ = this.products$.pipe(filter((products) => Array.isArray(products)));
-  public readonly blizzardAgent$ = this._blizzardAgentPathSrc.asObservable();
   public readonly installedClientTypes$ = this._installedClientTypesSrc.asObservable();
 
   // Map the client types so that we can localize them
@@ -80,10 +78,6 @@ export class WarcraftService {
     private _tocService: TocService
   ) {
     this._impl = this.getImplementation();
-
-    from(this.loadBlizzardAgentPath())
-      .pipe(map((blizzardAgentPath) => this._blizzardAgentPathSrc.next(blizzardAgentPath)))
-      .subscribe();
   }
 
   public getExecutableName(clientType: WowClientType): string {
@@ -214,6 +208,18 @@ export class WarcraftService {
     return await this._fileService.pathExists(executablePath);
   }
 
+  public async getBlizzardAgentPath() {
+    const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
+    if (storedAgentPath) {
+      return storedAgentPath;
+    }
+
+    const agentPath = await this._impl.getBlizzardAgentPath();
+    this._preferenceStorageService.set(BLIZZARD_AGENT_PATH_KEY, agentPath);
+
+    return agentPath;
+  }
+
   public getClientTypeForBinary(binaryName: string): WowClientType {
     return this._impl.getClientType(binaryName);
   }
@@ -294,18 +300,6 @@ export class WarcraftService {
     }
 
     throw new Error("No warcraft service implementation found");
-  }
-
-  private async loadBlizzardAgentPath() {
-    const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
-    if (storedAgentPath) {
-      return storedAgentPath;
-    }
-
-    const agentPath = await this._impl.getBlizzardAgentPath();
-    this._preferenceStorageService.set(BLIZZARD_AGENT_PATH_KEY, agentPath);
-
-    return agentPath;
   }
 
   private getClientTypeForFolderName(folderName: string): WowClientType {

@@ -65,7 +65,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this._warcraftInstallationService.wowInstallations$
       .pipe(
-        first((installations) => installations.length > 0),
+        first(),
         switchMap((installations) => {
           return from(this.migrateAddons(installations)).pipe(map(() => installations));
         })

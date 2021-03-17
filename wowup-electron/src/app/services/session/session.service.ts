@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { BehaviorSubject, Subject } from "rxjs";
-import { filter, first, map } from "rxjs/operators";
+import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
@@ -8,10 +8,7 @@ import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
-import { WowUpService } from "../wowup/wowup.service";
 import { ColumnState } from "../../models/wowup/column-state";
-import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: "root",
@@ -39,11 +36,8 @@ export class SessionService {
   public readonly getAddonsHiddenColumns$ = this._getAddonsColumnsSrc.asObservable();
 
   public constructor(
-    private _warcraftService: WarcraftService,
-    private _wowUpService: WowUpService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _preferenceStorageService: PreferenceStorageService,
-    private _translateService: TranslateService
+    private _preferenceStorageService: PreferenceStorageService
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
