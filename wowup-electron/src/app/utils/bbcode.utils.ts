@@ -1,7 +1,6 @@
 import { getUniqAttr, isStringNode, isTagNode } from "@bbob/plugin-helper/lib/index";
 import TagNode from "@bbob/plugin-helper/lib/TagNode";
 import bbobHTML from "@bbob/html";
-import presetHTML5 from "@bbob/preset-html5";
 import { createPreset } from "@bbob/preset";
 
 const renderUrl = (node, render) => (getUniqAttr(node.attrs) ? getUniqAttr(node.attrs) : render(node.content));
@@ -100,7 +99,7 @@ const bbpreset = createPreset({
 export function convertBbcode(str: string): string {
   let html: string = bbobHTML(str, bbpreset());
 
-  html = html.replaceAll("\r\n", "<br>");
+  html = html.replaceAll("\r\n", "");
 
   return html;
 }

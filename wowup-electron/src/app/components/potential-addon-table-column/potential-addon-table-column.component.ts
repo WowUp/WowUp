@@ -1,13 +1,17 @@
+import { AgRendererComponent } from "ag-grid-angular";
+import { IAfterGuiAttachedParams, ICellRendererParams } from "ag-grid-community";
 import * as _ from "lodash";
+
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
+
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonChannelType, AddonDependencyType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
-import * as SearchResults from "../../utils/search-result.utils";
-import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
+import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
+import * as SearchResults from "../../utils/search-result.utils";
 
 export interface PotentialAddonViewDetailsEvent {
   searchResult: AddonSearchResult;
@@ -19,12 +23,12 @@ export interface PotentialAddonViewDetailsEvent {
   templateUrl: "./potential-addon-table-column.component.html",
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
-export class PotentialAddonTableColumnComponent implements OnChanges {
-  @Input("addon") addon: GetAddonListItem;
-  @Input() channel: AddonChannelType;
-  @Input() clientType: WowClientType;
+export class PotentialAddonTableColumnComponent implements AgRendererComponent, OnChanges {
+  @Input("addon") public addon: GetAddonListItem;
+  @Input() public channel: AddonChannelType;
+  @Input() public clientType: WowClientType;
 
-  @Output() onViewDetails: EventEmitter<PotentialAddonViewDetailsEvent> = new EventEmitter();
+  @Output() public onViewDetails: EventEmitter<PotentialAddonViewDetailsEvent> = new EventEmitter();
 
   private _latestChannelType: AddonChannelType = AddonChannelType.Stable;
   private _requiredDependencies: AddonSearchResultDependency[] = [];
@@ -37,50 +41,73 @@ export class PotentialAddonTableColumnComponent implements OnChanges {
     return this._latestChannelType === AddonChannelType.Alpha;
   }
 
-  public get hasThumbnail() {
+  public get hasThumbnail(): boolean {
     return !!this.addon.thumbnailUrl;
   }
 
-  public get thumbnailLetter() {
+  public get thumbnailLetter(): string {
     return this.addon.name.charAt(0).toUpperCase();
   }
 
-  get dependencyTooltip() {
+  public get dependencyTooltip() {
     return {
       dependencyCount: this.getRequiredDependencyCount(),
     };
   }
 
-  constructor(private _getAddonListItemFileProp: GetAddonListItemFilePropPipe) {}
+  public get channelTranslationKey(): string {
+    return this._latestChannelType === AddonChannelType.Alpha
+      ? "COMMON.ENUM.ADDON_CHANNEL_TYPE.ALPHA"
+      : "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA";
+  }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  public constructor(
+    private _getAddonListItemFileProp: GetAddonListItemFilePropPipe,
+    private _dialogFactory: DialogFactory
+  ) {}
+
+  public agInit(params: ICellRendererParams): void {
+    this.clientType = (params as any).clientType;
+    this.channel = (params as any).channel;
+    this.addon = params.data;
+    this._latestChannelType = this.addon.latestAddonChannel;
+  }
+
+  public refresh(params: ICellRendererParams): boolean {
+    return false;
+  }
+
+  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
+
+  public ngOnChanges(changes: SimpleChanges): void {
     if (changes.clientType) {
-      this._latestChannelType = this._getAddonListItemFileProp.transform(
-        this.addon,
-        "channelType",
-        this.channel
-      ) as AddonChannelType;
+      if (this.addon.latestAddonChannel !== this.channel) {
+        this._latestChannelType = this.addon.latestAddonChannel;
+      } else {
+        this._latestChannelType = this._getAddonListItemFileProp.transform(
+          this.addon,
+          "channelType",
+          this.channel
+        ) as AddonChannelType;
+      }
 
       this._requiredDependencies = this.getRequiredDependencies();
     }
   }
 
-  viewDetails() {
-    this.onViewDetails.emit({
-      searchResult: this.addon.searchResult,
-      channelType: this._latestChannelType,
-    });
+  public viewDetails(): void {
+    this._dialogFactory.getPotentialAddonDetailsDialog(this.addon.searchResult, this.channel);
   }
 
-  getRequiredDependencyCount() {
+  public getRequiredDependencyCount(): number {
     return this._requiredDependencies.length;
   }
 
-  hasRequiredDependencies() {
+  public hasRequiredDependencies(): boolean {
     return this._requiredDependencies.length > 0;
   }
 
-  getRequiredDependencies() {
+  public getRequiredDependencies(): AddonSearchResultDependency[] {
     return SearchResults.getDependencyType(
       this.addon.searchResult,
       this._latestChannelType,

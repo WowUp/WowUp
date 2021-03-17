@@ -1,6 +1,5 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log";
-import * as Store from "electron-store";
 import { type as osType, release as osRelease, arch as osArch } from "os";
 import { join } from "path";
 import { format as urlFormat } from "url";
@@ -32,10 +31,11 @@ import {
   APP_PROTOCOL_NAME,
   WOWUP_LOGO_FILENAME,
 } from "./src/common/constants";
-import { AppOptions } from "./src/common/wowup/app-options";
+import { AppOptions } from "./src/common/wowup/models";
 import { windowStateManager } from "./window-state";
 import { createAppMenu } from "./app-menu";
 import { MainChannels } from "./src/common/wowup";
+import { preferenceStore } from "./stores";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -45,6 +45,7 @@ log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
+log.info(`Electron: ${process.versions.electron}`);
 
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {
@@ -57,7 +58,6 @@ process.on("unhandledRejection", (error) => {
 
 // VARIABLES
 const startedAt = Date.now();
-const preferenceStore = new Store({ name: "preferences" });
 const argv = minimist(process.argv.slice(1), {
   boolean: ["serve", "hidden"]
 }) as AppOptions;
@@ -216,6 +216,7 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       nodeIntegration: true,
+      contextIsolation: false,
       allowRunningInsecureContent: argv.serve,
       webSecurity: false,
       nativeWindowOpen: true,

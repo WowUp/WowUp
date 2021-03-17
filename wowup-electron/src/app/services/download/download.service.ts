@@ -10,7 +10,7 @@ import { ElectronService } from "../electron/electron.service";
   providedIn: "root",
 })
 export class DownloadService {
-  constructor(private _electronService: ElectronService) {}
+  public constructor(private _electronService: ElectronService) {}
 
   public downloadZipFile(
     url: string,

@@ -19,7 +19,7 @@ export class CircuitBreakerWrapper {
   private readonly _httpClient: HttpClient;
   private readonly _defaultTimeoutMs: number;
 
-  constructor(
+  public constructor(
     name: string,
     httpClient: HttpClient,
     resetTimeoutMs = AppConfig.defaultHttpResetTimeoutMs,

@@ -1,6 +1,6 @@
 import { orderBy, filter, map } from "lodash";
-import { Addon, AddonExternalId } from "../entities/addon";
-import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
+import { Addon, AddonExternalId } from "../../common/entities/addon";
+import { AddonDependency, AddonDependencyType } from "../../common/wowup/models";
 
 export function getAllProviders(addon: Addon): AddonExternalId[] {
   return orderBy(addon.externalIds, ["providerName"], ["asc"]);
@@ -14,7 +14,7 @@ export function hasMultipleProviders(addon: Addon): boolean {
   return getProviders(addon).length > 0;
 }
 
-export function getAddonDependencies(addon: Addon, dependencyType: AddonDependencyType = undefined) {
+export function getAddonDependencies(addon: Addon, dependencyType: AddonDependencyType = undefined): AddonDependency[] {
   return dependencyType == undefined
     ? addon.dependencies
     : filter(addon.dependencies, (dep) => dep.type === dependencyType);
@@ -37,7 +37,7 @@ export function getFolderList(addon: Addon): string[] {
 
 export function getGameVersion(gameVersion: string): string {
   if (!gameVersion) {
-    return gameVersion;
+    return "";
   }
 
   if (gameVersion.toString().indexOf(".") !== -1) {
@@ -51,4 +51,31 @@ export function getGameVersion(gameVersion: string): string {
     gameVersion.substr(gameVersion.length - 2, 2),
   ];
   return chunks.map((c) => parseInt(c, 10)).join(".");
+}
+
+export function toInterfaceVersion(version: string): string {
+  if (!version) {
+    throw new Error("interface version empty or undefined");
+  }
+
+  if (version.indexOf(".") === -1) {
+    return version;
+  }
+
+  const parts = version.split(".");
+  if (parts.length != 3) {
+    throw new Error(`Cannot convert ${version} to interface format`);
+  }
+
+  const paddedParts = parts.map((part, idx) => padInterfacePart(part, idx));
+
+  return paddedParts.join("");
+}
+
+function padInterfacePart(part: string, idx: number) {
+  const num = parseInt(part, 10);
+  if (idx === 0) {
+    return num;
+  }
+  return num >= 10 ? num : `0${num}`;
 }

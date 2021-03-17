@@ -21,22 +21,15 @@ import { PreferenceStorageService } from "./services/storage/preference-storage.
 import { WowUpService } from "./services/wowup/wowup.service";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { AnimatedLogoComponent } from "./components/animated-logo/animated-logo.component";
 
 describe("AppComponent", () => {
-  let component: AppComponent;
-  let fixture: ComponentFixture<AppComponent>;
-  let addonService: AddonService;
-  let addonServiceSpy: any;
-  let electronService: ElectronService;
-  let electronServiceSpy: any;
-  let wowUpService: WowUpService;
-  let wowUpServiceSpy: any;
-  let sessionService: SessionService;
-  let sessionServiceSpy: any;
-  let fileService: FileService;
-  let fileServiceSpy: any;
-  let analyticsService: AnalyticsService;
-  let analyticsServiceSpy: any;
+  let addonServiceSpy: AddonService;
+  let electronServiceSpy: ElectronService;
+  let wowUpServiceSpy: WowUpService;
+  let sessionServiceSpy: SessionService;
+  let fileServiceSpy: FileService;
+  let analyticsServiceSpy: AnalyticsService;
   let preferenceStorageSpy: PreferenceStorageService;
   let wowUpAddonServiceSpy: WowUpAddonService;
 
@@ -48,7 +41,9 @@ describe("AppComponent", () => {
         persistUpdateInformationToWowUpAddon: () => {},
       }
     );
-    addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates"]);
+    addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates", "syncAllClients"], {
+      syncError$: new Subject(),
+    });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on", "off"], {
       appOptions: { quit: null },
       getAppOptions: () => Promise.resolve({}),
@@ -66,7 +61,7 @@ describe("AppComponent", () => {
     preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", ["get"], {});
 
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      declarations: [AppComponent, AnimatedLogoComponent],
       providers: [MatDialog, ElectronService],
       imports: [
         OverlayModule,
@@ -104,20 +99,10 @@ describe("AppComponent", () => {
         },
       })
       .compileComponents();
-
-    fixture = TestBed.createComponent(AppComponent);
-    component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    sessionService = fixture.debugElement.injector.get(SessionService);
-    fileService = fixture.debugElement.injector.get(FileService);
-    analyticsService = fixture.debugElement.injector.get(AnalyticsService);
-
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(AppComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

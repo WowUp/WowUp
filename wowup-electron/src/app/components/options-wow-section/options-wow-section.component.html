@@ -7,18 +7,20 @@
       <div class="flex-grow-1">
         {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_LABEL" | translate }}
       </div>
-      <button
-        mat-flat-button
-        color="primary"
-        (click)="onReScan()"
-        appUserActionTracker
-        category="Options"
-        action="ScanInstalls"
-      >
+      <button mat-stroked-button (click)="onReScan()" class="mr-3">
         {{ "PAGES.OPTIONS.WOW.RESCAN_CLIENTS_BUTTON" | translate }}
       </button>
+
+      <button mat-flat-button color="primary" (click)="onAddNew()">
+        {{ "PAGES.OPTIONS.WOW.ADD_CLIENT_BUTTON" | translate }}
+      </button>
     </div>
-    <app-wow-client-options class="client-section" *ngFor="let clientType of wowClientTypes" [clientType]="clientType">
+    <h2 *ngIf="(wowInstallations$ | async).length === 0" class="pt-3">
+      No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client
+      manually
+    </h2>
+    <app-wow-client-options class="client-section" *ngFor="let installation of wowInstallations$ | async"
+      [installationId]="installation.id">
     </app-wow-client-options>
   </div>
 </div>

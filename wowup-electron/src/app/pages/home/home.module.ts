@@ -1,10 +1,11 @@
+import { AgGridModule } from "ag-grid-angular";
+
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { AddonDetailComponent } from "../../components/addon-detail/addon-detail.component";
 import { AddonInstallButtonComponent } from "../../components/addon-install-button/addon-install-button.component";
-import { AddonProviderBadgeComponent } from "../../components/addon-provider-badge/addon-provider-badge.component";
 import { AddonUpdateButtonComponent } from "../../components/addon-update-button/addon-update-button.component";
 import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
 import { CenteredSnackbarComponent } from "../../components/centered-snackbar/centered-snackbar.component";
@@ -23,6 +24,8 @@ import { ProgressButtonComponent } from "../../components/progress-button/progre
 import { ProgressSpinnerComponent } from "../../components/progress-spinner/progress-spinner.component";
 import { TelemetryDialogComponent } from "../../components/telemetry-dialog/telemetry-dialog.component";
 import { WowClientOptionsComponent } from "../../components/wow-client-options/wow-client-options.component";
+import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
+import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
 import { DirectiveModule } from "../../directive.module";
 import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
@@ -57,7 +60,6 @@ import { HomeComponent } from "./home.component";
     WowClientOptionsComponent,
     InstallFromUrlDialogComponent,
     AddonDetailComponent,
-    AddonProviderBadgeComponent,
     AddonInstallButtonComponent,
     GetAddonStatusColumnComponent,
     MyAddonStatusColumnComponent,
@@ -69,8 +71,22 @@ import { HomeComponent } from "./home.component";
     OptionsAddonSectionComponent,
     FundingButtonComponent,
     CenteredSnackbarComponent,
+    TableContextHeaderCellComponent,
+    CellWrapTextComponent,
   ],
-  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule, ReactiveFormsModule],
-  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe],
+  imports: [
+    CommonModule,
+    SharedModule,
+    HomeRoutingModule,
+    MatModule,
+    DirectiveModule,
+    ReactiveFormsModule,
+    AgGridModule.withComponents([
+      PotentialAddonTableColumnComponent,
+      GetAddonStatusColumnComponent,
+      TableContextHeaderCellComponent,
+    ]),
+  ],
+  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe, RelativeDurationPipe],
 })
 export class HomeModule {}

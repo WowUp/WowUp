@@ -1,12 +1,13 @@
+import { WowInstallation } from "../models/wowup/wow-installation";
 import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_RAIDERIO } from "../../common/constants";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";
+import { getGameVersion } from "../utils/addon.utils";
 
 export class RaiderIoAddonProvider extends AddonProvider {
   private readonly _scanWebsite = "https://raider.io";
@@ -20,12 +21,12 @@ export class RaiderIoAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  constructor() {
+  public constructor() {
     super();
   }
 
   public scan(
-    clientType: WowClientType,
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
@@ -46,7 +47,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
       rioAddonFolder.matchingAddon = {
         autoUpdateEnabled: false,
         channelType: AddonChannelType.Stable,
-        clientType,
+        clientType: installation.clientType,
         id: uuidv4(),
         isIgnored: true,
         name: raiderIo.toc.title,
@@ -54,7 +55,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
         downloadUrl: "",
         externalId: this.name,
         externalUrl: this._scanWebsite,
-        gameVersion: rioAddonFolder.toc.interface,
+        gameVersion: getGameVersion(rioAddonFolder.toc.interface),
         installedAt: new Date(),
         installedFolders: installedFolders,
         installedFolderList: installedFolderList,
@@ -69,6 +70,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
         releasedAt: new Date(),
         isLoadOnDemand: rioAddonFolder.toc.loadOnDemand === "1",
         externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+        installationId: installation.id,
       };
     }
 

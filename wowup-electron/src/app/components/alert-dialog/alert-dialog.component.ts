@@ -11,11 +11,9 @@ export interface AlertDialogData {
   templateUrl: "./alert-dialog.component.html",
   styleUrls: ["./alert-dialog.component.scss"],
 })
-export class AlertDialogComponent implements OnInit {
-  constructor(
+export class AlertDialogComponent {
+  public constructor(
     public dialogRef: MatDialogRef<AlertDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AlertDialogData
   ) {}
-
-  ngOnInit(): void {}
 }

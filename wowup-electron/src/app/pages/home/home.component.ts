@@ -1,5 +1,5 @@
-import { from, interval, Subscription } from "rxjs";
-import { filter, first, switchMap, tap } from "rxjs/operators";
+import { from, interval } from "rxjs";
+import { filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -7,18 +7,12 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { IPC_POWER_MONITOR_RESUME, IPC_POWER_MONITOR_UNLOCK } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
-import {
-  AddonScanError,
-  AddonSyncError,
-  GitHubFetchReleasesError,
-  GitHubFetchRepositoryError,
-  GitHubLimitError,
-} from "../../errors";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { AddonScanError } from "../../errors";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
 @Component({
@@ -28,34 +22,28 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
-  private _appUpdateInterval: Subscription;
+  private _appUpdateInterval?: number;
 
   public selectedIndex = 0;
   public hasWowClient = false;
   public appReady = false;
   public preloadSpinnerKey = "COMMON.PROGRESS_SPINNER.LOADING";
 
-  constructor(
+  public constructor(
     public electronService: ElectronService,
     private _sessionService: SessionService,
     private _translateService: TranslateService,
     private _addonService: AddonService,
-    private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
     private _snackBar: MatSnackBar,
-    private _cdRef: ChangeDetectorRef
+    private _cdRef: ChangeDetectorRef,
+    private _warcraftInstallationService: WarcraftInstallationService
   ) {
-    this._warcraftService.installedClientTypes$.subscribe((clientTypes) => {
-      if (clientTypes === undefined) {
-        this.hasWowClient = false;
-        this.selectedIndex = 3;
-      } else {
-        this.hasWowClient = clientTypes.length > 0;
-        this.selectedIndex = this.hasWowClient ? 0 : 3;
-      }
+    this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
+      this.hasWowClient = installations.length > 0;
+      this.selectedIndex = this.hasWowClient ? 0 : 3;
     });
 
-    this._addonService.syncError$.subscribe(this.onAddonSyncError);
     this._addonService.scanError$.subscribe(this.onAddonScanError);
 
     this._addonService.scanUpdate$
@@ -63,7 +51,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       .subscribe(this.onScanUpdate);
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping app update check...");
       this.destroyAppUpdateCheck();
@@ -75,10 +63,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this.initAppUpdateCheck();
 
-    this._warcraftService.installedClientTypes$
+    this._warcraftInstallationService.wowInstallations$
       .pipe(
-        first((clientTypes) => !!clientTypes),
-        switchMap((clientTypes) => from(this.migrateAddons(clientTypes)))
+        first((installations) => installations.length > 0),
+        switchMap((installations) => {
+          return from(this.migrateAddons(installations)).pipe(map(() => installations));
+        })
       )
       .subscribe(() => {
         this.appReady = true;
@@ -86,32 +76,33 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this._appUpdateInterval.unsubscribe();
+  public ngOnDestroy(): void {
+    window.clearInterval(this._appUpdateInterval);
   }
 
   private initAppUpdateCheck() {
+    if (this._appUpdateInterval !== undefined) {
+      console.warn(`App update interval already exists`);
+      return;
+    }
+
     // check for an app update every so often
-    this._appUpdateInterval = interval(AppConfig.appUpdateIntervalMs)
-      .pipe(
-        tap(() => {
-          this.checkForAppUpdate().catch((e) => console.error(e));
-        })
-      )
-      .subscribe();
+    this._appUpdateInterval = window.setInterval(() => {
+      this.checkForAppUpdate().catch((e) => console.error(e));
+    }, AppConfig.appUpdateIntervalMs);
 
     this.checkForAppUpdate().catch((e) => console.error(e));
   }
 
   private destroyAppUpdateCheck() {
-    this._appUpdateInterval?.unsubscribe();
+    window.clearInterval(this._appUpdateInterval);
     this._appUpdateInterval = undefined;
   }
 
-  private async migrateAddons(clientTypes: WowClientType[]) {
+  private async migrateAddons(installations: WowInstallation[]) {
     const shouldMigrate = await this._wowupService.shouldMigrateAddons();
-    if (!clientTypes || !shouldMigrate) {
-      return clientTypes;
+    if (!installations || installations.length === 0 || !shouldMigrate) {
+      return installations;
     }
 
     this.preloadSpinnerKey = "PAGES.HOME.MIGRATING_ADDONS";
@@ -120,8 +111,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     console.log("Migrating addons");
 
     try {
-      for (const clientType of clientTypes) {
-        await this._addonService.migrate(clientType);
+      for (const installation of installations) {
+        await this._addonService.migrate(installation);
       }
 
       await this._wowupService.setMigrationVersion();
@@ -129,7 +120,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.error(`Failed to migrate addons`, e);
     }
 
-    return clientTypes;
+    return installations;
   }
 
   private detectChanges = () => {
@@ -140,7 +131,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  onSelectedIndexChange(index: number) {
+  public onSelectedIndexChange(index: number): void {
     this._sessionService.selectedHomeTab = index;
   }
 
@@ -149,36 +140,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     const errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SCAN_ERROR", {
       providerName: error.providerName,
     });
-
-    this._snackBar.open(errorMessage, undefined, {
-      duration: durationMs,
-      panelClass: ["wowup-snackbar", "snackbar-error", "text-1"],
-    });
-  };
-
-  private onAddonSyncError = (error: AddonSyncError) => {
-    const durationMs = 4000;
-    let errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
-      providerName: error.providerName,
-    });
-
-    if (error.innerError instanceof GitHubLimitError) {
-      const err = error.innerError;
-      const max = err.rateLimitMax;
-      const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
-      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
-        max,
-        reset,
-      });
-    } else if (
-      error.innerError instanceof GitHubFetchRepositoryError ||
-      error.innerError instanceof GitHubFetchReleasesError
-    ) {
-      const err = error.innerError as GitHubFetchRepositoryError;
-      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
-        addonName: error.addonName,
-      });
-    }
 
     this._snackBar.open(errorMessage, undefined, {
       duration: durationMs,

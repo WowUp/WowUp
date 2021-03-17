@@ -32,9 +32,7 @@
   }
 }
 .addon-detail-view {
-  width: 60vw;
-  min-width: 380px;
-  max-width: 80vw;
+  min-width: 600px;
 
   .icon-link {
     width: 24px;
@@ -46,10 +44,6 @@
     // color: $artifact;
     padding: 0.5em;
     margin-bottom: 0.5em;
-  }
-
-  .sub-text {
-    color: $white-2;
   }
 }
 

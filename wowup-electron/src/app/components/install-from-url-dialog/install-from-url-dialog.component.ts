@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { from, Subscription } from "rxjs";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
@@ -12,12 +12,21 @@ import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { NO_SEARCH_RESULTS_ERROR } from "../../../common/constants";
 import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../../errors";
 
+interface DownloadCounts {
+  count: number;
+  shortCount: number;
+  simpleCount: string;
+  myriadCount: string;
+  textCount: string;
+  provider: string;
+}
+
 @Component({
   selector: "app-install-from-url-dialog",
   templateUrl: "./install-from-url-dialog.component.html",
   styleUrls: ["./install-from-url-dialog.component.scss"],
 })
-export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
+export class InstallFromUrlDialogComponent implements OnDestroy {
   public isBusy = false;
   public showInstallSpinner = false;
   public showInstallButton = false;
@@ -29,7 +38,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
 
   private _installSubscription?: Subscription;
 
-  constructor(
+  public constructor(
     private _addonService: AddonService,
     private _dialog: MatDialog,
     private _sessionService: SessionService,
@@ -38,27 +47,25 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<InstallFromUrlDialogComponent>
   ) {}
 
-  ngOnInit(): void {}
-
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this._installSubscription?.unsubscribe();
   }
 
-  onClose() {
+  public onClose(): void {
     this.dialogRef.close();
   }
 
-  onClearSearch() {
+  public onClearSearch(): void {
     this.query = "";
-    this.onImportUrl();
+    this.onImportUrl().catch((error) => console.error(error));
   }
 
-  onInstall() {
+  public onInstall(): void {
     this.showInstallButton = false;
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, this._sessionService.getSelectedClientType())
+      this._addonService.installPotentialAddon(this.addon, this._sessionService.getSelectedWowInstallation())
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
@@ -73,7 +80,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  public getDownloadCountParams() {
+  public getDownloadCountParams(): DownloadCounts {
     const count = this.addon.downloadCount;
     return {
       count,
@@ -85,7 +92,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     };
   }
 
-  async onImportUrl() {
+  public async onImportUrl(): Promise<void> {
     this.addon = undefined;
     this.showInstallSuccess = false;
     this.showInstallSpinner = false;
@@ -102,7 +109,10 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const importedAddon = await this._addonService.getAddonByUrl(url, this._sessionService.getSelectedClientType());
+      const importedAddon = await this._addonService.getAddonByUrl(
+        url,
+        this._sessionService.getSelectedWowInstallation()
+      );
       if (!importedAddon) {
         throw new Error("Addon not found");
       }
@@ -155,7 +165,7 @@ export class InstallFromUrlDialogComponent implements OnInit, OnDestroy {
   }
 
   private addonExists(externalId: string) {
-    return this._addonService.isInstalled(externalId, this._sessionService.getSelectedClientType());
+    return this._addonService.isInstalled(externalId, this._sessionService.getSelectedWowInstallation());
   }
 
   private getUrlFromQuery(): URL | undefined {

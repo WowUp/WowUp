@@ -8,6 +8,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../network/network.servic
 
 const API_URL = AppConfig.wowUpApiUrl;
 const BLOCKLIST_CACHE_KEY = "wowup-blocklist";
+const BLOCKLIST_CACHE_TTL_SEC = 43200;
 
 @Injectable({
   providedIn: "root",
@@ -15,7 +16,7 @@ const BLOCKLIST_CACHE_KEY = "wowup-blocklist";
 export class WowUpApiService {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
-  constructor(private _networkService: NetworkService, private _cacheService: CachingService) {
+  public constructor(private _networkService: NetworkService, private _cacheService: CachingService) {
     this._circuitBreaker = this._networkService.getCircuitBreaker(`WowUpApiService_main`);
     this.getBlockList().subscribe();
   }
@@ -30,7 +31,7 @@ export class WowUpApiService {
 
     return from(this._circuitBreaker.getJson<BlockListRepresentation>(url)).pipe(
       tap((response) => {
-        this._cacheService.set(BLOCKLIST_CACHE_KEY, response);
+        this._cacheService.set(BLOCKLIST_CACHE_KEY, response, BLOCKLIST_CACHE_TTL_SEC);
       })
     );
   }

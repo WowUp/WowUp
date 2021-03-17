@@ -32,8 +32,7 @@ import {
   IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
-import { SystemTrayConfig } from "../common/wowup/system-tray-config";
-import { MenuConfig } from "../common/wowup/menu-config";
+import { MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -43,11 +42,13 @@ import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
 import { ZoomDirection } from "./utils/zoom.utils";
-import { Addon } from "./entities/addon";
+import { Addon } from "../common/entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { InstallFromUrlDialogComponent } from "./components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
+import { SnackbarService } from "./services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-root",
@@ -56,17 +57,29 @@ import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
-  private _autoUpdateInterval?: Subscription;
+  private _autoUpdateInterval?: number;
 
-  // @HostListener("document:fullscreenchange", ["$event"])
-  // handleKeyboardEvent(event: Event) {
-  //   console.debug("fullscreenchange", event);
-  // }
+  @HostListener("mousewheel", ["$event"])
+  public async handleKeyboardEvent(event: any): Promise<void> {
+    if (!event.ctrlKey) {
+      return;
+    }
+
+    try {
+      if (event.wheelDelta > 0) {
+        await this._electronService.applyZoom(ZoomDirection.ZoomIn);
+      } else {
+        await this._electronService.applyZoom(ZoomDirection.ZoomOut);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   public quitEnabled?: boolean;
   public showPreLoad = true;
 
-  constructor(
+  public constructor(
     private _analyticsService: AnalyticsService,
     private _electronService: ElectronService,
     private _fileService: FileService,
@@ -78,11 +91,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _preferenceStore: PreferenceStorageService,
     private _cdRef: ChangeDetectorRef,
     private _wowupAddonService: WowUpAddonService,
+    private _snackbarService: SnackbarService,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
       this._electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
@@ -104,10 +118,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });
 
+    this._addonService.syncError$.subscribe(this.onAddonSyncError);
+
     this._electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this._electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
-	this._electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
+    this._electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
 
     from(this._electronService.getAppOptions())
       .pipe(
@@ -116,7 +132,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         map((appOptions) => {
           this.showPreLoad = false;
           this.quitEnabled = appOptions.quit;
-		      this.openInstallFromUrlDialog(appOptions.install);
+          this.openInstallFromUrlDialog(appOptions.install);
           this._cdRef.detectChanges();
         }),
         catchError((err) => {
@@ -128,7 +144,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping auto update...");
-      this._autoUpdateInterval?.unsubscribe();
+      window.clearInterval(this._autoUpdateInterval);
       this._autoUpdateInterval = undefined;
 
       if (evt === IPC_POWER_MONITOR_RESUME || evt === IPC_POWER_MONITOR_UNLOCK) {
@@ -137,7 +153,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     from(this.createAppMenu())
       .pipe(
         first(),
@@ -158,29 +174,29 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._electronService.off(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this._electronService.off(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this._electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
-  onMenuZoomIn = (): void => {
+  public onMenuZoomIn = (): void => {
     this._electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
   };
 
-  onMenuZoomOut = (): void => {
+  public onMenuZoomOut = (): void => {
     this._electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
   };
 
-  onMenuZoomReset = (): void => {
+  public onMenuZoomReset = (): void => {
     this._electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
   };
 
-  onRequestInstallFromUrl = async (evt, path?: string) => {
+  public onRequestInstallFromUrl = async (evt: any, path?: string): Promise<void> => {
     await this.openInstallFromUrlDialog(path);
-  }
+  };
 
-  openDialog(): void {
+  public openDialog(): void {
     const dialogRef = this._dialog.open(TelemetryDialogComponent, {
       disableClose: true,
     });
@@ -194,24 +210,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async openInstallFromUrlDialog(path?: string) {
-    if (!path)
-      return;
+    if (!path) return;
     var dialogRef = await this._dialog.open(InstallFromUrlDialogComponent);
     dialogRef.componentInstance.query = path;
   }
 
   private async initializeAutoUpdate() {
-    if (this._autoUpdateInterval) {
+    if (this._autoUpdateInterval !== undefined) {
+      console.warn(`Auto addon update interval already exists`);
       return;
     }
+
+    this._autoUpdateInterval = window.setInterval(() => {
+      this.onAutoUpdateInterval().catch((e) => console.error(e));
+    }, AppConfig.autoUpdateIntervalMs);
+
     await this.onAutoUpdateInterval();
-    this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
-      .pipe(
-        tap(() => {
-          this.onAutoUpdateInterval().catch((e) => console.error(e));
-        })
-      )
-      .subscribe();
   }
 
   private onAutoUpdateInterval = async () => {
@@ -257,6 +271,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: iconPath,
     });
 
+    notification.addEventListener("click", this.onClickNotification, { once: true });
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
   }
 
@@ -275,8 +290,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: iconPath,
     });
 
+    notification.addEventListener("click", this.onClickNotification, { once: true });
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
   }
+
+  private onClickNotification = () => {
+    this._electronService.focusWindow().catch((e) => console.error(`Failed to focus window on notification click`, e));
+  };
 
   private getAddonNames(addons: Addon[]) {
     return _.map(addons, (addon) => addon.name);
@@ -299,6 +319,41 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     console.debug("checkQuitEnabled");
     this._electronService.quitApplication().catch((e) => console.error(e));
   }
+
+  private onAddonSyncError = (error: AddonSyncError) => {
+    console.debug("onAddonSyncError", error);
+    const durationMs = 4000;
+    let errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
+      providerName: error.providerName,
+    });
+
+    if (error.addonName) {
+      errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_FULL_ERROR", {
+        providerName: error.providerName,
+        addonName: error.addonName,
+      });
+    }
+
+    if (error.innerError instanceof GitHubLimitError) {
+      const err = error.innerError;
+      const max = err.rateLimitMax;
+      const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
+      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
+        max,
+        reset,
+      });
+    } else if (
+      error.innerError instanceof GitHubFetchRepositoryError ||
+      error.innerError instanceof GitHubFetchReleasesError
+    ) {
+      const err = error.innerError as GitHubFetchRepositoryError;
+      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
+        addonName: error.addonName,
+      });
+    }
+
+    this._snackbarService.showErrorSnackbar(errorMessage);
+  };
 
   private async createAppMenu() {
     console.log("Creating app menu");

@@ -1,12 +1,17 @@
-import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import * as _ from "lodash";
-import { ColumnState } from "../../models/wowup/column-state";
 import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
+import * as _ from "lodash";
 import { join } from "path";
 import { Subject } from "rxjs";
+
+import { Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
 import {
+  ADDON_MIGRATION_VERSION_KEY,
+  ADDON_PROVIDERS_KEY,
+  ALLIANCE_LIGHT_THEME,
+  ALLIANCE_THEME,
   APP_UPDATE_CHECK_END,
   APP_UPDATE_CHECK_FOR_UPDATE,
   APP_UPDATE_CHECK_START,
@@ -14,38 +19,35 @@ import {
   APP_UPDATE_INSTALL,
   APP_UPDATE_START_DOWNLOAD,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
+  CURRENT_THEME_KEY,
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
+  DEFAULT_LIGHT_THEME,
+  DEFAULT_THEME,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
+  GET_ADDONS_HIDDEN_COLUMNS_KEY,
+  GET_ADDONS_SORT_ORDER,
+  HORDE_LIGHT_THEME,
+  HORDE_THEME,
+  IPC_GET_APP_VERSION,
+  PROTOCOL_REGISTERED_PREFERENCE_KEY,
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
+  MY_ADDONS_HIDDEN_COLUMNS_KEY,
+  MY_ADDONS_SORT_ORDER,
+  SELECTED_LANGUAGE_PREFERENCE_KEY,
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
-  WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
-  SELECTED_LANGUAGE_PREFERENCE_KEY,
-  MY_ADDONS_HIDDEN_COLUMNS_KEY,
-  MY_ADDONS_SORT_ORDER,
-  GET_ADDONS_HIDDEN_COLUMNS_KEY,
-  GET_ADDONS_SORT_ORDER,
-  CURRENT_THEME_KEY,
-  DEFAULT_THEME,
-  ADDON_PROVIDERS_KEY,
-  HORDE_THEME,
-  HORDE_LIGHT_THEME,
-  ALLIANCE_THEME,
-  ALLIANCE_LIGHT_THEME,
-  DEFAULT_LIGHT_THEME,
-  ADDON_MIGRATION_VERSION_KEY,
-  IPC_GET_APP_VERSION,
-  PROTOCOL_REGISTERED_PREFERENCE_KEY,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
+  WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
 } from "../../../common/constants";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../../common/wowup/models";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
+import { ColumnState } from "../../models/wowup/column-state";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
-import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
@@ -56,50 +58,38 @@ import { PreferenceStorageService } from "../storage/preference-storage.service"
 })
 export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
-
   private readonly _wowupUpdateDownloadInProgressSrc = new Subject<boolean>();
-
   private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
-
   private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
-
   private readonly _wowupUpdateCheckInProgressSrc = new Subject<boolean>();
 
   private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
-
   public readonly applicationFolderPath: string = remote.app.getPath("userData");
-
   public readonly applicationLogsFolderPath: string = remote.app.getPath("logs");
-
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, "downloads");
-
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
-
   public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
-
   public readonly wowupUpdateDownloadInProgress$ = this._wowupUpdateDownloadInProgressSrc.asObservable();
-
   public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
-
   public readonly wowupUpdateCheckInProgress$ = this._wowupUpdateCheckInProgressSrc.asObservable();
 
-  constructor(
+  public constructor(
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
     private _translateService: TranslateService
   ) {
     this.setDefaultPreferences()
-      .then(() => console.debug("Set default preferences"))
+      // .then(() => console.debug("Set default preferences"))
       .catch((e) => console.error("Failed to set default preferences", e));
 
     this.createDownloadDirectory()
       .then(() => this.cleanupDownloads())
-      .then(() => console.debug("createDownloadDirectory complete"))
+      // .then(() => console.debug("createDownloadDirectory complete"))
       .catch((e) => console.error("Failed to create download directory", e));
 
     this._electronService.ipcEventReceived$.subscribe((evt) => {
@@ -128,12 +118,12 @@ export class WowUpService {
       .catch((e) => console.error(e));
   }
 
-  async getApplicationVersion(): Promise<string> {
+  public async getApplicationVersion(): Promise<string> {
     const appVersion = await this._electronService.invoke<string>(IPC_GET_APP_VERSION);
     return `${appVersion}${this._electronService.isPortable ? " (portable)" : ""}`;
   }
 
-  async isBetaBuild(): Promise<boolean> {
+  public async isBetaBuild(): Promise<boolean> {
     const appVersion = await this.getApplicationVersion();
     return appVersion.toLowerCase().indexOf("beta") != -1;
   }
@@ -142,7 +132,7 @@ export class WowUpService {
    * This is called before the app component is initialized in order to catch issues
    * with unsupported languages
    */
-  async initializeLanguage(): Promise<void> {
+  public async initializeLanguage(): Promise<void> {
     console.log("Language setup start");
     const langCode = this.currentLanguage || (await this._electronService.getLocale());
 
@@ -245,17 +235,17 @@ export class WowUpService {
     await this.setAutoStartup();
   }
 
-  public get protocolRegistered() {
+  public get protocolRegistered(): boolean {
     const preference = this._preferenceStorageService.findByKey(PROTOCOL_REGISTERED_PREFERENCE_KEY);
     return preference === "true";
   }
 
-  public set protocolRegistered(value: boolean) {
+  public async setProtocolRegistered(value: boolean): Promise<void> {
     const key = PROTOCOL_REGISTERED_PREFERENCE_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
 
-    this.registerProtocol();
+    await this.registerProtocol();
   }
 
   public get wowUpReleaseChannel(): WowUpReleaseChannelType {
@@ -312,27 +302,27 @@ export class WowUpService {
     this._preferenceStorageService.set(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, enabled);
   }
 
-  public get myAddonsHiddenColumns(): ColumnState[] {
+  public getMyAddonsHiddenColumns(): ColumnState[] {
     return this._preferenceStorageService.getObject<ColumnState[]>(MY_ADDONS_HIDDEN_COLUMNS_KEY) || [];
   }
 
-  public set myAddonsHiddenColumns(columnStates: ColumnState[]) {
+  public setMyAddonsHiddenColumns(columnStates: ColumnState[]): void {
     this._preferenceStorageService.setObject(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
-  public get myAddonsSortOrder(): SortOrder {
-    return this._preferenceStorageService.getObject<SortOrder>(MY_ADDONS_SORT_ORDER);
+  public getMyAddonsSortOrder(): SortOrder[] {
+    return this._preferenceStorageService.getObject<SortOrder[]>(MY_ADDONS_SORT_ORDER);
   }
 
-  public set myAddonsSortOrder(sortOrder: SortOrder) {
+  public setMyAddonsSortOrder(sortOrder: SortOrder[]): void {
     this._preferenceStorageService.setObject(MY_ADDONS_SORT_ORDER, sortOrder);
   }
 
-  public get getAddonsHiddenColumns(): ColumnState[] {
+  public getGetAddonsHiddenColumns(): ColumnState[] {
     return this._preferenceStorageService.getObject<ColumnState[]>(GET_ADDONS_HIDDEN_COLUMNS_KEY) || [];
   }
 
-  public set getAddonsHiddenColumns(columnStates: ColumnState[]) {
+  public setGetAddonsHiddenColumns(columnStates: ColumnState[]): void {
     this._preferenceStorageService.setObject(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
@@ -359,29 +349,6 @@ export class WowUpService {
     this._preferenceStorageService.set(ADDON_MIGRATION_VERSION_KEY, versionNumber);
   }
 
-  public getDefaultAddonChannel(clientType: WowClientType): AddonChannelType {
-    const key = this.getClientDefaultAddonChannelKey(clientType);
-    const preference = this._preferenceStorageService.findByKey(key);
-    return parseInt(preference, 10) as AddonChannelType;
-  }
-
-  public setDefaultAddonChannel(clientType: WowClientType, channelType: AddonChannelType): void {
-    const key = this.getClientDefaultAddonChannelKey(clientType);
-    this._preferenceStorageService.set(key, channelType);
-    this._preferenceChangeSrc.next({ key, value: channelType.toString() });
-  }
-
-  public getDefaultAutoUpdate(clientType: WowClientType): boolean {
-    const key = this.getClientDefaultAutoUpdateKey(clientType);
-    const preference = this._preferenceStorageService.findByKey(key);
-    return preference === true.toString();
-  }
-
-  public setDefaultAutoUpdate(clientType: WowClientType, autoUpdate: boolean): void {
-    const key = this.getClientDefaultAutoUpdateKey(clientType);
-    this._preferenceStorageService.set(key, autoUpdate);
-  }
-
   public async showLogsFolder(): Promise<void> {
     await this._fileService.showDirectory(this.applicationLogsFolderPath);
   }
@@ -390,7 +357,8 @@ export class WowUpService {
     const updateCheckResult: UpdateCheckResult = await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
 
     // only notify things when the version changes
-    if (!(await this.isSameVersion(updateCheckResult))) {
+    const isSameVersion = await this.isSameVersion(updateCheckResult);
+    if (!isSameVersion) {
       this._availableVersion = updateCheckResult.updateInfo.version;
       this._wowupUpdateCheckSrc.next(updateCheckResult);
     }
@@ -512,11 +480,11 @@ export class WowUpService {
     }
   }
 
-  private registerProtocol() {
+  private registerProtocol(): Promise<void> {
     if (this.protocolRegistered) {
-      this._electronService.setAsDefaultProtocolClient();
+      return this._electronService.setAsDefaultProtocolClient();
     } else {
-      this._electronService.removeAsDefaultProtocolClient();
+      return this._electronService.removeAsDefaultProtocolClient();
     }
   }
 }

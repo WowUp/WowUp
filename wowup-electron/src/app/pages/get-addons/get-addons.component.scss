@@ -5,6 +5,11 @@
   flex-direction: column;
 }
 
+.wu-ag-table {
+  width: calc(100% - 6px);
+  height: calc(100% - 72px);
+}
+
 .control-container {
   display: flex;
   flex-direction: row;
@@ -51,7 +56,7 @@
 }
 
 .table-container {
-  height: calc(100% - 75px);
+  height: calc(100% - 72px);
   overflow: auto;
   overflow-x: hidden;
 

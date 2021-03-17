@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { Component, NgZone, OnDestroy } from "@angular/core";
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
@@ -24,7 +24,7 @@ import { TranslateService } from "@ngx-translate/core";
   templateUrl: "./titlebar.component.html",
   styleUrls: ["./titlebar.component.scss"],
 })
-export class TitlebarComponent implements OnInit, OnDestroy {
+export class TitlebarComponent implements OnDestroy {
   public isProd = AppConfig.production;
   public isMaximized = false;
 
@@ -33,7 +33,7 @@ export class TitlebarComponent implements OnInit, OnDestroy {
 
   public isFullscreen = false;
 
-  constructor(
+  public constructor(
     public electronService: ElectronService,
     private _wowUpService: WowUpService,
     private _ngZone: NgZone,
@@ -67,13 +67,11 @@ export class TitlebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
-  getLogoPath() {
+  public getLogoPath(): string {
     switch (this._wowUpService.currentTheme) {
       case HORDE_THEME:
       case HORDE_LIGHT_THEME:
@@ -88,11 +86,11 @@ export class TitlebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClickClose() {
-    this.electronService.closeWindow();
+  public async onClickClose(): Promise<void> {
+    await this.electronService.closeWindow();
   }
 
-  onDblClick() {
+  public async onDblClick(): Promise<void> {
     if (this.electronService.isMac) {
       const action = this.electronService.getUserDefaultSystemPreference(
         "AppleActionOnDoubleClick",
@@ -100,9 +98,9 @@ export class TitlebarComponent implements OnInit, OnDestroy {
       ) as string;
 
       if (action === "Maximize") {
-        this.electronService.invoke(IPC_MAXIMIZE_WINDOW);
+        await this.electronService.invoke(IPC_MAXIMIZE_WINDOW);
       } else if (action === "Minimize") {
-        this.electronService.invoke(IPC_MINIMIZE_WINDOW);
+        await this.electronService.invoke(IPC_MINIMIZE_WINDOW);
       }
     }
   }

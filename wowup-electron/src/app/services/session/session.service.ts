@@ -1,75 +1,91 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import * as _ from "lodash";
+import { BehaviorSubject, Subject } from "rxjs";
 import { filter, first, map } from "rxjs/operators";
-import { first as ldFirst } from "lodash";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+
+import { Injectable } from "@angular/core";
+
+import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
+import { WowInstallation } from "../../models/wowup/wow-installation";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
-import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
+import { ColumnState } from "../../models/wowup/column-state";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: "root",
 })
 export class SessionService {
-  private readonly _selectedClientTypeSrc = new BehaviorSubject(WowClientType.None);
+  private readonly _selectedWowInstallationSrc = new BehaviorSubject<WowInstallation>(undefined);
   private readonly _pageContextTextSrc = new BehaviorSubject(""); // right side bar text, context to the screen
   private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
   private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
   private readonly _autoUpdateCompleteSrc = new BehaviorSubject(0);
+  private readonly _addonsChangedSrc = new Subject<boolean>();
+  private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
+
+  private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
+
   private _selectedDetailTabType: DetailsTabType;
 
-  public readonly selectedClientType$ = this._selectedClientTypeSrc.asObservable();
+  public readonly selectedWowInstallation$ = this._selectedWowInstallationSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
   public readonly selectedHomeTab$ = this._selectedHomeTabSrc.asObservable();
   public readonly pageContextText$ = this._pageContextTextSrc.asObservable();
   public readonly autoUpdateComplete$ = this._autoUpdateCompleteSrc.asObservable();
+  public readonly addonsChanged$ = this._addonsChangedSrc.asObservable();
+  public readonly myAddonsHiddenColumns$ = this._myAddonsColumnsSrc.asObservable();
+  public readonly getAddonsHiddenColumns$ = this._getAddonsColumnsSrc.asObservable();
 
-  constructor(
+  public constructor(
     private _warcraftService: WarcraftService,
     private _wowUpService: WowUpService,
-    private _preferenceStorageService: PreferenceStorageService
+    private _warcraftInstallationService: WarcraftInstallationService,
+    private _preferenceStorageService: PreferenceStorageService,
+    private _translateService: TranslateService
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
 
-    this.loadInitialClientType().pipe(first()).subscribe();
+    this._warcraftInstallationService.wowInstallations$
+      .pipe(filter((installations) => installations.length > 0))
+      .subscribe((installations) => this.onWowInstallationsChange(installations));
+  }
 
-    this._warcraftService.installedClientTypes$
-      .pipe(filter((clientTypes) => !!clientTypes))
-      .subscribe((clientTypes) => this.onInstalledClientsChange(clientTypes));
+  public notifyAddonsChanged(): void {
+    this._addonsChangedSrc.next(true);
   }
 
   public getSelectedDetailsTab(): DetailsTabType {
     return this._selectedDetailTabType;
   }
 
-  public setSelectedDetailsTab(tabType: DetailsTabType) {
+  public setSelectedDetailsTab(tabType: DetailsTabType): void {
     this._selectedDetailTabType = tabType;
     this._preferenceStorageService.set(SELECTED_DETAILS_TAB_KEY, tabType);
   }
 
-  public onInstalledClientsChange(installedClientTypes: WowClientType[]) {
-    if (!installedClientTypes.length) {
-      this.setSelectedClientType(WowClientType.None);
+  public onWowInstallationsChange(wowInstallations: WowInstallation[]): void {
+    if (wowInstallations.length === 0) {
+      this.setSelectedWowInstallation(undefined);
       return;
     }
 
-    if (
-      this.getSelectedClientType() !== WowClientType.None &&
-      installedClientTypes.indexOf(this.getSelectedClientType()) !== -1
-    ) {
-      return;
+    let selectedInstall = _.find(wowInstallations, (installation) => installation.selected);
+    if (!selectedInstall) {
+      selectedInstall = _.first(wowInstallations);
+      this.setSelectedWowInstallation(selectedInstall.id);
     }
 
-    this.setSelectedClientType(ldFirst(installedClientTypes));
+    this._selectedWowInstallationSrc.next(selectedInstall);
   }
 
-  public autoUpdateComplete() {
+  public autoUpdateComplete(): void {
     this._autoUpdateCompleteSrc.next(Date.now());
   }
 
-  public setContextText(tabIndex: number, text: string) {
+  public setContextText(tabIndex: number, text: string): void {
     if (tabIndex !== this._selectedHomeTabSrc.value) {
       return;
     }
@@ -81,7 +97,7 @@ export class SessionService {
     this._statusTextSrc.next(text);
   }
 
-  public getSelectedHomeTab() {
+  public getSelectedHomeTab(): number {
     return this._selectedHomeTabSrc.value;
   }
 
@@ -90,34 +106,17 @@ export class SessionService {
     this._selectedHomeTabSrc.next(tabIndex);
   }
 
-  public setSelectedClientType(clientType: WowClientType) {
-    this._wowUpService.setLastSelectedClientType(clientType);
-    this._selectedClientTypeSrc.next(clientType);
+  public setSelectedWowInstallation(installationId: string): void {
+    if (!installationId) {
+      return;
+    }
+
+    const installation = this._warcraftInstallationService.getWowInstallation(installationId);
+    this._warcraftInstallationService.setSelectedWowInstallation(installation);
+    this._selectedWowInstallationSrc.next(installation);
   }
 
-  public getSelectedClientType() {
-    return this._selectedClientTypeSrc.value;
-  }
-
-  private loadInitialClientType() {
-    return this._warcraftService.installedClientTypes$.pipe(
-      filter((clientTypes) => clientTypes !== undefined),
-      first((installedClientTypes) => installedClientTypes.length > 0),
-      map((installedClientTypes) => {
-        console.log("installedClientTypes", installedClientTypes);
-        const lastSelectedType = this._wowUpService.getLastSelectedClientType();
-        console.log("lastSelectedType", lastSelectedType);
-        let initialClientType = installedClientTypes.length ? installedClientTypes[0] : WowClientType.None;
-
-        // If the user has no stored type, or the type is no longer found just set it.
-        if (lastSelectedType == WowClientType.None || !installedClientTypes.some((ct) => ct == lastSelectedType)) {
-          this._wowUpService.setLastSelectedClientType(initialClientType);
-        } else {
-          initialClientType = lastSelectedType;
-        }
-
-        this._selectedClientTypeSrc.next(initialClientType);
-      })
-    );
+  public getSelectedWowInstallation(): WowInstallation {
+    return this._selectedWowInstallationSrc.value;
   }
 }

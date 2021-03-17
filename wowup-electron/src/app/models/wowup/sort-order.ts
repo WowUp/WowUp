@@ -1,4 +1,4 @@
 export interface SortOrder {
-  name: string;
-  direction: "asc" | "desc" | "";
+  colId: string;
+  sort: string;
 }

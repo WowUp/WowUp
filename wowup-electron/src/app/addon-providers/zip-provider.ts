@@ -6,9 +6,8 @@ import { map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 
 import { ADDON_PROVIDER_ZIP } from "../../common/constants";
-import { Addon } from "../entities/addon";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { Addon } from "../../common/entities/addon";
+import { AddonChannelType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { Toc } from "../models/wowup/toc";
@@ -16,6 +15,7 @@ import { FileService } from "../services/files/file.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { AddonProvider } from "./addon-provider";
+import { WowInstallation } from "../models/wowup/wow-installation";
 
 const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed", "application/octet-stream"];
 
@@ -28,7 +28,7 @@ export class ZipAddonProvider extends AddonProvider {
   public readonly canShowChangelog = false;
   public enabled = true;
 
-  constructor(
+  public constructor(
     private _httpClient: HttpClient,
     private _fileService: FileService,
     private _tocService: TocService,
@@ -37,21 +37,21 @@ export class ZipAddonProvider extends AddonProvider {
     super();
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(addonUri: URL): boolean {
     return addonUri.pathname?.toLowerCase()?.endsWith(".zip");
   }
 
-  isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(): boolean {
     return false;
   }
 
-  async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
+  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     if (!addon) {
       return "";
     }
 
     const folders = addon.installedFolderList;
-    const clientAddonFolderPath = this._warcraftService.getAddonFolderPath(addon.clientType);
+    const clientAddonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const allTocs = await this.getAllTocs(clientAddonFolderPath, folders);
 
     const primaryToc = this.getPrimaryToc(allTocs);
@@ -96,7 +96,7 @@ export class ZipAddonProvider extends AddonProvider {
     return tocs;
   }
 
-  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult | undefined> {
+  public async searchByUrl(addonUri: URL): Promise<AddonSearchResult | undefined> {
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {
       throw new Error(`Invalid zip URL ${addonUri.toString()}`);
     }
@@ -118,7 +118,7 @@ export class ZipAddonProvider extends AddonProvider {
     return potentialAddon;
   }
 
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+  public getById(addonId: string): Observable<AddonSearchResult> {
     const addonUri = new URL(addonId);
 
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {

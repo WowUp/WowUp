@@ -77,10 +77,12 @@
     "ADDON_STATE": {
       "IGNORED": "Ignoré",
       "INSTALL": "Installer",
+      "PENDING": "Pending",
       "UNINSTALL": "Désinstaller",
       "UNKNOWN": "",
       "UPDATE": "Mise à jour",
-      "UPTODATE": "À jour"
+      "UPTODATE": "À jour",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Sauvegarde",
@@ -91,6 +93,12 @@
       "PENDING": "En attente",
       "UNINSTALLING": "Désinstallation",
       "UPDATING": "En cours de mise à jour"
+    },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -133,6 +141,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "Une erreur s'est produite lors de la correspondance de vos dossiers d'addons avec {providerName}, merci de réessayer plus tard.",
       "ADDON_SYNC_ERROR": "Une erreur s'est produite lors de la vérification des mises à jour depuis : {providerName}",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "Impossible de changer le fournisseur {providerName} pour l´addon {addonName}",
       "GITHUB_LIMIT_ERROR": "Vous avez atteint la limite de {max} requêtes API Github.\nMerci d'attendre {reset} et de réessayer.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
@@ -143,7 +152,8 @@
     "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Aucun addon trouvé"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -190,6 +200,9 @@
       "INSTALL_SUCCESS_LABEL": "Installé !",
       "SUPPORTED_SOURCES": "Supporte WowInterface et GitHub",
       "TITLE": "URL de l'addon à installer"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Aidez-moi à améliorer WowUp en envoyant anonymement les données d'installation et / ou erreurs ?",
@@ -368,8 +381,10 @@
         "DEBUG": "Debug"
       },
       "WOW": {
+        "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "Les addons nouvellement installés seront mises à jour automatiquement par défaut",
         "AUTO_UPDATE_LABEL": "Mise à jour automatique",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Voulez-vous vraiment effacer le chemin d'installation de {clientName} ? Cette action supprimera toutes les informations des addons stockées pour ce client.\n\nVos dossiers d'addons ne seront pas supprimées.",
           "TITLE": "Effacer le chemin d'installation ?"
@@ -378,9 +393,12 @@
         "CLIENT_TYPE_PATH_LABEL": "Chemin de {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal d'extension par défaut",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal d'Addon",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Sélectionner",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Réanalyser",
         "RESCAN_CLIENTS_LABEL": "Réanalyser les clients de World of Warcraft installés",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "World of Warcraft"
       }
     }

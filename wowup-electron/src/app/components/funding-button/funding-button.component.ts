@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { AddonFundingLink } from "../../entities/addon";
+import { AddonFundingLink } from "../../../common/entities/addon";
 
 @Component({
   selector: "app-funding-button",
@@ -7,28 +7,26 @@ import { AddonFundingLink } from "../../entities/addon";
   styleUrls: ["./funding-button.component.scss"],
 })
 export class FundingButtonComponent implements OnInit {
-  @Input("funding") funding: AddonFundingLink;
-  @Input("size") size: "large" | "small" = "large";
+  @Input("funding") public funding: AddonFundingLink;
+  @Input("size") public size: "large" | "small" = "large";
 
   public isFontIcon = false;
   public iconSrc = "";
   public tooltipKey = "";
   public fundingName = "";
 
-  constructor() {}
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.isFontIcon = this.getIsFontIcon();
     this.iconSrc = this.isFontIcon ? this.getFontIcon() : this.getFundingIcon();
     this.fundingName = this.getFundingName();
     this.tooltipKey = this.getFundingLocaleKey(this.fundingName);
   }
 
-  getTooltipKey() {
+  public getTooltipKey(): string {
     return `PAGES.MY_ADDONS.FUNDING_TOOLTIP.${this.funding.platform.toUpperCase()}`;
   }
 
-  getIsFontIcon(): boolean {
+  private getIsFontIcon(): boolean {
     switch (this.funding.platform) {
       case "PATREON":
       case "GITHUB":
@@ -40,7 +38,7 @@ export class FundingButtonComponent implements OnInit {
     }
   }
 
-  getFontIcon() {
+  private getFontIcon(): string {
     switch (this.funding.platform) {
       case "PATREON":
         return "fab:patreon";
@@ -53,7 +51,7 @@ export class FundingButtonComponent implements OnInit {
     }
   }
 
-  getFundingIcon() {
+  private getFundingIcon(): string {
     switch (this.funding.platform) {
       case "LIBERAPAY":
         return "assets/images/librepay_logo_small.png";
@@ -67,13 +65,13 @@ export class FundingButtonComponent implements OnInit {
     }
   }
 
-  getFundingLocaleKey(fundingName: string) {
+  private getFundingLocaleKey(fundingName: string): string {
     return fundingName && fundingName.toUpperCase() !== "CUSTOM"
       ? "PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC"
       : "PAGES.MY_ADDONS.FUNDING_TOOLTIP.CUSTOM";
   }
 
-  getFundingName() {
+  private getFundingName(): string {
     switch (this.funding.platform) {
       case "LIBERAPAY":
         return "Liberapay";

@@ -12,15 +12,17 @@ import {
   GitHubFetchRepositoryError,
   GitHubLimitError,
   NoReleaseFoundError,
+  SourceRemovedAddonError,
 } from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider, GetAllResult } from "./addon-provider";
+import { WowInstallation } from "../models/wowup/wow-installation";
 
 interface GitHubRepoParts {
   repository: string;
@@ -42,17 +44,17 @@ export class GitHubAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  constructor(private _httpClient: HttpClient) {
+  public constructor(private _httpClient: HttpClient) {
     super();
   }
 
-  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const searchResults: AddonSearchResult[] = [];
     const errors: Error[] = [];
 
     for (const addonId of addonIds) {
       try {
-        const result = await this.getByIdAsync(addonId, clientType);
+        const result = await this.getByIdAsync(addonId, installation.clientType);
         if (result == null) {
           continue;
         }
@@ -62,6 +64,10 @@ export class GitHubAddonProvider extends AddonProvider {
         // If we're at the limit, just give up the loop
         if (e instanceof GitHubLimitError) {
           throw e;
+        }
+
+        if (e instanceof SourceRemovedAddonError) {
+          e.addonId = addonId;
         }
 
         errors.push(e);
@@ -74,7 +80,7 @@ export class GitHubAddonProvider extends AddonProvider {
     };
   }
 
-  public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     const repoPath = addonUri.pathname;
     if (!repoPath) {
       throw new Error(`Invalid URL: ${addonUri.toString()}`);
@@ -88,10 +94,10 @@ export class GitHubAddonProvider extends AddonProvider {
         throw new NoReleaseFoundError(addonUri.toString());
       }
 
-      const asset = this.getValidAsset(latestRelease, clientType);
+      const asset = this.getValidAsset(latestRelease, installation.clientType);
       console.log("latestRelease", latestRelease);
       if (asset == null) {
-        if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(clientType)) {
+        if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(installation.clientType)) {
           throw new ClassicAssetMissingError(addonUri.toString());
         } else {
           throw new AssetMissingError(addonUri.toString());
@@ -125,8 +131,8 @@ export class GitHubAddonProvider extends AddonProvider {
     return `${parsed.owner}/${parsed.repository}`;
   }
 
-  public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    return from(this.getByIdAsync(addonId, clientType));
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+    return from(this.getByIdAsync(addonId, installation.clientType));
   }
 
   private async getByIdAsync(addonId: string, clientType: WowClientType) {
@@ -261,7 +267,7 @@ export class GitHubAddonProvider extends AddonProvider {
     } catch (e) {
       console.error(`Failed to get GitHub repository`, e);
       // If some other internal handler already handled this, use that error
-      if (e instanceof GitHubError) {
+      if (e instanceof GitHubError || e instanceof SourceRemovedAddonError) {
         throw e;
       }
 
@@ -287,6 +293,12 @@ export class GitHubAddonProvider extends AddonProvider {
     }
   }
 
+  private handleNotFoundError(response: HttpErrorResponse) {
+    if (response.status === 404) {
+      throw new SourceRemovedAddonError("", response);
+    }
+  }
+
   private getIntHeader(headers: HttpHeaders, key: string) {
     return parseInt(headers.get(key), 10);
   }
@@ -296,6 +308,7 @@ export class GitHubAddonProvider extends AddonProvider {
       return await this._httpClient.get<T>(url.toString()).toPromise();
     } catch (e) {
       this.handleRateLimitError(e);
+      this.handleNotFoundError(e);
       throw e;
     }
   }

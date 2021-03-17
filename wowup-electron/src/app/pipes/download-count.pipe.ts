@@ -6,9 +6,9 @@ import { shortenDownloadCount } from "../utils/number.utils";
   name: "downloadCount",
 })
 export class DownloadCountPipe implements PipeTransform {
-  constructor(private translateService: TranslateService) {}
+  public constructor(private translateService: TranslateService) {}
 
-  transform(value: number, ...args: unknown[]): string {
+  public transform(value: number, ...args: unknown[]): string {
     const numMatches = /(e\+\d+)/.exec(value.toExponential());
     const suffix = numMatches[1];
 

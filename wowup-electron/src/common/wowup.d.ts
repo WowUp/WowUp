@@ -1,13 +1,4 @@
-import {
-  IpcRendererEvent,
-  LoginItemSettings,
-  WebContents,
-  Settings,
-  LoginItemSettingsOptions,
-  OpenExternalOptions,
-  OpenDialogOptions,
-  OpenDialogReturnValue,
-} from "electron";
+import { IpcRendererEvent, OpenExternalOptions, OpenDialogOptions, OpenDialogReturnValue } from "electron";
 import { ElectronLog } from "electron-log";
 
 // Events that can be sent from main to renderer
@@ -66,7 +57,10 @@ declare type RendererChannels =
   | "list-files"
   | "readdir"
   | "set-as-default-protocol-client"
-  | "remove-as-default-protocol-client";
+  | "remove-as-default-protocol-client"
+  | "read-file-buffer"
+  | "addons-save-all"
+  | "focus-window";
 
 declare global {
   interface Window {

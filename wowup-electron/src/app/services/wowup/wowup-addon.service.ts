@@ -3,12 +3,13 @@ import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
-import { Addon } from "../../entities/addon";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { Addon } from "../../../common/entities/addon";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
-import { getEnumName } from "../../utils/enum.utils";
+import { WowInstallation } from "../../models/wowup/wow-installation";
+import { toInterfaceVersion } from "../../utils/addon.utils";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
+import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 
 enum WowUpAddonFileType {
@@ -43,7 +44,7 @@ const WOWUP_ADODN_FOLDER_NAME = "WowUp";
   providedIn: "root",
 })
 export class WowUpAddonService {
-  readonly files: WowUpAddonFileProcessing[] = [
+  public readonly files: WowUpAddonFileProcessing[] = [
     {
       filename: "data.lua",
       type: WowUpAddonFileType.HandlebarsTemplate,
@@ -59,48 +60,50 @@ export class WowUpAddonService {
   ];
   private compiledFiles = {};
 
-  constructor(
+  public constructor(
     private _addonService: AddonService,
     private _fileService: FileService,
+    private _warcraftInstallationService: WarcraftInstallationService,
     private _warcraftService: WarcraftService
   ) {
     _addonService.addonInstalled$
       .pipe(filter((update) => update.installState === AddonInstallState.Complete))
       .subscribe((update) => {
-        console.debug("addonInstalled");
-        this.updateForClientType(update.addon.clientType).catch((e) => console.error(e));
+        const installation = this._warcraftInstallationService.getWowInstallation(update.addon.installationId);
+        this.updateForInstallation(installation).catch((e) => console.error(e));
       });
 
     _addonService.addonRemoved$.subscribe((addon) => {
-      console.debug("addonRemoved", addon);
       this.updateForAllClientTypes().catch((e) => console.error(e));
     });
   }
 
   public async updateForAllClientTypes(): Promise<void> {
-    const availableClients = await this._warcraftService.getWowClientTypes();
+    const installations = this._warcraftInstallationService.getWowInstallations();
 
-    for (const clientType of availableClients) {
+    for (const installation of installations) {
       try {
-        await this.updateForClientType(clientType);
+        await this.updateForInstallation(installation);
       } catch (e) {
         console.error(e);
       }
     }
   }
 
-  public async updateForClientType(clientType: WowClientType): Promise<void> {
-    const addons = this._addonService.getAllAddons(clientType);
+  public async updateForInstallation(installation: WowInstallation): Promise<void> {
+    const addons = this._addonService.getAllAddons(installation);
     if (addons.length === 0) {
-      console.log(`WowUpAddonService: No addons to sync ${getEnumName(WowClientType, clientType)}`);
+      console.log(`WowUpAddonService: No addons to sync ${installation.label}`);
       return;
     }
 
-    await this.persistUpdateInformationToWowUpAddon(clientType, addons);
+    await this.persistUpdateInformationToWowUpAddon(installation, addons);
   }
 
-  private async persistUpdateInformationToWowUpAddon(clientType: WowClientType, addons: Addon[]) {
-    const wowUpAddon = addons.find((addon: Addon) => addon.installedFolderList.includes(WOWUP_ADODN_FOLDER_NAME));
+  private async persistUpdateInformationToWowUpAddon(installation: WowInstallation, addons: Addon[]) {
+    const wowUpAddon = addons.find((addon: Addon) =>
+      (addon.installedFolderList ?? []).includes(WOWUP_ADODN_FOLDER_NAME)
+    );
     if (!wowUpAddon) {
       console.debug("WowUp Addon not found");
       return;
@@ -113,13 +116,13 @@ export class WowUpAddonService {
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailable: availableUpdates,
         generatedAt: new Date().toString(),
-        interfaceVersion: wowUpAddon.gameVersion,
+        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion),
         wowUpAddonName: wowUpAddon.installedFolders,
         wowUpAddonVersion: wowUpAddon.installedVersion,
       };
 
       const dataAddonPath = path.join(
-        this._warcraftService.getAddonFolderPath(clientType),
+        this._warcraftService.getAddonFolderPath(installation),
         WOWUP_DATA_ADDON_FOLDER_NAME
       );
 

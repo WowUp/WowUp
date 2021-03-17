@@ -1,6 +1,120 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.13",
+      "changes": [
+        "Fix an issue with the my addons filter clearing when cancelling a dialog",
+        "Improve the details dialog css"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.12",
+      "changes": [
+        "Fix an issue with WowInterface changelogs not handling BBCode",
+        "Fix an issue with changelog showing up as 'undefined'",
+        "Fix an issue with newly installed addons not showing up in my addons filter",
+        "Fix an issue when an addon has no releases in a the default channel",
+        "Fix alpha/beta display on get addons tab",
+        "Fix an issue with Update buttons getting out of sync when updating multiple addons",
+        "Add some fuzzy text matching for TukUI addon searching/matching",
+        "Add single row de-select to get addons tab",
+        "Tweak the details dialog header style"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.11",
+      "changes": [
+        "German locale updates (Glow)",
+        "Fix Latest Version column vertical alignment",
+        "Fix an issue with update button getting stuck in details dialog",
+        "Clicking a selected single row should now de-select it",
+        "Ctrl + Mouse Wheel should now zoom as it used to"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.10",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "Fix several grid related bugs",
+        "Fix an issue with selecting non retail WoW executables",
+        "Tweak some ui stuff",
+        "Add/improve some logging"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.9",
+      "changes": [
+        "German locale updates (Glow)",
+        "Chinese locale updates (CyanoHao)",
+        "My Addons tab should remember the sort direction again",
+        "Revert the color change",
+        "Add some padding to the sort header arrow",
+        "General grid ui tweaks",
+        "Fix an issue with the 'Update all clients' button not resetting the spinner text"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.8",
+      "changes": [
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Fix an issue with the update available snackbar (Linaori)",
+        "Fix an issue with migrations no longer happening",
+        "Change the dark colors to be like discord, to match the light theme",
+        "Migrations made smarter/faster",
+        "The My Addons tab will now use the new grid library"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.7",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Chinese locale updates (CyanoHao)",
+        "When clicking the auto update notification the app will now be focused",
+        "Add a new 'Remove' button to the addon details dialog",
+        "Using a new grid library for better performance",
+        "Fix an issue with the tab highlight not flexing properly in the details dialog",
+        "Fix some color issues with dialog buttons",
+        "Code cleanup",
+        "Update to Electron 12"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.6",
+      "changes": [
+        "German locale updates (Glow)",
+        "Add new logging for addon updating (Linaori)",
+        "Add support for Hub toc version display",
+        "Add new WoW installation handling"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.5",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow/maestrohdude)",
+        "Pull Hub addon names from their toc values to be more consistent",
+        "Handle removed addons from Hub"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.4",
+      "changes": [
+        "German locale updates (Glow/maestrohdude)",
+        "Add the ability to handle and mark addons deleted from WowInterface"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.3",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Fix filtering for My Addons page",
+        "Add virtual rows to Get Addons page (faster loading)"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.2",
       "changes": ["Rework sorting to be simpler in 'My Addons'", "Add optional symlink support"]
     },

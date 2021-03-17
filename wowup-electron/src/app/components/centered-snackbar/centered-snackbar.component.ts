@@ -13,9 +13,9 @@ export interface CenteredSnackbarComponentData {
 export class CenteredSnackbarComponent implements OnInit {
   public message?: string;
 
-  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: CenteredSnackbarComponentData) {}
+  public constructor(@Inject(MAT_SNACK_BAR_DATA) public data: CenteredSnackbarComponentData) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.message = this.data.message;
   }
 }

@@ -29,6 +29,7 @@ import {
   IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
   APP_PROTOCOL_NAME,
+  IPC_FOCUS_WINDOW,
 } from "../../../common/constants";
 import * as minimist from "minimist";
 import * as log from "electron-log";
@@ -41,7 +42,7 @@ import { IpcRequest } from "../../../common/models/ipc-request";
 import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
-import { AppOptions } from "../../../common/wowup/app-options";
+import { AppOptions } from "../../../common/wowup/models";
 import { ZoomDirection, ZOOM_SCALE } from "../../utils/zoom.utils";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { MainChannels, RendererChannels } from "../../../common/wowup";
@@ -73,7 +74,7 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
-  constructor(private _preferenceStorageService: PreferenceStorageService) {
+  public constructor(private _preferenceStorageService: PreferenceStorageService) {
     // Conditional imports
     if (!this.isElectron) {
       return;
@@ -179,12 +180,12 @@ export class ElectronService {
     return this.invoke(IPC_SET_LOGIN_ITEM_SETTINGS, settings);
   }
 
-  public setAsDefaultProtocolClient() {
-    this.invoke(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT);
+  public setAsDefaultProtocolClient(): Promise<void> {
+    return this.invoke(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT);
   }
 
-  public removeAsDefaultProtocolClient() {
-    this.invoke(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT);
+  public async removeAsDefaultProtocolClient(): Promise<void> {
+    return this.invoke(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT);
   }
 
   public async getAppOptions(): Promise<AppOptions> {
@@ -193,16 +194,18 @@ export class ElectronService {
 
     opts = (<any>minimist(launchArgs.slice(1), {
       boolean: ["hidden", "quit"],
-      string: ["install"]
+      string: ["install"],
     })) as AppOptions;
 
-    launchArgs.slice(1).forEach(arg => {
+    launchArgs.slice(1).forEach((arg) => {
       try {
-        var url = new URL(arg);
+        const url = new URL(arg);
         if (url && url.protocol == APP_PROTOCOL_NAME + ":") {
-          opts = <any>{ install: url.searchParams.get("install") } as AppOptions;
+          opts = (<any>{ install: url.searchParams.get("install") }) as AppOptions;
         }
-      } catch { }
+      } catch (e) {
+        console.error(e);
+      }
     });
 
     return opts;
@@ -285,6 +288,10 @@ export class ElectronService {
     const response = await this.sendIPCMessage<ValueRequest<TIN>, ValueResponse<TOUT>>(channel, request);
 
     return response.value;
+  }
+
+  public focusWindow(): Promise<void> {
+    return this.invoke(IPC_FOCUS_WINDOW);
   }
 
   public sendIPCMessage<TIN extends IpcRequest, TOUT extends IpcResponse>(

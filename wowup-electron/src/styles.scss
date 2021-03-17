@@ -1,3 +1,4 @@
+@import "./markdown.scss";
 @import "./custom-theme.scss";
 
 :not(input):not(textarea),
@@ -51,6 +52,10 @@ img {
   -webkit-app-region: no-drag;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .rounded {
   border-radius: 4px;
 }
@@ -73,6 +78,10 @@ img {
 
 .px-1 {
   padding: 0 0.25em;
+}
+
+.pt-3 {
+  padding-top: 1em;
 }
 
 .m-0 {
@@ -117,6 +126,10 @@ img {
 
 .mb-1 {
   margin-bottom: 0.25em !important;
+}
+
+.w-100 {
+  width: 100%;
 }
 
 .text-center {
@@ -342,24 +355,20 @@ img {
   .cell-wrap-text {
     white-space: normal;
   }
+}
 
-  // .addon-title {
-  //   font-weight: bold;
-  //   font-size: 1.1em;
-
-  // }
+.ignored {
+  color: $white-4 !important;
 }
 
 .addon-context-menu {
   .addon-context-menu-header {
     padding: 0 16px 8px 16px;
-    color: $white-1;
     display: flex;
     flex-direction: row;
     align-items: center;
 
     .thumbnail {
-      background-color: $dark-2;
       width: 30px;
       height: 30px;
       margin-right: 16px;
@@ -370,6 +379,11 @@ img {
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
+
+      img {
+        height: 100%;
+      }
 
       .thumbnail-letter {
         color: $white-4;
@@ -380,15 +394,12 @@ img {
 
     .addon-name {
       font-size: 1em;
-      // font-weight: bold;
-    }
-
-    .addon-version {
-      color: $white-2;
     }
 
     .addon-update-available {
-      display: inline-block;
+      mat-icon {
+        height: 10px;
+      }
     }
   }
 }
@@ -485,6 +496,12 @@ img {
 }
 
 // MATERIAL OVERRIDES
+
+.no-input-border {
+  .mat-form-field-infix {
+    border: none !important;
+  }
+}
 
 .mat-tooltip {
   font-size: 0.95em;

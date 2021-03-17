@@ -77,10 +77,12 @@
     "ADDON_STATE": {
       "IGNORED": "Ignored",
       "INSTALL": "Install",
+      "PENDING": "Pending",
       "UNINSTALL": "Uninstall",
       "UNKNOWN": "",
       "UPDATE": "Update",
-      "UPTODATE": "Up to date"
+      "UPTODATE": "Up to date",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Backing Up",
@@ -91,6 +93,12 @@
       "PENDING": "Pending",
       "UNINSTALLING": "Uninstalling",
       "UPDATING": "Updating..."
+    },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -133,6 +141,7 @@
     "ERRORS": {
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from {providerName}, please try again later.",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}",
       "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
@@ -143,7 +152,8 @@
     "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "No addons found"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -190,6 +200,9 @@
       "INSTALL_SUCCESS_LABEL": "Installed!",
       "SUPPORTED_SOURCES": "Supports WowInterface and GitHub",
       "TITLE": "Install Addon URL"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
@@ -368,19 +381,24 @@
         "DEBUG": "Debug"
       },
       "WOW": {
-        "AUTO_UPDATE_DESCRIPTION": "Newly installed addons will be set to auto update by default",
+        "ADD_CLIENT_BUTTON": "Add New",
+        "AUTO_UPDATE_DESCRIPTION": "All existing and newly installed addons will be set to auto update by default",
         "AUTO_UPDATE_LABEL": "Auto Update",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
-          "MESSAGE": "Are you sure you want to clear the install path for {clientName}? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
-          "TITLE": "Clear Install Location?"
+          "MESSAGE": "Are you sure you want to remove the installation at \"{location}\"? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
+          "TITLE": "Remove World of Warcraft Installation?"
         },
         "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Default Addon Channel",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Re-Scan",
         "RESCAN_CLIENTS_LABEL": "Rescan installed World of Warcraft products",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "World of Warcraft"
       }
     }

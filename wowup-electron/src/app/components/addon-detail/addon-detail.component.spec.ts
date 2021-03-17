@@ -4,13 +4,13 @@ import { Subject } from "rxjs";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../app.module";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { Addon } from "../../entities/addon";
+import { Addon } from "../../../common/entities/addon";
 import { MatModule } from "../../mat-module";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ElectronService } from "../../services";
@@ -19,15 +19,14 @@ import { IconService } from "../../services/icons/icon.service";
 import { SessionService } from "../../services/session/session.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 
 describe("AddonDetailComponent", () => {
-  let component: AddonDetailComponent;
-  let fixture: ComponentFixture<AddonDetailComponent>;
-  let addonService: AddonService;
   let dialogModel: AddonDetailModel;
   let addonServiceSpy: any;
   let electronServiceSpy: ElectronService;
   let sessionServiceSpy: SessionService;
+  let dialogFactory: DialogFactory;
 
   beforeEach(async () => {
     console.log("AddonDetailComponent");
@@ -40,8 +39,12 @@ describe("AddonDetailComponent", () => {
       }
     );
 
+    dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
+
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {});
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {
+      getSelectedWowInstallation: () => "description",
+    });
 
     const viewModel = new AddonViewModel({
       installedVersion: "1.0.0",
@@ -75,30 +78,22 @@ describe("AddonDetailComponent", () => {
     testBed = overrideIconModule(testBed).overrideComponent(AddonDetailComponent, {
       set: {
         providers: [
+          { provide: MatDialogRef, useValue: {} },
           { provide: AddonService, useValue: addonServiceSpy },
           { provide: SessionService, useValue: sessionServiceSpy },
           {
             provide: ElectronService,
             useValue: electronServiceSpy,
           },
-          {
-            provide: IconService,
-          },
         ],
       },
     });
 
     await testBed.compileComponents();
-
-    fixture = TestBed.createComponent(AddonDetailComponent);
-    component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    const icons = fixture.debugElement.injector.get(IconService);
-
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(AddonDetailComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

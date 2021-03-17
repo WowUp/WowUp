@@ -1,8 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as Store from "electron-store";
 
-const PREFERENCE_PREFIX = "preferences";
-
 @Injectable({
   providedIn: "root",
 })
@@ -11,13 +9,11 @@ export class PreferenceStorageService {
     name: "preferences",
   });
 
-  constructor() {}
-
-  public query<T>(action: (items: Store) => T) {
+  public query<T>(action: (items: Store) => T): T {
     return action(this._store);
   }
 
-  public set(key: string, value: any) {
+  public set(key: string, value: any): void {
     this._store.set(key, value.toString());
   }
 
@@ -29,7 +25,7 @@ export class PreferenceStorageService {
     return this._store.get(key) as string;
   }
 
-  public setObject<T>(key: string, object: T) {
+  public setObject<T>(key: string, object: T): void {
     this._store.set(key, object);
   }
 

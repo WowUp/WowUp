@@ -7,13 +7,13 @@ import { TranslateService } from "@ngx-translate/core";
   styleUrls: ["./progress-spinner.component.scss"],
 })
 export class ProgressSpinnerComponent implements OnInit {
-  @Input("message") message: string;
+  @Input("message") public message: string;
 
   public defaultMessage = "";
 
-  constructor(private _translateService: TranslateService) {}
+  public constructor(private _translateService: TranslateService) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this._translateService.get("COMMON.PROGRESS_SPINNER.LOADING").subscribe((translatedStr) => {
       this.defaultMessage = translatedStr;
     });
