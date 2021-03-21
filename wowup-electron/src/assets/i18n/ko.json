@@ -112,16 +112,16 @@
       "TOOLTIP": "{dependencyCount}개의 다른 애드온 참조"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{simpleCount}",
-      "e+1": "{simpleCount}십",
-      "e+2": "{simpleCount}백",
-      "e+3": "{simpleCount}천",
-      "e+4": "{simpleCount}만",
-      "e+5": "{simpleCount}십만",
-      "e+6": "{simpleCount}백만",
-      "e+7": "{simpleCount}천만",
-      "e+8": "{simpleCount}억",
-      "e+9": "{simpleCount}십억"
+      "e+0": "{myriadCount}",
+      "e+1": "{myriadCount}십",
+      "e+2": "{myriadCount}백",
+      "e+3": "{myriadCount}천",
+      "e+4": "{myriadCount}만",
+      "e+5": "{myriadCount}만",
+      "e+6": "{myriadCount}만",
+      "e+7": "{myriadCount}만",
+      "e+8": "{myriadCount}억",
+      "e+9": "{myriadCount}억"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
