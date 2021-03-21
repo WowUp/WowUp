@@ -235,19 +235,6 @@ export class WowUpService {
     await this.setAutoStartup();
   }
 
-  public get protocolRegistered(): boolean {
-    const preference = this._preferenceStorageService.findByKey(PROTOCOL_REGISTERED_PREFERENCE_KEY);
-    return preference === "true";
-  }
-
-  public async setProtocolRegistered(value: boolean): Promise<void> {
-    const key = PROTOCOL_REGISTERED_PREFERENCE_KEY;
-    this._preferenceStorageService.set(key, value);
-    this._preferenceChangeSrc.next({ key, value: value.toString() });
-
-    await this.registerProtocol();
-  }
-
   public get wowUpReleaseChannel(): WowUpReleaseChannelType {
     const preference = this._preferenceStorageService.findByKey(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY);
     return parseInt(preference, 10) as WowUpReleaseChannelType;
@@ -477,14 +464,6 @@ export class WowUpService {
         openAsHidden: this._electronService.isMac ? this.startMinimized : false,
         args: this._electronService.isWin ? (this.startMinimized ? ["--hidden"] : []) : [],
       });
-    }
-  }
-
-  private registerProtocol(): Promise<void> {
-    if (this.protocolRegistered) {
-      return this._electronService.setAsDefaultProtocolClient();
-    } else {
-      return this._electronService.removeAsDefaultProtocolClient();
     }
   }
 }

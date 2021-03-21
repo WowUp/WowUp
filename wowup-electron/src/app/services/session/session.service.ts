@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { BehaviorSubject, Subject } from "rxjs";
-import { filter, first, map } from "rxjs/operators";
+import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
@@ -8,10 +8,7 @@ import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
-import { WarcraftService } from "../warcraft/warcraft.service";
-import { WowUpService } from "../wowup/wowup.service";
 import { ColumnState } from "../../models/wowup/column-state";
-import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: "root",
@@ -24,6 +21,7 @@ export class SessionService {
   private readonly _autoUpdateCompleteSrc = new BehaviorSubject(0);
   private readonly _addonsChangedSrc = new Subject<boolean>();
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
+  private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
 
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
@@ -37,13 +35,11 @@ export class SessionService {
   public readonly addonsChanged$ = this._addonsChangedSrc.asObservable();
   public readonly myAddonsHiddenColumns$ = this._myAddonsColumnsSrc.asObservable();
   public readonly getAddonsHiddenColumns$ = this._getAddonsColumnsSrc.asObservable();
+  public readonly targetFileInstallComplete$ = this._targetFileInstallCompleteSrc.asObservable();
 
   public constructor(
-    private _warcraftService: WarcraftService,
-    private _wowUpService: WowUpService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _preferenceStorageService: PreferenceStorageService,
-    private _translateService: TranslateService
+    private _preferenceStorageService: PreferenceStorageService
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
@@ -51,6 +47,10 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$
       .pipe(filter((installations) => installations.length > 0))
       .subscribe((installations) => this.onWowInstallationsChange(installations));
+  }
+
+  public notifyTargetFileInstallComplete(): void {
+    this._targetFileInstallCompleteSrc.next(true);
   }
 
   public notifyAddonsChanged(): void {

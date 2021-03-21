@@ -1,5 +1,6 @@
+import { ComponentType } from "@angular/cdk/portal";
 import { Injectable } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { AddonChannelType } from "../../../common/wowup/models";
@@ -61,5 +62,9 @@ export class DialogFactory {
     return this._dialog.open(AddonDetailComponent, {
       data,
     });
+  }
+
+  public getDialog<T, K>(component: ComponentType<T>, config?: MatDialogConfig<K>): MatDialogRef<T, any> {
+    return this._dialog.open(component, config);
   }
 }

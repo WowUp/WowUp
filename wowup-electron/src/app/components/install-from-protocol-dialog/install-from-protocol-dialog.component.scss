@@ -1,0 +1,22 @@
+.content {
+  min-width: 300px;
+
+  .control {
+    width: 100%;
+  }
+
+  .success-icon {
+    text-align: center;
+    filter: invert(23%) sepia(99%) saturate(1821%) hue-rotate(104deg) brightness(96%) contrast(106%);
+  }
+}
+.error {
+  color: #f04747;
+}
+
+.select {
+  .mat-icon {
+    height: 17px;
+    width: 17px;
+  }
+}

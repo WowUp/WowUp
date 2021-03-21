@@ -16,6 +16,7 @@ import { AddonChannelType, AddonDependencyType } from "../../common/wowup/models
 import { AppConfig } from "../../environments/environment";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import {
+  CurseAddonFileResponse,
   CurseAuthor,
   CurseDependency,
   CurseDependencyType,
@@ -30,6 +31,7 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
 import { WowInstallation } from "../models/wowup/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
@@ -41,6 +43,11 @@ import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
+
+interface ProtocolData {
+  addonId: number;
+  fileId: number;
+}
 
 export class CurseAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
@@ -84,6 +91,51 @@ export class CurseAddonProvider extends AddonProvider {
     }
 
     return "";
+  }
+
+  public isValidProtocol(protocol: string): boolean {
+    return protocol.toLowerCase().startsWith("curseforge://");
+  }
+
+  public async searchProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
+    const protocolData = this.parseProtocol(protocol);
+    console.debug("protocolData", protocolData);
+    if (!protocolData.addonId || !protocolData.fileId) {
+      throw new Error("Invalid protocol data");
+    }
+
+    const addonResult = await this.getByIdBase(protocolData.addonId.toString()).toPromise();
+    console.debug("addonResult", addonResult);
+    if (!addonResult) {
+      throw new Error(`Failed to get addon data`);
+    }
+
+    const addonFileResponse = await this.getAddonFileById(protocolData.addonId, protocolData.fileId).toPromise();
+
+    // const targetFile = _.find(addonResult.latestFiles, (lf) => lf.id === protocolData.fileId);
+    console.debug("targetFile", addonFileResponse);
+    if (!addonFileResponse) {
+      throw new Error("Failed to get target file");
+    }
+
+    const searchResult: ProtocolSearchResult = {
+      protocol,
+      protocolAddonId: protocolData.addonId.toString(),
+      protocolReleaseId: protocolData.fileId.toString(),
+      validClientTypes: this.getValidClientTypes(addonFileResponse.gameVersionFlavor),
+      ...this.getAddonSearchResult(addonResult, [addonFileResponse]),
+    };
+    console.debug("searchResult", searchResult);
+
+    return searchResult;
+  }
+
+  private parseProtocol(protocol: string): ProtocolData {
+    const url = new URL(protocol);
+    return {
+      addonId: +url.searchParams.get("addonId"),
+      fileId: +url.searchParams.get("fileId"),
+    };
   }
 
   public async getChangelog(
@@ -377,9 +429,7 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
-    const url = `${API_URL}/addon/${addonId}`;
-
-    return from(this._circuitBreaker.getJson<CurseSearchResult>(url)).pipe(
+    return this.getByIdBase(addonId).pipe(
       map((result) => {
         if (!result) {
           return null;
@@ -393,6 +443,18 @@ export class CurseAddonProvider extends AddonProvider {
         return this.getAddonSearchResult(result, latestFiles);
       })
     );
+  }
+
+  private getByIdBase(addonId: string): Observable<CurseSearchResult> {
+    const url = `${API_URL}/addon/${addonId}`;
+
+    return from(this._circuitBreaker.getJson<CurseSearchResult>(url));
+  }
+
+  private getAddonFileById(addonId: string | number, fileId: string | number): Observable<CurseAddonFileResponse> {
+    const url = `${API_URL}/addon/${addonId}/file/${fileId}`;
+
+    return from(this._circuitBreaker.getJson<CurseAddonFileResponse>(url));
   }
 
   public isValidAddonUri(addonUri: URL): boolean {
@@ -578,6 +640,15 @@ export class CurseAddonProvider extends AddonProvider {
       case WowClientType.Beta:
       default:
         return "wow_retail";
+    }
+  }
+
+  private getValidClientTypes(gameVersionFlavor: string): WowClientType[] {
+    switch (gameVersionFlavor) {
+      case "wow_classic":
+        return [WowClientType.Classic, WowClientType.ClassicPtr];
+      default:
+        return [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta];
     }
   }
 

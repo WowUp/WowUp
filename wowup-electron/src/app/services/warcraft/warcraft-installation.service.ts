@@ -68,6 +68,10 @@ export class WarcraftInstallationService {
     return _.filter(this.getWowInstallations(), (installation) => installation.clientType === clientType);
   }
 
+  public getWowInstallationsByClientTypes(clientTypes: WowClientType[]): WowInstallation[] {
+    return _.filter(this.getWowInstallations(), (installation) => clientTypes.includes(installation.clientType));
+  }
+
   public setWowInstallations(wowInstallations: WowInstallation[]): void {
     console.log(`Setting wow installations: ${wowInstallations.length}`);
     this._preferenceStorageService.setObject(WOW_INSTALLATIONS_KEY, wowInstallations);

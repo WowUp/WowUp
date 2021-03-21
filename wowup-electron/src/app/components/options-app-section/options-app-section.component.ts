@@ -12,6 +12,8 @@ import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.compone
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
+  APP_PROTOCOL_NAME,
+  CURSE_PROTOCOL_NAME,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
@@ -32,6 +34,9 @@ interface LocaleListItem {
   styleUrls: ["./options-app-section.component.scss"],
 })
 export class OptionsAppSectionComponent implements OnInit {
+  public readonly curseProtocolName = CURSE_PROTOCOL_NAME;
+  public readonly wowupProtocolName = APP_PROTOCOL_NAME;
+
   public collapseToTray = false;
   public minimizeOnCloseDescription = "";
   public startMinimized = false;
@@ -77,6 +82,9 @@ export class OptionsAppSectionComponent implements OnInit {
     },
   ];
 
+  public curseforgeProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(CURSE_PROTOCOL_NAME));
+  public wowupProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(APP_PROTOCOL_NAME));
+
   public constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
@@ -105,7 +113,6 @@ export class OptionsAppSectionComponent implements OnInit {
     this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
     this.startWithSystem = this.wowupService.getStartWithSystem();
     this.startMinimized = this.wowupService.startMinimized;
-    this.protocolRegistered = this.wowupService.protocolRegistered;
     this.currentLanguage = this.wowupService.currentLanguage;
     this.useSymlinkMode = this.wowupService.useSymlinkMode;
 
@@ -115,6 +122,13 @@ export class OptionsAppSectionComponent implements OnInit {
       this.currentScale = zoomFactor;
       this._cdRef.detectChanges();
     });
+
+    this.electronService
+      .isDefaultProtocolClient(APP_PROTOCOL_NAME)
+      .then((isDefault) => {
+        this.protocolRegistered = isDefault;
+      })
+      .catch((e) => console.error(e));
   }
 
   private async initScale() {
@@ -149,11 +163,11 @@ export class OptionsAppSectionComponent implements OnInit {
     await this.wowupService.setStartMinimized(evt.checked);
   };
 
-  public onProtocolRegisteredChange = async (evt: MatSlideToggleChange): Promise<void> => {
+  public onProtocolHandlerChange = async (evt: MatSlideToggleChange, protocol: string): Promise<void> => {
     try {
-      await this.wowupService.setProtocolRegistered(evt.checked);
+      await this.setProtocolHandler(protocol, evt.checked);
     } catch (e) {
-      console.error(`onProtocolRegisteredChange failed`, e);
+      console.error(`onProtocolHandlerChange failed: ${protocol}`, e);
     }
   };
 
@@ -259,5 +273,13 @@ export class OptionsAppSectionComponent implements OnInit {
 
   private async updateScale() {
     this.currentScale = await this.electronService.getZoomFactor();
+  }
+
+  private setProtocolHandler(protocol: string, enabled: boolean): Promise<boolean> {
+    if (enabled) {
+      return this.electronService.setAsDefaultProtocolClient(protocol);
+    } else {
+      return this.electronService.removeAsDefaultProtocolClient(protocol);
+    }
   }
 }

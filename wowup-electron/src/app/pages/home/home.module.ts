@@ -13,6 +13,7 @@ import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-
 import { FundingButtonComponent } from "../../components/funding-button/funding-button.component";
 import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
+import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
 import { OptionsAddonSectionComponent } from "../../components/options-addon-section/options-addon-section.component";
@@ -24,6 +25,7 @@ import { ProgressButtonComponent } from "../../components/progress-button/progre
 import { ProgressSpinnerComponent } from "../../components/progress-spinner/progress-spinner.component";
 import { TelemetryDialogComponent } from "../../components/telemetry-dialog/telemetry-dialog.component";
 import { WowClientOptionsComponent } from "../../components/wow-client-options/wow-client-options.component";
+import { AddonThumbnailComponent } from "../../components/addon-thumbnail/addon-thumbnail.component";
 import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
 import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
 import { DirectiveModule } from "../../directive.module";
@@ -59,6 +61,7 @@ import { HomeComponent } from "./home.component";
     AlertDialogComponent,
     WowClientOptionsComponent,
     InstallFromUrlDialogComponent,
+    InstallFromProtocolDialogComponent,
     AddonDetailComponent,
     AddonInstallButtonComponent,
     GetAddonStatusColumnComponent,
@@ -73,6 +76,7 @@ import { HomeComponent } from "./home.component";
     CenteredSnackbarComponent,
     TableContextHeaderCellComponent,
     CellWrapTextComponent,
+    AddonThumbnailComponent,
   ],
   imports: [
     CommonModule,

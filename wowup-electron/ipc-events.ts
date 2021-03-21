@@ -51,6 +51,7 @@ import {
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
+  IPC_IS_DEFAULT_PROTOCOL_CLIENT,
 } from "./src/common/constants";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "./src/common/curse/curse-folder-scan-result";
@@ -170,13 +171,17 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     }
   );
 
-  handle(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT, () => {
-    app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+  handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
+    return app.isDefaultProtocolClient(protocol);
   });
 
-  handle(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, () => {
-    app.removeAsDefaultProtocolClient(APP_PROTOCOL_NAME);
-  })
+  handle(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
+    return app.setAsDefaultProtocolClient(protocol);
+  });
+
+  handle(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
+    return app.removeAsDefaultProtocolClient(protocol);
+  });
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
     const files = await fs.readdir(filePath, { withFileTypes: true });

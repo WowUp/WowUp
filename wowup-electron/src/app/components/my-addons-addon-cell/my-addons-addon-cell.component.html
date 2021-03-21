@@ -1,20 +1,7 @@
 <div>
   <div class="addon-column row align-items-center">
     <div class="thumbnail-container">
-      <div *ngIf="listItem.hasThumbnail === true" class="addon-logo-container bg-secondary-3">
-        <img [src]="listItem.addon.thumbnailUrl" loading="lazy" />
-      </div>
-      <div *ngIf="listItem.hasThumbnail === false" class="addon-logo-container">
-        <div class="addon-logo-letter text-3">
-          {{ listItem.thumbnailLetter }}
-        </div>
-      </div>
-      <!-- <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3" [ngClass]="{
-        beta: listItem.isBetaChannel(),
-        alpha: listItem.isAlphaChannel()
-      }">
-        {{ listItem.isAlphaChannel() ? "Alpha" : "Beta" }}
-      </div> -->
+      <app-addon-thumbnail [url]="getThumbnailUrl()" [name]="listItem.addon.name"></app-addon-thumbnail>
     </div>
     <div class="version-container">
       <div class="title-container">
@@ -30,9 +17,9 @@
       <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.addon.isIgnored }">
         <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3 mr-2"
           [ngClass]="{
-          beta: listItem.isBetaChannel(),
-          alpha: listItem.isAlphaChannel()
-        }">
+            beta: listItem.isBetaChannel(),
+            alpha: listItem.isAlphaChannel()
+          }">
           {{ channelTranslationKey | translate }}
         </div>
         <div *ngIf="hasMultipleProviders === true" class="mr-2">

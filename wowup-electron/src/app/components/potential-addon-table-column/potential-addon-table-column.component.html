@@ -1,15 +1,7 @@
 <span>
   <div class="addon-column">
     <div class="thumbnail-container bg-secondary-3">
-      <div *ngIf="hasThumbnail === true" class="addon-logo-container ">
-        <img [src]="addon.thumbnailUrl" loading="lazy" />
-      </div>
-      <div *ngIf="hasThumbnail === false" class="addon-logo-container">
-        <div class="addon-logo-letter text-3">
-          {{ thumbnailLetter }}
-        </div>
-      </div>
-
+      <app-addon-thumbnail [url]="addon.thumbnailUrl" [name]="addon.name"></app-addon-thumbnail>
     </div>
     <div style="display: flex; flex-direction: column; justify-content: space-between; min-height: 40px">
       <a class="addon-title hover-text-2 " (click)="viewDetails()">{{ addon.name }}</a>

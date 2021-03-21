@@ -63,6 +63,10 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
     this._dialogFactory.getAddonDetailsDialog(this.listItem);
   }
 
+  public getThumbnailUrl(): string {
+    return this.listItem?.addon?.thumbnailUrl ?? "";
+  }
+
   public getRequireDependencyCount(): number {
     return this.listItem.getDependencies(AddonDependencyType.Required).length;
   }

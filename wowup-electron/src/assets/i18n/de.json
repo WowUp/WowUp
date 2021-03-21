@@ -178,6 +178,18 @@
       "NEGATIVE_BUTTON": "Nein",
       "POSITIVE_BUTTON": "Ja"
     },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Addon is installed!",
+      "ADDON_INSTALLING": "Installing addon",
+      "CANCEL_BUTTON": "Close",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
+        "GENERIC": "Error fetching data for protocol: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+      },
+      "INSTALL_BUTTON": "Install",
+      "TITLE": "Install Addon From {providerName}"
+    },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon-URL",
       "ADDON_URL_INPUT_PLACEHOLDER": "z.B. GitHub- oder WoWInterface-URL",
@@ -333,13 +345,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
+        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
+        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen WowUp in die Menüleiste minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters in den Benachrichtigungsbereich der Taskleiste minimieren.",
+        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schließen",
         "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquries",
         "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
-        "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schließen",
         "SCALE_DESCRIPTION": "Den Zoomfaktor für die ganze Anwendung verändern.",
         "SCALE_LABEL": "Skalierung",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Zum Ändern der Standardsprache muss die Anwendung neu gestartet werden.",

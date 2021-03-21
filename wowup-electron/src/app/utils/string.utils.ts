@@ -19,3 +19,12 @@ export function getSha1Hash(str: string): string {
 export function capitalizeString(str: string): string {
   return str.charAt(0).toUpperCase() + str.toLowerCase().slice(1);
 }
+
+export function isProtocol(arg: string): boolean {
+  return getProtocol(arg) != null;
+}
+
+export function getProtocol(arg: string): string | null {
+  const match = /^([a-z][a-z0-9+\-.]*):/.exec(arg);
+  return match !== null && match.length > 1 ? match[1] : null;
+}
