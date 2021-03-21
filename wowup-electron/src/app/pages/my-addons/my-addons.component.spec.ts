@@ -70,6 +70,7 @@ describe("MyAddonsComponent", () => {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
       autoUpdateComplete$: new BehaviorSubject(0).asObservable(),
       selectedClientType$: new BehaviorSubject(WowClientType.Retail).asObservable(),
+      targetFileInstallComplete$: new Subject<boolean>(),
       addonsChanged$: new BehaviorSubject([]),
     });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {

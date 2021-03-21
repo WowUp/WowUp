@@ -1,14 +1,16 @@
+import * as _ from "lodash";
+import { from, of } from "rxjs";
+import { catchError, delay, first, switchMap } from "rxjs/operators";
+
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { ProtocolSearchResult } from "app/models/wowup/protocol-search-result";
-import { WowInstallation } from "app/models/wowup/wow-installation";
-import { SessionService } from "app/services/session/session.service";
-import { WarcraftInstallationService } from "app/services/warcraft/warcraft-installation.service";
-import * as _ from "lodash";
-import { BehaviorSubject, from, of, Subject } from "rxjs";
-import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+
+import { ProtocolSearchResult } from "../../models/wowup/protocol-search-result";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { AddonService } from "../../services/addons/addon.service";
+import { SessionService } from "../../services/session/session.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 
 export interface InstallFromProtocolDialogComponentData {
   protocol: string;

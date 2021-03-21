@@ -12,16 +12,16 @@ import {
   IPC_POWER_MONITOR_UNLOCK,
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
+import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
 import { AddonScanError } from "../../errors";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { getProtocol } from "../../utils/string.utils";
-import { InstallFromProtocolDialogComponent } from "app/components/install-from-protocol-dialog/install-from-protocol-dialog.component";
 
 @Component({
   selector: "app-home",

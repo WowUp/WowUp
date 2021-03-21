@@ -1,4 +1,4 @@
-import { WowClientType } from "common/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonSearchResult } from "./addon-search-result";
 
 export interface ProtocolSearchResult extends AddonSearchResult {

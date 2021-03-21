@@ -1,16 +1,75 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { httpLoaderFactory } from "../../app.module";
+import { MatModule } from "../../mat-module";
+import { AddonService } from "../../services/addons/addon.service";
+import { IconService } from "../../services/icons/icon.service";
+import { SessionService } from "../../services/session/session.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { overrideIconModule } from "../../tests/mock-mat-icon";
 
-import { InstallFromProtocolDialogComponent } from './install-from-protocol-dialog.component';
+import {
+  InstallFromProtocolDialogComponent,
+  InstallFromProtocolDialogComponentData,
+} from "./install-from-protocol-dialog.component";
 
-describe('InstallFromProtocolDialogComponent', () => {
+describe("InstallFromProtocolDialogComponent", () => {
   let component: InstallFromProtocolDialogComponent;
   let fixture: ComponentFixture<InstallFromProtocolDialogComponent>;
+  let addonService: AddonService;
+  let sessionService: SessionService;
+  let warcraftInstallationService: WarcraftInstallationService;
+  let dialogModel: InstallFromProtocolDialogComponentData;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ InstallFromProtocolDialogComponent ]
-    })
-    .compileComponents();
+    addonService = jasmine.createSpyObj("AddonService", [""], {});
+
+    sessionService = jasmine.createSpyObj("SessionService", [""], {});
+
+    warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {});
+
+    dialogModel = { protocol: "" };
+
+    let testBed = TestBed.configureTestingModule({
+      declarations: [InstallFromProtocolDialogComponent],
+      imports: [
+        MatModule,
+        HttpClientModule,
+        NoopAnimationsModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [{ provide: MAT_DIALOG_DATA, useValue: dialogModel }],
+    });
+
+    testBed = overrideIconModule(testBed).overrideComponent(InstallFromProtocolDialogComponent, {
+      set: {
+        providers: [
+          { provide: MatDialogRef, useValue: {} },
+          { provide: AddonService, useValue: addonService },
+          { provide: SessionService, useValue: sessionService },
+          { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
+          { provide: IconService },
+        ],
+      },
+    });
+
+    await testBed.compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +78,7 @@ describe('InstallFromProtocolDialogComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
