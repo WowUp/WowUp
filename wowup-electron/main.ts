@@ -176,6 +176,20 @@ app.on("child-process-gone", (e, details) => {
   }
 });
 
+// See https://www.electronjs.org/docs/api/app#event-open-url-macos
+if (platform.isMac) {
+  app.on("open-url", (evt, url) => {
+    log.info(`Open url recieved ${url}`);
+    
+      // If we did get a custom protocol notify the app
+    if (isProtocol(url)) {
+      evt.preventDefault();
+      log.info(`Custom protocol detected: ${url}`);
+      win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, url);
+    }
+  });
+}
+
 powerMonitor.on("resume", () => {
   log.info("powerMonitor resume");
   win?.webContents?.send(IPC_POWER_MONITOR_RESUME);

@@ -58,11 +58,11 @@
     "hardenedRuntime": true,
     "entitlements": "./electron-build/entitlements.mac.plist",
     "extendInfo": {
-      "CFBundleURLTypes": {
+      "CFBundleURLTypes": [{
         "CFBundleTypeRole": "Shell",
-        "CFBundleURLName": "WowUp",
-        "CFBundleURLSchemes" : "wowup"
-      }
+        "CFBundleURLName": "CurseForge",
+        "CFBundleURLSchemes": "curseforge"
+      }]
     }
   },
   "linux": {

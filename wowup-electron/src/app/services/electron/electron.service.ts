@@ -80,6 +80,10 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
+  public get platform(): string {
+    return process.platform;
+  }
+
   public constructor(private _preferenceStorageService: PreferenceStorageService) {
     // Conditional imports
     if (!this.isElectron) {

@@ -70,6 +70,7 @@ if (window.opener === null) {
     handlebars: require("handlebars"),
     autoLaunch: require("auto-launch"),
   };
+  window.platform = process.platform;
   window.wowup = {
     onRendererEvent,
     onceRendererEvent,
