@@ -181,7 +181,7 @@ if (platform.isMac) {
   app.on("open-url", (evt, url) => {
     log.info(`Open url recieved ${url}`);
     
-      // If we did get a custom protocol notify the app
+    // If we did get a custom protocol notify the app
     if (isProtocol(url)) {
       evt.preventDefault();
       log.info(`Custom protocol detected: ${url}`);
