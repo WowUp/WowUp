@@ -7,7 +7,9 @@
         "Add support for CurseForge download links in the app settings",
         "Add UI for installing via a custom protocol",
         "Add some more error feedback when installing/updating",
-        "Fix an issue with duplicated rows when removing/re-adding an addon"
+        "Fix an issue with duplicated rows when removing/re-adding an addon",
+        "Fix an issue with unzipped file permissions on Mac",
+        "Fix an issue with renderer log file location on Mac"
       ]
     },
     {
