@@ -1,6 +1,16 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.14",
+      "changes": [
+        "Finally merge Noxis' PR",
+        "Add support for CurseForge download links in the app settings",
+        "Add UI for installing via a custom protocol",
+        "Add some more error feedback when installing/updating",
+        "Fix an issue with duplicated rows when removing/re-adding an addon"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.13",
       "changes": [
         "Fix an issue with the my addons filter clearing when cancelling a dialog",
