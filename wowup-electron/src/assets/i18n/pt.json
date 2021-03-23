@@ -139,6 +139,7 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
       "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
@@ -369,6 +370,8 @@
         "THEME_DESCRIPTION": "Mude o tema do WowUp",
         "THEME_LABEL": "Cor do tema",
         "TITLE": "Aplicativo",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Você quer reiniciar",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Desabilitar aceleração de hardware pode solucionar problemas de FPS de corrigir outros problemas de renderização no app. Mudar esta opção exige reiniciar o aplicativo.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Desabilitar a aceleração de hardware exige reiniciar o aplicativo.",

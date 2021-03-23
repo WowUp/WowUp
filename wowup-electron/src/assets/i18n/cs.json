@@ -139,6 +139,7 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
@@ -369,6 +370,8 @@
         "THEME_DESCRIPTION": "Přizpůsobte si barevné schéma",
         "THEME_LABEL": "Barevné schéma",
         "TITLE": "Aplikace",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Chcete restartovat aplikaci?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Vypnutím hardwarové akcelerace můžete vyřešit problémy s FPS či případné problémy s vykreslením WowUp. Změna tohoto nastavení vyžaduje restartování aplikace.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Vypnutí hardwarové akcelerace vyžaduje restartování aplikace.",
