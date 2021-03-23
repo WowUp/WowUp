@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { ElectronService } from "app/services";
+import { Component } from "@angular/core";
+import { ElectronService } from "../../services";
 
 @Component({
   selector: "app-animated-logo",
