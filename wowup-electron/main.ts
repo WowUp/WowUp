@@ -51,6 +51,7 @@ log.info(`Electron: ${process.versions.electron}`);
 log.info(`BinaryPath: ${app.getPath("exe")}`);
 log.info("ExecPath", process.execPath);
 log.info("Args", process.argv);
+log.info(`Log path: ${LOG_PATH}`);
 
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {

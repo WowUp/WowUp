@@ -31,6 +31,9 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
     return WOW_APP_NAMES.includes(appName);
   }
 
+  /**
+   * Attempt to figure out where the blizzard agent was installed at
+   */
   public async getBlizzardAgentPath(): Promise<string> {
     const agentPath = join(BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
     const exists = await this._fileService.pathExists(agentPath);

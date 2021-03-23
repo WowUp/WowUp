@@ -129,7 +129,6 @@
     "@fortawesome/free-regular-svg-icons": "5.15.2",
     "@fortawesome/free-solid-svg-icons": "5.15.2",
     "@microsoft/applicationinsights-web": "2.5.11",
-    "adm-zip": "0.5.4",
     "ag-grid-angular": "25.1.0",
     "ag-grid-community": "25.1.0",
     "auto-launch": "5.0.5",
@@ -156,6 +155,7 @@
     "string-similarity": "4.0.4",
     "ts-custom-error": "3.2.0",
     "tslib": "2.1.0",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "yauzl": "2.10.0"
   }
 }

@@ -568,11 +568,8 @@ export class AddonService {
         await this.restoreAddonDirectories(directoriesToBeRemoved);
 
         throw err;
-      }
-
-      for (const directory of directoriesToBeRemoved) {
-        this.logAddonAction("AddonRemoveBackup", addon, directory);
-        await this._fileService.deleteIfExists(directory);
+      } finally {
+        await this._fileService.removeAllSafe(...directoriesToBeRemoved);
       }
 
       const unzippedDirectoryNames = await this._fileService.listDirectories(unzippedDirectory);
@@ -769,21 +766,25 @@ export class AddonService {
   }
 
   private async restoreAddonDirectories(directories: string[]) {
-    for (const directory of directories) {
-      const originalLocation = directory.substring(0, directory.length - 4);
+    try {
+      for (const directory of directories) {
+        const originalLocation = directory.substring(0, directory.length - 4);
 
-      // If a backup directory exists, attempt to roll back
-      const dirExists = await this._fileService.pathExists(directory);
-      if (dirExists) {
-        // If the new addon folder was already created delete it
-        const originExists = await this._fileService.pathExists(originalLocation);
-        if (originExists) {
-          await this._fileService.remove(originalLocation);
+        // If a backup directory exists, attempt to roll back
+        const dirExists = await this._fileService.pathExists(directory);
+        if (dirExists) {
+          // If the new addon folder was already created delete it
+          const originExists = await this._fileService.pathExists(originalLocation);
+          if (originExists) {
+            await this._fileService.remove(originalLocation);
+          }
+
+          // Move the backup folder into the original location
+          await this._fileService.copy(directory, originalLocation);
         }
-
-        // Move the backup folder into the original location
-        await this._fileService.copy(directory, originalLocation);
       }
+    } catch (e) {
+      console.error(`Failed to roll back directories`, directories, e);
     }
   }
 

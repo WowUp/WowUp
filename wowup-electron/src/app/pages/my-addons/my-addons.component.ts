@@ -802,9 +802,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(
         debounceTime(300),
         switchMap((installation) => {
+          // Installs will not be pre-selected on Linux, so wait for one to get added
+          if (!installation) {
+            return of(undefined);
+          }
+
           this.selectedInstallation = installation;
           this.selectedInstallationId = installation.id;
           return from(this.loadAddons(this.selectedInstallation));
+        }),
+        catchError((e) => {
+          console.error(`selectedInstallationSub failed`, e);
+          return of(undefined);
         })
       )
       .subscribe();

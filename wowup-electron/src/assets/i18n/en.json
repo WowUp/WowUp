@@ -139,6 +139,7 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from {providerName}, please try again later.",
       "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",

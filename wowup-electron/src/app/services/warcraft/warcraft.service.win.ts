@@ -34,6 +34,9 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
     return WOW_APP_NAMES.includes(appName);
   }
 
+  /**
+   * Attempt to figure out where the blizzard agent was installed at
+   */
   public async getBlizzardAgentPath(): Promise<string> {
     try {
       const diskInfo = await this._electronService.invoke(IPC_LIST_DISKS_WIN32);

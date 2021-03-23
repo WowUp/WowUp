@@ -55,6 +55,30 @@ export class FileService {
     return await this._electronService.invoke(IPC_DELETE_DIRECTORY_CHANNEL, sourcePath);
   }
 
+  public async removeAll(...sourcePaths: string[]): Promise<boolean> {
+    if (!Array.isArray(sourcePaths) || !sourcePaths.length) {
+      return false;
+    }
+
+    const results = await Promise.all(
+      sourcePaths.map((sp) => {
+        console.log(`[RemovePath]: ${sp}`);
+        return this._electronService.invoke(IPC_DELETE_DIRECTORY_CHANNEL, sp);
+      })
+    );
+
+    return results.every((r) => r === true);
+  }
+
+  public async removeAllSafe(...sourcePaths: string[]): Promise<boolean> {
+    try {
+      return await this.removeAll(...sourcePaths);
+    } catch (e) {
+      console.error(`Failed to remove all`, sourcePaths, e);
+      return false;
+    }
+  }
+
   /**
    * Copy a file or folder
    */
