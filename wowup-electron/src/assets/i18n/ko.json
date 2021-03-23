@@ -26,17 +26,17 @@
         "LABEL": "Window"
       }
     },
-    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatically updated\r\n{addonNames}",
-    "AUTO_UPDATE_NOTIFICATION_BODY": "{count} 개의 애드온이 자동업데이트됨",
+    "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "다음 애드온들이 자동 업데이트되었습니다.\r\n{addonNames}",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "{count}개의 애드온이 자동업데이트됨",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "자동 업데이트",
-    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Leave full screen mode",
+    "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "전체 화면 종료하기",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Press ^⌘F to exit full screen",
-      "WINDOWS": "Press F11 to exit full screen"
+      "MAC": "전체 화면을 종료하려면 ^⌘F를 누르세요.",
+      "WINDOWS": "전체 화면을 종료하려면 F11을 누르세요."
     },
     "LINK_NAVIGATION": {
-      "MESSAGE": "{url}\n\nAre you sure you want to open this 3rd party page in your default browser?",
-      "TITLE": "You are about to leave WowUp"
+      "MESSAGE": "{url}\n\n기본 브라우저로 이 서드 파티 페이지를 여시겠습니까?",
+      "TITLE": "WoWUp 바깥으로 나가려고 하고 있습니다"
     },
     "PROVIDERS": {
       "UNKNOWN": "Unknown"
@@ -59,7 +59,7 @@
       "HORDE": "호드"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 전체 화면",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
       "INSTALL_MESSAGE": "업데이트를 설치하기 위해 프로그램을 재시작할까요?",
@@ -86,7 +86,7 @@
       "BACKINGUP": "백업 중",
       "COMPLETE": "설치됨",
       "DOWNLOADING": "다운로드 중",
-      "ERROR": "Error",
+      "ERROR": "에러",
       "INSTALLING": "설치 중",
       "PENDING": "일시정지됨",
       "UNINSTALLING": "삭제 중",
@@ -146,16 +146,16 @@
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
-      "ADDON_ID_PREFIX": "Addon ID:",
+      "ADDON_ID_PREFIX": "애드온 ID:",
       "BY_AUTHOR": "제작자: {authorName}",
-      "CHANGELOG_TAB": "Changelog",
-      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
-      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
+      "CHANGELOG_TAB": "변경 내역",
+      "COPY_ADDON_ID_SNACKBAR": "애드온 ID가 클립보드에 복사되었습니다.",
+      "COPY_ADDON_ID_TOOLTIP": "애드온 ID 클립보드에 복사하기",
       "DEPENDENCY_TEXT": "이 애드온은 {dependencyCount}개의 다른 애드온을 참조합니다.",
-      "DESCRIPTION_TAB": "Description",
-      "FUNDING_LINK_TITLE": "Support this author",
+      "DESCRIPTION_TAB": "설명",
+      "FUNDING_LINK_TITLE": "제작자 지원하기",
       "MISSING_DEPENDENCIES": "Missing dependencies",
-      "NO_CHANGELOG_TEXT": "No changelog available",
+      "NO_CHANGELOG_TEXT": "불러올 변경 내역이 없습니다.",
       "VIEW_IN_BROWSER_BUTTON": "브라우저에서 열기",
       "VIEW_ON_PROVIDER_PREFIX": "다음에서 보기: "
     },
@@ -181,7 +181,7 @@
         "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "애드온을 찾을 수 없습니다. 입력하신 주소가 올바른 애드온 페이지를 가리키고 있는지 확인해주세요.\n\nGithub에서 설치할 때는, 애드온을 zip 파일로 묶은 릴리즈 태그가 존재하는 저장소인지 확인하세요.",
         "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
-        "NO_SEARCH_RESULTS": "No search results were found.",
+        "NO_SEARCH_RESULTS": "검색 결과가 없습니다.",
         "TITLE": "애드온 설치 실패"
       },
       "IMPORT_BUTTON": "가져오기",
@@ -250,14 +250,14 @@
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "컬럼 보기"
       },
-      "ERROR_SNACKBAR": "An error occurred",
+      "ERROR_SNACKBAR": "에러가 발생했습니다.",
       "FILTER_LABEL": "필터",
       "FUNDING_TOOLTIP": {
-        "CUSTOM": "Support this author",
-        "GENERIC": "Support this author on {platform}",
-        "GITHUB": "Support this author on GitHub",
-        "PATREON": "Support this author on Patreon",
-        "PAYPAL": "Support this author on PayPal"
+        "CUSTOM": "제작자 지원하기",
+        "GENERIC": "{platform}에서 제작자 지원하기",
+        "GITHUB": "GitHub에서 제작자 지원하기",
+        "PATREON": "Patreon에서 제작자 지원하기",
+        "PAYPAL": "PayPal에서 제작자 지원하기"
       },
       "MULTIPLE_PROVIDERS_TOOLTIP": "복수의 제공자가 존재합니다",
       "PAGE_CONTEXT_FOOTER": {
@@ -311,11 +311,11 @@
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
-          "FIELD_LABEL": "Enabled Addon Providers",
+          "DESCRIPTION": "애드온을 검색하고 설치할 때 사용할 애드온 제공자를 선택하세요",
+          "FIELD_LABEL": "활성화된 애드온 제공자들",
           "INPUT_LABEL": "Providers"
         },
-        "TITLE": "Addons"
+        "TITLE": "애드온"
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "현재 언어",
@@ -324,8 +324,8 @@
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "창을 닫으면 메뉴바로 최소화",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "창을 닫으면 시스템 트레이로 최소화",
         "MINIMIZE_ON_CLOSE_LABEL": "종료 시 최소화",
-        "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
-        "SCALE_LABEL": "Scale",
+        "SCALE_DESCRIPTION": "앱 전체의 확대/축소 비율을 변경합니다.",
+        "SCALE_LABEL": "확대/축소",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "기본 언어를 바꾸려면 애플리케이션을 다시 시작해야 합니다.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "새 기본 언어 설정",
         "SET_LANGUAGE_DESCRIPTION": "언어를 선택하세요.",
@@ -347,7 +347,7 @@
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "디버그 데이터 덤프",
-        "DEBUG_DATA_DESCRIPTION": "Log debug data to help with diagnosing potential issues. This can be found in your latest log file for the curious.",
+        "DEBUG_DATA_DESCRIPTION": "잠재적인 문제를 진단하는데 도움을 주기 위해 디버그 데이터를 기록합니다. 궁금하시다면 최신 로그 파일에서 확인하실 수 있습니다.",
         "DEBUG_DATA_LABEL": "디버그 데이터",
         "LOG_FILES_BUTTON": "로그 파일 보기",
         "LOG_FILES_DESCRIPTION": "최근 로그파일이 포함된 폴더 열기",
@@ -355,8 +355,8 @@
         "TITLE": "디버그"
       },
       "TABS": {
-        "ADDONS": "Addons",
-        "APPLICATION": "애플리케이션",
+        "ADDONS": "애드온",
+        "APPLICATION": "게임 애플리케이션",
         "CLIENTS": "클라이언트",
         "DEBUG": "디버그"
       },
