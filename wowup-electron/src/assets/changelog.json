@@ -9,7 +9,8 @@
         "Add some more error feedback when installing/updating",
         "Fix an issue with duplicated rows when removing/re-adding an addon",
         "Fix an issue with unzipped file permissions on Mac",
-        "Fix an issue with renderer log file location on Mac"
+        "Fix an issue with renderer log file location on Mac",
+        "Fix an issue with addon changelogs sometimes having a white background"
       ]
     },
     {
