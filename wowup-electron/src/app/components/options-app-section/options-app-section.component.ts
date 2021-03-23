@@ -1,14 +1,12 @@
+import { from, of } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
+
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
-import { ElectronService } from "../../services";
-import { AnalyticsService } from "../../services/analytics/analytics.service";
-import { SessionService } from "../../services/session/session.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { ThemeGroup } from "../../models/wowup/theme";
-import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
@@ -19,10 +17,14 @@ import {
   HORDE_LIGHT_THEME,
   HORDE_THEME,
 } from "../../../common/constants";
+import { ThemeGroup } from "../../models/wowup/theme";
+import { ElectronService } from "../../services";
+import { AnalyticsService } from "../../services/analytics/analytics.service";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
+import { SessionService } from "../../services/session/session.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 import { ZOOM_SCALE } from "../../utils/zoom.utils";
-import { catchError, map, switchMap } from "rxjs/operators";
-import { from, of } from "rxjs";
-import { DialogFactory } from "app/services/dialog/dialog.factory";
+import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
 interface LocaleListItem {
   localeId: string;
