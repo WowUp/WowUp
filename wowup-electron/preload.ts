@@ -45,18 +45,6 @@ function rendererOn(channel: string, listener: (event: IpcRendererEvent, ...args
   ipcRenderer.on(channel, listener);
 }
 
-function isDefaultProtocolClient(protocol: string, path?: string, args?: string[]) {
-  return remote.app.isDefaultProtocolClient(protocol, path, args);
-}
-
-function setAsDefaultProtocolClient(protocol: string, path?: string, args?: string[]) {
-  return remote.app.setAsDefaultProtocolClient(protocol, path, args);
-}
-
-function removeAsDefaultProtocolClient(protocol: string, path?: string, args?: string[]) {
-  return remote.app.removeAsDefaultProtocolClient(protocol, path, args);
-}
-
 function openExternal(url: string, options?: OpenExternalOptions): Promise<void> {
   return shell.openExternal(url, options);
 }
@@ -77,12 +65,12 @@ function showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnVal
 }
 
 if (window.opener === null) {
-  console.log("NO OPENER");
   window.log = log;
   window.libs = {
     handlebars: require("handlebars"),
     autoLaunch: require("auto-launch"),
   };
+  window.platform = process.platform;
   window.wowup = {
     onRendererEvent,
     onceRendererEvent,
@@ -90,9 +78,6 @@ if (window.opener === null) {
     rendererInvoke,
     rendererOff,
     rendererOn,
-    isDefaultProtocolClient,
-    setAsDefaultProtocolClient,
-    removeAsDefaultProtocolClient,
     openExternal,
     showOpenDialog,
     openPath,

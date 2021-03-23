@@ -6,6 +6,7 @@ import { Addon } from "../../common/entities/addon";
 import { AddonChannelType } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
 
 export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "WowUpHub" | "RaiderIO" | "Zip";
 
@@ -54,6 +55,10 @@ export abstract class AddonProvider {
     return Promise.resolve(undefined);
   }
 
+  public searchProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
+    return Promise.resolve(undefined);
+  }
+
   public searchByName(
     addonName: string,
     folderName: string,
@@ -72,6 +77,10 @@ export abstract class AddonProvider {
   }
 
   public isValidAddonId(addonId: string): boolean {
+    return false;
+  }
+
+  public isValidProtocol(protocol: string): boolean {
     return false;
   }
 

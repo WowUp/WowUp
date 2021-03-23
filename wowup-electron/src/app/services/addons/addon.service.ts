@@ -32,10 +32,12 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-file";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { ProtocolSearchResult } from "../../models/wowup/protocol-search-result";
 import { Toc } from "../../models/wowup/toc";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
+import * as SearchResults from "../../utils/search-result.utils";
 import { capitalizeString } from "../../utils/string.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { DownloadService } from "../download/download.service";
@@ -46,7 +48,6 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
-import * as SearchResults from "../../utils/search-result.utils";
 
 export enum ScanUpdateType {
   Start,
@@ -312,14 +313,20 @@ export class AddonService {
   public async installPotentialAddon(
     potentialAddon: AddonSearchResult,
     installation: WowInstallation,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
+    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
+    targetFile?: AddonSearchResultFile
   ): Promise<void> {
     const existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, installation.id);
     if (existingAddon) {
       throw new Error("Addon already installed");
     }
 
-    const addon = await this.getAddon(potentialAddon.externalId, potentialAddon.providerName, installation).toPromise();
+    const addon = await this.getAddon(
+      potentialAddon.externalId,
+      potentialAddon.providerName,
+      installation,
+      targetFile
+    ).toPromise();
     this._addonStorage.set(addon.id, addon);
 
     await this.installAddon(addon.id, onUpdate);
@@ -476,8 +483,6 @@ export class AddonService {
       originalAddon: originalAddon ? { ...originalAddon } : undefined,
     };
     this._installQueue.next(installQueueItem);
-
-    onUpdate?.call(this, AddonInstallState.Pending, 0);
 
     return promise;
   }
@@ -817,7 +822,8 @@ export class AddonService {
   public getAddon(
     externalId: string,
     providerName: string,
-    installation: WowInstallation
+    installation: WowInstallation,
+    targetFile?: AddonSearchResultFile
   ): Observable<Addon | undefined> {
     const targetAddonChannel = installation.defaultAddonChannelType;
     const provider = this.getProvider(providerName);
@@ -828,7 +834,8 @@ export class AddonService {
         }
 
         const latestFile = SearchResults.getLatestFile(searchResult, targetAddonChannel);
-        return this.createAddon(latestFile.folders[0], searchResult, latestFile, installation);
+        const newAddon = this.createAddon(latestFile.folders[0], searchResult, targetFile ?? latestFile, installation);
+        return newAddon;
       })
     );
   }
@@ -919,6 +926,19 @@ export class AddonService {
     const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
 
     return addons;
+  }
+
+  public async getAddonForProtocol(protocol: string): Promise<ProtocolSearchResult> {
+    const addonProvider = this.getAddonProviderForProtocol(protocol);
+    if (!addonProvider) {
+      throw new Error(`No addon provider found for protocol ${protocol}`);
+    }
+
+    return await addonProvider.searchProtocol(protocol);
+  }
+
+  private getAddonProviderForProtocol(protocol: string): AddonProvider {
+    return _.find(this.getEnabledAddonProviders(), (provider) => provider.isValidProtocol(protocol));
   }
 
   public async syncAllClients(): Promise<void> {

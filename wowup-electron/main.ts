@@ -1,17 +1,23 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log";
-import { type as osType, release as osRelease, arch as osArch } from "os";
+import { find } from "lodash";
+import * as minimist from "minimist";
+import { arch as osArch, release as osRelease, type as osType } from "os";
 import { join } from "path";
 import { format as urlFormat } from "url";
 import { inspect } from "util";
-import * as platform from "./platform";
+
+import { createAppMenu } from "./app-menu";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import { initializeIpcHandlers } from "./ipc-events";
+import * as platform from "./platform";
 import {
+  APP_USER_MODEL_ID,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
   DEFAULT_BG_COLOR,
   DEFAULT_LIGHT_BG_COLOR,
+  IPC_CUSTOM_PROTOCOL_RECEIVED,
   IPC_POWER_MONITOR_LOCK,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_SUSPEND,
@@ -28,11 +34,10 @@ import {
   WINDOW_MIN_WIDTH,
   WOWUP_LOGO_FILENAME,
 } from "./src/common/constants";
-import { AppOptions } from "./src/common/wowup/models";
-import { windowStateManager } from "./window-state";
-import { createAppMenu } from "./app-menu";
 import { MainChannels } from "./src/common/wowup";
+import { AppOptions } from "./src/common/wowup/models";
 import { preferenceStore } from "./stores";
+import { windowStateManager } from "./window-state";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -43,6 +48,9 @@ log.transports.file.resolvePath = (variables: log.PathVariables) => {
 };
 log.info("Main starting");
 log.info(`Electron: ${process.versions.electron}`);
+log.info(`BinaryPath: ${app.getPath("exe")}`);
+log.info("ExecPath", process.execPath);
+log.info("Args", process.argv);
 log.info(`Log path: ${LOG_PATH}`);
 
 // ERROR HANDLING SETUP
@@ -56,8 +64,7 @@ process.on("unhandledRejection", (error) => {
 
 // VARIABLES
 const startedAt = Date.now();
-
-const argv = require("minimist")(process.argv.slice(1), {
+const argv = minimist(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
 }) as AppOptions;
 const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
@@ -71,7 +78,7 @@ let win: BrowserWindow = null;
 createAppMenu(win);
 
 // Set the app ID so that our notifications work correctly on Windows
-app.setAppUserModelId("io.wowup.jliddev");
+app.setAppUserModelId(APP_USER_MODEL_ID);
 
 // HARDWARE ACCELERATION SETUP
 if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
@@ -92,7 +99,8 @@ const singleInstanceLock = app.requestSingleInstanceLock();
 if (!singleInstanceLock) {
   app.quit();
 } else {
-  app.on("second-instance", () => {
+  app.on("second-instance", (evt, args) => {
+    log.info(`Second instance detected`, args);
     // Someone tried to run a second instance, we should focus our window.
     if (!win) {
       log.warn("Second instance launched, but no window found");
@@ -106,7 +114,26 @@ if (!singleInstanceLock) {
     }
 
     win.focus();
+
+    // Find the first protocol arg if any exist
+    const customProtocol = find(args, (arg) => isProtocol(arg));
+    if (customProtocol) {
+      log.info(`Custom protocol detected: ${customProtocol}`);
+      // If we did get a custom protocol notify the app
+      win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, customProtocol);
+    } else {
+      log.info(`No custom protocol detected`);
+    }
   });
+}
+
+function isProtocol(arg: string) {
+  return getProtocol(arg) != null;
+}
+
+function getProtocol(arg: string) {
+  const match = /^([a-z][a-z0-9+\-.]*):/.exec(arg);
+  return match !== null && match.length > 1 ? match[1] : null;
 }
 
 // This method will be called when Electron has finished
@@ -148,6 +175,20 @@ app.on("child-process-gone", (e, details) => {
     app.quit();
   }
 });
+
+// See https://www.electronjs.org/docs/api/app#event-open-url-macos
+if (platform.isMac) {
+  app.on("open-url", (evt, url) => {
+    log.info(`Open url recieved ${url}`);
+    
+    // If we did get a custom protocol notify the app
+    if (isProtocol(url)) {
+      evt.preventDefault();
+      log.info(`Custom protocol detected: ${url}`);
+      win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, url);
+    }
+  });
+}
 
 powerMonitor.on("resume", () => {
   log.info("powerMonitor resume");

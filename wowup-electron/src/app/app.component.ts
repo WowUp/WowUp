@@ -29,6 +29,7 @@ import {
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
+  IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
 import { MenuConfig, SystemTrayConfig } from "../common/wowup/models";
@@ -44,6 +45,7 @@ import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "../common/entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
+import { InstallFromUrlDialogComponent } from "./components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
@@ -65,9 +67,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
       if (event.wheelDelta > 0) {
-        await this._electronService.applyZoom(ZoomDirection.ZoomIn);
+        await this.electronService.applyZoom(ZoomDirection.ZoomIn);
       } else {
-        await this._electronService.applyZoom(ZoomDirection.ZoomOut);
+        await this.electronService.applyZoom(ZoomDirection.ZoomOut);
       }
     } catch (e) {
       console.error(e);
@@ -79,12 +81,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public constructor(
     private _analyticsService: AnalyticsService,
-    private _electronService: ElectronService,
+    public electronService: ElectronService,
     private _fileService: FileService,
     private translate: TranslateService,
     private _dialog: MatDialog,
     private _addonService: AddonService,
-    private _iconService: IconService,
     private _sessionService: SessionService,
     private _preferenceStore: PreferenceStorageService,
     private _cdRef: ChangeDetectorRef,
@@ -97,9 +98,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public ngOnInit(): void {
     const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
-      this._electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
+      this.electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
     }
 
+    this.overlayContainer.getContainerElement().classList.add(this.electronService.platform);
     this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
 
     this.wowUpService.preferenceChange$.pipe(filter((pref) => pref.key === CURRENT_THEME_KEY)).subscribe((pref) => {
@@ -118,11 +120,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
 
-    this._electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this.electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this.electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this.electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this.electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
 
-    from(this._electronService.getAppOptions())
+    from(this.electronService.getAppOptions())
       .pipe(
         first(),
         delay(2000),
@@ -138,7 +141,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
-    this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
+    this.electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping auto update...");
       window.clearInterval(this._autoUpdateInterval);
       this._autoUpdateInterval = undefined;
@@ -171,21 +174,25 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy(): void {
-    this._electronService.off(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.off(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this.electronService.off(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this.electronService.off(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this.electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
   public onMenuZoomIn = (): void => {
-    this._electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
+    this.electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
   };
 
   public onMenuZoomOut = (): void => {
-    this._electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
+    this.electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
   };
 
   public onMenuZoomReset = (): void => {
-    this._electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
+    this.electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
+  };
+
+  public onRequestInstallFromUrl = (evt: any, path?: string): void => {
+    this.openInstallFromUrlDialog(path);
   };
 
   public openDialog(): void {
@@ -199,6 +206,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         this._analyticsService.trackStartup();
       }
     });
+  }
+
+  private openInstallFromUrlDialog(path?: string) {
+    if (!path) {
+      return;
+    }
+
+    const dialogRef = this._dialog.open(InstallFromUrlDialogComponent);
+    dialogRef.componentInstance.query = path;
   }
 
   private async initializeAutoUpdate() {
@@ -252,7 +268,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .toPromise();
 
-    const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
+    const notification = this.electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
       body: translated["APP.AUTO_UPDATE_NOTIFICATION_BODY"],
       icon: iconPath,
     });
@@ -271,7 +287,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .toPromise();
 
-    const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
+    const notification = this.electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
       body: translated["APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"],
       icon: iconPath,
     });
@@ -281,7 +297,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onClickNotification = () => {
-    this._electronService.focusWindow().catch((e) => console.error(`Failed to focus window on notification click`, e));
+    this.electronService.focusWindow().catch((e) => console.error(`Failed to focus window on notification click`, e));
   };
 
   private getAddonNames(addons: Addon[]) {
@@ -297,13 +313,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private async checkQuitEnabled() {
-    const appOptions = await this._electronService.getAppOptions();
+    const appOptions = await this.electronService.getAppOptions();
     if (!appOptions.quit) {
       return;
     }
 
     console.debug("checkQuitEnabled");
-    this._electronService.quitApplication().catch((e) => console.error(e));
+    this.electronService.quitApplication().catch((e) => console.error(e));
   }
 
   private onAddonSyncError = (error: AddonSyncError) => {
@@ -415,7 +431,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(IPC_CREATE_APP_MENU_CHANNEL, config);
+      const trayCreated = await this.electronService.invoke(IPC_CREATE_APP_MENU_CHANNEL, config);
       console.log("App menu created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);
@@ -433,7 +449,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(IPC_CREATE_TRAY_MENU_CHANNEL, config);
+      const trayCreated = await this.electronService.invoke(IPC_CREATE_TRAY_MENU_CHANNEL, config);
       console.log("Tray created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);

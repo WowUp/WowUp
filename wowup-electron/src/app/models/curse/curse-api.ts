@@ -29,6 +29,9 @@ export interface CurseGetFeaturedResponse {
   RecentlyUpdated: CurseSearchResult[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface CurseAddonFileResponse extends CurseFile {}
+
 export interface CurseSearchResult {
   id: number;
   name: string;

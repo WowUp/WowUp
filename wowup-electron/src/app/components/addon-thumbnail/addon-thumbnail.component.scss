@@ -1,0 +1,26 @@
+.addon-logo-container {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: hidden;
+
+  .addon-logo {
+    height: 100%;
+  }
+
+  .addon-logo-letter {
+    font-size: 2em;
+    font-weight: 400;
+  }
+
+  img {
+    height: 100%;
+  }
+}

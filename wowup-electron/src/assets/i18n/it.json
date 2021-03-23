@@ -139,6 +139,7 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "Errore nel sincronizzare le cartelle dell'addon con {providerName}, per favore riprovare più tardi.",
       "ADDON_SYNC_ERROR": "Errore nel controllare gli aggioranementi da: {providerName}",
       "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
@@ -177,6 +178,18 @@
     "CONFIRM": {
       "NEGATIVE_BUTTON": "No",
       "POSITIVE_BUTTON": "Sì"
+    },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Addon is installed!",
+      "ADDON_INSTALLING": "Installing addon",
+      "CANCEL_BUTTON": "Close",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
+        "GENERIC": "Error fetching data for protocol: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+      },
+      "INSTALL_BUTTON": "Install",
+      "TITLE": "Install Addon From {providerName}"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon URL",
@@ -333,11 +346,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
+        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
+        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Notifiche di Sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Alla chiusura, WowUp verrà ridotto a icona nella barra dei menu.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Alla chiusura, WowUp verrà ridotto a icona nella barra delle applicazioni.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizza alla Chiusura",
+        "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquries",
+        "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
         "SCALE_DESCRIPTION": "Seleziona lo zoom per l'intera app.",
         "SCALE_LABEL": "Zoom",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Cambiare lingua richiede il riavvio dell'applicazione.",
@@ -353,6 +370,8 @@
         "THEME_DESCRIPTION": "Seleziona il tema che preferisci",
         "THEME_LABEL": "Tema",
         "TITLE": "Applicazione",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Vuoi riavviare?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware potrebbe risolvere i problemi di FPS e altri problemi di rendering in questa app. La modifica di questa impostazione richiede il riavvio di WowUp.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "La disabilitazione dell'accelerazione hardware richiede il riavvio dell'applicazione.",

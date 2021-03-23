@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { ElectronService } from "../../services";
 
 @Component({
   selector: "app-animated-logo",
@@ -6,5 +7,5 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./animated-logo.component.scss"],
 })
 export class AnimatedLogoComponent {
-  public constructor() {}
+  public constructor(public electronService: ElectronService) {}
 }

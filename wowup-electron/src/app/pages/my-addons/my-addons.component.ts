@@ -13,7 +13,7 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, map, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -195,6 +195,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
+      this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent),
       this.addonService.addonRemoved$.subscribe(this.onAddonRemoved),
       filterInputSub
@@ -531,6 +532,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.getRemoveAddonPrompt(addon.name)
       .afterClosed()
       .pipe(
+        first(),
         switchMap((result) => {
           if (!result) {
             return of(undefined);
@@ -607,6 +609,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef
       .afterClosed()
       .pipe(
+        first(),
         switchMap((result) => {
           if (!result) {
             return of(undefined);
@@ -708,6 +711,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef
       .afterClosed()
       .pipe(
+        first(),
         switchMap((result) => {
           if (!result) {
             return of(undefined);
@@ -916,31 +920,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     } finally {
       this._cdRef.detectChanges();
     }
-
-    // return from().pipe(
-    //   map((addons) => {
-    //     const rowData = this.formatAddons(addons);
-    //     this.enableControls = this.calculateControlState();
-
-    //     this.rowData = rowData;
-    //     this.gridApi.setRowData(rowData);
-    //     this.gridApi.redrawRows();
-
-    //     this.isBusy = false;
-    //     this.setPageContextText();
-
-    //     this._cdRef.detectChanges();
-    //   }),
-    //   catchError((e) => {
-    //     console.error(e);
-    //     this.isBusy = false;
-    //     this.enableControls = this.calculateControlState();
-    //     return of(undefined);
-    //   }),
-    //   tap(() => {
-    //     this._cdRef.detectChanges();
-    //   })
-    // );
   };
 
   private formatAddons(addons: Addon[]): AddonViewModel[] {
@@ -986,6 +965,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
     try {
+      if (evt.addon.installationId !== this.selectedInstallationId) {
+        return;
+      }
+
       if ([AddonInstallState.Complete, AddonInstallState.Error].includes(evt.installState) === false) {
         this.enableControls = false;
         return;
@@ -1022,11 +1005,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private onAddonRemoved = (addonId: string) => {
-    const addons: AddonViewModel[] = this.rowData.slice();
-    const listItemIdx = addons.findIndex((li) => li.addon.id === addonId);
-    addons.splice(listItemIdx, 1);
+    const listItemIdx = this._baseRowData.findIndex((li) => li.addon.id === addonId);
+    this._baseRowData.splice(listItemIdx, 1);
 
-    this.rowData = addons;
+    this.rowData = [...this._baseRowData];
+    this._cdRef.detectChanges();
   };
 
   private showErrorMessage(title: string, message: string) {

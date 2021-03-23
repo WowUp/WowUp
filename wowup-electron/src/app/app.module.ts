@@ -26,6 +26,7 @@ import { WowUpService } from "./services/wowup/wowup.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { SharedModule } from "./shared.module";
 import { AddonService } from "./services/addons/addon.service";
+import { IconService } from "./services/icons/icon.service";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -66,7 +67,7 @@ export function initializeApp(wowupService: WowUpService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [WowUpService, WowUpApiService, AddonService, WarcraftInstallationService],
+      deps: [WowUpService, WowUpApiService, AddonService, WarcraftInstallationService, IconService],
       multi: true,
     },
     {

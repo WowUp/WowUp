@@ -1,3 +1,5 @@
+export const APP_USER_MODEL_ID = "io.wowup.jliddev"; // Bundle ID
+
 export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
 export const ADDON_PROVIDER_CURSEFORGE = "Curse";
 export const ADDON_PROVIDER_GITHUB = "GitHub";
@@ -7,6 +9,9 @@ export const ADDON_PROVIDER_UNKNOWN = "Unknown";
 export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
 export const ADDON_PROVIDER_HUB = "WowUpHub";
 export const ADDON_PROVIDER_ZIP = "Zip";
+
+export const APP_PROTOCOL_NAME = "wowup";
+export const CURSE_PROTOCOL_NAME = "curseforge";
 
 // IPC CHANNELS
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
@@ -59,6 +64,11 @@ export const IPC_GET_LOGIN_ITEM_SETTINGS = "get-login-item-settings";
 export const IPC_SET_LOGIN_ITEM_SETTINGS = "set-login-item-settings";
 export const IPC_LIST_ENTRIES = "list-entries";
 export const IPC_READDIR = "readdir";
+export const IPC_IS_DEFAULT_PROTOCOL_CLIENT = "is-default-protocol-client";
+export const IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT = "set-as-default-protocol-client";
+export const IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT = "remove-as-default-protocol-client";
+export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
+export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 
 // PREFERENCES
@@ -85,6 +95,7 @@ export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
 export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
+export const PROTOCOL_REGISTERED_PREFERENCE_KEY = "protocol_registered";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";

@@ -19,6 +19,8 @@
   }
 }
 
+
+
 .about-container {
   display: flex;
   justify-content: center;
@@ -76,6 +78,14 @@
         word-break: break-all;
         white-space: pre-wrap;
       }
+    }
+  }
+}
+
+.mac {
+  .header {
+    .logo {
+      border-radius: 23px;
     }
   }
 }

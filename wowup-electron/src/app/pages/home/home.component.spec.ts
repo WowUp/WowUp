@@ -15,6 +15,7 @@ import { MatModule } from "../../mat-module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AddonScanError, AddonSyncError } from "../../errors";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 
 describe("HomeComponent", () => {
@@ -23,8 +24,11 @@ describe("HomeComponent", () => {
   let sessionService: SessionService;
   let addonService: AddonService;
   let warcraftInstallationService: WarcraftInstallationService;
+  let dialogFactory: DialogFactory;
 
   beforeEach(async () => {
+    dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
+
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
       wowInstallations$: new BehaviorSubject<any[]>([]),
     });
@@ -41,6 +45,7 @@ describe("HomeComponent", () => {
       isLinux: true,
       isMax: false,
       powerMonitor$: new Observable(),
+      customProtocol$: new Observable(),
     });
 
     wowUpService = jasmine.createSpyObj("WowUpService", {
@@ -77,6 +82,7 @@ describe("HomeComponent", () => {
             { provide: SessionService, useValue: sessionService },
             { provide: AddonService, useValue: addonService },
             { provide: WowUpService, useValue: wowUpService },
+            { provide: DialogFactory, useValue: dialogFactory },
             { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
           ],
         },

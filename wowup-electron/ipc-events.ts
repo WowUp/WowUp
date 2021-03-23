@@ -26,6 +26,8 @@ import {
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
+  IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_GET_ZOOM_FACTOR,
   IPC_LIST_DIRECTORIES_CHANNEL,
   IPC_LIST_DISKS_WIN32,
@@ -38,6 +40,7 @@ import {
   IPC_READ_FILE_BUFFER_CHANNEL,
   IPC_READ_FILE_CHANNEL,
   IPC_READDIR,
+  APP_PROTOCOL_NAME,
   IPC_RESTART_APP,
   IPC_SET_LOGIN_ITEM_SETTINGS,
   IPC_SET_ZOOM_FACTOR,
@@ -49,6 +52,7 @@ import {
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
+  IPC_IS_DEFAULT_PROTOCOL_CLIENT,
 } from "./src/common/constants";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "./src/common/curse/curse-folder-scan-result";
@@ -170,9 +174,20 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     }
   );
 
+  handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
+    return app.isDefaultProtocolClient(protocol);
+  });
+
+  handle(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
+    return app.setAsDefaultProtocolClient(protocol);
+  });
+
+  handle(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
+    return app.removeAsDefaultProtocolClient(protocol);
+  });
+
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
     const files = await fs.readdir(filePath, { withFileTypes: true });
-
     let symlinkNames: string[] = [];
     if (scanSymlinks === true) {
       log.info("Scanning symlinks");

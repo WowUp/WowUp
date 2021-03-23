@@ -15,7 +15,9 @@ declare type MainChannels =
   | "power-monitor-resume"
   | "power-monitor-suspend"
   | "power-monitor-lock"
-  | "power-monitor-unlock";
+  | "power-monitor-unlock"
+  | "request-install-from-url"
+  | "custom-protocol-received";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
@@ -55,6 +57,9 @@ declare type RendererChannels =
   | "list-entries"
   | "list-files"
   | "readdir"
+  | "is-default-protocol-client"
+  | "set-as-default-protocol-client"
+  | "remove-as-default-protocol-client"
   | "read-file-buffer"
   | "addons-save-all"
   | "focus-window";
@@ -66,6 +71,7 @@ declare global {
       handlebars: any;
       autoLaunch: any;
     };
+    platform: string;
     wowup: {
       onRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       onceRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
@@ -73,9 +79,6 @@ declare global {
       rendererInvoke: (channel: string, ...args: any[]) => Promise<any>;
       rendererOff: (event: string | symbol, listener: (...args: any[]) => void) => void;
       rendererOn: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
-      isDefaultProtocolClient: (protocol: string, path?: string, args?: string[]) => boolean;
-      setAsDefaultProtocolClient: (protocol: string, path?: string, args?: string[]) => boolean;
-      removeAsDefaultProtocolClient: (protocol: string, path?: string, args?: string[]) => boolean;
       openExternal: (url: string, options?: OpenExternalOptions) => Promise<void>;
       showOpenDialog: (options: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
       openPath: (path: string) => Promise<string>;

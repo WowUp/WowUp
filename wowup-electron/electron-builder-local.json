@@ -56,7 +56,14 @@
     "category": "public.app-category.games",
     "target": ["default"],
     "hardenedRuntime": true,
-    "entitlements": "./electron-build/entitlements.mac.plist"
+    "entitlements": "./electron-build/entitlements.mac.plist",
+    "extendInfo": {
+      "CFBundleURLTypes": [{
+        "CFBundleTypeRole": "Shell",
+        "CFBundleURLName": "CurseForge",
+        "CFBundleURLSchemes": "curseforge"
+      }]
+    }
   },
   "linux": {
     "icon": "electron-build/icon.icns",

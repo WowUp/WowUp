@@ -139,6 +139,7 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
@@ -177,6 +178,18 @@
     "CONFIRM": {
       "NEGATIVE_BUTTON": "Ne",
       "POSITIVE_BUTTON": "Ano"
+    },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Addon is installed!",
+      "ADDON_INSTALLING": "Installing addon",
+      "CANCEL_BUTTON": "Close",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
+        "GENERIC": "Error fetching data for protocol: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+      },
+      "INSTALL_BUTTON": "Install",
+      "TITLE": "Install Addon From {providerName}"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "URL adresa addonu",
@@ -333,11 +346,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Jazyk",
+        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
+        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Povolí různé systémové notifikace, např. po automatické aktualizaci addonů.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Povolit systémové notifikace",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Minimalizovat do lišty při uzavírání WowUp okna.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Minimalizovat do lišty při uzavírání WowUp okna.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimalizovat místo vypnutí",
+        "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquries",
+        "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
         "SCALE_DESCRIPTION": "Změní % přiblížení pro celou aplikaci.",
         "SCALE_LABEL": "% přiblížení",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Aby se změna jazyku projevila, je třeba restartovat WowUp.",
@@ -353,6 +370,8 @@
         "THEME_DESCRIPTION": "Přizpůsobte si barevné schéma",
         "THEME_LABEL": "Barevné schéma",
         "TITLE": "Aplikace",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Chcete restartovat aplikaci?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Vypnutím hardwarové akcelerace můžete vyřešit problémy s FPS či případné problémy s vykreslením WowUp. Změna tohoto nastavení vyžaduje restartování aplikace.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Vypnutí hardwarové akcelerace vyžaduje restartování aplikace.",
