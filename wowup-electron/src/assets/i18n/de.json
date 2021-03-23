@@ -370,7 +370,7 @@
         "THEME_DESCRIPTION": "Ändere das Farbschema nach deinen Wünschen",
         "THEME_LABEL": "Farbschema",
         "TITLE": "Anwendung",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp kann sich selbst als Standardhandler für CurseForge-Download-Links festlegen. Dies kann zu Problemen führen, wenn du versuchst, die CurseForge-App zu verwenden. Bist du sicher, dass du fortfahren möchten?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp kann sich selbst als Standardhandler für CurseForge-Download-Links festlegen. Dies kann zu Problemen führen, wenn Du versuchst, die CurseForge-App zu verwenden. Bist Du sicher, dass Du fortfahren möchtest?",
         "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Mit CurseForge-Downloads umgehen?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Möchtest Du die Anwendung neu starten?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Das Deaktivieren der Hardwarebeschleunigung kann FPS-Probleme und Probleme bei der Darstellung beheben. Eine Änderung dieser Einstellung benötigt einen Neustart der Anwendung.",
