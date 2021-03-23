@@ -43,6 +43,7 @@ log.transports.file.resolvePath = (variables: log.PathVariables) => {
 };
 log.info("Main starting");
 log.info(`Electron: ${process.versions.electron}`);
+log.info(`Log path: ${LOG_PATH}`);
 
 // ERROR HANDLING SETUP
 process.on("uncaughtException", (error) => {

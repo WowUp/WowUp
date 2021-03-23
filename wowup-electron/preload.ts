@@ -10,10 +10,16 @@ import {
   OpenDialogReturnValue,
 } from "electron";
 import * as log from "electron-log";
+import { join } from "path";
 
 if (!process.isMainFrame) {
   throw new Error("Preload scripts should not be running in a subframe");
 }
+
+const LOG_PATH = join(remote.app.getPath("userData"), "logs");
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
+  return join(LOG_PATH, variables.fileName);
+};
 
 function onRendererEvent(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener);

@@ -1,4 +1,4 @@
-import * as admZip from "adm-zip";
+// import * as admZip from "adm-zip";
 import axios from "axios";
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell } from "electron";
 import * as log from "electron-log";
@@ -8,6 +8,7 @@ import * as _ from "lodash";
 import * as nodeDiskInfo from "node-disk-info";
 import * as pLimit from "p-limit";
 import * as path from "path";
+import * as yauzl from "yauzl";
 
 import { createAppMenu } from "./app-menu";
 import {
@@ -63,6 +64,8 @@ import { WowUpFolderScanner } from "./src/common/wowup/wowup-folder-scanner";
 import { Addon } from "./src/common/entities/addon";
 import { createTray, restoreWindow } from "./system-tray";
 import { addonStore } from "./stores";
+import { Transform } from "stream";
+import { reject } from "lodash";
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -292,10 +295,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   );
 
   handle(IPC_UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
-    const zip = new admZip(arg.zipFilePath);
     await new Promise((resolve, reject) => {
-      zip.extractAllToAsync(arg.outputFolder, true, (err) => {
-        return err ? reject(err) : resolve(true);
+      yauzl.open(arg.zipFilePath, { lazyEntries: true }, (err, zipfile) => {
+        handleZipFile(err, zipfile, arg.outputFolder).then(resolve).catch(reject);
       });
     });
 
@@ -313,9 +315,11 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(IPC_DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
     log.info(`[FileRemove] ${filePath}`);
-    await fs.remove(filePath);
-
-    return true;
+    return new Promise((resolve, reject) => {
+      fs.remove(filePath, (err) => {
+        return err ? reject(err) : resolve(true);
+      });
+    });
   });
 
   handle(IPC_READ_FILE_CHANNEL, async (evt, filePath: string) => {
@@ -432,4 +436,57 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       window.webContents.send(arg.responseKey, status);
     }
   }
+}
+// Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
+function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    if (err) {
+      return reject(err);
+    }
+
+    zipfile.on("close", function () {
+      resolve(true);
+    });
+
+    zipfile.on("error", (error: Error) => {
+      reject(err);
+    });
+
+    zipfile.readEntry();
+    zipfile.on("entry", function (entry) {
+      if (/\/$/.test(entry.fileName)) {
+        // directory file names end with '/'
+        const dirPath = path.join(targetDir, entry.fileName);
+        fs.mkdirp(dirPath, function () {
+          if (err) throw err;
+          zipfile.readEntry();
+        });
+      } else {
+        // ensure parent directory exists
+        const filePath = path.join(targetDir, entry.fileName);
+        const parentPath = path.join(targetDir, path.dirname(entry.fileName));
+        fs.mkdirp(parentPath, function () {
+          zipfile.openReadStream(entry, (err, readStream) => {
+            if (err) {
+              throw err;
+            }
+
+            var filter = new Transform();
+            filter._transform = function (chunk, encoding, cb) {
+              cb(null, chunk);
+            };
+            filter._flush = function (cb) {
+              process.stdout.write("\b \b\b \b\b \b\n");
+              cb();
+              zipfile.readEntry();
+            };
+
+            // pump file contents
+            var writeStream = fs.createWriteStream(filePath);
+            readStream.pipe(filter).pipe(writeStream);
+          });
+        });
+      }
+    });
+  });
 }

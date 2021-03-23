@@ -15,6 +15,7 @@ import { MatModule } from "../../mat-module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AddonScanError, AddonSyncError } from "../../errors";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 
 describe("HomeComponent", () => {
   let electronService: ElectronService;
@@ -32,6 +33,7 @@ describe("HomeComponent", () => {
       scanUpdate$: new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown }).asObservable(),
       syncError$: new Subject<AddonSyncError>(),
       scanError$: new Subject<AddonScanError>(),
+      addonInstalled$: new Subject<AddonUpdateEvent>()
     });
 
     electronService = jasmine.createSpyObj("ElectronService", [""], {

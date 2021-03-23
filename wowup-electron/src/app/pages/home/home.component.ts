@@ -14,6 +14,9 @@ import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-home",
@@ -36,6 +39,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _addonService: AddonService,
     private _wowupService: WowUpService,
     private _snackBar: MatSnackBar,
+    private _snackBarService: SnackbarService,
     private _cdRef: ChangeDetectorRef,
     private _warcraftInstallationService: WarcraftInstallationService
   ) {
@@ -45,10 +49,10 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     });
 
     this._addonService.scanError$.subscribe(this.onAddonScanError);
-
-    this._addonService.scanUpdate$
-      .pipe(filter((update) => update.type !== ScanUpdateType.Unknown))
-      .subscribe(this.onScanUpdate);
+    this._addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent),
+      this._addonService.scanUpdate$
+        .pipe(filter((update) => update.type !== ScanUpdateType.Unknown))
+        .subscribe(this.onScanUpdate);
   }
 
   public ngAfterViewInit(): void {
@@ -176,4 +180,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.error(e);
     }
   }
+
+  private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
+    if (evt.installState !== AddonInstallState.Error) {
+      return;
+    }
+
+    this._snackBarService.showErrorSnackbar("COMMON.ERRORS.ADDON_INSTALL_ERROR", {
+      localeArgs: {
+        addonName: evt.addon.name,
+      },
+    });
+  };
 }
