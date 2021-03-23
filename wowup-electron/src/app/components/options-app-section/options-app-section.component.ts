@@ -22,6 +22,7 @@ import {
 import { ZOOM_SCALE } from "../../utils/zoom.utils";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { from, of } from "rxjs";
+import { DialogFactory } from "app/services/dialog/dialog.factory";
 
 interface LocaleListItem {
   localeId: string;
@@ -88,6 +89,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
+    private _dialogFactory: DialogFactory,
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
     public electronService: ElectronService,
@@ -163,25 +165,58 @@ export class OptionsAppSectionComponent implements OnInit {
     await this.wowupService.setStartMinimized(evt.checked);
   };
 
-  public onProtocolHandlerChange = async (evt: MatSlideToggleChange, protocol: string): Promise<void> => {
-    try {
-      await this.setProtocolHandler(protocol, evt.checked);
-    } catch (e) {
-      console.error(`onProtocolHandlerChange failed: ${protocol}`, e);
+  public onProtocolHandlerChange = (evt: MatSlideToggleChange, protocol: string): void => {
+    // If this is already enabled and the user wants to disable it, don't prompt
+    if (evt.checked === false) {
+      from(this.setProtocolHandler(protocol, evt.checked))
+        .pipe(
+          catchError((e) => {
+            console.error(e);
+            return of(undefined);
+          })
+        )
+        .subscribe();
+      return;
     }
+
+    // Prompt the user that this may affect their existing CurseForge app
+    const title = this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_CURSE_PROTOCOL_CONFIRMATION_LABEL");
+    const message = this._translateService.instant(
+      "PAGES.OPTIONS.APPLICATION.USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION"
+    );
+
+    const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.checked = !evt.source.checked;
+            return of(undefined);
+          }
+
+          return from(this.setProtocolHandler(protocol, evt.checked));
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   };
 
   public onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
-    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"),
-        message: this._translateService.instant(
-          evt.checked
-            ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
-            : "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION"
-        ),
-      },
-    });
+    const title = this._translateService.instant(
+      "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"
+    );
+    const message = this._translateService.instant(
+      evt.checked
+        ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
+        : "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION"
+    );
+
+    const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
 
     dialogRef
       .afterClosed()
