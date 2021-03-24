@@ -16,7 +16,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   const trayIconPath = path.join(__dirname, "assets", trayIconFile);
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
-  _trayRef = new Tray(icon);
+  _trayRef = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([
     {
       label: app.name,
