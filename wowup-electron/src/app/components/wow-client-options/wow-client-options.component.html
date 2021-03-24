@@ -1,4 +1,7 @@
 <mat-card>
+  <div class="wow-install-logo-container">
+    <img [src]="wowLogoImage">
+  </div>
   <mat-card-title class="row">
     <div *ngIf="(editMode$ | async) === false" class="flex-grow-1">{{ installationModel.label }}</div>
     <mat-form-field *ngIf="(editMode$ | async) === true" class="no-input-border">
