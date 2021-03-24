@@ -21,7 +21,6 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
     {
       label: app.name,
       type: "normal",
-      icon: icon,
       enabled: false,
     },
     {
