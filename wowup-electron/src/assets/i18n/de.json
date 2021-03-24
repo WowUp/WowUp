@@ -181,7 +181,7 @@
     },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon installiert!",
-      "ADDON_INSTALLING": "Installieren Addon",
+      "ADDON_INSTALLING": "Addon wird installiert",
       "CANCEL_BUTTON": "Schließen",
       "ERRORS": {
         "ADDON_NOT_FOUND": "Für das Protokoll '{protocol}' wurde kein Addon gefunden",
@@ -189,7 +189,7 @@
         "NO_VALID_WOW_INSTALLATIONS": "Kein WoW-Client für Protokoll '{protocol}' installiert"
       },
       "INSTALL_BUTTON": "Installieren",
-      "TITLE": "Installiere das Addon von {providerName}"
+      "TITLE": "Das Addon von {providerName} installieren"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon-URL",
@@ -211,7 +211,7 @@
       "IMPORT_BUTTON": "Importieren",
       "INSTALL_BUTTON": "Installieren",
       "INSTALL_SUCCESS_LABEL": "Installiert!",
-      "SUPPORTED_SOURCES": "Unterstützt werden WowInterface und GitHub",
+      "SUPPORTED_SOURCES": "Unterstützt WowInterface und GitHub",
       "TITLE": "Installation eines Addons über eine externe URL"
     },
     "SELECT_INSTALLATION": {
