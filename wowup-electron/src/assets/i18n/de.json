@@ -139,7 +139,7 @@
       }
     },
     "ERRORS": {
-      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
+      "ADDON_INSTALL_ERROR": "Addon '{addonName}' konnte nicht installiert werden. Versuche es später erneut.",
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
       "ADDON_SYNC_FULL_ERROR": "Beim Überprüfen auf Aktualisierungen von {addonName} von {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
@@ -180,16 +180,16 @@
       "POSITIVE_BUTTON": "Ja"
     },
     "INSTALL_FROM_PROTOCOL": {
-      "ADDON_INSTALLED": "Addon is installed!",
-      "ADDON_INSTALLING": "Installing addon",
-      "CANCEL_BUTTON": "Close",
+      "ADDON_INSTALLED": "Addon installiert!",
+      "ADDON_INSTALLING": "Installieren Addon",
+      "CANCEL_BUTTON": "Schließen",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
-        "GENERIC": "Error fetching data for protocol: {protocol}",
-        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+        "ADDON_NOT_FOUND": "Für das Protokoll '{protocol}' wurde kein Addon gefunden",
+        "GENERIC": "Fehler beim Abrufen der Daten für das Protokoll: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "Kein WoW-Client für Protokoll '{protocol}' installiert"
       },
-      "INSTALL_BUTTON": "Install",
-      "TITLE": "Install Addon From {providerName}"
+      "INSTALL_BUTTON": "Installieren",
+      "TITLE": "Installiere das Addon von {providerName}"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon-URL",
@@ -346,15 +346,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
-        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
-        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
+        "CURSE_PROTOCOL_DESCRIPTION": "Beim Herunterladen von Addons von der CurseForge-Website übernimmt WowUp die Installation",
+        "CURSE_PROTOCOL_LABEL": "CurseForge-Download-Links verarbeiten",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen WowUp in die Menüleiste minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters in den Benachrichtigungsbereich der Taskleiste minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schließen",
-        "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquries",
-        "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
+        "PROTOCOL_DESCRIPTION": "WowUp registriert ein benutzerdefiniertes URI-Protokoll in deinem System und verarbeitet die eingehenden Anfragen",
+        "PROTOCOL_LABEL": "Erlaube WowUp die 'wowup:// URI' zu verarbeiten",
         "SCALE_DESCRIPTION": "Den Zoomfaktor für die ganze Anwendung verändern.",
         "SCALE_LABEL": "Skalierung",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Zum Ändern der Standardsprache muss die Anwendung neu gestartet werden.",
@@ -370,8 +370,8 @@
         "THEME_DESCRIPTION": "Ändere das Farbschema nach deinen Wünschen",
         "THEME_LABEL": "Farbschema",
         "TITLE": "Anwendung",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp kann sich selbst als Standardhandler für CurseForge-Download-Links festlegen. Dies kann zu Problemen führen, wenn Du versuchst, die CurseForge-App zu verwenden. Bist Du sicher, dass Du fortfahren möchtest?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Mit CurseForge-Downloads umgehen?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Möchtest Du die Anwendung neu starten?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Das Deaktivieren der Hardwarebeschleunigung kann FPS-Probleme und Probleme bei der Darstellung beheben. Eine Änderung dieser Einstellung benötigt einen Neustart der Anwendung.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Beim Deaktivieren der Hardwarebeschleunigung benötigt die Anwendung einen Neustart.",
