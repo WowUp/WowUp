@@ -406,7 +406,7 @@
           "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",
           "TITLE": "忘記此路徑？"
         },
-        "CLIENT_TYPE_INPUT_HINT": "請選擇 {clientTypeName} 客戶端路徑（\"{clientFolderName}\" 的上級路徑）",
+        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} 客戶端 “{clientFolderName}” 主程式路徑",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
         "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
