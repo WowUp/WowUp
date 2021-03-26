@@ -139,7 +139,7 @@
       }
     },
     "ERRORS": {
-      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
+      "ADDON_INSTALL_ERROR": "安裝插件 {addonName} 失敗。請稍後再試。",
       "ADDON_SCAN_ERROR": "在與 {providerName} 匹配插件資料夾時出現錯誤，請稍後再試。",
       "ADDON_SYNC_ERROR": "從 {providerName} 上檢查更新時出現錯誤。",
       "ADDON_SYNC_FULL_ERROR": "從 {providerName} 上檢查 {addonName} 的更新時出現錯誤，請稍後再試。",
@@ -180,16 +180,16 @@
       "POSITIVE_BUTTON": "是"
     },
     "INSTALL_FROM_PROTOCOL": {
-      "ADDON_INSTALLED": "Addon is installed!",
-      "ADDON_INSTALLING": "Installing addon",
-      "CANCEL_BUTTON": "Close",
+      "ADDON_INSTALLED": "插件已安裝！",
+      "ADDON_INSTALLING": "正在安裝插件",
+      "CANCEL_BUTTON": "關閉",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
-        "GENERIC": "Error fetching data for protocol: {protocol}",
-        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+        "ADDON_NOT_FOUND": "在 {protocol} 協議下未找到插件",
+        "GENERIC": "在 {protocol} 協議下獲取資料失敗",
+        "NO_VALID_WOW_INSTALLATIONS": "在 {protocol} 協議下沒有《魔獸世界》客戶端"
       },
-      "INSTALL_BUTTON": "Install",
-      "TITLE": "Install Addon From {providerName}"
+      "INSTALL_BUTTON": "安裝",
+      "TITLE": "從 {providerName} 處安裝插件"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "插件 URL",
@@ -346,15 +346,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "當前語言",
-        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
-        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
+        "CURSE_PROTOCOL_DESCRIPTION": "從 CurseForge 網站下載插件時，WowUp 將會接管安裝過程",
+        "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下載連結",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "啟用系統通知",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "關閉 WowUp 視窗時，最小化到選單欄。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "關閉 WowUp 視窗時，最小化到系統托盤。",
         "MINIMIZE_ON_CLOSE_LABEL": "關閉時最小化",
-        "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquries",
-        "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
+        "PROTOCOL_DESCRIPTION": "WowUp 將會在系統中註冊自定義 URI 協議以處理傳入的請求",
+        "PROTOCOL_LABEL": "允許 WowUp 處理 wowup:// URI",
         "SCALE_DESCRIPTION": "修改整個應用程式的縮放係數。",
         "SCALE_LABEL": "介面縮放",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "更改預設語言需要重新啟動客戶端。",
@@ -370,8 +370,8 @@
         "THEME_DESCRIPTION": "選擇喜歡的配色主題",
         "THEME_LABEL": "配色主題",
         "TITLE": "應用程式",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp 可以被註冊為 CurseForge 下載連結的處理程式。開啟此選項可能會導致使用 CurseForge 客戶端時出現問題，確定要繼續嗎？",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "是否接管 CurseForge 下載？",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "是否重新啟動？",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "禁用硬體加速可能會提高 FPS 並修復其他渲染問題。更改此項需要重新啟動。",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "禁用硬體加速需要重新啟動 WowUp。",
@@ -406,7 +406,7 @@
           "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",
           "TITLE": "忘記此路徑？"
         },
-        "CLIENT_TYPE_INPUT_HINT": "請選擇 {clientTypeName} 客戶端路徑（\"{clientFolderName}\" 的上級路徑）",
+        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} 客戶端 “{clientFolderName}” 主程式路徑",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
         "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",

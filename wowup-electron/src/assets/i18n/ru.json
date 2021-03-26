@@ -77,7 +77,7 @@
     "ADDON_STATE": {
       "IGNORED": "Игнорируется",
       "INSTALL": "Установить",
-      "PENDING": "Pending",
+      "PENDING": "В ожидании",
       "UNINSTALL": "Удалить",
       "UNKNOWN": "",
       "UPDATE": "Обновить",
@@ -139,7 +139,7 @@
       }
     },
     "ERRORS": {
-      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
+      "ADDON_INSTALL_ERROR": "Не удалось установить модификацию {addonName}. Попробуйте позже.",
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
       "ADDON_SYNC_FULL_ERROR": "Произошла ошибка при проверке наличия обновлений для {addonName} из {providerName}, попробуйте позже.",
@@ -180,16 +180,16 @@
       "POSITIVE_BUTTON": "Да"
     },
     "INSTALL_FROM_PROTOCOL": {
-      "ADDON_INSTALLED": "Addon is installed!",
-      "ADDON_INSTALLING": "Installing addon",
-      "CANCEL_BUTTON": "Close",
+      "ADDON_INSTALLED": "Модификация установлена!",
+      "ADDON_INSTALLING": "Установка модификации",
+      "CANCEL_BUTTON": "Закрыть",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
-        "GENERIC": "Error fetching data for protocol: {protocol}",
-        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+        "ADDON_NOT_FOUND": "Для следующего протокола не была найдена модификация: {protocol}",
+        "GENERIC": "Ошибка при получении данных для протокола: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "Для следующего протокола не был установлен клиент WoW: {protocol}"
       },
-      "INSTALL_BUTTON": "Install",
-      "TITLE": "Install Addon From {providerName}"
+      "INSTALL_BUTTON": "Установить",
+      "TITLE": "Установить модификацию с {providerName}"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Ссылка на модификацию",
@@ -346,8 +346,8 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
-        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
-        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
+        "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
+        "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
@@ -370,8 +370,8 @@
         "THEME_DESCRIPTION": "Изменить цветовую тему по вкусу",
         "THEME_LABEL": "Цветовая тема",
         "TITLE": "Приложение",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp может установить себя обработчиком установочных ссылок с CurseForge по умолчанию. Это может вызвать неполадки если вы используете приложение CurseForge, вы уверены что хотите продолжить?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Обрабатывать установки с CurseForge?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Хотите перезапустить приложение?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Для отключения аппаратного ускорения нужен перезапуск приложения.",
