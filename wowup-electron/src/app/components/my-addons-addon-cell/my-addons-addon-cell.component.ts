@@ -4,6 +4,7 @@ import { ICellRendererParams } from "ag-grid-community";
 import { Component, Input } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
+import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { AddonChannelType, AddonDependencyType, AddonWarningType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
@@ -23,6 +24,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   @Input("addon") public listItem: AddonViewModel;
 
   public readonly capitalizeString = capitalizeString;
+  public readonly unknownProviderName = ADDON_PROVIDER_UNKNOWN;
 
   public showUpdateToVersion = false;
   public warningType?: AddonWarningType;

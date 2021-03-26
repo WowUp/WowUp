@@ -288,6 +288,7 @@
       "OPTIONS_TAB_TITLE": "Options"
     },
     "MY_ADDONS": {
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
       "ADDON_CONTEXT_MENU": {
         "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "Alpha",

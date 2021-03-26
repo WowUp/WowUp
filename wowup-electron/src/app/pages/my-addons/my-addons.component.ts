@@ -16,7 +16,16 @@ import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
 import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
@@ -63,6 +72,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("updateAllContextMenuTrigger", { static: false })
   public updateAllContextMenu: MatMenuTrigger;
 
+  @HostListener("window:keydown", ["$event"])
+  public handleKeyboardEvent(event: KeyboardEvent): void {
+    if (this.selectAllRows(event)) {
+      return;
+    }
+  }
+
   private readonly _operationErrorSrc = new Subject<Error>();
 
   private subscriptions: Subscription[] = [];
@@ -74,7 +90,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
-  public sortedListItems: AddonViewModel[] = [];
   public spinnerMessage = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
   public filter = "";
@@ -342,20 +357,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   public unselectAll(): void {
-    this.sortedListItems.forEach((item) => {
-      item.selected = false;
-    });
+    this.gridApi.deselectAll();
   }
 
-  public selectAllRows(event: KeyboardEvent): void {
-    event.preventDefault();
-    if ((event.ctrlKey && this.electronService.isMac) || (event.metaKey && !this.electronService.isMac)) {
-      return;
+  // See: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
+  public selectAllRows(event: KeyboardEvent): boolean {
+    if (!event.ctrlKey || event.code !== "KeyA") {
+      return false;
     }
 
-    this.sortedListItems.forEach((item) => {
-      item.selected = true;
-    });
+    event.preventDefault();
+
+    this.gridApi.selectAll();
+
+    return true;
   }
 
   public canSetAutoUpdate(listItem: AddonViewModel): boolean {
@@ -777,8 +792,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public onTableBlur(evt: MouseEvent): void {
     evt.stopPropagation();
 
+    console.debug('BLUR', evt)
+
     const ePath = (evt as any).path as HTMLElement[];
-    const tableElem = ePath.find((tag) => tag.tagName === "TABLE");
+    const tableElem = ePath.find((tag) => tag.tagName === "AG-GRID-ANGULAR");
     if (tableElem) {
       return;
     }

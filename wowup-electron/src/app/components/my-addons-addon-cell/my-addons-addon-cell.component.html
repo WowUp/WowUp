@@ -5,7 +5,12 @@
     </div>
     <div class="version-container">
       <div class="title-container">
-        <a class="addon-title hover-text-2" (click)="viewDetails()"
+        <a *ngIf="listItem.addon.providerName !== unknownProviderName" class="addon-title hover-text-2"
+          (click)="viewDetails()" [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
+          listItem.addon.name
+          }}</a>
+        <a *ngIf="listItem.addon.providerName === unknownProviderName" class="addon-title hover-text-2"
+          (click)="viewDetails()" [matTooltip]="'PAGES.MY_ADDONS.UNKNOWN_ADDON_INFO_TOOLTIP' | translate"
           [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
           listItem.addon.name
           }}</a>
