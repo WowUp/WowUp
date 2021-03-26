@@ -13,20 +13,24 @@ import { WowClientOptionsComponent } from "./wow-client-options.component";
 import { FormsModule } from "@angular/forms";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
   let fixture: ComponentFixture<WowClientOptionsComponent>;
   let warcraftInstallationService: WarcraftInstallationService;
+  let warcraftService: WarcraftService;
 
   beforeEach(async () => {
-    warcraftInstallationService = jasmine.createSpyObj("warcraftInstallationService", ["getWowInstallations"], {
+    warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", ["getWowInstallations"], {
       getWowInstallation: () => {
         return {
           clientType: WowClientType.Beta,
         };
       },
     });
+
+    warcraftService = jasmine.createSpyObj("WarcraftService", ["getExecutableName"], {});
 
     let testBed = TestBed.configureTestingModule({
       declarations: [WowClientOptionsComponent],
@@ -51,7 +55,10 @@ describe("WowClientOptionsComponent", () => {
     });
     testBed = overrideIconModule(testBed).overrideComponent(WowClientOptionsComponent, {
       set: {
-        providers: [{ provide: WarcraftInstallationService, useValue: warcraftInstallationService }],
+        providers: [
+          { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
+          { provide: WarcraftService, useValue: warcraftService },
+        ],
       },
     });
     await testBed.compileComponents();
