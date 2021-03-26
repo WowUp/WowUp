@@ -74,6 +74,34 @@
     }
   },
   "COMMON": {
+    "ADDON_CATEGORIES": {
+      "ACHIEVEMENTS": "Achievements",
+      "ACTION_BARS": "Action Bars",
+      "ALL_ADDONS": "All Addons",
+      "AUCTION_ECONOMY": "Auction & Economy",
+      "BAGS_INVENTORY": "Bags & Inventory",
+      "BOSS_ENCOUNTERS": "Boss Encounters",
+      "BUFFS_DEBUFFS": "Buffs & Debuffs",
+      "CHAT_COMMUNICATION": "Chat & Communication",
+      "CLASS": "Class",
+      "COMBAT": "Combat",
+      "COMPANIONS": "Companions",
+      "DATA_EXPORT": "Data Export",
+      "DEVELOPMENT_TOOLS": "Development Tools",
+      "GUILD": "Guild",
+      "LIBRARIES": "Libraries",
+      "MAIL": "Mail",
+      "MAP_MINIMAP": "Map & Minimap",
+      "MISCELLANEOUS": "Miscellaneous",
+      "MISSIONS": "Missions",
+      "PLUGINS": "Plugins",
+      "PROFESSIONS": "Professions",
+      "PVP": "PVP",
+      "QUESTS_LEVELING": "Quests & Leveling",
+      "ROLEPLAY": "Roleplay",
+      "TOOLTIPS": "Tooltips",
+      "UNIT_FRAMES": "Unit Frames"
+    },
     "ADDON_STATE": {
       "IGNORED": "忽略",
       "INSTALL": "安裝",
@@ -232,9 +260,16 @@
       "WEBSITE_LINK_LABEL": "訪問網站！"
     },
     "GET_ADDONS": {
+      "ADDON_CATEGORIES_BUTTON": "Categories",
+      "ADDON_CATEGORIES_MENU_TITLE": "Addon Categories",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Category: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Browse various categories",
       "CLIENT_TYPE_SELECT_LABEL": "魔獸世界",
       "INSTALL_FROM_URL_BUTTON": "從 URL 安裝",
+      "INSTALL_FROM_URL_TOOLTIP": "Install and addon from a URL",
       "REFRESH_BUTTON": "重新整理",
+      "REFRESH_TOOLTIP": "Refresh addon results",
+      "RESET_CATEGORY_TOOLTIP": "Reset Category",
       "SEARCH_LABEL": "搜尋",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "插件",
@@ -328,6 +363,7 @@
         "DEPENDENCY_TITLE": "是否刪除插件依賴項？",
         "TITLE": "是否解除安裝插件？"
       },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
       "UPDATE_ALL_BUTTON": "全部更新",
       "UPDATE_ALL_BUTTON_TOOLTIP": "更新此客戶端的所有插件",
       "UPDATE_ALL_CONTEXT_MENU": {

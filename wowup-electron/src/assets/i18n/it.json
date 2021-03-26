@@ -74,6 +74,34 @@
     }
   },
   "COMMON": {
+    "ADDON_CATEGORIES": {
+      "ACHIEVEMENTS": "Achievements",
+      "ACTION_BARS": "Action Bars",
+      "ALL_ADDONS": "All Addons",
+      "AUCTION_ECONOMY": "Auction & Economy",
+      "BAGS_INVENTORY": "Bags & Inventory",
+      "BOSS_ENCOUNTERS": "Boss Encounters",
+      "BUFFS_DEBUFFS": "Buffs & Debuffs",
+      "CHAT_COMMUNICATION": "Chat & Communication",
+      "CLASS": "Class",
+      "COMBAT": "Combat",
+      "COMPANIONS": "Companions",
+      "DATA_EXPORT": "Data Export",
+      "DEVELOPMENT_TOOLS": "Development Tools",
+      "GUILD": "Guild",
+      "LIBRARIES": "Libraries",
+      "MAIL": "Mail",
+      "MAP_MINIMAP": "Map & Minimap",
+      "MISCELLANEOUS": "Miscellaneous",
+      "MISSIONS": "Missions",
+      "PLUGINS": "Plugins",
+      "PROFESSIONS": "Professions",
+      "PVP": "PVP",
+      "QUESTS_LEVELING": "Quests & Leveling",
+      "ROLEPLAY": "Roleplay",
+      "TOOLTIPS": "Tooltips",
+      "UNIT_FRAMES": "Unit Frames"
+    },
     "ADDON_STATE": {
       "IGNORED": "Ignorato",
       "INSTALL": "Installa",
@@ -232,9 +260,16 @@
       "WEBSITE_LINK_LABEL": "Dai un'occhiata al sito!"
     },
     "GET_ADDONS": {
+      "ADDON_CATEGORIES_BUTTON": "Categories",
+      "ADDON_CATEGORIES_MENU_TITLE": "Addon Categories",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Category: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Browse various categories",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "INSTALL_FROM_URL_BUTTON": "Installa da URL",
+      "INSTALL_FROM_URL_TOOLTIP": "Install and addon from a URL",
       "REFRESH_BUTTON": "Aggiorna",
+      "REFRESH_TOOLTIP": "Refresh addon results",
+      "RESET_CATEGORY_TOOLTIP": "Reset Category",
       "SEARCH_LABEL": "Cerca",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
@@ -328,6 +363,7 @@
         "DEPENDENCY_TITLE": "Rimuovere Dipendenze dell'Addon?",
         "TITLE": "Disinstallare {count, plural, =1{l'addon} other{gli addons}}?"
       },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
       "UPDATE_ALL_BUTTON": "Aggiorna Tutto",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Aggiorna tutti gli addons per questo client",
       "UPDATE_ALL_CONTEXT_MENU": {

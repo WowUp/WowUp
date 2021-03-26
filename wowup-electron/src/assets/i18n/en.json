@@ -75,9 +75,9 @@
   },
   "COMMON": {
     "ADDON_CATEGORIES": {
-      "ALL_ADDONS": "All Addons",
       "ACHIEVEMENTS": "Achievements",
       "ACTION_BARS": "Action Bars",
+      "ALL_ADDONS": "All Addons",
       "AUCTION_ECONOMY": "Auction & Economy",
       "BAGS_INVENTORY": "Bags & Inventory",
       "BOSS_ENCOUNTERS": "Boss Encounters",
@@ -260,17 +260,17 @@
       "WEBSITE_LINK_LABEL": "Check out the website!"
     },
     "GET_ADDONS": {
-      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
-      "INSTALL_FROM_URL_TOOLTIP": "Install and addon from a URL",
-      "INSTALL_FROM_URL_BUTTON": "Install from URL",
-      "REFRESH_TOOLTIP": "Refresh addon results",
-      "REFRESH_BUTTON": "Refresh",
-      "SEARCH_LABEL": "Search",
-      "ADDON_CATEGORIES_TOOLTIP": "Browse various categories",
       "ADDON_CATEGORIES_BUTTON": "Categories",
-      "ADDON_CATEGORIES_SELECTED_TITLE": "Category: {category}",
       "ADDON_CATEGORIES_MENU_TITLE": "Addon Categories",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Category: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Browse various categories",
+      "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
+      "INSTALL_FROM_URL_BUTTON": "Install from URL",
+      "INSTALL_FROM_URL_TOOLTIP": "Install and addon from a URL",
+      "REFRESH_BUTTON": "Refresh",
+      "REFRESH_TOOLTIP": "Refresh addon results",
       "RESET_CATEGORY_TOOLTIP": "Reset Category",
+      "SEARCH_LABEL": "Search",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Author(s)",
@@ -288,7 +288,6 @@
       "OPTIONS_TAB_TITLE": "Options"
     },
     "MY_ADDONS": {
-      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
       "ADDON_CONTEXT_MENU": {
         "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
         "ALPHA_ADDON_CHANNEL": "Alpha",
@@ -364,6 +363,7 @@
         "DEPENDENCY_TITLE": "Remove Addon Dependencies?",
         "TITLE": "Uninstall {count, plural, =1{Addon} other{Addons}}?"
       },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
       "UPDATE_ALL_BUTTON": "Update All",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Update all addons for this client",
       "UPDATE_ALL_CONTEXT_MENU": {
