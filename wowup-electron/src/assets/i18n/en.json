@@ -442,7 +442,7 @@
           "MESSAGE": "Are you sure you want to remove the installation at \"{location}\"? This will remove all stored addon information for this client.\n\nYour addon folders will not be removed.",
           "TITLE": "Remove World of Warcraft Installation?"
         },
-        "CLIENT_TYPE_INPUT_HINT": "The folder that contains the {clientTypeName} client folder \"{clientFolderName}\"",
+        "CLIENT_TYPE_INPUT_HINT": "Select the {clientTypeName} application \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} path",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Default Addon Channel",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",

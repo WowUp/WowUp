@@ -14,6 +14,7 @@ import { WowInstallation } from "../../models/wowup/wow-installation";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { WarcraftService } from "../../services/warcraft/warcraft.service";
 
 @Component({
   selector: "app-wow-client-options",
@@ -61,6 +62,10 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public get executableName(): string {
+    return this._warcraftService.getExecutableName(this.installation.clientType);
+  }
+
   public get wowLogoImage(): string {
     switch (this.installation.clientType) {
       case WowClientType.Beta:
@@ -79,7 +84,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   public constructor(
     private _dialog: MatDialog,
     private _translateService: TranslateService,
-    private _warcraftInstallationService: WarcraftInstallationService
+    private _warcraftInstallationService: WarcraftInstallationService,
+    private _warcraftService: WarcraftService
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
   }
