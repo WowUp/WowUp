@@ -356,10 +356,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   };
 
-  public unselectAll(): void {
-    this.gridApi.deselectAll();
-  }
-
   // See: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
   public selectAllRows(event: KeyboardEvent): boolean {
     if (!event.ctrlKey || event.code !== "KeyA") {
@@ -792,15 +788,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public onTableBlur(evt: MouseEvent): void {
     evt.stopPropagation();
 
-    console.debug('BLUR', evt)
-
     const ePath = (evt as any).path as HTMLElement[];
     const tableElem = ePath.find((tag) => tag.tagName === "AG-GRID-ANGULAR");
     if (tableElem) {
       return;
     }
 
-    this.unselectAll();
+    this.gridApi.deselectAll();
   }
 
   private async lazyLoad(): Promise<void> {
