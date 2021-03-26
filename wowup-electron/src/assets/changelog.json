@@ -1,6 +1,22 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.15",
+      "changes": [
+        "Finally merge Strayge's PR",
+        "German locale updates (Glow/maestrohdude)",
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "Chinese locale updates (CyanoHao)",
+        "Fix the Mac system bar to switch based on system theme",
+        "Fix ctrl + a support for My Addons",
+        "Fix a color issue on Get Addons tab context menu",
+        "Fix the hint text for selecting an WoW installation",
+        "Add first pass at category support (Strayge)",
+        "Add addon tooltip for unknown addons"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.14",
       "changes": [
         "Finally merge Noxis' PR",
