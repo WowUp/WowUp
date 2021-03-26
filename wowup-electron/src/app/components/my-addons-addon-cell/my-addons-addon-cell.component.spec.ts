@@ -38,7 +38,7 @@ describe("MyAddonsAddonCellComponent", () => {
     component = fixture.componentInstance;
 
     component.listItem = new AddonViewModel({
-      name: "Teelo's Test Tool",
+      name: "Test Tool",
       dependencies: [],
     } as Addon);
 
