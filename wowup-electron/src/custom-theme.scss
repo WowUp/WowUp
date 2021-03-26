@@ -91,6 +91,22 @@ $wowup-light-theme: mat-light-theme(
   background-color: $purple-3;
 }
 
+.text-primary-1 {
+  color: $purple-1 !important;
+}
+
+.text-primary-2 {
+  color: $purple-2 !important;
+}
+
+.text-primary-3 {
+  color: $purple-3 !important;
+}
+
+.text-control {
+  color: $wowup-control !important;
+}
+
 .bg-secondary {
   background-color: $dark-1;
 }
@@ -268,6 +284,22 @@ $horde-theme-light: mat-light-theme(
     background-color: $horde-red-2 !important;
   }
 
+  .text-primary-1 {
+    color: $horde-red-1 !important;
+  }
+
+  .text-primary-2 {
+    color: $horde-red-2 !important;
+  }
+
+  .text-primary-3 {
+    color: $horde-red-3 !important;
+  }
+
+  .text-control {
+    color: $horde-control !important;
+  }
+
   .hover-primary-2:hover {
     background-color: $horde-red-2 !important;
   }
@@ -387,6 +419,22 @@ $alliance-theme-light: mat-light-theme(
 
   .bg-primary-2 {
     background-color: $alliance-blue-2 !important;
+  }
+
+  .text-primary-1 {
+    color: $alliance-blue-1 !important;
+  }
+
+  .text-primary-2 {
+    color: $alliance-blue-2 !important;
+  }
+
+  .text-primary-3 {
+    color: $alliance-blue-3 !important;
+  }
+
+  .text-control {
+    color: $alliance-control !important;
   }
 
   .hover-primary-2:hover {

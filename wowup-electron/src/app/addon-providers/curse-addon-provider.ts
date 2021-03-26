@@ -12,7 +12,7 @@ import {
 import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
 import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType, AddonDependencyType } from "../../common/wowup/models";
+import { AddonCategory, AddonChannelType, AddonDependencyType } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import {
@@ -39,6 +39,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { WowUpApiService } from "../services/wowup-api/wowup-api.service";
 import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
+import { CurseAddonCategory, CurseGameVersionFlavor } from "../..//common/curse/curse-models";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
@@ -420,6 +421,24 @@ export class CurseAddonProvider extends AddonProvider {
     return this.getAddonSearchResult(match, latestFiles);
   }
 
+  public async getCategory(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const curseCategories = this.mapAddonCategory(category);
+    const gameVersionFlavor = this.getGameVersionFlavor(installation.clientType);
+
+    const response = await this.getCategoryAddons(curseCategories[0], gameVersionFlavor, 150, 0);
+    const searchResults: AddonSearchResult[] = [];
+    for (const responseItem of response) {
+      const latestFiles = this.getLatestFiles(responseItem, installation.clientType);
+      if (!latestFiles.length) {
+        continue;
+      }
+
+      searchResults.push(this.getAddonSearchResult(responseItem, latestFiles));
+    }
+
+    return searchResults;
+  }
+
   private async getSearchResults(query: string): Promise<CurseSearchResult[]> {
     const url = new URL(`${API_URL}/addon/search`);
     url.searchParams.set("gameId", "1");
@@ -588,6 +607,30 @@ export class CurseAddonProvider extends AddonProvider {
     return result.Popular;
   }
 
+  private async getCategoryAddons(
+    category: CurseAddonCategory,
+    gameVersionFlavor: CurseGameVersionFlavor,
+    pageSize: number,
+    pageNumber: number
+  ): Promise<CurseSearchResult[]> {
+    //https://addons-ecs.forgesvc.net/api/v2/addon/search?gameId=1&categoryId=1018&pageSize=20&index=0&sort=1&sortDescending=true&gameVersionFlavor=wow_retail
+    const url = new URL(`${API_URL}/addon/search`);
+    url.searchParams.set("gameId", "1");
+    url.searchParams.set("categoryId", category.toString());
+    url.searchParams.set("pageSize", pageSize.toString());
+    url.searchParams.set("index", pageNumber.toString());
+    url.searchParams.set("sort", "1");
+    url.searchParams.set("sortDescending", "true");
+    url.searchParams.set("gameVersionFlavor", gameVersionFlavor);
+
+    const urlStr = url.toString();
+    const result = await this._cachingService.transaction(urlStr, () =>
+      this._circuitBreaker.getJson<CurseSearchResult[]>(urlStr)
+    );
+
+    return result ? result : [];
+  }
+
   private getChannelType(releaseType: CurseReleaseType): AddonChannelType {
     switch (releaseType) {
       case CurseReleaseType.Alpha:
@@ -630,7 +673,7 @@ export class CurseAddonProvider extends AddonProvider {
     return _.sortBy(filtered, (lf) => lf.id).reverse();
   }
 
-  private getGameVersionFlavor(clientType: WowClientType): string {
+  private getGameVersionFlavor(clientType: WowClientType): CurseGameVersionFlavor {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
@@ -718,5 +761,62 @@ export class CurseAddonProvider extends AddonProvider {
       externalChannel: getEnumName(AddonChannelType, channelType),
       installationId: installation.id,
     };
+  }
+
+  private mapAddonCategory(category: AddonCategory): CurseAddonCategory[] {
+    switch (category) {
+      case AddonCategory.Achievements:
+        return [CurseAddonCategory.Achievements];
+      case AddonCategory.ActionBars:
+        return [CurseAddonCategory.ActionBars];
+      case AddonCategory.AuctionEconomy:
+        return [CurseAddonCategory.AuctionEconomy];
+      case AddonCategory.BagsInventory:
+        return [CurseAddonCategory.BagsInventory];
+      case AddonCategory.BossEncounters:
+        return [CurseAddonCategory.BossEncounters];
+      case AddonCategory.BuffsDebuffs:
+        return [CurseAddonCategory.BuffsDebuffs];
+      case AddonCategory.ChatCommunication:
+        return [CurseAddonCategory.ChatCommunication];
+      case AddonCategory.Class:
+        return [CurseAddonCategory.Class];
+      case AddonCategory.Combat:
+        return [CurseAddonCategory.Combat];
+      case AddonCategory.Companions:
+        return [CurseAddonCategory.Companions];
+      case AddonCategory.DataExport:
+        return [CurseAddonCategory.DataExport];
+      case AddonCategory.DevelopmentTools:
+        return [CurseAddonCategory.DevelopmentTools];
+      case AddonCategory.Guild:
+        return [CurseAddonCategory.Guild];
+      case AddonCategory.Libraries:
+        return [CurseAddonCategory.Libraries];
+      case AddonCategory.Mail:
+        return [CurseAddonCategory.Mail];
+      case AddonCategory.MapMinimap:
+        return [CurseAddonCategory.MapMinimap];
+      case AddonCategory.Miscellaneous:
+        return [CurseAddonCategory.Miscellaneous];
+      case AddonCategory.Missions:
+        return [CurseAddonCategory.Garrison];
+      case AddonCategory.Plugins:
+        return [CurseAddonCategory.Plugins];
+      case AddonCategory.Professions:
+        return [CurseAddonCategory.Professions];
+      case AddonCategory.PVP:
+        return [CurseAddonCategory.PvP];
+      case AddonCategory.QuestsLeveling:
+        return [CurseAddonCategory.QuestsLeveling];
+      case AddonCategory.Roleplay:
+        return [CurseAddonCategory.Roleplay];
+      case AddonCategory.Tooltips:
+        return [CurseAddonCategory.Tooltip];
+      case AddonCategory.UnitFrames:
+        return [CurseAddonCategory.UnitFrames];
+      default:
+        throw new Error("Unhandled addon category");
+    }
   }
 }

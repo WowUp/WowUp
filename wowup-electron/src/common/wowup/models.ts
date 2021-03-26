@@ -15,6 +15,35 @@ export enum AddonWarningType {
   MissingOnProvider = "missing-on-provider",
 }
 
+export enum AddonCategory {
+  AllAddons,
+  Achievements,
+  ActionBars,
+  AuctionEconomy,
+  BagsInventory,
+  BossEncounters,
+  BuffsDebuffs,
+  ChatCommunication,
+  Class,
+  Combat,
+  Companions,
+  DataExport,
+  DevelopmentTools,
+  Guild,
+  Libraries,
+  Mail,
+  MapMinimap,
+  Miscellaneous,
+  Missions,
+  Plugins,
+  Professions,
+  PVP,
+  QuestsLeveling,
+  Roleplay,
+  Tooltips,
+  UnitFrames,
+}
+
 export interface AddonDependency {
   externalAddonId: string;
   type: AddonDependencyType;

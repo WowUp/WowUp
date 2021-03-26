@@ -9,17 +9,18 @@ import {
 } from "ag-grid-community";
 import * as _ from "lodash";
 import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } from "rxjs";
-import { catchError, filter, first, map } from "rxjs/operators";
+import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
+import { MatDrawer } from "@angular/material/sidenav";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_HUB } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../../common/wowup/models";
+import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
@@ -42,6 +43,13 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { getEnumKeys } from "../../utils/enum.utils";
+import { camelToSnakeCase } from "../../utils/string.utils";
+
+interface CategoryItem {
+  category: AddonCategory;
+  localeKey: string;
+}
 
 @Component({
   selector: "app-get-addons",
@@ -52,6 +60,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   @Input("tabIndex") public tabIndex: number;
 
   @ViewChild("columnContextMenuTrigger") public columnContextMenu: MatMenuTrigger;
+  @ViewChild("drawer") public drawer: MatDrawer;
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab = false;
@@ -59,7 +68,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _isBusySubject = new BehaviorSubject<boolean>(true);
   private _rowDataSrc = new BehaviorSubject<GetAddonListItem[]>([]);
   private _lastSelectionState: RowNode[] = [];
+  private _selectedAddonCategory: CategoryItem;
 
+  public addonCategory = AddonCategory;
   public columnDefs: ColDef[] = [];
   public rowData$ = this._rowDataSrc.asObservable();
   public frameworkComponents = {};
@@ -122,6 +133,64 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
 
+  public addonCategories: CategoryItem[] = [];
+
+  public get selectedAddonCategory(): CategoryItem {
+    return this._selectedAddonCategory;
+  }
+
+  public set selectedAddonCategory(categoryItem: CategoryItem) {
+    this._selectedAddonCategory = categoryItem;
+    this.drawer?.close().catch((e) => console.error(e));
+
+    if (categoryItem.category === AddonCategory.AllAddons) {
+      this.loadPopularAddons(this.selectedInstallation);
+      return;
+    }
+
+    of(true)
+      .pipe(
+        first(),
+        map(() => {
+          this._isBusySubject.next(true);
+        }),
+        switchMap(() => from(this._addonService.getCategoryPage(categoryItem.category, this.selectedInstallation))),
+        map((searchResults) => {
+          const searchListItems = this.formatAddons(searchResults);
+          this._rowDataSrc.next(searchListItems);
+          this._isBusySubject.next(false);
+        }),
+        catchError((error) => {
+          console.error(error);
+          this.displayError(error);
+          this._rowDataSrc.next([]);
+          this._isBusySubject.next(false);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+
+    /**
+       * from(this._addonService.search(this.query, this.selectedInstallation))
+      .pipe(
+        first(),
+        map((searchResults) => {
+          const searchListItems = this.formatAddons(searchResults);
+          this._rowDataSrc.next(searchListItems);
+          this._isBusySubject.next(false);
+        }),
+        catchError((error) => {
+          console.error(error);
+          this.displayError(error);
+          this._rowDataSrc.next([]);
+          this._isBusySubject.next(false);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+       */
+  }
+
   public constructor(
     private _dialog: MatDialog,
     private _dialogFactory: DialogFactory,
@@ -166,6 +235,33 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     };
 
     this.columnDefs = this.createColumns();
+
+    this.addonCategories = this.buildCategories();
+    this.selectedAddonCategory = this.addonCategories[0];
+  }
+
+  public resetCategory(silent = false): void {
+    if (silent) {
+      this._selectedAddonCategory = this.addonCategories[0];
+    } else {
+      this.selectedAddonCategory = this.addonCategories[0];
+    }
+  }
+
+  private buildCategories() {
+    const categoryKeys = getEnumKeys(AddonCategory);
+    const categoryItems: CategoryItem[] = categoryKeys.map((key) => {
+      return {
+        category: AddonCategory[key],
+        localeKey: `COMMON.ADDON_CATEGORIES.${camelToSnakeCase(key).toUpperCase()}`,
+      };
+    });
+
+    // make sure all addons is always first
+    const allAddonsCategory = _.remove(categoryItems, (item) => item.category === AddonCategory.AllAddons);
+    categoryItems.unshift(allAddonsCategory[0]);
+
+    return categoryItems;
   }
 
   public onRowClicked(event: RowClickedEvent): void {
@@ -357,6 +453,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   public onSearch(): void {
     this._isBusySubject.next(true);
+    this.resetCategory(true);
 
     if (!this.query) {
       this.loadPopularAddons(this.selectedInstallation);

@@ -20,7 +20,13 @@ import {
 } from "../../../common/constants";
 import { Addon, AddonExternalId } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonChannelType, AddonDependency, AddonDependencyType, AddonWarningType } from "../../../common/wowup/models";
+import {
+  AddonCategory,
+  AddonChannelType,
+  AddonDependency,
+  AddonDependencyType,
+  AddonWarningType,
+} from "../../../common/wowup/models";
 import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
@@ -198,6 +204,18 @@ export class AddonService {
 
   public isSameAddon(addon1: Addon, addon2: Addon): boolean {
     return addon1.externalId === addon2.externalId && addon1.providerName === addon2.providerName;
+  }
+
+  public async getCategoryPage(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const providers = this.getEnabledAddonProviders();
+
+    const resultSet: AddonSearchResult[][] = [];
+    for (const provider of providers) {
+      const results = await provider.getCategory(category, installation);
+      resultSet.push(results);
+    }
+
+    return _.flatten(resultSet);
   }
 
   public async getFullDescription(
