@@ -36,7 +36,7 @@
     "electron:publish": "npm run lint && npm run build:prod && electron-builder build --publish always",
     "electron:publish:linux": "docker-compose -f linux-compose.yml up",
     "electron:publish:never": "npm run electron:build && electron-builder --publish never",
-    "electron:publish:never:local": "npm run electron:build && electron-builder -c electron-builder-local.json --publish never ",
+    "electron:publish:never:local": "npm run build:prod && electron-builder -c electron-builder-local.json --publish never ",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "test:locales": "ng test --watch=false --include='src/locales.spec.ts'",
@@ -156,6 +156,7 @@
     "ts-custom-error": "3.2.0",
     "tslib": "2.1.0",
     "uuid": "8.3.2",
+    "win-ca": "3.4.5",
     "yauzl": "2.10.0"
   }
 }

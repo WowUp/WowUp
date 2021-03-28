@@ -10,10 +10,12 @@ import {
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
 import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
+import { CurseAddonCategory, CurseGameVersionFlavor } from "../../common/curse/curse-models";
 import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType, AddonDependencyType } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
+import { SourceRemovedAddonError } from "../errors";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
 import {
   CurseAddonFileResponse,
@@ -39,7 +41,6 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { WowUpApiService } from "../services/wowup-api/wowup-api.service";
 import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
-import { CurseAddonCategory, CurseGameVersionFlavor } from "../..//common/curse/curse-models";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
@@ -351,8 +352,15 @@ export class CurseAddonProvider extends AddonProvider {
       }
     }
 
+    const missingAddonIds = _.filter(
+      addonIds,
+      (addonId) => _.find(searchResults, (sr) => sr.id.toString() === addonId) === undefined
+    );
+
+    const deletedErrors = _.map(missingAddonIds, (addonId) => new SourceRemovedAddonError(addonId, undefined));
+
     return {
-      errors: [],
+      errors: [...deletedErrors],
       searchResults: addonResults,
     };
   }

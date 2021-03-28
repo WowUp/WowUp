@@ -35,6 +35,7 @@
     "!tslint.json",
     "!**/.vscode/*",
     "!node_modules/@angular",
+    "!node_modules/win-ca/pem",
     "!native/",
     "!*.npmrc",
     "!*.eslintrc.json",

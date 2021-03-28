@@ -23,6 +23,7 @@ export enum AddonCategory {
   BagsInventory,
   BossEncounters,
   BuffsDebuffs,
+  Bundles,
   ChatCommunication,
   Class,
   Combat,

@@ -93,6 +93,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public spinnerMessage = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
   public filter = "";
+  public overlayNoRowsTemplate = "";
   public addonUtils = AddonUtils;
   public selectedClient = WowClientType.None;
   public selectedInstallation: WowInstallation = undefined;
@@ -200,6 +201,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     public warcraftInstallationService: WarcraftInstallationService,
     public relativeDurationPipe: RelativeDurationPipe
   ) {
+    this.overlayNoRowsTemplate = `<span class="text-1 mat-h1">${
+      _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
+    }</span>`;
+
     this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
 
     // When the search input changes debounce it a little before searching
