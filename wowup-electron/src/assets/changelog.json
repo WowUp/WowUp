@@ -1,6 +1,19 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.16",
+      "changes": [
+        "German locale updates (Glow/maestrohdude)",
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "Fix display of 'no addons' message in Get Addons",
+        "Add localization of the 'no addons' message in Get Addons and My Addons",
+        "Add the same logic for server side missing addons for CurseForge",
+        "Add support for TukUI categories in the category browser",
+        "Add a module to pull in custom windows ssl certs"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.15",
       "changes": [
         "Finally merge Strayge's PR",
