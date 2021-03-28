@@ -120,13 +120,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public selectedInstallationId = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
   public wowInstallations$: Observable<WowInstallation[]>;
+  public overlayNoRowsTemplate = "";
 
   public isBusy$ = this._isBusySubject.asObservable();
   public hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
 
   public readonly showTable$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
     map(([isBusy, hasData]) => {
-      return isBusy === false && hasData === true;
+      return isBusy === false;
     })
   );
 
@@ -169,26 +170,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-
-    /**
-       * from(this._addonService.search(this.query, this.selectedInstallation))
-      .pipe(
-        first(),
-        map((searchResults) => {
-          const searchListItems = this.formatAddons(searchResults);
-          this._rowDataSrc.next(searchListItems);
-          this._isBusySubject.next(false);
-        }),
-        catchError((error) => {
-          console.error(error);
-          this.displayError(error);
-          this._rowDataSrc.next([]);
-          this._isBusySubject.next(false);
-          return of(undefined);
-        })
-      )
-      .subscribe();
-       */
   }
 
   public constructor(
@@ -206,6 +187,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     public relativeDurationPipe: RelativeDurationPipe,
     public downloadCountPipe: DownloadCountPipe
   ) {
+    this.overlayNoRowsTemplate = `<span class="text-1 mat-h1">${
+      _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
+    }</span>`;
+
     this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
 
     const homeTabSub = _sessionService.selectedHomeTab$.subscribe((tabIndex) => {

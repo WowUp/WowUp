@@ -211,8 +211,12 @@ export class AddonService {
 
     const resultSet: AddonSearchResult[][] = [];
     for (const provider of providers) {
-      const results = await provider.getCategory(category, installation);
-      resultSet.push(results);
+      try {
+        const results = await provider.getCategory(category, installation);
+        resultSet.push(results);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     return _.flatten(resultSet);
