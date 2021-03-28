@@ -6,7 +6,7 @@ import * as stringSimilarity from "string-similarity";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType } from "../../common/wowup/models";
+import { AddonCategory, AddonChannelType } from "../../common/wowup/models";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
@@ -37,6 +37,60 @@ export class TukUiAddonProvider extends AddonProvider {
   public constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
     super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
+  }
+
+  public async getCategory(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const addonCategories = this.mapAddonCategory(category);
+
+    const allAddons = await this.getAllAddons(installation.clientType);
+    const matchingAddons = allAddons.filter((addon) => addonCategories.some((cat) => addon.category === cat));
+
+    const searchResults: AddonSearchResult[] = [];
+    for (const addon of matchingAddons) {
+      const searchResult = await this.toSearchResult(addon);
+      searchResults.push(searchResult);
+    }
+
+    return searchResults;
+  }
+
+  private mapAddonCategory(category: AddonCategory): string[] {
+    switch (category) {
+      case AddonCategory.Achievements:
+        return ["Achievements"];
+      case AddonCategory.ActionBars:
+        return ["Action Bars"];
+      case AddonCategory.BagsInventory:
+        return ["Bags & Inventory"];
+      case AddonCategory.BuffsDebuffs:
+        return ["Buffs & Debuffs"];
+      case AddonCategory.Bundles:
+        return ["Edited UIs & Compilations", "Full UI Replacements"];
+      case AddonCategory.ChatCommunication:
+        return ["Chat & Communication"];
+      case AddonCategory.Class:
+        return ["Class"];
+      case AddonCategory.Combat:
+        return ["Combat"];
+      case AddonCategory.Guild:
+        return ["Guild"];
+      case AddonCategory.MapMinimap:
+        return ["Map & Minimap"];
+      case AddonCategory.Miscellaneous:
+        return ["Miscellaneous"];
+      case AddonCategory.Plugins:
+        return ["Plugins: ElvUI", "Plugins: Tukui", "Plugins: Other", "Skins"];
+      case AddonCategory.Professions:
+        return ["Professions"];
+      case AddonCategory.Roleplay:
+        return ["Roleplay"];
+      case AddonCategory.Tooltips:
+        return ["Tooltips"];
+      case AddonCategory.UnitFrames:
+        return ["Unit Frames"];
+      default:
+        throw new Error("Unhandled addon category");
+    }
   }
 
   public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
@@ -217,7 +271,7 @@ export class TukUiAddonProvider extends AddonProvider {
     return _.orderBy(matches, (match) => match.similarity, "desc").map((match) => match.addon);
   }
 
-  private async toSearchResult(addon: TukUiAddon, folderName?: string): Promise<AddonSearchResult | undefined> {
+  private async toSearchResult(addon: TukUiAddon, folderName = ""): Promise<AddonSearchResult | undefined> {
     if (!addon) {
       return undefined;
     }
