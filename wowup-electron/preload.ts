@@ -11,9 +11,23 @@ import {
 } from "electron";
 import * as log from "electron-log";
 import { join } from "path";
+import * as platform from "./platform";
 
 if (!process.isMainFrame) {
   throw new Error("Preload scripts should not be running in a subframe");
+}
+
+if (platform.isWin) {
+  const ca = require("win-ca");
+  const list: any[] = [];
+  ca({
+    async: true,
+    format: ca.der2.txt,
+    ondata: list,
+    onend: () => {
+      log.info("win-ca loaded");
+    },
+  });
 }
 
 const LOG_PATH = join(remote.app.getPath("userData"), "logs");
