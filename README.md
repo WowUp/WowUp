@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://wowup.io/assets/images/wowup_logo_512np.png" width="200" />
+  <img src="https://wowup.io/assets/images/wowup_logo_purple.png" width="200" />
 </p>
 
 [![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/rk4F5aD) 
