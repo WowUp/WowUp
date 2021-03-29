@@ -2,16 +2,33 @@
   <img src="https://wowup.io/assets/images/wowup_logo_purple.png" width="200" />
 </p>
 
+# WowUp Client Repository
 [![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/rk4F5aD) 
 [![WowUp on Patreon](https://img.shields.io/static/v1?label=Patreon&message=WowUp&color=f96854)](https://www.patreon.com/jliddev) 
 
-# WowUp
-[WowUp](https://wowup.io) the World of Warcraft addon updater
+[WowUp](https://wowup.io) This is the repository for all our WowUp client side code for Windows, Mac, and Linux.
 
-Thanks to the announcement that Twitch is giving the Curse addon client to yet another company I wanted to try and create something the community can believe in.
-If you have any ideas/requests for the feature list let me know!
+## WowUp
+![image](https://user-images.githubusercontent.com/20467484/112852379-7a26cf00-9071-11eb-85ba-5336f10b6d4b.png)
 
-### [Chocolatey](https://chocolatey.org)
+WowUp is the community centered World of Warcraft addon updater. We attempt to bring the addon community together in an easy to use updater application. We have an ever growing list of supported features.
+
+- Support for all major addon sources
+- Discover or find new addons across addon sources
+- Handle all your different World of Warcraft clients
+- Auto updates
+- [Companion addon](https://github.com/WowUp/WowUp.Addon)
+
+## Installing
+
+### Latest Releases
+The latest WowUp release is always available on our website [wowup.io](https://wowup.io)
+
+### Beta Releases
+If you feel like helping us test the latest and greatest changes beta builds are available on [GitHub](https://github.com/WowUp/WowUp/releases)
+
+### Community Support Alternatives
+[Chocolatey](https://chocolatey.org)
 
 You can also install the latest version via Chocolatey package manager:
 
@@ -19,17 +36,27 @@ You can also install the latest version via Chocolatey package manager:
 choco install wowup
 ```
 
-### Upcoming Features
-- [x] Create feature List
-- [x] Scan for already installed addons
-- [x] Update addons that were scanned
-- [x] TukUI Support
-- [x] Install new addons
-- [x] Browse addons
-- [x] Ignoring addons
-- [X] GitHub support
-- [x] Addon Search
-- [x] Auto addon updates
-- [x] Mac client
-- [x] Linux Client
-- [ ] Curse alternative?
+## Contributing
+We welcome any and all contributions from translations to feature pull requests.
+
+Please read our [contribution guide](https://github.com/WowUp/WowUp/blob/master/CONTRIBUTING.md) to get started.
+
+## Feedback
+If you have a question, comment, or request we have several ways you can communicate them.
+
+- Create a [bug or feature request](https://github.com/WowUp/WowUp/issues)
+- Contact us on [Discord](https://discord.gg/rk4F5aD)
+
+## Related Projects
+We have a couple companion projects that are related to WowUp
+
+- [Companion Addon](https://github.com/WowUp/WowUp.Addon)
+- [App Updater](https://github.com/WowUp/WowUpUpdater) (Deprecated)
+
+## Code of Conduct
+Please read and understand our [Code of Coduct](https://github.com/WowUp/WowUp/blob/master/CODE_OF_CONDUCT.md) when submitting a bug or feature request here or on Discord.
+
+## License
+Copyright (c) WowUp LLC. All rights reserved.
+
+Licensed under the [GNU General Public License v3.0](https://github.com/WowUp/WowUp/blob/master/LICENSE) license.
