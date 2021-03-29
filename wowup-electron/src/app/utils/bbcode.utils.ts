@@ -99,7 +99,7 @@ const bbpreset = createPreset({
 export function convertBbcode(str: string): string {
   let html: string = bbobHTML(str, bbpreset());
 
-  html = html.replaceAll("\r\n", "");
+  html = html.replaceAll("\r\n", "<br>").replaceAll(/(<br>)\1+/g, "<br>");
 
   return html;
 }
