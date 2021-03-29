@@ -6,7 +6,7 @@
 [![WowUp on Discord](https://img.shields.io/static/v1?label=Discord&message=WowUp&color=7289DA)](https://discord.gg/rk4F5aD) 
 [![WowUp on Patreon](https://img.shields.io/static/v1?label=Patreon&message=WowUp&color=f96854)](https://www.patreon.com/jliddev) 
 
-[WowUp](https://wowup.io) This is the repository for all our WowUp client side code for Windows, Mac, and Linux.
+This is the repository for all our [WowUp](https://wowup.io) client side code for Windows, Mac, and Linux.
 
 ## WowUp
 ![image](https://user-images.githubusercontent.com/20467484/112852379-7a26cf00-9071-11eb-85ba-5336f10b6d4b.png)
