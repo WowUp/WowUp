@@ -371,6 +371,7 @@ export class TukUiAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
         return "classic-addons";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
@@ -385,6 +386,7 @@ export class TukUiAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
         return "classic";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:

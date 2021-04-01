@@ -28,6 +28,7 @@ const CLIENT_RETAIL_PTR_FOLDER = "_ptr_";
 const CLIENT_CLASSIC_FOLDER = "_classic_";
 const CLIENT_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 const CLIENT_BETA_FOLDER = "_beta_";
+const CLIENT_CLASSIC_BETA_FOLDER = "_classic_beta_";
 const ADDON_FOLDER_NAME = "AddOns";
 const INTERFACE_FOLDER_NAME = "Interface";
 
@@ -37,6 +38,7 @@ const RETAIL_PTR_LOCATION_KEY = "wow_retail_ptr_location";
 const CLASSIC_LOCATION_KEY = "wow_classic_location";
 const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location";
 const BETA_LOCATION_KEY = "wow_beta_location";
+const CLASSIC_BETA_LOCATION_KEY = "wow_beta_location";
 
 @Injectable({
   providedIn: "root",
@@ -236,6 +238,8 @@ export class WarcraftService {
         return CLIENT_CLASSIC_PTR_FOLDER;
       case WowClientType.Beta:
         return CLIENT_BETA_FOLDER;
+      case WowClientType.ClassicBeta:
+        return CLIENT_CLASSIC_BETA_FOLDER;
       default:
         return "";
     }
@@ -253,6 +257,8 @@ export class WarcraftService {
         return CLASSIC_PTR_LOCATION_KEY;
       case WowClientType.Beta:
         return BETA_LOCATION_KEY;
+      case WowClientType.ClassicBeta:
+        return CLASSIC_BETA_LOCATION_KEY;
       default:
         throw new Error(`Failed to get client location key: ${clientType}, ${getEnumName(WowClientType, clientType)}`);
     }
@@ -314,6 +320,8 @@ export class WarcraftService {
         return WowClientType.ClassicPtr;
       case CLIENT_BETA_FOLDER:
         return WowClientType.Beta;
+      case CLIENT_CLASSIC_BETA_FOLDER:
+        return WowClientType.ClassicBeta;
       default:
         return WowClientType.Retail;
     }

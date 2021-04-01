@@ -132,6 +132,7 @@
     "CLIENT_TYPES": {
       "BETA": "Бета",
       "CLASSIC": "Классический",
+      "CLASSICBETA": "Классический Бета",
       "CLASSICPTR": "Классический PTR",
       "RETAIL": "Актуальный",
       "RETAILPTR": "Актуальный PTR"
