@@ -691,7 +691,7 @@ export class AddonService {
     const clientMap = {};
     const installations = this._warcraftInstallationService.getWowInstallations();
     for (const installation of installations) {
-      const clientTypeName = this._warcraftService.getClientFolderName(installation.clientType);
+      const clientTypeName = getEnumName(WowClientType, installation.clientType);
       const addonFolders = await this._warcraftService.listAddons(installation, this._wowUpService.useSymlinkMode);
 
       const curseMap = {};

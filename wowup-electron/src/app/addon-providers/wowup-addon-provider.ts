@@ -344,6 +344,7 @@ export class WowUpAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
         return WowGameType.Classic;
       case WowClientType.Retail:
       case WowClientType.RetailPtr:

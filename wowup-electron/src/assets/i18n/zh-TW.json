@@ -132,6 +132,7 @@
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "經典版",
+      "CLASSICBETA": "經典版 Beta",
       "CLASSICPTR": "經典版 PTR",
       "RETAIL": "正式服",
       "RETAILPTR": "正式服 PTR"
