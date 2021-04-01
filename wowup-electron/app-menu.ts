@@ -58,7 +58,13 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
   return [
     {
       label: app.name,
-      submenu: [{ label: config.quitLabel, role: "quit" }],
+      submenu: [
+        {label: 'Hide WowUp', accelerator: 'Command+H', role: 'hide'},
+        {label: 'Hide Others', accelerator: 'Command+Alt+H', role: 'hideOthers'},
+        {label: 'Show All', role: 'unhide'},
+        { type: 'separator' },
+        { label: config.quitLabel, role: "quit" }
+      ],
     },
     {
       label: config.editLabel,
