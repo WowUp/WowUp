@@ -228,7 +228,7 @@
       "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下載",
       "ERROR": {
         "ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要有效的 zip 檔案。",
-        "CLASSIC_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以 “-classic” 結尾的有效的 zip 檔案。",
+        "CLASSIC_ASSET_NOT_FOUND": "未找到可下載的附件 {message}。\n\n要通過 WowUp 下載插件，釋出頁面（Releases）上需要檔名以「-classic」結尾的有效的 zip 檔案。",
         "FAILED_TO_CONNECT": "無法連線 API，請稍後重試。",
         "INSTALL_FAILED": "安裝插件時出現了一些錯誤，請重試。\n\n如果一直出現此訊息，可以加入 Discord #wowup-support 頻道尋求幫助（英語）。",
         "INVALID_URL": "輸入的 URL 無效。有效 URL 示例：\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
@@ -302,7 +302,7 @@
         "SHOW_FOLDER": "開啟資料夾",
         "STABLE_ADDON_CHANNEL": "穩定版"
       },
-      "ADDON_IS_CODE_REPOSITORY": "插件似乎是代码仓库",
+      "ADDON_IS_CODE_REPOSITORY": "插件似乎是程式碼倉庫",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "是否將 {addonName} 的提供方修改為 {providerName}？此操作將會用 {providerName} 的版本替換現有版本。",
         "TITLE": "修改插件提供方？"
@@ -443,7 +443,7 @@
           "MESSAGE": "是否忘記 {clientName} 的安裝路徑？此操作將會刪除 WowUp 記錄的此客戶端所安裝插件資訊。\n\n插件資料夾不會被刪除。",
           "TITLE": "忘記此路徑？"
         },
-        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} 客戶端 “{clientFolderName}” 主程式路徑",
+        "CLIENT_TYPE_INPUT_HINT": "{clientTypeName} 客戶端「{clientFolderName}」主程式路徑",
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 路徑",
         "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
