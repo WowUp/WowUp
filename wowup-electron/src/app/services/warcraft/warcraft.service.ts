@@ -38,7 +38,6 @@ const RETAIL_PTR_LOCATION_KEY = "wow_retail_ptr_location";
 const CLASSIC_LOCATION_KEY = "wow_classic_location";
 const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location";
 const BETA_LOCATION_KEY = "wow_beta_location";
-const CLASSIC_BETA_LOCATION_KEY = "wow_beta_location";
 
 @Injectable({
   providedIn: "root",
@@ -192,23 +191,23 @@ export class WarcraftService {
     }
   }
 
-  public getClientRelativePath(clientType: WowClientType, folderPath: string): string {
-    const clientFolderName = this.getClientFolderName(clientType);
-    const clientFolderIdx = folderPath.indexOf(clientFolderName);
-    const relativePath = clientFolderIdx === -1 ? folderPath : folderPath.substring(0, clientFolderIdx);
+  // public getClientRelativePath(clientType: WowClientType, folderPath: string): string {
+  //   const clientFolderName = this.getClientFolderName(clientType);
+  //   const clientFolderIdx = folderPath.indexOf(clientFolderName);
+  //   const relativePath = clientFolderIdx === -1 ? folderPath : folderPath.substring(0, clientFolderIdx);
 
-    return path.normalize(relativePath);
-  }
+  //   return path.normalize(relativePath);
+  // }
 
-  private async isClientFolder(clientType: WowClientType, folderPath: string) {
-    const clientFolderName = this.getClientFolderName(clientType);
-    const relativePath = this.getClientRelativePath(clientType, folderPath);
+  // private async isClientFolder(clientType: WowClientType, folderPath: string) {
+  //   const clientFolderName = this.getClientFolderName(clientType);
+  //   const relativePath = this.getClientRelativePath(clientType, folderPath);
 
-    const executableName = this.getExecutableName(clientType);
-    const executablePath = path.join(relativePath, clientFolderName, executableName);
+  //   const executableName = this.getExecutableName(clientType);
+  //   const executablePath = path.join(relativePath, clientFolderName, executableName);
 
-    return await this._fileService.pathExists(executablePath);
-  }
+  //   return await this._fileService.pathExists(executablePath);
+  // }
 
   public async getBlizzardAgentPath() {
     const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
@@ -257,8 +256,6 @@ export class WarcraftService {
         return CLASSIC_PTR_LOCATION_KEY;
       case WowClientType.Beta:
         return BETA_LOCATION_KEY;
-      case WowClientType.ClassicBeta:
-        return CLASSIC_BETA_LOCATION_KEY;
       default:
         throw new Error(`Failed to get client location key: ${clientType}, ${getEnumName(WowClientType, clientType)}`);
     }

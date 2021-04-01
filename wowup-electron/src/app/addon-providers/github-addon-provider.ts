@@ -97,7 +97,9 @@ export class GitHubAddonProvider extends AddonProvider {
       const asset = this.getValidAsset(latestRelease, installation.clientType);
       console.log("latestRelease", latestRelease);
       if (asset == null) {
-        if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(installation.clientType)) {
+        if (
+          [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta].includes(installation.clientType)
+        ) {
           throw new ClassicAssetMissingError(addonUri.toString());
         } else {
           throw new AssetMissingError(addonUri.toString());
@@ -226,6 +228,7 @@ export class GitHubAddonProvider extends AddonProvider {
         return !isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
         return isClassic;
       default:
         return false;
