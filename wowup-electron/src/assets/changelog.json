@@ -1,6 +1,14 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.17",
+      "changes": [
+        "German locale updates (Glow)",
+        "Pull in TBC beta installation support changes (CyanoHao)",
+        "Fix a layout issue for BBCode parsing"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.16",
       "changes": [
         "German locale updates (Glow/maestrohdude)",
