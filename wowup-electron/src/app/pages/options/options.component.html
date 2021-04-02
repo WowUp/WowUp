@@ -1,8 +1,11 @@
-<div class="tab-container" [ngClass]="{
+<div
+  class="tab-container"
+  [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }">
+  }"
+>
   <div class="nav-container bg-secondary-4">
     <div class="theme-logo">
       <div class="logo-img"></div>
@@ -21,6 +24,9 @@
               {{ "PAGES.OPTIONS.TABS.ADDONS" | translate }}
             </button>
             <button mat-list-item (click)="optionTabIndex = 3">
+              {{ "PAGES.OPTIONS.TABS.BACKUP" | translate }}
+            </button>
+            <button mat-list-item (click)="optionTabIndex = 4">
               {{ "PAGES.OPTIONS.TABS.DEBUG" | translate }}
             </button>
           </mat-action-list>
@@ -39,6 +45,9 @@
             </mat-tab>
             <mat-tab label="Addons">
               <app-options-addon-section></app-options-addon-section>
+            </mat-tab>
+            <mat-tab label="Backup">
+              <app-options-addon-backup></app-options-addon-backup>
             </mat-tab>
             <mat-tab label="Debug">
               <app-options-debug-section></app-options-debug-section>

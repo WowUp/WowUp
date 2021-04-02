@@ -141,6 +141,7 @@
     "fs-extra": "10.0.0",
     "globrex": "0.1.2",
     "handlebars": "4.7.7",
+    "jszip": "3.6.0",
     "lodash": "4.17.21",
     "markdown-it": "12.0.6",
     "messageformat": "2.3.0",

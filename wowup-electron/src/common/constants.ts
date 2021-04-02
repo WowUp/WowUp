@@ -146,6 +146,7 @@ export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
 export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";
 
+<<<<<<< HEAD
 export const WOW_CLASSIC_FOLDER = "_classic_";
 export const WOW_CLASSIC_ERA_FOLDER = "_classic_era_";
 export const WOW_RETAIL_FOLDER = "_retail_";
@@ -165,3 +166,9 @@ export const USER_ACTION_OPEN_LINK = "open-link";
 export const USER_ACTION_ADDON_SEARCH = "addon-search";
 export const USER_ACTION_ADDON_PROTOCOL_SEARCH = "addon-protocol-search";
 export const USER_ACTION_ADDON_INSTALL = "addon-install-action";
+=======
+//BACKUP
+export const ENABLED_BACKUP = "enabled_backup";
+export const ENABLED_AUTOMATIC_BACKUP = "enabled_automatic_backup";
+export const LAST_BACKUP_DATE = "last_backup_date";
+>>>>>>> (feat) backup/restore user interface

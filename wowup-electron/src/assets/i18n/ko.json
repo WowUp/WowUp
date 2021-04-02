@@ -265,7 +265,14 @@
       "POSITIVE_BUTTON": "물론!",
       "TITLE": "원격 분석용 데이터 전송"
     },
+<<<<<<< HEAD
     "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
+=======
+    "RESTORE": {
+      "DATE": "Dates",
+      "ACTIONS": "Actions"
+    }
+>>>>>>> (feat) backup/restore user interface
   },
   "PAGES": {
     "ABOUT": {
@@ -450,11 +457,24 @@
         "LOG_FILES_LABEL": "로그 파일",
         "TITLE": "디버그"
       },
+      "BACKUP": {
+        "TITLE": "Backups",
+        "LABEL": "Enable backup",
+        "DESCRIPTION": "This will save the addons and their profiles of all your associated games",
+        "AUTOMATIC_LABEL": "Automatic backup",
+        "STORAGE_LABEL": "Storage location for backups",
+        "BTN_MANUAL": "Backup now",
+        "BTN_RESTORE": "Restoring a backup",
+        "ERROR_UNDEFINED": "<b>{client}</b> : An error has occurred, please try again\n",
+        "ERROR_FOLDER_NOT_FOUND": "<b>{client}</b> : The WTF or Interface folder is not present, the backup could not be performed\n",
+        "ERROR_RESTORE": "An error occurred during the restoration, your files were not modified"
+      },
       "TABS": {
         "ADDONS": "애드온",
         "APPLICATION": "게임 애플리케이션",
         "CLIENTS": "클라이언트",
-        "DEBUG": "디버그"
+        "DEBUG": "디버그",
+        "BACKUP": "Backups"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",

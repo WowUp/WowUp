@@ -265,7 +265,14 @@
       "POSITIVE_BUTTON": "Bien sûr!",
       "TITLE": "Télémétrie WowUp"
     },
+<<<<<<< HEAD
     "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
+=======
+    "RESTORE": {
+      "DATE": "Dates",
+      "ACTIONS": "Actions"
+    }
+>>>>>>> (feat) backup/restore user interface
   },
   "PAGES": {
     "ABOUT": {
@@ -380,7 +387,7 @@
         "DEPENDENCY_TITLE": "Supprimer les dépendances de l'addon ?",
         "TITLE": "Désinstaller {count, plural, =1{addon} other{addons}}?"
       },
-      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "L'addon installé ne correspond à aucun des fournisseurs configurés",
       "UPDATE_ALL_BUTTON": "Tout mettre à jour",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Mettre à jour tous les addons pour ce client",
       "UPDATE_ALL_CONTEXT_MENU": {
@@ -441,6 +448,18 @@
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
+      "BACKUP": {
+        "TITLE": "Sauvegardes",
+        "LABEL": "Activer la sauvegarde",
+        "DESCRIPTION": "Ceci permettra de sauvegarder les addons ainsi que leur profiles de tous vos jeux associés",
+        "AUTOMATIC_LABEL": "Sauvegarde automatique",
+        "STORAGE_LABEL": "Lieu de stockage des sauvegardes",
+        "BTN_MANUAL": "Sauvegarder maintenant",
+        "BTN_RESTORE": "Restaurer une sauvegarde",
+        "ERROR_UNDEFINED": "<b>{client}</b> : Une erreur est survenue, veuillez réessayer\n",
+        "ERROR_FOLDER_NOT_FOUND": "<b>{client}</b> : Le dossier WTF ou Interface n'est pas présent, la sauvegarde n'a pas pu être effectué\n",
+        "ERROR_RESTORE": "Une erreur est survenue lors de la restauration, vos fichiers n'ont pas été modifié"
+      },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Dump des données de débogage",
         "DEBUG_DATA_DESCRIPTION": "Log les données de débogage pour aider à diagnostiquer les problèmes potentiels. Cela peut être trouvé dans votre dernier fichier journal pour les curieux.",
@@ -454,7 +473,8 @@
         "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
-        "DEBUG": "Debug"
+        "DEBUG": "Debug",
+        "BACKUP": "Sauvegardes"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",

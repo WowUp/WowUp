@@ -1,10 +1,13 @@
+<<<<<<< HEAD
 import { AgGridModule } from "ag-grid-angular";
 import { LightboxModule } from "ngx-lightbox";
 
+=======
+>>>>>>> (feat) backup/restore user interface
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-
+import { AgGridModule } from "ag-grid-angular";
 import { AddonDetailComponent } from "../../components/addon-detail/addon-detail.component";
 import { AddonInstallButtonComponent } from "../../components/addon-install-button/addon-install-button.component";
 import { AddonThumbnailComponent } from "../../components/addon-thumbnail/addon-thumbnail.component";
@@ -21,7 +24,11 @@ import { InstallFromProtocolDialogComponent } from "../../components/install-fro
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
+<<<<<<< HEAD
 import { NewsPanelComponent } from "../../components/news-panel/news-panel.component";
+=======
+import { OptionsAddonBackupComponent } from "../../components/options-addon-backup/options-addon-backup.component";
+>>>>>>> (feat) backup/restore user interface
 import { OptionsAddonSectionComponent } from "../../components/options-addon-section/options-addon-section.component";
 import { OptionsAppSectionComponent } from "../../components/options-app-section/options-app-section.component";
 import { OptionsDebugSectionComponent } from "../../components/options-debug-section/options-debug-section.component";
@@ -30,6 +37,10 @@ import { PatchNotesDialogComponent } from "../../components/patch-notes-dialog/p
 import { PotentialAddonTableColumnComponent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
 import { ProgressButtonComponent } from "../../components/progress-button/progress-button.component";
 import { ProgressSpinnerComponent } from "../../components/progress-spinner/progress-spinner.component";
+<<<<<<< HEAD
+=======
+import { RestoreDialogComponent } from "../../components/restore-dialog/restore-dialog.component";
+>>>>>>> (feat) backup/restore user interface
 import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
 import { TelemetryDialogComponent } from "../../components/telemetry-dialog/telemetry-dialog.component";
 import { WowClientOptionsComponent } from "../../components/wow-client-options/wow-client-options.component";
@@ -48,7 +59,6 @@ import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
-
 @NgModule({
   declarations: [
     HomeComponent,
@@ -86,10 +96,15 @@ import { HomeComponent } from "./home.component";
     CellWrapTextComponent,
     DateTooltipCellComponent,
     AddonThumbnailComponent,
+<<<<<<< HEAD
     PatchNotesDialogComponent,
     TrustHtmlPipe,
     NewsPanelComponent,
     ExternalUrlConfirmationDialogComponent,
+=======
+    OptionsAddonBackupComponent,
+    RestoreDialogComponent,
+>>>>>>> (feat) backup/restore user interface
   ],
   imports: [
     CommonModule,

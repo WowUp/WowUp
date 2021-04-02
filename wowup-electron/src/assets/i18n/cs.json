@@ -265,7 +265,14 @@
       "POSITIVE_BUTTON": "Jasně!",
       "TITLE": "Telemetrie WowUp"
     },
+<<<<<<< HEAD
     "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
+=======
+    "RESTORE": {
+      "DATE": "Dates",
+      "ACTIONS": "Actions"
+    }
+>>>>>>> (feat) backup/restore user interface
   },
   "PAGES": {
     "ABOUT": {
@@ -450,11 +457,24 @@
         "LOG_FILES_LABEL": "Logovací soubory",
         "TITLE": "Debug aplikace"
       },
+      "BACKUP": {
+        "TITLE": "Backups",
+        "LABEL": "Enable backup",
+        "DESCRIPTION": "This will save the addons and their profiles of all your associated games",
+        "AUTOMATIC_LABEL": "Automatic backup",
+        "STORAGE_LABEL": "Storage location for backups",
+        "BTN_MANUAL": "Backup now",
+        "BTN_RESTORE": "Restoring a backup",
+        "ERROR_UNDEFINED": "<b>{client}</b> : An error has occurred, please try again\n",
+        "ERROR_FOLDER_NOT_FOUND": "<b>{client}</b> : The WTF or Interface folder is not present, the backup could not be performed\n",
+        "ERROR_RESTORE": "An error occurred during the restoration, your files were not modified"
+      },
       "TABS": {
         "ADDONS": "Addony",
         "APPLICATION": "Aplikace",
         "CLIENTS": "WoW klienti",
-        "DEBUG": "Debug aplikace"
+        "DEBUG": "Debug aplikace",
+        "BACKUP": "Backups"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",

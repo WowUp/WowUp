@@ -1,0 +1,83 @@
+<div class="container">
+  <h2>
+    {{ "PAGES.OPTIONS.BACKUP.TITLE" | translate }}
+  </h2>
+
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.BACKUP.LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle
+        [(ngModel)]="backupEnabled"
+        [checked]="backupEnabled"
+        (change)="onEnableBackupChange($event)"
+        [disabled]="!hasWowClients"
+      ></mat-slide-toggle>
+    </div>
+    <small class="text-2">
+      {{ "PAGES.OPTIONS.BACKUP.DESCRIPTION" | translate }}
+    </small>
+  </div>
+
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.BACKUP.AUTOMATIC_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle
+        [(ngModel)]="automaticBackupEnabled"
+        [checked]="automaticBackupEnabled"
+        [disabled]="!backupEnabled || !hasWowClients"
+        (change)="onEnableAutomaticBackupChange($event)"
+      ></mat-slide-toggle>
+    </div>
+  </div>
+
+  <div class="row row align-items-center">
+    <div class="flex-grow-1">
+      <div>{{ "PAGES.OPTIONS.BACKUP.STORAGE_LABEL" | translate }}</div>
+    </div>
+    <mat-form-field class="light-select">
+      <mat-select [(value)]="storageSelected" [disabled]="true || !backupEnabled">
+        <mat-option *ngFor="let value of storageType" [value]="value"> {{ value }} </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="row align-items-center">
+    <div class="flex-grow-1">
+      <span></span>
+    </div>
+    <app-progress-button
+      [value]="wowUpBackupAddonService.progressAction$ | async"
+      [showProgress]="backupProcessing"
+      [disable]="backupProcessing || restoreProcessing || !backupEnabled || !hasWowClients"
+      (btnClick)="onBackup()"
+    >
+      {{ "PAGES.OPTIONS.BACKUP.BTN_MANUAL" | translate }}
+    </app-progress-button>
+  </div>
+  <div class="spacer">
+    <mat-divider></mat-divider>
+  </div>
+
+  <div class="row align-items-center">
+    <div class="flex-grow-1">
+      <span></span>
+    </div>
+
+    <app-progress-button
+      [value]="wowUpBackupAddonService.progressAction$ | async"
+      [showProgress]="restoreProcessing"
+      [disable]="restoreProcessing || backupProcessing || !backupEnabled || !hasWowClients"
+      (btnClick)="onOpenDialogRestore()"
+    >
+      {{ "PAGES.OPTIONS.BACKUP.BTN_RESTORE" | translate }}
+    </app-progress-button>
+  </div>
+</div>
