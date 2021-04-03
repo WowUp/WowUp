@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.18",
+      "changes": ["Use the Hub dev api for improved TBC support", "Add some new support for TBC beta releases"]
+    },
+    {
       "Version": "2.2.0-beta.17",
       "changes": [
         "German locale updates (Glow)",
