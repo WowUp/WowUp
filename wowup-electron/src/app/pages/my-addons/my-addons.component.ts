@@ -72,12 +72,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("updateAllContextMenuTrigger", { static: false })
   public updateAllContextMenu: MatMenuTrigger;
 
-  @HostListener("window:keydown", ["$event"])
-  public handleKeyboardEvent(event: KeyboardEvent): void {
-    if (this.selectAllRows(event)) {
-      return;
-    }
-  }
+  // @HostListener("window:keydown", ["$event"])
 
   private readonly _operationErrorSrc = new Subject<Error>();
 
@@ -262,6 +257,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public handleKeyboardEvent(event: KeyboardEvent): void {
+    if (this.selectAllRows(event)) {
+      return;
+    }
   }
 
   public onSortChanged(evt: SortChangedEvent): void {

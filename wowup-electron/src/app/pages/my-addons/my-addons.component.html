@@ -76,7 +76,7 @@
     [overlayNoRowsTemplate]="overlayNoRowsTemplate" (gridReady)="onGridReady($event)"
     (rowDoubleClicked)="onRowDoubleClicked($event)" (rowClicked)="onRowClicked($event)"
     (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
-    (cellContextMenu)="onCellContext($event)">
+    (cellContextMenu)="onCellContext($event)" (keydown)="handleKeyboardEvent($event)">
   </ag-grid-angular>
 
 </div>
