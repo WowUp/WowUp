@@ -229,6 +229,7 @@
       "DOWNLOAD_COUNT": "{count, plural, one{Un download} other{{textCount} downloads}} su {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Non è stato trovato alcun asset per scaricare {message}.\n\nÈ necessario ci sia un file zip valido nella release affinché che WowUp possa scaricarlo.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Non è stato trovato alcun asset per scaricare {message}.\n\nÈ necessario ci sia un file zip valido che termini in '-classic' nella release affinché WowUp possa scaricarlo.",
         "FAILED_TO_CONNECT": "Impossibile connettersi all'API, per favore riprovare più tardi.",
         "INSTALL_FAILED": "Qualcosa è andato storto nell'installazione dell'addon, per favore riprovare.\n\nSe questo messaggio continua ad apparire puoi chiederci aiuto su Discord, nel canale #wowup-support.",

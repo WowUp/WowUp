@@ -6,12 +6,12 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http
 import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
 import {
   AssetMissingError,
+  BurningCrusadeAssetMissingError,
   ClassicAssetMissingError,
   GitHubError,
   GitHubFetchReleasesError,
   GitHubFetchRepositoryError,
   GitHubLimitError,
-  NoReleaseFoundError,
   SourceRemovedAddonError,
 } from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
@@ -88,19 +88,19 @@ export class GitHubAddonProvider extends AddonProvider {
 
     try {
       const results = await this.getReleases(repoPath);
-      const latestRelease = this.getLatestRelease(results);
-      if (!latestRelease) {
-        console.log("latestRelease results", results);
-        throw new NoReleaseFoundError(addonUri.toString());
-      }
+      // const latestRelease = this.getLatestRelease(results);
+      // if (!latestRelease) {
+      //   console.log("latestRelease results", results);
+      //   throw new NoReleaseFoundError(addonUri.toString());
+      // }
 
-      const asset = this.getValidAsset(latestRelease, installation.clientType);
-      console.log("latestRelease", latestRelease);
-      if (asset == null) {
-        if (
-          [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta].includes(installation.clientType)
-        ) {
+      const result = this.getLatestValidAsset(results, installation.clientType, installation.defaultAddonChannelType);
+      console.log("result", result);
+      if (!result) {
+        if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(installation.clientType)) {
           throw new ClassicAssetMissingError(addonUri.toString());
+        } else if ([WowClientType.ClassicBeta].includes(installation.clientType)) {
+          throw new BurningCrusadeAssetMissingError(addonUri.toString());
         } else {
           throw new AssetMissingError(addonUri.toString());
         }
@@ -113,12 +113,22 @@ export class GitHubAddonProvider extends AddonProvider {
 
       const potentialAddon: AddonSearchResult = {
         author: author,
-        downloadCount: asset.download_count,
+        downloadCount: result.asset.download_count,
         externalId: this.createExternalId(addonUri),
         externalUrl: repository.html_url,
         name: repository.name,
         providerName: this.name,
         thumbnailUrl: authorImageUrl,
+        files: [
+          {
+            channelType: result.release.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
+            downloadUrl: "",
+            folders: [],
+            gameVersion: "",
+            releaseDate: new Date(result.release.published_at),
+            version: result.asset.name,
+          },
+        ],
       };
 
       return potentialAddon;
@@ -192,6 +202,27 @@ export class GitHubAddonProvider extends AddonProvider {
 
   public isValidAddonId(addonId: string): boolean {
     return addonId.indexOf("/") !== -1;
+  }
+
+  private getLatestValidAsset(
+    releases: GitHubRelease[],
+    clientType: WowClientType,
+    channel: AddonChannelType
+  ): { asset: GitHubAsset; release: GitHubRelease } | undefined {
+    let sortedReleases = _.filter(releases, (r) => !r.draft);
+    sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
+
+    for (const release of sortedReleases) {
+      const validAsset = this.getValidAsset(release, clientType);
+      if (validAsset) {
+        return {
+          asset: validAsset,
+          release: release,
+        };
+      }
+    }
+
+    return undefined;
   }
 
   private getLatestRelease(releases: GitHubRelease[]): GitHubRelease {

@@ -12,6 +12,8 @@ export class ErrorContainer extends CustomError {
 
 export class ClassicAssetMissingError extends CustomError {}
 
+export class BurningCrusadeAssetMissingError extends CustomError {}
+
 export class AssetMissingError extends CustomError {}
 
 export class NoReleaseFoundError extends CustomError {}
