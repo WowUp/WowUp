@@ -220,16 +220,18 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isValidClientType(clientType: WowClientType, asset: GitHubAsset): boolean {
     const isClassic = this.isClassicAsset(asset);
+    const isBurningCrusade = this.isBurningCrusadeAsset(asset);
 
     switch (clientType) {
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
-        return !isClassic;
+        return !isClassic && !isBurningCrusade;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return isClassic;
+      case WowClientType.ClassicBeta:
+        return isBurningCrusade;
       default:
         return false;
     }
@@ -237,6 +239,10 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isClassicAsset(asset: GitHubAsset): boolean {
     return asset.name.toLowerCase().endsWith("-classic.zip");
+  }
+
+  private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
+    return asset.name.toLowerCase().endsWith("-bc.zip");
   }
 
   private getAddonName(addonId: string): string {
