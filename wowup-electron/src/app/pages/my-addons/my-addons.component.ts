@@ -800,7 +800,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    this.gridApi.deselectAll();
+    this.gridApi?.deselectAll();
   }
 
   private async lazyLoad(): Promise<void> {
