@@ -132,9 +132,6 @@ export class TukUiAddonProvider extends AddonProvider {
   public async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
     const searchResults = await this.searchAddons(query, installation.clientType);
 
-    // const addons = await this.getAllAddons(installation.clientType);
-    // const canonQuery = query.toLowerCase();
-    // let similarAddons = _.filter(addons, (addon) => addon.name.toLowerCase().indexOf(canonQuery) !== -1);
     const similarAddons = _.orderBy(searchResults, ["downloads"]);
 
     return await this.mapAddonsToSearchResults(similarAddons);
@@ -180,46 +177,72 @@ export class TukUiAddonProvider extends AddonProvider {
     addonFolders: AddonFolder[]
   ): Promise<void> {
     const allAddons = await this.getAllAddons(installation.clientType);
-    for (const addonFolder of addonFolders) {
+
+    // Keep track of addons already matched to prevent duplicate folders being collapsed
+    const matches: TukUiAddon[] = [];
+
+    // Sort folders to prioritize ones with a toc id
+    let sortedAddonFolders = _.orderBy(addonFolders, ["toc.tukUiProjectId"], ["desc"]);
+    sortedAddonFolders = _.filter(sortedAddonFolders, (folder) => folder.toc.loadOnDemand !== "1");
+
+    for (const addonFolder of sortedAddonFolders) {
       let tukUiAddon: TukUiAddon;
       if (addonFolder.toc?.tukUiProjectId) {
         tukUiAddon = _.find(allAddons, (addon) => addon.id.toString() === addonFolder.toc.tukUiProjectId);
       } else {
         const results = await this.searchAddons(addonFolder.toc.title, installation.clientType);
         tukUiAddon = _.first(results);
+
+        // If we got a fuzzy name match, ensure it's not already added to prevent hiding addons
+        if (tukUiAddon && _.findIndex(matches, (match) => match.id.toString() === tukUiAddon.id.toString()) !== -1) {
+          console.warn(`Overlapping addon: ${addonFolder.toc.title} => ${tukUiAddon.name}`);
+          continue;
+        }
       }
 
-      if (tukUiAddon) {
-        addonFolder.matchingAddon = {
-          autoUpdateEnabled: false,
-          channelType: addonChannelType,
-          clientType: installation.clientType,
-          id: uuidv4(),
-          isIgnored: false,
-          name: tukUiAddon.name,
-          author: tukUiAddon.author,
-          downloadUrl: tukUiAddon.url,
-          externalId: tukUiAddon.id.toString(),
-          externalUrl: tukUiAddon.web_url,
-          gameVersion: getGameVersion(tukUiAddon.patch),
-          installedAt: addonFolder.fileStats.birthtime,
-          installedFolders: addonFolder.name,
-          installedFolderList: [addonFolder.name],
-          installedVersion: addonFolder.toc.version,
-          latestVersion: tukUiAddon.version,
-          providerName: this.name,
-          thumbnailUrl: tukUiAddon.screenshot_url,
-          updatedAt: new Date(),
-          summary: tukUiAddon.small_desc,
-          downloadCount: Number.parseFloat(tukUiAddon.downloads),
-          screenshotUrls: [tukUiAddon.screenshot_url],
-          releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
-          isLoadOnDemand: false,
-          latestChangelog: await this.formatChangelog(tukUiAddon),
-          externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
-          installationId: installation.id,
-        };
+      if (!tukUiAddon) {
+        continue;
       }
+
+      matches.push({ ...tukUiAddon });
+
+      const installedFolders = addonFolder.toc.tukUiProjectFolders
+        ? addonFolder.toc.tukUiProjectFolders
+        : tukUiAddon.name;
+
+      const installedFolderList = addonFolder.toc.tukUiProjectFolders
+        ? addonFolder.toc.tukUiProjectFolders.split(",").map((f) => f.trim())
+        : [tukUiAddon.name];
+
+      addonFolder.matchingAddon = {
+        autoUpdateEnabled: false,
+        channelType: addonChannelType,
+        clientType: installation.clientType,
+        id: uuidv4(),
+        isIgnored: false,
+        name: tukUiAddon.name,
+        author: tukUiAddon.author,
+        downloadUrl: tukUiAddon.url,
+        externalId: tukUiAddon.id.toString(),
+        externalUrl: tukUiAddon.web_url,
+        gameVersion: getGameVersion(tukUiAddon.patch),
+        installedAt: addonFolder.fileStats.birthtime,
+        installedFolders: installedFolders,
+        installedFolderList: installedFolderList,
+        installedVersion: addonFolder.toc.version,
+        latestVersion: tukUiAddon.version,
+        providerName: this.name,
+        thumbnailUrl: tukUiAddon.screenshot_url,
+        updatedAt: new Date(),
+        summary: tukUiAddon.small_desc,
+        downloadCount: Number.parseFloat(tukUiAddon.downloads),
+        screenshotUrls: [tukUiAddon.screenshot_url],
+        releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
+        isLoadOnDemand: false,
+        latestChangelog: await this.formatChangelog(tukUiAddon),
+        externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+        installationId: installation.id,
+      };
     }
   }
 
