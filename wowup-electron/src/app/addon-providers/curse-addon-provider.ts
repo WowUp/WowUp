@@ -325,10 +325,6 @@ export class CurseAddonProvider extends AddonProvider {
     return response;
   }
 
-  private sendRequest<T>(action: () => Promise<T>): Promise<T> {
-    return action.call(this);
-  }
-
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     if (!addonIds.length) {
       return {

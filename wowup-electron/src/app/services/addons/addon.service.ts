@@ -1054,6 +1054,7 @@ export class AddonService {
         addon.summary = result.summary;
         addon.thumbnailUrl = result.thumbnailUrl;
         addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
+        addon.warningType = undefined;
 
         // If the release ID hasn't changed we don't really need to update the whole record
         if (!!latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
