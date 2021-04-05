@@ -753,7 +753,7 @@ export class AddonService {
   }
 
   private async backupOriginalDirectories(addon: Addon) {
-    const installedFolders = addon.installedFolderList;
+    const installedFolders = addon.installedFolderList ?? [];
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
@@ -877,7 +877,7 @@ export class AddonService {
     console.log(`[RemoveAddon] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name}`);
 
     if (removeDirectories) {
-      const installedDirectories = addon.installedFolderList;
+      const installedDirectories = addon.installedFolderList ?? [];
       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
       const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
@@ -932,7 +932,7 @@ export class AddonService {
     }
 
     // Only sync non-ignored addons
-    const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
+    // const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
 
     return addons;
   }
@@ -1475,7 +1475,7 @@ export class AddonService {
       return;
     }
 
-    addon.installedFolderList = addon.installedFolderList;
+    addon.installedFolderList = addon.installedFolders?.split(",") ?? [];
     this.saveAddon(addon);
   }
 
@@ -1570,6 +1570,7 @@ export class AddonService {
       latestChangelog: latestFile.changelog,
       latestChangelogVersion: latestFile.version,
       installationId: installation.id,
+      installedFolderList: [],
     };
   }
 
