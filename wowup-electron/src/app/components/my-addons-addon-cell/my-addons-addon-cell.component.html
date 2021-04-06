@@ -5,12 +5,7 @@
     </div>
     <div class="version-container">
       <div class="title-container">
-        <a *ngIf="listItem.addon.providerName !== unknownProviderName" class="addon-title hover-text-2"
-          (click)="viewDetails()" [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
-          listItem.addon.name
-          }}</a>
-        <a *ngIf="listItem.addon.providerName === unknownProviderName" class="addon-title hover-text-2"
-          (click)="viewDetails()" [matTooltip]="'PAGES.MY_ADDONS.UNKNOWN_ADDON_INFO_TOOLTIP' | translate"
+        <a class="addon-title hover-text-2" (click)="viewDetails()"
           [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
           listItem.addon.name
           }}</a>
@@ -47,7 +42,7 @@
             svgIcon="fas:exclamation-triangle">
           </mat-icon>
         </div>
-        <div *ngIf="hasWarning()" class="mr-2">
+        <div *ngIf="hasWarning() === true" class="mr-2">
           <mat-icon class="auto-update-icon text-warning" [matTooltip]="getWarningText()"
             svgIcon="fas:exclamation-triangle">
           </mat-icon>
@@ -55,6 +50,14 @@
         <div *ngIf="hasIgnoreReason() === true" class="mr-2">
           <mat-icon class="auto-update-icon" [matTooltip]="getIgnoreTooltipKey() | translate" [style.color]="'#ff9800'"
             [svgIcon]="getIgnoreIcon()">
+          </mat-icon>
+        </div>
+        <!-- If no warning and not ignored for some specific reason, default to this -->
+        <div
+          *ngIf="listItem.isLoadOnDemand === false && hasIgnoreReason() === false && hasWarning() === false && listItem.addon.providerName === unknownProviderName"
+          class="mr-2">
+          <mat-icon class="auto-update-icon" [matTooltip]="'PAGES.MY_ADDONS.UNKNOWN_ADDON_INFO_TOOLTIP' | translate"
+            [matTooltipClass]="['text-center']" [style.color]="'#ff9800'" svgIcon="fas:exclamation-triangle">
           </mat-icon>
         </div>
         {{ listItem.addon.installedVersion }}
