@@ -37,6 +37,7 @@ import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { DateTooltipCellComponent } from "../../components/date-tooltip-cell/date-tooltip-cell.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
@@ -221,6 +222,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       myAddonStatus: MyAddonStatusColumnComponent,
       contextHeader: TableContextHeaderCellComponent,
       wrapTextCell: CellWrapTextComponent,
+      dateTooltipCell: DateTooltipCellComponent,
     };
 
     this.columnDefs = this.createColumns();
@@ -1093,8 +1095,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "installedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER"),
-        valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.installedAt),
         ...baseColumn,
+        cellRenderer: "dateTooltipCell",
       },
       {
         field: "latestVersion",
@@ -1106,8 +1108,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "releasedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
-        valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.releasedAt),
         ...baseColumn,
+        cellRenderer: "dateTooltipCell",
       },
       {
         field: "gameVersion",

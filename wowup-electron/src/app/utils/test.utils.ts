@@ -1,10 +1,14 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 
 export function testHttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+}
+
+export function getStandardTestImports() {
+  return [HttpClientModule, createTranslateModule()];
 }
 
 export function createTranslateModule() {
