@@ -2,7 +2,13 @@
   "ChangeLogs": [
     {
       "Version": "2.2.0-beta.21",
-      "changes": ["Fix an issue from switching to the addon folder array"]
+      "changes": [
+        "Chinese locale updates (CyanoHao)",
+        "Fix an issue with select all with the table on Mac",
+        "Hovering over Released At or Updated At on My Addons tab will show the full date again",
+        "Selecting all on other tabs will no longer select all text on the About tab",
+        "Moved the Unknown provider tooltip to an icon"
+      ]
     },
     {
       "Version": "2.2.0-beta.20",
