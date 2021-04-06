@@ -38,7 +38,7 @@ export class AboutComponent implements OnDestroy {
     this._subscriptions.push(tabIndexSub);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._subscriptions.forEach((subscription) => subscription.unsubscribe());
     this._subscriptions = [];
   }

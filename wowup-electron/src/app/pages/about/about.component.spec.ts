@@ -8,6 +8,8 @@ import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { SessionService } from "../../services/session/session.service";
+import { BehaviorSubject } from "rxjs";
 
 describe("AboutComponent", () => {
   let component: AboutComponent;
@@ -16,6 +18,7 @@ describe("AboutComponent", () => {
   let wowUpService: WowUpService;
   let electronServiceSpy: any;
   let wowUpServiceSpy: any;
+  let sessionService: SessionService;
 
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
@@ -23,6 +26,10 @@ describe("AboutComponent", () => {
     });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [], {
       getVersionNumber: () => Promise.resolve("2.0.0"),
+    });
+
+    sessionService = jasmine.createSpyObj("SessionService", [], {
+      selectedHomeTab$: new BehaviorSubject(1),
     });
 
     await TestBed.configureTestingModule({
@@ -49,6 +56,7 @@ describe("AboutComponent", () => {
           providers: [
             { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: SessionService, useValue: sessionService },
           ],
         },
       })
