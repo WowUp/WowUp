@@ -77,7 +77,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private readonly _operationErrorSrc = new Subject<Error>();
 
-  private subscriptions: Subscription[] = [];
+  private _subscriptions: Subscription[] = [];
   private isSelectedTab = false;
   private _lazyLoaded = false;
   private _isRefreshing = false;
@@ -208,7 +208,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.filterAddons();
     });
 
-    this.subscriptions.push(
+    this._subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
@@ -229,7 +229,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    this.subscriptions.push(
+    this._subscriptions.push(
       this.operationError$.subscribe({
         next: () => {
           this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
@@ -258,7 +258,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   public handleKeyboardEvent(event: KeyboardEvent): void {
@@ -366,7 +366,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // See: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
   public selectAllRows(event: KeyboardEvent): boolean {
-    if (!event.ctrlKey || event.code !== "KeyA") {
+    if (!(event.ctrlKey || event.metaKey) || event.code !== "KeyA") {
       return false;
     }
 
@@ -837,7 +837,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
-    this.subscriptions.push(selectedInstallationSub);
+    this._subscriptions.push(selectedInstallationSub);
   }
 
   private async updateAllWithSpinner(...installations: WowInstallation[]): Promise<void> {

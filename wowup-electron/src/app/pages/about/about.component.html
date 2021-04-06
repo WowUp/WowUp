@@ -33,7 +33,7 @@
       <ul class="change-log-list">
         <li class="changelog bg-secondary-4 border-primary" *ngFor="let cl of changeLogs">
           <div class="version  mat-subheading-2">{{ cl.Version }}</div>
-          <pre *ngIf="cl.Description" class="description  selectable">{{ cl.Description }}</pre>
+          <pre *ngIf="cl.Description" class="description selectable">{{ cl.Description }}</pre>
           <pre *ngIf="cl.changes" class="description selectable">{{ formatChanges(cl) }}</pre>
         </li>
       </ul>
