@@ -209,6 +209,11 @@ export class AddonService {
   public async getCategoryPage(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
     const providers = this.getEnabledAddonProviders();
 
+    this._analyticsService.trackAction("browse-category", {
+      clientType: getEnumName(WowClientType, installation.clientType),
+      category: getEnumName(AddonCategory, category),
+    });
+
     const resultSet: AddonSearchResult[][] = [];
     for (const provider of providers) {
       try {
@@ -942,6 +947,10 @@ export class AddonService {
     if (!addonProvider) {
       throw new Error(`No addon provider found for protocol ${protocol}`);
     }
+
+    this._analyticsService.trackAction("addon-protocol-search", {
+      protocol,
+    });
 
     return await addonProvider.searchProtocol(protocol);
   }
