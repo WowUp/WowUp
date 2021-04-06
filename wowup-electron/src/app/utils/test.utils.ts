@@ -7,7 +7,7 @@ export function testHttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
-export function getStandardTestImports() {
+export function getStandardTestImports(): any[] {
   return [HttpClientModule, createTranslateModule()];
 }
 

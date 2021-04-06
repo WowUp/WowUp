@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.21",
+      "changes": ["Fix an issue from switching to the addon folder array"]
+    },
+    {
       "Version": "2.2.0-beta.20",
       "changes": ["Fix an issue from switching to the addon folder array"]
     },
