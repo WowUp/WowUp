@@ -34,6 +34,7 @@ import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
 import { InterfaceFormatPipe } from "../../pipes/interface-format.pipe";
+import { NgxDatePipe } from "../../pipes/ngx-date.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { SharedModule } from "../../shared.module";
 import { AboutComponent } from "../about/about.component";
@@ -55,6 +56,7 @@ import { HomeComponent } from "./home.component";
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,
     InterfaceFormatPipe,
+    NgxDatePipe,
     GetAddonListItemFilePropPipe,
     RelativeDurationPipe,
     TelemetryDialogComponent,
@@ -93,6 +95,6 @@ import { HomeComponent } from "./home.component";
       TableContextHeaderCellComponent,
     ]),
   ],
-  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe, RelativeDurationPipe],
+  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe, RelativeDurationPipe, NgxDatePipe],
 })
 export class HomeModule {}

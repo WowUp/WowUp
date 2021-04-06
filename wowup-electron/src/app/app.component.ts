@@ -10,8 +10,8 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { from, interval, of, Subscription } from "rxjs";
-import { catchError, delay, filter, first, map, switchMap, tap } from "rxjs/operators";
+import { from, of } from "rxjs";
+import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
 import * as _ from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
