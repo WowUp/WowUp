@@ -5,9 +5,10 @@ import { WarcraftServiceImpl } from "./warcraft.service.impl";
 
 const WOW_RETAIL_NAME = "World of Warcraft.app";
 const WOW_RETAIL_PTR_NAME = "World of Warcraft Test.app";
+const WOW_RETAIL_BETA_NAME = "World of Warcraft Beta.app";
 const WOW_CLASSIC_NAME = "World of Warcraft Classic.app";
 const WOW_CLASSIC_PTR_NAME = "World of Warcraft Classic Test.app";
-const WOW_RETAIL_BETA_NAME = "World of Warcraft Beta.app";
+const WOW_CLASSIC_BETA_NAME = "World of Warcraft Classic Beta.app";
 
 const WOW_APP_NAMES = [
   WOW_RETAIL_NAME,
@@ -15,6 +16,7 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_NAME,
   WOW_CLASSIC_PTR_NAME,
   WOW_RETAIL_BETA_NAME,
+  WOW_CLASSIC_BETA_NAME
 ];
 
 const BLIZZARD_AGENT_PATH = "/Users/Shared/Battle.net/Agent";
@@ -52,6 +54,8 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
         return WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
         return WOW_RETAIL_BETA_NAME;
+      case WowClientType.ClassicBeta:
+        return WOW_CLASSIC_BETA_NAME;
       default:
         return "";
     }
@@ -69,6 +73,8 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
         return WowClientType.ClassicPtr;
       case WOW_RETAIL_BETA_NAME:
         return WowClientType.Beta;
+      case WOW_CLASSIC_BETA_NAME:
+        return WowClientType.ClassicBeta;
       default:
         return WowClientType.None;
     }

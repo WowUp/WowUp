@@ -28,6 +28,7 @@ const CLIENT_RETAIL_PTR_FOLDER = "_ptr_";
 const CLIENT_CLASSIC_FOLDER = "_classic_";
 const CLIENT_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 const CLIENT_BETA_FOLDER = "_beta_";
+const CLIENT_CLASSIC_BETA_FOLDER = "_classic_beta_";
 const ADDON_FOLDER_NAME = "AddOns";
 const INTERFACE_FOLDER_NAME = "Interface";
 
@@ -190,23 +191,23 @@ export class WarcraftService {
     }
   }
 
-  public getClientRelativePath(clientType: WowClientType, folderPath: string): string {
-    const clientFolderName = this.getClientFolderName(clientType);
-    const clientFolderIdx = folderPath.indexOf(clientFolderName);
-    const relativePath = clientFolderIdx === -1 ? folderPath : folderPath.substring(0, clientFolderIdx);
+  // public getClientRelativePath(clientType: WowClientType, folderPath: string): string {
+  //   const clientFolderName = this.getClientFolderName(clientType);
+  //   const clientFolderIdx = folderPath.indexOf(clientFolderName);
+  //   const relativePath = clientFolderIdx === -1 ? folderPath : folderPath.substring(0, clientFolderIdx);
 
-    return path.normalize(relativePath);
-  }
+  //   return path.normalize(relativePath);
+  // }
 
-  private async isClientFolder(clientType: WowClientType, folderPath: string) {
-    const clientFolderName = this.getClientFolderName(clientType);
-    const relativePath = this.getClientRelativePath(clientType, folderPath);
+  // private async isClientFolder(clientType: WowClientType, folderPath: string) {
+  //   const clientFolderName = this.getClientFolderName(clientType);
+  //   const relativePath = this.getClientRelativePath(clientType, folderPath);
 
-    const executableName = this.getExecutableName(clientType);
-    const executablePath = path.join(relativePath, clientFolderName, executableName);
+  //   const executableName = this.getExecutableName(clientType);
+  //   const executablePath = path.join(relativePath, clientFolderName, executableName);
 
-    return await this._fileService.pathExists(executablePath);
-  }
+  //   return await this._fileService.pathExists(executablePath);
+  // }
 
   public async getBlizzardAgentPath() {
     const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
@@ -236,6 +237,8 @@ export class WarcraftService {
         return CLIENT_CLASSIC_PTR_FOLDER;
       case WowClientType.Beta:
         return CLIENT_BETA_FOLDER;
+      case WowClientType.ClassicBeta:
+        return CLIENT_CLASSIC_BETA_FOLDER;
       default:
         return "";
     }
@@ -314,6 +317,8 @@ export class WarcraftService {
         return WowClientType.ClassicPtr;
       case CLIENT_BETA_FOLDER:
         return WowClientType.Beta;
+      case CLIENT_CLASSIC_BETA_FOLDER:
+        return WowClientType.ClassicBeta;
       default:
         return WowClientType.Retail;
     }

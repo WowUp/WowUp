@@ -37,6 +37,7 @@ import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { DateTooltipCellComponent } from "../../components/date-tooltip-cell/date-tooltip-cell.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
@@ -72,16 +73,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("updateAllContextMenuTrigger", { static: false })
   public updateAllContextMenu: MatMenuTrigger;
 
-  @HostListener("window:keydown", ["$event"])
-  public handleKeyboardEvent(event: KeyboardEvent): void {
-    if (this.selectAllRows(event)) {
-      return;
-    }
-  }
+  // @HostListener("window:keydown", ["$event"])
 
   private readonly _operationErrorSrc = new Subject<Error>();
 
-  private subscriptions: Subscription[] = [];
+  private _subscriptions: Subscription[] = [];
   private isSelectedTab = false;
   private _lazyLoaded = false;
   private _isRefreshing = false;
@@ -212,7 +208,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.filterAddons();
     });
 
-    this.subscriptions.push(
+    this._subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
@@ -226,13 +222,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       myAddonStatus: MyAddonStatusColumnComponent,
       contextHeader: TableContextHeaderCellComponent,
       wrapTextCell: CellWrapTextComponent,
+      dateTooltipCell: DateTooltipCellComponent,
     };
 
     this.columnDefs = this.createColumns();
   }
 
   public ngOnInit(): void {
-    this.subscriptions.push(
+    this._subscriptions.push(
       this.operationError$.subscribe({
         next: () => {
           this._snackbarService.showErrorSnackbar("PAGES.MY_ADDONS.ERROR_SNACKBAR");
@@ -261,7 +258,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy(): void {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public handleKeyboardEvent(event: KeyboardEvent): void {
+    if (this.selectAllRows(event)) {
+      return;
+    }
   }
 
   public onSortChanged(evt: SortChangedEvent): void {
@@ -363,7 +366,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // See: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
   public selectAllRows(event: KeyboardEvent): boolean {
-    if (!event.ctrlKey || event.code !== "KeyA") {
+    if (!(event.ctrlKey || event.metaKey) || event.code !== "KeyA") {
       return false;
     }
 
@@ -799,7 +802,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    this.gridApi.deselectAll();
+    this.gridApi?.deselectAll();
   }
 
   private async lazyLoad(): Promise<void> {
@@ -834,7 +837,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
-    this.subscriptions.push(selectedInstallationSub);
+    this._subscriptions.push(selectedInstallationSub);
   }
 
   private async updateAllWithSpinner(...installations: WowInstallation[]): Promise<void> {
@@ -1092,8 +1095,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "installedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER"),
-        valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.installedAt),
         ...baseColumn,
+        cellRenderer: "dateTooltipCell",
       },
       {
         field: "latestVersion",
@@ -1105,8 +1108,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "releasedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
-        valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.releasedAt),
         ...baseColumn,
+        cellRenderer: "dateTooltipCell",
       },
       {
         field: "gameVersion",

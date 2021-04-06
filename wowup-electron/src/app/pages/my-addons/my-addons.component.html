@@ -76,7 +76,7 @@
     [overlayNoRowsTemplate]="overlayNoRowsTemplate" (gridReady)="onGridReady($event)"
     (rowDoubleClicked)="onRowDoubleClicked($event)" (rowClicked)="onRowClicked($event)"
     (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
-    (cellContextMenu)="onCellContext($event)">
+    (cellContextMenu)="onCellContext($event)" (keydown)="handleKeyboardEvent($event)">
   </ag-grid-angular>
 
 </div>
@@ -170,7 +170,7 @@
       </mat-radio-group>
     </mat-menu>
     <mat-menu #addonFolders="matMenu" class="addon-context-menu bg-secondary-4">
-      <div *ngFor="let folder of addonUtils.getFolderList(listItem.addon)">
+      <div *ngFor="let folder of listItem.addon.installedFolderList">
         <button mat-menu-item (click)="onShowFolder(listItem.addon, folder)">{{folder}}</button>
       </div>
     </mat-menu>

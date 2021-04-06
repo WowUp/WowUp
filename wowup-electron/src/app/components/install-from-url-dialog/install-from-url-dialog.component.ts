@@ -10,7 +10,13 @@ import { TranslateService } from "@ngx-translate/core";
 import { roundDownloadCount, shortenDownloadCount } from "../../utils/number.utils";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { NO_SEARCH_RESULTS_ERROR } from "../../../common/constants";
-import { AssetMissingError, ClassicAssetMissingError, GitHubLimitError, NoReleaseFoundError } from "../../errors";
+import {
+  AssetMissingError,
+  BurningCrusadeAssetMissingError,
+  ClassicAssetMissingError,
+  GitHubLimitError,
+  NoReleaseFoundError,
+} from "../../errors";
 
 interface DownloadCounts {
   count: number;
@@ -141,6 +147,10 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_SEARCH_RESULTS");
       } else if (err instanceof ClassicAssetMissingError) {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.CLASSIC_ASSET_NOT_FOUND", {
+          message: err.message,
+        });
+      } else if (err instanceof BurningCrusadeAssetMissingError) {
+        message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.BURNING_CRUSADE_ASSET_NOT_FOUND", {
           message: err.message,
         });
       } else if (err instanceof AssetMissingError) {

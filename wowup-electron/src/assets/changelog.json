@@ -1,6 +1,33 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.20",
+      "changes": ["Fix an issue from switching to the addon folder array"]
+    },
+    {
+      "Version": "2.2.0-beta.19",
+      "changes": [
+        "Install by URL now supports GitHub -bc releases",
+        "Fix an issue causing some addons to get stuck in a warning state",
+        "Fix an issue preventing select all outside of the My Addons table",
+        "Fix an error when trying to deselect the table before it was ready",
+        "Add new version display for Install By URL dialog",
+        "Add new logic for detecting overlapping TukUI addons due to fuzzy name search"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.18",
+      "changes": ["Use the Hub dev api for improved TBC support", "Add some new support for TBC beta releases"]
+    },
+    {
+      "Version": "2.2.0-beta.17",
+      "changes": [
+        "German locale updates (Glow)",
+        "Pull in TBC beta installation support changes (CyanoHao)",
+        "Fix a layout issue for BBCode parsing"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.16",
       "changes": [
         "German locale updates (Glow/maestrohdude)",

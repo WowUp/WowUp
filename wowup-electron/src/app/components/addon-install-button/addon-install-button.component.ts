@@ -95,6 +95,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
       );
     } catch (e) {
       console.error("onInstallUpdateClick failed", e);
+      console.error(this.addonSearchResult);
       this.disableButton = false;
     }
   }

@@ -132,6 +132,7 @@
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "Classic",
+      "CLASSICBETA": "Classic Beta",
       "CLASSICPTR": "Classic PTR",
       "RETAIL": "Retail",
       "RETAILPTR": "Retail PTR"
@@ -228,6 +229,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, one{Download} other{Downloads}} auf {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Es wurde kein Asset zum Herunterladen von {message} gefunden.\n\nEine gültige Zip-Datei mit der Endung '-classic' muss in dem Release enthalten sein, damit WowUp diese herunterladen kann.",
         "FAILED_TO_CONNECT": "Keine Verbindung mit der API möglich, warte ein wenig und versuche es erneut.",
         "INSTALL_FAILED": "Beim Versuch das Addon zu installieren ist etwas schief gelaufen, bitte versuche es erneut.\n\nWenn diese Nachricht weiterhin erscheint, kannst Du auf unserem Discord im Kanal #wowup-support nach Hilfe fragen.",

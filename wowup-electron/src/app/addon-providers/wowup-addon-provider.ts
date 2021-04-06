@@ -345,6 +345,8 @@ export class WowUpAddonProvider extends AddonProvider {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
         return WowGameType.Classic;
+      case WowClientType.ClassicBeta:
+        return WowGameType.BurningCrusade;
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:

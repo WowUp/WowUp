@@ -69,13 +69,14 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   public get wowLogoImage(): string {
     switch (this.installation.clientType) {
       case WowClientType.Beta:
-        return "/assets/images/wow-classic-tbc-logo.png";
+      case WowClientType.ClassicBeta:
+        return "assets/images/wow-classic-tbc-logo.png";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-        return "/assets/images/wow-classic-logo.png";
+        return "assets/images/wow-classic-logo.png";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
-        return "/assets/images/wow-retail-logo.png";
+        return "assets/images/wow-retail-logo.png";
       default:
         return "";
     }

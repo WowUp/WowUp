@@ -28,6 +28,7 @@ import { WowClientOptionsComponent } from "../../components/wow-client-options/w
 import { AddonThumbnailComponent } from "../../components/addon-thumbnail/addon-thumbnail.component";
 import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
 import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
+import { DateTooltipCellComponent } from "../../components/date-tooltip-cell/date-tooltip-cell.component";
 import { DirectiveModule } from "../../directive.module";
 import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
@@ -76,6 +77,7 @@ import { HomeComponent } from "./home.component";
     CenteredSnackbarComponent,
     TableContextHeaderCellComponent,
     CellWrapTextComponent,
+    DateTooltipCellComponent,
     AddonThumbnailComponent,
   ],
   imports: [

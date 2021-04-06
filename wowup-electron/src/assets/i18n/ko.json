@@ -132,6 +132,7 @@
     "CLIENT_TYPES": {
       "BETA": "베타",
       "CLASSIC": "클래식",
+      "CLASSICBETA": "클래식 베타",
       "CLASSICPTR": "클래식 PTR",
       "RETAIL": "리테일",
       "RETAILPTR": "리테일 PTR"
@@ -228,6 +229,7 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
         "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wowup-support 채널에서 도움을 요청해보세요.",

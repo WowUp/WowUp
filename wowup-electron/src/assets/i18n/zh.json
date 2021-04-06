@@ -132,6 +132,7 @@
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "经典怀旧服",
+      "CLASSICBETA": "经典怀旧服 Beta",
       "CLASSICPTR": "经典怀旧服 PTR",
       "RETAIL": "正式服",
       "RETAILPTR": "正式服 PTR"
@@ -228,6 +229,7 @@
       "DOWNLOAD_COUNT": "在 {provider} 上有 {textCount} 次下载",
       "ERROR": {
         "ASSET_NOT_FOUND": "未找到可下载的附件 {message}。\n\n要通过 WowUp 下载插件，发布页面（Releases）上需要有效的 zip 文件。",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "未找到可下载的附件 {message}。\n\n要通过 WowUp 下载插件，发布页面（Releases）上需要文件名以 “-classic” 结尾的有效的 zip 文件。",
         "FAILED_TO_CONNECT": "无法连接 API，请稍后重试。",
         "INSTALL_FAILED": "安装插件时出现了一些错误，请重试。\n\n如果一直出现此消息，可以加入 Discord #wowup-support 频道寻求帮助（英语）。",

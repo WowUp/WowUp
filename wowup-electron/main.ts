@@ -67,6 +67,7 @@ const startedAt = Date.now();
 const argv = minimist(process.argv.slice(1), {
   boolean: ["serve", "hidden"],
 }) as AppOptions;
+log.info("ARGV", argv);
 const isPortable = !!process.env.PORTABLE_EXECUTABLE_DIR;
 const USER_AGENT = getUserAgent();
 log.info("USER_AGENT", USER_AGENT);
@@ -180,7 +181,7 @@ app.on("child-process-gone", (e, details) => {
 if (platform.isMac) {
   app.on("open-url", (evt, url) => {
     log.info(`Open url recieved ${url}`);
-    
+
     // If we did get a custom protocol notify the app
     if (isProtocol(url)) {
       evt.preventDefault();

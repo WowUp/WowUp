@@ -597,7 +597,7 @@ export class AddonService {
       const unzippedDirectoryNames = await this._fileService.listDirectories(unzippedDirectory);
       _.remove(unzippedDirectoryNames, (dirName) => _.includes(IGNORED_FOLDER_NAMES, dirName));
 
-      const existingDirectoryNames = this.getInstalledFolders(addon);
+      const existingDirectoryNames = addon.installedFolderList;
       const addedDirectoryNames = _.difference(unzippedDirectoryNames, existingDirectoryNames);
       const removedDirectoryNames = _.difference(existingDirectoryNames, unzippedDirectoryNames);
 
@@ -691,7 +691,7 @@ export class AddonService {
     const clientMap = {};
     const installations = this._warcraftInstallationService.getWowInstallations();
     for (const installation of installations) {
-      const clientTypeName = this._warcraftService.getClientFolderName(installation.clientType);
+      const clientTypeName = getEnumName(WowClientType, installation.clientType);
       const addonFolders = await this._warcraftService.listAddons(installation, this._wowUpService.useSymlinkMode);
 
       const curseMap = {};
@@ -753,7 +753,7 @@ export class AddonService {
   }
 
   private async backupOriginalDirectories(addon: Addon) {
-    const installedFolders = this.getInstalledFolders(addon);
+    const installedFolders = addon.installedFolderList ?? [];
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
@@ -870,27 +870,14 @@ export class AddonService {
   public getFullInstallPath(addon: Addon): string {
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
-    const installedFolders = this.getInstalledFolders(addon);
-    return path.join(addonFolderPath, _.first(installedFolders));
-  }
-
-  public getInstalledFolders(addon: Addon): string[] {
-    const folders = addon?.installedFolders || "";
-    if (!folders) {
-      return [];
-    }
-
-    return folders
-      .split(",")
-      .map((f) => f.trim())
-      .filter((f) => !!f);
+    return path.join(addonFolderPath, _.first(addon.installedFolderList));
   }
 
   public async removeAddon(addon: Addon, removeDependencies = false, removeDirectories = true): Promise<void> {
     console.log(`[RemoveAddon] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name}`);
 
     if (removeDirectories) {
-      const installedDirectories = addon.installedFolders?.split(",") ?? [];
+      const installedDirectories = addon.installedFolderList ?? [];
       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
       const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
@@ -945,7 +932,7 @@ export class AddonService {
     }
 
     // Only sync non-ignored addons
-    const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
+    // const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
 
     return addons;
   }
@@ -1054,6 +1041,7 @@ export class AddonService {
         addon.summary = result.summary;
         addon.thumbnailUrl = result.thumbnailUrl;
         addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
+        addon.warningType = undefined;
 
         // If the release ID hasn't changed we don't really need to update the whole record
         if (!!latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
@@ -1517,9 +1505,8 @@ export class AddonService {
   public getTocPaths(addon: Addon): string[] {
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
-    const installedFolders = this.getInstalledFolders(addon);
 
-    return _.map(installedFolders, (installedFolder) =>
+    return _.map(addon.installedFolderList, (installedFolder) =>
       path.join(addonFolderPath, installedFolder, `${installedFolder}.toc`)
     );
   }
@@ -1583,6 +1570,7 @@ export class AddonService {
       latestChangelog: latestFile.changelog,
       latestChangelogVersion: latestFile.version,
       installationId: installation.id,
+      installedFolderList: [],
     };
   }
 

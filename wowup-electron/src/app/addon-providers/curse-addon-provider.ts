@@ -325,10 +325,6 @@ export class CurseAddonProvider extends AddonProvider {
     return response;
   }
 
-  private sendRequest<T>(action: () => Promise<T>): Promise<T> {
-    return action.call(this);
-  }
-
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     if (!addonIds.length) {
       return {
@@ -685,6 +681,7 @@ export class CurseAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
         return "wow_classic";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
@@ -697,7 +694,7 @@ export class CurseAddonProvider extends AddonProvider {
   private getValidClientTypes(gameVersionFlavor: string): WowClientType[] {
     switch (gameVersionFlavor) {
       case "wow_classic":
-        return [WowClientType.Classic, WowClientType.ClassicPtr];
+        return [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta];
       default:
         return [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta];
     }
