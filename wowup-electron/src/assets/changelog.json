@@ -1,6 +1,17 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.22",
+      "changes": [
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Localize date hover tooltip",
+        "Localize Unknown provider name on My Addons tab",
+        "Fix an issue with GitHub addons and markdown in the changelog",
+        "Add a new warning for a specific Curseforge API bug"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.21",
       "changes": [
         "Chinese locale updates (CyanoHao)",
