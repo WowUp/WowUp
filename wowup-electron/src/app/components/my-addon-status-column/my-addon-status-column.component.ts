@@ -111,6 +111,8 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
     switch (this.warningType) {
       case AddonWarningType.MissingOnProvider:
         return "COMMON.ADDON_WARNING.MISSING_ON_PROVIDER_DESCRIPTION";
+      case AddonWarningType.NoProviderFiles:
+        return "COMMON.ADDON_WARNING.NO_PROVIDER_FILES_DESCRIPTION";
       default:
         return "COMMON.ADDON_WARNING.GENERIC_DESCRIPTION";
     }
@@ -121,7 +123,9 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
     this._dialog.open(AlertDialogComponent, {
       data: {
         title: this._translateService.instant("COMMON.ADDON_STATE.WARNING"),
-        message: this._translateService.instant(descriptionKey),
+        message: this._translateService.instant(descriptionKey, {
+          providerName: this.listItem.providerName,
+        }),
       },
     });
   }

@@ -126,8 +126,10 @@
     "ADDON_WARNING": {
       "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
       "GENERIC_TOOLTIP": "We have detected an issue with this addon",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider"
+      "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} did not return the addon when we requested it.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} is not returning this addon as expected",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, but did not have a list of current files to download.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} for this addon did not return any files"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",

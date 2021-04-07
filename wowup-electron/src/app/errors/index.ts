@@ -1,12 +1,15 @@
 export * from "./install-error";
+import { AddonWarningType } from "../../common/wowup/models";
 import { CustomError } from "ts-custom-error";
 
 export class ErrorContainer extends CustomError {
   public readonly innerError?: Error;
+  public readonly warningType?: AddonWarningType;
 
-  public constructor(innerError?: Error, message?: string) {
+  public constructor(innerError?: Error, message?: string, warningType?: AddonWarningType) {
     super(message);
     this.innerError = innerError;
+    this.warningType = warningType;
   }
 }
 
@@ -62,9 +65,9 @@ export class AddonSyncError extends CustomError {
 
 export class GenericProviderError extends ErrorContainer {}
 
-export class SourceRemovedAddonError extends ErrorContainer {
+export class SourceRemovedAddonError extends GenericProviderError {
   public constructor(public addonId: string, innerError: Error) {
-    super(innerError);
+    super(innerError, '', AddonWarningType.MissingOnProvider);
   }
 }
 

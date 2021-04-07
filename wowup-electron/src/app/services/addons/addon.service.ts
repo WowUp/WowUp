@@ -20,17 +20,11 @@ import {
 } from "../../../common/constants";
 import { Addon, AddonExternalId } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import {
-  AddonCategory,
-  AddonChannelType,
-  AddonDependency,
-  AddonDependencyType,
-  AddonWarningType,
-} from "../../../common/wowup/models";
+import { AddonCategory, AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
 import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
-import { AddonScanError, AddonSyncError, GenericProviderError, SourceRemovedAddonError } from "../../errors";
+import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
@@ -1093,8 +1087,8 @@ export class AddonService {
         addon = _.find(addons, (a) => a.externalId === addonId);
       }
 
-      if (error instanceof SourceRemovedAddonError) {
-        addon.warningType = AddonWarningType.MissingOnProvider;
+      if (error instanceof GenericProviderError) {
+        addon.warningType = error.warningType;
         this._addonStorage.set(addon.id, addon);
       }
 

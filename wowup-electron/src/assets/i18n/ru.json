@@ -127,7 +127,9 @@
       "GENERIC_DESCRIPTION": "Мы обнаружили неполадку с этой модификацией. Мы больше не способны обновлять эту модификацию или показывать её детали.",
       "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация вероятно была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником"
+      "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, but did not have a list of current files to download.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
+      "NO_PROVIDER_FILES_TOOLTIP": "The provider for this addon did not return any files"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",

@@ -13,7 +13,7 @@ import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-resu
 import { CurseAddonCategory, CurseGameVersionFlavor } from "../../common/curse/curse-models";
 import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonCategory, AddonChannelType, AddonDependencyType } from "../../common/wowup/models";
+import { AddonCategory, AddonChannelType, AddonDependencyType, AddonWarningType } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
 import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
@@ -195,7 +195,16 @@ export class CurseAddonProvider extends AddonProvider {
 
       scanResult.searchResult = addonResults.find((addonResult) => addonResult.id === scanResult.exactMatch.id);
       if (!scanResult.searchResult) {
-        continue;
+        // If a folder did not have a match, and the folder has a CF toc id, try that
+        // This can happen if the CF api is having issues returning latestFiles
+        console.warn(`scan result missing for addon: ${addonFolder.name}`);
+        const searchResult = await this.getByIdBase(scanResult.exactMatch.id.toString()).toPromise();
+        if (searchResult) {
+          addonResults.push(searchResult);
+          scanResult.searchResult = searchResult;
+        } else {
+          continue;
+        }
       }
 
       try {
@@ -730,20 +739,20 @@ export class CurseAddonProvider extends AddonProvider {
     let latestVersion = latestFiles.find((lf) => this.getChannelType(lf.releaseType) <= channelType);
 
     // If there were no releases that met the channel type restrictions
-    if (!latestVersion) {
+    if (!latestVersion && latestFiles.length > 0) {
       latestVersion = _.first(latestFiles);
       channelType = this.getWowUpChannel(latestVersion.releaseType);
       console.warn("falling back to default channel");
     }
 
-    return {
+    const addon: Addon = {
       id: uuidv4(),
       author: authors,
       name: scanResult.searchResult.name,
       channelType,
       autoUpdateEnabled: false,
       clientType: installation.clientType,
-      downloadUrl: latestVersion.downloadUrl,
+      downloadUrl: latestVersion?.downloadUrl ?? scanResult.exactMatch.file.downloadUrl,
       externalUrl: scanResult.searchResult.websiteUrl,
       externalId: scanResult.searchResult.id.toString(),
       gameVersion: gameVersion,
@@ -753,19 +762,25 @@ export class CurseAddonProvider extends AddonProvider {
       installedVersion: currentVersion.displayName,
       installedExternalReleaseId: currentVersion.id.toString(),
       isIgnored: false,
-      latestVersion: latestVersion.displayName,
+      latestVersion: latestVersion?.displayName ?? scanResult.exactMatch.file.displayName,
       providerName: this.name,
       thumbnailUrl: this.getThumbnailUrl(scanResult.searchResult),
       screenshotUrls: this.getScreenshotUrls(scanResult.searchResult),
       downloadCount: scanResult.searchResult.downloadCount,
       summary: scanResult.searchResult.summary,
-      releasedAt: new Date(latestVersion.fileDate),
+      releasedAt: new Date(latestVersion?.fileDate ?? scanResult.exactMatch.file.fileDate),
       isLoadOnDemand: false,
-      externalLatestReleaseId: latestVersion.id.toString(),
+      externalLatestReleaseId: (latestVersion?.id ?? scanResult.exactMatch.file.id).toString(),
       updatedAt: scanResult.addonFolder.fileStats.birthtime,
       externalChannel: getEnumName(AddonChannelType, channelType),
       installationId: installation.id,
     };
+
+    if (!latestFiles.length) {
+      addon.warningType = AddonWarningType.NoProviderFiles;
+    }
+
+    return addon;
   }
 
   private mapAddonCategory(category: AddonCategory): CurseAddonCategory[] {

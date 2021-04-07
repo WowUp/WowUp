@@ -127,7 +127,9 @@
       "GENERIC_DESCRIPTION": "WowUp 检测到此插件存在问题，无法更新此插件或提供详细信息。",
       "GENERIC_TOOLTIP": "检测到此插件存在问题",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 无法更新此插件或提供详细信息。",
-      "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除"
+      "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, but did not have a list of current files to download.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
+      "NO_PROVIDER_FILES_TOOLTIP": "The provider for this addon did not return any files"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",

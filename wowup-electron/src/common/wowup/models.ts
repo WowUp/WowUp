@@ -13,6 +13,7 @@ export enum AddonDependencyType {
 
 export enum AddonWarningType {
   MissingOnProvider = "missing-on-provider",
+  NoProviderFiles = "no-provider-files",
 }
 
 export enum AddonCategory {

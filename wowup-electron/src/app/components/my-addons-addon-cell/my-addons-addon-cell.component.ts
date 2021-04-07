@@ -112,11 +112,17 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
       return "";
     }
 
+    const toolTipParams = {
+      providerName: this.listItem.providerName,
+    };
+
     switch (this.warningType) {
       case AddonWarningType.MissingOnProvider:
-        return this._translateService.instant("COMMON.ADDON_WARNING.MISSING_ON_PROVIDER_TOOLTIP");
+        return this._translateService.instant("COMMON.ADDON_WARNING.MISSING_ON_PROVIDER_TOOLTIP", toolTipParams);
+      case AddonWarningType.NoProviderFiles:
+        return this._translateService.instant("COMMON.ADDON_WARNING.NO_PROVIDER_FILES_TOOLTIP", toolTipParams);
       default:
-        return this._translateService.instant("COMMON.ADDON_WARNING.GENERIC_TOOLTIP");
+        return this._translateService.instant("COMMON.ADDON_WARNING.GENERIC_TOOLTIP", toolTipParams);
     }
   }
 }
