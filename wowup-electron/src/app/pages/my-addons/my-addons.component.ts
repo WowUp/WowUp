@@ -332,9 +332,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Get the translated value of the provider name (unknown)
   // If the key is returned there's nothing to translate return the normal name
-  public getProviderName(viewModel: AddonViewModel): Observable<string> {
-    const key = `APP.PROVIDERS.${viewModel.addon.providerName.toUpperCase()}`;
-    return this._translateService.get(key).pipe(map((tx) => (tx === key ? viewModel.addon.providerName : tx)));
+  public getProviderName(providerName: string): string {
+    const key = `APP.PROVIDERS.${providerName.toUpperCase()}`;
+    const tx = this._translateService.instant(key);
+    return tx === key ? providerName : tx;
   }
 
   public isLatestUpdateColumnVisible(): boolean {
@@ -1131,6 +1132,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "providerName",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER"),
+        valueFormatter: (row) => this.getProviderName(row.data.providerName),
         ...baseColumn,
       },
       {

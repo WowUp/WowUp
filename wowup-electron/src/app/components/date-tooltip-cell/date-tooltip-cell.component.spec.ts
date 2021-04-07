@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { NgxDatePipe } from "../../pipes/ngx-date.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { getStandardTestImports } from "../../utils/test.utils";
 
@@ -11,9 +12,9 @@ describe("DateTooltipCellComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DateTooltipCellComponent, RelativeDurationPipe],
+      declarations: [DateTooltipCellComponent, RelativeDurationPipe, NgxDatePipe],
       imports: [...getStandardTestImports()],
-      providers: [RelativeDurationPipe],
+      providers: [RelativeDurationPipe, NgxDatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });
