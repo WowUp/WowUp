@@ -23,6 +23,7 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { WowInstallation } from "../models/wowup/wow-installation";
+import { convertMarkdown } from "../utils/markdown.utlils";
 
 interface GitHubRepoParts {
   repository: string;
@@ -179,7 +180,7 @@ export class GitHubAddonProvider extends AddonProvider {
       gameVersion: "",
       version: asset.name,
       releaseDate: new Date(asset.created_at),
-      changelog: latestRelease.body,
+      changelog: convertMarkdown(latestRelease.body),
     };
 
     const searchResult: AddonSearchResult = {
