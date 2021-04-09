@@ -1,6 +1,10 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.1.3",
+      "changes": ["Handle a change Townlong Yak made"]
+    },
+    {
       "Version": "2.1.2",
       "changes": ["Always backfill install folder list"]
     },
