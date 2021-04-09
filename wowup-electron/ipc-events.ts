@@ -69,7 +69,8 @@ import { Addon } from "./src/common/entities/addon";
 import { createTray, restoreWindow } from "./system-tray";
 import { addonStore } from "./stores";
 import { Transform } from "stream";
-import { reject } from "lodash";
+
+let USER_AGENT = "";
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -108,7 +109,9 @@ function handle(
   ipcMain.handle(channel, listener);
 }
 
-export function initializeIpcHandlers(window: BrowserWindow): void {
+export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
+  USER_AGENT = userAgent;
+
   handle(
     IPC_SHOW_DIRECTORY,
     async (evt, filePath: string): Promise<string> => {
@@ -421,6 +424,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
         url: arg.url,
         method: "GET",
         responseType: "stream",
+        headers: {
+          "User-Agent": USER_AGENT,
+        },
       });
 
       // const totalLength = headers["content-length"];
@@ -486,7 +492,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
               throw err;
             }
 
-            var filter = new Transform();
+            const filter = new Transform();
             filter._transform = function (chunk, encoding, cb) {
               cb(null, chunk);
             };
@@ -497,7 +503,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
             };
 
             // pump file contents
-            var writeStream = fs.createWriteStream(filePath);
+            const writeStream = fs.createWriteStream(filePath);
             readStream.pipe(filter).pipe(writeStream);
           });
         });
