@@ -217,7 +217,7 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
-  initializeIpcHandlers(win);
+  initializeIpcHandlers(win, USER_AGENT);
   initializeAppUpdater(win);
   initializeAppUpdateIpcHandlers(win);
 

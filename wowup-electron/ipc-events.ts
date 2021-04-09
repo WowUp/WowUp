@@ -64,6 +64,8 @@ import { createTray } from "./system-tray";
 import { createAppMenu } from "./app-menu";
 import { RendererChannels } from "./src/common/wowup";
 
+let USER_AGENT = "";
+
 function handle(
   channel: RendererChannels,
   listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
@@ -71,7 +73,9 @@ function handle(
   ipcMain.handle(channel, listener);
 }
 
-export function initializeIpcHandlers(window: BrowserWindow): void {
+export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
+  USER_AGENT = userAgent;
+
   handle(
     IPC_SHOW_DIRECTORY,
     async (evt, filePath: string): Promise<string> => {
@@ -353,6 +357,9 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
         url: arg.url,
         method: "GET",
         responseType: "stream",
+        headers: {
+          "User-Agent": USER_AGENT,
+        },
       });
 
       // const totalLength = headers["content-length"];
