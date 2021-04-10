@@ -1577,6 +1577,10 @@ export class AddonService {
     };
   }
 
+  private hasValidTocTitle(addonFolder: AddonFolder) {
+    return addonFolder.toc?.title && /[a-zA-Z]/g.test(addonFolder.toc.title);
+  }
+
   private createUnmatchedAddon(
     addonFolder: AddonFolder,
     installation: WowInstallation,
@@ -1586,7 +1590,7 @@ export class AddonService {
 
     return {
       id: uuidv4(),
-      name: addonFolder.toc?.title || addonFolder.name,
+      name: this.hasValidTocTitle(addonFolder) ? addonFolder.toc.title : addonFolder.name,
       thumbnailUrl: "",
       latestVersion: addonFolder.toc?.version || "",
       installedVersion: addonFolder.toc?.version || "",

@@ -56,6 +56,26 @@ export class TocService {
     };
   }
 
+  public stripColorCode(str: string): string {
+    if (str.indexOf("|c") === -1) {
+      return str;
+    }
+
+    const regex = /(\|c[a-z0-9]{8})|(\|r)/gi;
+
+    return str.replace(regex, "").trim();
+  }
+
+  public stripTextureCode(str: string): string {
+    if (str.indexOf("|T") === -1) {
+      return str;
+    }
+
+    const regex = /(\|T.*\|t)/g;
+
+    return str.replace(regex, "").trim();
+  }
+
   private getWebsite(tocText: string) {
     return this.getValue(TOC_WEBSITE, tocText) || this.getValue(TOC_X_WEBSITE, tocText);
   }
@@ -86,14 +106,11 @@ export class TocService {
   }
 
   private stripEncodedChars(value: string) {
-    let str = this.stripColorChars(value);
+    let str = this.stripColorCode(value);
+    str = this.stripTextureCode(str);
     str = this.stripNewLineChars(str);
 
     return str;
-  }
-
-  private stripColorChars(value: string) {
-    return value.replace(/\|[a-zA-Z0-9]{9}/g, "");
   }
 
   private stripNewLineChars(value: string) {
