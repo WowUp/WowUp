@@ -102,8 +102,6 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
   return _.filter(symlinkDirs, (symDir) => symDir.isDir);
 }
 
-let USER_AGENT = "";
-
 function handle(
   channel: RendererChannels,
   listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<void> | any
