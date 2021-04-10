@@ -1,4 +1,3 @@
-// import * as admZip from "adm-zip";
 import axios from "axios";
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell } from "electron";
 import * as log from "electron-log";
