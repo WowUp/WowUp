@@ -1,4 +1,4 @@
-export type CurseGameVersionFlavor = "wow_retail" | "wow_classic";
+export type CurseGameVersionFlavor = "wow_retail" | "wow_classic" | "wow_burning_crusade";
 
 // see https://addons-ecs.forgesvc.net/api/v2/category/section/1
 export enum CurseAddonCategory {

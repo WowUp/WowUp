@@ -690,8 +690,9 @@ export class CurseAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return "wow_classic";
+      case WowClientType.ClassicBeta:
+        return "wow_burning_crusade";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
