@@ -407,12 +407,15 @@ export class AddonService {
   }
 
   public async processAutoUpdates(): Promise<Addon[]> {
-    const autoUpdateAddons = this.getAutoUpdateEnabledAddons();
+    const autoUpdateAddons = this.getAutoUpdateEnabledAddons().filter((addon) => !!addon.installationId);
     const installationIdGroups = _.groupBy(autoUpdateAddons, (addon) => addon.installationId);
     const updatedAddons = [];
 
     for (const installationId in installationIdGroups) {
       const installation = this._warcraftInstallationService.getWowInstallation(installationId);
+      if (!installation) {
+        console.warn("No installation found:", installationId);
+      }
       try {
         const clientUpdates = await this.autoUpdateClient(installation, installationIdGroups[installationId]);
         updatedAddons.push(...clientUpdates);
@@ -1018,7 +1021,6 @@ export class AddonService {
   }
 
   private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
-    // console.debug(`syncProviderAddons ${getEnumName(WowClientType, clientType)} ${addonProvider.name}`);
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;
@@ -1384,9 +1386,11 @@ export class AddonService {
     const addons = [...this._addonStorage.getAll()];
 
     for (const addon of addons) {
-      // ignore legacy addons for now
       if (!addon.installationId) {
-        // console.debug(`Skipping legacy addon [${getEnumName(WowClientType, addon.clientType)}]: ${addon.name}`);
+        console.debug(
+          `Removing detached legacy addon [${getEnumName(WowClientType, addon.clientType)}]: ${addon.name}`
+        );
+        await this.removeAddon(addon, false, false);
         continue;
       }
 

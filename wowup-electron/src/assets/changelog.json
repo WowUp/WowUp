@@ -1,6 +1,16 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.24",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Add support for new TBC CurseForge flavor",
+        "Add better handling of textures in Toc files",
+        "Update many libraries"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.23",
       "changes": ["Add in user agent header when downloading files"]
     },

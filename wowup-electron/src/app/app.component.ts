@@ -49,6 +49,7 @@ import { InstallFromUrlDialogComponent } from "./components/install-from-url-dia
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
+import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 
 @Component({
   selector: "app-root",
@@ -91,9 +92,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _cdRef: ChangeDetectorRef,
     private _wowupAddonService: WowUpAddonService,
     private _snackbarService: SnackbarService,
+    private _warcraftInstallationService: WarcraftInstallationService,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
-  ) {}
+  ) {
+    this._warcraftInstallationService.wowInstallations$
+      .pipe(
+        first((installations) => installations.length > 0),
+        switchMap(() => from(this.initializeAutoUpdate()))
+      )
+      .subscribe();
+  }
 
   public ngOnInit(): void {
     const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
@@ -164,7 +173,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             this._analyticsService.trackStartup();
           }
         }),
-        switchMap(() => from(this.initializeAutoUpdate())),
         catchError((e) => {
           console.error(e);
           return of(undefined);
