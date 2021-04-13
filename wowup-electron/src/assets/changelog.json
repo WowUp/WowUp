@@ -1,6 +1,14 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.25",
+      "changes": [
+        "Chinese locale updates (CyanoHao)",
+        "Add the ability to update all clients independently of your selected client",
+        "Fix an issue with orphaned addons being left in the data store"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.24",
       "changes": [
         "German locale updates (Glow)",
