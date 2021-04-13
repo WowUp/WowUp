@@ -251,7 +251,7 @@ export class WarcraftInstallationService {
   }
 
   private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation> {
-    if (clientType === WowClientType.None) {
+    if ([WowClientType.None, WowClientType.ClassicBeta].includes(clientType)) {
       return undefined;
     }
 
