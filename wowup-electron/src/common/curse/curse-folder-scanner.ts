@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as log from "electron-log";
 import * as pLimit from "p-limit";
-import { CurseScanResult } from "./curse-scan-result";
+import { CurseFolderScanResult } from "./curse-folder-scan-result";
 import { readDirRecursive, readFile } from "../../../file.utils";
 
 const nativeAddon = require("../../../build/Release/addon.node");
@@ -56,22 +56,22 @@ export class CurseFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^\/]+)[\\\/]\1\.toc$/gim;
+    return /^([^/]+)[\\/]\1\.toc$/gim;
   }
 
   private get bindingsXmlRegex() {
-    return /^[^\/\\]+[\/\\]Bindings\.xml$/gim;
+    return /^[^/\\]+[/\\]Bindings\.xml$/gim;
   }
 
   private get bindingsXmlIncludesRegex() {
-    return /<(?:Include|Script)\s+file=[\""\""']((?:(?<!\.\.).)+)[\""\""']\s*\/>/gis;
+    return /<(?:Include|Script)\s+file=["']((?:(?<!\.\.).)+)["']\s*\/>/gis;
   }
 
   private get bindingsXmlCommentsRegex() {
     return /<!--.*?-->/gims;
   }
 
-  async scanFolder(folderPath: string): Promise<CurseScanResult> {
+  public async scanFolder(folderPath: string): Promise<CurseFolderScanResult> {
     const fileList = await readDirRecursive(folderPath);
     fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
     // log.debug("listAllFiles", folderPath, fileList.length);
@@ -91,7 +91,7 @@ export class CurseFolderScanner {
         }
       })
     );
-    
+
     let individualFingerprints = await Promise.all(tasks);
     individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
@@ -113,7 +113,7 @@ export class CurseFolderScanner {
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
 
-    for (let filePath of filePaths) {
+    for (const filePath of filePaths) {
       const input = filePath.toLowerCase().replace(parentDir.toLowerCase(), "");
 
       if (this.tocFileRegex.test(input)) {
@@ -124,7 +124,7 @@ export class CurseFolderScanner {
     }
 
     // log.debug("fileInfoList", fileInfoList.length);
-    for (let fileInfo of fileInfoList) {
+    for (const fileInfo of fileInfoList) {
       await this.processIncludeFile(matchingFileList, fileInfo);
     }
 
@@ -154,7 +154,7 @@ export class CurseFolderScanner {
     }
 
     const dirname = path.dirname(nativePath);
-    for (let include of inclusions) {
+    for (const include of inclusions) {
       if (this.hasInvalidPathChars(include)) {
         log.debug(`Invalid include file ${nativePath}`);
         break;

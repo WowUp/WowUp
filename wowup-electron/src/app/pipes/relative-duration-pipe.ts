@@ -10,9 +10,9 @@ const HOUR_SECONDS = 3600;
   name: "relativeDuration",
 })
 export class RelativeDurationPipe implements PipeTransform {
-  constructor(private _translate: TranslateService) {}
+  public constructor(private _translate: TranslateService) {}
 
-  transform(value: string): string {
+  public transform(value: string): string {
     if (!value) {
       return "";
     }

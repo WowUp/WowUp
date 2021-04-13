@@ -5,7 +5,7 @@
     </app-progress-spinner>
   </div>
 </div>
-<div *ngIf="appReady === true" class="page-container bg-secondary-3" [ngClass]="{ linux: electronService.isLinux }">
+<div *ngIf="appReady === true" class="page-container bg-secondary-2" [ngClass]="{ linux: electronService.isLinux }">
   <div class="tabs">
     <mat-tab-group mat-align-tabs="center" animationDuration="0ms" [backgroundColor]="'primary'"
       [disablePagination]="true" [(selectedIndex)]="selectedIndex"

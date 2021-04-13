@@ -15,6 +15,7 @@ import {
   IPC_LIST_ENTRIES,
   IPC_LIST_FILES_CHANNEL,
   IPC_READDIR,
+  IPC_READ_FILE_BUFFER_CHANNEL,
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
@@ -25,7 +26,7 @@ import { ElectronService } from "../electron/electron.service";
   providedIn: "root",
 })
 export class FileService {
-  constructor(private _electronService: ElectronService) {}
+  public constructor(private _electronService: ElectronService) {}
 
   public getAssetFilePath(fileName: string): Promise<string> {
     return this._electronService.invoke<string>(IPC_GET_ASSET_FILE_PATH, fileName);
@@ -54,6 +55,30 @@ export class FileService {
     return await this._electronService.invoke(IPC_DELETE_DIRECTORY_CHANNEL, sourcePath);
   }
 
+  public async removeAll(...sourcePaths: string[]): Promise<boolean> {
+    if (!Array.isArray(sourcePaths) || !sourcePaths.length) {
+      return false;
+    }
+
+    const results = await Promise.all(
+      sourcePaths.map((sp) => {
+        console.log(`[RemovePath]: ${sp}`);
+        return this._electronService.invoke(IPC_DELETE_DIRECTORY_CHANNEL, sp);
+      })
+    );
+
+    return results.every((r) => r === true);
+  }
+
+  public async removeAllSafe(...sourcePaths: string[]): Promise<boolean> {
+    try {
+      return await this.removeAll(...sourcePaths);
+    } catch (e) {
+      console.error(`Failed to remove all`, sourcePaths, e);
+      return false;
+    }
+  }
+
   /**
    * Copy a file or folder
    */
@@ -80,12 +105,16 @@ export class FileService {
     return await this._electronService.invoke(IPC_READ_FILE_CHANNEL, sourcePath);
   }
 
+  public async readFileBuffer(sourcePath: string): Promise<Buffer> {
+    return await this._electronService.invoke(IPC_READ_FILE_BUFFER_CHANNEL, sourcePath);
+  }
+
   public async writeFile(sourcePath: string, contents: string): Promise<string> {
     return await this._electronService.invoke(IPC_WRITE_FILE_CHANNEL, sourcePath, contents);
   }
 
-  public async listDirectories(sourcePath: string): Promise<string[]> {
-    return await this._electronService.invoke(IPC_LIST_DIRECTORIES_CHANNEL, sourcePath);
+  public async listDirectories(sourcePath: string, scanSymlinks = false): Promise<string[]> {
+    return await this._electronService.invoke(IPC_LIST_DIRECTORIES_CHANNEL, sourcePath, scanSymlinks);
   }
 
   public readdir(dirPath: string): Promise<string[]> {

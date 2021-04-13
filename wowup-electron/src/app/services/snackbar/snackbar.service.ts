@@ -9,13 +9,14 @@ import {
 export interface SnackbarConfig {
   timeout?: number;
   classes?: string[];
+  localeArgs?: any;
 }
 
 @Injectable({
   providedIn: "root",
 })
 export class SnackbarService {
-  constructor(private _translateService: TranslateService, private _snackBar: MatSnackBar) {}
+  public constructor(private _translateService: TranslateService, private _snackBar: MatSnackBar) {}
 
   public showSuccessSnackbar(localeKey: string, config?: SnackbarConfig): MatSnackBarRef<CenteredSnackbarComponent> {
     return this.showSnackbar(localeKey, {
@@ -32,7 +33,7 @@ export class SnackbarService {
   }
 
   public showSnackbar(localeKey: string, config?: SnackbarConfig): MatSnackBarRef<CenteredSnackbarComponent> {
-    const message = this._translateService.instant(localeKey);
+    const message = this._translateService.instant(localeKey, config?.localeArgs);
     const data: CenteredSnackbarComponentData = {
       message,
     };

@@ -1,8 +1,10 @@
 import { app, BrowserWindow, Menu, nativeImage, Tray } from "electron";
+import * as log from "electron-log";
 import * as path from "path";
+
 import * as platform from "./platform";
 import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "./src/common/constants";
-import { SystemTrayConfig } from "./src/common/wowup/system-tray-config";
+import { SystemTrayConfig } from "./src/common/wowup/models";
 
 let _trayRef: Tray;
 
@@ -14,12 +16,11 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   const trayIconPath = path.join(__dirname, "assets", trayIconFile);
   const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
-  _trayRef = new Tray(icon);
+  _trayRef = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([
     {
       label: app.name,
       type: "normal",
-      icon: icon,
       enabled: false,
     },
     {
@@ -53,14 +54,11 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   return true;
 }
 
-function restoreWindow(window: BrowserWindow) {
+export function restoreWindow(window: BrowserWindow): void {
   window?.show();
   window?.setSkipTaskbar(false);
 
   if (platform.isMac) {
-    app.dock.show();
+    app.dock.show().catch((e) => log.error(`Failed to show on Mac dock`, e));
   }
-  // } else {
-  //   window?.setSkipTaskbar(false);
-  // }
 }

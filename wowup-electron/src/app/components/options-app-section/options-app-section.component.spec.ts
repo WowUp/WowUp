@@ -38,6 +38,7 @@ describe("OptionsAppSectionComponent", () => {
       {
         getZoomFactor: Promise.resolve(1.0),
         onRendererEvent: () => undefined,
+        isDefaultProtocolClient: Promise.resolve(false),
       },
       {
         isWin: false,

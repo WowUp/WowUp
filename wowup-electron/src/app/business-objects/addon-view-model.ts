@@ -1,12 +1,10 @@
 import * as _ from "lodash";
-import { AddonDependencyType } from "../models/wowup/addon-dependency-type";
-import { Addon } from "../entities/addon";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../common/wowup/models";
+import { Addon } from "../../common/entities/addon";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
-import { AddonDependency } from "../models/wowup/addon-dependency";
 
 export class AddonViewModel {
   public addon: Addon;
@@ -21,8 +19,33 @@ export class AddonViewModel {
   public isLoadOnDemand = false;
   public hasThumbnail = false;
   public thumbnailLetter = "";
+  public showUpdate = false;
 
-  constructor(addon?: Addon) {
+  public get name(): string {
+    return this.addon?.name ?? "";
+  }
+
+  public get latestVersion(): string {
+    return this.addon?.latestVersion ?? "";
+  }
+
+  public get gameVersion(): string {
+    return this.addon?.gameVersion ?? "";
+  }
+
+  public get externalChannel(): string {
+    return this.addon?.externalChannel ?? "";
+  }
+
+  public get providerName(): string {
+    return this.addon?.providerName ?? "";
+  }
+
+  public get author(): string {
+    return this.addon?.author ?? "";
+  }
+
+  public constructor(addon?: Addon) {
     this.addon = addon;
     this.installedAt = addon.installedAt ? new Date(addon.installedAt).getTime() : 0;
     this.releasedAt = addon.releasedAt ? new Date(addon.releasedAt).getTime() : 0;

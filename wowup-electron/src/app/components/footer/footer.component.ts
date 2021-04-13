@@ -7,8 +7,9 @@ import { AppConfig } from "../../../environments/environment";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { from } from "rxjs";
+import { from, of } from "rxjs";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
+import { catchError, switchMap } from "rxjs/operators";
 
 @Component({
   selector: "app-footer",
@@ -24,7 +25,7 @@ export class FooterComponent implements OnInit {
   public updateIconTooltip = "APP.WOWUP_UPDATE.TOOLTIP";
   public versionNumber = from(this.wowUpService.getApplicationVersion());
 
-  constructor(
+  public constructor(
     private _dialog: MatDialog,
     private _translateService: TranslateService,
     private _zone: NgZone,
@@ -35,7 +36,7 @@ export class FooterComponent implements OnInit {
     private _electronService: ElectronService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.wowUpService.wowupUpdateCheck$.subscribe((updateCheckResult) => {
       console.debug("updateCheckResult", updateCheckResult);
       this.isWowUpUpdateAvailable = true;
@@ -48,7 +49,7 @@ export class FooterComponent implements OnInit {
       this._zone.run(() => {
         this.isWowUpUpdateDownloaded = true;
         this.updateIconTooltip = "APP.WOWUP_UPDATE.DOWNLOADED_TOOLTIP";
-        this.onClickUpdateWowup();
+        this.onClickUpdateWowup().catch((e) => console.error(e));
       });
     });
 
@@ -65,11 +66,11 @@ export class FooterComponent implements OnInit {
     });
 
     // Force the angular zone to pump for every progress update since its outside the zone
-    this.sessionService.statusText$.subscribe((text) => {
+    this.sessionService.statusText$.subscribe(() => {
       this._zone.run(() => {});
     });
 
-    this.sessionService.pageContextText$.subscribe((text) => {
+    this.sessionService.pageContextText$.subscribe(() => {
       this._zone.run(() => {});
     });
   }
@@ -100,20 +101,31 @@ export class FooterComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            return;
+          }
 
-      this._electronService.openExternal(
-        `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
-      );
-    });
+          return from(
+            this._electronService.openExternal(
+              `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
+            )
+          );
+        }),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
+        })
+      )
+      .subscribe();
 
     return;
   }
 
-  public async onClickUpdateWowup() {
+  public async onClickUpdateWowup(): Promise<void> {
     if (!this.isWowUpUpdateAvailable) {
       return;
     }
@@ -131,12 +143,21 @@ export class FooterComponent implements OnInit {
         },
       });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (!result) {
-          return;
-        }
-        this.wowUpService.installUpdate();
-      });
+      dialogRef
+        .afterClosed()
+        .pipe(
+          switchMap((result) => {
+            if (!result) {
+              return;
+            }
+            return from(this.wowUpService.installUpdate());
+          }),
+          catchError((e) => {
+            console.error(e);
+            return of(undefined);
+          })
+        )
+        .subscribe();
 
       return;
     }

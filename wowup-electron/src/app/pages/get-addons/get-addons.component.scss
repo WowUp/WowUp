@@ -5,6 +5,11 @@
   flex-direction: column;
 }
 
+.wu-ag-table {
+  width: 100%;
+  height: calc(100% - 72px);
+}
+
 .control-container {
   display: flex;
   flex-direction: row;
@@ -15,9 +20,22 @@
     flex-grow: 1;
   }
 
+  .center-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    h4 {
+      padding-top: 8px;
+    }
+  }
+
   .right-container {
     display: flex;
     flex-direction: row;
+    flex-grow: 1;
+    justify-content: flex-end;
 
     .search-container {
       padding-top: 1em;
@@ -51,7 +69,7 @@
 }
 
 .table-container {
-  height: calc(100% - 75px);
+  height: calc(100% - 72px);
   overflow: auto;
   overflow-x: hidden;
 

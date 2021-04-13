@@ -1,18 +1,28 @@
+// If you import a module but never use any of the imported values other than as TypeScript types,
+// the resulting javascript file will look as if you never imported the module at all.
+import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExternalOptions, Settings } from "electron";
+import { LoginItemSettings } from "electron/main";
+import { find } from "lodash";
+import * as minimist from "minimist";
+import { BehaviorSubject } from "rxjs";
+import { v4 as uuidv4 } from "uuid";
+
 import { Injectable } from "@angular/core";
+
 import {
   APP_UPDATE_CHECK_END,
   APP_UPDATE_CHECK_START,
   APP_UPDATE_DOWNLOADED,
   APP_UPDATE_START_DOWNLOAD,
   IPC_CLOSE_WINDOW,
+  IPC_CUSTOM_PROTOCOL_RECEIVED,
+  IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
   IPC_GET_ZOOM_FACTOR,
-  IPC_SET_LOGIN_ITEM_SETTINGS,
-  IPC_SET_ZOOM_FACTOR,
-  IPC_SET_ZOOM_LIMITS,
+  IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_MAXIMIZE_WINDOW,
   IPC_MINIMIZE_WINDOW,
   IPC_POWER_MONITOR_LOCK,
@@ -20,28 +30,27 @@ import {
   IPC_POWER_MONITOR_SUSPEND,
   IPC_POWER_MONITOR_UNLOCK,
   IPC_QUIT_APP,
+  IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_RESTART_APP,
+  IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_SET_LOGIN_ITEM_SETTINGS,
+  IPC_SET_ZOOM_FACTOR,
+  IPC_SET_ZOOM_LIMITS,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
   IPC_WINDOW_UNMAXIMIZED,
   ZOOM_FACTOR_KEY,
 } from "../../../common/constants";
-import * as minimist from "minimist";
-// If you import a module but never use any of the imported values other than as TypeScript types,
-// the resulting javascript file will look as if you never imported the module at all.
-import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExternalOptions, Settings } from "electron";
-import { BehaviorSubject } from "rxjs";
-import { v4 as uuidv4 } from "uuid";
 import { IpcRequest } from "../../../common/models/ipc-request";
 import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
-import { AppOptions } from "../../../common/wowup/app-options";
-import { ZoomDirection, ZOOM_SCALE } from "../../utils/zoom.utils";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { MainChannels, RendererChannels } from "../../../common/wowup";
-import { LoginItemSettings } from "electron/main";
+import { AppOptions } from "../../../common/wowup/models";
+import { isProtocol } from "../../utils/string.utils";
+import { ZOOM_SCALE, ZoomDirection } from "../../utils/zoom.utils";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
 
 @Injectable({
   providedIn: "root",
@@ -52,6 +61,7 @@ export class ElectronService {
   private readonly _ipcEventReceivedSrc = new BehaviorSubject("");
   private readonly _zoomFactorChangeSrc = new BehaviorSubject(1.0);
   private readonly _powerMonitorSrc = new BehaviorSubject("");
+  private readonly _customProtocolSrc = new BehaviorSubject("");
 
   private _appVersion = "";
 
@@ -60,6 +70,7 @@ export class ElectronService {
   public readonly ipcEventReceived$ = this._ipcEventReceivedSrc.asObservable();
   public readonly zoomFactor$ = this._zoomFactorChangeSrc.asObservable();
   public readonly powerMonitor$ = this._powerMonitorSrc.asObservable();
+  public readonly customProtocol$ = this._customProtocolSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -69,7 +80,11 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
-  constructor(private _preferenceStorageService: PreferenceStorageService) {
+  public get platform(): string {
+    return process.platform;
+  }
+
+  public constructor(private _preferenceStorageService: PreferenceStorageService) {
     // Conditional imports
     if (!this.isElectron) {
       return;
@@ -114,6 +129,11 @@ export class ElectronService {
 
     this.onRendererEvent(IPC_WINDOW_UNMAXIMIZED, () => {
       this._windowMaximizedSrc.next(false);
+    });
+
+    this.onRendererEvent(IPC_CUSTOM_PROTOCOL_RECEIVED, (evt, protocol: string) => {
+      console.debug(IPC_CUSTOM_PROTOCOL_RECEIVED, protocol);
+      this._customProtocolSrc.next(protocol);
     });
 
     this.onRendererEvent(IPC_POWER_MONITOR_LOCK, () => {
@@ -175,11 +195,34 @@ export class ElectronService {
     return this.invoke(IPC_SET_LOGIN_ITEM_SETTINGS, settings);
   }
 
+  public isDefaultProtocolClient(protocol: string): Promise<boolean> {
+    return this.invoke(IPC_IS_DEFAULT_PROTOCOL_CLIENT, protocol);
+  }
+
+  public setAsDefaultProtocolClient(protocol: string): Promise<boolean> {
+    return this.invoke(IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT, protocol);
+  }
+
+  public async removeAsDefaultProtocolClient(protocol: string): Promise<boolean> {
+    return this.invoke(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, protocol);
+  }
+
   public async getAppOptions(): Promise<AppOptions> {
+    // TODO check protocols here
     const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
-    return (<any>minimist(launchArgs.slice(1), {
+    const opts = (<any>minimist(launchArgs.slice(1), {
       boolean: ["hidden", "quit"],
+      string: ["install"],
     })) as AppOptions;
+
+    // Find the first protocol arg if any exist
+    const customProtocol = find(launchArgs, (arg) => isProtocol(arg));
+    if (customProtocol) {
+      // If we did get a custom protocol notify the app
+      this._customProtocolSrc.next(customProtocol);
+    }
+
+    return opts;
   }
 
   public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
@@ -227,18 +270,6 @@ export class ElectronService {
     return new Notification(title, options);
   }
 
-  public isHandlingProtocol(protocol: string): boolean {
-    return window.wowup.isDefaultProtocolClient(protocol);
-  }
-
-  public setHandleProtocol(protocol: string, enable: boolean): boolean {
-    if (enable) {
-      return window.wowup.setAsDefaultProtocolClient(protocol);
-    } else {
-      return window.wowup.removeAsDefaultProtocolClient(protocol);
-    }
-  }
-
   public showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
     return window.wowup.showOpenDialog(options);
   }
@@ -259,6 +290,10 @@ export class ElectronService {
     const response = await this.sendIPCMessage<ValueRequest<TIN>, ValueResponse<TOUT>>(channel, request);
 
     return response.value;
+  }
+
+  public focusWindow(): Promise<void> {
+    return this.invoke(IPC_FOCUS_WINDOW);
   }
 
   public sendIPCMessage<TIN extends IpcRequest, TOUT extends IpcResponse>(

@@ -1,4 +1,4 @@
-<div *ngIf="quitEnabled === false" class="app" [ngClass]="[wowUpService.currentTheme]">
+<div *ngIf="quitEnabled === false" class="app" [ngClass]="[wowUpService.currentTheme, electronService.platform]">
   <app-titlebar class="bg-primary"></app-titlebar>
   <div class="content">
     <router-outlet></router-outlet>

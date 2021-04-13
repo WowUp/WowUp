@@ -27,6 +27,7 @@
     <div class="addon-info">
       <h4>{{ addon.name }}</h4>
       <p>{{ addon.author }}</p>
+      <p>{{ addon.files?.length ? addon.files[0].version : '' }}</p>
       <p class="addon-download-count">
         {{ "DIALOGS.INSTALL_FROM_URL.DOWNLOAD_COUNT" | translate: getDownloadCountParams() }}
       </p>
@@ -51,8 +52,7 @@
   <button mat-button (click)="onClose()">
     {{ "DIALOGS.INSTALL_FROM_URL.CLOSE_BUTTON" | translate }}
   </button>
-  <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()" appUserActionTracker
-    category="InstallFromUrl" action="ImportUrl" [label]="query">
+  <button mat-flat-button color="primary" cdkFocusInitial (click)="onImportUrl()">
     {{ "DIALOGS.INSTALL_FROM_URL.IMPORT_BUTTON" | translate }}
   </button>
 </div>

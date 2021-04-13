@@ -1,16 +1,31 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ElectronService } from "../../services";
 
-import { AnimatedLogoComponent } from './animated-logo.component';
+import { AnimatedLogoComponent } from "./animated-logo.component";
 
-describe('AnimatedLogoComponent', () => {
+describe("AnimatedLogoComponent", () => {
   let component: AnimatedLogoComponent;
   let fixture: ComponentFixture<AnimatedLogoComponent>;
+  let electronServiceSpy: ElectronService;
 
   beforeEach(async () => {
+    electronServiceSpy = jasmine.createSpyObj(
+      "ElectronService",
+      {},
+      {
+        platform: "test-harness",
+      }
+    );
+
     await TestBed.configureTestingModule({
-      declarations: [ AnimatedLogoComponent ]
+      declarations: [AnimatedLogoComponent],
     })
-    .compileComponents();
+      .overrideComponent(AnimatedLogoComponent, {
+        set: {
+          providers: [{ provide: ElectronService, useValue: electronServiceSpy }],
+        },
+      })
+      .compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +34,7 @@ describe('AnimatedLogoComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

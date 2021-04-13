@@ -10,10 +10,30 @@ import {
   OpenDialogReturnValue,
 } from "electron";
 import * as log from "electron-log";
+import { join } from "path";
+import * as platform from "./platform";
 
 if (!process.isMainFrame) {
   throw new Error("Preload scripts should not be running in a subframe");
 }
+
+if (platform.isWin) {
+  const ca = require("win-ca");
+  const list: any[] = [];
+  ca({
+    async: true,
+    format: ca.der2.txt,
+    ondata: list,
+    onend: () => {
+      log.info("win-ca loaded");
+    },
+  });
+}
+
+const LOG_PATH = join(remote.app.getPath("userData"), "logs");
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
+  return join(LOG_PATH, variables.fileName);
+};
 
 function onRendererEvent(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) {
   ipcRenderer.on(channel, listener);
@@ -39,18 +59,6 @@ function rendererOn(channel: string, listener: (event: IpcRendererEvent, ...args
   ipcRenderer.on(channel, listener);
 }
 
-function isDefaultProtocolClient(protocol: string, path?: string, args?: string[]) {
-  return remote.app.isDefaultProtocolClient(protocol, path, args);
-}
-
-function setAsDefaultProtocolClient(protocol: string, path?: string, args?: string[]) {
-  return remote.app.setAsDefaultProtocolClient(protocol, path, args);
-}
-
-function removeAsDefaultProtocolClient(protocol: string, path?: string, args?: string[]) {
-  return remote.app.removeAsDefaultProtocolClient(protocol, path, args);
-}
-
 function openExternal(url: string, options?: OpenExternalOptions): Promise<void> {
   return shell.openExternal(url, options);
 }
@@ -71,12 +79,12 @@ function showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnVal
 }
 
 if (window.opener === null) {
-  console.log("NO OPENER");
   window.log = log;
   window.libs = {
     handlebars: require("handlebars"),
     autoLaunch: require("auto-launch"),
   };
+  window.platform = process.platform;
   window.wowup = {
     onRendererEvent,
     onceRendererEvent,
@@ -84,9 +92,6 @@ if (window.opener === null) {
     rendererInvoke,
     rendererOff,
     rendererOn,
-    isDefaultProtocolClient,
-    setAsDefaultProtocolClient,
-    removeAsDefaultProtocolClient,
     openExternal,
     showOpenDialog,
     openPath,

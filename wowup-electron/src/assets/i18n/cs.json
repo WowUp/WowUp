@@ -74,13 +74,44 @@
     }
   },
   "COMMON": {
+    "ADDON_CATEGORIES": {
+      "ACHIEVEMENTS": "Achievements",
+      "ACTION_BARS": "Action Bars",
+      "ALL_ADDONS": "All Addons",
+      "AUCTION_ECONOMY": "Auction & Economy",
+      "BAGS_INVENTORY": "Bags & Inventory",
+      "BOSS_ENCOUNTERS": "Boss Encounters",
+      "BUFFS_DEBUFFS": "Buffs & Debuffs",
+      "BUNDLES": "Bundles",
+      "CHAT_COMMUNICATION": "Chat & Communication",
+      "CLASS": "Class",
+      "COMBAT": "Combat",
+      "COMPANIONS": "Companions",
+      "DATA_EXPORT": "Data Export",
+      "DEVELOPMENT_TOOLS": "Development Tools",
+      "GUILD": "Guild",
+      "LIBRARIES": "Libraries",
+      "MAIL": "Mail",
+      "MAP_MINIMAP": "Map & Minimap",
+      "MISCELLANEOUS": "Miscellaneous",
+      "MISSIONS": "Missions",
+      "PLUGINS": "Plugins",
+      "PROFESSIONS": "Professions",
+      "PVP": "PVP",
+      "QUESTS_LEVELING": "Quests & Leveling",
+      "ROLEPLAY": "Roleplay",
+      "TOOLTIPS": "Tooltips",
+      "UNIT_FRAMES": "Unit Frames"
+    },
     "ADDON_STATE": {
       "IGNORED": "Ignorován",
       "INSTALL": "Instalovat",
+      "PENDING": "Pending",
       "UNINSTALL": "Odinstalovat",
       "UNKNOWN": "",
       "UPDATE": "Aktualizovat",
-      "UPTODATE": "Aktuální"
+      "UPTODATE": "Aktuální",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Zálohuji",
@@ -92,9 +123,18 @@
       "UNINSTALLING": "Odinstalovávaný",
       "UPDATING": "Aktualizuji..."
     },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, but did not have a list of current files to download.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
+      "NO_PROVIDER_FILES_TOOLTIP": "The provider for this addon did not return any files"
+    },
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "Classic",
+      "CLASSICBETA": "Classic Beta",
       "CLASSICPTR": "Classic PTR",
       "RETAIL": "Retail",
       "RETAILPTR": "Retail PTR"
@@ -131,8 +171,10 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "Nepodařilo se změnit poskytovatele {providerName} pro addon {addonName}",
       "GITHUB_LIMIT_ERROR": "Dosáhli jste limitu {max} požadavků na GitHub API.\nVyčkejte prosím do {reset} a pak to zkuste znovu.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
@@ -140,9 +182,11 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Nahrávám..."
     },
+    "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Žádné addony nebyly nalezeny"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -167,6 +211,18 @@
       "NEGATIVE_BUTTON": "Ne",
       "POSITIVE_BUTTON": "Ano"
     },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Addon is installed!",
+      "ADDON_INSTALLING": "Installing addon",
+      "CANCEL_BUTTON": "Close",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
+        "GENERIC": "Error fetching data for protocol: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+      },
+      "INSTALL_BUTTON": "Install",
+      "TITLE": "Install Addon From {providerName}"
+    },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "URL adresa addonu",
       "ADDON_URL_INPUT_PLACEHOLDER": "GitHub nebo WowInterface URL adresa",
@@ -175,10 +231,11 @@
       "DOWNLOAD_COUNT": "{textCount} stažení z {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor musí být k dispozici, aby ho WowUp mohl stáhnout.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor s názvem končícím s '-classic' musí být k dispozici, aby ho WowUp mohl stáhnout.",
         "FAILED_TO_CONNECT": "Nemohu se připojit k API. Chvíli počkejte a pak to zkuste znovu.",
         "INSTALL_FAILED": "Něco se nepovedlo při instalaci addonu, zkuste to prosím znovu.\n\nPokud se tato zpráva opakuje, kontaktujte nás na Discordu na kanále #wowup-support.",
-        "INVALID_URL": "Zadaná hodnota není platná URL adresa. Příklady platných URL adres jsou:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "INVALID_URL": "Zadaná hodnota není platná URL adresa. Příklady platných URL adres jsou:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Žádný addon na zadané URL adrese nebyl nalezen. Ujistěte se, že URL adresa odkazuje na správnou stránku.\n\nPři instalaci z GitHubu se ujistěte, že repozitář obsahuje release tag s zipem obsahujícím addon.",
         "NO_RELEASE_FOUND": "Nebyl nalezen žádný soubor ke stažení {message}.\n\nPlatný zip soubor musí být k dispozici, aby ho WowUp mohl stáhnout.",
         "NO_SEARCH_RESULTS": "Hledání neodpovídá žádný addon.",
@@ -189,6 +246,9 @@
       "INSTALL_SUCCESS_LABEL": "Úspěšně nainstalováno!",
       "SUPPORTED_SOURCES": "Podporuje WowInterface a GitHub",
       "TITLE": "URL adresa pro instalaci addonu"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Chcete nám pomoci dále vylepšovat WowUp posíláním anonymních dat o instalaci a případných chybách?",
@@ -205,9 +265,16 @@
       "WEBSITE_LINK_LABEL": "Navštivte naše webové stránky!"
     },
     "GET_ADDONS": {
+      "ADDON_CATEGORIES_BUTTON": "Categories",
+      "ADDON_CATEGORIES_MENU_TITLE": "Addon Categories",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Category: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Browse various categories",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "INSTALL_FROM_URL_BUTTON": "Instalovat z URL adresy",
+      "INSTALL_FROM_URL_TOOLTIP": "Install and addon from a URL",
       "REFRESH_BUTTON": "Aktualizovat",
+      "REFRESH_TOOLTIP": "Refresh addon results",
+      "RESET_CATEGORY_TOOLTIP": "Reset Category",
       "SEARCH_LABEL": "Hledat",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
@@ -301,6 +368,7 @@
         "DEPENDENCY_TITLE": "Odebrat závislosti addonu?",
         "TITLE": "Odebrat {count, plural, =1{addon} =2{addony} =3{addony} =4{addony} other{addonů}}?"
       },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
       "UPDATE_ALL_BUTTON": "Aktualizovat vše",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Zaktualizuje všechny addony vybraného clienta",
       "UPDATE_ALL_CONTEXT_MENU": {
@@ -319,11 +387,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Jazyk",
+        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
+        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Povolí různé systémové notifikace, např. po automatické aktualizaci addonů.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Povolit systémové notifikace",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Minimalizovat do lišty při uzavírání WowUp okna.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Minimalizovat do lišty při uzavírání WowUp okna.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimalizovat místo vypnutí",
+        "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquries",
+        "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
         "SCALE_DESCRIPTION": "Změní % přiblížení pro celou aplikaci.",
         "SCALE_LABEL": "% přiblížení",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Aby se změna jazyku projevila, je třeba restartovat WowUp.",
@@ -339,11 +411,17 @@
         "THEME_DESCRIPTION": "Přizpůsobte si barevné schéma",
         "THEME_LABEL": "Barevné schéma",
         "TITLE": "Aplikace",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Chcete restartovat aplikaci?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Vypnutím hardwarové akcelerace můžete vyřešit problémy s FPS či případné problémy s vykreslením WowUp. Změna tohoto nastavení vyžaduje restartování aplikace.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Vypnutí hardwarové akcelerace vyžaduje restartování aplikace.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Zaputí hardwarové akcelerace vyžaduje restartování aplikace.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "Zapnout hardwarovou akceleraci"
+        "USE_HARDWARE_ACCELERATION_LABEL": "Zapnout hardwarovou akceleraci",
+        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Uložit debugovací data",
@@ -361,8 +439,10 @@
         "DEBUG": "Debug aplikace"
       },
       "WOW": {
+        "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "Nově instalované addony budou automaticky označeny k automatické aktualizaci pomocí WowUp.",
         "AUTO_UPDATE_LABEL": "Automatické aktualizace",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Opravdu chcete vyčistit složku pro instalaci addonů v klientu {clientName}? Toto vymaže pouze informace o addonech, které má uložené WowUp.\n\nAddony nebudou vymazány.",
           "TITLE": "Vyčistit složku?"
@@ -371,9 +451,12 @@
         "CLIENT_TYPE_PATH_LABEL": "Cesta k {clientTypeName} klientu",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Výchozí kanál aktualizací addonů",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanál aktualizací addonů",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Vybrat",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Znovu vyhledat",
         "RESCAN_CLIENTS_LABEL": "Pokusí se znovu vyhledat všechny instalace hry World of Warcraft",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "World of Warcraft"
       }
     }

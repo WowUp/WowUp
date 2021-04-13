@@ -1,5 +1,5 @@
 import { FsStats } from "../../../common/models/ipc-events";
-import { Addon } from "../../entities/addon";
+import { Addon } from "../../../common/entities/addon";
 import { Toc } from "./toc";
 
 export interface AddonFolder {

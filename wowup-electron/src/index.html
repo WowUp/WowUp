@@ -15,7 +15,7 @@
 
 <body class="mat-typography" style="overflow: hidden">
   <app-root>
-    <div class="pre-load-container" style="
+    <div id="preload-container" style="
           width: 100%;
           height: 100vh;
           display: flex;
@@ -24,9 +24,16 @@
           justify-content: center;
           align-items: center;
         ">
-      <img class="logo" src="assets/wowup_logo_purple.png" style="width: 150px; " />
+      <img id="preload-logo" src="assets/wowup_logo_purple.png" style="width: 150px; " />
     </div>
   </app-root>
+  <script>
+    document.body.classList.add(window.platform)
+    if (window.platform === 'darwin') {
+      document.getElementById('preload-logo').style.borderRadius = '23px';
+    }
+
+  </script>
 </body>
 
 </html>

@@ -1,6 +1,238 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.24",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Add support for new TBC CurseForge flavor",
+        "Add better handling of textures in Toc files",
+        "Update many libraries"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.23",
+      "changes": ["Add in user agent header when downloading files"]
+    },
+    {
+      "Version": "2.2.0-beta.22",
+      "changes": [
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Localize date hover tooltip",
+        "Localize Unknown provider name on My Addons tab",
+        "Fix an issue with GitHub addons and markdown in the changelog",
+        "Add a new warning for a specific Curseforge API bug"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.21",
+      "changes": [
+        "Chinese locale updates (CyanoHao)",
+        "Spanish locale updates (SkollVargr)",
+        "Fix an issue with select all with the table on Mac",
+        "Hovering over Released At or Updated At on My Addons tab will show the full date again",
+        "Selecting all on other tabs will no longer select all text on the About tab",
+        "Moved the Unknown provider tooltip to an icon"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.20",
+      "changes": ["Fix an issue from switching to the addon folder array"]
+    },
+    {
+      "Version": "2.2.0-beta.19",
+      "changes": [
+        "Install by URL now supports GitHub -bc releases",
+        "Fix an issue causing some addons to get stuck in a warning state",
+        "Fix an issue preventing select all outside of the My Addons table",
+        "Fix an error when trying to deselect the table before it was ready",
+        "Add new version display for Install By URL dialog",
+        "Add new logic for detecting overlapping TukUI addons due to fuzzy name search"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.18",
+      "changes": ["Use the Hub dev api for improved TBC support", "Add some new support for TBC beta releases"]
+    },
+    {
+      "Version": "2.2.0-beta.17",
+      "changes": [
+        "German locale updates (Glow)",
+        "Pull in TBC beta installation support changes (CyanoHao)",
+        "Fix a layout issue for BBCode parsing"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.16",
+      "changes": [
+        "German locale updates (Glow/maestrohdude)",
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "Fix display of 'no addons' message in Get Addons",
+        "Add localization of the 'no addons' message in Get Addons and My Addons",
+        "Add the same logic for server side missing addons for CurseForge",
+        "Add support for TukUI categories in the category browser",
+        "Add a module to pull in custom windows ssl certs"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.15",
+      "changes": [
+        "Finally merge Strayge's PR",
+        "German locale updates (Glow/maestrohdude)",
+        "Russian locale updates (Medok)",
+        "Spanish locale updates (SkollVargr)",
+        "Chinese locale updates (CyanoHao)",
+        "Fix the Mac system bar to switch based on system theme",
+        "Fix ctrl + a support for My Addons",
+        "Fix a color issue on Get Addons tab context menu",
+        "Fix the hint text for selecting an WoW installation",
+        "Add first pass at category support (Strayge)",
+        "Add addon tooltip for unknown addons"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.14",
+      "changes": [
+        "Finally merge Noxis' PR",
+        "Add support for CurseForge download links in the app settings",
+        "Add UI for installing via a custom protocol",
+        "Add some more error feedback when installing/updating",
+        "Fix an issue with duplicated rows when removing/re-adding an addon",
+        "Fix an issue with unzipped file permissions on Mac",
+        "Fix an issue with renderer log file location on Mac",
+        "Fix an issue with addon changelogs sometimes having a white background"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.13",
+      "changes": [
+        "Fix an issue with the my addons filter clearing when cancelling a dialog",
+        "Fix an issue with Linux and the new wow installation handling",
+        "Improve the details dialog css"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.12",
+      "changes": [
+        "Fix an issue with WowInterface changelogs not handling BBCode",
+        "Fix an issue with changelog showing up as 'undefined'",
+        "Fix an issue with newly installed addons not showing up in my addons filter",
+        "Fix an issue when an addon has no releases in a the default channel",
+        "Fix alpha/beta display on get addons tab",
+        "Fix an issue with Update buttons getting out of sync when updating multiple addons",
+        "Add some fuzzy text matching for TukUI addon searching/matching",
+        "Add single row de-select to get addons tab",
+        "Tweak the details dialog header style"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.11",
+      "changes": [
+        "German locale updates (Glow)",
+        "Fix Latest Version column vertical alignment",
+        "Fix an issue with update button getting stuck in details dialog",
+        "Clicking a selected single row should now de-select it",
+        "Ctrl + Mouse Wheel should now zoom as it used to"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.10",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "Fix several grid related bugs",
+        "Fix an issue with selecting non retail WoW executables",
+        "Tweak some ui stuff",
+        "Add/improve some logging"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.9",
+      "changes": [
+        "German locale updates (Glow)",
+        "Chinese locale updates (CyanoHao)",
+        "My Addons tab should remember the sort direction again",
+        "Revert the color change",
+        "Add some padding to the sort header arrow",
+        "General grid ui tweaks",
+        "Fix an issue with the 'Update all clients' button not resetting the spinner text"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.8",
+      "changes": [
+        "German locale updates (Glow)",
+        "Russian locale updates (Medok)",
+        "Fix an issue with the update available snackbar (Linaori)",
+        "Fix an issue with migrations no longer happening",
+        "Change the dark colors to be like discord, to match the light theme",
+        "Migrations made smarter/faster",
+        "The My Addons tab will now use the new grid library"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.7",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Chinese locale updates (CyanoHao)",
+        "When clicking the auto update notification the app will now be focused",
+        "Add a new 'Remove' button to the addon details dialog",
+        "Using a new grid library for better performance",
+        "Fix an issue with the tab highlight not flexing properly in the details dialog",
+        "Fix some color issues with dialog buttons",
+        "Code cleanup",
+        "Update to Electron 12"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.6",
+      "changes": [
+        "German locale updates (Glow)",
+        "Add new logging for addon updating (Linaori)",
+        "Add support for Hub toc version display",
+        "Add new WoW installation handling"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.5",
+      "changes": [
+        "Spanish locale updates (SkollVargr)",
+        "German locale updates (Glow/maestrohdude)",
+        "Pull Hub addon names from their toc values to be more consistent",
+        "Handle removed addons from Hub"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.4",
+      "changes": [
+        "German locale updates (Glow/maestrohdude)",
+        "Add the ability to handle and mark addons deleted from WowInterface"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.3",
+      "changes": [
+        "German locale updates (Glow)",
+        "Spanish locale updates (SkollVargr)",
+        "Fix filtering for My Addons page",
+        "Add virtual rows to Get Addons page (faster loading)"
+      ]
+    },
+    {
+      "Version": "2.2.0-beta.2",
+      "changes": ["Rework sorting to be simpler in 'My Addons'", "Add optional symlink support"]
+    },
+    {
+      "Version": "2.2.0-beta.1",
+      "changes": [
+        "Rework sorting to be simpler in 'Get Addons'",
+        "Add better error reporting for 'Get Addons'",
+        "Update Angular/Electron"
+      ]
+    },
+    {
       "Version": "2.1.3",
       "changes": ["Handle a change Townlong Yak made"]
     },

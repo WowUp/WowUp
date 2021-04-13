@@ -2,17 +2,19 @@ import * as _ from "lodash";
 import { from, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
+import * as stringSimilarity from "string-similarity";
 
 import { ADDON_PROVIDER_TUKUI } from "../../common/constants";
-import { Addon } from "../entities/addon";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
+import { AddonCategory, AddonChannelType } from "../../common/wowup/models";
 import { TukUiAddon } from "../models/tukui/tukui-addon";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
+import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 
@@ -32,28 +34,82 @@ export class TukUiAddonProvider extends AddonProvider {
 
   public enabled = true;
 
-  constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+  public constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
     super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
-    const addons = await this.getAllAddons(clientType);
+  public async getCategory(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const addonCategories = this.mapAddonCategory(category);
+
+    const allAddons = await this.getAllAddons(installation.clientType);
+    const matchingAddons = allAddons.filter((addon) => addonCategories.some((cat) => addon.category === cat));
+
+    const searchResults: AddonSearchResult[] = [];
+    for (const addon of matchingAddons) {
+      const searchResult = await this.toSearchResult(addon);
+      searchResults.push(searchResult);
+    }
+
+    return searchResults;
+  }
+
+  private mapAddonCategory(category: AddonCategory): string[] {
+    switch (category) {
+      case AddonCategory.Achievements:
+        return ["Achievements"];
+      case AddonCategory.ActionBars:
+        return ["Action Bars"];
+      case AddonCategory.BagsInventory:
+        return ["Bags & Inventory"];
+      case AddonCategory.BuffsDebuffs:
+        return ["Buffs & Debuffs"];
+      case AddonCategory.Bundles:
+        return ["Edited UIs & Compilations", "Full UI Replacements"];
+      case AddonCategory.ChatCommunication:
+        return ["Chat & Communication"];
+      case AddonCategory.Class:
+        return ["Class"];
+      case AddonCategory.Combat:
+        return ["Combat"];
+      case AddonCategory.Guild:
+        return ["Guild"];
+      case AddonCategory.MapMinimap:
+        return ["Map & Minimap"];
+      case AddonCategory.Miscellaneous:
+        return ["Miscellaneous"];
+      case AddonCategory.Plugins:
+        return ["Plugins: ElvUI", "Plugins: Tukui", "Plugins: Other", "Skins"];
+      case AddonCategory.Professions:
+        return ["Professions"];
+      case AddonCategory.Roleplay:
+        return ["Roleplay"];
+      case AddonCategory.Tooltips:
+        return ["Tooltips"];
+      case AddonCategory.UnitFrames:
+        return ["Unit Frames"];
+      default:
+        throw new Error("Unhandled addon category");
+    }
+  }
+
+  public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
+    const addons = await this.getAllAddons(installation.clientType);
     const addonMatch = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
     return addonMatch.small_desc;
   }
 
-  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    const addons = await this.getAllAddons(clientType);
+  public async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
+    const addons = await this.getAllAddons(installation.clientType);
     const addon = _.find(addons, (addon) => addon.id.toString() === externalId.toString());
     return await this.formatChangelog(addon);
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     let results: AddonSearchResult[] = [];
 
     try {
-      const addons = await this.getAllAddons(clientType);
+      const addons = await this.getAllAddons(installation.clientType);
       const filteredAddons = addons.filter((addon) =>
         _.some(addonIds, (aid) => aid.toString() === addon.id.toString())
       );
@@ -68,33 +124,27 @@ export class TukUiAddonProvider extends AddonProvider {
     };
   }
 
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    const tukUiAddons = await this.getAllAddons(clientType);
+  public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const tukUiAddons = await this.getAllAddons(installation.clientType);
     return await this.mapAddonsToSearchResults(tukUiAddons);
   }
 
-  async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    const addons = await this.getAllAddons(clientType);
-    const canonQuery = query.toLowerCase();
-    let similarAddons = _.filter(addons, (addon) => addon.name.toLowerCase().indexOf(canonQuery) !== -1);
-    similarAddons = _.orderBy(similarAddons, ["downloads"]);
+  public async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const searchResults = await this.searchAddons(query, installation.clientType);
+
+    const similarAddons = _.orderBy(searchResults, ["downloads"]);
 
     return await this.mapAddonsToSearchResults(similarAddons);
   }
 
-  searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
-    throw new Error("Method not implemented.");
-  }
-
-  async searchByName(
+  public async searchByName(
     addonName: string,
     folderName: string,
-    clientType: WowClientType,
-    nameOverride?: string
+    installation: WowInstallation
   ): Promise<AddonSearchResult[]> {
     const results: AddonSearchResult[] = [];
     try {
-      const addons = await this.searchAddons(addonName, clientType);
+      const addons = await this.searchAddons(addonName, installation.clientType);
       const searchResult = await this.toSearchResult(_.first(addons), folderName);
       if (searchResult) {
         results.push(searchResult);
@@ -106,68 +156,93 @@ export class TukUiAddonProvider extends AddonProvider {
     return results;
   }
 
-  getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult | undefined> {
-    return from(this.getAllAddons(clientType)).pipe(
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
+    return from(this.getAllAddons(installation.clientType)).pipe(
       map((addons) => _.find(addons, (addon) => addon.id === addonId)),
       switchMap((match) => from(this.toSearchResult(match, "")))
     );
   }
 
-  isValidAddonUri(addonUri: URL): boolean {
+  public isValidAddonUri(): boolean {
     return false;
   }
 
-  isValidAddonId(addonId: string): boolean {
+  public isValidAddonId(addonId: string): boolean {
     return !!addonId && !isNaN(parseInt(addonId, 10));
   }
 
-  onPostInstall(addon: Addon): void {}
-
-  async scan(
-    clientType: WowClientType,
+  public async scan(
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    const allAddons = await this.getAllAddons(clientType);
-    for (const addonFolder of addonFolders) {
+    const allAddons = await this.getAllAddons(installation.clientType);
+
+    // Keep track of addons already matched to prevent duplicate folders being collapsed
+    const matches: TukUiAddon[] = [];
+
+    // Sort folders to prioritize ones with a toc id
+    let sortedAddonFolders = _.orderBy(addonFolders, ["toc.tukUiProjectId"], ["desc"]);
+    sortedAddonFolders = _.filter(sortedAddonFolders, (folder) => folder.toc.loadOnDemand !== "1");
+
+    for (const addonFolder of sortedAddonFolders) {
       let tukUiAddon: TukUiAddon;
       if (addonFolder.toc?.tukUiProjectId) {
         tukUiAddon = _.find(allAddons, (addon) => addon.id.toString() === addonFolder.toc.tukUiProjectId);
       } else {
-        const results = await this.searchAddons(addonFolder.toc.title, clientType);
+        const results = await this.searchAddons(addonFolder.toc.title, installation.clientType);
         tukUiAddon = _.first(results);
+
+        // If we got a fuzzy name match, ensure it's not already added to prevent hiding addons
+        if (tukUiAddon && _.findIndex(matches, (match) => match.id.toString() === tukUiAddon.id.toString()) !== -1) {
+          console.warn(`Overlapping addon: ${addonFolder.toc.title} => ${tukUiAddon.name}`);
+          continue;
+        }
       }
 
-      if (tukUiAddon) {
-        addonFolder.matchingAddon = {
-          autoUpdateEnabled: false,
-          channelType: addonChannelType,
-          clientType: clientType,
-          id: uuidv4(),
-          isIgnored: false,
-          name: tukUiAddon.name,
-          author: tukUiAddon.author,
-          downloadUrl: tukUiAddon.url,
-          externalId: tukUiAddon.id.toString(),
-          externalUrl: tukUiAddon.web_url,
-          gameVersion: tukUiAddon.patch,
-          installedAt: addonFolder.fileStats.birthtime,
-          installedFolders: addonFolder.name,
-          installedFolderList: [addonFolder.name],
-          installedVersion: addonFolder.toc.version,
-          latestVersion: tukUiAddon.version,
-          providerName: this.name,
-          thumbnailUrl: tukUiAddon.screenshot_url,
-          updatedAt: new Date(),
-          summary: tukUiAddon.small_desc,
-          downloadCount: Number.parseFloat(tukUiAddon.downloads),
-          screenshotUrls: [tukUiAddon.screenshot_url],
-          releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
-          isLoadOnDemand: false,
-          latestChangelog: await this.formatChangelog(tukUiAddon),
-          externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
-        };
+      if (!tukUiAddon) {
+        continue;
       }
+
+      matches.push({ ...tukUiAddon });
+
+      const installedFolders = addonFolder.toc.tukUiProjectFolders
+        ? addonFolder.toc.tukUiProjectFolders
+        : tukUiAddon.name;
+
+      const installedFolderList = addonFolder.toc.tukUiProjectFolders
+        ? addonFolder.toc.tukUiProjectFolders.split(",").map((f) => f.trim())
+        : [tukUiAddon.name];
+
+      addonFolder.matchingAddon = {
+        autoUpdateEnabled: false,
+        channelType: addonChannelType,
+        clientType: installation.clientType,
+        id: uuidv4(),
+        isIgnored: false,
+        name: tukUiAddon.name,
+        author: tukUiAddon.author,
+        downloadUrl: tukUiAddon.url,
+        externalId: tukUiAddon.id.toString(),
+        externalUrl: tukUiAddon.web_url,
+        gameVersion: getGameVersion(tukUiAddon.patch),
+        installedAt: addonFolder.fileStats.birthtime,
+        installedFolders: installedFolders,
+        installedFolderList: installedFolderList,
+        installedVersion: addonFolder.toc.version,
+        latestVersion: tukUiAddon.version,
+        providerName: this.name,
+        thumbnailUrl: tukUiAddon.screenshot_url,
+        updatedAt: new Date(),
+        summary: tukUiAddon.small_desc,
+        downloadCount: Number.parseFloat(tukUiAddon.downloads),
+        screenshotUrls: [tukUiAddon.screenshot_url],
+        releasedAt: new Date(`${tukUiAddon.lastupdate} UTC`),
+        isLoadOnDemand: false,
+        latestChangelog: await this.formatChangelog(tukUiAddon),
+        externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+        installationId: installation.id,
+      };
     }
   }
 
@@ -180,13 +255,17 @@ export class TukUiAddonProvider extends AddonProvider {
     return results;
   }
 
-  private async formatChangelog(addon: TukUiAddon) {
+  private async formatChangelog(addon: TukUiAddon): Promise<string | undefined> {
     if (["-1", "-2"].includes(addon.id.toString())) {
       try {
         return await this.fetchChangelogHtml(addon);
       } catch (e) {
         console.error("Failed to get changelog", e);
       }
+    }
+
+    if (!addon.changelog) {
+      return undefined;
     }
 
     return `<a href="${addon.changelog}">${addon.changelog}</a>`;
@@ -202,12 +281,20 @@ export class TukUiAddonProvider extends AddonProvider {
     return html;
   };
 
-  private async searchAddons(addonName: string, clientType: WowClientType) {
+  private async searchAddons(addonName: string, clientType: WowClientType): Promise<TukUiAddon[]> {
+    const canonAddonName = addonName.toLowerCase();
     const addons = await this.getAllAddons(clientType);
-    return addons.filter((addon) => addon.name.toLowerCase() === addonName.toLowerCase());
+    const matches = addons
+      .map((addon) => {
+        const similarity = stringSimilarity.compareTwoStrings(canonAddonName, addon.name.toLowerCase());
+        return { addon, similarity };
+      })
+      .filter((result) => result.similarity > 0.7);
+
+    return _.orderBy(matches, (match) => match.similarity, "desc").map((match) => match.addon);
   }
 
-  private async toSearchResult(addon: TukUiAddon, folderName?: string): Promise<AddonSearchResult | undefined> {
+  private async toSearchResult(addon: TukUiAddon, folderName = ""): Promise<AddonSearchResult | undefined> {
     if (!addon) {
       return undefined;
     }
@@ -216,7 +303,7 @@ export class TukUiAddonProvider extends AddonProvider {
       channelType: AddonChannelType.Stable,
       folders: folderName ? [folderName] : [],
       downloadUrl: addon.url,
-      gameVersion: addon.patch,
+      gameVersion: getGameVersion(addon.patch),
       version: addon.version,
       releaseDate: new Date(`${addon.lastupdate} UTC`),
       changelog: await this.formatChangelog(addon),
@@ -307,6 +394,7 @@ export class TukUiAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
         return "classic-addons";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
@@ -321,6 +409,7 @@ export class TukUiAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
         return "classic";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:

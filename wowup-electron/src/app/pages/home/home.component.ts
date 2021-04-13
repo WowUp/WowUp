@@ -1,25 +1,30 @@
-import { from, interval, Subscription } from "rxjs";
-import { filter, first, switchMap, tap } from "rxjs/operators";
+import { from, Subscription } from "rxjs";
+import { filter, first, map, switchMap, tap } from "rxjs/operators";
 
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
-import { IPC_POWER_MONITOR_RESUME, IPC_POWER_MONITOR_UNLOCK } from "../../../common/constants";
-import { AppConfig } from "../../../environments/environment";
 import {
-  AddonScanError,
-  AddonSyncError,
-  GitHubFetchReleasesError,
-  GitHubFetchRepositoryError,
-  GitHubLimitError,
-} from "../../errors";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+  APP_PROTOCOL_NAME,
+  CURSE_PROTOCOL_NAME,
+  IPC_POWER_MONITOR_RESUME,
+  IPC_POWER_MONITOR_UNLOCK,
+} from "../../../common/constants";
+import { AppConfig } from "../../../environments/environment";
+import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
+import { AddonScanError } from "../../errors";
+import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { getProtocol } from "../../utils/string.utils";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-home",
@@ -28,43 +33,79 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements AfterViewInit, OnDestroy {
-  private _appUpdateInterval: Subscription;
+  private _appUpdateInterval?: number;
+  private _subscriptions: Subscription[] = [];
 
   public selectedIndex = 0;
   public hasWowClient = false;
   public appReady = false;
   public preloadSpinnerKey = "COMMON.PROGRESS_SPINNER.LOADING";
 
-  constructor(
+  public constructor(
     public electronService: ElectronService,
     private _sessionService: SessionService,
     private _translateService: TranslateService,
     private _addonService: AddonService,
-    private _warcraftService: WarcraftService,
     private _wowupService: WowUpService,
     private _snackBar: MatSnackBar,
-    private _cdRef: ChangeDetectorRef
+    private _snackBarService: SnackbarService,
+    private _cdRef: ChangeDetectorRef,
+    private _warcraftInstallationService: WarcraftInstallationService,
+    private _dialogFactory: DialogFactory
   ) {
-    this._warcraftService.installedClientTypes$.subscribe((clientTypes) => {
-      if (clientTypes === undefined) {
-        this.hasWowClient = false;
-        this.selectedIndex = 3;
-      } else {
-        this.hasWowClient = clientTypes.length > 0;
-        this.selectedIndex = this.hasWowClient ? 0 : 3;
-      }
+    const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
+      this.hasWowClient = installations.length > 0;
+      this.selectedIndex = this.hasWowClient ? 0 : 3;
     });
 
-    this._addonService.syncError$.subscribe(this.onAddonSyncError);
-    this._addonService.scanError$.subscribe(this.onAddonScanError);
+    const customProtocolSub = this.electronService.customProtocol$
+      .pipe(
+        filter((protocol) => !!protocol),
+        switchMap((protocol) => from(this.handleCustomProtocol(protocol)))
+      )
+      .subscribe();
 
-    this._addonService.scanUpdate$
+    const scanErrorSub = this._addonService.scanError$.subscribe(this.onAddonScanError);
+    const addonInstallErrorSub = this._addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent);
+
+    const scanUpdateSub = this._addonService.scanUpdate$
       .pipe(filter((update) => update.type !== ScanUpdateType.Unknown))
       .subscribe(this.onScanUpdate);
+
+    this._subscriptions.push(customProtocolSub, wowInstalledSub, scanErrorSub, scanUpdateSub, addonInstallErrorSub);
   }
 
-  ngAfterViewInit(): void {
-    this.electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
+  private handleCustomProtocol = async (protocol: string): Promise<void> => {
+    console.debug("PROTOCOL RECEIEVED", protocol);
+    const protocolName = getProtocol(protocol);
+    try {
+      switch (protocolName) {
+        case APP_PROTOCOL_NAME:
+        case CURSE_PROTOCOL_NAME:
+          await this.handleAddonInstallProtocol(protocol);
+          break;
+        default:
+          console.warn(`Unknown protocol: ${protocol}`);
+          return;
+      }
+    } catch (e) {
+      console.error(`Failed to handle protocol`, e);
+    }
+  };
+
+  private async handleAddonInstallProtocol(protocol: string) {
+    const dialog = this._dialogFactory.getDialog(InstallFromProtocolDialogComponent, {
+      disableClose: true,
+      data: {
+        protocol,
+      },
+    });
+
+    await dialog.afterClosed().toPromise();
+  }
+
+  public ngAfterViewInit(): void {
+    const powerMonitorSub = this.electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping app update check...");
       this.destroyAppUpdateCheck();
 
@@ -73,45 +114,51 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this.initAppUpdateCheck();
-
-    this._warcraftService.installedClientTypes$
+    const wowInstallInitialSub = this._warcraftInstallationService.wowInstallations$
       .pipe(
-        first((clientTypes) => !!clientTypes),
-        switchMap((clientTypes) => from(this.migrateAddons(clientTypes)))
+        first(),
+        switchMap((installations) => {
+          return from(this.migrateAddons(installations)).pipe(map(() => installations));
+        })
       )
       .subscribe(() => {
         this.appReady = true;
         this.detectChanges();
       });
+
+    this.initAppUpdateCheck();
+
+    this._subscriptions.push(powerMonitorSub, wowInstallInitialSub);
   }
 
-  ngOnDestroy(): void {
-    this._appUpdateInterval.unsubscribe();
+  public ngOnDestroy(): void {
+    window.clearInterval(this._appUpdateInterval);
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   private initAppUpdateCheck() {
+    if (this._appUpdateInterval !== undefined) {
+      console.warn(`App update interval already exists`);
+      return;
+    }
+
     // check for an app update every so often
-    this._appUpdateInterval = interval(AppConfig.appUpdateIntervalMs)
-      .pipe(
-        tap(() => {
-          this.checkForAppUpdate().catch((e) => console.error(e));
-        })
-      )
-      .subscribe();
+    this._appUpdateInterval = window.setInterval(() => {
+      this.checkForAppUpdate().catch((e) => console.error(e));
+    }, AppConfig.appUpdateIntervalMs);
 
     this.checkForAppUpdate().catch((e) => console.error(e));
   }
 
   private destroyAppUpdateCheck() {
-    this._appUpdateInterval?.unsubscribe();
+    window.clearInterval(this._appUpdateInterval);
     this._appUpdateInterval = undefined;
   }
 
-  private async migrateAddons(clientTypes: WowClientType[]) {
+  private async migrateAddons(installations: WowInstallation[]) {
     const shouldMigrate = await this._wowupService.shouldMigrateAddons();
-    if (!clientTypes || !shouldMigrate) {
-      return clientTypes;
+    if (!installations || installations.length === 0 || !shouldMigrate) {
+      return installations;
     }
 
     this.preloadSpinnerKey = "PAGES.HOME.MIGRATING_ADDONS";
@@ -120,8 +167,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     console.log("Migrating addons");
 
     try {
-      for (const clientType of clientTypes) {
-        await this._addonService.migrate(clientType);
+      for (const installation of installations) {
+        await this._addonService.migrate(installation);
       }
 
       await this._wowupService.setMigrationVersion();
@@ -129,7 +176,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.error(`Failed to migrate addons`, e);
     }
 
-    return clientTypes;
+    return installations;
   }
 
   private detectChanges = () => {
@@ -140,7 +187,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  onSelectedIndexChange(index: number) {
+  public onSelectedIndexChange(index: number): void {
     this._sessionService.selectedHomeTab = index;
   }
 
@@ -149,36 +196,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     const errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SCAN_ERROR", {
       providerName: error.providerName,
     });
-
-    this._snackBar.open(errorMessage, undefined, {
-      duration: durationMs,
-      panelClass: ["wowup-snackbar", "snackbar-error", "text-1"],
-    });
-  };
-
-  private onAddonSyncError = (error: AddonSyncError) => {
-    const durationMs = 4000;
-    let errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
-      providerName: error.providerName,
-    });
-
-    if (error.innerError instanceof GitHubLimitError) {
-      const err = error.innerError;
-      const max = err.rateLimitMax;
-      const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
-      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
-        max,
-        reset,
-      });
-    } else if (
-      error.innerError instanceof GitHubFetchRepositoryError ||
-      error.innerError instanceof GitHubFetchReleasesError
-    ) {
-      const err = error.innerError as GitHubFetchRepositoryError;
-      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
-        addonName: error.addonName,
-      });
-    }
 
     this._snackBar.open(errorMessage, undefined, {
       duration: durationMs,
@@ -215,4 +232,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.error(e);
     }
   }
+
+  private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
+    if (evt.installState !== AddonInstallState.Error) {
+      return;
+    }
+
+    this._snackBarService.showErrorSnackbar("COMMON.ERRORS.ADDON_INSTALL_ERROR", {
+      localeArgs: {
+        addonName: evt.addon.name,
+      },
+    });
+  };
 }

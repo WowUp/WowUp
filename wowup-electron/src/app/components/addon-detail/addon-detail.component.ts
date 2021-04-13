@@ -1,6 +1,6 @@
 import { last } from "lodash";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
-import { delay, filter, map, tap } from "rxjs/operators";
+import { filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
@@ -14,18 +14,17 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
+import { Addon, AddonFundingLink } from "../../../common/entities/addon";
+import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonFundingLink } from "../../entities/addon";
-import { AddonChannelType } from "../../models/wowup/addon-channel-type";
-import { AddonDependency } from "../../models/wowup/addon-dependency";
-import { AddonDependencyType } from "../../models/wowup/addon-dependency-type";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
@@ -46,10 +45,10 @@ export interface AddonDetailModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
-  @ViewChild("descriptionContainer", { read: ElementRef }) descriptionContainer: ElementRef;
-  @ViewChild("changelogContainer", { read: ElementRef }) changelogContainer: ElementRef;
-  @ViewChild("providerLink", { read: ElementRef }) providerLink: ElementRef;
-  @ViewChild("tabs", { static: false }) tabGroup: MatTabGroup;
+  @ViewChild("descriptionContainer", { read: ElementRef }) public descriptionContainer: ElementRef;
+  @ViewChild("changelogContainer", { read: ElementRef }) public changelogContainer: ElementRef;
+  @ViewChild("providerLink", { read: ElementRef }) public providerLink: ElementRef;
+  @ViewChild("tabs", { static: false }) public tabGroup: MatTabGroup;
 
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
@@ -85,34 +84,22 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public isMissingUnknownDependencies = false;
   public missingDependencies: string[] = [];
 
-  constructor(
+  public constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
+    private _dialogRef: MatDialogRef<AddonDetailComponent>,
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _cdRef: ChangeDetectorRef,
     private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
-    public sessionService: SessionService
+    private _sessionService: SessionService
   ) {
     this._dependencies = this.getDependencies();
 
     const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(
-        filter(
-          (evt) =>
-            evt.addon.id === this.model.listItem?.addon.id ||
-            evt.addon.externalId === this.model.searchResult?.externalId
-        )
-      )
-      .subscribe((evt) => {
-        if (this.model.listItem) {
-          this.model.listItem.addon = evt.addon;
-          this.model.listItem.installState = evt.installState;
-        }
-
-        this._cdRef.detectChanges();
-      });
+      .pipe(filter(this.isSameAddon))
+      .subscribe(this.onAddonInstalledUpdate);
 
     const changelogSub = from(this.getChangelog())
       .pipe(tap(() => (this.fetchingChangelog = false)))
@@ -128,11 +115,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._subscriptions.push(changelogSub, fullDescriptionSub, addonInstalledSub);
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
 
-    this.selectedTabIndex = this.getSelectedTabTypeIndex(this.sessionService.getSelectedDetailsTab());
-    
+    this.selectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab());
+
     this.thumbnailLetter = this.getThumbnailLetter();
 
     this.showInstallButton = !!this.model.searchResult;
@@ -177,40 +164,99 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.isMissingUnknownDependencies = !!this.missingDependencies.length;
   }
 
-  ngAfterViewInit(): void {
-    of(true)
-      .pipe(
-        delay(200),
-        map(() => this.providerLink?.nativeElement?.focus())
-      )
-      .subscribe();
+  public ngAfterViewInit(): void {}
 
-    // window.setTimeout(() => {
-    // }, 200);
-  }
-
-  ngAfterViewChecked(): void {
+  public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
     const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
     this.formatLinks(descriptionContainer);
     this.formatLinks(changelogContainer);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onInstallUpdated(): void {
+  public onInstallUpdated(): void {
     this._cdRef.detectChanges();
   }
 
-  onSelectedTabChange(evt: MatTabChangeEvent): void {
-    this.sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
+  public onSelectedTabChange(evt: MatTabChangeEvent): void {
+    this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
   }
 
-  onClickExternalId(): void {
+  public onClickExternalId(): void {
     this._snackbarService.showSuccessSnackbar("DIALOGS.ADDON_DETAILS.COPY_ADDON_ID_SNACKBAR", {
       timeout: 2000,
+    });
+  }
+
+  public onClickRemoveAddon(): void {
+    this.getRemoveAddonPrompt(this.model.listItem.addon.name)
+      .afterClosed()
+      .pipe(
+        first(),
+        switchMap((result) => {
+          if (!result) {
+            return of(false);
+          }
+
+          const addon = this.model.listItem.addon;
+          if (this._addonService.getRequiredDependencies(addon).length === 0) {
+            return from(this._addonService.removeAddon(addon)).pipe(map(() => true));
+          } else {
+            return this.getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
+              .afterClosed()
+              .pipe(
+                switchMap((result) => from(this._addonService.removeAddon(addon, result))),
+                map(() => true)
+              );
+          }
+        }),
+        map((shouldClose) => {
+          if (shouldClose) {
+            this._dialogRef.close();
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  private getRemoveAddonPrompt(addonName: string): MatDialogRef<ConfirmDialogComponent, any> {
+    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });
+    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE", {
+      addonName,
+    });
+    const message2: string = this._translateService.instant(
+      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+    );
+
+    return this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title,
+        message: `${message1}\n\n${message2}`,
+      },
+    });
+  }
+
+  private getRemoveDependenciesPrompt(
+    addonName: string,
+    dependencyCount: number
+  ): MatDialogRef<ConfirmDialogComponent, any> {
+    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_TITLE");
+    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_MESSAGE", {
+      addonName,
+      dependencyCount,
+    });
+    const message2: string = this._translateService.instant(
+      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
+    );
+
+    return this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title,
+        message: `${message1}\n\n${message2}`,
+      },
     });
   }
 
@@ -249,6 +295,21 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       tag.addEventListener("click", this.onOpenLink, false);
     }
   }
+
+  private onAddonInstalledUpdate = (evt: AddonUpdateEvent): void => {
+    if (this.model.listItem) {
+      this.model.listItem.addon = evt.addon;
+      this.model.listItem.installState = evt.installState;
+    }
+
+    this._cdRef.detectChanges();
+  };
+
+  private isSameAddon = (evt: AddonUpdateEvent): boolean => {
+    return (
+      evt.addon.id === this.model.listItem?.addon.id || evt.addon.externalId === this.model.searchResult?.externalId
+    );
+  };
 
   private onOpenLink = (e: MouseEvent): boolean => {
     e.preventDefault();
@@ -289,13 +350,16 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(first())
+      .subscribe((result) => {
+        if (!result) {
+          return;
+        }
 
-      this._electronService.openExternal(href).catch((e) => console.error(e));
-    });
+        this._electronService.openExternal(href).catch((e) => console.error(e));
+      });
   }
 
   private getChangelog = (): Promise<string> => {
@@ -318,7 +382,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     try {
       return await this._addonService.getFullDescription(
-        this.sessionService.getSelectedClientType(),
+        this._sessionService.getSelectedWowInstallation(),
         providerName,
         externalId,
         this.model?.listItem?.addon
@@ -344,7 +408,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getSearchResultChangelog() {
     return await this._addonService.getChangelogForSearchResult(
-      this.sessionService.getSelectedClientType(),
+      this._sessionService.getSelectedWowInstallation(),
       this.model.channelType,
       this.model.searchResult
     );
@@ -352,7 +416,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private async getMyAddonChangelog() {
     return await this._addonService.getChangelogForAddon(
-      this.sessionService.getSelectedClientType(),
+      this._sessionService.getSelectedWowInstallation(),
       this.model.listItem?.addon
     );
   }

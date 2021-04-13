@@ -18,14 +18,10 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 /** Fix icon warning? https://stackoverflow.com/a/62277810 */
 describe("FooterComponent", () => {
-  let component: FooterComponent;
   let fixture: ComponentFixture<FooterComponent>;
-  let electronService: ElectronService;
-  let wowUpService: WowUpService;
-  let sessionService: SessionService;
-  let electronServiceSpy: any;
-  let wowUpServiceSpy: any;
-  let sessionServiceSpy: any;
+  let electronServiceSpy: ElectronService;
+  let wowUpServiceSpy: WowUpService;
+  let sessionServiceSpy: SessionService;
 
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [], {
@@ -72,17 +68,10 @@ describe("FooterComponent", () => {
         },
       })
       .compileComponents();
-
-    fixture = TestBed.createComponent(FooterComponent);
-    component = fixture.componentInstance;
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    sessionService = fixture.debugElement.injector.get(SessionService);
-
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    fixture = TestBed.createComponent(FooterComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

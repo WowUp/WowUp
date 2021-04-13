@@ -1,8 +1,11 @@
 @import "../../../variables.scss";
 
 .addon-column {
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
 
   .thumbnail-container {
     margin-right: 11px;
@@ -29,30 +32,37 @@
       }
     }
 
-    .channel {
-      background: $dark-4;
-      text-align: center;
-      font-weight: 400;
-      font-size: 0.8em;
-
-      &.beta {
-        color: $rare-color;
-      }
-
-      &.alpha {
-        color: $epic-color;
-      }
-    }
-
     .addon-logo-letter {
       font-size: 2em;
       font-weight: 400;
     }
   }
 
+  .channel {
+    background: $dark-4;
+    text-align: center;
+    font-weight: 400;
+    padding: 1px 4px;
+    border-radius: 4px;
+
+    &.beta {
+      color: $rare-color;
+    }
+
+    &.alpha {
+      color: $epic-color;
+    }
+  }
+
   .addon-title {
     white-space: normal;
     text-decoration: none;
+    font-size: 16px;
+    line-height: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     &:hover {
       cursor: pointer;
@@ -63,6 +73,10 @@
 
   .addon-version {
     color: $white-2;
+    font-size: 14px;
+    line-height: 14px;
+    display: flex;
+    flex-direction: row;
   }
 
   .dependency-icon {

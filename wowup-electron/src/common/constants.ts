@@ -1,3 +1,5 @@
+export const APP_USER_MODEL_ID = "io.wowup.jliddev"; // Bundle ID
+
 export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
 export const ADDON_PROVIDER_CURSEFORGE = "Curse";
 export const ADDON_PROVIDER_GITHUB = "GitHub";
@@ -7,6 +9,9 @@ export const ADDON_PROVIDER_UNKNOWN = "Unknown";
 export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
 export const ADDON_PROVIDER_HUB = "WowUpHub";
 export const ADDON_PROVIDER_ZIP = "Zip";
+
+export const APP_PROTOCOL_NAME = "wowup";
+export const CURSE_PROTOCOL_NAME = "curseforge";
 
 // IPC CHANNELS
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
@@ -19,6 +24,7 @@ export const IPC_STAT_FILES_CHANNEL = "stat-files";
 export const IPC_PATH_EXISTS_CHANNEL = "path-exists";
 export const IPC_LIST_FILES_CHANNEL = "list-files";
 export const IPC_READ_FILE_CHANNEL = "read-file";
+export const IPC_READ_FILE_BUFFER_CHANNEL = "read-file-buffer";
 export const IPC_WRITE_FILE_CHANNEL = "write-file";
 export const IPC_UNZIP_FILE_CHANNEL = "unzip-file";
 export const IPC_COPY_FILE_CHANNEL = "copy-file";
@@ -35,6 +41,7 @@ export const IPC_MENU_ZOOM_IN_CHANNEL = "menu-zoom-in";
 export const IPC_MENU_ZOOM_RESET_CHANNEL = "menu-zoom-reset";
 export const IPC_MAXIMIZE_WINDOW = "maximize-window";
 export const IPC_MINIMIZE_WINDOW = "minimize-window";
+export const IPC_FOCUS_WINDOW = "focus-window";
 export const IPC_WINDOW_MAXIMIZED = "window-maximized";
 export const IPC_WINDOW_UNMAXIMIZED = "window-unmaximized";
 export const IPC_WINDOW_MINIMIZED = "window-minimized";
@@ -57,6 +64,12 @@ export const IPC_GET_LOGIN_ITEM_SETTINGS = "get-login-item-settings";
 export const IPC_SET_LOGIN_ITEM_SETTINGS = "set-login-item-settings";
 export const IPC_LIST_ENTRIES = "list-entries";
 export const IPC_READDIR = "readdir";
+export const IPC_IS_DEFAULT_PROTOCOL_CLIENT = "is-default-protocol-client";
+export const IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT = "set-as-default-protocol-client";
+export const IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT = "remove-as-default-protocol-client";
+export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
+export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
+export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
@@ -66,6 +79,7 @@ export const DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX = "_default_addon_channel";
 export const DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX = "_default_auto_update";
 export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_client_type";
 export const USE_HARDWARE_ACCELERATION_PREFERENCE_KEY = "use_hardware_acceleration";
+export const USE_SYMLINK_MODE_PREFERENCE_KEY = "use_symlink_mode";
 export const START_WITH_SYSTEM_PREFERENCE_KEY = "start_with_system";
 export const START_MINIMIZED_PREFERENCE_KEY = "start_minimized";
 export const SELECTED_LANGUAGE_PREFERENCE_KEY = "selected_language";
@@ -74,12 +88,14 @@ export const MY_ADDONS_SORT_ORDER = "my_addons_sort_order";
 export const GET_ADDONS_HIDDEN_COLUMNS_KEY = "get_addons_hidden_columns";
 export const GET_ADDONS_SORT_ORDER = "get_addons_sort_order";
 export const ADDON_PROVIDERS_KEY = "addon_providers";
+export const WOW_INSTALLATIONS_KEY = "wow_installations";
 export const CURRENT_THEME_KEY = "current_theme";
 export const TELEMETRY_ENABLED_KEY = "telemetry_enabled";
 export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
 export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
+export const PROTOCOL_REGISTERED_PREFERENCE_KEY = "protocol_registered";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
@@ -114,4 +130,4 @@ export const WINDOW_MIN_WIDTH = 940;
 export const WINDOW_MIN_HEIGHT = 500;
 export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
-export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowup_white_lg_nopad.png";
+export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";

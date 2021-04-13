@@ -6,6 +6,22 @@ import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from "@ang
 
 declare const require: any;
 
+jasmine.getEnv().addReporter({
+  suiteStarted: function (result) {
+    console.log(`suiteStarted: ${result.fullName}`);
+  },
+  specStarted: function (result) {
+    console.log(`specStarted: ${result.fullName}`);
+  },
+  specDone: function (result) {
+    console.log(`specDone: ${result.fullName}`);
+  },
+  jasmineDone: (result) => {
+    console.log(`Jasmine done`);
+    console.log(JSON.stringify(result, null, 2));
+  },
+});
+
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 // Then we find all the tests.

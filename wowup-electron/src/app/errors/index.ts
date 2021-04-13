@@ -1,16 +1,21 @@
 export * from "./install-error";
+import { AddonWarningType } from "../../common/wowup/models";
 import { CustomError } from "ts-custom-error";
 
 export class ErrorContainer extends CustomError {
   public readonly innerError?: Error;
+  public readonly warningType?: AddonWarningType;
 
-  constructor(innerError?: Error, message?: string) {
+  public constructor(innerError?: Error, message?: string, warningType?: AddonWarningType) {
     super(message);
     this.innerError = innerError;
+    this.warningType = warningType;
   }
 }
 
 export class ClassicAssetMissingError extends CustomError {}
+
+export class BurningCrusadeAssetMissingError extends CustomError {}
 
 export class AssetMissingError extends CustomError {}
 
@@ -28,7 +33,7 @@ export class AddonScanError extends CustomError {
   public readonly providerName: string;
   public readonly addonName?: string;
 
-  constructor(config: AddonScanErrorConfig) {
+  public constructor(config: AddonScanErrorConfig) {
     super(config.message);
 
     this.providerName = config.providerName;
@@ -49,12 +54,20 @@ export class AddonSyncError extends CustomError {
   public readonly providerName: string;
   public readonly addonName?: string;
 
-  constructor(config: AddonSyncErrorConfig) {
+  public constructor(config: AddonSyncErrorConfig) {
     super(config.message);
 
     this.providerName = config.providerName;
     this.innerError = config.innerError;
     this.addonName = config.addonName;
+  }
+}
+
+export class GenericProviderError extends ErrorContainer {}
+
+export class SourceRemovedAddonError extends GenericProviderError {
+  public constructor(public addonId: string, innerError: Error) {
+    super(innerError, '', AddonWarningType.MissingOnProvider);
   }
 }
 
@@ -66,7 +79,7 @@ export class GitHubLimitError extends GitHubError {
   public readonly rateLimitRemaining: number;
   public readonly rateLimitReset: number;
 
-  constructor(max: number, used: number, remaining: number, reset: number, message?: string) {
+  public constructor(max: number, used: number, remaining: number, reset: number, message?: string) {
     super(undefined, message);
 
     this.rateLimitMax = max;
@@ -79,7 +92,7 @@ export class GitHubLimitError extends GitHubError {
 export class GitHubFetchReleasesError extends GitHubError {
   public readonly addonId: string;
 
-  constructor(addonId: string, error?: Error) {
+  public constructor(addonId: string, error?: Error) {
     super(error);
 
     this.addonId = addonId;
@@ -89,7 +102,7 @@ export class GitHubFetchReleasesError extends GitHubError {
 export class GitHubFetchRepositoryError extends GitHubError {
   public readonly addonId: string;
 
-  constructor(addonId: string, error?: Error) {
+  public constructor(addonId: string, error?: Error) {
     super(error);
 
     this.addonId = addonId;

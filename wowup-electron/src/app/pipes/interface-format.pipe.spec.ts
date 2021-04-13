@@ -6,7 +6,7 @@ import { Component } from "@angular/core";
   template: `<p>{{ version | interfaceFormat }}</p>`,
 })
 class TestInterfaceFormatComponent {
-  public version: string = "";
+  public version = "";
 }
 
 describe("InterfaceFormatPipe", () => {
@@ -30,7 +30,7 @@ describe("InterfaceFormatPipe", () => {
   it("should transform .toc format to semver", () => {
     component.version = "90002";
     fixture.detectChanges();
-    let p = fixture.debugElement.nativeElement.querySelector("p");
+    const p = fixture.debugElement.nativeElement.querySelector("p");
     expect(p.innerHTML).toBe("9.0.2");
   });
 

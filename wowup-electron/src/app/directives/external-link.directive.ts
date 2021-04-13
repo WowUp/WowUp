@@ -5,14 +5,14 @@ import { ElectronService } from "../services";
   selector: "[appExternalLink]",
 })
 export class ExternalLinkDirective {
-  @HostListener("click", ["$event"]) onClick($event) {
+  @HostListener("click", ["$event"]) public async onClick($event: any): Promise<void> {
     $event.preventDefault();
     $event.stopPropagation();
 
     const target = $event.path.find((t) => t.tagName === "A");
 
-    this._electronService.openExternal(target.href);
+    await this._electronService.openExternal(target.href);
   }
 
-  constructor(private _electronService: ElectronService) {}
+  public constructor(private _electronService: ElectronService) {}
 }

@@ -10,8 +10,8 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { from, interval, of, Subscription } from "rxjs";
-import { catchError, delay, filter, first, map, switchMap, tap } from "rxjs/operators";
+import { from, of } from "rxjs";
+import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
 import * as _ from "lodash";
 import {
   ALLIANCE_LIGHT_THEME,
@@ -29,10 +29,10 @@ import {
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
   ZOOM_FACTOR_KEY,
+  IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
-import { SystemTrayConfig } from "../common/wowup/system-tray-config";
-import { MenuConfig } from "../common/wowup/menu-config";
+import { MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -42,10 +42,14 @@ import { WowUpService } from "./services/wowup/wowup.service";
 import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
 import { ZoomDirection } from "./utils/zoom.utils";
-import { Addon } from "./entities/addon";
+import { Addon } from "../common/entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
+import { InstallFromUrlDialogComponent } from "./components/install-from-url-dialog/install-from-url-dialog.component";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
+import { SnackbarService } from "./services/snackbar/snackbar.service";
+import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 
 @Component({
   selector: "app-root",
@@ -54,38 +58,59 @@ import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
-  private _autoUpdateInterval?: Subscription;
+  private _autoUpdateInterval?: number;
 
-  // @HostListener("document:fullscreenchange", ["$event"])
-  // handleKeyboardEvent(event: Event) {
-  //   console.debug("fullscreenchange", event);
-  // }
+  @HostListener("mousewheel", ["$event"])
+  public async handleKeyboardEvent(event: any): Promise<void> {
+    if (!event.ctrlKey) {
+      return;
+    }
+
+    try {
+      if (event.wheelDelta > 0) {
+        await this.electronService.applyZoom(ZoomDirection.ZoomIn);
+      } else {
+        await this.electronService.applyZoom(ZoomDirection.ZoomOut);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   public quitEnabled?: boolean;
   public showPreLoad = true;
 
-  constructor(
+  public constructor(
     private _analyticsService: AnalyticsService,
-    private _electronService: ElectronService,
+    public electronService: ElectronService,
     private _fileService: FileService,
     private translate: TranslateService,
     private _dialog: MatDialog,
     private _addonService: AddonService,
-    private _iconService: IconService,
     private _sessionService: SessionService,
     private _preferenceStore: PreferenceStorageService,
     private _cdRef: ChangeDetectorRef,
     private _wowupAddonService: WowUpAddonService,
+    private _snackbarService: SnackbarService,
+    private _warcraftInstallationService: WarcraftInstallationService,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
-  ) {}
+  ) {
+    this._warcraftInstallationService.wowInstallations$
+      .pipe(
+        first((installations) => installations.length > 0),
+        switchMap(() => from(this.initializeAutoUpdate()))
+      )
+      .subscribe();
+  }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
-      this._electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
+      this.electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
     }
 
+    this.overlayContainer.getContainerElement().classList.add(this.electronService.platform);
     this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
 
     this.wowUpService.preferenceChange$.pipe(filter((pref) => pref.key === CURRENT_THEME_KEY)).subscribe((pref) => {
@@ -102,11 +127,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.overlayContainer.getContainerElement().classList.add(pref.value);
     });
 
-    this._electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this._addonService.syncError$.subscribe(this.onAddonSyncError);
 
-    from(this._electronService.getAppOptions())
+    this.electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this.electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this.electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+    this.electronService.on(IPC_REQUEST_INSTALL_FROM_URL, this.onRequestInstallFromUrl);
+
+    from(this.electronService.getAppOptions())
       .pipe(
         first(),
         delay(2000),
@@ -122,9 +150,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
-    this._electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
+    this.electronService.powerMonitor$.pipe(filter((evt) => !!evt)).subscribe((evt) => {
       console.log("Stopping auto update...");
-      this._autoUpdateInterval?.unsubscribe();
+      window.clearInterval(this._autoUpdateInterval);
       this._autoUpdateInterval = undefined;
 
       if (evt === IPC_POWER_MONITOR_RESUME || evt === IPC_POWER_MONITOR_UNLOCK) {
@@ -133,7 +161,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     from(this.createAppMenu())
       .pipe(
         first(),
@@ -145,7 +173,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             this._analyticsService.trackStartup();
           }
         }),
-        switchMap(() => from(this.initializeAutoUpdate())),
         catchError((e) => {
           console.error(e);
           return of(undefined);
@@ -154,25 +181,29 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  ngOnDestroy(): void {
-    this._electronService.off(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
-    this._electronService.off(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
-    this._electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
+  public ngOnDestroy(): void {
+    this.electronService.off(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
+    this.electronService.off(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
+    this.electronService.off(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
   }
 
-  onMenuZoomIn = (): void => {
-    this._electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
+  public onMenuZoomIn = (): void => {
+    this.electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
   };
 
-  onMenuZoomOut = (): void => {
-    this._electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
+  public onMenuZoomOut = (): void => {
+    this.electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
   };
 
-  onMenuZoomReset = (): void => {
-    this._electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
+  public onMenuZoomReset = (): void => {
+    this.electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
   };
 
-  openDialog(): void {
+  public onRequestInstallFromUrl = (evt: any, path?: string): void => {
+    this.openInstallFromUrlDialog(path);
+  };
+
+  public openDialog(): void {
     const dialogRef = this._dialog.open(TelemetryDialogComponent, {
       disableClose: true,
     });
@@ -185,18 +216,26 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  private async initializeAutoUpdate() {
-    if (this._autoUpdateInterval) {
+  private openInstallFromUrlDialog(path?: string) {
+    if (!path) {
       return;
     }
+
+    const dialogRef = this._dialog.open(InstallFromUrlDialogComponent);
+    dialogRef.componentInstance.query = path;
+  }
+
+  private async initializeAutoUpdate() {
+    if (this._autoUpdateInterval !== undefined) {
+      console.warn(`Auto addon update interval already exists`);
+      return;
+    }
+
+    this._autoUpdateInterval = window.setInterval(() => {
+      this.onAutoUpdateInterval().catch((e) => console.error(e));
+    }, AppConfig.autoUpdateIntervalMs);
+
     await this.onAutoUpdateInterval();
-    this._autoUpdateInterval = interval(AppConfig.autoUpdateIntervalMs)
-      .pipe(
-        tap(() => {
-          this.onAutoUpdateInterval().catch((e) => console.error(e));
-        })
-      )
-      .subscribe();
   }
 
   private onAutoUpdateInterval = async () => {
@@ -237,11 +276,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .toPromise();
 
-    const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
+    const notification = this.electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
       body: translated["APP.AUTO_UPDATE_NOTIFICATION_BODY"],
       icon: iconPath,
     });
 
+    notification.addEventListener("click", this.onClickNotification, { once: true });
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
   }
 
@@ -255,13 +295,18 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .toPromise();
 
-    const notification = this._electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
+    const notification = this.electronService.showNotification(translated["APP.AUTO_UPDATE_NOTIFICATION_TITLE"], {
       body: translated["APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"],
       icon: iconPath,
     });
 
+    notification.addEventListener("click", this.onClickNotification, { once: true });
     notification.addEventListener("close", this.onAutoUpdateNotificationClosed, { once: true });
   }
+
+  private onClickNotification = () => {
+    this.electronService.focusWindow().catch((e) => console.error(`Failed to focus window on notification click`, e));
+  };
 
   private getAddonNames(addons: Addon[]) {
     return _.map(addons, (addon) => addon.name);
@@ -276,14 +321,49 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private async checkQuitEnabled() {
-    const appOptions = await this._electronService.getAppOptions();
+    const appOptions = await this.electronService.getAppOptions();
     if (!appOptions.quit) {
       return;
     }
 
     console.debug("checkQuitEnabled");
-    this._electronService.quitApplication().catch((e) => console.error(e));
+    this.electronService.quitApplication().catch((e) => console.error(e));
   }
+
+  private onAddonSyncError = (error: AddonSyncError) => {
+    console.debug("onAddonSyncError", error);
+    const durationMs = 4000;
+    let errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
+      providerName: error.providerName,
+    });
+
+    if (error.addonName) {
+      errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_FULL_ERROR", {
+        providerName: error.providerName,
+        addonName: error.addonName,
+      });
+    }
+
+    if (error.innerError instanceof GitHubLimitError) {
+      const err = error.innerError;
+      const max = err.rateLimitMax;
+      const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
+      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
+        max,
+        reset,
+      });
+    } else if (
+      error.innerError instanceof GitHubFetchRepositoryError ||
+      error.innerError instanceof GitHubFetchReleasesError
+    ) {
+      const err = error.innerError as GitHubFetchRepositoryError;
+      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
+        addonName: error.addonName,
+      });
+    }
+
+    this._snackbarService.showErrorSnackbar(errorMessage);
+  };
 
   private async createAppMenu() {
     console.log("Creating app menu");
@@ -359,7 +439,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(IPC_CREATE_APP_MENU_CHANNEL, config);
+      const trayCreated = await this.electronService.invoke(IPC_CREATE_APP_MENU_CHANNEL, config);
       console.log("App menu created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);
@@ -377,7 +457,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     };
 
     try {
-      const trayCreated = await this._electronService.invoke(IPC_CREATE_TRAY_MENU_CHANNEL, config);
+      const trayCreated = await this.electronService.invoke(IPC_CREATE_TRAY_MENU_CHANNEL, config);
       console.log("Tray created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);

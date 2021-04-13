@@ -17,13 +17,16 @@ import { FooterComponent } from "./components/footer/footer.component";
 import { TitlebarComponent } from "./components/titlebar/titlebar.component";
 import { DirectiveModule } from "./directive.module";
 import { DefaultHeadersInterceptor } from "./interceptors/default-headers.interceptor";
-import { ErrorHandlerIntercepter } from "./interceptors/error-handler-intercepter";
+import { ErrorHandlerInterceptor } from "./interceptors/error-handler-interceptor";
 import { MatModule } from "./mat-module";
 import { HomeModule } from "./pages/home/home.module";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { WowUpApiService } from "./services/wowup-api/wowup-api.service";
 import { WowUpService } from "./services/wowup/wowup.service";
+import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { SharedModule } from "./shared.module";
+import { AddonService } from "./services/addons/addon.service";
+import { IconService } from "./services/icons/icon.service";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -31,7 +34,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 export function initializeApp(wowupService: WowUpService) {
-  return async () => {
+  return async (): Promise<void> => {
     await wowupService.initializeLanguage();
   };
 }
@@ -64,7 +67,7 @@ export function initializeApp(wowupService: WowUpService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [WowUpService, WowUpApiService],
+      deps: [WowUpService, WowUpApiService, AddonService, WarcraftInstallationService, IconService],
       multi: true,
     },
     {
@@ -74,7 +77,7 @@ export function initializeApp(wowupService: WowUpService) {
     },
     {
       provide: ErrorHandler,
-      useClass: ErrorHandlerIntercepter,
+      useClass: ErrorHandlerInterceptor,
       deps: [AnalyticsService],
     },
   ],

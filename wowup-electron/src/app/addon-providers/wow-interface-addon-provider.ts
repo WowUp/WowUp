@@ -3,19 +3,23 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
+import { HttpErrorResponse } from "@angular/common/http";
+
 import { ADDON_PROVIDER_WOWINTERFACE } from "../../common/constants";
-import { Addon } from "../entities/addon";
-import { WowClientType } from "../models/warcraft/wow-client-type";
+import { Addon } from "../../common/entities/addon";
+import { AddonChannelType } from "../../common/wowup/models";
+import { SourceRemovedAddonError } from "../errors";
 import { AddonDetailsResponse } from "../models/wow-interface/addon-details-response";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { WowInstallation } from "../models/wowup/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
+import { getGameVersion } from "../utils/addon.utils";
 import { convertBbcode } from "../utils/bbcode.utils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
 import { getEnumName } from "../utils/enum.utils";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -31,71 +35,76 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+  public constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
     super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
 
-  public async getDescription(clientType: WowClientType, externalId: string, addon?: Addon): Promise<string> {
-    const addonDetails = await this.getAddonDetails(externalId);
-    return convertBbcode(addonDetails.description);
+  public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
+    try {
+      const addonDetails = await this.getAddonDetails(externalId);
+      return convertBbcode(addonDetails.description);
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
   }
 
-  async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const searchResults: AddonSearchResult[] = [];
+    const errors: Error[] = [];
 
-    for (let addonId of addonIds) {
-      const result = await this.getById(addonId, clientType).toPromise();
-      if (result == null) {
-        continue;
+    for (const addonId of addonIds) {
+      try {
+        const result = await this.getById(addonId).toPromise();
+        if (result == null) {
+          continue;
+        }
+
+        searchResults.push(result);
+      } catch (error) {
+        console.error(error);
+        // Check if the addon 404d which means its deleted or missing.
+        if (error instanceof HttpErrorResponse && error.status === 404) {
+          errors.push(new SourceRemovedAddonError(addonId, error));
+        } else {
+          error.addonId = addonId;
+          errors.push(error);
+        }
       }
-
-      searchResults.push(result);
     }
 
     return {
-      errors: [],
-      searchResults: searchResults,
+      errors,
+      searchResults,
     };
   }
 
-  public async getChangelog(clientType: WowClientType, externalId: string, externalReleaseId: string): Promise<string> {
-    const addon = await this.getAddonDetails(externalId);
-    return addon.changeLog;
+  public async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
+    try {
+      const addon = await this.getAddonDetails(externalId);
+      return convertBbcode(addon.changeLog);
+    } catch (error) {
+      console.error(`Failed to get addon changelog`, error);
+      return "";
+    }
   }
 
-  public async getFeaturedAddons(clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  async searchByQuery(query: string, clientType: WowClientType): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL): Promise<AddonSearchResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
-      throw new Error(`Addon ID not found ${addonUri}`);
+      throw new Error(`Addon ID not found ${addonUri.toString()}`);
     }
 
     const addon = await this.getAddonDetails(addonId);
     if (addon == null) {
-      throw new Error(`Bad addon api response ${addonUri}`);
+      throw new Error(`Bad addon api response ${addonUri.toString()}`);
     }
 
     return this.toAddonSearchResult(addon);
   }
 
-  searchByName(
-    addonName: string,
-    folderName: string,
-    clientType: WowClientType,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    throw new Error("Method not implemented.");
-  }
-
-  public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
+  public getById(addonId: string): Observable<AddonSearchResult> {
     return from(this.getAddonDetails(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );
@@ -109,23 +118,19 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return !!addonId && !isNaN(parseInt(addonId, 10));
   }
 
-  public onPostInstall(addon: Addon): void {
-    throw new Error("Method not implemented.");
-  }
-
-  async scan(
-    clientType: WowClientType,
+  public async scan(
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    for (let addonFolder of addonFolders) {
+    for (const addonFolder of addonFolders) {
       if (!addonFolder?.toc?.wowInterfaceId) {
         continue;
       }
 
       const details = await this.getAddonDetails(addonFolder.toc.wowInterfaceId);
 
-      addonFolder.matchingAddon = this.toAddon(details, clientType, addonChannelType, addonFolder);
+      addonFolder.matchingAddon = this.toAddon(details, installation, addonChannelType, addonFolder);
     }
   }
 
@@ -143,7 +148,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       return infoUrlMatch[1];
     }
 
-    throw new Error(`Unhandled URL: ${addonUri}`);
+    throw new Error(`Unhandled URL: ${addonUri.toString()}`);
   }
 
   private getAddonDetails = async (addonId: string): Promise<AddonDetailsResponse> => {
@@ -168,7 +173,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
   private toAddon(
     response: AddonDetailsResponse,
-    clientType: WowClientType,
+    installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolder: AddonFolder
   ): Addon {
@@ -177,11 +182,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       author: response.author,
       autoUpdateEnabled: false,
       channelType: addonChannelType,
-      clientType: clientType,
+      clientType: installation.clientType,
       downloadUrl: response.downloadUri,
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
-      gameVersion: addonFolder.toc.interface,
+      gameVersion: getGameVersion(addonFolder.toc.interface),
       installedAt: new Date(),
       installedFolders: addonFolder.name,
       installedFolderList: [addonFolder.name],
@@ -198,6 +203,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       isLoadOnDemand: false,
       latestChangelog: convertBbcode(response.changeLog),
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
+      installationId: installation.id,
     };
   }
 
