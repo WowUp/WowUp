@@ -36,7 +36,7 @@
           </button>
           <div class="menu-button-divider"></div>
           <button mat-flat-button color="primary" class="chip col justify-content-center"
-            [matMenuTriggerFor]="updateAllMenu" [disabled]="enableControls === false || enableUpdateAll  === false">
+            [matMenuTriggerFor]="updateAllMenu" [disabled]="enableControls === false || (addonService.anyUpdatesAvailable$ | async)  === false">
             <mat-icon svgIcon="fas:caret-down"></mat-icon>
           </button>
         </div>

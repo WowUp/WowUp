@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject } from "rxjs";
-import { catchError, filter, first, map, mergeMap, switchMap } from "rxjs/operators";
+import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from "rxjs";
+import { catchError, filter, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
 
@@ -87,8 +87,10 @@ export class AddonService {
   private readonly _scanErrorSrc = new Subject<AddonScanError>();
   private readonly _searchErrorSrc = new Subject<GenericProviderError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
+  private readonly _anyUpdatesAvailableSrc = new BehaviorSubject<boolean>(false);
 
   private _activeInstalls: AddonUpdateEvent[] = [];
+  private _subscriptions: Subscription[] = [];
 
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
@@ -97,6 +99,7 @@ export class AddonService {
   public readonly syncError$ = this._syncErrorSrc.asObservable();
   public readonly scanError$ = this._scanErrorSrc.asObservable();
   public readonly searchError$ = this._searchErrorSrc.asObservable();
+  public readonly anyUpdatesAvailable$ = this._anyUpdatesAvailableSrc.asObservable();
 
   public constructor(
     private _addonStorage: AddonStorageService,
@@ -113,10 +116,32 @@ export class AddonService {
     this._addonProviders = addonProviderFactory.getAll();
 
     // This should keep the current update queue state snapshot up to date
-    this._addonInstalledSrc.subscribe(this.updateActiveInstall);
+    const addonInstalledSub = this.addonInstalled$
+      .pipe(
+        tap(() => {
+          this._anyUpdatesAvailableSrc.next(this.areAnyAddonsAvailableForUpdate());
+        })
+      )
+      .subscribe(this.updateActiveInstall);
+
+    const addonRemovedSub = this.addonRemoved$
+      .pipe(
+        tap(() => {
+          this._anyUpdatesAvailableSrc.next(this.areAnyAddonsAvailableForUpdate());
+        })
+      )
+      .subscribe();
+
+    const addonScanSub = this.scanUpdate$
+      .pipe(
+        tap(() => {
+          this._anyUpdatesAvailableSrc.next(this.areAnyAddonsAvailableForUpdate());
+        })
+      )
+      .subscribe();
 
     // Setup our install queue pump here
-    this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
+    const queueSub = this._installQueue.pipe(mergeMap((item) => from(this.processInstallQueue(item)), 3)).subscribe({
       next: (addonName) => {
         console.log("Install complete", addonName);
       },
@@ -136,16 +161,19 @@ export class AddonService {
           return of(undefined);
         })
       )
-      .subscribe(() => {
-        // console.debug("reconcileOrphanAddons complete");
-      });
+      .subscribe();
 
+    // When legacy installation setup is complete, migrate the addons
     this._warcraftInstallationService.legacyInstallationSrc$
       .pipe(
         first(),
         map((installations) => this.handleLegacyInstallations(installations))
       )
       .subscribe(() => console.log(`Legacy installation addons finished`));
+
+    this._anyUpdatesAvailableSrc.next(this.areAnyAddonsAvailableForUpdate());
+
+    this._subscriptions.push(addonInstalledSub, addonRemovedSub, addonScanSub, queueSub);
   }
 
   public isInstalling(addonId?: string): boolean {
@@ -997,6 +1025,8 @@ export class AddonService {
       }
     }
 
+    this._anyUpdatesAvailableSrc.next(this.areAnyAddonsAvailableForUpdate())
+
     return didSync;
   }
 
@@ -1641,5 +1671,13 @@ export class AddonService {
       addonId: addon.externalId,
       installType,
     });
+  }
+
+  private areAnyAddonsAvailableForUpdate(): boolean {
+    const updateReadyAddons = this._addonStorage.queryAll((addon) => {
+      return addon.isIgnored !== true && this.canUpdateAddon(addon);
+    });
+
+    return updateReadyAddons.length > 0;
   }
 }

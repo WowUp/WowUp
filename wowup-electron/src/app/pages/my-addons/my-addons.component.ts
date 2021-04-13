@@ -844,6 +844,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private async updateAllWithSpinner(...installations: WowInstallation[]): Promise<void> {
     this.isBusy = true;
     this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS");
+    this.enableControls = false;
 
     let addons: Addon[] = [];
     let updatedCt = 0;
@@ -885,10 +886,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     } catch (err) {
       console.error("Failed to update classic/retail", err);
       this.isBusy = false;
-      this.enableControls = this.calculateControlState();
       this._cdRef.detectChanges();
     } finally {
       this.spinnerMessage = "";
+      this.enableControls = this.calculateControlState();
     }
   }
 
