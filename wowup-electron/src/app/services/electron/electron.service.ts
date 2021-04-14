@@ -64,6 +64,7 @@ export class ElectronService {
   private readonly _customProtocolSrc = new BehaviorSubject("");
 
   private _appVersion = "";
+  private _opts: AppOptions;
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
@@ -208,21 +209,24 @@ export class ElectronService {
   }
 
   public async getAppOptions(): Promise<AppOptions> {
-    // TODO check protocols here
-    const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
-    const opts = (<any>minimist(launchArgs.slice(1), {
-      boolean: ["hidden", "quit"],
-      string: ["install"],
-    })) as AppOptions;
+    if (!this._opts) {
+      console.debug("getAppOptions");
+      // TODO check protocols here
+      const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
+      this._opts = (<any>minimist(launchArgs.slice(1), {
+        boolean: ["hidden", "quit"],
+        string: ["install"],
+      })) as AppOptions;
 
-    // Find the first protocol arg if any exist
-    const customProtocol = find(launchArgs, (arg) => isProtocol(arg));
-    if (customProtocol) {
-      // If we did get a custom protocol notify the app
-      this._customProtocolSrc.next(customProtocol);
+      // Find the first protocol arg if any exist
+      const customProtocol = find(launchArgs, (arg) => isProtocol(arg));
+      if (customProtocol) {
+        // If we did get a custom protocol notify the app
+        this._customProtocolSrc.next(customProtocol);
+      }
     }
 
-    return opts;
+    return this._opts;
   }
 
   public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
