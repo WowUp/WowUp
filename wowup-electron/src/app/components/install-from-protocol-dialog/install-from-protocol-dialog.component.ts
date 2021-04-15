@@ -142,7 +142,11 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
       }
 
       this.validWowInstallations.forEach((installation) => {
-        installation.isInstalled = this._addonService.isInstalled(this.addon.externalId, installation);
+        installation.isInstalled = this._addonService.isInstalled(
+          this.addon.externalId,
+          this.addon.providerName,
+          installation
+        );
       });
 
       if (this.validWowInstallations.length === 0) {

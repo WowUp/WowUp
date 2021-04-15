@@ -5,7 +5,7 @@
     <app-progress-spinner></app-progress-spinner>
   </div>
   <div *ngIf="ready === true">
-    <div class="row mb-3">
+    <div *ngIf="error.length === 0" class="row mb-3">
       <app-addon-thumbnail [url]="getThumbnailUrl()" [name]="getName()" [size]="60" class="pt-1 mr-3"></app-addon-thumbnail>
       <div>
         <h3 class="m-0">{{getName()}}</h3>

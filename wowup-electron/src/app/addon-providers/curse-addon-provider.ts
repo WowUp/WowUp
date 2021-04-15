@@ -107,15 +107,20 @@ export class CurseAddonProvider extends AddonProvider {
     }
 
     const addonResult = await this.getByIdBase(protocolData.addonId.toString()).toPromise();
+    for (const author of addonResult.authors) {
+      if (await this.isBlockedAuthor(author)) {
+        console.info(`Blocklist addon detected`, addonResult.name);
+        return undefined;
+      }
+    }
     console.debug("addonResult", addonResult);
     if (!addonResult) {
       throw new Error(`Failed to get addon data`);
     }
 
     const addonFileResponse = await this.getAddonFileById(protocolData.addonId, protocolData.fileId).toPromise();
-
-    // const targetFile = _.find(addonResult.latestFiles, (lf) => lf.id === protocolData.fileId);
     console.debug("targetFile", addonFileResponse);
+
     if (!addonFileResponse) {
       throw new Error("Failed to get target file");
     }

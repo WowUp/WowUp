@@ -365,7 +365,11 @@ export class AddonService {
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
     targetFile?: AddonSearchResultFile
   ): Promise<void> {
-    const existingAddon = this._addonStorage.getByExternalId(potentialAddon.externalId, installation.id);
+    const existingAddon = this._addonStorage.getByExternalId(
+      potentialAddon.externalId,
+      potentialAddon.providerName,
+      installation.id
+    );
     if (existingAddon) {
       throw new Error("Addon already installed");
     }
@@ -409,7 +413,11 @@ export class AddonService {
       onUpdate?.call(this, AddonInstallState.Installing, percent);
 
       // If the dependency is already installed, skip it
-      const existingAddon = this._addonStorage.getByExternalId(dependency.externalAddonId, addon.installationId);
+      const existingAddon = this._addonStorage.getByExternalId(
+        dependency.externalAddonId,
+        addon.providerName,
+        addon.installationId
+      );
       if (existingAddon) {
         continue;
       }
@@ -932,7 +940,11 @@ export class AddonService {
 
   private async removeDependencies(addon: Addon) {
     for (const dependency of addon.dependencies) {
-      const dependencyAddon = this.getByExternalId(dependency.externalAddonId, addon.installationId);
+      const dependencyAddon = this.getByExternalId(
+        dependency.externalAddonId,
+        addon.providerName,
+        addon.installationId
+      );
       if (!dependencyAddon) {
         console.log(`${addon.name}: Dependency not found ${dependency.externalAddonId}`);
         continue;
@@ -1025,7 +1037,7 @@ export class AddonService {
       }
     }
 
-    this._anyUpdatesAvailableSrc.next(this.areAnyAddonsAvailableForUpdate())
+    this._anyUpdatesAvailableSrc.next(this.areAnyAddonsAvailableForUpdate());
 
     return didSync;
   }
@@ -1397,7 +1409,7 @@ export class AddonService {
       throw new Error(`Provider not found: ${providerName}`);
     }
 
-    if (this.isInstalled(externalId, installation)) {
+    if (this.isInstalled(externalId, providerName, installation)) {
       throw new Error(ERROR_ADDON_ALREADY_INSTALLED);
     }
 
@@ -1476,12 +1488,12 @@ export class AddonService {
     );
   }
 
-  public getByExternalId(externalId: string, installationId: string): Addon {
-    return this._addonStorage.getByExternalId(externalId, installationId);
+  public getByExternalId(externalId: string, providerName: string, installationId: string): Addon {
+    return this._addonStorage.getByExternalId(externalId, providerName, installationId);
   }
 
-  public isInstalled(externalId: string, installation: WowInstallation): boolean {
-    return !!this.getByExternalId(externalId, installation.id);
+  public isInstalled(externalId: string, providerName: string, installation: WowInstallation): boolean {
+    return !!this.getByExternalId(externalId, providerName, installation.id);
   }
 
   public setProviderEnabled(providerName: string, enabled: boolean): void {

@@ -58,12 +58,16 @@ export class AddonStorageService {
     addons.forEach((addon) => this._store.delete(addon.id));
   }
 
-  public getByExternalId(externalId: string, installationId: string): Addon {
+  public getByExternalId(externalId: string, providerName: string, installationId: string): Addon {
     const addons: Addon[] = [];
 
     for (const result of this._store) {
       const addon = result[1] as Addon;
-      if (addon.installationId === installationId && addon.externalId === externalId) {
+      if (
+        addon.installationId === installationId &&
+        addon.externalId === externalId &&
+        addon.providerName === providerName
+      ) {
         addons.push(addon);
         break;
       }

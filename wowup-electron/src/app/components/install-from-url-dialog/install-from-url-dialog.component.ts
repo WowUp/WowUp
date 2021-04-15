@@ -127,7 +127,13 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       this.hasThumbnail = !!this.addon.thumbnailUrl;
       this.thumbnailLetter = this.addon.name.charAt(0).toUpperCase();
 
-      if (this.addonExists(importedAddon.externalId)) {
+      const addonInstalled = this._addonService.isInstalled(
+        importedAddon.externalId,
+        importedAddon.providerName,
+        this._sessionService.getSelectedWowInstallation()
+      );
+      
+      if (addonInstalled) {
         this.showInstallSuccess = true;
         this.showInstallButton = false;
         return;
@@ -172,10 +178,6 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
 
       this.showErrorMessage(message);
     }
-  }
-
-  private addonExists(externalId: string) {
-    return this._addonService.isInstalled(externalId, this._sessionService.getSelectedWowInstallation());
   }
 
   private getUrlFromQuery(): URL | undefined {

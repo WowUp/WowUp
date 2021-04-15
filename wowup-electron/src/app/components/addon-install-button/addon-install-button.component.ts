@@ -43,6 +43,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     const isInstalled = this._addonService.isInstalled(
       this.addonSearchResult.externalId,
+      this.addonSearchResult.providerName,
       this._sessionService.getSelectedWowInstallation()
     );
     this.disableButton = isInstalled;
