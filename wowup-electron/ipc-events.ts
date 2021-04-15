@@ -52,6 +52,7 @@ import {
   IPC_WRITE_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_GET_PENDING_OPEN_URLS,
 } from "./src/common/constants";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "./src/common/curse/curse-folder-scan-result";
@@ -70,6 +71,7 @@ import { addonStore } from "./stores";
 import { Transform } from "stream";
 
 let USER_AGENT = "";
+let PENDING_OPEN_URLS: string[] = [];
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -108,8 +110,20 @@ function handle(
   ipcMain.handle(channel, listener);
 }
 
+// When doing a cold start on mac, open-url will happen before the app is loaded
+export function setPendingOpenUrl(...openUrls: string[]): void {
+  PENDING_OPEN_URLS = openUrls;
+}
+
 export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
   USER_AGENT = userAgent;
+
+  // Remove the pending URLs once read so they are only able to be gotten once
+  handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
+    const urls = PENDING_OPEN_URLS;
+    PENDING_OPEN_URLS = [];
+    return urls;
+  });
 
   handle(
     IPC_SHOW_DIRECTORY,

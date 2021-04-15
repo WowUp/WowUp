@@ -70,6 +70,7 @@ export const IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT = "remove-as-default-protocol
 export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
 export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
+export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";

@@ -21,6 +21,7 @@ import {
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
+  IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_ZOOM_FACTOR,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_MAXIMIZE_WINDOW,
@@ -64,6 +65,7 @@ export class ElectronService {
   private readonly _customProtocolSrc = new BehaviorSubject("");
 
   private _appVersion = "";
+  private _opts: AppOptions;
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
@@ -207,22 +209,36 @@ export class ElectronService {
     return this.invoke(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, protocol);
   }
 
-  public async getAppOptions(): Promise<AppOptions> {
-    // TODO check protocols here
-    const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
-    const opts = (<any>minimist(launchArgs.slice(1), {
-      boolean: ["hidden", "quit"],
-      string: ["install"],
-    })) as AppOptions;
+  // Check for any URLs that were available at app launch on Mac
+  public async processPendingOpenUrls(): Promise<void> {
+    const pendingUrls: string[] = await this.invoke(IPC_GET_PENDING_OPEN_URLS);
+    for (const pendingUrl of pendingUrls) {
+      if (isProtocol(pendingUrl)) {
+        // If we did get a custom protocol notify the app
+        this._customProtocolSrc.next(pendingUrl);
+      }
+    }
+  }
 
-    // Find the first protocol arg if any exist
-    const customProtocol = find(launchArgs, (arg) => isProtocol(arg));
-    if (customProtocol) {
-      // If we did get a custom protocol notify the app
-      this._customProtocolSrc.next(customProtocol);
+  public async getAppOptions(): Promise<AppOptions> {
+    if (!this._opts) {
+      console.debug("getAppOptions");
+      // TODO check protocols here
+      const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
+      this._opts = (<any>minimist(launchArgs.slice(1), {
+        boolean: ["hidden", "quit"],
+        string: ["install"],
+      })) as AppOptions;
+
+      // Find the first protocol arg if any exist
+      const customProtocol = find(launchArgs, (arg) => isProtocol(arg));
+      if (customProtocol) {
+        // If we did get a custom protocol notify the app
+        this._customProtocolSrc.next(customProtocol);
+      }
     }
 
-    return opts;
+    return this._opts;
   }
 
   public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
