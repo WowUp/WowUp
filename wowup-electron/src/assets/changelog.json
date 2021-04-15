@@ -1,6 +1,15 @@
 {
   "ChangeLogs": [
     {
+      "Version": "2.2.0-beta.26",
+      "changes": [
+        "Korean locale updates (Jaehyuk-Lee)",
+        "Fix an issue with startup args being processed multiple times",
+        "Fix an issue with starting via protocol link not working on Mac",
+        "Fix an issue causing the incorrect addon to show as 'Installed' on Get Addons tab"
+      ]
+    },
+    {
       "Version": "2.2.0-beta.25",
       "changes": [
         "Chinese locale updates (CyanoHao)",
