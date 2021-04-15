@@ -402,22 +402,19 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._cdRef.detectChanges();
   }
 
-  /** Handle when the user clicks the clear button on the filter input box */
+  // Handle when the user clicks the clear button on the filter input box
   public onClearFilter(): void {
     this.filter = "";
     this.filterInput$.next(this.filter);
   }
 
-  // TODO change this to rely on addon service now view models
+  // Handle when the user clicks the update all button
   public async onUpdateAll(): Promise<void> {
     this.enableControls = false;
 
     const addons = await this.addonService.getAddons(this.selectedInstallation, false);
     try {
-      const filteredAddons = _.filter(
-        addons,
-        (addon) => !addon.isIgnored && (!addon.installedVersion || addon.latestVersion !== addon.installedVersion)
-      );
+      const filteredAddons = _.filter(addons, (addon) => this.addonService.canUpdateAddon(addon));
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
@@ -435,6 +432,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.enableControls = this.calculateControlState();
   }
 
+  // Handle when the user clicks the update all retail/classic button
   public onUpdateAllRetailClassic(): void {
     const installations = this.warcraftInstallationService
       .getWowInstallations()
@@ -445,6 +443,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }
 
+  // Handle when the user clicks update all clients button
   public onUpdateAllClients(): void {
     this.updateAllWithSpinner(...this.warcraftInstallationService.getWowInstallations()).catch((e) => console.error(e));
   }

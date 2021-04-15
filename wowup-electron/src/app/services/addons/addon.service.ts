@@ -485,7 +485,7 @@ export class AddonService {
   }
 
   public canUpdateAddon(addon: Addon): boolean {
-    return addon.installedVersion && addon.installedVersion !== addon.latestVersion;
+    return addon.isIgnored === false && addon.installedVersion && addon.installedVersion !== addon.latestVersion;
   }
 
   public getAutoUpdateEnabledAddons(): Addon[] {
