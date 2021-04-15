@@ -153,9 +153,9 @@
     },
     "DOWNLOAD_COUNT": {
       "e+0": "{myriadCount}",
-      "e+1": "{myriadCount}십",
-      "e+2": "{myriadCount}백",
-      "e+3": "{myriadCount}천",
+      "e+1": "{myriadCount}",
+      "e+2": "{myriadCount}",
+      "e+3": "{myriadCount}",
       "e+4": "{myriadCount}만",
       "e+5": "{myriadCount}만",
       "e+6": "{myriadCount}만",
