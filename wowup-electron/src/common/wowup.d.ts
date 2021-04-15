@@ -62,7 +62,8 @@ declare type RendererChannels =
   | "remove-as-default-protocol-client"
   | "read-file-buffer"
   | "addons-save-all"
-  | "focus-window";
+  | "focus-window"
+  | "get-pending-open-urls";
 
 declare global {
   interface Window {

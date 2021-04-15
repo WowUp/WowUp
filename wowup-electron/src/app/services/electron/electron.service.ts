@@ -21,6 +21,7 @@ import {
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
+  IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_ZOOM_FACTOR,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_MAXIMIZE_WINDOW,
@@ -206,6 +207,17 @@ export class ElectronService {
 
   public async removeAsDefaultProtocolClient(protocol: string): Promise<boolean> {
     return this.invoke(IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT, protocol);
+  }
+
+  // Check for any URLs that were available at app launch on Mac
+  public async processPendingOpenUrls(): Promise<void> {
+    const pendingUrls: string[] = await this.invoke(IPC_GET_PENDING_OPEN_URLS);
+    for (const pendingUrl of pendingUrls) {
+      if (isProtocol(pendingUrl)) {
+        // If we did get a custom protocol notify the app
+        this._customProtocolSrc.next(pendingUrl);
+      }
+    }
   }
 
   public async getAppOptions(): Promise<AppOptions> {

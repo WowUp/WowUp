@@ -143,6 +143,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           this.quitEnabled = appOptions.quit;
           this._cdRef.detectChanges();
         }),
+        switchMap(() => from(this.electronService.processPendingOpenUrls())),
         catchError((err) => {
           console.error(err);
           return of(undefined);

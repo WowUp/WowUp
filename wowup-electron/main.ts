@@ -9,7 +9,7 @@ import { inspect } from "util";
 
 import { createAppMenu } from "./app-menu";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
-import { initializeIpcHandlers } from "./ipc-events";
+import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import {
   APP_USER_MODEL_ID,
@@ -186,7 +186,8 @@ if (platform.isMac) {
     if (isProtocol(url)) {
       evt.preventDefault();
       log.info(`Custom protocol detected: ${url}`);
-      win.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, url);
+      win?.webContents.send(IPC_CUSTOM_PROTOCOL_RECEIVED, url);
+      setPendingOpenUrl(url);
     }
   });
 }
