@@ -248,7 +248,7 @@
       "TITLE": "Instalar addon desde URL"
     },
     "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
+      "TITLE": "Notas de la versión {versionNumber}"
     },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "La ruta indicada no parece contener un cliente de World of Warcraft válido:\n{selectedPath}"
