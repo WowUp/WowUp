@@ -96,7 +96,7 @@ export const BLIZZARD_AGENT_PATH_KEY = "blizzard_agent_path";
 export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
-export const PROTOCOL_REGISTERED_PREFERENCE_KEY = "protocol_registered";
+export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";

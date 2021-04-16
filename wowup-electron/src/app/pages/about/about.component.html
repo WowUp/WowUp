@@ -35,6 +35,7 @@
           <div class="version  mat-subheading-2">{{ cl.Version }}</div>
           <pre *ngIf="cl.Description" class="description selectable">{{ cl.Description }}</pre>
           <pre *ngIf="cl.changes" class="description selectable">{{ formatChanges(cl) }}</pre>
+          <div *ngIf="cl.html" [innerHTML]="cl.html | trustHtml"></div>
         </li>
       </ul>
     </div>

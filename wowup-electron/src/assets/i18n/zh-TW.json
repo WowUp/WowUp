@@ -247,6 +247,9 @@
       "SUPPORTED_SOURCES": "支援 WowInterface 和 GitHub",
       "TITLE": "從 URL 安裝"
     },
+    "NEW_VERSION_POPUP": {
+      "TITLE": "Patch Notes {versionNumber}"
+    },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "此路徑可能不是有效的《魔獸世界》應用程式：\n{selectedPath}"
     },

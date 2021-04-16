@@ -247,6 +247,9 @@
       "SUPPORTED_SOURCES": "(Supporta WowInterface e GitHub)",
       "TITLE": "Installa un Addon tramite URL"
     },
+    "NEW_VERSION_POPUP": {
+      "TITLE": "Patch Notes {versionNumber}"
+    },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },

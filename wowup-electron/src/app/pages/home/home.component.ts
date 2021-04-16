@@ -1,5 +1,5 @@
 import { from, Subscription } from "rxjs";
-import { filter, first, map, switchMap, tap } from "rxjs/operators";
+import { filter, first, map, switchMap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -13,18 +13,19 @@ import {
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
+import { PatchNotesDialogComponent } from "../../components/patch-notes-dialog/patch-notes-dialog.component";
 import { AddonScanError } from "../../errors";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { SessionService } from "../../services/session/session.service";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getProtocol } from "../../utils/string.utils";
-import { AddonInstallState } from "../../models/wowup/addon-install-state";
-import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { SnackbarService } from "../../services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-home",
@@ -119,7 +120,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         first(),
         switchMap((installations) => {
           return from(this.migrateAddons(installations)).pipe(map(() => installations));
-        })
+        }),
+        map(() => this.showNewVersionNotesPopup())
       )
       .subscribe(() => {
         this.appReady = true;
@@ -153,6 +155,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private destroyAppUpdateCheck() {
     window.clearInterval(this._appUpdateInterval);
     this._appUpdateInterval = undefined;
+  }
+
+  private async showNewVersionNotesPopup(): Promise<void> {
+    const shouldShow = await this._wowupService.shouldShowNewVersionNotes();
+    if (!shouldShow) {
+      return;
+    }
+
+    await this._dialogFactory.getDialog(PatchNotesDialogComponent).afterClosed().toPromise();
+    await this._wowupService.setNewVersionNotes();
   }
 
   private async migrateAddons(installations: WowInstallation[]) {

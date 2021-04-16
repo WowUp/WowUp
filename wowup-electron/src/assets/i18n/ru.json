@@ -247,6 +247,9 @@
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",
       "TITLE": "Ссылка на установку модификации"
     },
+    "NEW_VERSION_POPUP": {
+      "TITLE": "Patch Notes {versionNumber}"
+    },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "Данный путь является неверным для приложения World of Warcraft:\n{selectedPath}"
     },

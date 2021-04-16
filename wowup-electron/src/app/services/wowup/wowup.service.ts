@@ -30,7 +30,6 @@ import {
   HORDE_LIGHT_THEME,
   HORDE_THEME,
   IPC_GET_APP_VERSION,
-  PROTOCOL_REGISTERED_PREFERENCE_KEY,
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
   MY_ADDONS_SORT_ORDER,
@@ -40,6 +39,7 @@ import {
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
+  UPDATE_NOTES_POPUP_VERSION_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/models";
@@ -324,6 +324,16 @@ export class WowUpService {
   public getClientDefaultAddonChannelKey(clientType: WowClientType): string {
     const typeName = getEnumName(WowClientType, clientType);
     return `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
+  }
+
+  public async shouldShowNewVersionNotes(): Promise<boolean> {
+    const popupVersion = this._preferenceStorageService.get(UPDATE_NOTES_POPUP_VERSION_KEY);
+    return popupVersion !== (await this._electronService.getVersionNumber());
+  }
+
+  public async setNewVersionNotes(): Promise<void> {
+    const versionNumber = await this._electronService.getVersionNumber();
+    this._preferenceStorageService.set(UPDATE_NOTES_POPUP_VERSION_KEY, versionNumber);
   }
 
   public async shouldMigrateAddons(): Promise<boolean> {

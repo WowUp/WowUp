@@ -247,6 +247,9 @@
       "SUPPORTED_SOURCES": "WowInterface 와 GitHub 주소가 지원됩니다",
       "TITLE": "설치할 애드온 URL 주소"
     },
+    "NEW_VERSION_POPUP": {
+      "TITLE": "Patch Notes {versionNumber}"
+    },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },

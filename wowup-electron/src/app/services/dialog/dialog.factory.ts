@@ -25,7 +25,7 @@ export class DialogFactory {
     });
   }
 
-  public getErrorDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
+  public getAlertDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
     return this._dialog.open(AlertDialogComponent, {
       minWidth: 250,
       data: {
@@ -33,6 +33,10 @@ export class DialogFactory {
         message,
       },
     });
+  }
+
+  public getErrorDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
+    return this.getAlertDialog(title, message);
   }
 
   public getPotentialAddonDetailsDialog(
