@@ -248,7 +248,7 @@
       "TITLE": "Installation eines Addons über eine externe URL"
     },
     "NEW_VERSION_POPUP": {
-      "TITLE": "Patch Notes {versionNumber}"
+      "TITLE": "Neu in Version {versionNumber}"
     },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "Dies scheint keine gültige World of Warcraft-Anwendung zu sein:\n{selectedPath}"
