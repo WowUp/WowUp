@@ -328,7 +328,7 @@ export class TukUiAddonProvider extends AddonProvider {
     }
 
     try {
-      const cacheKey = `${this.name}_all_addons_${this.getAddonsSuffixWowUp(clientType)}`;
+      const cacheKey = `${this.name}_all_addons_${this.getAddonsCacheType(clientType)}`;
       const addons = await this._cachingService.transaction(cacheKey, () => this.fetchApiResults(clientType));
       return addons;
     } catch (err) {
@@ -394,8 +394,9 @@ export class TukUiAddonProvider extends AddonProvider {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return "classic-addons";
+      case WowClientType.ClassicBeta:
+        return "classic-tbc-addons";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
@@ -405,12 +406,13 @@ export class TukUiAddonProvider extends AddonProvider {
     }
   }
 
-  private getAddonsSuffixWowUp(clientType: WowClientType) {
+  private getAddonsCacheType(clientType: WowClientType) {
     switch (clientType) {
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
         return "classic";
+      case WowClientType.ClassicBeta:
+        return "tbc";
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
