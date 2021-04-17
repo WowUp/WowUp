@@ -871,10 +871,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       for (const addon of addons) {
         updatedCt += 1;
 
+        // Find the installation for this addon so we can show the correct name
+        const installation = installations.find((inst) => inst.id === addon.installationId);
+
         this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME", {
           updateCount: updatedCt,
           addonCount: addons.length,
-          clientType: getEnumName(WowClientType, addon.clientType),
+          clientType: installation.label,
           addonName: addon.name,
         });
 
