@@ -2,7 +2,7 @@ import * as Store from "electron-store";
 
 import { Injectable } from "@angular/core";
 
-import { IPC_ADDONS_SAVE_ALL } from "../../../common/constants";
+import { IPC_ADDONS_SAVE_ALL, ADDON_STORE_NAME, IPC_STORE_SET_OBJECT, IPC_STORE_GET_OBJECT } from "../../../common/constants";
 import { Addon } from "../../../common/entities/addon";
 import { ElectronService } from "../electron/electron.service";
 
@@ -37,12 +37,16 @@ export class AddonStorageService {
     // addons.forEach((addon) => this.set(addon.id, addon));
   }
 
+  public setAsync(key: string, value: Addon): Promise<void> {
+    return this._electronService.invoke(IPC_STORE_SET_OBJECT, ADDON_STORE_NAME, key, value);
+  }
+
   public set(key: string, value: Addon): void {
     this._store.set(key, value);
   }
 
-  public get(key: string): Addon {
-    return this._store.get(key) as Addon;
+  public get(key: string): Promise<Addon> {
+    return this._electronService.invoke(IPC_STORE_GET_OBJECT, ADDON_STORE_NAME, key);
   }
 
   public removeAll(...addons: Addon[]): void {

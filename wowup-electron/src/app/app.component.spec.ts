@@ -23,6 +23,7 @@ import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { AnimatedLogoComponent } from "./components/animated-logo/animated-logo.component";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
+import { ZoomService } from "./services/zoom/zoom.service";
 
 describe("AppComponent", () => {
   let addonServiceSpy: AddonService;
@@ -34,6 +35,7 @@ describe("AppComponent", () => {
   let preferenceStorageSpy: PreferenceStorageService;
   let wowUpAddonServiceSpy: WowUpAddonService;
   let warcraftInstallationService: WarcraftInstallationService;
+  let zoomService: ZoomService;
 
   beforeEach(async () => {
     wowUpAddonServiceSpy = jasmine.createSpyObj(
@@ -49,8 +51,10 @@ describe("AppComponent", () => {
     });
 
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
-      wowInstallations$: new Subject()
+      wowInstallations$: new Subject(),
     });
+
+    zoomService = jasmine.createSpyObj("ZoomService", [""], {});
 
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["invoke", "on", "off"], {
       appOptions: { quit: null },
@@ -104,6 +108,7 @@ describe("AppComponent", () => {
             { provide: PreferenceStorageService, useValue: preferenceStorageSpy },
             { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
             { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
+            { provide: ZoomService, useValue: zoomService },
           ],
         },
       })

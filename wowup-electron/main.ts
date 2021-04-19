@@ -36,7 +36,7 @@ import {
 } from "./src/common/constants";
 import { MainChannels } from "./src/common/wowup";
 import { AppOptions } from "./src/common/wowup/models";
-import { preferenceStore } from "./stores";
+import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
 import { windowStateManager } from "./window-state";
 
 // LOGGING SETUP
@@ -264,6 +264,7 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow(windowOptions);
 
   initializeIpcHandlers(win, USER_AGENT);
+  initializeStoreIpcHandlers(win);
   initializeAppUpdater(win);
   initializeAppUpdateIpcHandlers(win);
 

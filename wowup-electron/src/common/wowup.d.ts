@@ -63,7 +63,9 @@ declare type RendererChannels =
   | "read-file-buffer"
   | "addons-save-all"
   | "focus-window"
-  | "get-pending-open-urls";
+  | "get-pending-open-urls"
+  | "store-get-object"
+  | "store-set-object";
 
 declare global {
   interface Window {

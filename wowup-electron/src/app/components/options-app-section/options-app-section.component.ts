@@ -25,6 +25,7 @@ import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ZOOM_SCALE } from "../../utils/zoom.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { ZoomService } from "../../services/zoom/zoom.service";
 
 interface LocaleListItem {
   localeId: string;
@@ -94,6 +95,7 @@ export class OptionsAppSectionComponent implements OnInit {
     private _dialogFactory: DialogFactory,
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
+    private _zoomService: ZoomService,
     public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService
@@ -122,7 +124,7 @@ export class OptionsAppSectionComponent implements OnInit {
 
     this.initScale().catch((e) => console.error(e));
 
-    this.electronService.zoomFactor$.subscribe((zoomFactor) => {
+    this._zoomService.zoomFactor$.subscribe((zoomFactor) => {
       this.currentScale = zoomFactor;
       this._cdRef.detectChanges();
     });
@@ -304,12 +306,12 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public onScaleChange = async (evt: MatSelectChange): Promise<void> => {
     const newScale = evt.value;
-    await this.electronService.setZoomFactor(newScale);
+    await this._zoomService.setZoomFactor(newScale);
     this.currentScale = newScale;
   };
 
   private async updateScale() {
-    this.currentScale = await this.electronService.getZoomFactor();
+    this.currentScale = await this._zoomService.getZoomFactor();
   }
 
   private setProtocolHandler(protocol: string, enabled: boolean): Promise<boolean> {

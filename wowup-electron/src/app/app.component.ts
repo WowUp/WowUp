@@ -50,6 +50,7 @@ import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
+import { ZoomService } from "./services/zoom/zoom.service";
 
 @Component({
   selector: "app-root",
@@ -68,9 +69,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
       if (event.wheelDelta > 0) {
-        await this.electronService.applyZoom(ZoomDirection.ZoomIn);
+        await this._zoomService.applyZoom(ZoomDirection.ZoomIn);
       } else {
-        await this.electronService.applyZoom(ZoomDirection.ZoomOut);
+        await this._zoomService.applyZoom(ZoomDirection.ZoomOut);
       }
     } catch (e) {
       console.error(e);
@@ -93,6 +94,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _wowupAddonService: WowUpAddonService,
     private _snackbarService: SnackbarService,
     private _warcraftInstallationService: WarcraftInstallationService,
+    private _zoomService: ZoomService,
     public overlayContainer: OverlayContainer,
     public wowUpService: WowUpService
   ) {
@@ -107,7 +109,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   public ngOnInit(): void {
     const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
     if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
-      this.electronService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
+      this._zoomService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
     }
 
     this.overlayContainer.getContainerElement().classList.add(this.electronService.platform);
@@ -189,15 +191,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onMenuZoomIn = (): void => {
-    this.electronService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
+    this._zoomService.applyZoom(ZoomDirection.ZoomIn).catch((e) => console.error(e));
   };
 
   public onMenuZoomOut = (): void => {
-    this.electronService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
+    this._zoomService.applyZoom(ZoomDirection.ZoomOut).catch((e) => console.error(e));
   };
 
   public onMenuZoomReset = (): void => {
-    this.electronService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
+    this._zoomService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
   };
 
   public onRequestInstallFromUrl = (evt: any, path?: string): void => {

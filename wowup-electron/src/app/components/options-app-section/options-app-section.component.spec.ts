@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../mat-module";
 import { createTranslateModule } from "../../utils/test.utils";
 import { FormsModule } from "@angular/forms";
+import { ZoomService } from "../../services/zoom/zoom.service";
 
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
@@ -28,15 +29,21 @@ describe("OptionsAppSectionComponent", () => {
   let fileServiceSpy: any;
   let analyticsService: AnalyticsService;
   let analyticsServiceSpy: any;
+  let zoomService: ZoomService;
 
   beforeEach(async () => {
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
       telemetryEnabled$: new BehaviorSubject(false).asObservable(),
     });
+
+    zoomService = jasmine.createSpyObj("ZoomService", [""], {
+      zoomFactor$: new BehaviorSubject(1.0).asObservable(),
+      getZoomFactor: Promise.resolve(1.0),
+    });
+
     electronServiceSpy = jasmine.createSpyObj(
       "ElectronService",
       {
-        getZoomFactor: Promise.resolve(1.0),
         onRendererEvent: () => undefined,
         isDefaultProtocolClient: Promise.resolve(false),
       },
@@ -44,7 +51,6 @@ describe("OptionsAppSectionComponent", () => {
         isWin: false,
         isLinux: true,
         isMac: false,
-        zoomFactor$: new BehaviorSubject(1.0).asObservable(),
       }
     );
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", ["getStartWithSystem"], {
@@ -69,6 +75,7 @@ describe("OptionsAppSectionComponent", () => {
             { provide: SessionService, useValue: sessionServiceSpy },
             { provide: FileService, useValue: fileServiceSpy },
             { provide: AnalyticsService, useValue: analyticsServiceSpy },
+            { provide: ZoomService, useValue: zoomService },
           ],
         },
       })
@@ -76,11 +83,6 @@ describe("OptionsAppSectionComponent", () => {
 
     fixture = TestBed.createComponent(OptionsAppSectionComponent);
     component = fixture.componentInstance;
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    sessionService = fixture.debugElement.injector.get(SessionService);
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    fileService = fixture.debugElement.injector.get(FileService);
-    analyticsService = fixture.debugElement.injector.get(AnalyticsService);
 
     fixture.detectChanges();
   });

@@ -22,7 +22,6 @@ import {
   IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
   IPC_GET_PENDING_OPEN_URLS,
-  IPC_GET_ZOOM_FACTOR,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_MAXIMIZE_WINDOW,
   IPC_MINIMIZE_WINDOW,
@@ -35,13 +34,11 @@ import {
   IPC_RESTART_APP,
   IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_SET_LOGIN_ITEM_SETTINGS,
-  IPC_SET_ZOOM_FACTOR,
   IPC_SET_ZOOM_LIMITS,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
   IPC_WINDOW_UNMAXIMIZED,
-  ZOOM_FACTOR_KEY,
 } from "../../../common/constants";
 import { IpcRequest } from "../../../common/models/ipc-request";
 import { IpcResponse } from "../../../common/models/ipc-response";
@@ -50,8 +47,6 @@ import { ValueResponse } from "../../../common/models/value-response";
 import { MainChannels, RendererChannels } from "../../../common/wowup";
 import { AppOptions } from "../../../common/wowup/models";
 import { isProtocol } from "../../utils/string.utils";
-import { ZOOM_SCALE, ZoomDirection } from "../../utils/zoom.utils";
-import { PreferenceStorageService } from "../storage/preference-storage.service";
 
 @Injectable({
   providedIn: "root",
@@ -60,7 +55,6 @@ export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
   private readonly _ipcEventReceivedSrc = new BehaviorSubject("");
-  private readonly _zoomFactorChangeSrc = new BehaviorSubject(1.0);
   private readonly _powerMonitorSrc = new BehaviorSubject("");
   private readonly _customProtocolSrc = new BehaviorSubject("");
 
@@ -70,7 +64,6 @@ export class ElectronService {
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
   public readonly ipcEventReceived$ = this._ipcEventReceivedSrc.asObservable();
-  public readonly zoomFactor$ = this._zoomFactorChangeSrc.asObservable();
   public readonly powerMonitor$ = this._powerMonitorSrc.asObservable();
   public readonly customProtocol$ = this._customProtocolSrc.asObservable();
   public readonly isWin = process.platform === "win32";
@@ -86,7 +79,7 @@ export class ElectronService {
     return process.platform;
   }
 
-  public constructor(private _preferenceStorageService: PreferenceStorageService) {
+  public constructor() {
     // Conditional imports
     if (!this.isElectron) {
       return;
@@ -161,24 +154,6 @@ export class ElectronService {
     this.invoke(IPC_SET_ZOOM_LIMITS, 1, 1).catch((e) => {
       console.error("Failed to set zoom limits", e);
     });
-
-    window.wowup.onRendererEvent("zoom-changed", (_evt, zoomDirection: string) => {
-      this.onWindowZoomChanged(zoomDirection).catch((e) => console.error(e));
-    });
-
-    this.getZoomFactor()
-      .then((zoom) => this._zoomFactorChangeSrc.next(zoom))
-      .catch(() => console.error("Failed to set initial zoom"));
-  }
-
-  private async onWindowZoomChanged(zoomDirection: string) {
-    if (zoomDirection === "in") {
-      const factor = await this.getNextZoomInFactor();
-      await this.setZoomFactor(factor);
-    } else if (zoomDirection === "out") {
-      const factor = await this.getNextZoomOutFactor();
-      await this.setZoomFactor(factor);
-    }
   }
 
   private onWindowOnline = () => {
@@ -349,54 +324,5 @@ export class ElectronService {
 
   public openPath(path: string): Promise<string> {
     return window.wowup.openPath(path);
-  }
-
-  public applyZoom = async (zoomDirection: ZoomDirection): Promise<void> => {
-    switch (zoomDirection) {
-      case ZoomDirection.ZoomIn:
-        await this.setZoomFactor(await this.getNextZoomInFactor());
-        break;
-      case ZoomDirection.ZoomOut:
-        await this.setZoomFactor(await this.getNextZoomOutFactor());
-        break;
-      case ZoomDirection.ZoomReset:
-        await this.setZoomFactor(1.0);
-        break;
-      case ZoomDirection.ZoomUnknown:
-      default:
-        break;
-    }
-  };
-
-  public setZoomFactor = async (zoomFactor: number): Promise<void> => {
-    await this.invoke(IPC_SET_ZOOM_FACTOR, zoomFactor);
-    this._zoomFactorChangeSrc.next(zoomFactor);
-    this._preferenceStorageService.set(ZOOM_FACTOR_KEY, zoomFactor);
-  };
-
-  public getZoomFactor(): Promise<number> {
-    return this.invoke(IPC_GET_ZOOM_FACTOR);
-  }
-
-  private async getNextZoomInFactor(): Promise<number> {
-    const windowZoomFactor = await this.getZoomFactor();
-    const zoomFactor = Math.round(windowZoomFactor * 100) / 100;
-    let zoomIndex = ZOOM_SCALE.indexOf(zoomFactor);
-    if (zoomIndex == -1) {
-      return 1.0;
-    }
-    zoomIndex = Math.min(zoomIndex + 1, ZOOM_SCALE.length - 1);
-    return ZOOM_SCALE[zoomIndex];
-  }
-
-  private async getNextZoomOutFactor(): Promise<number> {
-    const windowZoomFactor = await this.getZoomFactor();
-    const zoomFactor = Math.round(windowZoomFactor * 100) / 100;
-    let zoomIndex = ZOOM_SCALE.indexOf(zoomFactor);
-    if (zoomIndex == -1) {
-      return 1.0;
-    }
-    zoomIndex = Math.max(zoomIndex - 1, 0);
-    return ZOOM_SCALE[zoomIndex];
   }
 }

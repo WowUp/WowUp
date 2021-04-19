@@ -380,7 +380,7 @@ export class AddonService {
       installation,
       targetFile
     ).toPromise();
-    this._addonStorage.set(addon.id, addon);
+    await this._addonStorage.setAsync(addon.id, addon);
 
     await this.installAddon(addon.id, onUpdate);
   }
@@ -436,7 +436,7 @@ export class AddonService {
         continue;
       }
 
-      this._addonStorage.set(dependencyAddon.id, dependencyAddon);
+      await this._addonStorage.setAsync(dependencyAddon.id, dependencyAddon);
 
       await this.installAddon(dependencyAddon.id);
     }
@@ -510,13 +510,13 @@ export class AddonService {
     return this.installOrUpdateAddon(addonId, "install", onUpdate, originalAddon);
   }
 
-  public installOrUpdateAddon(
+  public async installOrUpdateAddon(
     addonId: string,
     installType: InstallType,
     onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
     originalAddon: Addon = undefined
   ): Promise<void> {
-    const addon = this.getAddonById(addonId);
+    const addon = await this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
       throw new Error("Addon not found or invalid");
     }
@@ -568,7 +568,7 @@ export class AddonService {
     const addonId = queueItem.addonId;
     const onUpdate = queueItem.onUpdate;
 
-    const addon = this.getAddonById(addonId);
+    const addon = await this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
       throw new Error("Addon not found or invalid");
     }
@@ -669,7 +669,7 @@ export class AddonService {
         addon.name = this.getBestGuessTitle(allTocFiles);
       }
 
-      this._addonStorage.set(addon.id, addon);
+      await this._addonStorage.setAsync(addon.id, addon);
 
       this.trackInstallAction(queueItem.installType, addon);
 
@@ -865,7 +865,7 @@ export class AddonService {
     }
   }
 
-  public getAddonById(addonId: string): Addon {
+  public getAddonById(addonId: string): Promise<Addon> {
     return this._addonStorage.get(addonId);
   }
 
@@ -1070,10 +1070,10 @@ export class AddonService {
 
     const getAllResult = await addonProvider.getAll(installation, providerAddonIds);
     this.handleSyncErrors(getAllResult, addonProvider, addons);
-    this.handleSyncResults(getAllResult, addons);
+    await this.handleSyncResults(getAllResult, addons);
   }
 
-  private handleSyncResults(getAllResult: GetAllResult, addons: Addon[]) {
+  private async handleSyncResults(getAllResult: GetAllResult, addons: Addon[]): Promise<void> {
     for (const result of getAllResult.searchResults) {
       const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
       if (!addon) {
@@ -1122,7 +1122,8 @@ export class AddonService {
 
         addon.externalUrl = result.externalUrl;
       } finally {
-        this._addonStorage.set(addon.id, addon);
+        await this._addonStorage.setAsync(addon.id, addon);
+        // this._addonStorage.set(addon.id, addon);
       }
     }
   }

@@ -353,7 +353,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
       console.debug("onRefresh");
-      await this.addonService.syncInstallationAddons(this.selectedInstallation);
+      await this.addonService.syncAllClients();
+      // await this.addonService.syncInstallationAddons(this.selectedInstallation);
       await this.loadAddons(this.selectedInstallation);
       await this._wowUpAddonService.updateForInstallation(this.selectedInstallation);
     } catch (e) {

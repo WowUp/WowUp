@@ -72,6 +72,14 @@ export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 
+// IPC STORAGE
+export const IPC_STORE_GET_OBJECT = "store-get-object";
+export const IPC_STORE_SET_OBJECT = "store-set-object";
+
+// STORES
+export const ADDON_STORE_NAME = "addons";
+export const PREFERENCE_STORE_NAME = "preferences";
+
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
 export const COLLAPSE_TO_TRAY_PREFERENCE_KEY = "collapse_to_tray";
