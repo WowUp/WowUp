@@ -102,7 +102,7 @@ export class WowUpAddonProvider extends AddonProvider {
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(installation.clientType);
-    const url = new URL(`${API_URL}/addons/featured/${gameType}?count=30`);
+    const url = new URL(`${API_URL}/addons/featured/${gameType}?count=60`);
 
     const addons = await this._cachingService.transaction(
       url.toString(),

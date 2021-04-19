@@ -485,7 +485,16 @@ export class AddonService {
   }
 
   public canUpdateAddon(addon: Addon): boolean {
-    return addon.isIgnored === false && addon.installedVersion && addon.installedVersion !== addon.latestVersion;
+    if (addon.isIgnored) {
+      return false;
+    }
+
+    // Sometimes authors push out new builds without changing the toc version.
+    if (addon.externalLatestReleaseId && addon.externalLatestReleaseId !== addon.installedExternalReleaseId) {
+      return true;
+    }
+
+    return addon.installedVersion && addon.installedVersion !== addon.latestVersion;
   }
 
   public getAutoUpdateEnabledAddons(): Addon[] {
