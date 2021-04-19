@@ -617,9 +617,9 @@ export class AddonService {
       });
 
       const unzipPath = path.join(this._wowUpService.applicationDownloadsFolderPath, uuidv4());
-      unzippedDirectory = await this._fileService.unzipFile(downloadedFilePath, unzipPath);
 
       try {
+        unzippedDirectory = await this._fileService.unzipFile(downloadedFilePath, unzipPath);
         await this.installUnzippedDirectory(unzippedDirectory, installation);
       } catch (err) {
         console.error(err);
