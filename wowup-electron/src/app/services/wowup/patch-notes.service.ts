@@ -61,6 +61,10 @@ const CHANGELOGS: ChangeLog[] = [
         <li>System bar icon will now change per system theme setting on Mac</li>
         <li>Fix an issue with unzipped folders permissions on Mac</li>
         <li>Fix an issue with update all clients button being disabled when selected client had no updates</li>
+        <li>Fix an issue with not rolling back an addon update when unzipping fails</li>
+        <li>Fix an issue with rotating download links not being updated in the json store</li>
+        <li>Fix an issue with Check Updates not checking all installations</li>
+        <li>Fix an issue with Scanning ignoring disabled addon providers</li>
         <li>Fix a memory leak issue when checking for updates</li>
       </ul>
       </div>`,
