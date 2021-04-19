@@ -1019,7 +1019,7 @@ export class AddonService {
   }
 
   public async syncAddons(installation: WowInstallation, addons: Addon[]): Promise<boolean> {
-    // console.debug(`syncAddons ${installation.label}`);
+    console.info(`syncAddons ${installation.label}`);
     let didSync = true;
 
     for (const provider of this.getEnabledAddonProviders()) {
@@ -1090,6 +1090,11 @@ export class AddonService {
         addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
         addon.warningType = undefined;
 
+        // Check for a new download URL
+        if (latestFile.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
+          addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
+        }
+
         // If the release ID hasn't changed we don't really need to update the whole record
         if (!!latestFile?.externalId && latestFile.externalId === addon.externalLatestReleaseId) {
           continue;
@@ -1104,7 +1109,6 @@ export class AddonService {
 
         addon.latestVersion = latestFile.version;
         addon.releasedAt = latestFile.releaseDate;
-        addon.downloadUrl = latestFile.downloadUrl;
         addon.externalLatestReleaseId = latestFile.externalId;
         addon.name = result.name;
         addon.author = result.author;
