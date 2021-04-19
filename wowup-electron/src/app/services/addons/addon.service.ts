@@ -1273,7 +1273,7 @@ export class AddonService {
         totalCount: addonFolders.length,
       });
 
-      for (const provider of this._addonProviders) {
+      for (const provider of this.getEnabledAddonProviders()) {
         try {
           const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.toc);
           await provider.scan(installation, defaultAddonChannel, validFolders);
