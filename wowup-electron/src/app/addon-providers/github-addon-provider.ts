@@ -1,27 +1,29 @@
 import * as _ from "lodash";
-import { forkJoin, from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { from, Observable } from "rxjs";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
 import {
   AssetMissingError,
+  BurningCrusadeAssetMissingError,
   ClassicAssetMissingError,
   GitHubError,
   GitHubFetchReleasesError,
   GitHubFetchRepositoryError,
   GitHubLimitError,
-  NoReleaseFoundError,
+  SourceRemovedAddonError,
 } from "../errors";
 import { GitHubAsset } from "../models/github/github-asset";
 import { GitHubRelease } from "../models/github/github-release";
 import { GitHubRepository } from "../models/github/github-repository";
-import { WowClientType } from "../models/warcraft/wow-client-type";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { WowClientType } from "../../common/warcraft/wow-client-type";
+import { AddonChannelType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider, GetAllResult } from "./addon-provider";
+import { WowInstallation } from "../models/wowup/wow-installation";
+import { convertMarkdown } from "../utils/markdown.utlils";
 
 interface GitHubRepoParts {
   repository: string;
@@ -43,17 +45,17 @@ export class GitHubAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  constructor(private _httpClient: HttpClient) {
+  public constructor(private _httpClient: HttpClient) {
     super();
   }
 
-  public async getAll(clientType: WowClientType, addonIds: string[]): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     const searchResults: AddonSearchResult[] = [];
     const errors: Error[] = [];
 
     for (const addonId of addonIds) {
       try {
-        const result = await this.getByIdAsync(addonId, clientType);
+        const result = await this.getByIdAsync(addonId, installation.clientType);
         if (result == null) {
           continue;
         }
@@ -63,6 +65,10 @@ export class GitHubAddonProvider extends AddonProvider {
         // If we're at the limit, just give up the loop
         if (e instanceof GitHubLimitError) {
           throw e;
+        }
+
+        if (e instanceof SourceRemovedAddonError) {
+          e.addonId = addonId;
         }
 
         errors.push(e);
@@ -75,25 +81,27 @@ export class GitHubAddonProvider extends AddonProvider {
     };
   }
 
-  public async searchByUrl(addonUri: URL, clientType: WowClientType): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult> {
     const repoPath = addonUri.pathname;
     if (!repoPath) {
-      throw new Error(`Invalid URL: ${addonUri}`);
+      throw new Error(`Invalid URL: ${addonUri.toString()}`);
     }
 
     try {
       const results = await this.getReleases(repoPath);
-      const latestRelease = this.getLatestRelease(results);
-      if (!latestRelease) {
-        console.log("latestRelease results", results);
-        throw new NoReleaseFoundError(addonUri.toString());
-      }
+      // const latestRelease = this.getLatestRelease(results);
+      // if (!latestRelease) {
+      //   console.log("latestRelease results", results);
+      //   throw new NoReleaseFoundError(addonUri.toString());
+      // }
 
-      const asset = this.getValidAsset(latestRelease, clientType);
-      console.log("latestRelease", latestRelease);
-      if (asset == null) {
-        if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(clientType)) {
+      const result = this.getLatestValidAsset(results, installation.clientType, installation.defaultAddonChannelType);
+      console.log("result", result);
+      if (!result) {
+        if ([WowClientType.Classic, WowClientType.ClassicPtr].includes(installation.clientType)) {
           throw new ClassicAssetMissingError(addonUri.toString());
+        } else if ([WowClientType.ClassicBeta].includes(installation.clientType)) {
+          throw new BurningCrusadeAssetMissingError(addonUri.toString());
         } else {
           throw new AssetMissingError(addonUri.toString());
         }
@@ -106,12 +114,22 @@ export class GitHubAddonProvider extends AddonProvider {
 
       const potentialAddon: AddonSearchResult = {
         author: author,
-        downloadCount: asset.download_count,
+        downloadCount: result.asset.download_count,
         externalId: this.createExternalId(addonUri),
         externalUrl: repository.html_url,
         name: repository.name,
         providerName: this.name,
         thumbnailUrl: authorImageUrl,
+        files: [
+          {
+            channelType: result.release.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable,
+            downloadUrl: "",
+            folders: [],
+            gameVersion: "",
+            releaseDate: new Date(result.release.published_at),
+            version: result.asset.name,
+          },
+        ],
       };
 
       return potentialAddon;
@@ -126,17 +144,8 @@ export class GitHubAddonProvider extends AddonProvider {
     return `${parsed.owner}/${parsed.repository}`;
   }
 
-  public async searchByName(
-    addonName: string,
-    folderName: string,
-    clientType: WowClientType,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    return [];
-  }
-
-  public getById(addonId: string, clientType: WowClientType): Observable<AddonSearchResult> {
-    return from(this.getByIdAsync(addonId, clientType));
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+    return from(this.getByIdAsync(addonId, installation.clientType));
   }
 
   private async getByIdAsync(addonId: string, clientType: WowClientType) {
@@ -171,7 +180,7 @@ export class GitHubAddonProvider extends AddonProvider {
       gameVersion: "",
       version: asset.name,
       releaseDate: new Date(asset.created_at),
-      changelog: latestRelease.body,
+      changelog: convertMarkdown(latestRelease.body),
     };
 
     const searchResult: AddonSearchResult = {
@@ -194,6 +203,27 @@ export class GitHubAddonProvider extends AddonProvider {
 
   public isValidAddonId(addonId: string): boolean {
     return addonId.indexOf("/") !== -1;
+  }
+
+  private getLatestValidAsset(
+    releases: GitHubRelease[],
+    clientType: WowClientType,
+    channel: AddonChannelType
+  ): { asset: GitHubAsset; release: GitHubRelease } | undefined {
+    let sortedReleases = _.filter(releases, (r) => !r.draft);
+    sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
+
+    for (const release of sortedReleases) {
+      const validAsset = this.getValidAsset(release, clientType);
+      if (validAsset) {
+        return {
+          asset: validAsset,
+          release: release,
+        };
+      }
+    }
+
+    return undefined;
   }
 
   private getLatestRelease(releases: GitHubRelease[]): GitHubRelease {
@@ -222,15 +252,18 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isValidClientType(clientType: WowClientType, asset: GitHubAsset): boolean {
     const isClassic = this.isClassicAsset(asset);
+    const isBurningCrusade = this.isBurningCrusadeAsset(asset);
 
     switch (clientType) {
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
       case WowClientType.Beta:
-        return !isClassic;
+        return !isClassic && !isBurningCrusade;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
         return isClassic;
+      case WowClientType.ClassicBeta:
+        return isBurningCrusade;
       default:
         return false;
     }
@@ -238,6 +271,10 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private isClassicAsset(asset: GitHubAsset): boolean {
     return asset.name.toLowerCase().endsWith("-classic.zip");
+  }
+
+  private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
+    return asset.name.toLowerCase().endsWith("-bc.zip");
   }
 
   private getAddonName(addonId: string): string {
@@ -271,7 +308,7 @@ export class GitHubAddonProvider extends AddonProvider {
     } catch (e) {
       console.error(`Failed to get GitHub repository`, e);
       // If some other internal handler already handled this, use that error
-      if (e instanceof GitHubError) {
+      if (e instanceof GitHubError || e instanceof SourceRemovedAddonError) {
         throw e;
       }
 
@@ -297,15 +334,22 @@ export class GitHubAddonProvider extends AddonProvider {
     }
   }
 
+  private handleNotFoundError(response: HttpErrorResponse) {
+    if (response.status === 404) {
+      throw new SourceRemovedAddonError("", response);
+    }
+  }
+
   private getIntHeader(headers: HttpHeaders, key: string) {
     return parseInt(headers.get(key), 10);
   }
 
-  private async getWithRateLimit<T>(url: URL | string, defaultValue = undefined): Promise<T> {
+  private async getWithRateLimit<T>(url: URL | string): Promise<T> {
     try {
       return await this._httpClient.get<T>(url.toString()).toPromise();
     } catch (e) {
       this.handleRateLimitError(e);
+      this.handleNotFoundError(e);
       throw e;
     }
   }

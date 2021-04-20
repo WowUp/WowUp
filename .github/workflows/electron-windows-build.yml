@@ -47,7 +47,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
           CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
-        run: |
-          cd ./wowup-electron
-          npm i
-          npm run electron:publish
+        run: cd ./wowup-electron && npm i && npm run electron:publish

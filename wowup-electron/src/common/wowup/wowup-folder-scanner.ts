@@ -5,7 +5,7 @@ import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
 import { readDirRecursive, readFile, readFileAsBuffer } from "../../../file.utils";
-import { WowUpScanResult } from "./wowup-scan-result";
+import { WowUpScanResult } from "./models";
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -48,7 +48,7 @@ export class WowUpFolderScanner {
   // This map is required for solving for case sensitive mismatches from addon authors on Linux
   private _fileMap: { [key: string]: string } = {};
 
-  constructor(folderPath: string) {
+  public constructor(folderPath: string) {
     this._folderPath = folderPath;
   }
 
@@ -61,15 +61,15 @@ export class WowUpFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^\/]+)[\\\/]\1\.toc$/i;
+    return /^([^/]+)[\\/]\1\.toc$/i;
   }
 
   private get bindingsXmlRegex() {
-    return /^[^\/\\]+[\/\\]Bindings\.xml$/i;
+    return /^[^/\\]+[/\\]Bindings\.xml$/i;
   }
 
   private get bindingsXmlIncludesRegex() {
-    return /<(?:Include|Script)\s+file=[\""\""']((?:(?<!\.\.).)+)[\""\""']\s*\/>/gi;
+    return /<(?:Include|Script)\s+file=["']((?:(?<!\.\.).)+)["']\s*\/>/gi;
   }
 
   private get bindingsXmlCommentsRegex() {
@@ -95,8 +95,6 @@ export class WowUpFolderScanner {
     const hashConcat = _.orderBy(fingerprintList).join("");
     const fingerprint = this.hashString(hashConcat);
 
-    // log.info(this._folderPath, fingerprint);
-
     const result: WowUpScanResult = {
       fileFingerprints: fingerprintList,
       fingerprint,
@@ -113,7 +111,7 @@ export class WowUpFolderScanner {
     const matchingFileList: string[] = [];
     const fileInfoList: string[] = [];
 
-    for (let filePath of filePaths) {
+    for (const filePath of filePaths) {
       const input = filePath.toLowerCase().replace(parentDir.toLowerCase(), "");
 
       if (this.tocFileRegex.test(input)) {
@@ -123,8 +121,7 @@ export class WowUpFolderScanner {
       }
     }
 
-    // console.log('fileInfoList', fileInfoList.length)
-    for (let fileInfo of fileInfoList) {
+    for (const fileInfo of fileInfoList) {
       await this.processIncludeFile(matchingFileList, fileInfo);
     }
 
@@ -154,7 +151,7 @@ export class WowUpFolderScanner {
     }
 
     const dirname = path.dirname(nativePath);
-    for (let include of inclusions) {
+    for (const include of inclusions) {
       if (this.hasInvalidPathChars(include)) {
         log.debug(`Invalid include file ${nativePath}`);
         break;

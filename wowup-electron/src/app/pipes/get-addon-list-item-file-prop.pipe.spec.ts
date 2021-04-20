@@ -6,10 +6,10 @@ import { httpLoaderFactory } from "../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { Component } from "@angular/core";
 import { GetAddonListItem } from "../business-objects/get-addon-list-item";
-import { AddonChannelType } from "../models/wowup/addon-channel-type";
+import { AddonChannelType } from "../../common/wowup/models";
 
 @Component({
-  template: `<p>{{ item | getAddonListItemFileProp: "version": channel }}</p>`,
+  template: `<p>{{ item | getAddonListItemFileProp: "version":channel }}</p>`,
 })
 class TestAddonListItemFilePropComponent {
   public item: GetAddonListItem = {
@@ -27,17 +27,20 @@ describe("GetAddonListItemFilePropPipe", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TestAddonListItemFilePropComponent, GetAddonListItemFilePropPipe],
-      imports: [HttpClientModule, TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: httpLoaderFactory,
-          deps: [HttpClient],
-        },
-        compiler: {
-          provide: TranslateCompiler,
-          useClass: TranslateMessageFormatCompiler,
-        },
-      })],
+      imports: [
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useFactory: httpLoaderFactory,
+            deps: [HttpClient],
+          },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestAddonListItemFilePropComponent);

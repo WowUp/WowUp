@@ -23,7 +23,7 @@ import { WowUpApiService } from "../wowup-api/wowup-api.service";
 export class AddonProviderFactory {
   private _providers: AddonProvider[] = [];
 
-  constructor(
+  public constructor(
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _httpClient: HttpClient,

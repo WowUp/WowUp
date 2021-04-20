@@ -1,16 +1,21 @@
+import { AgGridModule } from "ag-grid-angular";
+
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { AddonDetailComponent } from "../../components/addon-detail/addon-detail.component";
 import { AddonInstallButtonComponent } from "../../components/addon-install-button/addon-install-button.component";
-import { AddonProviderBadgeComponent } from "../../components/addon-provider-badge/addon-provider-badge.component";
+import { AddonThumbnailComponent } from "../../components/addon-thumbnail/addon-thumbnail.component";
 import { AddonUpdateButtonComponent } from "../../components/addon-update-button/addon-update-button.component";
 import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
+import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
 import { CenteredSnackbarComponent } from "../../components/centered-snackbar/centered-snackbar.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
+import { DateTooltipCellComponent } from "../../components/date-tooltip-cell/date-tooltip-cell.component";
 import { FundingButtonComponent } from "../../components/funding-button/funding-button.component";
 import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
+import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
@@ -18,9 +23,11 @@ import { OptionsAddonSectionComponent } from "../../components/options-addon-sec
 import { OptionsAppSectionComponent } from "../../components/options-app-section/options-app-section.component";
 import { OptionsDebugSectionComponent } from "../../components/options-debug-section/options-debug-section.component";
 import { OptionsWowSectionComponent } from "../../components/options-wow-section/options-wow-section.component";
+import { PatchNotesDialogComponent } from "../../components/patch-notes-dialog/patch-notes-dialog.component";
 import { PotentialAddonTableColumnComponent } from "../../components/potential-addon-table-column/potential-addon-table-column.component";
 import { ProgressButtonComponent } from "../../components/progress-button/progress-button.component";
 import { ProgressSpinnerComponent } from "../../components/progress-spinner/progress-spinner.component";
+import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
 import { TelemetryDialogComponent } from "../../components/telemetry-dialog/telemetry-dialog.component";
 import { WowClientOptionsComponent } from "../../components/wow-client-options/wow-client-options.component";
 import { DirectiveModule } from "../../directive.module";
@@ -28,7 +35,9 @@ import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
 import { InterfaceFormatPipe } from "../../pipes/interface-format.pipe";
+import { NgxDatePipe } from "../../pipes/ngx-date.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
+import { TrustHtmlPipe } from "../../pipes/trust-html.pipe";
 import { SharedModule } from "../../shared.module";
 import { AboutComponent } from "../about/about.component";
 import { GetAddonsComponent } from "../get-addons/get-addons.component";
@@ -49,6 +58,7 @@ import { HomeComponent } from "./home.component";
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,
     InterfaceFormatPipe,
+    NgxDatePipe,
     GetAddonListItemFilePropPipe,
     RelativeDurationPipe,
     TelemetryDialogComponent,
@@ -56,8 +66,8 @@ import { HomeComponent } from "./home.component";
     AlertDialogComponent,
     WowClientOptionsComponent,
     InstallFromUrlDialogComponent,
+    InstallFromProtocolDialogComponent,
     AddonDetailComponent,
-    AddonProviderBadgeComponent,
     AddonInstallButtonComponent,
     GetAddonStatusColumnComponent,
     MyAddonStatusColumnComponent,
@@ -69,8 +79,33 @@ import { HomeComponent } from "./home.component";
     OptionsAddonSectionComponent,
     FundingButtonComponent,
     CenteredSnackbarComponent,
+    TableContextHeaderCellComponent,
+    CellWrapTextComponent,
+    DateTooltipCellComponent,
+    AddonThumbnailComponent,
+    PatchNotesDialogComponent,
+    TrustHtmlPipe,
   ],
-  imports: [CommonModule, SharedModule, HomeRoutingModule, MatModule, DirectiveModule, ReactiveFormsModule],
-  providers: [DatePipe, GetAddonListItemFilePropPipe, DownloadCountPipe],
+  imports: [
+    CommonModule,
+    SharedModule,
+    HomeRoutingModule,
+    MatModule,
+    DirectiveModule,
+    ReactiveFormsModule,
+    AgGridModule.withComponents([
+      PotentialAddonTableColumnComponent,
+      GetAddonStatusColumnComponent,
+      TableContextHeaderCellComponent,
+    ]),
+  ],
+  providers: [
+    DatePipe,
+    GetAddonListItemFilePropPipe,
+    DownloadCountPipe,
+    RelativeDurationPipe,
+    NgxDatePipe,
+    TrustHtmlPipe,
+  ],
 })
 export class HomeModule {}

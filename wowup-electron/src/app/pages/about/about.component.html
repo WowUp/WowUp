@@ -8,12 +8,11 @@
   </div>
   <div class="about">
     <div class="header text-1">
-      <img class="logo mt-3" src="assets/wowup_logo_purple.png" />
+      <img class="logo mt-3 mat-elevation-z2" src="assets/wowup_logo_purple.png" />
       <h2>{{ "PAGES.ABOUT.TITLE" | translate }}</h2>
       <div class="version text-2">v{{ versionNumber | async }}</div>
       <div class="link-container">
-        <a appExternalLink mat-stroked-button href="https://wowup.io" appUserActionTracker category="About"
-          action="ViewWebsite">
+        <a appExternalLink mat-stroked-button href="https://wowup.io">
           {{ "PAGES.ABOUT.WEBSITE_LINK_LABEL" | translate }}
         </a>
       </div>
@@ -34,8 +33,9 @@
       <ul class="change-log-list">
         <li class="changelog bg-secondary-4 border-primary" *ngFor="let cl of changeLogs">
           <div class="version  mat-subheading-2">{{ cl.Version }}</div>
-          <pre *ngIf="cl.Description" class="description  selectable">{{ cl.Description }}</pre>
+          <pre *ngIf="cl.Description" class="description selectable">{{ cl.Description }}</pre>
           <pre *ngIf="cl.changes" class="description selectable">{{ formatChanges(cl) }}</pre>
+          <div *ngIf="cl.html" [innerHTML]="cl.html | trustHtml"></div>
         </li>
       </ul>
     </div>

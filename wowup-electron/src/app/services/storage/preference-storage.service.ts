@@ -1,7 +1,9 @@
-import { Injectable } from "@angular/core";
 import * as Store from "electron-store";
 
-const PREFERENCE_PREFIX = "preferences";
+import { Injectable } from "@angular/core";
+
+import { IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME } from "../../../common/constants";
+import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
   providedIn: "root",
@@ -11,13 +13,13 @@ export class PreferenceStorageService {
     name: "preferences",
   });
 
-  constructor() {}
+  public constructor(private _electronService: ElectronService) {}
 
-  public query<T>(action: (items: Store) => T) {
+  public query<T>(action: (items: Store) => T): T {
     return action(this._store);
   }
 
-  public set(key: string, value: any) {
+  public set(key: string, value: any): void {
     this._store.set(key, value.toString());
   }
 
@@ -29,8 +31,12 @@ export class PreferenceStorageService {
     return this._store.get(key) as string;
   }
 
-  public setObject<T>(key: string, object: T) {
+  public setObject<T>(key: string, object: T): void {
     this._store.set(key, object);
+  }
+
+  public getObjectAsync<T>(key: string): Promise<T | undefined> {
+    return this._electronService.invoke(IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME, key);
   }
 
   public getObject<T>(key: string): T | undefined {

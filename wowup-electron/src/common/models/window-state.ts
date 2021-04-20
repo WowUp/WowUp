@@ -1,4 +1,4 @@
-import { Rectangle } from "electron/main";
+import { Rectangle } from "electron";
 
 export interface WindowState extends Rectangle {
   x: number;

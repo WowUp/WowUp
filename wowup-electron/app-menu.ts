@@ -1,7 +1,11 @@
 import * as platform from "./platform";
 import { app, BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions } from "electron";
-import { IPC_MENU_ZOOM_IN_CHANNEL, IPC_MENU_ZOOM_OUT_CHANNEL, IPC_MENU_ZOOM_RESET_CHANNEL } from "./src/common/constants";
-import { MenuConfig } from "./src/common/wowup/menu-config";
+import {
+  IPC_MENU_ZOOM_IN_CHANNEL,
+  IPC_MENU_ZOOM_OUT_CHANNEL,
+  IPC_MENU_ZOOM_RESET_CHANNEL,
+} from "./src/common/constants";
+import { MenuConfig } from "./src/common/wowup/models";
 
 function onMenuZoomIn(win: BrowserWindow) {
   win?.webContents.send(IPC_MENU_ZOOM_IN_CHANNEL);
@@ -165,7 +169,7 @@ function createMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuIte
   return [];
 }
 
-export function createAppMenu(win: BrowserWindow, config?: MenuConfig) {
+export function createAppMenu(win: BrowserWindow, config?: MenuConfig): boolean {
   const menuItems = createMenuItems(win, config);
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(menuItems));

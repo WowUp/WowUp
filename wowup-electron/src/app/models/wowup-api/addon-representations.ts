@@ -29,6 +29,8 @@ export interface WowUpAddonReleaseRepresentation {
   published_at: Date;
   addonFolders?: WowUpAddonReleaseFolderRepresentation[];
   game_type: WowGameType;
+  toc_title?: string;
+  toc_version?: string;
 }
 
 export interface WowUpAddonRepresentation {

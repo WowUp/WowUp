@@ -59,7 +59,7 @@
       "HORDE": "Орда"
     },
     "WINDOW_TITLE": "WowUp.io",
-    "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Полный экран",
+    "WINDOW_TITLE_FULLSCREEN": "WowUp.io — Полный экран",
     "WOWUP_UPDATE": {
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
       "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
@@ -74,13 +74,44 @@
     }
   },
   "COMMON": {
+    "ADDON_CATEGORIES": {
+      "ACHIEVEMENTS": "Достижения",
+      "ACTION_BARS": "Панели действий",
+      "ALL_ADDONS": "Все модификации",
+      "AUCTION_ECONOMY": "Аукцион и экономика",
+      "BAGS_INVENTORY": "Сумки и инвентарь",
+      "BOSS_ENCOUNTERS": "Сражение с боссами",
+      "BUFFS_DEBUFFS": "Баффы и дебаффы",
+      "BUNDLES": "Комплекты",
+      "CHAT_COMMUNICATION": "Чат и общение",
+      "CLASS": "Класс",
+      "COMBAT": "Бой",
+      "COMPANIONS": "Коллекционирование",
+      "DATA_EXPORT": "Экспорт данных",
+      "DEVELOPMENT_TOOLS": "Инструменты для разработки",
+      "GUILD": "Гильдия",
+      "LIBRARIES": "Библиотеки",
+      "MAIL": "Почта",
+      "MAP_MINIMAP": "Карта и мини-карта",
+      "MISCELLANEOUS": "Разное",
+      "MISSIONS": "Миссии",
+      "PLUGINS": "Плагины",
+      "PROFESSIONS": "Профессии",
+      "PVP": "PVP",
+      "QUESTS_LEVELING": "Задания и прокачка",
+      "ROLEPLAY": "Ролевая игра",
+      "TOOLTIPS": "Описания",
+      "UNIT_FRAMES": "Рамки юнитов"
+    },
     "ADDON_STATE": {
       "IGNORED": "Игнорируется",
       "INSTALL": "Установить",
+      "PENDING": "В ожидании",
       "UNINSTALL": "Удалить",
       "UNKNOWN": "",
       "UPDATE": "Обновить",
-      "UPTODATE": "Актуальная"
+      "UPTODATE": "Актуальная",
+      "WARNING": "Предупреждение"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "Резервное копирование",
@@ -92,9 +123,18 @@
       "UNINSTALLING": "Удаляется",
       "UPDATING": "Обновляется..."
     },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "Мы обнаружили неполадку с этой модификацией. Мы больше не способны обновлять эту модификацию или показывать её детали.",
+      "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация вероятно была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} обнаружил эту модификацию, но не имеет списка текущих файлов для загрузки.<br>Мы больше не способны обновлять эту модификацию или показывать её детали, пока {providerName} не исправит её.",
+      "NO_PROVIDER_FILES_TOOLTIP": "Источник этой модификации не отправляет никаких файлов"
+    },
     "CLIENT_TYPES": {
       "BETA": "Бета",
       "CLASSIC": "Классический",
+      "CLASSICBETA": "Классический Бета",
       "CLASSICPTR": "Классический PTR",
       "RETAIL": "Актуальный",
       "RETAILPTR": "Актуальный PTR"
@@ -131,8 +171,10 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Не удалось установить модификацию {addonName}. Попробуйте позже.",
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
+      "ADDON_SYNC_FULL_ERROR": "Произошла ошибка при проверке наличия обновлений для {addonName} из {providerName}, попробуйте позже.",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
       "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Не удалось проверить обновления для {addonName}.\nУбедитесь что хранилище указано верно или установите игнорирование на эту модификацию."
@@ -140,9 +182,11 @@
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
     },
+    "PROVIDER_ERROR": "Ошибка при связи с {providerName}",
     "SEARCH": {
       "NO_ADDONS": "Модификаций не найдено"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "Исполнительный файл WoW"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -167,6 +211,18 @@
       "NEGATIVE_BUTTON": "Нет",
       "POSITIVE_BUTTON": "Да"
     },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Модификация установлена!",
+      "ADDON_INSTALLING": "Установка модификации",
+      "CANCEL_BUTTON": "Закрыть",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "Для следующего протокола не была найдена модификация: {protocol}",
+        "GENERIC": "Ошибка при получении данных для протокола: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "Для следующего протокола не был установлен клиент WoW: {protocol}"
+      },
+      "INSTALL_BUTTON": "Установить",
+      "TITLE": "Установить модификацию с {providerName}"
+    },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Ссылка на модификацию",
       "ADDON_URL_INPUT_PLACEHOLDER": "Например ссылки GitHub или WowInterface",
@@ -175,10 +231,11 @@
       "DOWNLOAD_COUNT": "{textCount} {shortCount, plural, one{загрузка} few{загрузки} other{загрузок}} на {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки {message}.\n\nНеобходим верный .zip файл в выпусках, чтобы WowUp мог загрузить его.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nеобходим верный .zip файл с окончанием '-bc', чтобы WowUp мог загрузить его.",
         "CLASSIC_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-classic', чтобы WowUp мог загрузить его.",
         "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
         "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, вы можете получить помощь в канале #wowup-support нашего Discord сообщества.",
-        "INVALID_URL": "Введенное значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "INVALID_URL": "Введенное значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Модификация не была найдена, убедитесь что ваша ссылка указывает на правильную страницу.\n\nПри установке с GitHub, убедитесь, что в репозитории есть тег выпуска с zip-архивом, содержащим модификацию.",
         "NO_RELEASE_FOUND": "Не найдено выпусков для {message}.\n\nНеобходим верный выпуск с ресурсами в .zip файле, чтобы WowUp мог загрузить его.",
         "NO_SEARCH_RESULTS": "Поиск не дал результатов.",
@@ -189,6 +246,12 @@
       "INSTALL_SUCCESS_LABEL": "Установлена!",
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",
       "TITLE": "Ссылка на установку модификации"
+    },
+    "NEW_VERSION_POPUP": {
+      "TITLE": "Список изменений в версии {versionNumber}"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "Данный путь является неверным для приложения World of Warcraft:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "Хотите помочь улучшить WowUp, анонимно отправляя данные об установке и ошибках?",
@@ -205,9 +268,16 @@
       "WEBSITE_LINK_LABEL": "Посетите наш сайт!"
     },
     "GET_ADDONS": {
+      "ADDON_CATEGORIES_BUTTON": "Категории",
+      "ADDON_CATEGORIES_MENU_TITLE": "Категории модификаций",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Категория: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Просматривайте различные категории",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "INSTALL_FROM_URL_BUTTON": "Установить по ссылке",
+      "INSTALL_FROM_URL_TOOLTIP": "Установить модификацию по ссылке",
       "REFRESH_BUTTON": "Обновить",
+      "REFRESH_TOOLTIP": "Обновить результаты модификаций",
+      "RESET_CATEGORY_TOOLTIP": "Сбросить категорию",
       "SEARCH_LABEL": "Искать",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Модификация",
@@ -301,6 +371,7 @@
         "DEPENDENCY_TITLE": "Удалить зависимости модификации?",
         "TITLE": "Удалить {count, plural, one{модификацию} other{модификации}}?"
       },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "Установленная модификация не соответствует ни одному из известных источников",
       "UPDATE_ALL_BUTTON": "Обновить всё",
       "UPDATE_ALL_BUTTON_TOOLTIP": "Обновить все модификации для этого клиента",
       "UPDATE_ALL_CONTEXT_MENU": {
@@ -319,11 +390,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
+        "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
+        "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "При закрытии окна WowUp сворачивается в область уведомлений панели задач.",
         "MINIMIZE_ON_CLOSE_LABEL": "Свернуть в трей при закрытии",
+        "PROTOCOL_DESCRIPTION": "WowUp может зарегистрировать протокол в вашей системе и обрабатывать его запросы",
+        "PROTOCOL_LABEL": "Включить обработку протокола wowup://",
         "SCALE_DESCRIPTION": "Изменить масштаб всего приложения.",
         "SCALE_LABEL": "Масштабирование",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Изменение языка по умолчанию требует перезапуска приложения.",
@@ -339,11 +414,17 @@
         "THEME_DESCRIPTION": "Изменить цветовую тему по вкусу",
         "THEME_LABEL": "Цветовая тема",
         "TITLE": "Приложение",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp может установить себя обработчиком установочных ссылок с CurseForge по умолчанию. Это может вызвать неполадки если вы используете приложение CurseForge, вы уверены что хотите продолжить?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Обрабатывать установки с CurseForge?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Хотите перезапустить приложение?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "Для отключения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Для включения аппаратного ускорения нужен перезапуск приложения.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение"
+        "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение",
+        "USE_SYMLINK_SUPPORT": "Включить поддержку символических ссылок",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Включение поддержки символических ссылок позволит WowUp распознавать их при повторном сканировании. Предупреждение: Если вы не знаете что такое символическая ссылка, то скорее всего вам это не нужно. При обновлении символические ссылки в настоящее время будут заменены фактической папкой, и ссылка будет потеряна.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Включить поддержку символических ссылок?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке вашей модификации. Предупреждение: они будут заменены при обновлении/установке."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
@@ -361,8 +442,10 @@
         "DEBUG": "Отладка"
       },
       "WOW": {
+        "ADD_CLIENT_BUTTON": "Добавить новый",
         "AUTO_UPDATE_DESCRIPTION": "Новые установленные модификации будут автоматически обновляться по умолчанию",
         "AUTO_UPDATE_LABEL": "Автообновление",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Отмена",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "Вы точно хотите очистить путь установки для {clientName}? Это удалит всю хранимую информацию модификации для этого клиента.\n\nПапки ваших модификаций не будут удалены.",
           "TITLE": "Очистить место установки?"
@@ -371,9 +454,12 @@
         "CLIENT_TYPE_PATH_LABEL": "Путь для {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Тип выпуска модификации",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Изменить",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Удалить",
         "RESCAN_CLIENTS_BUTTON": "Повторное сканирование",
         "RESCAN_CLIENTS_LABEL": "Повторно найти установленные продукты World of Warcraft",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Сохранить",
         "TITLE": "World of Warcraft"
       }
     }

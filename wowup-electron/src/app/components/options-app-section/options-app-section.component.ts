@@ -1,23 +1,31 @@
+import { from, of } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
+
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatSelectChange } from "@angular/material/select";
 import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
-import { ElectronService } from "../../services";
-import { AnalyticsService } from "../../services/analytics/analytics.service";
-import { SessionService } from "../../services/session/session.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { ThemeGroup } from "../../models/wowup/theme";
-import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
+  APP_PROTOCOL_NAME,
+  CURSE_PROTOCOL_NAME,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
 } from "../../../common/constants";
+import { ThemeGroup } from "../../models/wowup/theme";
+import { ElectronService } from "../../services";
+import { AnalyticsService } from "../../services/analytics/analytics.service";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
+import { SessionService } from "../../services/session/session.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 import { ZOOM_SCALE } from "../../utils/zoom.utils";
+import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { ZoomService } from "../../services/zoom/zoom.service";
 
 interface LocaleListItem {
   localeId: string;
@@ -30,10 +38,15 @@ interface LocaleListItem {
   styleUrls: ["./options-app-section.component.scss"],
 })
 export class OptionsAppSectionComponent implements OnInit {
+  public readonly curseProtocolName = CURSE_PROTOCOL_NAME;
+  public readonly wowupProtocolName = APP_PROTOCOL_NAME;
+
   public collapseToTray = false;
   public minimizeOnCloseDescription = "";
   public startMinimized = false;
   public startWithSystem = false;
+  public protocolRegistered = false;
+  public useSymlinkMode = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
   public currentLanguage = "";
@@ -73,17 +86,22 @@ export class OptionsAppSectionComponent implements OnInit {
     },
   ];
 
-  constructor(
+  public curseforgeProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(CURSE_PROTOCOL_NAME));
+  public wowupProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(APP_PROTOCOL_NAME));
+
+  public constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
+    private _dialogFactory: DialogFactory,
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
+    private _zoomService: ZoomService,
     public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this._analyticsService.telemetryEnabled$.subscribe((enabled) => {
       this.telemetryEnabled = enabled;
     });
@@ -102,13 +120,21 @@ export class OptionsAppSectionComponent implements OnInit {
     this.startWithSystem = this.wowupService.getStartWithSystem();
     this.startMinimized = this.wowupService.startMinimized;
     this.currentLanguage = this.wowupService.currentLanguage;
+    this.useSymlinkMode = this.wowupService.useSymlinkMode;
 
     this.initScale().catch((e) => console.error(e));
 
-    this.electronService.zoomFactor$.subscribe((zoomFactor) => {
+    this._zoomService.zoomFactor$.subscribe((zoomFactor) => {
       this.currentScale = zoomFactor;
       this._cdRef.detectChanges();
     });
+
+    this.electronService
+      .isDefaultProtocolClient(APP_PROTOCOL_NAME)
+      .then((isDefault) => {
+        this.protocolRegistered = isDefault;
+      })
+      .catch((e) => console.error(e));
   }
 
   private async initScale() {
@@ -118,19 +144,19 @@ export class OptionsAppSectionComponent implements OnInit {
     });
   }
 
-  onEnableSystemNotifications = (evt: MatSlideToggleChange): void => {
+  public onEnableSystemNotifications = (evt: MatSlideToggleChange): void => {
     this.wowupService.enableSystemNotifications = evt.checked;
   };
 
-  onTelemetryChange = (evt: MatSlideToggleChange): void => {
+  public onTelemetryChange = (evt: MatSlideToggleChange): void => {
     this._analyticsService.telemetryEnabled = evt.checked;
   };
 
-  onCollapseChange = (evt: MatSlideToggleChange): void => {
+  public onCollapseChange = (evt: MatSlideToggleChange): void => {
     this.wowupService.collapseToTray = evt.checked;
   };
 
-  onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
+  public onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setStartWithSystem(evt.checked);
     if (!evt.checked) {
       this.startMinimized = false;
@@ -139,34 +165,118 @@ export class OptionsAppSectionComponent implements OnInit {
     }
   };
 
-  onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
+  public onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setStartMinimized(evt.checked);
   };
 
-  onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
+  public onProtocolHandlerChange = (evt: MatSlideToggleChange, protocol: string): void => {
+    // If this is already enabled and the user wants to disable it, don't prompt
+    if (evt.checked === false) {
+      from(this.setProtocolHandler(protocol, evt.checked))
+        .pipe(
+          catchError((e) => {
+            console.error(e);
+            return of(undefined);
+          })
+        )
+        .subscribe();
+      return;
+    }
+
+    // Prompt the user that this may affect their existing CurseForge app
+    const title = this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_CURSE_PROTOCOL_CONFIRMATION_LABEL");
+    const message = this._translateService.instant(
+      "PAGES.OPTIONS.APPLICATION.USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION"
+    );
+
+    const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.checked = !evt.source.checked;
+            return of(undefined);
+          }
+
+          return from(this.setProtocolHandler(protocol, evt.checked));
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  };
+
+  public onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
+    const title = this._translateService.instant(
+      "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"
+    );
+    const message = this._translateService.instant(
+      evt.checked
+        ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
+        : "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION"
+    );
+
+    const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.checked = !evt.source.checked;
+            return of(undefined);
+          }
+
+          this.wowupService.useHardwareAcceleration = evt.checked;
+          return from(this.electronService.restartApplication());
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  };
+
+  public onSymlinkModeChange = (evt: MatSlideToggleChange): void => {
+    if (evt.checked === false) {
+      this.wowupService.useSymlinkMode = false;
+      return;
+    }
+
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"),
+        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL"),
         message: this._translateService.instant(
-          evt.checked
-            ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
-            : "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION"
+          "PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION"
         ),
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        evt.source.checked = !evt.source.checked;
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(
+        map((result) => {
+          if (!result) {
+            evt.source.checked = !evt.source.checked;
+            return of(undefined);
+          }
 
-      this.wowupService.useHardwareAcceleration = evt.checked;
-      this.electronService.restartApplication();
-    });
+          this.wowupService.useSymlinkMode = evt.checked;
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   };
 
-  onCurrentLanguageChange = (evt: MatSelectChange): void => {
+  public onCurrentLanguageChange = (evt: MatSelectChange): void => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.SET_LANGUAGE_CONFIRMATION_LABEL"),
@@ -174,24 +284,41 @@ export class OptionsAppSectionComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
-        evt.source.value = this.wowupService.currentLanguage;
-        return;
-      }
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.value = this.wowupService.currentLanguage;
+            return of(undefined);
+          }
 
-      this.wowupService.currentLanguage = evt.value;
-      this.electronService.restartApplication();
-    });
+          this.wowupService.currentLanguage = evt.value;
+          return from(this.electronService.restartApplication());
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   };
 
   public onScaleChange = async (evt: MatSelectChange): Promise<void> => {
     const newScale = evt.value;
-    await this.electronService.setZoomFactor(newScale);
+    await this._zoomService.setZoomFactor(newScale);
     this.currentScale = newScale;
   };
 
   private async updateScale() {
-    this.currentScale = await this.electronService.getZoomFactor();
+    this.currentScale = await this._zoomService.getZoomFactor();
+  }
+
+  private setProtocolHandler(protocol: string, enabled: boolean): Promise<boolean> {
+    if (enabled) {
+      return this.electronService.setAsDefaultProtocolClient(protocol);
+    } else {
+      return this.electronService.removeAsDefaultProtocolClient(protocol);
+    }
   }
 }

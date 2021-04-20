@@ -1,9 +1,10 @@
-import { Injectable } from "@angular/core";
 import * as Store from "electron-store";
-import { Addon } from "../../entities/addon";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
 
-const PREFERENCE_PREFIX = "preferences";
+import { Injectable } from "@angular/core";
+
+import { IPC_ADDONS_SAVE_ALL, ADDON_STORE_NAME, IPC_STORE_SET_OBJECT, IPC_STORE_GET_OBJECT } from "../../../common/constants";
+import { Addon } from "../../../common/entities/addon";
+import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
   providedIn: "root",
@@ -13,9 +14,9 @@ export class AddonStorageService {
     name: "addons",
   });
 
-  constructor() {}
+  public constructor(private _electronService: ElectronService) {}
 
-  public query<T>(action: (store: Store) => T) {
+  public query<T>(action: (store: Store) => T): T {
     return action(this._store);
   }
 
@@ -31,37 +32,46 @@ export class AddonStorageService {
     return addons;
   }
 
-  public saveAll(addons: Addon[]) {
-    addons.forEach((addon) => this.set(addon.id, addon));
+  public async saveAll(addons: Addon[]): Promise<void> {
+    await this._electronService.invoke(IPC_ADDONS_SAVE_ALL, addons);
+    // addons.forEach((addon) => this.set(addon.id, addon));
   }
 
-  public set(key: string, value: Addon) {
+  public setAsync(key: string, value: Addon): Promise<void> {
+    return this._electronService.invoke(IPC_STORE_SET_OBJECT, ADDON_STORE_NAME, key, value);
+  }
+
+  public set(key: string, value: Addon): void {
     this._store.set(key, value);
   }
 
-  public get(key: string): Addon {
-    return this._store.get(key) as Addon;
+  public get(key: string): Promise<Addon> {
+    return this._electronService.invoke(IPC_STORE_GET_OBJECT, ADDON_STORE_NAME, key);
   }
 
-  public removeAll(...addons: Addon[]) {
+  public removeAll(...addons: Addon[]): void {
     addons.forEach((addon) => this.remove(addon));
   }
 
-  public remove(addon: Addon) {
+  public remove(addon: Addon): void {
     this._store.delete(addon.id);
   }
 
-  public removeAllForClientType(clientType: WowClientType) {
-    const addons = this.getAllForClientType(clientType);
+  public removeAllForInstallation(installationId: string): void {
+    const addons = this.getAllForInstallationId(installationId);
     addons.forEach((addon) => this._store.delete(addon.id));
   }
 
-  public getByExternalId(externalId: string, clientType: WowClientType) {
+  public getByExternalId(externalId: string, providerName: string, installationId: string): Addon {
     const addons: Addon[] = [];
 
     for (const result of this._store) {
       const addon = result[1] as Addon;
-      if (addon.clientType === clientType && addon.externalId === externalId) {
+      if (
+        addon.installationId === installationId &&
+        addon.externalId === externalId &&
+        addon.providerName === providerName
+      ) {
         addons.push(addon);
         break;
       }
@@ -70,17 +80,26 @@ export class AddonStorageService {
     return addons[0];
   }
 
-  public getAllForClientType(clientType: WowClientType, validator?: (addon: Addon) => boolean) {
+  public getAll(): Addon[] {
     const addons: Addon[] = [];
 
-    this.query((store) => {
-      for (const result of store) {
-        const addon = result[1] as Addon;
-        if (addon.clientType === clientType && (!validator || validator(addon))) {
-          addons.push(addon);
-        }
+    for (const result of this._store) {
+      const addon = result[1] as Addon;
+      addons.push(addon);
+    }
+
+    return addons;
+  }
+
+  public getAllForInstallationId(installationId: string, validator?: (addon: Addon) => boolean): Addon[] {
+    const addons: Addon[] = [];
+
+    for (const result of this._store) {
+      const addon = result[1] as Addon;
+      if (addon.installationId === installationId && (!validator || validator(addon))) {
+        addons.push(addon);
       }
-    });
+    }
 
     return addons;
   }

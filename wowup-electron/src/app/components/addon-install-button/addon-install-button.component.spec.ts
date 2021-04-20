@@ -6,19 +6,14 @@ import { AddonInstallButtonComponent } from "./addon-install-button.component";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { httpLoaderFactory } from "../../app.module";
-import { AddonSearchResult } from "../../models/wowup/addon-search-result";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { Subject } from "rxjs";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ProgressButtonComponent } from "../progress-button/progress-button.component";
 
 describe("AddonInstallButtonComponent", () => {
-  let component: AddonInstallButtonComponent;
-  let fixture: ComponentFixture<AddonInstallButtonComponent>;
-  let addonService: AddonService;
-  let addonServiceSpy: any;
-  let sessionService: SessionService;
-  let sessionServiceSpy: any;
+  let addonServiceSpy: AddonService;
+  let sessionServiceSpy: SessionService;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj(
@@ -60,20 +55,10 @@ describe("AddonInstallButtonComponent", () => {
         },
       })
       .compileComponents();
-
-    fixture = TestBed.createComponent(AddonInstallButtonComponent);
-    component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    sessionService = fixture.debugElement.injector.get(SessionService);
-
-    component.addonSearchResult = {
-      externalId: "123123",
-    } as AddonSearchResult;
-
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(AddonInstallButtonComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

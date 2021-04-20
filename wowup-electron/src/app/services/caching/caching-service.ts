@@ -7,15 +7,15 @@ import * as NodeCache from "node-cache";
 export class CachingService {
   private readonly _cache = new NodeCache();
 
-  get<T>(key: string): T | undefined {
+  public get<T>(key: string): T | undefined {
     return this._cache.get<T>(key);
   }
 
-  set<T>(key: string, value: T, ttlSec = 600): boolean {
+  public set<T>(key: string, value: T, ttlSec = 600): boolean {
     return this._cache.set<T>(key, value, ttlSec);
   }
 
-  async transaction<T>(key: string, missingAction: () => Promise<T>, ttlSec = 600): Promise<T> {
+  public async transaction<T>(key: string, missingAction: () => Promise<T>, ttlSec = 600): Promise<T> {
     const cached = this.get<T>(key);
     if (cached !== undefined && cached !== null) {
       return cached;

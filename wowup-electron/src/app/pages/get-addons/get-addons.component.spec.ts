@@ -1,5 +1,5 @@
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
@@ -11,7 +11,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 
 import { httpLoaderFactory } from "../../app.module";
 import { MatModule } from "../../mat-module";
-import { WowClientType } from "../../models/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
@@ -20,6 +20,10 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { GetAddonsComponent } from "./get-addons.component";
 import { IconService } from "../../services/icons/icon.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { DownloadCountPipe } from "../../pipes/download-count.pipe";
+import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -34,10 +38,12 @@ describe("GetAddonsComponent", () => {
   let addonServiceSpy: any;
   let warcraftService: WarcraftService;
   let warcraftServiceSpy: any;
+  let snackbarService: SnackbarService;
+  let warcraftInstallationService: WarcraftInstallationService;
 
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
-      getAddonsHiddenColumns: [],
+      getGetAddonsHiddenColumns: () => [],
     });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),
@@ -50,9 +56,18 @@ describe("GetAddonsComponent", () => {
       isLinux: true,
       isMac: false,
     });
+    addonServiceSpy = jasmine.createSpyObj("AddonService", [""], {
+      searchError$: new Subject<Error>(),
+    });
+
+    snackbarService = jasmine.createSpyObj("SnackbarService", [""], {});
+
+    warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
+      wowInstallations$: new BehaviorSubject<any[]>([]),
+    });
 
     let testBed = TestBed.configureTestingModule({
-      declarations: [GetAddonsComponent],
+      declarations: [GetAddonsComponent, RelativeDurationPipe, DownloadCountPipe],
       imports: [
         MatModule,
         OverlayModule,
@@ -70,7 +85,7 @@ describe("GetAddonsComponent", () => {
           },
         }),
       ],
-      providers: [MatDialog],
+      providers: [MatDialog, RelativeDurationPipe, DownloadCountPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     });
 
@@ -78,11 +93,12 @@ describe("GetAddonsComponent", () => {
       set: {
         providers: [
           { provide: AddonService, useValue: addonServiceSpy },
-          { provide: WowUpService, useValue: wowUpServiceSpy },
-          { provide: ElectronService, useValue: electronServiceSpy },
           { provide: SessionService, useValue: sessionServiceSpy },
+          { provide: WowUpService, useValue: wowUpServiceSpy },
+          { provide: SnackbarService, useValue: snackbarService },
+          { provide: ElectronService, useValue: electronServiceSpy },
           { provide: WarcraftService, useValue: warcraftServiceSpy },
-          { provide: IconService },
+          { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
         ],
       },
     });

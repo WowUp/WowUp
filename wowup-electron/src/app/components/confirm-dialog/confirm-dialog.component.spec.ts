@@ -9,9 +9,6 @@ import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("ConfirmDialogComponent", () => {
-  let component: ConfirmDialogComponent;
-  let fixture: ComponentFixture<ConfirmDialogComponent>;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ConfirmDialogComponent],
@@ -36,13 +33,10 @@ describe("ConfirmDialogComponent", () => {
         { provide: MatDialogRef, useValue: {} },
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(ConfirmDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(ConfirmDialogComponent);
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

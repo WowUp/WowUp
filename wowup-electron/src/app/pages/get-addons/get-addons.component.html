@@ -3,23 +3,34 @@
     windows: electronService.isWin,
     linux: electronService.isLinux
   }">
-  <div class="control-container">
+  <div class="control-container bg-secondary-3">
     <div class="select-container">
       <mat-form-field>
         <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
-        <mat-select class="select" [(value)]="selectedClient" (selectionChange)="onClientChange()"
-          [disabled]="isBusy === true">
-          <mat-option [value]="clientType.value" *ngFor="let clientType of warcraftService.installedClientTypesSelectItems$ | async">
-            {{ clientType.display | translate }}
+        <mat-select class="select" [(value)]="selectedInstallationId" (selectionChange)="onClientChange()"
+          [disabled]="(isBusy$ | async) === true">
+          <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
+            {{ installation.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>
+    </div>
+    <div *ngIf="selectedAddonCategory.category !== addonCategory.AllAddons" class="center-container text-1">
+      <h4 class="m-0">
+        {{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_SELECTED_TITLE' | translate: {category: (selectedAddonCategory.localeKey |
+        translate)} }}
+      </h4>
+      <button mat-button color="accent" mat-icon-button aria-label="Clear Category"
+        [matTooltip]="'PAGES.GET_ADDONS.RESET_CATEGORY_TOOLTIP' | translate" (click)="resetCategory()">
+        <mat-icon svgIcon="fas:times"></mat-icon>
+      </button>
     </div>
     <div class="right-container">
       <div class="search-container">
         <mat-form-field>
           <mat-label>{{ "PAGES.GET_ADDONS.SEARCH_LABEL" | translate }}</mat-label>
-          <input matInput type="text" [(ngModel)]="query" (keyup.enter)="onSearch()" />
+          <input matInput type="text" [(ngModel)]="query" [disabled]="(isBusy$ | async) === true"
+            (keyup.enter)="onSearch()" />
           <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
             (click)="onClearSearch()">
             <mat-icon svgIcon="fas:times"></mat-icon>
@@ -27,110 +38,58 @@
         </mat-form-field>
       </div>
       <div class="button-container">
-        <button mat-flat-button color="primary" (click)="onRefresh()" appUserActionTracker category="GetAddons"
-          action="Refresh">
+        <button mat-flat-button color="primary" [matTooltip]="'PAGES.GET_ADDONS.REFRESH_TOOLTIP' | translate"
+          [disabled]="(isBusy$ | async) === true" (click)="onRefresh()">
           {{ "PAGES.GET_ADDONS.REFRESH_BUTTON" | translate }}
         </button>
-        <button mat-flat-button color="primary" (click)="onInstallFromUrl()" appUserActionTracker category="GetAddons"
-          action="InstallFromUrl">
+        <button mat-flat-button color="primary" [matTooltip]="'PAGES.GET_ADDONS.INSTALL_FROM_URL_TOOLTIP' | translate"
+          [disabled]="(isBusy$ | async) === true" (click)="onInstallFromUrl()">
           {{ "PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON" | translate }}
+        </button>
+        <button mat-flat-button color="primary" [matTooltip]="'PAGES.GET_ADDONS.ADDON_CATEGORIES_TOOLTIP' | translate"
+          [disabled]="(isBusy$ | async) === true" (click)="drawer.toggle()">
+          {{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_BUTTON' | translate }}
         </button>
       </div>
     </div>
   </div>
 
-  <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
-    <app-progress-spinner> </app-progress-spinner>
-  </div>
+  <mat-drawer-container class="wu-ag-table bg-secondary-2" [hasBackdrop]="true">
+    <mat-drawer #drawer mode="over" position="end" [autoFocus]="false" style="padding-right: 0.25em;">
+      <h3 class="px-3">{{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_MENU_TITLE' | translate }}</h3>
+      <mat-divider></mat-divider>
+      <mat-action-list>
+        <button *ngFor="let item of addonCategories" mat-list-item
+          [ngClass]="{ 'text-control': selectedAddonCategory === item }" (click)="selectedAddonCategory = item">{{
+          item.localeKey | translate }}</button>
+      </mat-action-list>
+    </mat-drawer>
+    <mat-drawer-content>
+      <div class="spinner-container flex-grow-1" style="height: 100%" *ngIf="(isBusy$ | async) === true">
+        <app-progress-spinner> </app-progress-spinner>
+      </div>
 
-  <div *ngIf="isBusy === false && dataSource.data.length === 0" class="no-addons-container flex-grow-1 text-1">
-    <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
-  </div>
+      <!-- <div *ngIf="(isBusy$ | async) === false && (hasData$ | async) === false"
+        class="no-addons-container flex-grow-1 text-1">
+        <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
+      </div> -->
 
-  <div class="table-container flex-grow-1" [hidden]="isBusy === true || dataSource.data.length === 0">
-    <table #table mat-table matSort (matSortChange)="onSortChange()" [dataSource]="dataSource"
-      [matSortActive]="activeSort" [matSortDirection]="activeSortDirection" class="mat-elevation-z8">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>
-          {{ "PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER" | translate }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          <app-potential-addon-table-column [addon]="element" [channel]="defaultAddonChannel"
-            [clientType]="selectedClient" (onViewDetails)="onAddonColumnDetailDialog($event)">
-          </app-potential-addon-table-column>
-        </td>
-      </ng-container>
+      <ag-grid-angular class="ag-theme-material" style="height: 100%; padding-right: 0.25em;"
+        [hidden]="(showTable$ | async) === false" [rowData]="rowData$ | async" [columnDefs]="columnDefs"
+        [columnTypes]="columnTypes" [rowSelection]="'single'" [frameworkComponents]="frameworkComponents"
+        [overlayNoRowsTemplate]="overlayNoRowsTemplate" [rowHeight]="63" (rowDoubleClicked)="onRowDoubleClicked($event)"
+        (rowClicked)="onRowClicked($event)" (gridReady)="onGridReady($event)">
+      </ag-grid-angular>
+    </mat-drawer-content>
+  </mat-drawer-container>
 
-      <ng-container matColumnDef="downloadCount">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>
-          {{ "PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER" | translate }}
-        </th>
-        <td mat-cell *matCellDef="let element" class="cell-padding">
-          {{ element.downloadCount | downloadCount }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="releasedAt">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>
-          {{ "PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER" | translate }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          <ng-template let-releasedAt [ngTemplateOutletContext]="{
-              $implicit: element | getAddonListItemFileProp: 'releaseDate':defaultAddonChannel
-            }" [ngTemplateOutlet]="t" #t>
-            <div [matTooltip]="'COMMON.DATES.DATETIME_SHORT' | translate: { d: releasedAt }" matTooltipPosition="above"
-              matTooltipShowDelay="500">
-              {{ releasedAt | relativeDuration }}
-            </div>
-          </ng-template>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="providerName">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef class="provider-column">
-          {{ "PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER" | translate }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.providerName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="author">
-        <th mat-header-cell mat-sort-header *matHeaderCellDef>
-          <div class="author-column">
-            {{ "PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER" | translate }}
-          </div>
-        </th>
-        <td mat-cell *matCellDef="let element" class="cell-padding">
-          <div class="author-column">
-            {{ element.author }}
-          </div>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>
-          {{ "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER" | translate }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          <app-get-addon-status-column [addonSearchResult]="element.searchResult"
-            (onInstallViewUpdated)="onStatusColumnUpdated()"></app-get-addon-status-column>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" class="hover-bg-secondary-2"
-        (contextmenu)="onHeaderContext($event); $event.preventDefault()"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="hover-bg-secondary-2"
-        (dblclick)="onDoubleClickRow(row)"></tr>
-    </table>
-  </div>
 </div>
 
 <!-- COLUMNS CONTEXT MENU -->
 <div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
   [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
 </div>
-<mat-menu #columnContextMenu="matMenu" class="addon-context-menu">
+<mat-menu #columnContextMenu="matMenu" class="addon-context-menu text-1">
   <ng-template matMenuContent let-columns="columns">
     <div class="addon-context-menu-header">
       <div class="addon-name">

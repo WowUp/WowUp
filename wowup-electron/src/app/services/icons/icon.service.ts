@@ -18,6 +18,9 @@ import {
   faCode,
   faCoins,
   faCompressArrowsAlt,
+  faPencilAlt,
+  faArrowDown,
+  faCheckCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-icons";
@@ -26,9 +29,10 @@ import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-ico
   providedIn: "root",
 })
 export class IconService {
-  constructor(private _matIconRegistry: MatIconRegistry, private _sanitizer: DomSanitizer) {
+  public constructor(private _matIconRegistry: MatIconRegistry, private _sanitizer: DomSanitizer) {
     this.addSvg(faAngleDoubleDown);
     this.addSvg(faArrowUp);
+    this.addSvg(faArrowDown);
     this.addSvg(faSyncAlt);
     this.addSvg(faTimes);
     this.addSvg(faExternalLinkAlt);
@@ -47,10 +51,14 @@ export class IconService {
     this.addSvg(faPatreon);
     this.addSvg(faCoins);
     this.addSvg(faCompressArrowsAlt);
+    this.addSvg(faPencilAlt);
+    this.addSvg(faCheckCircle);
   }
 
-  async addSvg(icon: IconDefinition) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${icon.icon[0]} ${icon.icon[1]}"><path d="${icon.icon[4]}" /></svg>`;
+  private addSvg(icon: IconDefinition): void {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${icon.icon[0]} ${
+      icon.icon[1]
+    }"><path d="${icon.icon[4].toString()}" /></svg>`;
 
     this._matIconRegistry.addSvgIconLiteralInNamespace(
       icon.prefix,

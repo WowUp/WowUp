@@ -1,5 +1,10 @@
 @import "../../../variables.scss";
 
+.wu-ag-table {
+  width: calc(100% - 6px);
+  height: calc(100% - 72px);
+}
+
 .control-container {
   display: flex;
   flex-direction: row;
@@ -174,6 +179,7 @@
     margin-bottom: 0.5em;
   }
 }
+
 
 .open-in-browser-icon {
   width: 12px;

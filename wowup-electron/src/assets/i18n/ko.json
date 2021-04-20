@@ -74,13 +74,44 @@
     }
   },
   "COMMON": {
+    "ADDON_CATEGORIES": {
+      "ACHIEVEMENTS": "Achievements",
+      "ACTION_BARS": "Action Bars",
+      "ALL_ADDONS": "All Addons",
+      "AUCTION_ECONOMY": "Auction & Economy",
+      "BAGS_INVENTORY": "Bags & Inventory",
+      "BOSS_ENCOUNTERS": "Boss Encounters",
+      "BUFFS_DEBUFFS": "Buffs & Debuffs",
+      "BUNDLES": "Bundles",
+      "CHAT_COMMUNICATION": "Chat & Communication",
+      "CLASS": "Class",
+      "COMBAT": "Combat",
+      "COMPANIONS": "Companions",
+      "DATA_EXPORT": "Data Export",
+      "DEVELOPMENT_TOOLS": "Development Tools",
+      "GUILD": "Guild",
+      "LIBRARIES": "Libraries",
+      "MAIL": "Mail",
+      "MAP_MINIMAP": "Map & Minimap",
+      "MISCELLANEOUS": "Miscellaneous",
+      "MISSIONS": "Missions",
+      "PLUGINS": "Plugins",
+      "PROFESSIONS": "Professions",
+      "PVP": "PVP",
+      "QUESTS_LEVELING": "Quests & Leveling",
+      "ROLEPLAY": "Roleplay",
+      "TOOLTIPS": "Tooltips",
+      "UNIT_FRAMES": "Unit Frames"
+    },
     "ADDON_STATE": {
       "IGNORED": "제외됨",
       "INSTALL": "설치",
+      "PENDING": "Pending",
       "UNINSTALL": "삭제",
       "UNKNOWN": "",
       "UPDATE": "업데이트",
-      "UPTODATE": "최신"
+      "UPTODATE": "최신",
+      "WARNING": "Warning"
     },
     "ADDON_STATUS": {
       "BACKINGUP": "백업 중",
@@ -92,9 +123,18 @@
       "UNINSTALLING": "삭제 중",
       "UPDATING": "업데이트 중..."
     },
+    "ADDON_WARNING": {
+      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
+      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, but did not have a list of current files to download.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
+      "NO_PROVIDER_FILES_TOOLTIP": "The provider for this addon did not return any files"
+    },
     "CLIENT_TYPES": {
       "BETA": "베타",
       "CLASSIC": "클래식",
+      "CLASSICBETA": "클래식 베타",
       "CLASSICPTR": "클래식 PTR",
       "RETAIL": "리테일",
       "RETAILPTR": "리테일 PTR"
@@ -113,9 +153,9 @@
     },
     "DOWNLOAD_COUNT": {
       "e+0": "{myriadCount}",
-      "e+1": "{myriadCount}십",
-      "e+2": "{myriadCount}백",
-      "e+3": "{myriadCount}천",
+      "e+1": "{myriadCount}",
+      "e+2": "{myriadCount}",
+      "e+3": "{myriadCount}",
       "e+4": "{myriadCount}만",
       "e+5": "{myriadCount}만",
       "e+6": "{myriadCount}만",
@@ -131,8 +171,10 @@
       }
     },
     "ERRORS": {
+      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
+      "ADDON_SYNC_FULL_ERROR": "An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
       "CHANGE_PROVIDER_ERROR": "{addonName} 애드온 제공자를 {providerName}로 변경하는 과정에서 오류가 발생했습니다",
       "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
@@ -140,9 +182,11 @@
     "PROGRESS_SPINNER": {
       "LOADING": "불러오는 중..."
     },
+    "PROVIDER_ERROR": "Error contacting {providerName}",
     "SEARCH": {
       "NO_ADDONS": "애드온을 찾을 수 없습니다"
-    }
+    },
+    "WOW_EXE_SELECTION_NAME": "WoW Executable"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -167,6 +211,18 @@
       "NEGATIVE_BUTTON": "취소",
       "POSITIVE_BUTTON": "확인"
     },
+    "INSTALL_FROM_PROTOCOL": {
+      "ADDON_INSTALLED": "Addon is installed!",
+      "ADDON_INSTALLING": "Installing addon",
+      "CANCEL_BUTTON": "Close",
+      "ERRORS": {
+        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
+        "GENERIC": "Error fetching data for protocol: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+      },
+      "INSTALL_BUTTON": "Install",
+      "TITLE": "Install Addon From {providerName}"
+    },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "애드온 URL 주소",
       "ADDON_URL_INPUT_PLACEHOLDER": "예) GitHub 또는 WowInterface URL",
@@ -175,10 +231,11 @@
       "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
         "FAILED_TO_CONNECT": "API 연결 실패. 잠시 후 다시 시도해주세요.",
         "INSTALL_FAILED": "설치 실패! 뭔가 잘못됐습니다.다시 시도해주세요.\n\n이 메세지가 반복된다면, 디스코드의 #wowup-support 채널에서 도움을 요청해보세요.",
-        "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/teelolws/Altoholic-Retail\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "INVALID_URL": "URL 주소 형식이 잘못되었습니다. 올바른 애드온 주소 예제: \n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "애드온을 찾을 수 없습니다. 입력하신 주소가 올바른 애드온 페이지를 가리키고 있는지 확인해주세요.\n\nGithub에서 설치할 때는, 애드온을 zip 파일로 묶은 릴리즈 태그가 존재하는 저장소인지 확인하세요.",
         "NO_RELEASE_FOUND": "No releases were found for {message}.\n\nValid release with zip file assets are required for WowUp to download it.",
         "NO_SEARCH_RESULTS": "검색 결과가 없습니다.",
@@ -189,6 +246,12 @@
       "INSTALL_SUCCESS_LABEL": "설치됨!",
       "SUPPORTED_SOURCES": "WowInterface 와 GitHub 주소가 지원됩니다",
       "TITLE": "설치할 애드온 URL 주소"
+    },
+    "NEW_VERSION_POPUP": {
+      "TITLE": "Patch Notes {versionNumber}"
+    },
+    "SELECT_INSTALLATION": {
+      "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
     "TELEMETRY": {
       "DESCRIPTION": "앱 설치 데이터 또는 오류를 익명으로 전송하여 WowUp 서비스 개선에 도움을 주시겠습니까?",
@@ -205,9 +268,16 @@
       "WEBSITE_LINK_LABEL": "웹사이트로 이동"
     },
     "GET_ADDONS": {
+      "ADDON_CATEGORIES_BUTTON": "Categories",
+      "ADDON_CATEGORIES_MENU_TITLE": "Addon Categories",
+      "ADDON_CATEGORIES_SELECTED_TITLE": "Category: {category}",
+      "ADDON_CATEGORIES_TOOLTIP": "Browse various categories",
       "CLIENT_TYPE_SELECT_LABEL": "월드 오브 워크래프트",
       "INSTALL_FROM_URL_BUTTON": "URL 주소로 설치",
+      "INSTALL_FROM_URL_TOOLTIP": "Install and addon from a URL",
       "REFRESH_BUTTON": "다시 불러오기",
+      "REFRESH_TOOLTIP": "Refresh addon results",
+      "RESET_CATEGORY_TOOLTIP": "Reset Category",
       "SEARCH_LABEL": "찾기",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "애드온",
@@ -301,6 +371,7 @@
         "DEPENDENCY_TITLE": "참조하는 다른 애드온 삭제 확인",
         "TITLE": "애드온 삭제"
       },
+      "UNKNOWN_ADDON_INFO_TOOLTIP": "The installed addon did not match with any of the configured providers",
       "UPDATE_ALL_BUTTON": "모두 업데이트",
       "UPDATE_ALL_BUTTON_TOOLTIP": "이 클라이언트의 모든 애드온을 업데이트합니다",
       "UPDATE_ALL_CONTEXT_MENU": {
@@ -319,11 +390,15 @@
       },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "현재 언어",
+        "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
+        "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "애드온 자동업데이트 등과 같은 다양한 시스템 알림 팝업 활성화 여부",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "시스템 알림 활성화",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "창을 닫으면 메뉴바로 최소화",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "창을 닫으면 시스템 트레이로 최소화",
         "MINIMIZE_ON_CLOSE_LABEL": "종료 시 최소화",
+        "PROTOCOL_DESCRIPTION": "WowUp will register a custom URI protocol in your system and handle its incoming inquiries",
+        "PROTOCOL_LABEL": "Allow WowUp to handle wowup:// URI",
         "SCALE_DESCRIPTION": "앱 전체의 확대/축소 비율을 변경합니다.",
         "SCALE_LABEL": "확대/축소",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "기본 언어를 바꾸려면 애플리케이션을 다시 시작해야 합니다.",
@@ -339,11 +414,17 @@
         "THEME_DESCRIPTION": "원하시는 테마 색상을 선택하세요.",
         "THEME_LABEL": "테마",
         "TITLE": "애플리케이션",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp can set itself as the default handler for CurseForge download links. This may cause issues if you try to use the CursForge app, are you sure you want to continue?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Handle CurseForge Downloads?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "재시작하시겠습니까?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "FPS 문제 등 렌더링 이슈를 겪고 있다면 하드웨어 가속을 비활성화해보세요. 변경 시 재시작이 필요합니다",
         "USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION": "하드웨어 가속을 비활성화 하려면 재시작이 필요합니다.",
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "하드웨어 가속을 활성화 하려면 재시작이 필요합니다.",
-        "USE_HARDWARE_ACCELERATION_LABEL": "하드웨어 가속 활성화"
+        "USE_HARDWARE_ACCELERATION_LABEL": "하드웨어 가속 활성화",
+        "USE_SYMLINK_SUPPORT": "Enable Symlink Support",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Enabling symlink support will allow WowUp to recognize symlinks when performing a re-scan. Warning: If you do not know what a symlink is, you do not need this. When updating symlinks will currently be replaced with an actual folder and the link lost.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Enable symlink support?",
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
       "DEBUG": {
         "DEBUG_DATA_BUTTON": "디버그 데이터 덤프",
@@ -361,8 +442,10 @@
         "DEBUG": "디버그"
       },
       "WOW": {
+        "ADD_CLIENT_BUTTON": "Add New",
         "AUTO_UPDATE_DESCRIPTION": "새로 설치되는 애드온의 자동업데이트 옵션을 활성화합니다.",
         "AUTO_UPDATE_LABEL": "자동 업데이트",
+        "CANCEL_WOW_DIRECTORY_SELECT_BUTTON": "Cancel",
         "CLEAR_INSTALL_LOCATION_DIALOG": {
           "MESSAGE": "{clientName}의 설치 위치 정보를 삭제할까요?\n이 클라이언트의 저장된 애드온 정보는 모두 사라지지만 애드온 디렉토리는 삭제되지 않습니다.",
           "TITLE": "설치 위치 정보 초기화"
@@ -371,9 +454,12 @@
         "CLIENT_TYPE_PATH_LABEL": "{clientTypeName} 설치 위치",
         "DEFAULT_ADDON_CHANNEL_LABEL": "기본 애드온 채널",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "애드온 채널",
+        "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "선택",
+        "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "재탐색",
         "RESCAN_CLIENTS_LABEL": "설치된 월드 오브 워크래프트 제품 재탐색",
+        "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "월드 오브 워크래프트"
       }
     }
