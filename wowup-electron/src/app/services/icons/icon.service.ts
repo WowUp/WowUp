@@ -21,6 +21,7 @@ import {
   faPencilAlt,
   faArrowDown,
   faCheckCircle,
+  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-icons";
@@ -53,6 +54,7 @@ export class IconService {
     this.addSvg(faCompressArrowsAlt);
     this.addSvg(faPencilAlt);
     this.addSvg(faCheckCircle);
+    this.addSvg(faChevronDown);
   }
 
   private addSvg(icon: IconDefinition): void {

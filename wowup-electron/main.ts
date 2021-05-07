@@ -2,16 +2,18 @@ import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } fro
 import * as log from "electron-log";
 import { find } from "lodash";
 import * as minimist from "minimist";
-import { arch as osArch, release as osRelease, type as osType } from "os";
+import { arch as osArch, release as osRelease, type as osType, hostname as osHostname } from "os";
 import { join } from "path";
 import { format as urlFormat } from "url";
 import { inspect } from "util";
+import { setup as setupPushReceiver } from "electron-push-receiver";
 
 import { createAppMenu } from "./app-menu";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import {
+  APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
@@ -36,6 +38,7 @@ import {
 } from "./src/common/constants";
 import { MainChannels } from "./src/common/wowup";
 import { AppOptions } from "./src/common/wowup/models";
+import { initializeBattleNetIpcHandlers } from "./src/common/battle-net/battle-net.common";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
 import { windowStateManager } from "./window-state";
 
@@ -47,6 +50,7 @@ log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return join(LOG_PATH, variables.fileName);
 };
 log.info("Main starting");
+log.info(`Hostname: ${osHostname()}`);
 log.info(`Electron: ${process.versions.electron}`);
 log.info(`BinaryPath: ${app.getPath("exe")}`);
 log.info("ExecPath", process.execPath);
@@ -177,6 +181,8 @@ app.on("child-process-gone", (e, details) => {
   }
 });
 
+app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+
 // See https://www.electronjs.org/docs/api/app#event-open-url-macos
 if (platform.isMac) {
   app.on("open-url", (evt, url) => {
@@ -258,6 +264,8 @@ function createWindow(): BrowserWindow {
   // Attempt to fix the missing icon issue on Ubuntu
   if (platform.isLinux) {
     windowOptions.icon = join(__dirname, "assets", WOWUP_LOGO_FILENAME);
+  } else if (platform.isWin) {
+    windowOptions.icon = join(__dirname, "assets", "icon.ico");
   }
 
   // Create the browser window.
@@ -267,6 +275,10 @@ function createWindow(): BrowserWindow {
   initializeStoreIpcHandlers(win);
   initializeAppUpdater(win);
   initializeAppUpdateIpcHandlers(win);
+  initializeBattleNetIpcHandlers(win);
+
+  // Init cloud messaging
+  setupPushReceiver(win.webContents);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);

@@ -6,6 +6,10 @@
   flex-direction: column;
 }
 
+.selected {
+  border-right: 3px solid var(--text-1-color);
+}
+
 .theme-logo {
   content: "";
   opacity: 0.02;
@@ -108,4 +112,3 @@
     }
   }
 }
-

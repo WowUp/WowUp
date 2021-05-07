@@ -11,6 +11,20 @@ footer {
     margin: 0;
   }
 
+  .login-button {
+    height: 25px;
+    font-size: 0.8em;
+    background-color: #006fb2;
+    border: solid 1px #00aeff;
+    border-radius: 4px;
+    padding: 0 0.5em;
+
+    &:hover {
+      background-color: #007bc6;
+      border: solid 1px #79d4ff;
+    }
+  }
+
   a,
   img {
     height: 25px;

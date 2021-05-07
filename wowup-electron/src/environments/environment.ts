@@ -13,4 +13,5 @@ export const AppConfig = {
   defaultHttpTimeoutMs: 10000,
   defaultHttpResetTimeoutMs: 30000,
   wowUpHubHttpTimeoutMs: 10000,
+  firebaseSenderId: "914166112595",
 };

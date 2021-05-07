@@ -1,0 +1,31 @@
+.bnet-login {
+  background-color: #006fb2;
+  border: solid 1px #00aeff;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  color: #fff;
+  padding: 10px 50px;
+  font-size: 16px;
+  font-weight: 400;
+
+  &:hover {
+    background-color: #007bc6;
+    border: solid 1px #79d4ff;
+    cursor: pointer;
+  }
+}
+.bnet-login-mat {
+  background-color: #006fb2;
+  border: solid 1px #00aeff;
+
+  display: flex;
+  flex-direction: row;
+
+  &:hover {
+    background-color: #007bc6;
+    border: solid 1px #79d4ff;
+  }
+}
+
+.mat-icon {
+  width: 8px;
+}

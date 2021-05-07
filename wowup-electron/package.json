@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.2.0",
+  "version": "2.2.1-beta.1",
   "description": "World of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
@@ -136,6 +136,7 @@
     "compare-versions": "3.6.0",
     "conf": "7.1.2",
     "electron-log": "4.3.4",
+    "electron-push-receiver": "2.1.3",
     "electron-store": "7.0.3",
     "electron-updater": "4.3.8",
     "fs-extra": "9.1.0",

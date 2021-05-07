@@ -17,6 +17,7 @@
     <mat-icon svgIcon="far:question-circle"></mat-icon>
   </a>
   <p class="flex-grow-1 text-1">{{ sessionService.statusText$ | async }}</p>
+  <button class="login-button text-1 mr-3" (click)="onClickBattleNetLogin()">Login with Battle.net</button>
   <div class="row align-items-center text-1">
     <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
     <p>v{{ versionNumber | async }}</p>

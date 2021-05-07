@@ -1,7 +1,7 @@
 export const AppConfig = {
   production: true,
   environment: "PROD",
-  wowUpApiUrl: "https://api.wowup.io",
+  wowUpApiUrl: "https://api.dev.wowup.io",
   wowUpHubUrl: "https://hub.wowup.io",
   googleAnalyticsId: "UA-92563227-4",
   wowupRepositoryUrl: "https://github.com/WowUp/WowUp",
@@ -13,4 +13,5 @@ export const AppConfig = {
   defaultHttpTimeoutMs: 10000,
   defaultHttpResetTimeoutMs: 30000,
   wowUpHubHttpTimeoutMs: 10000,
+  firebaseSenderId: "914166112595",
 };

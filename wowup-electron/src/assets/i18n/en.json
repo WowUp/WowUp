@@ -388,6 +388,10 @@
         },
         "TITLE": "Addons"
       },
+      "ACCOUNT": {
+        "TITLE": "Account",
+        "DESCRIPTION": "You can connect your Battle.net account to WowUp to enable various cloud features for managing your addons. All you have to do is login!"
+      },
       "APPLICATION": {
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
@@ -437,6 +441,7 @@
       },
       "TABS": {
         "ADDONS": "Addons",
+        "ACCOUNT": "Account",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
         "DEBUG": "Debug"

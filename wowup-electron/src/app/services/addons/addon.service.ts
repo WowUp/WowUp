@@ -1091,6 +1091,9 @@ export class AddonService {
 
       try {
         const latestFile = SearchResults.getLatestFile(result, addon?.channelType);
+        if(!latestFile){
+          console.debug('latestFile', result)
+        }
 
         this.setExternalIdString(addon);
 

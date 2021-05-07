@@ -47,6 +47,7 @@ import { ValueResponse } from "../../../common/models/value-response";
 import { MainChannels, RendererChannels } from "../../../common/wowup";
 import { AppOptions } from "../../../common/wowup/models";
 import { isProtocol } from "../../utils/string.utils";
+import { PushService } from "./push.service";
 
 @Injectable({
   providedIn: "root",
@@ -79,7 +80,7 @@ export class ElectronService {
     return process.platform;
   }
 
-  public constructor() {
+  public constructor(private _pushService: PushService) {
     // Conditional imports
     if (!this.isElectron) {
       return;
@@ -302,7 +303,7 @@ export class ElectronService {
     });
   }
 
-  public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
+  public async invoke<T = any>(channel: RendererChannels | string, ...args: any[]): Promise<T> {
     return await window.wowup.rendererInvoke(channel, ...args);
   }
 

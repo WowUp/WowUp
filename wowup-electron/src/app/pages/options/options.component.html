@@ -11,17 +11,9 @@
       <div class="nav-item-list-wrap">
         <div class="nav-item-list">
           <mat-action-list>
-            <button mat-list-item (click)="optionTabIndex = 0">
-              {{ "PAGES.OPTIONS.TABS.CLIENTS" | translate }}
-            </button>
-            <button mat-list-item (click)="optionTabIndex = 1">
-              {{ "PAGES.OPTIONS.TABS.APPLICATION" | translate }}
-            </button>
-            <button mat-list-item (click)="optionTabIndex = 2">
-              {{ "PAGES.OPTIONS.TABS.ADDONS" | translate }}
-            </button>
-            <button mat-list-item (click)="optionTabIndex = 3">
-              {{ "PAGES.OPTIONS.TABS.DEBUG" | translate }}
+            <button *ngFor="let item of tabListItems; let i = index" mat-list-item
+              [ngClass]="{ 'selected': (selectedOptionsTab$ | async) === i }" (click)="onSelectedIndexChange(i)">
+              {{ item.label | translate }}
             </button>
           </mat-action-list>
         </div>
@@ -30,9 +22,13 @@
     <div class="nav-content-container bg-secondary-2 text-1">
       <div class="nav-content-wrap">
         <div class="nav-content">
-          <mat-tab-group class="no-tabs content-tab" animationDuration="0ms" [(selectedIndex)]="optionTabIndex">
+          <mat-tab-group class="no-tabs content-tab" animationDuration="0ms"
+            [selectedIndex]="selectedOptionsTab$ | async" (selectedIndexChange)="onSelectedIndexChange($event)">
             <mat-tab label="WorldOfWarcraft" class="tab">
               <app-options-wow-section></app-options-wow-section>
+            </mat-tab>
+            <mat-tab label="Account" class="tab">
+              <app-options-account-section></app-options-account-section>
             </mat-tab>
             <mat-tab label="Application">
               <app-options-app-section></app-options-app-section>

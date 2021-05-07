@@ -8,13 +8,22 @@ import { SystemTrayConfig } from "./src/common/wowup/models";
 
 let _trayRef: Tray;
 
+function getTrayIconName() {
+  if (platform.isMac) {
+    return WOWUP_LOGO_MAC_SYSTEM_TRAY;
+  } else if (platform.isWin) {
+    return "icon.ico";
+  } else {
+    return WOWUP_LOGO_FILENAME;
+  }
+}
+
 export function createTray(window: BrowserWindow, config: SystemTrayConfig): boolean {
   _trayRef?.destroy();
 
   console.log("Creating tray");
-  const trayIconFile = platform.isMac ? WOWUP_LOGO_MAC_SYSTEM_TRAY : WOWUP_LOGO_FILENAME;
+  const trayIconFile = getTrayIconName();
   const trayIconPath = path.join(__dirname, "assets", trayIconFile);
-  const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
   _trayRef = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([

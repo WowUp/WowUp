@@ -1,0 +1,39 @@
+<!-- REGION SELECTOR -->
+<div class="row align-items-center">
+    <div>Select your Battle.net region</div>
+    <button mat-button [matMenuTriggerFor]="menu" [disabled]="isBusy"
+        [matTooltip]="'Select your Battle.net region'">{{selectedRegion}}
+        <mat-icon class="ml-3" svgIcon="fas:chevron-down" aria-hidden="false" aria-label="Menu dropdown icon">
+        </mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="selectedRegion = 'US'">US</button>
+        <button mat-menu-item (click)="selectedRegion = 'EU'">EU</button>
+        <button mat-menu-item (click)="selectedRegion = 'KR'">KR</button>
+        <button mat-menu-item (click)="selectedRegion = 'TW'">TW</button>
+        <button mat-menu-item (click)="selectedRegion = 'CN'">CN</button>
+    </mat-menu>
+</div>
+<!-- LOGIN BUTTON -->
+<!-- <a *ngIf="displayName === ''" mat-raised-button class="bnet-login-mat" [href]="signInUrl" [disabled]="isBusy"
+      (click)="isBusy = true">
+      <div class="row justify-content-center align-items-center">
+        <div class="mr-2">Login with Battle.net</div>
+        <mat-spinner *ngIf="isBusy === true" diameter="25" strokeWidth="3" color="warn"></mat-spinner>
+      </div>
+    </a> -->
+<button mat-raised-button class="bnet-login-mat" [disabled]="isBusy" (click)="onClickLogin()">
+    <div class="row justify-content-center align-items-center">
+        <div class="mr-2">Login with Battle.net</div>
+        <mat-spinner *ngIf="isBusy === true" diameter="25" strokeWidth="3" color="warn"></mat-spinner>
+    </div>
+</button>
+<!-- USER MENU -->
+<!-- <button mat-button [matMenuTriggerFor]="acctMenu">{{displayName}}
+        <mat-icon svgIcon="fas:sort-down" aria-hidden="false" aria-label="Menu dropdown icon"></mat-icon>
+    </button>
+    <mat-menu #acctMenu="matMenu">
+        <button mat-menu-item>Settings</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="text-warn" (click)="onClickLogout()">Logout</button>
+    </mat-menu> -->

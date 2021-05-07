@@ -73,7 +73,21 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       .pipe(filter((update) => update.type !== ScanUpdateType.Unknown))
       .subscribe(this.onScanUpdate);
 
-    this._subscriptions.push(customProtocolSub, wowInstalledSub, scanErrorSub, scanUpdateSub, addonInstallErrorSub);
+    const homeTabChangeSub = this._sessionService.selectedHomeTab$.subscribe((newIndex) => {
+      if (newIndex === this.selectedIndex) {
+        return;
+      }
+      this.selectedIndex = newIndex;
+    });
+
+    this._subscriptions.push(
+      customProtocolSub,
+      wowInstalledSub,
+      scanErrorSub,
+      scanUpdateSub,
+      addonInstallErrorSub,
+      homeTabChangeSub
+    );
   }
 
   private handleCustomProtocol = async (protocol: string): Promise<void> => {
@@ -82,6 +96,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     try {
       switch (protocolName) {
         case APP_PROTOCOL_NAME:
+          this.handleWowUpProtocol(protocol);
+          break;
         case CURSE_PROTOCOL_NAME:
           await this.handleAddonInstallProtocol(protocol);
           break;
@@ -93,6 +109,17 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.error(`Failed to handle protocol`, e);
     }
   };
+
+  private handleWowUpProtocol(protocol: string) {
+    const url = new URL(protocol);
+    if (url.pathname.indexOf("auth-callback") !== -1) {
+      console.debug("auth-callback");
+      const token = url.searchParams.get("token");
+      this._sessionService.authToken = token;
+    } else {
+      console.warn(`Unhandled WowUp protocol: ${protocol}`);
+    }
+  }
 
   private async handleAddonInstallProtocol(protocol: string) {
     const dialog = this._dialogFactory.getDialog(InstallFromProtocolDialogComponent, {

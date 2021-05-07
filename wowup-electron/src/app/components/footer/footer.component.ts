@@ -75,6 +75,11 @@ export class FooterComponent implements OnInit {
     });
   }
 
+  public onClickBattleNetLogin() {
+    this.sessionService.selectedOptionsTab = 1;
+    this.sessionService.selectedHomeTab = 3;
+  }
+
   public async onClickCheckForUpdates(): Promise<void> {
     if (this.isCheckingForUpdates) {
       return;

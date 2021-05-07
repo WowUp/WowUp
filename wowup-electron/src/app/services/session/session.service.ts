@@ -18,11 +18,12 @@ export class SessionService {
   private readonly _pageContextTextSrc = new BehaviorSubject(""); // right side bar text, context to the screen
   private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
   private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
+  private readonly _selectedOptionsTabSrc = new BehaviorSubject(0);
   private readonly _autoUpdateCompleteSrc = new BehaviorSubject(0);
   private readonly _addonsChangedSrc = new Subject<boolean>();
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
-
+  private readonly _authTokenSrc = new BehaviorSubject("");
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
   private _selectedDetailTabType: DetailsTabType;
@@ -30,12 +31,28 @@ export class SessionService {
   public readonly selectedWowInstallation$ = this._selectedWowInstallationSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
   public readonly selectedHomeTab$ = this._selectedHomeTabSrc.asObservable();
+  public readonly selectedOptionsTab$ = this._selectedOptionsTabSrc.asObservable();
   public readonly pageContextText$ = this._pageContextTextSrc.asObservable();
   public readonly autoUpdateComplete$ = this._autoUpdateCompleteSrc.asObservable();
   public readonly addonsChanged$ = this._addonsChangedSrc.asObservable();
   public readonly myAddonsHiddenColumns$ = this._myAddonsColumnsSrc.asObservable();
   public readonly getAddonsHiddenColumns$ = this._getAddonsColumnsSrc.asObservable();
   public readonly targetFileInstallComplete$ = this._targetFileInstallCompleteSrc.asObservable();
+  public readonly authToken$ = this._authTokenSrc.asObservable();
+
+  public set authToken(token: string) {
+    this._authTokenSrc.next(token);
+
+    if (!token) {
+      window.localStorage.removeItem("auth-token");
+    } else {
+      window.localStorage.setItem("auth-token", token);
+    }
+  }
+
+  public set selectedOptionsTab(index: number) {
+    this._selectedOptionsTabSrc.next(index);
+  }
 
   public constructor(
     private _warcraftInstallationService: WarcraftInstallationService,
@@ -47,6 +64,13 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$
       .pipe(filter((installations) => installations.length > 0))
       .subscribe((installations) => this.onWowInstallationsChange(installations));
+
+    this.loadAuthToken();
+  }
+
+  private loadAuthToken() {
+    const authToken = window.localStorage.getItem("auth-token");
+    console.debug("authToken", authToken);
   }
 
   public notifyTargetFileInstallComplete(): void {
