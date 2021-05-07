@@ -16,6 +16,21 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.2.1",
+    html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>
+        <div style="margin-bottom: 0.25em;">WowUp companion data addon name updated (Linaori)</div>
+        <img style="max-width: 90%; margin-bottom: 1em" class="mat-elevation-z8" src="https://user-images.githubusercontent.com/1754678/117027014-923adf80-acfc-11eb-8127-c3c8c4564df5.png">
+        </li>
+        <li>Classic PTR client is now treated like a Burning Crusade client</li>
+        <li>Http circuit breaker will no longer trip for 404s</li>
+        </li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.2.0",
     html: `<div>
       <h4>Locale Updates</h4>
