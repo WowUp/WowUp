@@ -343,8 +343,8 @@ export class WowUpAddonProvider extends AddonProvider {
   private getWowGameType(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
         return WowGameType.Classic;
+      case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return WowGameType.BurningCrusade;
       case WowClientType.Retail:

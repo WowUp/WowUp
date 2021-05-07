@@ -694,8 +694,8 @@ export class CurseAddonProvider extends AddonProvider {
   private getGameVersionFlavor(clientType: WowClientType): CurseGameVersionFlavor {
     switch (clientType) {
       case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
         return "wow_classic";
+      case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return "wow_burning_crusade";
       case WowClientType.Retail:
