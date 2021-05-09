@@ -1145,6 +1145,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         minWidth: 150,
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
+        cellRenderer: "wrapTextCell",
         ...baseColumn,
       },
     ];
