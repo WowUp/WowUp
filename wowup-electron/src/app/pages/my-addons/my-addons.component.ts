@@ -13,19 +13,10 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, first, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
@@ -71,10 +62,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("addonMultiContextMenuTrigger", { static: false }) public multiContextMenu: MatMenuTrigger;
   @ViewChild("columnContextMenuTrigger", { static: false }) public columnContextMenu: MatMenuTrigger;
   @ViewChild("updateAllContextMenuTrigger", { static: false })
-  public updateAllContextMenu: MatMenuTrigger;
 
   // @HostListener("window:keydown", ["$event"])
-
   private readonly _operationErrorSrc = new Subject<Error>();
 
   private _subscriptions: Subscription[] = [];
@@ -86,6 +75,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
+  public updateAllContextMenu: MatMenuTrigger;
   public spinnerMessage = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
   public filter = "";
@@ -280,6 +270,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onRowDataChanged(): void {
     this.rowDataChange$.next(true);
+  }
+
+  public onFirstDataRendered(): void {
+    this.autoSizeColumns();
   }
 
   public onGridReady(params: GridReadyEvent): void {
@@ -1057,9 +1051,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private autoSizeColumns() {
+    this.gridColumnApi?.autoSizeColumns(["installedAt", "latestVersion", "releasedAt", "gameVersion", "externalChannel", "providerName"]);
+  }
+
   private redrawRows() {
     this.gridApi?.redrawRows();
     this.gridApi?.resetRowHeights();
+    this.autoSizeColumns();
     this._cdRef.detectChanges();
   }
 
@@ -1090,8 +1089,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         field: "sortOrder",
-        sortable: true,
         width: 150,
+        sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
         cellRenderer: "myAddonStatus",
         ...baseColumn,
@@ -1119,7 +1118,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         field: "gameVersion",
         sortable: true,
-        flex: 1,
         minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER"),
         ...baseColumn,
@@ -1142,7 +1140,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         field: "author",
         sortable: true,
-        minWidth: 150,
+        minWidth: 120,
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
         cellRenderer: "wrapTextCell",
