@@ -47,12 +47,14 @@ export interface AddonSyncErrorConfig {
   innerError?: CustomError;
   message?: string;
   addonName?: string;
+  installationName?: string;
 }
 
 export class AddonSyncError extends CustomError {
   public readonly innerError: CustomError;
   public readonly providerName: string;
   public readonly addonName?: string;
+  public readonly installationName?: string;
 
   public constructor(config: AddonSyncErrorConfig) {
     super(config.message);
@@ -60,6 +62,7 @@ export class AddonSyncError extends CustomError {
     this.providerName = config.providerName;
     this.innerError = config.innerError;
     this.addonName = config.addonName;
+    this.installationName = config.installationName;
   }
 }
 
@@ -67,7 +70,7 @@ export class GenericProviderError extends ErrorContainer {}
 
 export class SourceRemovedAddonError extends GenericProviderError {
   public constructor(public addonId: string, innerError: Error) {
-    super(innerError, '', AddonWarningType.MissingOnProvider);
+    super(innerError, "", AddonWarningType.MissingOnProvider);
   }
 }
 

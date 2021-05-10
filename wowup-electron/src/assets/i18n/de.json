@@ -174,7 +174,7 @@
       "ADDON_INSTALL_ERROR": "Addon '{addonName}' konnte nicht installiert werden. Versuche es später erneut.",
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
-      "ADDON_SYNC_FULL_ERROR": "Beim Überprüfen auf Aktualisierungen von {addonName} von {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Beim Überprüfen auf Aktualisierungen von {addonName} von {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "CHANGE_PROVIDER_ERROR": "Anbieterwechsel von {addonName} nach {providerName} fehlgeschlagen",
       "GITHUB_LIMIT_ERROR": "Du hast dein GitHub-API-Limit von {max} Anforderungen erreicht.\nBitte warten bis {reset} und versuche es erneut.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Aktualisierungen für {addonName} konnten nicht überprüft werden.\nBitte überprüfen, ob das Repository korrekt ist, oder stelle das Addon auf 'Ignoriert' ein."

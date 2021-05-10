@@ -174,7 +174,7 @@
       "ADDON_INSTALL_ERROR": "Не удалось установить модификацию {addonName}. Попробуйте позже.",
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
-      "ADDON_SYNC_FULL_ERROR": "Произошла ошибка при проверке наличия обновлений для {addonName} из {providerName}, попробуйте позже.",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Произошла ошибка при проверке наличия обновлений для {addonName} из {providerName}, попробуйте позже.",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
       "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова.",
       "GITHUB_REPOSITORY_FETCH_ERROR": "Не удалось проверить обновления для {addonName}.\nУбедитесь что хранилище указано верно или установите игнорирование на эту модификацию."

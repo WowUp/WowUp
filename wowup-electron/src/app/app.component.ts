@@ -342,6 +342,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (error.addonName) {
       errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_FULL_ERROR", {
+        installationName: error.installationName,
         providerName: error.providerName,
         addonName: error.addonName,
       });

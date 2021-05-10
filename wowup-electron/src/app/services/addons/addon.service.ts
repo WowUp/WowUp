@@ -1039,6 +1039,7 @@ export class AddonService {
         this._syncErrorSrc.next(
           new AddonSyncError({
             providerName: provider.name,
+            installationName: installation.label,
             innerError: e,
           })
         );
@@ -1078,7 +1079,7 @@ export class AddonService {
     }
 
     const getAllResult = await addonProvider.getAll(installation, providerAddonIds);
-    this.handleSyncErrors(getAllResult, addonProvider, addons);
+    this.handleSyncErrors(installation, getAllResult, addonProvider, addons);
     await this.handleSyncResults(getAllResult, addons);
   }
 
@@ -1137,7 +1138,12 @@ export class AddonService {
     }
   }
 
-  private handleSyncErrors(getAllResult: GetAllResult, addonProvider: AddonProvider, addons: Addon[]) {
+  private handleSyncErrors(
+    installation: WowInstallation,
+    getAllResult: GetAllResult,
+    addonProvider: AddonProvider,
+    addons: Addon[]
+  ) {
     for (const error of getAllResult.errors) {
       const addonId = (error as any).addonId;
       let addon: Addon;
@@ -1153,6 +1159,7 @@ export class AddonService {
       this._syncErrorSrc.next(
         new AddonSyncError({
           providerName: addonProvider.name,
+          installationName: installation.label,
           innerError: error,
           addonName: addon?.name,
         })

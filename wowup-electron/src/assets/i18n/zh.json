@@ -174,7 +174,7 @@
       "ADDON_INSTALL_ERROR": "安装插件 {addonName} 失败。请稍后再试。",
       "ADDON_SCAN_ERROR": "在与 {providerName} 匹配插件文件夹时出现错误，请稍后再试。",
       "ADDON_SYNC_ERROR": "从 {providerName} 上检查更新时出现错误。",
-      "ADDON_SYNC_FULL_ERROR": "从 {providerName} 上检查 {addonName} 的更新时出现错误，请稍后再试。",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: 从 {providerName} 上检查 {addonName} 的更新时出现错误，请稍后再试。",
       "CHANGE_PROVIDER_ERROR": "无法将 {addonName} 的提供方修改为 {providerName}",
       "GITHUB_LIMIT_ERROR": "GitHub API 请求次数达到 {max} 次的上限。\n请等到 {reset} 再试。",
       "GITHUB_REPOSITORY_FETCH_ERROR": "检查 {addonName} 的更新失败。\n请检查更新源是否正确，或者忽略此插件。"
