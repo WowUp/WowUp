@@ -967,6 +967,27 @@ export class AddonService {
     return this._addonStorage.getAllForInstallationId(installation.id);
   }
 
+  public async rescanInstallation(installation: WowInstallation): Promise<Addon[]> {
+    if (!installation) {
+      return [];
+    }
+
+    // Fetch existing installation addons
+    let addons = this._addonStorage.getAllForInstallationId(installation.id);
+
+    // Collect info on filesystem addons
+    const newAddons = await this.scanAddons(installation);
+
+    this._addonStorage.removeAllForInstallation(installation.id);
+
+    // Map the old installation addon settings to the new ones
+    addons = this.updateAddons(addons, newAddons);
+
+    await this._addonStorage.saveAll(addons);
+
+    return addons;
+  }
+
   public async getAddons(installation: WowInstallation, rescan = false): Promise<Addon[]> {
     if (!installation) {
       return [];
@@ -975,15 +996,8 @@ export class AddonService {
     let addons = this._addonStorage.getAllForInstallationId(installation.id);
 
     if (rescan || addons.length === 0) {
-      const newAddons = await this.scanAddons(installation);
-      this._addonStorage.removeAllForInstallation(installation.id);
-
-      addons = this.updateAddons(addons, newAddons);
-      await this._addonStorage.saveAll(addons);
+      addons = await this.rescanInstallation(installation);
     }
-
-    // Only sync non-ignored addons
-    // const notIgnored = _.filter(addons, (addon) => addon.isIgnored === false);
 
     return addons;
   }

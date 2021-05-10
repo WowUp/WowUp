@@ -362,7 +362,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       console.debug("onRefresh");
       await this.addonService.syncAllClients();
-      // await this.addonService.syncInstallationAddons(this.selectedInstallation);
       await this.loadAddons(this.selectedInstallation);
       await this._wowUpAddonService.updateForInstallation(this.selectedInstallation);
     } catch (e) {
@@ -933,7 +932,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._cdRef.detectChanges();
 
     try {
-      const addons = await this.addonService.getAddons(installation, reScan);
+      let addons = await this.addonService.getAddons(installation, reScan);
+      if (reScan) {
+        await this.addonService.syncInstallationAddons(installation);
+        addons = await this.addonService.getAddons(installation, false);
+      }
 
       const rowData = this.formatAddons(addons);
       this.enableControls = this.calculateControlState();

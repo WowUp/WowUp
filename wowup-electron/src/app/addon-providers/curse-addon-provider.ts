@@ -317,13 +317,13 @@ export class CurseAddonProvider extends AddonProvider {
     return response;
   }
 
-  private async getAddonsByFingerprints(fingerprints: number[]): Promise<CurseFingerprintsResponse> {
-    const url = `${API_URL}/fingerprint`;
+  // private async getAddonsByFingerprints(fingerprints: number[]): Promise<CurseFingerprintsResponse> {
+  //   const url = `${API_URL}/fingerprint`;
 
-    console.log(`Curse Fetching fingerprints`, JSON.stringify(fingerprints));
+  //   console.log(`Curse Fetching fingerprints`, JSON.stringify(fingerprints));
 
-    return await this._circuitBreaker.postJson(url, fingerprints);
-  }
+  //   return await this._circuitBreaker.postJson(url, fingerprints);
+  // }
 
   private async getAllIds(addonIds: number[]): Promise<CurseSearchResult[]> {
     if (!addonIds?.length) {
