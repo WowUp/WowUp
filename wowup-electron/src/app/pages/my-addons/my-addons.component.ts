@@ -13,7 +13,7 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, first, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -198,12 +198,26 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.filterAddons();
     });
 
+    const addonInstalledSub = this.addonService.addonInstalled$
+      .pipe(
+        map((evt) => this.onAddonInstalledEvent(evt)),
+        map(() => this.setPageContextText())
+      )
+      .subscribe();
+
+    const addonRemovedSub = this.addonService.addonRemoved$
+      .pipe(
+        map((evt) => this.onAddonRemoved(evt)),
+        map(() => this.setPageContextText())
+      )
+      .subscribe();
+
     this._subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
-      this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent),
-      this.addonService.addonRemoved$.subscribe(this.onAddonRemoved),
+      addonInstalledSub,
+      addonRemovedSub,
       filterInputSub
     );
 
@@ -1005,17 +1019,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       // Reorder everything by name to act as a sub-sort
       this.rowData = [...this._baseRowData];
 
-      // If the user is currently filtering the table, use that.
-      // if (this.filter) {
-      //   this.filterAddons();
-      // } else {
-      //   this.gridApi.setRowData(this.rowData);
-
-      //   // Force the grid to redraw whatever row needs updated
-      //   const rowNode = this.gridApi.getRowNode(evt.addon.id);
-      //   this.gridApi.redrawRows({ rowNodes: [rowNode] });
-      // }
-
       this.enableControls = this.calculateControlState();
     } finally {
       this._cdRef.detectChanges();
@@ -1052,7 +1055,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private autoSizeColumns() {
-    this.gridColumnApi?.autoSizeColumns(["installedAt", "latestVersion", "releasedAt", "gameVersion", "externalChannel", "providerName"]);
+    this.gridColumnApi?.autoSizeColumns([
+      "installedAt",
+      "latestVersion",
+      "releasedAt",
+      "gameVersion",
+      "externalChannel",
+      "providerName",
+    ]);
   }
 
   private redrawRows() {
