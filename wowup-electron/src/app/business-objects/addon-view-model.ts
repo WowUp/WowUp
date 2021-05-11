@@ -92,6 +92,10 @@ export class AddonViewModel {
   }
 
   public get sortOrder(): AddonStatusSortOrder {
+    if (this.addon.warningType) {
+      return AddonStatusSortOrder.Warning;
+    }
+
     if (this.addon.isIgnored) {
       return AddonStatusSortOrder.Ignored;
     }

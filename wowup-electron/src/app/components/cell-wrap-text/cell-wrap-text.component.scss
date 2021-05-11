@@ -16,3 +16,15 @@
     word-break: break-all;
   }
 }
+
+.overflow {
+  p {
+    white-space: normal;
+    -webkit-line-clamp: 3;
+    text-overflow: ellipsis;
+    line-height: 1.2em !important ;
+    max-height: calc(3 * 1.2em);
+    margin: 0;
+    padding: 0;
+  }
+}

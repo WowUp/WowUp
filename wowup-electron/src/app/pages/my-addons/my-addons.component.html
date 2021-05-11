@@ -36,7 +36,8 @@
           </button>
           <div class="menu-button-divider"></div>
           <button mat-flat-button color="primary" class="chip col justify-content-center"
-            [matMenuTriggerFor]="updateAllMenu" [disabled]="enableControls === false || (addonService.anyUpdatesAvailable$ | async)  === false">
+            [matMenuTriggerFor]="updateAllMenu"
+            [disabled]="enableControls === false || (addonService.anyUpdatesAvailable$ | async)  === false">
             <mat-icon svgIcon="fas:caret-down"></mat-icon>
           </button>
         </div>
@@ -76,7 +77,8 @@
     [overlayNoRowsTemplate]="overlayNoRowsTemplate" (gridReady)="onGridReady($event)"
     (rowDoubleClicked)="onRowDoubleClicked($event)" (rowClicked)="onRowClicked($event)"
     (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
-    (cellContextMenu)="onCellContext($event)" (keydown)="handleKeyboardEvent($event)">
+    (cellContextMenu)="onCellContext($event)" (keydown)="handleKeyboardEvent($event)"
+    (firstDataRendered)="onFirstDataRendered()">
   </ag-grid-angular>
 
 </div>

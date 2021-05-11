@@ -16,16 +16,7 @@ import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
 import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  HostListener,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
@@ -71,10 +62,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("addonMultiContextMenuTrigger", { static: false }) public multiContextMenu: MatMenuTrigger;
   @ViewChild("columnContextMenuTrigger", { static: false }) public columnContextMenu: MatMenuTrigger;
   @ViewChild("updateAllContextMenuTrigger", { static: false })
-  public updateAllContextMenu: MatMenuTrigger;
 
   // @HostListener("window:keydown", ["$event"])
-
   private readonly _operationErrorSrc = new Subject<Error>();
 
   private _subscriptions: Subscription[] = [];
@@ -86,6 +75,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
+  public updateAllContextMenu: MatMenuTrigger;
   public spinnerMessage = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
   public filter = "";
@@ -208,12 +198,26 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.filterAddons();
     });
 
+    const addonInstalledSub = this.addonService.addonInstalled$
+      .pipe(
+        map((evt) => this.onAddonInstalledEvent(evt)),
+        map(() => this.setPageContextText())
+      )
+      .subscribe();
+
+    const addonRemovedSub = this.addonService.addonRemoved$
+      .pipe(
+        map((evt) => this.onAddonRemoved(evt)),
+        map(() => this.setPageContextText())
+      )
+      .subscribe();
+
     this._subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
-      this.addonService.addonInstalled$.subscribe(this.onAddonInstalledEvent),
-      this.addonService.addonRemoved$.subscribe(this.onAddonRemoved),
+      addonInstalledSub,
+      addonRemovedSub,
       filterInputSub
     );
 
@@ -280,6 +284,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onRowDataChanged(): void {
     this.rowDataChange$.next(true);
+  }
+
+  public onFirstDataRendered(): void {
+    this.autoSizeColumns();
   }
 
   public onGridReady(params: GridReadyEvent): void {
@@ -354,7 +362,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       console.debug("onRefresh");
       await this.addonService.syncAllClients();
-      // await this.addonService.syncInstallationAddons(this.selectedInstallation);
       await this.loadAddons(this.selectedInstallation);
       await this._wowUpAddonService.updateForInstallation(this.selectedInstallation);
     } catch (e) {
@@ -925,7 +932,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._cdRef.detectChanges();
 
     try {
-      const addons = await this.addonService.getAddons(installation, reScan);
+      let addons = await this.addonService.getAddons(installation, reScan);
+      if (reScan) {
+        await this.addonService.syncInstallationAddons(installation);
+        addons = await this.addonService.getAddons(installation, false);
+      }
 
       const rowData = this.formatAddons(addons);
       this.enableControls = this.calculateControlState();
@@ -1011,17 +1022,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       // Reorder everything by name to act as a sub-sort
       this.rowData = [...this._baseRowData];
 
-      // If the user is currently filtering the table, use that.
-      // if (this.filter) {
-      //   this.filterAddons();
-      // } else {
-      //   this.gridApi.setRowData(this.rowData);
-
-      //   // Force the grid to redraw whatever row needs updated
-      //   const rowNode = this.gridApi.getRowNode(evt.addon.id);
-      //   this.gridApi.redrawRows({ rowNodes: [rowNode] });
-      // }
-
       this.enableControls = this.calculateControlState();
     } finally {
       this._cdRef.detectChanges();
@@ -1057,9 +1057,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private autoSizeColumns() {
+    this.gridColumnApi?.autoSizeColumns([
+      "installedAt",
+      "latestVersion",
+      "releasedAt",
+      "gameVersion",
+      "externalChannel",
+      "providerName",
+    ]);
+  }
+
   private redrawRows() {
     this.gridApi?.redrawRows();
     this.gridApi?.resetRowHeights();
+    this.autoSizeColumns();
     this._cdRef.detectChanges();
   }
 
@@ -1090,8 +1102,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         field: "sortOrder",
-        sortable: true,
         width: 150,
+        sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
         cellRenderer: "myAddonStatus",
         ...baseColumn,
@@ -1119,7 +1131,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         field: "gameVersion",
         sortable: true,
-        flex: 1,
         minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER"),
         ...baseColumn,
@@ -1142,9 +1153,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         field: "author",
         sortable: true,
-        minWidth: 150,
+        minWidth: 120,
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
+        cellRenderer: "wrapTextCell",
         ...baseColumn,
       },
     ];
