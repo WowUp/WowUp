@@ -6,6 +6,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "skipLibCheck": true,
     "target": "es2015",
     "types": ["node"],
     "lib": ["es2017", "es2016", "es2015", "dom"]
