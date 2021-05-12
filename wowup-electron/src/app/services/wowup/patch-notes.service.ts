@@ -22,6 +22,11 @@ const CHANGELOGS: ChangeLog[] = [
       <ul>
         <li>Support for new multiple toc file addons from the WowUpHub</li>
       </ul>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Addons with warnings and ignored will be weighted at the bottom again</li>
+        <li>Fix a display issue with selecting the latest game version when installing an addon</li>
+      </ul>
       </div>`,
   },
   {

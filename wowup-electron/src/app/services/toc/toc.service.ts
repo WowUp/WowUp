@@ -1,4 +1,7 @@
 import { Injectable } from "@angular/core";
+import * as path from "path";
+
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { Toc } from "../../models/wowup/toc";
 import { FileService } from "../files/file.service";
 
@@ -74,6 +77,59 @@ export class TocService {
     const regex = /(\|T.*\|t)/g;
 
     return str.replace(regex, "").trim();
+  }
+
+  /**
+   * Return all valid tocs from a given base directory combined with the installation folders for the given client type
+   */
+  public async getAllTocs(baseDir: string, installedFolders: string[], clientType: WowClientType): Promise<Toc[]> {
+    const tocs: Toc[] = [];
+
+    for (const dir of installedFolders) {
+      const dirPath = path.join(baseDir, dir);
+
+      const tocFiles = await this._fileService.listFiles(dirPath, "*.toc");
+      const tocFile = this.getTocForGameType(tocFiles, clientType);
+      if (!tocFile) {
+        continue;
+      }
+
+      const tocPath = path.join(dirPath, tocFile);
+
+      const toc = await this.parse(tocPath);
+      if (toc.interface) {
+        tocs.push(toc);
+      }
+    }
+
+    return tocs;
+  }
+
+  /**
+   * Given a list of toc file names, select the one that goes with the given client type
+   * Use a similar priority switch as the actual wow client, if a targeted one exists use that, if not check for a base toc and try that
+   */
+  public getTocForGameType(tocFileNames: string[], clientType: WowClientType): string {
+    let matchedToc = "";
+
+    switch (clientType) {
+      case WowClientType.Beta:
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn));
+        break;
+      case WowClientType.Classic:
+        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn));
+        break;
+      case WowClientType.ClassicBeta:
+      case WowClientType.ClassicPtr:
+        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn));
+        break;
+      default:
+        break;
+    }
+
+    return matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn));
   }
 
   private getWebsite(tocText: string) {

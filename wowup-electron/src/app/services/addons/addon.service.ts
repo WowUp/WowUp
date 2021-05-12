@@ -663,7 +663,11 @@ export class AddonService {
       addon.installedFolders = unzippedDirectoryNames.join(",");
       addon.isIgnored = addonProvider.forceIgnore;
 
-      const allTocFiles = await this.getAllTocs(unzippedDirectory, unzippedDirectoryNames);
+      const allTocFiles = await this._tocService.getAllTocs(
+        unzippedDirectory,
+        unzippedDirectoryNames,
+        addon.clientType
+      );
       const gameVersion = this.getLatestGameVersion(allTocFiles);
       if (gameVersion) {
         addon.gameVersion = AddonUtils.getGameVersion(gameVersion);
@@ -758,30 +762,6 @@ export class AddonService {
     }
 
     console.log(JSON.stringify(clientMap));
-  }
-
-  private async getAllTocs(baseDir: string, installedFolders: string[]) {
-    const tocs: Toc[] = [];
-
-    for (const dir of installedFolders) {
-      const dirPath = path.join(baseDir, dir);
-
-      const tocFiles = await this._fileService.listFiles(dirPath, "*.toc");
-      const tocFile = _.first(tocFiles);
-      if (!tocFile) {
-        continue;
-      }
-
-      const tocPath = path.join(dirPath, tocFile);
-      const toc = await this._tocService.parse(tocPath);
-      if (!toc.interface) {
-        continue;
-      }
-
-      tocs.push(toc);
-    }
-
-    return tocs;
   }
 
   private getBestGuessTitle(tocs: Toc[]) {
