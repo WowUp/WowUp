@@ -9,11 +9,6 @@ export interface WowUpAddonReleaseFolderRepresentation {
   id: number;
   folder_name: string;
   fingerprint: string;
-  game_version: string;
-  addon_title: string;
-  addon_authors: string;
-  load_on_demand: boolean;
-  version: string;
 }
 
 export interface WowUpAddonReleaseRepresentation {
@@ -24,13 +19,21 @@ export interface WowUpAddonReleaseRepresentation {
   external_id: string;
   prerelease: boolean;
   body: string;
-  game_version: string;
+  // game_version: string;
+  game_versions: AddonReleaseGameVersion[];
   download_url: string;
   published_at: Date;
   addonFolders?: WowUpAddonReleaseFolderRepresentation[];
+  // game_type: WowGameType;
+  // toc_title?: string;
+  // toc_version?: string;
+}
+
+export interface AddonReleaseGameVersion {
+  interface: string;
+  title: string;
   game_type: WowGameType;
-  toc_title?: string;
-  toc_version?: string;
+  version: string;
 }
 
 export interface WowUpAddonRepresentation {

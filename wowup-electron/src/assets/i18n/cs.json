@@ -196,6 +196,7 @@
       "COPY_ADDON_ID_SNACKBAR": "ID addonu zkopírováno do schránky",
       "COPY_ADDON_ID_TOOLTIP": "Zkopíruje ID addonu do schránky",
       "DEPENDENCY_TEXT": "Tento addon má {dependencyCount} {dependencyCount, plural, =1{závislost} =2{závislosti} =3{závislosti} =4{závislosti} other{závislostí}}",
+      "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Popis",
       "FUNDING_LINK_TITLE": "Podpořte autora",
       "MISSING_DEPENDENCIES": "Chybějící závislosti",

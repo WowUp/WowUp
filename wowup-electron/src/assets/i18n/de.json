@@ -196,6 +196,7 @@
       "COPY_ADDON_ID_SNACKBAR": "Addon ID in die Zwischenablage kopiert",
       "COPY_ADDON_ID_TOOLTIP": "Addon ID in die Zwischenablage kopieren",
       "DEPENDENCY_TEXT": "Dieses Addon besitzt {dependencyCount} {dependencyCount, plural, one{Abhängigkeit} other{Abhängigkeiten}}",
+      "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Unterstütze diesen Autor",
       "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",

@@ -196,6 +196,7 @@
       "COPY_ADDON_ID_SNACKBAR": "插件 ID 已複製到剪貼簿",
       "COPY_ADDON_ID_TOOLTIP": "複製插件 ID",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 個依賴項",
+      "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支援插件作者",
       "MISSING_DEPENDENCIES": "缺失的依賴項",

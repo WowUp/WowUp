@@ -85,7 +85,7 @@ export class WowUpAddonProvider extends AddonProvider {
       addonIds: addonIdList,
     });
 
-    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, installation.clientType));
+    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, gameType));
 
     const missingAddonIds = _.filter(
       addonIds,
@@ -110,7 +110,7 @@ export class WowUpAddonProvider extends AddonProvider {
       CHANGELOG_CACHE_TTL_SEC
     );
 
-    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, installation.clientType));
+    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, gameType));
     return searchResults;
   }
 
@@ -123,7 +123,7 @@ export class WowUpAddonProvider extends AddonProvider {
       () => this._circuitBreaker.getJson<WowUpSearchAddonsResponse>(url),
       CHANGELOG_CACHE_TTL_SEC
     );
-    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, installation.clientType));
+    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, gameType));
 
     return searchResults;
   }
@@ -139,6 +139,7 @@ export class WowUpAddonProvider extends AddonProvider {
   }
 
   public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+    const gameType = this.getWowGameType(installation.clientType);
     const url = new URL(`${API_URL}/addons/${addonId}`);
     const task = this._cachingService.transaction(
       url.toString(),
@@ -148,7 +149,7 @@ export class WowUpAddonProvider extends AddonProvider {
 
     return from(task).pipe(
       map((result) => {
-        return this.getSearchResult(result.addon, installation.clientType);
+        return this.getSearchResult(result.addon, gameType);
       })
     );
   }
@@ -167,6 +168,8 @@ export class WowUpAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
+    const gameType = this.getWowGameType(installation.clientType);
+
     console.time("WowUpScan");
     const scanResults = await this.getScanResults(addonFolders);
     console.timeEnd("WowUpScan");
@@ -179,7 +182,7 @@ export class WowUpAddonProvider extends AddonProvider {
       // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
       scanResult.exactMatch = fingerprintResponse.exactMatches.find(
         (exactMatch) =>
-          this.isGameType(exactMatch.matched_release, installation.clientType) &&
+          this.hasGameType(exactMatch.matched_release, gameType) &&
           this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
       );
     }
@@ -238,8 +241,9 @@ export class WowUpAddonProvider extends AddonProvider {
     return release.addonFolders.some((addonFolder) => addonFolder.fingerprint == scanResult.fingerprint);
   }
 
-  private isGameType(release: WowUpAddonReleaseRepresentation, clientType: WowClientType) {
-    return release.game_type === this.getWowGameType(clientType);
+  private hasGameType(release: WowUpAddonReleaseRepresentation, clientType: WowGameType): boolean {
+    const matchingVersion = this.getMatchingVersion(release, clientType);
+    return matchingVersion !== undefined;
   }
 
   private getAddonsByFingerprints(fingerprints: string[]): Promise<GetAddonsByFingerprintResponse> {
@@ -254,30 +258,42 @@ export class WowUpAddonProvider extends AddonProvider {
     return file.prerelease ? AddonChannelType.Beta : AddonChannelType.Stable;
   }
 
-  private getSearchResultFile(file: WowUpAddonReleaseRepresentation): AddonSearchResultFile {
-    const version = file?.toc_version ?? file.tag_name;
+  // Only 1 game version should match a given game type
+  private getMatchingVersion(release: WowUpAddonReleaseRepresentation, gameType: WowGameType) {
+    return release.game_versions.find((gv) => gv.game_type === gameType);
+  }
+
+  private getSearchResultFile(release: WowUpAddonReleaseRepresentation, gameType: WowGameType): AddonSearchResultFile {
+    const matchingVersion = this.getMatchingVersion(release, gameType);
+    const version = matchingVersion?.version ?? release.tag_name;
 
     return {
-      channelType: this.getAddonReleaseChannel(file),
-      downloadUrl: file.download_url,
+      channelType: this.getAddonReleaseChannel(release),
+      downloadUrl: release.download_url,
       folders: [],
-      gameVersion: getGameVersion(file.game_version),
-      releaseDate: file.published_at,
+      gameVersion: getGameVersion(matchingVersion?.version),
+      releaseDate: release.published_at,
       version: version,
       dependencies: [],
-      changelog: file.body,
-      externalId: file.id.toString(),
+      changelog: release.body,
+      externalId: release.id.toString(),
+      title: matchingVersion?.title,
     };
   }
 
-  private getSearchResult(representation: WowUpAddonRepresentation, clientType: WowClientType): AddonSearchResult {
-    const wowGameType = this.getWowGameType(clientType);
-    const clientReleases = _.filter(representation.releases, (release) => release.game_type === wowGameType);
+  private filterReleases(representation: WowUpAddonRepresentation, gameType: WowGameType) {
+    return _.filter(representation.releases, (release) =>
+      release.game_versions.some((gv) => gv.game_type === gameType)
+    );
+  }
+
+  private getSearchResult(representation: WowUpAddonRepresentation, gameType: WowGameType): AddonSearchResult {
+    const clientReleases = this.filterReleases(representation, gameType);
     const searchResultFiles: AddonSearchResultFile[] = _.map(clientReleases, (release) =>
-      this.getSearchResultFile(release)
+      this.getSearchResultFile(release, gameType)
     );
 
-    const name = _.first(representation.releases)?.toc_title ?? representation.repository_name;
+    const name = _.first(searchResultFiles)?.title ?? representation.repository_name;
 
     return {
       author: representation.owner_name,
@@ -301,13 +317,16 @@ export class WowUpAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     scanResult: AppWowUpScanResult
   ): Addon {
+    const gameType = this.getWowGameType(installation.clientType);
     const authors = scanResult.exactMatch.owner_name;
     const folders = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name);
     const folderList = folders.join(", ");
     const channelType = addonChannelType;
-    const name = scanResult.exactMatch.matched_release?.toc_title ?? scanResult.exactMatch.repository_name;
-    const version =
-      scanResult.exactMatch.matched_release?.toc_version ?? scanResult.exactMatch.matched_release.tag_name;
+
+    const matchingVersion = this.getMatchingVersion(scanResult.exactMatch.matched_release, gameType);
+
+    const name = matchingVersion?.title ?? scanResult.exactMatch.repository_name;
+    const version = matchingVersion?.version ?? scanResult.exactMatch.matched_release.tag_name;
 
     return {
       id: uuidv4(),
@@ -319,7 +338,7 @@ export class WowUpAddonProvider extends AddonProvider {
       downloadUrl: scanResult.exactMatch.matched_release.download_url,
       externalUrl: scanResult.exactMatch.repository,
       externalId: scanResult.exactMatch.id.toString(),
-      gameVersion: getGameVersion(scanResult.exactMatch.matched_release.game_version),
+      gameVersion: getGameVersion(version),
       installedAt: new Date(),
       installedFolders: folderList,
       installedFolderList: folders,
@@ -340,7 +359,7 @@ export class WowUpAddonProvider extends AddonProvider {
     };
   }
 
-  private getWowGameType(clientType: WowClientType): string {
+  private getWowGameType(clientType: WowClientType): WowGameType {
     switch (clientType) {
       case WowClientType.Classic:
         return WowGameType.Classic;

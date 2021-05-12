@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.3.0",
+    html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>Support for new multiple toc file addons from the WowUpHub</li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.2.1",
     html: `<div>
       <h4 style="margin-top: 1em;">New Features</h4>

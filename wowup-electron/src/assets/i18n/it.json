@@ -196,6 +196,7 @@
       "COPY_ADDON_ID_SNACKBAR": "ID dell'addon copiato negli appunti",
       "COPY_ADDON_ID_TOOLTIP": "Copia l'ID dell'addon negli appunti",
       "DEPENDENCY_TEXT": "Questo addon ha {dependencyCount, plural, one{una dipendenza} other{{dependencyCount} dipendenze}} {dependencyCount, plural, one{richiesta} other{richieste}}",
+      "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Descrizione",
       "FUNDING_LINK_TITLE": "Supporta questo autore",
       "MISSING_DEPENDENCIES": "Dipendenze mancanti",

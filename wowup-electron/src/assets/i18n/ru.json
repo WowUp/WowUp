@@ -196,6 +196,7 @@
       "COPY_ADDON_ID_SNACKBAR": "ID модификации скопирован в буфер обмена",
       "COPY_ADDON_ID_TOOLTIP": "Скопировать ID модификации в буфер обмена",
       "DEPENDENCY_TEXT": "Эта модификация имеет {dependencyCount} {dependencyCount, plural, one{необходимую} other{необходимых}} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}",
+      "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Описание",
       "FUNDING_LINK_TITLE": "Поддержать этого автора",
       "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
