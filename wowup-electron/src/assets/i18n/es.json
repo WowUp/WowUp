@@ -196,7 +196,7 @@
       "COPY_ADDON_ID_SNACKBAR": "El ID del addon se ha copiado al portapapeles",
       "COPY_ADDON_ID_TOOLTIP": "Copia el ID del addon al portapapeles",
       "DEPENDENCY_TEXT": "Este addon tiene {dependencyCount} {dependencyCount, plural, one{dependencia requerida} other{dependencias requeridas}}",
-      "DESCRIPTION_NOT_FOUND": "No description found",
+      "DESCRIPTION_NOT_FOUND": "Descripción no encontrada",
       "DESCRIPTION_TAB": "Descripción",
       "FUNDING_LINK_TITLE": "Apoyar a este autor",
       "MISSING_DEPENDENCIES": "Dependencias no encontradas",
