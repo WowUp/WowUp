@@ -28,6 +28,15 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Addons from the WowUpHub will not show author names from their respective toc files where applicable</li>
         <li>Addons that are no longer supported by a client sourced from the WowUpHub will now be marked with a warning, not throw an error</li>
         <li>Fix a display issue with selecting the latest game version when installing an addon (right click > re-install)</li>
+        </ul>
+      </div>`
+  },
+  {
+    Version: "2.2.2",
+    html: `<div>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Fix some issues related to addons migrating from classic to TBC / Multiple toc files</li>
       </ul>
       </div>`,
   },

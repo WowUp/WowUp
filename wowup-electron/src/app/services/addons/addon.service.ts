@@ -1111,7 +1111,7 @@ export class AddonService {
           );
           continue;
         }
-
+        
         this.setExternalIdString(addon);
 
         addon.summary = result.summary;

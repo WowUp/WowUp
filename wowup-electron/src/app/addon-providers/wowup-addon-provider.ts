@@ -183,7 +183,6 @@ export class WowUpAddonProvider extends AddonProvider {
         this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
       );
 
-      // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
       let clientMatch = fingerprintMatches.find((exactMatch) => this.hasGameType(exactMatch.matched_release, gameType));
 
       if (!clientMatch && fingerprintMatches.length > 0) {

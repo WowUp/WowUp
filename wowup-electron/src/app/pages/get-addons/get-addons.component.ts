@@ -519,7 +519,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
           return new GetAddonListItem(addon, this.defaultAddonChannel);
         } catch (e) {
           console.error(e);
-          console.error("defaultAddonChannel", this.defaultAddonChannel);
           console.error(addon);
         }
       })
