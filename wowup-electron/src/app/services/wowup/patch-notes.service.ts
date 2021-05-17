@@ -21,6 +21,7 @@ const CHANGELOGS: ChangeLog[] = [
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>
         <li>Fix some issues related to addons migrating from classic to TBC / Multiple toc files</li>
+        <li>Improve TukUI searching</li>
       </ul>
       </div>`,
   },
