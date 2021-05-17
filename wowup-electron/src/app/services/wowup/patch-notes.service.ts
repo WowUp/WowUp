@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.2.2",
+    html: `<div>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Fix some issues related to addons migrating from classic to TBC / Multiple toc files</li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.2.1",
     html: `<div>
       <h4 style="margin-top: 1em;">New Features</h4>
