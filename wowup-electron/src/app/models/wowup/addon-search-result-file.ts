@@ -12,4 +12,5 @@ export interface AddonSearchResultFile {
   dependencies?: AddonSearchResultDependency[];
   changelog?: string;
   title?: string;
+  authors?: string;
 }

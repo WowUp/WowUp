@@ -179,12 +179,19 @@ export class WowUpAddonProvider extends AddonProvider {
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints);
 
     for (const scanResult of scanResults) {
-      // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
-      scanResult.exactMatch = fingerprintResponse.exactMatches.find(
-        (exactMatch) =>
-          this.hasGameType(exactMatch.matched_release, gameType) &&
-          this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
+      const fingerprintMatches = fingerprintResponse.exactMatches.filter((exactMatch) =>
+        this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
       );
+
+      // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
+      let clientMatch = fingerprintMatches.find((exactMatch) => this.hasGameType(exactMatch.matched_release, gameType));
+
+      if (!clientMatch && fingerprintMatches.length > 0) {
+        console.warn(`No matching client type found for ${scanResult.folderName}, using fallback`);
+        clientMatch = fingerprintMatches[0];
+      }
+
+      scanResult.exactMatch = clientMatch;
     }
 
     for (const addonFolder of addonFolders) {
@@ -278,6 +285,7 @@ export class WowUpAddonProvider extends AddonProvider {
       changelog: release.body,
       externalId: release.id.toString(),
       title: matchingVersion?.title,
+      authors: matchingVersion?.authors
     };
   }
 
@@ -294,9 +302,10 @@ export class WowUpAddonProvider extends AddonProvider {
     );
 
     const name = _.first(searchResultFiles)?.title ?? representation.repository_name;
+    const authors = _.first(searchResultFiles)?.authors ?? representation.owner_name;
 
     return {
-      author: representation.owner_name,
+      author: authors,
       externalId: representation.id.toString(),
       externalUrl: representation.repository,
       name,
@@ -318,15 +327,22 @@ export class WowUpAddonProvider extends AddonProvider {
     scanResult: AppWowUpScanResult
   ): Addon {
     const gameType = this.getWowGameType(installation.clientType);
-    const authors = scanResult.exactMatch.owner_name;
     const folders = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name);
     const folderList = folders.join(", ");
     const channelType = addonChannelType;
 
-    const matchingVersion = this.getMatchingVersion(scanResult.exactMatch.matched_release, gameType);
+    let matchingVersion = this.getMatchingVersion(scanResult.exactMatch.matched_release, gameType);
+    if (!matchingVersion) {
+      matchingVersion = scanResult?.exactMatch?.matched_release?.game_versions[0];
+      console.warn(
+        `No matching version found: ${scanResult.exactMatch.repository_name}, using fallback ${matchingVersion.interface}`
+      );
+    }
 
     const name = matchingVersion?.title ?? scanResult.exactMatch.repository_name;
     const version = matchingVersion?.version ?? scanResult.exactMatch.matched_release.tag_name;
+    const authors = matchingVersion?.authors ?? scanResult.exactMatch.owner_name;
+    const interfaceVer = matchingVersion?.interface;
 
     return {
       id: uuidv4(),
@@ -338,7 +354,7 @@ export class WowUpAddonProvider extends AddonProvider {
       downloadUrl: scanResult.exactMatch.matched_release.download_url,
       externalUrl: scanResult.exactMatch.repository,
       externalId: scanResult.exactMatch.id.toString(),
-      gameVersion: getGameVersion(version),
+      gameVersion: getGameVersion(interfaceVer),
       installedAt: new Date(),
       installedFolders: folderList,
       installedFolderList: folders,

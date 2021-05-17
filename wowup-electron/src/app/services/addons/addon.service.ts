@@ -20,7 +20,13 @@ import {
 } from "../../../common/constants";
 import { Addon, AddonExternalId } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonCategory, AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
+import {
+  AddonCategory,
+  AddonChannelType,
+  AddonDependency,
+  AddonDependencyType,
+  AddonWarningType,
+} from "../../../common/wowup/models";
 import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
@@ -1074,10 +1080,14 @@ export class AddonService {
 
     const getAllResult = await addonProvider.getAll(installation, providerAddonIds);
     this.handleSyncErrors(installation, getAllResult, addonProvider, addons);
-    await this.handleSyncResults(getAllResult, addons);
+    await this.handleSyncResults(getAllResult, addons, installation);
   }
 
-  private async handleSyncResults(getAllResult: GetAllResult, addons: Addon[]): Promise<void> {
+  private async handleSyncResults(
+    getAllResult: GetAllResult,
+    addons: Addon[],
+    installation: WowInstallation
+  ): Promise<void> {
     for (const result of getAllResult.searchResults) {
       const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
       if (!addon) {
@@ -1086,6 +1096,21 @@ export class AddonService {
 
       try {
         const latestFile = SearchResults.getLatestFile(result, addon?.channelType);
+        if (!latestFile) {
+          console.warn(`No latest file found: ${addon.name}, clientType: ${addon.clientType}`);
+
+          addon.warningType = AddonWarningType.NoProviderFiles;
+          this._addonStorage.set(addon.id, addon);
+
+          this._syncErrorSrc.next(
+            new AddonSyncError({
+              providerName: addon.providerName,
+              installationName: installation.label,
+              addonName: addon?.name,
+            })
+          );
+          continue;
+        }
 
         this.setExternalIdString(addon);
 

@@ -34,6 +34,7 @@ export interface AddonReleaseGameVersion {
   title: string;
   game_type: WowGameType;
   version: string;
+  authors: string;
 }
 
 export interface WowUpAddonRepresentation {
