@@ -289,7 +289,7 @@ export class TukUiAddonProvider extends AddonProvider {
         const similarity = stringSimilarity.compareTwoStrings(canonAddonName, addon.name.toLowerCase());
         return { addon, similarity };
       })
-      .filter((result) => result.similarity > 0.7);
+      .filter((result) => result.similarity > 0.7 || result.addon.name.toLowerCase().indexOf(canonAddonName) !== -1);
 
     return _.orderBy(matches, (match) => match.similarity, "desc").map((match) => match.addon);
   }
