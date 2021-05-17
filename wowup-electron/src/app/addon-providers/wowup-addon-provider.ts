@@ -176,12 +176,10 @@ export class WowUpAddonProvider extends AddonProvider {
     const fingerprintResponse = await this.getAddonsByFingerprints(fingerprints);
 
     for (const scanResult of scanResults) {
-      // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
       const fingerprintMatches = fingerprintResponse.exactMatches.filter((exactMatch) =>
         this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
       );
 
-      // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
       let clientMatch = fingerprintMatches.find((exactMatch) =>
         this.isGameType(exactMatch.matched_release, installation.clientType)
       );
