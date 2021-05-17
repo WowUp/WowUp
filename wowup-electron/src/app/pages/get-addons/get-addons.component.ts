@@ -507,7 +507,17 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
-    const addonList = addons.map((addon) => new GetAddonListItem(addon, this.defaultAddonChannel));
+    const addonList = addons
+      .map((addon) => {
+        try {
+          return new GetAddonListItem(addon, this.defaultAddonChannel);
+        } catch (e) {
+          console.error(e);
+          console.error(addon);
+        }
+      })
+      .filter((item) => item !== undefined);
+
     return this.sortAddons(addonList);
   }
 

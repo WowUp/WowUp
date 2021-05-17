@@ -177,11 +177,21 @@ export class WowUpAddonProvider extends AddonProvider {
 
     for (const scanResult of scanResults) {
       // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
-      scanResult.exactMatch = fingerprintResponse.exactMatches.find(
-        (exactMatch) =>
-          this.isGameType(exactMatch.matched_release, installation.clientType) &&
-          this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
+      const fingerprintMatches = fingerprintResponse.exactMatches.filter((exactMatch) =>
+        this.hasMatchingFingerprint(scanResult, exactMatch.matched_release)
       );
+
+      // Wowup can deliver the wrong result sometimes, ensure the result matches the client type
+      let clientMatch = fingerprintMatches.find((exactMatch) =>
+        this.isGameType(exactMatch.matched_release, installation.clientType)
+      );
+
+      if (!clientMatch && fingerprintMatches.length > 0) {
+        console.warn(`No matching client type found for ${scanResult.folderName}, using fallback`);
+        clientMatch = fingerprintMatches[0];
+      }
+
+      scanResult.exactMatch = clientMatch;
     }
 
     for (const addonFolder of addonFolders) {
@@ -271,9 +281,7 @@ export class WowUpAddonProvider extends AddonProvider {
   }
 
   private getSearchResult(representation: WowUpAddonRepresentation, clientType: WowClientType): AddonSearchResult {
-    const wowGameType = this.getWowGameType(clientType);
-    const clientReleases = _.filter(representation.releases, (release) => release.game_type === wowGameType);
-    const searchResultFiles: AddonSearchResultFile[] = _.map(clientReleases, (release) =>
+    const searchResultFiles: AddonSearchResultFile[] = _.map(representation.releases, (release) =>
       this.getSearchResultFile(release)
     );
 
