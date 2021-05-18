@@ -31,6 +31,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Fix an issue with the interface version being displayed in the Game Version column after a re-scan</li>
         <li>Fix an issue with curse matches being ignored when they have no matching client type releases during a re-scan</li>
         <li>Fix an issue with over aggressive TukUI name matching during a re-scan</li>
+        <li>Fix an issue Classic Era being incorrectly identified when adding it manually</li>
         </ul>
       </div>`
   },
