@@ -446,7 +446,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .getWowInstallations()
       .filter(
         (installation) =>
-          installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.Classic
+          installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra
       );
     this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }

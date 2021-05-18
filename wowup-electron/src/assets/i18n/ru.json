@@ -128,13 +128,14 @@
       "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация вероятно была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} обнаружил эту модификацию, но не имеет списка текущих файлов для загрузки.<br>Мы больше не способны обновлять эту модификацию или показывать её детали, пока {providerName} не исправит её.",
-      "NO_PROVIDER_FILES_TOOLTIP": "Источник этой модификации не отправляет никаких файлов"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",
       "CLASSIC": "Классический",
       "CLASSICBETA": "Классический Бета",
+      "CLASSICERA": "Classic Era",
       "CLASSICPTR": "Классический PTR",
       "RETAIL": "Актуальный",
       "RETAILPTR": "Актуальный PTR"
@@ -196,6 +197,7 @@
       "COPY_ADDON_ID_SNACKBAR": "ID модификации скопирован в буфер обмена",
       "COPY_ADDON_ID_TOOLTIP": "Скопировать ID модификации в буфер обмена",
       "DEPENDENCY_TEXT": "Эта модификация имеет {dependencyCount} {dependencyCount, plural, one{необходимую} other{необходимых}} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}",
+      "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Описание",
       "FUNDING_LINK_TITLE": "Поддержать этого автора",
       "MISSING_DEPENDENCIES": "Отсутствующие зависимости",

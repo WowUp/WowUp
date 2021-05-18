@@ -5,5 +5,5 @@ export interface WarcraftServiceImpl {
   isWowApplication(appName: string): boolean;
   getBlizzardAgentPath(): Promise<string>;
   getExecutableName(clientType: WowClientType): string;
-  getClientType(executableName: string): WowClientType;
+  getClientType(binaryPath: string): WowClientType;
 }

@@ -128,13 +128,14 @@
       "GENERIC_TOOLTIP": "Se ha detectado un problema con este addon",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Este addon parece haber sido eliminado por el autor o el proveedor.<br>No es posible actualizarlo ni proveer detalles.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Este addon parece haber sido eliminado por el proveedor",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} informa disponer de este addon, pero no posee la lista de archivos necesarios para su descarga.<br>WowUp no podrá actualizar o mostrar detalles del addon hasta que {providerName} lo solucione.",
-      "NO_PROVIDER_FILES_TOOLTIP": "El proveedor de este addon informa no disponer de los archivos"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "Classic",
       "CLASSICBETA": "Beta Classic",
+      "CLASSICERA": "Classic Era",
       "CLASSICPTR": "RPP Classic",
       "RETAIL": "Retail",
       "RETAILPTR": "RPP Retail"
@@ -196,6 +197,7 @@
       "COPY_ADDON_ID_SNACKBAR": "El ID del addon se ha copiado al portapapeles",
       "COPY_ADDON_ID_TOOLTIP": "Copia el ID del addon al portapapeles",
       "DEPENDENCY_TEXT": "Este addon tiene {dependencyCount} {dependencyCount, plural, one{dependencia requerida} other{dependencias requeridas}}",
+      "DESCRIPTION_NOT_FOUND": "Descripción no encontrada",
       "DESCRIPTION_TAB": "Descripción",
       "FUNDING_LINK_TITLE": "Apoyar a este autor",
       "MISSING_DEPENDENCIES": "Dependencias no encontradas",

@@ -6,7 +6,16 @@ import { filter, map } from "rxjs/operators";
 import { Injectable } from "@angular/core";
 
 import { ElectronService } from "../";
-import { BLIZZARD_AGENT_PATH_KEY } from "../../../common/constants";
+import {
+  BLIZZARD_AGENT_PATH_KEY,
+  WOW_BETA_FOLDER,
+  WOW_CLASSIC_BETA_FOLDER,
+  WOW_CLASSIC_ERA_FOLDER,
+  WOW_CLASSIC_FOLDER,
+  WOW_CLASSIC_PTR_FOLDER,
+  WOW_RETAIL_FOLDER,
+  WOW_RETAIL_PTR_FOLDER,
+} from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { ProductDb } from "../../models/warcraft/product-db";
@@ -23,12 +32,7 @@ import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
 
 // WOW STRINGS
-const CLIENT_RETAIL_FOLDER = "_retail_";
-const CLIENT_RETAIL_PTR_FOLDER = "_ptr_";
-const CLIENT_CLASSIC_FOLDER = "_classic_";
-const CLIENT_CLASSIC_PTR_FOLDER = "_classic_ptr_";
-const CLIENT_BETA_FOLDER = "_beta_";
-const CLIENT_CLASSIC_BETA_FOLDER = "_classic_beta_";
+
 const ADDON_FOLDER_NAME = "AddOns";
 const INTERFACE_FOLDER_NAME = "Interface";
 
@@ -60,15 +64,13 @@ export class WarcraftService {
   public installedClientTypesSelectItems$ = this._installedClientTypesSrc.pipe(
     filter((clientTypes) => !!clientTypes),
     map((clientTypes) => {
-      return clientTypes.map(
-        (ct): SelectItem<WowClientType> => {
-          const clientTypeName = getEnumName(WowClientType, ct).toUpperCase();
-          return {
-            display: `COMMON.CLIENT_TYPES.${clientTypeName}`,
-            value: ct,
-          };
-        }
-      );
+      return clientTypes.map((ct): SelectItem<WowClientType> => {
+        const clientTypeName = getEnumName(WowClientType, ct).toUpperCase();
+        return {
+          display: `COMMON.CLIENT_TYPES.${clientTypeName}`,
+          value: ct,
+        };
+      });
     })
   );
 
@@ -221,24 +223,26 @@ export class WarcraftService {
     return agentPath;
   }
 
-  public getClientTypeForBinary(binaryName: string): WowClientType {
-    return this._impl.getClientType(binaryName);
+  public getClientTypeForBinary(binaryPath: string): WowClientType {
+    return this._impl.getClientType(binaryPath);
   }
 
   public getClientFolderName(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
-        return CLIENT_RETAIL_FOLDER;
+        return WOW_RETAIL_FOLDER;
+      case WowClientType.ClassicEra:
+        return WOW_CLASSIC_ERA_FOLDER;
       case WowClientType.Classic:
-        return CLIENT_CLASSIC_FOLDER;
+        return WOW_CLASSIC_FOLDER;
       case WowClientType.RetailPtr:
-        return CLIENT_RETAIL_PTR_FOLDER;
+        return WOW_RETAIL_PTR_FOLDER;
       case WowClientType.ClassicPtr:
-        return CLIENT_CLASSIC_PTR_FOLDER;
+        return WOW_CLASSIC_PTR_FOLDER;
       case WowClientType.Beta:
-        return CLIENT_BETA_FOLDER;
+        return WOW_BETA_FOLDER;
       case WowClientType.ClassicBeta:
-        return CLIENT_CLASSIC_BETA_FOLDER;
+        return WOW_CLASSIC_BETA_FOLDER;
       default:
         return "";
     }
@@ -248,7 +252,7 @@ export class WarcraftService {
     switch (clientType) {
       case WowClientType.Retail:
         return RETAIL_LOCATION_KEY;
-      case WowClientType.Classic:
+      case WowClientType.ClassicEra:
         return CLASSIC_LOCATION_KEY;
       case WowClientType.RetailPtr:
         return RETAIL_PTR_LOCATION_KEY;
@@ -307,17 +311,19 @@ export class WarcraftService {
 
   private getClientTypeForFolderName(folderName: string): WowClientType {
     switch (folderName) {
-      case CLIENT_RETAIL_FOLDER:
+      case WOW_RETAIL_FOLDER:
         return WowClientType.Retail;
-      case CLIENT_RETAIL_PTR_FOLDER:
+      case WOW_RETAIL_PTR_FOLDER:
         return WowClientType.RetailPtr;
-      case CLIENT_CLASSIC_FOLDER:
+      case WOW_CLASSIC_ERA_FOLDER:
+        return WowClientType.ClassicEra;
+      case WOW_CLASSIC_FOLDER:
         return WowClientType.Classic;
-      case CLIENT_CLASSIC_PTR_FOLDER:
+      case WOW_CLASSIC_PTR_FOLDER:
         return WowClientType.ClassicPtr;
-      case CLIENT_BETA_FOLDER:
+      case WOW_BETA_FOLDER:
         return WowClientType.Beta;
-      case CLIENT_CLASSIC_BETA_FOLDER:
+      case WOW_CLASSIC_BETA_FOLDER:
         return WowClientType.ClassicBeta;
       default:
         return WowClientType.Retail;

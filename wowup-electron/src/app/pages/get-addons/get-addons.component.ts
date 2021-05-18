@@ -22,6 +22,7 @@ import { ADDON_PROVIDER_HUB } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
+import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
 import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import {
@@ -217,6 +218,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       potentialAddonRenderer: PotentialAddonTableColumnComponent,
       statusRenderer: GetAddonStatusColumnComponent,
       contextHeader: TableContextHeaderCellComponent,
+      wrapTextCell: CellWrapTextComponent,
     };
 
     this.columnDefs = this.createColumns();
@@ -334,6 +336,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       },
       cellStyle: {
         lineHeight: "62px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
       },
     };
 
@@ -371,6 +376,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
+        cellRenderer: "wrapTextCell",
         ...baseColumn,
       },
       {

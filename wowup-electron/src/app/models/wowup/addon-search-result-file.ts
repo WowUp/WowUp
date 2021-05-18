@@ -11,4 +11,6 @@ export interface AddonSearchResultFile {
   releaseDate: Date;
   dependencies?: AddonSearchResultDependency[];
   changelog?: string;
+  title?: string;
+  authors?: string;
 }

@@ -63,15 +63,6 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
-  public searchByName(
-    addonName: string,
-    folderName: string,
-    installation: WowInstallation,
-    nameOverride?: string
-  ): Promise<AddonSearchResult[]> {
-    return Promise.resolve([]);
-  }
-
   public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
     return of(undefined);
   }

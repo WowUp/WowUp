@@ -34,6 +34,11 @@ a[href^="ftp://"]
 .selectable {
   user-select: text !important;
   -webkit-user-select: text !important;
+
+  * {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+  }
 }
 
 html {

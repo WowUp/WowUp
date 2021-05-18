@@ -130,30 +130,11 @@ export class TukUiAddonProvider extends AddonProvider {
   }
 
   public async searchByQuery(query: string, installation: WowInstallation): Promise<AddonSearchResult[]> {
-    const searchResults = await this.searchAddons(query, installation.clientType);
+    const searchResults = await this.searchAddons(query, installation.clientType, true);
 
     const similarAddons = _.orderBy(searchResults, ["downloads"]);
 
     return await this.mapAddonsToSearchResults(similarAddons);
-  }
-
-  public async searchByName(
-    addonName: string,
-    folderName: string,
-    installation: WowInstallation
-  ): Promise<AddonSearchResult[]> {
-    const results: AddonSearchResult[] = [];
-    try {
-      const addons = await this.searchAddons(addonName, installation.clientType);
-      const searchResult = await this.toSearchResult(_.first(addons), folderName);
-      if (searchResult) {
-        results.push(searchResult);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    return results;
   }
 
   public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
@@ -281,17 +262,31 @@ export class TukUiAddonProvider extends AddonProvider {
     return html;
   };
 
-  private async searchAddons(addonName: string, clientType: WowClientType): Promise<TukUiAddon[]> {
+  private async searchAddons(
+    addonName: string,
+    clientType: WowClientType,
+    allowContain = false
+  ): Promise<TukUiAddon[]> {
     const canonAddonName = addonName.toLowerCase();
     const addons = await this.getAllAddons(clientType);
-    const matches = addons
-      .map((addon) => {
-        const similarity = stringSimilarity.compareTwoStrings(canonAddonName, addon.name.toLowerCase());
-        return { addon, similarity };
-      })
-      .filter((result) => result.similarity > 0.7 || result.addon.name.toLowerCase().indexOf(canonAddonName) !== -1);
 
-    return _.orderBy(matches, (match) => match.similarity, "desc").map((match) => match.addon);
+    let matches = _.orderBy(
+      addons
+        .map((addon) => {
+          const similarity = stringSimilarity.compareTwoStrings(canonAddonName, addon.name.toLowerCase());
+          return { addon, similarity };
+        })
+        .filter((result) => result.similarity > 0.7),
+      (match) => match.similarity,
+      "desc"
+    ).map((result) => result.addon);
+
+    // If we didnt get any similarity matches
+    if (allowContain && matches.length === 0) {
+      matches = addons.filter((addon) => addon.name.toLowerCase().indexOf(canonAddonName) !== -1);
+    }
+
+    return matches;
   }
 
   private async toSearchResult(addon: TukUiAddon, folderName = ""): Promise<AddonSearchResult | undefined> {
@@ -392,8 +387,9 @@ export class TukUiAddonProvider extends AddonProvider {
 
   private getAddonsSuffix(clientType: WowClientType) {
     switch (clientType) {
-      case WowClientType.Classic:
+      case WowClientType.ClassicEra:
         return "classic-addons";
+      case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return "classic-tbc-addons";
@@ -408,8 +404,9 @@ export class TukUiAddonProvider extends AddonProvider {
 
   private getAddonsCacheType(clientType: WowClientType) {
     switch (clientType) {
-      case WowClientType.Classic:
+      case WowClientType.ClassicEra:
         return "classic";
+      case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return "tbc";

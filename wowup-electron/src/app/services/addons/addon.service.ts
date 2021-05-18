@@ -20,7 +20,13 @@ import {
 } from "../../../common/constants";
 import { Addon, AddonExternalId } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { AddonCategory, AddonChannelType, AddonDependency, AddonDependencyType, AddonWarningType } from "../../../common/wowup/models";
+import {
+  AddonCategory,
+  AddonChannelType,
+  AddonDependency,
+  AddonDependencyType,
+  AddonWarningType,
+} from "../../../common/wowup/models";
 import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
@@ -663,7 +669,11 @@ export class AddonService {
       addon.installedFolders = unzippedDirectoryNames.join(",");
       addon.isIgnored = addonProvider.forceIgnore;
 
-      const allTocFiles = await this.getAllTocs(unzippedDirectory, unzippedDirectoryNames);
+      const allTocFiles = await this._tocService.getAllTocs(
+        unzippedDirectory,
+        unzippedDirectoryNames,
+        addon.clientType
+      );
       const gameVersion = this.getLatestGameVersion(allTocFiles);
       if (gameVersion) {
         addon.gameVersion = AddonUtils.getGameVersion(gameVersion);
@@ -758,30 +768,6 @@ export class AddonService {
     }
 
     console.log(JSON.stringify(clientMap));
-  }
-
-  private async getAllTocs(baseDir: string, installedFolders: string[]) {
-    const tocs: Toc[] = [];
-
-    for (const dir of installedFolders) {
-      const dirPath = path.join(baseDir, dir);
-
-      const tocFiles = await this._fileService.listFiles(dirPath, "*.toc");
-      const tocFile = _.first(tocFiles);
-      if (!tocFile) {
-        continue;
-      }
-
-      const tocPath = path.join(dirPath, tocFile);
-      const toc = await this._tocService.parse(tocPath);
-      if (!toc.interface) {
-        continue;
-      }
-
-      tocs.push(toc);
-    }
-
-    return tocs;
   }
 
   private getBestGuessTitle(tocs: Toc[]) {
@@ -1134,7 +1120,7 @@ export class AddonService {
         addon.warningType = undefined;
 
         // Check for a new download URL
-        if (latestFile.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
+        if (latestFile?.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
           addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
         }
 

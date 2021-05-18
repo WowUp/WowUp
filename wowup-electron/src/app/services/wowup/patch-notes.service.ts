@@ -16,6 +16,26 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.3.0",
+    html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>Support for new multiple toc file addons from the WowUpHub</li>
+      </ul>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Addons with warnings and ignored will be weighted at the bottom again</li>
+        <li>Addons from the WowUpHub will now show author names from their respective toc files where applicable</li>
+        <li>Addons that are no longer supported by a client sourced from the WowUpHub will now be marked with a warning, not throw an error</li>
+        <li>Fix a display issue with selecting the latest game version when installing an addon (right click > re-install)</li>
+        <li>Fix an issue with the interface version being displayed in the Game Version column after a re-scan</li>
+        <li>Fix an issue with curse matches being ignored when they have no matching client type releases during a re-scan</li>
+        <li>Fix an issue with over aggressive TukUI name matching during a re-scan</li>
+        <li>Fix an issue Classic Era being incorrectly identified when adding it manually</li>
+        </ul>
+      </div>`
+  },
+  {
     Version: "2.2.2",
     html: `<div>
       <h4 style="margin-top: 1em;">Changes</h4>

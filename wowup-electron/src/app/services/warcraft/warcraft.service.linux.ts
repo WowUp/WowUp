@@ -1,3 +1,6 @@
+import * as path from "path";
+
+import { WOW_CLASSIC_ERA_FOLDER } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 
@@ -37,6 +40,7 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
     switch (clientType) {
       case WowClientType.Retail:
         return WOW_RETAIL_NAME;
+      case WowClientType.ClassicEra:
       case WowClientType.Classic:
         return WOW_CLASSIC_NAME;
       case WowClientType.RetailPtr:
@@ -52,12 +56,17 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
     }
   }
 
-  public getClientType(executableName: string): WowClientType {
-    switch (executableName) {
+  public getClientType(binaryPath: string): WowClientType {
+    const binaryName = path.basename(binaryPath);
+    switch (binaryName) {
       case WOW_RETAIL_NAME:
         return WowClientType.Retail;
       case WOW_CLASSIC_NAME:
-        return WowClientType.Classic;
+        if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_FOLDER)) {
+          return WowClientType.ClassicEra;
+        } else {
+          return WowClientType.Classic;
+        }
       case WOW_RETAIL_PTR_NAME:
         return WowClientType.RetailPtr;
       case WOW_CLASSIC_PTR_NAME:

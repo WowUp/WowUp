@@ -381,12 +381,14 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
 
     try {
-      return await this._addonService.getFullDescription(
+      const description = await this._addonService.getFullDescription(
         this._sessionService.getSelectedWowInstallation(),
         providerName,
         externalId,
         this.model?.listItem?.addon
       );
+
+      return description || this._translateService.instant("DIALOGS.ADDON_DETAILS.DESCRIPTION_NOT_FOUND");
     } catch (e) {
       return "";
     }

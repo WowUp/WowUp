@@ -128,13 +128,14 @@
       "GENERIC_TOOLTIP": "We have detected an issue with this addon",
       "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
       "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, but did not have a list of current files to download.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
-      "NO_PROVIDER_FILES_TOOLTIP": "The provider for this addon did not return any files"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
       "CLASSIC": "Classic",
       "CLASSICBETA": "Classic Beta",
+      "CLASSICERA": "Classic Era",
       "CLASSICPTR": "Classic PTR",
       "RETAIL": "Retail",
       "RETAILPTR": "Retail PTR"
@@ -196,6 +197,7 @@
       "COPY_ADDON_ID_SNACKBAR": "ID dell'addon copiato negli appunti",
       "COPY_ADDON_ID_TOOLTIP": "Copia l'ID dell'addon negli appunti",
       "DEPENDENCY_TEXT": "Questo addon ha {dependencyCount, plural, one{una dipendenza} other{{dependencyCount} dipendenze}} {dependencyCount, plural, one{richiesta} other{richieste}}",
+      "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Descrizione",
       "FUNDING_LINK_TITLE": "Supporta questo autore",
       "MISSING_DEPENDENCIES": "Dipendenze mancanti",

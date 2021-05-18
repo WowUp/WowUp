@@ -1,4 +1,6 @@
-import { join } from "path";
+import * as path from "path";
+
+import { WOW_CLASSIC_ERA_FOLDER } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
@@ -16,7 +18,7 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_NAME,
   WOW_CLASSIC_PTR_NAME,
   WOW_RETAIL_BETA_NAME,
-  WOW_CLASSIC_BETA_NAME
+  WOW_CLASSIC_BETA_NAME,
 ];
 
 const BLIZZARD_AGENT_PATH = "/Users/Shared/Battle.net/Agent";
@@ -37,7 +39,7 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
    * Attempt to figure out where the blizzard agent was installed at
    */
   public async getBlizzardAgentPath(): Promise<string> {
-    const agentPath = join(BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
+    const agentPath = path.join(BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
     const exists = await this._fileService.pathExists(agentPath);
     return exists ? agentPath : "";
   }
@@ -46,6 +48,7 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
     switch (clientType) {
       case WowClientType.Retail:
         return WOW_RETAIL_NAME;
+      case WowClientType.ClassicEra:
       case WowClientType.Classic:
         return WOW_CLASSIC_NAME;
       case WowClientType.RetailPtr:
@@ -61,12 +64,17 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
     }
   }
 
-  public getClientType(executableName: string): WowClientType {
-    switch (executableName) {
+  public getClientType(binaryPath: string): WowClientType {
+    const binaryName = path.basename(binaryPath);
+    switch (binaryName) {
       case WOW_RETAIL_NAME:
         return WowClientType.Retail;
       case WOW_CLASSIC_NAME:
-        return WowClientType.Classic;
+        if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_FOLDER)) {
+          return WowClientType.ClassicEra;
+        } else {
+          return WowClientType.Classic;
+        }
       case WOW_RETAIL_PTR_NAME:
         return WowClientType.RetailPtr;
       case WOW_CLASSIC_PTR_NAME:
