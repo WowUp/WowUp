@@ -1120,7 +1120,7 @@ export class AddonService {
         addon.warningType = undefined;
 
         // Check for a new download URL
-        if (latestFile.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
+        if (latestFile?.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
           addon.downloadUrl = latestFile.downloadUrl || addon.downloadUrl;
         }
 
