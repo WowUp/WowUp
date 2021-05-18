@@ -128,8 +128,8 @@
       "GENERIC_TOOLTIP": "Se ha detectado un problema con este addon",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Este addon parece haber sido eliminado por el autor o el proveedor.<br>No es posible actualizarlo ni proveer detalles.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Este addon parece haber sido eliminado por el proveedor",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} informa disponer de este addon, sin embargo, no posee ningún archivo que corresponda a esta versión del juego.<br>Una vez esté disponible una actualización que corresponda a esta versión del juego esta advertencia debería desaparecer.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} no dispone de ningún archivo que se corresponda con la versión del juego"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
