@@ -278,10 +278,9 @@ export class CurseAddonProvider extends AddonProvider {
 
     for (const scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
-      scanResult.exactMatch = fingerprintResponse.exactMatches.find(
-        (exactMatch) =>
-          this.isGameVersionFlavor(exactMatch.file.gameVersionFlavor, installation.clientType) &&
-          this.hasMatchingFingerprint(scanResult, exactMatch)
+      scanResult.exactMatch = fingerprintResponse.exactMatches.find((exactMatch) =>
+        // this.isGameVersionFlavor(exactMatch.file.gameVersionFlavor, installation.clientType) &&
+        this.hasMatchingFingerprint(scanResult, exactMatch)
       );
 
       // If the addon does not have an exact match, check the partial matches.

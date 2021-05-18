@@ -277,7 +277,7 @@ export class WowUpAddonProvider extends AddonProvider {
       channelType: this.getAddonReleaseChannel(release),
       downloadUrl: release.download_url,
       folders: [],
-      gameVersion: getGameVersion(matchingVersion?.version),
+      gameVersion: getGameVersion(matchingVersion?.interface),
       releaseDate: release.published_at,
       version: version,
       dependencies: [],
