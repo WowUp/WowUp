@@ -128,8 +128,8 @@
       "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация вероятно была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} обнаружил эту модификацию, но не имеет списка текущих файлов для загрузки.<br>Мы больше не способны обновлять эту модификацию или показывать её детали, пока {providerName} не исправит её.",
-      "NO_PROVIDER_FILES_TOOLTIP": "Источник этой модификации не отправляет никаких файлов"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",

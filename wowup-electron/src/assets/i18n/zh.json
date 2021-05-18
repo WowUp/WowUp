@@ -128,8 +128,8 @@
       "GENERIC_TOOLTIP": "检测到此插件存在问题",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 无法更新此插件或提供详细信息。",
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了该插件的相关信息，但不包含可下载的文件。<br>在 {providerName} 修复此问题之前，WowUp 无法更新此插件或提供详细信息。",
-      "NO_PROVIDER_FILES_TOOLTIP": "此插件的提供方未返回任何文件"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
