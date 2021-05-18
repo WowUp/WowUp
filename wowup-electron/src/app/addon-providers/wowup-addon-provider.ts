@@ -284,7 +284,7 @@ export class WowUpAddonProvider extends AddonProvider {
       changelog: release.body,
       externalId: release.id.toString(),
       title: matchingVersion?.title,
-      authors: matchingVersion?.authors
+      authors: matchingVersion?.authors,
     };
   }
 
@@ -376,8 +376,9 @@ export class WowUpAddonProvider extends AddonProvider {
 
   private getWowGameType(clientType: WowClientType): WowGameType {
     switch (clientType) {
-      case WowClientType.Classic:
+      case WowClientType.ClassicEra:
         return WowGameType.Classic;
+      case WowClientType.Classic:
       case WowClientType.ClassicPtr:
       case WowClientType.ClassicBeta:
         return WowGameType.BurningCrusade;

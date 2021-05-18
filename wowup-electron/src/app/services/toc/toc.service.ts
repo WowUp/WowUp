@@ -118,9 +118,10 @@ export class TocService {
       case WowClientType.RetailPtr:
         matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn));
         break;
-      case WowClientType.Classic:
+      case WowClientType.ClassicEra:
         matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn));
         break;
+      case WowClientType.Classic:
       case WowClientType.ClassicBeta:
       case WowClientType.ClassicPtr:
         matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn));
