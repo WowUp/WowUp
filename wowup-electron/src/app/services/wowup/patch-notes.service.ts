@@ -25,7 +25,7 @@ const CHANGELOGS: ChangeLog[] = [
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>
         <li>Addons with warnings and ignored will be weighted at the bottom again</li>
-        <li>Addons from the WowUpHub will not show author names from their respective toc files where applicable</li>
+        <li>Addons from the WowUpHub will now show author names from their respective toc files where applicable</li>
         <li>Addons that are no longer supported by a client sourced from the WowUpHub will now be marked with a warning, not throw an error</li>
         <li>Fix a display issue with selecting the latest game version when installing an addon (right click > re-install)</li>
         </ul>
