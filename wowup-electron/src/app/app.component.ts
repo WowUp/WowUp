@@ -355,12 +355,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         reset,
       });
     } else if (
-      error.innerError instanceof GitHubFetchRepositoryError ||
-      error.innerError instanceof GitHubFetchReleasesError
+      error.innerError instanceof GitHubFetchReleasesError ||
+      error.innerError instanceof GitHubFetchRepositoryError
     ) {
       errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
         addonName: error.addonName,
       });
+    } else if (error instanceof AddonSyncError) {
+      return;
     }
 
     this._snackbarService.showErrorSnackbar(errorMessage);
