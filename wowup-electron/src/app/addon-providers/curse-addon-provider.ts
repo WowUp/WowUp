@@ -610,7 +610,7 @@ export class CurseAddonProvider extends AddonProvider {
       gameId: 1,
       featuredCount: 6,
       popularCount: 50,
-      updatedCount: 0,
+      updatedCount: 50,
     };
 
     const result = await this._cachingService.transaction(url, () =>
@@ -621,7 +621,7 @@ export class CurseAddonProvider extends AddonProvider {
       return [];
     }
 
-    return result.Popular;
+    return [...result.Popular, ...result.RecentlyUpdated];
   }
 
   private async getCategoryAddons(
