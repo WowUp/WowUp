@@ -128,8 +128,8 @@
       "GENERIC_TOOLTIP": "检测到此插件存在问题",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 无法更新此插件或提供详细信息。",
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了该插件的相关信息，但不包含匹配当前游戏版本的文件。<br>一旦有匹配该游戏版本的更新，此提示信息将会消失。",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 没有匹配该游戏版本的文件"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -197,7 +197,7 @@
       "COPY_ADDON_ID_SNACKBAR": "插件 ID 已复制到剪贴板",
       "COPY_ADDON_ID_TOOLTIP": "复制插件 ID",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 个依赖项",
-      "DESCRIPTION_NOT_FOUND": "No description found",
+      "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支持插件作者",
       "MISSING_DEPENDENCIES": "缺失的依赖项",
