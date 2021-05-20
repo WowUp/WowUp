@@ -16,6 +16,17 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.3.1",
+    html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>Installing from a GitHub URL now supports the new BigWigs metadata file</li>
+        <li>Installing from a GitHub URL now supports -bcc zip files when a Burning Crusade client is selected</li>
+        <li>The Get Addons tab will now also list Recently Added addons from CurseForge, just sort by the 'Released At' column</li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.3.0",
     html: `<div>
       <h4 style="margin-top: 1em;">New Features</h4>
@@ -33,7 +44,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Fix an issue with over aggressive TukUI name matching during a re-scan</li>
         <li>Fix an issue Classic Era being incorrectly identified when adding it manually</li>
         </ul>
-      </div>`
+      </div>`,
   },
   {
     Version: "2.2.2",
