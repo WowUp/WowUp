@@ -133,12 +133,12 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "经典怀旧服",
-      "CLASSICBETA": "经典怀旧服 Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICPTR": "经典怀旧服 PTR",
-      "RETAIL": "正式服",
-      "RETAILPTR": "正式服 PTR"
+      "CLASSIC": "燃烧的远征",
+      "CLASSICBETA": "燃烧的远征 Beta",
+      "CLASSICERA": "经典旧世",
+      "CLASSICPTR": "燃烧的远征 PTR",
+      "RETAIL": "暗影国度",
+      "RETAILPTR": "暗影国度 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
