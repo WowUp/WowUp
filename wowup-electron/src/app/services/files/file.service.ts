@@ -82,7 +82,7 @@ export class FileService {
   /**
    * Copy a file or folder
    */
-  public async copy(sourceFilePath: string, destinationFilePath: string, destinationFileChmod: string | number = '0770'): Promise<string> {
+  public async copy(sourceFilePath: string, destinationFilePath: string, destinationFileChmod: string | number = 0o775): Promise<string> {
     const request: CopyFileRequest = {
       sourceFilePath,
       destinationFilePath,
