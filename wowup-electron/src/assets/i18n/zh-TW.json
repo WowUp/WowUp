@@ -128,17 +128,17 @@
       "GENERIC_TOOLTIP": "檢測到此插件存在問題",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 無法更新此插件或提供詳細資訊。",
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了該外掛的相關資訊，但不包含匹配當前遊戲版本的檔案。<br>一旦有匹配該遊戲版本的更新，此提示資訊將會消失。",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 沒有匹配該遊戲版本的檔案"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "經典版",
-      "CLASSICBETA": "經典版 Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICPTR": "經典版 PTR",
-      "RETAIL": "正式服",
-      "RETAILPTR": "正式服 PTR"
+      "CLASSIC": "燃燒的遠征",
+      "CLASSICBETA": "燃燒的遠征 Beta",
+      "CLASSICERA": "經典舊世",
+      "CLASSICPTR": "燃燒的遠征 PTR",
+      "RETAIL": "暗影之境",
+      "RETAILPTR": "暗影之境 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -197,7 +197,7 @@
       "COPY_ADDON_ID_SNACKBAR": "插件 ID 已複製到剪貼簿",
       "COPY_ADDON_ID_TOOLTIP": "複製插件 ID",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 個依賴項",
-      "DESCRIPTION_NOT_FOUND": "No description found",
+      "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支援插件作者",
       "MISSING_DEPENDENCIES": "缺失的依賴項",
