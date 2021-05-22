@@ -340,6 +340,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     async (evt, arg: CopyFileRequest): Promise<boolean> => {
       log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
       await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
+      await fs.chmod(arg.destinationFilePath, arg.destinationFileChmod);
       return true;
     }
   );
