@@ -23,7 +23,13 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Installing from a GitHub URL now supports the new BigWigs metadata file</li>
         <li>Installing from a GitHub URL now supports -bcc zip files when a Burning Crusade client is selected</li>
         <li>The Get Addons tab will now also list Recently Added addons from CurseForge, just sort by the 'Released At' column</li>
-        <li>Using the WowUp Addon should no longer cause the Battle.net app to say "Updating" for all clients</li>
+      </ul>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>German locale updates (Glow)</li>
+        <li>Chinese locale updates (CyanoHao)</li>
+        <li>Spanish locale updates (SkollVargr)</li>
+        <li>Using the WowUp Addon should no longer cause the Battle.net app to say "Updating" for all clients (Linaori)</li>
       </ul>
       </div>`,
   },

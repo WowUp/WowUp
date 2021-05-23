@@ -16,6 +16,7 @@ import {
   IPC_LIST_FILES_CHANNEL,
   IPC_READDIR,
   IPC_READ_FILE_BUFFER_CHANNEL,
+  IPC_GET_LATEST_DIR_UPDATE_TIME,
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
@@ -82,7 +83,11 @@ export class FileService {
   /**
    * Copy a file or folder
    */
-  public async copy(sourceFilePath: string, destinationFilePath: string, destinationFileChmod: string | number = 0o775): Promise<string> {
+  public async copy(
+    sourceFilePath: string,
+    destinationFilePath: string,
+    destinationFileChmod: string | number = 0o775
+  ): Promise<string> {
     const request: CopyFileRequest = {
       sourceFilePath,
       destinationFilePath,
@@ -108,6 +113,10 @@ export class FileService {
 
   public async readFileBuffer(sourcePath: string): Promise<Buffer> {
     return await this._electronService.invoke(IPC_READ_FILE_BUFFER_CHANNEL, sourcePath);
+  }
+
+  public async getLatestDirUpdateTime(dirPath: string): Promise<number> {
+    return await this._electronService.invoke(IPC_GET_LATEST_DIR_UPDATE_TIME, dirPath);
   }
 
   public async writeFile(sourcePath: string, contents: string): Promise<string> {

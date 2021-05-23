@@ -53,6 +53,7 @@ import {
   IPC_FOCUS_WINDOW,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_GET_PENDING_OPEN_URLS,
+  IPC_GET_LATEST_DIR_UPDATE_TIME,
 } from "./src/common/constants";
 import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "./src/common/curse/curse-folder-scan-result";
@@ -69,6 +70,7 @@ import { Addon } from "./src/common/entities/addon";
 import { createTray, restoreWindow } from "./system-tray";
 import { addonStore } from "./stores";
 import { Transform } from "stream";
+import { getLastModifiedFileDate } from "./file.utils";
 
 let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
@@ -125,25 +127,19 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return urls;
   });
 
-  handle(
-    IPC_SHOW_DIRECTORY,
-    async (evt, filePath: string): Promise<string> => {
-      return await shell.openPath(filePath);
-    }
-  );
+  handle(IPC_SHOW_DIRECTORY, async (evt, filePath: string): Promise<string> => {
+    return await shell.openPath(filePath);
+  });
 
   handle(IPC_GET_ASSET_FILE_PATH, (evt, fileName: string) => {
     return path.join(__dirname, "assets", fileName);
   });
 
-  handle(
-    IPC_CREATE_DIRECTORY_CHANNEL,
-    async (evt, directoryPath: string): Promise<boolean> => {
-      log.info(`[CreateDirectory] '${directoryPath}'`);
-      await fs.ensureDir(directoryPath);
-      return true;
-    }
-  );
+  handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
+    log.info(`[CreateDirectory] '${directoryPath}'`);
+    await fs.ensureDir(directoryPath);
+    return true;
+  });
 
   handle(IPC_GET_ZOOM_FACTOR, () => {
     return window?.webContents?.getZoomFactor();
@@ -183,12 +179,9 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return app.setLoginItemSettings(settings);
   });
 
-  handle(
-    IPC_READDIR,
-    async (evt, dirPath: string): Promise<string[]> => {
-      return await fs.readdir(dirPath);
-    }
-  );
+  handle(IPC_READDIR, async (evt, dirPath: string): Promise<string[]> => {
+    return await fs.readdir(dirPath);
+  });
 
   handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
     return app.isDefaultProtocolClient(protocol);
@@ -301,29 +294,23 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return true;
   });
 
-  handle(
-    IPC_CURSE_GET_SCAN_RESULTS,
-    async (evt, filePaths: string[]): Promise<CurseFolderScanResult[]> => {
-      // Scan addon folders in parallel for speed!?
-      try {
-        const limit = pLimit(2);
-        const tasks = _.map(filePaths, (folder) => limit(() => new CurseFolderScanner().scanFolder(folder)));
-        return await Promise.all(tasks);
-      } catch (e) {
-        log.error("Failed during curse scan", e);
-        throw e;
-      }
-    }
-  );
-
-  handle(
-    IPC_WOWUP_GET_SCAN_RESULTS,
-    async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
+  handle(IPC_CURSE_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<CurseFolderScanResult[]> => {
+    // Scan addon folders in parallel for speed!?
+    try {
       const limit = pLimit(2);
-      const tasks = _.map(filePaths, (folder) => limit(() => new WowUpFolderScanner(folder).scanFolder()));
+      const tasks = _.map(filePaths, (folder) => limit(() => new CurseFolderScanner().scanFolder(folder)));
       return await Promise.all(tasks);
+    } catch (e) {
+      log.error("Failed during curse scan", e);
+      throw e;
     }
-  );
+  });
+
+  handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
+    const limit = pLimit(2);
+    const tasks = _.map(filePaths, (folder) => limit(() => new WowUpFolderScanner(folder).scanFolder()));
+    return await Promise.all(tasks);
+  });
 
   handle(IPC_UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
     await new Promise((resolve, reject) => {
@@ -335,15 +322,12 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return arg.outputFolder;
   });
 
-  handle(
-    IPC_COPY_FILE_CHANNEL,
-    async (evt, arg: CopyFileRequest): Promise<boolean> => {
-      log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
-      await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
-      await fs.chmod(arg.destinationFilePath, arg.destinationFileChmod);
-      return true;
-    }
-  );
+  handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
+    log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
+    await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
+    await fs.chmod(arg.destinationFilePath, arg.destinationFileChmod);
+    return true;
+  });
 
   handle(IPC_DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
     log.info(`[FileRemove] ${filePath}`);
@@ -372,6 +356,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_CREATE_APP_MENU_CHANNEL, (evt, config: MenuConfig) => {
     return createAppMenu(window, config);
+  });
+
+  handle(IPC_GET_LATEST_DIR_UPDATE_TIME, (evt, dirPath: string) => {
+    return getLastModifiedFileDate(dirPath);
   });
 
   handle(IPC_MINIMIZE_WINDOW, () => {

@@ -65,7 +65,8 @@ declare type RendererChannels =
   | "focus-window"
   | "get-pending-open-urls"
   | "store-get-object"
-  | "store-set-object";
+  | "store-set-object"
+  | "get-latest-dir-update-time";
 
 declare global {
   interface Window {

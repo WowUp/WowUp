@@ -1111,7 +1111,7 @@ export class AddonService {
           );
           continue;
         }
-        
+
         this.setExternalIdString(addon);
 
         addon.summary = result.summary;
@@ -1338,11 +1338,10 @@ export class AddonService {
 
       const unmatchedFolders = addonFolders.filter((af) => this.isAddonFolderUnmatched(matchedAddonFolderNames, af));
 
-      const unmatchedAddons = unmatchedFolders.map((uf) =>
-        this.createUnmatchedAddon(uf, installation, matchedAddonFolderNames)
-      );
-
-      addonList.push(...unmatchedAddons);
+      for (const uf of unmatchedFolders) {
+        const unmatchedAddon = await this.createUnmatchedAddon(uf, installation, matchedAddonFolderNames);
+        addonList.push(unmatchedAddon);
+      }
 
       //Clear the changelogs since they wont always be latest
       addonList.forEach((addon) => {
@@ -1667,12 +1666,13 @@ export class AddonService {
     return addonFolder.toc?.title && /[a-zA-Z]/g.test(addonFolder.toc.title);
   }
 
-  private createUnmatchedAddon(
+  private async createUnmatchedAddon(
     addonFolder: AddonFolder,
     installation: WowInstallation,
     matchedAddonFolderNames: string[]
-  ): Addon {
+  ): Promise<Addon> {
     const tocMissingDependencies = _.difference(addonFolder.toc?.dependencyList, matchedAddonFolderNames);
+    const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(addonFolder.path);
 
     return {
       id: uuidv4(),
@@ -1690,7 +1690,7 @@ export class AddonService {
       channelType: AddonChannelType.Stable,
       isIgnored: true,
       autoUpdateEnabled: false,
-      releasedAt: new Date(),
+      releasedAt: new Date(lastUpdatedAt),
       installedAt: addonFolder.fileStats?.mtime || new Date(),
       installedFolders: addonFolder.name,
       installedFolderList: [addonFolder.name],

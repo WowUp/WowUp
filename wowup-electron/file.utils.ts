@@ -1,47 +1,32 @@
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as path from "path";
+import { max } from "lodash";
 
 export async function readDirRecursive(sourcePath: string): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const dirFiles: string[] = [];
-    fs.readdir(sourcePath, { withFileTypes: true }, async (err, files) => {
-      if (err) {
-        return reject(err);
-      }
+  const dirFiles: string[] = [];
+  const files = await fs.readdir(sourcePath, { withFileTypes: true });
 
-      for (let file of files) {
-        const filePath = path.join(sourcePath, file.name);
-        if (file.isDirectory()) {
-          const nestedFiles = await readDirRecursive(filePath);
-          dirFiles.push(...nestedFiles);
-        } else {
-          dirFiles.push(filePath);
-        }
-      }
+  for (const file of files) {
+    const filePath = path.join(sourcePath, file.name);
+    if (file.isDirectory()) {
+      const nestedFiles = await readDirRecursive(filePath);
+      dirFiles.push(...nestedFiles);
+    } else {
+      dirFiles.push(filePath);
+    }
+  }
 
-      resolve(dirFiles);
-    });
-  });
+  return dirFiles;
 }
 
-export function readFile(sourcePath: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    fs.readFile(sourcePath, { encoding: "utf-8" }, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(data);
-    });
-  });
-}
+export async function getLastModifiedFileDate(sourcePath: string): Promise<number> {
+  const dirFiles = await readDirRecursive(sourcePath);
+  const dates: number[] = [];
+  for (const file of dirFiles) {
+    const stat = await fs.stat(file);
+    dates.push(stat.mtimeMs);
+  }
 
-export function readFileAsBuffer(sourcePath: string): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    fs.readFile(sourcePath, {}, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(data);
-    });
-  });
+  const latest = max(dates);
+  return latest;
 }
