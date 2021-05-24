@@ -312,6 +312,7 @@
         "STABLE_ADDON_CHANNEL": "稳定版"
       },
       "ADDON_IS_CODE_REPOSITORY": "插件似乎是代码仓库",
+      "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "是否将 {addonName} 的提供方修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
         "TITLE": "修改插件提供方？"

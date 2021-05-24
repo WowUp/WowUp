@@ -566,12 +566,27 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           if (this.addonService.getRequiredDependencies(addon).length === 0) {
-            return from(this.addonService.removeAddon(addon));
+            return from(this.addonService.removeAddon(addon)).pipe(
+              map(() => {
+                this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
+                  localeArgs: {
+                    addonName: addon.name,
+                  },
+                });
+              })
+            );
           } else {
             return this.getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
               .afterClosed()
               .pipe(
                 switchMap((result) => from(this.addonService.removeAddon(addon, result))),
+                map(() => {
+                  this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
+                    localeArgs: {
+                      addonName: addon.name,
+                    },
+                  });
+                }),
                 switchMap(() => from(this.loadAddons(this.selectedInstallation)))
               );
           }

@@ -112,8 +112,6 @@ export class WowUpAddonService {
     const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
 
-    console.debug("addonFolder", addonFolder);
-
     if (companionAddon) {
       delete addonFolder.matchingAddon.id;
       const updatedCompanion: Addon = { ...companionAddon, ...addonFolder.matchingAddon };
