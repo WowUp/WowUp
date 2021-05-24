@@ -354,6 +354,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
           channel: this.defaultAddonChannel,
           clientType: this.selectedClient,
         },
+        valueGetter: (params) => {
+          return params.data.canonicalName;
+        },
         ...baseColumn,
       },
       {

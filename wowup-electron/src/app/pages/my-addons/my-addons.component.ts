@@ -1099,6 +1099,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         autoHeight: true,
         cellRenderer: "myAddonRenderer",
         colId: "name",
+        valueGetter: (params) => {
+          return params.data.canonicalName;
+        },
         ...baseColumn,
       },
       {

@@ -15,6 +15,7 @@ export class GetAddonListItem {
   public author: string;
   public providerName: string;
   public latestAddonChannel: AddonChannelType;
+  public canonicalName: string;
 
   public installState: AddonInstallState = AddonInstallState.Unknown;
 
@@ -29,6 +30,7 @@ export class GetAddonListItem {
     this.providerName = this.searchResult.providerName;
     this.thumbnailUrl = this.searchResult.thumbnailUrl;
     this.downloadCount = this.searchResult.downloadCount || 0;
+    this.canonicalName = this.name.toLowerCase();
 
     const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
     this.latestAddonChannel = latestFile.channelType;
