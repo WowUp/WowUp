@@ -1086,6 +1086,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         flexDirection: "column",
         justifyContent: "center",
       },
+      suppressMovable: true,
     };
 
     return [

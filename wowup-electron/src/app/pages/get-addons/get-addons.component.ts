@@ -340,6 +340,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flexDirection: "column",
         justifyContent: "center",
       },
+      suppressMovable: true,
     };
 
     return [
