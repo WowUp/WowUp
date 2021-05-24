@@ -8,6 +8,7 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";
 import { getGameVersion } from "../utils/addon.utils";
+import { FileService } from "app/services/files/file.service";
 
 export const X_WOWUP_ADDON_PROVIDER = "wowup-app";
 export const X_WEBSITE = "https://wowup.io";
@@ -20,20 +21,22 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
   public readonly allowEdit = false;
   public enabled = true;
 
-  public constructor() {
+  public constructor(private _fileService: FileService) {
     super();
   }
 
-  public scan(
+  public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    console.debug("WowUp Companion provider scan");
+    console.info("WowUp Companion provider scan");
     const companion = _.find(addonFolders, (addonFolder) => this.isWowUpCompanion(addonFolder));
     if (!companion) {
       return;
     }
+
+    const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(companion.path);
 
     companion.matchingAddon = {
       autoUpdateEnabled: false,
@@ -47,24 +50,22 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
       externalId: this.name,
       externalUrl: X_WEBSITE,
       gameVersion: getGameVersion(companion.toc.interface),
-      installedAt: new Date(),
+      installedAt: new Date(lastUpdatedAt),
       installedFolders: companion.name,
       installedFolderList: [companion.name],
       installedVersion: companion.toc.version,
       latestVersion: companion.toc.version,
       providerName: this.name,
       thumbnailUrl: "https://avatars.githubusercontent.com/u/74023737?s=400&v=4",
-      updatedAt: new Date(),
+      updatedAt: new Date(lastUpdatedAt),
       summary: companion.toc.notes,
       downloadCount: 0,
       screenshotUrls: [],
-      releasedAt: new Date(),
+      releasedAt: new Date(lastUpdatedAt),
       isLoadOnDemand: companion.toc.loadOnDemand === "1",
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
       installationId: installation.id,
     };
-
-    return Promise.resolve(undefined);
   }
 
   private isWowUpCompanion(addonFolder: AddonFolder) {

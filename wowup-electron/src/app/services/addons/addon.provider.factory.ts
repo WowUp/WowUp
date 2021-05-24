@@ -37,7 +37,7 @@ export class AddonProviderFactory {
   ) {}
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
-    return new WowUpCompanionAddonProvider();
+    return new WowUpCompanionAddonProvider(this._fileService);
   }
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {

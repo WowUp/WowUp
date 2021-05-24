@@ -167,7 +167,7 @@ export class WarcraftService {
     return addonFolders;
   }
 
-  private async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
+  public async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
     try {
       const dirPath = path.join(addonFolderPath, dir);
       const dirFiles = await this._fileService.readdir(dirPath);

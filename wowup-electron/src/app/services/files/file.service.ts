@@ -115,6 +115,7 @@ export class FileService {
     return await this._electronService.invoke(IPC_READ_FILE_BUFFER_CHANNEL, sourcePath);
   }
 
+  /** Returns the time in ms of the last updated file in a folder */
   public async getLatestDirUpdateTime(dirPath: string): Promise<number> {
     return await this._electronService.invoke(IPC_GET_LATEST_DIR_UPDATE_TIME, dirPath);
   }

@@ -1152,7 +1152,6 @@ export class AddonService {
         addon.externalUrl = result.externalUrl;
       } finally {
         await this._addonStorage.setAsync(addon.id, addon);
-        // this._addonStorage.set(addon.id, addon);
       }
     }
   }

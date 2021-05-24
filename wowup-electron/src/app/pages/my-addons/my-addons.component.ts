@@ -362,8 +362,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       console.debug("onRefresh");
       await this.addonService.syncAllClients();
-      await this.loadAddons(this.selectedInstallation);
       await this._wowUpAddonService.updateForInstallation(this.selectedInstallation);
+      await this.loadAddons(this.selectedInstallation);
     } catch (e) {
       console.error(`Failed to refresh addons`, e);
     } finally {
