@@ -30,6 +30,14 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Chinese locale updates (CyanoHao)</li>
         <li>Spanish locale updates (SkollVargr)</li>
         <li>Using the WowUp Addon should no longer cause the Battle.net app to say "Updating" for all clients (Linaori)</li>
+        <li>When re-scanning the "Released At" date should be more accurate</li>
+        <li>Can no longer drag columns on "My Addons" and "Get Addons" off the screen</li>
+        <li>Sorting by name is no longer case sensitive</li>
+        <li>Sorting by name on "My Addons" and "Get Addons" is no longer case sensitive</li>
+        <li>Long author names will now attempt to wrap all text</li>
+        <li>WowUp addon companion data now has it's own provider name</li>
+        <li>The WowUp addon companion data row should now be kept up to date without a re-scan</li>
+        <li>A success toast will now be shown when an addon is successfully removed</li>
       </ul>
       </div>`,
   },
