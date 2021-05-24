@@ -54,7 +54,7 @@ export class AddonViewModel {
     this.isLoadOnDemand = addon.isLoadOnDemand;
     this.hasThumbnail = !!addon.thumbnailUrl;
     this.thumbnailLetter = this.addon.name?.charAt(0).toUpperCase() ?? "";
-    this.canonicalName = addon.name.toLowerCase();
+    this.canonicalName = addon.name?.toLowerCase() ?? "";
   }
 
   public isUpToDate(): boolean {

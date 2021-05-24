@@ -1,14 +1,14 @@
-import { WowInstallation } from "../models/wowup/wow-installation";
 import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_WOWUP_COMPANION, WOWUP_DATA_ADDON_FOLDER_NAME } from "../../common/constants";
 import { AddonChannelType } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
+import { WowInstallation } from "../models/wowup/wow-installation";
+import { FileService } from "../services/files/file.service";
+import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider } from "./addon-provider";
-import { getGameVersion } from "../utils/addon.utils";
-import { FileService } from "app/services/files/file.service";
 
 export const X_WOWUP_ADDON_PROVIDER = "wowup-app";
 export const X_WEBSITE = "https://wowup.io";
