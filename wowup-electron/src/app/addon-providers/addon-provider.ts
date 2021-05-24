@@ -8,7 +8,15 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
 
-export type AddonProviderType = "Curse" | "GitHub" | "TukUI" | "WowInterface" | "WowUpHub" | "RaiderIO" | "Zip";
+export type AddonProviderType =
+  | "Curse"
+  | "GitHub"
+  | "TukUI"
+  | "WowInterface"
+  | "WowUpHub"
+  | "RaiderIO"
+  | "Zip"
+  | "WowUpCompanion";
 
 export interface GetAllResult {
   searchResults: AddonSearchResult[];

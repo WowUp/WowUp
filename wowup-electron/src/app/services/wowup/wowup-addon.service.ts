@@ -3,6 +3,11 @@ import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
+import {
+  WOWUP_ADDON_FOLDER_NAME,
+  WOWUP_ASSET_FOLDER_NAME,
+  WOWUP_DATA_ADDON_FOLDER_NAME,
+} from "../../../common/constants";
 import { Addon } from "../../../common/entities/addon";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { WowInstallation } from "../../models/wowup/wow-installation";
@@ -35,10 +40,6 @@ interface WowUpAddonFileProcessing {
   type: WowUpAddonFileType;
   filename: string;
 }
-
-const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
-const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
-const WOWUP_ADODN_FOLDER_NAME = "WowUp";
 
 @Injectable({
   providedIn: "root",
@@ -102,7 +103,7 @@ export class WowUpAddonService {
 
   private async persistUpdateInformationToWowUpAddon(installation: WowInstallation, addons: Addon[]) {
     const wowUpAddon = addons.find((addon: Addon) =>
-      (addon.installedFolderList ?? []).includes(WOWUP_ADODN_FOLDER_NAME)
+      (addon.installedFolderList ?? []).includes(WOWUP_ADDON_FOLDER_NAME)
     );
     if (!wowUpAddon) {
       console.debug("WowUp Addon not found");

@@ -8,10 +8,16 @@ export const ADDON_PROVIDER_TUKUI = "TukUI";
 export const ADDON_PROVIDER_UNKNOWN = "Unknown";
 export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
 export const ADDON_PROVIDER_HUB = "WowUpHub";
+export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
 export const APP_PROTOCOL_NAME = "wowup";
 export const CURSE_PROTOCOL_NAME = "curseforge";
+
+// WOWUP ADDON
+export const WOWUP_ADDON_FOLDER_NAME = "WowUp";
+export const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
+export const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 // IPC CHANNELS
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";

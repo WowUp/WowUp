@@ -119,7 +119,7 @@ export class AddonService {
     addonProviderFactory: AddonProviderFactory
   ) {
     // Create our base set of addon providers
-    this._addonProviders = addonProviderFactory.getAll();
+    this._addonProviders = addonProviderFactory.getProviders();
 
     // This should keep the current update queue state snapshot up to date
     const addonInstalledSub = this.addonInstalled$
