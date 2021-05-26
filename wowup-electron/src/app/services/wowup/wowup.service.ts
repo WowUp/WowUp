@@ -20,6 +20,8 @@ import {
   APP_UPDATE_START_DOWNLOAD,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
+  DEFAULT_ADDON_DETAILS_TAB_SELECTION_KEY,
+  DEFAULT_ADDON_DETAILS_TAB_SELECTION,
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   DEFAULT_LIGHT_THEME,
@@ -395,6 +397,16 @@ export class WowUpService {
       default:
         return "assets/images/wowup-white-1.png";
     }
+  }
+
+  public get defaultAddonDetailsTabSelection(): string {
+    return this._preferenceStorageService.get(DEFAULT_ADDON_DETAILS_TAB_SELECTION_KEY) || DEFAULT_ADDON_DETAILS_TAB_SELECTION;
+  }
+
+  public set defaultAddonDetailsTabSelection(value: string) {
+    const key = DEFAULT_ADDON_DETAILS_TAB_SELECTION_KEY;
+    this._preferenceStorageService.set(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
   private setDefaultPreference(key: string, defaultValue: any) {

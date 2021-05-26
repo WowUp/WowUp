@@ -192,4 +192,26 @@
     </div>
     <div class="divider"></div>
   </div>
+  <!-- ADDON DETAIL DEFAULT TAB SELECTION -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          <!-- Need to change all detail to plural => details  -->
+          {{ "PAGES.OPTIONS.APPLICATION.SET_ADDON_DETAIL_DEFAULT_TAB_LABEL" | translate }}
+        </div>
+        <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.SET_ADDON_DETAIL_DEFAULT_TAB_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-form-field class="">
+        <!-- still need to add all this to en.json -->
+        <mat-label>{{ "PAGES.OPTIONS.APPLICATION.CURRENT_DEFAULT_ADDON_DETAILS_TAB_SELECTION_LABEL" | translate }}</mat-label>
+        <mat-select [value]="currentDefaultAddonDetailsTabSelection" (selectionChange)="onCurrentDefaultDetailsTabSelectionChange($event)">
+          <mat-option *ngFor="let selection of addonDetailsTabSelections" [value]="selection.label">
+            {{ selection.label }} <!-- ??? dont know if those or the above [value] works, check en.json -->
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="divider"></div>
+  </div>
 </div>

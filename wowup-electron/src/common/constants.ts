@@ -105,6 +105,8 @@ export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
 export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
+export const DEFAULT_ADDON_DETAILS_TAB_SELECTION_KEY = "default_addon_details_tab_selection";
+export const DEFAULT_ADDON_DETAILS_TAB_SELECTION = "last_used";
 
 // APP UPDATER
 export const APP_UPDATE_ERROR = "app-update-error";
