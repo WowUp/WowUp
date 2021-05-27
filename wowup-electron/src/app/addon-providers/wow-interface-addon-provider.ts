@@ -128,7 +128,6 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    debugger;
     const addonIds = addonFolders.filter((af) => !!af.toc.wowInterfaceId).map((af) => af.toc.wowInterfaceId);
     const addonDetails = await this.getAllAddonDetails(addonIds);
 
