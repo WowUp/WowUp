@@ -8,5 +8,5 @@ interface Window {
   require: any;
 }
 
-declare type DetailsTabType = "description" | "changelog";
+declare type DetailsTabType = "description" | "changelog" | "last_used_tab";
 declare type AddonIgnoreReason = "git_repo" | "missing_dependency" | "unknown";

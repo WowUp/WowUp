@@ -60,6 +60,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public fetchingChangelog = true;
   public fetchingFullDescription = true;
   public selectedTabIndex = 0;
+  public defaultSelectedTabIndex = 0;
   public requiredDependencyCount = 0;
   public canShowChangelog = true;
   public hasIconUrl = false;
@@ -119,6 +120,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
 
     this.selectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab());
+
+    this.defaultSelectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getDefaultSelectedDetailsTab());
 
     this.thumbnailLetter = this.getThumbnailLetter();
 
@@ -182,7 +185,9 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public onSelectedTabChange(evt: MatTabChangeEvent): void {
-    this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
+    if (this.defaultSelectedTabIndex === 2) {
+      this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
+    }
   }
 
   public onClickExternalId(): void {
@@ -265,6 +270,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   private getSelectedTabTypeIndex(tabType: DetailsTabType): number {
+    if (tabType === "last_used_tab") return 2;
     return tabType === "description" ? 0 : 1;
   }
 

@@ -391,8 +391,8 @@
         "TITLE": "Addons"
       },
       "APPLICATION": {
+        "CURRENT_DEFAULT_DETAILS_TAB_SELECTION_LABEL": "Current default tab selection",
         "CURRENT_LANGUAGE_LABEL": "Current Language",
-        "CURRENT_DEFAULT_ADDON_DETAILS_TAB_SELECTION_LABEL": "Current default tab selection",
         "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
         "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
@@ -404,8 +404,8 @@
         "PROTOCOL_LABEL": "Enable the wowup:// URI protocol",
         "SCALE_DESCRIPTION": "Change zoom factor for entire app.",
         "SCALE_LABEL": "Scale",
-        "SET_ADDON_DETAIL_DEFAULT_TAB_DESCRIPTION": "When clicking on addons, choose which tab to show",
-        "SET_ADDON_DETAIL_DEFAULT_TAB_LABEL": "Set default addon detail tab",
+        "SET_DETAIL_DEFAULT_TAB_DESCRIPTION": "When clicking on addons, choose which tab to show",
+        "SET_DETAIL_DEFAULT_TAB_LABEL": "Set default addon detail tab",
         "SET_LANGUAGE_CONFIRMATION_DESCRIPTION": "Changing the default language requires the application to restart.",
         "SET_LANGUAGE_CONFIRMATION_LABEL": "Setting a new default language",
         "SET_LANGUAGE_DESCRIPTION": "Select a language to change to",

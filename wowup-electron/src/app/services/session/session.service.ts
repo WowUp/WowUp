@@ -4,7 +4,7 @@ import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
-import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
+import { SELECTED_DETAILS_TAB_KEY, DEFAULT_SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
@@ -26,6 +26,7 @@ export class SessionService {
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
   private _selectedDetailTabType: DetailsTabType;
+  private _defaultSelectedDetailTabType: DetailsTabType;
 
   public readonly selectedWowInstallation$ = this._selectedWowInstallationSrc.asObservable();
   public readonly statusText$ = this._statusTextSrc.asObservable();
@@ -43,6 +44,8 @@ export class SessionService {
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
+    
+    this._defaultSelectedDetailTabType = this._preferenceStorageService.getObject<DetailsTabType>(DEFAULT_SELECTED_DETAILS_TAB_KEY) || "description";
 
     this._warcraftInstallationService.wowInstallations$
       .pipe(filter((installations) => installations.length > 0))
@@ -64,6 +67,15 @@ export class SessionService {
   public setSelectedDetailsTab(tabType: DetailsTabType): void {
     this._selectedDetailTabType = tabType;
     this._preferenceStorageService.set(SELECTED_DETAILS_TAB_KEY, tabType);
+  }
+
+  public getDefaultSelectedDetailsTab(): DetailsTabType {
+    return this._defaultSelectedDetailTabType;
+  }
+
+  public setDefaultSelectedDetailsTab(tabType: DetailsTabType): void {
+    this._defaultSelectedDetailTabType = tabType;
+    this._preferenceStorageService.set(DEFAULT_SELECTED_DETAILS_TAB_KEY, tabType);
   }
 
   public onWowInstallationsChange(wowInstallations: WowInstallation[]): void {
