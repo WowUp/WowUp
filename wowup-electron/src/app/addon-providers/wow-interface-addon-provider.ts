@@ -51,12 +51,12 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
-    const searchResults: AddonSearchResult[] = [];
     const errors: Error[] = [];
+    const searchResults = await this.getAllById(addonIds);
 
     for (const addonId of addonIds) {
       try {
-        const result = await this.getById(addonId).toPromise();
+        const result = searchResults.find((sr) => sr.externalId === addonId);
         if (result == null) {
           continue;
         }
@@ -110,6 +110,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     );
   }
 
+  public async getAllById(addonIds: string[]): Promise<AddonSearchResult[]> {
+    const addonDetails = await this.getAllAddonDetails(addonIds);
+    return addonDetails.map((ad) => this.toAddonSearchResult(ad, ""));
+  }
+
   public isValidAddonUri(addonUri: URL): boolean {
     return addonUri.host && addonUri.host.endsWith("wowinterface.com");
   }
@@ -123,13 +128,16 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
+    debugger;
+    const addonIds = addonFolders.filter((af) => !!af.toc.wowInterfaceId).map((af) => af.toc.wowInterfaceId);
+    const addonDetails = await this.getAllAddonDetails(addonIds);
+
     for (const addonFolder of addonFolders) {
       if (!addonFolder?.toc?.wowInterfaceId) {
         continue;
       }
 
-      const details = await this.getAddonDetails(addonFolder.toc.wowInterfaceId);
-
+      const details = addonDetails.find((ad) => ad.id.toString() === addonFolder.toc.wowInterfaceId);
       addonFolder.matchingAddon = this.toAddon(details, installation, addonChannelType, addonFolder);
     }
   }
@@ -161,6 +169,18 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     );
 
     return _.first(responses);
+  };
+
+  private getAllAddonDetails = async (addonIds: string[]): Promise<AddonDetailsResponse[]> => {
+    const url = new URL(`${API_URL}/filedetails/${addonIds.join(",")}.json`);
+
+    const responses = await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<AddonDetailsResponse[]>(url),
+      DETAILS_HTTP_CACHE_TTL_SEC
+    );
+
+    return responses;
   };
 
   private getThumbnailUrl(response: AddonDetailsResponse) {
