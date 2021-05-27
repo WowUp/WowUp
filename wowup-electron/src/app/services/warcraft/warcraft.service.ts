@@ -273,6 +273,7 @@ export class WarcraftService {
     try {
       const productDbData = await this._fileService.readFileBuffer(productDbPath);
       const productDb = ProductDb.decode(productDbData);
+      console.log("productDb", JSON.stringify(productDb));
       const wowProducts: InstalledProduct[] = productDb.products
         .filter((p) => p.family === "wow")
         .map((p) => ({
@@ -287,10 +288,6 @@ export class WarcraftService {
       console.error(e);
       return [];
     }
-  }
-
-  private arePathsEqual(path1: string, path2: string) {
-    return path.normalize(path1) === path.normalize(path2);
   }
 
   private getImplementation(): WarcraftServiceImpl {

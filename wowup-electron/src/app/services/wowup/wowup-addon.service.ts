@@ -107,8 +107,14 @@ export class WowUpAddonService {
 
   private async syncCompanionAddon(addons: Addon[], installation: WowInstallation): Promise<void> {
     const companionAddon = this.getCompanionAddon(addons);
+    if (!companionAddon) {
+      console.debug(`No wow companion found: ${installation.label}`);
+      return;
+    }
+
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const addonFolder = await this._warcraftService.getAddonFolder(addonFolderPath, WOWUP_DATA_ADDON_FOLDER_NAME);
+
     const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
 
