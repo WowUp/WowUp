@@ -38,6 +38,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>WowUp addon companion data now has it's own provider name</li>
         <li>The WowUp addon companion data row should now be kept up to date without a re-scan</li>
         <li>A success toast will now be shown when an addon is successfully removed</li>
+        <li>Optimize fetching of WowInterface data</li>
       </ul>
       </div>`,
   },
