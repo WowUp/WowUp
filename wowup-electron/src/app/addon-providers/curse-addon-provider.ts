@@ -621,7 +621,10 @@ export class CurseAddonProvider extends AddonProvider {
       return [];
     }
 
-    return [...result.Popular, ...result.RecentlyUpdated];
+    // Remove duplicate addons that are already in the popular list from the recents list
+    const uniqueRecent = result.RecentlyUpdated.filter((ru) => !result.Popular.some((p) => p.id === ru.id));
+
+    return [...result.Popular, ...uniqueRecent];
   }
 
   private async getCategoryAddons(
