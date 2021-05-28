@@ -3,9 +3,9 @@
     windows: electronService.isWin,
     linux: electronService.isLinux
   }">
-  <div class="theme-logo">
+  <!-- <div class="theme-logo">
     <img [src]="getLogoPath()" />
-  </div>
+  </div> -->
   <div class="titlebar-drag-region" (dblclick)="onDblClick()"></div>
   <div class="title-container">
     <div>{{ (isFullscreen ? 'APP.WINDOW_TITLE_FULLSCREEN' : 'APP.WINDOW_TITLE') | translate }}</div>

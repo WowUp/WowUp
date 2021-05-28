@@ -203,6 +203,19 @@ $wowup-light-theme: mat-light-theme(
 // that you are using.
 @include angular-material-theme($wowup-default-theme);
 
+.default-theme {
+  --background-primary: #6b69d6;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+}
+
 .default-theme-light-theme {
   @include angular-material-color($wowup-light-theme);
 }

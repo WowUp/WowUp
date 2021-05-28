@@ -7,5 +7,17 @@
   .content {
     flex-grow: 1;
     overflow: auto;
+    display: flex;
+    flex-direction: row;
+
+    .tabs {
+      flex-shrink: 0;
+    }
+    .main {
+      flex-grow: 1;
+    }
+    .extra {
+      flex-shrink: 0;
+    }
   }
 }

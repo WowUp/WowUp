@@ -20,7 +20,7 @@
     <div class="changelog-container  header-2 text-1">
       <h2>{{ "PAGES.ABOUT.ATTRIBUTIONS_TITLE" | translate }}</h2>
       <ul class="change-log-list">
-        <li class="changelog bg-secondary-4 border-primary">
+        <li class="changelog bg-secondary-4 border-primary mat-elevation-z8">
           <p><a appExternalLink href="https://vectorified.com/wow-alliance-icon">Wow Alliance Icon</a></p>
           <p><a appExternalLink href="https://vectorified.com/horde-logo-vector">Horde Logo Vector</a></p>
         </li>
@@ -31,7 +31,7 @@
         {{ "PAGES.ABOUT.CHANGE_LOG_SECTION_LABEL" | translate }}
       </h2>
       <ul class="change-log-list">
-        <li class="changelog bg-secondary-4 border-primary" *ngFor="let cl of changeLogs">
+        <li class="changelog bg-secondary-4 border-primary mat-elevation-z8" *ngFor="let cl of changeLogs">
           <div class="version selectable  mat-subheading-2">{{ cl.Version }}</div>
           <pre *ngIf="cl.Description" class="description selectable">{{ cl.Description }}</pre>
           <pre *ngIf="cl.changes" class="description selectable">{{ formatChanges(cl) }}</pre>

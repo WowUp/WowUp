@@ -73,6 +73,14 @@ img {
   padding: 0.25em !important;
 }
 
+.p-2 {
+  padding: 0.5em !important;
+}
+
+.p-3 {
+  padding: 1em !important;
+}
+
 .pl-1 {
   padding-left: 0.25em;
 }
@@ -274,7 +282,7 @@ mat-icon.success-icon {
   }
 
   &.windows {
-    height: calc(100vh - 114px);
+    height: calc(100vh - 66px);
   }
 
   &.linux {
@@ -551,6 +559,22 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
 .mat-menu-content {
   .mat-checkbox {
     display: block;
+  }
+}
+
+.header-less-tabs .mat-tab-group .mat-tab-header {
+  display: none;
+}
+
+.icon-inactive {
+  svg {
+    fill: var(--text-4);
+  }
+}
+
+.icon-active {
+  svg {
+    fill: var(--text-1);
   }
 }
 

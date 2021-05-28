@@ -2,6 +2,8 @@ import { ComponentType } from "@angular/cdk/portal";
 import { Injectable } from "@angular/core";
 import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable } from "rxjs";
+import { first } from "rxjs/operators";
 
 import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
@@ -15,6 +17,17 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 })
 export class DialogFactory {
   public constructor(private _dialog: MatDialog, private _translateService: TranslateService) {}
+
+  public confirmLinkNavigation(href: string): Observable<boolean> {
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("APP.LINK_NAVIGATION.TITLE"),
+        message: this._translateService.instant("APP.LINK_NAVIGATION.MESSAGE", { url: href }),
+      },
+    });
+
+    return dialogRef.afterClosed().pipe(first());
+  }
 
   public getConfirmDialog(title: string, message: string): MatDialogRef<ConfirmDialogComponent, any> {
     return this._dialog.open(ConfirmDialogComponent, {

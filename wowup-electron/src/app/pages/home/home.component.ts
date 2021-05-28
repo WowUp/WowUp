@@ -44,7 +44,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   public constructor(
     public electronService: ElectronService,
-    private _sessionService: SessionService,
+    public sessionService: SessionService,
     private _translateService: TranslateService,
     private _addonService: AddonService,
     private _wowupService: WowUpService,
@@ -200,7 +200,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   };
 
   public onSelectedIndexChange(index: number): void {
-    this._sessionService.selectedHomeTab = index;
+    this.sessionService.selectedHomeTab = index;
   }
 
   private onAddonScanError = (error: AddonScanError) => {
@@ -218,16 +218,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private onScanUpdate = (update: ScanUpdate) => {
     switch (update.type) {
       case ScanUpdateType.Start:
-        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_STARTED");
+        this.sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_STARTED");
         break;
       case ScanUpdateType.Complete:
-        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_COMPLETED");
+        this.sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_COMPLETED");
         window.setTimeout(() => {
-          this._sessionService.statusText = "";
+          this.sessionService.statusText = "";
         }, 3000);
         break;
       case ScanUpdateType.Update:
-        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_UPDATE", {
+        this.sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_UPDATE", {
           count: update.totalCount,
         });
         break;

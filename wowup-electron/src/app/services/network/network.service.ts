@@ -127,4 +127,11 @@ export class NetworkService {
       .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
       .toPromise();
   }
+
+  public async getText(url: URL | string, timeoutMs?: number): Promise<string> {
+    return await this._httpClient
+      .get(url.toString(), { responseType: "text", headers: { ...CACHE_CONTROL_HEADERS } })
+      .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
+      .toPromise();
+  }
 }
