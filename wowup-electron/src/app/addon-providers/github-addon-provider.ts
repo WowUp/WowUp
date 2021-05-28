@@ -277,7 +277,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return asset.name.toLowerCase().endsWith("-bc.zip");
+    return asset.name.toLowerCase().match(/-bc(c)?\.zip$/);
   }
 
   private getAddonName(addonId: string): string {
