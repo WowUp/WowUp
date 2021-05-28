@@ -128,17 +128,17 @@
       "GENERIC_TOOLTIP": "检测到此插件存在问题",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 无法更新此插件或提供详细信息。",
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了该插件的相关信息，但不包含匹配当前游戏版本的文件。<br>一旦有匹配该游戏版本的更新，此提示信息将会消失。",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 没有匹配该游戏版本的文件"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "经典怀旧服",
-      "CLASSICBETA": "经典怀旧服 Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICPTR": "经典怀旧服 PTR",
-      "RETAIL": "正式服",
-      "RETAILPTR": "正式服 PTR"
+      "CLASSIC": "燃烧的远征",
+      "CLASSICBETA": "燃烧的远征 Beta",
+      "CLASSICERA": "经典旧世",
+      "CLASSICPTR": "燃烧的远征 PTR",
+      "RETAIL": "暗影国度",
+      "RETAILPTR": "暗影国度 PTR"
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
@@ -197,7 +197,7 @@
       "COPY_ADDON_ID_SNACKBAR": "插件 ID 已复制到剪贴板",
       "COPY_ADDON_ID_TOOLTIP": "复制插件 ID",
       "DEPENDENCY_TEXT": "此插件有 {dependencyCount} 个依赖项",
-      "DESCRIPTION_NOT_FOUND": "No description found",
+      "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支持插件作者",
       "MISSING_DEPENDENCIES": "缺失的依赖项",
@@ -312,6 +312,7 @@
         "STABLE_ADDON_CHANNEL": "稳定版"
       },
       "ADDON_IS_CODE_REPOSITORY": "插件似乎是代码仓库",
+      "ADDON_REMOVED_SNACKBAR": "{addonName} 已成功移除",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "是否将 {addonName} 的提供方修改为 {providerName}？此操作将会用 {providerName} 的版本替换现有版本。",
         "TITLE": "修改插件提供方？"

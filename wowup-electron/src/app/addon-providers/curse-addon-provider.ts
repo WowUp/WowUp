@@ -610,7 +610,7 @@ export class CurseAddonProvider extends AddonProvider {
       gameId: 1,
       featuredCount: 6,
       popularCount: 50,
-      updatedCount: 0,
+      updatedCount: 50,
     };
 
     const result = await this._cachingService.transaction(url, () =>
@@ -621,7 +621,10 @@ export class CurseAddonProvider extends AddonProvider {
       return [];
     }
 
-    return result.Popular;
+    // Remove duplicate addons that are already in the popular list from the recents list
+    const uniqueRecent = result.RecentlyUpdated.filter((ru) => !result.Popular.some((p) => p.id === ru.id));
+
+    return [...result.Popular, ...uniqueRecent];
   }
 
   private async getCategoryAddons(

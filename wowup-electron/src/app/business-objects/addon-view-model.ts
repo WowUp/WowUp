@@ -20,6 +20,7 @@ export class AddonViewModel {
   public hasThumbnail = false;
   public thumbnailLetter = "";
   public showUpdate = false;
+  public canonicalName = "";
 
   public get name(): string {
     return this.addon?.name ?? "";
@@ -53,6 +54,7 @@ export class AddonViewModel {
     this.isLoadOnDemand = addon.isLoadOnDemand;
     this.hasThumbnail = !!addon.thumbnailUrl;
     this.thumbnailLetter = this.addon.name?.charAt(0).toUpperCase() ?? "";
+    this.canonicalName = addon.name?.toLowerCase() ?? "";
   }
 
   public isUpToDate(): boolean {

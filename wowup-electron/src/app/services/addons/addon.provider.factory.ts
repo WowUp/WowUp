@@ -8,6 +8,7 @@ import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-a
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { RaiderIoAddonProvider } from "../../addon-providers/raiderio-provider";
 import { ZipAddonProvider } from "../../addon-providers/zip-provider";
+import { WowUpCompanionAddonProvider } from "../../addon-providers/wowup-companion-addon-provider";
 import { CachingService } from "../caching/caching-service";
 import { ElectronService } from "../electron/electron.service";
 import { WowUpService } from "../wowup/wowup.service";
@@ -34,6 +35,10 @@ export class AddonProviderFactory {
     private _warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService
   ) {}
+
+  public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
+    return new WowUpCompanionAddonProvider(this._fileService);
+  }
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
     return new RaiderIoAddonProvider();
@@ -68,11 +73,12 @@ export class AddonProviderFactory {
     return new ZipAddonProvider(this._httpClient, this._fileService, this._tocService, this._warcraftService);
   }
 
-  public getAll(): AddonProvider[] {
+  public getProviders(): AddonProvider[] {
     if (this._providers.length === 0) {
       this._providers = [
         this.createZipAddonProvider(),
         this.createRaiderIoAddonProvider(),
+        this.createWowUpCompanionAddonProvider(),
         this.createWowUpAddonProvider(),
         this.createCurseAddonProvider(),
         this.createTukUiAddonProvider(),

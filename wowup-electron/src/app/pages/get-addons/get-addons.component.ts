@@ -340,6 +340,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flexDirection: "column",
         justifyContent: "center",
       },
+      suppressMovable: true,
     };
 
     return [
@@ -352,6 +353,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         cellRendererParams: {
           channel: this.defaultAddonChannel,
           clientType: this.selectedClient,
+        },
+        valueGetter: (params) => {
+          return params.data.canonicalName;
         },
         ...baseColumn,
       },

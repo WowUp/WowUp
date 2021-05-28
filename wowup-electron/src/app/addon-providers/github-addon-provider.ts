@@ -25,9 +25,26 @@ import { AddonProvider, GetAllResult } from "./addon-provider";
 import { WowInstallation } from "../models/wowup/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 
+type MetadataFlavor = "bcc" | "classic" | "mainline";
+
 interface GitHubRepoParts {
   repository: string;
   owner: string;
+}
+
+interface ReleaseMeta {
+  releases: ReleaseMetaItem[];
+}
+
+interface ReleaseMetaItem {
+  filename: string;
+  nolib: boolean;
+  metadata: ReleaseMetaItemMetadata[];
+}
+
+interface ReleaseMetaItemMetadata {
+  flavor: MetadataFlavor;
+  interface: number;
 }
 
 const API_URL = "https://api.github.com/repos";
@@ -89,13 +106,11 @@ export class GitHubAddonProvider extends AddonProvider {
 
     try {
       const results = await this.getReleases(repoPath);
-      // const latestRelease = this.getLatestRelease(results);
-      // if (!latestRelease) {
-      //   console.log("latestRelease results", results);
-      //   throw new NoReleaseFoundError(addonUri.toString());
-      // }
-
-      const result = this.getLatestValidAsset(results, installation.clientType, installation.defaultAddonChannelType);
+      const result = await this.getLatestValidAsset(
+        results,
+        installation.clientType,
+        installation.defaultAddonChannelType
+      );
       console.log("result", result);
       if (!result) {
         if ([WowClientType.ClassicEra].includes(installation.clientType)) {
@@ -207,16 +222,27 @@ export class GitHubAddonProvider extends AddonProvider {
     return addonId.indexOf("/") !== -1;
   }
 
-  private getLatestValidAsset(
+  private async getLatestValidAsset(
     releases: GitHubRelease[],
     clientType: WowClientType,
     channel: AddonChannelType
-  ): { asset: GitHubAsset; release: GitHubRelease } | undefined {
+  ): Promise<{ asset: GitHubAsset; release: GitHubRelease } | undefined> {
     let sortedReleases = _.filter(releases, (r) => !r.draft);
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
 
     for (const release of sortedReleases) {
-      const validAsset = this.getValidAsset(release, clientType);
+      let validAsset: GitHubAsset;
+      if (this.hasReleaseMetadata(release)) {
+        console.log(`Checking release metadata: ${release.name}`);
+        const metadata = await this.getReleaseMetadata(release);
+        validAsset = this.getValidAssetFromMetadata(release, clientType, metadata);
+      }
+
+      // If we didn't find an asset with metadata, try the old way
+      if (!validAsset) {
+        validAsset = this.getValidAsset(release, clientType);
+      }
+
       if (validAsset) {
         return {
           asset: validAsset,
@@ -233,6 +259,60 @@ export class GitHubAddonProvider extends AddonProvider {
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
 
     return _.first(sortedReleases);
+  }
+
+  /** Fetch the json object for the BigWigs metadata json file */
+  private async getReleaseMetadata(release: GitHubRelease): Promise<ReleaseMeta> {
+    const metadataAsset = release.assets.find((asset) => asset.name === "release.json");
+    return await this.getWithRateLimit<ReleaseMeta>(metadataAsset.browser_download_url);
+  }
+
+  /** Check if any of the assets are the BigWigs metadata json file */
+  private hasReleaseMetadata(release: GitHubRelease): boolean {
+    return release.assets.findIndex((asset) => asset.name === "release.json") !== -1;
+  }
+
+  /** Return the valid zip file asset for a given client type combined with the BigWigs metadata */
+  private getValidAssetFromMetadata(
+    release: GitHubRelease,
+    clientType: WowClientType,
+    releaseMeta: ReleaseMeta
+  ): GitHubAsset | undefined {
+    // map the client type to the flavor we want
+    const targetFlavor = this.getMetadataTargetFlavor(clientType);
+    console.log(`Target metadata flavor: ${targetFlavor}`);
+
+    // see if we can find that flavor in the metadata
+    const targetMetaRelease = releaseMeta.releases.find(
+      (release) => release.nolib === false && release.metadata.findIndex((m) => m.flavor === targetFlavor) !== -1
+    );
+    if (!targetMetaRelease) {
+      console.log(`No matching metadata file found for target`);
+      return undefined;
+    }
+
+    console.log(`Target metadata release: ${targetMetaRelease.filename}`);
+
+    // return any matching valid asset with the metadata file name and content type
+    return release.assets.find((asset) => this.isValidContentType(asset) && asset.name === targetMetaRelease.filename);
+  }
+
+  /** Return the BigWigs metadata flavor for a given client type */
+  private getMetadataTargetFlavor(clientType: WowClientType): MetadataFlavor {
+    switch (clientType) {
+      case WowClientType.Classic:
+      case WowClientType.ClassicBeta:
+      case WowClientType.ClassicPtr:
+        return "bcc";
+      case WowClientType.ClassicEra:
+        return "classic";
+      case WowClientType.Beta:
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+        return "mainline";
+      default:
+        throw new Error("Unknown client type for metadata");
+    }
   }
 
   private getValidAsset(release: GitHubRelease, clientType: WowClientType): GitHubAsset {
@@ -277,7 +357,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return asset.name.toLowerCase().endsWith("-bc.zip");
+    return asset.name.toLowerCase().endsWith("-bc.zip") || asset.name.toLowerCase().endsWith("-bcc.zip");
   }
 
   private getAddonName(addonId: string): string {

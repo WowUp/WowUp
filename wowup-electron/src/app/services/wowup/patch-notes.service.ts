@@ -16,6 +16,33 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.3.1",
+    html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>Installing from a GitHub URL now supports the new BigWigs metadata file</li>
+        <li>Installing from a GitHub URL now supports -bcc zip files when a Burning Crusade client is selected</li>
+        <li>The Get Addons tab will now also list Recently Added addons from CurseForge, just sort by the 'Released At' column</li>
+      </ul>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>German locale updates (Glow)</li>
+        <li>Chinese locale updates (CyanoHao)</li>
+        <li>Spanish locale updates (SkollVargr)</li>
+        <li>Using the WowUp Addon should no longer cause the Battle.net app to say "Updating" for all clients (Linaori)</li>
+        <li>When re-scanning the "Released At" date should be more accurate</li>
+        <li>Can no longer drag columns on "My Addons" and "Get Addons" off the screen</li>
+        <li>Sorting by name is no longer case sensitive</li>
+        <li>Sorting by name on "My Addons" and "Get Addons" is no longer case sensitive</li>
+        <li>Long author names will now attempt to wrap all text</li>
+        <li>WowUp addon companion data now has it's own provider name</li>
+        <li>The WowUp addon companion data row should now be kept up to date without a re-scan</li>
+        <li>A success toast will now be shown when an addon is successfully removed</li>
+        <li>Optimize fetching of WowInterface data</li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.3.0",
     html: `<div>
       <h4 style="margin-top: 1em;">New Features</h4>
@@ -33,7 +60,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Fix an issue with over aggressive TukUI name matching during a re-scan</li>
         <li>Fix an issue Classic Era being incorrectly identified when adding it manually</li>
         </ul>
-      </div>`
+      </div>`,
   },
   {
     Version: "2.2.2",

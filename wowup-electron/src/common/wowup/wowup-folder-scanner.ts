@@ -1,10 +1,10 @@
 import * as _ from "lodash";
 import * as crypto from "crypto";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
-import { readDirRecursive, readFile, readFileAsBuffer } from "../../../file.utils";
+import { readDirRecursive } from "../../../file.utils";
 import { WowUpScanResult } from "./models";
 
 const INVALID_PATH_CHARS = [
@@ -142,7 +142,7 @@ export class WowUpFolderScanner {
 
     matchingFileList.push(nativePath);
 
-    let input = await readFile(nativePath);
+    let input = await fs.readFile(nativePath, { encoding: "utf-8" });
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -210,7 +210,7 @@ export class WowUpFolderScanner {
   }
 
   private async hashFile(filePath: string): Promise<string> {
-    const text = await readFileAsBuffer(filePath);
+    const text = await fs.readFile(filePath);
     return this.hashString(text);
   }
 

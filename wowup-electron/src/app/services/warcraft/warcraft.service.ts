@@ -167,7 +167,7 @@ export class WarcraftService {
     return addonFolders;
   }
 
-  private async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
+  public async getAddonFolder(addonFolderPath: string, dir: string): Promise<AddonFolder | undefined> {
     try {
       const dirPath = path.join(addonFolderPath, dir);
       const dirFiles = await this._fileService.readdir(dirPath);
@@ -273,6 +273,7 @@ export class WarcraftService {
     try {
       const productDbData = await this._fileService.readFileBuffer(productDbPath);
       const productDb = ProductDb.decode(productDbData);
+      console.log("productDb", JSON.stringify(productDb));
       const wowProducts: InstalledProduct[] = productDb.products
         .filter((p) => p.family === "wow")
         .map((p) => ({
@@ -287,10 +288,6 @@ export class WarcraftService {
       console.error(e);
       return [];
     }
-  }
-
-  private arePathsEqual(path1: string, path2: string) {
-    return path.normalize(path1) === path.normalize(path2);
   }
 
   private getImplementation(): WarcraftServiceImpl {

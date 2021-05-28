@@ -312,6 +312,7 @@
         "STABLE_ADDON_CHANNEL": "Stabilní"
       },
       "ADDON_IS_CODE_REPOSITORY": "Jedná se o addon z repozitáře kódu",
+      "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Opravdu chcete změnit poskytovatele pro {addonName} na {providerName}? Tato operace odinstaluje existující addon a nainstaluje verzi od nového poskytovatele.",
         "TITLE": "Změnit poskytovatele addonu?"

@@ -128,8 +128,8 @@
       "GENERIC_TOOLTIP": "Wir haben ein Problem mit diesem Addon festgestellt",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Dieses Addon scheint entweder vom Autor oder vom Addon-Anbieter entfernt worden zu sein.<br>Wir können dieses Addon nicht mehr aktualisieren oder Details bereitstellen.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Dieses Addon scheint vom Anbieter entfernt worden zu sein",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} hat dieses Addon ordnungsgemäß zurückgegeben, es gab jedoch keine Dateien, die mit dieser Spielversion übereinstimmen.<br>Sobald es ein Update gibt, das zu dieser Spielversion passt, sollte diese Warnung verschwinden.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hatte keine passenden Spielversionsdateien"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -312,6 +312,7 @@
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon scheint ein Code-Repository zu sein",
+      "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Möchtest Du den Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
         "TITLE": "Addon-Anbieter wechseln?"

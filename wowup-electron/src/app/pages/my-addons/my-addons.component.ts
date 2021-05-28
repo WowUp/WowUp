@@ -362,8 +362,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       console.debug("onRefresh");
       await this.addonService.syncAllClients();
-      await this.loadAddons(this.selectedInstallation);
       await this._wowUpAddonService.updateForInstallation(this.selectedInstallation);
+      await this.loadAddons(this.selectedInstallation);
     } catch (e) {
       console.error(`Failed to refresh addons`, e);
     } finally {
@@ -566,12 +566,27 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           if (this.addonService.getRequiredDependencies(addon).length === 0) {
-            return from(this.addonService.removeAddon(addon));
+            return from(this.addonService.removeAddon(addon)).pipe(
+              map(() => {
+                this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
+                  localeArgs: {
+                    addonName: addon.name,
+                  },
+                });
+              })
+            );
           } else {
             return this.getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
               .afterClosed()
               .pipe(
                 switchMap((result) => from(this.addonService.removeAddon(addon, result))),
+                map(() => {
+                  this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
+                    localeArgs: {
+                      addonName: addon.name,
+                    },
+                  });
+                }),
                 switchMap(() => from(this.loadAddons(this.selectedInstallation)))
               );
           }
@@ -1086,6 +1101,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         flexDirection: "column",
         justifyContent: "center",
       },
+      suppressMovable: true,
     };
 
     return [
@@ -1098,6 +1114,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         autoHeight: true,
         cellRenderer: "myAddonRenderer",
         colId: "name",
+        valueGetter: (params) => {
+          return params.data.canonicalName;
+        },
         ...baseColumn,
       },
       {

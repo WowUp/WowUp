@@ -3,10 +3,17 @@ import { filter } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
+import {
+  WOWUP_ADDON_FOLDER_NAME,
+  WOWUP_ASSET_FOLDER_NAME,
+  WOWUP_DATA_ADDON_FOLDER_NAME,
+} from "../../../common/constants";
 import { Addon } from "../../../common/entities/addon";
+import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { toInterfaceVersion } from "../../utils/addon.utils";
+import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { AddonService } from "../addons/addon.service";
 import { FileService } from "../files/file.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
@@ -36,10 +43,6 @@ interface WowUpAddonFileProcessing {
   filename: string;
 }
 
-const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
-const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
-const WOWUP_ADODN_FOLDER_NAME = "WowUp";
-
 @Injectable({
   providedIn: "root",
 })
@@ -62,6 +65,7 @@ export class WowUpAddonService {
 
   public constructor(
     private _addonService: AddonService,
+    private _addonProviderFactory: AddonProviderFactory,
     private _fileService: FileService,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _warcraftService: WarcraftService
@@ -98,12 +102,33 @@ export class WowUpAddonService {
     }
 
     await this.persistUpdateInformationToWowUpAddon(installation, addons);
+    await this.syncCompanionAddon(addons, installation);
+  }
+
+  private async syncCompanionAddon(addons: Addon[], installation: WowInstallation): Promise<void> {
+    const companionAddon = this.getCompanionAddon(addons);
+    if (!companionAddon) {
+      console.debug(`No wow companion found: ${installation.label}`);
+      return;
+    }
+
+    const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
+    const addonFolder = await this._warcraftService.getAddonFolder(addonFolderPath, WOWUP_DATA_ADDON_FOLDER_NAME);
+
+    const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
+    await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
+
+    if (companionAddon) {
+      delete addonFolder.matchingAddon.id;
+      const updatedCompanion: Addon = { ...companionAddon, ...addonFolder.matchingAddon };
+      this._addonService.saveAddon(updatedCompanion);
+    } else {
+      this._addonService.saveAddon(addonFolder.matchingAddon);
+    }
   }
 
   private async persistUpdateInformationToWowUpAddon(installation: WowInstallation, addons: Addon[]) {
-    const wowUpAddon = addons.find((addon: Addon) =>
-      (addon.installedFolderList ?? []).includes(WOWUP_ADODN_FOLDER_NAME)
-    );
+    const wowUpAddon = this.findAddonByFolderName(addons, WOWUP_ADDON_FOLDER_NAME);
     if (!wowUpAddon) {
       console.debug("WowUp Addon not found");
       return;
@@ -126,7 +151,10 @@ export class WowUpAddonService {
         WOWUP_DATA_ADDON_FOLDER_NAME
       );
 
-      await this._fileService.createDirectory(dataAddonPath);
+      const pathExists = await this._fileService.pathExists(dataAddonPath);
+      if (!pathExists) {
+        await this._fileService.createDirectory(dataAddonPath);
+      }
 
       for (const file of this.files) {
         const designatedPath = path.join(dataAddonPath, file.filename);
@@ -144,7 +172,7 @@ export class WowUpAddonService {
 
       console.log("Available update data synced to wowup_data_addon/{data.lua,wowup_data_addon.toc}");
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -180,5 +208,15 @@ export class WowUpAddonService {
     const assetPath = path.join(WOWUP_ASSET_FOLDER_NAME, file.filename);
     const filePath = await this._fileService.getAssetFilePath(assetPath);
     await this._fileService.copy(filePath, designatedPath);
+  }
+
+  private getCompanionAddon(addons: Addon[]): Addon | undefined {
+    return this.findAddonByFolderName(addons, WOWUP_DATA_ADDON_FOLDER_NAME);
+  }
+
+  private findAddonByFolderName(addons: Addon[], folderName: string): Addon | undefined {
+    return addons.find(
+      (addon: Addon) => Array.isArray(addon.installedFolderList) && addon.installedFolderList.includes(folderName)
+    );
   }
 }

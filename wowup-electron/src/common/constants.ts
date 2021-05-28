@@ -8,10 +8,16 @@ export const ADDON_PROVIDER_TUKUI = "TukUI";
 export const ADDON_PROVIDER_UNKNOWN = "Unknown";
 export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
 export const ADDON_PROVIDER_HUB = "WowUpHub";
+export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
 export const APP_PROTOCOL_NAME = "wowup";
 export const CURSE_PROTOCOL_NAME = "curseforge";
+
+// WOWUP ADDON
+export const WOWUP_ADDON_FOLDER_NAME = "WowUp";
+export const WOWUP_DATA_ADDON_FOLDER_NAME = "wowup_data_addon";
+export const WOWUP_ASSET_FOLDER_NAME = "WowUpAddon";
 
 // IPC CHANNELS
 export const IPC_DOWNLOAD_FILE_CHANNEL = "download-file";
@@ -71,6 +77,7 @@ export const IPC_REQUEST_INSTALL_FROM_URL = "request-install-from-url";
 export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
+export const IPC_GET_LATEST_DIR_UPDATE_TIME = "get-latest-dir-update-time";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";

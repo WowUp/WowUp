@@ -312,6 +312,7 @@
         "STABLE_ADDON_CHANNEL": "Стабильная"
       },
       "ADDON_IS_CODE_REPOSITORY": "Модификация является репозиторием кода",
+      "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Хотите изменить источник модификаций для {addonName} на {providerName}? Это действие удалит существующую модификацию и заменит её копией из нового источника.",
         "TITLE": "Изменить источник модификации?"
