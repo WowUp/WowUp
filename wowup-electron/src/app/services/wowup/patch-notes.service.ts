@@ -16,6 +16,17 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.3.2",
+    html: `<div>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Scanning should now be more accurate</li>
+        <li>Reduce the time that searches are cached</li>
+        <li>Sorting by columns other than name should now fall back to case insensitive names</li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.3.1",
     html: `<div>
       <h4 style="margin-top: 1em;">New Features</h4>
