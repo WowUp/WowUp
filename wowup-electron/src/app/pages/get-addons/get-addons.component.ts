@@ -328,6 +328,18 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.gridColumnApi.setColumnVisible(column.name, event.checked);
   }
 
+  // If nodes have the same primary value, use the canonical name as a fallback
+  private compareElement(nodeA: RowNode, nodeB: RowNode, prop: string): number {
+    if (nodeA.data[prop] === nodeB.data[prop]) {
+      if (nodeA.data.canonicalName === nodeB.data.canonicalName) {
+        return 0;
+      }
+      return nodeA.data.canonicalName > nodeB.data.canonicalName ? 1 : -1;
+    }
+
+    return nodeA.data[prop] > nodeB.data[prop] ? 1 : -1;
+  }
+
   private createColumns(): ColDef[] {
     const baseColumn = {
       headerComponent: "contextHeader",
@@ -365,6 +377,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER"),
         valueFormatter: (row) => this.downloadCountPipe.transform(row.data.downloadCount),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "downloadCount"),
         ...baseColumn,
       },
       {
@@ -373,6 +386,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
         valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.releasedAt),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "releasedAt"),
         ...baseColumn,
       },
       {
@@ -380,6 +394,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "author"),
         cellRenderer: "wrapTextCell",
         ...baseColumn,
       },
@@ -388,12 +403,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "providerName"),
         ...baseColumn,
       },
       {
         field: "status",
         flex: 1,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "status"),
         cellRenderer: "statusRenderer",
         ...baseColumn,
       },
