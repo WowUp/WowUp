@@ -121,7 +121,7 @@ export class WowUpAddonProvider extends AddonProvider {
     const addons = await this._cachingService.transaction(
       url.toString(),
       () => this._circuitBreaker.getJson<WowUpSearchAddonsResponse>(url),
-      CHANGELOG_CACHE_TTL_SEC
+      5
     );
     const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, gameType));
 

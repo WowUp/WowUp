@@ -171,6 +171,10 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   };
 
   private getAllAddonDetails = async (addonIds: string[]): Promise<AddonDetailsResponse[]> => {
+    if (addonIds.length === 0) {
+      return [];
+    }
+
     const url = new URL(`${API_URL}/filedetails/${addonIds.join(",")}.json`);
 
     const responses = await this._cachingService.transaction(

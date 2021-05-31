@@ -7,15 +7,15 @@ import {
 } from "./src/common/constants";
 import { MenuConfig } from "./src/common/wowup/models";
 
-function onMenuZoomIn(win: BrowserWindow) {
+export function onMenuZoomIn(win: BrowserWindow): void {
   win?.webContents.send(IPC_MENU_ZOOM_IN_CHANNEL);
 }
 
-function onMenuZoomOut(win: BrowserWindow) {
+export function onMenuZoomOut(win: BrowserWindow): void {
   win?.webContents.send(IPC_MENU_ZOOM_OUT_CHANNEL);
 }
 
-function onMenuZoomReset(win: BrowserWindow) {
+export function onMenuZoomReset(win: BrowserWindow): void {
   win?.webContents.send(IPC_MENU_ZOOM_RESET_CHANNEL);
 }
 

@@ -1090,6 +1090,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._cdRef.detectChanges();
   }
 
+  // If nodes have the same primary value, use the canonical name as a fallback
+  private compareElement(nodeA: RowNode, nodeB: RowNode, prop: string): number {
+    if (nodeA.data[prop] === nodeB.data[prop]) {
+      if (nodeA.data.canonicalName === nodeB.data.canonicalName) {
+        return 0;
+      }
+      return nodeA.data.canonicalName > nodeB.data.canonicalName ? 1 : -1;
+    }
+
+    return nodeA.data[prop] > nodeB.data[prop] ? 1 : -1;
+  }
+
   private createColumns(): ColDef[] {
     const baseColumn = {
       headerComponent: "contextHeader",
@@ -1125,12 +1137,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
         cellRenderer: "myAddonStatus",
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "sortOrder"),
         ...baseColumn,
       },
       {
         field: "installedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "installedAt"),
         ...baseColumn,
         cellRenderer: "dateTooltipCell",
       },
@@ -1138,12 +1152,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "latestVersion",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "latestVersion"),
         ...baseColumn,
       },
       {
         field: "releasedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "releasedAt"),
         ...baseColumn,
         cellRenderer: "dateTooltipCell",
       },
@@ -1152,6 +1168,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         sortable: true,
         minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "gameVersion"),
         ...baseColumn,
       },
       {
@@ -1160,6 +1177,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         flex: 1,
         minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "externalChannel"),
         ...baseColumn,
       },
       {
@@ -1167,6 +1185,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER"),
         valueFormatter: (row) => this.getProviderName(row.data.providerName),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "providerName"),
         ...baseColumn,
       },
       {
@@ -1175,6 +1194,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         minWidth: 120,
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
+        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "author"),
         cellRenderer: "wrapTextCell",
         ...baseColumn,
       },
