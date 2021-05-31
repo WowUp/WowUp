@@ -49,12 +49,12 @@
     "pretty": "npx prettier --write . && ng lint --fix"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "11.1.1",
-    "@angular-devkit/build-angular": "0.1102.12",
-    "@angular-eslint/builder": "4.2.0",
-    "@angular-eslint/eslint-plugin": "4.2.0",
-    "@angular-eslint/eslint-plugin-template": "4.2.0",
-    "@angular-eslint/template-parser": "4.2.0",
+    "@angular-builders/custom-webpack": "12.0.0",
+    "@angular-devkit/build-angular": "12.0.2",
+    "@angular-eslint/builder": "12.1.0",
+    "@angular-eslint/eslint-plugin": "12.1.0",
+    "@angular-eslint/eslint-plugin-template": "12.1.0",
+    "@angular-eslint/template-parser": "12.1.0",
     "@angular/cli": "11.2.12",
     "@angular/common": "11.2.13",
     "@angular/compiler": "11.2.13",
