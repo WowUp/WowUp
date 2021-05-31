@@ -43,13 +43,31 @@ import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 
-const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
-const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
-
 interface ProtocolData {
   addonId: number;
   fileId: number;
 }
+
+const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
+const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
+
+const GAME_TYPE_LISTS = [
+  {
+    flavor: "wow_classic",
+    gameType: WowClientType.Classic,
+    matches: [WowClientType.ClassicEra],
+  },
+  {
+    flavor: "wow_burning_crusade",
+    gameType: WowClientType.ClassicEra,
+    matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
+  },
+  {
+    flavor: "wow_retail",
+    gameType: WowClientType.Retail,
+    matches: [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta],
+  },
+];
 
 export class CurseAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
@@ -101,7 +119,6 @@ export class CurseAddonProvider extends AddonProvider {
 
   public async searchProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
     const protocolData = this.parseProtocol(protocol);
-    console.debug("protocolData", protocolData);
     if (!protocolData.addonId || !protocolData.fileId) {
       throw new Error("Invalid protocol data");
     }
@@ -129,7 +146,7 @@ export class CurseAddonProvider extends AddonProvider {
       protocol,
       protocolAddonId: protocolData.addonId.toString(),
       protocolReleaseId: protocolData.fileId.toString(),
-      validClientTypes: this.getValidClientTypes(addonFileResponse.gameVersionFlavor),
+      validClientTypes: this.getValidClientTypes(addonFileResponse),
       ...this.getAddonSearchResult(addonResult, [addonFileResponse]),
     };
     console.debug("searchResult", searchResult);
@@ -726,15 +743,24 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
-  private getValidClientTypes(gameVersionFlavor: string): WowClientType[] {
-    switch (gameVersionFlavor) {
-      case "wow_classic":
-        return [WowClientType.ClassicEra];
-      case "wow_burning_crusade":
-        return [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta];
-      default:
-        return [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta];
+  private getValidClientTypes(file: CurseAddonFileResponse): WowClientType[] {
+    const gameVersions: WowClientType[] = [];
+
+    const flavorMatches = GAME_TYPE_LISTS.find((list) => list.flavor === file.gameVersionFlavor)?.matches ?? [];
+    gameVersions.push(...flavorMatches);
+
+    if (!Array.isArray(file.gameVersion) || file.gameVersion.length === 0) {
+      return gameVersions;
     }
+
+    for (const list of GAME_TYPE_LISTS) {
+      const gameVersionRegex = this.getGameVersionRegex(list.gameType);
+      if (file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion))) {
+        gameVersions.push(...list.matches);
+      }
+    }
+
+    return _.uniq(gameVersions);
   }
 
   private getWowUpChannel(releaseType: CurseReleaseType): AddonChannelType {
