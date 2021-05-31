@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import * as ChangeLogJson from "../../../assets/changelog.json";
+import ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
 
 @Injectable({

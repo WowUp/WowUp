@@ -5,6 +5,7 @@
     "module": "es2015",
     "baseUrl": "",
     "types": [],
+    "allowSyntheticDefaultImports": true
   },
   "files": ["./typings.d.ts", "./common/wowup.d.ts"],
   "include": ["main.ts", "polyfill.ts"],
