@@ -18,6 +18,10 @@ const CHANGELOGS: ChangeLog[] = [
   {
     Version: "2.3.2",
     html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>Numpad keys can now be used to control zoom</li>
+      </ul>
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>
         <li>Russian locale updates (Medok)</li>
