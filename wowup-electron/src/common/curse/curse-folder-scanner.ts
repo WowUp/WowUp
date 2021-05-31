@@ -56,7 +56,7 @@ export class CurseFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^/]+)[\\/]\1\.toc$/gim;
+    return /^([^/]+)[\\/]\1(-mainline|-bcc|-classic)?\.toc$/i;
   }
 
   private get bindingsXmlRegex() {

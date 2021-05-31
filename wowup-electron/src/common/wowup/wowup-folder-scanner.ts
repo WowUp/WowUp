@@ -61,7 +61,7 @@ export class WowUpFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^/]+)[\\/]\1\.toc$/i;
+    return /^([^/]+)[\\/]\1(-mainline|-bcc|-classic)?\.toc$/i;
   }
 
   private get bindingsXmlRegex() {

@@ -20,12 +20,15 @@
 .overflow {
   p {
     white-space: normal;
+    -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+    display: -webkit-box;
     text-overflow: ellipsis;
     line-height: 1.2em !important ;
     max-height: calc(3 * 1.2em);
     margin: 0;
     padding: 0;
+    overflow: hidden;
     word-break: break-all;
   }
 }

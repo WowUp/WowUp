@@ -43,13 +43,31 @@ import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 
-const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
-const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
-
 interface ProtocolData {
   addonId: number;
   fileId: number;
 }
+
+const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
+const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
+
+const GAME_TYPE_LISTS = [
+  {
+    flavor: "wow_classic",
+    gameType: WowClientType.Classic,
+    matches: [WowClientType.ClassicEra],
+  },
+  {
+    flavor: "wow_burning_crusade",
+    gameType: WowClientType.ClassicEra,
+    matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
+  },
+  {
+    flavor: "wow_retail",
+    gameType: WowClientType.Retail,
+    matches: [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta],
+  },
+];
 
 export class CurseAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
@@ -101,7 +119,6 @@ export class CurseAddonProvider extends AddonProvider {
 
   public async searchProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
     const protocolData = this.parseProtocol(protocol);
-    console.debug("protocolData", protocolData);
     if (!protocolData.addonId || !protocolData.fileId) {
       throw new Error("Invalid protocol data");
     }
@@ -129,7 +146,7 @@ export class CurseAddonProvider extends AddonProvider {
       protocol,
       protocolAddonId: protocolData.addonId.toString(),
       protocolReleaseId: protocolData.fileId.toString(),
-      validClientTypes: this.getValidClientTypes(addonFileResponse.gameVersionFlavor),
+      validClientTypes: this.getValidClientTypes(addonFileResponse),
       ...this.getAddonSearchResult(addonResult, [addonFileResponse]),
     };
     console.debug("searchResult", searchResult);
@@ -279,7 +296,6 @@ export class CurseAddonProvider extends AddonProvider {
     for (const scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
       scanResult.exactMatch = fingerprintResponse.exactMatches.find((exactMatch) =>
-        // this.isGameVersionFlavor(exactMatch.file.gameVersionFlavor, installation.clientType) &&
         this.hasMatchingFingerprint(scanResult, exactMatch)
       );
 
@@ -294,10 +310,6 @@ export class CurseAddonProvider extends AddonProvider {
 
   private hasMatchingFingerprint(scanResult: AppCurseScanResult, exactMatch: CurseMatch) {
     return exactMatch.file.modules.some((m) => m.fingerprint === scanResult.fingerprint);
-  }
-
-  private isGameVersionFlavor(gameVersionFlavor: string, clientType: WowClientType) {
-    return gameVersionFlavor === this.getGameVersionFlavor(clientType);
   }
 
   private async getAddonsByFingerprintsW(fingerprints: number[]) {
@@ -443,6 +455,9 @@ export class CurseAddonProvider extends AddonProvider {
     const gameVersionFlavor = this.getGameVersionFlavor(installation.clientType);
 
     const response = await this.getCategoryAddons(curseCategories[0], gameVersionFlavor, 150, 0);
+
+    await this.removeBlockedItems(response);
+
     const searchResults: AddonSearchResult[] = [];
     for (const responseItem of response) {
       const latestFiles = this.getLatestFiles(responseItem, installation.clientType);
@@ -566,18 +581,8 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
-  private filterFeaturedAddons(results: CurseSearchResult[], clientType: WowClientType) {
-    const clientTypeStr = this.getGameVersionFlavor(clientType);
-
-    return results.filter((r) => r.latestFiles.some((lf) => this.isClientType(lf, clientTypeStr)));
-  }
-
-  private isClientType(file: CurseFile, clientTypeStr: string) {
-    return (
-      file.releaseType === CurseReleaseType.Release &&
-      file.gameVersionFlavor === clientTypeStr &&
-      file.isAlternate === false
-    );
+  private filterFeaturedAddons(results: CurseSearchResult[], clientType: WowClientType): CurseSearchResult[] {
+    return results.filter((r) => r.latestFiles.some((lf) => this.isClientType(lf, clientType)));
   }
 
   private createAddonSearchResultDependency = (dependency: CurseDependency): AddonSearchResultDependency => {
@@ -686,11 +691,40 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   private getLatestFiles(result: CurseSearchResult, clientType: WowClientType): CurseFile[] {
+    const filtered = result.latestFiles.filter((latestFile) => this.isClientType(latestFile, clientType));
+    return _.sortBy(filtered, (latestFile) => latestFile.id).reverse();
+  }
+
+  private isClientType(file: CurseFile, clientType: WowClientType) {
     const clientTypeStr = this.getGameVersionFlavor(clientType);
-    const filtered = result.latestFiles.filter(
-      (lf) => lf.isAlternate === false && lf.gameVersionFlavor === clientTypeStr
-    );
-    return _.sortBy(filtered, (lf) => lf.id).reverse();
+    if (file.isAlternate) {
+      return false;
+    }
+
+    // If the version flavor is an exact match, use that
+    if (file.gameVersionFlavor === clientTypeStr) {
+      return true;
+    }
+
+    // Otherwise check if the game version array is close enough
+    const gameVersionRegex = this.getGameVersionRegex(clientType);
+    return file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion));
+  }
+
+  private getGameVersionRegex(clientType: WowClientType): RegExp {
+    switch (clientType) {
+      case WowClientType.ClassicEra:
+        return /^1.\d+.\d+$/;
+      case WowClientType.Classic:
+      case WowClientType.ClassicPtr:
+      case WowClientType.ClassicBeta:
+        return /^2.\d+.\d+$/;
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+      case WowClientType.Beta:
+      default:
+        return /^[3-9].\d+.\d+$/;
+    }
   }
 
   private getGameVersionFlavor(clientType: WowClientType): CurseGameVersionFlavor {
@@ -709,15 +743,24 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
-  private getValidClientTypes(gameVersionFlavor: string): WowClientType[] {
-    switch (gameVersionFlavor) {
-      case "wow_classic":
-        return [WowClientType.ClassicEra];
-      case "wow_burning_crusade":
-        return [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta];
-      default:
-        return [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta];
+  private getValidClientTypes(file: CurseAddonFileResponse): WowClientType[] {
+    const gameVersions: WowClientType[] = [];
+
+    const flavorMatches = GAME_TYPE_LISTS.find((list) => list.flavor === file.gameVersionFlavor)?.matches ?? [];
+    gameVersions.push(...flavorMatches);
+
+    if (!Array.isArray(file.gameVersion) || file.gameVersion.length === 0) {
+      return gameVersions;
     }
+
+    for (const list of GAME_TYPE_LISTS) {
+      const gameVersionRegex = this.getGameVersionRegex(list.gameType);
+      if (file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion))) {
+        gameVersions.push(...list.matches);
+      }
+    }
+
+    return _.uniq(gameVersions);
   }
 
   private getWowUpChannel(releaseType: CurseReleaseType): AddonChannelType {

@@ -128,14 +128,14 @@
       "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
       "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация вероятно была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} верно определил модификацию, однако, он не имеет каких-либо файлов соответствующих этой версии игры.<br>Это предупреждение исчезнет как только будет доступно обновление для данной версии игры.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов для соответствия версии игры"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",
       "CLASSIC": "Классический",
       "CLASSICBETA": "Классический Бета",
-      "CLASSICERA": "Classic Era",
+      "CLASSICERA": "Эпоха классики",
       "CLASSICPTR": "Классический PTR",
       "RETAIL": "Актуальный",
       "RETAILPTR": "Актуальный PTR"
@@ -197,7 +197,7 @@
       "COPY_ADDON_ID_SNACKBAR": "ID модификации скопирован в буфер обмена",
       "COPY_ADDON_ID_TOOLTIP": "Скопировать ID модификации в буфер обмена",
       "DEPENDENCY_TEXT": "Эта модификация имеет {dependencyCount} {dependencyCount, plural, one{необходимую} other{необходимых}} {dependencyCount, plural, one{зависимость} few{зависимости} other{зависимостей}}",
-      "DESCRIPTION_NOT_FOUND": "No description found",
+      "DESCRIPTION_NOT_FOUND": "Описание не найдено",
       "DESCRIPTION_TAB": "Описание",
       "FUNDING_LINK_TITLE": "Поддержать этого автора",
       "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
@@ -312,7 +312,7 @@
         "STABLE_ADDON_CHANNEL": "Стабильная"
       },
       "ADDON_IS_CODE_REPOSITORY": "Модификация является репозиторием кода",
-      "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
+      "ADDON_REMOVED_SNACKBAR": "Успешно удалёна: {addonName} ",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Хотите изменить источник модификаций для {addonName} на {providerName}? Это действие удалит существующую модификацию и заменит её копией из нового источника.",
         "TITLE": "Изменить источник модификации?"
@@ -344,7 +344,7 @@
       "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Нет необходимой зависимости",
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
       "RESCAN_FOLDERS_BUTTON_TOOLTIP": "Сканирование папки клиента на наличие установленных модификаций",
-      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может попытаться угадать какие модификации уже установилены, это действие может обнулить известную о модификации информацию. Используйте эту функцию если не определяются некоторые модификации или их версии не отображаются корректно. Это действие никогда не удалит ваши установленные модификации, лишь то что WowUp знает о них.\n\nЭта процедура займёт немного времени.",
+      "RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION": "Повторное сканирование может попытаться угадать какие модификации уже установлены, это действие может обнулить известную о модификации информацию. Используйте эту функцию если не определяются некоторые модификации или их версии не отображаются корректно. Это действие никогда не удалит ваши установленные модификации, лишь то что WowUp знает о них.\n\nЭта процедура займёт немного времени.",
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Начать повторное сканирование?",
       "SPINNER": {
         "GATHERING_ADDONS": "Сбор модификаций...",
