@@ -62,7 +62,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: number;
 
   @HostListener("mousewheel", ["$event"])
-  public async handleKeyboardEvent(event: any): Promise<void> {
+  public async handleMouseWheelEvent(event: any): Promise<void> {
     if (!event.ctrlKey) {
       return;
     }
