@@ -20,7 +20,9 @@ const CHANGELOGS: ChangeLog[] = [
     html: `<div>
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>
+        <li>Russian locale updates (Medok)</li>
         <li>Scanning should now be more accurate</li>
+        <li>Tweak some CurseForge matching</li>
         <li>Reduce the time that searches are cached</li>
         <li>Sorting by columns other than name should now fall back to case insensitive names</li>
       </ul>
