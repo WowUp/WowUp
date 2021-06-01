@@ -31,29 +31,9 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
   };
 
   const viewMenuArr = viewMenu.submenu as MenuItemConstructorOptions[];
-  if (config) {
-    viewMenuArr.push(
-      {
-        label: config.zoomInLabel,
-        click: () => onMenuZoomIn(win),
-        accelerator: "CommandOrControl+=",
-      },
-      {
-        label: config.zoomOutLabel,
-        click: () => onMenuZoomOut(win),
-        accelerator: "CommandOrControl+-",
-      },
-      {
-        label: config.zoomResetLabel,
-        click: () => onMenuZoomReset(win),
-        accelerator: "CommandOrControl+0",
-      }
-    );
-  }
+  createViewMenu(viewMenuArr, win, config);
 
   viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
-
-  console.debug(config);
 
   return [
     {
@@ -86,6 +66,20 @@ function createMacMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Menu
 }
 
 function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
+  const viewMenu: MenuItemConstructorOptions = {
+    label: config.viewLabel,
+    submenu: [
+      { label: config.reloadLabel, role: "reload" },
+      { label: config.forceReloadLabel, role: "forceReload" },
+      { label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" },
+    ],
+  };
+
+  const submenu = viewMenu.submenu as MenuItemConstructorOptions[];
+  createViewMenu(submenu, win, config);
+
+  submenu.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
+
   return [
     {
       label: app.name,
@@ -103,20 +97,7 @@ function createLinuxMenuItems(win: BrowserWindow, config?: MenuConfig): Array<Me
         { label: config.selectAllLabel, role: "selectAll" },
       ],
     },
-    {
-      label: "View",
-      submenu: [
-        { label: config.reloadLabel, role: "reload" },
-        { label: config.forceReloadLabel, role: "forceReload" },
-        { label: config.toggleDevToolsLabel, role: "toggleDevTools" },
-        { type: "separator" },
-        // { role: "resetZoom" },
-        // { role: "zoomIn", accelerator: "CommandOrControl+=" },
-        // { role: "zoomOut" },
-        // { type: "separator" },
-        { label: config.toggleFullScreenLabel, role: "togglefullscreen" },
-      ],
-    },
+    viewMenu,
   ];
 }
 
@@ -126,34 +107,51 @@ function createWindowsMenuItems(win: BrowserWindow, config?: MenuConfig): Array<
     submenu: [{ label: config.toggleDevToolsLabel, role: "toggleDevTools", accelerator: "CommandOrControl+Shift+I" }],
   };
 
-  const viewMenuArr = viewMenu.submenu as MenuItemConstructorOptions[];
-  if (config) {
-    viewMenuArr.push(
-      {
-        label: config.zoomInLabel,
-        click: () => onMenuZoomIn(win),
-        accelerator: "CommandOrControl+=",
-      },
-      {
-        label: config.zoomOutLabel,
-        click: () => onMenuZoomOut(win),
-        accelerator: "CommandOrControl+-",
-      },
-      {
-        label: config.zoomResetLabel,
-        click: () => onMenuZoomReset(win),
-        accelerator: "CommandOrControl+0",
-      }
-    );
-  }
+  const submenu = viewMenu.submenu as MenuItemConstructorOptions[];
+  createViewMenu(submenu, win, config);
 
-  viewMenuArr.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
+  submenu.push({ type: "separator" }, { label: config.toggleFullScreenLabel, role: "togglefullscreen" });
 
   return [viewMenu];
 }
 
+function createViewMenu(submenu: MenuItemConstructorOptions[], win: BrowserWindow, config?: MenuConfig): void {
+  if (!config) {
+    return;
+  }
+
+  submenu.push(
+    {
+      label: config.zoomInLabel,
+      click: () => onMenuZoomIn(win),
+      accelerator: "CommandOrControl+=",
+    },
+    {
+      label: config.zoomOutLabel,
+      click: () => onMenuZoomOut(win),
+      accelerator: "CommandOrControl+-",
+    },
+    {
+      label: config.zoomResetLabel,
+      click: () => onMenuZoomReset(win),
+      accelerator: "CommandOrControl+0",
+    },
+    {
+      label: config.zoomInLabel + "num",
+      visible: false,
+      click: () => onMenuZoomIn(win),
+      accelerator: "CommandOrControl+numadd",
+    },
+    {
+      label: config.zoomOutLabel + "num",
+      visible: false,
+      click: () => onMenuZoomOut(win),
+      accelerator: "CommandOrControl+numsub",
+    }
+  );
+}
+
 function createMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
-  console.debug("CREATING MENU");
   if (!config) {
     return [];
   }
