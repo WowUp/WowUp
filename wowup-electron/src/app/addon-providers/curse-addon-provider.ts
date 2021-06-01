@@ -706,9 +706,11 @@ export class CurseAddonProvider extends AddonProvider {
       return true;
     }
 
+    // This check was a workaround for CF not supporting multi toc, it causes odd behavior with legacy (12 year old) addons showing up as valid.
     // Otherwise check if the game version array is close enough
-    const gameVersionRegex = this.getGameVersionRegex(clientType);
-    return file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion));
+    // const gameVersionRegex = this.getGameVersionRegex(clientType);
+    // return file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion));
+    return false;
   }
 
   private getGameVersionRegex(clientType: WowClientType): RegExp {
@@ -753,12 +755,13 @@ export class CurseAddonProvider extends AddonProvider {
       return gameVersions;
     }
 
-    for (const list of GAME_TYPE_LISTS) {
-      const gameVersionRegex = this.getGameVersionRegex(list.gameType);
-      if (file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion))) {
-        gameVersions.push(...list.matches);
-      }
-    }
+    // This check was a workaround for CF not supporting multi toc, it causes odd behavior with legacy (12 year old) addons showing up as valid.
+    // for (const list of GAME_TYPE_LISTS) {
+    //   const gameVersionRegex = this.getGameVersionRegex(list.gameType);
+    //   if (file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion))) {
+    //     gameVersions.push(...list.matches);
+    //   }
+    // }
 
     return _.uniq(gameVersions);
   }
@@ -785,9 +788,7 @@ export class CurseAddonProvider extends AddonProvider {
 
     const latestFiles = this.getLatestFiles(scanResult.searchResult, installation.clientType);
 
-    const gameVersion = AddonUtils.getGameVersion(
-      currentVersion.gameVersion[0] || scanResult.addonFolder.toc.interface
-    );
+    const gameVersion = AddonUtils.getGameVersion(scanResult.addonFolder.toc.interface);
 
     let channelType = this.getChannelType(scanResult.exactMatch.file.releaseType);
     let latestVersion = latestFiles.find((lf) => this.getChannelType(lf.releaseType) <= channelType);
