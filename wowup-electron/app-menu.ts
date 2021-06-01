@@ -152,7 +152,6 @@ function createViewMenu(submenu: MenuItemConstructorOptions[], win: BrowserWindo
 }
 
 function createMenuItems(win: BrowserWindow, config?: MenuConfig): Array<MenuItemConstructorOptions | MenuItem> {
-  console.debug("CREATING MENU");
   if (!config) {
     return [];
   }
