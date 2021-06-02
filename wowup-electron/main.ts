@@ -7,7 +7,7 @@ import { join } from "path";
 import { format as urlFormat } from "url";
 import { inspect } from "util";
 
-import { createAppMenu, onMenuZoomIn, onMenuZoomOut, onMenuZoomReset } from "./app-menu";
+import { createAppMenu } from "./app-menu";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
