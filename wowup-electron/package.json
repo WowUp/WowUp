@@ -155,5 +155,8 @@
     "uuid": "8.3.2",
     "win-ca": "3.4.5",
     "yauzl": "2.10.0"
-  }
+  },
+  "browserslist": [
+    "chrome 83"
+  ]
 }
