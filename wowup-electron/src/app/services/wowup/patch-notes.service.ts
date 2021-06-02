@@ -16,6 +16,24 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.3.4",
+    html: `<div>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Fix the numpad zoom in/out shortcuts</li>
+      </ul>
+      </div>`,
+  },
+  {
+    Version: "2.3.3",
+    html: `<div>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Undo the CurseForge tweak, caused too many issues</li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.3.2",
     html: `<div>
       <h4 style="margin-top: 1em;">New Features</h4>

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, BrowserWindowConstructorOptions, globalShortcut, powerMonitor } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions, powerMonitor } from "electron";
 import * as log from "electron-log";
 import { find } from "lodash";
 import * as minimist from "minimist";
@@ -7,7 +7,7 @@ import { join } from "path";
 import { format as urlFormat } from "url";
 import { inspect } from "util";
 
-import { createAppMenu, onMenuZoomIn, onMenuZoomOut, onMenuZoomReset } from "./app-menu";
+import { createAppMenu } from "./app-menu";
 import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
@@ -268,18 +268,6 @@ function createWindow(): BrowserWindow {
   initializeAppUpdater(win);
   initializeAppUpdateIpcHandlers(win);
 
-  globalShortcut.register("CommandOrControl+numadd", () => {
-    onMenuZoomIn(win);
-  });
-
-  globalShortcut.register("CommandOrControl+numsub", () => {
-    onMenuZoomOut(win);
-  });
-
-  globalShortcut.register("CommandOrControl+num0", () => {
-    onMenuZoomReset(win);
-  });
-
   // Keep track of window state
   mainWindowManager.monitorState(win);
 
@@ -354,7 +342,6 @@ function createWindow(): BrowserWindow {
 
   win.once("closed", () => {
     win = null;
-    globalShortcut.unregisterAll();
   });
 
   win.on("maximize", () => {
