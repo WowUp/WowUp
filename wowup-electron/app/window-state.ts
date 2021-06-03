@@ -1,7 +1,7 @@
 import { BrowserWindow, Rectangle, screen } from "electron";
 import * as log from "electron-log";
-import { MIN_VISIBLE_ON_SCREEN } from "./src/common/constants";
-import { WindowState } from "./src/common/models/window-state";
+import { MIN_VISIBLE_ON_SCREEN } from "../src/common/constants";
+import { WindowState } from "../src/common/models/window-state";
 import { preferenceStore } from "./stores";
 
 interface WuWindowState extends WindowState {

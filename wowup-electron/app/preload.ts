@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="./src/common/wowup.d.ts" />
+/// <reference path="../src/common/wowup.d.ts" />
 
 import {
   remote,

@@ -4,7 +4,7 @@ import * as fs from "fs-extra";
 import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
-import { readDirRecursive } from "../../../file.utils";
+import { readDirRecursive } from "../../../app/file.utils";
 import { WowUpScanResult } from "./models";
 
 const INVALID_PATH_CHARS = [

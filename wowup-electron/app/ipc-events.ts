@@ -39,7 +39,6 @@ import {
   IPC_READ_FILE_BUFFER_CHANNEL,
   IPC_READ_FILE_CHANNEL,
   IPC_READDIR,
-  APP_PROTOCOL_NAME,
   IPC_RESTART_APP,
   IPC_SET_LOGIN_ITEM_SETTINGS,
   IPC_SET_ZOOM_FACTOR,
@@ -54,19 +53,19 @@ import {
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
-} from "./src/common/constants";
-import { CurseFolderScanner } from "./src/common/curse/curse-folder-scanner";
-import { CurseFolderScanResult } from "./src/common/curse/curse-folder-scan-result";
-import { CopyFileRequest } from "./src/common/models/copy-file-request";
-import { DownloadRequest } from "./src/common/models/download-request";
-import { DownloadStatus } from "./src/common/models/download-status";
-import { DownloadStatusType } from "./src/common/models/download-status-type";
-import { FsDirent, FsStats } from "./src/common/models/ipc-events";
-import { UnzipRequest } from "./src/common/models/unzip-request";
-import { RendererChannels } from "./src/common/wowup";
-import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "./src/common/wowup/models";
-import { WowUpFolderScanner } from "./src/common/wowup/wowup-folder-scanner";
-import { Addon } from "./src/common/entities/addon";
+} from "../src/common/constants";
+import { CurseFolderScanner } from "../src/common/curse/curse-folder-scanner";
+import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
+import { CopyFileRequest } from "../src/common/models/copy-file-request";
+import { DownloadRequest } from "../src/common/models/download-request";
+import { DownloadStatus } from "../src/common/models/download-status";
+import { DownloadStatusType } from "../src/common/models/download-status-type";
+import { FsDirent, FsStats } from "../src/common/models/ipc-events";
+import { UnzipRequest } from "../src/common/models/unzip-request";
+import { RendererChannels } from "../src/common/wowup";
+import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
+import { WowUpFolderScanner } from "../src/common/wowup/wowup-folder-scanner";
+import { Addon } from "../src/common/entities/addon";
 import { createTray, restoreWindow } from "./system-tray";
 import { addonStore } from "./stores";
 import { Transform } from "stream";
@@ -422,7 +421,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       const savePath = path.join(arg.outputFolder, arg.fileName);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
-      const { data, headers } = await axios({
+      const { data } = await axios({
         url: arg.url,
         method: "GET",
         responseType: "stream",
@@ -472,7 +471,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
     });
 
     zipfile.on("error", (error: Error) => {
-      reject(err);
+      reject(error);
     });
 
     zipfile.readEntry();

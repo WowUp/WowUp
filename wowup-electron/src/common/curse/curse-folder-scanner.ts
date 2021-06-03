@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import * as log from "electron-log";
 import * as pLimit from "p-limit";
 import { CurseFolderScanResult } from "./curse-folder-scan-result";
-import { readDirRecursive } from "../../../file.utils";
+import { readDirRecursive } from "../../../app/file.utils";
 
 const nativeAddon = require("../../../build/Release/addon.node");
 

@@ -116,7 +116,7 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "eslintConfig": ".eslintrc.json",
-            "lintFilePatterns": ["src/**.ts", "main.ts"]
+            "lintFilePatterns": ["src/**/*.ts", "app/**.ts"]
           }
         }
       }

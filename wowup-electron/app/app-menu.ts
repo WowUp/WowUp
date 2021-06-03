@@ -4,8 +4,8 @@ import {
   IPC_MENU_ZOOM_IN_CHANNEL,
   IPC_MENU_ZOOM_OUT_CHANNEL,
   IPC_MENU_ZOOM_RESET_CHANNEL,
-} from "./src/common/constants";
-import { MenuConfig } from "./src/common/wowup/models";
+} from "../src/common/constants";
+import { MenuConfig } from "../src/common/wowup/models";
 
 export function onMenuZoomIn(win: BrowserWindow): void {
   win?.webContents.send(IPC_MENU_ZOOM_IN_CHANNEL);

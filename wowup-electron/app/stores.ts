@@ -1,11 +1,11 @@
-import { BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
+import { ipcMain, IpcMainInvokeEvent } from "electron";
 import * as Store from "electron-store";
 import {
   ADDON_STORE_NAME,
   IPC_STORE_GET_OBJECT,
   IPC_STORE_SET_OBJECT,
   PREFERENCE_STORE_NAME,
-} from "./src/common/constants";
+} from "../src/common/constants";
 
 // https://github.com/sindresorhus/electron-store#initrenderer
 Store.initRenderer();
@@ -18,7 +18,7 @@ const stores: { [storeName: string]: Store } = {
   [PREFERENCE_STORE_NAME]: preferenceStore,
 };
 
-export function initializeStoreIpcHandlers(window: BrowserWindow): void {
+export function initializeStoreIpcHandlers(): void {
   // Return the store value for a specific key
   ipcMain.handle(IPC_STORE_GET_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string): any => {
     const store = stores[storeName];

@@ -33,9 +33,9 @@ import {
   WINDOW_MIN_HEIGHT,
   WINDOW_MIN_WIDTH,
   WOWUP_LOGO_FILENAME,
-} from "./src/common/constants";
-import { MainChannels } from "./src/common/wowup";
-import { AppOptions } from "./src/common/wowup/models";
+} from "../src/common/constants";
+import { MainChannels } from "../src/common/wowup";
+import { AppOptions } from "../src/common/wowup/models";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
 import { windowStateManager } from "./window-state";
 
@@ -264,7 +264,7 @@ function createWindow(): BrowserWindow {
   win = new BrowserWindow(windowOptions);
 
   initializeIpcHandlers(win, USER_AGENT);
-  initializeStoreIpcHandlers(win);
+  initializeStoreIpcHandlers();
   initializeAppUpdater(win);
   initializeAppUpdateIpcHandlers(win);
 
@@ -320,6 +320,7 @@ function createWindow(): BrowserWindow {
   });
 
   win.once("show", () => {
+    win.webContents.openDevTools();
     if (mainWindowManager.isFullScreen) {
       win.setFullScreen(true);
     } else if (mainWindowManager.isMaximized) {
@@ -372,7 +373,7 @@ function createWindow(): BrowserWindow {
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
   if (argv.serve) {
     require("electron-reload")(__dirname, {
-      electron: require(`${__dirname}/node_modules/electron`),
+      electron: require(join(__dirname, "..", "node_modules", "electron")),
     });
     win.loadURL("http://localhost:4200").catch((e) => log.error(e));
   } else {

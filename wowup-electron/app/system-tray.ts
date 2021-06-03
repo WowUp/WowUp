@@ -1,10 +1,10 @@
-import { app, BrowserWindow, Menu, nativeImage, Tray } from "electron";
+import { app, BrowserWindow, Menu, Tray } from "electron";
 import * as log from "electron-log";
 import * as path from "path";
 
 import * as platform from "./platform";
-import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "./src/common/constants";
-import { SystemTrayConfig } from "./src/common/wowup/models";
+import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
+import { SystemTrayConfig } from "../src/common/wowup/models";
 
 let _trayRef: Tray;
 
@@ -14,7 +14,6 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   console.log("Creating tray");
   const trayIconFile = platform.isMac ? WOWUP_LOGO_MAC_SYSTEM_TRAY : WOWUP_LOGO_FILENAME;
   const trayIconPath = path.join(__dirname, "assets", trayIconFile);
-  const icon = nativeImage.createFromPath(trayIconPath).resize({ width: 16 });
 
   _trayRef = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([

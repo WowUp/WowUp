@@ -11,7 +11,7 @@ import {
   APP_UPDATE_INSTALL,
   APP_UPDATE_NOT_AVAILABLE,
   APP_UPDATE_START_DOWNLOAD,
-} from "./src/common/constants";
+} from "../src/common/constants";
 
 export const checkForUpdates = async (win: BrowserWindow): Promise<UpdateCheckResult> => {
   let result = null;
