@@ -37,6 +37,9 @@
 
     .link-container {
       margin-top: 1em;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
     }
 
     .patron-img {
