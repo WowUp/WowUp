@@ -46,6 +46,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumKeys } from "../../utils/enum.utils";
 import { camelToSnakeCase } from "../../utils/string.utils";
+import { PackParser } from "../../services/pack-parser";
 
 interface CategoryItem {
   category: AddonCategory;
@@ -182,11 +183,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     private _wowUpService: WowUpService,
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
+    private _packParser: PackParser,
     public electronService: ElectronService,
     public warcraftService: WarcraftService,
     public warcraftInstallationService: WarcraftInstallationService,
     public relativeDurationPipe: RelativeDurationPipe,
-    public downloadCountPipe: DownloadCountPipe
+    public downloadCountPipe: DownloadCountPipe,
   ) {
     this.overlayNoRowsTemplate = `<span class="text-1 mat-h1">${
       _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
@@ -448,6 +450,25 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(() => {
       console.log("The dialog was closed");
     });
+  }
+
+  public onTest(): void {
+    const test = `
+    # test comment
+ID linaoris-addon-pack
+
+NAME Linaori's Addon Pack
+
+  CLIENT mainline mainline-ptr
+
+ADDON tukui -2
+
+ADDON https://www.curseforge.com/wow/addons/elvui-windtools
+
+ADDON https://www.some-domain.com/hidden/my-streamer-addon.zip
+    `;
+
+    console.log(this._packParser.parse(test));
   }
 
   public onClientChange(): void {

@@ -50,6 +50,10 @@
           [disabled]="(isBusy$ | async) === true" (click)="drawer.toggle()">
           {{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_BUTTON' | translate }}
         </button>
+        <button mat-flat-button color="primary" [matTooltip]="'TEST' | translate"
+          [disabled]="(isBusy$ | async) === true" (click)="onTest()">
+          {{ 'TEST' | translate }}
+        </button>
       </div>
     </div>
   </div>
