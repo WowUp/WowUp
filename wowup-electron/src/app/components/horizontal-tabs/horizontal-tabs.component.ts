@@ -1,14 +1,14 @@
 import { Component, OnInit } from "@angular/core";
-import { SessionService } from "app/services/session/session.service";
+import { SessionService } from "../../services/session/session.service";
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Component({
-  selector: "app-vertical-tabs",
-  templateUrl: "./vertical-tabs.component.html",
-  styleUrls: ["./vertical-tabs.component.scss"],
+  selector: "app-horizontal-tabs",
+  templateUrl: "./horizontal-tabs.component.html",
+  styleUrls: ["./horizontal-tabs.component.scss"],
 })
-export class VerticalTabsComponent implements OnInit {
+export class HorizontalTabsComponent implements OnInit {
   public constructor(public sessionService: SessionService) {}
 
   public tabsTop = [
