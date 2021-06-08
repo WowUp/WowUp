@@ -3,7 +3,10 @@
   windows: electronService.isWin,
   linux: electronService.isLinux
 }">
-  <div class="news-list text-1">
+  <div *ngIf="isBusy" class="busy-container" >
+    <app-progress-spinner></app-progress-spinner>
+  </div>
+  <div [hidden]="isBusy" class="news-list text-1">
     <div *ngFor="let news of newsService.newsItems$ | async" class="news-item  mat-elevation-z8"
       (click)="onClickItem(news)">
       <div class="thumbnail" [style.backgroundImage]="'url(' + news.thumbnail + ')'"></div>
@@ -13,5 +16,11 @@
         <p class="description" [innerHtml]="news.description"></p>
       </div>
     </div>
+  </div>
+  <div class="fab-container">
+    <button mat-fab class="mat-elevation-z8" color="primary" [disabled]="isBusy"
+      [matTooltip]="'PAGES.NEWS.REFRESH_TOOLTIP' | translate" (click)="onClickRefresh()">
+      <mat-icon svgIcon="fas:sync-alt"></mat-icon>
+    </button>
   </div>
 </div>

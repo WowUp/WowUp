@@ -290,6 +290,10 @@
         "STATUS_COLUMN_HEADER": "Status"
       }
     },
+    "NEWS": {
+      "REFRESH_TOOLTIP": "Refresh news feed",
+      "PAGE_CONTEXT_FOOTER": "{count} news stories"
+    },
     "HOME": {
       "ABOUT_TAB_TITLE": "About",
       "GET_ADDONS_TAB_TITLE": "Get Addons",

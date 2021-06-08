@@ -17,6 +17,10 @@ import {
   ADDON_PROVIDER_WOWINTERFACE,
   ADDON_PROVIDER_ZIP,
   ERROR_ADDON_ALREADY_INSTALLED,
+  USER_ACTION_ADDON_INSTALL,
+  USER_ACTION_ADDON_PROTOCOL_SEARCH,
+  USER_ACTION_ADDON_SEARCH,
+  USER_ACTION_BROWSE_CATEGORY,
 } from "../../../common/constants";
 import { Addon, AddonExternalId } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
@@ -237,7 +241,7 @@ export class AddonService {
   public async getCategoryPage(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
     const providers = this.getEnabledAddonProviders();
 
-    this._analyticsService.trackAction("browse-category", {
+    this._analyticsService.trackAction(USER_ACTION_BROWSE_CATEGORY, {
       clientType: getEnumName(WowClientType, installation.clientType),
       category: getEnumName(AddonCategory, category),
     });
@@ -355,7 +359,7 @@ export class AddonService {
 
     const searchResults = await Promise.all(searchTasks);
 
-    this._analyticsService.trackAction("addon-search", {
+    this._analyticsService.trackAction(USER_ACTION_ADDON_SEARCH, {
       clientType: getEnumName(WowClientType, installation.clientType),
       query,
     });
@@ -994,7 +998,7 @@ export class AddonService {
       throw new Error(`No addon provider found for protocol ${protocol}`);
     }
 
-    this._analyticsService.trackAction("addon-protocol-search", {
+    this._analyticsService.trackAction(USER_ACTION_ADDON_PROTOCOL_SEARCH, {
       protocol,
     });
 
@@ -1715,7 +1719,7 @@ export class AddonService {
   }
 
   private trackInstallAction(installType: InstallType, addon: Addon) {
-    this._analyticsService.trackAction(`addon-install-action`, {
+    this._analyticsService.trackAction(USER_ACTION_ADDON_INSTALL, {
       clientType: getEnumName(WowClientType, addon.clientType),
       provider: addon.providerName,
       addon: addon.name,

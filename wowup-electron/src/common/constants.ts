@@ -155,3 +155,9 @@ export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_BETA_FOLDER = "_beta_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
+
+export const USER_ACTION_BROWSE_CATEGORY = "browse-category";
+export const USER_ACTION_OPEN_LINK = "open-link";
+export const USER_ACTION_ADDON_SEARCH = "addon-search";
+export const USER_ACTION_ADDON_PROTOCOL_SEARCH = "addon-protocol-search";
+export const USER_ACTION_ADDON_INSTALL = "addon-install-action";

@@ -1,5 +1,6 @@
 import { Directive, HostListener } from "@angular/core";
 import { ElectronService } from "../services";
+import { WowUpService } from "../services/wowup/wowup.service";
 
 @Directive({
   selector: "[appExternalLink]",
@@ -11,8 +12,8 @@ export class ExternalLinkDirective {
 
     const target = $event.path.find((t) => t.tagName === "A");
 
-    await this._electronService.openExternal(target.href);
+    await this._wowupService.openExternalLink(target.href);
   }
 
-  public constructor(private _electronService: ElectronService) {}
+  public constructor(private _wowupService: WowUpService) {}
 }

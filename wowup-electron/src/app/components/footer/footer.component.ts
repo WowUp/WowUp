@@ -33,7 +33,8 @@ export class FooterComponent implements OnInit {
     public wowUpService: WowUpService,
     public sessionService: SessionService,
     private _snackBarService: SnackbarService,
-    private _electronService: ElectronService
+    private _electronService: ElectronService,
+    private _wowupService: WowUpService
   ) {}
 
   public ngOnInit(): void {
@@ -110,7 +111,7 @@ export class FooterComponent implements OnInit {
           }
 
           return from(
-            this._electronService.openExternal(
+            this._wowupService.openExternalLink(
               `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
             )
           );

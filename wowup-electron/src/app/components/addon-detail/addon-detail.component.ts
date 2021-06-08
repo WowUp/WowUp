@@ -31,6 +31,7 @@ import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { WowUpService } from "../../services/wowup/wowup.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -90,7 +91,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _cdRef: ChangeDetectorRef,
-    private _electronService: ElectronService,
+    private _wowupService: WowUpService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
     private _sessionService: SessionService
@@ -358,7 +359,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
           return;
         }
 
-        this._electronService.openExternal(href).catch((e) => console.error(e));
+        this._wowupService.openExternalLink(href).catch((e) => console.error(e));
       });
   }
 

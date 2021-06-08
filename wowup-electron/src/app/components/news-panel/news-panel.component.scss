@@ -1,6 +1,22 @@
+.busy-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
 .news-container {
   display: flex;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+
+  .fab-container {
+    position: absolute;
+    left: 1em;
+    top: 1em;
+  }
 
   .news-list {
     overflow: auto;
@@ -8,6 +24,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-left: 1em;
+    padding-right: 1em;
   }
 
   .news-item {
