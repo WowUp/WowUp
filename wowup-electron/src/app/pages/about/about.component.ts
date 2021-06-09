@@ -17,7 +17,7 @@ import { PatchNotesService } from "../../services/wowup/patch-notes.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AboutComponent implements OnDestroy {
-  @Input("tabIndex") public tabIndex: number;
+  @Input("tabIndex") public tabIndex: number = 0;
 
   private _subscriptions: Subscription[] = [];
 
@@ -36,7 +36,7 @@ export class AboutComponent implements OnDestroy {
       .pipe(
         filter((newTabIndex) => newTabIndex === this.tabIndex),
         map(() => {
-          window.getSelection().empty();
+          window.getSelection()?.empty();
         })
       )
       .subscribe();
@@ -50,7 +50,7 @@ export class AboutComponent implements OnDestroy {
   }
 
   public formatChanges(changeLog: ChangeLog): string {
-    return changeLog.changes.join("\n");
+    return (changeLog.changes ?? []).join("\n");
   }
 
   public trustHtml(html: string): SafeHtml {

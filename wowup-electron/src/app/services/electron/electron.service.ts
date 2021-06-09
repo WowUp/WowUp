@@ -59,7 +59,7 @@ export class ElectronService {
   private readonly _customProtocolSrc = new BehaviorSubject("");
 
   private _appVersion = "";
-  private _opts: AppOptions;
+  private _opts!: AppOptions;
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();

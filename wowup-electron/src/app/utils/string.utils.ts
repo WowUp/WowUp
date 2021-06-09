@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 
-export function stringIncludes(value: string, search: string) {
-  if (value == null) {
+export function stringIncludes(value: string | undefined, search: string): boolean {
+  if (!value) {
     return false;
   }
   return value.trim().toLowerCase().indexOf(search.trim().toLowerCase()) >= 0;

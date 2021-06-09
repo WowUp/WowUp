@@ -5,12 +5,14 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 
 export function getLatestFile(
-  searchResult: AddonSearchResult,
+  searchResult: AddonSearchResult | undefined,
   channel: AddonChannelType
 ): AddonSearchResultFile | undefined {
-  if (!searchResult.files) {
+  if (!searchResult?.files) {
     console.warn(
-      `Search result had no files: [${searchResult.providerName}:${searchResult.externalId}] ${searchResult.name}`
+      `Search result had no files: [${searchResult?.providerName ?? ""}:${searchResult?.externalId ?? ""}] ${
+        searchResult?.name ?? ""
+      }`
     );
     return undefined;
   }

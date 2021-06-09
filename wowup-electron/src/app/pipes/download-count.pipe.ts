@@ -10,6 +10,10 @@ export class DownloadCountPipe implements PipeTransform {
 
   public transform(value: number, ...args: unknown[]): string {
     const numMatches = /(e\+\d+)/.exec(value.toExponential());
+    if (!numMatches) {
+      throw new Error("Failed to get matches");
+    }
+
     const suffix = numMatches[1];
 
     return suffix

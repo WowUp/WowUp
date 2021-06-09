@@ -62,8 +62,12 @@ export class WarcraftService {
 
   // Map the client types so that we can localize them
   public installedClientTypesSelectItems$ = this._installedClientTypesSrc.pipe(
-    filter((clientTypes) => !!clientTypes),
+    filter((clientTypes) => clientTypes !== undefined),
     map((clientTypes) => {
+      if (clientTypes === undefined) {
+        return [];
+      }
+
       return clientTypes.map((ct): SelectItem<WowClientType> => {
         const clientTypeName = getEnumName(WowClientType, ct).toUpperCase();
         return {
@@ -189,7 +193,7 @@ export class WarcraftService {
       };
     } catch (e) {
       console.error(e);
-      return null;
+      return undefined;
     }
   }
 

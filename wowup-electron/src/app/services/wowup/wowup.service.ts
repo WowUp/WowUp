@@ -258,7 +258,7 @@ export class WowUpService {
     return this._preferenceStorageService.getObject<AddonProviderState[]>(ADDON_PROVIDERS_KEY) || [];
   }
 
-  public getAddonProviderState(providerName: string): AddonProviderState {
+  public getAddonProviderState(providerName: string): AddonProviderState | undefined {
     const preference = this.getAddonProviderStates();
     return _.find(preference, (pref) => pref.providerName === providerName.toLowerCase());
   }
@@ -308,7 +308,7 @@ export class WowUpService {
   }
 
   public getMyAddonsSortOrder(): SortOrder[] {
-    return this._preferenceStorageService.getObject<SortOrder[]>(MY_ADDONS_SORT_ORDER);
+    return this._preferenceStorageService.getObject<SortOrder[]>(MY_ADDONS_SORT_ORDER) ?? [];
   }
 
   public setMyAddonsSortOrder(sortOrder: SortOrder[]): void {
@@ -323,11 +323,11 @@ export class WowUpService {
     this._preferenceStorageService.setObject(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
-  public get getAddonsSortOrder(): SortOrder {
+  public get getAddonsSortOrder(): SortOrder | undefined {
     return this._preferenceStorageService.getObject<SortOrder>(GET_ADDONS_SORT_ORDER);
   }
 
-  public set getAddonsSortOrder(sortOrder: SortOrder) {
+  public set getAddonsSortOrder(sortOrder: SortOrder | undefined) {
     this._preferenceStorageService.setObject(GET_ADDONS_SORT_ORDER, sortOrder);
   }
 

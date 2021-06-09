@@ -18,7 +18,7 @@ interface HeaderParams extends IHeaderParams {
   },
 })
 export class TableContextHeaderCellComponent implements IHeaderAngularComp {
-  public params: HeaderParams;
+  public params!: HeaderParams;
   public sorted$ = new BehaviorSubject<string>("");
 
   public constructor(private _ngZone: NgZone, private _sessionService: SessionService) {}

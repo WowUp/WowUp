@@ -97,30 +97,6 @@ export class NetworkService {
     return new CircuitBreakerWrapper(name, this._httpClient, resetTimeoutMs, httpTimeoutMs);
   }
 
-  public getCircuitBreaker2<TIN extends unknown[] = unknown[], TOUT = unknown>(
-    name: string,
-    action: (...args: any[]) => Promise<TOUT> = () => Promise.resolve(undefined),
-    resetTimeoutMs: number = AppConfig.defaultHttpResetTimeoutMs
-  ): CircuitBreaker<TIN, TOUT> {
-    const cb = new CircuitBreaker<TIN, TOUT>(action, {
-      resetTimeout: resetTimeoutMs,
-      errorFilter: (err) => {
-        // Don't trip the breaker on a 404
-        return err.status === 404;
-      },
-    });
-
-    cb.on("open", () => {
-      console.log(`${name} circuit breaker open`);
-    });
-
-    cb.on("close", () => {
-      console.log(`${name} circuit breaker close`);
-    });
-
-    return cb;
-  }
-
   public async getJson<T>(url: URL | string, timeoutMs?: number): Promise<T> {
     return await this._httpClient
       .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS } })

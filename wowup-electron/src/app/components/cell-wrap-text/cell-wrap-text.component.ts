@@ -8,7 +8,7 @@ import { ICellRendererParams, IAfterGuiAttachedParams } from "ag-grid-community"
   styleUrls: ["./cell-wrap-text.component.scss"],
 })
 export class CellWrapTextComponent implements AgRendererComponent {
-  public params: ICellRendererParams;
+  public params!: ICellRendererParams;
 
   public constructor() {}
 

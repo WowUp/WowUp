@@ -81,7 +81,7 @@ export class FooterComponent implements OnInit {
       return;
     }
 
-    let result: UpdateCheckResult = null;
+    let result: UpdateCheckResult | null = null;
     try {
       result = await this.wowUpService.checkForAppUpdate();
 
@@ -107,7 +107,7 @@ export class FooterComponent implements OnInit {
       .pipe(
         switchMap((result) => {
           if (!result) {
-            return;
+            return of(undefined);
           }
 
           return from(
@@ -149,7 +149,7 @@ export class FooterComponent implements OnInit {
         .pipe(
           switchMap((result) => {
             if (!result) {
-              return;
+              return of(undefined);
             }
             return from(this.wowUpService.installUpdate());
           }),

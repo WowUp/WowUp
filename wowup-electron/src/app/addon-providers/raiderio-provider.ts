@@ -33,7 +33,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
     console.debug("RAIDER IO CLIENT SCAN");
     const raiderIo = _.find(addonFolders, (addonFolder) => this.isRaiderIo(addonFolder));
     if (!raiderIo) {
-      return;
+      return Promise.resolve(undefined);
     }
 
     const dependencies = _.filter(addonFolders, (addonFolder) => this.isRaiderIoDependant(addonFolder));
@@ -50,7 +50,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
         clientType: installation.clientType,
         id: uuidv4(),
         isIgnored: true,
-        name: raiderIo.toc.title,
+        name: raiderIo.toc.title ?? "unknown",
         author: rioAddonFolder.toc.author,
         downloadUrl: "",
         externalId: this.name,
@@ -86,6 +86,8 @@ export class RaiderIoAddonProvider extends AddonProvider {
   }
 
   private isRaiderIoDependant(addonFolder: AddonFolder) {
-    return addonFolder.toc?.dependencies.indexOf(this._scanFolderName) !== -1;
+    return (
+      addonFolder.toc?.dependencies !== undefined && addonFolder.toc.dependencies.indexOf(this._scanFolderName) !== -1
+    );
   }
 }

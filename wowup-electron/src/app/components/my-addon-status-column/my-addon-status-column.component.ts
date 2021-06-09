@@ -23,7 +23,7 @@ import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDestroy {
   private _subscriptions: Subscription[] = [];
 
-  public listItem: AddonViewModel;
+  public listItem!: AddonViewModel;
   public warningType?: AddonWarningType;
   public hasWarning = false;
   public showStatusText = false;
@@ -42,8 +42,8 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
       .pipe(
         filter(
           (evt) =>
-            evt.addon.externalId === this.listItem.addon.externalId &&
-            evt.addon.providerName === this.listItem.addon.providerName
+            evt.addon.externalId === this.listItem.addon?.externalId &&
+            evt.addon.providerName === this.listItem.addon?.providerName
         )
       )
       .subscribe((evt) => {
@@ -54,7 +54,7 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
           if (evt.installState !== AddonInstallState.Complete) {
             this.showStatusText = false;
           } else {
-            this.showStatusText = !AddonUtils.needsUpdate(evt.addon) || this.listItem?.addon.isIgnored;
+            this.showStatusText = !AddonUtils.needsUpdate(evt.addon) || (this.listItem?.addon?.isIgnored ?? true);
           }
           this.statusText = this.getStatusText(evt.addon);
         });
@@ -68,9 +68,9 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
 
     this.warningType = this.listItem?.addon?.warningType;
     this.hasWarning = this.warningType !== undefined;
-    this.showStatusText = this.listItem?.isUpToDate() || this.listItem?.addon.isIgnored;
+    this.showStatusText = this.listItem?.isUpToDate() || (this.listItem?.addon?.isIgnored ?? true);
     this.statusText = this.getStatusText(this.listItem?.addon);
-    this.isIgnored = this.listItem.addon.isIgnored;
+    this.isIgnored = this.listItem.addon?.isIgnored ?? true;
   }
 
   public ngOnDestroy(): void {
@@ -83,7 +83,7 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
 
   public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
 
-  public getStatusText(addon: Addon, installState = AddonInstallState.Unknown): string {
+  public getStatusText(addon: Addon | undefined, installState = AddonInstallState.Unknown): string {
     if (!addon) {
       return "";
     }

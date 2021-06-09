@@ -8,7 +8,7 @@ import { IAfterGuiAttachedParams, ICellRendererParams } from "ag-grid-community"
   styleUrls: ["./date-tooltip-cell.component.scss"],
 })
 export class DateTooltipCellComponent implements AgRendererComponent {
-  public params: ICellRendererParams;
+  public params!: ICellRendererParams;
 
   public constructor() {}
 

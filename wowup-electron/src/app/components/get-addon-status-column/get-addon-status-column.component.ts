@@ -9,7 +9,7 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
   styleUrls: ["./get-addon-status-column.component.scss"],
 })
 export class GetAddonStatusColumnComponent implements AgRendererComponent {
-  @Input() public addonSearchResult: AddonSearchResult;
+  @Input() public addonSearchResult!: AddonSearchResult;
 
   @Output() public onInstallViewUpdated: EventEmitter<boolean> = new EventEmitter();
 

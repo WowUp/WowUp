@@ -21,7 +21,7 @@ interface MyAddonsAddonCellComponentParams extends ICellRendererParams {
   styleUrls: ["./my-addons-addon-cell.component.scss"],
 })
 export class MyAddonsAddonCellComponent implements AgRendererComponent {
-  @Input("addon") public listItem: AddonViewModel;
+  @Input("addon") public listItem!: AddonViewModel;
 
   public readonly capitalizeString = capitalizeString;
   public readonly unknownProviderName = ADDON_PROVIDER_UNKNOWN;
@@ -38,7 +38,8 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   }
 
   public get channelTranslationKey(): string {
-    return this.listItem.addon.channelType === AddonChannelType.Alpha
+    const channelType = this.listItem.addon?.channelType ?? AddonChannelType.Stable;
+    return channelType === AddonChannelType.Alpha
       ? "COMMON.ENUM.ADDON_CHANNEL_TYPE.ALPHA"
       : "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA";
   }
@@ -49,10 +50,11 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
     this.listItem = params.data;
     this.showUpdateToVersion = this.listItem.showUpdate;
 
-    this.warningType = this.listItem.addon.warningType;
+    this.warningType = this.listItem.addon?.warningType;
     this.warningText = this.getWarningText();
 
-    this.hasMultipleProviders = AddonUtils.hasMultipleProviders(this.listItem.addon);
+    this.hasMultipleProviders =
+      this.listItem.addon === undefined ? false : AddonUtils.hasMultipleProviders(this.listItem.addon);
   }
 
   public refresh(): boolean {
@@ -82,7 +84,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   }
 
   public getIgnoreTooltipKey(): string {
-    switch (this.listItem.addon.ignoreReason) {
+    switch (this.listItem.addon?.ignoreReason) {
       case "git_repo":
         return "PAGES.MY_ADDONS.ADDON_IS_CODE_REPOSITORY";
       case "missing_dependency":
@@ -93,7 +95,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   }
 
   public getIgnoreIcon(): string {
-    switch (this.listItem.addon.ignoreReason) {
+    switch (this.listItem.addon?.ignoreReason) {
       case "git_repo":
         return "fas:code";
       case "missing_dependency":

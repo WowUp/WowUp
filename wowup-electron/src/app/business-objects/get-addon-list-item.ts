@@ -33,8 +33,8 @@ export class GetAddonListItem {
     this.canonicalName = this.name.toLowerCase();
 
     const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
-    this.latestAddonChannel = latestFile.channelType;
+    this.latestAddonChannel = latestFile?.channelType ?? AddonChannelType.Stable;
 
-    this.releasedAt = new Date(latestFile?.releaseDate).getTime();
+    this.releasedAt = new Date(latestFile?.releaseDate ?? new Date()).getTime();
   }
 }

@@ -33,13 +33,13 @@ export class DownloadService {
 
         switch (arg.type) {
           case DownloadStatusType.Complete:
-            resolve(arg.savePath);
+            resolve(arg.savePath ?? "");
             break;
           case DownloadStatusType.Error:
             reject(arg.error);
             break;
           case DownloadStatusType.Progress:
-            onProgress?.call(null, arg.progress);
+            onProgress?.call(null, arg.progress ?? 0);
             break;
           default:
             break;

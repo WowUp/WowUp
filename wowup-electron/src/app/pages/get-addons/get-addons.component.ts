@@ -58,10 +58,10 @@ interface CategoryItem {
   styleUrls: ["./get-addons.component.scss"],
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
-  @Input("tabIndex") public tabIndex: number;
+  @Input("tabIndex") public tabIndex: number = 0;
 
-  @ViewChild("columnContextMenuTrigger") public columnContextMenu: MatMenuTrigger;
-  @ViewChild("drawer") public drawer: MatDrawer;
+  @ViewChild("columnContextMenuTrigger") public columnContextMenu!: MatMenuTrigger;
+  @ViewChild("drawer") public drawer!: MatDrawer;
 
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab = false;
@@ -69,7 +69,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _isBusySubject = new BehaviorSubject<boolean>(true);
   private _rowDataSrc = new BehaviorSubject<GetAddonListItem[]>([]);
   private _lastSelectionState: RowNode[] = [];
-  private _selectedAddonCategory: CategoryItem;
+  private _selectedAddonCategory: CategoryItem | undefined;
 
   public addonCategory = AddonCategory;
   public columnDefs: ColDef[] = [];
@@ -117,7 +117,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   public query = "";
   public selectedClient = WowClientType.None;
-  public selectedInstallation: WowInstallation = undefined;
+  public selectedInstallation: WowInstallation | undefined = undefined;
   public selectedInstallationId = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
   public wowInstallations$: Observable<WowInstallation[]>;
@@ -132,31 +132,38 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     })
   );
 
-  public gridApi: GridApi;
-  public gridColumnApi: ColumnApi;
+  public gridApi!: GridApi;
+  public gridColumnApi!: ColumnApi;
 
   public addonCategories: CategoryItem[] = [];
 
-  public get selectedAddonCategory(): CategoryItem {
+  public get selectedAddonCategory(): CategoryItem | undefined {
     return this._selectedAddonCategory;
   }
 
-  public set selectedAddonCategory(categoryItem: CategoryItem) {
+  public set selectedAddonCategory(categoryItem: CategoryItem | undefined) {
     this._selectedAddonCategory = categoryItem;
     this.drawer?.close().catch((e) => console.error(e));
+
+    if (!this.selectedInstallation || !categoryItem) {
+      return;
+    }
 
     if (categoryItem.category === AddonCategory.AllAddons) {
       this.loadPopularAddons(this.selectedInstallation);
       return;
     }
 
+    this._isBusySubject.next(true);
+
     of(true)
       .pipe(
         first(),
-        map(() => {
-          this._isBusySubject.next(true);
+        switchMap(() => {
+          return this.selectedInstallation
+            ? from(this._addonService.getCategoryPage(categoryItem.category, this.selectedInstallation))
+            : of([] as AddonSearchResult[]);
         }),
-        switchMap(() => from(this._addonService.getCategoryPage(categoryItem.category, this.selectedInstallation))),
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
@@ -322,6 +329,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState): void {
     const colState = this.columnStates.find((col) => col.name === column.name);
+    if (!colState) {
+      return;
+    }
+
     colState.visible = event.checked;
     this._wowUpService.setGetAddonsHiddenColumns([...this.columnStates]);
 
@@ -425,6 +436,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._lazyLoaded = true;
 
     const selectedInstallationSub = this._sessionService.selectedWowInstallation$.subscribe((installation) => {
+      if (!installation) {
+        return;
+      }
+
       this.selectedInstallation = installation;
       this.selectedInstallationId = installation.id;
       this.loadPopularAddons(this.selectedInstallation);
@@ -455,6 +470,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRefresh(): void {
+    if (!this.selectedInstallation) {
+      return;
+    }
+
     this.loadPopularAddons(this.selectedInstallation);
   }
 
@@ -464,6 +483,10 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onSearch(): void {
+    if (!this.selectedInstallation) {
+      return;
+    }
+
     this._isBusySubject.next(true);
     this.resetCategory(true);
 
@@ -534,16 +557,21 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private formatAddons(addons: AddonSearchResult[]): GetAddonListItem[] {
-    const addonList = addons
-      .map((addon) => {
-        try {
-          return new GetAddonListItem(addon, this.defaultAddonChannel);
-        } catch (e) {
-          console.error(e);
-          console.error(addon);
-        }
-      })
-      .filter((item) => item !== undefined);
+    const mapped = addons.map((addon) => {
+      try {
+        return new GetAddonListItem(addon, this.defaultAddonChannel);
+      } catch (e) {
+        console.error(e);
+        console.error(addon);
+      }
+    });
+
+    const addonList: GetAddonListItem[] = [];
+    for (const item of mapped) {
+      if (item) {
+        addonList.push(item);
+      }
+    }
 
     return this.sortAddons(addonList);
   }

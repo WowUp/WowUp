@@ -29,7 +29,7 @@ export class TitlebarComponent implements OnDestroy {
   public isMaximized = false;
 
   private _subscriptions: Subscription[] = [];
-  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent>;
+  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent> | undefined;
 
   public isFullscreen = false;
 

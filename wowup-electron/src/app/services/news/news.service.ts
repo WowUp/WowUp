@@ -47,14 +47,22 @@ class WowTavernFeed implements NewsFeed {
 
   private getNewsItem(item: Element): NewsItem {
     return {
-      id: item.getElementsByTagName("dc:identifier")[0].textContent,
-      title: item.getElementsByTagName("title")[0].textContent,
-      description: item.getElementsByTagName("description")[0].textContent,
-      link: item.getElementsByTagName("link")[0].textContent,
-      publishedAt: new Date(item.getElementsByTagName("pubDate")[0].textContent),
-      publishedBy: item.getElementsByTagName("dc:creator")[0].textContent,
-      thumbnail: item.getElementsByTagName("media:content")[0].getAttribute("url"),
+      id: this.getText(item, "dc:identifier"),
+      title: this.getText(item, "title"),
+      description: this.getText(item, "description"),
+      link: this.getText(item, "link"),
+      publishedAt: new Date(this.getText(item, "pubDate")),
+      publishedBy: this.getText(item, "dc:creator"),
+      thumbnail: this.getUrl(item, "media:content"),
     };
+  }
+
+  private getText(item: Element, name: string): string {
+    return item.getElementsByTagName(name)[0]?.textContent ?? "";
+  }
+
+  private getUrl(item: Element, name: string): string {
+    return item.getElementsByTagName(name)[0]?.getAttribute("url") ?? "";
   }
 }
 

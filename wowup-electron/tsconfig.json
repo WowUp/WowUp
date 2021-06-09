@@ -2,20 +2,23 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
-    "module": "commonjs",
+    "module": "es2020",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowJs": true,
+    "target": "es2017",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "downlevelIteration": true,
     "resolveJsonModule": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "target": "es2015",
+    "noImplicitAny": false,
     "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2017", "ES2016", "ES2015", "DOM", "ES2020.String", "ES2019.Array", "ESNext.String"]
+    "lib": ["ES2018", "DOM", "ES2020.String", "ES2019.Array", "ESNext.String"]
   },
   "include": ["src/**/*.d.ts"],
   "exclude": ["node_modules"]

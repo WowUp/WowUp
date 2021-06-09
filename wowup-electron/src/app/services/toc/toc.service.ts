@@ -116,21 +116,21 @@ export class TocService {
       case WowClientType.Beta:
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn));
+        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.ClassicEra:
-        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn));
+        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.Classic:
       case WowClientType.ClassicBeta:
       case WowClientType.ClassicPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn));
+        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
     }
 
-    return matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn));
+    return matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
   }
 
   private getWebsite(tocText: string) {
@@ -141,7 +141,7 @@ export class TocService {
     const dependencies = this.getValue(TOC_DEPENDENCIES, tocText);
     const requiredDeps = this.getValue(TOC_REQUIRED_DEPS, tocText);
 
-    const deps = [].concat(...dependencies.split(","), ...requiredDeps.split(",")).filter((dep) => !!dep);
+    const deps = [...dependencies.split(","), ...requiredDeps.split(",")].filter((dep) => !!dep);
 
     return deps;
   }

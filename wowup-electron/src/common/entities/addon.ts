@@ -14,7 +14,7 @@ export interface AddonFundingLink {
 }
 
 export interface Addon {
-  id: string;
+  id?: string;
   name: string;
   downloadUrl?: string;
   installedVersion?: string;

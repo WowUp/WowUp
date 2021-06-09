@@ -193,7 +193,7 @@ export class AddonService {
     return _.find(this._activeInstalls, (install) => install.addon.id === addonId) !== undefined;
   }
 
-  public getInstallStatus(addonId: string): AddonUpdateEvent {
+  public getInstallStatus(addonId: string): AddonUpdateEvent | undefined {
     return _.find(this._activeInstalls, (install) => install.addon.id === addonId);
   }
 
@@ -226,8 +226,8 @@ export class AddonService {
     }
   }
 
-  public canShowChangelog(providerName: string): boolean {
-    return this.getProvider(providerName)?.canShowChangelog ?? false;
+  public canShowChangelog(providerName: string | undefined): boolean {
+    return this.getProvider(providerName ?? "")?.canShowChangelog ?? false;
   }
 
   public canShowAddonChangelog(addon: Addon): boolean {
@@ -285,7 +285,11 @@ export class AddonService {
       }
 
       const latestFile = SearchResults.getLatestFile(searchResult, channelType);
-      return await provider.getChangelog(installation, searchResult.externalId, latestFile.externalId);
+      if (!latestFile) {
+        throw new Error("Latest file not found");
+      }
+
+      return await provider.getChangelog(installation, searchResult.externalId, latestFile.externalId ?? "");
     } catch (e) {
       console.error("Failed to get searchResult changelog", e);
       return "";
@@ -302,16 +306,16 @@ export class AddonService {
     }
 
     try {
-      const provider = this.getProvider(addon.providerName);
+      const provider = this.getProvider(addon.providerName ?? "");
       if (!provider) {
         return "";
       }
 
-      const changelog = await provider.getChangelog(installation, addon.externalId, addon.externalLatestReleaseId);
-
-      // addon.latestChangelogVersion = addon.latestVersion;
-      // addon.latestChangelog = changelog;
-      // this.saveAddon(addon);
+      const changelog = await provider.getChangelog(
+        installation,
+        addon.externalId ?? "",
+        addon.externalLatestReleaseId ?? ""
+      );
 
       return changelog;
     } catch (e) {
@@ -321,15 +325,34 @@ export class AddonService {
   }
 
   public isForceIgnore(addon: Addon): boolean {
-    return addon.providerName === ADDON_PROVIDER_UNKNOWN || this.getProvider(addon.providerName).forceIgnore;
+    if (!addon.providerName) {
+      return false;
+    }
+
+    return (
+      addon.providerName === ADDON_PROVIDER_UNKNOWN || (this.getProvider(addon.providerName)?.forceIgnore ?? false)
+    );
   }
 
   public canReinstall(addon: Addon): boolean {
-    return addon.providerName !== ADDON_PROVIDER_UNKNOWN && this.getProvider(addon.providerName).allowReinstall;
+    if (!addon.providerName) {
+      return false;
+    }
+
+    return (
+      addon.providerName !== ADDON_PROVIDER_UNKNOWN && (this.getProvider(addon.providerName)?.allowReinstall ?? false)
+    );
   }
 
   public canChangeChannel(addon: Addon): boolean {
-    return addon.providerName !== ADDON_PROVIDER_UNKNOWN && this.getProvider(addon.providerName).allowChannelChange;
+    if (!addon.providerName) {
+      return false;
+    }
+
+    return (
+      addon.providerName !== ADDON_PROVIDER_UNKNOWN &&
+      (this.getProvider(addon.providerName)?.allowChannelChange ?? false)
+    );
   }
 
   public getAddonProviderStates(): AddonProviderState[] {
@@ -342,7 +365,11 @@ export class AddonService {
     });
   }
 
-  public saveAddon(addon: Addon): void {
+  public saveAddon(addon: Addon | undefined): void {
+    if (!addon) {
+      throw new Error("Invalid addon");
+    }
+
     this._addonStorage.set(addon.id, addon);
   }
 
@@ -372,7 +399,7 @@ export class AddonService {
   public async installPotentialAddon(
     potentialAddon: AddonSearchResult,
     installation: WowInstallation,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
+    onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
     targetFile?: AddonSearchResultFile
   ): Promise<void> {
     const existingAddon = this._addonStorage.getByExternalId(
@@ -390,9 +417,11 @@ export class AddonService {
       installation,
       targetFile
     ).toPromise();
-    await this._addonStorage.setAsync(addon.id, addon);
 
-    await this.installAddon(addon.id, onUpdate);
+    if (addon?.id !== undefined) {
+      await this._addonStorage.setAsync(addon.id, addon);
+      await this.installAddon(addon.id, onUpdate);
+    }
   }
 
   public getRequiredDependencies(addon: Addon): AddonDependency[] {
@@ -401,10 +430,10 @@ export class AddonService {
 
   public async installDependencies(
     addon: Addon,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined
+    onUpdate: (installState: AddonInstallState, progress: number) => void = () => {}
   ): Promise<void> {
-    if (!addon.dependencies) {
-      console.log(`${addon.name}: No dependencies found`);
+    if (!addon.dependencies || !addon.providerName || !addon.installationId) {
+      console.warn(`Invalid addon: ${addon.id ?? ""}`);
       return;
     }
 
@@ -433,15 +462,21 @@ export class AddonService {
       }
 
       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+      if (!installation) {
+        throw new Error("Installation not found");
+      }
+
       const dependencyAddon = await this.getAddon(
         dependency.externalAddonId,
         addon.providerName,
         installation
       ).toPromise();
 
-      if (!dependencyAddon) {
+      if (!dependencyAddon || !dependencyAddon.id) {
         console.warn(
-          `No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName} CT: ${addon.clientType}`
+          `No addon was found EID: ${dependency.externalAddonId} CP: ${addon.providerName ?? ""} CT: ${
+            addon.clientType
+          }`
         );
         continue;
       }
@@ -455,18 +490,20 @@ export class AddonService {
   public async processAutoUpdates(): Promise<Addon[]> {
     const autoUpdateAddons = this.getAutoUpdateEnabledAddons().filter((addon) => !!addon.installationId);
     const installationIdGroups = _.groupBy(autoUpdateAddons, (addon) => addon.installationId);
-    const updatedAddons = [];
+    const updatedAddons: Addon[] = [];
 
     for (const installationId in installationIdGroups) {
       const installation = this._warcraftInstallationService.getWowInstallation(installationId);
       if (!installation) {
         console.warn("No installation found:", installationId);
+        continue;
       }
+
       try {
         const clientUpdates = await this.autoUpdateClient(installation, installationIdGroups[installationId]);
         updatedAddons.push(...clientUpdates);
       } catch (e) {
-        console.error(`Failed to auto update install: ${installation?.label}`, e);
+        console.error(`Failed to auto update install: ${installation?.label ?? ""}`, e);
       }
     }
 
@@ -479,7 +516,7 @@ export class AddonService {
     await this.syncAddons(installation, addons);
 
     for (const addon of addons) {
-      if (!this.canUpdateAddon(addon)) {
+      if (!this.canUpdateAddon(addon) || !addon.id) {
         continue;
       }
 
@@ -504,7 +541,7 @@ export class AddonService {
       return true;
     }
 
-    return addon.installedVersion && addon.installedVersion !== addon.latestVersion;
+    return !!addon.installedVersion && addon.installedVersion !== addon.latestVersion;
   }
 
   public getAutoUpdateEnabledAddons(): Addon[] {
@@ -515,25 +552,34 @@ export class AddonService {
 
   public updateAddon(
     addonId: string,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
-    originalAddon: Addon = undefined
+    onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
+    originalAddon: Addon | undefined = undefined
   ): Promise<void> {
+    if (!addonId) {
+      return Promise.resolve(undefined);
+    }
+
     return this.installOrUpdateAddon(addonId, "update", onUpdate, originalAddon);
   }
 
   public installAddon(
     addonId: string,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
-    originalAddon: Addon = undefined
+    onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
+    originalAddon: Addon | undefined = undefined
   ): Promise<void> {
+    if (!addonId) {
+      console.warn("installAddon invalid addon id");
+      return Promise.resolve(undefined);
+    }
+
     return this.installOrUpdateAddon(addonId, "install", onUpdate, originalAddon);
   }
 
   public async installOrUpdateAddon(
     addonId: string,
     installType: InstallType,
-    onUpdate: (installState: AddonInstallState, progress: number) => void = undefined,
-    originalAddon: Addon = undefined
+    onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
+    originalAddon: Addon | undefined = undefined
   ): Promise<void> {
     const addon = await this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
@@ -549,7 +595,7 @@ export class AddonService {
     this._addonInstalledSrc.next(updateEvent);
 
     // create a ref for resolving or rejecting once the queue grabs this.
-    let completion = { resolve: undefined, reject: undefined };
+    let completion = { resolve: () => {}, reject: () => {} };
     const promise = new Promise<void>((resolve, reject) => {
       completion = { resolve, reject };
     });
@@ -595,11 +641,19 @@ export class AddonService {
     this.logAddonAction(
       `Addon${capitalizeString(queueItem.installType)}`,
       addon,
-      `'${addon.installedVersion}' -> '${addon.latestVersion}'`
+      `'${addon.installedVersion ?? ""}' -> '${addon.latestVersion ?? ""}'`
     );
 
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
-    const addonProvider = this.getProvider(addon.providerName);
+    if (!installation) {
+      throw new Error(`Installation not found: ${addon.installationId ?? ""}`);
+    }
+
+    const addonProvider = this.getProvider(addon.providerName ?? "");
+    if (!addonProvider) {
+      throw new Error(`Addon provider not found: ${addon.providerName ?? ""}`);
+    }
+
     const downloadFileName = `${slug(addon.name)}.zip`;
 
     onUpdate?.call(this, AddonInstallState.Downloading, 25);
@@ -654,7 +708,7 @@ export class AddonService {
       const unzippedDirectoryNames = await this._fileService.listDirectories(unzippedDirectory);
       _.remove(unzippedDirectoryNames, (dirName) => _.includes(IGNORED_FOLDER_NAMES, dirName));
 
-      const existingDirectoryNames = addon.installedFolderList;
+      const existingDirectoryNames = addon.installedFolderList ?? [];
       const addedDirectoryNames = _.difference(unzippedDirectoryNames, existingDirectoryNames);
       const removedDirectoryNames = _.difference(existingDirectoryNames, unzippedDirectoryNames);
 
@@ -699,7 +753,11 @@ export class AddonService {
       await this.installDependencies(addon, onUpdate);
 
       await this.backfillAddon(addon);
-      this.reconcileExternalIds(addon, queueItem.originalAddon);
+
+      if (queueItem.originalAddon) {
+        this.reconcileExternalIds(addon, queueItem.originalAddon);
+      }
+
       await this.reconcileAddonFolders(addon);
 
       queueItem.completion.resolve();
@@ -711,7 +769,11 @@ export class AddonService {
         progress: 100,
       });
 
-      this.logAddonAction(`Addon${capitalizeString(queueItem.installType)}Complete`, addon, addon.installedVersion);
+      this.logAddonAction(
+        `Addon${capitalizeString(queueItem.installType)}Complete`,
+        addon,
+        addon.installedVersion ?? ""
+      );
     } catch (err) {
       console.error(err);
       queueItem.completion.reject(err);
@@ -775,26 +837,30 @@ export class AddonService {
   }
 
   private getBestGuessTitle(tocs: Toc[]) {
-    const titles = _.map(tocs, (toc) => toc.title).filter((title) => !!title);
-    return _.maxBy(titles, (title) => title.length);
+    const titles = tocs.map((toc) => toc.title).filter((title) => !!title);
+    return _.maxBy(titles, (title) => title?.length ?? 0) ?? "";
   }
 
   private getBestGuessAuthor(tocs: Toc[]) {
-    const authors = _.map(tocs, (toc) => toc.author).filter((author) => !!author);
-    return _.maxBy(authors, (author) => author.length);
+    const authors = tocs.map((toc) => toc.author).filter((author) => !!author);
+    return _.maxBy(authors, (author) => author?.length ?? 0);
   }
 
   private getLatestGameVersion(tocs: Toc[]) {
     const versions = _.map(tocs, (toc) => toc.interface);
-    return AddonUtils.getGameVersion(_.orderBy(versions, null, "desc")[0] || "");
+    return AddonUtils.getGameVersion(_.orderBy(versions, [], "desc")[0] || "");
   }
 
-  private async backupOriginalDirectories(addon: Addon) {
+  private async backupOriginalDirectories(addon: Addon): Promise<string[]> {
     const installedFolders = addon.installedFolderList ?? [];
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (!installation) {
+      return [];
+    }
+
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
-    const backupFolders = [];
+    const backupFolders: string[] = [];
     for (const addonFolder of installedFolders) {
       const currentAddonLocation = path.join(addonFolderPath, addonFolder);
       const addonFolderBackupLocation = path.join(addonFolderPath, `${addonFolder}-bak`);
@@ -820,7 +886,7 @@ export class AddonService {
 
   private logAddonAction(action: string, addon: Addon, ...extras: string[]) {
     console.log(
-      `[${action}] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name} ${extras.join(" ")}`
+      `[${action}] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name} ${extras.join(" ")}`
     );
   }
 
@@ -886,6 +952,10 @@ export class AddonService {
   ): Observable<Addon | undefined> {
     const targetAddonChannel = installation.defaultAddonChannelType;
     const provider = this.getProvider(providerName);
+    if (!provider) {
+      throw new Error(`Provider not found: ${providerName}`);
+    }
+
     return provider.getById(externalId, installation).pipe(
       map((searchResult) => {
         if (!searchResult) {
@@ -893,6 +963,11 @@ export class AddonService {
         }
 
         const latestFile = SearchResults.getLatestFile(searchResult, targetAddonChannel);
+        if (!latestFile) {
+          console.warn(`Latest file not found`);
+          return undefined;
+        }
+
         const newAddon = this.createAddon(latestFile.folders[0], searchResult, targetFile ?? latestFile, installation);
         return newAddon;
       })
@@ -901,27 +976,46 @@ export class AddonService {
 
   public getInstallBasePath(addon: Addon): string {
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (!installation) {
+      throw new Error(`installation not found: ${addon.installationId ?? ""}`);
+    }
     return this._warcraftService.getAddonFolderPath(installation);
   }
 
   public getFullInstallPath(addon: Addon): string {
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (!installation) {
+      throw new Error(`installation not found: ${addon.installationId ?? ""}`);
+    }
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
-    return path.join(addonFolderPath, _.first(addon.installedFolderList));
+    return path.join(addonFolderPath, _.first(addon.installedFolderList) ?? "");
   }
 
-  public async removeAddon(addon: Addon, removeDependencies = false, removeDirectories = true): Promise<void> {
-    console.log(`[RemoveAddon] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name}`);
+  public async removeAddon(
+    addon: Addon | undefined,
+    removeDependencies = false,
+    removeDirectories = true
+  ): Promise<void> {
+    if (addon === undefined) {
+      throw new Error("Invalid addon");
+    }
+
+    console.log(`[RemoveAddon] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addon.name}`);
 
     if (removeDirectories) {
       const installedDirectories = addon.installedFolderList ?? [];
       const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+      if (!installation) {
+        console.warn("No installation found for remove", addon.installationId);
+        return;
+      }
+
       const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
       for (const directory of installedDirectories) {
         const addonDirectory = path.join(addonFolderPath, directory);
         console.log(
-          `[RemoveAddonDirectory] ${addon.providerName} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`
+          `[RemoveAddonDirectory] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`
         );
         await this._fileService.remove(addonDirectory);
       }
@@ -938,7 +1032,18 @@ export class AddonService {
   }
 
   private async removeDependencies(addon: Addon) {
-    for (const dependency of addon.dependencies) {
+    const dependencies = addon.dependencies ?? [];
+    for (const dependency of dependencies) {
+      if (!dependency.externalAddonId) {
+        console.warn("No external addon id for dependency", dependency);
+        continue;
+      }
+
+      if (!addon.providerName || !addon.installationId) {
+        console.warn("Invalid addon for dependency", addon);
+        continue;
+      }
+
       const dependencyAddon = this.getByExternalId(
         dependency.externalAddonId,
         addon.providerName,
@@ -992,7 +1097,7 @@ export class AddonService {
     return addons;
   }
 
-  public async getAddonForProtocol(protocol: string): Promise<ProtocolSearchResult> {
+  public async getAddonForProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
     const addonProvider = this.getAddonProviderForProtocol(protocol);
     if (!addonProvider) {
       throw new Error(`No addon provider found for protocol ${protocol}`);
@@ -1005,7 +1110,7 @@ export class AddonService {
     return await addonProvider.searchProtocol(protocol);
   }
 
-  private getAddonProviderForProtocol(protocol: string): AddonProvider {
+  private getAddonProviderForProtocol(protocol: string): AddonProvider | undefined {
     return _.find(this.getEnabledAddonProviders(), (provider) => provider.isValidProtocol(protocol));
   }
 
@@ -1060,7 +1165,8 @@ export class AddonService {
     _.forEach(newAddons, (newAddon) => {
       const existingAddon = _.find(
         existingAddons,
-        (ea) => ea.externalId.toString() === newAddon.externalId.toString() && ea.providerName == newAddon.providerName
+        (ea) =>
+          ea.externalId?.toString() === newAddon.externalId?.toString() && ea.providerName == newAddon.providerName
       );
 
       if (!existingAddon) {
@@ -1093,7 +1199,7 @@ export class AddonService {
     installation: WowInstallation
   ): Promise<void> {
     for (const result of getAllResult.searchResults) {
-      const addon = addons.find((addon) => addon.externalId.toString() === result?.externalId?.toString());
+      const addon = addons.find((addon) => addon.externalId?.toString() === result?.externalId?.toString());
       if (!addon) {
         continue;
       }
@@ -1108,7 +1214,7 @@ export class AddonService {
 
           this._syncErrorSrc.next(
             new AddonSyncError({
-              providerName: addon.providerName,
+              providerName: addon.providerName ?? "",
               installationName: installation.label,
               addonName: addon?.name,
             })
@@ -1149,8 +1255,10 @@ export class AddonService {
 
         if (latestFile.gameVersion) {
           addon.gameVersion = AddonUtils.getGameVersion(latestFile.gameVersion);
-        } else {
+        } else if (addon.gameVersion) {
           addon.gameVersion = AddonUtils.getGameVersion(addon.gameVersion);
+        } else {
+          console.warn("No game version found", addon);
         }
 
         addon.externalUrl = result.externalUrl;
@@ -1168,14 +1276,16 @@ export class AddonService {
   ) {
     for (const error of getAllResult.errors) {
       const addonId = (error as any).addonId;
-      let addon: Addon;
+      let addon: Addon | undefined = undefined;
       if (addonId) {
         addon = _.find(addons, (a) => a.externalId === addonId);
       }
 
-      if (error instanceof GenericProviderError) {
+      if (error instanceof GenericProviderError && addon !== undefined) {
         addon.warningType = error.warningType;
-        this._addonStorage.set(addon.id, addon);
+        if (addon.id) {
+          this._addonStorage.set(addon.id, addon);
+        }
       }
 
       this._syncErrorSrc.next(
@@ -1191,16 +1301,30 @@ export class AddonService {
 
   // Legacy TukUI/ElvUI ids were ints, correct them
   private setExternalIdString(addon: Addon) {
+    if (!addon.id) {
+      return;
+    }
     if (typeof addon.externalId === "string") {
       return;
     }
 
-    addon.externalId = `${addon.externalId as string}`;
+    const nonStrId: any = addon.externalId;
+    addon.externalId = nonStrId.toString();
     this._addonStorage.set(addon.id, addon);
   }
 
   private getExternalIdsForProvider(addonProvider: AddonProvider, addons: Addon[]): string[] {
-    return addons.filter((addon) => addon.providerName === addonProvider.name).map((addon) => addon.externalId);
+    const filtered = addons.filter((addon) => addon.providerName === addonProvider.name);
+
+    const externalIds: string[] = [];
+    for (const addon of filtered) {
+      if (!addon.externalId) {
+        continue;
+      }
+
+      externalIds.push(addon.externalId);
+    }
+    return externalIds;
   }
 
   private async removeGitFolders(addonFolders: AddonFolder[]) {
@@ -1234,7 +1358,7 @@ export class AddonService {
   }
 
   private needsMigration(addon: Addon) {
-    const provider = this.getProvider(addon.providerName);
+    const provider = this.getProvider(addon.providerName ?? "");
 
     const migrationNeeded =
       addon.providerName === ADDON_PROVIDER_HUB_LEGACY ||
@@ -1329,15 +1453,29 @@ export class AddonService {
       const matchedAddonFolders = addonFolders.filter((addonFolder) => !!addonFolder.matchingAddon);
       const matchedAddonFolderNames = matchedAddonFolders.map((mf) => mf.name);
 
-      matchedAddonFolders.forEach((maf) => this.setExternalIds(maf.matchingAddon, maf.toc));
+      matchedAddonFolders.forEach((maf) => {
+        if (maf.matchingAddon) {
+          this.setExternalIds(maf.matchingAddon, maf.toc);
+        }
+      });
+
       const matchedGroups = _.groupBy(
         matchedAddonFolders,
-        (addonFolder) => `${addonFolder.matchingAddon.providerName}${addonFolder.matchingAddon.externalId}`
+        (addonFolder) =>
+          `${addonFolder.matchingAddon?.providerName ?? ""}${addonFolder.matchingAddon?.externalId ?? ""}`
       );
 
-      const addonList = Object.values(matchedGroups).map(
-        (value) => _.orderBy(value, (v) => v.matchingAddon.externalIds.length).reverse()[0].matchingAddon
-      );
+      const addonList: Addon[] = [];
+      for (const value of Object.values(matchedGroups)) {
+        const ordered = _.orderBy(value, (v) => v.matchingAddon?.externalIds?.length ?? 0).reverse();
+        const first = ordered[0];
+        if (first.matchingAddon) {
+          addonList.push(first.matchingAddon);
+        }
+      }
+      // const addonList = Object.values(matchedGroups).map(
+      //   (value) => _.orderBy(value, (v) => v.matchingAddon?.externalIds?.length ?? 0).reverse()[0].matchingAddon
+      // );
 
       const unmatchedFolders = addonFolders.filter((af) => this.isAddonFolderUnmatched(matchedAddonFolderNames, af));
 
@@ -1348,6 +1486,10 @@ export class AddonService {
 
       //Clear the changelogs since they wont always be latest
       addonList.forEach((addon) => {
+        if (!addon) {
+          return;
+        }
+
         addon.latestChangelog = undefined;
         addon.latestChangelogVersion = undefined;
       });
@@ -1372,6 +1514,10 @@ export class AddonService {
 
     //If the addon does not include the current external id add it
     if (!this.containsOwnExternalId(addon, externalIds)) {
+      if (!addon.providerName || !addon.externalId) {
+        console.warn("addon provider name or external id missing", addon);
+        return;
+      }
       this.insertExternalId(externalIds, addon.providerName, addon.externalId);
     }
 
@@ -1379,7 +1525,16 @@ export class AddonService {
   }
 
   private async reconcileAddonFolders(addon: Addon) {
+    if (!addon.installationId) {
+      console.warn("addon installation id missing", addon);
+      return;
+    }
+
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (!installation) {
+      console.warn("addon installation not found", addon.installationId);
+      return;
+    }
 
     let existingAddons = await this.getAddons(installation);
     existingAddons = _.filter(
@@ -1430,7 +1585,7 @@ export class AddonService {
       return;
     }
 
-    if (this.getProvider(providerName).isValidAddonId(addonId)) {
+    if (this.getProvider(providerName)?.isValidAddonId(addonId) ?? false) {
       externalIds.push({
         id: addonId,
         providerName: providerName,
@@ -1441,11 +1596,15 @@ export class AddonService {
   }
 
   public async setProvider(
-    addon: Addon,
+    addon: Addon | undefined,
     externalId: string,
     providerName: string,
     installation: WowInstallation
   ): Promise<void> {
+    if (addon === undefined) {
+      throw new Error("Invalid addon");
+    }
+
     const provider = this.getProvider(providerName);
     if (!provider) {
       throw new Error(`Provider not found: ${providerName}`);
@@ -1461,8 +1620,12 @@ export class AddonService {
     }
 
     this.saveAddon(externalAddon);
-    await this.installAddon(externalAddon.id, undefined, addon);
 
+    if (!externalAddon.id) {
+      throw new Error(`External addon had no id`);
+    }
+
+    await this.installAddon(externalAddon.id, undefined, addon);
     await this.removeAddon(addon, false, false);
   }
 
@@ -1488,29 +1651,32 @@ export class AddonService {
     }
   }
 
-  public reconcileExternalIds(newAddon: Addon, oldAddon: Addon): void {
+  public reconcileExternalIds = (newAddon: Addon, oldAddon: Addon): void => {
     if (!newAddon || !oldAddon) {
       return;
     }
 
     // Ensure all previously existing external ids are brought along during the swap
     // some addons are not always the same between providers ;)
-    oldAddon.externalIds.forEach((oldExtId) => {
-      const match = newAddon.externalIds.find(
+    oldAddon.externalIds?.forEach((oldExtId) => {
+      const match = newAddon.externalIds?.find(
         (newExtId) => newExtId.id === oldExtId.id && newExtId.providerName === oldExtId.providerName
       );
       if (match) {
         return;
       }
       console.log(`Reconciling external id: ${oldExtId.providerName}|${oldExtId.id}`);
-      newAddon.externalIds.push({ ...oldExtId });
+      newAddon.externalIds?.push({ ...oldExtId });
     });
 
     // Remove external ids that are not valid that we may have saved previously
-    _.remove(newAddon.externalIds, (extId) => !this.getProvider(extId.providerName).isValidAddonId(extId.id));
+    _.remove(
+      newAddon.externalIds ?? [],
+      (extId) => !this.getProvider(extId.providerName)?.isValidAddonId(extId.id) ?? false
+    );
 
     this.saveAddon(newAddon);
-  }
+  };
 
   public getFeaturedAddons(installation: WowInstallation): Observable<AddonSearchResult[]> {
     return forkJoin(
@@ -1545,7 +1711,7 @@ export class AddonService {
     }
   }
 
-  private getProvider(providerName: string) {
+  private getProvider(providerName: string): AddonProvider | undefined {
     return this._addonProviders.find((provider) => provider.name === providerName);
   }
 
@@ -1580,6 +1746,10 @@ export class AddonService {
       const tocFiles = await Promise.all(_.map(tocPaths, (tocPath) => this._tocService.parse(tocPath)));
       const orderedTocFiles = _.orderBy(tocFiles, ["wowInterfaceId", "loadOnDemand"], ["desc", "asc"]);
       const primaryToc = _.first(orderedTocFiles);
+      if (!primaryToc) {
+        throw new Error("Could not find primary toc");
+      }
+
       this.setExternalIds(addon, primaryToc);
       this.saveAddon(addon);
     } catch (e) {
@@ -1589,12 +1759,21 @@ export class AddonService {
 
   public containsOwnExternalId(addon: Addon, array?: AddonExternalId[]): boolean {
     const arr = array || addon.externalIds;
-    const result = arr && !!arr.find((ext) => ext.id === addon.externalId && ext.providerName === addon.providerName);
+    const result =
+      Array.isArray(arr) && !!arr.find((ext) => ext.id === addon.externalId && ext.providerName === addon.providerName);
     return result;
   }
 
   public getTocPaths(addon: Addon): string[] {
+    if (!addon.installationId) {
+      return [];
+    }
+
     const installation = this._warcraftInstallationService.getWowInstallation(addon.installationId);
+    if (!installation) {
+      return [];
+    }
+
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
     return _.map(addon.installedFolderList, (installedFolder) =>
@@ -1602,32 +1781,18 @@ export class AddonService {
     );
   }
 
-  private getAddonProvider(addonUri: URL): AddonProvider {
+  private getAddonProvider(addonUri: URL): AddonProvider | undefined {
     return this.getEnabledAddonProviders().find((provider) => provider.isValidAddonUri(addonUri));
   }
-
-  // private getLatestFile(
-  //   searchResult: AddonSearchResult,
-  //   channelType: AddonChannelType
-  // ): AddonSearchResultFile | undefined {
-  //   if (!searchResult?.files) {
-  //     console.warn("Search result had no files", searchResult);
-  //     return undefined;
-  //   }
-
-  //   let files = _.filter(searchResult.files, (f: AddonSearchResultFile) => f.channelType <= channelType);
-  //   files = _.orderBy(files, ["releaseDate"]).reverse();
-  //   return _.first(files);
-  // }
 
   private createAddon(
     folderName: string,
     searchResult: AddonSearchResult,
-    latestFile: AddonSearchResultFile,
+    latestFile: AddonSearchResultFile | undefined,
     installation: WowInstallation
-  ): Addon {
-    if (latestFile == null) {
-      return null;
+  ): Addon | undefined {
+    if (!latestFile) {
+      return undefined;
     }
 
     const dependencies = _.map(latestFile.dependencies, this.createAddonDependency);
@@ -1679,7 +1844,7 @@ export class AddonService {
 
     return {
       id: uuidv4(),
-      name: this.hasValidTocTitle(addonFolder) ? addonFolder.toc.title : addonFolder.name,
+      name: this.hasValidTocTitle(addonFolder) ? addonFolder.toc.title ?? addonFolder.name : addonFolder.name,
       thumbnailUrl: "",
       latestVersion: addonFolder.toc?.version || "",
       installedVersion: addonFolder.toc?.version || "",

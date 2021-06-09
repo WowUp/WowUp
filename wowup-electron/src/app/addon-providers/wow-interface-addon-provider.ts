@@ -20,6 +20,8 @@ import { getGameVersion } from "../utils/addon.utils";
 import { convertBbcode } from "../utils/bbcode.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
+import { filter } from "lodash";
+import { strictFilter } from "../utils/array.utils";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -43,7 +45,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public async getDescription(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const addonDetails = await this.getAddonDetails(externalId);
-      return convertBbcode(addonDetails.description);
+      return convertBbcode(addonDetails?.description ?? "");
     } catch (error) {
       console.error(error);
       return "";
@@ -83,7 +85,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public async getChangelog(installation: WowInstallation, externalId: string): Promise<string> {
     try {
       const addon = await this.getAddonDetails(externalId);
-      return convertBbcode(addon.changeLog);
+      return convertBbcode(addon?.changeLog ?? "");
     } catch (error) {
       console.error(`Failed to get addon changelog`, error);
       return "";
@@ -101,10 +103,15 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       throw new Error(`Bad addon api response ${addonUri.toString()}`);
     }
 
-    return this.toAddonSearchResult(addon);
+    const searchResult = this.toAddonSearchResult(addon);
+    if (searchResult == null) {
+      throw new Error(`Failed to create search result  ${addonUri.toString()}`);
+    }
+
+    return searchResult;
   }
 
-  public getById(addonId: string): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
     return from(this.getAddonDetails(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );
@@ -112,11 +119,13 @@ export class WowInterfaceAddonProvider extends AddonProvider {
 
   public async getAllById(addonIds: string[]): Promise<AddonSearchResult[]> {
     const addonDetails = await this.getAllAddonDetails(addonIds);
-    return addonDetails.map((ad) => this.toAddonSearchResult(ad, ""));
+    const mapped = addonDetails.map((ad) => this.toAddonSearchResult(ad, ""));
+    const filtered = strictFilter(mapped);
+    return filtered;
   }
 
   public isValidAddonUri(addonUri: URL): boolean {
-    return addonUri.host && addonUri.host.endsWith("wowinterface.com");
+    return !!addonUri.host && addonUri.host.endsWith("wowinterface.com");
   }
 
   public isValidAddonId(addonId: string): boolean {
@@ -128,7 +137,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    const addonIds = addonFolders.filter((af) => !!af.toc.wowInterfaceId).map((af) => af.toc.wowInterfaceId);
+    const addonIds = addonFolders.filter((af) => !!af.toc.wowInterfaceId).map((af) => af.toc.wowInterfaceId ?? "");
     const addonDetails = await this.getAllAddonDetails(addonIds);
 
     for (const addonFolder of addonFolders) {
@@ -137,6 +146,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       }
 
       const details = addonDetails.find((ad) => ad.id.toString() === addonFolder.toc.wowInterfaceId);
+      if (!details) {
+        console.warn("Details not found");
+        continue;
+      }
+
       addonFolder.matchingAddon = this.toAddon(details, installation, addonChannelType, addonFolder);
     }
   }
@@ -158,7 +172,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     throw new Error(`Unhandled URL: ${addonUri.toString()}`);
   }
 
-  private getAddonDetails = async (addonId: string): Promise<AddonDetailsResponse> => {
+  private getAddonDetails = async (addonId: string): Promise<AddonDetailsResponse | undefined> => {
     const url = new URL(`${API_URL}/filedetails/${addonId}.json`);
 
     const responses = await this._cachingService.transaction(
@@ -186,8 +200,8 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return responses;
   };
 
-  private getThumbnailUrl(response: AddonDetailsResponse) {
-    return _.first(response.images)?.thumbUrl;
+  private getThumbnailUrl(response: AddonDetailsResponse): string {
+    return _.first(response.images)?.thumbUrl ?? "";
   }
 
   private getAddonUrl(response: AddonDetailsResponse) {
@@ -230,7 +244,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     };
   }
 
-  private toAddonSearchResult(response: AddonDetailsResponse, folderName?: string): AddonSearchResult {
+  private toAddonSearchResult(response: AddonDetailsResponse, folderName?: string): AddonSearchResult | undefined {
     try {
       const searchResultFile: AddonSearchResultFile = {
         channelType: AddonChannelType.Stable,

@@ -65,8 +65,13 @@ export class WarcraftInstallationService {
     return this._preferenceStorageService.getObject<WowInstallation[]>(WOW_INSTALLATIONS_KEY) || [];
   }
 
-  public getWowInstallation(installationId: string): WowInstallation {
-    return _.find(this._wowInstallationsSrc.value, (installation) => installation.id === installationId);
+  public getWowInstallation(installationId: string | undefined): WowInstallation | undefined {
+    if (!installationId) {
+      console.warn("getWowInstallation invalid installationId");
+      return undefined;
+    }
+
+    return this._wowInstallationsSrc.value.find((installation) => installation.id === installationId);
   }
 
   public getWowInstallationsByClientType(clientType: WowClientType): WowInstallation[] {
@@ -234,7 +239,7 @@ export class WarcraftInstallationService {
   private async migrateAllLegacyInstallations(blizzardAgentPath: string): Promise<string> {
     if (!blizzardAgentPath) {
       console.info(`Unable to migrate legacy installations, no agent path`);
-      return;
+      return "";
     }
 
     const legacyInstallations: WowInstallation[] = [];
@@ -254,7 +259,7 @@ export class WarcraftInstallationService {
     return blizzardAgentPath;
   }
 
-  private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation> {
+  private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation | undefined> {
     if ([WowClientType.None, WowClientType.ClassicBeta].includes(clientType)) {
       return undefined;
     }

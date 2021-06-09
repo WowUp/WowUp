@@ -73,7 +73,10 @@ export class WowUpAddonService {
     _addonService.addonInstalled$
       .pipe(filter((update) => update.installState === AddonInstallState.Complete))
       .subscribe((update) => {
-        const installation = this._warcraftInstallationService.getWowInstallation(update.addon.installationId);
+        const installation = this._warcraftInstallationService.getWowInstallation(update.addon.installationId ?? "");
+        if (!installation) {
+          return;
+        }
         this.updateForInstallation(installation).catch((e) => console.error(e));
       });
 
@@ -115,6 +118,10 @@ export class WowUpAddonService {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const addonFolder = await this._warcraftService.getAddonFolder(addonFolderPath, WOWUP_DATA_ADDON_FOLDER_NAME);
 
+    if (!addonFolder?.matchingAddon?.id) {
+      throw new Error("addonfolder did not have a matching addon");
+    }
+
     const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
 
@@ -141,9 +148,9 @@ export class WowUpAddonService {
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailable: availableUpdates,
         generatedAt: new Date().toString(),
-        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion),
-        wowUpAddonName: wowUpAddon.installedFolders,
-        wowUpAddonVersion: wowUpAddon.installedVersion,
+        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion ?? ""),
+        wowUpAddonName: wowUpAddon.installedFolders ?? "",
+        wowUpAddonVersion: wowUpAddon.installedVersion ?? "",
       };
 
       const dataAddonPath = path.join(
@@ -179,8 +186,8 @@ export class WowUpAddonService {
   private getAddonVersion = (addon: Addon): WowUpAddonVersion => {
     return {
       name: addon.name,
-      currentVersion: addon.installedVersion,
-      newVersion: addon.latestVersion,
+      currentVersion: addon.installedVersion ?? "",
+      newVersion: addon.latestVersion ?? "",
     };
   };
 

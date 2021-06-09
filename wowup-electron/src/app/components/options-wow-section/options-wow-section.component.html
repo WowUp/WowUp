@@ -15,7 +15,7 @@
         {{ "PAGES.OPTIONS.WOW.ADD_CLIENT_BUTTON" | translate }}
       </button>
     </div>
-    <h2 *ngIf="(wowInstallations$ | async).length === 0" class="pt-3">
+    <h2 *ngIf="((wowInstallations$ | async)?.length ?? 0) === 0" class="pt-3">
       No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client
       manually
     </h2>

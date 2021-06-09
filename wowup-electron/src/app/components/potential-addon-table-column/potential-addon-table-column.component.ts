@@ -24,9 +24,9 @@ export interface PotentialAddonViewDetailsEvent {
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
 export class PotentialAddonTableColumnComponent implements AgRendererComponent, OnChanges {
-  @Input("addon") public addon: GetAddonListItem;
-  @Input() public channel: AddonChannelType;
-  @Input() public clientType: WowClientType;
+  @Input("addon") public addon!: GetAddonListItem;
+  @Input() public channel!: AddonChannelType;
+  @Input() public clientType!: WowClientType;
 
   @Output() public onViewDetails: EventEmitter<PotentialAddonViewDetailsEvent> = new EventEmitter();
 

@@ -27,7 +27,7 @@ export class PatchNotesDialogComponent implements OnInit {
     private _electronService: ElectronService,
     private _patchNotesService: PatchNotesService
   ) {
-    this.changeLog = _.first(this._patchNotesService.changeLogs);
+    this.changeLog = _.first(this._patchNotesService.changeLogs) ?? { Version: "" };
   }
 
   public ngOnInit(): void {}

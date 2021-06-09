@@ -29,7 +29,7 @@ export interface AddonScanErrorConfig {
 }
 
 export class AddonScanError extends CustomError {
-  public readonly innerError: CustomError;
+  public readonly innerError: CustomError | undefined;
   public readonly providerName: string;
   public readonly addonName?: string;
 
@@ -51,7 +51,7 @@ export interface AddonSyncErrorConfig {
 }
 
 export class AddonSyncError extends CustomError {
-  public readonly innerError: CustomError;
+  public readonly innerError: CustomError | undefined;
   public readonly providerName: string;
   public readonly addonName?: string;
   public readonly installationName?: string;
@@ -69,7 +69,7 @@ export class AddonSyncError extends CustomError {
 export class GenericProviderError extends ErrorContainer {}
 
 export class SourceRemovedAddonError extends GenericProviderError {
-  public constructor(public addonId: string, innerError: Error) {
+  public constructor(public addonId: string, innerError?: Error) {
     super(innerError, "", AddonWarningType.MissingOnProvider);
   }
 }

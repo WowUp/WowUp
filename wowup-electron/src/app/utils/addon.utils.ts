@@ -14,13 +14,22 @@ export function hasMultipleProviders(addon: Addon): boolean {
   return getProviders(addon).length > 0;
 }
 
-export function getAddonDependencies(addon: Addon, dependencyType: AddonDependencyType = undefined): AddonDependency[] {
-  return dependencyType == undefined
-    ? addon.dependencies
-    : filter(addon.dependencies, (dep) => dep.type === dependencyType);
+export function getAddonDependencies(
+  addon: Addon,
+  dependencyType: AddonDependencyType | undefined = undefined
+): AddonDependency[] {
+  if (dependencyType === undefined) {
+    return addon.dependencies ?? [];
+  }
+
+  return filter(addon.dependencies, (dep) => dep.type === dependencyType);
 }
 
-export function needsUpdate(addon: Addon): boolean {
+export function needsUpdate(addon: Addon | undefined): boolean {
+  if (addon === undefined) {
+    return false;
+  }
+
   return (
     (addon.externalLatestReleaseId && addon.externalLatestReleaseId !== addon.installedExternalReleaseId) ||
     addon.installedVersion !== addon.latestVersion
@@ -31,7 +40,7 @@ export function needsInstall(addon: Addon): boolean {
   return !addon.installedVersion;
 }
 
-export function getGameVersion(gameVersion: string): string {
+export function getGameVersion(gameVersion: string | undefined): string {
   if (!gameVersion) {
     return "";
   }

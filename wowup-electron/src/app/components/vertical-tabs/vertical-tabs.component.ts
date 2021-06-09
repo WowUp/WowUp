@@ -39,6 +39,7 @@ export class VerticalTabsComponent implements OnInit {
     {
       tooltipKey: "PAGES.HOME.NEWS_TAB_TITLE",
       icon: "fas:newspaper",
+      badge: true,
       isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === 3)),
       onClick: () => {
         this.sessionService.selectedHomeTab = 3;

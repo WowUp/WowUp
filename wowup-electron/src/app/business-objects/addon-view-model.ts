@@ -7,7 +7,7 @@ import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
 
 export class AddonViewModel {
-  public addon: Addon;
+  public addon: Addon | undefined;
 
   public installState: AddonInstallState = AddonInstallState.Unknown;
   public isInstalling = false;
@@ -46,15 +46,15 @@ export class AddonViewModel {
     return this.addon?.author ?? "";
   }
 
-  public constructor(addon?: Addon) {
+  public constructor(addon: Addon | undefined) {
     this.addon = addon;
-    this.installedAt = addon.installedAt ? new Date(addon.installedAt).getTime() : 0;
-    this.releasedAt = addon.releasedAt ? new Date(addon.releasedAt).getTime() : 0;
+    this.installedAt = addon?.installedAt ? new Date(addon?.installedAt).getTime() : 0;
+    this.releasedAt = addon?.releasedAt ? new Date(addon?.releasedAt).getTime() : 0;
     this.stateTextTranslationKey = this.getStateTextTranslationKey();
-    this.isLoadOnDemand = addon.isLoadOnDemand;
-    this.hasThumbnail = !!addon.thumbnailUrl;
-    this.thumbnailLetter = this.addon.name?.charAt(0).toUpperCase() ?? "";
-    this.canonicalName = addon.name?.toLowerCase() ?? "";
+    this.isLoadOnDemand = addon?.isLoadOnDemand ?? false;
+    this.hasThumbnail = !!addon?.thumbnailUrl;
+    this.thumbnailLetter = addon?.name?.charAt(0).toUpperCase() ?? "";
+    this.canonicalName = addon?.name?.toLowerCase() ?? "";
   }
 
   public isUpToDate(): boolean {
@@ -62,19 +62,19 @@ export class AddonViewModel {
   }
 
   public isStableChannel(): boolean {
-    return this.addon.channelType === AddonChannelType.Stable;
+    return this.addon?.channelType === AddonChannelType.Stable;
   }
 
   public isBetaChannel(): boolean {
-    return this.addon.channelType === AddonChannelType.Beta;
+    return this.addon?.channelType === AddonChannelType.Beta;
   }
 
   public isAlphaChannel(): boolean {
-    return this.addon.channelType === AddonChannelType.Alpha;
+    return this.addon?.channelType === AddonChannelType.Alpha;
   }
 
   public isUnMatched(): boolean {
-    return this.addon.providerName === ADDON_PROVIDER_UNKNOWN;
+    return this.addon?.providerName === ADDON_PROVIDER_UNKNOWN;
   }
 
   public clone(): AddonViewModel {
@@ -86,19 +86,19 @@ export class AddonViewModel {
   }
 
   public needsInstall(): boolean {
-    return !this.isInstalling && AddonUtils.needsInstall(this.addon);
+    return !this.isInstalling && this.addon !== undefined && AddonUtils.needsInstall(this.addon);
   }
 
   public needsUpdate(): boolean {
-    return !this.isInstalling && AddonUtils.needsUpdate(this.addon);
+    return !this.isInstalling && this.addon !== undefined && AddonUtils.needsUpdate(this.addon);
   }
 
   public get sortOrder(): AddonStatusSortOrder {
-    if (this.addon.isIgnored) {
+    if (this.addon?.isIgnored) {
       return AddonStatusSortOrder.Ignored;
     }
 
-    if (this.addon.warningType) {
+    if (this.addon?.warningType) {
       return AddonStatusSortOrder.Warning;
     }
 
@@ -122,7 +122,7 @@ export class AddonViewModel {
       return "COMMON.ADDON_STATE.UPTODATE";
     }
 
-    if (this.addon.isIgnored) {
+    if (this.addon?.isIgnored) {
       return "COMMON.ADDON_STATE.IGNORED";
     }
 
@@ -138,9 +138,11 @@ export class AddonViewModel {
     return "COMMON.ADDON_STATE.UNKNOWN";
   }
 
-  public getDependencies(dependencyType: AddonDependencyType = undefined): AddonDependency[] {
-    return dependencyType == undefined
-      ? this.addon.dependencies
-      : _.filter(this.addon.dependencies, (dep) => dep.type === dependencyType);
+  public getDependencies(dependencyType: AddonDependencyType | undefined = undefined): AddonDependency[] {
+    return (
+      (dependencyType == undefined
+        ? this.addon?.dependencies ?? []
+        : _.filter(this.addon?.dependencies ?? [], (dep) => dep.type === dependencyType)) ?? []
+    );
   }
 }

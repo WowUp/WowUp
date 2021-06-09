@@ -9,7 +9,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsComponent {
-  @Input("tabIndex") public tabIndex: number;
+  @Input("tabIndex") public tabIndex: number = 0;
 
   public optionTabIndex = 0;
 

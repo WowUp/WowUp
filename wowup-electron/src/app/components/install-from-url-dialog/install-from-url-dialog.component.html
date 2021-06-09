@@ -27,7 +27,7 @@
     <div class="addon-info">
       <h4>{{ addon.name }}</h4>
       <p>{{ addon.author }}</p>
-      <p>{{ addon.files?.length ? addon.files[0].version : '' }}</p>
+      <p>{{ addon.files?.length ? addon?.files[0]?.version ?? '' : '' }}</p>
       <p class="addon-download-count">
         {{ "DIALOGS.INSTALL_FROM_URL.DOWNLOAD_COUNT" | translate: getDownloadCountParams() }}
       </p>

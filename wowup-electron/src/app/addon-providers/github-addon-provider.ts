@@ -24,6 +24,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { WowInstallation } from "../models/wowup/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
+import { strictFilter, strictFilterBy } from "../utils/array.utils";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline";
 
@@ -161,7 +162,7 @@ export class GitHubAddonProvider extends AddonProvider {
     return `${parsed.owner}/${parsed.repository}`;
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
     return from(this.getByIdAsync(addonId, installation.clientType));
   }
 
@@ -215,7 +216,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public isValidAddonUri(addonUri: URL): boolean {
-    return addonUri.host && addonUri.host.endsWith("github.com");
+    return !!addonUri.host && addonUri.host.endsWith("github.com");
   }
 
   public isValidAddonId(addonId: string): boolean {
@@ -231,7 +232,7 @@ export class GitHubAddonProvider extends AddonProvider {
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
 
     for (const release of sortedReleases) {
-      let validAsset: GitHubAsset;
+      let validAsset: GitHubAsset | undefined = undefined;
       if (this.hasReleaseMetadata(release)) {
         console.log(`Checking release metadata: ${release.name}`);
         const metadata = await this.getReleaseMetadata(release);
@@ -255,15 +256,23 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private getLatestRelease(releases: GitHubRelease[]): GitHubRelease {
-    let sortedReleases = _.filter(releases, (r) => !r.draft);
+    let sortedReleases = strictFilterBy(releases, (r) => !r.draft);
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
+    const firstItem = _.first(sortedReleases);
+    if (firstItem === undefined) {
+      throw new Error("No releases found");
+    }
 
-    return _.first(sortedReleases);
+    return firstItem;
   }
 
   /** Fetch the json object for the BigWigs metadata json file */
   private async getReleaseMetadata(release: GitHubRelease): Promise<ReleaseMeta> {
     const metadataAsset = release.assets.find((asset) => asset.name === "release.json");
+    if (!metadataAsset) {
+      throw new Error("No metadata asset found");
+    }
+
     return await this.getWithRateLimit<ReleaseMeta>(metadataAsset.browser_download_url);
   }
 
@@ -315,13 +324,13 @@ export class GitHubAddonProvider extends AddonProvider {
     }
   }
 
-  private getValidAsset(release: GitHubRelease, clientType: WowClientType): GitHubAsset {
+  private getValidAsset(release: GitHubRelease, clientType: WowClientType): GitHubAsset | undefined {
     const sortedAssets = _.filter(
       release.assets,
       (asset) => this.isNotNoLib(asset) && this.isValidContentType(asset) && this.isValidClientType(clientType, asset)
     );
 
-    return _.first(sortedAssets);
+    return sortedAssets[0];
   }
 
   private isNotNoLib(asset: GitHubAsset): boolean {
@@ -424,7 +433,7 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private getIntHeader(headers: HttpHeaders, key: string) {
-    return parseInt(headers.get(key), 10);
+    return parseInt(headers.get(key) ?? "", 10);
   }
 
   private async getWithRateLimit<T>(url: URL | string): Promise<T> {
@@ -440,6 +449,9 @@ export class GitHubAddonProvider extends AddonProvider {
   private parseRepoPath(repositoryPath: string): GitHubRepoParts {
     const regex = /\/?(.*?)\/(.*?)(\/.*|\.git.*)?$/;
     const matches = regex.exec(repositoryPath);
+    if (!matches) {
+      throw new Error("No matches found");
+    }
 
     return {
       owner: matches[1],

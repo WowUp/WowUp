@@ -32,7 +32,7 @@ const ERROR_NO_VALID_WOW_INSTALLATIONS = "DIALOGS.INSTALL_FROM_PROTOCOL.ERRORS.N
 export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit {
   public error = "";
   public ready = false;
-  public addon: ProtocolSearchResult;
+  public addon!: ProtocolSearchResult;
   public installations = new FormControl();
   public validWowInstallations: WowInstallationWrapper[] = [];
   public installProgress = 0;

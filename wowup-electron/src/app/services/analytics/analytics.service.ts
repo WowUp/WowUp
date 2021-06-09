@@ -71,7 +71,7 @@ export class AnalyticsService {
     this._insights?.trackEvent({ name, properties });
   }
 
-  public trackAction(name: string, properties = undefined): void {
+  public trackAction(name: string, properties: any = undefined): void {
     this.track(name, properties);
   }
 

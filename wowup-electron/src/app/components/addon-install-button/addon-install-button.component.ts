@@ -16,7 +16,7 @@ import { SessionService } from "../../services/session/session.service";
   styleUrls: ["./addon-install-button.component.scss"],
 })
 export class AddonInstallButtonComponent implements OnInit, OnDestroy {
-  @Input() public addonSearchResult: AddonSearchResult;
+  @Input() public addonSearchResult!: AddonSearchResult;
 
   @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
@@ -41,10 +41,16 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+    if (!selectedInstallation) {
+      console.warn("No selected installation");
+      return;
+    }
+
     const isInstalled = this._addonService.isInstalled(
       this.addonSearchResult.externalId,
       this.addonSearchResult.providerName,
-      this._sessionService.getSelectedWowInstallation()
+      selectedInstallation
     );
     this.disableButton = isInstalled;
     this.buttonText = this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown);
@@ -88,12 +94,15 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
   }
 
   public async onInstallUpdateClick(): Promise<void> {
+    const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+    if (!selectedInstallation) {
+      console.warn("No selected installation");
+      return;
+    }
+
     this.disableButton = true;
     try {
-      await this._addonService.installPotentialAddon(
-        this.addonSearchResult,
-        this._sessionService.getSelectedWowInstallation()
-      );
+      await this._addonService.installPotentialAddon(this.addonSearchResult, selectedInstallation);
     } catch (e) {
       console.error("onInstallUpdateClick failed", e);
       console.error(this.addonSearchResult);
