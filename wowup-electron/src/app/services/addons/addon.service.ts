@@ -15,6 +15,7 @@ import {
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
   ADDON_PROVIDER_WOWINTERFACE,
+  ADDON_PROVIDER_WOWUP_COMPANION,
   ADDON_PROVIDER_ZIP,
   ERROR_ADDON_ALREADY_INSTALLED,
   USER_ACTION_ADDON_INSTALL,
@@ -1515,9 +1516,9 @@ export class AddonService {
     //If the addon does not include the current external id add it
     if (!this.containsOwnExternalId(addon, externalIds)) {
       if (!addon.providerName || !addon.externalId) {
-        console.warn("addon provider name or external id missing", addon);
         return;
       }
+      
       this.insertExternalId(externalIds, addon.providerName, addon.externalId);
     }
 
@@ -1573,7 +1574,7 @@ export class AddonService {
   }
 
   public insertExternalId(externalIds: AddonExternalId[], providerName: string, addonId?: string): void {
-    if (!addonId || providerName === ADDON_PROVIDER_RAIDERIO) {
+    if (!addonId || [ADDON_PROVIDER_RAIDERIO, ADDON_PROVIDER_WOWUP_COMPANION].includes(providerName)) {
       return;
     }
 
@@ -1592,6 +1593,7 @@ export class AddonService {
       });
     } else {
       console.warn(`Invalid provider id ${providerName}|${addonId}`);
+      console.warn(externalIds);
     }
   }
 

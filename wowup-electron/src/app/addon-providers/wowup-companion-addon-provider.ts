@@ -30,7 +30,6 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    console.info("WowUp Companion provider scan");
     const companion = _.find(addonFolders, (addonFolder) => this.isWowUpCompanion(addonFolder));
     if (!companion) {
       return;

@@ -1,4 +1,3 @@
-import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
 import * as _ from "lodash";
 import { join } from "path";
@@ -68,8 +67,8 @@ export class WowUpService {
   private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
-  public readonly applicationFolderPath: string = remote.app.getPath("userData");
-  public readonly applicationLogsFolderPath: string = remote.app.getPath("logs");
+  public readonly applicationFolderPath: string = window.userDataPath;
+  public readonly applicationLogsFolderPath: string = window.logPath;
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, "downloads");
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 

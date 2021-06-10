@@ -26,7 +26,7 @@
           "configurations": {
             "dev": {
               "optimization": false,
-              "outputHashing": "none",
+              "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,
               "aot": false,
@@ -42,7 +42,7 @@
             },
             "web": {
               "optimization": false,
-              "outputHashing": "none",
+              "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,
               "aot": false,

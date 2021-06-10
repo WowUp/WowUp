@@ -1,5 +1,5 @@
 import axios from "axios";
-import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell } from "electron";
+import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell, systemPreferences } from "electron";
 import * as log from "electron-log";
 import * as fs from "fs-extra";
 import * as globrex from "globrex";
@@ -53,6 +53,7 @@ import {
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
+  IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
 } from "../src/common/constants";
 import { CurseFolderScanner } from "../src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
@@ -125,6 +126,17 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     PENDING_OPEN_URLS = [];
     return urls;
   });
+
+  handle(
+    IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
+    (
+      _evt,
+      key: string,
+      type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
+    ) => {
+      return systemPreferences.getUserDefault(key, type);
+    }
+  );
 
   handle(IPC_SHOW_DIRECTORY, async (evt, filePath: string): Promise<string> => {
     return await shell.openPath(filePath);

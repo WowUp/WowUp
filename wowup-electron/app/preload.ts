@@ -2,7 +2,6 @@
 /// <reference path="../src/common/wowup.d.ts" />
 
 import {
-  remote,
   ipcRenderer,
   IpcRendererEvent,
   shell,
@@ -31,7 +30,20 @@ if (platform.isWin) {
   });
 }
 
-const LOG_PATH = join(remote.app.getPath("userData"), "logs");
+function getArg(argKey: string): string {
+  for (const arg of window.process.argv) {
+    const [key, val] = arg.split("=");
+    if (key === `--${argKey}`) {
+      return val;
+    }
+  }
+
+  throw new Error(`Arg not found: ${argKey}`);
+}
+
+const LOG_PATH = getArg("log-path");
+const USER_DATA_PATH = getArg("user-data-path");
+
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return join(LOG_PATH, variables.fileName);
 };
@@ -72,11 +84,13 @@ function getUserDefaultSystemPreference(
   key: string,
   type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
 ) {
-  return remote.systemPreferences.getUserDefault(key, type);
+  return "";
+  // return remote.systemPreferences.getUserDefault(key, type);
 }
 
 function showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
-  return remote.dialog.showOpenDialog(options);
+  throw new Error("Not implemented");
+  // return remote.dialog.showOpenDialog(options);
 }
 
 if (window.opener === null) {
@@ -85,6 +99,8 @@ if (window.opener === null) {
     handlebars: require("handlebars"),
     autoLaunch: require("auto-launch"),
   };
+  window.userDataPath = USER_DATA_PATH;
+  window.logPath = LOG_PATH;
   window.platform = process.platform;
   window.wowup = {
     onRendererEvent,

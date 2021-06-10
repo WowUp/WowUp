@@ -66,7 +66,8 @@ declare type RendererChannels =
   | "get-pending-open-urls"
   | "store-get-object"
   | "store-set-object"
-  | "get-latest-dir-update-time";
+  | "get-latest-dir-update-time"
+  | "system-preferences-get-user-default";
 
 declare global {
   interface Window {
@@ -76,6 +77,8 @@ declare global {
       autoLaunch: any;
     };
     platform: string;
+    userDataPath: string;
+    logPath: string;
     wowup: {
       onRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       onceRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;

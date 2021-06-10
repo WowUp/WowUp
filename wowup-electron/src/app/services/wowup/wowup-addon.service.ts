@@ -118,26 +118,19 @@ export class WowUpAddonService {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const addonFolder = await this._warcraftService.getAddonFolder(addonFolderPath, WOWUP_DATA_ADDON_FOLDER_NAME);
 
-    if (!addonFolder?.matchingAddon?.id) {
-      throw new Error("addonfolder did not have a matching addon");
-    }
-
     const provider = this._addonProviderFactory.createWowUpCompanionAddonProvider();
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
 
     if (companionAddon) {
-      delete addonFolder.matchingAddon.id;
-      const updatedCompanion: Addon = { ...companionAddon, ...addonFolder.matchingAddon };
+      const updatedCompanion: Addon = { ...companionAddon };
       this._addonService.saveAddon(updatedCompanion);
-    } else {
-      this._addonService.saveAddon(addonFolder.matchingAddon);
     }
   }
 
   private async persistUpdateInformationToWowUpAddon(installation: WowInstallation, addons: Addon[]) {
     const wowUpAddon = this.findAddonByFolderName(addons, WOWUP_ADDON_FOLDER_NAME);
     if (!wowUpAddon) {
-      console.debug("WowUp Addon not found");
+      console.debug(`WowUp Addon not found: ${installation.label}`);
       return;
     }
 

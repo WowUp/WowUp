@@ -246,7 +246,8 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: argv.serve,
       webSecurity: false,
       nativeWindowOpen: true,
-      enableRemoteModule: true, // This is only required for electron store https://github.com/sindresorhus/electron-store/issues/152
+      enableRemoteModule: false, // This is only required for electron store https://github.com/sindresorhus/electron-store/issues/152,
+      additionalArguments: [`--log-path=${LOG_PATH}`, `--user-data-path=${app.getPath("userData")}`],
     },
     show: false,
   };

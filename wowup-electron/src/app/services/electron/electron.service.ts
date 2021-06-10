@@ -35,6 +35,7 @@ import {
   IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_SET_LOGIN_ITEM_SETTINGS,
   IPC_SET_ZOOM_LIMITS,
+  IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
@@ -265,11 +266,11 @@ export class ElectronService {
     return window.wowup.showOpenDialog(options);
   }
 
-  public getUserDefaultSystemPreference(
+  public async getUserDefaultSystemPreference<T = any>(
     key: string,
     type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
-  ): any {
-    return window.wowup.systemPreferences.getUserDefault(key, type);
+  ): Promise<T> {
+    return await this.invoke(IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT, key, type);
   }
 
   public async sendIpcValueMessage<TIN, TOUT>(channel: string, value: TIN): Promise<TOUT> {

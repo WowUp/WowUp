@@ -543,6 +543,18 @@ mat-icon.success-icon {
   }
 }
 
+.z-badge {
+  .mat-badge-content {
+    z-index: 100;
+  }
+}
+
+.clear-badge {
+  .mat-badge-content {
+    color: transparent;
+  }
+}
+
 .mat-tooltip {
   font-size: 0.95em;
 }

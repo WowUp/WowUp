@@ -13,7 +13,7 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
 
   console.log("Creating tray");
   const trayIconFile = platform.isMac ? WOWUP_LOGO_MAC_SYSTEM_TRAY : WOWUP_LOGO_FILENAME;
-  const trayIconPath = path.join(__dirname, "assets", trayIconFile);
+  const trayIconPath = path.join(__dirname, "..", "assets", trayIconFile);
 
   _trayRef = new Tray(trayIconPath);
   const contextMenu = Menu.buildFromTemplate([

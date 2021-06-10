@@ -4,7 +4,7 @@
     <mat-icon *ngIf="tab.badge !== true" class="icon-inactive" [ngClass]="{'icon-active': tab.isSelected$ | async }"
       [svgIcon]="tab.icon">
     </mat-icon>
-    <mat-icon *ngIf="tab.badge === true" class="icon-inactive" matBadge="15" matBadgeColor="warn"
+    <mat-icon *ngIf="tab.badge === true" class="icon-inactive z-badge clear-badge" matBadge="1" matBadgeColor="accent"
       [ngClass]="{'icon-active': tab.isSelected$ | async }" [svgIcon]="tab.icon">
     </mat-icon>
 
