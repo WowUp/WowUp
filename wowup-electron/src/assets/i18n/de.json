@@ -312,7 +312,7 @@
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon scheint ein Code-Repository zu sein",
-      "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
+      "ADDON_REMOVED_SNACKBAR": "{addonName} erfolgreich entfernt",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Möchtest Du den Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
         "TITLE": "Addon-Anbieter wechseln?"
