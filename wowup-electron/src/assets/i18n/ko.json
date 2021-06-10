@@ -295,6 +295,7 @@
       "GET_ADDONS_TAB_TITLE": "애드온 찾기",
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "내 애드온",
+      "NEWS_TAB_TITLE": "News",
       "OPTIONS_TAB_TITLE": "설정"
     },
     "MY_ADDONS": {
@@ -381,6 +382,10 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "모든 클라이언트 업데이트",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "리테일/클래식 업데이트"
       }
+    },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} news stories",
+      "REFRESH_TOOLTIP": "Refresh news feed"
     },
     "OPTIONS": {
       "ADDON": {

@@ -295,6 +295,7 @@
       "GET_ADDONS_TAB_TITLE": "Ottieni Addons",
       "MIGRATING_ADDONS": "Trasferimento degli addons in corso...",
       "MY_ADDONS_TAB_TITLE": "I Miei Addons",
+      "NEWS_TAB_TITLE": "News",
       "OPTIONS_TAB_TITLE": "Opzioni"
     },
     "MY_ADDONS": {
@@ -381,6 +382,10 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Aggiorna Tutti i Clients",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Aggiorna Retail/Classic"
       }
+    },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} news stories",
+      "REFRESH_TOOLTIP": "Refresh news feed"
     },
     "OPTIONS": {
       "ADDON": {
