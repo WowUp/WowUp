@@ -2,7 +2,9 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { TrustHtmlPipe } from "../../pipes/trust-html.pipe";
 import { ElectronService } from "../../services";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { PatchNotesService } from "../../services/wowup/patch-notes.service";
+import { WowUpService } from "../../services/wowup/wowup.service";
 import { getStandardImports } from "../../tests/test-helpers";
 import { PatchNotesDialogComponent } from "./patch-notes-dialog.component";
 
@@ -12,11 +14,16 @@ describe("PatchNotesDialogComponent", () => {
 
   let electronService: ElectronService;
   let patchNotesService: PatchNotesService;
+  let dialogFactory: DialogFactory;
+  let wowupService: WowUpService;
 
   beforeEach(async () => {
     electronService = jasmine.createSpyObj("ElectronService", {
       getVersionNumber: Promise.resolve("30.0.0"),
     });
+
+    dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
+    wowupService = jasmine.createSpyObj("WowUpService", [""], {});
 
     patchNotesService = jasmine.createSpyObj("PatchNotesService", [""], {
       changeLogs: [
@@ -35,6 +42,8 @@ describe("PatchNotesDialogComponent", () => {
           providers: [
             { provide: ElectronService, useValue: electronService },
             { provide: PatchNotesService, useValue: patchNotesService },
+            { provide: DialogFactory, useValue: dialogFactory },
+            { provide: WowUpService, useValue: wowupService },
           ],
         },
       })

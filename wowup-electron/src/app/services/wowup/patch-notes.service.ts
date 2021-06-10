@@ -16,6 +16,30 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.0",
+    html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>
+        <div>Added a news section powered by</div>
+        <a appExternalLink href="https://www.warcrafttavern.com">
+        <img style="width: 200px;" loading="lazy" src="https://www.warcrafttavern.com/wp-content/uploads/2020/10/Warcraft-Tavern-Logo-768x246.png">
+        </a>
+        </li>
+      </ul>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Revamped UI</li>
+        <li>WowUp updates will now download automatically</li>
+        <li>Update Angular and Electron to latest</li>
+      </ul>
+      <h4 style="margin-top: 1em;">Fixes</h4>
+      <ul>
+        <li>Fixed an issue with table header font in addon details</li>
+      </ul>
+      </div>`,
+  },
+  {
     Version: "2.3.4",
     html: `<div>
       <h4 style="margin-top: 1em;">Changes</h4>

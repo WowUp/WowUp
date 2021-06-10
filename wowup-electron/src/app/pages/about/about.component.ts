@@ -1,7 +1,15 @@
-import { from, Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { from, of, Subscription } from "rxjs";
+import { catchError, filter, map, switchMap } from "rxjs/operators";
 
-import { ChangeDetectionStrategy, Component, Input, OnDestroy } from "@angular/core";
+import {
+  AfterViewChecked,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  ViewChild,
+} from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 import { ChangeLog } from "../../models/wowup/change-log";
@@ -9,6 +17,8 @@ import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { PatchNotesService } from "../../services/wowup/patch-notes.service";
+import { formatDynamicLinks } from "../../utils/dom.utils";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 
 @Component({
   selector: "app-about",
@@ -16,8 +26,10 @@ import { PatchNotesService } from "../../services/wowup/patch-notes.service";
   styleUrls: ["./about.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutComponent implements OnDestroy {
+export class AboutComponent implements OnDestroy, AfterViewChecked {
   @Input("tabIndex") public tabIndex!: number;
+
+  @ViewChild("changelogContainer", { read: ElementRef }) public changelogContainer!: ElementRef;
 
   private _subscriptions: Subscription[] = [];
 
@@ -29,6 +41,8 @@ export class AboutComponent implements OnDestroy {
     public electronService: ElectronService,
     private _sessionService: SessionService,
     private _patchNotesService: PatchNotesService,
+    private _dialogFactory: DialogFactory,
+    private _wowupService: WowUpService,
     private _sanitizer: DomSanitizer
   ) {
     this.changeLogs = this._patchNotesService.changeLogs;
@@ -48,6 +62,28 @@ export class AboutComponent implements OnDestroy {
     this._subscriptions.forEach((subscription) => subscription.unsubscribe());
     this._subscriptions = [];
   }
+
+  public ngAfterViewChecked(): void {
+    const descriptionContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
+    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+  }
+
+  private onOpenLink = (element: HTMLAnchorElement): boolean => {
+    this._dialogFactory
+      .confirmLinkNavigation(element.href)
+      .pipe(
+        switchMap((confirmed) => {
+          return confirmed ? from(this._wowupService.openExternalLink(element.href)) : of(undefined);
+        }),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+
+    return false;
+  };
 
   public formatChanges(changeLog: ChangeLog): string {
     return (changeLog.changes ?? []).join("\n");

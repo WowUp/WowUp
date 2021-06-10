@@ -25,13 +25,13 @@ import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { formatDynamicLinks } from "../../utils/dom.utils";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -170,8 +170,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
     const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
-    this.formatLinks(descriptionContainer);
-    this.formatLinks(changelogContainer);
+    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    formatDynamicLinks(changelogContainer, this.onOpenLink);
   }
 
   public ngOnDestroy(): void {
@@ -287,26 +287,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     return this.model.listItem?.addon?.providerName ?? this.model.searchResult?.providerName ?? "";
   }
 
-  private formatLinks(container: HTMLDivElement): void {
-    if (!container) {
-      return;
-    }
-
-    const aTags = container.getElementsByTagName("a");
-    for (const tag of Array.from(aTags)) {
-      if (tag.getAttribute("clk")) {
-        continue;
-      }
-
-      if (tag.href.toLowerCase().indexOf("http") === -1 || tag.href.toLowerCase().indexOf("localhost") !== -1) {
-        tag.classList.add("no-link");
-      }
-
-      tag.setAttribute("clk", "1");
-      tag.addEventListener("click", this.onOpenLink, false);
-    }
-  }
-
   private onAddonInstalledUpdate = (evt: AddonUpdateEvent): void => {
     if (this.model.listItem) {
       this.model.listItem.addon = evt.addon;
@@ -322,32 +302,32 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     );
   };
 
-  private onOpenLink = (e: MouseEvent): boolean => {
-    e.preventDefault();
+  private onOpenLink = (element: HTMLAnchorElement): boolean => {
+    // e.preventDefault();
 
-    // Go up the call chain to find the tag
-    const path = (e as any).path as HTMLElement[];
-    let anchor: HTMLAnchorElement | undefined = undefined;
-    for (const element of path) {
-      if (element.tagName !== "A") {
-        continue;
-      }
+    // // Go up the call chain to find the tag
+    // const path = (e as any).path as HTMLElement[];
+    // let anchor: HTMLAnchorElement | undefined = undefined;
+    // for (const element of path) {
+    //   if (element.tagName !== "A") {
+    //     continue;
+    //   }
 
-      anchor = element as HTMLAnchorElement;
-      break;
-    }
+    //   anchor = element as HTMLAnchorElement;
+    //   break;
+    // }
 
-    if (!anchor) {
-      console.warn("No anchor in path");
-      return false;
-    }
+    // if (!anchor) {
+    //   console.warn("No anchor in path");
+    //   return false;
+    // }
 
-    if (anchor.href.toLowerCase().indexOf("http") !== 0 || anchor.href.toLowerCase().indexOf("localhost") !== -1) {
-      console.warn(`Unhandled relative path: ${anchor.href}`);
-      return false;
-    }
+    // if (anchor.href.toLowerCase().indexOf("http") !== 0 || anchor.href.toLowerCase().indexOf("localhost") !== -1) {
+    //   console.warn(`Unhandled relative path: ${anchor.href}`);
+    //   return false;
+    // }
 
-    this.confirmLinkNavigation(anchor.href);
+    this.confirmLinkNavigation(element.href);
 
     return false;
   };
