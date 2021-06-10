@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { SessionService } from "app/services/session/session.service";
-import { of } from "rxjs";
 import { map } from "rxjs/operators";
+
+import { Component, OnInit } from "@angular/core";
+
+import { SessionService } from "../../services/session/session.service";
 
 @Component({
   selector: "app-vertical-tabs",

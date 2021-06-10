@@ -15,11 +15,12 @@ import { MatModule } from "../../mat-module";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
-import { IconService } from "../../services/icons/icon.service";
 import { SessionService } from "../../services/session/session.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
+import { mockPreload } from "../../tests/test-helpers";
+import { WowUpService } from "../../services/wowup/wowup.service";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;
@@ -27,8 +28,11 @@ describe("AddonDetailComponent", () => {
   let electronServiceSpy: ElectronService;
   let sessionServiceSpy: SessionService;
   let dialogFactory: DialogFactory;
+  let wowUpService: WowUpService;
 
   beforeEach(async () => {
+    mockPreload();
+
     console.log("AddonDetailComponent");
     addonServiceSpy = jasmine.createSpyObj(
       "AddonService",
@@ -39,9 +43,14 @@ describe("AddonDetailComponent", () => {
       }
     );
 
+    wowUpService = jasmine.createSpyObj("WowUpService", [""], {});
+
     dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
 
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {});
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
+      onRendererEvent: () => undefined,
+    });
+
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {
       getSelectedWowInstallation: () => "description",
     });
@@ -82,8 +91,8 @@ describe("AddonDetailComponent", () => {
           { provide: AddonService, useValue: addonServiceSpy },
           { provide: SessionService, useValue: sessionServiceSpy },
           {
-            provide: ElectronService,
-            useValue: electronServiceSpy,
+            provide: WowUpService,
+            useValue: wowUpService,
           },
         ],
       },

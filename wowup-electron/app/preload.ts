@@ -80,14 +80,6 @@ function openPath(path: string): Promise<string> {
   return shell.openPath(path);
 }
 
-function getUserDefaultSystemPreference(
-  key: string,
-  type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
-) {
-  return "";
-  // return remote.systemPreferences.getUserDefault(key, type);
-}
-
 function showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
   throw new Error("Not implemented");
   // return remote.dialog.showOpenDialog(options);
@@ -112,9 +104,6 @@ if (window.opener === null) {
     openExternal,
     showOpenDialog,
     openPath,
-    systemPreferences: {
-      getUserDefault: getUserDefaultSystemPreference,
-    },
   };
 } else {
   console.log("HAS OPENER");

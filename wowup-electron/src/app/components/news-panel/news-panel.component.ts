@@ -16,7 +16,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./news-panel.component.scss"],
 })
 export class NewsPanelComponent implements OnInit, OnDestroy {
-  @Input("tabIndex") public tabIndex: number = 0;
+  @Input("tabIndex") public tabIndex!: number;
 
   public isBusy = false;
 

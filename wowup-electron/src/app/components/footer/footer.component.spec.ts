@@ -5,7 +5,6 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { ElectronService } from "../../services";
 import { SessionService } from "../../services/session/session.service";
 import { OverlayModule } from "@angular/cdk/overlay";
 import { BehaviorSubject, of, Subject } from "rxjs";
@@ -15,15 +14,17 @@ import { MatModule } from "../../mat-module";
 import { MatIcon } from "@angular/material/icon";
 import { MatIconTestingModule } from "@angular/material/icon/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { mockPreload } from "../../tests/test-helpers";
 
 /** Fix icon warning? https://stackoverflow.com/a/62277810 */
 describe("FooterComponent", () => {
   let fixture: ComponentFixture<FooterComponent>;
-  let electronServiceSpy: ElectronService;
   let wowUpServiceSpy: WowUpService;
   let sessionServiceSpy: SessionService;
 
   beforeEach(async () => {
+    mockPreload();
+
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [], {
       getApplicationVersion: () => Promise.resolve("TESTV"),
       wowupUpdateCheck$: new Subject<UpdateCheckResult>().asObservable(),
@@ -62,7 +63,6 @@ describe("FooterComponent", () => {
         set: {
           providers: [
             { provide: WowUpService, useValue: wowUpServiceSpy },
-            { provide: ElectronService, useValue: electronServiceSpy },
             { provide: SessionService, useValue: sessionServiceSpy },
           ],
         },

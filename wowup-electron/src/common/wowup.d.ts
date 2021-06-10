@@ -89,12 +89,6 @@ declare global {
       openExternal: (url: string, options?: OpenExternalOptions) => Promise<void>;
       showOpenDialog: (options: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
       openPath: (path: string) => Promise<string>;
-      systemPreferences: {
-        getUserDefault: (
-          key: string,
-          type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
-        ) => any;
-      };
     };
   }
 }
