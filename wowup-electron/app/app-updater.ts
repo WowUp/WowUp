@@ -29,7 +29,7 @@ export const checkForUpdates = async (win: BrowserWindow): Promise<UpdateCheckRe
 // Example: https://github.com/electron-userland/electron-builder/blob/docs/encapsulated%20manual%20update%20via%20menu.js
 export function initializeAppUpdater(win: BrowserWindow): void {
   autoUpdater.logger = log;
-  autoUpdater.autoDownload = false;
+  autoUpdater.autoDownload = true;
   // autoUpdater.allowPrerelease = true;
 
   autoUpdater.on("update-available", () => {
