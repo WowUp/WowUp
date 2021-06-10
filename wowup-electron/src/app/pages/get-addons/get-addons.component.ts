@@ -58,7 +58,7 @@ interface CategoryItem {
   styleUrls: ["./get-addons.component.scss"],
 })
 export class GetAddonsComponent implements OnInit, OnDestroy {
-  @Input("tabIndex") public tabIndex: number = 0;
+  @Input("tabIndex") public tabIndex!: number;
 
   @ViewChild("columnContextMenuTrigger") public columnContextMenu!: MatMenuTrigger;
   @ViewChild("drawer") public drawer!: MatDrawer;
@@ -432,6 +432,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     if (this._lazyLoaded) {
       return;
     }
+    console.debug("GET ADDON LAZY LOAD");
 
     this._lazyLoaded = true;
 

@@ -17,7 +17,7 @@ import { PatchNotesService } from "../../services/wowup/patch-notes.service";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AboutComponent implements OnDestroy {
-  @Input("tabIndex") public tabIndex: number = 0;
+  @Input("tabIndex") public tabIndex!: number;
 
   private _subscriptions: Subscription[] = [];
 

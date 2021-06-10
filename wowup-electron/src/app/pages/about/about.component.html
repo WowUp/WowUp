@@ -4,11 +4,11 @@
     linux: electronService.isLinux
   }">
   <div class="theme-logo">
-    <img [src]="wowUpService.getThemeLogoPath()" />
+    <img loading="lazy" [src]="wowUpService.getThemeLogoPath()" />
   </div>
   <div class="about">
     <div class="header text-1">
-      <img class="logo mt-3 mat-elevation-z2" src="assets/wowup_logo_purple.png" />
+      <img class="logo mt-3 mat-elevation-z2" loading="lazy" src="assets/wowup_logo_purple.png" />
       <h2>{{ "PAGES.ABOUT.TITLE" | translate }}</h2>
       <div class="version text-2">v{{ versionNumber | async }}</div>
       <div class="link-container">

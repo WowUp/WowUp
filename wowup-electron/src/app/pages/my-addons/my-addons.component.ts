@@ -57,7 +57,7 @@ import { SortOrder } from "../../models/wowup/sort-order";
   styleUrls: ["./my-addons.component.scss"],
 })
 export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input("tabIndex") public tabIndex: number = 0;
+  @Input("tabIndex") public tabIndex!: number;
 
   @ViewChild("addonContextMenuTrigger", { static: false }) public contextMenu!: MatMenuTrigger;
   @ViewChild("addonMultiContextMenuTrigger", { static: false }) public multiContextMenu!: MatMenuTrigger;
