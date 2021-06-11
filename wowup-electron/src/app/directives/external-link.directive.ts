@@ -4,14 +4,13 @@ import { TranslateService } from "@ngx-translate/core";
 import { from, of } from "rxjs";
 import { catchError, first, switchMap } from "rxjs/operators";
 import { ConfirmDialogComponent } from "../components/confirm-dialog/confirm-dialog.component";
-import { DialogFactory } from "../services/dialog/dialog.factory";
 import { WowUpService } from "../services/wowup/wowup.service";
 
 @Directive({
   selector: "[appExternalLink]",
 })
 export class ExternalLinkDirective {
-  @HostListener("click", ["$event"]) public async onClick($event: MouseEvent): Promise<void> {
+  @HostListener("click", ["$event"]) public onClick($event: MouseEvent): void {
     $event.preventDefault();
     $event.stopPropagation();
 
