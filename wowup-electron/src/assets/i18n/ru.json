@@ -295,7 +295,7 @@
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
       "MIGRATING_ADDONS": "Перенос модификаций...",
       "MY_ADDONS_TAB_TITLE": "Мои модификации",
-      "NEWS_TAB_TITLE": "News",
+      "NEWS_TAB_TITLE": "Новости",
       "OPTIONS_TAB_TITLE": "Настройки"
     },
     "MY_ADDONS": {
@@ -384,8 +384,8 @@
       }
     },
     "NEWS": {
-      "PAGE_CONTEXT_FOOTER": "{count} news stories",
-      "REFRESH_TOOLTIP": "Refresh news feed"
+      "PAGE_CONTEXT_FOOTER": "{count} новостей",
+      "REFRESH_TOOLTIP": "Обновить ленту новостей"
     },
     "OPTIONS": {
       "ADDON": {
