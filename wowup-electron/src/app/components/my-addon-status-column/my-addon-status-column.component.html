@@ -3,7 +3,7 @@
     [extInstallState]="installState" [value]="installProgress">
   </app-addon-update-button>
   <div *ngIf="hasWarning === false && showStatusText === true" class="status-text"
-    [ngClass]="{ ignored: listItem.addon.isIgnored }">
+    [ngClass]="{ ignored: listItem.addon?.isIgnored }">
     {{ statusText | translate }}
   </div>
   <div *ngIf="hasWarning">

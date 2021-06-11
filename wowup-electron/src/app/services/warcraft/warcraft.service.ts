@@ -1,6 +1,5 @@
-import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { filter, map } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
@@ -62,8 +61,12 @@ export class WarcraftService {
 
   // Map the client types so that we can localize them
   public installedClientTypesSelectItems$ = this._installedClientTypesSrc.pipe(
-    filter((clientTypes) => !!clientTypes),
+    filter((clientTypes) => clientTypes !== undefined),
     map((clientTypes) => {
+      if (clientTypes === undefined) {
+        return [];
+      }
+
       return clientTypes.map((ct): SelectItem<WowClientType> => {
         const clientTypeName = getEnumName(WowClientType, ct).toUpperCase();
         return {
@@ -189,7 +192,7 @@ export class WarcraftService {
       };
     } catch (e) {
       console.error(e);
-      return null;
+      return undefined;
     }
   }
 
@@ -211,7 +214,7 @@ export class WarcraftService {
   //   return await this._fileService.pathExists(executablePath);
   // }
 
-  public async getBlizzardAgentPath() {
+  public async getBlizzardAgentPath(): Promise<string> {
     const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
     if (storedAgentPath) {
       return storedAgentPath;

@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "./variables.scss";
 @import "~@angular/material/theming";
 
@@ -9,7 +10,7 @@
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core();
+@include mat.core();
 
 $md-wowup-pallette: (
   50: #e8eaf6,
@@ -47,15 +48,15 @@ $md-wowup-pallette: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$wowup-default-primary: mat-palette($md-wowup-pallette, 100, 50, 300);
-$wowup-default-accent: mat-palette($md-wowup-pallette, A200, A100, A400);
+$wowup-default-primary: mat.define-palette($md-wowup-pallette, 100, 50, 300);
+$wowup-default-accent: mat.define-palette($md-wowup-pallette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$wowup-default-warn: mat-palette($mat-red);
+$wowup-default-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
-$wowup-default-theme: mat-dark-theme(
+$wowup-default-theme: mat.define-dark-theme(
   (
     color: (
       primary: $wowup-default-primary,
@@ -65,7 +66,7 @@ $wowup-default-theme: mat-dark-theme(
   )
 );
 
-$wowup-light-theme: mat-light-theme(
+$wowup-light-theme: mat.define-light-theme(
   (
     color: (
       primary: $wowup-default-primary,
@@ -201,10 +202,23 @@ $wowup-light-theme: mat-light-theme(
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($wowup-default-theme);
+@include mat.all-component-themes($wowup-default-theme);
+
+.default-theme {
+  --background-primary: #6b69d6;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+}
 
 .default-theme-light-theme {
-  @include angular-material-color($wowup-light-theme);
+  @include mat.all-component-colors($wowup-light-theme);
 }
 
 // Horde theme
@@ -240,10 +254,10 @@ $horde-pallette: (
     A700: #ffffff,
   ),
 );
-$horde-primary: mat-palette($horde-pallette, 100, 50, 300);
-$horde-accent: mat-palette($horde-pallette, A200, A100, A400);
-$horde-warn: mat-palette($mat-deep-orange);
-$horde-theme: mat-dark-theme(
+$horde-primary: mat.define-palette($horde-pallette, 100, 50, 300);
+$horde-accent: mat.define-palette($horde-pallette, A200, A100, A400);
+$horde-warn: mat.define-palette(mat.$deep-orange-palette);
+$horde-theme: mat.define-dark-theme(
   (
     color: (
       primary: $horde-primary,
@@ -253,7 +267,7 @@ $horde-theme: mat-dark-theme(
   )
 );
 
-$horde-theme-light: mat-light-theme(
+$horde-theme-light: mat.define-light-theme(
   (
     color: (
       primary: $horde-primary,
@@ -264,11 +278,11 @@ $horde-theme-light: mat-light-theme(
 );
 
 .horde-theme-light-theme {
-  @include angular-material-color($horde-theme-light);
+  @include mat.all-component-colors($horde-theme-light);
 }
 
 .horde-theme {
-  @include angular-material-color($horde-theme);
+  @include mat.all-component-colors($horde-theme);
 }
 
 [class*="horde-theme"] {
@@ -377,10 +391,10 @@ $alliance-pallette: (
     A700: #ffffff,
   ),
 );
-$alliance-primary: mat-palette($alliance-pallette, 100, 50, 300);
-$alliance-accent: mat-palette($alliance-pallette, A200, A100, A400);
-$alliance-warn: mat-palette($mat-deep-orange);
-$alliance-theme: mat-dark-theme(
+$alliance-primary: mat.define-palette($alliance-pallette, 100, 50, 300);
+$alliance-accent: mat.define-palette($alliance-pallette, A200, A100, A400);
+$alliance-warn: mat.define-palette(mat.$deep-orange-palette);
+$alliance-theme: mat.define-dark-theme(
   (
     color: (
       primary: $alliance-primary,
@@ -390,7 +404,7 @@ $alliance-theme: mat-dark-theme(
   )
 );
 
-$alliance-theme-light: mat-light-theme(
+$alliance-theme-light: mat.define-light-theme(
   (
     color: (
       primary: $alliance-primary,
@@ -401,11 +415,11 @@ $alliance-theme-light: mat-light-theme(
 );
 
 .alliance-theme-light-theme {
-  @include angular-material-color($alliance-theme-light);
+  @include mat.all-component-colors($alliance-theme-light);
 }
 
 .alliance-theme {
-  @include angular-material-color($alliance-theme);
+  @include mat.all-component-colors($alliance-theme);
 }
 
 [class*="alliance-theme"] {

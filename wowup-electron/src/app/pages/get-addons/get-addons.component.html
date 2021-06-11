@@ -15,9 +15,10 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div *ngIf="selectedAddonCategory.category !== addonCategory.AllAddons" class="center-container text-1">
+    <div *ngIf="selectedAddonCategory?.category !== addonCategory.AllAddons" class="center-container text-1">
       <h4 class="m-0">
-        {{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_SELECTED_TITLE' | translate: {category: (selectedAddonCategory.localeKey |
+        {{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_SELECTED_TITLE' | translate: {category: (selectedAddonCategory?.localeKey
+        ?? "" |
         translate)} }}
       </h4>
       <button mat-button color="accent" mat-icon-button aria-label="Clear Category"

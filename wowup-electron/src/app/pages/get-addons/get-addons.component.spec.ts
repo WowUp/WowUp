@@ -1,5 +1,5 @@
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 
 import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
@@ -18,7 +18,6 @@ import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { GetAddonsComponent } from "./get-addons.component";
-import { IconService } from "../../services/icons/icon.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
@@ -28,15 +27,10 @@ import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
   let fixture: ComponentFixture<GetAddonsComponent>;
-  let electronService: ElectronService;
   let electronServiceSpy: any;
-  let wowUpService: WowUpService;
   let wowUpServiceSpy: any;
-  let sessionService: SessionService;
   let sessionServiceSpy: any;
-  let addonService: AddonService;
   let addonServiceSpy: any;
-  let warcraftService: WarcraftService;
   let warcraftServiceSpy: any;
   let snackbarService: SnackbarService;
   let warcraftInstallationService: WarcraftInstallationService;
@@ -107,12 +101,6 @@ describe("GetAddonsComponent", () => {
 
     fixture = TestBed.createComponent(GetAddonsComponent);
     component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    sessionService = fixture.debugElement.injector.get(SessionService);
-    warcraftService = fixture.debugElement.injector.get(WarcraftService);
-    const icons = fixture.debugElement.injector.get(IconService);
 
     fixture.detectChanges();
   });

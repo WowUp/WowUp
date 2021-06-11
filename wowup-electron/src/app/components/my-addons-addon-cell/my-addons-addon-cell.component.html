@@ -1,20 +1,20 @@
 <div>
   <div class="addon-column row align-items-center">
     <div class="thumbnail-container">
-      <app-addon-thumbnail [url]="getThumbnailUrl()" [name]="listItem.addon.name"></app-addon-thumbnail>
+      <app-addon-thumbnail [url]="getThumbnailUrl()" [name]="listItem.addon?.name ?? ''"></app-addon-thumbnail>
     </div>
     <div class="version-container">
       <div class="title-container">
         <a class="addon-title hover-text-2" (click)="viewDetails()"
-          [ngClass]="{ 'text-3': listItem.addon.isIgnored, 'text-warning': hasWarning() }">{{
-          listItem.addon.name
+          [ngClass]="{ 'text-3': listItem.addon?.isIgnored, 'text-warning': hasWarning() }">{{
+          listItem.addon?.name
           }}</a>
       </div>
-      <div *ngIf="listItem.addon.fundingLinks" class="addon-funding">
-        <app-funding-button *ngFor="let link of listItem.addon.fundingLinks" [funding]="link" size="small">
+      <div *ngIf="listItem.addon?.fundingLinks" class="addon-funding">
+        <app-funding-button *ngFor="let link of listItem.addon?.fundingLinks ?? []" [funding]="link" size="small">
         </app-funding-button>
       </div>
-      <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.addon.isIgnored }">
+      <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.addon?.isIgnored }">
         <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3 mr-2"
           [ngClass]="{
             beta: listItem.isBetaChannel(),
@@ -27,7 +27,7 @@
             [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
           </mat-icon>
         </div>
-        <div *ngIf="listItem.addon.autoUpdateEnabled === true" class="mr-2">
+        <div *ngIf="listItem.addon?.autoUpdateEnabled === true" class="mr-2">
           <mat-icon class="auto-update-icon text-2"
             [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate" svgIcon="far:clock">
           </mat-icon>
@@ -54,16 +54,16 @@
         </div>
         <!-- If no warning and not ignored for some specific reason, default to this -->
         <div
-          *ngIf="listItem.isLoadOnDemand === false && hasIgnoreReason() === false && hasWarning() === false && listItem.addon.providerName === unknownProviderName"
+          *ngIf="listItem.isLoadOnDemand === false && hasIgnoreReason() === false && hasWarning() === false && listItem.addon?.providerName === unknownProviderName"
           class="mr-2">
           <mat-icon class="auto-update-icon" [matTooltip]="'PAGES.MY_ADDONS.UNKNOWN_ADDON_INFO_TOOLTIP' | translate"
             [matTooltipClass]="['text-center']" [style.color]="'#ff9800'" svgIcon="fas:exclamation-triangle">
           </mat-icon>
         </div>
-        {{ listItem.addon.installedVersion }}
+        {{ listItem.addon?.installedVersion }}
         <div *ngIf="showUpdateToVersion && listItem.needsUpdate()" class="text-1  row">
           <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
-          <div class="bg-secondary-4 text-2 rounded px-1">{{ listItem.addon.latestVersion }}</div>
+          <div class="bg-secondary-4 text-2 rounded px-1">{{ listItem.addon?.latestVersion }}</div>
         </div>
       </div>
     </div>

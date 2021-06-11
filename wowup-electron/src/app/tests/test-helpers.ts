@@ -5,6 +5,19 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { MatModule } from "../mat-module";
 
+export function mockPreload(): void {
+  window.wowup = {
+    onRendererEvent: () => {},
+    onceRendererEvent: () => {},
+    openExternal: async () => {},
+    openPath: () => Promise.resolve(""),
+    rendererInvoke: () => Promise.resolve(undefined),
+    rendererOff: () => {},
+    rendererOn: () => {},
+    rendererSend: () => {},
+  };
+}
+
 // AoT requires an exported function for factories
 export function httpLoaderFactoryTest(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");

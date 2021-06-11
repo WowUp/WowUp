@@ -14,7 +14,7 @@ import { ColumnState } from "../../models/wowup/column-state";
   providedIn: "root",
 })
 export class SessionService {
-  private readonly _selectedWowInstallationSrc = new BehaviorSubject<WowInstallation>(undefined);
+  private readonly _selectedWowInstallationSrc = new BehaviorSubject<WowInstallation | undefined>(undefined);
   private readonly _pageContextTextSrc = new BehaviorSubject(""); // right side bar text, context to the screen
   private readonly _statusTextSrc = new BehaviorSubject(""); // left side bar text, context to the app
   private readonly _selectedHomeTabSrc = new BehaviorSubject(0);
@@ -68,17 +68,20 @@ export class SessionService {
 
   public onWowInstallationsChange(wowInstallations: WowInstallation[]): void {
     if (wowInstallations.length === 0) {
-      this.setSelectedWowInstallation(undefined);
       return;
     }
 
     let selectedInstall = _.find(wowInstallations, (installation) => installation.selected);
     if (!selectedInstall) {
       selectedInstall = _.first(wowInstallations);
-      this.setSelectedWowInstallation(selectedInstall.id);
+      if (selectedInstall) {
+        this.setSelectedWowInstallation(selectedInstall.id);
+      }
     }
 
-    this._selectedWowInstallationSrc.next(selectedInstall);
+    if (selectedInstall) {
+      this._selectedWowInstallationSrc.next(selectedInstall);
+    }
   }
 
   public autoUpdateComplete(): void {
@@ -112,11 +115,15 @@ export class SessionService {
     }
 
     const installation = this._warcraftInstallationService.getWowInstallation(installationId);
+    if (!installation) {
+      return;
+    }
+
     this._warcraftInstallationService.setSelectedWowInstallation(installation);
     this._selectedWowInstallationSrc.next(installation);
   }
 
-  public getSelectedWowInstallation(): WowInstallation {
+  public getSelectedWowInstallation(): WowInstallation | undefined {
     return this._selectedWowInstallationSrc.value;
   }
 }

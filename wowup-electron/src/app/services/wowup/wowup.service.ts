@@ -1,4 +1,3 @@
-import { remote } from "electron";
 import { UpdateCheckResult } from "electron-updater";
 import * as _ from "lodash";
 import { join } from "path";
@@ -36,10 +35,11 @@ import {
   SELECTED_LANGUAGE_PREFERENCE_KEY,
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
+  UPDATE_NOTES_POPUP_VERSION_KEY,
+  USER_ACTION_OPEN_LINK,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   USE_SYMLINK_MODE_PREFERENCE_KEY,
   WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY,
-  UPDATE_NOTES_POPUP_VERSION_KEY,
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/models";
@@ -49,6 +49,7 @@ import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
@@ -66,8 +67,8 @@ export class WowUpService {
   private _availableVersion = "";
 
   public readonly updaterName = "WowUpUpdater.exe";
-  public readonly applicationFolderPath: string = remote.app.getPath("userData");
-  public readonly applicationLogsFolderPath: string = remote.app.getPath("logs");
+  public readonly applicationFolderPath: string = window.userDataPath;
+  public readonly applicationLogsFolderPath: string = window.logPath;
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, "downloads");
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
@@ -81,7 +82,8 @@ export class WowUpService {
     private _preferenceStorageService: PreferenceStorageService,
     private _electronService: ElectronService,
     private _fileService: FileService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _analyticsService: AnalyticsService
   ) {
     this.setDefaultPreferences()
       // .then(() => console.debug("Set default preferences"))
@@ -126,6 +128,13 @@ export class WowUpService {
   public async isBetaBuild(): Promise<boolean> {
     const appVersion = await this.getApplicationVersion();
     return appVersion.toLowerCase().indexOf("beta") != -1;
+  }
+
+  public async openExternalLink(url: string): Promise<void> {
+    this._analyticsService.trackAction(USER_ACTION_OPEN_LINK, {
+      link: url,
+    });
+    await this._electronService.openExternal(url);
   }
 
   /**
@@ -248,7 +257,7 @@ export class WowUpService {
     return this._preferenceStorageService.getObject<AddonProviderState[]>(ADDON_PROVIDERS_KEY) || [];
   }
 
-  public getAddonProviderState(providerName: string): AddonProviderState {
+  public getAddonProviderState(providerName: string): AddonProviderState | undefined {
     const preference = this.getAddonProviderStates();
     return _.find(preference, (pref) => pref.providerName === providerName.toLowerCase());
   }
@@ -298,7 +307,7 @@ export class WowUpService {
   }
 
   public getMyAddonsSortOrder(): SortOrder[] {
-    return this._preferenceStorageService.getObject<SortOrder[]>(MY_ADDONS_SORT_ORDER);
+    return this._preferenceStorageService.getObject<SortOrder[]>(MY_ADDONS_SORT_ORDER) ?? [];
   }
 
   public setMyAddonsSortOrder(sortOrder: SortOrder[]): void {
@@ -313,11 +322,11 @@ export class WowUpService {
     this._preferenceStorageService.setObject(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
-  public get getAddonsSortOrder(): SortOrder {
+  public get getAddonsSortOrder(): SortOrder | undefined {
     return this._preferenceStorageService.getObject<SortOrder>(GET_ADDONS_SORT_ORDER);
   }
 
-  public set getAddonsSortOrder(sortOrder: SortOrder) {
+  public set getAddonsSortOrder(sortOrder: SortOrder | undefined) {
     this._preferenceStorageService.setObject(GET_ADDONS_SORT_ORDER, sortOrder);
   }
 

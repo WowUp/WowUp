@@ -29,7 +29,7 @@ export class TitlebarComponent implements OnDestroy {
   public isMaximized = false;
 
   private _subscriptions: Subscription[] = [];
-  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent>;
+  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent> | undefined;
 
   public isFullscreen = false;
 
@@ -92,10 +92,10 @@ export class TitlebarComponent implements OnDestroy {
 
   public async onDblClick(): Promise<void> {
     if (this.electronService.isMac) {
-      const action = this.electronService.getUserDefaultSystemPreference(
+      const action = await this.electronService.getUserDefaultSystemPreference<string>(
         "AppleActionOnDoubleClick",
         "string"
-      ) as string;
+      );
 
       if (action === "Maximize") {
         await this.electronService.invoke(IPC_MAXIMIZE_WINDOW);

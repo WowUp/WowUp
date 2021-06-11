@@ -1,0 +1,36 @@
+.tab-strip {
+  width: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .patreon-link {
+    padding: 0 0.25em;
+    .patron-img {
+      height: 25px;
+    }
+  }
+
+  .tab {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.selected {
+      border-left: 3px solid var(--background-primary);
+    }
+  }
+
+  .spacer {
+    flex-grow: 1;
+  }
+}

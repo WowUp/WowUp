@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { GetAddonListItemFilePropPipe } from "./get-addon-list-item-file-prop.pipe";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";

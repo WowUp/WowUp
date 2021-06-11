@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import { from, Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 
@@ -26,12 +25,12 @@ export class OptionsWowSectionComponent implements OnInit {
   ) as WowClientType[];
 
   public wowInstallations$: Observable<WowInstallation[]>;
-  public wowUpReleaseChannel: WowUpReleaseChannelType;
+  public wowUpReleaseChannel!: WowUpReleaseChannelType;
 
   public wowUpReleaseChannels: {
     type: WowUpReleaseChannelType;
     name: string;
-  }[] = getEnumList(WowUpReleaseChannelType).map((type: WowUpReleaseChannelType) => ({
+  }[] = getEnumList<WowUpReleaseChannelType>(WowUpReleaseChannelType).map((type: WowUpReleaseChannelType) => ({
     type,
     name: getEnumName(WowUpReleaseChannelType, type),
   }));

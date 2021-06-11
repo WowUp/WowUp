@@ -24,12 +24,12 @@ export interface GetAllResult {
 }
 
 export abstract class AddonProvider {
-  public name: AddonProviderType;
-  public enabled: boolean;
-  public forceIgnore: boolean;
-  public allowReinstall: boolean;
-  public allowChannelChange: boolean;
-  public allowEdit: boolean;
+  public name: AddonProviderType = "Zip";
+  public enabled = false;
+  public forceIgnore = true;
+  public allowReinstall = false;
+  public allowChannelChange = false;
+  public allowEdit = false;
   public allowViewAtSource = true;
   public canShowChangelog = true;
 
@@ -71,7 +71,7 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
     return of(undefined);
   }
 

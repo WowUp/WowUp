@@ -7,6 +7,10 @@ export function getEnumList<T>(enume: Record<string, unknown>): T[] {
   return keys.map((k) => enume[k as any]) as T[];
 }
 
-export function getEnumName(enume: Record<string, unknown>, value: number): string {
+export function getEnumName(enume: Record<string, unknown>, value: number | undefined): string {
+  if (value === undefined) {
+    throw new TypeError("Invalid value type");
+  }
+
   return enume[value] as string;
 }

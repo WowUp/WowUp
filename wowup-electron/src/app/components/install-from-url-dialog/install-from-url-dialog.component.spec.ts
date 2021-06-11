@@ -19,9 +19,7 @@ describe("InstallFromUrlDialogComponent", () => {
   console.log("InstallFromUrlDialogComponent");
   let component: InstallFromUrlDialogComponent;
   let fixture: ComponentFixture<InstallFromUrlDialogComponent>;
-  let sessionService: SessionService;
   let sessionServiceSpy: any;
-  let addonService: AddonService;
   let addonServiceSpy: any;
 
   beforeEach(async () => {
@@ -61,9 +59,6 @@ describe("InstallFromUrlDialogComponent", () => {
 
     fixture = TestBed.createComponent(InstallFromUrlDialogComponent);
     component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    sessionService = fixture.debugElement.injector.get(SessionService);
-    const icons = fixture.debugElement.injector.get(IconService);
 
     fixture.detectChanges();
   });

@@ -13,19 +13,19 @@ import { SessionService } from "../../services/session/session.service";
 import { PatchNotesService } from "../../services/wowup/patch-notes.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { AboutComponent } from "./about.component";
+import { DialogFactory } from "../../services/dialog/dialog.factory";
 
 describe("AboutComponent", () => {
   let component: AboutComponent;
   let fixture: ComponentFixture<AboutComponent>;
-  let electronService: ElectronService;
-  let wowUpService: WowUpService;
+  let wowupService: WowUpService;
   let electronServiceSpy: any;
-  let wowUpServiceSpy: any;
   let sessionService: SessionService;
   let patchNotesService: PatchNotesService;
+  let dialogFactory: DialogFactory;
 
   beforeEach(async () => {
-    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", {
+    wowupService = jasmine.createSpyObj("WowUpService", {
       getThemeLogoPath: () => "",
     });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [], {
@@ -37,6 +37,7 @@ describe("AboutComponent", () => {
     });
 
     patchNotesService = jasmine.createSpyObj("PatchNotesService", [""], {});
+    dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
 
     await TestBed.configureTestingModule({
       declarations: [AboutComponent],
@@ -60,10 +61,11 @@ describe("AboutComponent", () => {
       .overrideComponent(AboutComponent, {
         set: {
           providers: [
-            { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: WowUpService, useValue: wowupService },
             { provide: ElectronService, useValue: electronServiceSpy },
             { provide: SessionService, useValue: sessionService },
             { provide: PatchNotesService, useValue: patchNotesService },
+            { provide: DialogFactory, useValue: dialogFactory },
           ],
         },
       })
@@ -71,8 +73,6 @@ describe("AboutComponent", () => {
 
     fixture = TestBed.createComponent(AboutComponent);
     component = fixture.componentInstance;
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    electronService = fixture.debugElement.injector.get(ElectronService);
 
     fixture.detectChanges();
   });

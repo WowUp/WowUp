@@ -67,11 +67,16 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
   }
 
   public onInstall(): void {
+    const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+    if (!selectedInstallation || !this.addon) {
+      return;
+    }
+
     this.showInstallButton = false;
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, this._sessionService.getSelectedWowInstallation())
+      this._addonService.installPotentialAddon(this.addon, selectedInstallation)
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
@@ -87,14 +92,14 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
   }
 
   public getDownloadCountParams(): DownloadCounts {
-    const count = this.addon.downloadCount;
+    const count = this.addon?.downloadCount ?? 0;
     return {
       count,
       shortCount: roundDownloadCount(count),
       simpleCount: shortenDownloadCount(count, 1),
       myriadCount: shortenDownloadCount(count, 4),
       textCount: this._downloadCountPipe.transform(count),
-      provider: this.addon.providerName,
+      provider: this.addon?.providerName ?? "",
     };
   }
 
@@ -109,16 +114,18 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       return;
     }
 
-    const url: URL = this.getUrlFromQuery();
+    const url: URL | undefined = this.getUrlFromQuery();
     if (!url) {
       return;
     }
 
     try {
-      const importedAddon = await this._addonService.getAddonByUrl(
-        url,
-        this._sessionService.getSelectedWowInstallation()
-      );
+      const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+      if (!selectedInstallation) {
+        throw new Error(`Selected installation not found`);
+      }
+
+      const importedAddon = await this._addonService.getAddonByUrl(url, selectedInstallation);
       if (!importedAddon) {
         throw new Error("Addon not found");
       }
@@ -130,9 +137,9 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       const addonInstalled = this._addonService.isInstalled(
         importedAddon.externalId,
         importedAddon.providerName,
-        this._sessionService.getSelectedWowInstallation()
+        selectedInstallation
       );
-      
+
       if (addonInstalled) {
         this.showInstallSuccess = true;
         this.showInstallButton = false;

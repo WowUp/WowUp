@@ -65,7 +65,7 @@ export class WowUpAddonProvider extends AddonProvider {
   public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     try {
       const response = await this.getAddonById(externalId);
-      return response.addon?.description;
+      return response.addon?.description ?? "";
     } catch (e) {
       console.error("Failed to get description", e);
     }
@@ -195,7 +195,7 @@ export class WowUpAddonProvider extends AddonProvider {
 
     for (const addonFolder of addonFolders) {
       const scanResult = scanResults.find((sr) => sr.path === addonFolder.path);
-      if (!scanResult.exactMatch) {
+      if (!scanResult || !scanResult.exactMatch) {
         continue;
       }
 
@@ -243,11 +243,22 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
-  private hasMatchingFingerprint(scanResult: WowUpScanResult, release: WowUpAddonReleaseRepresentation) {
+  private hasMatchingFingerprint(
+    scanResult: WowUpScanResult,
+    release: WowUpAddonReleaseRepresentation | undefined
+  ): boolean {
+    if (!release?.addonFolders) {
+      return false;
+    }
+
     return release.addonFolders.some((addonFolder) => addonFolder.fingerprint == scanResult.fingerprint);
   }
 
-  private hasGameType(release: WowUpAddonReleaseRepresentation, clientType: WowGameType): boolean {
+  private hasGameType(release: WowUpAddonReleaseRepresentation | undefined, clientType: WowGameType): boolean {
+    if (!release) {
+      return false;
+    }
+
     const matchingVersion = this.getMatchingVersion(release, clientType);
     return matchingVersion !== undefined;
   }
@@ -301,7 +312,7 @@ export class WowUpAddonProvider extends AddonProvider {
     );
 
     const name = _.first(searchResultFiles)?.title ?? representation.repository_name;
-    const authors = _.first(searchResultFiles)?.authors ?? representation.owner_name;
+    const authors = _.first(searchResultFiles)?.authors ?? representation.owner_name ?? "";
 
     return {
       author: authors,
@@ -309,14 +320,14 @@ export class WowUpAddonProvider extends AddonProvider {
       externalUrl: representation.repository,
       name,
       providerName: this.name,
-      thumbnailUrl: representation.image_url || representation.owner_image_url,
+      thumbnailUrl: representation.image_url || representation.owner_image_url || "",
       downloadCount: representation.total_download_count,
       files: searchResultFiles,
       releasedAt: new Date(),
       screenshotUrl: "",
       screenshotUrls: [],
       summary: representation.description,
-      fundingLinks: [...representation.funding_links],
+      fundingLinks: [...(representation?.funding_links ?? [])],
     };
   }
 
@@ -326,22 +337,33 @@ export class WowUpAddonProvider extends AddonProvider {
     scanResult: AppWowUpScanResult
   ): Addon {
     const gameType = this.getWowGameType(installation.clientType);
-    const folders = scanResult.exactMatch.matched_release.addonFolders.map((af) => af.folder_name);
+    const matchedRelease = scanResult.exactMatch?.matched_release;
+    if (!matchedRelease || !matchedRelease.addonFolders) {
+      throw new Error("No matched release");
+    }
+
+    const folders = matchedRelease.addonFolders.map((af) => af.folder_name);
     const folderList = folders.join(", ");
     const channelType = addonChannelType;
 
-    let matchingVersion = this.getMatchingVersion(scanResult.exactMatch.matched_release, gameType);
+    let matchingVersion = this.getMatchingVersion(matchedRelease, gameType);
     if (!matchingVersion) {
-      matchingVersion = scanResult?.exactMatch?.matched_release?.game_versions[0];
+      matchingVersion = matchedRelease.game_versions[0];
       console.warn(
-        `No matching version found: ${scanResult.exactMatch.repository_name}, using fallback ${matchingVersion.interface}`
+        `No matching version found: ${scanResult.exactMatch?.repository_name ?? ""}, using fallback ${
+          matchingVersion?.interface ?? ""
+        }`
       );
     }
 
-    const name = matchingVersion?.title ?? scanResult.exactMatch.repository_name;
-    const version = matchingVersion?.version ?? scanResult.exactMatch.matched_release.tag_name;
-    const authors = matchingVersion?.authors ?? scanResult.exactMatch.owner_name;
+    const name = matchingVersion?.title ?? scanResult.exactMatch?.repository_name;
+    const version = matchingVersion?.version ?? scanResult.exactMatch?.matched_release?.tag_name;
+    const authors = matchingVersion?.authors ?? scanResult.exactMatch?.owner_name ?? "";
     const interfaceVer = matchingVersion?.interface;
+
+    if (!name || !version || !interfaceVer) {
+      throw new Error("Invalid matching version data");
+    }
 
     return {
       id: uuidv4(),
@@ -350,21 +372,21 @@ export class WowUpAddonProvider extends AddonProvider {
       channelType,
       autoUpdateEnabled: false,
       clientType: installation.clientType,
-      downloadUrl: scanResult.exactMatch.matched_release.download_url,
-      externalUrl: scanResult.exactMatch.repository,
-      externalId: scanResult.exactMatch.id.toString(),
+      downloadUrl: scanResult.exactMatch?.matched_release?.download_url ?? "",
+      externalUrl: scanResult.exactMatch?.repository ?? "unknown",
+      externalId: scanResult.exactMatch?.id.toString() ?? "unknown",
       gameVersion: getGameVersion(interfaceVer),
       installedAt: new Date(),
       installedFolders: folderList,
       installedFolderList: folders,
       installedVersion: version,
-      installedExternalReleaseId: scanResult.exactMatch.matched_release.id.toString(),
+      installedExternalReleaseId: scanResult.exactMatch?.matched_release?.id.toString() ?? "unknown",
       isIgnored: false,
       latestVersion: version,
       providerName: this.name,
-      providerSource: scanResult.exactMatch.source,
-      thumbnailUrl: scanResult.exactMatch.image_url,
-      fundingLinks: [...scanResult.exactMatch.funding_links],
+      providerSource: scanResult.exactMatch?.source ?? "unknown",
+      thumbnailUrl: scanResult.exactMatch?.image_url ?? "",
+      fundingLinks: [...(scanResult.exactMatch?.funding_links ?? [])],
       isLoadOnDemand: false,
       releasedAt: scanResult.exactMatch?.matched_release?.published_at,
       externalChannel: getEnumName(AddonChannelType, channelType),

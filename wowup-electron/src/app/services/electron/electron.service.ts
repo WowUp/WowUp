@@ -35,6 +35,8 @@ import {
   IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_SET_LOGIN_ITEM_SETTINGS,
   IPC_SET_ZOOM_LIMITS,
+  IPC_SHOW_OPEN_DIALOG,
+  IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
@@ -59,7 +61,7 @@ export class ElectronService {
   private readonly _customProtocolSrc = new BehaviorSubject("");
 
   private _appVersion = "";
-  private _opts: AppOptions;
+  private _opts!: AppOptions;
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
@@ -261,15 +263,15 @@ export class ElectronService {
     return new Notification(title, options);
   }
 
-  public showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
-    return window.wowup.showOpenDialog(options);
+  public async showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
+    return await this.invoke(IPC_SHOW_OPEN_DIALOG, options);
   }
 
-  public getUserDefaultSystemPreference(
+  public async getUserDefaultSystemPreference<T = any>(
     key: string,
     type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
-  ): any {
-    return window.wowup.systemPreferences.getUserDefault(key, type);
+  ): Promise<T> {
+    return await this.invoke(IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT, key, type);
   }
 
   public async sendIpcValueMessage<TIN, TOUT>(channel: string, value: TIN): Promise<TOUT> {

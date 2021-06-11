@@ -39,7 +39,6 @@ import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
-import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
 import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "../common/entities/addon";
@@ -62,13 +61,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: number;
 
   @HostListener("mousewheel", ["$event"])
-  public async handleMouseWheelEvent(event: any): Promise<void> {
+  public async handleMouseWheelEvent(event: WheelEvent): Promise<void> {
     if (!event.ctrlKey) {
       return;
     }
 
     try {
-      if (event.wheelDelta > 0) {
+      if ((event as any).wheelDelta > 0) {
         await this._zoomService.applyZoom(ZoomDirection.ZoomIn);
       } else {
         await this._zoomService.applyZoom(ZoomDirection.ZoomOut);
@@ -202,7 +201,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._zoomService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
   };
 
-  public onRequestInstallFromUrl = (evt: any, path?: string): void => {
+  public onRequestInstallFromUrl = (evt: unknown, path?: string): void => {
     this.openInstallFromUrlDialog(path);
   };
 

@@ -5,7 +5,7 @@ import { getGameVersion } from "../utils/addon.utils";
   name: "interfaceFormat",
 })
 export class InterfaceFormatPipe implements PipeTransform {
-  public transform(value: string, ...args: unknown[]): string {
+  public transform(value: string): string {
     return getGameVersion(value);
   }
 }

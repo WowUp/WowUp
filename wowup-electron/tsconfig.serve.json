@@ -1,17 +1,29 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "target": "es2015",
-    "types": ["node"],
-    "lib": ["es2017", "es2016", "es2015", "dom"]
+    "target": "es2017",
+    "module": "CommonJS",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "es2017",
+      "es2016",
+      "es2015",
+      "dom"
+    ]
   },
-  "files": ["main.ts", "preload.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "include": ["src/common/wowup.d.ts"]
+  "files": [
+    "app/main.ts",
+    "app/preload.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }
+  

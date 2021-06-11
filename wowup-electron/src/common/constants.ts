@@ -78,6 +78,8 @@ export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 export const IPC_GET_LATEST_DIR_UPDATE_TIME = "get-latest-dir-update-time";
+export const IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT = "system-preferences-get-user-default";
+export const IPC_SHOW_OPEN_DIALOG = "show-open-dialog";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
@@ -155,3 +157,9 @@ export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_BETA_FOLDER = "_beta_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
+
+export const USER_ACTION_BROWSE_CATEGORY = "browse-category";
+export const USER_ACTION_OPEN_LINK = "open-link";
+export const USER_ACTION_ADDON_SEARCH = "addon-search";
+export const USER_ACTION_ADDON_PROTOCOL_SEARCH = "addon-protocol-search";
+export const USER_ACTION_ADDON_INSTALL = "addon-install-action";

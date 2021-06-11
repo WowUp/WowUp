@@ -50,11 +50,16 @@ export class ZipAddonProvider extends AddonProvider {
       return "";
     }
 
-    const folders = addon.installedFolderList;
+    const folders = addon?.installedFolderList ?? [];
     const clientAddonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const allTocs = await this.getAllTocs(clientAddonFolderPath, folders);
 
     const primaryToc = this.getPrimaryToc(allTocs);
+    if (!primaryToc) {
+      console.warn("No primary toc found");
+      return "";
+    }
+
     const lines = _.map(Object.entries(primaryToc), ([key, value]) => {
       if (typeof value === "string" && !!value) {
         return `${key}: ${value}`;
@@ -103,7 +108,7 @@ export class ZipAddonProvider extends AddonProvider {
 
     await this.validateUrlContentType(addonUri);
 
-    const fileName = _.last(addonUri.pathname.split("/"));
+    const fileName = _.last(addonUri.pathname.split("/")) ?? "unknown";
 
     const potentialAddon: AddonSearchResult = {
       author: addonUri.hostname,
@@ -127,7 +132,7 @@ export class ZipAddonProvider extends AddonProvider {
 
     return from(this.validateUrlContentType(addonUri)).pipe(
       map(() => {
-        const fileName = _.last(addonUri.pathname.split("/"));
+        const fileName = _.last(addonUri.pathname.split("/")) ?? "unknown";
 
         const searchResultFile: AddonSearchResultFile = {
           channelType: AddonChannelType.Stable,
@@ -156,7 +161,7 @@ export class ZipAddonProvider extends AddonProvider {
 
   private async validateUrlContentType(addonUri: URL) {
     const response = await this.getUrlInfo(addonUri);
-    const contentType = response.headers.get("content-type");
+    const contentType = response.headers.get("content-type") ?? "";
     if (!VALID_ZIP_CONTENT_TYPES.includes(contentType)) {
       throw new Error(`Invalid zip content type ${contentType}`);
     }

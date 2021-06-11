@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { EventEmitter } from "events";
 import { SessionService } from "../../services/session/session.service";
 
 import { TableContextHeaderCellComponent } from "./table-context-header-cell.component";

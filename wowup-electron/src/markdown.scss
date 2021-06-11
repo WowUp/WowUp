@@ -1,4 +1,14 @@
 //This css based on https://github.com/sindresorhus/github-markdown-css
+
+.markdown-body {
+  * {
+    th {
+      font-family: Roboto, Helvetica Neue, sans-serif;
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+  }
+}
 .markdown-body .octicon {
   display: inline-block;
   fill: currentColor;

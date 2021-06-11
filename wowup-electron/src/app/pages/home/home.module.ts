@@ -19,6 +19,7 @@ import { InstallFromProtocolDialogComponent } from "../../components/install-fro
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
+import { NewsPanelComponent } from "../../components/news-panel/news-panel.component";
 import { OptionsAddonSectionComponent } from "../../components/options-addon-section/options-addon-section.component";
 import { OptionsAppSectionComponent } from "../../components/options-app-section/options-app-section.component";
 import { OptionsDebugSectionComponent } from "../../components/options-debug-section/options-debug-section.component";
@@ -85,6 +86,7 @@ import { HomeComponent } from "./home.component";
     AddonThumbnailComponent,
     PatchNotesDialogComponent,
     TrustHtmlPipe,
+    NewsPanelComponent,
   ],
   imports: [
     CommonModule,
