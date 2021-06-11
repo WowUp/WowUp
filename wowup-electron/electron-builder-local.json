@@ -55,15 +55,22 @@
   "mac": {
     "icon": "electron-build/icon.icns",
     "category": "public.app-category.games",
-    "target": ["default"],
+    "target": [
+      {
+        "target": "default",
+        "arch": ["x64", "arm64"]
+      }
+    ],
     "hardenedRuntime": true,
     "entitlements": "./electron-build/entitlements.mac.plist",
     "extendInfo": {
-      "CFBundleURLTypes": [{
-        "CFBundleTypeRole": "Shell",
-        "CFBundleURLName": "CurseForge",
-        "CFBundleURLSchemes": "curseforge"
-      }]
+      "CFBundleURLTypes": [
+        {
+          "CFBundleTypeRole": "Shell",
+          "CFBundleURLName": "CurseForge",
+          "CFBundleURLSchemes": "curseforge"
+        }
+      ]
     }
   },
   "linux": {
