@@ -4,7 +4,7 @@ import { find } from "lodash";
 import * as minimist from "minimist";
 import { arch as osArch, release as osRelease, type as osType } from "os";
 import { join } from "path";
-import { format as urlFormat } from "url";
+import { format as urlFormat, pathToFileURL } from "url";
 import { inspect } from "util";
 
 import { createAppMenu } from "./app-menu";
@@ -74,6 +74,7 @@ log.info("USER_AGENT", USER_AGENT);
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
+let loadFailCount = 0;
 
 // APP MENU SETUP
 createAppMenu(win);
@@ -322,7 +323,7 @@ function createWindow(): BrowserWindow {
 
   win.once("show", () => {
     // win.webContents.openDevTools();
-    
+
     if (mainWindowManager.isFullScreen) {
       win.setFullScreen(true);
     } else if (mainWindowManager.isMaximized) {
@@ -369,7 +370,13 @@ function createWindow(): BrowserWindow {
 
   win.webContents.on("did-fail-load", () => {
     log.info("did-fail-load");
-    loadMainUrl(win).catch((e) => log.error(e));
+    if (loadFailCount < 5) {
+      loadFailCount += 1;
+      loadMainUrl(win).catch((e) => log.error(e));
+    } else {
+      log.error(`Failed to load too many times, exiting`);
+      app.quit();
+    }
   });
 
   log.info(`Loading app URL: ${Date.now() - startedAt}ms`);
@@ -386,13 +393,8 @@ function createWindow(): BrowserWindow {
 }
 
 function loadMainUrl(window: BrowserWindow) {
-  return window?.loadURL(
-    urlFormat({
-      pathname: join(__dirname, "dist/index.html"),
-      protocol: "file:",
-      slashes: true,
-    })
-  );
+  const url = pathToFileURL(join(__dirname, "..", "dist", "index.html"));
+  return window?.loadURL(url.toString());
 }
 
 async function onActivate() {
