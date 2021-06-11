@@ -25,13 +25,12 @@ describe("AboutComponent", () => {
   let dialogFactory: DialogFactory;
 
   beforeEach(async () => {
-    wowupService = jasmine.createSpyObj("WowUpService", {
-    });
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [], {
+    wowupService = jasmine.createSpyObj("WowUpService", [""]);
+    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
       getVersionNumber: () => Promise.resolve("2.0.0"),
     });
 
-    sessionService = jasmine.createSpyObj("SessionService", [], {
+    sessionService = jasmine.createSpyObj("SessionService", [""], {
       selectedHomeTab$: new BehaviorSubject(1),
     });
 
