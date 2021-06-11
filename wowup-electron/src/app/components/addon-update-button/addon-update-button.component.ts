@@ -10,6 +10,7 @@ import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AddonService } from "../../services/addons/addon.service";
 import { getEnumName } from "../../utils/enum.utils";
+import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 
 @Component({
   selector: "app-addon-update-button",
@@ -43,13 +44,17 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    if (this.listItem.addon?.providerName === ADDON_PROVIDER_UNKNOWN) {
+      return;
+    }
+
     if (
       this.listItem.addon === undefined ||
       !this.listItem.addon.id ||
       !this.listItem.addon.externalId ||
       !this.listItem.addon.providerName
     ) {
-      console.warn("Invalid list item addon");
+      console.warn("Invalid list item addon", this.listItem);
       return;
     }
 

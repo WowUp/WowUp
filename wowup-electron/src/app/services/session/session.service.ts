@@ -1,10 +1,10 @@
 import * as _ from "lodash";
 import { BehaviorSubject, Subject } from "rxjs";
-import { filter } from "rxjs/operators";
+import { filter, first } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
-import { SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
+import { SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS, TAB_INDEX_MY_ADDONS } from "../../../common/constants";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";

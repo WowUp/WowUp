@@ -48,7 +48,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   public readonly TAB_INDEX_NEWS = TAB_INDEX_NEWS;
   public readonly TAB_INDEX_SETTINGS = TAB_INDEX_SETTINGS;
 
-  public selectedIndex = 0;
   public hasWowClient = false;
   public appReady = false;
   public preloadSpinnerKey = "COMMON.PROGRESS_SPINNER.LOADING";
@@ -67,7 +66,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   ) {
     const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
       this.hasWowClient = installations.length > 0;
-      this.selectedIndex = this.hasWowClient ? 0 : 3;
     });
 
     const customProtocolSub = this.electronService.customProtocol$
@@ -126,7 +124,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    const wowInstallInitialSub = this._warcraftInstallationService.wowInstallations$
+    this._warcraftInstallationService.wowInstallations$
       .pipe(
         first(),
         switchMap((installations) => {
@@ -141,7 +139,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this.initAppUpdateCheck();
 
-    this._subscriptions.push(powerMonitorSub, wowInstallInitialSub);
+    this._subscriptions.push(powerMonitorSub);
   }
 
   public ngOnDestroy(): void {

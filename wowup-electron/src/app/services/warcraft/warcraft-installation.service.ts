@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { from, ReplaySubject, Subject } from "rxjs";
 import { map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,9 +25,10 @@ import { WarcraftService } from "./warcraft.service";
   providedIn: "root",
 })
 export class WarcraftInstallationService {
-  private readonly _wowInstallationsSrc = new BehaviorSubject<WowInstallation[]>([]);
+  private readonly _wowInstallationsSrc = new ReplaySubject<WowInstallation[]>(1);
   private readonly _legacyInstallationSrc = new Subject<WowInstallation[]>();
 
+  private _wowInstallations: WowInstallation[] = [];
   private _blizzardAgentPath = "";
 
   public readonly wowInstallations$ = this._wowInstallationsSrc.asObservable();
@@ -44,6 +45,10 @@ export class WarcraftInstallationService {
     private _fileService: FileService,
     private _electronService: ElectronService
   ) {
+    this._wowInstallationsSrc.subscribe((installations) => {
+      this._wowInstallations = installations;
+    });
+
     from(this._warcraftService.getBlizzardAgentPath())
       .pipe(
         tap((blizzardAgentPath) => {
@@ -71,7 +76,7 @@ export class WarcraftInstallationService {
       return undefined;
     }
 
-    return this._wowInstallationsSrc.value.find((installation) => installation.id === installationId);
+    return this._wowInstallations.find((installation) => installation.id === installationId);
   }
 
   public getWowInstallationsByClientType(clientType: WowClientType): WowInstallation[] {
