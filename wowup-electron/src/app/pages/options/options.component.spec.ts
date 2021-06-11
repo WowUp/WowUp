@@ -19,9 +19,7 @@ describe("OptionsComponent", () => {
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj(
       "WowUpService",
-      {
-        getThemeLogoPath: () => "",
-      },
+      {},
       {
         currentTheme: "horde ofc",
       }

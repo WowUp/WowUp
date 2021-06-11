@@ -23,9 +23,7 @@ describe("TitlebarComponent", () => {
     });
     wowUpServiceSpy = jasmine.createSpyObj(
       "WowUpService",
-      {
-        getThemeLogoPath: () => "",
-      },
+      {},
       {
         currentTheme: "horde ofc",
       }

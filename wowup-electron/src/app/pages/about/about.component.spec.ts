@@ -26,7 +26,6 @@ describe("AboutComponent", () => {
 
   beforeEach(async () => {
     wowupService = jasmine.createSpyObj("WowUpService", {
-      getThemeLogoPath: () => "",
     });
     electronServiceSpy = jasmine.createSpyObj("ElectronService", [], {
       getVersionNumber: () => Promise.resolve("2.0.0"),
