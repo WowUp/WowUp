@@ -39,18 +39,18 @@
   }
 
   .channel {
-    background: $dark-4;
+    background: var(--background-secondary-4);
     text-align: center;
     font-weight: 400;
     padding: 1px 4px;
     border-radius: 4px;
 
     &.beta {
-      color: $rare-color;
+      color: var(--rare-color);
     }
 
     &.alpha {
-      color: $epic-color;
+      color: var(--epic-color);
     }
   }
 
@@ -67,12 +67,12 @@
     &:hover {
       cursor: pointer;
       text-decoration: underline;
-      color: $white-2;
+      color: var(--text-2);
     }
   }
 
   .addon-version {
-    color: $white-2;
+    color: var(--text-2);
     font-size: 14px;
     line-height: 14px;
     display: flex;

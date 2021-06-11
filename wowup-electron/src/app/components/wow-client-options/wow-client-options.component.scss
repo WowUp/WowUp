@@ -13,7 +13,7 @@
 }
 .option-card {
   margin-top: 1em;
-  background-color: $dark-2;
+  background-color: var(--background-secondary-2);
 }
 
 .title {
@@ -31,7 +31,7 @@ p {
 }
 
 .setting-section {
-  background-color: $dark-4;
+  background-color: var(--background-secondary-4);
 }
 
 .folder-input {

@@ -69,7 +69,7 @@
 
 .no-addons-container {
   display: flex;
-  color: $white-1;
+  color: var(--text-1);
   justify-content: center;
   flex-direction: column;
   align-items: center;
@@ -173,13 +173,12 @@
 
 .column-menu {
   padding: 0.5em;
-  color: $white-1;
+  color: var(--text-1);
 
   p {
     margin-bottom: 0.5em;
   }
 }
-
 
 .open-in-browser-icon {
   width: 12px;

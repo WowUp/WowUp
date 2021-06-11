@@ -71,7 +71,7 @@ footer {
       }
 
       &:disabled {
-        background-color: $dark-2;
+        background-color: var(--background-secondary-2);
       }
     }
 

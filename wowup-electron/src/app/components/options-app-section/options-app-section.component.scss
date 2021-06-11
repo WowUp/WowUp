@@ -5,7 +5,7 @@
   max-width: 660px;
 
   .hint {
-    color: $white-3;
+    color: var(--text-3);
   }
 }
 
@@ -16,7 +16,6 @@
   .divider {
     margin-top: 20px;
     height: 1px;
-    border-top: thin solid $dark-1;
+    border-top: thin solid var(--background-secondary-1);
   }
 }
-
