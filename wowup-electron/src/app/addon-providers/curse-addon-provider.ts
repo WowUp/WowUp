@@ -426,7 +426,7 @@ export class CurseAddonProvider extends AddonProvider {
 
       const searchResult = this.getAddonSearchResult(result, latestFiles);
       if (searchResult) {
-        searchResults.push();
+        searchResults.push(searchResult);
       }
     }
 
