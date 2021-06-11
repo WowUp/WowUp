@@ -1,4 +1,4 @@
-import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { from, of, Subscription } from "rxjs";
 import { catchError, delay, first, map, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";

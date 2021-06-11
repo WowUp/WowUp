@@ -62,7 +62,7 @@ describe("DownloadCountPipe", () => {
     it(`should transform the number ${number} to ${index}`, () => {
       component.number = number;
       fixture.detectChanges();
-      let p = fixture.debugElement.nativeElement.querySelector("p");
+      const p = fixture.debugElement.nativeElement.querySelector("p");
       expect(p.innerHTML).toBe(`COMMON.DOWNLOAD_COUNT.${index}`);
     });
   }

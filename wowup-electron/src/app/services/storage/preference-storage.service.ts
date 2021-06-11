@@ -19,7 +19,7 @@ export class PreferenceStorageService {
     return action(this._store);
   }
 
-  public set(key: string, value: any): void {
+  public set(key: string, value: unknown): void {
     this._store.set(key, value.toString());
   }
 

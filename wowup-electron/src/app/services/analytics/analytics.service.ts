@@ -103,7 +103,7 @@ export class AnalyticsService {
     this._insights.trackPageView();
 
     // If telemetry is off, don't let it track anything
-    this._insights.addTelemetryInitializer((envelop) => {
+    this._insights.addTelemetryInitializer(() => {
       if (!this.telemetryEnabled) {
         return false;
       }

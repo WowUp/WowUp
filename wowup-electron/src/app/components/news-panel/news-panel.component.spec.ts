@@ -1,11 +1,5 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
-import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { BehaviorSubject } from "rxjs";
-import { httpLoaderFactory } from "../../app.module";
-import { MatModule } from "../../mat-module";
 import { ElectronService } from "../../services";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { NewsService } from "../../services/news/news.service";

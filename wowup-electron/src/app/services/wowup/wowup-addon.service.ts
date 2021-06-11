@@ -80,7 +80,7 @@ export class WowUpAddonService {
         this.updateForInstallation(installation).catch((e) => console.error(e));
       });
 
-    _addonService.addonRemoved$.subscribe((addon) => {
+    _addonService.addonRemoved$.subscribe(() => {
       this.updateForAllClientTypes().catch((e) => console.error(e));
     });
   }

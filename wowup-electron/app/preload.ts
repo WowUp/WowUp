@@ -1,14 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../src/common/wowup.d.ts" />
 
-import {
-  ipcRenderer,
-  IpcRendererEvent,
-  shell,
-  OpenExternalOptions,
-  OpenDialogOptions,
-  OpenDialogReturnValue,
-} from "electron";
+import { ipcRenderer, IpcRendererEvent, shell, OpenExternalOptions } from "electron";
 import * as log from "electron-log";
 import { join } from "path";
 import * as platform from "./platform";
@@ -80,11 +73,6 @@ function openPath(path: string): Promise<string> {
   return shell.openPath(path);
 }
 
-function showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
-  throw new Error("Not implemented");
-  // return remote.dialog.showOpenDialog(options);
-}
-
 if (window.opener === null) {
   window.log = log;
   window.libs = {
@@ -102,7 +90,6 @@ if (window.opener === null) {
     rendererOff,
     rendererOn,
     openExternal,
-    showOpenDialog,
     openPath,
   };
 } else {

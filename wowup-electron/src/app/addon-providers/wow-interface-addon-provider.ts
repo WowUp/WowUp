@@ -20,7 +20,6 @@ import { getGameVersion } from "../utils/addon.utils";
 import { convertBbcode } from "../utils/bbcode.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import { filter } from "lodash";
 import { strictFilter } from "../utils/array.utils";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
@@ -111,7 +110,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     return searchResult;
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
+  public getById(addonId: string): Observable<AddonSearchResult | undefined> {
     return from(this.getAddonDetails(addonId)).pipe(
       map((result) => (result ? this.toAddonSearchResult(result, "") : undefined))
     );

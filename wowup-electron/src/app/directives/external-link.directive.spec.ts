@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { ExternalLinkDirective } from "./external-link.directive";
 import { Component } from "@angular/core";
-import { ElectronService } from "../services";
 import { mockPreload } from "../tests/test-helpers";
 import { WowUpService } from "../services/wowup/wowup.service";
 
@@ -13,13 +12,10 @@ class TestAppExternalLinkComponent {}
 describe("ExternalLinkDirective", () => {
   let component: TestAppExternalLinkComponent;
   let fixture: ComponentFixture<TestAppExternalLinkComponent>;
-  let shellSpy: any;
   let wowUpService: any;
 
   beforeEach(async () => {
     mockPreload();
-
-    shellSpy = jasmine.createSpyObj("Shell", ["openExternal"]);
 
     wowUpService = jasmine.createSpyObj("WowUpService", ["openExternalLink"], {});
 

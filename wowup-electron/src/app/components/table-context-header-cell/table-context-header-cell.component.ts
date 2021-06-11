@@ -1,6 +1,6 @@
 import { Component, NgZone } from "@angular/core";
 import { IHeaderAngularComp } from "ag-grid-angular";
-import { IHeaderParams, IAfterGuiAttachedParams } from "ag-grid-community";
+import { IHeaderParams } from "ag-grid-community";
 import { SessionService } from "../../services/session/session.service";
 import { BehaviorSubject } from "rxjs";
 
@@ -29,11 +29,11 @@ export class TableContextHeaderCellComponent implements IHeaderAngularComp {
     this.onSortChanged();
   }
 
-  public refresh(params: IHeaderParams): boolean {
+  public refresh(): boolean {
     return false;
   }
 
-  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
+  public afterGuiAttached?(): void {}
 
   public onSortRequested(event: KeyboardEvent): void {
     if (this.params.enableSorting !== true) {

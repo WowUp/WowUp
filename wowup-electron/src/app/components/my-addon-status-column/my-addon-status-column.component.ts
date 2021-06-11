@@ -1,5 +1,5 @@
 import { AgRendererComponent } from "ag-grid-angular";
-import { IAfterGuiAttachedParams, ICellRendererParams } from "ag-grid-community";
+import { ICellRendererParams } from "ag-grid-community";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 
@@ -77,11 +77,11 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
     this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  public refresh(params: ICellRendererParams): boolean {
+  public refresh(): boolean {
     return false;
   }
 
-  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
+  public afterGuiAttached?(): void {}
 
   public getStatusText(addon: Addon | undefined, installState = AddonInstallState.Unknown): string {
     if (!addon) {

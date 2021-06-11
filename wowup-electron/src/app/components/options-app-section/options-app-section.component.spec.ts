@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { HttpClientModule } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
 import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { FileService } from "../../services/files/file.service";
@@ -19,15 +17,10 @@ import { ZoomService } from "../../services/zoom/zoom.service";
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
   let fixture: ComponentFixture<OptionsAppSectionComponent>;
-  let electronService: ElectronService;
   let electronServiceSpy: any;
-  let wowUpService: WowUpService;
   let wowUpServiceSpy: any;
-  let sessionService: SessionService;
   let sessionServiceSpy: any;
-  let fileService: FileService;
   let fileServiceSpy: any;
-  let analyticsService: AnalyticsService;
   let analyticsServiceSpy: any;
   let zoomService: ZoomService;
 

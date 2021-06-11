@@ -9,7 +9,7 @@ import {
 } from "ag-grid-community";
 import * as _ from "lodash";
 import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } from "rxjs";
-import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
+import { catchError, filter, first, map, switchMap } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
@@ -127,7 +127,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
 
   public readonly showTable$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
-    map(([isBusy, hasData]) => {
+    map(([isBusy]) => {
       return isBusy === false;
     })
   );
@@ -388,7 +388,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER"),
         valueFormatter: (row) => this.downloadCountPipe.transform(row.data.downloadCount),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "downloadCount"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "downloadCount"),
         ...baseColumn,
       },
       {
@@ -397,7 +397,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
         valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.releasedAt),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "releasedAt"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "releasedAt"),
         ...baseColumn,
       },
       {
@@ -405,7 +405,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "author"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "author"),
         cellRenderer: "wrapTextCell",
         ...baseColumn,
       },
@@ -414,14 +414,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.PROVIDER_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "providerName"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "providerName"),
         ...baseColumn,
       },
       {
         field: "status",
         flex: 1,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "status"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "status"),
         cellRenderer: "statusRenderer",
         ...baseColumn,
       },
@@ -562,7 +562,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       try {
         return new GetAddonListItem(addon, this.defaultAddonChannel);
       } catch (e) {
-        console.error(e);
+        console.error("formatAddons", e);
         console.error(addon);
       }
     });

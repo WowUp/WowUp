@@ -17,7 +17,7 @@ export class VerticalTabsComponent implements OnInit {
       tooltipKey: "PAGES.HOME.MY_ADDONS_TAB_TITLE",
       icon: "fas:dice-d6",
       isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === 0)),
-      onClick: () => {
+      onClick: (): void => {
         this.sessionService.selectedHomeTab = 0;
       },
     },
@@ -25,7 +25,7 @@ export class VerticalTabsComponent implements OnInit {
       tooltipKey: "PAGES.HOME.GET_ADDONS_TAB_TITLE",
       icon: "fas:search",
       isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === 1)),
-      onClick: () => {
+      onClick: (): void => {
         this.sessionService.selectedHomeTab = 1;
       },
     },
@@ -33,7 +33,7 @@ export class VerticalTabsComponent implements OnInit {
       tooltipKey: "PAGES.HOME.ABOUT_TAB_TITLE",
       icon: "fas:info-circle",
       isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === 2)),
-      onClick: () => {
+      onClick: (): void => {
         this.sessionService.selectedHomeTab = 2;
       },
     },
@@ -42,7 +42,7 @@ export class VerticalTabsComponent implements OnInit {
       icon: "fas:newspaper",
       badge: true,
       isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === 3)),
-      onClick: () => {
+      onClick: (): void => {
         this.sessionService.selectedHomeTab = 3;
       },
     },
@@ -56,7 +56,7 @@ export class VerticalTabsComponent implements OnInit {
       tooltipKey: "PAGES.HOME.OPTIONS_TAB_TITLE",
       icon: "fas:cog",
       isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === 4)),
-      onClick: () => {
+      onClick: (): void => {
         this.sessionService.selectedHomeTab = 4;
       },
     },

@@ -3,8 +3,8 @@ import { Subject } from "rxjs";
 
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { TestBed } from "@angular/core/testing";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
@@ -13,21 +13,17 @@ import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { Addon } from "../../../common/entities/addon";
 import { MatModule } from "../../mat-module";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
-import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { mockPreload } from "../../tests/test-helpers";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;
   let addonServiceSpy: any;
-  let electronServiceSpy: ElectronService;
   let sessionServiceSpy: SessionService;
-  let dialogFactory: DialogFactory;
   let wowUpService: WowUpService;
 
   beforeEach(async () => {
@@ -44,12 +40,6 @@ describe("AddonDetailComponent", () => {
     );
 
     wowUpService = jasmine.createSpyObj("WowUpService", [""], {});
-
-    dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
-
-    electronServiceSpy = jasmine.createSpyObj("ElectronService", [""], {
-      onRendererEvent: () => undefined,
-    });
 
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {
       getSelectedWowInstallation: () => "description",

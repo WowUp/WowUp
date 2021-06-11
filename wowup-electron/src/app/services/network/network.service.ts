@@ -65,7 +65,7 @@ export class CircuitBreakerWrapper {
     );
   }
 
-  public postJson<T>(url: URL | string, body: any, timeoutMs?: number): Promise<T> {
+  public postJson<T>(url: URL | string, body: unknown, timeoutMs?: number): Promise<T> {
     return this.fire<T>(() =>
       this._httpClient
         .post<T>(url.toString(), body)

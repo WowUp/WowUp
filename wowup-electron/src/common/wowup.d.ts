@@ -1,4 +1,4 @@
-import { IpcRendererEvent, OpenExternalOptions, OpenDialogOptions, OpenDialogReturnValue } from "electron";
+import { IpcRendererEvent, OpenExternalOptions } from "electron";
 import { ElectronLog } from "electron-log";
 
 // Events that can be sent from main to renderer
@@ -67,7 +67,8 @@ declare type RendererChannels =
   | "store-get-object"
   | "store-set-object"
   | "get-latest-dir-update-time"
-  | "system-preferences-get-user-default";
+  | "system-preferences-get-user-default"
+  | "show-open-dialog";
 
 declare global {
   interface Window {
@@ -87,7 +88,6 @@ declare global {
       rendererOff: (event: string | symbol, listener: (...args: any[]) => void) => void;
       rendererOn: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       openExternal: (url: string, options?: OpenExternalOptions) => Promise<void>;
-      showOpenDialog: (options: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
       openPath: (path: string) => Promise<string>;
     };
   }

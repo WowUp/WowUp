@@ -1,5 +1,15 @@
 import axios from "axios";
-import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent, Settings, shell, systemPreferences } from "electron";
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  IpcMainInvokeEvent,
+  OpenDialogOptions,
+  Settings,
+  shell,
+  systemPreferences,
+} from "electron";
 import * as log from "electron-log";
 import * as fs from "fs-extra";
 import * as globrex from "globrex";
@@ -54,6 +64,7 @@ import {
   IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
   IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
+  IPC_SHOW_OPEN_DIALOG,
 } from "../src/common/constants";
 import { CurseFolderScanner } from "../src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
@@ -422,6 +433,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_WINDOW_LEAVE_FULLSCREEN, () => {
     window?.setFullScreen(false);
+  });
+
+  handle(IPC_SHOW_OPEN_DIALOG, async (evt, options: OpenDialogOptions) => {
+    return await dialog.showOpenDialog(options);
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {

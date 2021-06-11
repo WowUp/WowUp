@@ -15,7 +15,6 @@ export function mockPreload(): void {
     rendererOff: () => {},
     rendererOn: () => {},
     rendererSend: () => {},
-    showOpenDialog: () => Promise.resolve({} as any),
   };
 }
 

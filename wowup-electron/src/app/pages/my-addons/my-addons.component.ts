@@ -47,7 +47,6 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpAddonService } from "../../services/wowup/wowup-addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
-import { getEnumName } from "../../utils/enum.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { SortOrder } from "../../models/wowup/sort-order";
 
@@ -1176,14 +1175,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
         cellRenderer: "myAddonStatus",
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "sortOrder"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "sortOrder"),
         ...baseColumn,
       },
       {
         field: "installedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.UPDATED_AT_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "installedAt"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "installedAt"),
         ...baseColumn,
         cellRenderer: "dateTooltipCell",
       },
@@ -1191,14 +1190,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "latestVersion",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.LATEST_VERSION_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "latestVersion"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "latestVersion"),
         ...baseColumn,
       },
       {
         field: "releasedAt",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "releasedAt"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "releasedAt"),
         ...baseColumn,
         cellRenderer: "dateTooltipCell",
       },
@@ -1207,7 +1206,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         sortable: true,
         minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.GAME_VERSION_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "gameVersion"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "gameVersion"),
         ...baseColumn,
       },
       {
@@ -1216,7 +1215,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         flex: 1,
         minWidth: 125,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_RELEASE_CHANNEL"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "externalChannel"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "externalChannel"),
         ...baseColumn,
       },
       {
@@ -1224,7 +1223,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER"),
         valueFormatter: (row) => this.getProviderName(row.data.providerName),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "providerName"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "providerName"),
         ...baseColumn,
       },
       {
@@ -1233,7 +1232,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         minWidth: 120,
         flex: 1,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.AUTHOR_COLUMN_HEADER"),
-        comparator: (va, vb, na, nb, inv) => this.compareElement(na, nb, "author"),
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "author"),
         cellRenderer: "wrapTextCell",
         ...baseColumn,
       },

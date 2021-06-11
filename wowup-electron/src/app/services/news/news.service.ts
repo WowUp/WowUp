@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
+import { AppConfig } from "../../../environments/environment";
 import { NetworkService } from "../network/network.service";
 
 declare type NewsFeedType = "xml";
@@ -21,8 +22,7 @@ export interface NewsItem {
 }
 
 class WowTavernFeed implements NewsFeed {
-  public url =
-    "https://www.warcrafttavern.com/?call_custom_simple_rss=1&csrp_post_type=wow-classic-news,tbc-classic-news,retail-news&csrp_thumbnail_size=full";
+  public url = AppConfig.warcraftTavernNewsFeedUrl;
 
   public type: NewsFeedType = "xml";
 

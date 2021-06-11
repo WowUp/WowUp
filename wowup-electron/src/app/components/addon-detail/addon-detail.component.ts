@@ -19,7 +19,7 @@ import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
-import { Addon, AddonFundingLink } from "../../../common/entities/addon";
+import { AddonFundingLink } from "../../../common/entities/addon";
 import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";

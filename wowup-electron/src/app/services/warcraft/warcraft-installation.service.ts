@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as path from "path";
 import { BehaviorSubject, from, Subject } from "rxjs";
-import { filter, map, switchMap, tap } from "rxjs/operators";
+import { map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";

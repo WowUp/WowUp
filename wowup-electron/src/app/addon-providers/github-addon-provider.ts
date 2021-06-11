@@ -24,7 +24,7 @@ import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file"
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { WowInstallation } from "../models/wowup/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
-import { strictFilter, strictFilterBy } from "../utils/array.utils";
+import { strictFilterBy } from "../utils/array.utils";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline";
 
@@ -107,11 +107,7 @@ export class GitHubAddonProvider extends AddonProvider {
 
     try {
       const results = await this.getReleases(repoPath);
-      const result = await this.getLatestValidAsset(
-        results,
-        installation.clientType,
-        installation.defaultAddonChannelType
-      );
+      const result = await this.getLatestValidAsset(results, installation.clientType);
       console.log("result", result);
       if (!result) {
         if ([WowClientType.ClassicEra].includes(installation.clientType)) {
@@ -225,8 +221,7 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private async getLatestValidAsset(
     releases: GitHubRelease[],
-    clientType: WowClientType,
-    channel: AddonChannelType
+    clientType: WowClientType
   ): Promise<{ asset: GitHubAsset; release: GitHubRelease } | undefined> {
     let sortedReleases = _.filter(releases, (r) => !r.draft);
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();

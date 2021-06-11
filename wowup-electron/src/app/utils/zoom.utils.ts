@@ -12,15 +12,15 @@ export enum ZoomDirection {
   ZoomUnknown,
 }
 
-export function isZoomInShortcut(event: KeyboardEvent) {
+export function isZoomInShortcut(event: KeyboardEvent): boolean {
   return event.ctrlKey && event.code === ZOOM_IN_CODE;
 }
 
-export function isZoomOutShortcut(event: KeyboardEvent) {
+export function isZoomOutShortcut(event: KeyboardEvent): boolean {
   return event.ctrlKey && event.code === ZOOM_OUT_CODE;
 }
 
-export function isZoomResetShortcut(event: KeyboardEvent) {
+export function isZoomResetShortcut(event: KeyboardEvent): boolean {
   return event.ctrlKey && event.code === ZOOM_RESET_CODE;
 }
 

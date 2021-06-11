@@ -17,7 +17,6 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import { add } from "lodash";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";

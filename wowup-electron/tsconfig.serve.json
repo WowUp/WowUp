@@ -1,16 +1,29 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2015",
-    "types": ["node"],
-    "lib": ["ES2017", "ES2016", "ES2015", "DOM", "ES2020.String", "ES2019.Array", "ESNext.String"]
+    "target": "es2017",
+    "module": "CommonJS",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "es2017",
+      "es2016",
+      "es2015",
+      "dom"
+    ]
   },
-  "files": ["app/main.ts", "app/preload.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "files": [
+    "app/main.ts",
+    "app/preload.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }
   

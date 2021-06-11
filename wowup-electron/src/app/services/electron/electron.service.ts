@@ -35,6 +35,7 @@ import {
   IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_SET_LOGIN_ITEM_SETTINGS,
   IPC_SET_ZOOM_LIMITS,
+  IPC_SHOW_OPEN_DIALOG,
   IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
@@ -262,8 +263,8 @@ export class ElectronService {
     return new Notification(title, options);
   }
 
-  public showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
-    return window.wowup.showOpenDialog(options);
+  public async showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
+    return await this.invoke(IPC_SHOW_OPEN_DIALOG, options);
   }
 
   public async getUserDefaultSystemPreference<T = any>(

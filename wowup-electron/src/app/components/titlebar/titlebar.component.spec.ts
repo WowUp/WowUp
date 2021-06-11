@@ -14,9 +14,7 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 describe("TitlebarComponent", () => {
   let component: TitlebarComponent;
   let fixture: ComponentFixture<TitlebarComponent>;
-  let electronService: ElectronService;
   let electronServiceSpy: any;
-  let wowUpService: WowUpService;
   let wowUpServiceSpy: any;
 
   beforeEach(async () => {
@@ -65,8 +63,6 @@ describe("TitlebarComponent", () => {
 
     fixture = TestBed.createComponent(TitlebarComponent);
     component = fixture.componentInstance;
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
 
     fixture.detectChanges();
   });

@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 

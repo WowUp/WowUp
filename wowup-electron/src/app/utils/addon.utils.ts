@@ -1,4 +1,4 @@
-import { orderBy, filter, map } from "lodash";
+import { orderBy, filter } from "lodash";
 import { Addon, AddonExternalId } from "../../common/entities/addon";
 import { AddonDependency, AddonDependencyType } from "../../common/wowup/models";
 

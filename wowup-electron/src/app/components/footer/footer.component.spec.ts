@@ -7,7 +7,7 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { SessionService } from "../../services/session/session.service";
 import { OverlayModule } from "@angular/cdk/overlay";
-import { BehaviorSubject, of, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { UpdateCheckResult } from "electron-updater";
 import { MatModule } from "../../mat-module";
 

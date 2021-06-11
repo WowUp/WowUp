@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { AgRendererComponent } from "ag-grid-angular";
-import { ICellRendererParams, IAfterGuiAttachedParams } from "ag-grid-community";
+import { ICellRendererParams } from "ag-grid-community";
 
 @Component({
   selector: "app-cell-wrap-text",
@@ -16,9 +16,9 @@ export class CellWrapTextComponent implements AgRendererComponent {
     this.params = params;
   }
 
-  public refresh(params: ICellRendererParams): boolean {
+  public refresh(): boolean {
     return false;
   }
 
-  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
+  public afterGuiAttached?(): void {}
 }

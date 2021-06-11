@@ -5,9 +5,9 @@ export class ErrorHandlerInterceptor implements ErrorHandler {
   public constructor(private _analytics: AnalyticsService) {}
 
   // ErrorHandler
-  public handleError(error: any): void {
+  public handleError(error: Error): void {
     console.error("Caught error", error);
 
-    this._analytics.trackError(error.originalError || error);
+    this._analytics.trackError((error as any).innerError ?? error);
   }
 }

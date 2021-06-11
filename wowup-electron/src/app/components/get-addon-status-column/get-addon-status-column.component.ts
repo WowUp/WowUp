@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { AgRendererComponent } from "ag-grid-angular";
-import { ICellRendererParams, IAfterGuiAttachedParams } from "ag-grid-community";
+import { ICellRendererParams } from "ag-grid-community";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 
 @Component({
@@ -13,7 +13,7 @@ export class GetAddonStatusColumnComponent implements AgRendererComponent {
 
   @Output() public onInstallViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
-  public refresh(params: ICellRendererParams): boolean {
+  public refresh(): boolean {
     return false;
   }
 
@@ -21,7 +21,7 @@ export class GetAddonStatusColumnComponent implements AgRendererComponent {
     this.addonSearchResult = params.data.searchResult;
   }
 
-  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
+  public afterGuiAttached?(): void {}
 
   public onInstallButtonUpdated(): void {
     this.onInstallViewUpdated.emit(true);

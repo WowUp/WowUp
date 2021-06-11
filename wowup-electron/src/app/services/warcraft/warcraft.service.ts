@@ -1,6 +1,5 @@
-import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { filter, map } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
@@ -215,7 +214,7 @@ export class WarcraftService {
   //   return await this._fileService.pathExists(executablePath);
   // }
 
-  public async getBlizzardAgentPath() {
+  public async getBlizzardAgentPath(): Promise<string> {
     const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
     if (storedAgentPath) {
       return storedAgentPath;

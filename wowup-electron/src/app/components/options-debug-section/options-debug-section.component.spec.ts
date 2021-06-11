@@ -12,8 +12,6 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 describe("OptionsDebugSectionComponent", () => {
   let component: OptionsDebugSectionComponent;
   let fixture: ComponentFixture<OptionsDebugSectionComponent>;
-  let addonService: AddonService;
-  let wowUpService: WowUpService;
   let addonServiceSpy: any;
   let wowUpServiceSpy: any;
 
@@ -52,8 +50,6 @@ describe("OptionsDebugSectionComponent", () => {
 
     fixture = TestBed.createComponent(OptionsDebugSectionComponent);
     component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
 
     fixture.detectChanges();
   });
