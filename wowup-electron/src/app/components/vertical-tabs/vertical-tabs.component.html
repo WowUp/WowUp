@@ -1,13 +1,11 @@
 <div class="tab-strip  bg-secondary-4 text-1">
   <div *ngFor="let tab of tabsTop" class="tab hover-bg-secondary-2" [ngClass]="{ selected: tab.isSelected$ | async }"
     (click)="tab.onClick()" [matTooltip]="tab.tooltipKey | translate" [matTooltipPosition]="'right'">
-    <mat-icon *ngIf="tab.badge !== true" class="icon-inactive" [ngClass]="{'icon-active': tab.isSelected$ | async }"
-      [svgIcon]="tab.icon">
+    <mat-icon class="icon-inactive" [ngClass]="{'icon-active': tab.isSelected$ | async }" [svgIcon]="tab.icon">
     </mat-icon>
-    <mat-icon *ngIf="tab.badge === true" class="icon-inactive z-badge clear-badge" matBadge="1" matBadgeColor="accent"
+    <!-- <mat-icon *ngIf="tab.badge === true" class="icon-inactive z-badge clear-badge" matBadge="1" matBadgeColor="accent"
       [ngClass]="{'icon-active': tab.isSelected$ | async }" [svgIcon]="tab.icon">
-    </mat-icon>
-
+    </mat-icon> -->
   </div>
   <div class="spacer"></div>
   <a appExternalLink class="text-1 tab hover-bg-secondary-2" href="https://wowup.io/guide/section/my-addons/overview"

@@ -19,7 +19,9 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   @Input("tabIndex") public tabIndex!: number;
 
   public isBusy = false;
+  public lastUpdated = 0;
 
+  private _isLazyLoaded = false;
   private _isSelectedTab = false;
   private _subscriptions: Subscription[] = [];
 
@@ -61,8 +63,11 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     of(true)
       .pipe(
         first(),
-        delay(1000),
+        delay(500),
         switchMap(() => from(this.newsService.loadFeeds())),
+        map(() => {
+          this.lastUpdated = Date.now();
+        }),
         catchError((err) => {
           console.error(err);
           return of(undefined);
@@ -89,7 +94,12 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   private lazyLoad(): void {
+    if (this._isLazyLoaded) {
+      this.setPageContextText(this.newsService.newsItems$.value.length);
+      return;
+    }
     this.onClickRefresh();
+    this._isLazyLoaded = true;
   }
 
   private setPageContextLoading() {
