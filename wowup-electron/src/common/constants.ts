@@ -158,6 +158,12 @@ export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_BETA_FOLDER = "_beta_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
 
+export const TAB_INDEX_MY_ADDONS = 0;
+export const TAB_INDEX_GET_ADDONS = 1;
+export const TAB_INDEX_ABOUT = 2;
+export const TAB_INDEX_NEWS = 3;
+export const TAB_INDEX_SETTINGS = 4;
+
 export const USER_ACTION_BROWSE_CATEGORY = "browse-category";
 export const USER_ACTION_OPEN_LINK = "open-link";
 export const USER_ACTION_ADDON_SEARCH = "addon-search";

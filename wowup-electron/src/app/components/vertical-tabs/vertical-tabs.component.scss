@@ -4,6 +4,8 @@
   display: flex;
   flex-direction: column;
 
+  
+
   .patreon-link {
     padding: 0 0.25em;
     .patron-img {
@@ -27,6 +29,10 @@
 
     &.selected {
       border-left: 3px solid var(--background-primary);
+    }
+
+    &.disabled {
+      pointer-events: none;
     }
   }
 

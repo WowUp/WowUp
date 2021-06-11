@@ -10,6 +10,11 @@ import {
   CURSE_PROTOCOL_NAME,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
+  TAB_INDEX_ABOUT,
+  TAB_INDEX_GET_ADDONS,
+  TAB_INDEX_MY_ADDONS,
+  TAB_INDEX_NEWS,
+  TAB_INDEX_SETTINGS,
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
@@ -36,6 +41,12 @@ import { getProtocol } from "../../utils/string.utils";
 export class HomeComponent implements AfterViewInit, OnDestroy {
   private _appUpdateInterval?: number;
   private _subscriptions: Subscription[] = [];
+
+  public readonly TAB_INDEX_MY_ADDONS = TAB_INDEX_MY_ADDONS;
+  public readonly TAB_INDEX_GET_ADDONS = TAB_INDEX_GET_ADDONS;
+  public readonly TAB_INDEX_ABOUT = TAB_INDEX_ABOUT;
+  public readonly TAB_INDEX_NEWS = TAB_INDEX_NEWS;
+  public readonly TAB_INDEX_SETTINGS = TAB_INDEX_SETTINGS;
 
   public selectedIndex = 0;
   public hasWowClient = false;
