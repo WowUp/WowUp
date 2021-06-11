@@ -321,7 +321,8 @@ function createWindow(): BrowserWindow {
   });
 
   win.once("show", () => {
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
+    
     if (mainWindowManager.isFullScreen) {
       win.setFullScreen(true);
     } else if (mainWindowManager.isMaximized) {

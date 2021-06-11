@@ -303,30 +303,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   };
 
   private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    // e.preventDefault();
-
-    // // Go up the call chain to find the tag
-    // const path = (e as any).path as HTMLElement[];
-    // let anchor: HTMLAnchorElement | undefined = undefined;
-    // for (const element of path) {
-    //   if (element.tagName !== "A") {
-    //     continue;
-    //   }
-
-    //   anchor = element as HTMLAnchorElement;
-    //   break;
-    // }
-
-    // if (!anchor) {
-    //   console.warn("No anchor in path");
-    //   return false;
-    // }
-
-    // if (anchor.href.toLowerCase().indexOf("http") !== 0 || anchor.href.toLowerCase().indexOf("localhost") !== -1) {
-    //   console.warn(`Unhandled relative path: ${anchor.href}`);
-    //   return false;
-    // }
-
     this.confirmLinkNavigation(element.href);
 
     return false;
