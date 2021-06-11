@@ -40,8 +40,6 @@
   }
 
   .addon-dependencies {
-    // background-color: $dark-4;
-    // color: $artifact;
     padding: 0.5em;
     margin-bottom: 0.5em;
   }
@@ -55,10 +53,8 @@
 }
 
 .funding-link-container {
-  h3 {
-  }
   .addon-funding {
-    background-color: $dark-4;
+    background-color: var(--background-secondary-4);
     border-radius: 4px;
     padding: 0.5em;
     a {

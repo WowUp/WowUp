@@ -10,6 +10,11 @@ import {
   CURSE_PROTOCOL_NAME,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
+  TAB_INDEX_ABOUT,
+  TAB_INDEX_GET_ADDONS,
+  TAB_INDEX_MY_ADDONS,
+  TAB_INDEX_NEWS,
+  TAB_INDEX_SETTINGS,
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
@@ -37,7 +42,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private _appUpdateInterval?: number;
   private _subscriptions: Subscription[] = [];
 
-  public selectedIndex = 0;
+  public readonly TAB_INDEX_MY_ADDONS = TAB_INDEX_MY_ADDONS;
+  public readonly TAB_INDEX_GET_ADDONS = TAB_INDEX_GET_ADDONS;
+  public readonly TAB_INDEX_ABOUT = TAB_INDEX_ABOUT;
+  public readonly TAB_INDEX_NEWS = TAB_INDEX_NEWS;
+  public readonly TAB_INDEX_SETTINGS = TAB_INDEX_SETTINGS;
+
   public hasWowClient = false;
   public appReady = false;
   public preloadSpinnerKey = "COMMON.PROGRESS_SPINNER.LOADING";
@@ -56,7 +66,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   ) {
     const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
       this.hasWowClient = installations.length > 0;
-      this.selectedIndex = this.hasWowClient ? 0 : 3;
     });
 
     const customProtocolSub = this.electronService.customProtocol$
@@ -115,7 +124,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    const wowInstallInitialSub = this._warcraftInstallationService.wowInstallations$
+    this._warcraftInstallationService.wowInstallations$
       .pipe(
         first(),
         switchMap((installations) => {
@@ -130,7 +139,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this.initAppUpdateCheck();
 
-    this._subscriptions.push(powerMonitorSub, wowInstallInitialSub);
+    this._subscriptions.push(powerMonitorSub);
   }
 
   public ngOnDestroy(): void {

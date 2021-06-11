@@ -199,16 +199,6 @@ img {
   }
 }
 
-.text-light {
-  color: $white-1;
-}
-
-.text-light-hover {
-  &:hover {
-    color: $white-1 !important;
-  }
-}
-
 .option-icon {
   width: 17px !important;
   height: 17px !important;
@@ -260,14 +250,6 @@ mat-icon.success-icon {
   -webkit-app-region: no-drag;
 }
 
-.text-light {
-  color: $white-1;
-}
-
-.text-light-2 {
-  color: $white-2;
-}
-
 .window-appicon {
   background-size: 30px !important;
   padding-left: 12px !important;
@@ -278,7 +260,7 @@ mat-icon.success-icon {
   overflow-x: hidden;
 
   &.mac {
-    height: calc(100vh - 106px);
+    height: calc(100vh - 55px);
   }
 
   &.windows {
@@ -286,7 +268,7 @@ mat-icon.success-icon {
   }
 
   &.linux {
-    height: calc(100vh - 114px);
+    height: calc(100vh - 63px);
   }
 }
 
@@ -294,10 +276,6 @@ mat-icon.success-icon {
   .mat-form-field-wrapper {
     padding-bottom: 0 !important;
   }
-}
-
-.mat-option.mat-selected:not(.mat-option-disabled) {
-  color: $white-3 !important;
 }
 
 .d-flex {
@@ -397,8 +375,18 @@ mat-icon.success-icon {
   }
 }
 
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .ignored {
-  color: $white-4 !important;
+  color: var(--text-4) !important;
 }
 
 .addon-context-menu {
@@ -426,7 +414,7 @@ mat-icon.success-icon {
       }
 
       .thumbnail-letter {
-        color: $white-4;
+        color: var(--text-4);
         font-size: 1.5em;
         font-weight: 400;
       }
@@ -464,7 +452,7 @@ mat-icon.success-icon {
 
 .light-select {
   .mat-form-field-label {
-    color: $white-2 !important;
+    color: var(--text-2) !important;
   }
 }
 
@@ -507,11 +495,11 @@ mat-icon.success-icon {
   }
 
   .mat-progress-bar-buffer {
-    background: $white-4 !important;
+    background: var(--text-4) !important;
   }
 
   .mat-progress-bar-fill::after {
-    background: $blue-1 !important;
+    background: var(--background-primary) !important;
   }
 }
 
@@ -587,6 +575,13 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
 .icon-active {
   svg {
     fill: var(--text-1);
+  }
+}
+
+.icon-disabled {
+  svg {
+    fill: var(--text-1);
+    opacity: 0.25;
   }
 }
 

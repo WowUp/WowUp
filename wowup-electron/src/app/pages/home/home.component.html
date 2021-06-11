@@ -1,5 +1,4 @@
 <div *ngIf="appReady === false" class="page-container bg-secondary-3" [ngClass]="{ linux: electronService.isLinux }">
-  <div class="tab-bar-placeholder bg-primary"></div>
   <div class="preload-container">
     <app-progress-spinner [message]="preloadSpinnerKey | translate">
     </app-progress-spinner>
@@ -11,19 +10,19 @@
       [disablePagination]="true" [selectedIndex]="sessionService.selectedHomeTab$ | async"
       (selectedIndexChange)="onSelectedIndexChange($event)">
       <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.MY_ADDONS_TAB_TITLE' | translate">
-        <app-my-addons [tabIndex]="0"></app-my-addons>
+        <app-my-addons [tabIndex]="TAB_INDEX_MY_ADDONS"></app-my-addons>
       </mat-tab>
       <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.GET_ADDONS_TAB_TITLE' | translate">
-        <app-get-addons [tabIndex]="1"></app-get-addons>
+        <app-get-addons [tabIndex]="TAB_INDEX_GET_ADDONS"></app-get-addons>
       </mat-tab>
       <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.ABOUT_TAB_TITLE' | translate">
-        <app-about [tabIndex]="2"></app-about>
+        <app-about [tabIndex]="TAB_INDEX_ABOUT"></app-about>
       </mat-tab>
       <mat-tab [label]="'PAGES.HOME.NEWS_TAB_TITLE' | translate">
-        <app-news-panel [tabIndex]="3"></app-news-panel>
+        <app-news-panel [tabIndex]="TAB_INDEX_NEWS"></app-news-panel>
       </mat-tab>
       <mat-tab [label]="'PAGES.HOME.OPTIONS_TAB_TITLE' | translate">
-        <app-options [tabIndex]="4"></app-options>
+        <app-options [tabIndex]="TAB_INDEX_SETTINGS"></app-options>
       </mat-tab>
     </mat-tab-group>
   </div>

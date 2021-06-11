@@ -76,146 +76,10 @@ $wowup-light-theme: mat.define-light-theme(
   )
 );
 
-.border-primary {
-  border-color: $purple-1;
-}
-
-.bg-primary {
-  background-color: $purple-1;
-}
-
-.bg-primary-2 {
-  background-color: $purple-2;
-}
-
-.bg-primary-3 {
-  background-color: $purple-3;
-}
-
-.text-primary-1 {
-  color: $purple-1 !important;
-}
-
-.text-primary-2 {
-  color: $purple-2 !important;
-}
-
-.text-primary-3 {
-  color: $purple-3 !important;
-}
-
-.text-control {
-  color: $wowup-control !important;
-}
-
-.bg-secondary {
-  background-color: $dark-1;
-}
-
-.bg-secondary-2 {
-  background-color: $dark-2;
-}
-
-.bg-secondary-3 {
-  background-color: $dark-3;
-}
-
-.bg-secondary-4 {
-  background-color: $dark-4;
-}
-
-.hover-bg-secondary:hover {
-  background-color: $dark-1;
-}
-
-.hover-bg-secondary-2:hover {
-  background-color: $dark-2;
-}
-
-.hover-bg-secondary-3:hover {
-  background-color: $dark-3;
-}
-
-.hover-bg-secondary-4:hover {
-  background-color: $dark-4;
-}
-
-.hover-bg-secondary-5:hover {
-  background-color: $dark-5;
-}
-
-.hover-primary-2:hover {
-  background-color: $purple-2;
-}
-
-.hover-primary-3:hover {
-  background-color: $purple-3;
-}
-
-::-webkit-scrollbar {
-  // width: 16px;
-  // height: 16px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #2e3338;
-  margin: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-color: $purple-3;
-  background: $purple-1;
-  background: linear-gradient(146deg, $purple-1 0%, $purple-2 100%);
-  min-height: 40px;
-}
-
-::-webkit-scrollbar-track,
-::-webkit-scrollbar-thumb {
-  border: 4px solid transparent;
-  // background-clip: padding-box;
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-.addon-summary,
-.addon-changelog {
-  a {
-    color: $wowup-control;
-
-    &:visited {
-      color: $wowup-control;
-    }
-  }
-}
-
-.mat-input-element {
-  caret-color: $white-3 !important;
-  color: $white-1 !important;
-}
-.mat-form-field.mat-focused .mat-form-field-label {
-  color: $white-2 !important;
-}
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($wowup-default-theme);
-
-.default-theme {
-  --background-primary: #6b69d6;
-  --background-secondary-1: #666666;
-  --background-secondary-2: #555555;
-  --background-secondary-3: #444444;
-  --background-secondary-4: #333333;
-  --background-secondary-5: #222222;
-  --text-1: #ffffff;
-  --text-2: #dcddde;
-  --text-3: #cccccc;
-  --text-4: #bbbbbb;
-}
 
 .default-theme-light-theme {
   @include mat.all-component-colors($wowup-light-theme);
@@ -285,79 +149,6 @@ $horde-theme-light: mat.define-light-theme(
   @include mat.all-component-colors($horde-theme);
 }
 
-[class*="horde-theme"] {
-  .border-primary {
-    border-color: $horde-red-1 !important;
-  }
-
-  .bg-primary {
-    background-color: $horde-red-1 !important;
-  }
-
-  .bg-primary-2 {
-    background-color: $horde-red-2 !important;
-  }
-
-  .text-primary-1 {
-    color: $horde-red-1 !important;
-  }
-
-  .text-primary-2 {
-    color: $horde-red-2 !important;
-  }
-
-  .text-primary-3 {
-    color: $horde-red-3 !important;
-  }
-
-  .text-control {
-    color: $horde-control !important;
-  }
-
-  .hover-primary-2:hover {
-    background-color: $horde-red-2 !important;
-  }
-
-  .hover-primary-3:hover {
-    background-color: $purple-3 !important;
-  }
-
-  .mat-form-field-ripple {
-    background-color: $horde-red-2 !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: $dark-2;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-color: $horde-red-3;
-    background: $horde-red-1;
-    background: linear-gradient(146deg, $horde-red-1 0%, $horde-red-2 100%);
-  }
-
-  ::-webkit-scrollbar-corner {
-    background: $dark-3;
-  }
-
-  .addon-summary,
-  .addon-changelog {
-    a {
-      color: $horde-control;
-
-      &:visited {
-        color: $horde-control;
-      }
-    }
-  }
-
-  .mat-button {
-    &.mat-primary {
-      color: $horde-control !important;
-    }
-  }
-}
-
 // Alliance theme
 $alliance-pallette: (
   50: #e8eaf6,
@@ -422,286 +213,329 @@ $alliance-theme-light: mat.define-light-theme(
   @include mat.all-component-colors($alliance-theme);
 }
 
-[class*="alliance-theme"] {
-  .border-primary {
-    border-color: $alliance-blue-1 !important;
-  }
-
-  .bg-primary {
-    background-color: $alliance-blue-1 !important;
-  }
-
-  .bg-primary-2 {
-    background-color: $alliance-blue-2 !important;
-  }
-
-  .text-primary-1 {
-    color: $alliance-blue-1 !important;
-  }
-
-  .text-primary-2 {
-    color: $alliance-blue-2 !important;
-  }
-
-  .text-primary-3 {
-    color: $alliance-blue-3 !important;
-  }
-
-  .text-control {
-    color: $alliance-control !important;
-  }
-
-  .hover-primary-2:hover {
-    background-color: $alliance-blue-2 !important;
-  }
-
-  .hover-primary-3:hover {
-    background-color: $alliance-blue-3 !important;
-  }
-
-  .mat-form-field-ripple {
-    background-color: $alliance-blue-2 !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: $dark-2;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-color: $alliance-blue-3;
-    background: $alliance-blue-1;
-    background: linear-gradient(146deg, $alliance-blue-1 0%, $alliance-blue-2 100%);
-  }
-
-  ::-webkit-scrollbar-corner {
-    background: $dark-3;
-  }
-
-  .addon-summary,
-  .addon-changelog {
-    a {
-      color: $alliance-control;
-
-      &:visited {
-        color: $alliance-control;
-      }
-    }
-  }
-
-  .mat-button {
-    &.mat-primary {
-      color: $alliance-control !important;
-    }
-  }
+// VARS
+.default-theme {
+  --background-primary: #6b69d6;
+  --background-primary-2: #504fa1;
+  --background-primary-3: #383773;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --control-color: #536dfe;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #333333;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+  --warn-color: #f44336;
+  --theme-logo: url("assets/images/wowup-white-1.png");
 }
 
-// DARK THEME
-.default-theme,
-.alliance-theme,
+.default-theme-light-theme {
+  --background-primary: #6b69d6;
+  --background-primary-2: #504fa1;
+  --background-primary-3: #383773;
+  --background-secondary-1: #ffffff;
+  --background-secondary-2: #f2f3f5;
+  --background-secondary-3: #ebedef;
+  --background-secondary-4: #e3e5e8;
+  --background-secondary-5: #caccce;
+  --control-color: #536dfe;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #e3e5e8;
+  --text-1: #000000;
+  --text-2: #666666;
+  --text-3: #888888;
+  --text-4: #aaaaaa;
+  --warn-color: #f44336;
+
+  --theme-logo: url("assets/images/wowup-dark-1.png");
+}
+
 .horde-theme {
-  .bg-secondary {
-    background-color: $dark-1 !important;
+  --background-primary: #8c1616;
+  --background-primary-2: #9d3939;
+  --background-primary-3: #5c0606;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --control-color: #0a0a0a;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #333333;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+  --warn-color: #f44336;
+  --theme-logo: url("assets/images/horde-1.png");
+}
+
+.horde-theme-light-theme {
+  --background-primary: #8c1616;
+  --background-primary-2: #9d3939;
+  --background-primary-3: #5c0606;
+  --background-secondary-1: #ffffff;
+  --background-secondary-2: #f2f3f5;
+  --background-secondary-3: #ebedef;
+  --background-secondary-4: #e3e5e8;
+  --background-secondary-5: #caccce;
+  --control-color: #0a0a0a;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #e3e5e8;
+  --text-1: #000000;
+  --text-2: #666666;
+  --text-3: #888888;
+  --text-4: #aaaaaa;
+  --warn-color: #f44336;
+  --theme-logo: url("assets/images/horde-dark-1.png");
+}
+
+.alliance-theme {
+  --background-primary: #162c57;
+  --background-primary-2: #394c70;
+  --background-primary-3: #06102c;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --control-color: #335eff;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #333333;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+  --warn-color: #f44336;
+  --theme-logo: url("assets/images/alliance-1.png");
+}
+
+.alliance-theme-light-theme {
+  --background-primary: #162c57;
+  --background-primary-2: #394c70;
+  --background-primary-3: #06102c;
+  --background-secondary-1: #ffffff;
+  --background-secondary-2: #f2f3f5;
+  --background-secondary-3: #ebedef;
+  --background-secondary-4: #e3e5e8;
+  --background-secondary-5: #caccce;
+  --control-color: #335eff;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #e3e5e8;
+  --text-1: #000000;
+  --text-2: #666666;
+  --text-3: #888888;
+  --text-4: #aaaaaa;
+  --warn-color: #f44336;
+  --theme-logo: url("assets/images/alliance-dark-1.png");
+}
+
+.bg-primary {
+  background-color: var(--background-primary);
+}
+
+.bg-primary-2 {
+  background-color: var(--background-primary-2);
+}
+
+.bg-primary-3 {
+  background-color: var(--background-primary-3);
+}
+
+.bg-secondary {
+  background-color: var(--background-secondary-1);
+}
+
+.bg-secondary-2 {
+  background-color: var(--background-secondary-2);
+}
+
+.bg-secondary-3 {
+  background-color: var(--background-secondary-3);
+}
+
+.bg-secondary-4 {
+  background-color: var(--background-secondary-4);
+}
+
+.bg-secondary-5 {
+  background-color: var(--background-secondary-5);
+}
+
+.hover-primary-2:hover {
+  background-color: var(--background-primary-2);
+}
+
+.hover-bg-secondary:hover {
+  background-color: var(--background-secondary-1);
+}
+
+.hover-bg-secondary-2:hover {
+  background-color: var(--background-secondary-2);
+}
+
+.hover-bg-secondary-3:hover {
+  background-color: var(--background-secondary-3);
+}
+
+.hover-bg-secondary-4:hover {
+  background-color: var(--background-secondary-4);
+}
+
+.hover-bg-secondary-5:hover {
+  background-color: var(--background-secondary-5);
+}
+
+.border-primary {
+  border-color: var(--background-primary);
+}
+
+.text-1 {
+  color: var(--text-1);
+}
+
+.text-1-hover {
+  &:hover {
+    color: var(--text-1) !important;
   }
+}
 
-  .bg-secondary-2 {
-    background-color: $dark-2 !important;
-  }
+.text-2 {
+  color: var(--text-2);
+}
 
-  .bg-secondary-3 {
-    background-color: $dark-3 !important;
-  }
+.text-3 {
+  color: var(--text-3);
+}
 
-  .bg-secondary-4 {
-    background-color: $dark-4 !important;
-  }
+.text-primary-1 {
+  color: var(--background-primary) !important;
+}
 
-  .bg-secondary-5 {
-    background-color: $dark-5 !important;
-  }
+.text-primary-2 {
+  color: var(--background-primary-2) !important;
+}
 
-  .hover-bg-secondary:hover {
-    background-color: $dark-1 !important;
-  }
+.text-primary-3 {
+  color: var(--background-primary-3) !important;
+}
 
-  .hover-bg-secondary-2:hover {
-    background-color: $dark-2 !important;
-  }
+.text-control {
+  color: var(--control-color) !important;
+}
 
-  .hover-bg-secondary-3:hover {
-    background-color: $dark-3 !important;
-  }
+.text-warning {
+  color: var(--warn-color) !important;
+}
 
-  .hover-bg-secondary-4:hover {
-    background-color: $dark-4 !important;
-  }
+.wowup-snackbar {
+  background-color: var(--background-secondary-4);
+}
 
-  .hover-bg-secondary-5:hover {
-    background-color: $dark-5 !important;
-  }
+.addon-summary,
+.addon-changelog {
+  a {
+    color: var(--control-color);
 
-  .hover-border-secondary-2:hover {
-    box-sizing: border-box;
-    border: 5px solid white;
-  }
-
-  --text-1-color: #ffffff;
-  --text-2-color: #dcddde;
-  --text-3-color: #cccccc;
-
-  .text-1 {
-    color: $white-1 !important;
-  }
-
-  .text-2 {
-    color: $white-2;
-  }
-
-  .text-3 {
-    color: $white-3;
-  }
-
-  .wowup-snackbar {
-    background-color: $dark-4;
-  }
-
-  .mat-form-field-appearance-fill .mat-form-field-flex {
-    background-color: $dark-1;
-  }
-
-  .addon-summary,
-  .addon-changelog {
-    h1,
-    h2 {
-      border-bottom: 1px solid $dark-1;
+    &:visited {
+      color: var(--control-color);
     }
-
-    hr {
-      background-color: $dark-1;
-    }
-
-    code {
-      background-color: $dark-4;
-    }
   }
 
-  // GRID STYLES
-  .ag-theme-material {
-    @include ag-theme-material(
-      (
-        foreground-color: $white-1,
-        background-color: $dark-2,
-        header-background-color: $dark-2,
-        row-hover-color: $dark-2,
-        row-border-color: rgba(255, 255, 255, 0.12),
-        border-color: rgba(255, 255, 255, 0.12),
-        secondary-border-color: rgba(255, 255, 255, 0.12),
-        selected-row-background-color: $dark-4,
-        range-selection-border-color: transparent,
-      )
-    );
+  h1,
+  h2 {
+    border-bottom: 1px solid var(--background-secondary-1);
+  }
+
+  hr {
+    background-color: var(--background-secondary-1);
+  }
+
+  code {
+    background-color: var(--background-secondary-4);
   }
 }
 
-// LIGHT THEME
-[class*="light-theme"] {
-  .bg-secondary {
-    background-color: $lt-secondary-1 !important;
-  }
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+  margin: 8px;
+}
 
-  .bg-secondary-2 {
-    background-color: $lt-secondary-2 !important;
-  }
+::-webkit-scrollbar-thumb {
+  border-color: var(--background-primary-3);
+  background: var(--background-primary);
+  background: linear-gradient(146deg, var(--background-primary) 0%, var(--background-primary-2) 100%);
+  min-height: 40px;
+}
 
-  .bg-secondary-3 {
-    background-color: $lt-secondary-3 !important;
-  }
+// MATERIAL STYLES
+.mat-input-element {
+  caret-color: var(--text-3) !important;
+  color: var(--text-1) !important;
+}
 
-  .bg-secondary-4 {
-    background-color: $lt-secondary-4 !important;
-  }
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: var(--text-2) !important;
+}
 
-  .hover-bg-secondary:hover {
-    background-color: $lt-secondary-1 !important;
-  }
+.mat-form-field-ripple {
+  background-color: var(--background-primary-2) !important;
+}
 
-  .hover-bg-secondary-2:hover {
-    background-color: $lt-secondary-2 !important;
-  }
+.mat-card {
+  background-color: var(--background-secondary-3);
+}
 
-  .hover-bg-secondary-3:hover {
-    background-color: $lt-secondary-3 !important;
-  }
+// .mat-button {
+//   color: var(--control-color);
+//   background: transparent;
+// }
 
-  .hover-bg-secondary-4:hover {
-    background-color: $lt-secondary-4 !important;
-  }
+// .mat-stroked-button {
+//   background-color: transparent;
+//   color: var(--text-1);
+// }
 
-  .hover-bg-secondary-5:hover {
-    background-color: $lt-secondary-5 !important;
-  }
+// .mat-flat-button {
+//   &.mat-primary {
+//     background-color: var(--background-primary) !important;
+//     color: var(--text-1) !important;
+//   }
+// }
 
-  --text-1-color: #000000;
-  --text-2-color: #666666;
-  --text-3-color: #888888;
-
-  .text-1 {
-    color: $lt-text-1 !important;
-  }
-
-  .text-2 {
-    color: $lt-text-2 !important;
-  }
-
-  .text-3 {
-    color: $lt-text-3 !important;
-  }
-
-  .hover-text-1:hover {
-    color: $lt-text-1 !important;
-  }
-
-  .hover-text-2:hover {
-    color: $lt-text-2 !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: $lt-secondary-4 !important;
-  }
-
-  .mat-form-field-label {
-    color: $lt-text-1 !important;
-  }
-
-  .mat-input-element {
-    caret-color: $lt-text-3 !important;
-    color: $lt-text-1 !important;
-  }
-  .mat-form-field.mat-focused .mat-form-field-label {
-    color: $lt-text-2 !important;
-  }
-
-  .wowup-snackbar {
-    background-color: $white-1 !important;
-  }
-
-  .ag-theme-material {
-    @include ag-theme-material(
-      (
-        row-hover-color: $lt-secondary-2,
-        selected-row-background-color: $lt-secondary-4,
-      )
-    );
+.mat-button {
+  &.mat-primary {
+    color: var(--control-color) !important;
   }
 }
 
-.text-light-1 {
-  color: $white-1;
+.mat-option.mat-selected:not(.mat-option-disabled) {
+  color: var(--text-3) !important;
 }
 
-.text-light-2 {
-  color: $white-2;
-}
-
-.text-light-3 {
-  color: $white-3;
+// GRID STYLES
+.ag-theme-material {
+  @include ag-theme-material(
+    (
+      foreground-color: var(--text-1),
+      background-color: var(--background-secondary-2),
+      header-background-color: var(--background-secondary-2),
+      row-hover-color: var(--background-secondary-2),
+      row-border-color: rgba(255, 255, 255, 0.12),
+      border-color: rgba(255, 255, 255, 0.12),
+      secondary-border-color: rgba(255, 255, 255, 0.12),
+      selected-row-background-color: var(--background-secondary-4),
+      range-selection-border-color: transparent,
+    )
+  );
 }

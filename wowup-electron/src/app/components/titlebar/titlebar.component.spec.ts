@@ -21,15 +21,9 @@ describe("TitlebarComponent", () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["on"], {
       windowMaximized$: new BehaviorSubject(false).asObservable(),
     });
-    wowUpServiceSpy = jasmine.createSpyObj(
-      "WowUpService",
-      {
-        getThemeLogoPath: () => "",
-      },
-      {
-        currentTheme: "horde ofc",
-      }
-    );
+    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
+      currentTheme: "horde ofc",
+    });
 
     await TestBed.configureTestingModule({
       declarations: [TitlebarComponent],

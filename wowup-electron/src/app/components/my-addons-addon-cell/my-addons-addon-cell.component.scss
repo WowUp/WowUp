@@ -1,9 +1,5 @@
 @import "../../../variables.scss";
 
-.text-warning {
-  color: $warn-color !important;
-}
-
 .addon-column {
   padding-top: 0.6em;
   padding-bottom: 0.6em;
@@ -45,11 +41,11 @@
     border-radius: 4px;
 
     &.beta {
-      color: $rare-color;
+      color: var(--rare-color);
     }
 
     &.alpha {
-      color: $epic-color;
+      color: var(--epic-color);
     }
   }
 
@@ -63,7 +59,7 @@
   .title-container {
     padding-bottom: 0.5em;
   }
-  
+
   .addon-title {
     white-space: normal;
     text-decoration: none;
@@ -87,7 +83,7 @@
   }
 
   .addon-version {
-    color: $white-2;
+    color: var(--text-2);
     font-size: 14px;
     line-height: 14px;
   }

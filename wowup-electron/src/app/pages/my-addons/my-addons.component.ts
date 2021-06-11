@@ -855,14 +855,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onTableBlur(evt: MouseEvent): void {
-    evt.stopPropagation();
-
     const ePath = (evt as any).path as HTMLElement[];
     const tableElem = ePath.find((tag) => tag.tagName === "AG-GRID-ANGULAR");
     if (tableElem) {
       return;
     }
 
+    evt.stopPropagation();
+    evt.preventDefault();
+    this._lastSelectionState = [];
     this.gridApi?.deselectAll();
   }
 

@@ -258,6 +258,19 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     return categoryItems;
   }
 
+  public onTableBlur(evt: MouseEvent): void {
+    const ePath = (evt as any).path as HTMLElement[];
+    const tableElem = ePath.find((tag) => tag.tagName === "AG-GRID-ANGULAR");
+    if (tableElem) {
+      return;
+    }
+
+    evt.stopPropagation();
+    evt.preventDefault();
+    this._lastSelectionState = [];
+    this.gridApi?.deselectAll();
+  }
+  
   public onRowClicked(event: RowClickedEvent): void {
     const selectedNodes = event.api.getSelectedNodes();
 

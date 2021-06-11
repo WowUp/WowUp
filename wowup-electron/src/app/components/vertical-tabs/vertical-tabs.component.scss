@@ -28,6 +28,10 @@
     &.selected {
       border-left: 3px solid var(--background-primary);
     }
+
+    &.disabled {
+      pointer-events: none;
+    }
   }
 
   .spacer {

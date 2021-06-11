@@ -1,10 +1,10 @@
 import * as _ from "lodash";
 import { BehaviorSubject, Subject } from "rxjs";
-import { filter } from "rxjs/operators";
+import { filter, first } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
-import { SELECTED_DETAILS_TAB_KEY } from "../../../common/constants";
+import { SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS, TAB_INDEX_MY_ADDONS } from "../../../common/constants";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
@@ -44,9 +44,9 @@ export class SessionService {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
 
-    this._warcraftInstallationService.wowInstallations$
-      .pipe(filter((installations) => installations.length > 0))
-      .subscribe((installations) => this.onWowInstallationsChange(installations));
+    this._warcraftInstallationService.wowInstallations$.subscribe((installations) =>
+      this.onWowInstallationsChange(installations)
+    );
   }
 
   public notifyTargetFileInstallComplete(): void {
@@ -68,6 +68,7 @@ export class SessionService {
 
   public onWowInstallationsChange(wowInstallations: WowInstallation[]): void {
     if (wowInstallations.length === 0) {
+      this._selectedHomeTabSrc.next(TAB_INDEX_SETTINGS);
       return;
     }
 
