@@ -35,7 +35,7 @@ export class VerticalTabsComponent implements OnInit {
     isDisabled$: this._warcraftInstallationService.wowInstallations$.pipe(
       map((installations) => installations.length === 0)
     ),
-    onClick: (tab: Tab): void => {
+    onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_MY_ADDONS;
     },
   };

@@ -2,13 +2,11 @@ import { Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { ElectronService } from "../../services";
-import { UpdateCheckResult } from "electron-updater";
 import { AppConfig } from "../../../environments/environment";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { combineLatest, from, Observable, of } from "rxjs";
-import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { AppUpdateState } from "../../../common/wowup/models";
 
@@ -40,7 +38,6 @@ export class FooterComponent implements OnInit {
     private _zone: NgZone,
     public wowUpService: WowUpService,
     public sessionService: SessionService,
-    private _snackBarService: SnackbarService,
     private electronService: ElectronService,
     private _wowupService: WowUpService
   ) {}
