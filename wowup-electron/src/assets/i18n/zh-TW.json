@@ -295,7 +295,7 @@
       "GET_ADDONS_TAB_TITLE": "獲取插件",
       "MIGRATING_ADDONS": "正在遷移插件...",
       "MY_ADDONS_TAB_TITLE": "我的插件",
-      "NEWS_TAB_TITLE": "News",
+      "NEWS_TAB_TITLE": "新聞",
       "OPTIONS_TAB_TITLE": "選項"
     },
     "MY_ADDONS": {
@@ -384,8 +384,8 @@
       }
     },
     "NEWS": {
-      "PAGE_CONTEXT_FOOTER": "{count} news stories",
-      "REFRESH_TOOLTIP": "Refresh news feed"
+      "PAGE_CONTEXT_FOOTER": "共 {count} 條新聞",
+      "REFRESH_TOOLTIP": "重新整理資訊流"
     },
     "OPTIONS": {
       "ADDON": {
