@@ -155,10 +155,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     // check for an app update every so often
     this._appUpdateInterval = window.setInterval(() => {
-      this.checkForAppUpdate().catch((e) => console.error(e));
+      this._wowupService.checkForAppUpdate();
     }, AppConfig.appUpdateIntervalMs);
-
-    this.checkForAppUpdate().catch((e) => console.error(e));
   }
 
   private destroyAppUpdateCheck() {
@@ -244,15 +242,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         break;
     }
   };
-
-  private async checkForAppUpdate() {
-    try {
-      const appUpdateResponse = await this._wowupService.checkForAppUpdate();
-      console.log(appUpdateResponse);
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
     if (evt.installState !== AddonInstallState.Error) {

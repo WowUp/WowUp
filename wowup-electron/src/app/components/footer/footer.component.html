@@ -3,17 +3,25 @@
   <div class="row align-items-center text-1">
     <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
     <p>v{{ versionNumber | async }}</p>
-    <button *ngIf="isWowUpUpdateAvailable && !isWowUpdateDownloading" class="footer-button update-button ml-3 text-1"
-      matTooltip="{{ updateIconTooltip | translate }}" [disabled]="isUpdatingWowUp" (click)="onClickUpdateWowup()">
-      <h4>{{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}</h4>
-    </button>
-    <button *ngIf="isWowUpdateDownloading" class="footer-button downloading-button text-2 ml-3 animate">
-      <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
-    </button>
-    <button *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading"
-      class="footer-button text-1 check-update-button ml-3" [ngClass]="{ animate: isCheckingForUpdates }"
-      (click)="onClickCheckForUpdates()" matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}">
-      <mat-icon svgIcon="fas:sync-alt"></mat-icon>
-    </button>
+    <div class="ml-3" [ngSwitch]="appUpdateState$ | async">
+      <div *ngSwitchCase="appUpdateState.CheckingForUpdate">{{'APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE' | translate}}</div>
+      <div *ngSwitchCase="appUpdateState.Downloading" class="row align-items-center">
+        <mat-progress-spinner class="" color="primary" mode="determinate" [value]="appUpdateProgress$ | async"
+          [diameter]="20"></mat-progress-spinner>
+        <span>{{'APP.WOWUP_UPDATE.DOWNLOADING_UPDATE' | translate}}</span>
+      </div>
+      <div *ngSwitchCase="appUpdateState.Downloaded">
+        <button class="footer-button update-button ml-3 text-1" matTooltip="{{ updateIconTooltip | translate }}"
+          (click)="onClickInstallUpdate()">
+          <h4>{{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}</h4>
+        </button>
+      </div>
+      <div *ngSwitchDefault>
+        <button class="footer-button text-1 check-update-button ml-3" (click)="onClickCheckForUpdates()"
+          matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}">
+          <mat-icon svgIcon="fas:sync-alt"></mat-icon>
+        </button>
+      </div>
+    </div>
   </div>
 </footer>

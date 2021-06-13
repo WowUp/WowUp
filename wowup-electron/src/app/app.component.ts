@@ -32,7 +32,7 @@ import {
   IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
-import { MenuConfig, SystemTrayConfig } from "../common/wowup/models";
+import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -50,6 +50,7 @@ import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, G
 import { SnackbarService } from "./services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { ZoomService } from "./services/zoom/zoom.service";
+import { AlertDialogComponent } from "./components/alert-dialog/alert-dialog.component";
 
 @Component({
   selector: "app-root",
@@ -103,6 +104,31 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         switchMap(() => from(this.initializeAutoUpdate()))
       )
       .subscribe();
+
+    this.electronService.appUpdate$.subscribe((evt) => {
+      if (evt.state === AppUpdateState.Error) {
+        if (evt.error.indexOf("dev-app-update.yml") === -1) {
+          this._snackbarService.showErrorSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR");
+        }
+      } else if (evt.state === AppUpdateState.Downloaded) {
+        // Force the user to update when one is ready
+        const dialogRef = this._dialog.open(AlertDialogComponent, {
+          minWidth: 250,
+          disableClose: true,
+          data: {
+            title: this.translate.instant("APP.WOWUP_UPDATE.INSTALL_TITLE"),
+            message: this.translate.instant("APP.WOWUP_UPDATE.SNACKBAR_TEXT"),
+          },
+        });
+
+        dialogRef
+          .afterClosed()
+          .pipe(first())
+          .subscribe(() => {
+            this.wowUpService.installUpdate();
+          });
+      }
+    });
   }
 
   public ngOnInit(): void {

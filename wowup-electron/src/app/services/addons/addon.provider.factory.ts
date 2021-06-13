@@ -37,11 +37,11 @@ export class AddonProviderFactory {
   ) {}
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
-    return new WowUpCompanionAddonProvider(this._fileService);
+    return new WowUpCompanionAddonProvider(this._fileService, this._tocService);
   }
 
   public createRaiderIoAddonProvider(): RaiderIoAddonProvider {
-    return new RaiderIoAddonProvider();
+    return new RaiderIoAddonProvider(this._tocService);
   }
 
   public createCurseAddonProvider(): CurseAddonProvider {
@@ -49,16 +49,17 @@ export class AddonProviderFactory {
       this._cachingService,
       this._electronService,
       this._wowupApiService,
+      this._tocService,
       this._networkService
     );
   }
 
   public createTukUiAddonProvider(): TukUiAddonProvider {
-    return new TukUiAddonProvider(this._cachingService, this._networkService);
+    return new TukUiAddonProvider(this._cachingService, this._networkService, this._tocService);
   }
 
   public createWowInterfaceAddonProvider(): WowInterfaceAddonProvider {
-    return new WowInterfaceAddonProvider(this._cachingService, this._networkService);
+    return new WowInterfaceAddonProvider(this._cachingService, this._networkService, this._tocService);
   }
 
   public createGitHubAddonProvider(): GitHubAddonProvider {

@@ -45,7 +45,7 @@
   ],
   "win": {
     "icon": "electron-build/icon.ico",
-    "target": ["portable"],
+    "target": ["nsis"],
     "forceCodeSigning": false,
     "publisherName": "WowUp LLC"
   },

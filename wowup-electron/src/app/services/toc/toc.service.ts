@@ -31,6 +31,7 @@ export class TocService {
   public constructor(private _fileService: FileService) {}
 
   public async parse(tocPath: string): Promise<Toc> {
+    const fileName = path.basename(tocPath);
     let tocText = await this._fileService.readFile(tocPath);
     tocText = tocText.trim();
 
@@ -39,6 +40,7 @@ export class TocService {
     const dependencyList: string[] = this.getDependencyList(tocText);
 
     return {
+      fileName,
       author: this.getValue(TOC_AUTHOR, tocText),
       curseProjectId: this.getValue(TOC_X_CURSE_PROJECT_ID, tocText),
       interface: this.getValue(TOC_INTERFACE, tocText),
@@ -131,6 +133,33 @@ export class TocService {
     }
 
     return matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
+  }
+
+  public getTocForGameType2(tocs: Toc[], clientType: WowClientType): Toc {
+    let matchedToc = "";
+
+    const tocFileNames = tocs.map((toc) => toc.fileName);
+    switch (clientType) {
+      case WowClientType.Beta:
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn)) || "";
+        break;
+      case WowClientType.ClassicEra:
+        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn)) || "";
+        break;
+      case WowClientType.Classic:
+      case WowClientType.ClassicBeta:
+      case WowClientType.ClassicPtr:
+        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn)) || "";
+        break;
+      default:
+        break;
+    }
+
+    matchedToc = matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
+
+    return tocs.find((toc) => toc.fileName === matchedToc);
   }
 
   private getWebsite(tocText: string) {

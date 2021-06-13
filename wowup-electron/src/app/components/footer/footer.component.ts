@@ -1,15 +1,14 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
+import { Component, NgZone, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { ElectronService } from "../../services";
-import { UpdateCheckResult } from "electron-updater";
 import { AppConfig } from "../../../environments/environment";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { from, of } from "rxjs";
-import { SnackbarService } from "../../services/snackbar/snackbar.service";
-import { catchError, switchMap } from "rxjs/operators";
+import { combineLatest, from, Observable, of } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
+import { AppUpdateState } from "../../../common/wowup/models";
 
 @Component({
   selector: "app-footer",
@@ -24,48 +23,26 @@ export class FooterComponent implements OnInit {
   public isWowUpdateDownloading = false;
   public updateIconTooltip = "APP.WOWUP_UPDATE.TOOLTIP";
   public versionNumber = from(this.wowUpService.getApplicationVersion());
+  public appUpdateState = AppUpdateState;
+
+  public appUpdateState$: Observable<AppUpdateState> = this.electronService.appUpdate$.pipe(map((evt) => evt.state));
+
+  public appUpdateProgress$: Observable<number> = combineLatest([
+    of(0),
+    this.electronService.appUpdate$.pipe(map((evt) => evt.progress?.percent ?? 0)),
+  ]).pipe(map(([def, val]) => Math.max(def, val)));
 
   public constructor(
     private _dialog: MatDialog,
     private _translateService: TranslateService,
     private _zone: NgZone,
-    private _cdRef: ChangeDetectorRef,
     public wowUpService: WowUpService,
     public sessionService: SessionService,
-    private _snackBarService: SnackbarService,
-    private _electronService: ElectronService,
+    private electronService: ElectronService,
     private _wowupService: WowUpService
   ) {}
 
   public ngOnInit(): void {
-    this.wowUpService.wowupUpdateCheck$.subscribe((updateCheckResult) => {
-      console.debug("updateCheckResult", updateCheckResult);
-      this.isWowUpUpdateAvailable = true;
-      this._snackBarService.showSuccessSnackbar("APP.WOWUP_UPDATE.SNACKBAR_TEXT");
-      this._cdRef.detectChanges();
-    });
-
-    this.wowUpService.wowupUpdateDownloaded$.subscribe((result) => {
-      console.debug("wowupUpdateDownloaded", result);
-      this._zone.run(() => {
-        this.isWowUpUpdateDownloaded = true;
-        this.updateIconTooltip = "APP.WOWUP_UPDATE.DOWNLOADED_TOOLTIP";
-        this.onClickUpdateWowup().catch((e) => console.error(e));
-      });
-    });
-
-    this.wowUpService.wowupUpdateCheckInProgress$.subscribe((inProgress) => {
-      console.debug("wowUpUpdateCheckInProgress", inProgress);
-      this.isCheckingForUpdates = inProgress;
-      this._cdRef.detectChanges();
-    });
-
-    this.wowUpService.wowupUpdateDownloadInProgress$.subscribe((inProgress) => {
-      console.debug("wowupUpdateDownloadInProgress", inProgress);
-      this.isWowUpdateDownloading = inProgress;
-      this._cdRef.detectChanges();
-    });
-
     // Force the angular zone to pump for every progress update since its outside the zone
     this.sessionService.statusText$.subscribe(() => {
       this._zone.run(() => {});
@@ -76,22 +53,8 @@ export class FooterComponent implements OnInit {
     });
   }
 
-  public async onClickCheckForUpdates(): Promise<void> {
-    if (this.isCheckingForUpdates) {
-      return;
-    }
-
-    let result: UpdateCheckResult | null = null;
-    try {
-      result = await this.wowUpService.checkForAppUpdate();
-
-      if (result === null || (await this.wowUpService.isSameVersion(result))) {
-        this._snackBarService.showSnackbar("APP.WOWUP_UPDATE.NOT_AVAILABLE");
-      }
-    } catch (e) {
-      console.error(e);
-      this._snackBarService.showErrorSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR");
-    }
+  public onClickCheckForUpdates(): void {
+    this.wowUpService.checkForAppUpdate();
   }
 
   private portableUpdate() {
@@ -126,50 +89,54 @@ export class FooterComponent implements OnInit {
     return;
   }
 
-  public async onClickUpdateWowup(): Promise<void> {
-    if (!this.isWowUpUpdateAvailable) {
-      return;
-    }
-
-    if (this._electronService.isPortable) {
-      this.portableUpdate();
-      return;
-    }
-
-    if (this.isWowUpUpdateDownloaded) {
-      const dialogRef = this._dialog.open(ConfirmDialogComponent, {
-        data: {
-          title: this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_TITLE"),
-          message: this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_MESSAGE"),
-        },
-      });
-
-      dialogRef
-        .afterClosed()
-        .pipe(
-          switchMap((result) => {
-            if (!result) {
-              return of(undefined);
-            }
-            return from(this.wowUpService.installUpdate());
-          }),
-          catchError((e) => {
-            console.error(e);
-            return of(undefined);
-          })
-        )
-        .subscribe();
-
-      return;
-    }
-
-    this.isUpdatingWowUp = true;
-    try {
-      await this.wowUpService.downloadUpdate();
-    } catch (e) {
-      console.error("onClickUpdateWowup", e);
-    } finally {
-      this.isUpdatingWowUp = false;
-    }
+  public onClickInstallUpdate(): void {
+    this._wowupService.installUpdate();
   }
+
+  // public async onClickUpdateWowup(): Promise<void> {
+  //   if (!this.isWowUpUpdateAvailable) {
+  //     return;
+  //   }
+
+  //   if (this.electronService.isPortable) {
+  //     this.portableUpdate();
+  //     return;
+  //   }
+
+  //   if (this.isWowUpUpdateDownloaded) {
+  //     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+  //       data: {
+  //         title: this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_TITLE"),
+  //         message: this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_MESSAGE"),
+  //       },
+  //     });
+
+  //     dialogRef
+  //       .afterClosed()
+  //       .pipe(
+  //         switchMap((result) => {
+  //           if (!result) {
+  //             return of(undefined);
+  //           }
+  //           return from(this.wowUpService.installUpdate());
+  //         }),
+  //         catchError((e) => {
+  //           console.error(e);
+  //           return of(undefined);
+  //         })
+  //       )
+  //       .subscribe();
+
+  //     return;
+  //   }
+
+  //   this.isUpdatingWowUp = true;
+  //   try {
+  //     await this.wowUpService.downloadUpdate();
+  //   } catch (e) {
+  //     console.error("onClickUpdateWowup", e);
+  //   } finally {
+  //     this.isUpdatingWowUp = false;
+  //   }
+  // }
 }

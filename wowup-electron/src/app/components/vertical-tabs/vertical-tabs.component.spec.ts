@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { SessionService } from "../../services/session/session.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { getStandardImports, mockPreload } from "../../tests/test-helpers";

@@ -60,6 +60,7 @@ describe("AppComponent", () => {
       appOptions: { quit: null },
       getAppOptions: () => Promise.resolve({}),
       powerMonitor$: new Observable(),
+      appUpdate$: new Observable(),
       ipcRenderer: {
         on: () => {},
       },

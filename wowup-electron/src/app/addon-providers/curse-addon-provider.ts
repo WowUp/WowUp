@@ -43,6 +43,7 @@ import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { strictFilter } from "../utils/array.utils";
+import { TocService } from "../services/toc/toc.service";
 
 interface ProtocolData {
   addonId: number;
@@ -84,6 +85,7 @@ export class CurseAddonProvider extends AddonProvider {
     private _cachingService: CachingService,
     private _electronService: ElectronService,
     private _wowupApiService: WowUpApiService,
+    private _tocService: TocService,
     _networkService: NetworkService
   ) {
     super();
@@ -817,7 +819,8 @@ export class CurseAddonProvider extends AddonProvider {
 
     const latestFiles = this.getLatestFiles(scanResult.searchResult, installation.clientType);
 
-    const gameVersion = AddonUtils.getGameVersion(scanResult.addonFolder?.toc.interface);
+    const targetToc = this._tocService.getTocForGameType2(scanResult.addonFolder.tocs, installation.clientType);
+    const gameVersion = AddonUtils.getGameVersion(targetToc.interface);
 
     let channelType = this.getChannelType(scanResult.exactMatch.file.releaseType);
     let latestVersion = latestFiles.find((lf) => this.getChannelType(lf.releaseType) <= channelType);

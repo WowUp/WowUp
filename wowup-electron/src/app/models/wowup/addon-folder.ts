@@ -9,8 +9,7 @@ export interface AddonFolder {
   ignoreReason?: AddonIgnoreReason;
   thumbnailUrl?: string;
   latestVersion?: string;
-  toc: Toc;
-  tocMetaData: string[];
+  tocs: Toc[];
   matchingAddon?: Addon;
   fileStats?: FsStats;
 }
