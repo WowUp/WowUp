@@ -31,6 +31,9 @@ const CHANGELOGS: ChangeLog[] = [
       <ul>
         <li>Russian locale updates (Medok)</li>
         <li>German locale updates (Glow)</li>
+        <li>Spanish locale updates (SkollVargr)</li>
+        <li>Chinese locale updates (CyanoHao)</li>
+        <li>Italian locale updates (Bito)</li>
         <li>Revamped UI</li>
         <li>WowUp updates will now download automatically</li>
         <li>When starting with 0 installs found, user should go to installations page</li>
