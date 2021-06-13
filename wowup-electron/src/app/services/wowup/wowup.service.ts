@@ -9,25 +9,16 @@ import { TranslateService } from "@ngx-translate/core";
 import {
   ADDON_MIGRATION_VERSION_KEY,
   ADDON_PROVIDERS_KEY,
-  ALLIANCE_LIGHT_THEME,
-  ALLIANCE_THEME,
-  APP_UPDATE_CHECK_END,
-  APP_UPDATE_CHECK_FOR_UPDATE,
-  APP_UPDATE_CHECK_START,
-  APP_UPDATE_DOWNLOADED,
-  APP_UPDATE_INSTALL,
-  APP_UPDATE_START_DOWNLOAD,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
-  DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
   GET_ADDONS_SORT_ORDER,
-  HORDE_LIGHT_THEME,
-  HORDE_THEME,
+  IPC_APP_CHECK_UPDATE,
+  IPC_APP_INSTALL_UPDATE,
   IPC_GET_APP_VERSION,
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
@@ -59,10 +50,6 @@ import { PreferenceStorageService } from "../storage/preference-storage.service"
 })
 export class WowUpService {
   private readonly _preferenceChangeSrc = new Subject<PreferenceChange>();
-  private readonly _wowupUpdateDownloadInProgressSrc = new Subject<boolean>();
-  private readonly _wowupUpdateDownloadedSrc = new Subject<any>();
-  private readonly _wowupUpdateCheckSrc = new Subject<UpdateCheckResult>();
-  private readonly _wowupUpdateCheckInProgressSrc = new Subject<boolean>();
 
   private _availableVersion = "";
 
@@ -73,10 +60,6 @@ export class WowUpService {
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
 
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
-  public readonly wowupUpdateDownloaded$ = this._wowupUpdateDownloadedSrc.asObservable();
-  public readonly wowupUpdateDownloadInProgress$ = this._wowupUpdateDownloadInProgressSrc.asObservable();
-  public readonly wowupUpdateCheck$ = this._wowupUpdateCheckSrc.asObservable();
-  public readonly wowupUpdateCheckInProgress$ = this._wowupUpdateCheckInProgressSrc.asObservable();
 
   public constructor(
     private _preferenceStorageService: PreferenceStorageService,
@@ -93,27 +76,6 @@ export class WowUpService {
       .then(() => this.cleanupDownloads())
       // .then(() => console.debug("createDownloadDirectory complete"))
       .catch((e) => console.error("Failed to create download directory", e));
-
-    this._electronService.ipcEventReceived$.subscribe((evt) => {
-      switch (evt) {
-        case APP_UPDATE_CHECK_START:
-          console.log(APP_UPDATE_CHECK_START);
-          this._wowupUpdateCheckInProgressSrc.next(true);
-          break;
-        case APP_UPDATE_CHECK_END:
-          console.log(APP_UPDATE_CHECK_END);
-          this._wowupUpdateCheckInProgressSrc.next(false);
-          break;
-        case APP_UPDATE_START_DOWNLOAD:
-          console.log(APP_UPDATE_START_DOWNLOAD);
-          this._wowupUpdateDownloadInProgressSrc.next(true);
-          break;
-        case APP_UPDATE_DOWNLOADED:
-          console.log(APP_UPDATE_DOWNLOADED);
-          this._wowupUpdateDownloadInProgressSrc.next(false);
-          break;
-      }
-    });
 
     this.setAutoStartup()
       .then(() => console.log("loginItemSettings", this._electronService.getLoginItemSettings()))
@@ -359,17 +321,8 @@ export class WowUpService {
     await this._fileService.showDirectory(this.applicationLogsFolderPath);
   }
 
-  public async checkForAppUpdate(): Promise<UpdateCheckResult> {
-    const updateCheckResult: UpdateCheckResult = await this._electronService.invoke(APP_UPDATE_CHECK_FOR_UPDATE);
-
-    // only notify things when the version changes
-    const isSameVersion = await this.isSameVersion(updateCheckResult);
-    if (!isSameVersion) {
-      this._availableVersion = updateCheckResult.updateInfo.version;
-      this._wowupUpdateCheckSrc.next(updateCheckResult);
-    }
-
-    return updateCheckResult;
+  public checkForAppUpdate(): void {
+    this._electronService.send(IPC_APP_CHECK_UPDATE);
   }
 
   public async isSameVersion(updateCheckResult: UpdateCheckResult): Promise<boolean> {
@@ -377,15 +330,8 @@ export class WowUpService {
     return updateCheckResult && updateCheckResult.updateInfo?.version === appVersion;
   }
 
-  public async downloadUpdate(): Promise<any> {
-    const downloadResult = await this._electronService.invoke(APP_UPDATE_START_DOWNLOAD);
-
-    this._wowupUpdateDownloadedSrc.next(downloadResult);
-    return downloadResult;
-  }
-
-  public async installUpdate(): Promise<any> {
-    return await this._electronService.invoke(APP_UPDATE_INSTALL);
+  public installUpdate(): void {
+    return this._electronService.send(IPC_APP_INSTALL_UPDATE);
   }
 
   private setDefaultPreference(key: string, defaultValue: any) {

@@ -17,6 +17,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
+import { TocService } from "../services/toc/toc.service";
 
 const API_URL = "https://www.tukui.org/api.php";
 const CLIENT_API_URL = "https://www.tukui.org/client-api.php";
@@ -34,7 +35,11 @@ export class TukUiAddonProvider extends AddonProvider {
 
   public enabled = true;
 
-  public constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+  public constructor(
+    private _cachingService: CachingService,
+    private _networkService: NetworkService,
+    private _tocService: TocService
+  ) {
     super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
@@ -170,20 +175,23 @@ export class TukUiAddonProvider extends AddonProvider {
     const matches: TukUiAddon[] = [];
 
     // Sort folders to prioritize ones with a toc id
-    let sortedAddonFolders = _.orderBy(addonFolders, ["toc.tukUiProjectId"], ["desc"]);
-    sortedAddonFolders = _.filter(sortedAddonFolders, (folder) => folder.toc.loadOnDemand !== "1");
+    const tukProjectAddonFolders = addonFolders.filter((folder) =>
+      folder.tocs.some((toc) => !!toc.tukUiProjectId && toc.loadOnDemand !== "1")
+    );
 
-    for (const addonFolder of sortedAddonFolders) {
+    for (const addonFolder of tukProjectAddonFolders) {
+      const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+
       let tukUiAddon: TukUiAddon;
-      if (addonFolder.toc?.tukUiProjectId) {
-        const match = _.find(allAddons, (addon) => addon.id.toString() === addonFolder.toc.tukUiProjectId);
+      if (targetToc?.tukUiProjectId) {
+        const match = _.find(allAddons, (addon) => addon.id.toString() === targetToc.tukUiProjectId);
         if (!match) {
           continue;
         }
 
         tukUiAddon = match;
       } else {
-        const results = await this.searchAddons(addonFolder.toc.title, installation.clientType);
+        const results = await this.searchAddons(targetToc.title, installation.clientType);
         const firstResult = _.first(results);
         if (!firstResult) {
           continue;
@@ -193,7 +201,7 @@ export class TukUiAddonProvider extends AddonProvider {
 
         // If we got a fuzzy name match, ensure it's not already added to prevent hiding addons
         if (tukUiAddon && _.findIndex(matches, (match) => match.id.toString() === tukUiAddon.id.toString()) !== -1) {
-          console.warn(`Overlapping addon: ${addonFolder.toc.title ?? ""} => ${tukUiAddon.name}`);
+          console.warn(`Overlapping addon: ${targetToc.title ?? ""} => ${tukUiAddon.name}`);
           continue;
         }
       }
@@ -204,12 +212,10 @@ export class TukUiAddonProvider extends AddonProvider {
 
       matches.push({ ...tukUiAddon });
 
-      const installedFolders = addonFolder.toc.tukUiProjectFolders
-        ? addonFolder.toc.tukUiProjectFolders
-        : tukUiAddon.name;
+      const installedFolders = targetToc.tukUiProjectFolders ? targetToc.tukUiProjectFolders : tukUiAddon.name;
 
-      const installedFolderList = addonFolder.toc.tukUiProjectFolders
-        ? addonFolder.toc.tukUiProjectFolders.split(",").map((f) => f.trim())
+      const installedFolderList = targetToc.tukUiProjectFolders
+        ? targetToc.tukUiProjectFolders.split(",").map((f) => f.trim())
         : [tukUiAddon.name];
 
       addonFolder.matchingAddon = {
@@ -227,7 +233,7 @@ export class TukUiAddonProvider extends AddonProvider {
         installedAt: addonFolder.fileStats?.birthtime ?? new Date(0),
         installedFolders: installedFolders,
         installedFolderList: installedFolderList,
-        installedVersion: addonFolder.toc.version,
+        installedVersion: targetToc.version,
         latestVersion: tukUiAddon.version,
         providerName: this.name,
         thumbnailUrl: tukUiAddon.screenshot_url,

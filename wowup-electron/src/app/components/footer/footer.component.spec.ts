@@ -29,7 +29,6 @@ describe("FooterComponent", () => {
       getApplicationVersion: () => Promise.resolve("TESTV"),
       wowupUpdateCheck$: new Subject<UpdateCheckResult>().asObservable(),
       wowupUpdateDownloaded$: new Subject<any>().asObservable(),
-      wowupUpdateCheckInProgress$: new Subject<boolean>().asObservable(),
       wowupUpdateDownloadInProgress$: new Subject<boolean>().asObservable(),
     });
 

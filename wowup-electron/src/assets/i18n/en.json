@@ -70,7 +70,9 @@
       "SNACKBAR_ACTION": "Update",
       "SNACKBAR_TEXT": "A new version of WowUp is available",
       "TOOLTIP": "WowUp update available",
-      "UPDATE_ERROR": "Failed to get WowUp update"
+      "UPDATE_ERROR": "Failed to get WowUp update",
+      "CHECKING_FOR_UPDATE": "Checking for update",
+      "DOWNLOADING_UPDATE": "Downloading update"
     }
   },
   "COMMON": {

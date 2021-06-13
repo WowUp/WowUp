@@ -21,6 +21,7 @@ import { convertBbcode } from "../utils/bbcode.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { strictFilter } from "../utils/array.utils";
+import { TocService } from "../services/toc/toc.service";
 
 const API_URL = "https://api.mmoui.com/v4/game/WOW";
 const ADDON_URL = "https://www.wowinterface.com/downloads/info";
@@ -36,7 +37,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
   public readonly allowEdit = true;
   public enabled = true;
 
-  public constructor(private _cachingService: CachingService, private _networkService: NetworkService) {
+  public constructor(
+    private _cachingService: CachingService,
+    private _networkService: NetworkService,
+    private _tocService: TocService
+  ) {
     super();
     this._circuitBreaker = this._networkService.getCircuitBreaker(`${this.name}_main`);
   }
@@ -136,15 +141,20 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
-    const addonIds = addonFolders.filter((af) => !!af.toc.wowInterfaceId).map((af) => af.toc.wowInterfaceId ?? "");
+    const wowiFolders = addonFolders.filter((folder) =>
+      folder.tocs.some((toc) => !!toc.wowInterfaceId && toc.loadOnDemand !== "1")
+    );
+    const addonIds = _.uniq(_.flatten(wowiFolders.map((folder) => folder.tocs.map((toc) => toc.wowInterfaceId))));
+
     const addonDetails = await this.getAllAddonDetails(addonIds);
 
-    for (const addonFolder of addonFolders) {
-      if (!addonFolder?.toc?.wowInterfaceId) {
+    for (const addonFolder of wowiFolders) {
+      const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+      if (!targetToc?.wowInterfaceId) {
         continue;
       }
 
-      const details = addonDetails.find((ad) => ad.id.toString() === addonFolder.toc.wowInterfaceId);
+      const details = addonDetails.find((ad) => ad.id.toString() === targetToc.wowInterfaceId);
       if (!details) {
         console.warn("Details not found");
         continue;
@@ -213,6 +223,8 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolder: AddonFolder
   ): Addon {
+    const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+
     return {
       id: uuidv4(),
       author: response.author,
@@ -222,11 +234,11 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       downloadUrl: response.downloadUri,
       externalId: response.id.toString(),
       externalUrl: this.getAddonUrl(response),
-      gameVersion: getGameVersion(addonFolder.toc.interface),
+      gameVersion: getGameVersion(targetToc.interface),
       installedAt: new Date(),
       installedFolders: addonFolder.name,
       installedFolderList: [addonFolder.name],
-      installedVersion: addonFolder.toc?.version,
+      installedVersion: targetToc?.version,
       isIgnored: false,
       latestVersion: response.version,
       name: response.title,

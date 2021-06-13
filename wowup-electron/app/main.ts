@@ -4,11 +4,11 @@ import { find } from "lodash";
 import * as minimist from "minimist";
 import { arch as osArch, release as osRelease, type as osType } from "os";
 import { join } from "path";
-import { format as urlFormat, pathToFileURL } from "url";
+import { pathToFileURL } from "url";
 import { inspect } from "util";
 
 import { createAppMenu } from "./app-menu";
-import { initializeAppUpdateIpcHandlers, initializeAppUpdater } from "./app-updater";
+import { AppUpdater } from "./app-updater";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import {
@@ -74,6 +74,7 @@ log.info("USER_AGENT", USER_AGENT);
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
+let appUpdater: AppUpdater | undefined = undefined;
 let loadFailCount = 0;
 
 // APP MENU SETUP
@@ -156,6 +157,7 @@ if (app.isReady()) {
 app.on("before-quit", () => {
   win = null;
   appIsQuitting = true;
+  appUpdater?.dispose();
 });
 
 // Quit when all windows are closed.
@@ -265,10 +267,10 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
+  appUpdater = new AppUpdater(win);
+
   initializeIpcHandlers(win, USER_AGENT);
   initializeStoreIpcHandlers();
-  initializeAppUpdater(win);
-  initializeAppUpdateIpcHandlers(win);
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
@@ -329,6 +331,8 @@ function createWindow(): BrowserWindow {
     } else if (mainWindowManager.isMaximized) {
       win.maximize();
     }
+
+    appUpdater.checkForUpdates().catch((e) => console.error(e));
   });
 
   win.on("close", (e) => {

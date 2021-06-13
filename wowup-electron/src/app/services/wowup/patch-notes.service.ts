@@ -26,10 +26,11 @@ const CHANGELOGS: ChangeLog[] = [
         <img style="width: 200px;" loading="lazy" src="https://www.warcrafttavern.com/wp-content/uploads/2020/10/Warcraft-Tavern-Logo-768x246.png">
         </a>
         </li>
-        <li>Mac M1 build available</li>
       </ul>
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>
+        <li>Russian locale updates (Medok)</li>
+        <li>German locale updates (Glow)</li>
         <li>Revamped UI</li>
         <li>WowUp updates will now download automatically</li>
         <li>When starting with 0 installs found, user should go to installations page</li>
@@ -40,6 +41,8 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Fixed an issue with table header font in addon details</li>
         <li>Fixed an issue with odd table de-select behavior</li>
         <li>Fixed an issue with the client selector overlapping the top toolbar</li>
+        <li>Fixed an issue with re-scanning not showing the correct game version</li>
+        <li>Reworked the app update flow</li>
       </ul>
       </div>`,
   },

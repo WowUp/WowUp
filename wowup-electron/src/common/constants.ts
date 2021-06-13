@@ -80,6 +80,9 @@ export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 export const IPC_GET_LATEST_DIR_UPDATE_TIME = "get-latest-dir-update-time";
 export const IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT = "system-preferences-get-user-default";
 export const IPC_SHOW_OPEN_DIALOG = "show-open-dialog";
+export const IPC_APP_UPDATE_STATE = "app-update-state";
+export const IPC_APP_INSTALL_UPDATE = "app-install-update";
+export const IPC_APP_CHECK_UPDATE = "app-check-update";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
@@ -114,17 +117,6 @@ export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
 export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
-
-// APP UPDATER
-export const APP_UPDATE_ERROR = "app-update-error";
-export const APP_UPDATE_DOWNLOADED = "app-update-downloaded";
-export const APP_UPDATE_NOT_AVAILABLE = "app-update-not-available";
-export const APP_UPDATE_AVAILABLE = "app-update-available";
-export const APP_UPDATE_START_DOWNLOAD = "app-update-start-download";
-export const APP_UPDATE_INSTALL = "app-update-install";
-export const APP_UPDATE_CHECK_FOR_UPDATE = "app-update-check-for-update";
-export const APP_UPDATE_CHECK_START = "app-update-check-start";
-export const APP_UPDATE_CHECK_END = "app-update-check-end";
 
 // THEMES
 export const DEFAULT_THEME = "default-theme";

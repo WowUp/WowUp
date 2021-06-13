@@ -11,6 +11,28 @@ export enum AddonDependencyType {
   Other = 4,
 }
 
+export enum AppUpdateState {
+  CheckingForUpdate = 1,
+  UpdateAvailable,
+  UpdateNotAvailable,
+  Downloading,
+  Downloaded,
+  Error,
+}
+
+export interface AppUpdateEvent {
+  state: AppUpdateState;
+  progress?: AppUpdateDownloadProgress;
+  error?: string;
+}
+
+export interface AppUpdateDownloadProgress {
+  bytesPerSecond: number;
+  percent: number;
+  transferred: number;
+  total: number;
+}
+
 export enum AddonWarningType {
   MissingOnProvider = "missing-on-provider",
   NoProviderFiles = "no-provider-files",

@@ -17,7 +17,8 @@ declare type MainChannels =
   | "power-monitor-lock"
   | "power-monitor-unlock"
   | "request-install-from-url"
-  | "custom-protocol-received";
+  | "custom-protocol-received"
+  | "app-update-state";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
@@ -68,7 +69,8 @@ declare type RendererChannels =
   | "store-set-object"
   | "get-latest-dir-update-time"
   | "system-preferences-get-user-default"
-  | "show-open-dialog";
+  | "show-open-dialog"
+  | "app-install-update";
 
 declare global {
   interface Window {

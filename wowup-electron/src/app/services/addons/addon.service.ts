@@ -1438,7 +1438,7 @@ export class AddonService {
 
       for (const provider of this.getEnabledAddonProviders()) {
         try {
-          const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.toc);
+          const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
           await provider.scan(installation, defaultAddonChannel, validFolders);
         } catch (e) {
           console.error(e);
@@ -1456,7 +1456,8 @@ export class AddonService {
 
       matchedAddonFolders.forEach((maf) => {
         if (maf.matchingAddon) {
-          this.setExternalIds(maf.matchingAddon, maf.toc);
+          const targetToc = this._tocService.getTocForGameType2(maf.tocs, installation.clientType);
+          this.setExternalIds(maf.matchingAddon, targetToc);
         }
       });
 
@@ -1465,6 +1466,8 @@ export class AddonService {
         (addonFolder) =>
           `${addonFolder.matchingAddon?.providerName ?? ""}${addonFolder.matchingAddon?.externalId ?? ""}`
       );
+
+      console.debug("matchedGroups", matchedGroups);
 
       const addonList: Addon[] = [];
       for (const value of Object.values(matchedGroups)) {
@@ -1478,7 +1481,9 @@ export class AddonService {
       //   (value) => _.orderBy(value, (v) => v.matchingAddon?.externalIds?.length ?? 0).reverse()[0].matchingAddon
       // );
 
-      const unmatchedFolders = addonFolders.filter((af) => this.isAddonFolderUnmatched(matchedAddonFolderNames, af));
+      const unmatchedFolders = addonFolders.filter((af) =>
+        this.isAddonFolderUnmatched(matchedAddonFolderNames, af, installation)
+      );
 
       for (const uf of unmatchedFolders) {
         const unmatchedAddon = await this.createUnmatchedAddon(uf, installation, matchedAddonFolderNames);
@@ -1518,7 +1523,7 @@ export class AddonService {
       if (!addon.providerName || !addon.externalId) {
         return;
       }
-      
+
       this.insertExternalId(externalIds, addon.providerName, addon.externalId);
     }
 
@@ -1554,14 +1559,20 @@ export class AddonService {
    * This should verify that a folder that did not have a match, is actually unmatched
    * This will happen for any sub folders of TukUI or WowInterface addons
    */
-  private isAddonFolderUnmatched(matchedFolderNames: string[], addonFolder: AddonFolder) {
+  private isAddonFolderUnmatched(
+    matchedFolderNames: string[],
+    addonFolder: AddonFolder,
+    installation: WowInstallation
+  ) {
     if (addonFolder.matchingAddon) {
       return false;
     }
 
+    const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+
     // if the folder is load on demand, it 'should' be a sub folder
-    const isLoadOnDemand = addonFolder.toc?.loadOnDemand === "1";
-    if (isLoadOnDemand && this.allItemsMatch(addonFolder.toc.dependencyList, matchedFolderNames)) {
+    const isLoadOnDemand = targetToc?.loadOnDemand === "1";
+    if (isLoadOnDemand && this.allItemsMatch(targetToc.dependencyList, matchedFolderNames)) {
       return false;
     }
 
@@ -1832,8 +1843,8 @@ export class AddonService {
     };
   }
 
-  private hasValidTocTitle(addonFolder: AddonFolder) {
-    return addonFolder.toc?.title && /[a-zA-Z]/g.test(addonFolder.toc.title);
+  private hasValidTocTitle(toc: Toc) {
+    return toc?.title && /[a-zA-Z]/g.test(toc.title);
   }
 
   private async createUnmatchedAddon(
@@ -1841,19 +1852,20 @@ export class AddonService {
     installation: WowInstallation,
     matchedAddonFolderNames: string[]
   ): Promise<Addon> {
-    const tocMissingDependencies = _.difference(addonFolder.toc?.dependencyList, matchedAddonFolderNames);
+    const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+    const tocMissingDependencies = _.difference(targetToc?.dependencyList, matchedAddonFolderNames);
     const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(addonFolder.path);
 
     return {
       id: uuidv4(),
-      name: this.hasValidTocTitle(addonFolder) ? addonFolder.toc.title ?? addonFolder.name : addonFolder.name,
+      name: this.hasValidTocTitle(targetToc) ? targetToc.title ?? addonFolder.name : addonFolder.name,
       thumbnailUrl: "",
-      latestVersion: addonFolder.toc?.version || "",
-      installedVersion: addonFolder.toc?.version || "",
+      latestVersion: targetToc?.version || "",
+      installedVersion: targetToc?.version || "",
       clientType: installation.clientType,
       externalId: "",
-      gameVersion: AddonUtils.getGameVersion(addonFolder.toc?.interface) || "",
-      author: addonFolder.toc?.author || "",
+      gameVersion: AddonUtils.getGameVersion(targetToc?.interface) || "",
+      author: targetToc?.author || "",
       downloadUrl: "",
       externalUrl: "",
       providerName: ADDON_PROVIDER_UNKNOWN,
@@ -1866,7 +1878,7 @@ export class AddonService {
       installedFolderList: [addonFolder.name],
       summary: "",
       screenshotUrls: [],
-      isLoadOnDemand: addonFolder.toc?.loadOnDemand === "1",
+      isLoadOnDemand: targetToc?.loadOnDemand === "1",
       externalChannel: getEnumName(AddonChannelType, AddonChannelType.Stable),
       missingDependencies: tocMissingDependencies,
       ignoreReason: addonFolder.ignoreReason,

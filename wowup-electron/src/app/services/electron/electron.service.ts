@@ -4,16 +4,13 @@ import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExterna
 import { LoginItemSettings } from "electron/main";
 import { find } from "lodash";
 import * as minimist from "minimist";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, ReplaySubject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
 
 import {
-  APP_UPDATE_CHECK_END,
-  APP_UPDATE_CHECK_START,
-  APP_UPDATE_DOWNLOADED,
-  APP_UPDATE_START_DOWNLOAD,
+  IPC_APP_UPDATE_STATE,
   IPC_CLOSE_WINDOW,
   IPC_CUSTOM_PROTOCOL_RECEIVED,
   IPC_FOCUS_WINDOW,
@@ -47,7 +44,7 @@ import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
 import { MainChannels, RendererChannels } from "../../../common/wowup";
-import { AppOptions } from "../../../common/wowup/models";
+import { AppOptions, AppUpdateEvent } from "../../../common/wowup/models";
 import { isProtocol } from "../../utils/string.utils";
 
 @Injectable({
@@ -56,18 +53,18 @@ import { isProtocol } from "../../utils/string.utils";
 export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
-  private readonly _ipcEventReceivedSrc = new BehaviorSubject("");
   private readonly _powerMonitorSrc = new BehaviorSubject("");
   private readonly _customProtocolSrc = new BehaviorSubject("");
+  private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
 
   private _appVersion = "";
   private _opts!: AppOptions;
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
-  public readonly ipcEventReceived$ = this._ipcEventReceivedSrc.asObservable();
   public readonly powerMonitor$ = this._powerMonitorSrc.asObservable();
   public readonly customProtocol$ = this._customProtocolSrc.asObservable();
+  public readonly appUpdate$ = this._appUpdateSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -100,20 +97,10 @@ export class ElectronService {
         console.error("Failed to get app version", e);
       });
 
-    this.onRendererEvent(APP_UPDATE_CHECK_START, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_START);
-    });
-
-    this.onRendererEvent(APP_UPDATE_CHECK_END, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_END);
-    });
-
-    this.onRendererEvent(APP_UPDATE_START_DOWNLOAD, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_START_DOWNLOAD);
-    });
-
-    this.onRendererEvent(APP_UPDATE_DOWNLOADED, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_DOWNLOADED);
+    this.onRendererEvent(IPC_APP_UPDATE_STATE, (evt, updateEvt: AppUpdateEvent) => {
+      console.log("IPC_APP_UPDATE_STATE", IPC_APP_UPDATE_STATE);
+      console.log(updateEvt);
+      this._appUpdateSrc.next(updateEvt);
     });
 
     this.onRendererEvent(IPC_WINDOW_MINIMIZED, () => {
@@ -305,7 +292,12 @@ export class ElectronService {
   }
 
   public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
-    return await window.wowup.rendererInvoke(channel, ...args);
+    try {
+      return await window.wowup.rendererInvoke(channel, ...args);
+    } catch (e) {
+      console.error("Invoke failed", e);
+      throw e;
+    }
   }
 
   public on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
