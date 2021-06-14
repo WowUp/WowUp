@@ -61,7 +61,9 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 全屏模式",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "安装 WowUp 更新",
+      "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "是否重新启动 WowUp 以完成更新？",
       "INSTALL_TITLE": "WowUp 更新已准备就绪",
       "NOT_AVAILABLE": "已安装最新版 WowUp",
@@ -200,6 +202,7 @@
       "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支持插件作者",
+      "IMAGES_TAB": "Images",
       "MISSING_DEPENDENCIES": "缺失的依赖项",
       "NO_CHANGELOG_TEXT": "更新记录不可用",
       "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看",

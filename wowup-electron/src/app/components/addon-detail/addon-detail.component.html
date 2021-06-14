@@ -51,7 +51,8 @@
     <!-- SUMMARY -->
     <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
       <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
-      <div #descriptionContainer class="markdown-body addon-summary text-1 mt-3" [innerHtml]="description$ | async"></div>
+      <div #descriptionContainer class="markdown-body addon-summary text-1 mt-3" [innerHtml]="description$ | async">
+      </div>
     </mat-tab>
     <!-- CHANGELOG -->
     <mat-tab *ngIf="canShowChangelog === true" [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
@@ -60,6 +61,16 @@
         {{'DIALOGS.ADDON_DETAILS.NO_CHANGELOG_TEXT' |
         translate}}</div>
       <div #changelogContainer class="markdown-body addon-changelog text-1 mt-3" [innerHTML]="changelog$ | async"></div>
+    </mat-tab>
+    <!-- SCREENSHOTS -->
+    <mat-tab *ngIf="imageUrls.length > 0" [label]="'DIALOGS.ADDON_DETAILS.IMAGES_TAB' | translate">
+      <mat-grid-list class="image-grid pt-3" cols="4" rowHeight="1:1" gutterSize="3">
+        <mat-grid-tile *ngFor="let image of imageUrls">
+          <div class="image-thumb-container ">
+            <img class="image-thumb mat-elevation-z8" [src]="image.src" (click)="onClickImage(image.src)">
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
     </mat-tab>
   </mat-tab-group>
 </mat-dialog-content>

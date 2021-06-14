@@ -61,7 +61,9 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Vollbild",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "WowUp Update installieren",
+      "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "Möchtest Du WowUp neu starten, um das Update zu installieren?",
       "INSTALL_TITLE": "WowUp-Update bereit",
       "NOT_AVAILABLE": "Die aktuellste Version von WowUp ist bereits installiert",
@@ -200,6 +202,7 @@
       "DESCRIPTION_NOT_FOUND": "Keine Beschreibung gefunden",
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Unterstütze diesen Autor",
+      "IMAGES_TAB": "Images",
       "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",
       "NO_CHANGELOG_TEXT": "Kein Änderungsverlauf verfügbar",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",

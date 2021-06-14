@@ -529,6 +529,20 @@ $alliance-theme-light: mat.define-light-theme(
   color: var(--text-3) !important;
 }
 
+// LIGHT BOX
+
+.lb-outerContainer {
+  background-color: var(--background-secondary-4);
+}
+
+.lb-cancel {
+  width: 80px;
+  height: 80px;
+  background-image: url('assets/images/wowup-white-1.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 // GRID STYLES
 .ag-theme-material {
   @include ag-theme-material(

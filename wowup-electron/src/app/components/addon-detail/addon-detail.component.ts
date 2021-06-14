@@ -1,6 +1,7 @@
 import { last } from "lodash";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
 import { filter, first, map, switchMap, tap } from "rxjs/operators";
+import { IAlbum, Lightbox } from "ngx-lightbox";
 
 import {
   AfterViewChecked,
@@ -84,6 +85,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public isUnknownProvider = false;
   public isMissingUnknownDependencies = false;
   public missingDependencies: string[] = [];
+  public imageUrls: IAlbum[] = [];
 
   public constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -94,7 +96,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _wowupService: WowUpService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    private _lightbox: Lightbox
   ) {
     this._dependencies = this.getDependencies();
 
@@ -162,7 +165,16 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.isUnknownProvider = this.model.listItem?.addon?.providerName === ADDON_PROVIDER_UNKNOWN;
 
     this.missingDependencies = this.model.listItem?.addon?.missingDependencies ?? [];
+
     this.isMissingUnknownDependencies = !!this.missingDependencies.length;
+
+    const imageUrlList = this.model.listItem?.addon?.screenshotUrls ?? this.model.searchResult?.screenshotUrls ?? [];
+    this.imageUrls = imageUrlList.map((url) => {
+      return {
+        src: url,
+        thumb: url,
+      };
+    });
   }
 
   public ngAfterViewInit(): void {}
@@ -176,6 +188,13 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public onClickImage(url: string): void {
+    const idx = this.imageUrls.findIndex((album) => album.src === url);
+    if(idx >= 0){
+      this._lightbox.open(this.imageUrls, idx);
+    }
   }
 
   public onInstallUpdated(): void {
