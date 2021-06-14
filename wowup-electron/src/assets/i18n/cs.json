@@ -61,7 +61,9 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "Nainstalovat aktualizaci WowUp",
+      "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "Chcete restartovat WowUp and nainstalovat aktualizaci?",
       "INSTALL_TITLE": "Aktualizace WowUp je připravena",
       "NOT_AVAILABLE": "Nejnovější verze WowUp je již nainstalována",
@@ -200,6 +202,7 @@
       "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Popis",
       "FUNDING_LINK_TITLE": "Podpořte autora",
+      "IMAGES_TAB": "Images",
       "MISSING_DEPENDENCIES": "Chybějící závislosti",
       "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Zobrazit v prohlížeči",

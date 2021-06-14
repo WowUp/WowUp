@@ -1,4 +1,24 @@
 @import "../../../variables.scss";
+
+.image-grid {
+  width: 70vw;
+  .image-thumb-container {
+    margin: 1em;
+    .image-thumb {
+      max-height: 100%;
+      max-width: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      box-sizing: border-box;
+
+      &:hover {
+        border: 3px solid var(--background-primary);
+        cursor: pointer;
+      }
+    }
+  }
+}
+
 .title {
   display: -webkit-box;
   -webkit-line-clamp: 1;

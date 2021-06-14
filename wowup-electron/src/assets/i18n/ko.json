@@ -61,7 +61,9 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 전체 화면",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
+      "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "업데이트를 설치하기 위해 프로그램을 재시작할까요?",
       "INSTALL_TITLE": "WowUp 업데이트 준비됨",
       "NOT_AVAILABLE": "최신 버전입니다",
@@ -200,6 +202,7 @@
       "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "설명",
       "FUNDING_LINK_TITLE": "제작자 지원하기",
+      "IMAGES_TAB": "Images",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "NO_CHANGELOG_TEXT": "불러올 변경 내역이 없습니다.",
       "VIEW_IN_BROWSER_BUTTON": "브라우저에서 열기",

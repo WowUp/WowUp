@@ -573,6 +573,7 @@ export class CurseAddonProvider extends AddonProvider {
         files: _.orderBy(searchResultFiles, (f) => f.channelType).reverse(),
         downloadCount: result.downloadCount,
         summary: result.summary,
+        screenshotUrls: this.getScreenshotUrls(result),
       };
 
       return searchResult;

@@ -1,4 +1,5 @@
 import { AgGridModule } from "ag-grid-angular";
+import { LightboxModule } from 'ngx-lightbox';
 
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
@@ -100,6 +101,7 @@ import { HomeComponent } from "./home.component";
       GetAddonStatusColumnComponent,
       TableContextHeaderCellComponent,
     ]),
+    LightboxModule 
   ],
   providers: [
     DatePipe,
