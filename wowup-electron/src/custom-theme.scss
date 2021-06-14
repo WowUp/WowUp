@@ -439,7 +439,13 @@ $alliance-theme-light: mat.define-light-theme(
 }
 
 .wowup-snackbar {
-  background-color: var(--background-secondary-4);
+  background-color: var(--background-secondary-4) !important;
+
+  &.text-1 {
+    * {
+      color: var(--text-1) !important;
+    }
+  }
 }
 
 .addon-summary,
