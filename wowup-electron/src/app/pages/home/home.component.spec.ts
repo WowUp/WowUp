@@ -17,6 +17,7 @@ import { AddonScanError, AddonSyncError } from "../../errors";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
+import { LightboxModule } from "ngx-lightbox";
 
 describe("HomeComponent", () => {
   let electronService: ElectronService;
@@ -37,7 +38,7 @@ describe("HomeComponent", () => {
       scanUpdate$: new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown }).asObservable(),
       syncError$: new Subject<AddonSyncError>(),
       scanError$: new Subject<AddonScanError>(),
-      addonInstalled$: new Subject<AddonUpdateEvent>()
+      addonInstalled$: new Subject<AddonUpdateEvent>(),
     });
 
     electronService = jasmine.createSpyObj("ElectronService", [""], {
@@ -71,6 +72,7 @@ describe("HomeComponent", () => {
             useClass: TranslateMessageFormatCompiler,
           },
         }),
+        LightboxModule,
       ],
       providers: [MatSnackBar],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
