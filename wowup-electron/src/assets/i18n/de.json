@@ -384,8 +384,8 @@
       }
     },
     "NEWS": {
-      "PAGE_CONTEXT_FOOTER": "{count} news stories",
-      "REFRESH_TOOLTIP": "Refresh news feed"
+      "PAGE_CONTEXT_FOOTER": "{count} News",
+      "REFRESH_TOOLTIP": "Newsfeed aktualisieren"
     },
     "OPTIONS": {
       "ADDON": {
