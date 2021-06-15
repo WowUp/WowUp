@@ -260,15 +260,15 @@ mat-icon.success-icon {
   overflow-x: hidden;
 
   &.mac {
-    height: calc(100vh - 55px);
+    height: calc(100vh - 95px);
   }
 
   &.windows {
-    height: calc(100vh - 63px);
+    height: calc(100vh - 103px);
   }
 
   &.linux {
-    height: calc(100vh - 63px);
+    height: calc(100vh - 103px);
   }
 }
 

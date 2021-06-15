@@ -1,9 +1,10 @@
 <div *ngIf="quitEnabled === false" class="app" [ngClass]="[wowUpService.currentTheme, electronService.platform]">
   <app-titlebar class="bg-primary"></app-titlebar>
+  <app-horizontal-tabs></app-horizontal-tabs>
   <div class="content">
-    <div class="tabs">
+    <!-- <div class="tabs">
       <app-vertical-tabs></app-vertical-tabs>
-    </div>
+    </div> -->
     <div class="main">
       <router-outlet></router-outlet>
     </div>
