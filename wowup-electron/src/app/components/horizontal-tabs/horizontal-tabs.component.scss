@@ -30,10 +30,11 @@
     border-top-right-radius: 4px;
 
     .tab-title {
-      transition: max-width 0.3s ease 0.1s;
-      overflow: hidden;
-      white-space: nowrap;
+      color: var(--text-4);
       max-width: 0;
+      overflow: hidden;
+      transition: all 0.3s ease 0.1s;
+      white-space: nowrap;
     }
 
     &:hover {
@@ -48,6 +49,7 @@
       }
 
       .tab-title {
+        color: var(--text-1);
         display: block;
         max-width: 200px;
       }

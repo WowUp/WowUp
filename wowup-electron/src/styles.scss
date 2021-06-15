@@ -568,12 +568,14 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
 
 .icon-inactive {
   svg {
+    transition: fill 0.3s ease 0.1s;
     fill: var(--text-4);
   }
 }
 
 .icon-active {
   svg {
+    transition: fill 0.3s ease 0.1s;
     fill: var(--text-1);
   }
 }
