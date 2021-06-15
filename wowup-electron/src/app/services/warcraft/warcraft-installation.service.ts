@@ -61,6 +61,30 @@ export class WarcraftInstallationService {
       .subscribe();
   }
 
+  public reOrderInstallation(installationId: string, direction: number): void {
+    const originIndex = this._wowInstallations.findIndex((installation) => installation.id === installationId);
+    if (originIndex === -1) {
+      console.warn("Installation not found to re-order", installationId);
+      return;
+    }
+
+    const newIndex = originIndex + direction;
+    if (newIndex < 0 || newIndex >= this._wowInstallations.length) {
+      console.warn("New index was out of bounds");
+      return;
+    }
+
+    const installationCpy = [...this._wowInstallations];
+
+    [installationCpy[newIndex], installationCpy[originIndex]] = [
+      installationCpy[originIndex],
+      installationCpy[newIndex],
+    ];
+
+    this.setWowInstallations(installationCpy);
+    this._wowInstallationsSrc.next(installationCpy);
+  }
+
   public async getWowInstallationsAsync(): Promise<WowInstallation[]> {
     const results = await this._preferenceStorageService.getObjectAsync<WowInstallation[]>(WOW_INSTALLATIONS_KEY);
     return results || [];

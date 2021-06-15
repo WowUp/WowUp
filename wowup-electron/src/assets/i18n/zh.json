@@ -466,6 +466,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "默认插件更新通道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "编辑",
+        "MOVE_DOWN_BUTTON": "Move Down",
+        "MOVE_UP_BUTTON": "Move Up",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "浏览",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",
         "RESCAN_CLIENTS_BUTTON": "重新扫描",

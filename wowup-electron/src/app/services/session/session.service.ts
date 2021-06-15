@@ -35,6 +35,7 @@ export class SessionService {
   public readonly myAddonsHiddenColumns$ = this._myAddonsColumnsSrc.asObservable();
   public readonly getAddonsHiddenColumns$ = this._getAddonsColumnsSrc.asObservable();
   public readonly targetFileInstallComplete$ = this._targetFileInstallCompleteSrc.asObservable();
+  public readonly editingWowInstallationId$ = new BehaviorSubject<string>("");
 
   public constructor(
     private _warcraftInstallationService: WarcraftInstallationService,
