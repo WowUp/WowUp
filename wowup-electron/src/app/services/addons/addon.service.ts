@@ -517,7 +517,7 @@ export class AddonService {
     await this.syncAddons(installation, addons);
 
     for (const addon of addons) {
-      if (!this.canUpdateAddon(addon) || !addon.id) {
+      if (!AddonUtils.needsUpdate(addon) || !addon.id) {
         continue;
       }
 
@@ -530,19 +530,6 @@ export class AddonService {
     }
 
     return updatedAddons;
-  }
-
-  public canUpdateAddon(addon: Addon): boolean {
-    if (addon.isIgnored) {
-      return false;
-    }
-
-    // Sometimes authors push out new builds without changing the toc version.
-    if (addon.externalLatestReleaseId && addon.externalLatestReleaseId !== addon.installedExternalReleaseId) {
-      return true;
-    }
-
-    return !!addon.installedVersion && addon.installedVersion !== addon.latestVersion;
   }
 
   public getAutoUpdateEnabledAddons(): Addon[] {
@@ -1909,7 +1896,7 @@ export class AddonService {
 
   private areAnyAddonsAvailableForUpdate(): boolean {
     const updateReadyAddons = this._addonStorage.queryAll((addon) => {
-      return addon.isIgnored !== true && this.canUpdateAddon(addon);
+      return addon.isIgnored !== true && AddonUtils.needsUpdate(addon);
     });
 
     return updateReadyAddons.length > 0;

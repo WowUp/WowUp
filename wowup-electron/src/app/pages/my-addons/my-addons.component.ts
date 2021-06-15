@@ -446,7 +446,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const addons = await this.addonService.getAddons(this.selectedInstallation, false);
     try {
-      const filteredAddons = _.filter(addons, (addon) => this.addonService.canUpdateAddon(addon));
+      const filteredAddons = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
