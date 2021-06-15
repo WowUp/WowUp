@@ -260,15 +260,15 @@ mat-icon.success-icon {
   overflow-x: hidden;
 
   &.mac {
-    height: calc(100vh - 55px);
+    height: calc(100vh - 95px);
   }
 
   &.windows {
-    height: calc(100vh - 63px);
+    height: calc(100vh - 103px);
   }
 
   &.linux {
-    height: calc(100vh - 63px);
+    height: calc(100vh - 103px);
   }
 }
 
@@ -568,12 +568,14 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
 
 .icon-inactive {
   svg {
+    transition: fill 0.3s ease 0.1s;
     fill: var(--text-4);
   }
 }
 
 .icon-active {
   svg {
+    transition: fill 0.3s ease 0.1s;
     fill: var(--text-1);
   }
 }

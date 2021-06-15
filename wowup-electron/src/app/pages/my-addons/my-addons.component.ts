@@ -13,7 +13,7 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, first, map, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, delay, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -330,12 +330,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this.setPageContextText();
-    this.lazyLoad()
-      .then(() => {
-        this.redrawRows();
-      })
-      .catch((e) => console.error(e));
-    // window.setTimeout(() => {}, 50);
+
+    from(this.lazyLoad())
+      .pipe(
+        first(),
+        delay(400),
+        map(() => {
+          this.redrawRows();
+        }),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   };
 
   // Get the translated value of the provider name (unknown)
@@ -438,7 +446,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const addons = await this.addonService.getAddons(this.selectedInstallation, false);
     try {
-      const filteredAddons = _.filter(addons, (addon) => this.addonService.canUpdateAddon(addon));
+      const filteredAddons = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {

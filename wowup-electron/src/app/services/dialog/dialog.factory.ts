@@ -8,7 +8,7 @@ import { first } from "rxjs/operators";
 import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
-import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
+import { AlertDialogComponent, AlertDialogData } from "../../components/alert-dialog/alert-dialog.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 
@@ -38,18 +38,18 @@ export class DialogFactory {
     });
   }
 
-  public getAlertDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
+  public getAlertDialog(data: AlertDialogData): MatDialogRef<AlertDialogComponent, any> {
     return this._dialog.open(AlertDialogComponent, {
       minWidth: 250,
-      data: {
-        title,
-        message,
-      },
+      data: { ...data },
     });
   }
 
   public getErrorDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
-    return this.getAlertDialog(title, message);
+    return this.getAlertDialog({
+      title,
+      message,
+    });
   }
 
   public getPotentialAddonDetailsDialog(

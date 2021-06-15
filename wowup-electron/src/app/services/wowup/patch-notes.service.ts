@@ -27,6 +27,7 @@ const CHANGELOGS: ChangeLog[] = [
         </a>
         </li>
         <li>New Images tab in the addon details dialog</li>
+        <li>You can now change the order of your WoW installations</li>
       </ul>
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>
@@ -46,6 +47,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Fixed an issue with odd table de-select behavior</li>
         <li>Fixed an issue with the client selector overlapping the top toolbar</li>
         <li>Fixed an issue with re-scanning not showing the correct game version</li>
+        <li>Fixed an issue with Update All button sometimes getting stuck enabled</li>
         <li>Reworked the app update flow</li>
       </ul>
       </div>`,

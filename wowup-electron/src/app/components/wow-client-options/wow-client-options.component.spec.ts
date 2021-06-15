@@ -14,15 +14,22 @@ import { FormsModule } from "@angular/forms";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { mockPreload } from "../../tests/test-helpers";
+import { SessionService } from "../../services/session/session.service";
+import { BehaviorSubject, Observable } from "rxjs";
 
 describe("WowClientOptionsComponent", () => {
   let component: WowClientOptionsComponent;
   let fixture: ComponentFixture<WowClientOptionsComponent>;
   let warcraftInstallationService: WarcraftInstallationService;
   let warcraftService: WarcraftService;
+  let sessionService: any;
 
   beforeEach(async () => {
+    mockPreload();
+
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", ["getWowInstallations"], {
+      wowInstallations$: new BehaviorSubject([]),
       getWowInstallation: () => {
         return {
           clientType: WowClientType.Beta,
@@ -31,6 +38,9 @@ describe("WowClientOptionsComponent", () => {
     });
 
     warcraftService = jasmine.createSpyObj("WarcraftService", ["getExecutableName"], {});
+    sessionService = jasmine.createSpyObj("SessionService", [""], {
+      editingWowInstallationId$: new Observable(),
+    });
 
     let testBed = TestBed.configureTestingModule({
       declarations: [WowClientOptionsComponent],
@@ -58,6 +68,7 @@ describe("WowClientOptionsComponent", () => {
         providers: [
           { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
           { provide: WarcraftService, useValue: warcraftService },
+          { provide: SessionService, useValue: sessionService },
         ],
       },
     });

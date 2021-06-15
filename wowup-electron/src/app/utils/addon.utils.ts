@@ -26,14 +26,16 @@ export function getAddonDependencies(
 }
 
 export function needsUpdate(addon: Addon | undefined): boolean {
-  if (addon === undefined) {
+  if (addon.isIgnored) {
     return false;
   }
 
-  return (
-    (addon.externalLatestReleaseId && addon.externalLatestReleaseId !== addon.installedExternalReleaseId) ||
-    addon.installedVersion !== addon.latestVersion
-  );
+  // Sometimes authors push out new builds without changing the toc version.
+  if (addon.externalLatestReleaseId && addon.externalLatestReleaseId !== addon.installedExternalReleaseId) {
+    return true;
+  }
+
+  return !!addon.installedVersion && addon.installedVersion !== addon.latestVersion;
 }
 
 export function needsInstall(addon: Addon): boolean {

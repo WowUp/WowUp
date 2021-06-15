@@ -1,5 +1,14 @@
 @import "../../../variables.scss";
 
+.installation-card {
+  box-sizing: border-box;
+  border: 3px solid transparent;
+
+  &:hover {
+    border: 3px solid var(--background-primary);
+  }
+}
+
 .wow-install-logo-container {
   position: absolute;
   right: 0.25em;

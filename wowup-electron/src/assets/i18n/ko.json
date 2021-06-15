@@ -466,6 +466,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "기본 애드온 채널",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "애드온 채널",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "MOVE_DOWN_BUTTON": "Move Down",
+        "MOVE_UP_BUTTON": "Move Up",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "선택",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "재탐색",

@@ -466,6 +466,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanal for Utvidelser",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "MOVE_DOWN_BUTTON": "Move Down",
+        "MOVE_UP_BUTTON": "Move Up",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Velg",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Skann Igjen",
