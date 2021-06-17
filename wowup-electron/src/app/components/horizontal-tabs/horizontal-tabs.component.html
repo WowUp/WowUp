@@ -1,4 +1,8 @@
-<div class="tab-strip bg-primary text-1">
+<div class="tab-strip bg-primary text-1" [ngClass]="{
+  mac: electronService.isMac,
+  windows: electronService.isWin,
+  linux: electronService.isLinux
+}">
   <div *ngFor="let tab of tabsTop" class="tab hover-bg-secondary-2"
     [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)"
     [matTooltip]="tab.tooltipKey | translate" [matTooltipPosition]="'below'">
