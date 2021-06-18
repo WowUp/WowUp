@@ -10,7 +10,7 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { from, of } from "rxjs";
+import { combineLatest, from, of } from "rxjs";
 import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
 import * as _ from "lodash";
 import {
@@ -158,6 +158,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
 
+    // If an addon is installed/updated check the badge number
+    combineLatest([this._addonService.addonInstalled$, this._addonService.addonRemoved$]).subscribe(() => {
+      this.electronService
+        .updateAppBadgeCount(this._addonService.getAllAddonsAvailableForUpdate().length)
+        .catch((e) => console.error(e));
+    });
+
     this.electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this.electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
     this.electronService.on(IPC_MENU_ZOOM_RESET_CHANNEL, this.onMenuZoomReset);
@@ -275,6 +282,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       const updatedAddons = await this._addonService.processAutoUpdates();
 
       await this._wowupAddonService.updateForAllClientTypes();
+
+      await this.electronService.updateAppBadgeCount(this._addonService.getAllAddonsAvailableForUpdate().length);
 
       if (!updatedAddons || updatedAddons.length === 0) {
         await this.checkQuitEnabled();

@@ -405,6 +405,8 @@
         "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
+        "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",

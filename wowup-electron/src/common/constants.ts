@@ -83,6 +83,7 @@ export const IPC_SHOW_OPEN_DIALOG = "show-open-dialog";
 export const IPC_APP_UPDATE_STATE = "app-update-state";
 export const IPC_APP_INSTALL_UPDATE = "app-install-update";
 export const IPC_APP_CHECK_UPDATE = "app-check-update";
+export const IPC_UPDATE_APP_BADGE = "update-app-badge";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
@@ -117,6 +118,7 @@ export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
 export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
+export const ENABLE_APP_BADGE_KEY = "enable_app_badge";
 
 // THEMES
 export const DEFAULT_THEME = "default-theme";

@@ -34,6 +34,7 @@ import {
   IPC_SET_ZOOM_LIMITS,
   IPC_SHOW_OPEN_DIALOG,
   IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
+  IPC_UPDATE_APP_BADGE,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
@@ -289,6 +290,10 @@ export class ElectronService {
       });
       window.wowup.rendererSend(channel, request);
     });
+  }
+
+  public async updateAppBadgeCount(count: number): Promise<void> {
+    await this.invoke(IPC_UPDATE_APP_BADGE, count);
   }
 
   public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
