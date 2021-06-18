@@ -70,9 +70,14 @@ class WowTavernFeed implements NewsFeed {
   providedIn: "root",
 })
 export class NewsService {
+  private _lastFetchedAt = 0;
   private _newsFeeds: NewsFeed[] = [new WowTavernFeed(this._networkService)];
 
   public newsItems$ = new BehaviorSubject<NewsItem[]>([]);
+
+  public get lastFetchedAt(): number {
+    return this._lastFetchedAt;
+  }
 
   public constructor(private _networkService: NetworkService) {}
 
@@ -87,6 +92,7 @@ export class NewsService {
       }
     }
 
+    this._lastFetchedAt = Date.now();
     this.newsItems$.next(newsItems);
     return newsItems;
   }

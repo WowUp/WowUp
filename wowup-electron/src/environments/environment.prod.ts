@@ -14,4 +14,5 @@ export const AppConfig = {
   defaultHttpTimeoutMs: 10000,
   defaultHttpResetTimeoutMs: 30000,
   wowUpHubHttpTimeoutMs: 10000,
+  newsRefreshIntervalMs: 3600000, // 1 hour
 };
