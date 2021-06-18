@@ -429,6 +429,12 @@ export class AddonService {
     return _.filter(addon.dependencies, (dep) => dep.type === AddonDependencyType.Required);
   }
 
+  public getAllAddonsAvailableForUpdate(): Addon[] {
+    return this._addonStorage.queryAll((addon) => {
+      return addon.isIgnored !== true && AddonUtils.needsUpdate(addon);
+    });
+  }
+
   public async installDependencies(
     addon: Addon,
     onUpdate: (installState: AddonInstallState, progress: number) => void = () => {}
@@ -1895,10 +1901,6 @@ export class AddonService {
   }
 
   private areAnyAddonsAvailableForUpdate(): boolean {
-    const updateReadyAddons = this._addonStorage.queryAll((addon) => {
-      return addon.isIgnored !== true && AddonUtils.needsUpdate(addon);
-    });
-
-    return updateReadyAddons.length > 0;
+    return this.getAllAddonsAvailableForUpdate().length > 0;
   }
 }

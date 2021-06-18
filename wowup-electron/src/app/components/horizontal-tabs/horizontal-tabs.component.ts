@@ -12,6 +12,7 @@ import {
 } from "../../../common/constants";
 import { Observable, of } from "rxjs";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
+import { ElectronService } from "../../services";
 
 interface Tab {
   titleKey?: string;
@@ -94,6 +95,7 @@ export class HorizontalTabsComponent implements OnInit {
   public tabsBottom: Tab[] = [this.settingsTab];
 
   public constructor(
+    public electronService: ElectronService,
     public sessionService: SessionService,
     private _warcraftInstallationService: WarcraftInstallationService
   ) {}

@@ -9,6 +9,7 @@ import { ElectronService } from "../../services/electron/electron.service";
 import { NewsItem, NewsService } from "../../services/news/news.service";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
+import { AppConfig } from "../../../environments/environment";
 
 @Component({
   selector: "app-news-panel",
@@ -94,7 +95,7 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   private lazyLoad(): void {
-    if (this._isLazyLoaded) {
+    if (!this.shouldReloadFeeds() && this._isLazyLoaded) {
       this.setPageContextText(this.newsService.newsItems$.value.length);
       return;
     }
@@ -112,5 +113,12 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
       rowCount > 0 ? this._translateService.instant("PAGES.NEWS.PAGE_CONTEXT_FOOTER", { count: rowCount }) : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);
+  }
+
+  private shouldReloadFeeds() {
+    return (
+      this.newsService.lastFetchedAt !== 0 &&
+      Date.now() - this.newsService.lastFetchedAt >= AppConfig.newsRefreshIntervalMs
+    );
   }
 }

@@ -70,7 +70,8 @@ declare type RendererChannels =
   | "get-latest-dir-update-time"
   | "system-preferences-get-user-default"
   | "show-open-dialog"
-  | "app-install-update";
+  | "app-install-update"
+  | "update-app-badge";
 
 declare global {
   interface Window {

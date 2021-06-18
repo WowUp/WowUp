@@ -14,6 +14,7 @@ import {
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   DEFAULT_THEME,
+  ENABLE_APP_BADGE_KEY,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
   GET_ADDONS_SORT_ORDER,
@@ -260,6 +261,14 @@ export class WowUpService {
     this._preferenceStorageService.set(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, enabled);
   }
 
+  public get enableAppBadge(): boolean {
+    return this._preferenceStorageService.findByKey(ENABLE_APP_BADGE_KEY) === true.toString();
+  }
+
+  public set enableAppBadge(enabled: boolean) {
+    this._preferenceStorageService.set(ENABLE_APP_BADGE_KEY, enabled);
+  }
+
   public getMyAddonsHiddenColumns(): ColumnState[] {
     return this._preferenceStorageService.getObject<ColumnState[]>(MY_ADDONS_HIDDEN_COLUMNS_KEY) || [];
   }
@@ -353,6 +362,7 @@ export class WowUpService {
     this.setDefaultPreference(CURRENT_THEME_KEY, DEFAULT_THEME);
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, await this.getDefaultReleaseChannel());
     this.setDefaultPreference(USE_SYMLINK_MODE_PREFERENCE_KEY, false);
+    this.setDefaultPreference(ENABLE_APP_BADGE_KEY, true);
     this.setDefaultClientPreferences();
   }
 

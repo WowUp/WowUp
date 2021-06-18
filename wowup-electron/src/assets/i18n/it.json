@@ -403,6 +403,8 @@
         "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
         "CURSE_PROTOCOL_DESCRIPTION": "Quando si scaricano addons dal sito Web CurseForge, WowUp ne gestirà l'installazione",
         "CURSE_PROTOCOL_LABEL": "Gestisci i link dei downloads da CurseForge",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
+        "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Abilita i vari popup di notifica del sistema, come gli addons aggiornati automaticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Notifiche di Sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Alla chiusura, WowUp verrà ridotto a icona nella barra dei menu.",

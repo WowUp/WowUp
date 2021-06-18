@@ -72,7 +72,7 @@
     <small class="text-2">{{ minimizeOnCloseDescription }}</small>
     <div class="divider"></div>
   </div>
-  <!-- SYSTEM NOTIFICATIONS -->
+  <!-- APP BADGE -->
   <div class="toggle">
     <div class="row align-items-center">
       <div class="flex-grow-1">
@@ -86,6 +86,22 @@
     </div>
     <small class="text-2">
       {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION" | translate }}
+    </small>
+    <div class="divider"></div>
+  </div>
+  <!-- SYSTEM NOTIFICATIONS -->
+  <div *ngIf="electronService.isMac" class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
+          {{ "PAGES.OPTIONS.APPLICATION.ENABLE_APP_BADGE_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [checked]="wowupService.enableAppBadge" (change)="onToggleAppBadge($event)">
+      </mat-slide-toggle>
+    </div>
+    <small class="text-2">
+      {{ "PAGES.OPTIONS.APPLICATION.ENABLE_APP_BADGE_DESCRIPTION" | translate }}
     </small>
     <div class="divider"></div>
   </div>

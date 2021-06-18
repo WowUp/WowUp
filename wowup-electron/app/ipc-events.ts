@@ -65,6 +65,7 @@ import {
   IPC_GET_LATEST_DIR_UPDATE_TIME,
   IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
   IPC_SHOW_OPEN_DIALOG,
+  IPC_UPDATE_APP_BADGE,
 } from "../src/common/constants";
 import { CurseFolderScanner } from "../src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
@@ -154,7 +155,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_GET_ASSET_FILE_PATH, (evt, fileName: string) => {
-    return path.join(__dirname, ".." , "assets", fileName);
+    return path.join(__dirname, "..", "assets", fileName);
   });
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
@@ -165,6 +166,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_GET_ZOOM_FACTOR, () => {
     return window?.webContents?.getZoomFactor();
+  });
+
+  handle(IPC_UPDATE_APP_BADGE, (evt, count: number) => {
+    return app.setBadgeCount(count);
   });
 
   handle(IPC_SET_ZOOM_LIMITS, (evt, minimumLevel: number, maximumLevel: number) => {
