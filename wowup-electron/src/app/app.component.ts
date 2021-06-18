@@ -51,6 +51,7 @@ import { SnackbarService } from "./services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { ZoomService } from "./services/zoom/zoom.service";
 import { AlertDialogComponent } from "./components/alert-dialog/alert-dialog.component";
+import { AddonInstallState } from "./models/wowup/addon-install-state";
 
 @Component({
   selector: "app-root",
@@ -159,11 +160,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
 
     // If an addon is installed/updated check the badge number
-    combineLatest([this._addonService.addonInstalled$, this._addonService.addonRemoved$]).subscribe(() => {
-      this.electronService
-        .updateAppBadgeCount(this._addonService.getAllAddonsAvailableForUpdate().length)
-        .catch((e) => console.error(e));
-    });
+    this._addonService.addonInstalled$
+      .pipe(
+        filter((evt) => evt.installState === AddonInstallState.Complete),
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
+
+    // If user removes an addon, update the badge count
+    this._addonService.addonRemoved$.pipe(switchMap(() => from(this.updateBadgeCount()))).subscribe();
 
     this.electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this.electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
@@ -500,6 +505,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log("Tray created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);
+    }
+  }
+
+  private async updateBadgeCount(): Promise<void> {
+    const ct = this._addonService.getAllAddonsAvailableForUpdate().length;
+    try {
+      await this.electronService.updateAppBadgeCount(ct);
+    } catch (e) {
+      console.error("Failed to update badge count", e);
     }
   }
 }
