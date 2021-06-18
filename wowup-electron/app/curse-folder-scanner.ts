@@ -3,10 +3,10 @@ import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as log from "electron-log";
 import * as pLimit from "p-limit";
-import { CurseFolderScanResult } from "./curse-folder-scan-result";
-import { readDirRecursive } from "../../../app/file.utils";
+import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
+import { readDirRecursive } from "./file.utils";
 
-const nativeAddon = require("../../../build/Release/addon.node");
+const nativeAddon = require("../build/Release/addon.node");
 
 const INVALID_PATH_CHARS = [
   "|",

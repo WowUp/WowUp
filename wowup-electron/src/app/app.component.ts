@@ -288,7 +288,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
       await this._wowupAddonService.updateForAllClientTypes();
 
-      await this.electronService.updateAppBadgeCount(this._addonService.getAllAddonsAvailableForUpdate().length);
+      await this.updateBadgeCount();
 
       if (!updatedAddons || updatedAddons.length === 0) {
         await this.checkQuitEnabled();

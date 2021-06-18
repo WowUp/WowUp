@@ -17,9 +17,9 @@ import * as _ from "lodash";
 import * as nodeDiskInfo from "node-disk-info";
 import * as pLimit from "p-limit";
 import * as path from "path";
+import { Transform } from "stream";
 import * as yauzl from "yauzl";
 
-import { createAppMenu } from "./app-menu";
 import {
   IPC_ADDONS_SAVE_ALL,
   IPC_CLOSE_WINDOW,
@@ -30,14 +30,16 @@ import {
   IPC_CURSE_GET_SCAN_RESULTS,
   IPC_DELETE_DIRECTORY_CHANNEL,
   IPC_DOWNLOAD_FILE_CHANNEL,
+  IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
   IPC_GET_ASSET_FILE_PATH,
+  IPC_GET_LATEST_DIR_UPDATE_TIME,
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
   IPC_GET_LOGIN_ITEM_SETTINGS,
-  IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
-  IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_ZOOM_FACTOR,
+  IPC_IS_DEFAULT_PROTOCOL_CLIENT,
   IPC_LIST_DIRECTORIES_CHANNEL,
   IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
@@ -49,26 +51,24 @@ import {
   IPC_READ_FILE_BUFFER_CHANNEL,
   IPC_READ_FILE_CHANNEL,
   IPC_READDIR,
+  IPC_REMOVE_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_RESTART_APP,
+  IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_SET_LOGIN_ITEM_SETTINGS,
   IPC_SET_ZOOM_FACTOR,
   IPC_SET_ZOOM_LIMITS,
   IPC_SHOW_DIRECTORY,
+  IPC_SHOW_OPEN_DIALOG,
   IPC_STAT_FILES_CHANNEL,
+  IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
   IPC_UNZIP_FILE_CHANNEL,
+  IPC_UPDATE_APP_BADGE,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
-  IPC_FOCUS_WINDOW,
-  IPC_IS_DEFAULT_PROTOCOL_CLIENT,
-  IPC_GET_PENDING_OPEN_URLS,
-  IPC_GET_LATEST_DIR_UPDATE_TIME,
-  IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
-  IPC_SHOW_OPEN_DIALOG,
-  IPC_UPDATE_APP_BADGE,
 } from "../src/common/constants";
-import { CurseFolderScanner } from "../src/common/curse/curse-folder-scanner";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
+import { Addon } from "../src/common/entities/addon";
 import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
 import { DownloadStatus } from "../src/common/models/download-status";
@@ -77,12 +77,12 @@ import { FsDirent, FsStats } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
-import { WowUpFolderScanner } from "../src/common/wowup/wowup-folder-scanner";
-import { Addon } from "../src/common/entities/addon";
-import { createTray, restoreWindow } from "./system-tray";
-import { addonStore } from "./stores";
-import { Transform } from "stream";
+import { createAppMenu } from "./app-menu";
+import { CurseFolderScanner } from "./curse-folder-scanner";
 import { getLastModifiedFileDate } from "./file.utils";
+import { addonStore } from "./stores";
+import { createTray, restoreWindow } from "./system-tray";
+import { WowUpFolderScanner } from "./wowup-folder-scanner";
 
 let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
