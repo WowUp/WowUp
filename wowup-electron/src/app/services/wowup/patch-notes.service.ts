@@ -28,6 +28,7 @@ const CHANGELOGS: ChangeLog[] = [
         </li>
         <li>New Images tab in the addon details dialog</li>
         <li>You can now change the order of your WoW installations</li>
+        <li>Added an optional app badge notification with the count of available updates for Mac and Linux users</li>
       </ul>
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>

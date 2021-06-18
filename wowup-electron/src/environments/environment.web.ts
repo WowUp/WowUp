@@ -10,5 +10,5 @@ export const AppConfig = {
   wowUpHubUrl: "https://hub.dev.wowup.io",
   googleAnalyticsId: "UA-92563227-4",
   warcraftTavernNewsFeedUrl: "https://www.warcrafttavern.com/?call_custom_simple_rss=1&csrp_post_type=wow-classic-news,tbc-classic-news,retail-news&csrp_thumbnail_size=medium",
-  newsRefreshIntervalMs: 3600000, // 2 hours
+  newsRefreshIntervalMs: 3600000, // 1 hour
 };

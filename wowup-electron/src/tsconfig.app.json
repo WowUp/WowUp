@@ -14,7 +14,9 @@
     "environments/**/*.ts",
   ],
   "exclude": [
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "app/**/tests/*.ts",
+    "app/**/utils/test.utils.ts",
   ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
