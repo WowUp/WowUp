@@ -84,6 +84,7 @@ export const IPC_APP_UPDATE_STATE = "app-update-state";
 export const IPC_APP_INSTALL_UPDATE = "app-install-update";
 export const IPC_APP_CHECK_UPDATE = "app-check-update";
 export const IPC_UPDATE_APP_BADGE = "update-app-badge";
+export const IPC_WINDOW_RESUME = "window-resume";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";

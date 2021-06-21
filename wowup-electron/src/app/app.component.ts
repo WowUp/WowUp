@@ -159,6 +159,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
 
+    //If the window is restored update the badge number
+    this.electronService.windowResumed$
+      .pipe(
+        delay(1000), // If you dont delay this on Mac, it will sometimes not show up
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
+
     // If an addon is installed/updated check the badge number
     this._addonService.addonInstalled$
       .pipe(
