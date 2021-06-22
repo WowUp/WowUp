@@ -26,6 +26,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { ZOOM_SCALE } from "../../utils/zoom.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { ZoomService } from "../../services/zoom/zoom.service";
+import { AddonService } from "../../services/addons/addon.service";
 
 interface LocaleListItem {
   localeId: string;
@@ -96,6 +97,7 @@ export class OptionsAppSectionComponent implements OnInit {
     private _translateService: TranslateService,
     private _cdRef: ChangeDetectorRef,
     private _zoomService: ZoomService,
+    private _addonService: AddonService,
     public electronService: ElectronService,
     public sessionService: SessionService,
     public wowupService: WowUpService
@@ -150,6 +152,10 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public onToggleAppBadge = (evt: MatSlideToggleChange): void => {
     this.wowupService.enableAppBadge = evt.checked;
+
+    const count = evt.checked ? this._addonService.getAllAddonsAvailableForUpdate().length : 0;
+
+    this.electronService.updateAppBadgeCount(count).catch((e) => console.error(e));
   };
 
   public onTelemetryChange = (evt: MatSlideToggleChange): void => {
