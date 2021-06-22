@@ -911,6 +911,9 @@ export class AddonService {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const unzippedFolders = await this._fileService.listDirectories(unzippedDirectory);
     for (const unzippedFolder of unzippedFolders) {
+      if (IGNORED_FOLDER_NAMES.includes(unzippedFolder)) {
+        continue;
+      }
       const unzippedFilePath = path.join(unzippedDirectory, unzippedFolder);
       const unzipLocation = path.join(addonFolderPath, unzippedFolder);
 
