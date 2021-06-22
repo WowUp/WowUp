@@ -32,7 +32,7 @@ import {
   AddonDependencyType,
   AddonWarningType,
 } from "../../../common/wowup/models";
-import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
+import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
