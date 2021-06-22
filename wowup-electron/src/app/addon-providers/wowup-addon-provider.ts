@@ -28,7 +28,7 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
+import { AddonProvider, GetAllBatchResult, GetAllResult } from "./addon-provider";
 
 const API_URL = AppConfig.wowUpHubUrl;
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
@@ -45,7 +45,7 @@ export class WowUpAddonProvider extends AddonProvider {
   public readonly allowReinstall = true;
   public readonly allowChannelChange = true;
   public readonly allowEdit = true;
-  public readonly canBatchFetch = false;
+  public readonly canBatchFetch = true;
   public enabled = true;
 
   public constructor(
@@ -75,6 +75,59 @@ export class WowUpAddonProvider extends AddonProvider {
 
   public shouldMigrate(addon: Addon): boolean {
     return !addon.installedExternalReleaseId;
+  }
+
+  public async getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
+    const batchResult: GetAllBatchResult = {
+      errors: {},
+      installationResults: {},
+    };
+
+    if (!addonIds.length) {
+      return batchResult;
+    }
+
+    const url = new URL(`${API_URL}/addons/batch`);
+    const addonIdList = _.map(addonIds, (id) => parseInt(id, 10));
+    const response = await this._circuitBreaker.postJson<GetAddonBatchResponse>(url, {
+      addonIds: addonIdList,
+    });
+
+    // eslint-disable-next-line no-debugger
+    // debugger;
+    for (const installation of installations) {
+      const addonResults: AddonSearchResult[] = [];
+      const gameType = this.getWowGameType(installation.clientType);
+
+      for (const result of response.addons) {
+        const latestFiles = this.getLatestFiles(result, gameType);
+        if (!latestFiles.length) {
+          continue;
+        }
+
+        const searchResult = this.getSearchResult(result, gameType);
+        addonResults.push(searchResult);
+      }
+
+      const missingAddonIds = _.filter(
+        addonIds,
+        (addonId) => _.find(addonResults, (sr) => sr.externalId === addonId) === undefined
+      );
+
+      batchResult.errors[installation.id] = _.map(
+        missingAddonIds,
+        (addonId) => new SourceRemovedAddonError(addonId, undefined)
+      );
+
+      batchResult.installationResults[installation.id] = addonResults;
+    }
+
+    return batchResult;
+  }
+
+  private getLatestFiles(result: WowUpAddonRepresentation, gameType: WowGameType): WowUpAddonReleaseRepresentation[] {
+    const filtered = result.releases.filter((latestFile) => !!this.getMatchingVersion(latestFile, gameType));
+    return _.sortBy(filtered, (latestFile) => latestFile.id).reverse();
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {

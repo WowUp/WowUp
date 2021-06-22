@@ -32,7 +32,7 @@ import {
   AddonDependencyType,
   AddonWarningType,
 } from "../../../common/wowup/models";
-import { AddonProvider, GetAllResult } from "../../addon-providers/addon-provider";
+import { AddonProvider } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
@@ -911,6 +911,9 @@ export class AddonService {
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
     const unzippedFolders = await this._fileService.listDirectories(unzippedDirectory);
     for (const unzippedFolder of unzippedFolders) {
+      if (IGNORED_FOLDER_NAMES.includes(unzippedFolder)) {
+        continue;
+      }
       const unzippedFilePath = path.join(unzippedDirectory, unzippedFolder);
       const unzipLocation = path.join(addonFolderPath, unzippedFolder);
 

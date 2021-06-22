@@ -39,6 +39,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Italian locale updates (Bito)</li>
         <li>Revamped UI</li>
         <li>WowUp updates will now download automatically</li>
+        <li>Optimize update checks for WowUpHub and CurseForge providers, now faster</li>
         <li>When starting with 0 installs found, user should go to installations page</li>
         <li>Update Angular and Electron to latest</li>
       </ul>
