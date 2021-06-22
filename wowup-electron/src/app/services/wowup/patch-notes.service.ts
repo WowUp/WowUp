@@ -49,6 +49,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Fixed an issue with the client selector overlapping the top toolbar</li>
         <li>Fixed an issue with re-scanning not showing the correct game version</li>
         <li>Fixed an issue with Update All button sometimes getting stuck enabled</li>
+        <li>Fixed an issue with CurseForge categories throwing an error</li>
         <li>Reworked the app update flow</li>
       </ul>
       </div>`,
