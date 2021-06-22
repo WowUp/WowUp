@@ -1110,6 +1110,51 @@ export class AddonService {
 
   public async syncAllClients(): Promise<void> {
     const installations = this._warcraftInstallationService.getWowInstallations();
+
+    const batchedAddonProviders = this._addonProviders.filter((provider) => provider.enabled && provider.canBatchFetch);
+
+    for (const provider of batchedAddonProviders) {
+      const batchedAddons = this._addonStorage
+        .getAllForProvider(provider.name)
+        .filter((addon) => addon.isIgnored === false);
+
+      // batchedAddons = _.uniqWith(batchedAddons, (v1, v2) => {
+      //   return v1.providerName === v2.providerName && v1.externalId === v2.externalId;
+      // });
+
+      const addonIds = batchedAddons.map((addon) => addon.externalId);
+      const searchResults = await provider.getAllBatch(installations, addonIds);
+
+      console.debug("batchedAddons", provider, batchedAddons);
+      console.debug("searchResults", searchResults);
+
+      // TODO combine these into 1 installations loop
+      for (const key of Object.keys(searchResults.errors)) {
+        const errors = searchResults.errors[key];
+        if (errors.length === 0) {
+          continue;
+        }
+
+        const installation = installations.find((i) => i.id === key);
+        const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
+        console.debug("installation", installation);
+        this.handleSyncErrors(installation, errors, provider, installationAddons);
+      }
+
+      for (const key of Object.keys(searchResults.installationResults)) {
+        const addonSearchResults = searchResults.installationResults[key];
+        if (addonSearchResults.length === 0) {
+          continue;
+        }
+
+        const installation = installations.find((i) => i.id === key);
+        const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
+        await this.handleSyncResults(addonSearchResults, installationAddons, installation);
+      }
+      // this.handleSyncErrors(installation, getAllResult, addonProvider, addons);
+      // await this.handleSyncResults(getAllResult, addons, installation);
+    }
+
     for (const installation of installations) {
       try {
         await this.syncInstallationAddons(installation);
@@ -1134,7 +1179,8 @@ export class AddonService {
     console.info(`syncAddons ${installation.label}`);
     let didSync = true;
 
-    for (const provider of this.getEnabledAddonProviders()) {
+    const addonProviders = _.filter(this._addonProviders, (provider) => provider.enabled && !provider.canBatchFetch);
+    for (const provider of addonProviders) {
       try {
         await this.syncProviderAddons(installation, addons, provider);
       } catch (e) {
@@ -1183,16 +1229,16 @@ export class AddonService {
     }
 
     const getAllResult = await addonProvider.getAll(installation, providerAddonIds);
-    this.handleSyncErrors(installation, getAllResult, addonProvider, addons);
-    await this.handleSyncResults(getAllResult, addons, installation);
+    this.handleSyncErrors(installation, getAllResult.errors, addonProvider, addons);
+    await this.handleSyncResults(getAllResult.searchResults, addons, installation);
   }
 
   private async handleSyncResults(
-    getAllResult: GetAllResult,
+    addonSearchResults: AddonSearchResult[],
     addons: Addon[],
     installation: WowInstallation
   ): Promise<void> {
-    for (const result of getAllResult.searchResults) {
+    for (const result of addonSearchResults) {
       const addon = addons.find((addon) => addon.externalId?.toString() === result?.externalId?.toString());
       if (!addon) {
         continue;
@@ -1264,11 +1310,11 @@ export class AddonService {
 
   private handleSyncErrors(
     installation: WowInstallation,
-    getAllResult: GetAllResult,
+    errors: Error[],
     addonProvider: AddonProvider,
     addons: Addon[]
   ) {
-    for (const error of getAllResult.errors) {
+    for (const error of errors) {
       const addonId = (error as any).addonId;
       let addon: Addon | undefined = undefined;
       if (addonId) {

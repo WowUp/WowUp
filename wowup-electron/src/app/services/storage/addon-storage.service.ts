@@ -54,7 +54,7 @@ export class AddonStorageService {
     if (!key) {
       return;
     }
-    
+
     this._store.set(key, value);
   }
 
@@ -116,6 +116,19 @@ export class AddonStorageService {
     for (const result of this._store) {
       const addon = result[1] as Addon;
       if (addon.installationId === installationId && (!validator || validator(addon))) {
+        addons.push(addon);
+      }
+    }
+
+    return addons;
+  }
+
+  public getAllForProvider(providerName: string, validator?: (addon: Addon) => boolean): Addon[] {
+    const addons: Addon[] = [];
+
+    for (const result of this._store) {
+      const addon = result[1] as Addon;
+      if (addon.providerName === providerName && (!validator || validator(addon))) {
         addons.push(addon);
       }
     }

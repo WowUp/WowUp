@@ -18,6 +18,11 @@ export type AddonProviderType =
   | "Zip"
   | "WowUpCompanion";
 
+export interface GetAllBatchResult {
+  installationResults: { [installationId: string]: AddonSearchResult[] };
+  errors: { [installationId: string]: Error[] };
+}
+
 export interface GetAllResult {
   searchResults: AddonSearchResult[];
   errors: Error[];
@@ -32,6 +37,14 @@ export abstract class AddonProvider {
   public allowEdit = false;
   public allowViewAtSource = true;
   public canShowChangelog = true;
+  public canBatchFetch = false;
+
+  public getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
+    return Promise.resolve({
+      errors: {},
+      installationResults: {},
+    });
+  }
 
   public getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     return Promise.resolve({

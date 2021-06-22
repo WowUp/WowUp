@@ -45,6 +45,7 @@ export class WowUpAddonProvider extends AddonProvider {
   public readonly allowReinstall = true;
   public readonly allowChannelChange = true;
   public readonly allowEdit = true;
+  public readonly canBatchFetch = false;
   public enabled = true;
 
   public constructor(
