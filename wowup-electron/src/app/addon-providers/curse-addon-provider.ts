@@ -41,7 +41,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { WowUpApiService } from "../services/wowup-api/wowup-api.service";
 import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
+import { AddonProvider, GetAllBatchResult, GetAllResult } from "./addon-provider";
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 
@@ -79,6 +79,7 @@ export class CurseAddonProvider extends AddonProvider {
   public readonly allowReinstall = true;
   public readonly allowChannelChange = true;
   public readonly allowEdit = true;
+  public readonly canBatchFetch = true;
   public enabled = true;
 
   public constructor(
@@ -358,6 +359,48 @@ export class CurseAddonProvider extends AddonProvider {
     return response;
   }
 
+  public async getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
+    const batchResult: GetAllBatchResult = {
+      errors: {},
+      installationResults: {},
+    };
+
+    if (!addonIds.length) {
+      return batchResult;
+    }
+
+    const searchResults = await this.getAllIds(addonIds.map((id) => parseInt(id, 10)));
+
+    for (const installation of installations) {
+      const addonResults: AddonSearchResult[] = [];
+      for (const result of searchResults) {
+        const latestFiles = this.getLatestFiles(result, installation.clientType);
+        if (!latestFiles.length) {
+          continue;
+        }
+
+        const addonSearchResult = this.getAddonSearchResult(result, latestFiles);
+        if (addonSearchResult) {
+          addonResults.push(addonSearchResult);
+        }
+      }
+
+      const missingAddonIds = _.filter(
+        addonIds,
+        (addonId) => _.find(searchResults, (sr) => sr.id.toString() === addonId) === undefined
+      );
+
+      batchResult.errors[installation.id] = _.map(
+        missingAddonIds,
+        (addonId) => new SourceRemovedAddonError(addonId, undefined)
+      );
+
+      batchResult.installationResults[installation.id] = addonResults;
+    }
+
+    return batchResult;
+  }
+
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     if (!addonIds.length) {
       return {
@@ -471,7 +514,7 @@ export class CurseAddonProvider extends AddonProvider {
     const curseCategories = this.mapAddonCategory(category);
     const gameVersionFlavor = this.getGameVersionFlavor(installation.clientType);
 
-    const response = await this.getCategoryAddons(curseCategories[0], gameVersionFlavor, 150, 0);
+    const response = await this.getCategoryAddons(curseCategories[0], gameVersionFlavor, 50, 0);
 
     await this.removeBlockedItems(response);
 

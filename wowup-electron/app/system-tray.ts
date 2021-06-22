@@ -3,7 +3,7 @@ import * as log from "electron-log";
 import * as path from "path";
 
 import * as platform from "./platform";
-import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
+import { IPC_WINDOW_RESUME, WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
 import { SystemTrayConfig } from "../src/common/wowup/models";
 
 let _trayRef: Tray;
@@ -60,4 +60,6 @@ export function restoreWindow(window: BrowserWindow): void {
   if (platform.isMac) {
     app.dock.show().catch((e) => log.error(`Failed to show on Mac dock`, e));
   }
+
+  window?.webContents?.send(IPC_WINDOW_RESUME);
 }

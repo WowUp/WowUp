@@ -10,7 +10,7 @@ import {
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { OverlayContainer } from "@angular/cdk/overlay";
-import { combineLatest, from, of } from "rxjs";
+import { from, of } from "rxjs";
 import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
 import * as _ from "lodash";
 import {
@@ -158,6 +158,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
+
+    //If the window is restored update the badge number
+    this.electronService.windowResumed$
+      .pipe(
+        delay(1000), // If you dont delay this on Mac, it will sometimes not show up
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
 
     // If an addon is installed/updated check the badge number
     this._addonService.addonInstalled$

@@ -4,7 +4,7 @@ import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExterna
 import { LoginItemSettings } from "electron/main";
 import { find } from "lodash";
 import * as minimist from "minimist";
-import { BehaviorSubject, ReplaySubject } from "rxjs";
+import { BehaviorSubject, ReplaySubject, Subject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
@@ -38,6 +38,7 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
+  IPC_WINDOW_RESUME,
   IPC_WINDOW_UNMAXIMIZED,
 } from "../../../common/constants";
 import { IpcRequest } from "../../../common/models/ipc-request";
@@ -57,6 +58,7 @@ export class ElectronService {
   private readonly _powerMonitorSrc = new BehaviorSubject("");
   private readonly _customProtocolSrc = new BehaviorSubject("");
   private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
+  private readonly _windowResumedSrc = new Subject<void>();
 
   private _appVersion = "";
   private _opts!: AppOptions;
@@ -66,6 +68,7 @@ export class ElectronService {
   public readonly powerMonitor$ = this._powerMonitorSrc.asObservable();
   public readonly customProtocol$ = this._customProtocolSrc.asObservable();
   public readonly appUpdate$ = this._appUpdateSrc.asObservable();
+  public readonly windowResumed$ = this._windowResumedSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -106,6 +109,10 @@ export class ElectronService {
 
     this.onRendererEvent(IPC_WINDOW_MINIMIZED, () => {
       this._windowMinimizedSrc.next(true);
+    });
+
+    this.onRendererEvent(IPC_WINDOW_RESUME, () => {
+      this._windowResumedSrc.next(undefined);
     });
 
     this.onRendererEvent(IPC_WINDOW_MAXIMIZED, () => {
@@ -293,6 +300,7 @@ export class ElectronService {
   }
 
   public async updateAppBadgeCount(count: number): Promise<void> {
+    console.debug('Update app badge', count);
     await this.invoke(IPC_UPDATE_APP_BADGE, count);
   }
 

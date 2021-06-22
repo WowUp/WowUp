@@ -344,6 +344,7 @@ function createWindow(): BrowserWindow {
     win.setSkipTaskbar(true);
 
     if (platform.isMac) {
+      app.setBadgeCount(0);
       app.dock.hide();
     }
   });

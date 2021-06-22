@@ -18,7 +18,8 @@ declare type MainChannels =
   | "power-monitor-unlock"
   | "request-install-from-url"
   | "custom-protocol-received"
-  | "app-update-state";
+  | "app-update-state"
+  | "window-resume";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
