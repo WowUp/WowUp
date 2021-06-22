@@ -121,6 +121,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             message: this.translate.instant("APP.WOWUP_UPDATE.SNACKBAR_TEXT"),
             positiveButton: "APP.WOWUP_UPDATE.DOWNLOADED_TOOLTIP",
             positiveButtonColor: "primary",
+            positiveButtonStyle: "raised",
           },
         });
 
