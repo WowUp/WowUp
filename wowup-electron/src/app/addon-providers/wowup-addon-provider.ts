@@ -172,14 +172,11 @@ export class WowUpAddonProvider extends AddonProvider {
 
     // Remove duplicate addons that are already in the popular list from the recents list
     const uniqueRecent = (response.recent ?? []).filter((ru) => !response.addons.some((p) => p.id === ru.id));
-    console.debug(uniqueRecent);
     const addonResults = [...response.addons, ...uniqueRecent];
-    console.debug(addonResults);
 
     const searchResults = _.map(addonResults, (addon) => this.getSearchResult(addon, gameType)).filter(
       (sr) => sr !== undefined
     );
-    console.debug(searchResults);
     return searchResults;
   }
 
