@@ -3,7 +3,7 @@
   windows: electronService.isWin,
   linux: electronService.isLinux
 }">
-  <div *ngFor="let tab of tabsTop" class="tab hover-bg-secondary-2"
+  <div *ngFor="let tab of tabsTop" class="tab"
     [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)"
     [matTooltip]="tab.tooltipKey | translate" [matTooltipPosition]="'below'">
     <div class="tab-icon">

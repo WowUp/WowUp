@@ -1,4 +1,3 @@
-
 .tab-strip {
   box-sizing: border-box;
   display: flex;
@@ -42,11 +41,12 @@
 
     &:hover {
       cursor: pointer;
+      background-color: var(--background-primary-2);
     }
 
     &.selected {
-      // border-bottom: 3px solid var(--text-1);
-      background-color: var(--background-secondary-2);
+      border-bottom: 2px solid var(--text-1);
+      background-color: var(--background-primary-3);
 
       .tab-icon {
         margin-right: 0.5em;

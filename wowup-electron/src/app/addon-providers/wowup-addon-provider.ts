@@ -11,9 +11,9 @@ import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
 import { WowUpAddonReleaseRepresentation, WowUpAddonRepresentation } from "../models/wowup-api/addon-representations";
 import {
+  GetFeaturedAddonsResponse,
   WowUpGetAddonReleaseResponse,
   WowUpGetAddonResponse,
-  WowUpGetAddonsResponse,
   WowUpSearchAddonsResponse,
 } from "../models/wowup-api/api-responses";
 import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
@@ -106,7 +106,9 @@ export class WowUpAddonProvider extends AddonProvider {
         }
 
         const searchResult = this.getSearchResult(result, gameType);
-        addonResults.push(searchResult);
+        if (searchResult) {
+          addonResults.push(searchResult);
+        }
       }
 
       const missingAddonIds = _.filter(
@@ -139,7 +141,9 @@ export class WowUpAddonProvider extends AddonProvider {
       addonIds: addonIdList,
     });
 
-    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, gameType));
+    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, gameType)).filter(
+      (sr) => sr !== undefined
+    );
 
     const missingAddonIds = _.filter(
       addonIds,
@@ -158,13 +162,22 @@ export class WowUpAddonProvider extends AddonProvider {
     const gameType = this.getWowGameType(installation.clientType);
     const url = new URL(`${API_URL}/addons/featured/${gameType}?count=60`);
 
-    const addons = await this._cachingService.transaction(
+    const response = await this._cachingService.transaction(
       url.toString(),
-      () => this._circuitBreaker.getJson<WowUpGetAddonsResponse>(url),
+      () => this._circuitBreaker.getJson<GetFeaturedAddonsResponse>(url),
       CHANGELOG_CACHE_TTL_SEC
     );
 
-    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, gameType));
+    // Remove duplicate addons that are already in the popular list from the recents list
+    const uniqueRecent = (response.recent ?? []).filter((ru) => !response.addons.some((p) => p.id === ru.id));
+    console.debug(uniqueRecent);
+    const addonResults = [...response.addons, ...uniqueRecent];
+    console.debug(addonResults);
+
+    const searchResults = _.map(addonResults, (addon) => this.getSearchResult(addon, gameType)).filter(
+      (sr) => sr !== undefined
+    );
+    console.debug(searchResults);
     return searchResults;
   }
 
@@ -177,7 +190,9 @@ export class WowUpAddonProvider extends AddonProvider {
       () => this._circuitBreaker.getJson<WowUpSearchAddonsResponse>(url),
       5
     );
-    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, gameType));
+    const searchResults = _.map(addons?.addons, (addon) => this.getSearchResult(addon, gameType)).filter(
+      (sr) => sr !== undefined
+    );
 
     return searchResults;
   }
@@ -334,8 +349,15 @@ export class WowUpAddonProvider extends AddonProvider {
     return release.game_versions.find((gv) => gv.game_type === gameType);
   }
 
-  private getSearchResultFile(release: WowUpAddonReleaseRepresentation, gameType: WowGameType): AddonSearchResultFile {
+  private getSearchResultFile(
+    release: WowUpAddonReleaseRepresentation,
+    gameType: WowGameType
+  ): AddonSearchResultFile | undefined {
     const matchingVersion = this.getMatchingVersion(release, gameType);
+    if (!matchingVersion) {
+      return undefined;
+    }
+
     const version = matchingVersion?.version ?? release.tag_name;
 
     return {
@@ -359,11 +381,22 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
-  private getSearchResult(representation: WowUpAddonRepresentation, gameType: WowGameType): AddonSearchResult {
+  private getSearchResult(
+    representation: WowUpAddonRepresentation,
+    gameType: WowGameType
+  ): AddonSearchResult | undefined {
+    if (representation.repository_name.indexOf("WowGuildInvite") !== -1) {
+      // eslint-disable-next-line no-debugger
+      debugger;
+    }
     const clientReleases = this.filterReleases(representation, gameType);
     const searchResultFiles: AddonSearchResultFile[] = _.map(clientReleases, (release) =>
       this.getSearchResultFile(release, gameType)
-    );
+    ).filter((sr) => sr !== undefined);
+
+    if (searchResultFiles.length === 0) {
+      return undefined;
+    }
 
     const name = _.first(searchResultFiles)?.title ?? representation.repository_name;
     const authors = _.first(searchResultFiles)?.authors ?? representation.owner_name ?? "";
