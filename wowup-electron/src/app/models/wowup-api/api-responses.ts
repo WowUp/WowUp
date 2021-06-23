@@ -17,6 +17,13 @@ export interface WowUpGetAddonsResponse {
   count: number;
 }
 
+export interface GetFeaturedAddonsResponse {
+  addons: WowUpAddonRepresentation[];
+  recent: WowUpAddonRepresentation[];
+  count: number;
+  recentCount: number;
+}
+
 export interface WowUpSearchAddonsResponse {
   addons: WowUpAddonRepresentation[];
   count: number;
