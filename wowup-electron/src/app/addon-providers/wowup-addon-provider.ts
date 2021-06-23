@@ -160,7 +160,9 @@ export class WowUpAddonProvider extends AddonProvider {
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
     const gameType = this.getWowGameType(installation.clientType);
-    const url = new URL(`${API_URL}/addons/featured/${gameType}?count=60`);
+    const url = new URL(`${API_URL}/addons/featured/${gameType}`);
+    url.searchParams.set("count", "60");
+    url.searchParams.set("recent", "30");
 
     const response = await this._cachingService.transaction(
       url.toString(),
@@ -385,10 +387,6 @@ export class WowUpAddonProvider extends AddonProvider {
     representation: WowUpAddonRepresentation,
     gameType: WowGameType
   ): AddonSearchResult | undefined {
-    if (representation.repository_name.indexOf("WowGuildInvite") !== -1) {
-      // eslint-disable-next-line no-debugger
-      debugger;
-    }
     const clientReleases = this.filterReleases(representation, gameType);
     const searchResultFiles: AddonSearchResultFile[] = _.map(clientReleases, (release) =>
       this.getSearchResultFile(release, gameType)
