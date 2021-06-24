@@ -12,6 +12,27 @@
   position: relative;
   overflow: hidden;
 
+  .theme-logo {
+    content: "";
+    opacity: 0.02;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+
+    .logo-img {
+      height: 100vh;
+      background-image: var(--theme-logo);
+      background-repeat: no-repeat;
+      background-position: 0 0;
+      background-size: contain;
+    }
+  }
+
   .fab-container {
     position: absolute;
     left: 1em;

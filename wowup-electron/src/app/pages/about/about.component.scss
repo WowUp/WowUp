@@ -1,6 +1,7 @@
 @import "../../../variables.scss";
 
 .theme-logo {
+  content: "";
   opacity: 0.02;
   position: absolute;
   top: 0;
@@ -16,6 +17,7 @@
     background-image: var(--theme-logo);
     background-repeat: no-repeat;
     background-position: 0 0;
+    background-size: contain;
   }
 }
 

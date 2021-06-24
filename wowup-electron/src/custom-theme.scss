@@ -235,6 +235,8 @@ $alliance-theme-light: mat.define-light-theme(
   --tab-disabled: #ffffff;
   --tab-inactive: #bbbbbb;
   --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+  --footer-hover: #444444;
 
   --title-logo: url("assets/images/wowup-white-1.png");
   --theme-logo: url("assets/images/wowup-white-1.png");
@@ -262,6 +264,8 @@ $alliance-theme-light: mat.define-light-theme(
   --tab-disabled: #ffffff;
   --tab-inactive: #bbbbbb;
   --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
 
   --title-logo: url("assets/images/wowup-white-1.png");
   --theme-logo: url("assets/images/wowup-dark-1.png");
@@ -289,7 +293,10 @@ $alliance-theme-light: mat.define-light-theme(
   --tab-disabled: #ffffff;
   --tab-inactive: #bbbbbb;
   --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+  --footer-hover: #444444;
 
+  --title-logo: url("assets/images/horde-1.png");
   --theme-logo: url("assets/images/horde-1.png");
 }
 
@@ -315,7 +322,10 @@ $alliance-theme-light: mat.define-light-theme(
   --tab-disabled: #ffffff;
   --tab-inactive: #bbbbbb;
   --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
 
+  --title-logo: url("assets/images/horde-1.png");
   --theme-logo: url("assets/images/horde-dark-1.png");
 }
 
@@ -341,7 +351,9 @@ $alliance-theme-light: mat.define-light-theme(
   --tab-disabled: #ffffff;
   --tab-inactive: #bbbbbb;
   --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
 
+  --title-logo: url("assets/images/alliance-1.png");
   --theme-logo: url("assets/images/alliance-1.png");
 }
 
@@ -367,7 +379,10 @@ $alliance-theme-light: mat.define-light-theme(
   --tab-disabled: #ffffff;
   --tab-inactive: #bbbbbb;
   --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
 
+  --title-logo: url("assets/images/alliance-1.png");
   --theme-logo: url("assets/images/alliance-dark-1.png");
 }
 
@@ -603,9 +618,9 @@ $alliance-theme-light: mat.define-light-theme(
       background-color: var(--background-secondary-2),
       header-background-color: var(--background-secondary-2),
       row-hover-color: var(--background-secondary-2),
-      row-border-color: rgba(255, 255, 255, 0.12),
-      border-color: rgba(255, 255, 255, 0.12),
-      secondary-border-color: rgba(255, 255, 255, 0.12),
+      row-border-color: var(--grid-border),
+      border-color: var(--grid-border),
+      secondary-border-color: var(--grid-border),
       selected-row-background-color: var(--background-secondary-4),
       range-selection-border-color: transparent,
     )
