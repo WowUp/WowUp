@@ -20,12 +20,14 @@ import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component
 import { mockPreload } from "../../tests/test-helpers";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { LightboxModule } from "ngx-lightbox";
+import { LinkService } from "../../services/links/link.service";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;
   let addonServiceSpy: any;
   let sessionServiceSpy: SessionService;
   let wowUpService: WowUpService;
+  let linkService: any;
 
   beforeEach(async () => {
     mockPreload();
@@ -41,6 +43,7 @@ describe("AddonDetailComponent", () => {
     );
 
     wowUpService = jasmine.createSpyObj("WowUpService", [""], {});
+    linkService = jasmine.createSpyObj("LinkService", [""], {});
 
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {
       getSelectedWowInstallation: () => "description",
@@ -82,6 +85,7 @@ describe("AddonDetailComponent", () => {
           { provide: MatDialogRef, useValue: {} },
           { provide: AddonService, useValue: addonServiceSpy },
           { provide: SessionService, useValue: sessionServiceSpy },
+          { provide: LinkService, useValue: linkService },
           {
             provide: WowUpService,
             useValue: wowUpService,

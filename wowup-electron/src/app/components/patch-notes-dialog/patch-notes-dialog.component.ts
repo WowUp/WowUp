@@ -1,16 +1,15 @@
 import * as _ from "lodash";
-import { from, of } from "rxjs";
-import { catchError, first, switchMap } from "rxjs/operators";
+import { from } from "rxjs";
+import { first, switchMap } from "rxjs/operators";
 
 import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ChangeLog } from "../../models/wowup/change-log";
-import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { ElectronService } from "../../services/electron/electron.service";
 import { PatchNotesService } from "../../services/wowup/patch-notes.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
 import { formatDynamicLinks } from "../../utils/dom.utils";
+import { LinkService } from "../../services/links/link.service";
 
 @Component({
   selector: "app-patch-notes-dialog",
@@ -31,8 +30,7 @@ export class PatchNotesDialogComponent implements OnInit, AfterViewChecked {
     private _translateService: TranslateService,
     private _electronService: ElectronService,
     private _patchNotesService: PatchNotesService,
-    private _dialogFactory: DialogFactory,
-    private _wowupService: WowUpService
+    private _linkService: LinkService
   ) {
     this.changeLog = _.first(this._patchNotesService.changeLogs) ?? { Version: "" };
   }
@@ -45,18 +43,7 @@ export class PatchNotesDialogComponent implements OnInit, AfterViewChecked {
   }
 
   private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._dialogFactory
-      .confirmLinkNavigation(element.href)
-      .pipe(
-        switchMap((confirmed) => {
-          return confirmed ? from(this._wowupService.openExternalLink(element.href)) : of(undefined);
-        }),
-        catchError((e) => {
-          console.error(e);
-          return of(undefined);
-        })
-      )
-      .subscribe();
+    this._linkService.confirmLinkNavigation(element.href).subscribe();
 
     return false;
   };

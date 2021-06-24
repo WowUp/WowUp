@@ -263,7 +263,8 @@
       "NEGATIVE_BUTTON": "No Thanks",
       "POSITIVE_BUTTON": "Sure!",
       "TITLE": "WowUp Telemetry"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
   },
   "PAGES": {
     "ABOUT": {

@@ -4,6 +4,7 @@ import { Component } from "@angular/core";
 import { getStandardImports, mockPreload } from "../tests/test-helpers";
 import { WowUpService } from "../services/wowup/wowup.service";
 import { MatDialog } from "@angular/material/dialog";
+import { LinkService } from "../services/links/link.service";
 
 @Component({
   template: `<a appExternalLink href="http://localhost:2020/">test link</a>`,
@@ -14,10 +15,12 @@ describe("ExternalLinkDirective", () => {
   let component: TestAppExternalLinkComponent;
   let fixture: ComponentFixture<TestAppExternalLinkComponent>;
   let wowUpService: any;
+  let linkService: any;
 
   beforeEach(async () => {
     mockPreload();
 
+    linkService = jasmine.createSpyObj("LinkService", [""], {});
     wowUpService = jasmine.createSpyObj("WowUpService", ["openExternalLink"], {});
 
     await TestBed.configureTestingModule({
@@ -28,10 +31,8 @@ describe("ExternalLinkDirective", () => {
       .overrideComponent(TestAppExternalLinkComponent, {
         set: {
           providers: [
-            {
-              provide: WowUpService,
-              useValue: wowUpService,
-            },
+            { provide: LinkService, useValue: linkService },
+            { provide: WowUpService, useValue: wowUpService },
           ],
         },
       })

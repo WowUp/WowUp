@@ -31,12 +31,23 @@
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 
+    .icon-active {
+      svg {
+        fill: var(--tab-text) !important;
+      }
+    }
+
     .tab-title {
       color: var(--text-4);
       max-width: 0;
       overflow: hidden;
       transition: all 0.3s ease 0.1s;
+      transition-property: color, max-width;
       white-space: nowrap;
+    }
+
+    .tab-icon {
+      transition: margin-right 0.3s ease 0.1s;
     }
 
     &:hover {
@@ -45,7 +56,7 @@
     }
 
     &.selected {
-      border-bottom: 2px solid var(--text-1);
+      // border-bottom: 2px solid var(--text-1);
       background-color: var(--background-primary-3);
 
       .tab-icon {
@@ -53,9 +64,9 @@
       }
 
       .tab-title {
-        color: var(--text-1);
-        display: block;
+        color: var(--tab-text);
         max-width: 200px;
+        // margin-left: 0.5em;
       }
     }
 

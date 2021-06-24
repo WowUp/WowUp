@@ -263,7 +263,8 @@
       "NEGATIVE_BUTTON": "No grazie",
       "POSITIVE_BUTTON": "Certo!",
       "TITLE": "Telemetria WowUp"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
   },
   "PAGES": {
     "ABOUT": {

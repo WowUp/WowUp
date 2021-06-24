@@ -1,5 +1,5 @@
-import { from, of, Subscription } from "rxjs";
-import { catchError, filter, map, switchMap } from "rxjs/operators";
+import { from, Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
 
 import {
   AfterViewChecked,
@@ -18,7 +18,7 @@ import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { PatchNotesService } from "../../services/wowup/patch-notes.service";
 import { formatDynamicLinks } from "../../utils/dom.utils";
-import { DialogFactory } from "../../services/dialog/dialog.factory";
+import { LinkService } from "../../services/links/link.service";
 
 @Component({
   selector: "app-about",
@@ -41,9 +41,8 @@ export class AboutComponent implements OnDestroy, AfterViewChecked {
     public electronService: ElectronService,
     private _sessionService: SessionService,
     private _patchNotesService: PatchNotesService,
-    private _dialogFactory: DialogFactory,
-    private _wowupService: WowUpService,
-    private _sanitizer: DomSanitizer
+    private _sanitizer: DomSanitizer,
+    private _linkService: LinkService
   ) {
     this.changeLogs = this._patchNotesService.changeLogs;
     const tabIndexSub = this._sessionService.selectedHomeTab$
@@ -69,18 +68,7 @@ export class AboutComponent implements OnDestroy, AfterViewChecked {
   }
 
   private onOpenLink = (element: HTMLAnchorElement): boolean => {
-    this._dialogFactory
-      .confirmLinkNavigation(element.href)
-      .pipe(
-        switchMap((confirmed) => {
-          return confirmed ? from(this._wowupService.openExternalLink(element.href)) : of(undefined);
-        }),
-        catchError((e) => {
-          console.error(e);
-          return of(undefined);
-        })
-      )
-      .subscribe();
+    this._linkService.confirmLinkNavigation(element.href).subscribe();
 
     return false;
   };

@@ -6,6 +6,31 @@ footer {
   display: flex;
   align-items: center;
 
+  .btn {
+    height: 100%;
+    overflow: hidden;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5em;
+
+    &:hover {
+      cursor: pointer;
+      background-color: var(--footer-hover);
+      border-radius: 4px;
+    }
+
+    img {
+      height: 100%;
+    }
+
+    mat-icon {
+      height: 100%;
+      padding: 4px 0;
+    }
+  }
   p {
     font-size: 0.85em;
     margin: 0;
@@ -13,9 +38,7 @@ footer {
 
   a,
   img {
-    height: 25px;
     -webkit-app-region: no-drag;
-    cursor: pointer;
   }
 
   .footer-button {

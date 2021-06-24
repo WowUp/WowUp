@@ -30,6 +30,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>You can now change the order of your WoW installations</li>
         <li>Added an optional app badge notification with the count of available updates for Mac and Linux users</li>
         <li>Get Addons tab will now include a list of recently updated addons from WowUpHub</li>
+        <li>When opening an external link you can now trust the domain to avoid being prompted again</li>
       </ul>
       <h4 style="margin-top: 1em;">Changes</h4>
       <ul>
@@ -53,6 +54,7 @@ const CHANGELOGS: ChangeLog[] = [
         <li>Fixed an issue with Update All button sometimes getting stuck enabled</li>
         <li>Fixed an issue with CurseForge categories throwing an error</li>
         <li>Fixed an issue with addons showing up with a blank version from WowUpHub in Get Addons</li>
+        <li>Fixed several issues with light themes</li>
         <li>Reworked the app update flow</li>
       </ul>
       </div>`,

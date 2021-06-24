@@ -26,6 +26,7 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
+  IPC_WINDOW_RESUME,
   IPC_WINDOW_UNMAXIMIZED,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
   WINDOW_DEFAULT_HEIGHT,
@@ -333,6 +334,10 @@ function createWindow(): BrowserWindow {
     }
 
     appUpdater.checkForUpdates().catch((e) => console.error(e));
+
+    win.on("show", () => {
+      win?.webContents?.send(IPC_WINDOW_RESUME);
+    });
   });
 
   win.on("close", (e) => {

@@ -3,7 +3,11 @@
   windows: electronService.isWin,
   linux: electronService.isLinux
 }">
-  <div *ngIf="isBusy" class="busy-container" >
+  <div class="theme-logo">
+    <div class="logo-img"></div>
+  </div>
+
+  <div *ngIf="isBusy" class="busy-container">
     <app-progress-spinner></app-progress-spinner>
   </div>
   <div [hidden]="isBusy" class="news-list text-1">

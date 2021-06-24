@@ -14,6 +14,7 @@ import { PatchNotesService } from "../../services/wowup/patch-notes.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { AboutComponent } from "./about.component";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
+import { LinkService } from "../../services/links/link.service";
 
 describe("AboutComponent", () => {
   let component: AboutComponent;
@@ -23,6 +24,7 @@ describe("AboutComponent", () => {
   let sessionService: SessionService;
   let patchNotesService: PatchNotesService;
   let dialogFactory: DialogFactory;
+  let linkService: any;
 
   beforeEach(async () => {
     wowupService = jasmine.createSpyObj("WowUpService", [""]);
@@ -34,6 +36,7 @@ describe("AboutComponent", () => {
       selectedHomeTab$: new BehaviorSubject(1),
     });
 
+    linkService = jasmine.createSpyObj("LinkService", [""], {});
     patchNotesService = jasmine.createSpyObj("PatchNotesService", [""], {});
     dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
 
@@ -59,6 +62,7 @@ describe("AboutComponent", () => {
       .overrideComponent(AboutComponent, {
         set: {
           providers: [
+            { provide: LinkService, useValue: linkService },
             { provide: WowUpService, useValue: wowupService },
             { provide: ElectronService, useValue: electronServiceSpy },
             { provide: SessionService, useValue: sessionService },

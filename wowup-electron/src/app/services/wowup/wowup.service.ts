@@ -27,6 +27,7 @@ import {
   SELECTED_LANGUAGE_PREFERENCE_KEY,
   START_MINIMIZED_PREFERENCE_KEY,
   START_WITH_SYSTEM_PREFERENCE_KEY,
+  TRUSTED_DOMAINS_KEY,
   UPDATE_NOTES_POPUP_VERSION_KEY,
   USER_ACTION_OPEN_LINK,
   USE_HARDWARE_ACCELERATION_PREFERENCE_KEY,
@@ -343,10 +344,32 @@ export class WowUpService {
     return this._electronService.send(IPC_APP_INSTALL_UPDATE);
   }
 
+  public async getTrustedDomains(): Promise<string[]> {
+    const trustedDomains = await this._preferenceStorageService.getObjectAsync<string[]>(TRUSTED_DOMAINS_KEY);
+    return trustedDomains ?? [];
+  }
+
+  public async isTrustedDomain(href: string | URL): Promise<boolean> {
+    const url = href instanceof URL ? href : new URL(href);
+    const trustedDomains = await this.getTrustedDomains();
+    return trustedDomains.includes(url.hostname);
+  }
+
+  public async trustDomain(domain: string): Promise<void> {
+    let trustedDomains = await this._preferenceStorageService.getObjectAsync<string[]>(TRUSTED_DOMAINS_KEY);
+    trustedDomains = _.uniq([...trustedDomains, domain]);
+
+    this._preferenceStorageService.setObject(TRUSTED_DOMAINS_KEY, trustedDomains);
+  }
+
   private setDefaultPreference(key: string, defaultValue: any) {
     const pref = this._preferenceStorageService.findByKey(key);
     if (pref === null || pref === undefined) {
-      this._preferenceStorageService.set(key, defaultValue.toString());
+      if (Array.isArray(defaultValue)) {
+        this._preferenceStorageService.setObject(key, defaultValue);
+      } else {
+        this._preferenceStorageService.set(key, defaultValue.toString());
+      }
     }
   }
 
@@ -363,6 +386,7 @@ export class WowUpService {
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, await this.getDefaultReleaseChannel());
     this.setDefaultPreference(USE_SYMLINK_MODE_PREFERENCE_KEY, false);
     this.setDefaultPreference(ENABLE_APP_BADGE_KEY, true);
+    this.setDefaultPreference(TRUSTED_DOMAINS_KEY, ["wowup.io", "discord.gg", "www.patreon.com", "github.com"]);
     this.setDefaultClientPreferences();
   }
 

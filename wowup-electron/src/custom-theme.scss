@@ -231,6 +231,14 @@ $alliance-theme-light: mat.define-light-theme(
   --text-3: #cccccc;
   --text-4: #bbbbbb;
   --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+  --footer-hover: #444444;
+
+  --title-logo: url("assets/images/wowup-white-1.png");
   --theme-logo: url("assets/images/wowup-white-1.png");
 }
 
@@ -252,7 +260,14 @@ $alliance-theme-light: mat.define-light-theme(
   --text-3: #888888;
   --text-4: #aaaaaa;
   --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
 
+  --title-logo: url("assets/images/wowup-white-1.png");
   --theme-logo: url("assets/images/wowup-dark-1.png");
 }
 
@@ -274,6 +289,14 @@ $alliance-theme-light: mat.define-light-theme(
   --text-3: #cccccc;
   --text-4: #bbbbbb;
   --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+  --footer-hover: #444444;
+
+  --title-logo: url("assets/images/horde-1.png");
   --theme-logo: url("assets/images/horde-1.png");
 }
 
@@ -295,6 +318,14 @@ $alliance-theme-light: mat.define-light-theme(
   --text-3: #888888;
   --text-4: #aaaaaa;
   --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
+
+  --title-logo: url("assets/images/horde-1.png");
   --theme-logo: url("assets/images/horde-dark-1.png");
 }
 
@@ -316,6 +347,13 @@ $alliance-theme-light: mat.define-light-theme(
   --text-3: #cccccc;
   --text-4: #bbbbbb;
   --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+
+  --title-logo: url("assets/images/alliance-1.png");
   --theme-logo: url("assets/images/alliance-1.png");
 }
 
@@ -337,6 +375,14 @@ $alliance-theme-light: mat.define-light-theme(
   --text-3: #888888;
   --text-4: #aaaaaa;
   --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
+
+  --title-logo: url("assets/images/alliance-1.png");
   --theme-logo: url("assets/images/alliance-dark-1.png");
 }
 
@@ -472,6 +518,27 @@ $alliance-theme-light: mat.define-light-theme(
   }
 }
 
+.tab-icon-inactive {
+  svg {
+    transition: fill 0.3s ease 0.1s;
+    fill: var(--tab-inactive);
+  }
+}
+
+.tab-icon-active {
+  svg {
+    transition: fill 0.3s ease 0.1s;
+    fill: var(--tab-text);
+  }
+}
+
+.tab-icon-disabled {
+  svg {
+    fill: var(--text-disabled);
+    opacity: 0.25;
+  }
+}
+
 ::-webkit-scrollbar-track {
   background-color: var(--scrollbar-track-color);
   margin: 8px;
@@ -538,7 +605,7 @@ $alliance-theme-light: mat.define-light-theme(
 .lb-cancel {
   width: 80px;
   height: 80px;
-  background-image: url('assets/images/wowup-white-1.png');
+  background-image: url("assets/images/wowup-white-1.png");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -551,9 +618,9 @@ $alliance-theme-light: mat.define-light-theme(
       background-color: var(--background-secondary-2),
       header-background-color: var(--background-secondary-2),
       row-hover-color: var(--background-secondary-2),
-      row-border-color: rgba(255, 255, 255, 0.12),
-      border-color: rgba(255, 255, 255, 0.12),
-      secondary-border-color: rgba(255, 255, 255, 0.12),
+      row-border-color: var(--grid-border),
+      border-color: var(--grid-border),
+      secondary-border-color: var(--grid-border),
       selected-row-background-color: var(--background-secondary-4),
       range-selection-border-color: transparent,
     )
