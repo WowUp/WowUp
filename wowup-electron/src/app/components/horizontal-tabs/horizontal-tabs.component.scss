@@ -42,7 +42,12 @@
       max-width: 0;
       overflow: hidden;
       transition: all 0.3s ease 0.1s;
+      transition-property: color, max-width;
       white-space: nowrap;
+    }
+
+    .tab-icon {
+      transition: margin-right 0.3s ease 0.1s;
     }
 
     &:hover {
@@ -60,8 +65,8 @@
 
       .tab-title {
         color: var(--tab-text);
-        display: block;
         max-width: 200px;
+        // margin-left: 0.5em;
       }
     }
 

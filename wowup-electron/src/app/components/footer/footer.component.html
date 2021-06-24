@@ -1,10 +1,15 @@
 <footer class="bg-secondary-4 text-2">
+  <a appExternalLink class="hover-bg-secondary-3" href="https://www.patreon.com/jliddev">
+    <img src="assets/Digital-Patreon-Wordmark_FieryCoral.png">
+  </a>
   <p class="flex-grow-1 text-1">{{ sessionService.statusText$ | async }}</p>
   <div class="row align-items-center text-1">
     <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
     <p>v{{ versionNumber | async }}</p>
     <div class="ml-3" [ngSwitch]="appUpdateState$ | async">
-      <div *ngSwitchCase="appUpdateState.CheckingForUpdate"><p>{{'APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE' | translate}}</p></div>
+      <div *ngSwitchCase="appUpdateState.CheckingForUpdate">
+        <p>{{'APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE' | translate}}</p>
+      </div>
       <div *ngSwitchCase="appUpdateState.Downloading" class="row align-items-center">
         <mat-progress-spinner class="" color="primary" mode="determinate" [value]="appUpdateProgress$ | async"
           [diameter]="20"></mat-progress-spinner>

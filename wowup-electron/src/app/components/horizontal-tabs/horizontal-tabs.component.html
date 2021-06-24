@@ -6,12 +6,10 @@
   <div *ngFor="let tab of tabsTop" class="tab"
     [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)"
     [matTooltip]="tab.tooltipKey | translate" [matTooltipPosition]="'below'">
-    <div class="tab-icon">
-      <mat-icon class="tab-icon-inactive"
-        [ngClass]="{ 'tab-icon-active': tab.isSelected$ | async, 'tab-icon-disabled': tab.isDisabled$ | async }"
-        [svgIcon]="tab.icon">
-      </mat-icon>
-    </div>
+    <mat-icon class="tab-icon tab-icon-inactive"
+      [ngClass]="{ 'tab-icon-active': tab.isSelected$ | async, 'tab-icon-disabled': tab.isDisabled$ | async }"
+      [svgIcon]="tab.icon">
+    </mat-icon>
     <div class="tab-title" *ngIf="tab.titleKey">{{ tab.titleKey | translate }}</div>
     <!-- <mat-icon *ngIf="tab.badge === true" class="tab-icon-inactive z-badge clear-badge" matBadge="1" matBadgeColor="accent"
       [ngClass]="{'tab-icon-active': tab.isSelected$ | async }" [svgIcon]="tab.icon">
@@ -20,30 +18,24 @@
   <div class="spacer"></div>
   <a appExternalLink class="text-1 tab hover-bg-secondary-2" href="https://wowup.io/guide/section/my-addons/overview"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}">
-    <div class="tab-icon">
-      <mat-icon class="tab-icon-inactive" svgIcon="far:question-circle"></mat-icon>
-    </div>
+    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="far:question-circle"></mat-icon>
   </a>
-  <a appExternalLink class="patreon-link tab hover-bg-secondary-2" href="https://www.patreon.com/jliddev"
+  <!-- <a appExternalLink class="patreon-link tab hover-bg-secondary-2" href="https://www.patreon.com/jliddev"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate }}">
-    <div class="tab-icon">
-      <img class="patron-img" src="assets/images/patreon_logo_small.png" />
-    </div>
-  </a>
+    <img class="tab-icon patron-img" src="assets/images/patreon_logo_small.png" />
+  </a> -->
   <a appExternalLink class="text-1 tab hover-bg-secondary-2" href="https://discord.gg/rk4F5aD"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}">
-    <div class="tab-icon">
-      <mat-icon class="tab-icon-inactive" svgIcon="fab:discord"></mat-icon>
-    </div>
+    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="fab:discord"></mat-icon>
   </a>
   <div *ngFor="let tab of tabsBottom" class="tab hover-bg-secondary-2"
     [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)"
     [matTooltip]="tab.tooltipKey | translate" [matTooltipPosition]="'below'">
-    <div class="tab-icon">
-      <mat-icon class="tab-icon-inactive" [svgIcon]="tab.icon"
-        [ngClass]="{ 'tab-icon-active': tab.isSelected$ | async, 'tab-icon-disabled': tab.isDisabled$ | async }">
-      </mat-icon>
-    </div>
+    <!-- <div class="tab-icon"> -->
+    <mat-icon class="tab-icon tab-icon-inactive" [svgIcon]="tab.icon"
+      [ngClass]="{ 'tab-icon-active': tab.isSelected$ | async, 'tab-icon-disabled': tab.isDisabled$ | async }">
+    </mat-icon>
+    <!-- </div> -->
     <div class="tab-title" *ngIf="tab.titleKey">{{ tab.titleKey | translate }}</div>
   </div>
 </div>
