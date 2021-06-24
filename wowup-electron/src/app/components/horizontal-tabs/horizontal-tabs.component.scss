@@ -31,6 +31,12 @@
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 
+    .icon-active {
+      svg {
+        fill: var(--tab-text) !important;
+      }
+    }
+
     .tab-title {
       color: var(--text-4);
       max-width: 0;
@@ -45,7 +51,7 @@
     }
 
     &.selected {
-      border-bottom: 2px solid var(--text-1);
+      // border-bottom: 2px solid var(--text-1);
       background-color: var(--background-primary-3);
 
       .tab-icon {
@@ -53,7 +59,7 @@
       }
 
       .tab-title {
-        color: var(--text-1);
+        color: var(--tab-text);
         display: block;
         max-width: 200px;
       }
