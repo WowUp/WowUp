@@ -192,8 +192,10 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public onClickImage(url: string): void {
     const idx = this.imageUrls.findIndex((album) => album.src === url);
-    if(idx >= 0){
-      this._lightbox.open(this.imageUrls, idx);
+    if (idx >= 0) {
+      this._lightbox.open(this.imageUrls, idx, {
+        centerVertically: true,
+      });
     }
   }
 
