@@ -120,6 +120,7 @@ export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
 export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
 export const ENABLE_APP_BADGE_KEY = "enable_app_badge";
+export const TRUSTED_DOMAINS_KEY = "trusted_domains";
 
 // THEMES
 export const DEFAULT_THEME = "default-theme";

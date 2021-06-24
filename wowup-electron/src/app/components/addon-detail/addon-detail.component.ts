@@ -31,8 +31,8 @@ import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { WowUpService } from "../../services/wowup/wowup.service";
 import { formatDynamicLinks } from "../../utils/dom.utils";
+import { LinkService } from "../../services/links/link.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -93,11 +93,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _cdRef: ChangeDetectorRef,
-    private _wowupService: WowUpService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
     private _sessionService: SessionService,
-    private _lightbox: Lightbox
+    private _lightbox: Lightbox,
+    private _linkService: LinkService
   ) {
     this._dependencies = this.getDependencies();
 
@@ -330,23 +330,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   };
 
   private confirmLinkNavigation(href: string) {
-    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: this._translateService.instant("APP.LINK_NAVIGATION.TITLE"),
-        message: this._translateService.instant("APP.LINK_NAVIGATION.MESSAGE", { url: href }),
-      },
-    });
-
-    dialogRef
-      .afterClosed()
-      .pipe(first())
-      .subscribe((result) => {
-        if (!result) {
-          return;
-        }
-
-        this._wowupService.openExternalLink(href).catch((e) => console.error(e));
-      });
+    this._linkService.confirmLinkNavigation(href).subscribe();
   }
 
   private getChangelog = (): Promise<string> => {

@@ -4,12 +4,11 @@ import { catchError, delay, first, map, switchMap } from "rxjs/operators";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { ElectronService } from "../../services/electron/electron.service";
 import { NewsItem, NewsService } from "../../services/news/news.service";
 import { SessionService } from "../../services/session/session.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
 import { AppConfig } from "../../../environments/environment";
+import { LinkService } from "../../services/links/link.service";
 
 @Component({
   selector: "app-news-panel",
@@ -29,10 +28,9 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   public constructor(
     public newsService: NewsService,
     public electronService: ElectronService,
-    private _dialogFactory: DialogFactory,
-    private _wowupService: WowUpService,
     private _sessionService: SessionService,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _linkService: LinkService
   ) {
     const homeTabSub = _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this._isSelectedTab = tabIndex === this.tabIndex;
@@ -80,18 +78,7 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   public onClickItem(item: NewsItem): void {
-    this._dialogFactory
-      .confirmLinkNavigation(item.link)
-      .pipe(
-        switchMap((confirmed) => {
-          return confirmed ? from(this._wowupService.openExternalLink(item.link)) : of(undefined);
-        }),
-        catchError((e) => {
-          console.error(e);
-          return of(undefined);
-        })
-      )
-      .subscribe();
+    this._linkService.confirmLinkNavigation(item.link).subscribe();
   }
 
   private lazyLoad(): void {

@@ -263,7 +263,8 @@
       "NEGATIVE_BUTTON": "Nei Takk!",
       "POSITIVE_BUTTON": "Selvfølgelig!",
       "TITLE": "WowUp Telemetri"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
   },
   "PAGES": {
     "ABOUT": {

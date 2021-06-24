@@ -263,7 +263,8 @@
       "NEGATIVE_BUTTON": "괜찮습니다.",
       "POSITIVE_BUTTON": "물론!",
       "TITLE": "원격 분석용 데이터 전송"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
   },
   "PAGES": {
     "ABOUT": {
