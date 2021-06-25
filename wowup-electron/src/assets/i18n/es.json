@@ -264,7 +264,7 @@
       "POSITIVE_BUTTON": "¡Por supuesto!",
       "TITLE": "Telemetría de WowUp"
     },
-    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
+    "TRUST_DOMAIN_CHECKBOX": "Confiar en este dominio y no volver a preguntar"
   },
   "PAGES": {
     "ABOUT": {
@@ -404,8 +404,8 @@
         "CURRENT_LANGUAGE_LABEL": "Idioma actual",
         "CURSE_PROTOCOL_DESCRIPTION": "Al descargar addons desde la web de CurseForge, WowUp se hará cargo de la instalación",
         "CURSE_PROTOCOL_LABEL": "Tramitar enlaces de descarga de CurseForge",
-        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
-        "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Muestra un contador en el icono de la aplicación en la barra de tareas con el número de addons con actualizaciones disponibles.",
+        "ENABLE_APP_BADGE_LABEL": "Activar contador en el icono",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, tales como cuando los addons son actualizados automáticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Activar notificaciones del sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Al cerrar la ventana de WowUp, minimizarla a la barra de menú",
