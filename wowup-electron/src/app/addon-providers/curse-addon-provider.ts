@@ -50,6 +50,14 @@ interface ProtocolData {
   fileId: number;
 }
 
+interface WowUpCurseFingerprintsResponse extends CurseFingerprintsResponse {
+  exactMatches: WowUpCurseMatch[];
+}
+
+interface WowUpCurseMatch extends CurseMatch {
+  authorIds: string[];
+}
+
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
@@ -326,13 +334,22 @@ export class CurseAddonProvider extends AddonProvider {
 
     console.log(`Wowup Fetching fingerprints`, JSON.stringify(fingerprints));
 
-    const response = await this._circuitBreaker.postJson<CurseFingerprintsResponse>(
+    const response = await this._circuitBreaker.postJson<WowUpCurseFingerprintsResponse>(
       url,
       {
         fingerprints,
       },
       AppConfig.wowUpHubHttpTimeoutMs
     );
+
+    const matchesCpy = [];
+    for (const match of response.exactMatches) {
+      const isBlocked = await this.isBlockedAuthorId(match.authorIds);
+      if (!isBlocked) {
+        matchesCpy.push(match);
+      }
+    }
+    response.exactMatches = matchesCpy;
 
     return response;
   }
@@ -640,6 +657,19 @@ export class CurseAddonProvider extends AddonProvider {
     }
 
     _.remove(searchResults, (sr) => blockedResults.includes(sr.id));
+  }
+
+  private async isBlockedAuthorId(authorId: string | string[]): Promise<boolean> {
+    try {
+      const blockList = await this._wowupApiService.getBlockList().toPromise();
+      const blockedAuthorIds = _.map(blockList.curse.authors, (author) => author.authorId);
+      if (Array.isArray(authorId)) {
+        return blockedAuthorIds.some((blockedAuthorId) => authorId.includes(blockedAuthorId));
+      }
+      return blockedAuthorIds.includes(authorId);
+    } catch (e) {
+      return false;
+    }
   }
 
   private async isBlockedAuthor(author: CurseAuthor) {

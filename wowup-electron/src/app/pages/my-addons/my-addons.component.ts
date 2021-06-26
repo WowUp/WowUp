@@ -574,7 +574,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .afterClosed()
       .pipe(
         switchMap((result) => {
-          return result ? from(this.loadAddons(this.selectedInstallation, true)) : of(undefined);
+          if (!result) {
+            return of(undefined);
+          }
+
+          return from(this.loadAddons(this.selectedInstallation, true)).pipe(switchMap(() => from(this.onRefresh())));
         })
       )
       .subscribe();
