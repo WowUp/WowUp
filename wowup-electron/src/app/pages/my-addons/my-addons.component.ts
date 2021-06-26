@@ -1001,7 +1001,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     try {
       let addons = await this.addonService.getAddons(installation, reScan);
       if (reScan) {
-        await this.addonService.syncInstallationAddons(installation);
+        await this.addonService.syncClient(installation);
         addons = await this.addonService.getAddons(installation, false);
       }
 

@@ -495,52 +495,22 @@ export class AddonService {
   }
 
   public async processAutoUpdates(): Promise<Addon[]> {
-    const autoUpdateAddons = this.getAutoUpdateEnabledAddons().filter((addon) => !!addon.installationId);
-    const installationIdGroups = _.groupBy(autoUpdateAddons, (addon) => addon.installationId);
-    const updatedAddons: Addon[] = [];
+    const autoUpdateAddons = this.getAutoUpdateEnabledAddons();
+    const addonsWithUpdates = autoUpdateAddons.filter((addon) => AddonUtils.needsUpdate(addon));
 
-    for (const installationId in installationIdGroups) {
-      const installation = this._warcraftInstallationService.getWowInstallation(installationId);
-      if (!installation) {
-        console.warn("No installation found:", installationId);
-        continue;
-      }
+    const tasks = addonsWithUpdates.map((addon) =>
+      this.updateAddon(addon.id)
+        .then(() => addon)
+        .catch((e) => console.error(e))
+    );
 
-      try {
-        const clientUpdates = await this.autoUpdateClient(installation, installationIdGroups[installationId]);
-        updatedAddons.push(...clientUpdates);
-      } catch (e) {
-        console.error(`Failed to auto update install: ${installation?.label ?? ""}`, e);
-      }
-    }
-
-    return updatedAddons;
-  }
-
-  private async autoUpdateClient(installation: WowInstallation, addons: Addon[]) {
-    const updatedAddons: Addon[] = [];
-
-    await this.syncAddons(installation, addons);
-
-    for (const addon of addons) {
-      if (!AddonUtils.needsUpdate(addon) || !addon.id) {
-        continue;
-      }
-
-      try {
-        await this.updateAddon(addon.id);
-        updatedAddons.push(addon);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    return updatedAddons;
+    const results = await Promise.all(tasks);
+    return results.filter((res) => res !== undefined).map((res) => res as Addon);
   }
 
   public getAutoUpdateEnabledAddons(): Addon[] {
     return this._addonStorage.queryAll((addon) => {
-      return addon.isIgnored !== true && addon.autoUpdateEnabled;
+      return addon.isIgnored !== true && addon.autoUpdateEnabled && !!addon.installationId;
     });
   }
 
@@ -1111,27 +1081,61 @@ export class AddonService {
     return _.find(this.getEnabledAddonProviders(), (provider) => provider.isValidProtocol(protocol));
   }
 
+  private getBatchAddonProviders(): AddonProvider[] {
+    return this._addonProviders.filter((provider) => provider.enabled && provider.canBatchFetch);
+  }
+
+  private getStandardAddonProviders(): AddonProvider[] {
+    return this._addonProviders.filter((provider) => provider.enabled && !provider.canBatchFetch);
+  }
+
+  /** Iterate over all the installed WoW clients and attempt to check for addon updates */
   public async syncAllClients(): Promise<void> {
     const installations = this._warcraftInstallationService.getWowInstallations();
 
-    const batchedAddonProviders = this._addonProviders.filter((provider) => provider.enabled && provider.canBatchFetch);
+    await this.syncBatchProviders(installations);
+
+    for (const installation of installations) {
+      try {
+        await this.syncStandardProviders(installation);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  /** Check for updates for all addons installed for the give WoW client */
+  public async syncClient(installation: WowInstallation): Promise<void> {
+    await this.syncBatchProviders([installation]);
+
+    try {
+      await this.syncStandardProviders(installation);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  /** Transform a list of addons into a list of their external IDs while removing empty or undefined values */
+  private getExternalIds(addons: Addon[]): string[] {
+    return addons.map((addon) => addon.externalId).filter((externalId) => !!externalId);
+  }
+
+  /** Iterate over all batch enabled addon providers and combine all
+   * external addon IDs into a single request to each batch enabled provider
+   * */
+  private async syncBatchProviders(installations: WowInstallation[]) {
+    const batchedAddonProviders = this.getBatchAddonProviders();
 
     for (const provider of batchedAddonProviders) {
+      // Get a list of all installed addons for this provider across all WoW installs
       const batchedAddons = this._addonStorage
         .getAllForProvider(provider.name)
         .filter((addon) => addon.isIgnored === false);
 
-      // batchedAddons = _.uniqWith(batchedAddons, (v1, v2) => {
-      //   return v1.providerName === v2.providerName && v1.externalId === v2.externalId;
-      // });
-
-      const addonIds = batchedAddons.map((addon) => addon.externalId);
+      const addonIds = this.getExternalIds(batchedAddons);
       const searchResults = await provider.getAllBatch(installations, addonIds);
 
-      console.debug("batchedAddons", provider, batchedAddons);
-      console.debug("searchResults", searchResults);
-
-      // TODO combine these into 1 installations loop
+      // Process the errors for each installation
       for (const key of Object.keys(searchResults.errors)) {
         const errors = searchResults.errors[key];
         if (errors.length === 0) {
@@ -1140,10 +1144,10 @@ export class AddonService {
 
         const installation = installations.find((i) => i.id === key);
         const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
-        console.debug("installation", installation);
         this.handleSyncErrors(installation, errors, provider, installationAddons);
       }
 
+      // Process the update results for each installation
       for (const key of Object.keys(searchResults.installationResults)) {
         const addonSearchResults = searchResults.installationResults[key];
         if (addonSearchResults.length === 0) {
@@ -1154,38 +1158,21 @@ export class AddonService {
         const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
         await this.handleSyncResults(addonSearchResults, installationAddons, installation);
       }
-      // this.handleSyncErrors(installation, getAllResult, addonProvider, addons);
-      // await this.handleSyncResults(getAllResult, addons, installation);
-    }
-
-    for (const installation of installations) {
-      try {
-        await this.syncInstallationAddons(installation);
-      } catch (e) {
-        console.error(e);
-      }
     }
   }
 
-  public async syncInstallationAddons(installation: WowInstallation): Promise<void> {
-    try {
-      const addons = this._addonStorage.getAllForInstallationId(installation.id);
-      const validAddons = _.filter(addons, (addon) => addon.isIgnored === false);
-
-      await this.syncAddons(installation, validAddons);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  public async syncAddons(installation: WowInstallation, addons: Addon[]): Promise<boolean> {
+  public async syncStandardProviders(installation: WowInstallation): Promise<boolean> {
     console.info(`syncAddons ${installation.label}`);
     let didSync = true;
 
-    const addonProviders = _.filter(this._addonProviders, (provider) => provider.enabled && !provider.canBatchFetch);
+    // fetch all the addons for this WoW client
+    const addons = this._addonStorage.getAllForInstallationId(installation.id);
+    const validAddons = _.filter(addons, (addon) => addon.isIgnored === false);
+
+    const addonProviders = this.getStandardAddonProviders();
     for (const provider of addonProviders) {
       try {
-        await this.syncProviderAddons(installation, addons, provider);
+        await this.syncProviderAddons(installation, validAddons, provider);
       } catch (e) {
         console.error(`Failed to sync from provider: ${provider.name}`, e);
         this._syncErrorSrc.next(
