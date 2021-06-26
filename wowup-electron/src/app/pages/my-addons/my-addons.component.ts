@@ -376,6 +376,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       await this.loadAddons(this.selectedInstallation);
+      await this.updateBadgeCount();
     } catch (e) {
       console.error(`Failed to refresh addons`, e);
     } finally {
@@ -420,7 +421,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.rowData = this._baseRowData;
       this._cdRef.detectChanges();
       return;
-    }
+    } 
 
     const filter = this.filter.trim().toLowerCase();
     const filtered = _.filter(this._baseRowData, (row) => this.filterListItem(row, filter));
@@ -1108,6 +1109,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private calculateControlState(): boolean {
     return !this.addonService.isInstalling();
+  }
+
+  private async updateBadgeCount(): Promise<void> {
+    const ct = this.addonService.getAllAddonsAvailableForUpdate().length;
+    console.debug('updateBadgeCount', ct)
+    try {
+      await this.electronService.updateAppBadgeCount(ct);
+    } catch (e) {
+      console.error("Failed to update badge count", e);
+    }
   }
 
   private loadSortOrder() {
