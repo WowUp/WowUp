@@ -49,11 +49,13 @@
             {{ "PAGES.MY_ADDONS.UPDATE_ALL_CONTEXT_MENU.UPDATE_ALL_CLIENTS_BUTTON" | translate }}
           </button>
         </mat-menu>
+        <!-- CHECK UPDATES -->
         <button mat-flat-button color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls === false" (click)="onRefresh()">
           {{ "PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON" | translate }}
         </button>
+        <!-- RESCAN -->
         <button mat-flat-button color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls === false" (click)="onReScan()">
