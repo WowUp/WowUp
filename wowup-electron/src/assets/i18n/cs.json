@@ -69,9 +69,10 @@
       "NOT_AVAILABLE": "Nejnovější verze WowUp je již nainstalována",
       "PORTABLE_DOWNLOAD_MESSAGE": "Chcete ručně stáhnout nejnovější přenosnou (portable) verzi?\n\nMusíte vypnout aplikaci a ručně nakopírovat novou verzi.",
       "PORTABLE_DOWNLOAD_TITLE": "Vyžadováno ruční stažení",
-      "SNACKBAR_ACTION": "Aktualizovat",
+      "SNACKBAR_ACTION": "Aktualizovat & Restart",
       "SNACKBAR_TEXT": "Nová verze WowUp je k dispozici",
       "TOOLTIP": "Aktualizace WowUp je k dospozici",
+      "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "Nepodařilo se stáhnout aktualizaci WowUp"
     }
   },

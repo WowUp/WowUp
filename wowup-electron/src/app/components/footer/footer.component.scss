@@ -42,9 +42,9 @@ footer {
   }
 
   .footer-button {
-    height: 25px;
+    height: 22px;
     padding: 0 0.5em;
-    margin: 3px 0 0 0;
+    margin: 0;
     overflow: hidden;
     border-radius: 4px;
     border: none;
@@ -52,12 +52,12 @@ footer {
 
     &.update-button {
       background-color: rgb(0, 128, 0);
-      // border: 1px solid rgb(0, 128, 0);
-      // color: rgb(0, 128, 0);
 
-      h4 {
-        margin: 0;
-        padding: 0;
+      .mat-icon {
+        height: 12px;
+        width: 12px;
+        font-size: 12px;
+        vertical-align: -2px;
       }
 
       &:hover {

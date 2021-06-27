@@ -72,6 +72,7 @@
       "SNACKBAR_ACTION": "Update",
       "SNACKBAR_TEXT": "Eine neue Version von WowUp ist verfügbar",
       "TOOLTIP": "WowUp Update verfügbar",
+      "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "WowUp konnte nicht nach Updates suchen"
     }
   },

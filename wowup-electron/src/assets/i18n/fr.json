@@ -69,9 +69,10 @@
       "NOT_AVAILABLE": "Vous disposez déjà de la dernière version de WowUp",
       "PORTABLE_DOWNLOAD_MESSAGE": "Voulez-vous télécharger manuellement la dernière version portable ?\n\nVous devrez fermer l'application manuellement et copier la nouvelle version.",
       "PORTABLE_DOWNLOAD_TITLE": "Téléchargement manuel requis",
-      "SNACKBAR_ACTION": "Mise à jour ",
+      "SNACKBAR_ACTION": "Mise à jour & Restart",
       "SNACKBAR_TEXT": "Une nouvelle version de WowUp est disponible",
       "TOOLTIP": "Mise à jour de WowUp disponible",
+      "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "Impossible d'obtenir la mise à jour de WowUp"
     }
   },

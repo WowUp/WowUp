@@ -69,9 +69,10 @@
       "NOT_AVAILABLE": "최신 버전입니다",
       "PORTABLE_DOWNLOAD_MESSAGE": "최신 포터블 버전을 수동 다운로드하시겠습니까?\n\n앱을 수동으로 닫고 새 버전 파일로 엎어써야 합니다.",
       "PORTABLE_DOWNLOAD_TITLE": "수동 다운로드 필요",
-      "SNACKBAR_ACTION": "업데이트",
+      "SNACKBAR_ACTION": "업데이트 & Restart",
       "SNACKBAR_TEXT": "새 버전 설치 가능",
       "TOOLTIP": "프로그램 업데이트가 있습니다.",
+      "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "업데이트 실패"
     }
   },
