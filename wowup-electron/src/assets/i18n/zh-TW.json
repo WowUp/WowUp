@@ -69,10 +69,10 @@
       "NOT_AVAILABLE": "已安裝最新版 WowUp",
       "PORTABLE_DOWNLOAD_MESSAGE": "是否手動下載最新綠色版？\n\n下載完成後請關閉本應用程式，然後用新版本覆蓋。",
       "PORTABLE_DOWNLOAD_TITLE": "需要手動下載",
-      "SNACKBAR_ACTION": "更新 & Restart",
+      "SNACKBAR_ACTION": "更新並重啟",
       "SNACKBAR_TEXT": "新版本 WowUp 可用",
       "TOOLTIP": "WowUp 更新可用",
-      "UPDATE_AVAILABLE": "Starting download",
+      "UPDATE_AVAILABLE": "正在開始下載",
       "UPDATE_ERROR": "WowUp 更新下載失敗"
     }
   },
