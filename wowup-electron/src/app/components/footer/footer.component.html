@@ -11,6 +11,9 @@
     <div *ngSwitchCase="appUpdateState.CheckingForUpdate">
       <p>{{'APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE' | translate}}</p>
     </div>
+    <div *ngSwitchCase="appUpdateState.UpdateAvailable">
+      <p>{{'APP.WOWUP_UPDATE.UPDATE_AVAILABLE' | translate}}</p>
+    </div>
     <div *ngSwitchCase="appUpdateState.Downloading" class="row align-items-center">
       <mat-progress-spinner class="" color="primary" mode="determinate" [value]="appUpdateProgress$ | async"
         [diameter]="20"></mat-progress-spinner>
@@ -18,8 +21,9 @@
     </div>
     <div *ngSwitchCase="appUpdateState.Downloaded">
       <button class="footer-button update-button text-1" matTooltip="{{ updateIconTooltip | translate }}"
-        (click)="onClickInstallUpdate()">
-        <h4>{{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}</h4>
+              (click)="onClickInstallUpdate()">
+        <mat-icon svgIcon="fas:sync-alt"></mat-icon>
+        {{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}
       </button>
     </div>
     <div *ngSwitchDefault class="btn text-1" (click)="onClickCheckForUpdates()"
