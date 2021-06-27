@@ -69,10 +69,10 @@
       "NOT_AVAILABLE": "Последняя версия WowUp уже установлена",
       "PORTABLE_DOWNLOAD_MESSAGE": "Хотите вручную установить последнюю портативную версию?\n\nНужно будет закрыть приложение вручную и заменить его новой версией.",
       "PORTABLE_DOWNLOAD_TITLE": "Необходима загрузка вручную",
-      "SNACKBAR_ACTION": "Обновить & Restart",
+      "SNACKBAR_ACTION": "Обновить и перезапустить",
       "SNACKBAR_TEXT": "Доступна новая версия WowUp",
       "TOOLTIP": "Доступно обновление для WowUp",
-      "UPDATE_AVAILABLE": "Starting download",
+      "UPDATE_AVAILABLE": "Начинается загрузка",
       "UPDATE_ERROR": "Неудачная попытка получить обновление для WowUp"
     }
   },
