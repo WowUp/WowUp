@@ -91,7 +91,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private handleCustomProtocol = async (protocol: string): Promise<void> => {
-    console.debug("PROTOCOL RECEIEVED", protocol);
     const protocolName = getProtocol(protocol);
     try {
       switch (protocolName) {
