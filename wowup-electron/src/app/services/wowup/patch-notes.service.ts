@@ -16,6 +16,17 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.1",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>The app badge toggle option is now visible for all operating systems</li>
+      <li>When changing the Ignore state on an addon the app badge should update</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.0",
     html: `<div>
       <h4 style="margin-top: 1em;">New Features</h4>
