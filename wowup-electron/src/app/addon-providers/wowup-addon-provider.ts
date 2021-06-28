@@ -31,6 +31,7 @@ import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllBatchResult, GetAllResult } from "./addon-provider";
 
 const API_URL = AppConfig.wowUpHubUrl;
+const FEATURED_ADDONS_CACHE_TTL_SEC = AppConfig.featuredAddonsCacheTimeSec;
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 
 export interface GetAddonBatchResponse {
@@ -167,7 +168,7 @@ export class WowUpAddonProvider extends AddonProvider {
     const response = await this._cachingService.transaction(
       url.toString(),
       () => this._circuitBreaker.getJson<GetFeaturedAddonsResponse>(url),
-      CHANGELOG_CACHE_TTL_SEC
+      FEATURED_ADDONS_CACHE_TTL_SEC
     );
 
     // Remove duplicate addons that are already in the popular list from the recents list
