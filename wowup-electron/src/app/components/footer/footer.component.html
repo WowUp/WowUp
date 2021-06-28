@@ -1,36 +1,34 @@
-<footer class="bg-secondary-4 text-light-2">
-  <a appExternalLink class="patreon-link hover-bg-secondary-2 mr-2" href="https://www.patreon.com/jliddev"
+<footer class="bg-secondary-4 text-2">
+  <a appExternalLink class="btn" href="https://www.patreon.com/jliddev"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate }}">
-    <img class="patron-img" src="assets/images/patreon_logo_small.png" />
+    <img src="assets/Digital-Patreon-Wordmark_FieryCoral.png">
   </a>
-  <a appExternalLink class="link discord-link text-1 hover-bg-secondary-2 mr-2" href="https://discord.gg/rk4F5aD"
-    matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}">
-    <mat-icon svgIcon="fab:discord"></mat-icon>
-  </a>
-  <a appExternalLink class="link github-link text-1 hover-bg-secondary-2 mr-2" href="https://github.com/WowUp/WowUp"
-    matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GITHUB' | translate }}">
-    <mat-icon svgIcon="fab:github"></mat-icon>
-  </a>
-  <a appExternalLink class="link guide-link text-1 hover-bg-secondary-2 mr-2"
-    href="https://wowup.io/guide/section/my-addons/overview"
-    matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}">
-    <mat-icon svgIcon="far:question-circle"></mat-icon>
-  </a>
-  <p class="flex-grow-1 text-1">{{ sessionService.statusText$ | async }}</p>
-  <div class="row align-items-center text-1">
-    <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
-    <p>v{{ versionNumber | async }}</p>
-    <button *ngIf="isWowUpUpdateAvailable && !isWowUpdateDownloading" class="footer-button update-button ml-3 text-1"
-      matTooltip="{{ updateIconTooltip | translate }}" [disabled]="isUpdatingWowUp" (click)="onClickUpdateWowup()">
-      <h4>{{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}</h4>
-    </button>
-    <button *ngIf="isWowUpdateDownloading" class="footer-button downloading-button text-2 ml-3 animate">
-      <mat-icon svgIcon="fas:angle-double-down"></mat-icon>
-    </button>
-    <button *ngIf="!isWowUpUpdateAvailable && !isWowUpdateDownloading"
-      class="footer-button text-1 check-update-button ml-3" [ngClass]="{ animate: isCheckingForUpdates }"
-      (click)="onClickCheckForUpdates()" matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}">
+  <p class="text-1">{{ sessionService.statusText$ | async }}</p>
+  <div class="flex-grow-1"></div>
+  <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>
+  <p>v{{ versionNumber | async }}</p>
+  <div class="h-100 ml-3" [ngSwitch]="appUpdateState$ | async">
+    <div *ngSwitchCase="appUpdateState.CheckingForUpdate">
+      <p>{{'APP.WOWUP_UPDATE.CHECKING_FOR_UPDATE' | translate}}</p>
+    </div>
+    <div *ngSwitchCase="appUpdateState.UpdateAvailable">
+      <p>{{'APP.WOWUP_UPDATE.UPDATE_AVAILABLE' | translate}}</p>
+    </div>
+    <div *ngSwitchCase="appUpdateState.Downloading" class="row align-items-center">
+      <mat-progress-spinner class="" color="primary" mode="determinate" [value]="appUpdateProgress$ | async"
+        [diameter]="20"></mat-progress-spinner>
+      <span>{{'APP.WOWUP_UPDATE.DOWNLOADING_UPDATE' | translate}}</span>
+    </div>
+    <div *ngSwitchCase="appUpdateState.Downloaded">
+      <button class="footer-button update-button text-1" matTooltip="{{ updateIconTooltip | translate }}"
+              (click)="onClickInstallUpdate()">
+        <mat-icon svgIcon="fas:sync-alt"></mat-icon>
+        {{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}
+      </button>
+    </div>
+    <div *ngSwitchDefault class="btn text-1" (click)="onClickCheckForUpdates()"
+      matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}">
       <mat-icon svgIcon="fas:sync-alt"></mat-icon>
-    </button>
+    </div>
   </div>
 </footer>

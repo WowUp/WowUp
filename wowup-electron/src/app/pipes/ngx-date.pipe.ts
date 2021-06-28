@@ -7,7 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 export class NgxDatePipe implements PipeTransform {
   public constructor(private translateService: TranslateService) {}
 
-  public transform(value: any, pattern = "fullDate"): any {
+  public transform(value: string | number): any {
     return new Date(value).toLocaleString(this.translateService.currentLang);
   }
 }

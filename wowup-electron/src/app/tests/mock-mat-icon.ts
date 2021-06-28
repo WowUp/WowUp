@@ -7,9 +7,9 @@ import { MatIcon, MatIconModule } from "@angular/material/icon";
   template: "<span></span>",
 })
 export class MockMatIconComponent {
-  @Input() svgIcon: any;
-  @Input() fontSet: any;
-  @Input() fontIcon: any;
+  @Input() public svgIcon: any;
+  @Input() public fontSet: any;
+  @Input() public fontIcon: any;
 }
 
 export function overrideIconModule(testBed: TestBedStatic): TestBedStatic {

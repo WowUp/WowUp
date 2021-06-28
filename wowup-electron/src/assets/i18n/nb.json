@@ -61,15 +61,18 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "Installer oppdatering til WowUp",
+      "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "Vil du restarte WowUp for å installere oppdateringen?",
       "INSTALL_TITLE": "WowUp-oppdatering er klar",
       "NOT_AVAILABLE": "Latest version of WowUp is already installed",
       "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
       "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
-      "SNACKBAR_ACTION": "Oppdater",
+      "SNACKBAR_ACTION": "Oppdater & Restart",
       "SNACKBAR_TEXT": "en ny versjon av WowUp er tilgjengelig",
       "TOOLTIP": "WowUp oppdatering tilgjengelig",
+      "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "Failed to get WowUp update"
     }
   },
@@ -200,6 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
+      "IMAGES_TAB": "Images",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Se i nettleser",
@@ -260,7 +264,8 @@
       "NEGATIVE_BUTTON": "Nei Takk!",
       "POSITIVE_BUTTON": "Selvfølgelig!",
       "TITLE": "WowUp Telemetri"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
   },
   "PAGES": {
     "ABOUT": {
@@ -295,6 +300,7 @@
       "GET_ADDONS_TAB_TITLE": "Få Utvidelser",
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "Mine Utvidelser",
+      "NEWS_TAB_TITLE": "News",
       "OPTIONS_TAB_TITLE": "Alternativer"
     },
     "MY_ADDONS": {
@@ -382,6 +388,10 @@
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Oppdater Retail/Classic"
       }
     },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} news stories",
+      "REFRESH_TOOLTIP": "Refresh news feed"
+    },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
@@ -395,6 +405,8 @@
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
         "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
+        "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktiver/Deaktiver forskjellige systemvarsler, foreksempel: automatisk oppdatering av addons.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Aktiver systemvarsler",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Når WowUp-vinduet lukkes, minimer til menylinjen.",
@@ -458,6 +470,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard kanal for utvidelser",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Kanal for Utvidelser",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "MOVE_DOWN_BUTTON": "Move Down",
+        "MOVE_UP_BUTTON": "Move Up",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Velg",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Skann Igjen",

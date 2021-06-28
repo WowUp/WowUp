@@ -1,4 +1,5 @@
 export interface Toc {
+  fileName: string;
   interface: string;
   title?: string;
   author?: string;

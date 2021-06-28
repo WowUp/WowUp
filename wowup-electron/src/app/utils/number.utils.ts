@@ -15,7 +15,11 @@ export function roundDownloadCount(value: number): number {
   }
   const exp = value.toExponential();
   const numberMatch = /(\d*\.?\d*)e\+(\d+)/.exec(exp);
+  if (numberMatch === null) {
+    throw new Error("failed to get number match");
+  }
+
   const number = Math.ceil(parseFloat(numberMatch[1]) * 10);
-  const exponent = new Array(parseInt(numberMatch[2]) - 1).fill(0);
+  const exponent = new Array(parseInt(numberMatch[2] ?? "0") - 1).fill(0);
   return parseInt(`${number}${exponent.join("")}`, 10);
 }

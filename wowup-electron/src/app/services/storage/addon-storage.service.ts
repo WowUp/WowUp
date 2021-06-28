@@ -2,7 +2,12 @@ import * as Store from "electron-store";
 
 import { Injectable } from "@angular/core";
 
-import { IPC_ADDONS_SAVE_ALL, ADDON_STORE_NAME, IPC_STORE_SET_OBJECT, IPC_STORE_GET_OBJECT } from "../../../common/constants";
+import {
+  IPC_ADDONS_SAVE_ALL,
+  ADDON_STORE_NAME,
+  IPC_STORE_SET_OBJECT,
+  IPC_STORE_GET_OBJECT,
+} from "../../../common/constants";
 import { Addon } from "../../../common/entities/addon";
 import { ElectronService } from "../electron/electron.service";
 
@@ -37,11 +42,19 @@ export class AddonStorageService {
     // addons.forEach((addon) => this.set(addon.id, addon));
   }
 
-  public setAsync(key: string, value: Addon): Promise<void> {
+  public setAsync(key: string | undefined, value: Addon): Promise<void> {
+    if (!key) {
+      return Promise.resolve(undefined);
+    }
+
     return this._electronService.invoke(IPC_STORE_SET_OBJECT, ADDON_STORE_NAME, key, value);
   }
 
-  public set(key: string, value: Addon): void {
+  public set(key: string | undefined, value: Addon): void {
+    if (!key) {
+      return;
+    }
+
     this._store.set(key, value);
   }
 
@@ -54,12 +67,18 @@ export class AddonStorageService {
   }
 
   public remove(addon: Addon): void {
-    this._store.delete(addon.id);
+    if (addon.id) {
+      this._store.delete(addon.id);
+    }
   }
 
   public removeAllForInstallation(installationId: string): void {
     const addons = this.getAllForInstallationId(installationId);
-    addons.forEach((addon) => this._store.delete(addon.id));
+    addons.forEach((addon) => {
+      if (addon.id) {
+        this._store.delete(addon.id);
+      }
+    });
   }
 
   public getByExternalId(externalId: string, providerName: string, installationId: string): Addon {
@@ -97,6 +116,19 @@ export class AddonStorageService {
     for (const result of this._store) {
       const addon = result[1] as Addon;
       if (addon.installationId === installationId && (!validator || validator(addon))) {
+        addons.push(addon);
+      }
+    }
+
+    return addons;
+  }
+
+  public getAllForProvider(providerName: string, validator?: (addon: Addon) => boolean): Addon[] {
+    const addons: Addon[] = [];
+
+    for (const result of this._store) {
+      const addon = result[1] as Addon;
+      if (addon.providerName === providerName && (!validator || validator(addon))) {
         addons.push(addon);
       }
     }

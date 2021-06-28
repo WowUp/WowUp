@@ -18,20 +18,33 @@ export type AddonProviderType =
   | "Zip"
   | "WowUpCompanion";
 
+export interface GetAllBatchResult {
+  installationResults: { [installationId: string]: AddonSearchResult[] };
+  errors: { [installationId: string]: Error[] };
+}
+
 export interface GetAllResult {
   searchResults: AddonSearchResult[];
   errors: Error[];
 }
 
 export abstract class AddonProvider {
-  public name: AddonProviderType;
-  public enabled: boolean;
-  public forceIgnore: boolean;
-  public allowReinstall: boolean;
-  public allowChannelChange: boolean;
-  public allowEdit: boolean;
+  public name: AddonProviderType = "Zip";
+  public enabled = false;
+  public forceIgnore = true;
+  public allowReinstall = false;
+  public allowChannelChange = false;
+  public allowEdit = false;
   public allowViewAtSource = true;
   public canShowChangelog = true;
+  public canBatchFetch = false;
+
+  public getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
+    return Promise.resolve({
+      errors: {},
+      installationResults: {},
+    });
+  }
 
   public getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     return Promise.resolve({
@@ -71,7 +84,7 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
-  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult> {
+  public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
     return of(undefined);
   }
 

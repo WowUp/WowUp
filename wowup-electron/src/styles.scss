@@ -73,6 +73,14 @@ img {
   padding: 0.25em !important;
 }
 
+.p-2 {
+  padding: 0.5em !important;
+}
+
+.p-3 {
+  padding: 1em !important;
+}
+
 .pl-1 {
   padding-left: 0.25em;
 }
@@ -165,6 +173,10 @@ img {
   margin-bottom: 1em !important;
 }
 
+.h-100 {
+  height: 100%;
+}
+
 .w-100 {
   width: 100%;
 }
@@ -188,16 +200,6 @@ img {
 
   &:hover {
     cursor: pointer !important;
-  }
-}
-
-.text-light {
-  color: $white-1;
-}
-
-.text-light-hover {
-  &:hover {
-    color: $white-1 !important;
   }
 }
 
@@ -252,14 +254,6 @@ mat-icon.success-icon {
   -webkit-app-region: no-drag;
 }
 
-.text-light {
-  color: $white-1;
-}
-
-.text-light-2 {
-  color: $white-2;
-}
-
 .window-appicon {
   background-size: 30px !important;
   padding-left: 12px !important;
@@ -270,15 +264,15 @@ mat-icon.success-icon {
   overflow-x: hidden;
 
   &.mac {
-    height: calc(100vh - 106px);
+    height: calc(100vh - 95px);
   }
 
   &.windows {
-    height: calc(100vh - 114px);
+    height: calc(100vh - 103px);
   }
 
   &.linux {
-    height: calc(100vh - 114px);
+    height: calc(100vh - 103px);
   }
 }
 
@@ -286,10 +280,6 @@ mat-icon.success-icon {
   .mat-form-field-wrapper {
     padding-bottom: 0 !important;
   }
-}
-
-.mat-option.mat-selected:not(.mat-option-disabled) {
-  color: $white-3 !important;
 }
 
 .d-flex {
@@ -389,8 +379,18 @@ mat-icon.success-icon {
   }
 }
 
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .ignored {
-  color: $white-4 !important;
+  color: var(--text-4) !important;
 }
 
 .addon-context-menu {
@@ -418,7 +418,7 @@ mat-icon.success-icon {
       }
 
       .thumbnail-letter {
-        color: $white-4;
+        color: var(--text-4);
         font-size: 1.5em;
         font-weight: 400;
       }
@@ -456,7 +456,7 @@ mat-icon.success-icon {
 
 .light-select {
   .mat-form-field-label {
-    color: $white-2 !important;
+    color: var(--text-2) !important;
   }
 }
 
@@ -499,11 +499,11 @@ mat-icon.success-icon {
   }
 
   .mat-progress-bar-buffer {
-    background: $white-4 !important;
+    background: var(--text-4) !important;
   }
 
   .mat-progress-bar-fill::after {
-    background: $blue-1 !important;
+    background: var(--background-primary) !important;
   }
 }
 
@@ -535,6 +535,18 @@ mat-icon.success-icon {
   }
 }
 
+.z-badge {
+  .mat-badge-content {
+    z-index: 100;
+  }
+}
+
+.clear-badge {
+  .mat-badge-content {
+    color: transparent;
+  }
+}
+
 .mat-tooltip {
   font-size: 0.95em;
 }
@@ -552,6 +564,10 @@ th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-h
   .mat-checkbox {
     display: block;
   }
+}
+
+.header-less-tabs .mat-tab-group .mat-tab-header {
+  display: none;
 }
 
 // SCROLLBAR

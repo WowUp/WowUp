@@ -1,4 +1,4 @@
-import { IpcRendererEvent, OpenExternalOptions, OpenDialogOptions, OpenDialogReturnValue } from "electron";
+import { IpcRendererEvent, OpenExternalOptions } from "electron";
 import { ElectronLog } from "electron-log";
 
 // Events that can be sent from main to renderer
@@ -17,7 +17,9 @@ declare type MainChannels =
   | "power-monitor-lock"
   | "power-monitor-unlock"
   | "request-install-from-url"
-  | "custom-protocol-received";
+  | "custom-protocol-received"
+  | "app-update-state"
+  | "window-resume";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
@@ -66,7 +68,11 @@ declare type RendererChannels =
   | "get-pending-open-urls"
   | "store-get-object"
   | "store-set-object"
-  | "get-latest-dir-update-time";
+  | "get-latest-dir-update-time"
+  | "system-preferences-get-user-default"
+  | "show-open-dialog"
+  | "app-install-update"
+  | "update-app-badge";
 
 declare global {
   interface Window {
@@ -76,6 +82,8 @@ declare global {
       autoLaunch: any;
     };
     platform: string;
+    userDataPath: string;
+    logPath: string;
     wowup: {
       onRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       onceRendererEvent: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
@@ -84,14 +92,7 @@ declare global {
       rendererOff: (event: string | symbol, listener: (...args: any[]) => void) => void;
       rendererOn: (channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void) => void;
       openExternal: (url: string, options?: OpenExternalOptions) => Promise<void>;
-      showOpenDialog: (options: OpenDialogOptions) => Promise<OpenDialogReturnValue>;
       openPath: (path: string) => Promise<string>;
-      systemPreferences: {
-        getUserDefault: (
-          key: string,
-          type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
-        ) => any;
-      };
     };
   }
 }

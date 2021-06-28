@@ -39,44 +39,54 @@
   }
 
   .channel {
-    background: $dark-4;
+    background: var(--background-secondary-4);
     text-align: center;
     font-weight: 400;
     padding: 1px 4px;
     border-radius: 4px;
 
     &.beta {
-      color: $rare-color;
+      color: var(--rare-color);
     }
 
     &.alpha {
-      color: $epic-color;
+      color: var(--epic-color);
     }
   }
 
+  .addon-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 40px;
+    overflow: hidden;
+  }
+
   .addon-title {
-    white-space: normal;
-    text-decoration: none;
+    display: -webkit-box;
     font-size: 16px;
     line-height: 16px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
     overflow: hidden;
+    text-decoration: none;
+    white-space: normal;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 
     &:hover {
       cursor: pointer;
       text-decoration: underline;
-      color: $white-2;
+      color: var(--text-2);
     }
   }
 
   .addon-version {
-    color: $white-2;
+    color: var(--text-2);
     font-size: 14px;
     line-height: 14px;
-    display: flex;
-    flex-direction: row;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .dependency-icon {

@@ -1,10 +1,10 @@
-<div class="titlebar bg-primary text-light" [ngClass]="{
+<div class="titlebar  text-1" [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
   }">
   <div class="theme-logo">
-    <img [src]="getLogoPath()" />
+    <div class="logo-img"></div>
   </div>
   <div class="titlebar-drag-region" (dblclick)="onDblClick()"></div>
   <div class="title-container">

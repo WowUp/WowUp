@@ -3,7 +3,7 @@ import { Observable, Subject } from "rxjs";
 
 import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -60,6 +60,7 @@ describe("AppComponent", () => {
       appOptions: { quit: null },
       getAppOptions: () => Promise.resolve({}),
       powerMonitor$: new Observable(),
+      appUpdate$: new Observable(),
       ipcRenderer: {
         on: () => {},
       },

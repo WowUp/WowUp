@@ -1,11 +1,5 @@
 import { Component, NgZone, OnDestroy } from "@angular/core";
 import {
-  ALLIANCE_LIGHT_THEME,
-  ALLIANCE_THEME,
-  DEFAULT_LIGHT_THEME,
-  DEFAULT_THEME,
-  HORDE_LIGHT_THEME,
-  HORDE_THEME,
   IPC_MAXIMIZE_WINDOW,
   IPC_MINIMIZE_WINDOW,
   IPC_WINDOW_ENTER_FULLSCREEN,
@@ -29,7 +23,7 @@ export class TitlebarComponent implements OnDestroy {
   public isMaximized = false;
 
   private _subscriptions: Subscription[] = [];
-  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent>;
+  private _snackBarRef: MatSnackBarRef<CenteredSnackbarComponent> | undefined;
 
   public isFullscreen = false;
 
@@ -71,31 +65,16 @@ export class TitlebarComponent implements OnDestroy {
     this._subscriptions.forEach((subscription) => subscription.unsubscribe());
   }
 
-  public getLogoPath(): string {
-    switch (this._wowUpService.currentTheme) {
-      case HORDE_THEME:
-      case HORDE_LIGHT_THEME:
-        return "assets/images/horde-1.png";
-      case ALLIANCE_THEME:
-      case ALLIANCE_LIGHT_THEME:
-        return "assets/images/alliance-1.png";
-      case DEFAULT_THEME:
-      case DEFAULT_LIGHT_THEME:
-      default:
-        return "assets/images/wowup-white-1.png";
-    }
-  }
-
   public async onClickClose(): Promise<void> {
     await this.electronService.closeWindow();
   }
 
   public async onDblClick(): Promise<void> {
     if (this.electronService.isMac) {
-      const action = this.electronService.getUserDefaultSystemPreference(
+      const action = await this.electronService.getUserDefaultSystemPreference<string>(
         "AppleActionOnDoubleClick",
         "string"
-      ) as string;
+      );
 
       if (action === "Maximize") {
         await this.electronService.invoke(IPC_MAXIMIZE_WINDOW);

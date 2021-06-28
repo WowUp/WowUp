@@ -78,6 +78,13 @@ export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 export const IPC_GET_LATEST_DIR_UPDATE_TIME = "get-latest-dir-update-time";
+export const IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT = "system-preferences-get-user-default";
+export const IPC_SHOW_OPEN_DIALOG = "show-open-dialog";
+export const IPC_APP_UPDATE_STATE = "app-update-state";
+export const IPC_APP_INSTALL_UPDATE = "app-install-update";
+export const IPC_APP_CHECK_UPDATE = "app-check-update";
+export const IPC_UPDATE_APP_BADGE = "update-app-badge";
+export const IPC_WINDOW_RESUME = "window-resume";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
@@ -112,17 +119,8 @@ export const ZOOM_FACTOR_KEY = "zoom_factor";
 export const SELECTED_DETAILS_TAB_KEY = "selected_details_tab";
 export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
 export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
-
-// APP UPDATER
-export const APP_UPDATE_ERROR = "app-update-error";
-export const APP_UPDATE_DOWNLOADED = "app-update-downloaded";
-export const APP_UPDATE_NOT_AVAILABLE = "app-update-not-available";
-export const APP_UPDATE_AVAILABLE = "app-update-available";
-export const APP_UPDATE_START_DOWNLOAD = "app-update-start-download";
-export const APP_UPDATE_INSTALL = "app-update-install";
-export const APP_UPDATE_CHECK_FOR_UPDATE = "app-update-check-for-update";
-export const APP_UPDATE_CHECK_START = "app-update-check-start";
-export const APP_UPDATE_CHECK_END = "app-update-check-end";
+export const ENABLE_APP_BADGE_KEY = "enable_app_badge";
+export const TRUSTED_DOMAINS_KEY = "trusted_domains";
 
 // THEMES
 export const DEFAULT_THEME = "default-theme";
@@ -155,3 +153,15 @@ export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_BETA_FOLDER = "_beta_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
+
+export const TAB_INDEX_MY_ADDONS = 0;
+export const TAB_INDEX_GET_ADDONS = 1;
+export const TAB_INDEX_ABOUT = 2;
+export const TAB_INDEX_NEWS = 3;
+export const TAB_INDEX_SETTINGS = 4;
+
+export const USER_ACTION_BROWSE_CATEGORY = "browse-category";
+export const USER_ACTION_OPEN_LINK = "open-link";
+export const USER_ACTION_ADDON_SEARCH = "addon-search";
+export const USER_ACTION_ADDON_PROTOCOL_SEARCH = "addon-protocol-search";
+export const USER_ACTION_ADDON_INSTALL = "addon-install-action";

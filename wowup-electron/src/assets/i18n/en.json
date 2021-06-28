@@ -61,15 +61,18 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Full Screen",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "Install WowUp update",
+      "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "Do you want to restart WowUp and install the update?",
       "INSTALL_TITLE": "WowUp Update Ready",
       "NOT_AVAILABLE": "Latest version of WowUp is already installed",
       "PORTABLE_DOWNLOAD_MESSAGE": "Do you want to manually download the latest portable version?\n\nYou will need to close the app manually and copy over the new version.",
       "PORTABLE_DOWNLOAD_TITLE": "Manual Download Required",
-      "SNACKBAR_ACTION": "Update",
+      "SNACKBAR_ACTION": "Update & Restart",
       "SNACKBAR_TEXT": "A new version of WowUp is available",
       "TOOLTIP": "WowUp update available",
+      "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "Failed to get WowUp update"
     }
   },
@@ -200,6 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
+      "IMAGES_TAB": "Images",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
@@ -260,7 +264,8 @@
       "NEGATIVE_BUTTON": "No Thanks",
       "POSITIVE_BUTTON": "Sure!",
       "TITLE": "WowUp Telemetry"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
   },
   "PAGES": {
     "ABOUT": {
@@ -295,6 +300,7 @@
       "GET_ADDONS_TAB_TITLE": "Get Addons",
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "My Addons",
+      "NEWS_TAB_TITLE": "News",
       "OPTIONS_TAB_TITLE": "Options"
     },
     "MY_ADDONS": {
@@ -382,6 +388,10 @@
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Update Retail/Classic"
       }
     },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} news stories",
+      "REFRESH_TOOLTIP": "Refresh news feed"
+    },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
@@ -395,8 +405,10 @@
         "CURRENT_LANGUAGE_LABEL": "Current Language",
         "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
         "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
+        "ENABLE_APP_BADGE_LABEL": "Enable App Badge Notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Enable various system notification popups, such as auto updated addons.",
-        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable system notifications",
+        "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Enable System Notifications",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "When closing the WowUp window, minimize to the menu bar.",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "When closing the WowUp window, minimize to the taskbar notification area.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimize on Close",
@@ -458,6 +470,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "Default Addon Channel",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon Channel",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "MOVE_DOWN_BUTTON": "Move Down",
+        "MOVE_UP_BUTTON": "Move Up",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Select",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Re-Scan",

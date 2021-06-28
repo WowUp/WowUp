@@ -61,15 +61,18 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io — Полный экран",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Проверка на наличие обновления",
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
+      "DOWNLOADING_UPDATE": "Загрузка обновления",
       "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
       "INSTALL_TITLE": "Для WowUp готово обновление",
       "NOT_AVAILABLE": "Последняя версия WowUp уже установлена",
       "PORTABLE_DOWNLOAD_MESSAGE": "Хотите вручную установить последнюю портативную версию?\n\nНужно будет закрыть приложение вручную и заменить его новой версией.",
       "PORTABLE_DOWNLOAD_TITLE": "Необходима загрузка вручную",
-      "SNACKBAR_ACTION": "Обновить",
+      "SNACKBAR_ACTION": "Обновить и перезапустить",
       "SNACKBAR_TEXT": "Доступна новая версия WowUp",
       "TOOLTIP": "Доступно обновление для WowUp",
+      "UPDATE_AVAILABLE": "Начинается загрузка",
       "UPDATE_ERROR": "Неудачная попытка получить обновление для WowUp"
     }
   },
@@ -200,6 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "Описание не найдено",
       "DESCRIPTION_TAB": "Описание",
       "FUNDING_LINK_TITLE": "Поддержать этого автора",
+      "IMAGES_TAB": "Изображения",
       "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
       "NO_CHANGELOG_TEXT": "Нет доступного списка изменений",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
@@ -260,7 +264,8 @@
       "NEGATIVE_BUTTON": "Нет, спасибо",
       "POSITIVE_BUTTON": "Конечно!",
       "TITLE": "Телеметрия WowUp"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Доверять этому домену и не спрашивать меня в будущем"
   },
   "PAGES": {
     "ABOUT": {
@@ -295,6 +300,7 @@
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
       "MIGRATING_ADDONS": "Перенос модификаций...",
       "MY_ADDONS_TAB_TITLE": "Мои модификации",
+      "NEWS_TAB_TITLE": "Новости",
       "OPTIONS_TAB_TITLE": "Настройки"
     },
     "MY_ADDONS": {
@@ -382,6 +388,10 @@
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
       }
     },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} новостей",
+      "REFRESH_TOOLTIP": "Обновить ленту новостей"
+    },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
@@ -395,6 +405,8 @@
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
         "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
         "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
+        "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
@@ -458,6 +470,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Тип выпуска модификации",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Изменить",
+        "MOVE_DOWN_BUTTON": "Переместить вниз",
+        "MOVE_UP_BUTTON": "Переместить вверх",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Удалить",
         "RESCAN_CLIENTS_BUTTON": "Повторное сканирование",

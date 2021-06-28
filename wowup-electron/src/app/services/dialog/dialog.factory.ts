@@ -1,12 +1,11 @@
 import { ComponentType } from "@angular/cdk/portal";
 import { Injectable } from "@angular/core";
 import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
 
 import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
-import { AlertDialogComponent } from "../../components/alert-dialog/alert-dialog.component";
+import { AlertDialogComponent, AlertDialogData } from "../../components/alert-dialog/alert-dialog.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 
@@ -14,7 +13,7 @@ import { AddonSearchResult } from "../../models/wowup/addon-search-result";
   providedIn: "root",
 })
 export class DialogFactory {
-  public constructor(private _dialog: MatDialog, private _translateService: TranslateService) {}
+  public constructor(private _dialog: MatDialog) {}
 
   public getConfirmDialog(title: string, message: string): MatDialogRef<ConfirmDialogComponent, any> {
     return this._dialog.open(ConfirmDialogComponent, {
@@ -25,18 +24,18 @@ export class DialogFactory {
     });
   }
 
-  public getAlertDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
+  public getAlertDialog(data: AlertDialogData): MatDialogRef<AlertDialogComponent, any> {
     return this._dialog.open(AlertDialogComponent, {
       minWidth: 250,
-      data: {
-        title,
-        message,
-      },
+      data: { ...data },
     });
   }
 
   public getErrorDialog(title: string, message: string): MatDialogRef<AlertDialogComponent, any> {
-    return this.getAlertDialog(title, message);
+    return this.getAlertDialog({
+      title,
+      message,
+    });
   }
 
   public getPotentialAddonDetailsDialog(
@@ -53,9 +52,9 @@ export class DialogFactory {
     });
   }
 
-  public getAddonDetailsDialog(listItem: AddonViewModel): MatDialogRef<AddonDetailComponent, any> {
+  public getAddonDetailsDialog(listItem: AddonViewModel): MatDialogRef<AddonDetailComponent, any> | undefined {
     // If this addon is in warning state, we wont be able to get details
-    if (listItem.addon.warningType !== undefined) {
+    if (listItem.addon?.warningType !== undefined) {
       return;
     }
 

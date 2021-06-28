@@ -32,14 +32,13 @@ import {
   IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
-import { MenuConfig, SystemTrayConfig } from "../common/wowup/models";
+import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { WowUpService } from "./services/wowup/wowup.service";
-import { IconService } from "./services/icons/icon.service";
 import { SessionService } from "./services/session/session.service";
 import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "../common/entities/addon";
@@ -51,6 +50,8 @@ import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, G
 import { SnackbarService } from "./services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { ZoomService } from "./services/zoom/zoom.service";
+import { AlertDialogComponent } from "./components/alert-dialog/alert-dialog.component";
+import { AddonInstallState } from "./models/wowup/addon-install-state";
 
 @Component({
   selector: "app-root",
@@ -62,13 +63,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private _autoUpdateInterval?: number;
 
   @HostListener("mousewheel", ["$event"])
-  public async handleMouseWheelEvent(event: any): Promise<void> {
+  public async handleMouseWheelEvent(event: WheelEvent): Promise<void> {
     if (!event.ctrlKey) {
       return;
     }
 
     try {
-      if (event.wheelDelta > 0) {
+      if ((event as any).wheelDelta > 0) {
         await this._zoomService.applyZoom(ZoomDirection.ZoomIn);
       } else {
         await this._zoomService.applyZoom(ZoomDirection.ZoomOut);
@@ -104,6 +105,34 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         switchMap(() => from(this.initializeAutoUpdate()))
       )
       .subscribe();
+
+    this.electronService.appUpdate$.subscribe((evt) => {
+      if (evt.state === AppUpdateState.Error) {
+        if (evt.error.indexOf("dev-app-update.yml") === -1) {
+          this._snackbarService.showErrorSnackbar("APP.WOWUP_UPDATE.UPDATE_ERROR");
+        }
+      } else if (evt.state === AppUpdateState.Downloaded) {
+        // Force the user to update when one is ready
+        const dialogRef = this._dialog.open(AlertDialogComponent, {
+          minWidth: 250,
+          disableClose: true,
+          data: {
+            title: this.translate.instant("APP.WOWUP_UPDATE.INSTALL_TITLE"),
+            message: this.translate.instant("APP.WOWUP_UPDATE.SNACKBAR_TEXT"),
+            positiveButton: "APP.WOWUP_UPDATE.DOWNLOADED_TOOLTIP",
+            positiveButtonColor: "primary",
+            positiveButtonStyle: "raised",
+          },
+        });
+
+        dialogRef
+          .afterClosed()
+          .pipe(first())
+          .subscribe(() => {
+            this.wowUpService.installUpdate();
+          });
+      }
+    });
   }
 
   public ngOnInit(): void {
@@ -130,6 +159,25 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
+
+    //If the window is restored update the badge number
+    this.electronService.windowResumed$
+      .pipe(
+        delay(1000), // If you dont delay this on Mac, it will sometimes not show up
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
+
+    // If an addon is installed/updated check the badge number
+    this._addonService.addonInstalled$
+      .pipe(
+        filter((evt) => evt.installState === AddonInstallState.Complete),
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
+
+    // If user removes an addon, update the badge count
+    this._addonService.addonRemoved$.pipe(switchMap(() => from(this.updateBadgeCount()))).subscribe();
 
     this.electronService.on(IPC_MENU_ZOOM_IN_CHANNEL, this.onMenuZoomIn);
     this.electronService.on(IPC_MENU_ZOOM_OUT_CHANNEL, this.onMenuZoomOut);
@@ -202,7 +250,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this._zoomService.applyZoom(ZoomDirection.ZoomReset).catch((e) => console.error(e));
   };
 
-  public onRequestInstallFromUrl = (evt: any, path?: string): void => {
+  public onRequestInstallFromUrl = (evt: unknown, path?: string): void => {
     this.openInstallFromUrlDialog(path);
   };
 
@@ -248,6 +296,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       const updatedAddons = await this._addonService.processAutoUpdates();
 
       await this._wowupAddonService.updateForAllClientTypes();
+
+      await this.updateBadgeCount();
 
       if (!updatedAddons || updatedAddons.length === 0) {
         await this.checkQuitEnabled();
@@ -464,6 +514,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log("Tray created", trayCreated);
     } catch (e) {
       console.error("Failed to create tray", e);
+    }
+  }
+
+  private async updateBadgeCount(): Promise<void> {
+    const ct = this._addonService.getAllAddonsAvailableForUpdate().length;
+    try {
+      await this.electronService.updateAppBadgeCount(ct);
+    } catch (e) {
+      console.error("Failed to update badge count", e);
     }
   }
 }

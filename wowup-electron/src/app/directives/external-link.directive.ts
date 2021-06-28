@@ -1,18 +1,18 @@
 import { Directive, HostListener } from "@angular/core";
-import { ElectronService } from "../services";
+import { LinkService } from "../services/links/link.service";
 
 @Directive({
   selector: "[appExternalLink]",
 })
 export class ExternalLinkDirective {
-  @HostListener("click", ["$event"]) public async onClick($event: any): Promise<void> {
+  @HostListener("click", ["$event"]) public onClick($event: MouseEvent): void {
     $event.preventDefault();
     $event.stopPropagation();
 
-    const target = $event.path.find((t) => t.tagName === "A");
+    const target = ($event as any).path?.find((t) => t.tagName === "A");
 
-    await this._electronService.openExternal(target.href);
+    this._linkService.confirmLinkNavigation(target.href).subscribe();
   }
 
-  public constructor(private _electronService: ElectronService) {}
+  public constructor(private _linkService: LinkService) {}
 }

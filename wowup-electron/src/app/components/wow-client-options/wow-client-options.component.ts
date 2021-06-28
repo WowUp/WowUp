@@ -1,6 +1,5 @@
-import * as _ from "lodash";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -15,6 +14,7 @@ import { WarcraftInstallationService } from "../../services/warcraft/warcraft-in
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
+import { SessionService } from "../../services/session/session.service";
 
 @Component({
   selector: "app-wow-client-options",
@@ -22,11 +22,12 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
   styleUrls: ["./wow-client-options.component.scss"],
 })
 export class WowClientOptionsComponent implements OnInit, OnDestroy {
-  @Input("installationId") public installationId: string;
+  @Input("installationId") public installationId = "";
+  @Input("index") public installationIndex!: number;
 
   private readonly _editModeSrc = new BehaviorSubject(false);
   private readonly _isBusySrc = new BehaviorSubject(false);
-  private installation: WowInstallation;
+  private installation: WowInstallation | undefined;
   private subscriptions: Subscription[] = [];
 
   public readonly addonChannelInfos: {
@@ -34,22 +35,21 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     name: string;
   }[];
 
-  public clientTypeName: string;
-  public clientFolderName: string;
-  public clientLocation: string;
-  public installationModel: WowInstallation;
-  public selectedAddonChannelType: AddonChannelType;
+  public clientTypeName = "";
+  public clientFolderName = "";
+  public clientLocation = "";
+  public installationModel!: WowInstallation;
+  public selectedAddonChannelType: AddonChannelType = AddonChannelType.Stable;
   public editMode$ = this._editModeSrc.asObservable();
   public isBusy$ = this._isBusySrc.asObservable();
+  public installationCount$ = this._warcraftInstallationService.wowInstallations$.pipe(
+    map((installations) => installations.length)
+  );
 
-  public clientAutoUpdate: boolean;
+  public clientAutoUpdate = false;
 
   public set isBusy(enabled: boolean) {
     this._isBusySrc.next(enabled);
-  }
-
-  public set editMode(enabled: boolean) {
-    this._editModeSrc.next(enabled);
   }
 
   public get installationLabel(): string {
@@ -63,10 +63,18 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   }
 
   public get executableName(): string {
+    if (!this.installation) {
+      return "";
+    }
+
     return this._warcraftService.getExecutableName(this.installation.clientType);
   }
 
   public get wowLogoImage(): string {
+    if (!this.installation) {
+      return "";
+    }
+
     switch (this.installation.clientType) {
       case WowClientType.Beta:
       case WowClientType.ClassicBeta:
@@ -87,9 +95,18 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _translateService: TranslateService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _warcraftService: WarcraftService
+    private _warcraftService: WarcraftService,
+    private _sessionService: SessionService
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
+
+    const editingSub = this._sessionService.editingWowInstallationId$
+      .pipe(filter((installationId) => this.installationId !== installationId))
+      .subscribe(() => {
+        this.onClickCancel();
+      });
+
+    this.subscriptions.push(editingSub);
   }
 
   public ngOnInit(): void {
@@ -114,25 +131,54 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   }
 
   public onDefaultAddonChannelChange(evt: MatSelectChange): void {
+    if (!this.installationModel) {
+      return;
+    }
     this.installationModel.defaultAddonChannelType = evt.value;
   }
 
   public onDefaultAutoUpdateChange(evt: MatSlideToggleChange): void {
+    if (!this.installationModel) {
+      return;
+    }
+
     this.installationModel.defaultAutoUpdate = evt.checked;
   }
 
+  public onClickMoveUp(): void {
+    this._warcraftInstallationService.reOrderInstallation(this.installationId, -1);
+  }
+
+  public onClickMoveDown(): void {
+    this._warcraftInstallationService.reOrderInstallation(this.installationId, 1);
+  }
+
+  public onClickEdit(): void {
+    this._editModeSrc.next(true);
+    this._sessionService.editingWowInstallationId$.next(this.installationId);
+  }
+
   public onClickCancel(): void {
-    this.installationModel = { ...this.installation };
-    this.editMode = false;
+    if (this.installation) {
+      this.installationModel = { ...this.installation };
+    }
+
+    this._editModeSrc.next(false);
   }
 
   public onClickSave(): void {
+    if (!this.installationModel) {
+      return;
+    }
+
     this.isBusy = true;
     try {
       // const saveAutoUpdate = this.installationModel.defaultAutoUpdate !== this.installation.defaultAutoUpdate;
 
       this.installation = { ...this.installationModel };
-      this._warcraftInstallationService.updateWowInstallation(this.installation);
+      if (this.installation) {
+        this._warcraftInstallationService.updateWowInstallation(this.installation);
+      }
 
       // if (saveAutoUpdate) {
       //   await this._addonService.setInstallationAutoUpdate(this.installation);
@@ -142,7 +188,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       console.error(e);
     } finally {
       this.isBusy = false;
-      this.editMode = false;
+      this._editModeSrc.next(false);
     }
   }
 
@@ -151,7 +197,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
       data: {
         title: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.TITLE"),
         message: this._translateService.instant("PAGES.OPTIONS.WOW.CLEAR_INSTALL_LOCATION_DIALOG.MESSAGE", {
-          location: this._translateService.instant(this.installation.location),
+          location: this._translateService.instant(this.installation?.location ?? ""),
         }),
       },
     });
@@ -164,14 +210,16 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
             return;
           }
 
-          this._warcraftInstallationService.removeWowInstallation(this.installation);
+          if (this.installation) {
+            this._warcraftInstallationService.removeWowInstallation(this.installation);
+          }
         })
       )
       .subscribe();
   }
 
-  private getAddonChannelInfos() {
-    return getEnumList(AddonChannelType).map((type: AddonChannelType) => {
+  private getAddonChannelInfos(): { type: AddonChannelType; name: string }[] {
+    return getEnumList(AddonChannelType).map((type: any) => {
       const channelName = getEnumName(AddonChannelType, type).toUpperCase();
       return {
         type: type,

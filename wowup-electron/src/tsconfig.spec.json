@@ -1,11 +1,24 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "module": "commonjs",
-    "types": ["jasmine", "node"]
+    "types": [
+      "jasmine",
+      "node"
+    ]
   },
-  "files": ["test.ts", "polyfills-test.ts", "./typings.d.ts"],
-  "include": ["**/*.spec.ts", "**/*.d.ts", "./common/wowup.d.ts", "app/components/patch-notes-dialog/patch-notes-dialog.component.speczz.ts"],
-  "exclude": ["dist", "release", "node_modules"]
+  "files": [
+    "test.ts",
+    "polyfills-test.ts"
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "release",
+    "node_modules"
+  ]
 }

@@ -7,7 +7,7 @@ import { AddonFundingLink } from "../../../common/entities/addon";
   styleUrls: ["./funding-button.component.scss"],
 })
 export class FundingButtonComponent implements OnInit {
-  @Input("funding") public funding: AddonFundingLink;
+  @Input("funding") public funding!: AddonFundingLink;
   @Input("size") public size: "large" | "small" = "large";
 
   public isFontIcon = false;

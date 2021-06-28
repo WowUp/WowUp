@@ -73,11 +73,14 @@ export class WowUpAddonService {
     _addonService.addonInstalled$
       .pipe(filter((update) => update.installState === AddonInstallState.Complete))
       .subscribe((update) => {
-        const installation = this._warcraftInstallationService.getWowInstallation(update.addon.installationId);
+        const installation = this._warcraftInstallationService.getWowInstallation(update.addon.installationId ?? "");
+        if (!installation) {
+          return;
+        }
         this.updateForInstallation(installation).catch((e) => console.error(e));
       });
 
-    _addonService.addonRemoved$.subscribe((addon) => {
+    _addonService.addonRemoved$.subscribe(() => {
       this.updateForAllClientTypes().catch((e) => console.error(e));
     });
   }
@@ -119,18 +122,15 @@ export class WowUpAddonService {
     await provider.scan(installation, AddonChannelType.Stable, [addonFolder]);
 
     if (companionAddon) {
-      delete addonFolder.matchingAddon.id;
-      const updatedCompanion: Addon = { ...companionAddon, ...addonFolder.matchingAddon };
+      const updatedCompanion: Addon = { ...companionAddon };
       this._addonService.saveAddon(updatedCompanion);
-    } else {
-      this._addonService.saveAddon(addonFolder.matchingAddon);
     }
   }
 
   private async persistUpdateInformationToWowUpAddon(installation: WowInstallation, addons: Addon[]) {
     const wowUpAddon = this.findAddonByFolderName(addons, WOWUP_ADDON_FOLDER_NAME);
     if (!wowUpAddon) {
-      console.debug("WowUp Addon not found");
+      console.debug(`WowUp Addon not found: ${installation.label}`);
       return;
     }
 
@@ -141,9 +141,9 @@ export class WowUpAddonService {
       const wowUpAddonData: WowUpAddonData = {
         updatesAvailable: availableUpdates,
         generatedAt: new Date().toString(),
-        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion),
-        wowUpAddonName: wowUpAddon.installedFolders,
-        wowUpAddonVersion: wowUpAddon.installedVersion,
+        interfaceVersion: toInterfaceVersion(wowUpAddon.gameVersion ?? ""),
+        wowUpAddonName: wowUpAddon.installedFolders ?? "",
+        wowUpAddonVersion: wowUpAddon.installedVersion ?? "",
       };
 
       const dataAddonPath = path.join(
@@ -179,8 +179,8 @@ export class WowUpAddonService {
   private getAddonVersion = (addon: Addon): WowUpAddonVersion => {
     return {
       name: addon.name,
-      currentVersion: addon.installedVersion,
-      newVersion: addon.latestVersion,
+      currentVersion: addon.installedVersion ?? "",
+      newVersion: addon.latestVersion ?? "",
     };
   };
 

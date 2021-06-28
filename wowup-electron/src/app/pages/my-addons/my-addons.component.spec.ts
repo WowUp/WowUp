@@ -28,17 +28,11 @@ import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
   let fixture: ComponentFixture<MyAddonsComponent>;
-  let electronService: ElectronService;
   let electronServiceSpy: any;
-  let wowUpService: WowUpService;
   let wowUpServiceSpy: any;
-  let wowUpAddonService: WowUpAddonService;
   let wowUpAddonServiceSpy: any;
-  let sessionService: SessionService;
   let sessionServiceSpy: any;
-  let addonService: AddonService;
   let addonServiceSpy: any;
-  let warcraftService: WarcraftService;
   let warcraftServiceSpy: any;
   let warcraftInstallationService: WarcraftInstallationService;
 
@@ -127,12 +121,6 @@ describe("MyAddonsComponent", () => {
 
     fixture = TestBed.createComponent(MyAddonsComponent);
     component = fixture.componentInstance;
-    addonService = fixture.debugElement.injector.get(AddonService);
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
-    wowUpAddonService = fixture.debugElement.injector.get(WowUpAddonService);
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    sessionService = fixture.debugElement.injector.get(SessionService);
-    warcraftService = fixture.debugElement.injector.get(WarcraftService);
 
     fixture.detectChanges();
   });

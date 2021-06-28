@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import * as ChangeLogJson from "../../../assets/changelog.json";
+import ChangeLogJson from "../../../assets/changelog.json";
 import { ChangeLog } from "../../models/wowup/change-log";
 
 @Injectable({
@@ -15,6 +15,50 @@ export class PatchNotesService {
 }
 
 const CHANGELOGS: ChangeLog[] = [
+  {
+    Version: "2.4.0",
+    html: `<div>
+      <h4 style="margin-top: 1em;">New Features</h4>
+      <ul>
+        <li>
+        <div>Added a news section powered by</div>
+        <a appExternalLink href="https://www.warcrafttavern.com">
+        <img style="width: 200px;" loading="lazy" src="https://www.warcrafttavern.com/wp-content/uploads/2020/10/Warcraft-Tavern-Logo-768x246.png">
+        </a>
+        </li>
+        <li>New Images tab in the addon details dialog</li>
+        <li>You can now change the order of your WoW installations</li>
+        <li>Added an optional app badge notification with the count of available updates for Mac and Linux users</li>
+        <li>Get Addons tab will now include a list of recently updated addons from WowUpHub</li>
+        <li>When opening an external link you can now trust the domain to avoid being prompted again</li>
+      </ul>
+      <h4 style="margin-top: 1em;">Changes</h4>
+      <ul>
+        <li>Russian locale updates (Medok)</li>
+        <li>German locale updates (Glow)</li>
+        <li>Spanish locale updates (SkollVargr)</li>
+        <li>Chinese locale updates (CyanoHao)</li>
+        <li>Italian locale updates (Bito)</li>
+        <li>Revamped UI</li>
+        <li>WowUp updates will now download automatically</li>
+        <li>Optimize update checks for WowUpHub and CurseForge providers, now faster</li>
+        <li>When starting with 0 installs found, user should go to installations page</li>
+        <li>Update Angular and Electron to latest</li>
+      </ul>
+      <h4 style="margin-top: 1em;">Fixes</h4>
+      <ul>
+        <li>Fixed an issue with table header font in addon details</li>
+        <li>Fixed an issue with odd table de-select behavior</li>
+        <li>Fixed an issue with the client selector overlapping the top toolbar</li>
+        <li>Fixed an issue with re-scanning not showing the correct game version</li>
+        <li>Fixed an issue with Update All button sometimes getting stuck enabled</li>
+        <li>Fixed an issue with CurseForge categories throwing an error</li>
+        <li>Fixed an issue with addons showing up with a blank version from WowUpHub in Get Addons</li>
+        <li>Fixed several issues with light themes</li>
+        <li>Reworked the app update flow</li>
+      </ul>
+      </div>`,
+  },
   {
     Version: "2.3.4",
     html: `<div>
@@ -114,14 +158,14 @@ const CHANGELOGS: ChangeLog[] = [
       <ul>
         <li>
         <div style="margin-bottom: 0.25em;">WowUp companion data addon name updated (Linaori)</div>
-        <img style="max-width: 90%; margin-bottom: 1em" class="mat-elevation-z8" src="https://user-images.githubusercontent.com/1754678/117027014-923adf80-acfc-11eb-8127-c3c8c4564df5.png">
+        <img style="max-width: 90%; margin-bottom: 1em" class="mat-elevation-z8" loading="lazy" src="https://user-images.githubusercontent.com/1754678/117027014-923adf80-acfc-11eb-8127-c3c8c4564df5.png">
         </li>
         <li>Classic PTR client is now treated like a Burning Crusade client</li>
         <li>Addons in Warning state will now be at the top when sorting by status on My Addons tab</li>
         <li>Author names lists will now wrap on My Addons tab</li>
         <li>
         <div style="margin-bottom: 0.25em;">Added the installation name to the sync error toast</div>
-        <img style="max-width: 50%; margin-bottom: 1em" class="mat-elevation-z8" src="https://user-images.githubusercontent.com/20467484/117684549-b8d49c80-b17a-11eb-8792-d38aa1267f51.png">
+        <img style="max-width: 50%; margin-bottom: 1em" class="mat-elevation-z8" loading="lazy" src="https://user-images.githubusercontent.com/20467484/117684549-b8d49c80-b17a-11eb-8792-d38aa1267f51.png">
         </li>
         <li>Tweaked the automatic column widths for My Addons tab</li>
         <li>When adding/removing an addon the count text should update again</li>
@@ -146,26 +190,26 @@ const CHANGELOGS: ChangeLog[] = [
       <ul>
         <li>
         <div style="margin-bottom: 0.25em;">Add category browsing support for CurseForge and TukUI (Strayge)</div>
-        <img style="height: 200px; margin-bottom: 1em" class="mat-elevation-z8" src="http://cdn.wowup.io/client/2.2.0/categories-1.png">
+        <img style="height: 200px; margin-bottom: 1em" class="mat-elevation-z8" loading="lazy" src="http://cdn.wowup.io/client/2.2.0/categories-1.png">
         </li>
         <li>Add new logging for addon updating (Linaori)</li>
         <li>
         <div style="margin-bottom: 0.25em;">Add support for CurseForge install links via app settings (Noxis)</div>
-        <img style="height: 200px; margin-bottom: 1em" class="mat-elevation-z8" src="http://cdn.wowup.io/client/2.2.0/curse-install-1.png">
+        <img style="height: 200px; margin-bottom: 1em" class="mat-elevation-z8" loading="lazy" src="http://cdn.wowup.io/client/2.2.0/curse-install-1.png">
         </li>
         <li>Add a button to remove an addon via the addon details dialog</li>
         <li>
         <div style="margin-bottom: 0.25em;">Add new detection for addons that have been removed by their provider</div>
-        <img style="width: 400px; max-width: 100%; margin-bottom: 1em" class="mat-elevation-z8" src="http://cdn.wowup.io/client/2.2.0/addon-warning-1.png">
+        <img style="width: 400px; max-width: 100%; margin-bottom: 1em" class="mat-elevation-z8" loading="lazy" src="http://cdn.wowup.io/client/2.2.0/addon-warning-1.png">
         </li>
         <li>
         <div style="margin-bottom: 0.25em;">All new handling of World of Warcraft client installations</div>
-        <img style="height: 200px; max-width: 100%; margin-bottom: 1em" class="mat-elevation-z8" src="http://cdn.wowup.io/client/2.2.0/wow-installations-1.png">
+        <img style="height: 200px; max-width: 100%; margin-bottom: 1em" class="mat-elevation-z8" loading="lazy" src="http://cdn.wowup.io/client/2.2.0/wow-installations-1.png">
         </li>
         <li>Add an advanced feature for symlinks in your addon folder via app settings</li>
         <li>
         <div style="margin-bottom: 0.25em;">Add initial support for Burning Crusade beta client</div>
-        <img style="height: 200px; max-width: 100%; margin-bottom: 1em" class="mat-elevation-z8" src="http://cdn.wowup.io/client/2.2.0/wow-tbc-logo.jpg">
+        <img style="height: 200px; max-width: 100%; margin-bottom: 1em" class="mat-elevation-z8" loading="lazy" src="http://cdn.wowup.io/client/2.2.0/wow-tbc-logo.jpg">
         </li>
       </ul>
       <h4 style="margin-top: 1em;">Bug Fixes/Tweaks</h4>

@@ -18,8 +18,12 @@
   overflow: hidden;
   pointer-events: none;
 
-  img {
+  .logo-img {
     height: 100vh;
+    background-image: var(--theme-logo);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: contain;
   }
 }
 
@@ -108,4 +112,3 @@
     }
   }
 }
-

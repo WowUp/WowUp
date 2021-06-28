@@ -1,55 +1,50 @@
 @import "../../../variables.scss";
 
 footer {
-  height: 25px;
+  height: 22px;
   padding: 0.25em 0.5em;
   display: flex;
   align-items: center;
 
+  .btn {
+    height: 100%;
+    overflow: hidden;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5em;
+
+    &:hover {
+      cursor: pointer;
+      background-color: var(--footer-hover);
+      border-radius: 4px;
+    }
+
+    img {
+      height: 100%;
+    }
+
+    mat-icon {
+      height: 100%;
+      padding: 4px 0;
+    }
+  }
   p {
-    font-size: 0.8em;
+    font-size: 0.85em;
     margin: 0;
   }
 
   a,
   img {
-    height: 25px;
     -webkit-app-region: no-drag;
-    cursor: pointer;
-  }
-
-  .link {
-    .mat-icon {
-      height: 20px;
-      width: 20px;
-    }
-  }
-
-  .patreon-link {
-    padding: 0 0.25em;
-    .patron-img {
-      height: 25px;
-    }
-  }
-
-  .discord-link {
-    height: 20px;
-    padding: 2.5px 0.25em;
-  }
-
-  .github-link {
-    height: 20px;
-    padding: 2.5px 0.25em;
-  }
-
-  .guide-link {
-    height: 20px;
-    padding: 2.5px 0.25em;
   }
 
   .footer-button {
-    height: 25px;
+    height: 22px;
     padding: 0 0.5em;
+    margin: 0;
     overflow: hidden;
     border-radius: 4px;
     border: none;
@@ -57,12 +52,12 @@ footer {
 
     &.update-button {
       background-color: rgb(0, 128, 0);
-      // border: 1px solid rgb(0, 128, 0);
-      // color: rgb(0, 128, 0);
 
-      h4 {
-        margin: 0;
-        padding: 0;
+      .mat-icon {
+        height: 12px;
+        width: 12px;
+        font-size: 12px;
+        vertical-align: -2px;
       }
 
       &:hover {
@@ -71,7 +66,7 @@ footer {
       }
 
       &:disabled {
-        background-color: $dark-2;
+        background-color: var(--background-secondary-2);
       }
     }
 
@@ -84,12 +79,6 @@ footer {
     &.check-update-button {
       &:hover {
         cursor: pointer;
-      }
-
-      &.animate {
-        .mat-icon {
-          animation: rotate 1.5s infinite linear reverse;
-        }
       }
     }
 

@@ -61,15 +61,18 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 전체 화면",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Checking for update",
       "DOWNLOADED_TOOLTIP": "WowUp 업데이트 설치",
+      "DOWNLOADING_UPDATE": "Downloading update",
       "INSTALL_MESSAGE": "업데이트를 설치하기 위해 프로그램을 재시작할까요?",
       "INSTALL_TITLE": "WowUp 업데이트 준비됨",
       "NOT_AVAILABLE": "최신 버전입니다",
       "PORTABLE_DOWNLOAD_MESSAGE": "최신 포터블 버전을 수동 다운로드하시겠습니까?\n\n앱을 수동으로 닫고 새 버전 파일로 엎어써야 합니다.",
       "PORTABLE_DOWNLOAD_TITLE": "수동 다운로드 필요",
-      "SNACKBAR_ACTION": "업데이트",
+      "SNACKBAR_ACTION": "업데이트 & Restart",
       "SNACKBAR_TEXT": "새 버전 설치 가능",
       "TOOLTIP": "프로그램 업데이트가 있습니다.",
+      "UPDATE_AVAILABLE": "Starting download",
       "UPDATE_ERROR": "업데이트 실패"
     }
   },
@@ -200,6 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "설명",
       "FUNDING_LINK_TITLE": "제작자 지원하기",
+      "IMAGES_TAB": "Images",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "NO_CHANGELOG_TEXT": "불러올 변경 내역이 없습니다.",
       "VIEW_IN_BROWSER_BUTTON": "브라우저에서 열기",
@@ -260,7 +264,8 @@
       "NEGATIVE_BUTTON": "괜찮습니다.",
       "POSITIVE_BUTTON": "물론!",
       "TITLE": "원격 분석용 데이터 전송"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Trust this domain and do not ask me in the future"
   },
   "PAGES": {
     "ABOUT": {
@@ -295,6 +300,7 @@
       "GET_ADDONS_TAB_TITLE": "애드온 찾기",
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "내 애드온",
+      "NEWS_TAB_TITLE": "News",
       "OPTIONS_TAB_TITLE": "설정"
     },
     "MY_ADDONS": {
@@ -382,6 +388,10 @@
         "UPDATE_RETAIL_CLASSIC_BUTTON": "리테일/클래식 업데이트"
       }
     },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} news stories",
+      "REFRESH_TOOLTIP": "Refresh news feed"
+    },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
@@ -395,6 +405,8 @@
         "CURRENT_LANGUAGE_LABEL": "현재 언어",
         "CURSE_PROTOCOL_DESCRIPTION": "When downloading addons from the CurseForge website, WowUp will handle the install",
         "CURSE_PROTOCOL_LABEL": "Handle CurseForge download links",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
+        "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "애드온 자동업데이트 등과 같은 다양한 시스템 알림 팝업 활성화 여부",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "시스템 알림 활성화",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "창을 닫으면 메뉴바로 최소화",
@@ -458,6 +470,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "기본 애드온 채널",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "애드온 채널",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
+        "MOVE_DOWN_BUTTON": "Move Down",
+        "MOVE_UP_BUTTON": "Move Up",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "선택",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "재탐색",

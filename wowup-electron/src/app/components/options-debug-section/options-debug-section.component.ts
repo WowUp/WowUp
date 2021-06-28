@@ -1,6 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from "@angular/core";
-import { from, of } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { AddonService } from "../../services/addons/addon.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 

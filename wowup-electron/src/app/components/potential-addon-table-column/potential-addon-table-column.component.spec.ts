@@ -1,4 +1,4 @@
-import { inject, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { PotentialAddonTableColumnComponent } from "./potential-addon-table-column.component";

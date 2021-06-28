@@ -1,4 +1,5 @@
 import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { ModuleWithProviders } from "@angular/core";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
@@ -11,7 +12,7 @@ export function getStandardTestImports(): any[] {
   return [HttpClientModule, createTranslateModule()];
 }
 
-export function createTranslateModule() {
+export function createTranslateModule(): ModuleWithProviders<TranslateModule> {
   return TranslateModule.forRoot({
     loader: {
       provide: TranslateLoader,

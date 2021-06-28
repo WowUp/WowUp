@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "./variables.scss";
 @import "~@angular/material/theming";
 
@@ -9,7 +10,7 @@
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
-@include mat-core();
+@include mat.core();
 
 $md-wowup-pallette: (
   50: #e8eaf6,
@@ -47,15 +48,15 @@ $md-wowup-pallette: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$wowup-default-primary: mat-palette($md-wowup-pallette, 100, 50, 300);
-$wowup-default-accent: mat-palette($md-wowup-pallette, A200, A100, A400);
+$wowup-default-primary: mat.define-palette($md-wowup-pallette, 100, 50, 300);
+$wowup-default-accent: mat.define-palette($md-wowup-pallette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$wowup-default-warn: mat-palette($mat-red);
+$wowup-default-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as `color` or `typography`.
-$wowup-default-theme: mat-dark-theme(
+$wowup-default-theme: mat.define-dark-theme(
   (
     color: (
       primary: $wowup-default-primary,
@@ -65,7 +66,7 @@ $wowup-default-theme: mat-dark-theme(
   )
 );
 
-$wowup-light-theme: mat-light-theme(
+$wowup-light-theme: mat.define-light-theme(
   (
     color: (
       primary: $wowup-default-primary,
@@ -74,137 +75,14 @@ $wowup-light-theme: mat-light-theme(
     ),
   )
 );
-
-.border-primary {
-  border-color: $purple-1;
-}
-
-.bg-primary {
-  background-color: $purple-1;
-}
-
-.bg-primary-2 {
-  background-color: $purple-2;
-}
-
-.bg-primary-3 {
-  background-color: $purple-3;
-}
-
-.text-primary-1 {
-  color: $purple-1 !important;
-}
-
-.text-primary-2 {
-  color: $purple-2 !important;
-}
-
-.text-primary-3 {
-  color: $purple-3 !important;
-}
-
-.text-control {
-  color: $wowup-control !important;
-}
-
-.bg-secondary {
-  background-color: $dark-1;
-}
-
-.bg-secondary-2 {
-  background-color: $dark-2;
-}
-
-.bg-secondary-3 {
-  background-color: $dark-3;
-}
-
-.bg-secondary-4 {
-  background-color: $dark-4;
-}
-
-.hover-bg-secondary:hover {
-  background-color: $dark-1;
-}
-
-.hover-bg-secondary-2:hover {
-  background-color: $dark-2;
-}
-
-.hover-bg-secondary-3:hover {
-  background-color: $dark-3;
-}
-
-.hover-bg-secondary-4:hover {
-  background-color: $dark-4;
-}
-
-.hover-bg-secondary-5:hover {
-  background-color: $dark-5;
-}
-
-.hover-primary-2:hover {
-  background-color: $purple-2;
-}
-
-.hover-primary-3:hover {
-  background-color: $purple-3;
-}
-
-::-webkit-scrollbar {
-  // width: 16px;
-  // height: 16px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #2e3338;
-  margin: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-color: $purple-3;
-  background: $purple-1;
-  background: linear-gradient(146deg, $purple-1 0%, $purple-2 100%);
-  min-height: 40px;
-}
-
-::-webkit-scrollbar-track,
-::-webkit-scrollbar-thumb {
-  border: 4px solid transparent;
-  // background-clip: padding-box;
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-.addon-summary,
-.addon-changelog {
-  a {
-    color: $wowup-control;
-
-    &:visited {
-      color: $wowup-control;
-    }
-  }
-}
-
-.mat-input-element {
-  caret-color: $white-3 !important;
-  color: $white-1 !important;
-}
-.mat-form-field.mat-focused .mat-form-field-label {
-  color: $white-2 !important;
-}
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include angular-material-theme($wowup-default-theme);
+@include mat.all-component-themes($wowup-default-theme);
 
 .default-theme-light-theme {
-  @include angular-material-color($wowup-light-theme);
+  @include mat.all-component-colors($wowup-light-theme);
 }
 
 // Horde theme
@@ -240,10 +118,10 @@ $horde-pallette: (
     A700: #ffffff,
   ),
 );
-$horde-primary: mat-palette($horde-pallette, 100, 50, 300);
-$horde-accent: mat-palette($horde-pallette, A200, A100, A400);
-$horde-warn: mat-palette($mat-deep-orange);
-$horde-theme: mat-dark-theme(
+$horde-primary: mat.define-palette($horde-pallette, 100, 50, 300);
+$horde-accent: mat.define-palette($horde-pallette, A200, A100, A400);
+$horde-warn: mat.define-palette(mat.$deep-orange-palette);
+$horde-theme: mat.define-dark-theme(
   (
     color: (
       primary: $horde-primary,
@@ -253,7 +131,7 @@ $horde-theme: mat-dark-theme(
   )
 );
 
-$horde-theme-light: mat-light-theme(
+$horde-theme-light: mat.define-light-theme(
   (
     color: (
       primary: $horde-primary,
@@ -264,84 +142,11 @@ $horde-theme-light: mat-light-theme(
 );
 
 .horde-theme-light-theme {
-  @include angular-material-color($horde-theme-light);
+  @include mat.all-component-colors($horde-theme-light);
 }
 
 .horde-theme {
-  @include angular-material-color($horde-theme);
-}
-
-[class*="horde-theme"] {
-  .border-primary {
-    border-color: $horde-red-1 !important;
-  }
-
-  .bg-primary {
-    background-color: $horde-red-1 !important;
-  }
-
-  .bg-primary-2 {
-    background-color: $horde-red-2 !important;
-  }
-
-  .text-primary-1 {
-    color: $horde-red-1 !important;
-  }
-
-  .text-primary-2 {
-    color: $horde-red-2 !important;
-  }
-
-  .text-primary-3 {
-    color: $horde-red-3 !important;
-  }
-
-  .text-control {
-    color: $horde-control !important;
-  }
-
-  .hover-primary-2:hover {
-    background-color: $horde-red-2 !important;
-  }
-
-  .hover-primary-3:hover {
-    background-color: $purple-3 !important;
-  }
-
-  .mat-form-field-ripple {
-    background-color: $horde-red-2 !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: $dark-2;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-color: $horde-red-3;
-    background: $horde-red-1;
-    background: linear-gradient(146deg, $horde-red-1 0%, $horde-red-2 100%);
-  }
-
-  ::-webkit-scrollbar-corner {
-    background: $dark-3;
-  }
-
-  .addon-summary,
-  .addon-changelog {
-    a {
-      color: $horde-control;
-
-      &:visited {
-        color: $horde-control;
-      }
-    }
-  }
-
-  .mat-button {
-    &.mat-primary {
-      color: $horde-control !important;
-    }
-  }
+  @include mat.all-component-colors($horde-theme);
 }
 
 // Alliance theme
@@ -377,10 +182,10 @@ $alliance-pallette: (
     A700: #ffffff,
   ),
 );
-$alliance-primary: mat-palette($alliance-pallette, 100, 50, 300);
-$alliance-accent: mat-palette($alliance-pallette, A200, A100, A400);
-$alliance-warn: mat-palette($mat-deep-orange);
-$alliance-theme: mat-dark-theme(
+$alliance-primary: mat.define-palette($alliance-pallette, 100, 50, 300);
+$alliance-accent: mat.define-palette($alliance-pallette, A200, A100, A400);
+$alliance-warn: mat.define-palette(mat.$deep-orange-palette);
+$alliance-theme: mat.define-dark-theme(
   (
     color: (
       primary: $alliance-primary,
@@ -390,7 +195,7 @@ $alliance-theme: mat-dark-theme(
   )
 );
 
-$alliance-theme-light: mat-light-theme(
+$alliance-theme-light: mat.define-light-theme(
   (
     color: (
       primary: $alliance-primary,
@@ -401,293 +206,423 @@ $alliance-theme-light: mat-light-theme(
 );
 
 .alliance-theme-light-theme {
-  @include angular-material-color($alliance-theme-light);
+  @include mat.all-component-colors($alliance-theme-light);
 }
 
 .alliance-theme {
-  @include angular-material-color($alliance-theme);
+  @include mat.all-component-colors($alliance-theme);
 }
 
-[class*="alliance-theme"] {
-  .border-primary {
-    border-color: $alliance-blue-1 !important;
-  }
+// VARS
+.default-theme {
+  --background-primary: #6b69d6;
+  --background-primary-2: #504fa1;
+  --background-primary-3: #383773;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --control-color: #536dfe;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #333333;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+  --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+  --footer-hover: #444444;
 
-  .bg-primary {
-    background-color: $alliance-blue-1 !important;
-  }
-
-  .bg-primary-2 {
-    background-color: $alliance-blue-2 !important;
-  }
-
-  .text-primary-1 {
-    color: $alliance-blue-1 !important;
-  }
-
-  .text-primary-2 {
-    color: $alliance-blue-2 !important;
-  }
-
-  .text-primary-3 {
-    color: $alliance-blue-3 !important;
-  }
-
-  .text-control {
-    color: $alliance-control !important;
-  }
-
-  .hover-primary-2:hover {
-    background-color: $alliance-blue-2 !important;
-  }
-
-  .hover-primary-3:hover {
-    background-color: $alliance-blue-3 !important;
-  }
-
-  .mat-form-field-ripple {
-    background-color: $alliance-blue-2 !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: $dark-2;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    border-color: $alliance-blue-3;
-    background: $alliance-blue-1;
-    background: linear-gradient(146deg, $alliance-blue-1 0%, $alliance-blue-2 100%);
-  }
-
-  ::-webkit-scrollbar-corner {
-    background: $dark-3;
-  }
-
-  .addon-summary,
-  .addon-changelog {
-    a {
-      color: $alliance-control;
-
-      &:visited {
-        color: $alliance-control;
-      }
-    }
-  }
-
-  .mat-button {
-    &.mat-primary {
-      color: $alliance-control !important;
-    }
-  }
+  --title-logo: url("assets/images/wowup-white-1.png");
+  --theme-logo: url("assets/images/wowup-white-1.png");
 }
 
-// DARK THEME
-.default-theme,
-.alliance-theme,
+.default-theme-light-theme {
+  --background-primary: #6b69d6;
+  --background-primary-2: #504fa1;
+  --background-primary-3: #383773;
+  --background-secondary-1: #ffffff;
+  --background-secondary-2: #f2f3f5;
+  --background-secondary-3: #ebedef;
+  --background-secondary-4: #e3e5e8;
+  --background-secondary-5: #caccce;
+  --control-color: #536dfe;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #e3e5e8;
+  --text-1: #000000;
+  --text-2: #666666;
+  --text-3: #888888;
+  --text-4: #aaaaaa;
+  --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
+
+  --title-logo: url("assets/images/wowup-white-1.png");
+  --theme-logo: url("assets/images/wowup-dark-1.png");
+}
+
 .horde-theme {
-  .bg-secondary {
-    background-color: $dark-1 !important;
+  --background-primary: #8c1616;
+  --background-primary-2: #9d3939;
+  --background-primary-3: #5c0606;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --control-color: #ff5b5b;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #333333;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+  --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+  --footer-hover: #444444;
+
+  --title-logo: url("assets/images/horde-1.png");
+  --theme-logo: url("assets/images/horde-1.png");
+}
+
+.horde-theme-light-theme {
+  --background-primary: #8c1616;
+  --background-primary-2: #9d3939;
+  --background-primary-3: #5c0606;
+  --background-secondary-1: #ffffff;
+  --background-secondary-2: #f2f3f5;
+  --background-secondary-3: #ebedef;
+  --background-secondary-4: #e3e5e8;
+  --background-secondary-5: #caccce;
+  --control-color: #ff5b5b;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #e3e5e8;
+  --text-1: #000000;
+  --text-2: #666666;
+  --text-3: #888888;
+  --text-4: #aaaaaa;
+  --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
+
+  --title-logo: url("assets/images/horde-1.png");
+  --theme-logo: url("assets/images/horde-dark-1.png");
+}
+
+.alliance-theme {
+  --background-primary: #162c57;
+  --background-primary-2: #394c70;
+  --background-primary-3: #06102c;
+  --background-secondary-1: #666666;
+  --background-secondary-2: #555555;
+  --background-secondary-3: #444444;
+  --background-secondary-4: #333333;
+  --background-secondary-5: #222222;
+  --control-color: #335eff;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #333333;
+  --text-1: #ffffff;
+  --text-2: #dcddde;
+  --text-3: #cccccc;
+  --text-4: #bbbbbb;
+  --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #666666;
+  --grid-border: rgba(255, 255, 255, 0.12);
+
+  --title-logo: url("assets/images/alliance-1.png");
+  --theme-logo: url("assets/images/alliance-1.png");
+}
+
+.alliance-theme-light-theme {
+  --background-primary: #162c57;
+  --background-primary-2: #394c70;
+  --background-primary-3: #06102c;
+  --background-secondary-1: #ffffff;
+  --background-secondary-2: #f2f3f5;
+  --background-secondary-3: #ebedef;
+  --background-secondary-4: #e3e5e8;
+  --background-secondary-5: #caccce;
+  --control-color: #335eff;
+  --epic-color: #a335ee;
+  --rare-color: #0070dd;
+  --scrollbar-track-color: #e3e5e8;
+  --text-1: #000000;
+  --text-2: #666666;
+  --text-3: #888888;
+  --text-4: #aaaaaa;
+  --warn-color: #f44336;
+  --tab-text: #ffffff;
+  --tab-disabled: #ffffff;
+  --tab-inactive: #bbbbbb;
+  --divider-color: #aaaaaa;
+  --grid-border: #cccccc;
+  --footer-hover: #cccccc;
+
+  --title-logo: url("assets/images/alliance-1.png");
+  --theme-logo: url("assets/images/alliance-dark-1.png");
+}
+
+.bg-primary {
+  background-color: var(--background-primary);
+}
+
+.bg-primary-2 {
+  background-color: var(--background-primary-2);
+}
+
+.bg-primary-3 {
+  background-color: var(--background-primary-3);
+}
+
+.bg-secondary {
+  background-color: var(--background-secondary-1);
+}
+
+.bg-secondary-2 {
+  background-color: var(--background-secondary-2);
+}
+
+.bg-secondary-3 {
+  background-color: var(--background-secondary-3);
+}
+
+.bg-secondary-4 {
+  background-color: var(--background-secondary-4);
+}
+
+.bg-secondary-5 {
+  background-color: var(--background-secondary-5);
+}
+
+.hover-primary-2:hover {
+  background-color: var(--background-primary-2);
+}
+
+.hover-bg-secondary:hover {
+  background-color: var(--background-secondary-1);
+}
+
+.hover-bg-secondary-2:hover {
+  background-color: var(--background-secondary-2);
+}
+
+.hover-bg-secondary-3:hover {
+  background-color: var(--background-secondary-3);
+}
+
+.hover-bg-secondary-4:hover {
+  background-color: var(--background-secondary-4);
+}
+
+.hover-bg-secondary-5:hover {
+  background-color: var(--background-secondary-5);
+}
+
+.border-primary {
+  border-color: var(--background-primary);
+}
+
+.text-1 {
+  color: var(--text-1);
+}
+
+.text-1-hover {
+  &:hover {
+    color: var(--text-1) !important;
   }
+}
 
-  .bg-secondary-2 {
-    background-color: $dark-2 !important;
-  }
+.text-2 {
+  color: var(--text-2);
+}
 
-  .bg-secondary-3 {
-    background-color: $dark-3 !important;
-  }
+.text-3 {
+  color: var(--text-3);
+}
 
-  .bg-secondary-4 {
-    background-color: $dark-4 !important;
-  }
+.text-primary-1 {
+  color: var(--background-primary) !important;
+}
 
-  .bg-secondary-5 {
-    background-color: $dark-5 !important;
-  }
+.text-primary-2 {
+  color: var(--background-primary-2) !important;
+}
 
-  .hover-bg-secondary:hover {
-    background-color: $dark-1 !important;
-  }
+.text-primary-3 {
+  color: var(--background-primary-3) !important;
+}
 
-  .hover-bg-secondary-2:hover {
-    background-color: $dark-2 !important;
-  }
+.text-control {
+  color: var(--control-color) !important;
+}
 
-  .hover-bg-secondary-3:hover {
-    background-color: $dark-3 !important;
-  }
+.text-warning {
+  color: var(--warn-color) !important;
+}
 
-  .hover-bg-secondary-4:hover {
-    background-color: $dark-4 !important;
-  }
+.wowup-snackbar {
+  background-color: var(--background-secondary-4) !important;
 
-  .hover-bg-secondary-5:hover {
-    background-color: $dark-5 !important;
-  }
-
-  .hover-border-secondary-2:hover {
-    box-sizing: border-box;
-    border: 5px solid white;
-  }
-
-  --text-1-color: #ffffff;
-  --text-2-color: #dcddde;
-  --text-3-color: #cccccc;
-
-  .text-1 {
-    color: $white-1 !important;
-  }
-
-  .text-2 {
-    color: $white-2;
-  }
-
-  .text-3 {
-    color: $white-3;
-  }
-
-  .wowup-snackbar {
-    background-color: $dark-4;
-  }
-
-  .mat-form-field-appearance-fill .mat-form-field-flex {
-    background-color: $dark-1;
-  }
-
-  .addon-summary,
-  .addon-changelog {
-    h1,
-    h2 {
-      border-bottom: 1px solid $dark-1;
+  &.text-1 {
+    * {
+      color: var(--text-1) !important;
     }
+  }
+}
 
-    hr {
-      background-color: $dark-1;
+.addon-summary,
+.addon-changelog {
+  a {
+    color: var(--control-color);
+
+    &:visited {
+      color: var(--control-color);
     }
-
-    code {
-      background-color: $dark-4;
-    }
   }
 
-  // GRID STYLES
-  .ag-theme-material {
-    @include ag-theme-material(
-      (
-        foreground-color: $white-1,
-        background-color: $dark-2,
-        header-background-color: $dark-2,
-        row-hover-color: $dark-2,
-        row-border-color: rgba(255, 255, 255, 0.12),
-        border-color: rgba(255, 255, 255, 0.12),
-        secondary-border-color: rgba(255, 255, 255, 0.12),
-        selected-row-background-color: $dark-4,
-        range-selection-border-color: transparent,
-      )
-    );
+  h1,
+  h2 {
+    border-bottom: 1px solid var(--background-secondary-1);
+  }
+
+  hr {
+    background-color: var(--background-secondary-1);
+  }
+
+  code {
+    background-color: var(--background-secondary-4);
   }
 }
 
-// LIGHT THEME
-[class*="light-theme"] {
-  .bg-secondary {
-    background-color: $lt-secondary-1 !important;
-  }
-
-  .bg-secondary-2 {
-    background-color: $lt-secondary-2 !important;
-  }
-
-  .bg-secondary-3 {
-    background-color: $lt-secondary-3 !important;
-  }
-
-  .bg-secondary-4 {
-    background-color: $lt-secondary-4 !important;
-  }
-
-  .hover-bg-secondary:hover {
-    background-color: $lt-secondary-1 !important;
-  }
-
-  .hover-bg-secondary-2:hover {
-    background-color: $lt-secondary-2 !important;
-  }
-
-  .hover-bg-secondary-3:hover {
-    background-color: $lt-secondary-3 !important;
-  }
-
-  .hover-bg-secondary-4:hover {
-    background-color: $lt-secondary-4 !important;
-  }
-
-  .hover-bg-secondary-5:hover {
-    background-color: $lt-secondary-5 !important;
-  }
-
-  --text-1-color: #000000;
-  --text-2-color: #666666;
-  --text-3-color: #888888;
-
-  .text-1 {
-    color: $lt-text-1 !important;
-  }
-
-  .text-2 {
-    color: $lt-text-2 !important;
-  }
-
-  .text-3 {
-    color: $lt-text-3 !important;
-  }
-
-  .hover-text-1:hover {
-    color: $lt-text-1 !important;
-  }
-
-  .hover-text-2:hover {
-    color: $lt-text-2 !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: $lt-secondary-4 !important;
-  }
-
-  .mat-form-field-label {
-    color: $lt-text-1 !important;
-  }
-
-  .mat-input-element {
-    caret-color: $lt-text-3 !important;
-    color: $lt-text-1 !important;
-  }
-  .mat-form-field.mat-focused .mat-form-field-label {
-    color: $lt-text-2 !important;
-  }
-
-  .wowup-snackbar {
-    background-color: $white-1 !important;
-  }
-
-  .ag-theme-material {
-    @include ag-theme-material(
-      (
-        row-hover-color: $lt-secondary-2,
-        selected-row-background-color: $lt-secondary-4,
-      )
-    );
+.tab-icon-inactive {
+  svg {
+    transition: fill 0.3s ease 0.1s;
+    fill: var(--tab-inactive);
   }
 }
 
-.text-light-1 {
-  color: $white-1;
+.tab-icon-active {
+  svg {
+    transition: fill 0.3s ease 0.1s;
+    fill: var(--tab-text);
+  }
 }
 
-.text-light-2 {
-  color: $white-2;
+.tab-icon-disabled {
+  svg {
+    fill: var(--text-disabled);
+    opacity: 0.25;
+  }
 }
 
-.text-light-3 {
-  color: $white-3;
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+  margin: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-color: var(--background-primary-3);
+  background: var(--background-primary);
+  background: linear-gradient(146deg, var(--background-primary) 0%, var(--background-primary-2) 100%);
+  min-height: 40px;
+}
+
+// MATERIAL STYLES
+.mat-input-element {
+  caret-color: var(--text-3) !important;
+  color: var(--text-1) !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: var(--text-2) !important;
+}
+
+.mat-form-field-ripple {
+  background-color: var(--background-primary-2) !important;
+}
+
+.mat-card {
+  background-color: var(--background-secondary-3);
+}
+
+// .mat-button {
+//   color: var(--control-color);
+//   background: transparent;
+// }
+
+// .mat-stroked-button {
+//   background-color: transparent;
+//   color: var(--text-1);
+// }
+
+// .mat-flat-button {
+//   &.mat-primary {
+//     background-color: var(--background-primary) !important;
+//     color: var(--text-1) !important;
+//   }
+// }
+
+.mat-button {
+  &.mat-primary {
+    color: var(--control-color) !important;
+  }
+}
+
+.mat-option.mat-selected:not(.mat-option-disabled) {
+  color: var(--text-3) !important;
+}
+
+// LIGHT BOX
+
+.lb-outerContainer {
+  background-color: var(--background-secondary-4);
+}
+
+.lb-cancel {
+  width: 80px;
+  height: 80px;
+  background-image: url("assets/images/wowup-white-1.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+// GRID STYLES
+.ag-theme-material {
+  @include ag-theme-material(
+    (
+      foreground-color: var(--text-1),
+      background-color: var(--background-secondary-2),
+      header-background-color: var(--background-secondary-2),
+      row-hover-color: var(--background-secondary-2),
+      row-border-color: var(--grid-border),
+      border-color: var(--grid-border),
+      secondary-border-color: var(--grid-border),
+      selected-row-background-color: var(--background-secondary-4),
+      range-selection-border-color: transparent,
+    )
+  );
 }

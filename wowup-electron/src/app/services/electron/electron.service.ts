@@ -4,16 +4,13 @@ import { IpcRendererEvent, OpenDialogOptions, OpenDialogReturnValue, OpenExterna
 import { LoginItemSettings } from "electron/main";
 import { find } from "lodash";
 import * as minimist from "minimist";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, ReplaySubject, Subject } from "rxjs";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
 
 import {
-  APP_UPDATE_CHECK_END,
-  APP_UPDATE_CHECK_START,
-  APP_UPDATE_DOWNLOADED,
-  APP_UPDATE_START_DOWNLOAD,
+  IPC_APP_UPDATE_STATE,
   IPC_CLOSE_WINDOW,
   IPC_CUSTOM_PROTOCOL_RECEIVED,
   IPC_FOCUS_WINDOW,
@@ -35,9 +32,13 @@ import {
   IPC_SET_AS_DEFAULT_PROTOCOL_CLIENT,
   IPC_SET_LOGIN_ITEM_SETTINGS,
   IPC_SET_ZOOM_LIMITS,
+  IPC_SHOW_OPEN_DIALOG,
+  IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
+  IPC_UPDATE_APP_BADGE,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
+  IPC_WINDOW_RESUME,
   IPC_WINDOW_UNMAXIMIZED,
 } from "../../../common/constants";
 import { IpcRequest } from "../../../common/models/ipc-request";
@@ -45,7 +46,7 @@ import { IpcResponse } from "../../../common/models/ipc-response";
 import { ValueRequest } from "../../../common/models/value-request";
 import { ValueResponse } from "../../../common/models/value-response";
 import { MainChannels, RendererChannels } from "../../../common/wowup";
-import { AppOptions } from "../../../common/wowup/models";
+import { AppOptions, AppUpdateEvent } from "../../../common/wowup/models";
 import { isProtocol } from "../../utils/string.utils";
 
 @Injectable({
@@ -54,18 +55,20 @@ import { isProtocol } from "../../utils/string.utils";
 export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
-  private readonly _ipcEventReceivedSrc = new BehaviorSubject("");
   private readonly _powerMonitorSrc = new BehaviorSubject("");
   private readonly _customProtocolSrc = new BehaviorSubject("");
+  private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
+  private readonly _windowResumedSrc = new Subject<void>();
 
   private _appVersion = "";
-  private _opts: AppOptions;
+  private _opts!: AppOptions;
 
   public readonly windowMaximized$ = this._windowMaximizedSrc.asObservable();
   public readonly windowMinimized$ = this._windowMinimizedSrc.asObservable();
-  public readonly ipcEventReceived$ = this._ipcEventReceivedSrc.asObservable();
   public readonly powerMonitor$ = this._powerMonitorSrc.asObservable();
   public readonly customProtocol$ = this._customProtocolSrc.asObservable();
+  public readonly appUpdate$ = this._appUpdateSrc.asObservable();
+  public readonly windowResumed$ = this._windowResumedSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -98,24 +101,18 @@ export class ElectronService {
         console.error("Failed to get app version", e);
       });
 
-    this.onRendererEvent(APP_UPDATE_CHECK_START, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_START);
-    });
-
-    this.onRendererEvent(APP_UPDATE_CHECK_END, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_CHECK_END);
-    });
-
-    this.onRendererEvent(APP_UPDATE_START_DOWNLOAD, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_START_DOWNLOAD);
-    });
-
-    this.onRendererEvent(APP_UPDATE_DOWNLOADED, () => {
-      this._ipcEventReceivedSrc.next(APP_UPDATE_DOWNLOADED);
+    this.onRendererEvent(IPC_APP_UPDATE_STATE, (evt, updateEvt: AppUpdateEvent) => {
+      console.log("IPC_APP_UPDATE_STATE", IPC_APP_UPDATE_STATE);
+      console.log(updateEvt);
+      this._appUpdateSrc.next(updateEvt);
     });
 
     this.onRendererEvent(IPC_WINDOW_MINIMIZED, () => {
       this._windowMinimizedSrc.next(true);
+    });
+
+    this.onRendererEvent(IPC_WINDOW_RESUME, () => {
+      this._windowResumedSrc.next(undefined);
     });
 
     this.onRendererEvent(IPC_WINDOW_MAXIMIZED, () => {
@@ -261,15 +258,15 @@ export class ElectronService {
     return new Notification(title, options);
   }
 
-  public showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
-    return window.wowup.showOpenDialog(options);
+  public async showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
+    return await this.invoke(IPC_SHOW_OPEN_DIALOG, options);
   }
 
-  public getUserDefaultSystemPreference(
+  public async getUserDefaultSystemPreference<T = any>(
     key: string,
     type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
-  ): any {
-    return window.wowup.systemPreferences.getUserDefault(key, type);
+  ): Promise<T> {
+    return await this.invoke(IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT, key, type);
   }
 
   public async sendIpcValueMessage<TIN, TOUT>(channel: string, value: TIN): Promise<TOUT> {
@@ -302,8 +299,18 @@ export class ElectronService {
     });
   }
 
+  public async updateAppBadgeCount(count: number): Promise<void> {
+    console.debug('Update app badge', count);
+    await this.invoke(IPC_UPDATE_APP_BADGE, count);
+  }
+
   public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
-    return await window.wowup.rendererInvoke(channel, ...args);
+    try {
+      return await window.wowup.rendererInvoke(channel, ...args);
+    } catch (e) {
+      console.error("Invoke failed", e);
+      throw e;
+    }
   }
 
   public on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {

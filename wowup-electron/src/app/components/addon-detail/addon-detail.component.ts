@@ -1,6 +1,7 @@
 import { last } from "lodash";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
 import { filter, first, map, switchMap, tap } from "rxjs/operators";
+import { IAlbum, Lightbox } from "ngx-lightbox";
 
 import {
   AfterViewChecked,
@@ -19,18 +20,19 @@ import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
-import { Addon, AddonFundingLink } from "../../../common/entities/addon";
+import { AddonFundingLink } from "../../../common/entities/addon";
 import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
 import { SessionService } from "../../services/session/session.service";
 import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import * as SearchResult from "../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
+import { formatDynamicLinks } from "../../utils/dom.utils";
+import { LinkService } from "../../services/links/link.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -45,10 +47,10 @@ export interface AddonDetailModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
-  @ViewChild("descriptionContainer", { read: ElementRef }) public descriptionContainer: ElementRef;
-  @ViewChild("changelogContainer", { read: ElementRef }) public changelogContainer: ElementRef;
-  @ViewChild("providerLink", { read: ElementRef }) public providerLink: ElementRef;
-  @ViewChild("tabs", { static: false }) public tabGroup: MatTabGroup;
+  @ViewChild("descriptionContainer", { read: ElementRef }) public descriptionContainer!: ElementRef;
+  @ViewChild("changelogContainer", { read: ElementRef }) public changelogContainer!: ElementRef;
+  @ViewChild("providerLink", { read: ElementRef }) public providerLink!: ElementRef;
+  @ViewChild("tabs", { static: false }) public tabGroup!: MatTabGroup;
 
   private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
@@ -83,6 +85,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public isUnknownProvider = false;
   public isMissingUnknownDependencies = false;
   public missingDependencies: string[] = [];
+  public imageUrls: IAlbum[] = [];
 
   public constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -90,10 +93,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _dialog: MatDialog,
     private _addonService: AddonService,
     private _cdRef: ChangeDetectorRef,
-    private _electronService: ElectronService,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    private _lightbox: Lightbox,
+    private _linkService: LinkService
   ) {
     this._dependencies = this.getDependencies();
 
@@ -144,24 +148,33 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     this.requiredDependencyCount = this._dependencies.length;
 
-    this.version = this.model.searchResult
-      ? this.getLatestSearchResultFile().version
-      : this.model.listItem.addon.installedVersion;
+    this.version =
+      (this.model.searchResult
+        ? this.getLatestSearchResultFile()?.version
+        : this.model.listItem?.addon?.installedVersion) ?? "";
 
     this.fundingLinks = this.model.listItem?.addon?.fundingLinks ?? [];
 
     this.hasFundingLinks = !!this.model.listItem?.addon?.fundingLinks?.length;
 
-    this.fullExternalId = this.model.searchResult
-      ? this.model.searchResult.externalId
-      : this.model.listItem.addon.externalId;
+    this.fullExternalId =
+      (this.model.searchResult ? this.model.searchResult?.externalId : this.model.listItem?.addon?.externalId) ?? "";
 
     this.displayExternalId = this.getDisplayExternalId(this.fullExternalId);
 
     this.isUnknownProvider = this.model.listItem?.addon?.providerName === ADDON_PROVIDER_UNKNOWN;
 
     this.missingDependencies = this.model.listItem?.addon?.missingDependencies ?? [];
+
     this.isMissingUnknownDependencies = !!this.missingDependencies.length;
+
+    const imageUrlList = this.model.listItem?.addon?.screenshotUrls ?? this.model.searchResult?.screenshotUrls ?? [];
+    this.imageUrls = imageUrlList.map((url) => {
+      return {
+        src: url,
+        thumb: url,
+      };
+    });
   }
 
   public ngAfterViewInit(): void {}
@@ -169,12 +182,21 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public ngAfterViewChecked(): void {
     const descriptionContainer: HTMLDivElement = this.descriptionContainer?.nativeElement;
     const changelogContainer: HTMLDivElement = this.changelogContainer?.nativeElement;
-    this.formatLinks(descriptionContainer);
-    this.formatLinks(changelogContainer);
+    formatDynamicLinks(descriptionContainer, this.onOpenLink);
+    formatDynamicLinks(changelogContainer, this.onOpenLink);
   }
 
   public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public onClickImage(url: string): void {
+    const idx = this.imageUrls.findIndex((album) => album.src === url);
+    if (idx >= 0) {
+      this._lightbox.open(this.imageUrls, idx, {
+        centerVertically: true,
+      });
+    }
   }
 
   public onInstallUpdated(): void {
@@ -192,6 +214,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public onClickRemoveAddon(): void {
+    if (!this.model.listItem?.addon?.name) {
+      console.warn("Invalid model list item addon");
+      return;
+    }
+
     this.getRemoveAddonPrompt(this.model.listItem.addon.name)
       .afterClosed()
       .pipe(
@@ -201,11 +228,16 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
             return of(false);
           }
 
-          const addon = this.model.listItem.addon;
+          const addon = this.model.listItem?.addon;
+          if (!addon) {
+            console.warn(`Invalid addon`);
+            return of(false);
+          }
+
           if (this._addonService.getRequiredDependencies(addon).length === 0) {
             return from(this._addonService.removeAddon(addon)).pipe(map(() => true));
           } else {
-            return this.getRemoveDependenciesPrompt(addon.name, addon.dependencies.length)
+            return this.getRemoveDependenciesPrompt(addon.name, (addon.dependencies ?? []).length)
               .afterClosed()
               .pipe(
                 switchMap((result) => from(this._addonService.removeAddon(addon, result))),
@@ -269,31 +301,11 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   private getThumbnailLetter(): string {
-    return this.model?.listItem?.thumbnailLetter ?? this.model.searchResult?.name?.charAt(0).toUpperCase();
+    return this.model?.listItem?.thumbnailLetter ?? this.model.searchResult?.name?.charAt(0).toUpperCase() ?? "";
   }
 
   private getProviderName(): string {
-    return this.model.listItem?.addon?.providerName ?? this.model.searchResult?.providerName;
-  }
-
-  private formatLinks(container: HTMLDivElement): void {
-    if (!container) {
-      return;
-    }
-
-    const aTags = container.getElementsByTagName("a");
-    for (const tag of Array.from(aTags)) {
-      if (tag.getAttribute("clk")) {
-        continue;
-      }
-
-      if (tag.href.toLowerCase().indexOf("http") === -1 || tag.href.toLowerCase().indexOf("localhost") !== -1) {
-        tag.classList.add("no-link");
-      }
-
-      tag.setAttribute("clk", "1");
-      tag.addEventListener("click", this.onOpenLink, false);
-    }
+    return this.model.listItem?.addon?.providerName ?? this.model.searchResult?.providerName ?? "";
   }
 
   private onAddonInstalledUpdate = (evt: AddonUpdateEvent): void => {
@@ -307,59 +319,18 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private isSameAddon = (evt: AddonUpdateEvent): boolean => {
     return (
-      evt.addon.id === this.model.listItem?.addon.id || evt.addon.externalId === this.model.searchResult?.externalId
+      evt.addon.id === this.model.listItem?.addon?.id || evt.addon.externalId === this.model.searchResult?.externalId
     );
   };
 
-  private onOpenLink = (e: MouseEvent): boolean => {
-    e.preventDefault();
+  private onOpenLink = (element: HTMLAnchorElement): boolean => {
+    this.confirmLinkNavigation(element.href);
 
-    // Go up the call chain to find the tag
-    const path = (e as any).path as HTMLElement[];
-    let anchor: HTMLAnchorElement = undefined;
-    for (const element of path) {
-      if (element.tagName !== "A") {
-        continue;
-      }
-
-      anchor = element as HTMLAnchorElement;
-      break;
-    }
-
-    if (!anchor) {
-      console.warn("No anchor in path");
-      return false;
-    }
-
-    if (anchor.href.toLowerCase().indexOf("http") !== 0 || anchor.href.toLowerCase().indexOf("localhost") !== -1) {
-      console.warn(`Unhandled relative path: ${anchor.href}`);
-      return false;
-    }
-
-    this.confirmLinkNavigation(anchor.href);
-
-    // this._electronService.openExternal(anchor.href).catch((e) => console.error(e));
     return false;
   };
 
   private confirmLinkNavigation(href: string) {
-    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: this._translateService.instant("APP.LINK_NAVIGATION.TITLE"),
-        message: this._translateService.instant("APP.LINK_NAVIGATION.MESSAGE", { url: href }),
-      },
-    });
-
-    dialogRef
-      .afterClosed()
-      .pipe(first())
-      .subscribe((result) => {
-        if (!result) {
-          return;
-        }
-
-        this._electronService.openExternal(href).catch((e) => console.error(e));
-      });
+    this._linkService.confirmLinkNavigation(href).subscribe();
   }
 
   private getChangelog = (): Promise<string> => {
@@ -373,16 +344,25 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   };
 
   private getFullDescription = async (): Promise<string> => {
-    const externalId = this.model.searchResult?.externalId ?? this.model.listItem?.addon?.externalId;
-    const providerName = this.model.searchResult?.providerName ?? this.model.listItem?.addon?.providerName;
-
-    if (providerName === ADDON_PROVIDER_GITHUB) {
-      return this.model.listItem?.addon?.summary;
-    }
+    const externalId = this.model.searchResult?.externalId ?? this.model.listItem?.addon?.externalId ?? "";
+    const providerName = this.model.searchResult?.providerName ?? this.model.listItem?.addon?.providerName ?? "";
 
     try {
+      if (providerName === ADDON_PROVIDER_GITHUB) {
+        if (this.model.listItem?.addon?.summary) {
+          return this.model.listItem?.addon?.summary;
+        }
+
+        throw new Error("Invalid model list item addon");
+      }
+
+      const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+      if (!selectedInstallation) {
+        throw new Error("No selected installation");
+      }
+
       const description = await this._addonService.getFullDescription(
-        this._sessionService.getSelectedWowInstallation(),
+        selectedInstallation,
         providerName,
         externalId,
         this.model?.listItem?.addon
@@ -398,7 +378,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     if (this.model.searchResult) {
       return SearchResult.getDependencyType(
         this.model.searchResult,
-        this.model.channelType,
+        this.model.channelType ?? AddonChannelType.Stable,
         AddonDependencyType.Required
       );
     } else if (this.model.listItem) {
@@ -409,29 +389,47 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   private async getSearchResultChangelog() {
+    const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+    if (!selectedInstallation) {
+      console.warn("No selected installation");
+      return "";
+    }
+    if (!this.model.searchResult) {
+      console.warn("Invalid model searchResult");
+      return "";
+    }
+
     return await this._addonService.getChangelogForSearchResult(
-      this._sessionService.getSelectedWowInstallation(),
-      this.model.channelType,
+      selectedInstallation,
+      this.model.channelType ?? AddonChannelType.Stable,
       this.model.searchResult
     );
   }
 
   private async getMyAddonChangelog() {
-    return await this._addonService.getChangelogForAddon(
-      this._sessionService.getSelectedWowInstallation(),
-      this.model.listItem?.addon
-    );
+    const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+    if (!selectedInstallation) {
+      console.warn("No selected installation");
+      return "";
+    }
+
+    if (!this.model.listItem?.addon) {
+      console.warn("Invalid list item addon");
+      return "";
+    }
+
+    return await this._addonService.getChangelogForAddon(selectedInstallation, this.model.listItem.addon);
   }
 
   private getDisplayExternalId(externalId: string): string {
     if (externalId.indexOf("/") !== -1) {
-      return `...${last(externalId.split("/"))}`;
+      return `...${last(externalId.split("/")) ?? ""}`;
     }
 
     return externalId;
   }
 
   private getLatestSearchResultFile() {
-    return SearchResult.getLatestFile(this.model.searchResult, this.model.channelType);
+    return SearchResult.getLatestFile(this.model.searchResult, this.model.channelType ?? AddonChannelType.Stable);
   }
 }

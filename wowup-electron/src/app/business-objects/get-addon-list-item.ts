@@ -1,5 +1,3 @@
-import * as _ from "lodash";
-
 import { AddonChannelType } from "../../common/wowup/models";
 import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
@@ -33,8 +31,8 @@ export class GetAddonListItem {
     this.canonicalName = this.name.toLowerCase();
 
     const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
-    this.latestAddonChannel = latestFile.channelType;
+    this.latestAddonChannel = latestFile?.channelType ?? AddonChannelType.Stable;
 
-    this.releasedAt = new Date(latestFile?.releaseDate).getTime();
+    this.releasedAt = new Date(latestFile?.releaseDate ?? new Date()).getTime();
   }
 }

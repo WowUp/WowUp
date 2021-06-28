@@ -22,7 +22,7 @@
     width: 50px;
     height: 50px;
     margin-right: 1em;
-    background-color: $dark-2;
+    background-color: var(--background-secondary-2);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -38,7 +38,7 @@
     }
 
     .addon-download-count {
-      color: $white-3;
+      color: var(--text-3);
     }
   }
 

@@ -10,6 +10,7 @@ import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { AddonService } from "../../services/addons/addon.service";
 import { getEnumName } from "../../utils/enum.utils";
+import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 
 @Component({
   selector: "app-addon-update-button",
@@ -17,7 +18,7 @@ import { getEnumName } from "../../utils/enum.utils";
   styleUrls: ["./addon-update-button.component.scss"],
 })
 export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
-  @Input() public listItem: AddonViewModel;
+  @Input() public listItem!: AddonViewModel;
   @Input() public extInstallState?: AddonInstallState;
   @Input() public value?: number;
 
@@ -43,6 +44,20 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
+    if (this.listItem.addon?.providerName === ADDON_PROVIDER_UNKNOWN) {
+      return;
+    }
+
+    if (
+      this.listItem.addon === undefined ||
+      !this.listItem.addon.id ||
+      !this.listItem.addon.externalId ||
+      !this.listItem.addon.providerName
+    ) {
+      console.warn("Invalid list item addon", this.listItem);
+      return;
+    }
+
     this.providerName = this.listItem.addon.providerName;
     this.externalId = this.listItem.addon.externalId;
     this.installProgress = this.value ?? 0;
@@ -59,9 +74,9 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
   }
 
   public getActionLabel(): string {
-    return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${this.listItem?.addon.providerName}|${
-      this.listItem?.addon.externalId
-    }|${this.listItem?.addon.name}`;
+    return `${getEnumName(WowClientType, this.listItem?.addon?.clientType)}|${
+      this.listItem?.addon?.providerName ?? ""
+    }|${this.listItem?.addon?.externalId ?? ""}|${this.listItem?.addon?.name ?? ""}`;
   }
 
   public getIsButtonActive(): boolean {
@@ -86,6 +101,10 @@ export class AddonUpdateButtonComponent implements OnInit, OnDestroy {
 
   public async onInstallUpdateClick(): Promise<void> {
     try {
+      if (!this.listItem?.addon?.id) {
+        throw new Error("Invalid list item addon");
+      }
+
       if (this.listItem.needsUpdate()) {
         await this._addonService.updateAddon(this.listItem.addon.id);
       } else {

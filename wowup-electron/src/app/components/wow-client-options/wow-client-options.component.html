@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="installation-card">
   <div class="wow-install-logo-container">
     <img [src]="wowLogoImage">
   </div>
@@ -57,14 +57,31 @@
       "PAGES.OPTIONS.WOW.REMOVE_WOW_DIRECTORY_SELECT_BUTTON"
       | translate }}</button>
     <div class="flex-grow-1"></div>
+
+    <!-- NOT EDIT MODE -->
+    <div *ngIf="(editMode$ | async) === false">
+      <button mat-button *ngIf="installationIndex > 0" [disabled]="(isBusy$ | async) === true"
+        [matTooltip]="'PAGES.OPTIONS.WOW.MOVE_UP_BUTTON' | translate" (click)="onClickMoveUp()">
+        <mat-icon svgIcon="fas:angle-up">
+        </mat-icon>
+      </button>
+      <button mat-button *ngIf="installationIndex < (installationCount$ | async) - 1"
+        [disabled]="(isBusy$ | async) === true" [matTooltip]="'PAGES.OPTIONS.WOW.MOVE_DOWN_BUTTON' | translate"
+        (click)="onClickMoveDown()">
+        <mat-icon svgIcon="fas:angle-down">
+        </mat-icon>
+      </button>
+    </div>
+    <!-- EDIT MODE -->
     <div *ngIf="(editMode$ | async) === true">
       <button mat-button [disabled]="(isBusy$ | async) === true" (click)="onClickCancel()">{{
         "PAGES.OPTIONS.WOW.CANCEL_WOW_DIRECTORY_SELECT_BUTTON" | translate }}</button>
       <button mat-button color="primary" [disabled]="(isBusy$ | async) === true" (click)="onClickSave()">{{
         "PAGES.OPTIONS.WOW.SAVE_WOW_DIRECTORY_SELECT_BUTTON" | translate }}</button>
     </div>
+    <!-- EDIT BUTTON -->
     <div *ngIf="(editMode$ | async) === false">
-      <button mat-button color="primary" (click)="editMode = true">{{
+      <button mat-button color="primary" (click)="onClickEdit()">{{
         "PAGES.OPTIONS.WOW.EDIT_WOW_DIRECTORY_SELECT_BUTTON" | translate }}</button>
 
     </div>

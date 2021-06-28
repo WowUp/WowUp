@@ -61,15 +61,18 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Vollbild",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Nach Updates suchen",
       "DOWNLOADED_TOOLTIP": "WowUp Update installieren",
+      "DOWNLOADING_UPDATE": "Update wird heruntergeladen",
       "INSTALL_MESSAGE": "Möchtest Du WowUp neu starten, um das Update zu installieren?",
       "INSTALL_TITLE": "WowUp-Update bereit",
       "NOT_AVAILABLE": "Die aktuellste Version von WowUp ist bereits installiert",
       "PORTABLE_DOWNLOAD_MESSAGE": "Möchtest Du die letzte portable Version manuell herunterladen?\n\nDu musst die Anwendung manuell schließen und die neue Version über die Alte kopieren.",
       "PORTABLE_DOWNLOAD_TITLE": "Manuelles Herunterladen erforderlich",
-      "SNACKBAR_ACTION": "Update",
+      "SNACKBAR_ACTION": "Updaten und neustarten",
       "SNACKBAR_TEXT": "Eine neue Version von WowUp ist verfügbar",
       "TOOLTIP": "WowUp Update verfügbar",
+      "UPDATE_AVAILABLE": "Download wird gestartet",
       "UPDATE_ERROR": "WowUp konnte nicht nach Updates suchen"
     }
   },
@@ -200,6 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "Keine Beschreibung gefunden",
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Unterstütze diesen Autor",
+      "IMAGES_TAB": "Bilder",
       "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",
       "NO_CHANGELOG_TEXT": "Kein Änderungsverlauf verfügbar",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
@@ -260,7 +264,8 @@
       "NEGATIVE_BUTTON": "Nein, Danke",
       "POSITIVE_BUTTON": "Ja",
       "TITLE": "WowUp Telemetrie"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Vertraue dieser Domain und frage mich in Zukunft nicht mehr"
   },
   "PAGES": {
     "ABOUT": {
@@ -295,6 +300,7 @@
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "MIGRATING_ADDONS": "Addons werden migriert...",
       "MY_ADDONS_TAB_TITLE": "Meine Addons",
+      "NEWS_TAB_TITLE": "News",
       "OPTIONS_TAB_TITLE": "Einstellungen"
     },
     "MY_ADDONS": {
@@ -312,7 +318,7 @@
         "STABLE_ADDON_CHANNEL": "Stabil"
       },
       "ADDON_IS_CODE_REPOSITORY": "Addon scheint ein Code-Repository zu sein",
-      "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
+      "ADDON_REMOVED_SNACKBAR": "{addonName} erfolgreich entfernt",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Möchtest Du den Anbieter für {addonName} auf {providerName} festlegen? Dies wird das aktuelle Addon deinstallieren und durch eine Version vom neuen Anbieter ersetzen.",
         "TITLE": "Addon-Anbieter wechseln?"
@@ -382,6 +388,10 @@
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Retail/Classic aktualisieren"
       }
     },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} News",
+      "REFRESH_TOOLTIP": "Newsfeed aktualisieren"
+    },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
@@ -395,6 +405,8 @@
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
         "CURSE_PROTOCOL_DESCRIPTION": "Beim Herunterladen von Addons von der CurseForge-Website übernimmt WowUp die Installation",
         "CURSE_PROTOCOL_LABEL": "CurseForge-Download-Links verarbeiten",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Zeigt auf dem App-Symbol einen Zähler, mit der Anzahl an verfügbaren Updates an.",
+        "ENABLE_APP_BADGE_LABEL": "App-Badge-Benachrichtigung aktivieren",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen WowUp in die Menüleiste minimieren",
@@ -458,6 +470,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "Standard Addon-Kanal",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Addon-Kanal",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Bearbeiten",
+        "MOVE_DOWN_BUTTON": "Nach unten bewegen",
+        "MOVE_UP_BUTTON": "Nach oben bewegen",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Auswählen",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Entfernen",
         "RESCAN_CLIENTS_BUTTON": "Neu scannen",

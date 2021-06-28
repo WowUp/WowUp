@@ -61,15 +61,18 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - Pantalla completa",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "Buscando actualización",
       "DOWNLOADED_TOOLTIP": "Instalar actualización de WowUp",
+      "DOWNLOADING_UPDATE": "Descargando actualización",
       "INSTALL_MESSAGE": "¿Quiere reiniciar WowUp para instalar la actualización?",
       "INSTALL_TITLE": "Actualización de WowUp preparada",
       "NOT_AVAILABLE": "La versión más reciente de WowUp ya se encuentra instalada",
       "PORTABLE_DOWNLOAD_MESSAGE": "¿Quiere descargar manualmente la última versión portable?\n\nTendrá que cerrar la aplicación y copiar los archivos de la nueva versión manualmente.",
       "PORTABLE_DOWNLOAD_TITLE": "Descarga manual requerida",
-      "SNACKBAR_ACTION": "Actualizar",
+      "SNACKBAR_ACTION": "Actualizar y reiniciar",
       "SNACKBAR_TEXT": "Una nueva versión de WowUp está disponible",
       "TOOLTIP": "Actualización de WowUp disponible",
+      "UPDATE_AVAILABLE": "Iniciando descarga",
       "UPDATE_ERROR": "Error al obtener la actualización de WowUp"
     }
   },
@@ -200,6 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "Descripción no encontrada",
       "DESCRIPTION_TAB": "Descripción",
       "FUNDING_LINK_TITLE": "Apoyar a este autor",
+      "IMAGES_TAB": "Imágenes",
       "MISSING_DEPENDENCIES": "Dependencias no encontradas",
       "NO_CHANGELOG_TEXT": "No hay listado de cambios disponible",
       "VIEW_IN_BROWSER_BUTTON": "Ver en el navegador",
@@ -260,14 +264,15 @@
       "NEGATIVE_BUTTON": "No, gracias",
       "POSITIVE_BUTTON": "¡Por supuesto!",
       "TITLE": "Telemetría de WowUp"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "Confiar en este dominio y no volver a preguntar"
   },
   "PAGES": {
     "ABOUT": {
       "ATTRIBUTIONS_TITLE": "Atribuciones",
       "CHANGE_LOG_SECTION_LABEL": "Registro de cambios",
       "TITLE": "WowUp.io",
-      "WEBSITE_LINK_LABEL": "¡Visita la página web!"
+      "WEBSITE_LINK_LABEL": "¡Visite la página web!"
     },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Categorías",
@@ -295,6 +300,7 @@
       "GET_ADDONS_TAB_TITLE": "Obtener addons",
       "MIGRATING_ADDONS": "Migrando lista de addons...",
       "MY_ADDONS_TAB_TITLE": "Mis addons",
+      "NEWS_TAB_TITLE": "Noticias",
       "OPTIONS_TAB_TITLE": "Opciones"
     },
     "MY_ADDONS": {
@@ -382,6 +388,10 @@
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Actualizar Retail/Classic"
       }
     },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "{count} titulares",
+      "REFRESH_TOOLTIP": "Actualizar titulares"
+    },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
@@ -395,6 +405,8 @@
         "CURRENT_LANGUAGE_LABEL": "Idioma actual",
         "CURSE_PROTOCOL_DESCRIPTION": "Al descargar addons desde la web de CurseForge, WowUp se hará cargo de la instalación",
         "CURSE_PROTOCOL_LABEL": "Tramitar enlaces de descarga de CurseForge",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Muestra un contador en el icono de la aplicación en la barra de tareas con el número de addons con actualizaciones disponibles.",
+        "ENABLE_APP_BADGE_LABEL": "Activar contador en el icono",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, tales como cuando los addons son actualizados automáticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Activar notificaciones del sistema",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Al cerrar la ventana de WowUp, minimizarla a la barra de menú",
@@ -458,6 +470,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "Canal de addons predeterminado",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Canal de addons",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Editar",
+        "MOVE_DOWN_BUTTON": "Mover abajo",
+        "MOVE_UP_BUTTON": "Mover arriba",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seleccionar",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Eliminar",
         "RESCAN_CLIENTS_BUTTON": "Reescanear",

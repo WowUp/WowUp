@@ -1,6 +1,5 @@
 import { AgRendererComponent } from "ag-grid-angular";
-import { IAfterGuiAttachedParams, ICellRendererParams } from "ag-grid-community";
-import * as _ from "lodash";
+import { ICellRendererParams } from "ag-grid-community";
 
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 
@@ -24,9 +23,9 @@ export interface PotentialAddonViewDetailsEvent {
   styleUrls: ["./potential-addon-table-column.component.scss"],
 })
 export class PotentialAddonTableColumnComponent implements AgRendererComponent, OnChanges {
-  @Input("addon") public addon: GetAddonListItem;
-  @Input() public channel: AddonChannelType;
-  @Input() public clientType: WowClientType;
+  @Input("addon") public addon!: GetAddonListItem;
+  @Input() public channel!: AddonChannelType;
+  @Input() public clientType!: WowClientType;
 
   @Output() public onViewDetails: EventEmitter<PotentialAddonViewDetailsEvent> = new EventEmitter();
 
@@ -49,7 +48,7 @@ export class PotentialAddonTableColumnComponent implements AgRendererComponent, 
     return this.addon.name.charAt(0).toUpperCase();
   }
 
-  public get dependencyTooltip() {
+  public get dependencyTooltip(): { dependencyCount: number } {
     return {
       dependencyCount: this.getRequiredDependencyCount(),
     };
@@ -73,11 +72,11 @@ export class PotentialAddonTableColumnComponent implements AgRendererComponent, 
     this._latestChannelType = this.addon.latestAddonChannel;
   }
 
-  public refresh(params: ICellRendererParams): boolean {
+  public refresh(): boolean {
     return false;
   }
 
-  public afterGuiAttached?(params?: IAfterGuiAttachedParams): void {}
+  public afterGuiAttached?(): void {}
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.clientType) {

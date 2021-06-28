@@ -1,4 +1,5 @@
 import { AgGridModule } from "ag-grid-angular";
+import { LightboxModule } from "ngx-lightbox";
 
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
@@ -13,12 +14,14 @@ import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap
 import { CenteredSnackbarComponent } from "../../components/centered-snackbar/centered-snackbar.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { DateTooltipCellComponent } from "../../components/date-tooltip-cell/date-tooltip-cell.component";
+import { ExternalUrlConfirmationDialogComponent } from "../../components/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
 import { FundingButtonComponent } from "../../components/funding-button/funding-button.component";
 import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
 import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
 import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
 import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
 import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
+import { NewsPanelComponent } from "../../components/news-panel/news-panel.component";
 import { OptionsAddonSectionComponent } from "../../components/options-addon-section/options-addon-section.component";
 import { OptionsAppSectionComponent } from "../../components/options-app-section/options-app-section.component";
 import { OptionsDebugSectionComponent } from "../../components/options-debug-section/options-debug-section.component";
@@ -85,6 +88,8 @@ import { HomeComponent } from "./home.component";
     AddonThumbnailComponent,
     PatchNotesDialogComponent,
     TrustHtmlPipe,
+    NewsPanelComponent,
+    ExternalUrlConfirmationDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -98,6 +103,7 @@ import { HomeComponent } from "./home.component";
       GetAddonStatusColumnComponent,
       TableContextHeaderCellComponent,
     ]),
+    LightboxModule,
   ],
   providers: [
     DatePipe,

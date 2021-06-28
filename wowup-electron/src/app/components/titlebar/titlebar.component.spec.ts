@@ -14,24 +14,16 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 describe("TitlebarComponent", () => {
   let component: TitlebarComponent;
   let fixture: ComponentFixture<TitlebarComponent>;
-  let electronService: ElectronService;
   let electronServiceSpy: any;
-  let wowUpService: WowUpService;
   let wowUpServiceSpy: any;
 
   beforeEach(async () => {
     electronServiceSpy = jasmine.createSpyObj("ElectronService", ["on"], {
       windowMaximized$: new BehaviorSubject(false).asObservable(),
     });
-    wowUpServiceSpy = jasmine.createSpyObj(
-      "WowUpService",
-      {
-        getThemeLogoPath: () => "",
-      },
-      {
-        currentTheme: "horde ofc",
-      }
-    );
+    wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
+      currentTheme: "horde ofc",
+    });
 
     await TestBed.configureTestingModule({
       declarations: [TitlebarComponent],
@@ -65,8 +57,6 @@ describe("TitlebarComponent", () => {
 
     fixture = TestBed.createComponent(TitlebarComponent);
     component = fixture.componentInstance;
-    electronService = fixture.debugElement.injector.get(ElectronService);
-    wowUpService = fixture.debugElement.injector.get(WowUpService);
 
     fixture.detectChanges();
   });

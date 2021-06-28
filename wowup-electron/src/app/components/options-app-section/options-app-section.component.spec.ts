@@ -1,37 +1,36 @@
+import { BehaviorSubject } from "rxjs";
+
+import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
+import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+
+import { MatModule } from "../../mat-module";
+import { ElectronService } from "../../services";
+import { AddonService } from "../../services/addons/addon.service";
 import { AnalyticsService } from "../../services/analytics/analytics.service";
 import { FileService } from "../../services/files/file.service";
 import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { ElectronService } from "../../services";
-import { OptionsAppSectionComponent } from "./options-app-section.component";
-import { BehaviorSubject } from "rxjs";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatModule } from "../../mat-module";
-import { createTranslateModule } from "../../utils/test.utils";
-import { FormsModule } from "@angular/forms";
 import { ZoomService } from "../../services/zoom/zoom.service";
+import { createTranslateModule } from "../../utils/test.utils";
+import { OptionsAppSectionComponent } from "./options-app-section.component";
 
 describe("OptionsAppSectionComponent", () => {
   let component: OptionsAppSectionComponent;
   let fixture: ComponentFixture<OptionsAppSectionComponent>;
-  let electronService: ElectronService;
   let electronServiceSpy: any;
-  let wowUpService: WowUpService;
   let wowUpServiceSpy: any;
-  let sessionService: SessionService;
   let sessionServiceSpy: any;
-  let fileService: FileService;
   let fileServiceSpy: any;
-  let analyticsService: AnalyticsService;
   let analyticsServiceSpy: any;
+  let addonService: any;
   let zoomService: ZoomService;
 
   beforeEach(async () => {
+    addonService = jasmine.createSpyObj("AddonService", [""], {});
+
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
       telemetryEnabled$: new BehaviorSubject(false).asObservable(),
     });
@@ -53,6 +52,7 @@ describe("OptionsAppSectionComponent", () => {
         isMac: false,
       }
     );
+
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", ["getStartWithSystem"], {
       collapseToTray: false,
       useHardwareAcceleration: false,
@@ -76,6 +76,7 @@ describe("OptionsAppSectionComponent", () => {
             { provide: FileService, useValue: fileServiceSpy },
             { provide: AnalyticsService, useValue: analyticsServiceSpy },
             { provide: ZoomService, useValue: zoomService },
+            { provide: AddonService, useValue: addonService },
           ],
         },
       })

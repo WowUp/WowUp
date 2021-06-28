@@ -5,6 +5,7 @@ export const AppConfig = {
   wowUpHubUrl: "https://hub.dev.wowup.io",
   googleAnalyticsId: "UA-92563227-4",
   wowupRepositoryUrl: "https://github.com/WowUp/WowUp",
+  warcraftTavernNewsFeedUrl: "https://www.warcrafttavern.com/?call_custom_simple_rss=1&csrp_post_type=wow-classic-news,tbc-classic-news,retail-news&csrp_thumbnail_size=medium",
   azure: {
     applicationInsightsKey: "4a53e8d9-796c-4f80-b1a6-9a058374dd6d",
   },
@@ -13,4 +14,5 @@ export const AppConfig = {
   defaultHttpTimeoutMs: 10000,
   defaultHttpResetTimeoutMs: 30000,
   wowUpHubHttpTimeoutMs: 10000,
+  newsRefreshIntervalMs: 3600000, // 1 hour
 };

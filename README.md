@@ -9,7 +9,7 @@
 This is the repository for all our [WowUp](https://wowup.io) client side code for Windows, Mac, and Linux.
 
 ## WowUp
-![image](https://user-images.githubusercontent.com/20467484/112852379-7a26cf00-9071-11eb-85ba-5336f10b6d4b.png)
+![image](https://user-images.githubusercontent.com/20467484/123314651-74b21700-d4f0-11eb-816b-1dccaced5602.png)
 
 WowUp is the community centered World of Warcraft addon updater. We attempt to bring the addon community together in an easy to use updater application. We have an ever growing list of supported features.
 

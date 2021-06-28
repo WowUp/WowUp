@@ -1,14 +1,23 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "module": "es2015",
     "baseUrl": "",
-    "types": [],
+    "types": []
   },
-  "files": ["./typings.d.ts", "./common/wowup.d.ts"],
-  "include": ["main.ts", "polyfill.ts"],
-  "exclude": ["**/*.spec.ts"],
+  "include": [
+    "main.ts",
+    "polyfills.ts",
+    "app/**/*.ts",
+    "common/**/*.ts",
+    "environments/**/*.ts",
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "app/**/tests/*.ts",
+    "app/**/utils/test.utils.ts",
+  ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,

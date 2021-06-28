@@ -10,6 +10,11 @@ import {
   CURSE_PROTOCOL_NAME,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
+  TAB_INDEX_ABOUT,
+  TAB_INDEX_GET_ADDONS,
+  TAB_INDEX_MY_ADDONS,
+  TAB_INDEX_NEWS,
+  TAB_INDEX_SETTINGS,
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
 import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
@@ -26,6 +31,7 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getProtocol } from "../../utils/string.utils";
+import { LightboxConfig } from "ngx-lightbox";
 
 @Component({
   selector: "app-home",
@@ -37,14 +43,19 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private _appUpdateInterval?: number;
   private _subscriptions: Subscription[] = [];
 
-  public selectedIndex = 0;
+  public readonly TAB_INDEX_MY_ADDONS = TAB_INDEX_MY_ADDONS;
+  public readonly TAB_INDEX_GET_ADDONS = TAB_INDEX_GET_ADDONS;
+  public readonly TAB_INDEX_ABOUT = TAB_INDEX_ABOUT;
+  public readonly TAB_INDEX_NEWS = TAB_INDEX_NEWS;
+  public readonly TAB_INDEX_SETTINGS = TAB_INDEX_SETTINGS;
+
   public hasWowClient = false;
   public appReady = false;
   public preloadSpinnerKey = "COMMON.PROGRESS_SPINNER.LOADING";
 
   public constructor(
     public electronService: ElectronService,
-    private _sessionService: SessionService,
+    public sessionService: SessionService,
     private _translateService: TranslateService,
     private _addonService: AddonService,
     private _wowupService: WowUpService,
@@ -52,11 +63,14 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _snackBarService: SnackbarService,
     private _cdRef: ChangeDetectorRef,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _dialogFactory: DialogFactory
+    private _dialogFactory: DialogFactory,
+    private _lightboxConfig: LightboxConfig
   ) {
+    _lightboxConfig.fadeDuration = 0.3;
+    _lightboxConfig.resizeDuration = 0.3;
+
     const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
       this.hasWowClient = installations.length > 0;
-      this.selectedIndex = this.hasWowClient ? 0 : 3;
     });
 
     const customProtocolSub = this.electronService.customProtocol$
@@ -77,7 +91,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private handleCustomProtocol = async (protocol: string): Promise<void> => {
-    console.debug("PROTOCOL RECEIEVED", protocol);
     const protocolName = getProtocol(protocol);
     try {
       switch (protocolName) {
@@ -115,7 +128,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    const wowInstallInitialSub = this._warcraftInstallationService.wowInstallations$
+    this._warcraftInstallationService.wowInstallations$
       .pipe(
         first(),
         switchMap((installations) => {
@@ -130,7 +143,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     this.initAppUpdateCheck();
 
-    this._subscriptions.push(powerMonitorSub, wowInstallInitialSub);
+    this._subscriptions.push(powerMonitorSub);
   }
 
   public ngOnDestroy(): void {
@@ -146,10 +159,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     // check for an app update every so often
     this._appUpdateInterval = window.setInterval(() => {
-      this.checkForAppUpdate().catch((e) => console.error(e));
+      this._wowupService.checkForAppUpdate();
     }, AppConfig.appUpdateIntervalMs);
-
-    this.checkForAppUpdate().catch((e) => console.error(e));
   }
 
   private destroyAppUpdateCheck() {
@@ -200,7 +211,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   };
 
   public onSelectedIndexChange(index: number): void {
-    this._sessionService.selectedHomeTab = index;
+    this.sessionService.selectedHomeTab = index;
   }
 
   private onAddonScanError = (error: AddonScanError) => {
@@ -218,16 +229,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private onScanUpdate = (update: ScanUpdate) => {
     switch (update.type) {
       case ScanUpdateType.Start:
-        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_STARTED");
+        this.sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_STARTED");
         break;
       case ScanUpdateType.Complete:
-        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_COMPLETED");
+        this.sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_COMPLETED");
         window.setTimeout(() => {
-          this._sessionService.statusText = "";
+          this.sessionService.statusText = "";
         }, 3000);
         break;
       case ScanUpdateType.Update:
-        this._sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_UPDATE", {
+        this.sessionService.statusText = this._translateService.instant("APP.STATUS_TEXT.ADDON_SCAN_UPDATE", {
           count: update.totalCount,
         });
         break;
@@ -235,15 +246,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
         break;
     }
   };
-
-  private async checkForAppUpdate() {
-    try {
-      const appUpdateResponse = await this._wowupService.checkForAppUpdate();
-      console.log(appUpdateResponse);
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
     if (evt.installState !== AddonInstallState.Error) {

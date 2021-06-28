@@ -61,15 +61,18 @@
     "WINDOW_TITLE": "WowUp.io",
     "WINDOW_TITLE_FULLSCREEN": "WowUp.io - 全螢幕模式",
     "WOWUP_UPDATE": {
+      "CHECKING_FOR_UPDATE": "檢查更新",
       "DOWNLOADED_TOOLTIP": "安裝 WowUp 更新",
+      "DOWNLOADING_UPDATE": "正在下載更新",
       "INSTALL_MESSAGE": "是否重新啟動 WowUp 以完成更新？",
       "INSTALL_TITLE": "WowUp 更新已準備就緒",
       "NOT_AVAILABLE": "已安裝最新版 WowUp",
       "PORTABLE_DOWNLOAD_MESSAGE": "是否手動下載最新綠色版？\n\n下載完成後請關閉本應用程式，然後用新版本覆蓋。",
       "PORTABLE_DOWNLOAD_TITLE": "需要手動下載",
-      "SNACKBAR_ACTION": "更新",
+      "SNACKBAR_ACTION": "更新並重啟",
       "SNACKBAR_TEXT": "新版本 WowUp 可用",
       "TOOLTIP": "WowUp 更新可用",
+      "UPDATE_AVAILABLE": "正在開始下載",
       "UPDATE_ERROR": "WowUp 更新下載失敗"
     }
   },
@@ -200,6 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支援插件作者",
+      "IMAGES_TAB": "圖片",
       "MISSING_DEPENDENCIES": "缺失的依賴項",
       "NO_CHANGELOG_TEXT": "更新記錄不可用",
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
@@ -260,7 +264,8 @@
       "NEGATIVE_BUTTON": "否",
       "POSITIVE_BUTTON": "是",
       "TITLE": "WowUp 遙測"
-    }
+    },
+    "TRUST_DOMAIN_CHECKBOX": "信任此域名，今後不再詢問"
   },
   "PAGES": {
     "ABOUT": {
@@ -295,6 +300,7 @@
       "GET_ADDONS_TAB_TITLE": "獲取插件",
       "MIGRATING_ADDONS": "正在遷移插件...",
       "MY_ADDONS_TAB_TITLE": "我的插件",
+      "NEWS_TAB_TITLE": "新聞（英語）",
       "OPTIONS_TAB_TITLE": "選項"
     },
     "MY_ADDONS": {
@@ -382,6 +388,10 @@
         "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/經典懷舊服"
       }
     },
+    "NEWS": {
+      "PAGE_CONTEXT_FOOTER": "共 {count} 條新聞",
+      "REFRESH_TOOLTIP": "重新整理資訊流"
+    },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
@@ -395,6 +405,8 @@
         "CURRENT_LANGUAGE_LABEL": "當前語言",
         "CURSE_PROTOCOL_DESCRIPTION": "從 CurseForge 網站下載插件時，WowUp 將會接管安裝過程",
         "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下載連結",
+        "ENABLE_APP_BADGE_DESCRIPTION": "在應用程式圖示上用角標顯示可更新的外掛數量。",
+        "ENABLE_APP_BADGE_LABEL": "啟用數字角標通知",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "啟用系統通知",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "關閉 WowUp 視窗時，最小化到選單欄。",
@@ -458,6 +470,8 @@
         "DEFAULT_ADDON_CHANNEL_LABEL": "預設插件更新通道",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "插件更新通道",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "編輯",
+        "MOVE_DOWN_BUTTON": "下移",
+        "MOVE_UP_BUTTON": "上移",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "瀏覽",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",
         "RESCAN_CLIENTS_BUTTON": "重新掃描",

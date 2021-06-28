@@ -65,7 +65,7 @@ export class CircuitBreakerWrapper {
     );
   }
 
-  public postJson<T>(url: URL | string, body: any, timeoutMs?: number): Promise<T> {
+  public postJson<T>(url: URL | string, body: unknown, timeoutMs?: number): Promise<T> {
     return this.fire<T>(() =>
       this._httpClient
         .post<T>(url.toString(), body)
@@ -97,33 +97,16 @@ export class NetworkService {
     return new CircuitBreakerWrapper(name, this._httpClient, resetTimeoutMs, httpTimeoutMs);
   }
 
-  public getCircuitBreaker2<TIN extends unknown[] = unknown[], TOUT = unknown>(
-    name: string,
-    action: (...args: any[]) => Promise<TOUT> = () => Promise.resolve(undefined),
-    resetTimeoutMs: number = AppConfig.defaultHttpResetTimeoutMs
-  ): CircuitBreaker<TIN, TOUT> {
-    const cb = new CircuitBreaker<TIN, TOUT>(action, {
-      resetTimeout: resetTimeoutMs,
-      errorFilter: (err) => {
-        // Don't trip the breaker on a 404
-        return err.status === 404;
-      },
-    });
-
-    cb.on("open", () => {
-      console.log(`${name} circuit breaker open`);
-    });
-
-    cb.on("close", () => {
-      console.log(`${name} circuit breaker close`);
-    });
-
-    return cb;
-  }
-
   public async getJson<T>(url: URL | string, timeoutMs?: number): Promise<T> {
     return await this._httpClient
       .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS } })
+      .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
+      .toPromise();
+  }
+
+  public async getText(url: URL | string, timeoutMs?: number): Promise<string> {
+    return await this._httpClient
+      .get(url.toString(), { responseType: "text", headers: { ...CACHE_CONTROL_HEADERS } })
       .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
       .toPromise();
   }

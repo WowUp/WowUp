@@ -1,9 +1,7 @@
 @import "../../../variables.scss";
 
-.tab-container {
-}
-
 .theme-logo {
+  content: "";
   opacity: 0.02;
   position: absolute;
   top: 0;
@@ -14,12 +12,14 @@
   overflow: hidden;
   pointer-events: none;
 
-  img {
+  .logo-img {
     height: 100vh;
+    background-image: var(--theme-logo);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: contain;
   }
 }
-
-
 
 .about-container {
   display: flex;
@@ -42,6 +42,9 @@
 
     .link-container {
       margin-top: 1em;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
     }
 
     .patron-img {
@@ -68,7 +71,7 @@
 
     .changelog {
       list-style-type: none;
-      margin: 1em 0;
+      margin: 1.5em 0;
       border-left-width: 3px;
       border-left-style: solid;
       padding: 0.5em 1em 1em 1em;

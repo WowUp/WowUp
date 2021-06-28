@@ -1,6 +1,5 @@
-import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { filter, map } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
@@ -30,6 +29,7 @@ import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
+import { Toc } from "../../models/wowup/toc";
 
 // WOW STRINGS
 
@@ -62,8 +62,12 @@ export class WarcraftService {
 
   // Map the client types so that we can localize them
   public installedClientTypesSelectItems$ = this._installedClientTypesSrc.pipe(
-    filter((clientTypes) => !!clientTypes),
+    filter((clientTypes) => clientTypes !== undefined),
     map((clientTypes) => {
+      if (clientTypes === undefined) {
+        return [];
+      }
+
       return clientTypes.map((ct): SelectItem<WowClientType> => {
         const clientTypeName = getEnumName(WowClientType, ct).toUpperCase();
         return {
@@ -171,25 +175,27 @@ export class WarcraftService {
     try {
       const dirPath = path.join(addonFolderPath, dir);
       const dirFiles = await this._fileService.readdir(dirPath);
-      const tocFile = dirFiles.find((f) => path.extname(f) === ".toc");
-      if (!tocFile) {
+      const tocFiles = dirFiles.filter((f) => path.extname(f) === ".toc");
+      if (tocFiles.length === 0) {
         return undefined;
       }
 
-      const tocPath = path.join(dirPath, tocFile);
-      const toc = await this._tocService.parse(tocPath);
-      const tocMetaData = await this._tocService.parseMetaData(tocPath);
+      const tocs: Toc[] = [];
+      for (const tocFile of tocFiles) {
+        const tocPath = path.join(dirPath, tocFile);
+        const toc = await this._tocService.parse(tocPath);
+        tocs.push(toc);
+      }
 
       return {
         name: dir,
         path: dirPath,
         status: "Pending",
-        toc: toc,
-        tocMetaData: tocMetaData,
+        tocs: tocs,
       };
     } catch (e) {
       console.error(e);
-      return null;
+      return undefined;
     }
   }
 
@@ -211,7 +217,7 @@ export class WarcraftService {
   //   return await this._fileService.pathExists(executablePath);
   // }
 
-  public async getBlizzardAgentPath() {
+  public async getBlizzardAgentPath(): Promise<string> {
     const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
     if (storedAgentPath) {
       return storedAgentPath;

@@ -27,6 +27,8 @@ import { WarcraftInstallationService } from "./services/warcraft/warcraft-instal
 import { SharedModule } from "./shared.module";
 import { AddonService } from "./services/addons/addon.service";
 import { IconService } from "./services/icons/icon.service";
+import { VerticalTabsComponent } from "./components/vertical-tabs/vertical-tabs.component";
+import { HorizontalTabsComponent } from "./components/horizontal-tabs/horizontal-tabs.component";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -40,7 +42,7 @@ export function initializeApp(wowupService: WowUpService) {
 }
 
 @NgModule({
-  declarations: [AppComponent, TitlebarComponent, FooterComponent],
+  declarations: [AppComponent, TitlebarComponent, FooterComponent, VerticalTabsComponent, HorizontalTabsComponent],
   imports: [
     BrowserModule,
     FormsModule,

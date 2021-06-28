@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as path from "path";
-import { BehaviorSubject, from, Subject } from "rxjs";
-import { filter, map, switchMap, tap } from "rxjs/operators";
+import { from, ReplaySubject, Subject } from "rxjs";
+import { map, switchMap, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
@@ -25,9 +25,10 @@ import { WarcraftService } from "./warcraft.service";
   providedIn: "root",
 })
 export class WarcraftInstallationService {
-  private readonly _wowInstallationsSrc = new BehaviorSubject<WowInstallation[]>([]);
+  private readonly _wowInstallationsSrc = new ReplaySubject<WowInstallation[]>(1);
   private readonly _legacyInstallationSrc = new Subject<WowInstallation[]>();
 
+  private _wowInstallations: WowInstallation[] = [];
   private _blizzardAgentPath = "";
 
   public readonly wowInstallations$ = this._wowInstallationsSrc.asObservable();
@@ -44,6 +45,10 @@ export class WarcraftInstallationService {
     private _fileService: FileService,
     private _electronService: ElectronService
   ) {
+    this._wowInstallationsSrc.subscribe((installations) => {
+      this._wowInstallations = installations;
+    });
+
     from(this._warcraftService.getBlizzardAgentPath())
       .pipe(
         tap((blizzardAgentPath) => {
@@ -56,6 +61,30 @@ export class WarcraftInstallationService {
       .subscribe();
   }
 
+  public reOrderInstallation(installationId: string, direction: number): void {
+    const originIndex = this._wowInstallations.findIndex((installation) => installation.id === installationId);
+    if (originIndex === -1) {
+      console.warn("Installation not found to re-order", installationId);
+      return;
+    }
+
+    const newIndex = originIndex + direction;
+    if (newIndex < 0 || newIndex >= this._wowInstallations.length) {
+      console.warn("New index was out of bounds");
+      return;
+    }
+
+    const installationCpy = [...this._wowInstallations];
+
+    [installationCpy[newIndex], installationCpy[originIndex]] = [
+      installationCpy[originIndex],
+      installationCpy[newIndex],
+    ];
+
+    this.setWowInstallations(installationCpy);
+    this._wowInstallationsSrc.next(installationCpy);
+  }
+
   public async getWowInstallationsAsync(): Promise<WowInstallation[]> {
     const results = await this._preferenceStorageService.getObjectAsync<WowInstallation[]>(WOW_INSTALLATIONS_KEY);
     return results || [];
@@ -65,8 +94,13 @@ export class WarcraftInstallationService {
     return this._preferenceStorageService.getObject<WowInstallation[]>(WOW_INSTALLATIONS_KEY) || [];
   }
 
-  public getWowInstallation(installationId: string): WowInstallation {
-    return _.find(this._wowInstallationsSrc.value, (installation) => installation.id === installationId);
+  public getWowInstallation(installationId: string | undefined): WowInstallation | undefined {
+    if (!installationId) {
+      console.warn("getWowInstallation invalid installationId");
+      return undefined;
+    }
+
+    return this._wowInstallations.find((installation) => installation.id === installationId);
   }
 
   public getWowInstallationsByClientType(clientType: WowClientType): WowInstallation[] {
@@ -234,7 +268,7 @@ export class WarcraftInstallationService {
   private async migrateAllLegacyInstallations(blizzardAgentPath: string): Promise<string> {
     if (!blizzardAgentPath) {
       console.info(`Unable to migrate legacy installations, no agent path`);
-      return;
+      return "";
     }
 
     const legacyInstallations: WowInstallation[] = [];
@@ -254,7 +288,7 @@ export class WarcraftInstallationService {
     return blizzardAgentPath;
   }
 
-  private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation> {
+  private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation | undefined> {
     if ([WowClientType.None, WowClientType.ClassicBeta].includes(clientType)) {
       return undefined;
     }
