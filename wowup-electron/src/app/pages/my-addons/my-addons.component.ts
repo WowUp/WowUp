@@ -1117,7 +1117,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const ct = this.addonService.getAllAddonsAvailableForUpdate().length;
     console.debug("updateBadgeCount", ct);
     try {
-      await this.electronService.updateAppBadgeCount(ct);
+      await this.wowUpService.updateAppBadgeCount(ct);
     } catch (e) {
       console.error("Failed to update badge count", e);
     }

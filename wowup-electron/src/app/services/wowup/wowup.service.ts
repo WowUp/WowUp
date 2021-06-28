@@ -21,6 +21,7 @@ import {
   IPC_APP_CHECK_UPDATE,
   IPC_APP_INSTALL_UPDATE,
   IPC_GET_APP_VERSION,
+  IPC_UPDATE_APP_BADGE,
   LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
   MY_ADDONS_SORT_ORDER,
@@ -268,6 +269,15 @@ export class WowUpService {
 
   public set enableAppBadge(enabled: boolean) {
     this._preferenceStorageService.set(ENABLE_APP_BADGE_KEY, enabled);
+  }
+
+  public async updateAppBadgeCount(count: number): Promise<void> {
+    if (count > 0 && !this.enableAppBadge) {
+      return;
+    }
+
+    console.debug("Update app badge", count);
+    await this._electronService.invoke(IPC_UPDATE_APP_BADGE, count);
   }
 
   public getMyAddonsHiddenColumns(): ColumnState[] {

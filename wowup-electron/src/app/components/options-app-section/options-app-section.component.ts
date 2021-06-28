@@ -155,7 +155,7 @@ export class OptionsAppSectionComponent implements OnInit {
 
     const count = evt.checked ? this._addonService.getAllAddonsAvailableForUpdate().length : 0;
 
-    this.electronService.updateAppBadgeCount(count).catch((e) => console.error(e));
+    this.wowupService.updateAppBadgeCount(count).catch((e) => console.error(e));
   };
 
   public onTelemetryChange = (evt: MatSlideToggleChange): void => {

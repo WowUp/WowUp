@@ -299,11 +299,6 @@ export class ElectronService {
     });
   }
 
-  public async updateAppBadgeCount(count: number): Promise<void> {
-    console.debug('Update app badge', count);
-    await this.invoke(IPC_UPDATE_APP_BADGE, count);
-  }
-
   public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
     try {
       return await window.wowup.rendererInvoke(channel, ...args);
