@@ -60,6 +60,7 @@ interface WowUpCurseMatch extends CurseMatch {
 
 const API_URL = "https://addons-ecs.forgesvc.net/api/v2";
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
+const FEATURED_ADDONS_CACHE_TTL_SEC = AppConfig.featuredAddonsCacheTimeSec;
 
 const GAME_TYPE_LISTS = [
   {
@@ -719,8 +720,10 @@ export class CurseAddonProvider extends AddonProvider {
       updatedCount: 50,
     };
 
-    const result = await this._cachingService.transaction(url, () =>
-      this._circuitBreaker.postJson<CurseGetFeaturedResponse>(url, body)
+    const result = await this._cachingService.transaction(
+      url,
+      () => this._circuitBreaker.postJson<CurseGetFeaturedResponse>(url, body),
+      FEATURED_ADDONS_CACHE_TTL_SEC
     );
 
     if (!result) {

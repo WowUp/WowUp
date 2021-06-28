@@ -520,7 +520,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private async updateBadgeCount(): Promise<void> {
     const ct = this._addonService.getAllAddonsAvailableForUpdate().length;
     try {
-      await this.electronService.updateAppBadgeCount(ct);
+      await this.wowUpService.updateAppBadgeCount(ct);
     } catch (e) {
       console.error("Failed to update badge count", e);
     }

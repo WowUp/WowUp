@@ -16,6 +16,20 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.2",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Updating the app badge should now properly check the setting</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+      <li>Reduce the cache time of featured addons responses</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.1",
     html: `
     <div>
