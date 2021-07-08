@@ -243,7 +243,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private buildCategories() {
-    const categoryKeys = getEnumKeys(AddonCategory);
+    const categoryKeys = getEnumKeys(AddonCategory).filter((key) => key.toLowerCase() !== "unknown");
     const categoryItems: CategoryItem[] = categoryKeys.map((key) => {
       return {
         category: AddonCategory[key],
@@ -270,7 +270,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this._lastSelectionState = [];
     this.gridApi?.deselectAll();
   }
-  
+
   public onRowClicked(event: RowClickedEvent): void {
     const selectedNodes = event.api.getSelectedNodes();
 

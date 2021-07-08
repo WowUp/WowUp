@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ADDON_PROVIDER_HUB, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType, WowUpScanResult } from "../../common/wowup/models";
+import { AddonCategory, AddonChannelType, WowUpScanResult } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
 import { WowUpAddonReleaseRepresentation, WowUpAddonRepresentation } from "../models/wowup-api/addon-representations";
@@ -14,6 +14,7 @@ import {
   GetFeaturedAddonsResponse,
   WowUpGetAddonReleaseResponse,
   WowUpGetAddonResponse,
+  WowUpGetAddonsResponse,
   WowUpSearchAddonsResponse,
 } from "../models/wowup-api/api-responses";
 import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
@@ -232,6 +233,17 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
+  public async getCategory(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const gameType = this.getWowGameType(installation.clientType);
+    const response = await this.getAddonsByCategory(gameType, category);
+
+    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, gameType)).filter(
+      (sr) => sr !== undefined
+    );
+
+    return searchResults;
+  }
+
   public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
@@ -302,6 +314,15 @@ export class WowUpAddonProvider extends AddonProvider {
 
     return scanResults;
   };
+
+  private async getAddonsByCategory(gameType: WowGameType, category: AddonCategory) {
+    const url = new URL(`${API_URL}/addons/category/${category}/${gameType}`);
+    return await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WowUpGetAddonsResponse>(url),
+      CHANGELOG_CACHE_TTL_SEC
+    );
+  }
 
   private async getAddonById(addonId: number | string) {
     const url = new URL(`${API_URL}/addons/${addonId}`);
