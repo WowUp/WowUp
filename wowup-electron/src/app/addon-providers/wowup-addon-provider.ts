@@ -428,11 +428,21 @@ export class WowUpAddonProvider extends AddonProvider {
       downloadCount: representation.total_download_count,
       files: searchResultFiles,
       releasedAt: new Date(),
-      screenshotUrl: "",
-      screenshotUrls: [],
       summary: representation.description,
       fundingLinks: [...(representation?.funding_links ?? [])],
+      screenshotUrls: this.getScreenshotUrls(clientReleases),
     };
+  }
+
+  // Currently we only support images, so we filter for those
+  private getScreenshotUrls(releases: WowUpAddonReleaseRepresentation[]): string[] {
+    const urls = _.flatten(
+      releases.map((release) =>
+        release.previews?.filter((preview) => preview.preview_type === "image").map((preview) => preview.url)
+      )
+    ).filter((url) => !!url);
+
+    return _.uniq(urls);
   }
 
   private getAddon(
@@ -469,6 +479,12 @@ export class WowUpAddonProvider extends AddonProvider {
       throw new Error("Invalid matching version data");
     }
 
+    const screenshotUrls = this.getScreenshotUrls([matchedRelease]);
+    console.log("matchedRelease", matchedRelease);
+    if (screenshotUrls.length) {
+      console.debug(screenshotUrls);
+    }
+
     return {
       id: uuidv4(),
       author: authors,
@@ -497,6 +513,7 @@ export class WowUpAddonProvider extends AddonProvider {
       latestChangelog: scanResult.exactMatch?.matched_release?.body,
       externalLatestReleaseId: scanResult?.exactMatch?.matched_release?.id?.toString(),
       installationId: installation.id,
+      screenshotUrls,
     };
   }
 

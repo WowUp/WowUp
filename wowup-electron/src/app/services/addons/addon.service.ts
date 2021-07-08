@@ -1258,6 +1258,7 @@ export class AddonService {
         addon.thumbnailUrl = result.thumbnailUrl;
         addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
         addon.warningType = undefined;
+        addon.screenshotUrls = result.screenshotUrls;
 
         // Check for a new download URL
         if (latestFile?.downloadUrl && latestFile.downloadUrl !== addon.downloadUrl) {
