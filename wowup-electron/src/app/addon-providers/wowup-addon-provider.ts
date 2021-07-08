@@ -480,10 +480,6 @@ export class WowUpAddonProvider extends AddonProvider {
     }
 
     const screenshotUrls = this.getScreenshotUrls([matchedRelease]);
-    console.log("matchedRelease", matchedRelease);
-    if (screenshotUrls.length) {
-      console.debug(screenshotUrls);
-    }
 
     return {
       id: uuidv4(),
