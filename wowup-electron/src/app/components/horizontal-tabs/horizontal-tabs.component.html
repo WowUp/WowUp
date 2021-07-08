@@ -4,8 +4,7 @@
   linux: electronService.isLinux
 }">
   <div *ngFor="let tab of tabsTop" class="tab"
-    [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)"
-    [matTooltip]="tab.tooltipKey | translate" [matTooltipPosition]="'below'">
+    [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)">
     <mat-icon class="tab-icon tab-icon-inactive"
       [ngClass]="{ 'tab-icon-active': tab.isSelected$ | async, 'tab-icon-disabled': tab.isDisabled$ | async }"
       [svgIcon]="tab.icon">
@@ -19,18 +18,18 @@
   <a appExternalLink class="text-1 tab hover-bg-secondary-2" href="https://wowup.io/guide/section/my-addons/overview"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}">
     <mat-icon class="tab-icon tab-icon-inactive" svgIcon="far:question-circle"></mat-icon>
+    <div class="tab-title">{{ 'PAGES.HOME.GUIDE_TAB_TITLE' | translate }}</div>
   </a>
   <!-- <a appExternalLink class="patreon-link tab hover-bg-secondary-2" href="https://www.patreon.com/jliddev"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate }}">
     <img class="tab-icon patron-img" src="assets/images/patreon_logo_small.png" />
   </a> -->
-  <a appExternalLink class="text-1 tab hover-bg-secondary-2" href="https://discord.gg/rk4F5aD"
+  <!-- <a appExternalLink class="text-1 tab hover-bg-secondary-2" href="https://discord.gg/rk4F5aD"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}">
     <mat-icon class="tab-icon tab-icon-inactive" svgIcon="fab:discord"></mat-icon>
-  </a>
+  </a> -->
   <div *ngFor="let tab of tabsBottom" class="tab hover-bg-secondary-2"
-    [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)"
-    [matTooltip]="tab.tooltipKey | translate" [matTooltipPosition]="'below'">
+    [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)">
     <!-- <div class="tab-icon"> -->
     <mat-icon class="tab-icon tab-icon-inactive" [svgIcon]="tab.icon"
       [ngClass]="{ 'tab-icon-active': tab.isSelected$ | async, 'tab-icon-disabled': tab.isDisabled$ | async }">
