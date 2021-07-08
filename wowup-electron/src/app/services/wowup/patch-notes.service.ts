@@ -16,6 +16,26 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.5.0",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+      <li>Added WowUpHub category support</li>
+      <li>Added WowUpHub preview support</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with addons being ignored by TukUI too early during a scan</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+      <li>Tweak the tabs some more</li>
+      <li>Images details tab is now Previews</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.2",
     html: `
     <div>
