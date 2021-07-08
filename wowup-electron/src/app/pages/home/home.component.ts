@@ -31,7 +31,6 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getProtocol } from "../../utils/string.utils";
-import { LightboxConfig } from "ngx-lightbox";
 
 @Component({
   selector: "app-home",
@@ -63,12 +62,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _snackBarService: SnackbarService,
     private _cdRef: ChangeDetectorRef,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _dialogFactory: DialogFactory,
-    private _lightboxConfig: LightboxConfig
+    private _dialogFactory: DialogFactory
   ) {
-    _lightboxConfig.fadeDuration = 0.3;
-    _lightboxConfig.resizeDuration = 0.3;
-
     const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
       this.hasWowClient = installations.length > 0;
     });

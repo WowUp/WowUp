@@ -1,5 +1,4 @@
 import { AgGridModule } from "ag-grid-angular";
-import { LightboxModule } from "ngx-lightbox";
 
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
@@ -48,6 +47,7 @@ import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
+import { LightboxModule, LIGHTBOX_CONFIG } from "ng-gallery/lightbox";
 
 @NgModule({
   declarations: [
