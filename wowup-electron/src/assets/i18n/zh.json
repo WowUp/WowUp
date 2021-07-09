@@ -203,7 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支持插件作者",
-      "IMAGES_TAB": "Previews",
+      "IMAGES_TAB": "预览",
       "MISSING_DEPENDENCIES": "缺失的依赖项",
       "NO_CHANGELOG_TEXT": "更新记录不可用",
       "VIEW_IN_BROWSER_BUTTON": "在浏览器中查看",
@@ -298,7 +298,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "关于",
       "GET_ADDONS_TAB_TITLE": "获取插件",
-      "GUIDE_TAB_TITLE": "Guide",
+      "GUIDE_TAB_TITLE": "指南（英语）",
       "MIGRATING_ADDONS": "正在迁移插件...",
       "MY_ADDONS_TAB_TITLE": "我的插件",
       "NEWS_TAB_TITLE": "新闻（英语）",
@@ -346,7 +346,7 @@
         "PATREON_SUPPORT": "通过 Patreon 向 WowUp 捐助（英语）",
         "SEARCH_RESULTS": "共 {count} 条结果",
         "VIEW_GITHUB": "在 GitHub 上查看源代码",
-        "VIEW_GUIDE": "访问指南，探索 WowUp 的功能（英语）"
+        "VIEW_GUIDE": "访问指南，探索 WowUp 的功能"
       },
       "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "缺失必要的依赖项",
       "RESCAN_FOLDERS_BUTTON": "重新扫描",
