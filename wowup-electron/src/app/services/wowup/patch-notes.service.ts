@@ -27,11 +27,13 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
       <li>Fix an issue with addons being ignored by TukUI too early during a scan</li>
+      <li>Fix an issue with certain addons not being able to be re-scanned</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
       <li>Tweak the tabs some more</li>
       <li>Images details tab is now Previews</li>
+      <li>Use a different lightbox library for previews</li>
     </ul>
     </div>`,
   },
