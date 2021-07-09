@@ -1486,7 +1486,7 @@ export class AddonService {
 
       matchedAddonFolders.forEach((maf) => {
         if (maf.matchingAddon) {
-          const targetToc = this._tocService.getTocForGameType2(maf.tocs, installation.clientType);
+          const targetToc = this._tocService.getTocForGameType2(maf, installation.clientType);
           this.setExternalIds(maf.matchingAddon, targetToc);
         }
       });
@@ -1598,7 +1598,7 @@ export class AddonService {
       return false;
     }
 
-    const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
 
     // if the folder is load on demand, it 'should' be a sub folder
     const isLoadOnDemand = targetToc?.loadOnDemand === "1";
@@ -1882,7 +1882,7 @@ export class AddonService {
     installation: WowInstallation,
     matchedAddonFolderNames: string[]
   ): Promise<Addon> {
-    const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
     const tocMissingDependencies = _.difference(targetToc?.dependencyList, matchedAddonFolderNames);
     const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(addonFolder.path);
 
