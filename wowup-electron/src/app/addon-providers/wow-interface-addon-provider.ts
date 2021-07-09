@@ -149,7 +149,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     const addonDetails = await this.getAllAddonDetails(addonIds);
 
     for (const addonFolder of wowiFolders) {
-      const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+      const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
       if (!targetToc?.wowInterfaceId) {
         continue;
       }
@@ -223,7 +223,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolder: AddonFolder
   ): Addon {
-    const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
 
     return {
       id: uuidv4(),

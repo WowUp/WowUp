@@ -19,8 +19,9 @@ import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { AddonDetailComponent, AddonDetailModel } from "./addon-detail.component";
 import { mockPreload } from "../../tests/test-helpers";
 import { WowUpService } from "../../services/wowup/wowup.service";
-import { LightboxModule } from "ngx-lightbox";
 import { LinkService } from "../../services/links/link.service";
+import { GalleryModule } from "ng-gallery";
+import { LightboxModule } from "ng-gallery/lightbox";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;
@@ -73,6 +74,7 @@ describe("AddonDetailComponent", () => {
             useClass: TranslateMessageFormatCompiler,
           },
         }),
+        GalleryModule,
         LightboxModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

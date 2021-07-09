@@ -17,7 +17,8 @@ import { AddonScanError, AddonSyncError } from "../../errors";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { LightboxModule } from "ngx-lightbox";
+import { GalleryModule } from "ng-gallery";
+import { LightboxModule } from "ng-gallery/lightbox";
 
 describe("HomeComponent", () => {
   let electronService: ElectronService;
@@ -72,6 +73,7 @@ describe("HomeComponent", () => {
             useClass: TranslateMessageFormatCompiler,
           },
         }),
+        GalleryModule,
         LightboxModule,
       ],
       providers: [MatSnackBar],

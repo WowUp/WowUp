@@ -141,7 +141,7 @@ export class TukUiAddonProvider extends AddonProvider {
     ).reverse();
 
     for (const addonFolder of tukProjectAddonFolders) {
-      const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+      const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
 
       let tukUiAddon: TukUiAddon;
       if (targetToc?.tukUiProjectId) {

@@ -36,7 +36,7 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
       return;
     }
 
-    const targetToc = this._tocService.getTocForGameType2(companion.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(companion, installation.clientType);
     const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(companion.path);
 
     companion.matchingAddon = {
