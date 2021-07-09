@@ -31,6 +31,8 @@ const CHANGELOGS: ChangeLog[] = [
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
+      <li>Spanish locale updates (SkollVargr)</li>
+      <li>Chinese locale updates (CyanoHao)</li>
       <li>Tweak the tabs some more</li>
       <li>Images details tab is now Previews</li>
       <li>Use a different lightbox library for previews</li>
