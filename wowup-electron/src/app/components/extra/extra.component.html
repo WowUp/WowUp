@@ -1,0 +1,55 @@
+<div class="container">
+
+  <div *ngFor="let account of accountMap | async" class="account-container">
+    <h2>Account: {{account.name}}</h2>
+    <mat-accordion class="variable-accordion" multi>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Account Variables
+          </mat-panel-title>
+          <mat-panel-description>
+            {{account.globalVariables.length}} files, {{account.size | sizeDisplay}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <ul class="variable-list">
+          <li *ngFor="let gvar of account.globalVariables">
+            <div [ngClass]="{ 'text-warning': !gvar.hasAddon }">{{gvar.name}} | {{gvar.size | sizeDisplay}}</div>
+          </li>
+        </ul>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel *ngFor="let server of account.servers">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Server: {{server.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ server.characters.length }} characters, {{server.size | sizeDisplay}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <mat-accordion class="sub-accordion" multi>
+          <mat-expansion-panel *ngFor="let char of server.characters">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Character: {{char.name}}
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ char.variables.length }} files, {{char.size | sizeDisplay}}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <ul class="variable-list">
+              <li *ngFor="let svar of char.variables">
+                <div [ngClass]="{ 'text-warning': !svar.hasAddon }">{{svar.name}} | {{svar.size | sizeDisplay}}</div>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

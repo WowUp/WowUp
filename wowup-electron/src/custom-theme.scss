@@ -596,6 +596,11 @@ $alliance-theme-light: mat.define-light-theme(
   color: var(--text-3) !important;
 }
 
+.sub-accordion .mat-expansion-panel-header,
+.sub-accordion .mat-expansion-panel-body {
+  background-color: var(--background-secondary-2);
+}
+
 // LIGHT BOX
 
 .lb-outerContainer {

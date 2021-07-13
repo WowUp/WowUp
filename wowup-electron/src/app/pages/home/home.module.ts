@@ -48,6 +48,8 @@ import { OptionsComponent } from "../options/options.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
 import { LightboxModule, LIGHTBOX_CONFIG } from "ng-gallery/lightbox";
+import { ExtraComponent } from "../../components/extra/extra.component";
+import { SizeDisplayPipe } from "../../pipes/size-display.pipe";
 
 @NgModule({
   declarations: [
@@ -88,8 +90,10 @@ import { LightboxModule, LIGHTBOX_CONFIG } from "ng-gallery/lightbox";
     AddonThumbnailComponent,
     PatchNotesDialogComponent,
     TrustHtmlPipe,
+    SizeDisplayPipe,
     NewsPanelComponent,
     ExternalUrlConfirmationDialogComponent,
+    ExtraComponent,
   ],
   imports: [
     CommonModule,
@@ -112,6 +116,7 @@ import { LightboxModule, LIGHTBOX_CONFIG } from "ng-gallery/lightbox";
     RelativeDurationPipe,
     NgxDatePipe,
     TrustHtmlPipe,
+    SizeDisplayPipe,
   ],
 })
 export class HomeModule {}
