@@ -86,6 +86,12 @@ import { WowUpFolderScanner } from "./wowup-folder-scanner";
 
 let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
+let PROXY_INFO: ProxyInfo | undefined = undefined;
+
+interface ProxyInfo {
+  host: string;
+  port: number;
+}
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -131,6 +137,14 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 
 export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
   USER_AGENT = userAgent;
+
+  getProxyInfo(window)
+    .then((proxyInfo) => {
+      PROXY_INFO = proxyInfo;
+    })
+    .catch((e) => {
+      log.error(e);
+    });
 
   // Remove the pending URLs once read so they are only able to be gotten once
   handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
@@ -460,6 +474,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
         headers: {
           "User-Agent": USER_AGENT,
         },
+        proxy: PROXY_INFO,
       });
 
       // const totalLength = headers["content-length"];
@@ -491,6 +506,30 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
   }
 }
+
+// From: https://evandontje.com/2020/04/02/automatic-system-proxy-configuration-for-electron-applications/
+async function getProxyInfo(window: BrowserWindow): Promise<ProxyInfo> {
+  const session = window.webContents.session;
+
+  const proxyUrl = await session.resolveProxy("https://wowup.io");
+  // DIRECT means no proxy is configured
+  if (proxyUrl === "DIRECT") {
+    log.info("No proxy detected");
+    return;
+  }
+
+  log.info(`Proxy detected: ${proxyUrl}`);
+  const proxyUrlComponents = proxyUrl.split(":");
+
+  const host = proxyUrlComponents[0].split(" ")[1];
+  const port = parseInt(proxyUrlComponents[1], 10);
+
+  return {
+    host,
+    port,
+  };
+}
+
 // Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
 function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
