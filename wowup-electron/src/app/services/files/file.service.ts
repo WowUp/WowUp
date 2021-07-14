@@ -17,10 +17,12 @@ import {
   IPC_READDIR,
   IPC_READ_FILE_BUFFER_CHANNEL,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
+  IPC_LIST_DIR_RECURSIVE,
+  IPC_GET_DIRECTORY_TREE,
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
-import { FsDirent, FsStats } from "../../../common/models/ipc-events";
+import { FsDirent, FsStats, TreeNode } from "../../../common/models/ipc-events";
 import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
@@ -118,6 +120,14 @@ export class FileService {
   /** Returns the time in ms of the last updated file in a folder */
   public async getLatestDirUpdateTime(dirPath: string): Promise<number> {
     return await this._electronService.invoke(IPC_GET_LATEST_DIR_UPDATE_TIME, dirPath);
+  }
+
+  public async listDirectoryRecursive(dirPath: string): Promise<string[]> {
+    return await this._electronService.invoke(IPC_LIST_DIR_RECURSIVE, dirPath);
+  }
+
+  public async getDirectoryTree(dirPath: string): Promise<TreeNode> {
+    return await this._electronService.invoke(IPC_GET_DIRECTORY_TREE, dirPath);
   }
 
   public async writeFile(sourcePath: string, contents: string): Promise<string> {

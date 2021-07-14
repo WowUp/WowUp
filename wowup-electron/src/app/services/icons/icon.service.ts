@@ -27,6 +27,7 @@ import {
   faCog,
   faAngleUp,
   faAngleDown,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-icons";
@@ -66,6 +67,7 @@ export class IconService {
     this.addSvg(faCog);
     this.addSvg(faAngleUp);
     this.addSvg(faAngleDown);
+    this.addSvg(faChevronRight);
   }
 
   private addSvg(icon: IconDefinition): void {

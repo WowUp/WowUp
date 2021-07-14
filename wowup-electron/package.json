@@ -124,6 +124,7 @@
     "@bbob/core": "2.7.0",
     "@bbob/html": "2.7.0",
     "@bbob/preset-html5": "2.7.0",
+    "@circlon/angular-tree-component": "11.0.4",
     "@fortawesome/fontawesome-svg-core": "1.2.35",
     "@fortawesome/free-brands-svg-icons": "5.15.3",
     "@fortawesome/free-regular-svg-icons": "5.15.3",

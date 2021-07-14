@@ -66,6 +66,8 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
+  IPC_LIST_DIR_RECURSIVE,
+  IPC_GET_DIRECTORY_TREE,
 } from "../src/common/constants";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { Addon } from "../src/common/entities/addon";
@@ -73,13 +75,13 @@ import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
 import { DownloadStatus } from "../src/common/models/download-status";
 import { DownloadStatusType } from "../src/common/models/download-status-type";
-import { FsDirent, FsStats } from "../src/common/models/ipc-events";
+import { FsDirent, FsStats, TreeNode } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import { getLastModifiedFileDate } from "./file.utils";
+import { getDirTree, getLastModifiedFileDate, readDirRecursive } from "./file.utils";
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
@@ -401,6 +403,14 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_GET_LATEST_DIR_UPDATE_TIME, (evt, dirPath: string) => {
     return getLastModifiedFileDate(dirPath);
+  });
+
+  handle(IPC_LIST_DIR_RECURSIVE, (evt, dirPath: string): Promise<string[]> => {
+    return readDirRecursive(dirPath);
+  });
+
+  handle(IPC_GET_DIRECTORY_TREE, (evt, dirPath: string): Promise<TreeNode> => {
+    return getDirTree(dirPath);
   });
 
   handle(IPC_MINIMIZE_WINDOW, () => {
