@@ -11,6 +11,7 @@ import { WtfService } from "../../services/wtf/wtf.service";
 import { removeExtension } from "../../utils/string.utils";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 
 interface SavedVariable {
   name: string;
@@ -61,36 +62,55 @@ export class ExtraComponent implements OnInit, OnDestroy {
   private _active = false;
 
   public accountMap = new BehaviorSubject<AccountItem[]>([]);
+  public loading$ = new BehaviorSubject<boolean>(false);
+  public error$ = new BehaviorSubject<string>("");
+  public installations: WowInstallation[] = [];
+  public selectedInstallationId = "";
+
+  public get selectedInstallationLabel(): string {
+    return this.installations.find((inst) => inst.id === this.selectedInstallationId)?.label ?? "";
+  }
 
   public constructor(
     public electronService: ElectronService,
-    private _sessionService: SessionService,
     private _warcraftService: WarcraftService,
+    private _warcraftInstallationService: WarcraftInstallationService,
     private _wtfService: WtfService
-  ) {
-    // this._sessionService.se
-    //   .pipe(
-    //     filter((newTabIndex) => newTabIndex === this.tabIndex),
-    //     debounceTime(200),
-    //     map(() => {
-    //       this.lazyLoad();
-    //     })
-    //   )
-    //   .subscribe();
-  }
+  ) {}
 
   public ngOnInit(): void {}
 
   public ngOnDestroy(): void {}
 
-  private lazyLoad() {
-    console.debug("lazyLoad");
-    from(this.loadAccounts()).pipe(first()).subscribe();
+  public onClientChange(): void {
+    const installation = this.installations.find((inst) => inst.id === this.selectedInstallationId);
+    from(this.loadAccounts(installation))
+      .pipe(first())
+      .subscribe((accounts) => {
+        this.accountMap.next(accounts);
+      });
   }
 
-  private async loadAccounts(): Promise<void> {
+  private lazyLoad() {
+    console.debug("lazyLoad");
+    this.loading$.next(true);
+    this.error$.next("");
+    this.installations = this._warcraftInstallationService.getWowInstallations();
+    this.selectedInstallationId = this.installations[0]?.id ?? "";
+
+    from(this.loadAccounts(this.installations[0]))
+      .pipe(first())
+      .subscribe((accounts) => {
+        this.accountMap.next(accounts);
+      });
+  }
+
+  private async loadAccounts(installation: WowInstallation): Promise<AccountItem[]> {
     try {
-      const installation = this._sessionService.getSelectedWowInstallation();
+      if (!installation) {
+        return [];
+      }
+
       const accounts = await this._wtfService.getAccounts(installation);
       const addonFolders = await this._warcraftService.listAddons(installation);
       console.log("addonFolders", addonFolders);
@@ -111,9 +131,13 @@ export class ExtraComponent implements OnInit, OnDestroy {
         });
       }
 
-      this.accountMap.next(accountMap);
+      return accountMap;
     } catch (e) {
       console.error(e);
+      this.error$.next(e.message);
+      return [];
+    } finally {
+      this.loading$.next(false);
     }
   }
 

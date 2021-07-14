@@ -58,27 +58,32 @@ export class WtfService {
     server: string,
     character: string
   ): Promise<FileStats[]> {
-    const characterPath = path.join(
-      this.getAccountsPath(installation),
-      account,
-      server,
-      character,
-      SAVED_VARIABLES_FOLDER
-    );
-    const entries = await this._fileService.listFiles(characterPath, "*.lua");
+    try {
+      const characterPath = path.join(
+        this.getAccountsPath(installation),
+        account,
+        server,
+        character,
+        SAVED_VARIABLES_FOLDER
+      );
+      const entries = await this._fileService.listFiles(characterPath, "*.lua");
 
-    const entryPaths = entries.map((entry) => path.join(characterPath, entry));
-    const fileSizes = await this._fileService.statFiles(entryPaths);
+      const entryPaths = entries.map((entry) => path.join(characterPath, entry));
+      const fileSizes = await this._fileService.statFiles(entryPaths);
 
-    const fsStats: FileStats[] = Object.keys(fileSizes).map((key) => {
-      return {
-        name: path.basename(key),
-        path: key,
-        stats: fileSizes[key],
-      };
-    });
+      const fsStats: FileStats[] = Object.keys(fileSizes).map((key) => {
+        return {
+          name: path.basename(key),
+          path: key,
+          stats: fileSizes[key],
+        };
+      });
 
-    return fsStats;
+      return fsStats;
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
   }
 
   public async getGlobalVariables(installation: WowInstallation, account: string): Promise<FileStats[]> {
