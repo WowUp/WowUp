@@ -36,6 +36,7 @@ const CHANGELOGS: ChangeLog[] = [
       <li>Tweak the tabs some more</li>
       <li>Images details tab is now Previews</li>
       <li>Use a different lightbox library for previews</li>
+      <li>Expanded system proxy support</li>
     </ul>
     </div>`,
   },
