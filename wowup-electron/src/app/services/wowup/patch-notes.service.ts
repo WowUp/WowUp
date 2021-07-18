@@ -16,6 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.3",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with auto updates failing with the same addon installed in multiple WoW clients</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.2",
     html: `
     <div>
