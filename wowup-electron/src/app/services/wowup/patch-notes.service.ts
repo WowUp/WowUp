@@ -22,6 +22,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
       <li>Fix an issue with auto updates failing with the same addon installed in multiple WoW clients</li>
+      <li>Fix an caching issue with CurseForge featured addons</li>
     </ul>
     </div>`,
   },
