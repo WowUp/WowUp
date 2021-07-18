@@ -14,6 +14,7 @@ import * as log from "electron-log";
 import * as fs from "fs-extra";
 import * as globrex from "globrex";
 import * as _ from "lodash";
+import { nanoid } from "nanoid";
 import * as nodeDiskInfo from "node-disk-info";
 import * as pLimit from "p-limit";
 import * as path from "path";
@@ -450,7 +451,9 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
-      const savePath = path.join(arg.outputFolder, arg.fileName);
+      await fs.ensureDir(arg.outputFolder, 0o666);
+
+      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
       const { data } = await axios({

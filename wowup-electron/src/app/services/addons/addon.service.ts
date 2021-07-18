@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import { nanoid } from "nanoid";
 import * as path from "path";
 import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from "rxjs";
 import { catchError, filter, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
@@ -653,7 +654,7 @@ export class AddonService {
         progress: 75,
       });
 
-      const unzipPath = path.join(this._wowUpService.applicationDownloadsFolderPath, uuidv4());
+      const unzipPath = path.join(this._wowUpService.applicationDownloadsFolderPath, nanoid());
 
       try {
         unzippedDirectory = await this._fileService.unzipFile(downloadedFilePath, unzipPath);
