@@ -28,6 +28,7 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
       <li>Fix an issue with addons being ignored by TukUI too early during a scan</li>
       <li>Fix an issue with certain addons not being able to be re-scanned</li>
+      <li>Fix an issue with updating the same addon in multiple WoW clients at the same time</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
