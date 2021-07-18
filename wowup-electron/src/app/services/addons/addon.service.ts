@@ -4,6 +4,7 @@ import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription 
 import { catchError, filter, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 
 import { Injectable } from "@angular/core";
 
@@ -653,7 +654,7 @@ export class AddonService {
         progress: 75,
       });
 
-      const unzipPath = path.join(this._wowUpService.applicationDownloadsFolderPath, uuidv4());
+      const unzipPath = path.join(this._wowUpService.applicationDownloadsFolderPath, nanoid());
 
       try {
         unzippedDirectory = await this._fileService.unzipFile(downloadedFilePath, unzipPath);

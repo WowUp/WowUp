@@ -19,6 +19,7 @@ import * as pLimit from "p-limit";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
+import { nanoid } from "nanoid";
 
 import {
   IPC_ADDONS_SAVE_ALL,
@@ -33,6 +34,7 @@ import {
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
   IPC_GET_ASSET_FILE_PATH,
+  IPC_GET_DIRECTORY_TREE,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
@@ -40,6 +42,7 @@ import {
   IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_ZOOM_FACTOR,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_LIST_DIR_RECURSIVE,
   IPC_LIST_DIRECTORIES_CHANNEL,
   IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
@@ -66,8 +69,6 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
-  IPC_LIST_DIR_RECURSIVE,
-  IPC_GET_DIRECTORY_TREE,
 } from "../src/common/constants";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { Addon } from "../src/common/entities/addon";
@@ -474,7 +475,9 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
-      const savePath = path.join(arg.outputFolder, arg.fileName);
+      await fs.ensureDir(arg.outputFolder, 0o666);
+
+      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
       const { data } = await axios({
