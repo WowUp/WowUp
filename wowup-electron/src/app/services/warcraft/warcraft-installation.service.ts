@@ -288,6 +288,10 @@ export class WarcraftInstallationService {
     return blizzardAgentPath;
   }
 
+  /**
+   * Migrate the old method of storing installation data into the new more flexible one
+   * @deprecated
+   */
   private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation | undefined> {
     if ([WowClientType.None, WowClientType.ClassicBeta].includes(clientType)) {
       return undefined;

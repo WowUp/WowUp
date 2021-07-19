@@ -123,6 +123,11 @@ export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
 export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
 export const ENABLE_APP_BADGE_KEY = "enable_app_badge";
 export const TRUSTED_DOMAINS_KEY = "trusted_domains";
+export const RETAIL_LOCATION_KEY = "wow_retail_location"; // TODO remove, deprecated
+export const RETAIL_PTR_LOCATION_KEY = "wow_retail_ptr_location"; // TODO remove, deprecated
+export const CLASSIC_LOCATION_KEY = "wow_classic_location"; // TODO remove, deprecated
+export const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location"; // TODO remove, deprecated
+export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
 
 // THEMES
 export const DEFAULT_THEME = "default-theme";
@@ -155,6 +160,8 @@ export const WOW_RETAIL_PTR_FOLDER = "_ptr_";
 export const WOW_CLASSIC_PTR_FOLDER = "_classic_ptr_";
 export const WOW_BETA_FOLDER = "_beta_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
+export const WOW_ADDON_FOLDER_NAME = "AddOns";
+export const WOW_INTERFACE_FOLDER_NAME = "Interface";
 
 export const TAB_INDEX_MY_ADDONS = 0;
 export const TAB_INDEX_GET_ADDONS = 1;
