@@ -456,7 +456,7 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
-    const addons = await this.getFeaturedAddonList();
+    const addons = await this.getFeaturedAddonList(installation);
     const filteredAddons = this.filterFeaturedAddons(addons, installation.clientType);
 
     await this.removeBlockedItems(filteredAddons);
@@ -710,18 +710,21 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
-  private async getFeaturedAddonList(): Promise<CurseSearchResult[]> {
+  private async getFeaturedAddonList(wowInstallation: WowInstallation): Promise<CurseSearchResult[]> {
+    const flavor = this.getGameVersionFlavor(wowInstallation.clientType);
     const url = `${API_URL}/addon/featured`;
 
     const body = {
       gameId: 1,
+      gameVersionFlavor: flavor,
       featuredCount: 6,
       popularCount: 50,
       updatedCount: 50,
     };
 
+    const cacheKey = `${flavor}-${url}`;
     const result = await this._cachingService.transaction(
-      url,
+      cacheKey,
       () => this._circuitBreaker.postJson<CurseGetFeaturedResponse>(url, body),
       FEATURED_ADDONS_CACHE_TTL_SEC
     );
