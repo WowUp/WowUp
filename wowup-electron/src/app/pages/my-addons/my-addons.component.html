@@ -9,7 +9,7 @@
         <mat-label>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
         <mat-select class="select pointer" [(value)]="selectedInstallationId" (selectionChange)="onClientChange()"
           [disabled]="enableControls === false" [disableOptionCentering]="true">
-          <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
+          <mat-option [value]="installation.id" *ngFor="let installation of trackingEnabled(wowInstallations$) | async">
             {{ installation.label }}
           </mat-option>
         </mat-select>

@@ -477,7 +477,9 @@
         "RESCAN_CLIENTS_BUTTON": "Re-Scan",
         "RESCAN_CLIENTS_LABEL": "Rescan installed World of Warcraft products",
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
-        "TITLE": "World of Warcraft"
+        "TITLE": "World of Warcraft",
+        "TRACK_ADDONS_LABEL": "Track Addons",
+        "TRACK_ADDONS_DESCRIPTION": "If enabled, this application's addons will be tracked"
       }
     }
   }

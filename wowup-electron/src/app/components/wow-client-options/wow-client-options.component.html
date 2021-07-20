@@ -50,6 +50,15 @@
         (change)="onDefaultAutoUpdateChange($event)">
       </mat-slide-toggle>
     </div>
+    <div class="row">
+      <div class="grow">
+        <p>{{ "PAGES.OPTIONS.WOW.TRACK_ADDONS_LABEL" | translate }}</p>
+        <small class="text-2">{{ "PAGES.OPTIONS.WOW.TRACK_ADDONS_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle [(checked)]="installationModel.defaultTrackAddons" [disabled]="(editMode$ | async) !== true"
+        (change)="onDefaultTrackAddonsChange($event)">
+      </mat-slide-toggle>
+    </div>
   </mat-card-content>
   <mat-card-actions class="row">
     <button *ngIf="(editMode$ | async) === true" mat-button color="warn" [disabled]="(isBusy$ | async) === true"

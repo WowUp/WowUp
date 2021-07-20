@@ -145,6 +145,14 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this.installationModel.defaultAutoUpdate = evt.checked;
   }
 
+  public onDefaultTrackAddonsChange(evt: MatSlideToggleChange): void {
+    if (!this.installationModel) {
+      return;
+    }
+
+    this.installationModel.defaultTrackAddons = evt.checked;
+  }
+
   public onClickMoveUp(): void {
     this._warcraftInstallationService.reOrderInstallation(this.installationId, -1);
   }

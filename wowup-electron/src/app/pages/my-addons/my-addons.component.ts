@@ -13,7 +13,7 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, delay, first, map, switchMap, tap } from "rxjs/operators";
+import { catchError, debounceTime, delay, filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -880,6 +880,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     evt.preventDefault();
     this._lastSelectionState = [];
     this.gridApi?.deselectAll();
+  }
+
+  public trackingEnabled(installations: Observable<WowInstallation[]>): Observable<WowInstallation[]> {
+    return installations.pipe(
+      map(theList => theList.filter(anInstall => anInstall.defaultTrackAddons === true)),
+      filter(items => items && items.length > 0)
+    );
   }
 
   private async lazyLoad(): Promise<void> {

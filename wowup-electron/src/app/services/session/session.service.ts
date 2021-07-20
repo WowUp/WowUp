@@ -67,14 +67,16 @@ export class SessionService {
   }
 
   public onWowInstallationsChange(wowInstallations: WowInstallation[]): void {
-    if (wowInstallations.length === 0) {
+    const trackingEnabledInstallations = wowInstallations.filter(install => install.defaultTrackAddons);
+
+    if (trackingEnabledInstallations.length === 0) {
       this._selectedHomeTabSrc.next(TAB_INDEX_SETTINGS);
       return;
     }
 
-    let selectedInstall = _.find(wowInstallations, (installation) => installation.selected);
+    let selectedInstall = _.find(trackingEnabledInstallations, (installation) => installation.selected);
     if (!selectedInstall) {
-      selectedInstall = _.first(wowInstallations);
+      selectedInstall = _.first(trackingEnabledInstallations);
       if (selectedInstall) {
         this.setSelectedWowInstallation(selectedInstall.id);
       }

@@ -9,4 +9,5 @@ export interface WowInstallation {
   selected: boolean;
   defaultAddonChannelType: AddonChannelType;
   defaultAutoUpdate: boolean;
+  defaultTrackAddons: boolean;
 }

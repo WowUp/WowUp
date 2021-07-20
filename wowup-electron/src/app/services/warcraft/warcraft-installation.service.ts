@@ -215,6 +215,7 @@ export class WarcraftInstallationService {
       label: label,
       location: applicationPath,
       selected: false,
+      defaultTrackAddons: true,
     };
 
     return installation;
@@ -244,6 +245,7 @@ export class WarcraftInstallationService {
         selected: false,
         defaultAddonChannelType: AddonChannelType.Stable,
         defaultAutoUpdate: false,
+        defaultTrackAddons: true,
       };
 
       try {
@@ -330,6 +332,7 @@ export class WarcraftInstallationService {
       label,
       location: newLocation,
       selected: false,
+      defaultTrackAddons: true,
     };
 
     this.addInstallation(installation, false);
