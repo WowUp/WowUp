@@ -23,6 +23,7 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
       <li>Added WowUpHub category support</li>
       <li>Added WowUpHub preview support</li>
+      <li>Added Mac M1 builds</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>

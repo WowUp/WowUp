@@ -152,6 +152,7 @@ export const WINDOW_MIN_HEIGHT = 500;
 export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
 export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";
+export const DEFAULT_FILE_MODE = 0o666;
 
 export const WOW_CLASSIC_FOLDER = "_classic_";
 export const WOW_CLASSIC_ERA_FOLDER = "_classic_era_";

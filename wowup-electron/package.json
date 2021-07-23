@@ -139,7 +139,6 @@
     "electron-log": "4.3.5",
     "electron-store": "8.0.0",
     "electron-updater": "4.3.9",
-    "fs-extra": "10.0.0",
     "globrex": "0.1.2",
     "handlebars": "4.7.7",
     "lodash": "4.17.21",

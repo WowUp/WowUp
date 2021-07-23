@@ -11,7 +11,6 @@ import {
   systemPreferences,
 } from "electron";
 import * as log from "electron-log";
-import * as fs from "fs-extra";
 import * as globrex from "globrex";
 import * as _ from "lodash";
 import * as nodeDiskInfo from "node-disk-info";
@@ -20,6 +19,7 @@ import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
 import { nanoid } from "nanoid";
+import * as fs from "fs";
 
 import {
   IPC_ADDONS_SAVE_ALL,
@@ -69,6 +69,7 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
+  DEFAULT_FILE_MODE,
 } from "../src/common/constants";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { Addon } from "../src/common/entities/addon";
@@ -82,7 +83,22 @@ import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import { getDirTree, getLastModifiedFileDate, readDirRecursive } from "./file.utils";
+import {
+  copyDir,
+  fsAccess,
+  fsChmod,
+  fsLstat,
+  fsMkdir,
+  fsReaddir,
+  fsReadFile,
+  fsRealpath,
+  fsStat,
+  fsWriteFile,
+  getDirTree,
+  getLastModifiedFileDate,
+  readDirRecursive,
+  remove,
+} from "./file.utils";
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
@@ -116,8 +132,8 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
   });
 
   for (const symlinkDir of symlinkDirs) {
-    const realPath = await fs.realpath(symlinkDir.originalPath);
-    const lstat = await fs.lstat(realPath);
+    const realPath = await fsRealpath(symlinkDir.originalPath);
+    const lstat = await fsLstat(realPath);
 
     symlinkDir.realPath = realPath;
     symlinkDir.isDir = lstat.isDirectory();
@@ -140,6 +156,8 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 
 export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
   USER_AGENT = userAgent;
+
+  log.info("process.versions", process.versions);
 
   getProxyInfo(window)
     .then((proxyInfo) => {
@@ -177,7 +195,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
     log.info(`[CreateDirectory] '${directoryPath}'`);
-    await fs.ensureDir(directoryPath);
+    await fsMkdir(directoryPath, { mode: DEFAULT_FILE_MODE, recursive: true });
     return true;
   });
 
@@ -224,7 +242,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_READDIR, async (evt, dirPath: string): Promise<string[]> => {
-    return await fs.readdir(dirPath);
+    return await fsReaddir(dirPath);
   });
 
   handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
@@ -240,7 +258,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
-    const files = await fs.readdir(filePath, { withFileTypes: true });
+    const files = await fsReaddir(filePath, { withFileTypes: true });
     let symlinkNames: string[] = [];
     if (scanSymlinks === true) {
       log.info("Scanning symlinks");
@@ -257,7 +275,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     const limit = pLimit(3);
     const tasks = _.map(filePaths, (path) =>
       limit(async () => {
-        const stats = await fs.stat(path);
+        const stats = await fsStat(path);
         const fsStats: FsStats = {
           atime: stats.atime,
           atimeMs: stats.atimeMs,
@@ -297,7 +315,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_LIST_ENTRIES, async (evt, sourcePath: string, filter: string) => {
     const globFilter = globrex(filter);
-    const results = await fs.readdir(sourcePath, { withFileTypes: true });
+    const results = await fsReaddir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => {
       const dirEnt: FsDirent = {
@@ -316,7 +334,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_LIST_FILES_CHANNEL, async (evt, sourcePath: string, filter: string) => {
     const globFilter = globrex(filter);
-    const results = await fs.readdir(sourcePath, { withFileTypes: true });
+    const results = await fsReaddir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => match.name);
   });
@@ -327,7 +345,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
 
     try {
-      await fs.access(filePath);
+      await fsAccess(filePath);
     } catch (e) {
       if (e.code !== "ENOENT") {
         log.error(e);
@@ -368,30 +386,26 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
-    await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
-    await fs.chmod(arg.destinationFilePath, arg.destinationFileChmod);
+    await copyDir(arg.sourceFilePath, arg.destinationFilePath);
+    await fsChmod(arg.destinationFilePath, arg.destinationFileChmod);
     return true;
   });
 
   handle(IPC_DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
     log.info(`[FileRemove] ${filePath}`);
-    return new Promise((resolve, reject) => {
-      fs.remove(filePath, (err) => {
-        return err ? reject(err) : resolve(true);
-      });
-    });
+    return await remove(filePath);
   });
 
   handle(IPC_READ_FILE_CHANNEL, async (evt, filePath: string) => {
-    return await fs.readFile(filePath, { encoding: "utf-8" });
+    return await fsReadFile(filePath, { encoding: "utf-8" });
   });
 
   handle(IPC_READ_FILE_BUFFER_CHANNEL, async (evt, filePath: string) => {
-    return await fs.readFile(filePath);
+    return await fsReadFile(filePath);
   });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
-    return await fs.writeFile(filePath, contents, { encoding: "utf-8" });
+    return await fsWriteFile(filePath, contents, { encoding: "utf-8" });
   });
 
   handle(IPC_CREATE_TRAY_MENU_CHANNEL, (evt, config: SystemTrayConfig) => {
@@ -475,7 +489,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
-      await fs.ensureDir(arg.outputFolder, 0o666);
+      await fsMkdir(arg.outputFolder, { recursive: true, mode: DEFAULT_FILE_MODE });
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
@@ -563,7 +577,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);
-        fs.mkdirp(dirPath, function () {
+        fs.mkdir(dirPath, { recursive: true }, function () {
           if (err) throw err;
           zipfile.readEntry();
         });
@@ -571,7 +585,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
         // ensure parent directory exists
         const filePath = path.join(targetDir, entry.fileName);
         const parentPath = path.join(targetDir, path.dirname(entry.fileName));
-        fs.mkdirp(parentPath, function () {
+        fs.mkdir(parentPath, { recursive: true }, function () {
           zipfile.openReadStream(entry, (err, readStream) => {
             if (err) {
               throw err;

@@ -19,6 +19,7 @@ import {
   IPC_GET_LATEST_DIR_UPDATE_TIME,
   IPC_LIST_DIR_RECURSIVE,
   IPC_GET_DIRECTORY_TREE,
+  DEFAULT_FILE_MODE,
 } from "../../../common/constants";
 import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
@@ -88,7 +89,7 @@ export class FileService {
   public async copy(
     sourceFilePath: string,
     destinationFilePath: string,
-    destinationFileChmod: string | number = 0o775
+    destinationFileChmod: string | number = DEFAULT_FILE_MODE
   ): Promise<string> {
     const request: CopyFileRequest = {
       sourceFilePath,
