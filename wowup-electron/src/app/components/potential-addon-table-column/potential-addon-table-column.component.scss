@@ -87,6 +87,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    display: flex;
+    flex-direction: row;
   }
 
   .dependency-icon {
