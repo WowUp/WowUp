@@ -72,7 +72,9 @@ declare type RendererChannels =
   | "system-preferences-get-user-default"
   | "show-open-dialog"
   | "app-install-update"
-  | "update-app-badge";
+  | "update-app-badge"
+  | "list-dir-recursive"
+  | "get-directory-tree";
 
 declare global {
   interface Window {

@@ -9,7 +9,6 @@ export interface AddonSearchResult {
   files?: AddonSearchResultFile[];
   name: string;
   providerName: string;
-  screenshotUrl?: string;
   screenshotUrls?: string[];
   summary?: string;
   thumbnailUrl: string;

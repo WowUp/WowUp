@@ -1,11 +1,10 @@
 import * as _ from "lodash";
 import * as crypto from "crypto";
-import * as fs from "fs-extra";
 import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
 import { WowUpScanResult } from "../src/common/wowup/models";
-import { readDirRecursive } from "./file.utils";
+import { exists, fsReadFile, readDirRecursive } from "./file.utils";
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -136,13 +135,14 @@ export class WowUpFolderScanner {
       return;
     }
 
-    if (!fs.existsSync(nativePath) || matchingFileList.indexOf(nativePath) !== -1) {
+    const pathExists = await exists(nativePath);
+    if (!pathExists || matchingFileList.indexOf(nativePath) !== -1) {
       return;
     }
 
     matchingFileList.push(nativePath);
 
-    let input = await fs.readFile(nativePath, { encoding: "utf-8" });
+    let input = await fsReadFile(nativePath, { encoding: "utf-8" });
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -210,7 +210,7 @@ export class WowUpFolderScanner {
   }
 
   private async hashFile(filePath: string): Promise<string> {
-    const text = await fs.readFile(filePath);
+    const text = await fsReadFile(filePath);
     return this.hashString(text);
   }
 

@@ -596,6 +596,129 @@ $alliance-theme-light: mat.define-light-theme(
   color: var(--text-3) !important;
 }
 
+.sub-accordion .mat-expansion-panel-header,
+.sub-accordion .mat-expansion-panel-body {
+  background-color: var(--background-secondary-2);
+}
+
+// TREE VIEW
+div.tree div.tree-children::before {
+  content: "";
+  position: absolute;
+  border-left: 1px dotted var(--text-2);
+  height: 100%;
+  top: -14px;
+  left: 0;
+}
+
+div.tree {
+  padding-left: 0;
+  margin-left: -5px;
+}
+
+div.tree div.tree-children {
+  position: relative;
+  padding-left: 0;
+  margin-left: 16px;
+}
+
+div.tree div.tree-children::before {
+  left: 5px;
+}
+
+div.tree tree-node > div > .node-wrapper {
+  margin-left: 24px;
+}
+
+div.tree tree-node > div > .node-wrapper > .node-content-wrapper {
+  margin-left: 4px;
+}
+
+div.tree tree-node > div.tree-node-leaf > .node-wrapper {
+  margin-left: 0;
+}
+
+div.tree tree-node > div::before {
+  content: "";
+  position: absolute;
+  border-bottom: 1px dotted var(--text-2);
+  width: 7px;
+  margin-top: 12px;
+  left: 7px;
+}
+
+// div.tree tree-node > div .toggle-children-wrapper {
+//   width: 13px;
+//   height: 13px;
+//   border: 1px solid var(--text-2);
+//   position: absolute;
+//   left: 0;
+//   margin-top: 5px;
+//   margin-left: 0;
+//   display: inline-block;
+//   z-index: 1;
+// }
+
+// div.tree tree-node > div .toggle-children-wrapper::before {
+//   content: "";
+//   display: inline-block;
+//   width: 7px;
+//   border-top: 1px solid var(--text-2);
+//   position: absolute;
+//   top: 5px;
+//   left: 2px;
+// }
+
+// div.tree tree-node > div .toggle-children-wrapper.toggle-children-wrapper-collapsed::after {
+//   content: "";
+//   display: inline-block;
+//   height: 7px;
+//   border-left: 1px solid var(--text-2);
+//   position: absolute;
+//   top: 2px;
+//   left: 5px;
+// }
+
+div.tree tree-node > div .toggle-children-wrapper .toggle-children {
+  display: none;
+}
+
+div.tree tree-node > div .node-content-wrapper {
+  margin-left: 4px;
+}
+
+div.tree > tree-node > div::before {
+  left: 14px;
+}
+
+div.tree > tree-node > div > .node-wrapper > tree-node-expander > .toggle-children-wrapper {
+  left: 22px;
+}
+
+.node-content-wrapper:hover {
+  background-color: var(--background-secondary-4);
+}
+
+.node-content-wrapper-active,
+.node-content-wrapper-focused,
+.node-content-wrapper:hover {
+  box-shadow: none;
+}
+
+.node-content-wrapper-focused,
+.node-content-wrapper-active,
+.node-content-wrapper.node-content-wrapper-active:hover,
+.node-content-wrapper-active.node-content-wrapper-focused {
+  background-color: var(--background-secondary-3);
+}
+
+.tree-icon {
+  transition: transform 0.3s;
+}
+.tree-icon.expanded {
+  transform: rotate(90deg);
+}
+
 // LIGHT BOX
 
 .lb-outerContainer {

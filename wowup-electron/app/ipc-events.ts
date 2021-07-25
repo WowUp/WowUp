@@ -11,15 +11,15 @@ import {
   systemPreferences,
 } from "electron";
 import * as log from "electron-log";
-import * as fs from "fs-extra";
 import * as globrex from "globrex";
 import * as _ from "lodash";
-import { nanoid } from "nanoid";
 import * as nodeDiskInfo from "node-disk-info";
 import * as pLimit from "p-limit";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
+import { nanoid } from "nanoid";
+import * as fs from "fs";
 
 import {
   IPC_ADDONS_SAVE_ALL,
@@ -34,6 +34,7 @@ import {
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
   IPC_GET_ASSET_FILE_PATH,
+  IPC_GET_DIRECTORY_TREE,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
@@ -41,6 +42,7 @@ import {
   IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_ZOOM_FACTOR,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_LIST_DIR_RECURSIVE,
   IPC_LIST_DIRECTORIES_CHANNEL,
   IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
@@ -67,6 +69,7 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
+  DEFAULT_FILE_MODE,
 } from "../src/common/constants";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { Addon } from "../src/common/entities/addon";
@@ -74,19 +77,42 @@ import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
 import { DownloadStatus } from "../src/common/models/download-status";
 import { DownloadStatusType } from "../src/common/models/download-status-type";
-import { FsDirent, FsStats } from "../src/common/models/ipc-events";
+import { FsDirent, FsStats, TreeNode } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import { getLastModifiedFileDate } from "./file.utils";
+import {
+  chmodDir,
+  copyDir,
+  fsAccess,
+  fsChmod,
+  fsCopyFile,
+  fsLstat,
+  fsMkdir,
+  fsReaddir,
+  fsReadFile,
+  fsRealpath,
+  fsStat,
+  fsWriteFile,
+  getDirTree,
+  getLastModifiedFileDate,
+  readDirRecursive,
+  remove,
+} from "./file.utils";
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 
 let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
+let PROXY_INFO: ProxyInfo | undefined = undefined;
+
+interface ProxyInfo {
+  host: string;
+  port: number;
+}
 
 interface SymlinkDir {
   original: fs.Dirent;
@@ -108,8 +134,8 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
   });
 
   for (const symlinkDir of symlinkDirs) {
-    const realPath = await fs.realpath(symlinkDir.originalPath);
-    const lstat = await fs.lstat(realPath);
+    const realPath = await fsRealpath(symlinkDir.originalPath);
+    const lstat = await fsLstat(realPath);
 
     symlinkDir.realPath = realPath;
     symlinkDir.isDir = lstat.isDirectory();
@@ -132,6 +158,16 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 
 export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
   USER_AGENT = userAgent;
+
+  log.info("process.versions", process.versions);
+
+  getProxyInfo(window)
+    .then((proxyInfo) => {
+      PROXY_INFO = proxyInfo;
+    })
+    .catch((e) => {
+      log.error(e);
+    });
 
   // Remove the pending URLs once read so they are only able to be gotten once
   handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
@@ -161,7 +197,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
     log.info(`[CreateDirectory] '${directoryPath}'`);
-    await fs.ensureDir(directoryPath);
+    await fsMkdir(directoryPath, { recursive: true });
     return true;
   });
 
@@ -208,7 +244,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_READDIR, async (evt, dirPath: string): Promise<string[]> => {
-    return await fs.readdir(dirPath);
+    return await fsReaddir(dirPath);
   });
 
   handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
@@ -224,7 +260,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
-    const files = await fs.readdir(filePath, { withFileTypes: true });
+    const files = await fsReaddir(filePath, { withFileTypes: true });
     let symlinkNames: string[] = [];
     if (scanSymlinks === true) {
       log.info("Scanning symlinks");
@@ -241,7 +277,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     const limit = pLimit(3);
     const tasks = _.map(filePaths, (path) =>
       limit(async () => {
-        const stats = await fs.stat(path);
+        const stats = await fsStat(path);
         const fsStats: FsStats = {
           atime: stats.atime,
           atimeMs: stats.atimeMs,
@@ -281,7 +317,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_LIST_ENTRIES, async (evt, sourcePath: string, filter: string) => {
     const globFilter = globrex(filter);
-    const results = await fs.readdir(sourcePath, { withFileTypes: true });
+    const results = await fsReaddir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => {
       const dirEnt: FsDirent = {
@@ -300,7 +336,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_LIST_FILES_CHANNEL, async (evt, sourcePath: string, filter: string) => {
     const globFilter = globrex(filter);
-    const results = await fs.readdir(sourcePath, { withFileTypes: true });
+    const results = await fsReaddir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => match.name);
   });
@@ -311,7 +347,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
 
     try {
-      await fs.access(filePath);
+      await fsAccess(filePath);
     } catch (e) {
       if (e.code !== "ENOENT") {
         log.error(e);
@@ -347,35 +383,39 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       });
     });
 
+    await chmodDir(arg.outputFolder, DEFAULT_FILE_MODE);
+
     return arg.outputFolder;
   });
 
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
-    await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
-    await fs.chmod(arg.destinationFilePath, arg.destinationFileChmod);
+    const stat = await fsLstat(arg.sourceFilePath);
+    if (stat.isDirectory()) {
+      await copyDir(arg.sourceFilePath, arg.destinationFilePath);
+      await chmodDir(arg.destinationFilePath, DEFAULT_FILE_MODE);
+    } else {
+      await fsCopyFile(arg.sourceFilePath, arg.destinationFilePath);
+      await fsChmod(arg.destinationFilePath, DEFAULT_FILE_MODE);
+    }
     return true;
   });
 
   handle(IPC_DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
     log.info(`[FileRemove] ${filePath}`);
-    return new Promise((resolve, reject) => {
-      fs.remove(filePath, (err) => {
-        return err ? reject(err) : resolve(true);
-      });
-    });
+    return await remove(filePath);
   });
 
   handle(IPC_READ_FILE_CHANNEL, async (evt, filePath: string) => {
-    return await fs.readFile(filePath, { encoding: "utf-8" });
+    return await fsReadFile(filePath, { encoding: "utf-8" });
   });
 
   handle(IPC_READ_FILE_BUFFER_CHANNEL, async (evt, filePath: string) => {
-    return await fs.readFile(filePath);
+    return await fsReadFile(filePath);
   });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
-    return await fs.writeFile(filePath, contents, { encoding: "utf-8" });
+    return await fsWriteFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
   });
 
   handle(IPC_CREATE_TRAY_MENU_CHANNEL, (evt, config: SystemTrayConfig) => {
@@ -388,6 +428,14 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_GET_LATEST_DIR_UPDATE_TIME, (evt, dirPath: string) => {
     return getLastModifiedFileDate(dirPath);
+  });
+
+  handle(IPC_LIST_DIR_RECURSIVE, (evt, dirPath: string): Promise<string[]> => {
+    return readDirRecursive(dirPath);
+  });
+
+  handle(IPC_GET_DIRECTORY_TREE, (evt, dirPath: string): Promise<TreeNode> => {
+    return getDirTree(dirPath);
   });
 
   handle(IPC_MINIMIZE_WINDOW, () => {
@@ -451,7 +499,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
-      await fs.ensureDir(arg.outputFolder, 0o666);
+      await fsMkdir(arg.outputFolder, { recursive: true });
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
@@ -463,6 +511,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
         headers: {
           "User-Agent": USER_AGENT,
         },
+        proxy: PROXY_INFO,
       });
 
       // const totalLength = headers["content-length"];
@@ -494,6 +543,30 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
   }
 }
+
+// From: https://evandontje.com/2020/04/02/automatic-system-proxy-configuration-for-electron-applications/
+async function getProxyInfo(window: BrowserWindow): Promise<ProxyInfo> {
+  const session = window.webContents.session;
+
+  const proxyUrl = await session.resolveProxy("https://wowup.io");
+  // DIRECT means no proxy is configured
+  if (proxyUrl === "DIRECT") {
+    log.info("No proxy detected");
+    return;
+  }
+
+  log.info(`Proxy detected: ${proxyUrl}`);
+  const proxyUrlComponents = proxyUrl.split(":");
+
+  const host = proxyUrlComponents[0].split(" ")[1];
+  const port = parseInt(proxyUrlComponents[1], 10);
+
+  return {
+    host,
+    port,
+  };
+}
+
 // Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
 function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -514,7 +587,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);
-        fs.mkdirp(dirPath, function () {
+        fs.mkdir(dirPath, { recursive: true }, function () {
           if (err) throw err;
           zipfile.readEntry();
         });
@@ -522,7 +595,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
         // ensure parent directory exists
         const filePath = path.join(targetDir, entry.fileName);
         const parentPath = path.join(targetDir, path.dirname(entry.fileName));
-        fs.mkdirp(parentPath, function () {
+        fs.mkdir(parentPath, { recursive: true }, function () {
           zipfile.openReadStream(entry, (err, readStream) => {
             if (err) {
               throw err;

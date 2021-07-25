@@ -203,7 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
-      "IMAGES_TAB": "Images",
+      "IMAGES_TAB": "Previews",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "View in browser",
@@ -298,6 +298,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "About",
       "GET_ADDONS_TAB_TITLE": "Get Addons",
+      "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "My Addons",
       "NEWS_TAB_TITLE": "News",

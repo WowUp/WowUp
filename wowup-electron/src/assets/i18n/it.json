@@ -203,7 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "Nessuna descrizione trovata",
       "DESCRIPTION_TAB": "Descrizione",
       "FUNDING_LINK_TITLE": "Supporta questo autore",
-      "IMAGES_TAB": "Immagini",
+      "IMAGES_TAB": "Previews",
       "MISSING_DEPENDENCIES": "Dipendenze mancanti",
       "NO_CHANGELOG_TEXT": "Nessun changelog disponibile",
       "VIEW_IN_BROWSER_BUTTON": "Visualizza nel browser",
@@ -298,6 +298,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Informazioni",
       "GET_ADDONS_TAB_TITLE": "Ottieni Addons",
+      "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Trasferimento degli addons in corso...",
       "MY_ADDONS_TAB_TITLE": "I Miei Addons",
       "NEWS_TAB_TITLE": "Notizie",

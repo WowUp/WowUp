@@ -7,6 +7,10 @@ export function stringIncludes(value: string | undefined, search: string): boole
   return value.trim().toLowerCase().indexOf(search.trim().toLowerCase()) >= 0;
 }
 
+export function removeExtension(str: string): string {
+  return str.replace(/\.[^/.]+$/, "");
+}
+
 export function camelToSnakeCase(str: string): string {
   // if the string is all caps, ignore it
   if (str.toUpperCase() === str) {

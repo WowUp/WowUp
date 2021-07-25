@@ -2,7 +2,9 @@ import { Injectable } from "@angular/core";
 import * as path from "path";
 
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
 import { Toc } from "../../models/wowup/toc";
+import { removeExtension } from "../../utils/string.utils";
 import { FileService } from "../files/file.service";
 
 const TOC_AUTHOR = "Author";
@@ -135,9 +137,10 @@ export class TocService {
     return matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
   }
 
-  public getTocForGameType2(tocs: Toc[], clientType: WowClientType): Toc {
+  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): Toc {
     let matchedToc = "";
 
+    const tocs = addonFolder.tocs;
     const tocFileNames = tocs.map((toc) => toc.fileName);
     switch (clientType) {
       case WowClientType.Beta:
@@ -157,7 +160,15 @@ export class TocService {
         break;
     }
 
-    matchedToc = matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
+    if (matchedToc === "") {
+      matchedToc = tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
+    }
+
+    // If we still have no match, we need to return the toc that matches the folder name if it exists
+    // Example: All the things for TBC (ATT-Classic)
+    if (matchedToc === "") {
+      return tocs.find((toc) => removeExtension(toc.fileName).toLowerCase() === addonFolder.name.toLowerCase());
+    }
 
     return tocs.find((toc) => toc.fileName === matchedToc);
   }

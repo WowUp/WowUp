@@ -30,6 +30,7 @@
     border-right: 3px solid transparent;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    text-decoration: none;
 
     .icon-active {
       svg {
@@ -39,7 +40,7 @@
 
     .tab-title {
       color: var(--text-4);
-      max-width: 0;
+      max-width: 200px;
       overflow: hidden;
       transition: all 0.3s ease 0.1s;
       transition-property: color, max-width;
@@ -47,6 +48,7 @@
     }
 
     .tab-icon {
+      margin-right: 0.5em;
       transition: margin-right 0.3s ease 0.1s;
     }
 

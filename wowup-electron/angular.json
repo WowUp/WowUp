@@ -17,7 +17,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "assets": ["src/assets"],
-            "styles": ["./node_modules/ngx-lightbox/lightbox.css", "src/styles.scss"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "customWebpackConfig": {
               "path": "./angular.webpack.js"
