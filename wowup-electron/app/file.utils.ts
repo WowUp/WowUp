@@ -29,6 +29,20 @@ export async function exists(path: string): Promise<boolean> {
   }
 }
 
+export async function chmodDir(dirPath: string, mode: number | string): Promise<void> {
+  const entries = await fsReaddir(dirPath, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(dirPath, entry.name);
+
+    if (entry.isDirectory()) {
+      await chmodDir(srcPath, mode);
+    } else {
+      await fsChmod(srcPath, mode);
+    }
+  }
+}
+
 export async function copyDir(src: string, dest: string): Promise<void> {
   await fsMkdir(dest, { recursive: true });
   const entries = await fsReaddir(src, { withFileTypes: true });
@@ -37,7 +51,11 @@ export async function copyDir(src: string, dest: string): Promise<void> {
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
 
-    entry.isDirectory() ? await copyDir(srcPath, destPath) : await fsCopyFile(srcPath, destPath);
+    if (entry.isDirectory()) {
+      await copyDir(srcPath, destPath);
+    } else {
+      await fsCopyFile(srcPath, destPath);
+    }
   }
 }
 

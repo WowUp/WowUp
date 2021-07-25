@@ -84,9 +84,11 @@ import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wow
 import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
 import {
+  chmodDir,
   copyDir,
   fsAccess,
   fsChmod,
+  fsCopyFile,
   fsLstat,
   fsMkdir,
   fsReaddir,
@@ -195,7 +197,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
     log.info(`[CreateDirectory] '${directoryPath}'`);
-    await fsMkdir(directoryPath, { mode: DEFAULT_FILE_MODE, recursive: true });
+    await fsMkdir(directoryPath, { recursive: true });
     return true;
   });
 
@@ -381,13 +383,21 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       });
     });
 
+    await chmodDir(arg.outputFolder, DEFAULT_FILE_MODE);
+
     return arg.outputFolder;
   });
 
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
-    await copyDir(arg.sourceFilePath, arg.destinationFilePath);
-    await fsChmod(arg.destinationFilePath, arg.destinationFileChmod);
+    const stat = await fsLstat(arg.sourceFilePath);
+    if (stat.isDirectory()) {
+      await copyDir(arg.sourceFilePath, arg.destinationFilePath);
+      await chmodDir(arg.destinationFilePath, DEFAULT_FILE_MODE);
+    } else {
+      await fsCopyFile(arg.sourceFilePath, arg.destinationFilePath);
+      await fsChmod(arg.destinationFilePath, DEFAULT_FILE_MODE);
+    }
     return true;
   });
 
@@ -405,7 +415,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
-    return await fsWriteFile(filePath, contents, { encoding: "utf-8" });
+    return await fsWriteFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
   });
 
   handle(IPC_CREATE_TRAY_MENU_CHANNEL, (evt, config: SystemTrayConfig) => {
@@ -489,7 +499,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
-      await fsMkdir(arg.outputFolder, { recursive: true, mode: DEFAULT_FILE_MODE });
+      await fsMkdir(arg.outputFolder, { recursive: true });
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
