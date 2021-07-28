@@ -1,9 +1,10 @@
 import { AgGridModule } from "ag-grid-angular";
-import { LightboxModule } from "ngx-lightbox";
+import { LIGHTBOX_CONFIG, LightboxModule } from "ng-gallery/lightbox";
 
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
+import { TreeModule } from "@circlon/angular-tree-component";
 
 import { AddonDetailComponent } from "../../components/addon-detail/addon-detail.component";
 import { AddonInstallButtonComponent } from "../../components/addon-install-button/addon-install-button.component";
@@ -15,6 +16,7 @@ import { CenteredSnackbarComponent } from "../../components/centered-snackbar/ce
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { DateTooltipCellComponent } from "../../components/date-tooltip-cell/date-tooltip-cell.component";
 import { ExternalUrlConfirmationDialogComponent } from "../../components/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
+import { ExtraComponent } from "../../components/extra/extra.component";
 import { FundingButtonComponent } from "../../components/funding-button/funding-button.component";
 import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
 import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
@@ -40,6 +42,7 @@ import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-fi
 import { InterfaceFormatPipe } from "../../pipes/interface-format.pipe";
 import { NgxDatePipe } from "../../pipes/ngx-date.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
+import { SizeDisplayPipe } from "../../pipes/size-display.pipe";
 import { TrustHtmlPipe } from "../../pipes/trust-html.pipe";
 import { SharedModule } from "../../shared.module";
 import { AboutComponent } from "../about/about.component";
@@ -88,8 +91,10 @@ import { HomeComponent } from "./home.component";
     AddonThumbnailComponent,
     PatchNotesDialogComponent,
     TrustHtmlPipe,
+    SizeDisplayPipe,
     NewsPanelComponent,
     ExternalUrlConfirmationDialogComponent,
+    ExtraComponent,
   ],
   imports: [
     CommonModule,
@@ -104,6 +109,7 @@ import { HomeComponent } from "./home.component";
       TableContextHeaderCellComponent,
     ]),
     LightboxModule,
+    TreeModule,
   ],
   providers: [
     DatePipe,
@@ -112,6 +118,7 @@ import { HomeComponent } from "./home.component";
     RelativeDurationPipe,
     NgxDatePipe,
     TrustHtmlPipe,
+    SizeDisplayPipe,
   ],
 })
 export class HomeModule {}

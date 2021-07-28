@@ -10,6 +10,8 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { GalleryModule } from "ng-gallery";
+import { LightboxModule, LIGHTBOX_CONFIG } from "ng-gallery/lightbox";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -64,6 +66,8 @@ export function initializeApp(wowupService: WowUpService) {
       },
     }),
     BrowserAnimationsModule,
+    GalleryModule,
+    LightboxModule,
   ],
   providers: [
     {
@@ -81,6 +85,12 @@ export function initializeApp(wowupService: WowUpService) {
       provide: ErrorHandler,
       useClass: ErrorHandlerInterceptor,
       deps: [AnalyticsService],
+    },
+    {
+      provide: LIGHTBOX_CONFIG,
+      useValue: {
+        keyboardShortcuts: true,
+      },
     },
   ],
   bootstrap: [AppComponent],

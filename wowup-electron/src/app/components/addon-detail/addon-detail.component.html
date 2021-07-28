@@ -63,11 +63,11 @@
       <div #changelogContainer class="markdown-body addon-changelog text-1 mt-3" [innerHTML]="changelog$ | async"></div>
     </mat-tab>
     <!-- SCREENSHOTS -->
-    <mat-tab *ngIf="imageUrls.length > 0" [label]="'DIALOGS.ADDON_DETAILS.IMAGES_TAB' | translate">
+    <mat-tab *ngIf="previewItems.length > 0" [label]="'DIALOGS.ADDON_DETAILS.IMAGES_TAB' | translate">
       <mat-grid-list class="image-grid pt-3" cols="4" rowHeight="1:1" gutterSize="3">
-        <mat-grid-tile *ngFor="let image of imageUrls">
+        <mat-grid-tile *ngFor="let image of previewItems; index as i">
           <div class="image-thumb-container ">
-            <img class="image-thumb mat-elevation-z8" [src]="image.src" (click)="onClickImage(image.src)">
+            <img class="image-thumb mat-elevation-z8" [src]="image.data.thumb" [lightbox]="i">
           </div>
         </mat-grid-tile>
       </mat-grid-list>

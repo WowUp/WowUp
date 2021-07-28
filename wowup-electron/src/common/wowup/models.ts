@@ -39,7 +39,8 @@ export enum AddonWarningType {
 }
 
 export enum AddonCategory {
-  AllAddons,
+  Unknown,
+  AllAddons = 1,
   Achievements,
   ActionBars,
   AuctionEconomy,

@@ -8,6 +8,20 @@ export function shortenDownloadCount(value: number, nDigit: number): string {
   return shortValue.toFixed(0);
 }
 
+export function formatSize(size: number): string {
+  if (size < 1024) {
+    return `${size} bytes`;
+  }
+
+  const sizeKb = Math.round(size / 1024);
+  if (sizeKb < 1024) {
+    return `${sizeKb} kb`;
+  }
+
+  const sizeMb = Math.round(size / 1024 / 1024);
+  return `${sizeMb} mb`;
+}
+
 // This is a horrifying way to round to the nearest tens place
 export function roundDownloadCount(value: number): number {
   if (value < 10) {

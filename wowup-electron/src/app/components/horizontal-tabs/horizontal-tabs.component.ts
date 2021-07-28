@@ -90,9 +90,9 @@ export class HorizontalTabsComponent implements OnInit {
     },
   };
 
-  public tabsTop: Tab[] = [this.myAddonsTab, this.getAddonsTab, this.aboutTab, this.newsTab];
+  public tabsTop: Tab[] = [this.myAddonsTab, this.getAddonsTab, this.newsTab];
 
-  public tabsBottom: Tab[] = [this.settingsTab];
+  public tabsBottom: Tab[] = [this.aboutTab, this.settingsTab];
 
   public constructor(
     public electronService: ElectronService,

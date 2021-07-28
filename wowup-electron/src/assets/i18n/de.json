@@ -203,7 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "Keine Beschreibung gefunden",
       "DESCRIPTION_TAB": "Beschreibung",
       "FUNDING_LINK_TITLE": "Unterstütze diesen Autor",
-      "IMAGES_TAB": "Bilder",
+      "IMAGES_TAB": "Vorschau",
       "MISSING_DEPENDENCIES": "Fehlende Abhängigkeiten",
       "NO_CHANGELOG_TEXT": "Kein Änderungsverlauf verfügbar",
       "VIEW_IN_BROWSER_BUTTON": "Im Browser anzeigen",
@@ -298,6 +298,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
+      "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Addons werden migriert...",
       "MY_ADDONS_TAB_TITLE": "Meine Addons",
       "NEWS_TAB_TITLE": "News",

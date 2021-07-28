@@ -1,7 +1,6 @@
 import { last } from "lodash";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
 import { filter, first, map, switchMap, tap } from "rxjs/operators";
-import { IAlbum, Lightbox } from "ngx-lightbox";
 
 import {
   AfterViewChecked,
@@ -33,6 +32,7 @@ import * as SearchResult from "../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 import { formatDynamicLinks } from "../../utils/dom.utils";
 import { LinkService } from "../../services/links/link.service";
+import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -85,7 +85,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public isUnknownProvider = false;
   public isMissingUnknownDependencies = false;
   public missingDependencies: string[] = [];
-  public imageUrls: IAlbum[] = [];
+  public previewItems: GalleryItem[] = [];
 
   public constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
@@ -96,8 +96,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
     private _sessionService: SessionService,
-    private _lightbox: Lightbox,
-    private _linkService: LinkService
+    private _linkService: LinkService,
+    public gallery: Gallery
   ) {
     this._dependencies = this.getDependencies();
 
@@ -169,12 +169,12 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.isMissingUnknownDependencies = !!this.missingDependencies.length;
 
     const imageUrlList = this.model.listItem?.addon?.screenshotUrls ?? this.model.searchResult?.screenshotUrls ?? [];
-    this.imageUrls = imageUrlList.map((url) => {
-      return {
-        src: url,
-        thumb: url,
-      };
+
+    this.previewItems = imageUrlList.map((url) => {
+      return new ImageItem({ src: url, thumb: url });
     });
+
+    this.gallery.ref().load(this.previewItems);
   }
 
   public ngAfterViewInit(): void {}
@@ -191,12 +191,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public onClickImage(url: string): void {
-    const idx = this.imageUrls.findIndex((album) => album.src === url);
-    if (idx >= 0) {
-      this._lightbox.open(this.imageUrls, idx, {
-        centerVertically: true,
-      });
-    }
+    
   }
 
   public onInstallUpdated(): void {

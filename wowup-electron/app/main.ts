@@ -63,6 +63,11 @@ process.on("unhandledRejection", (error) => {
   log.error("unhandledRejection", error);
 });
 
+// WINDOWS CERTS
+if (platform.isWin) {
+  require("win-ca");
+}
+
 // VARIABLES
 const startedAt = Date.now();
 const argv = minimist(process.argv.slice(1), {
