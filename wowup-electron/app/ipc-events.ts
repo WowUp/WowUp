@@ -13,7 +13,6 @@ import {
 import * as log from "electron-log";
 import * as globrex from "globrex";
 import * as _ from "lodash";
-import { nanoid } from "nanoid";
 import * as nodeDiskInfo from "node-disk-info";
 import * as pLimit from "p-limit";
 import * as path from "path";
@@ -500,11 +499,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
-<<<<<<< HEAD
-      await fs.ensureDir(arg.outputFolder, 0o666);
-=======
       await fsMkdir(arg.outputFolder, { recursive: true });
->>>>>>> origin/develop
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);

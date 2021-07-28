@@ -16,15 +16,6 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
-<<<<<<< HEAD
-    Version: "2.4.3",
-    html: `
-    <div>
-    <h4 style="margin-top: 1em;">Fixes</h4>
-    <ul>
-      <li>Fix an issue with auto updates failing with the same addon installed in multiple WoW clients</li>
-      <li>Fix an caching issue with CurseForge featured addons</li>
-=======
     Version: "2.5.0",
     html: `
     <div>
@@ -48,7 +39,6 @@ const CHANGELOGS: ChangeLog[] = [
       <li>Images details tab is now Previews</li>
       <li>Use a different lightbox library for previews</li>
       <li>Expanded system proxy support</li>
->>>>>>> origin/develop
     </ul>
     </div>`,
   },

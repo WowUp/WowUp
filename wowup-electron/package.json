@@ -2,10 +2,14 @@
   "name": "wowup",
   "productName": "WowUp",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "version": "2.4.3",
 =======
   "version": "2.5.0-beta.9",
 >>>>>>> origin/develop
+=======
+  "version": "2.5.0-beta.9",
+>>>>>>> ba79a190d7f3e36be9b7b4b752fd879bd640d784
   "description": "World of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
@@ -150,11 +154,8 @@
     "messageformat": "2.3.0",
     "minimist": "1.2.5",
     "nanoid": "3.1.23",
-<<<<<<< HEAD
     "ngx-lightbox": "2.4.1",
-=======
     "ng-gallery": "5.0.0",
->>>>>>> origin/develop
     "ngx-translate-messageformat-compiler": "4.10.0",
     "node-cache": "5.1.2",
     "node-disk-info": "1.3.0",
