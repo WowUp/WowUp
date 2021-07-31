@@ -120,21 +120,23 @@ export class TocService {
       case WowClientType.Beta:
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-|_]mainline\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.ClassicEra:
-        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-|_](classic|vanilla)\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.Classic:
       case WowClientType.ClassicBeta:
       case WowClientType.ClassicPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-|_](bcc|tbc)\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
     }
 
-    return matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
+    return (
+      matchedToc || tocFileNames.find((tfn) => /.*(?<![-|_](classic|vanilla|bcc|tbc|mainline))\.toc$/gi.test(tfn)) || ""
+    );
   }
 
   public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): Toc {
@@ -142,27 +144,7 @@ export class TocService {
 
     const tocs = addonFolder.tocs;
     const tocFileNames = tocs.map((toc) => toc.fileName);
-    switch (clientType) {
-      case WowClientType.Beta:
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.ClassicEra:
-        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.Classic:
-      case WowClientType.ClassicBeta:
-      case WowClientType.ClassicPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn)) || "";
-        break;
-      default:
-        break;
-    }
-
-    if (matchedToc === "") {
-      matchedToc = tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
-    }
+    matchedToc = this.getTocForGameType(tocFileNames, clientType);
 
     // If we still have no match, we need to return the toc that matches the folder name if it exists
     // Example: All the things for TBC (ATT-Classic)

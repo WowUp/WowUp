@@ -357,11 +357,11 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isClassicAsset(asset: GitHubAsset): boolean {
-    return asset.name.toLowerCase().endsWith("-classic.zip");
+    return /[-](classic|vanilla)\.zip$/i.test(asset.name);
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return asset.name.toLowerCase().endsWith("-bc.zip") || asset.name.toLowerCase().endsWith("-bcc.zip");
+    return /[-](bc|bcc|tbc)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {
