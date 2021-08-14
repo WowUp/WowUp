@@ -579,6 +579,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             return of(undefined);
           }
 
+          console.log("Performing re-scan");
           return from(this.loadAddons(this.selectedInstallation, true)).pipe(switchMap(() => from(this.onRefresh())));
         })
       )

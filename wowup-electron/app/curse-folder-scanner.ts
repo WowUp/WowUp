@@ -3,7 +3,8 @@ import * as _ from "lodash";
 import * as log from "electron-log";
 import * as pLimit from "p-limit";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
-import { exists, fsReadFile, readDirRecursive } from "./file.utils";
+import { exists, readDirRecursive } from "./file.utils";
+import * as fsp from "fs/promises";
 
 const nativeAddon = require("../build/Release/addon.node");
 
@@ -145,7 +146,7 @@ export class CurseFolderScanner {
 
     matchingFileList.push(nativePath);
 
-    let input = await fsReadFile(nativePath, { encoding: "utf-8" });
+    let input = await fsp.readFile(nativePath, { encoding: "utf-8" });
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -243,7 +244,7 @@ export class CurseFolderScanner {
   }
 
   private async getFileHash(filePath: string): Promise<number> {
-    const buffer = await fsReadFile(filePath);
+    const buffer = await fsp.readFile(filePath);
     const hash = nativeAddon.computeHash(buffer, buffer.length);
     return hash;
   }

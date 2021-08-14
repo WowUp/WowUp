@@ -83,24 +83,9 @@ import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import {
-  chmodDir,
-  copyDir,
-  fsAccess,
-  fsChmod,
-  fsCopyFile,
-  fsLstat,
-  fsMkdir,
-  fsReaddir,
-  fsReadFile,
-  fsRealpath,
-  fsStat,
-  fsWriteFile,
-  getDirTree,
-  getLastModifiedFileDate,
-  readDirRecursive,
-  remove,
-} from "./file.utils";
+import * as fsp from "fs/promises";
+
+import { chmodDir, copyDir, getDirTree, getLastModifiedFileDate, readDirRecursive, remove } from "./file.utils";
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
@@ -134,8 +119,8 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
   });
 
   for (const symlinkDir of symlinkDirs) {
-    const realPath = await fsRealpath(symlinkDir.originalPath);
-    const lstat = await fsLstat(realPath);
+    const realPath = await fsp.realpath(symlinkDir.originalPath);
+    const lstat = await fsp.lstat(realPath);
 
     symlinkDir.realPath = realPath;
     symlinkDir.isDir = lstat.isDirectory();
@@ -197,7 +182,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
     log.info(`[CreateDirectory] '${directoryPath}'`);
-    await fsMkdir(directoryPath, { recursive: true });
+    await fsp.mkdir(directoryPath, { recursive: true });
     return true;
   });
 
@@ -244,7 +229,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_READDIR, async (evt, dirPath: string): Promise<string[]> => {
-    return await fsReaddir(dirPath);
+    return await fsp.readdir(dirPath);
   });
 
   handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
@@ -260,7 +245,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
-    const files = await fsReaddir(filePath, { withFileTypes: true });
+    const files = await fsp.readdir(filePath, { withFileTypes: true });
     let symlinkNames: string[] = [];
     if (scanSymlinks === true) {
       log.info("Scanning symlinks");
@@ -277,7 +262,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     const limit = pLimit(3);
     const tasks = _.map(filePaths, (path) =>
       limit(async () => {
-        const stats = await fsStat(path);
+        const stats = await fsp.stat(path);
         const fsStats: FsStats = {
           atime: stats.atime,
           atimeMs: stats.atimeMs,
@@ -317,7 +302,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_LIST_ENTRIES, async (evt, sourcePath: string, filter: string) => {
     const globFilter = globrex(filter);
-    const results = await fsReaddir(sourcePath, { withFileTypes: true });
+    const results = await fsp.readdir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => {
       const dirEnt: FsDirent = {
@@ -336,7 +321,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_LIST_FILES_CHANNEL, async (evt, sourcePath: string, filter: string) => {
     const globFilter = globrex(filter);
-    const results = await fsReaddir(sourcePath, { withFileTypes: true });
+    const results = await fsp.readdir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => match.name);
   });
@@ -347,7 +332,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
 
     try {
-      await fsAccess(filePath);
+      await fsp.access(filePath);
     } catch (e) {
       if (e.code !== "ENOENT") {
         log.error(e);
@@ -390,13 +375,13 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
-    const stat = await fsLstat(arg.sourceFilePath);
+    const stat = await fsp.lstat(arg.sourceFilePath);
     if (stat.isDirectory()) {
       await copyDir(arg.sourceFilePath, arg.destinationFilePath);
       await chmodDir(arg.destinationFilePath, DEFAULT_FILE_MODE);
     } else {
-      await fsCopyFile(arg.sourceFilePath, arg.destinationFilePath);
-      await fsChmod(arg.destinationFilePath, DEFAULT_FILE_MODE);
+      await fsp.copyFile(arg.sourceFilePath, arg.destinationFilePath);
+      await fsp.chmod(arg.destinationFilePath, DEFAULT_FILE_MODE);
     }
     return true;
   });
@@ -407,15 +392,15 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_READ_FILE_CHANNEL, async (evt, filePath: string) => {
-    return await fsReadFile(filePath, { encoding: "utf-8" });
+    return await fsp.readFile(filePath, { encoding: "utf-8" });
   });
 
   handle(IPC_READ_FILE_BUFFER_CHANNEL, async (evt, filePath: string) => {
-    return await fsReadFile(filePath);
+    return await fsp.readFile(filePath);
   });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
-    return await fsWriteFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
+    return await fsp.writeFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
   });
 
   handle(IPC_CREATE_TRAY_MENU_CHANNEL, (evt, config: SystemTrayConfig) => {
@@ -499,7 +484,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   async function handleDownloadFile(arg: DownloadRequest) {
     try {
-      await fsMkdir(arg.outputFolder, { recursive: true });
+      await fsp.mkdir(arg.outputFolder, { recursive: true });
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);

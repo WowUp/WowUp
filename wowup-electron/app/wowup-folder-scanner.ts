@@ -4,7 +4,8 @@ import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
 import { WowUpScanResult } from "../src/common/wowup/models";
-import { exists, fsReadFile, readDirRecursive } from "./file.utils";
+import { exists, readDirRecursive } from "./file.utils";
+import * as fsp from "fs/promises";
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -142,7 +143,7 @@ export class WowUpFolderScanner {
 
     matchingFileList.push(nativePath);
 
-    let input = await fsReadFile(nativePath, { encoding: "utf-8" });
+    let input = await fsp.readFile(nativePath, { encoding: "utf-8" });
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -210,7 +211,7 @@ export class WowUpFolderScanner {
   }
 
   private async hashFile(filePath: string): Promise<string> {
-    const text = await fsReadFile(filePath);
+    const text = await fsp.readFile(filePath);
     return this.hashString(text);
   }
 

@@ -1,26 +1,17 @@
 import * as fs from "fs";
+import * as fsp from "fs/promises";
 import * as path from "path";
 import * as log from "electron-log";
 import { promisify } from "util";
 import { max, sumBy } from "lodash";
 import { TreeNode } from "../src/common/models/ipc-events";
+import { isWin } from "./platform";
+import { exec } from "child_process";
 
-export const fsReaddir = promisify(fs.readdir);
-export const fsRmdir = promisify(fs.rmdir);
-export const fsStat = promisify(fs.stat);
-export const fsLstat = promisify(fs.lstat);
-export const fsRealpath = promisify(fs.realpath);
-export const fsMkdir = promisify(fs.mkdir);
-export const fsAccess = promisify(fs.access);
-export const fsCopyFile = promisify(fs.copyFile);
-export const fsChmod = promisify(fs.chmod);
-export const fsUnlink = promisify(fs.unlink);
-export const fsReadFile = promisify(fs.readFile);
-export const fsWriteFile = promisify(fs.writeFile);
 
 export async function exists(path: string): Promise<boolean> {
   try {
-    await fsAccess(path);
+    await fsp.access(path);
     return true;
   } catch (e) {
     log.warn(`File does not exist: ${path}`);
@@ -30,7 +21,7 @@ export async function exists(path: string): Promise<boolean> {
 }
 
 export async function chmodDir(dirPath: string, mode: number | string): Promise<void> {
-  const entries = await fsReaddir(dirPath, { withFileTypes: true });
+  const entries = await fsp.readdir(dirPath, { withFileTypes: true });
 
   for (const entry of entries) {
     const srcPath = path.join(dirPath, entry.name);
@@ -38,14 +29,14 @@ export async function chmodDir(dirPath: string, mode: number | string): Promise<
     if (entry.isDirectory()) {
       await chmodDir(srcPath, mode);
     } else {
-      await fsChmod(srcPath, mode);
+      await fsp.chmod(srcPath, mode);
     }
   }
 }
 
 export async function copyDir(src: string, dest: string): Promise<void> {
-  await fsMkdir(dest, { recursive: true });
-  const entries = await fsReaddir(src, { withFileTypes: true });
+  await fsp.mkdir(dest, { recursive: true });
+  const entries = await fsp.readdir(src, { withFileTypes: true });
 
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
@@ -54,23 +45,44 @@ export async function copyDir(src: string, dest: string): Promise<void> {
     if (entry.isDirectory()) {
       await copyDir(srcPath, destPath);
     } else {
-      await fsCopyFile(srcPath, destPath);
+      await fsp.copyFile(srcPath, destPath);
     }
   }
 }
 
 export async function remove(path: string): Promise<void> {
-  const stat = await fsStat(path);
+  const stat = await fsp.stat(path);
   if (stat.isDirectory()) {
-    await fsRmdir(path, { recursive: true });
+    await rmdir(path);
   } else {
-    await fsUnlink(path);
+    await fsp.unlink(path);
+  }
+}
+
+/**
+ * On Windows, users that use the Google Drive sync tool are unable to delete any folders.
+ * Seems to be a node issue that it cannot delete even empty folders synced by this tool.
+ * However, if you use CMD to delete the folder it works fine?
+ */
+async function rmdir(path: string): Promise<void> {
+  if (isWin) {
+    await new Promise((resolve, reject) => {
+      exec(`rmdir "${path}" /s /q`, (err, stdout, stderr) => {
+        if (err || stdout.length || stderr.length) {
+          log.error("rmdir fallback failed", err, stdout, stderr);
+          return reject(new Error("rmdir fallback failed"));
+        }
+        resolve(undefined);
+      });
+    });
+  } else {
+    await fsp.rm(path, { recursive: true, force: true });
   }
 }
 
 export async function readDirRecursive(sourcePath: string): Promise<string[]> {
   const dirFiles: string[] = [];
-  const files = await fsReaddir(sourcePath, { withFileTypes: true });
+  const files = await fsp.readdir(sourcePath, { withFileTypes: true });
 
   for (const file of files) {
     const filePath = path.join(sourcePath, file.name);
@@ -86,7 +98,7 @@ export async function readDirRecursive(sourcePath: string): Promise<string[]> {
 }
 
 export async function getDirTree(sourcePath: string): Promise<TreeNode> {
-  const files = await fsReaddir(sourcePath, { withFileTypes: true });
+  const files = await fsp.readdir(sourcePath, { withFileTypes: true });
 
   const node: TreeNode = {
     name: path.basename(sourcePath),
@@ -103,7 +115,7 @@ export async function getDirTree(sourcePath: string): Promise<TreeNode> {
       node.children.push(nestedNode);
       node.size = sumBy(node.children, (n) => n.size);
     } else {
-      const stats = await fsStat(filePath);
+      const stats = await fsp.stat(filePath);
       node.size += stats.size;
       node.children.push({
         name: file.name,
@@ -122,7 +134,7 @@ export async function getLastModifiedFileDate(sourcePath: string): Promise<numbe
   const dirFiles = await readDirRecursive(sourcePath);
   const dates: number[] = [];
   for (const file of dirFiles) {
-    const stat = await fsStat(file);
+    const stat = await fsp.stat(file);
     dates.push(stat.mtimeMs);
   }
 
