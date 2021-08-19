@@ -90,6 +90,15 @@
   -webkit-app-region: no-drag;
   height: 100%;
 
+  .bnet-control {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2500;
+    margin-top: -8px;
+  }
+
   .window-control {
     height: 100%;
     width: 46px;

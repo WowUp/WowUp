@@ -528,6 +528,32 @@ mat-icon.success-icon {
   border: 2px solid green;
 }
 
+.bnet-btn {
+  background-color: #0074e0;
+  border: solid 2px transparent;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  border-radius: 4px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  text-decoration: none;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+.bnet-btn-sm {
+  font-size: inherit;
+  border-radius: 4px;
+  // border: 1px solid white;
+  cursor: pointer;
+}
+.bnet-btn:hover {
+  background-color: #0074e0;
+  border-color: #47a6ff;
+  color: #fff;
+}
+
 // MATERIAL OVERRIDES
 
 .no-input-border {

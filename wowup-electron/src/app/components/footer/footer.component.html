@@ -7,6 +7,7 @@
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}">
     <mat-icon class="tab-icon tab-icon-inactive" svgIcon="fab:discord"></mat-icon>
   </a>
+  <a class="bnet-btn bnet-btn-sm" appExternalLink href="http://localhost:3000/dev/login?client=desktop" >Login</a>
   <p class="text-1">{{ sessionService.statusText$ | async }}</p>
   <div class="flex-grow-1"></div>
   <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>

@@ -12,6 +12,7 @@ import { AppUpdater } from "./app-updater";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import {
+  APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
@@ -85,6 +86,9 @@ let loadFailCount = 0;
 
 // APP MENU SETUP
 createAppMenu(win);
+
+// WowUp Protocol Handler
+app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
 
 // Set the app ID so that our notifications work correctly on Windows
 app.setAppUserModelId(APP_USER_MODEL_ID);

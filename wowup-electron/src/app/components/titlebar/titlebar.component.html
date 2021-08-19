@@ -11,6 +11,9 @@
     <div>{{ (isFullscreen ? 'APP.WINDOW_TITLE_FULLSCREEN' : 'APP.WINDOW_TITLE') | translate }}</div>
   </div>
   <div *ngIf="electronService.isWin || electronService.isLinux" class="window-control-container row align-items-center">
+    <!-- <div class="bnet-control">
+      <a class="bnet-btn bnet-btn-sm" appExternalLink href="https://dev.wowup.io">Login with Battle.net</a>
+    </div> -->
     <div *ngIf="isFullscreen === true" class="window-control hover-primary-2 text-2"
       (click)="electronService.leaveFullScreen()">
       <mat-icon class="icon" svgIcon="fas:compress-arrows-alt"
