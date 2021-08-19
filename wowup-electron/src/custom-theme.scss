@@ -738,8 +738,12 @@ div.tree > tree-node > div > .node-wrapper > tree-node-expander > .toggle-childr
   @include ag-theme-material(
     (
       foreground-color: var(--text-1),
+      disabled-foreground-color: rgba(var(--text-1), 0.38),
+      secondary-foreground-color: rgba(var(--text-1), 0.54),
       background-color: var(--background-secondary-2),
+      modal-overlay-background-color: rgba(var(--background-secondary-2), 0.66),
       header-background-color: var(--background-secondary-2),
+      header-cell-hover-background-color: hsl(var(--background-secondary-2), 95%),
       row-hover-color: var(--background-secondary-2),
       row-border-color: var(--grid-border),
       border-color: var(--grid-border),
