@@ -151,7 +151,7 @@
     "node-cache": "5.1.2",
     "node-disk-info": "1.3.0",
     "opossum": "6.2.0",
-    "p-limit": "4.0.0",
+    "p-limit": "3.1.0",
     "protobufjs": "6.11.2",
     "rxjs": "6.6.7",
     "slug": "5.1.0",
