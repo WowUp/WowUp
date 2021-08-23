@@ -39,7 +39,26 @@ const CHANGELOGS: ChangeLog[] = [
       <li>Tweak the tabs some more</li>
       <li>Images details tab is now Previews</li>
       <li>Use a different lightbox library for previews</li>
-      <li>Expanded system proxy support</li>
+      <li>Expanded system proxy support</li>`,
+  },
+  {
+    Version: "2.4.4",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with single CurseForge addons failing, causing the whole batch of addons to be marked "Unknown"</li>
+    </ul>
+    </div>`,
+  },
+  {
+    Version: "2.4.3",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with auto updates failing with the same addon installed in multiple WoW clients</li>
+      <li>Fix an caching issue with CurseForge featured addons</li>
     </ul>
     </div>`,
   },

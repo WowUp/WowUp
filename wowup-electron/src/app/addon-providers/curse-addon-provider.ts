@@ -138,7 +138,7 @@ export class CurseAddonProvider extends AddonProvider {
 
     const addonResult = await this.getByIdBase(protocolData.addonId.toString()).toPromise();
     if (!addonResult) {
-      throw new Error(`Failed to get addon data`);
+      throw new Error(`Failed to get addon data: ${protocolData.addonId}`);
     }
 
     for (const author of addonResult.authors) {

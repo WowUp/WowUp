@@ -13,6 +13,7 @@ import {
 import * as log from "electron-log";
 import * as globrex from "globrex";
 import * as _ from "lodash";
+import { nanoid } from "nanoid";
 import * as nodeDiskInfo from "node-disk-info";
 import * as pLimit from "p-limit";
 import * as path from "path";
