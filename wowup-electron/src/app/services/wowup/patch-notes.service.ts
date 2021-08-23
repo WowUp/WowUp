@@ -16,6 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.4",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with single CurseForge addons failing, causing the whole batch of addons to be marked "Unknown"</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.3",
     html: `
     <div>
