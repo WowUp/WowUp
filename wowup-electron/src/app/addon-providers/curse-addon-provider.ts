@@ -1,6 +1,6 @@
 import * as _ from "lodash";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { from, Observable, of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -137,16 +137,18 @@ export class CurseAddonProvider extends AddonProvider {
     }
 
     const addonResult = await this.getByIdBase(protocolData.addonId.toString()).toPromise();
+    if (!addonResult) {
+      throw new Error(`Failed to get addon data`);
+    }
+
     for (const author of addonResult.authors) {
       if (await this.isBlockedAuthor(author)) {
         console.info(`Blocklist addon detected`, addonResult.name);
         return undefined;
       }
     }
+
     console.debug("addonResult", addonResult);
-    if (!addonResult) {
-      throw new Error(`Failed to get addon data`);
-    }
 
     const addonFileResponse = await this.getAddonFileById(protocolData.addonId, protocolData.fileId).toPromise();
     console.debug("targetFile", addonFileResponse);
@@ -243,6 +245,7 @@ export class CurseAddonProvider extends AddonProvider {
           addonResults.push(searchResult);
           scanResult.searchResult = searchResult;
         } else {
+          console.warn(`Failed to get CurseForge addon data ${scanResult.exactMatch.id}`);
           continue;
         }
       }
@@ -577,10 +580,16 @@ export class CurseAddonProvider extends AddonProvider {
     );
   }
 
-  private getByIdBase(addonId: string): Observable<CurseSearchResult> {
+  private getByIdBase(addonId: string): Observable<CurseSearchResult | undefined> {
     const url = `${API_URL}/addon/${addonId}`;
 
-    return from(this._circuitBreaker.getJson<CurseSearchResult>(url));
+    return from(this._circuitBreaker.getJson<CurseSearchResult>(url)).pipe(
+      catchError((e) => {
+        // We want to eat things like 400/500 responses
+        console.error(e);
+        return of(undefined);
+      })
+    );
   }
 
   private getAddonFileById(addonId: string | number, fileId: string | number): Observable<CurseAddonFileResponse> {

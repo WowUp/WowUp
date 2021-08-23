@@ -1,0 +1,13 @@
+.control-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.account-container {
+  width: 400px;
+}

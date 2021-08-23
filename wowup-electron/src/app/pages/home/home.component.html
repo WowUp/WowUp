@@ -16,7 +16,7 @@
         <app-get-addons [tabIndex]="TAB_INDEX_GET_ADDONS"></app-get-addons>
       </mat-tab>
       <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.ABOUT_TAB_TITLE' | translate">
-        <app-about [tabIndex]="TAB_INDEX_ABOUT"></app-about>
+        <app-account-page></app-account-page>
       </mat-tab>
       <mat-tab [label]="'PAGES.HOME.NEWS_TAB_TITLE' | translate">
         <app-news-panel [tabIndex]="TAB_INDEX_NEWS"></app-news-panel>

@@ -90,6 +90,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     try {
       switch (protocolName) {
         case APP_PROTOCOL_NAME:
+          break;
         case CURSE_PROTOCOL_NAME:
           await this.handleAddonInstallProtocol(protocol);
           break;

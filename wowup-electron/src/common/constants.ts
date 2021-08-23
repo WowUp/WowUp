@@ -95,6 +95,7 @@ export const IPC_STORE_SET_OBJECT = "store-set-object";
 // STORES
 export const ADDON_STORE_NAME = "addons";
 export const PREFERENCE_STORE_NAME = "preferences";
+export const STORAGE_WOWUP_AUTH_TOKEN = "wowup-auth-token";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";

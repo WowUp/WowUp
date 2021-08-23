@@ -56,7 +56,7 @@ export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
   private readonly _powerMonitorSrc = new BehaviorSubject("");
-  private readonly _customProtocolSrc = new BehaviorSubject("");
+  public readonly _customProtocolSrc = new BehaviorSubject("");
   private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
   private readonly _windowResumedSrc = new Subject<void>();
 

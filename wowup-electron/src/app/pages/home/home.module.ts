@@ -51,6 +51,7 @@ import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
+import { AccountPageComponent } from "../account-page/account-page.component";
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { HomeComponent } from "./home.component";
     GetAddonsComponent,
     OptionsComponent,
     MyAddonsAddonCellComponent,
+    AccountPageComponent,
     ProgressSpinnerComponent,
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,

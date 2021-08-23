@@ -302,7 +302,8 @@
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "My Addons",
       "NEWS_TAB_TITLE": "News",
-      "OPTIONS_TAB_TITLE": "Options"
+      "OPTIONS_TAB_TITLE": "Options",
+      "ACCOUNT_TAB_TITLE": "Account"
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
@@ -455,7 +456,8 @@
         "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
-        "DEBUG": "Debug"
+        "DEBUG": "Debug",
+        "ABOUT": "About"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",

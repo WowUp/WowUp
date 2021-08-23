@@ -57,9 +57,9 @@ export class HorizontalTabsComponent implements OnInit {
   };
 
   private aboutTab: Tab = {
-    titleKey: "PAGES.HOME.ABOUT_TAB_TITLE",
-    tooltipKey: "PAGES.HOME.ABOUT_TAB_TITLE",
-    icon: "fas:info-circle",
+    titleKey: "PAGES.HOME.ACCOUNT_TAB_TITLE",
+    tooltipKey: "PAGES.HOME.ACCOUNT_TAB_TITLE",
+    icon: "fas:user-circle",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT)),
     isDisabled$: of(false),
     onClick: (): void => {

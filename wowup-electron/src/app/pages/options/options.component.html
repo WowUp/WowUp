@@ -26,6 +26,9 @@
             <button mat-list-item (click)="optionTabIndex = 4">
               {{ "WTF Explorer" | translate }}
             </button>
+            <button mat-list-item (click)="optionTabIndex = 5">
+              {{ "PAGES.OPTIONS.TABS.ABOUT" | translate }}
+            </button>
           </mat-action-list>
         </div>
       </div>
@@ -48,6 +51,9 @@
             </mat-tab>
             <mat-tab label="WtfExplorer">
               <app-extra [active]="optionTabIndex === 4"></app-extra>
+            </mat-tab>
+            <mat-tab label="About">
+              <app-about></app-about>
             </mat-tab>
           </mat-tab-group>
         </div>

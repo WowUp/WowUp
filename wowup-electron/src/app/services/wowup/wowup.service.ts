@@ -85,6 +85,10 @@ export class WowUpService {
       .catch((e) => console.error(e));
   }
 
+  public login(): void {
+    this.openExternalLink("http://localhost:3000/dev/login?client=desktop").catch((e) => console.error(e));
+  }
+
   public async getApplicationVersion(): Promise<string> {
     const appVersion = await this._electronService.invoke<string>(IPC_GET_APP_VERSION);
     return `${appVersion}${this._electronService.isPortable ? " (portable)" : ""}`;
