@@ -203,7 +203,7 @@
       "DESCRIPTION_NOT_FOUND": "Описание не найдено",
       "DESCRIPTION_TAB": "Описание",
       "FUNDING_LINK_TITLE": "Поддержать этого автора",
-      "IMAGES_TAB": "Previews",
+      "IMAGES_TAB": "Просмотр",
       "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
       "NO_CHANGELOG_TEXT": "Нет доступного списка изменений",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
@@ -297,7 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "О программе",
-      "ACCOUNT_TAB_TITLE": "Account",
+      "ACCOUNT_TAB_TITLE": "Аккаунт",
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
       "GUIDE_TAB_TITLE": "Руководство (англ.)",
       "MIGRATING_ADDONS": "Перенос модификаций...",
@@ -453,7 +453,7 @@
         "TITLE": "Отладка"
       },
       "TABS": {
-        "ABOUT": "About",
+        "ABOUT": "О приложении",
         "ADDONS": "Модификации",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",
