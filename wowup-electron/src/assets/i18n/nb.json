@@ -297,6 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Om",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Få Utvidelser",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Migrating addons...",
@@ -452,6 +453,7 @@
         "TITLE": "Debug"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",

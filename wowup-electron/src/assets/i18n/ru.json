@@ -297,6 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "О программе",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
       "GUIDE_TAB_TITLE": "Руководство (англ.)",
       "MIGRATING_ADDONS": "Перенос модификаций...",
@@ -452,6 +453,7 @@
         "TITLE": "Отладка"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Модификации",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",

@@ -297,13 +297,13 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "About",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Get Addons",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "My Addons",
       "NEWS_TAB_TITLE": "News",
-      "OPTIONS_TAB_TITLE": "Options",
-      "ACCOUNT_TAB_TITLE": "Account"
+      "OPTIONS_TAB_TITLE": "Options"
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
@@ -453,11 +453,11 @@
         "TITLE": "Debug"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addons",
         "APPLICATION": "Application",
         "CLIENTS": "Clients",
-        "DEBUG": "Debug",
-        "ABOUT": "About"
+        "DEBUG": "Debug"
       },
       "WOW": {
         "ADD_CLIENT_BUTTON": "Add New",

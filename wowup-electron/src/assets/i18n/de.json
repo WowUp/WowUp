@@ -297,6 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Addons werden migriert...",
@@ -452,6 +453,7 @@
         "TITLE": "Debuggen"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addons",
         "APPLICATION": "Anwendung",
         "CLIENTS": "Clients",

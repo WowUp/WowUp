@@ -297,6 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Acerca de",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Obtener addons",
       "GUIDE_TAB_TITLE": "Guía",
       "MIGRATING_ADDONS": "Migrando lista de addons...",
@@ -452,6 +453,7 @@
         "TITLE": "Depuración"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addons",
         "APPLICATION": "Aplicación",
         "CLIENTS": "Clientes",
