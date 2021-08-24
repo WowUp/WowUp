@@ -15,12 +15,14 @@ import { MatIcon } from "@angular/material/icon";
 import { MatIconTestingModule } from "@angular/material/icon/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { mockPreload } from "../../tests/test-helpers";
+import { ElectronService } from "../../services";
 
 /** Fix icon warning? https://stackoverflow.com/a/62277810 */
 describe("FooterComponent", () => {
   let fixture: ComponentFixture<FooterComponent>;
   let wowUpServiceSpy: WowUpService;
   let sessionServiceSpy: SessionService;
+  let electronService: ElectronService;
 
   beforeEach(async () => {
     mockPreload();
@@ -35,6 +37,11 @@ describe("FooterComponent", () => {
     sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
       statusText$: new BehaviorSubject(""),
       pageContextText$: new BehaviorSubject(""),
+      wowUpAccount$: new Subject(),
+    });
+
+    electronService = jasmine.createSpyObj("ElectronService", [""], {
+      appUpdate$: new Subject(),
     });
 
     await TestBed.configureTestingModule({
@@ -61,6 +68,7 @@ describe("FooterComponent", () => {
       .overrideComponent(FooterComponent, {
         set: {
           providers: [
+            { provide: ElectronService, useValue: electronService },
             { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: SessionService, useValue: sessionServiceSpy },
           ],
