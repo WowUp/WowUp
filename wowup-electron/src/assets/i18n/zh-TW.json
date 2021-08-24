@@ -297,7 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "關於",
-      "ACCOUNT_TAB_TITLE": "Account",
+      "ACCOUNT_TAB_TITLE": "賬戶",
       "GET_ADDONS_TAB_TITLE": "獲取插件",
       "GUIDE_TAB_TITLE": "指南（英語）",
       "MIGRATING_ADDONS": "正在遷移插件...",
@@ -453,7 +453,7 @@
         "TITLE": "除錯"
       },
       "TABS": {
-        "ABOUT": "About",
+        "ABOUT": "關於",
         "ADDONS": "插件",
         "APPLICATION": "應用程式",
         "CLIENTS": "客戶端",
