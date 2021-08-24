@@ -47,6 +47,7 @@ import { AnalyticsService } from "../analytics/analytics.service";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { AppConfig } from "../../../environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -86,7 +87,7 @@ export class WowUpService {
   }
 
   public login(): void {
-    this.openExternalLink("http://localhost:3000/dev/login?client=desktop").catch((e) => console.error(e));
+    this.openExternalLink(`${AppConfig.wowUpWebsiteUrl}/login?client=desktop`).catch((e) => console.error(e));
   }
 
   public async getApplicationVersion(): Promise<string> {

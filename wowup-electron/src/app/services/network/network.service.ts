@@ -32,7 +32,7 @@ export class CircuitBreakerWrapper {
       resetTimeout: resetTimeoutMs,
       errorFilter: (err) => {
         // Don't trip the breaker on a 404
-        return err.status === 404;
+        return err.status >= 400 && err.status < 500;
       },
     });
     this._cb.on("open", () => {
@@ -47,10 +47,16 @@ export class CircuitBreakerWrapper {
     return (await this._cb.fire(action)) as TOUT;
   }
 
-  public getJson<T>(url: URL | string, timeoutMs?: number): Promise<T> {
+  public getJson<T>(
+    url: URL | string,
+    headers: {
+      [header: string]: string | string[];
+    } = {},
+    timeoutMs?: number
+  ): Promise<T> {
     return this.fire(() =>
       this._httpClient
-        .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS } })
+        .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS, ...headers } })
         .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
         .toPromise()
     );

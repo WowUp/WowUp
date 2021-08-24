@@ -28,6 +28,17 @@
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}">
     <mat-icon class="tab-icon tab-icon-inactive" svgIcon="fab:discord"></mat-icon>
   </a> -->
+  <div class="tab hover-bg-secondary-2" [ngClass]="{ selected: isAccountSelected$ | async    }"
+    (click)="onClickTab(TAB_INDEX_ACCOUNT)">
+    <!-- <div class="tab-icon"> -->
+    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="fas:user-circle"
+      [ngClass]="{ 'tab-icon-active': isAccountSelected$ | async }">
+    </mat-icon>
+    <!-- </div> -->
+    <div *ngIf="(accountDisplayName$ | async) === ''" class="tab-title">{{ 'PAGES.HOME.ACCOUNT_TAB_TITLE' | translate }}</div>
+    <div *ngIf="(accountDisplayName$ | async) !== ''" class="tab-title">{{accountDisplayName$ | async}}</div>
+  </div>
+
   <div *ngFor="let tab of tabsBottom" class="tab hover-bg-secondary-2"
     [ngClass]="{ selected: tab.isSelected$ | async, disabled: tab.isDisabled$ | async }" (click)="tab.onClick(tab)">
     <!-- <div class="tab-icon"> -->

@@ -21,6 +21,17 @@ export class WowUpApiService {
     this.getBlockList().subscribe();
   }
 
+  public async getAccount(authToken: string): Promise<any> {
+    const url = new URL(`${API_URL}/account`);
+    return await this._circuitBreaker.getJson<any>(
+      url,
+      {
+        Authorization: `Bearer ${authToken}`,
+      },
+      5000
+    );
+  }
+
   public getBlockList(): Observable<BlockListRepresentation> {
     const cached = this._cacheService.get<BlockListRepresentation>(BLOCKLIST_CACHE_KEY);
     if (cached) {

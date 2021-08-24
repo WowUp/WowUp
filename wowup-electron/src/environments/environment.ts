@@ -1,11 +1,13 @@
 export const AppConfig = {
   production: false,
   environment: "LOCAL",
+  wowUpWebsiteUrl: "https://dev.wowup.io",
   wowUpApiUrl: "https://api.dev.wowup.io",
   wowUpHubUrl: "https://hub.dev.wowup.io",
   googleAnalyticsId: "UA-92563227-4",
   wowupRepositoryUrl: "https://github.com/WowUp/WowUp",
-  warcraftTavernNewsFeedUrl: "https://www.warcrafttavern.com/?call_custom_simple_rss=1&csrp_post_type=wow-classic-news,tbc-classic-news,retail-news&csrp_thumbnail_size=medium",
+  warcraftTavernNewsFeedUrl:
+    "https://www.warcrafttavern.com/?call_custom_simple_rss=1&csrp_post_type=wow-classic-news,tbc-classic-news,retail-news&csrp_thumbnail_size=medium",
   azure: {
     applicationInsightsKey: "4a53e8d9-796c-4f80-b1a6-9a058374dd6d",
   },

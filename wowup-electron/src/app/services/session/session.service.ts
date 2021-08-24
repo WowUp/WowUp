@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { BehaviorSubject, from, of, Subject } from "rxjs";
 
 import { Injectable } from "@angular/core";
 
@@ -14,8 +14,11 @@ import { PreferenceStorageService } from "../storage/preference-storage.service"
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";
 import { ElectronService } from "../electron/electron.service";
-import { filter, map, switchMap } from "rxjs/operators";
+import { catchError, filter, map, switchMap } from "rxjs/operators";
 import { getProtocol } from "../../utils/string.utils";
+import { WowUpApiService } from "../wowup-api/wowup-api.service";
+import { WowUpGetAccountResponse } from "../../models/wowup-api/api-responses";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -30,6 +33,7 @@ export class SessionService {
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
   private readonly _wowUpAuthTokenSrc = new BehaviorSubject<string>("");
+  private readonly _wowUpAccountSrc = new BehaviorSubject<WowUpGetAccountResponse | undefined>(undefined);
 
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
@@ -46,13 +50,15 @@ export class SessionService {
   public readonly targetFileInstallComplete$ = this._targetFileInstallCompleteSrc.asObservable();
   public readonly editingWowInstallationId$ = new BehaviorSubject<string>("");
   public readonly wowUpAuthToken$ = this._wowUpAuthTokenSrc.asObservable();
+  public readonly wowUpAccount$ = this._wowUpAccountSrc.asObservable();
 
-  public readonly wowUpAuthenticated$ = this.wowUpAuthToken$.pipe(map((token) => !!token && token.length > 10));
+  public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
   public constructor(
     private _electronService: ElectronService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _preferenceStorageService: PreferenceStorageService
+    private _preferenceStorageService: PreferenceStorageService,
+    private _wowUpApiService: WowUpApiService
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
@@ -68,8 +74,30 @@ export class SessionService {
       )
       .subscribe();
 
+    this.wowUpAuthToken$
+      .pipe(
+        filter((token) => !!token && token.length > 10),
+        switchMap((token) => from(this.onAuthTokenChanged(token)))
+      )
+      .subscribe();
+
     this.loadAuthToken();
   }
+
+  private onAuthTokenChanged = async (token: string) => {
+    try {
+      const account = await this._wowUpApiService.getAccount(token);
+      console.debug("Account", account);
+      this._wowUpAccountSrc.next(account);
+    } catch (e) {
+      console.error(e);
+
+      // Check if user is no longer authorized
+      if (e instanceof HttpErrorResponse && [403, 401].includes(e.status)) {
+        this.clearWowUpAuthToken();
+      }
+    }
+  };
 
   /**
    * Handle the post login protocol message
@@ -107,6 +135,7 @@ export class SessionService {
   public clearWowUpAuthToken(): void {
     window.localStorage.removeItem(STORAGE_WOWUP_AUTH_TOKEN);
     this._wowUpAuthTokenSrc.next("");
+    this._wowUpAccountSrc.next(undefined);
   }
 
   public isAuthenticated(): boolean {

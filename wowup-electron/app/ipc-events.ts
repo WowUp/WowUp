@@ -19,7 +19,6 @@ import * as pLimit from "p-limit";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
-import { nanoid } from "nanoid";
 import * as fs from "fs";
 
 import {

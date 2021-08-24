@@ -5,7 +5,6 @@ import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription 
 import { catchError, filter, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
-import { nanoid } from "nanoid";
 
 import { Injectable } from "@angular/core";
 

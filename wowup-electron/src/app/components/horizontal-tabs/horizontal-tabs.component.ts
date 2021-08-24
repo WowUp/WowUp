@@ -30,6 +30,13 @@ interface Tab {
   styleUrls: ["./horizontal-tabs.component.scss"],
 })
 export class HorizontalTabsComponent implements OnInit {
+  public TAB_INDEX_ACCOUNT = TAB_INDEX_ABOUT;
+
+  public isAccountSelected$ = this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT));
+  public accountDisplayName$: Observable<string> = this.sessionService.wowUpAccount$.pipe(
+    map((account) => account?.displayName ?? "")
+  );
+
   private myAddonsTab: Tab = {
     titleKey: "PAGES.HOME.MY_ADDONS_TAB_TITLE",
     tooltipKey: "PAGES.HOME.MY_ADDONS_TAB_TITLE",
@@ -92,7 +99,7 @@ export class HorizontalTabsComponent implements OnInit {
 
   public tabsTop: Tab[] = [this.myAddonsTab, this.getAddonsTab, this.newsTab];
 
-  public tabsBottom: Tab[] = [this.aboutTab, this.settingsTab];
+  public tabsBottom: Tab[] = [this.settingsTab];
 
   public constructor(
     public electronService: ElectronService,
@@ -101,4 +108,8 @@ export class HorizontalTabsComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {}
+
+  public onClickTab(tabIndex: number): void {
+    this.sessionService.selectedHomeTab = tabIndex;
+  }
 }

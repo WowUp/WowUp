@@ -28,3 +28,8 @@ export interface WowUpSearchAddonsResponse {
   addons: WowUpAddonRepresentation[];
   count: number;
 }
+
+export interface WowUpGetAccountResponse {
+  displayName: string;
+  patreonTier: string;
+}
