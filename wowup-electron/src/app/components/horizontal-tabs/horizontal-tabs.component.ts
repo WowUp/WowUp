@@ -13,6 +13,7 @@ import {
 import { Observable, of } from "rxjs";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { ElectronService } from "../../services";
+import { AppConfig } from "../../../environments/environment";
 
 interface Tab {
   titleKey?: string;
@@ -30,6 +31,7 @@ interface Tab {
   styleUrls: ["./horizontal-tabs.component.scss"],
 })
 export class HorizontalTabsComponent implements OnInit {
+  public wowUpWebsiteUrl = AppConfig.wowUpWebsiteUrl;
   public TAB_INDEX_ACCOUNT = TAB_INDEX_ABOUT;
 
   public isAccountSelected$ = this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT));

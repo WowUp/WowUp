@@ -15,7 +15,7 @@
     </mat-icon> -->
   </div>
   <div class="spacer"></div>
-  <a appExternalLink class="text-1 tab hover-bg-secondary-2" href="https://wowup.io/guide/section/my-addons/overview"
+  <a appExternalLink class="text-1 tab hover-bg-secondary-2" [href]="wowUpWebsiteUrl + '/guide'"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}">
     <mat-icon class="tab-icon tab-icon-inactive" svgIcon="far:question-circle"></mat-icon>
     <div class="tab-title">{{ 'PAGES.HOME.GUIDE_TAB_TITLE' | translate }}</div>
@@ -35,7 +35,8 @@
       [ngClass]="{ 'tab-icon-active': isAccountSelected$ | async }">
     </mat-icon>
     <!-- </div> -->
-    <div *ngIf="(accountDisplayName$ | async) === ''" class="tab-title">{{ 'PAGES.HOME.ACCOUNT_TAB_TITLE' | translate }}</div>
+    <div *ngIf="(accountDisplayName$ | async) === ''" class="tab-title">{{ 'PAGES.HOME.ACCOUNT_TAB_TITLE' | translate }}
+    </div>
     <div *ngIf="(accountDisplayName$ | async) !== ''" class="tab-title">{{accountDisplayName$ | async}}</div>
   </div>
 

@@ -14,6 +14,7 @@ import {
   DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX,
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   DEFAULT_THEME,
+  DEFAULT_TRUSTED_DOMAINS,
   ENABLE_APP_BADGE_KEY,
   ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY,
   GET_ADDONS_HIDDEN_COLUMNS_KEY,
@@ -366,6 +367,10 @@ export class WowUpService {
 
   public async isTrustedDomain(href: string | URL): Promise<boolean> {
     const url = href instanceof URL ? href : new URL(href);
+    if (DEFAULT_TRUSTED_DOMAINS.includes(url.hostname)) {
+      return true;
+    }
+    
     const trustedDomains = await this.getTrustedDomains();
     return trustedDomains.includes(url.hostname);
   }
@@ -401,7 +406,7 @@ export class WowUpService {
     this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, await this.getDefaultReleaseChannel());
     this.setDefaultPreference(USE_SYMLINK_MODE_PREFERENCE_KEY, false);
     this.setDefaultPreference(ENABLE_APP_BADGE_KEY, true);
-    this.setDefaultPreference(TRUSTED_DOMAINS_KEY, ["wowup.io", "discord.gg", "www.patreon.com", "github.com"]);
+    this.setDefaultPreference(TRUSTED_DOMAINS_KEY, DEFAULT_TRUSTED_DOMAINS);
     this.setDefaultClientPreferences();
   }
 
