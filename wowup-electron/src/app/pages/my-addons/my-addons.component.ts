@@ -334,10 +334,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     from(this.lazyLoad())
       .pipe(
         first(),
-        delay(400),
-        map(() => {
-          this.redrawRows();
-        }),
+        // delay(400),
+        // map(() => {
+        //   this.redrawRows();
+        // }),
         catchError((e) => {
           console.error(e);
           return of(undefined);
