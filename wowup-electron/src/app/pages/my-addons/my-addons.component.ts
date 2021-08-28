@@ -1149,9 +1149,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private redrawRows() {
-    this.gridApi?.redrawRows();
-    this.gridApi?.resetRowHeights();
-    this.autoSizeColumns();
+    // this.gridApi?.redrawRows();
+    // this.gridApi?.resetRowHeights();
+    // this.autoSizeColumns();
     this._cdRef.detectChanges();
   }
 

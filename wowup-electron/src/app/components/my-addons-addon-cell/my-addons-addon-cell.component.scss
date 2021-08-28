@@ -1,8 +1,12 @@
 @import "../../../variables.scss";
 
 .addon-column {
-  padding-top: 0.6em;
-  padding-bottom: 0.6em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 
   .thumbnail-container {
     margin-right: 11px;
@@ -57,7 +61,7 @@
   }
 
   .title-container {
-    padding-bottom: 0.5em;
+    // padding-bottom: 0.5em;
   }
 
   .addon-title {
