@@ -126,7 +126,8 @@
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
-    <div *ngIf="listItem.addon.autoUpdateEnabled" class="mat-menu-item"> 
+    <!-- AUTO UPDATE NOTIFICATIONS -->
+    <div *ngIf="canSetAutoUpdateNotifications(listItem)" class="mat-menu-item"> 
       <mat-checkbox [checked]="listItem.addon.autoUpdateNotificationsEnabled" (click)="onClickAutoUpdateAddonNotifications(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON" | translate }}
       </mat-checkbox>
