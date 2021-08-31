@@ -10,6 +10,7 @@ import { combineLatest, from, Observable, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { AppUpdateState } from "../../../common/wowup/models";
 import { TAB_INDEX_ABOUT } from "../../../common/constants";
+import { LinkService } from "../../services/links/link.service";
 
 @Component({
   selector: "app-footer",
@@ -43,7 +44,8 @@ export class FooterComponent implements OnInit {
     public wowUpService: WowUpService,
     public sessionService: SessionService,
     private electronService: ElectronService,
-    private _wowupService: WowUpService
+    private _wowupService: WowUpService,
+    private _linkService: LinkService
   ) {}
 
   public ngOnInit(): void {
@@ -82,7 +84,7 @@ export class FooterComponent implements OnInit {
           }
 
           return from(
-            this._wowupService.openExternalLink(
+            this._linkService.openExternalLink(
               `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
             )
           );

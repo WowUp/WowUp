@@ -1,11 +1,14 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
-import { from, of, Subscription } from "rxjs";
-import { catchError, filter, map, switchMap } from "rxjs/operators";
+import { of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { AppConfig } from "../../../environments/environment";
 import { ElectronService } from "../../services";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
+import { LinkService } from "../../services/links/link.service";
 import { SessionService } from "../../services/session/session.service";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
 @Component({
@@ -19,15 +22,26 @@ export class AccountPageComponent {
   public constructor(
     public electronService: ElectronService,
     public sessionService: SessionService,
-    private _wowUpService: WowUpService,
+    public wowUpService: WowUpService,
     private _dialogFactory: DialogFactory,
-    private _translateService: TranslateService
+    private _translateService: TranslateService,
+    private _snackbarService: SnackbarService,
+    private _linkService: LinkService
   ) {}
 
   public onClickLogin(): void {
-    this._wowUpService.login();
-
+    this.sessionService.login();
   }
+
+  public onToggleAccountPush = async (evt: MatSlideToggleChange): Promise<void> => {
+    try {
+      await this.sessionService.toggleAccountPush(evt.checked);
+    } catch (e) {
+      evt.source.checked = !evt.source.checked;
+      console.error("Failed to toggle account push", e);
+      this._snackbarService.showErrorSnackbar("COMMON.ERRORS.ACCOUNT_PUSH_TOGGLE_FAILED_ERROR");
+    }
+  };
 
   public onClickLogout(): void {
     const title = this._translateService.instant("PAGES.ACCOUNT.LOGOUT_CONFIRMATION_TITLE");
@@ -40,7 +54,7 @@ export class AccountPageComponent {
       .pipe(
         map((result) => {
           if (result) {
-            this.sessionService.clearWowUpAuthToken();
+            this.sessionService.logout();
           }
         }),
         catchError((error) => {
@@ -52,6 +66,6 @@ export class AccountPageComponent {
   }
 
   public onClickManageAccount(): void {
-    this._wowUpService.openExternalLink(`${AppConfig.wowUpWebsiteUrl}/account`).catch((e) => console.error(e));
+    this._linkService.openExternalLink(`${AppConfig.wowUpWebsiteUrl}/account`).catch((e) => console.error(e));
   }
 }

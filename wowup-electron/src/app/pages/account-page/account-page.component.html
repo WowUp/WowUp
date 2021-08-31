@@ -35,7 +35,7 @@
           <small class="text-2">{{ "No more waiting for timers, get updates as soon as we see them" | translate
             }}</small>
         </div>
-        <mat-slide-toggle disabled>
+        <mat-slide-toggle [checked]="sessionService.wowUpAccountPushEnabled$ | async" (change)="onToggleAccountPush($event)">
         </mat-slide-toggle>
       </div>
       <div class="toggle-row row align-items-center">

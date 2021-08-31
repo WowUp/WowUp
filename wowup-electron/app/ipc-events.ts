@@ -70,6 +70,10 @@ import {
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
   DEFAULT_FILE_MODE,
+  IPC_PUSH_INIT,
+  IPC_PUSH_REGISTER,
+  IPC_PUSH_UNREGISTER,
+  IPC_PUSH_SUBSCRIBE,
 } from "../src/common/constants";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { Addon } from "../src/common/entities/addon";
@@ -89,6 +93,7 @@ import { chmodDir, copyDir, getDirTree, getLastModifiedFileDate, readDirRecursiv
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
+import * as push from "./push";
 
 let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
@@ -476,6 +481,22 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_SHOW_OPEN_DIALOG, async (evt, options: OpenDialogOptions) => {
     return await dialog.showOpenDialog(options);
+  });
+
+  handle(IPC_PUSH_INIT, (evt) => {
+    return push.startPushService();
+  });
+
+  handle(IPC_PUSH_REGISTER, async (evt, appId: string) => {
+    return await push.registerForPush(appId);
+  });
+
+  handle(IPC_PUSH_UNREGISTER, async (evt) => {
+    return await push.unregisterPush();
+  });
+
+  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel) => {
+    return await push.subscribeToChannel(channel);
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {

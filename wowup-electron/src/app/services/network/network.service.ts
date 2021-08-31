@@ -71,10 +71,34 @@ export class CircuitBreakerWrapper {
     );
   }
 
-  public postJson<T>(url: URL | string, body: unknown, timeoutMs?: number): Promise<T> {
+  public postJson<T>(
+    url: URL | string,
+    body: unknown,
+    headers: {
+      [header: string]: string | string[];
+    } = {},
+    timeoutMs?: number
+  ): Promise<T> {
+    const cheaders = headers || {};
     return this.fire<T>(() =>
       this._httpClient
-        .post<T>(url.toString(), body)
+        .post<T>(url.toString(), body, { headers: { ...cheaders } })
+        .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
+        .toPromise()
+    );
+  }
+
+  public deleteJson<T>(
+    url: URL | string,
+    headers: {
+      [header: string]: string | string[];
+    } = {},
+    timeoutMs?: number
+  ): Promise<T> {
+    const cheaders = headers || {};
+    return this.fire<T>(() =>
+      this._httpClient
+        .delete<T>(url.toString(), { headers: { ...cheaders } })
         .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
         .toPromise()
     );

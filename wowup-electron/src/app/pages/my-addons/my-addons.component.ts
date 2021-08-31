@@ -307,7 +307,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.loadSortOrder();
 
-    this.rowDataChange$.pipe(debounceTime(50)).subscribe(() => {
+    this.rowDataChange$.pipe(debounceTime(500)).subscribe(() => {
       this.redrawRows();
     });
   }
@@ -1188,7 +1188,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         minWidth: 300,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER"),
         sortable: true,
-        autoHeight: true,
+        // autoHeight: true,
         cellRenderer: "myAddonRenderer",
         colId: "name",
         valueGetter: (params) => {

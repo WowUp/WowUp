@@ -71,6 +71,17 @@ export class FundingButtonComponent implements OnInit {
       : "PAGES.MY_ADDONS.FUNDING_TOOLTIP.CUSTOM";
   }
 
+  private getClassName(): string {
+    switch (this.funding.platform) {
+      case "PATREON":
+        return "patreon-icon";
+      case "GITHUB":
+        return "github-icon";
+      default:
+        return "custom-icon";
+    }
+  }
+
   private getFundingName(): string {
     switch (this.funding.platform) {
       case "LIBERAPAY":

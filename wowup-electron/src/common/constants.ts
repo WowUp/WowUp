@@ -87,6 +87,10 @@ export const IPC_APP_INSTALL_UPDATE = "app-install-update";
 export const IPC_APP_CHECK_UPDATE = "app-check-update";
 export const IPC_UPDATE_APP_BADGE = "update-app-badge";
 export const IPC_WINDOW_RESUME = "window-resume";
+export const IPC_PUSH_INIT = "push-init";
+export const IPC_PUSH_REGISTER = "push-register";
+export const IPC_PUSH_UNREGISTER = "push-unregister";
+export const IPC_PUSH_SUBSCRIBE = "push-subscribe";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
@@ -129,6 +133,9 @@ export const RETAIL_PTR_LOCATION_KEY = "wow_retail_ptr_location"; // TODO remove
 export const CLASSIC_LOCATION_KEY = "wow_classic_location"; // TODO remove, deprecated
 export const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location"; // TODO remove, deprecated
 export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
+export const ACCT_PUSH_ENABLED_KEY = "acct_push_enabled";
+
+export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 
 // THEMES
 export const DEFAULT_THEME = "default-theme";

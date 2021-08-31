@@ -32,4 +32,13 @@ export interface WowUpSearchAddonsResponse {
 export interface WowUpGetAccountResponse {
   displayName: string;
   patreonTier: string;
+  config: WowUpAccountConfig;
+}
+
+export interface WowUpAccountConfig {
+  pushAppId: string;
+  pushChannels: {
+    addonUpdates: string;
+    alerts: string;
+  };
 }

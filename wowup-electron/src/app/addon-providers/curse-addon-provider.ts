@@ -343,6 +343,7 @@ export class CurseAddonProvider extends AddonProvider {
       {
         fingerprints,
       },
+      undefined,
       AppConfig.wowUpHubHttpTimeoutMs
     );
 

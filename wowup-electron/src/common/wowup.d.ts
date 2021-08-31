@@ -74,7 +74,11 @@ declare type RendererChannels =
   | "app-install-update"
   | "update-app-badge"
   | "list-dir-recursive"
-  | "get-directory-tree";
+  | "get-directory-tree"
+  | "push-init"
+  | "push-register"
+  | "push-unregister"
+  | "push-subscribe";
 
 declare global {
   interface Window {
