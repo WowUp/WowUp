@@ -309,6 +309,7 @@
         "ADDONS_SELECTED": "Выбрано {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
         "ALPHA_ADDON_CHANNEL": "Альфа",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
+        "IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON": "Ignore Notifications",
         "BETA_ADDON_CHANNEL": "Бета",
         "CHANNEL_SUBMENU_TITLE": "Тип выпуска",
         "IGNORE_ADDON_BUTTON": "Пропускать",

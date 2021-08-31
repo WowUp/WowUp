@@ -309,6 +309,7 @@
         "ADDONS_SELECTED": "已选中 {count} 项",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
+        "IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON": "Ignore Notifications",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",

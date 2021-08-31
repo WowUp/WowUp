@@ -309,6 +309,7 @@
         "ADDONS_SELECTED": "{count}개의 애드온이 선택됨",
         "ALPHA_ADDON_CHANNEL": "알파",
         "AUTO_UPDATE_ADDON_BUTTON": "자동 업데이트",
+        "IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON": "Ignore Notifications",
         "BETA_ADDON_CHANNEL": "베타",
         "CHANNEL_SUBMENU_TITLE": "채널",
         "IGNORE_ADDON_BUTTON": "관리제외",

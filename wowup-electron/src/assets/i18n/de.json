@@ -309,6 +309,7 @@
         "ADDONS_SELECTED": "{count} {count, plural, =1{Addon} other{Addons}} ausgewählt",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Automatisch aktualisieren",
+        "IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON": "Ignore Notifications",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Kanal",
         "IGNORE_ADDON_BUTTON": "Ignorieren",

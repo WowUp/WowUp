@@ -309,6 +309,7 @@
         "ADDONS_SELECTED": "{count} {count, plural, =1{addon vybrán} =2{addony vybrány} =3{addony vybrány} =4{addony vybrány} other{addonů vybráno}}",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Automaticky aktualizovat",
+        "IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON": "Ignore Notifications",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Kanál aktualizací",
         "IGNORE_ADDON_BUTTON": "Ignorovat",
