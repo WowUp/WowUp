@@ -931,6 +931,7 @@ export class CurseAddonProvider extends AddonProvider {
       name: scanResult.searchResult?.name ?? "unknown",
       channelType,
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       clientType: installation.clientType,
       downloadUrl: latestVersion?.downloadUrl ?? scanResult.exactMatch?.file.downloadUrl ?? "",
       externalUrl: scanResult.searchResult?.websiteUrl ?? "",

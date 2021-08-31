@@ -5,7 +5,6 @@ import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription 
 import { catchError, filter, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
-import { nanoid } from "nanoid";
 
 import { Injectable } from "@angular/core";
 
@@ -1860,6 +1859,7 @@ export class AddonService {
       channelType: installation.defaultAddonChannelType,
       isIgnored: false,
       autoUpdateEnabled: installation.defaultAutoUpdate,
+      autoUpdateNotificationsEnabled: installation.defaultAutoUpdate,
       releasedAt: latestFile.releaseDate,
       summary: searchResult.summary,
       screenshotUrls: searchResult.screenshotUrls,
@@ -1904,6 +1904,7 @@ export class AddonService {
       channelType: AddonChannelType.Stable,
       isIgnored: true,
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       releasedAt: new Date(lastUpdatedAt),
       installedAt: addonFolder.fileStats?.mtime || new Date(),
       installedFolders: addonFolder.name,

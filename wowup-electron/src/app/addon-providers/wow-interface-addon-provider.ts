@@ -229,6 +229,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       id: uuidv4(),
       author: response.author,
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       channelType: addonChannelType,
       clientType: installation.clientType,
       downloadUrl: response.downloadUri,

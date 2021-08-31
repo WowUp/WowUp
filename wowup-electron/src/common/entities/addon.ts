@@ -36,6 +36,7 @@ export interface Addon {
   isLoadOnDemand: boolean;
   warningType?: AddonWarningType;
   autoUpdateEnabled: boolean;
+  autoUpdateNotificationsEnabled: boolean;
   clientType: WowClientType;
   channelType: AddonChannelType;
   updatedAt?: Date;

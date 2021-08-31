@@ -407,6 +407,18 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return listItem.addon.isIgnored === false && listItem.addon.warningType === undefined;
   }
 
+  public canSetAutoUpdateNotifications(listItem: AddonViewModel): boolean {
+    if (!listItem.addon) {
+      return false;
+    }
+
+    if (this.wowUpService.enableSystemNotifications === false) {
+      return false;
+    }
+
+    return listItem.addon.isIgnored === false && listItem.addon.warningType === undefined && listItem.addon.autoUpdateEnabled;
+  }
+
   public canReInstall(listItem: AddonViewModel): boolean {
     if (!listItem.addon) {
       return false;
@@ -733,6 +745,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onClickAutoUpdateAddons([listItem]);
   }
 
+  public onClickAutoUpdateAddonNotifications(listItem: AddonViewModel): void {
+    this.onClickAutoUpdateAddonsNotifications([listItem]);
+  }
+
   public onRowClicked(event: RowClickedEvent): void {
     const selectedNodes = event.api.getSelectedNodes();
 
@@ -768,6 +784,31 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         if (isAutoUpdate) {
           row.addon.isIgnored = false;
         }
+
+        row.addon.autoUpdateNotificationsEnabled = isAutoUpdate;
+
+        this.addonService.saveAddon(row.addon);
+      }
+
+      this.rowData = rows;
+    } catch (e) {
+      console.error(e);
+      this._operationErrorSrc.next(e);
+    }
+  }
+
+  public onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): void {
+    const isAutoUpdateNofications = _.every(listItems, (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false);
+    const rows = [...this._baseRowData];
+    try {
+      for (const listItem of listItems) {
+        const row = _.find(rows, (r) => r.addon?.id === listItem.addon?.id);
+        if (!row || !row.addon) {
+          console.warn("Invalid row data");
+          continue;
+        }
+
+        row.addon.autoUpdateNotificationsEnabled = isAutoUpdateNofications;
 
         this.addonService.saveAddon(row.addon);
       }

@@ -50,6 +50,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
 
       rioAddonFolder.matchingAddon = {
         autoUpdateEnabled: false,
+        autoUpdateNotificationsEnabled: false,
         channelType: AddonChannelType.Stable,
         clientType: installation.clientType,
         id: uuidv4(),

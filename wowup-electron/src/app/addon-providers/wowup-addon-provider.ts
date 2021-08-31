@@ -487,6 +487,7 @@ export class WowUpAddonProvider extends AddonProvider {
       name,
       channelType,
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       clientType: installation.clientType,
       downloadUrl: scanResult.exactMatch?.matched_release?.download_url ?? "",
       externalUrl: scanResult.exactMatch?.repository ?? "unknown",
