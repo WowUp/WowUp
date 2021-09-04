@@ -21,6 +21,10 @@ const CHANGELOGS: ChangeLog[] = [
     <div>
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
+      <li>
+      <div>The first stage of a set of cloud based features you've been asking for</div>
+      <img style="width: 80%;" loading="lazy" src="https://cdn.wowup.io/patch-notes/2-5/account-2.5-preview.png">
+      </li>
       <li>Added WowUpHub category support</li>
       <li>Added WowUpHub preview support</li>
       <li>Added Mac M1 builds</li>

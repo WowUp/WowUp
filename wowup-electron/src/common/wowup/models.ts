@@ -114,3 +114,20 @@ export interface WowUpScanResult {
   folderName: string;
   path: string;
 }
+
+export type PushAction = "addon-update";
+
+export interface PushNotification<T extends PushNotificationData | string> {
+  action: PushAction;
+  sender: string;
+  message: string | T;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PushNotificationData {}
+
+export interface AddonUpdatePushNotification extends PushNotificationData {
+  provider: string;
+  addonName: string;
+  addonId: string;
+}

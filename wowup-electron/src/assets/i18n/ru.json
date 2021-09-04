@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Не удалось установить модификацию {addonName}. Попробуйте позже.",
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
@@ -274,6 +275,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Посетите наш сайт!"
     },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Login Now!",
+      "LOGOUT_BUTTON": "Logout",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
+      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
+      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
+      "TITLE": "Account"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Категории",
       "ADDON_CATEGORIES_MENU_TITLE": "Категории модификаций",
@@ -297,6 +307,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "О программе",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
       "GUIDE_TAB_TITLE": "Руководство (англ.)",
       "MIGRATING_ADDONS": "Перенос модификаций...",
@@ -453,6 +464,7 @@
         "TITLE": "Отладка"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Модификации",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",

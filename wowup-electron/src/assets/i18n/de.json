@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Addon '{addonName}' konnte nicht installiert werden. Versuche es später erneut.",
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
@@ -274,6 +275,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Schau dir die Website an!"
     },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Login Now!",
+      "LOGOUT_BUTTON": "Logout",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
+      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
+      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
+      "TITLE": "Account"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Kategorien",
       "ADDON_CATEGORIES_MENU_TITLE": "Addon Kategorien",
@@ -297,6 +307,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Addons werden migriert...",
@@ -453,6 +464,7 @@
         "TITLE": "Debuggen"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addons",
         "APPLICATION": "Anwendung",
         "CLIENTS": "Clients",

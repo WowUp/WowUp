@@ -10,11 +10,12 @@
           listItem.addon?.name
           }}</a>
       </div>
-      <div *ngIf="listItem.addon?.fundingLinks" class="addon-funding">
-        <app-funding-button *ngFor="let link of listItem.addon?.fundingLinks ?? []" [funding]="link" size="small">
-        </app-funding-button>
-      </div>
+
       <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: listItem.addon?.isIgnored }">
+        <div *ngIf="listItem.addon?.fundingLinks" class="addon-funding mr-2">
+          <app-funding-button *ngFor="let link of listItem.addon?.fundingLinks ?? []" [funding]="link" size="small">
+          </app-funding-button>
+        </div>
         <div *ngIf="listItem.isBetaChannel() || listItem.isAlphaChannel()" class="channel bg-secondary-3 mr-2"
           [ngClass]="{
             beta: listItem.isBetaChannel(),

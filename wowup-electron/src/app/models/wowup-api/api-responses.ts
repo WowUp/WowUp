@@ -28,3 +28,17 @@ export interface WowUpSearchAddonsResponse {
   addons: WowUpAddonRepresentation[];
   count: number;
 }
+
+export interface WowUpGetAccountResponse {
+  displayName: string;
+  patreonTier: string;
+  config: WowUpAccountConfig;
+}
+
+export interface WowUpAccountConfig {
+  pushAppId: string;
+  pushChannels: {
+    addonUpdates: string;
+    alerts: string;
+  };
+}
