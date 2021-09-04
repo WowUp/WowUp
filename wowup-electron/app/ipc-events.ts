@@ -483,7 +483,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await dialog.showOpenDialog(options);
   });
 
-  handle(IPC_PUSH_INIT, (evt) => {
+  handle(IPC_PUSH_INIT, () => {
     return push.startPushService();
   });
 
@@ -491,7 +491,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await push.registerForPush(appId);
   });
 
-  handle(IPC_PUSH_UNREGISTER, async (evt) => {
+  handle(IPC_PUSH_UNREGISTER, async () => {
     return await push.unregisterPush();
   });
 
