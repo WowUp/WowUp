@@ -515,6 +515,16 @@ export class AddonService {
     });
   }
 
+  public getAllByExternalAddonId(externalAddonIds: string[]): Addon[] {
+    return this._addonStorage.queryAll((addon) => {
+      return externalAddonIds.includes(addon.externalId);
+    });
+  }
+
+  public hasAnyWithExternalAddonIds(externalAddonIds: string[]): boolean {
+    return this.getAllByExternalAddonId(externalAddonIds).length > 0;
+  }
+
   public updateAddon(
     addonId: string,
     onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},

@@ -65,15 +65,15 @@
     </div>
   </div>
 
-  <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
+  <div class="spinner-container flex-grow-1" *ngIf="(isBusy$ | async) === true">
     <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
   </div>
 
-  <div *ngIf="isBusy === false && hasData === false" class="no-addons-container text-1 flex-grow-1">
+  <div *ngIf="(isBusy$ | async) === false && hasData === false" class="no-addons-container text-1 flex-grow-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="isBusy === true || hasData === false"
+  <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="(isBusy$ | async) === true || hasData === false"
     [rowData]="rowData" [columnDefs]="columnDefs" [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId"
     [frameworkComponents]="frameworkComponents" [rowHeight]="63" [immutableData]="true" [rowClassRules]="rowClassRules"
     [overlayNoRowsTemplate]="overlayNoRowsTemplate" (gridReady)="onGridReady($event)"

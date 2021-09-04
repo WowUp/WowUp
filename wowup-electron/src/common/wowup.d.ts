@@ -19,7 +19,8 @@ declare type MainChannels =
   | "request-install-from-url"
   | "custom-protocol-received"
   | "app-update-state"
-  | "window-resume";
+  | "window-resume"
+  | "push-notification";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =

@@ -17,8 +17,6 @@ import { WowUpService } from "../../services/wowup/wowup.service";
   styleUrls: ["./account-page.component.scss"],
 })
 export class AccountPageComponent {
-  public displayName$ = this.sessionService.wowUpAccount$.pipe(map((account) => account?.displayName ?? ""));
-
   public constructor(
     public electronService: ElectronService,
     public sessionService: SessionService,

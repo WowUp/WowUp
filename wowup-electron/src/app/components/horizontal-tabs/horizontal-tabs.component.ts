@@ -35,9 +35,6 @@ export class HorizontalTabsComponent implements OnInit {
   public TAB_INDEX_ACCOUNT = TAB_INDEX_ABOUT;
 
   public isAccountSelected$ = this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT));
-  public accountDisplayName$: Observable<string> = this.sessionService.wowUpAccount$.pipe(
-    map((account) => account?.displayName ?? "")
-  );
 
   private myAddonsTab: Tab = {
     titleKey: "PAGES.HOME.MY_ADDONS_TAB_TITLE",

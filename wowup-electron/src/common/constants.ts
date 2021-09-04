@@ -91,6 +91,7 @@ export const IPC_PUSH_INIT = "push-init";
 export const IPC_PUSH_REGISTER = "push-register";
 export const IPC_PUSH_UNREGISTER = "push-unregister";
 export const IPC_PUSH_SUBSCRIBE = "push-subscribe";
+export const IPC_PUSH_NOTIFICATION = "push-notification";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";

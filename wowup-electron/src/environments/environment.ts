@@ -2,7 +2,7 @@ export const AppConfig = {
   production: false,
   environment: "LOCAL",
   wowUpWebsiteUrl: "https://dev.wowup.io",
-  wowUpApiUrl: "http://localhost:4000/dev",
+  wowUpApiUrl: "https://api.dev.wowup.io",
   wowUpHubUrl: "https://hub.dev.wowup.io",
   googleAnalyticsId: "UA-92563227-4",
   wowupRepositoryUrl: "https://github.com/WowUp/WowUp",

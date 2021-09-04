@@ -1,4 +1,8 @@
 import * as log from "electron-log";
+import { EventEmitter } from "events";
+
+export const PUSH_NOTIFICATION_EVENT = "push-notification";
+export const pushEvents = new EventEmitter();
 
 const channelSubscriptions = new Map<string, boolean>();
 
@@ -10,8 +14,7 @@ export function startPushService(): boolean {
 
   // Listen for push notifications
   Pushy.setNotificationListener((data) => {
-    // Display an alert with the "message" payload value
-    log.debug("Push notification:", data);
+    pushEvents.emit(PUSH_NOTIFICATION_EVENT, data);
   });
 
   Pushy.listen();
