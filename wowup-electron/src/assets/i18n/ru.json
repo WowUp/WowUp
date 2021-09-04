@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Не удалось установить модификацию {addonName}. Попробуйте позже.",
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",

@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Fallito nell'installare l'addon {addonName}. Per favore riprovare più tardi.",
       "ADDON_SCAN_ERROR": "Errore nel sincronizzare le cartelle dell'addon con {providerName}, per favore riprovare più tardi.",
       "ADDON_SYNC_ERROR": "Errore nel controllare gli aggioranementi da: {providerName}",

@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",

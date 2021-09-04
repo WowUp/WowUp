@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "安裝插件 {addonName} 失敗。請稍後再試。",
       "ADDON_SCAN_ERROR": "在與 {providerName} 匹配插件資料夾時出現錯誤，請稍後再試。",
       "ADDON_SYNC_ERROR": "從 {providerName} 上檢查更新時出現錯誤。",
