@@ -26,6 +26,16 @@ export class FundingButtonComponent implements OnInit {
     return `PAGES.MY_ADDONS.FUNDING_TOOLTIP.${this.funding.platform.toUpperCase()}`;
   }
 
+  public getClassName(): string {
+    switch (this.funding.platform) {
+      case "PATREON":
+        return "patreon-icon";
+      case "GITHUB":
+        return "github-icon";
+      default:
+        return "custom-icon";
+    }
+  }
   private getIsFontIcon(): boolean {
     switch (this.funding.platform) {
       case "PATREON":
@@ -69,17 +79,6 @@ export class FundingButtonComponent implements OnInit {
     return fundingName && fundingName.toUpperCase() !== "CUSTOM"
       ? "PAGES.MY_ADDONS.FUNDING_TOOLTIP.GENERIC"
       : "PAGES.MY_ADDONS.FUNDING_TOOLTIP.CUSTOM";
-  }
-
-  private getClassName(): string {
-    switch (this.funding.platform) {
-      case "PATREON":
-        return "patreon-icon";
-      case "GITHUB":
-        return "github-icon";
-      default:
-        return "custom-icon";
-    }
   }
 
   private getFundingName(): string {
