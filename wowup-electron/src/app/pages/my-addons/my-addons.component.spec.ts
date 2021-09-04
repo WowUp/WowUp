@@ -24,6 +24,7 @@ import { MyAddonsComponent } from "./my-addons.component";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
+import { PushService } from "../../services/push/push.service";
 
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
@@ -35,6 +36,7 @@ describe("MyAddonsComponent", () => {
   let addonServiceSpy: any;
   let warcraftServiceSpy: any;
   let warcraftInstallationService: WarcraftInstallationService;
+  let pushService: PushService;
 
   beforeEach(async () => {
     wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", ["updateForClientType"], {
@@ -51,6 +53,10 @@ describe("MyAddonsComponent", () => {
         addonRemoved$: new Subject<string>().asObservable(),
       }
     );
+
+    pushService = jasmine.createSpyObj("PushService", [""], {
+      addonUpdate$: new Subject<any>(),
+    });
 
     const testSortOrder: SortOrder = {
       colId: "name",
@@ -113,6 +119,7 @@ describe("MyAddonsComponent", () => {
           { provide: SessionService, useValue: sessionServiceSpy },
           { provide: WarcraftService, useValue: warcraftServiceSpy },
           { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
+          { provide: PushService, useValue: pushService },
         ],
       },
     });
