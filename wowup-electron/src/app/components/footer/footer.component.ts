@@ -9,6 +9,8 @@ import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.compone
 import { combineLatest, from, Observable, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { AppUpdateState } from "../../../common/wowup/models";
+import { TAB_INDEX_ABOUT } from "../../../common/constants";
+import { LinkService } from "../../services/links/link.service";
 
 @Component({
   selector: "app-footer",
@@ -26,6 +28,9 @@ export class FooterComponent implements OnInit {
   public appUpdateState = AppUpdateState;
 
   public appUpdateState$: Observable<AppUpdateState> = this.electronService.appUpdate$.pipe(map((evt) => evt.state));
+  public accountDisplayName$: Observable<string> = this.sessionService.wowUpAccount$.pipe(
+    map((account) => account?.displayName ?? "")
+  );
 
   public appUpdateProgress$: Observable<number> = combineLatest([
     of(0),
@@ -39,7 +44,8 @@ export class FooterComponent implements OnInit {
     public wowUpService: WowUpService,
     public sessionService: SessionService,
     private electronService: ElectronService,
-    private _wowupService: WowUpService
+    private _wowupService: WowUpService,
+    private _linkService: LinkService
   ) {}
 
   public ngOnInit(): void {
@@ -55,6 +61,10 @@ export class FooterComponent implements OnInit {
 
   public onClickCheckForUpdates(): void {
     this.wowUpService.checkForAppUpdate();
+  }
+
+  public onClickAccount(): void {
+    this.sessionService.selectedHomeTab = TAB_INDEX_ABOUT;
   }
 
   private portableUpdate() {
@@ -74,7 +84,7 @@ export class FooterComponent implements OnInit {
           }
 
           return from(
-            this._wowupService.openExternalLink(
+            this._linkService.openExternalLink(
               `${AppConfig.wowupRepositoryUrl}/releases/tag/v${this.wowUpService.availableVersion}`
             )
           );

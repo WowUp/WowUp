@@ -197,10 +197,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  public onClickImage(url: string): void {
-    
-  }
-
   public onInstallUpdated(): void {
     this._cdRef.detectChanges();
   }

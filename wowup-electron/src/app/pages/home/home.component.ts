@@ -207,7 +207,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   };
 
   public onSelectedIndexChange(index: number): void {
-    this.sessionService.selectedHomeTab = index;
+    // this.sessionService.selectedHomeTab = index;
   }
 
   private onAddonScanError = (error: AddonScanError) => {

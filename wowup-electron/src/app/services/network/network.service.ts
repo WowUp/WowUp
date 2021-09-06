@@ -32,7 +32,7 @@ export class CircuitBreakerWrapper {
       resetTimeout: resetTimeoutMs,
       errorFilter: (err) => {
         // Don't trip the breaker on a 404
-        return err.status === 404;
+        return err.status >= 400 && err.status < 500;
       },
     });
     this._cb.on("open", () => {
@@ -47,10 +47,16 @@ export class CircuitBreakerWrapper {
     return (await this._cb.fire(action)) as TOUT;
   }
 
-  public getJson<T>(url: URL | string, timeoutMs?: number): Promise<T> {
+  public getJson<T>(
+    url: URL | string,
+    headers: {
+      [header: string]: string | string[];
+    } = {},
+    timeoutMs?: number
+  ): Promise<T> {
     return this.fire(() =>
       this._httpClient
-        .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS } })
+        .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS, ...headers } })
         .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
         .toPromise()
     );
@@ -65,10 +71,34 @@ export class CircuitBreakerWrapper {
     );
   }
 
-  public postJson<T>(url: URL | string, body: unknown, timeoutMs?: number): Promise<T> {
+  public postJson<T>(
+    url: URL | string,
+    body: unknown,
+    headers: {
+      [header: string]: string | string[];
+    } = {},
+    timeoutMs?: number
+  ): Promise<T> {
+    const cheaders = headers || {};
     return this.fire<T>(() =>
       this._httpClient
-        .post<T>(url.toString(), body)
+        .post<T>(url.toString(), body, { headers: { ...cheaders } })
+        .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
+        .toPromise()
+    );
+  }
+
+  public deleteJson<T>(
+    url: URL | string,
+    headers: {
+      [header: string]: string | string[];
+    } = {},
+    timeoutMs?: number
+  ): Promise<T> {
+    const cheaders = headers || {};
+    return this.fire<T>(() =>
+      this._httpClient
+        .delete<T>(url.toString(), { headers: { ...cheaders } })
         .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
         .toPromise()
     );

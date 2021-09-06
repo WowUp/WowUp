@@ -10,6 +10,9 @@ import {
   ExternalUrlConfirmationDialogComponent,
 } from "../../components/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
 import { WowUpService } from "../wowup/wowup.service";
+import { AnalyticsService } from "../analytics/analytics.service";
+import { USER_ACTION_OPEN_LINK } from "../../../common/constants";
+import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
   providedIn: "root",
@@ -17,16 +20,25 @@ import { WowUpService } from "../wowup/wowup.service";
 export class LinkService {
   public constructor(
     private _dialog: MatDialog,
+    private _analyticsService: AnalyticsService,
+    private _electronService: ElectronService,
     private _wowUpService: WowUpService,
     private _translateService: TranslateService
   ) {}
+
+  public async openExternalLink(url: string): Promise<void> {
+    this._analyticsService.trackAction(USER_ACTION_OPEN_LINK, {
+      link: url,
+    });
+    await this._electronService.openExternal(url);
+  }
 
   public confirmLinkNavigation(href: string): Observable<any> {
     return from(this._wowUpService.isTrustedDomain(href)).pipe(
       first(),
       switchMap((isTrusted) => {
         if (isTrusted) {
-          return from(this._wowUpService.openExternalLink(href));
+          return from(this.openExternalLink(href));
         } else {
           return this.showLinkNavigationDialog(href);
         }
@@ -56,10 +68,10 @@ export class LinkService {
 
         if (result.trustDomain !== "") {
           return from(this._wowUpService.trustDomain(result.trustDomain)).pipe(
-            switchMap(() => from(this._wowUpService.openExternalLink(href)))
+            switchMap(() => from(this.openExternalLink(href)))
           );
         } else {
-          return from(this._wowUpService.openExternalLink(href));
+          return from(this.openExternalLink(href));
         }
       }),
       catchError((e) => {

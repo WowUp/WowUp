@@ -23,6 +23,7 @@ import {
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_SUSPEND,
   IPC_POWER_MONITOR_UNLOCK,
+  IPC_PUSH_NOTIFICATION,
   IPC_WINDOW_ENTER_FULLSCREEN,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
@@ -40,6 +41,7 @@ import { MainChannels } from "../src/common/wowup";
 import { AppOptions } from "../src/common/wowup/models";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
 import { windowStateManager } from "./window-state";
+import { pushEvents, PUSH_NOTIFICATION_EVENT } from "./push";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -282,6 +284,10 @@ function createWindow(): BrowserWindow {
   initializeIpcHandlers(win, USER_AGENT);
   initializeStoreIpcHandlers();
 
+  pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
+    win.webContents.send(IPC_PUSH_NOTIFICATION, data);
+  });
+
   // Keep track of window state
   mainWindowManager.monitorState(win);
 
@@ -351,6 +357,7 @@ function createWindow(): BrowserWindow {
 
   win.on("close", (e) => {
     if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
+      pushEvents.removeAllListeners(PUSH_NOTIFICATION_EVENT);
       return;
     }
     e.preventDefault();

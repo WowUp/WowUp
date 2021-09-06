@@ -40,11 +40,21 @@
 
     .tab-title {
       color: var(--text-4);
+      margin: 0;
+      padding: 0;
+      line-height: 1em;
       max-width: 200px;
       overflow: hidden;
       transition: all 0.3s ease 0.1s;
       transition-property: color, max-width;
       white-space: nowrap;
+    }
+
+    .tab-subtitle {
+      font-size: 0.8em;
+      margin: 0;
+      padding: 0;
+      line-height: 1em;
     }
 
     .tab-icon {

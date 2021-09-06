@@ -6,6 +6,7 @@
 export const AppConfig = {
   production: false,
   environment: "DEV",
+  wowUpWebsiteUrl: "https://dev.wowup.io",
   wowUpApiUrl: "https://api.dev.wowup.io",
   wowUpHubUrl: "https://hub.dev.wowup.io",
   googleAnalyticsId: "UA-92563227-4",

@@ -515,6 +515,16 @@ export class AddonService {
     });
   }
 
+  public getAllByExternalAddonId(externalAddonIds: string[]): Addon[] {
+    return this._addonStorage.queryAll((addon) => {
+      return externalAddonIds.includes(addon.externalId);
+    });
+  }
+
+  public hasAnyWithExternalAddonIds(externalAddonIds: string[]): boolean {
+    return this.getAllByExternalAddonId(externalAddonIds).length > 0;
+  }
+
   public updateAddon(
     addonId: string,
     onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
@@ -1786,7 +1796,7 @@ export class AddonService {
     }
 
     try {
-      const tocPaths = this.getTocPaths(addon);
+      const tocPaths = await this.getTocPaths(addon);
       const tocFiles = await Promise.all(_.map(tocPaths, (tocPath) => this._tocService.parse(tocPath)));
       const orderedTocFiles = _.orderBy(tocFiles, ["wowInterfaceId", "loadOnDemand"], ["desc", "asc"]);
       const primaryToc = _.first(orderedTocFiles);
@@ -1808,7 +1818,7 @@ export class AddonService {
     return result;
   }
 
-  public getTocPaths(addon: Addon): string[] {
+  public async getTocPaths(addon: Addon): Promise<string[]> {
     if (!addon.installationId) {
       return [];
     }
@@ -1820,9 +1830,14 @@ export class AddonService {
 
     const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
-    return _.map(addon.installedFolderList, (installedFolder) =>
-      path.join(addonFolderPath, installedFolder, `${installedFolder}.toc`)
+    const addonTocs = await this._tocService.getAllTocs(
+      addonFolderPath,
+      addon.installedFolderList,
+      installation.clientType
     );
+
+    const tocPaths = addonTocs.map((toc) => toc.filePath);
+    return tocPaths;
   }
 
   private getAddonProvider(addonUri: URL): AddonProvider | undefined {

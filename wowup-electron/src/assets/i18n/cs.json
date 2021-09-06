@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "Vyskytla se chyba při párování vaší složky addonů s poskytovatelem {providerName}, zkuste to prosím později.",
       "ADDON_SYNC_ERROR": "Vyskytla se chyba při zjišťování aktualizací od poskytovatele {providerName}, zkuste to prosím později.",
@@ -274,6 +275,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Navštivte naše webové stránky!"
     },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Login Now!",
+      "LOGOUT_BUTTON": "Logout",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
+      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
+      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
+      "TITLE": "Account"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Categories",
       "ADDON_CATEGORIES_MENU_TITLE": "Addon Categories",
@@ -297,6 +307,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "O programu",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Stáhnout nové addony",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Migruji addony...",
@@ -452,6 +463,7 @@
         "TITLE": "Debug aplikace"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addony",
         "APPLICATION": "Aplikace",
         "CLIENTS": "WoW klienti",

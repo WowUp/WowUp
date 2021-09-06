@@ -12,8 +12,8 @@ import {
 } from "ag-grid-community";
 import * as _ from "lodash";
 import { join } from "path";
-import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, delay, first, map, switchMap, tap } from "rxjs/operators";
+import { BehaviorSubject, from, Observable, of, Subject, Subscription, zip } from "rxjs";
+import { catchError, debounceTime, delay, filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
@@ -49,6 +49,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { SortOrder } from "../../models/wowup/sort-order";
+import { PushService } from "../../services/push/push.service";
 
 @Component({
   selector: "app-my-addons",
@@ -64,6 +65,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // @HostListener("window:keydown", ["$event"])
   private readonly _operationErrorSrc = new Subject<Error>();
+  private readonly _isBusySrc = new BehaviorSubject<boolean>(true);
+
+  public readonly isBusy$ = this._isBusySrc.asObservable();
 
   private _subscriptions: Subscription[] = [];
   private isSelectedTab = false;
@@ -84,7 +88,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public selectedInstallation: WowInstallation | undefined = undefined;
   public wowClientType = WowClientType;
   public overlayRef: OverlayRef | null = null;
-  public isBusy = true;
   public enableControls = true;
   public wowInstallations$: Observable<WowInstallation[]>;
   public selectedInstallationId!: string;
@@ -178,6 +181,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _wowUpAddonService: WowUpAddonService,
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
+    private _pushService: PushService,
     public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
@@ -211,10 +215,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
+    // If an update push comes in, check if we have any addons installed with any of the ids, if so refresh
+    const pushUpdateSub = this._pushService.addonUpdate$
+      .pipe(
+        debounceTime(5000),
+        filter((addons) => {
+          const addonIds = addons.map((addon) => addon.addonId);
+          return this.addonService.hasAnyWithExternalAddonIds(addonIds);
+        }),
+        switchMap(() => from(this.onRefresh()))
+      )
+      .subscribe();
+
     this._subscriptions.push(
       this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
+      pushUpdateSub,
       addonInstalledSub,
       addonRemovedSub,
       filterInputSub
@@ -307,7 +324,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.loadSortOrder();
 
-    this.rowDataChange$.pipe(debounceTime(50)).subscribe(() => {
+    this.rowDataChange$.pipe(debounceTime(500)).subscribe(() => {
       this.redrawRows();
     });
   }
@@ -334,10 +351,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     from(this.lazyLoad())
       .pipe(
         first(),
-        delay(400),
-        map(() => {
-          this.redrawRows();
-        }),
+        // delay(400),
+        // map(() => {
+        //   this.redrawRows();
+        // }),
         catchError((e) => {
           console.error(e);
           return of(undefined);
@@ -364,7 +381,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this._isRefreshing = true;
-    this.isBusy = true;
+    this._isBusySrc.next(true);
     this.enableControls = false;
 
     try {
@@ -380,7 +397,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     } catch (e) {
       console.error(`Failed to refresh addons`, e);
     } finally {
-      this.isBusy = false;
+      this._isBusySrc.next(false);
+
       this.enableControls = true;
       this._isRefreshing = false;
     }
@@ -889,7 +907,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this._lazyLoaded = true;
-    this.isBusy = true;
+    this._isBusySrc.next(true);
+
     this.enableControls = false;
 
     // TODO this shouldn't be here
@@ -919,7 +938,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async updateAllWithSpinner(...installations: WowInstallation[]): Promise<void> {
-    this.isBusy = true;
+    this._isBusySrc.next(true);
+
     this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS");
     this.enableControls = false;
 
@@ -973,7 +993,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       await this.loadAddons(this.selectedInstallation);
     } catch (err) {
       console.error("Failed to update classic/retail", err);
-      this.isBusy = false;
+      this._isBusySrc.next(false);
+
       this._cdRef.detectChanges();
     } finally {
       this.spinnerMessage = "";
@@ -991,7 +1012,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    this.isBusy = true;
+    this._isBusySrc.next(true);
+
     this.enableControls = false;
 
     if (!installation) {
@@ -1015,15 +1037,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._baseRowData = rowData;
       this.rowData = this._baseRowData;
 
-      this.isBusy = false;
       this.setPageContextText();
 
       this._cdRef.detectChanges();
     } catch (e) {
       console.error(e);
-      this.isBusy = false;
       this.enableControls = this.calculateControlState();
     } finally {
+      this._isBusySrc.next(false);
       this._cdRef.detectChanges();
     }
   };
@@ -1149,9 +1170,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private redrawRows() {
-    this.gridApi?.redrawRows();
-    this.gridApi?.resetRowHeights();
-    this.autoSizeColumns();
+    // this.gridApi?.redrawRows();
+    // this.gridApi?.resetRowHeights();
+    // this.autoSizeColumns();
     this._cdRef.detectChanges();
   }
 
@@ -1188,7 +1209,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         minWidth: 300,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER"),
         sortable: true,
-        autoHeight: true,
+        // autoHeight: true,
         cellRenderer: "myAddonRenderer",
         colId: "name",
         valueGetter: (params) => {

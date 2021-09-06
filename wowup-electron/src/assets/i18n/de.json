@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Addon '{addonName}' konnte nicht installiert werden. Versuche es später erneut.",
       "ADDON_SCAN_ERROR": "Beim Abgleichen deiner Addon-Ordner mit {providerName} ist ein Fehler aufgetreten. Versuche es später erneut.",
       "ADDON_SYNC_ERROR": "Beim Überprüfen auf Aktualisierungen von '{providerName}' ist ein Fehler aufgetreten.",
@@ -274,6 +275,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Schau dir die Website an!"
     },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Jetzt Einloggen!",
+      "LOGOUT_BUTTON": "Ausloggen",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Bist du dir sicher, dass du dich ausloggen möchten? Alle deine lokalen Kontodaten werden entfernt, bis du dich erneut einloggst.",
+      "LOGOUT_CONFIRMATION_TITLE": "Ausloggen?",
+      "MANAGE_ACCOUNT_BUTTON": "Konto verwalten",
+      "TITLE": "Konto"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Kategorien",
       "ADDON_CATEGORIES_MENU_TITLE": "Addon Kategorien",
@@ -297,6 +307,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
+      "ACCOUNT_TAB_TITLE": "Konto",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Addons werden migriert...",
@@ -306,7 +317,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "{count} {count, plural, =1{Addon} other{Addons}} ausgewählt",
+        "ADDONS_SELECTED": "{count} {count, plural, =1{Addon} otherOPTIONS_TAB_TITLE{Addons}} ausgewählt",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Automatisch aktualisieren",
         "BETA_ADDON_CHANNEL": "Beta",
@@ -452,6 +463,7 @@
         "TITLE": "Debuggen"
       },
       "TABS": {
+        "ABOUT": "Über",
         "ADDONS": "Addons",
         "APPLICATION": "Anwendung",
         "CLIENTS": "Clients",
