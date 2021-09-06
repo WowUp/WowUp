@@ -297,6 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "关于",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "获取插件",
       "GUIDE_TAB_TITLE": "指南（英语）",
       "MIGRATING_ADDONS": "正在迁移插件...",
@@ -309,7 +310,7 @@
         "ADDONS_SELECTED": "已选中 {count} 项",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
-        "IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON": "Ignore Notifications",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Notifications Enabled",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
@@ -453,6 +454,7 @@
         "TITLE": "调试"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "插件",
         "APPLICATION": "应用程序",
         "CLIENTS": "客户端",

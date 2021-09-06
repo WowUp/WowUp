@@ -297,6 +297,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Informazioni",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Ottieni Addons",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Trasferimento degli addons in corso...",
@@ -309,7 +310,7 @@
         "ADDONS_SELECTED": "{count, plural, =1{Un addon} other{{count} addons}} {count, plural, =1{selezionato} other{selezionati}}",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "Aggiornamenti Automatici",
-        "IGNORE_AUTO_UPDATE_ADDON_NOTIFICATIONS_BUTTON": "Ignore Notifications",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Notifications Enabled",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canale",
         "IGNORE_ADDON_BUTTON": "Ignora",
@@ -453,6 +454,7 @@
         "TITLE": "Debug"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addons",
         "APPLICATION": "Applicazione",
         "CLIENTS": "Clients",
