@@ -822,7 +822,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       for (const listItem of listItems) {
         const row = _.find(rows, (r) => r.addon?.id === listItem.addon?.id);
         if (!row || !row.addon) {
-          console.warn("Invalid row data");
+          console.warn("Invalid row data for addon", listItem.addon?.id);
           continue;
         }
 
