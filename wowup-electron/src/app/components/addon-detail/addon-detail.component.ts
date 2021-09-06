@@ -1,4 +1,3 @@
-import { AddonInstallState } from './../../models/wowup/addon-install-state';
 import { last } from "lodash";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
 import { filter, first, map, switchMap, tap } from "rxjs/operators";
