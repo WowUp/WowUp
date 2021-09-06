@@ -43,6 +43,7 @@ export class TocService {
 
     return {
       fileName,
+      filePath: tocPath,
       author: this.getValue(TOC_AUTHOR, tocText),
       curseProjectId: this.getValue(TOC_X_CURSE_PROJECT_ID, tocText),
       interface: this.getValue(TOC_INTERFACE, tocText),

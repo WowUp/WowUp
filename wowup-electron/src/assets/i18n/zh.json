@@ -175,6 +175,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "安装插件 {addonName} 失败。请稍后再试。",
       "ADDON_SCAN_ERROR": "在与 {providerName} 匹配插件文件夹时出现错误，请稍后再试。",
       "ADDON_SYNC_ERROR": "从 {providerName} 上检查更新时出现错误。",
@@ -273,6 +274,15 @@
       "CHANGE_LOG_SECTION_LABEL": "更新记录",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "访问网站！"
+    },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Login Now!",
+      "LOGOUT_BUTTON": "Logout",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
+      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
+      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
+      "TITLE": "Account"
     },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "类别",

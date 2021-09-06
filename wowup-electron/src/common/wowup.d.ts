@@ -19,7 +19,8 @@ declare type MainChannels =
   | "request-install-from-url"
   | "custom-protocol-received"
   | "app-update-state"
-  | "window-resume";
+  | "window-resume"
+  | "push-notification";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
@@ -74,7 +75,11 @@ declare type RendererChannels =
   | "app-install-update"
   | "update-app-badge"
   | "list-dir-recursive"
-  | "get-directory-tree";
+  | "get-directory-tree"
+  | "push-init"
+  | "push-register"
+  | "push-unregister"
+  | "push-subscribe";
 
 declare global {
   interface Window {

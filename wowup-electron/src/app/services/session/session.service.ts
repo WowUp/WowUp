@@ -1,21 +1,16 @@
 import * as _ from "lodash";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 
 import { Injectable } from "@angular/core";
 
-import {
-  APP_PROTOCOL_NAME,
-  SELECTED_DETAILS_TAB_KEY,
-  STORAGE_WOWUP_AUTH_TOKEN,
-  TAB_INDEX_SETTINGS,
-} from "../../../common/constants";
+import { SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";
-import { ElectronService } from "../electron/electron.service";
-import { filter, map, switchMap } from "rxjs/operators";
-import { getProtocol } from "../../utils/string.utils";
+import { map } from "rxjs/operators";
+import { WowUpApiService } from "../wowup-api/wowup-api.service";
+import { WowUpAccountService } from "../wowup/wowup-account.service";
 
 @Injectable({
   providedIn: "root",
@@ -29,7 +24,6 @@ export class SessionService {
   private readonly _addonsChangedSrc = new Subject<boolean>();
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
-  private readonly _wowUpAuthTokenSrc = new BehaviorSubject<string>("");
 
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
@@ -45,14 +39,16 @@ export class SessionService {
   public readonly getAddonsHiddenColumns$ = this._getAddonsColumnsSrc.asObservable();
   public readonly targetFileInstallComplete$ = this._targetFileInstallCompleteSrc.asObservable();
   public readonly editingWowInstallationId$ = new BehaviorSubject<string>("");
-  public readonly wowUpAuthToken$ = this._wowUpAuthTokenSrc.asObservable();
+  public readonly wowUpAuthToken$ = this._wowUpAccountService.wowUpAuthTokenSrc.asObservable();
+  public readonly wowUpAccount$ = this._wowUpAccountService.wowUpAccountSrc.asObservable();
+  public readonly wowUpAccountPushEnabled$ = this._wowUpAccountService.accountPushSrc.asObservable();
 
-  public readonly wowUpAuthenticated$ = this.wowUpAuthToken$.pipe(map((token) => !!token && token.length > 10));
+  public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
   public constructor(
-    private _electronService: ElectronService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _preferenceStorageService: PreferenceStorageService
+    private _preferenceStorageService: PreferenceStorageService,
+    private _wowUpAccountService: WowUpAccountService
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
@@ -60,53 +56,22 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$.subscribe((installations) =>
       this.onWowInstallationsChange(installations)
     );
-
-    this._electronService.customProtocol$
-      .pipe(
-        filter((protocol) => !!protocol),
-        map((protocol) => this.handleLoginProtocol(protocol))
-      )
-      .subscribe();
-
-    this.loadAuthToken();
   }
 
-  /**
-   * Handle the post login protocol message
-   * wowup://login/desktop/#{token}
-   */
-  private handleLoginProtocol = (protocol: string): void => {
-    const protocolName = getProtocol(protocol);
-    if (protocolName !== APP_PROTOCOL_NAME) {
-      return;
-    }
-
-    const parts = protocol.split("/");
-    if (parts[2] !== "login" || parts[3] !== "desktop") {
-      return;
-    }
-
-    const token = parts[4];
-    if (typeof token !== "string" || token.length < 10) {
-      console.warn("Invalid auth token", protocol);
-      return;
-    }
-
-    console.debug("GOT WOWUP PROTOCOL", protocol);
-    window.localStorage.setItem(STORAGE_WOWUP_AUTH_TOKEN, token);
-    this._wowUpAuthTokenSrc.next(token);
-  };
-
-  private loadAuthToken(): void {
-    const storedToken = window.localStorage.getItem(STORAGE_WOWUP_AUTH_TOKEN);
-    if (storedToken) {
-      this._wowUpAuthTokenSrc.next(storedToken);
-    }
+  public get wowUpAuthToken(): string {
+    return this._wowUpAccountService.wowUpAuthTokenSrc.value;
   }
 
-  public clearWowUpAuthToken(): void {
-    window.localStorage.removeItem(STORAGE_WOWUP_AUTH_TOKEN);
-    this._wowUpAuthTokenSrc.next("");
+  public login(): void {
+    this._wowUpAccountService.login();
+  }
+
+  public logout(): void {
+    this._wowUpAccountService.logout();
+  }
+
+  public async toggleAccountPush(enabled: boolean): Promise<void> {
+    return await this._wowUpAccountService.toggleAccountPush(enabled);
   }
 
   public isAuthenticated(): boolean {
