@@ -28,11 +28,18 @@
     </div>
   </app-root>
   <script>
-    document.body.classList.add(window.platform)
-    if (window.platform === 'darwin') {
-      document.getElementById('preload-logo').style.borderRadius = '23px';
-    }
+    try {
+      window.global = window;
 
+      document.body.classList.add(window.platform)
+      if (window.platform === 'darwin') {
+        document.getElementById('preload-logo').style.borderRadius = '23px';
+      }
+
+      document.body.style.backgroundColor = window.baseBgColor;
+    } catch (e) {
+      console.error(e)
+    }
   </script>
 </body>
 

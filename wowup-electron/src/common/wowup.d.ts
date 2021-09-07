@@ -88,6 +88,7 @@ declare global {
       handlebars: any;
       autoLaunch: any;
     };
+    baseBgColor: string;
     platform: string;
     userDataPath: string;
     logPath: string;
