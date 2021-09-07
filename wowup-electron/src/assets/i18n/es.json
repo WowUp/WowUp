@@ -175,7 +175,7 @@
       }
     },
     "ERRORS": {
-      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "No se pudieron activar las actualizaciones instantáneas en su cuenta. Por favor, inténtelo de nuevo más tarde o contacte con nosotros en Discord.",
       "ADDON_INSTALL_ERROR": "Falló la instalación del addon {addonName}. Por favor, inténtelo de nuevo más tarde.",
       "ADDON_SCAN_ERROR": "Ocurrió un error al comparar sus carpetas de addons con {providerName}. Por favor, inténtelo de nuevo más tarde.",
       "ADDON_SYNC_ERROR": "Ocurrió un error al comprobar actualizaciones desde: {providerName}",
@@ -277,12 +277,12 @@
     },
     "ACCOUNT": {
       "BETA": "Beta",
-      "LOGIN_BUTTON": "Login Now!",
-      "LOGOUT_BUTTON": "Logout",
-      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
-      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
-      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
-      "TITLE": "Account"
+      "LOGIN_BUTTON": "¡Iniciar sesión ahora!",
+      "LOGOUT_BUTTON": "Cerrar sesión",
+      "LOGOUT_CONFIRMATION_MESSAGE": "¿Quiere cerrar la sesión? Toda la información local sobre su cuenta será eliminada hasta que inicie sesión de nuevo.",
+      "LOGOUT_CONFIRMATION_TITLE": "¿Cerrar sesión?",
+      "MANAGE_ACCOUNT_BUTTON": "Administrar cuenta",
+      "TITLE": "Cuenta"
     },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Categorías",
@@ -307,7 +307,7 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Acerca de",
-      "ACCOUNT_TAB_TITLE": "Account",
+      "ACCOUNT_TAB_TITLE": "Cuenta",
       "GET_ADDONS_TAB_TITLE": "Obtener addons",
       "GUIDE_TAB_TITLE": "Guía",
       "MIGRATING_ADDONS": "Migrando lista de addons...",
@@ -463,7 +463,7 @@
         "TITLE": "Depuración"
       },
       "TABS": {
-        "ABOUT": "About",
+        "ABOUT": "Acerca de",
         "ADDONS": "Addons",
         "APPLICATION": "Aplicación",
         "CLIENTS": "Clientes",
