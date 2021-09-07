@@ -1,5 +1,5 @@
 import { AgGridModule } from "ag-grid-angular";
-import { LIGHTBOX_CONFIG, LightboxModule } from "ng-gallery/lightbox";
+import { LightboxModule } from "ng-gallery/lightbox";
 
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
@@ -40,18 +40,19 @@ import { MatModule } from "../../mat-module";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { GetAddonListItemFilePropPipe } from "../../pipes/get-addon-list-item-file-prop.pipe";
 import { InterfaceFormatPipe } from "../../pipes/interface-format.pipe";
+import { InvertBoolPipe } from "../../pipes/inverse-bool.pipe";
 import { NgxDatePipe } from "../../pipes/ngx-date.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { SizeDisplayPipe } from "../../pipes/size-display.pipe";
 import { TrustHtmlPipe } from "../../pipes/trust-html.pipe";
 import { SharedModule } from "../../shared.module";
 import { AboutComponent } from "../about/about.component";
+import { AccountPageComponent } from "../account-page/account-page.component";
 import { GetAddonsComponent } from "../get-addons/get-addons.component";
 import { MyAddonsComponent } from "../my-addons/my-addons.component";
 import { OptionsComponent } from "../options/options.component";
 import { HomeRoutingModule } from "./home-routing.module";
 import { HomeComponent } from "./home.component";
-import { AccountPageComponent } from "../account-page/account-page.component";
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { AccountPageComponent } from "../account-page/account-page.component";
     PotentialAddonTableColumnComponent,
     DownloadCountPipe,
     InterfaceFormatPipe,
+    InvertBoolPipe,
     NgxDatePipe,
     GetAddonListItemFilePropPipe,
     RelativeDurationPipe,

@@ -7,8 +7,9 @@
     <div class="select-container">
       <mat-form-field>
         <mat-label>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
-        <mat-select class="select pointer" [(value)]="selectedInstallationId" (selectionChange)="onClientChange()"
-          [disabled]="enableControls === false" [disableOptionCentering]="true">
+        <mat-select class="select pointer" [value]="selectedWowInstallationId$ | async"
+          (selectionChange)="onClientChange($event)" [disabled]="enableControls$ | async | invertBool"
+          [disableOptionCentering]="true">
           <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
             {{ installation.label }}
           </mat-option>
@@ -16,12 +17,12 @@
       </mat-form-field>
     </div>
     <div class="right-container">
-      <div class="filter-container" *ngIf="selectedInstallation !== undefined">
+      <div class="filter-container" *ngIf="hasSelectedWowInstallationId$ | async">
         <mat-form-field>
           <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
-          <input matInput (input)="filterInput$.next($event.target.value)" [(ngModel)]="filter" />
-          <button mat-button color="accent" *ngIf="filter" matSuffix mat-icon-button aria-label="Clear"
-            (click)="onClearFilter()">
+          <input #addonFilter matInput />
+          <button mat-button color="accent" *ngIf="filterInput$ | async" matSuffix mat-icon-button aria-label="Clear"
+            (click)="onClickClearFilter()">
             <mat-icon svgIcon="fas:times"></mat-icon>
           </button>
         </mat-form-field>
@@ -31,13 +32,12 @@
         <div class="row">
           <button mat-flat-button color="primary" class="menu-button"
             [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
-            [disabled]="enableControls === false || enableUpdateAll === false" (click)="onUpdateAll()">
+            [disabled]="enableUpdateAll$ | async | invertBool" (click)="onUpdateAll()">
             {{ "PAGES.MY_ADDONS.UPDATE_ALL_BUTTON" | translate }}
           </button>
           <div class="menu-button-divider"></div>
           <button mat-flat-button color="primary" class="chip col justify-content-center"
-            [matMenuTriggerFor]="updateAllMenu"
-            [disabled]="enableControls === false || (addonService.anyUpdatesAvailable$ | async)  === false">
+            [matMenuTriggerFor]="updateAllMenu" [disabled]="enableUpdateExtra$ | async | invertBool">
             <mat-icon svgIcon="fas:caret-down"></mat-icon>
           </button>
         </div>
@@ -52,35 +52,34 @@
         <!-- CHECK UPDATES -->
         <button mat-flat-button color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
-          [disabled]="enableControls === false" (click)="onRefresh()">
+          [disabled]="enableControls$ | async | invertBool" (click)="onRefresh()">
           {{ "PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON" | translate }}
         </button>
         <!-- RESCAN -->
         <button mat-flat-button color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
-          [disabled]="enableControls === false" (click)="onReScan()">
+          [disabled]="enableControls$ | async | invertBool" (click)="onReScan()">
           {{ "PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON" | translate }}
         </button>
       </div>
     </div>
   </div>
 
-  <div class="spinner-container flex-grow-1" *ngIf="(isBusy$ | async) === true">
-    <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
+  <div class="spinner-container flex-grow-1" *ngIf="isBusy$ | async">
+    <app-progress-spinner [message]="spinnerMessage$ | async"> </app-progress-spinner>
   </div>
 
-  <div *ngIf="(isBusy$ | async) === false && hasData === false" class="no-addons-container text-1 flex-grow-1">
+  <div *ngIf="showNoAddons$ | async" class="no-addons-container text-1 flex-grow-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="(isBusy$ | async) === true || hasData === false"
-    [rowData]="rowData" [columnDefs]="columnDefs" [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId"
-    [frameworkComponents]="frameworkComponents" [rowHeight]="63" [immutableData]="true" [rowClassRules]="rowClassRules"
+  <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="hideGrid$ | async" [rowData]="rowDataG" [columnDefs]="columnDefs"
+    [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId" [frameworkComponents]="frameworkComponents"
+    [rowHeight]="63" [immutableData]="true" [rowClassRules]="rowClassRules"
     [overlayNoRowsTemplate]="overlayNoRowsTemplate" (gridReady)="onGridReady($event)"
     (rowDoubleClicked)="onRowDoubleClicked($event)" (rowClicked)="onRowClicked($event)"
-    (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
-    (cellContextMenu)="onCellContext($event)" (keydown)="handleKeyboardEvent($event)"
-    (firstDataRendered)="onFirstDataRendered()">
+    (sortChanged)="onSortChanged($event)" (cellContextMenu)="onCellContext($event)"
+    (keydown)="handleKeyboardEvent($event)" (firstDataRendered)="onFirstDataRendered()">
   </ag-grid-angular>
 
 </div>

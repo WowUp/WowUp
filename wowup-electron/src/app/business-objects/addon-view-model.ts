@@ -5,6 +5,7 @@ import { AddonInstallState } from "../models/wowup/addon-install-state";
 import { AddonStatusSortOrder } from "../models/wowup/addon-status-sort-order";
 import * as AddonUtils from "../utils/addon.utils";
 import { ADDON_PROVIDER_UNKNOWN } from "../../common/constants";
+import * as objectHash from "object-hash";
 
 export class AddonViewModel {
   public addon: Addon | undefined;
@@ -19,8 +20,11 @@ export class AddonViewModel {
   public isLoadOnDemand = false;
   public hasThumbnail = false;
   public thumbnailLetter = "";
-  public showUpdate = false;
   public canonicalName = "";
+
+  public get isIgnored(): boolean {
+    return this.addon?.isIgnored ?? false;
+  }
 
   public get name(): string {
     return this.addon?.name ?? "";
@@ -44,6 +48,10 @@ export class AddonViewModel {
 
   public get author(): string {
     return this.addon?.author ?? "";
+  }
+
+  public get hash(): string {
+    return objectHash(this.addon);
   }
 
   public constructor(addon: Addon | undefined) {

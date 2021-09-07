@@ -24,6 +24,7 @@ export class SessionService {
   private readonly _addonsChangedSrc = new Subject<boolean>();
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
+  private readonly _myAddonsCompactVersionSrc = new BehaviorSubject<boolean>(false);
 
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
@@ -42,8 +43,13 @@ export class SessionService {
   public readonly wowUpAuthToken$ = this._wowUpAccountService.wowUpAuthTokenSrc.asObservable();
   public readonly wowUpAccount$ = this._wowUpAccountService.wowUpAccountSrc.asObservable();
   public readonly wowUpAccountPushEnabled$ = this._wowUpAccountService.accountPushSrc.asObservable();
+  public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
 
   public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
+
+  public set myAddonsCompactVersion(val: boolean) {
+    this._myAddonsCompactVersionSrc.next(val);
+  }
 
   public constructor(
     private _warcraftInstallationService: WarcraftInstallationService,
