@@ -41,9 +41,11 @@ const CHANGELOGS: ChangeLog[] = [
       <li>Spanish locale updates (SkollVargr)</li>
       <li>Chinese locale updates (CyanoHao)</li>
       <li>Tweak the tabs some more</li>
+      <li>Performance improvements for My Addons page</li>
       <li>Images details tab is now Previews</li>
       <li>Use a different lightbox library for previews</li>
-      <li>Expanded system proxy support</li>`,
+      <li>Expanded system proxy support</li>
+    </ul>`,
   },
   {
     Version: "2.4.4",

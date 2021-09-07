@@ -1,19 +1,17 @@
 import { AgRendererComponent } from "ag-grid-angular";
 import { ICellRendererParams } from "ag-grid-community";
+import { BehaviorSubject, combineLatest } from "rxjs";
+import { filter, map } from "rxjs/operators";
 
-import { Component, Input } from "@angular/core";
+import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 import { AddonChannelType, AddonDependencyType, AddonWarningType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
+import { SessionService } from "../../services/session/session.service";
 import * as AddonUtils from "../../utils/addon.utils";
-import { capitalizeString } from "../../utils/string.utils";
-
-interface MyAddonsAddonCellComponentParams extends ICellRendererParams {
-  showUpdateToVersion: boolean;
-}
 
 @Component({
   selector: "app-my-addons-addon-cell",
@@ -21,40 +19,114 @@ interface MyAddonsAddonCellComponentParams extends ICellRendererParams {
   styleUrls: ["./my-addons-addon-cell.component.scss"],
 })
 export class MyAddonsAddonCellComponent implements AgRendererComponent {
-  @Input("addon") public listItem!: AddonViewModel;
+  private readonly _listItemSrc = new BehaviorSubject<AddonViewModel | undefined>(undefined);
 
-  public readonly capitalizeString = capitalizeString;
-  public readonly unknownProviderName = ADDON_PROVIDER_UNKNOWN;
+  public readonly listItem$ = this._listItemSrc.asObservable().pipe(filter((item) => item !== undefined));
 
-  public showUpdateToVersion = false;
-  public warningType?: AddonWarningType;
-  public warningText?: string;
-  public hasMultipleProviders = false;
+  public readonly name$ = this.listItem$.pipe(map((item) => item.name));
 
-  public get dependencyTooltip(): any {
-    return {
-      dependencyCount: this.getRequireDependencyCount(),
-    };
+  public readonly isIgnored$ = this.listItem$.pipe(map((item) => item.isIgnored));
+
+  public readonly hasWarning$ = this.listItem$.pipe(map((item) => this.hasWarning(item)));
+
+  public readonly hasFundingLinks$ = this.listItem$.pipe(
+    map((item) => Array.isArray(item.addon?.fundingLinks) && item.addon.fundingLinks.length > 0)
+  );
+
+  public readonly fundingLinks$ = this.listItem$.pipe(map((item) => item.addon?.fundingLinks ?? []));
+
+  public readonly showChannel$ = this.listItem$.pipe(map((item) => item.isBetaChannel() || item.isAlphaChannel()));
+
+  public readonly channelClass$ = this.listItem$.pipe(
+    map((item) => {
+      if (item.isBetaChannel()) {
+        return "beta";
+      }
+      if (item.isAlphaChannel()) {
+        return "alpha";
+      }
+      return "";
+    })
+  );
+
+  public readonly channelTranslationKey$ = this.listItem$.pipe(
+    map((item) => {
+      const channelType = item.addon?.channelType ?? AddonChannelType.Stable;
+      return channelType === AddonChannelType.Alpha
+        ? "COMMON.ENUM.ADDON_CHANNEL_TYPE.ALPHA"
+        : "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA";
+    })
+  );
+
+  public readonly hasMultipleProviders$ = this.listItem$.pipe(
+    map((item) => (item.addon === undefined ? false : AddonUtils.hasMultipleProviders(item.addon)))
+  );
+
+  public readonly autoUpdateEnabled$ = this.listItem$.pipe(map((item) => item.addon?.autoUpdateEnabled ?? false));
+
+  public readonly hasIgnoreReason$ = this.listItem$.pipe(map((item) => this.hasIgnoreReason(item)));
+
+  public readonly hasRequiredDependencies$ = this.listItem$.pipe(
+    map((item) => this.getRequireDependencyCount(item) > 0)
+  );
+
+  public readonly dependencyTooltip$ = this.listItem$.pipe(
+    map((item) => {
+      return {
+        dependencyCount: this.getRequireDependencyCount(item),
+      };
+    })
+  );
+
+  public readonly isLoadOnDemand$ = this.listItem$.pipe(map((item) => item.isLoadOnDemand));
+
+  public readonly ignoreTooltipKey$ = this.listItem$.pipe(map((item) => this.getIgnoreTooltipKey(item)));
+
+  public readonly ignoreIcon$ = this.listItem$.pipe(map((item) => this.getIgnoreIcon(item)));
+
+  public readonly warningText$ = this.listItem$.pipe(
+    filter((item) => this.hasWarning(item)),
+    map((item) => this.getWarningText(item))
+  );
+
+  public readonly isUnknownAddon$ = this.listItem$.pipe(
+    map((item) => {
+      return (
+        !item.isLoadOnDemand &&
+        !this.hasIgnoreReason(item) &&
+        !this.hasWarning(item) &&
+        item.addon.providerName === ADDON_PROVIDER_UNKNOWN
+      );
+    })
+  );
+
+  public readonly installedVersion$ = this.listItem$.pipe(map((item) => item.addon.installedVersion));
+
+  public readonly latestVersion$ = this.listItem$.pipe(map((item) => item.addon.latestVersion));
+
+  public readonly thumbnailUrl$ = this.listItem$.pipe(map((item) => item.addon.thumbnailUrl));
+
+  public readonly showUpdateVersion$ = combineLatest([
+    this.listItem$,
+    this.sessionService.myAddonsCompactVersion$,
+  ]).pipe(
+    map(([item, compactVersion]) => {
+      return compactVersion && item.needsUpdate();
+    })
+  );
+
+  public set listItem(item: AddonViewModel) {
+    this._listItemSrc.next(item);
   }
 
-  public get channelTranslationKey(): string {
-    const channelType = this.listItem.addon?.channelType ?? AddonChannelType.Stable;
-    return channelType === AddonChannelType.Alpha
-      ? "COMMON.ENUM.ADDON_CHANNEL_TYPE.ALPHA"
-      : "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA";
-  }
+  public constructor(
+    private _translateService: TranslateService,
+    private _dialogFactory: DialogFactory,
+    public sessionService: SessionService
+  ) {}
 
-  public constructor(private _translateService: TranslateService, private _dialogFactory: DialogFactory) {}
-
-  public agInit(params: MyAddonsAddonCellComponentParams): void {
-    this.listItem = params.data;
-    this.showUpdateToVersion = this.listItem.showUpdate;
-
-    this.warningType = this.listItem.addon?.warningType;
-    this.warningText = this.getWarningText();
-
-    this.hasMultipleProviders =
-      this.listItem.addon === undefined ? false : AddonUtils.hasMultipleProviders(this.listItem.addon);
+  public agInit(params: ICellRendererParams): void {
+    this._listItemSrc.next(params.data);
   }
 
   public refresh(): boolean {
@@ -64,27 +136,19 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   public afterGuiAttached?(): void {}
 
   public viewDetails(): void {
-    this._dialogFactory.getAddonDetailsDialog(this.listItem);
+    this._dialogFactory.getAddonDetailsDialog(this._listItemSrc.value);
   }
 
-  public getThumbnailUrl(): string {
-    return this.listItem?.addon?.thumbnailUrl ?? "";
+  public getRequireDependencyCount(item: AddonViewModel): number {
+    return item.getDependencies(AddonDependencyType.Required).length;
   }
 
-  public getRequireDependencyCount(): number {
-    return this.listItem.getDependencies(AddonDependencyType.Required).length;
+  public hasIgnoreReason(item: AddonViewModel): boolean {
+    return !!item?.addon?.ignoreReason;
   }
 
-  public hasRequiredDependencies(): boolean {
-    return this.getRequireDependencyCount() > 0;
-  }
-
-  public hasIgnoreReason(): boolean {
-    return !!this.listItem?.addon?.ignoreReason;
-  }
-
-  public getIgnoreTooltipKey(): string {
-    switch (this.listItem.addon?.ignoreReason) {
+  public getIgnoreTooltipKey(item: AddonViewModel): string {
+    switch (item.addon?.ignoreReason) {
       case "git_repo":
         return "PAGES.MY_ADDONS.ADDON_IS_CODE_REPOSITORY";
       case "missing_dependency":
@@ -94,8 +158,8 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
     }
   }
 
-  public getIgnoreIcon(): string {
-    switch (this.listItem.addon?.ignoreReason) {
+  public getIgnoreIcon(item: AddonViewModel): string {
+    switch (item.addon?.ignoreReason) {
       case "git_repo":
         return "fas:code";
       case "missing_dependency":
@@ -105,20 +169,20 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
     }
   }
 
-  public hasWarning(): boolean {
-    return this.warningType !== undefined;
+  public hasWarning(item: AddonViewModel): boolean {
+    return item?.addon?.warningType !== undefined;
   }
 
-  public getWarningText(): string {
-    if (!this.warningType) {
+  public getWarningText(item: AddonViewModel): string {
+    if (!this.hasWarning(item)) {
       return "";
     }
 
     const toolTipParams = {
-      providerName: this.listItem.providerName,
+      providerName: item.providerName,
     };
 
-    switch (this.warningType) {
+    switch (item.addon.warningType) {
       case AddonWarningType.MissingOnProvider:
         return this._translateService.instant("COMMON.ADDON_WARNING.MISSING_ON_PROVIDER_TOOLTIP", toolTipParams);
       case AddonWarningType.NoProviderFiles:
