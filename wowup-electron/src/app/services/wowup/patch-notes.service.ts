@@ -21,6 +21,7 @@ const CHANGELOGS: ChangeLog[] = [
     <div>
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
+      <li>Added the ability to turn off system notifications for individual addons (tellier-dev)</li>
       <li>
       <div>The first stage of a set of cloud based features you've been asking for</div>
       <img style="width: 80%;" loading="lazy" src="https://cdn.wowup.io/patch-notes/2-5/account-2.5-preview.png">
@@ -40,6 +41,8 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
       <li>Spanish locale updates (SkollVargr)</li>
       <li>Chinese locale updates (CyanoHao)</li>
+      <li>Russian locale updates (Medok)</li>
+      <li>German locale updates (Glow)</li>
       <li>Tweak the tabs some more</li>
       <li>Performance improvements for My Addons page</li>
       <li>Images details tab is now Previews</li>
