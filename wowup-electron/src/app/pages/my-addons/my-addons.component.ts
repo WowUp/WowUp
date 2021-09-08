@@ -867,7 +867,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.addonService.saveAddon(row.addon);
       }
 
-      this.rowData = rows;
+      this._baseRowDataSrc.next(rows);
     } catch (e) {
       console.error(e);
       this._operationErrorSrc.next(e);
@@ -876,7 +876,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): void {
     const isAutoUpdateNofications = _.every(listItems, (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false);
-    const rows = [...this._baseRowData];
+    const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
       for (const listItem of listItems) {
         const row = _.find(rows, (r) => r.addon?.id === listItem.addon?.id);
