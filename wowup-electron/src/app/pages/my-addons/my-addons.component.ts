@@ -13,7 +13,17 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { BehaviorSubject, combineLatest, from, fromEvent, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap } from "rxjs/operators";
+import {
+  catchError,
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  switchMap,
+  tap,
+} from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
@@ -98,7 +108,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly isBusy$ = this._isBusySrc.asObservable();
   public readonly filterInput$ = this._filterInputSrc.asObservable();
 
-  public readonly rowData$ = combineLatest([this._baseRowDataSrc, this._filterInputSrc]).pipe(
+  public readonly rowData$ = combineLatest([this._baseRowDataSrc, this.filterInput$]).pipe(
+    debounceTime(0),
     map(([rowData, filterVal]) => {
       return this.filterAddons(rowData, filterVal);
     })
@@ -502,7 +513,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return false;
     }
 
-    return listItem.addon.isIgnored === false && listItem.addon.warningType === undefined && listItem.addon.autoUpdateEnabled;
+    return (
+      listItem.addon.isIgnored === false && listItem.addon.warningType === undefined && listItem.addon.autoUpdateEnabled
+    );
   }
 
   public canReInstall(listItem: AddonViewModel): boolean {
@@ -875,7 +888,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): void {
-    const isAutoUpdateNofications = _.every(listItems, (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false);
+    const isAutoUpdateNofications = _.every(
+      listItems,
+      (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false
+    );
     const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
       for (const listItem of listItems) {
@@ -1269,13 +1285,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       "externalChannel",
       "providerName",
     ]);
-  }
-
-  private redrawRows() {
-    this.gridApi?.redrawRows();
-    // this.gridApi?.resetRowHeights();
-    // this.autoSizeColumns();
-    this._cdRef.detectChanges();
   }
 
   // If nodes have the same primary value, use the canonical name as a fallback
