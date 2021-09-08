@@ -41,6 +41,7 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
 
     companion.matchingAddon = {
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       channelType: AddonChannelType.Stable,
       clientType: installation.clientType,
       id: uuidv4(),

@@ -125,6 +125,12 @@
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
+    <!-- AUTO UPDATE NOTIFICATIONS -->
+    <div *ngIf="canSetAutoUpdateNotifications(listItem)" class="mat-menu-item"> 
+      <mat-checkbox [checked]="listItem.addon.autoUpdateNotificationsEnabled" (click)="onClickAutoUpdateAddonNotifications(listItem)">
+        {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON" | translate }}
+      </mat-checkbox>
+    </div>
     <!-- CHANNEL SUBMENU -->
     <button *ngIf="addonService.canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}

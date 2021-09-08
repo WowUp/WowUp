@@ -181,6 +181,7 @@ export class TukUiAddonProvider extends AddonProvider {
 
       addonFolder.matchingAddon = {
         autoUpdateEnabled: false,
+        autoUpdateNotificationsEnabled: false,
         channelType: addonChannelType,
         clientType: installation.clientType,
         id: uuidv4(),
