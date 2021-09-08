@@ -111,6 +111,8 @@ interface SymlinkDir {
   isDir: boolean;
 }
 
+const _dlMap = new Map<string, (evt: Electron.Event, item: Electron.DownloadItem, ec: Electron.WebContents) => void>();
+
 async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<SymlinkDir[]> {
   // Find and resolve symlinks found and return the folder names as
   const symlinks = _.filter(files, (file) => file.isSymbolicLink());
@@ -483,7 +485,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await dialog.showOpenDialog(options);
   });
 
-  handle(IPC_PUSH_INIT, (evt) => {
+  handle(IPC_PUSH_INIT, () => {
     return push.startPushService();
   });
 
@@ -491,7 +493,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await push.registerForPush(appId);
   });
 
-  handle(IPC_PUSH_UNREGISTER, async (evt) => {
+  handle(IPC_PUSH_UNREGISTER, async () => {
     return await push.unregisterPush();
   });
 
@@ -500,53 +502,120 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {
-    handleDownloadFile(arg).catch((e) => console.error(e));
+    handleDownloadFile(arg).catch((e) => console.error(e.toString()));
+  });
+
+  // In order to allow concurrent downloads, we have to get creative with this session handler
+  window.webContents.session.on("will-download", (evt, item, wc) => {
+    for (const key of _dlMap.keys()) {
+      log.info(`will-download: ${key}`);
+      if (!item.getURLChain().includes(key)) {
+        continue;
+      }
+
+      try {
+        const action = _dlMap.get(key);
+        action.call(null, evt, item, wc);
+      } catch (e) {
+        log.error(e);
+      } finally {
+        _dlMap.delete(key);
+      }
+    }
   });
 
   async function handleDownloadFile(arg: DownloadRequest) {
+    const status: DownloadStatus = {
+      type: DownloadStatusType.Pending,
+      savePath: "",
+    };
+
     try {
       await fsp.mkdir(arg.outputFolder, { recursive: true });
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
+      status.savePath = savePath;
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
-      const { data } = await axios({
-        url: arg.url,
-        method: "GET",
-        responseType: "stream",
-        headers: {
-          "User-Agent": USER_AGENT,
-        },
-        proxy: PROXY_INFO,
+      // Store a function reference to this download in the global download map
+      // When electron starts downloading it, this function should be completed
+      _dlMap.set(arg.url, (evt, item, wc) => {
+        item.setSavePath(savePath);
+
+        item.on("updated", (event, state) => {
+          if (state === "interrupted") {
+            log.info("Download is interrupted but can be resumed");
+          } else if (state === "progressing") {
+            if (item.isPaused()) {
+              log.info("Download is paused");
+            } else {
+              log.info(`Received bytes: ${item.getReceivedBytes()}`);
+            }
+          }
+        });
+        item.once("done", (event, state) => {
+          item.removeAllListeners("updated");
+          if (state === "completed") {
+            log.info("Download successfully");
+            status.type = DownloadStatusType.Complete;
+          } else {
+            log.info(`Download failed: ${state}`);
+            status.type = DownloadStatusType.Error;
+            status.error = new Error(state);
+          }
+          (wc ?? window.webContents).send(arg.responseKey, status);
+        });
       });
 
-      // const totalLength = headers["content-length"];
-      // Progress is not shown anywhere
-      // data.on("data", (chunk) => {
-      //   log.info("DLPROG", arg.responseKey);
-      // });
-
-      const writer = fs.createWriteStream(savePath);
-      data.pipe(writer);
-
-      await new Promise((resolve, reject) => {
-        writer.on("finish", resolve);
-        writer.on("error", reject);
-      });
-
-      const status: DownloadStatus = {
-        type: DownloadStatusType.Complete,
-        savePath,
-      };
-      window.webContents.send(arg.responseKey, status);
-    } catch (err) {
-      log.error(err);
-      const status: DownloadStatus = {
-        type: DownloadStatusType.Error,
-        error: err,
-      };
-      window.webContents.send(arg.responseKey, status);
+      const session = window.webContents.session;
+      session.downloadURL(arg.url);
+    } catch (e) {
+      console.error(e);
     }
+
+    // try {
+    //   await fsp.mkdir(arg.outputFolder, { recursive: true });
+
+    //   const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
+    //   log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
+
+    //   const { data } = await axios({
+    //     url: arg.url,
+    //     method: "GET",
+    //     responseType: "stream",
+    //     headers: {
+    //       "User-Agent": USER_AGENT,
+    //     },
+    //     proxy: PROXY_INFO,
+    //   });
+
+    //   // const totalLength = headers["content-length"];
+    //   // Progress is not shown anywhere
+    //   // data.on("data", (chunk) => {
+    //   //   log.info("DLPROG", arg.responseKey);
+    //   // });
+
+    //   const writer = fs.createWriteStream(savePath);
+    //   data.pipe(writer);
+
+    //   await new Promise((resolve, reject) => {
+    //     writer.on("finish", resolve);
+    //     writer.on("error", reject);
+    //   });
+
+    //   const status: DownloadStatus = {
+    //     type: DownloadStatusType.Complete,
+    //     savePath,
+    //   };
+    //   window.webContents.send(arg.responseKey, status);
+    // } catch (err) {
+    //   log.error(err);
+    //   const status: DownloadStatus = {
+    //     type: DownloadStatusType.Error,
+    //     error: err,
+    //   };
+    //   window.webContents.send(arg.responseKey, status);
+    // }
   }
 }
 

@@ -3,7 +3,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 
 import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -25,6 +25,17 @@ import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { PushService } from "../../services/push/push.service";
+import { InvertBoolPipe } from "../../pipes/inverse-bool.pipe";
+
+export class MockElementRef extends ElementRef {
+  public constructor() {
+    super(null);
+  }
+}
+
+export function mockElementFactory(): ElementRef {
+  return new ElementRef({ nativeElement: jasmine.createSpyObj("nativeElement", ["value"]) });
+}
 
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
@@ -72,6 +83,7 @@ describe("MyAddonsComponent", () => {
       selectedClientType$: new BehaviorSubject(WowClientType.Retail).asObservable(),
       targetFileInstallComplete$: new Subject<boolean>(),
       addonsChanged$: new BehaviorSubject([]),
+      selectedWowInstallation$: new BehaviorSubject(undefined),
     });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
@@ -87,7 +99,7 @@ describe("MyAddonsComponent", () => {
     });
 
     let testBed = TestBed.configureTestingModule({
-      declarations: [MyAddonsComponent],
+      declarations: [MyAddonsComponent, InvertBoolPipe],
       imports: [
         MatModule,
         OverlayModule,
@@ -129,6 +141,11 @@ describe("MyAddonsComponent", () => {
     fixture = TestBed.createComponent(MyAddonsComponent);
     component = fixture.componentInstance;
 
+    component.addonFilter = {
+      nativeElement: jasmine.createSpyObj("nativeElement", ["value"]),
+    };
+    console.debug("addonFilter", component.addonFilter);
+
     fixture.detectChanges();
   });
 
@@ -138,6 +155,7 @@ describe("MyAddonsComponent", () => {
   });
 
   it("should create", () => {
+    console.debug("addonFilter", component.addonFilter);
     expect(component).toBeTruthy();
   });
 });

@@ -1,20 +1,17 @@
 import * as _ from "lodash";
 import { BehaviorSubject, from } from "rxjs";
-import { debounceTime, filter, first, map } from "rxjs/operators";
+import { first } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 
 import { ElectronService } from "../../services";
-import { SessionService } from "../../services/session/session.service";
 import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WtfNode, WtfService } from "../../services/wtf/wtf.service";
 import { removeExtension } from "../../utils/string.utils";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
-import { TreeNode } from "../../../common/models/ipc-events";
 import { formatSize } from "../../utils/number.utils";
-import path from "path/posix";
 
 interface SavedVariable {
   name: string;

@@ -103,8 +103,6 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
   log.info("Hardware acceleration enabled");
 }
 
-app.allowRendererProcessReuse = false;
-
 // Some servers don't supply good CORS headers for us, so we ignore them.
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
 
@@ -261,8 +259,11 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: argv.serve,
       webSecurity: false,
       nativeWindowOpen: true,
-      enableRemoteModule: false, // This is only required for electron store https://github.com/sindresorhus/electron-store/issues/152,
-      additionalArguments: [`--log-path=${LOG_PATH}`, `--user-data-path=${app.getPath("userData")}`],
+      additionalArguments: [
+        `--log-path=${LOG_PATH}`,
+        `--user-data-path=${app.getPath("userData")}`,
+        `--base-bg-color=${getBackgroundColor()}`,
+      ],
     },
     show: false,
   };

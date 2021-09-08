@@ -8,12 +8,16 @@ import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { Addon } from "../../../common/entities/addon";
 import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { SessionService } from "../../services/session/session.service";
 
 describe("MyAddonsAddonCellComponent", () => {
   let component: MyAddonsAddonCellComponent;
   let fixture: ComponentFixture<MyAddonsAddonCellComponent>;
+  let sessionService: SessionService;
 
   beforeEach(async () => {
+    sessionService = jasmine.createSpyObj("SessionService", [""], {});
+
     await TestBed.configureTestingModule({
       declarations: [MyAddonsAddonCellComponent],
       imports: [
@@ -32,7 +36,13 @@ describe("MyAddonsAddonCellComponent", () => {
           },
         }),
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(MyAddonsAddonCellComponent, {
+        set: {
+          providers: [{ provide: SessionService, useValue: sessionService }],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MyAddonsAddonCellComponent);
     component = fixture.componentInstance;
