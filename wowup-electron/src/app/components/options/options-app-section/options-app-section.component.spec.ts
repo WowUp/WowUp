@@ -6,15 +6,15 @@ import { FormsModule } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { MatModule } from "../../mat-module";
-import { ElectronService } from "../../services";
-import { AddonService } from "../../services/addons/addon.service";
-import { AnalyticsService } from "../../services/analytics/analytics.service";
-import { FileService } from "../../services/files/file.service";
-import { SessionService } from "../../services/session/session.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { ZoomService } from "../../services/zoom/zoom.service";
-import { createTranslateModule } from "../../utils/test.utils";
+import { MatModule } from "../../../mat-module";
+import { ElectronService } from "../../../services";
+import { AddonService } from "../../../services/addons/addon.service";
+import { AnalyticsService } from "../../../services/analytics/analytics.service";
+import { FileService } from "../../../services/files/file.service";
+import { SessionService } from "../../../services/session/session.service";
+import { WowUpService } from "../../../services/wowup/wowup.service";
+import { ZoomService } from "../../../services/zoom/zoom.service";
+import { createTranslateModule } from "../../../utils/test.utils";
 import { OptionsAppSectionComponent } from "./options-app-section.component";
 
 describe("OptionsAppSectionComponent", () => {

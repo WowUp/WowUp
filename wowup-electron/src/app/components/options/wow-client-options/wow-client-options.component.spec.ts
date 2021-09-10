@@ -6,16 +6,16 @@ import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
-import { httpLoaderFactory } from "../../app.module";
-import { MatModule } from "../../mat-module";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { httpLoaderFactory } from "../../../app.module";
+import { MatModule } from "../../../mat-module";
+import { WowClientType } from "../../../../common/warcraft/wow-client-type";
 import { WowClientOptionsComponent } from "./wow-client-options.component";
 import { FormsModule } from "@angular/forms";
-import { overrideIconModule } from "../../tests/mock-mat-icon";
-import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { mockPreload } from "../../tests/test-helpers";
-import { SessionService } from "../../services/session/session.service";
+import { overrideIconModule } from "../../../tests/mock-mat-icon";
+import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
+import { WarcraftService } from "../../../services/warcraft/warcraft.service";
+import { mockPreload } from "../../../tests/test-helpers";
+import { SessionService } from "../../../services/session/session.service";
 import { BehaviorSubject, Observable } from "rxjs";
 
 describe("WowClientOptionsComponent", () => {
