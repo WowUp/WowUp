@@ -16,17 +16,17 @@ import {
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
-} from "../../../common/constants";
-import { ThemeGroup } from "../../models/wowup/theme";
-import { ElectronService } from "../../services";
-import { AnalyticsService } from "../../services/analytics/analytics.service";
-import { DialogFactory } from "../../services/dialog/dialog.factory";
-import { SessionService } from "../../services/session/session.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { ZOOM_SCALE } from "../../utils/zoom.utils";
-import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { ZoomService } from "../../services/zoom/zoom.service";
-import { AddonService } from "../../services/addons/addon.service";
+} from "../../../../common/constants";
+import { ThemeGroup } from "../../../models/wowup/theme";
+import { ElectronService } from "../../../services";
+import { AnalyticsService } from "../../../services/analytics/analytics.service";
+import { DialogFactory } from "../../../services/dialog/dialog.factory";
+import { SessionService } from "../../../services/session/session.service";
+import { WowUpService } from "../../../services/wowup/wowup.service";
+import { ZOOM_SCALE } from "../../../utils/zoom.utils";
+import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
+import { ZoomService } from "../../../services/zoom/zoom.service";
+import { AddonService } from "../../../services/addons/addon.service";
 
 interface LocaleListItem {
   localeId: string;

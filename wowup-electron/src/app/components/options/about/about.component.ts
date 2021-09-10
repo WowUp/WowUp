@@ -12,13 +12,13 @@ import {
 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
-import { ChangeLog } from "../../models/wowup/change-log";
-import { ElectronService } from "../../services";
-import { SessionService } from "../../services/session/session.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { PatchNotesService } from "../../services/wowup/patch-notes.service";
-import { formatDynamicLinks } from "../../utils/dom.utils";
-import { LinkService } from "../../services/links/link.service";
+import { ChangeLog } from "../../../models/wowup/change-log";
+import { ElectronService } from "../../../services";
+import { SessionService } from "../../../services/session/session.service";
+import { WowUpService } from "../../../services/wowup/wowup.service";
+import { PatchNotesService } from "../../../services/wowup/patch-notes.service";
+import { formatDynamicLinks } from "../../../utils/dom.utils";
+import { LinkService } from "../../../services/links/link.service";
 
 @Component({
   selector: "app-about",

@@ -1,12 +1,12 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { OptionsDebugSectionComponent } from "./options-debug-section.component";
-import { AddonService } from "../../services/addons/addon.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
+import { AddonService } from "../../../services/addons/addon.service";
+import { WowUpService } from "../../../services/wowup/wowup.service";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { httpLoaderFactory } from "../../app.module";
-import { MatModule } from "../../mat-module";
+import { httpLoaderFactory } from "../../../app.module";
+import { MatModule } from "../../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
 describe("OptionsDebugSectionComponent", () => {

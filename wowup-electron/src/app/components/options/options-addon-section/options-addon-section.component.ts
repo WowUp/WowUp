@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { filter } from "lodash";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { AddonService } from "../../services/addons/addon.service";
-import { AddonProviderState } from "../../models/wowup/addon-provider-state";
+import { WowUpService } from "../../../services/wowup/wowup.service";
+import { AddonService } from "../../../services/addons/addon.service";
+import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { MatSelectionListChange } from "@angular/material/list";
 
 @Component({

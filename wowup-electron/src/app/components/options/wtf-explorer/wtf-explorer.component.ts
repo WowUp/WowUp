@@ -4,14 +4,14 @@ import { first } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 
-import { ElectronService } from "../../services";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { WtfNode, WtfService } from "../../services/wtf/wtf.service";
-import { removeExtension } from "../../utils/string.utils";
-import { AddonFolder } from "../../models/wowup/addon-folder";
-import { WowInstallation } from "../../models/wowup/wow-installation";
-import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
-import { formatSize } from "../../utils/number.utils";
+import { ElectronService } from "../../../services";
+import { WarcraftService } from "../../../services/warcraft/warcraft.service";
+import { WtfNode, WtfService } from "../../../services/wtf/wtf.service";
+import { removeExtension } from "../../../utils/string.utils";
+import { AddonFolder } from "../../../models/wowup/addon-folder";
+import { WowInstallation } from "../../../models/wowup/wow-installation";
+import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
+import { formatSize } from "../../../utils/number.utils";
 
 interface SavedVariable {
   name: string;
@@ -50,11 +50,11 @@ interface NodeModel {
 }
 
 @Component({
-  selector: "app-extra",
-  templateUrl: "./extra.component.html",
-  styleUrls: ["./extra.component.scss"],
+  selector: "app-wtf-explorer",
+  templateUrl: "./wtf-explorer.component.html",
+  styleUrls: ["./wtf-explorer.component.scss"],
 })
-export class ExtraComponent implements OnInit, OnDestroy {
+export class WtfExplorerComponent implements OnInit, OnDestroy {
   @Input("tabIndex") public tabIndex!: number;
 
   @Input()

@@ -4,7 +4,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material/dial
 
 import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonDetailComponent, AddonDetailModel } from "../../components/addon-detail/addon-detail.component";
+import { AddonDetailComponent, AddonDetailModel } from "../../components/addons/addon-detail/addon-detail.component";
 import { AlertDialogComponent, AlertDialogData } from "../../components/alert-dialog/alert-dialog.component";
 import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";

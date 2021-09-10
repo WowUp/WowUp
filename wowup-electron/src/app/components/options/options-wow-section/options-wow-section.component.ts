@@ -5,14 +5,14 @@ import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { WowInstallation } from "../../models/wowup/wow-installation";
-import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
-import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
-import { WarcraftService } from "../../services/warcraft/warcraft.service";
-import { WowUpService } from "../../services/wowup/wowup.service";
-import { getEnumList, getEnumName } from "../../utils/enum.utils";
-import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
+import { WowClientType } from "../../../../common/warcraft/wow-client-type";
+import { WowInstallation } from "../../../models/wowup/wow-installation";
+import { WowUpReleaseChannelType } from "../../../models/wowup/wowup-release-channel-type";
+import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
+import { WarcraftService } from "../../../services/warcraft/warcraft.service";
+import { WowUpService } from "../../../services/wowup/wowup.service";
+import { getEnumList, getEnumName } from "../../../utils/enum.utils";
+import { AlertDialogComponent } from "../../alert-dialog/alert-dialog.component";
 
 @Component({
   selector: "app-options-wow-section",

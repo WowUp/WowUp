@@ -18,20 +18,20 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dial
 import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
-import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
-import { AddonFundingLink } from "../../../common/entities/addon";
-import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../common/wowup/models";
-import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { AddonSearchResult } from "../../models/wowup/addon-search-result";
-import { AddonSearchResultDependency } from "../../models/wowup/addon-search-result-dependency";
-import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { AddonService } from "../../services/addons/addon.service";
-import { SessionService } from "../../services/session/session.service";
-import { SnackbarService } from "../../services/snackbar/snackbar.service";
-import * as SearchResult from "../../utils/search-result.utils";
-import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
-import { formatDynamicLinks } from "../../utils/dom.utils";
-import { LinkService } from "../../services/links/link.service";
+import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
+import { AddonFundingLink } from "../../../../common/entities/addon";
+import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../../common/wowup/models";
+import { AddonViewModel } from "../../../business-objects/addon-view-model";
+import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
+import { AddonSearchResultDependency } from "../../../models/wowup/addon-search-result-dependency";
+import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
+import { AddonService } from "../../../services/addons/addon.service";
+import { SessionService } from "../../../services/session/session.service";
+import { SnackbarService } from "../../../services/snackbar/snackbar.service";
+import * as SearchResult from "../../../utils/search-result.utils";
+import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
+import { formatDynamicLinks } from "../../../utils/dom.utils";
+import { LinkService } from "../../../services/links/link.service";
 import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
 
 export interface AddonDetailModel {

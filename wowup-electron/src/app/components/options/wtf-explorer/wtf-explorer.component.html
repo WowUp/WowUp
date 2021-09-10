@@ -1,0 +1,104 @@
+<div class="container">
+
+    <div class="account-container row align-items-center">
+      <mat-form-field class="mr-3">
+        <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
+        <mat-select [(value)]="selectedInstallationId" (selectionChange)="onClientChange()">
+          <mat-option *ngFor="let installation of installations" [value]="installation.id">
+            {{installation.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-raised-button color="primary" [disabled]="(loading$ | async) === true" (click)="onClickRefresh()">
+          Refresh
+        </button>
+      </div>
+    </div>
+  
+    <div *ngIf="(loading$ | async) === true" class="account-container">
+      <h4><i>Loading {{selectedInstallationLabel}}...</i></h4>
+    </div>
+  
+    <div *ngIf="(error$ | async) !== ''" class="account-container text-warning">
+      <h4>Error {{selectedInstallationLabel}}</h4>
+      <p>{{error$ | async}}</p>
+    </div>
+  
+    <div *ngIf="(loading$ | async) === false" class="tree-container">
+      <p>{{wtfPath}}</p>
+      <div class="tree">
+        <tree-root [nodes]="nodes$ | async">
+          <ng-template #treeNodeTemplate let-node let-index="index" let-templates="templates">
+            <div class="node-wrapper">
+              <div class="text-2" (click)="node.toggleExpanded()" *ngIf="node?.data?.children?.length > 0">
+                <mat-icon class="tree-icon" [ngClass]="{ 'expanded': node?.isExpanded }" svgIcon="fas:chevron-right">
+                </mat-icon>
+              </div>
+  
+              <div class="node-content-wrapper">
+                <span
+                  [ngClass]="{ 'text-warning': !node.data.ignore && node.data.isLua && !node.data.hasAddon, 'text-3': node.data.ignore}">{{
+                  node.data.name }}</span>
+              </div>
+            </div>
+  
+  
+          </ng-template>
+        </tree-root>
+      </div>
+  
+      <!-- <div *ngFor="let account of accountMap | async" class="account-container">
+        <h2>Account: {{account.name}}</h2>
+        <mat-accordion class="variable-accordion" multi>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Account Variables
+              </mat-panel-title>
+              <mat-panel-description>
+                {{account.globalVariables.length}} files, {{account.size | sizeDisplay}}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+  
+            <ul class="variable-list">
+              <li *ngFor="let gvar of account.globalVariables">
+                <div [ngClass]="{ 'text-warning': !gvar.hasAddon }">{{gvar.name}} | {{gvar.size | sizeDisplay}}</div>
+              </li>
+            </ul>
+          </mat-expansion-panel>
+  
+          <mat-expansion-panel *ngFor="let server of account.servers">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Server: {{server.name}}
+              </mat-panel-title>
+              <mat-panel-description>
+                {{ server.characters.length }} characters, {{server.size | sizeDisplay}}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+  
+            <mat-accordion class="sub-accordion" multi>
+              <mat-expansion-panel *ngFor="let char of server.characters">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Character: {{char.name}}
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    {{ char.variables.length }} files, {{char.size | sizeDisplay}}
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+  
+                <ul class="variable-list">
+                  <li *ngFor="let svar of char.variables">
+                    <div [ngClass]="{ 'text-warning': !svar.hasAddon }">{{svar.name}} | {{svar.size | sizeDisplay}}</div>
+                  </li>
+                </ul>
+              </mat-expansion-panel>
+            </mat-accordion>
+  
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div> -->
+    </div>
+  </div>
