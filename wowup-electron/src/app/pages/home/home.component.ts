@@ -17,8 +17,8 @@ import {
   TAB_INDEX_SETTINGS,
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
-import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
-import { PatchNotesDialogComponent } from "../../components/patch-notes-dialog/patch-notes-dialog.component";
+import { InstallFromProtocolDialogComponent } from "../../components/addons/install-from-protocol-dialog/install-from-protocol-dialog.component";
+import { PatchNotesDialogComponent } from "../../components/common/patch-notes-dialog/patch-notes-dialog.component";
 import { AddonScanError } from "../../errors";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";

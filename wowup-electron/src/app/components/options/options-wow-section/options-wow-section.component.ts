@@ -12,7 +12,7 @@ import { WarcraftInstallationService } from "../../../services/warcraft/warcraft
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
 import { getEnumList, getEnumName } from "../../../utils/enum.utils";
-import { AlertDialogComponent } from "../../alert-dialog/alert-dialog.component";
+import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
 
 @Component({
   selector: "app-options-wow-section",

@@ -32,7 +32,7 @@ import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
-import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
+import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;

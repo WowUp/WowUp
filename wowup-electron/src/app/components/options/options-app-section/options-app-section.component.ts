@@ -24,7 +24,7 @@ import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { SessionService } from "../../../services/session/session.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
 import { ZOOM_SCALE } from "../../../utils/zoom.utils";
-import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
+import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { ZoomService } from "../../../services/zoom/zoom.service";
 import { AddonService } from "../../../services/addons/addon.service";
 

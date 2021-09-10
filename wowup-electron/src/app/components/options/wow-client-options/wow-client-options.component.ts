@@ -12,7 +12,7 @@ import { AddonChannelType } from "../../../../common/wowup/models";
 import { WowInstallation } from "../../../models/wowup/wow-installation";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { getEnumList, getEnumName } from "../../../utils/enum.utils";
-import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
+import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { SessionService } from "../../../services/session/session.service";
 

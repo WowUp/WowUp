@@ -11,12 +11,10 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { GalleryModule } from "ng-gallery";
-import { LightboxModule, LIGHTBOX_CONFIG } from "ng-gallery/lightbox";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { FooterComponent } from "./components/footer/footer.component";
-import { TitlebarComponent } from "./components/titlebar/titlebar.component";
+import { TitlebarComponent } from "./components/common/titlebar/titlebar.component";
 import { DirectiveModule } from "./directive.module";
 import { DefaultHeadersInterceptor } from "./interceptors/default-headers.interceptor";
 import { ErrorHandlerInterceptor } from "./interceptors/error-handler-interceptor";
@@ -26,11 +24,11 @@ import { AnalyticsService } from "./services/analytics/analytics.service";
 import { WowUpApiService } from "./services/wowup-api/wowup-api.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
-import { SharedModule } from "./shared.module";
 import { AddonService } from "./services/addons/addon.service";
 import { IconService } from "./services/icons/icon.service";
-import { VerticalTabsComponent } from "./components/vertical-tabs/vertical-tabs.component";
-import { HorizontalTabsComponent } from "./components/horizontal-tabs/horizontal-tabs.component";
+import { HorizontalTabsComponent } from "./components/common/horizontal-tabs/horizontal-tabs.component";
+import { CommonUiModule } from "./modules/common-ui.module";
+import { FooterComponent } from "./components/common/footer/footer.component";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -44,12 +42,11 @@ export function initializeApp(wowupService: WowUpService) {
 }
 
 @NgModule({
-  declarations: [AppComponent, TitlebarComponent, FooterComponent, VerticalTabsComponent, HorizontalTabsComponent],
+  declarations: [AppComponent, TitlebarComponent, FooterComponent, HorizontalTabsComponent],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    SharedModule,
     HomeModule,
     AppRoutingModule,
     DirectiveModule,
@@ -67,7 +64,7 @@ export function initializeApp(wowupService: WowUpService) {
     }),
     BrowserAnimationsModule,
     GalleryModule,
-    LightboxModule,
+    CommonUiModule,
   ],
   providers: [
     {
@@ -85,12 +82,6 @@ export function initializeApp(wowupService: WowUpService) {
       provide: ErrorHandler,
       useClass: ErrorHandlerInterceptor,
       deps: [AnalyticsService],
-    },
-    {
-      provide: LIGHTBOX_CONFIG,
-      useValue: {
-        keyboardShortcuts: true,
-      },
     },
   ],
   bootstrap: [AppComponent],
