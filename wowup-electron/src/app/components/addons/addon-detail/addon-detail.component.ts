@@ -1,4 +1,5 @@
 import { last } from "lodash";
+import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
 import { BehaviorSubject, from, of, Subscription } from "rxjs";
 import { filter, first, map, switchMap, tap } from "rxjs/operators";
 
@@ -18,21 +19,20 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dial
 import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
-import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN } from "../../../../common/constants";
-import { AddonFundingLink } from "../../../../common/entities/addon";
+import { ADDON_PROVIDER_GITHUB, ADDON_PROVIDER_UNKNOWN, TAB_INDEX_MY_ADDONS } from "../../../../common/constants";
+import { Addon, AddonFundingLink } from "../../../../common/entities/addon";
 import { AddonChannelType, AddonDependency, AddonDependencyType } from "../../../../common/wowup/models";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../../../models/wowup/addon-search-result-dependency";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
+import { LinkService } from "../../../services/links/link.service";
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
+import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
-import { formatDynamicLinks } from "../../../utils/dom.utils";
-import { LinkService } from "../../../services/links/link.service";
-import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -69,6 +69,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public hasChangeLog = false;
   public showInstallButton = false;
   public showUpdateButton = false;
+  public showRemoveButton = false;
   public hasRequiredDependencies = false;
   public title = "";
   public subtitle = "";
@@ -129,6 +130,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this.showInstallButton = !!this.model.searchResult;
 
     this.showUpdateButton = !!this.model.listItem;
+
+    this.showRemoveButton = this.isAddonInstalled();
 
     this.title = this.model.listItem?.addon?.name || this.model.searchResult?.name || "UNKNOWN";
 
@@ -205,23 +208,44 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public onClickRemoveAddon(): void {
-    if (!this.model.listItem?.addon?.name) {
-      console.warn("Invalid model list item addon");
+    let addon: Addon = null;
+
+    // Addon is expected to be available through the model when browsing My Addons tab
+    if (this._sessionService.getSelectedHomeTab() === TAB_INDEX_MY_ADDONS) {
+      if (!this.model.listItem?.addon.name) {
+        console.warn("Invalid model list item addon");
+        return;
+      }
+
+      addon = this.model.listItem?.addon;
+    } else {
+      const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+      const externalId = this.model.searchResult?.externalId ?? "";
+      const providerName = this.model.searchResult?.providerName ?? "";
+
+      if (!externalId || !providerName || !selectedInstallation) {
+        console.warn("Invalid search result when identifying which addon to remove", {
+          selectedInstallation,
+          externalId,
+          providerName,
+        });
+        return;
+      }
+
+      addon = this._addonService.getByExternalId(externalId, providerName, selectedInstallation.id);
+    }
+
+    if (!addon) {
+      console.warn("Invalid addon when attempting removal");
       return;
     }
 
-    this.getRemoveAddonPrompt(this.model.listItem.addon.name)
+    this.getRemoveAddonPrompt(addon.name)
       .afterClosed()
       .pipe(
         first(),
         switchMap((result) => {
           if (!result) {
-            return of(false);
-          }
-
-          const addon = this.model.listItem?.addon;
-          if (!addon) {
-            console.warn(`Invalid addon`);
             return of(false);
           }
 
@@ -422,5 +446,22 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   private getLatestSearchResultFile() {
     return SearchResult.getLatestFile(this.model.searchResult, this.model.channelType ?? AddonChannelType.Stable);
+  }
+
+  private isAddonInstalled(): boolean {
+    const selectedInstallation = this._sessionService.getSelectedWowInstallation();
+    if (!selectedInstallation) {
+      console.warn("No selected installation");
+      return;
+    }
+
+    const externalId = this.model.searchResult?.externalId ?? this.model.listItem?.addon?.externalId ?? "";
+    const providerName = this.model.searchResult?.providerName ?? this.model.listItem?.addon?.providerName ?? "";
+
+    if (externalId && providerName) {
+      return this._addonService.isInstalled(externalId, providerName, selectedInstallation);
+    }
+
+    console.warn("Invalid list item addon when verifying if installed");
   }
 }
