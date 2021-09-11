@@ -7,7 +7,6 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../../app.module";
-import { MatModule } from "../../../mat-module";
 import { ElectronService } from "../../../services";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
 import { LinkService } from "../../../services/links/link.service";
@@ -15,6 +14,7 @@ import { SessionService } from "../../../services/session/session.service";
 import { PatchNotesService } from "../../../services/wowup/patch-notes.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
 import { AboutComponent } from "./about.component";
+import { MatModule } from "../../../modules/mat-module";
 
 describe("AboutComponent", () => {
   let component: AboutComponent;

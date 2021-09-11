@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../../app.module";
-import { MatModule } from "../../../mat-module";
+import { MatModule } from "../../../modules/mat-module";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { ElectronService } from "../../../services";
 import { AddonService } from "../../../services/addons/addon.service";

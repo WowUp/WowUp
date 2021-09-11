@@ -5,8 +5,8 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { httpLoaderFactory } from "../../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { MatModule } from "../../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { MatModule } from "../../../modules/mat-module";
 
 describe("TelemetryDialogComponent", () => {
   let component: TelemetryDialogComponent;

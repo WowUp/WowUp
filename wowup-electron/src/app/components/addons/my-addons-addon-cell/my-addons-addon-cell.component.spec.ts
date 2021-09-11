@@ -8,7 +8,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { Addon } from "../../../../common/entities/addon";
 import { httpLoaderFactory } from "../../../app.module";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
-import { MatModule } from "../../../mat-module";
+import { MatModule } from "../../../modules/mat-module";
 import { SessionService } from "../../../services/session/session.service";
 import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
 

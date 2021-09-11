@@ -10,7 +10,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../app.module";
-import { MatModule } from "../../mat-module";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { SortOrder } from "../../models/wowup/sort-order";
@@ -26,6 +25,7 @@ import { WarcraftInstallationService } from "../../services/warcraft/warcraft-in
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { PushService } from "../../services/push/push.service";
 import { InvertBoolPipe } from "../../pipes/inverse-bool.pipe";
+import { MatModule } from "../../modules/mat-module";
 
 export class MockElementRef extends ElementRef {
   public constructor() {

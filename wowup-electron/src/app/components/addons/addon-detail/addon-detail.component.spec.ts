@@ -11,7 +11,6 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../../app.module";
 import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { Addon } from "../../../../common/entities/addon";
-import { MatModule } from "../../../mat-module";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
@@ -22,6 +21,7 @@ import { WowUpService } from "../../../services/wowup/wowup.service";
 import { LinkService } from "../../../services/links/link.service";
 import { GalleryModule } from "ng-gallery";
 import { LightboxModule } from "ng-gallery/lightbox";
+import { MatModule } from "../../../modules/mat-module";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;

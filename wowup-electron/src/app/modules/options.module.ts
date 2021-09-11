@@ -11,7 +11,7 @@ import { OptionsDebugSectionComponent } from "../components/options/options-debu
 import { OptionsWowSectionComponent } from "../components/options/options-wow-section/options-wow-section.component";
 import { WowClientOptionsComponent } from "../components/options/wow-client-options/wow-client-options.component";
 import { WtfExplorerComponent } from "../components/options/wtf-explorer/wtf-explorer.component";
-import { MatModule } from "../mat-module";
+import { MatModule } from "./mat-module";
 import { PipesModule } from "./pipes.module";
 
 @NgModule({

@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../../app.module";
-import { MatModule } from "../../../mat-module";
+import { MatModule } from "../../../modules/mat-module";
 import { DownloadCountPipe } from "../../../pipes/download-count.pipe";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
