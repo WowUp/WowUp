@@ -1,12 +1,14 @@
-import { TestBed } from "@angular/core/testing";
-import { ConfirmDialogComponent } from "./confirm-dialog.component";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { MatModule } from "../../mat-module";
+
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { TestBed } from "@angular/core/testing";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+
+import { httpLoaderFactory } from "../../../app.module";
+import { MatModule } from "../../../mat-module";
+import { ConfirmDialogComponent } from "./confirm-dialog.component";
 
 describe("ConfirmDialogComponent", () => {
   beforeEach(async () => {

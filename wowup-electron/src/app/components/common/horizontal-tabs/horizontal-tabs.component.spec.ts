@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { BehaviorSubject, Subject } from "rxjs";
-import { ElectronService } from "../../services";
-import { SessionService } from "../../services/session/session.service";
-import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
-import { getStandardImports, mockPreload } from "../../tests/test-helpers";
 
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+
+import { ElectronService } from "../../../services";
+import { SessionService } from "../../../services/session/session.service";
+import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
+import { getStandardImports, mockPreload } from "../../../tests/test-helpers";
 import { HorizontalTabsComponent } from "./horizontal-tabs.component";
 
 describe("HorizontalTabsComponent", () => {
