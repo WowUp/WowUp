@@ -175,8 +175,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async migrateAddons(installations: WowInstallation[]) {
-    const shouldMigrate = await this._wowupService.shouldMigrateAddons();
-    if (!installations || installations.length === 0 || !shouldMigrate) {
+    const shouldDeepMigrate = await this._wowupService.shouldMigrateAddons();
+    if (!installations || installations.length === 0) {
+      return installations;
+    }
+
+    if (!shouldDeepMigrate) {
       return installations;
     }
 
@@ -187,7 +191,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     try {
       for (const installation of installations) {
-        await this._addonService.migrate(installation);
+        await this._addonService.migrateDeep(installation);
       }
 
       await this._wowupService.setMigrationVersion();

@@ -1379,7 +1379,32 @@ export class AddonService {
     }
   }
 
-  public async migrate(installation: WowInstallation): Promise<void> {
+  public migrateLocalAddons(installation: WowInstallation): void {
+    const existingAddons = this.getAllAddons(installation);
+    if (!existingAddons.length) {
+      console.log(`[MigrateInstall] ${installation.label} no addons found`);
+      return;
+    }
+
+    const needsMigration = existingAddons.some(addon => this.needsMigration(addon));
+    if (!needsMigration) {
+      console.log(`[MigrateInstall] ${installation.label} No addons needed to be migrated`);
+      return;
+    }
+
+    let migratedCt = 0;
+    for (const addon of existingAddons) {
+      if (this.migrateLocalAddon(addon)) {
+        migratedCt += 1;
+      }
+    }
+
+    console.log(`[MigrateInstall] Local addons complete: [${migratedCt}] ${installation.label}`);
+  }
+
+  public async migrateDeep(installation: WowInstallation): Promise<void> {
+    this.migrateLocalAddons(installation);
+
     console.log(`[MigrateInstall] ${installation.label}`);
     const existingAddons = this.getAllAddons(installation);
     if (!existingAddons.length) {
@@ -1395,7 +1420,7 @@ export class AddonService {
 
     const scannedAddons = await this.scanAddons(installation);
     for (const addon of existingAddons) {
-      this.migrateAddon(addon, scannedAddons);
+      this.migrateSyncAddon(addon, scannedAddons);
     }
   }
 
@@ -1404,6 +1429,7 @@ export class AddonService {
 
     const migrationNeeded =
       addon.providerName === ADDON_PROVIDER_HUB_LEGACY ||
+      typeof addon.autoUpdateNotificationsEnabled === "undefined" ||
       !addon.installedFolderList ||
       !addon.externalChannel ||
       (provider?.shouldMigrate(addon) ?? false);
@@ -1411,13 +1437,28 @@ export class AddonService {
     return migrationNeeded;
   }
 
-  private migrateAddon(addon: Addon, scannedAddons: Addon[]): void {
+  private migrateLocalAddon(addon: Addon): boolean {
+    let changed = false;
+    if (typeof addon.autoUpdateNotificationsEnabled === "undefined") {
+      console.log(`[MigrateAddon] '${addon.name}' Updating autoUpdateNotificationsEnabled`);
+      addon.autoUpdateNotificationsEnabled = addon.autoUpdateEnabled;
+      changed = true;
+    }
+
     if (addon.providerName === ADDON_PROVIDER_HUB_LEGACY) {
       console.log(`[MigrateAddon] '${addon.name}' Updating legacy hub name`);
       addon.providerName = ADDON_PROVIDER_HUB;
+      changed = true;
+    }
+
+    if (changed) {
       this.saveAddon(addon);
     }
 
+    return changed;
+  }
+
+  private migrateSyncAddon(addon: Addon, scannedAddons: Addon[]): void {
     const scannedAddon = _.find(
       scannedAddons,
       (sa) => sa.externalId === addon.externalId && addon.providerName === sa.providerName
