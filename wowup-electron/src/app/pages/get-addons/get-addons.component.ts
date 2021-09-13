@@ -22,14 +22,14 @@ import { ADDON_PROVIDER_HUB } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
-import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
-import { GetAddonStatusColumnComponent } from "../../components/get-addon-status-column/get-addon-status-column.component";
-import { InstallFromUrlDialogComponent } from "../../components/install-from-url-dialog/install-from-url-dialog.component";
+import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
+import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-column/get-addon-status-column.component";
+import { InstallFromUrlDialogComponent } from "../../components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import {
   PotentialAddonTableColumnComponent,
   PotentialAddonViewDetailsEvent,
-} from "../../components/potential-addon-table-column/potential-addon-table-column.component";
-import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
+} from "../../components/addons/potential-addon-table-column/potential-addon-table-column.component";
+import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { GenericProviderError } from "../../errors";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";

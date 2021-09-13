@@ -1,0 +1,47 @@
+:host {
+  margin-right: 0.5em;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+.funding-button {
+  &.large {
+    margin-right: 0.5em;
+    .funding-icon {
+      height: 20px;
+      width: 20px;
+      margin-right: 0.5em;
+    }
+
+    .mat-icon {
+      height: 20px;
+      width: 20px;
+      margin-right: 0.5em;
+    }
+  }
+
+  &.small {
+    padding: 0.25em;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .funding-icon {
+      height: 15px;
+      width: 15px;
+    }
+
+    .mat-icon {
+      height: 15px;
+      width: 15px;
+    }
+  }
+}
+.patreon-icon {
+  color: var(--patreon-color);
+}
+.custom-icon {
+  color: var(--wow-gold-color);
+}

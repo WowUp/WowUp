@@ -33,7 +33,7 @@ import {
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
 import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
-import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
+import { TelemetryDialogComponent } from "./components/common/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
@@ -44,13 +44,13 @@ import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "../common/entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
-import { InstallFromUrlDialogComponent } from "./components/install-from-url-dialog/install-from-url-dialog.component";
+import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { ZoomService } from "./services/zoom/zoom.service";
-import { AlertDialogComponent } from "./components/alert-dialog/alert-dialog.component";
+import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
 import { AddonInstallState } from "./models/wowup/addon-install-state";
 
 @Component({

@@ -1,0 +1,63 @@
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { TranslateModule } from "@ngx-translate/core";
+import { LightboxModule, LIGHTBOX_CONFIG } from "ng-gallery/lightbox";
+import { AddonUpdateButtonComponent } from "../components/addons/addon-update-button/addon-update-button.component";
+import { AddonDetailComponent } from "../components/addons/addon-detail/addon-detail.component";
+import { AddonInstallButtonComponent } from "../components/addons/addon-install-button/addon-install-button.component";
+import { AddonThumbnailComponent } from "../components/addons/addon-thumbnail/addon-thumbnail.component";
+import { DateTooltipCellComponent } from "../components/addons/date-tooltip-cell/date-tooltip-cell.component";
+import { MatModule } from "../mat-module";
+import { CommonUiModule } from "./common-ui.module";
+import { PipesModule } from "./pipes.module";
+import { FundingButtonComponent } from "../components/addons/funding-button/funding-button.component";
+import { GetAddonStatusColumnComponent } from "../components/addons/get-addon-status-column/get-addon-status-column.component";
+import { PotentialAddonTableColumnComponent } from "../components/addons/potential-addon-table-column/potential-addon-table-column.component";
+import { TableContextHeaderCellComponent } from "../components/addons/table-context-header-cell/table-context-header-cell.component";
+import { MyAddonStatusColumnComponent } from "../components/addons/my-addon-status-column/my-addon-status-column.component";
+import { InstallFromProtocolDialogComponent } from "../components/addons/install-from-protocol-dialog/install-from-protocol-dialog.component";
+import { MyAddonsAddonCellComponent } from "../components/addons/my-addons-addon-cell/my-addons-addon-cell.component";
+import { InstallFromUrlDialogComponent } from "../components/addons/install-from-url-dialog/install-from-url-dialog.component";
+
+@NgModule({
+  declarations: [
+    AddonUpdateButtonComponent,
+    AddonDetailComponent,
+    DateTooltipCellComponent,
+    AddonInstallButtonComponent,
+    AddonThumbnailComponent,
+    FundingButtonComponent,
+    GetAddonStatusColumnComponent,
+    PotentialAddonTableColumnComponent,
+    TableContextHeaderCellComponent,
+    MyAddonStatusColumnComponent,
+    InstallFromProtocolDialogComponent,
+    MyAddonsAddonCellComponent,
+    InstallFromUrlDialogComponent,
+  ],
+  imports: [CommonModule, TranslateModule, MatModule, CommonUiModule, PipesModule, LightboxModule],
+  exports: [
+    AddonUpdateButtonComponent,
+    AddonDetailComponent,
+    DateTooltipCellComponent,
+    AddonInstallButtonComponent,
+    AddonThumbnailComponent,
+    FundingButtonComponent,
+    GetAddonStatusColumnComponent,
+    PotentialAddonTableColumnComponent,
+    TableContextHeaderCellComponent,
+    MyAddonStatusColumnComponent,
+    InstallFromProtocolDialogComponent,
+    MyAddonsAddonCellComponent,
+    InstallFromUrlDialogComponent,
+  ],
+  providers: [
+    {
+      provide: LIGHTBOX_CONFIG,
+      useValue: {
+        keyboardShortcuts: true,
+      },
+    },
+  ],
+})
+export class AddonsModule {}

@@ -8,7 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 import {
   DialogResult,
   ExternalUrlConfirmationDialogComponent,
-} from "../../components/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
+} from "../../components/common/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
 import { WowUpService } from "../wowup/wowup.service";
 import { AnalyticsService } from "../analytics/analytics.service";
 import { USER_ACTION_OPEN_LINK } from "../../../common/constants";

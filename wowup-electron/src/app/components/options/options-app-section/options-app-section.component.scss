@@ -1,0 +1,19 @@
+.container {
+  padding: 1em;
+  max-width: 660px;
+
+  .hint {
+    color: var(--text-3);
+  }
+}
+
+.toggle {
+  margin-top: 1em;
+  margin-bottom: 20px;
+
+  .divider {
+    margin-top: 20px;
+    height: 1px;
+    border-top: thin solid var(--divider-color);
+  }
+}
