@@ -15,7 +15,7 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { MatTabChangeEvent, MatTabGroup } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -32,7 +32,6 @@ import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
-import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
 
 export interface AddonDetailModel {
