@@ -175,7 +175,7 @@
       }
     },
     "ERRORS": {
-      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "无法为战网账户启用实时更新。请稍后再试，或者到 Discord 上寻求帮助。",
       "ADDON_INSTALL_ERROR": "安装插件 {addonName} 失败。请稍后再试。",
       "ADDON_SCAN_ERROR": "在与 {providerName} 匹配插件文件夹时出现错误，请稍后再试。",
       "ADDON_SYNC_ERROR": "从 {providerName} 上检查更新时出现错误。",
@@ -276,13 +276,13 @@
       "WEBSITE_LINK_LABEL": "访问网站！"
     },
     "ACCOUNT": {
-      "BETA": "Beta",
-      "LOGIN_BUTTON": "Login Now!",
-      "LOGOUT_BUTTON": "Logout",
-      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
-      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
-      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
-      "TITLE": "Account"
+      "BETA": "测试版",
+      "LOGIN_BUTTON": "立即登录！",
+      "LOGOUT_BUTTON": "注销",
+      "LOGOUT_CONFIRMATION_MESSAGE": "确定要注销吗？本地账户数据将会被删除，重新登录时将会同步回来。",
+      "LOGOUT_CONFIRMATION_TITLE": "是否注销？",
+      "MANAGE_ACCOUNT_BUTTON": "管理账户",
+      "TITLE": "连接战网全球账户"
     },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "类别",
@@ -320,7 +320,7 @@
         "ADDONS_SELECTED": "已选中 {count} 项",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自动更新",
-        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Notifications Enabled",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "通知已开启",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",

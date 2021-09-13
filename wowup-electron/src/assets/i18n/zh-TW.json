@@ -175,7 +175,7 @@
       }
     },
     "ERRORS": {
-      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "無法為戰網賬戶啟用實時更新。請稍後再試，或者到 Discord 上尋求幫助。",
       "ADDON_INSTALL_ERROR": "安裝插件 {addonName} 失敗。請稍後再試。",
       "ADDON_SCAN_ERROR": "在與 {providerName} 匹配插件資料夾時出現錯誤，請稍後再試。",
       "ADDON_SYNC_ERROR": "從 {providerName} 上檢查更新時出現錯誤。",
@@ -276,13 +276,13 @@
       "WEBSITE_LINK_LABEL": "訪問網站！"
     },
     "ACCOUNT": {
-      "BETA": "Beta",
-      "LOGIN_BUTTON": "Login Now!",
-      "LOGOUT_BUTTON": "Logout",
-      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
-      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
-      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
-      "TITLE": "Account"
+      "BETA": "測試版",
+      "LOGIN_BUTTON": "立即登入！",
+      "LOGOUT_BUTTON": "登出",
+      "LOGOUT_CONFIRMATION_MESSAGE": "確定要登出嗎？本地賬戶資料將會被刪除，重新登入時將會同步回來。",
+      "LOGOUT_CONFIRMATION_TITLE": "是否登出？",
+      "MANAGE_ACCOUNT_BUTTON": "管理賬戶",
+      "TITLE": "賬戶"
     },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "類別",
@@ -320,7 +320,7 @@
         "ADDONS_SELECTED": "已選中 {count} 項",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自動更新",
-        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Notifications Enabled",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "通知已開啟",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
