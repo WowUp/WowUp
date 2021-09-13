@@ -22,6 +22,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
       <li>Added the ability to turn off system notifications for individual addons (tellier-dev)</li>
+      <li>Added the ability to remove addons from the details dialog on Get Addons tab (tellier-dev)</li>
       <li>
       <div>The first stage of a set of cloud based features you've been asking for</div>
       <img style="width: 80%;" loading="lazy" src="https://cdn.wowup.io/patch-notes/2-5/account-2.5-preview.png">
