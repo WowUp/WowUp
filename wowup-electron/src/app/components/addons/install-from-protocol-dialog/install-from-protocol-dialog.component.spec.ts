@@ -6,7 +6,7 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { httpLoaderFactory } from "../../../app.module";
-import { MatModule } from "../../../mat-module";
+import { MatModule } from "../../../modules/mat-module";
 import { AddonService } from "../../../services/addons/addon.service";
 import { IconService } from "../../../services/icons/icon.service";
 import { SessionService } from "../../../services/session/session.service";

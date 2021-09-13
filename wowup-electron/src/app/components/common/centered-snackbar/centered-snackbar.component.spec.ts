@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MAT_SNACK_BAR_DATA } from "@angular/material/snack-bar";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 
-import { MatModule } from "../../../mat-module";
+import { MatModule } from "../../../modules/mat-module";
 import { CenteredSnackbarComponent, CenteredSnackbarComponentData } from "./centered-snackbar.component";
 
 describe("CenteredSnackbarComponent", () => {

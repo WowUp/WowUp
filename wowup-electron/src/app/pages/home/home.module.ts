@@ -9,8 +9,8 @@ import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon
 import { PotentialAddonTableColumnComponent } from "../../components/addons/potential-addon-table-column/potential-addon-table-column.component";
 import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { NewsPanelComponent } from "../../components/news-panel/news-panel.component";
-import { DirectiveModule } from "../../directive.module";
-import { MatModule } from "../../mat-module";
+import { DirectiveModule } from "../../modules/directive.module";
+import { MatModule } from "../../modules/mat-module";
 import { AddonsModule } from "../../modules/addons.module";
 import { CommonUiModule } from "../../modules/common-ui.module";
 import { OptionsModule } from "../../modules/options.module";

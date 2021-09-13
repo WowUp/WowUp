@@ -11,7 +11,6 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { HomeComponent } from "./home.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { MatModule } from "../../mat-module";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AddonScanError, AddonSyncError } from "../../errors";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
@@ -19,6 +18,7 @@ import { DialogFactory } from "../../services/dialog/dialog.factory";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { GalleryModule } from "ng-gallery";
 import { LightboxModule } from "ng-gallery/lightbox";
+import { MatModule } from "../../modules/mat-module";
 
 describe("HomeComponent", () => {
   let electronService: ElectronService;

@@ -12,7 +12,7 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { AppComponent } from "./app.component";
 import { httpLoaderFactory } from "./app.module";
 import { AnimatedLogoComponent } from "./components/common/animated-logo/animated-logo.component";
-import { MatModule } from "./mat-module";
+import { MatModule } from "./modules/mat-module";
 import { PreferenceChange } from "./models/wowup/preference-change";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";

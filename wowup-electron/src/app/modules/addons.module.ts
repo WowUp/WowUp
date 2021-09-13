@@ -7,7 +7,7 @@ import { AddonDetailComponent } from "../components/addons/addon-detail/addon-de
 import { AddonInstallButtonComponent } from "../components/addons/addon-install-button/addon-install-button.component";
 import { AddonThumbnailComponent } from "../components/addons/addon-thumbnail/addon-thumbnail.component";
 import { DateTooltipCellComponent } from "../components/addons/date-tooltip-cell/date-tooltip-cell.component";
-import { MatModule } from "../mat-module";
+import { MatModule } from "./mat-module";
 import { CommonUiModule } from "./common-ui.module";
 import { PipesModule } from "./pipes.module";
 import { FundingButtonComponent } from "../components/addons/funding-button/funding-button.component";
@@ -18,6 +18,7 @@ import { MyAddonStatusColumnComponent } from "../components/addons/my-addon-stat
 import { InstallFromProtocolDialogComponent } from "../components/addons/install-from-protocol-dialog/install-from-protocol-dialog.component";
 import { MyAddonsAddonCellComponent } from "../components/addons/my-addons-addon-cell/my-addons-addon-cell.component";
 import { InstallFromUrlDialogComponent } from "../components/addons/install-from-url-dialog/install-from-url-dialog.component";
+import { DirectiveModule } from "./directive.module";
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { InstallFromUrlDialogComponent } from "../components/addons/install-from
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
   ],
-  imports: [CommonModule, TranslateModule, MatModule, CommonUiModule, PipesModule, LightboxModule],
+  imports: [CommonModule, TranslateModule, MatModule, CommonUiModule, PipesModule, DirectiveModule, LightboxModule],
   exports: [
     AddonUpdateButtonComponent,
     AddonDetailComponent,
