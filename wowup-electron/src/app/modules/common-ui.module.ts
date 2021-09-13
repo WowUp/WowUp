@@ -13,6 +13,7 @@ import { ProgressButtonComponent } from "../components/common/progress-button/pr
 import { TelemetryDialogComponent } from "../components/common/telemetry-dialog/telemetry-dialog.component";
 import { ProgressSpinnerComponent } from "../components/progress-spinner/progress-spinner.component";
 import { MatModule } from "./mat-module";
+import { PipesModule } from "./pipes.module";
 
 @NgModule({
   declarations: [
@@ -28,7 +29,7 @@ import { MatModule } from "./mat-module";
     CellWrapTextComponent,
     CenteredSnackbarComponent,
   ],
-  imports: [CommonModule, FormsModule, TranslateModule, MatModule],
+  imports: [CommonModule, FormsModule, TranslateModule, MatModule, PipesModule],
   exports: [
     ProgressSpinnerComponent,
     ProgressButtonComponent,

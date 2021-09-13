@@ -19,6 +19,7 @@ import { InstallFromProtocolDialogComponent } from "../components/addons/install
 import { MyAddonsAddonCellComponent } from "../components/addons/my-addons-addon-cell/my-addons-addon-cell.component";
 import { InstallFromUrlDialogComponent } from "../components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { DirectiveModule } from "./directive.module";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -36,7 +37,17 @@ import { DirectiveModule } from "./directive.module";
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
   ],
-  imports: [CommonModule, TranslateModule, MatModule, CommonUiModule, PipesModule, DirectiveModule, LightboxModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatModule,
+    CommonUiModule,
+    PipesModule,
+    DirectiveModule,
+    LightboxModule,
+  ],
   exports: [
     AddonUpdateButtonComponent,
     AddonDetailComponent,
