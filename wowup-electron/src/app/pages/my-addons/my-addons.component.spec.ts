@@ -26,6 +26,7 @@ import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { PushService } from "../../services/push/push.service";
 import { InvertBoolPipe } from "../../pipes/inverse-bool.pipe";
 import { MatModule } from "../../modules/mat-module";
+import { AddonUiService } from "../../services/addons/addon-ui.service";
 
 export class MockElementRef extends ElementRef {
   public constructor() {
@@ -48,8 +49,11 @@ describe("MyAddonsComponent", () => {
   let warcraftServiceSpy: any;
   let warcraftInstallationService: WarcraftInstallationService;
   let pushService: PushService;
+  let addonUiService: AddonUiService;
 
   beforeEach(async () => {
+    addonUiService = jasmine.createSpyObj("AddonUiService", [""], {});
+
     wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", ["updateForClientType"], {
       persistUpdateInformationToWowUpAddon: () => {},
     });
@@ -132,6 +136,7 @@ describe("MyAddonsComponent", () => {
           { provide: WarcraftService, useValue: warcraftServiceSpy },
           { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
           { provide: PushService, useValue: pushService },
+          { provide: AddonUiService, useValue: addonUiService },
         ],
       },
     });

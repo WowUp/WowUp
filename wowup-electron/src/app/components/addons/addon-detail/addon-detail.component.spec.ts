@@ -22,6 +22,7 @@ import { LinkService } from "../../../services/links/link.service";
 import { GalleryModule } from "ng-gallery";
 import { LightboxModule } from "ng-gallery/lightbox";
 import { MatModule } from "../../../modules/mat-module";
+import { AddonUiService } from "../../../services/addons/addon-ui.service";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;
@@ -29,6 +30,7 @@ describe("AddonDetailComponent", () => {
   let sessionServiceSpy: SessionService;
   let wowUpService: WowUpService;
   let linkService: any;
+  let addonUiService: any;
 
   beforeEach(async () => {
     mockPreload();
@@ -43,6 +45,7 @@ describe("AddonDetailComponent", () => {
       }
     );
 
+    addonUiService = jasmine.createSpyObj("AddonUiService", [""], {});
     wowUpService = jasmine.createSpyObj("WowUpService", [""], {});
     linkService = jasmine.createSpyObj("LinkService", [""], {});
 
@@ -92,6 +95,7 @@ describe("AddonDetailComponent", () => {
             provide: WowUpService,
             useValue: wowUpService,
           },
+          { provide: AddonUiService, useValue: addonUiService },
         ],
       },
     });
