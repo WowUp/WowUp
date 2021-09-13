@@ -33,6 +33,7 @@ import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
+import { AddonUiService } from "../../../services/addons/addon-ui.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -91,13 +92,13 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public constructor(
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
     private _dialogRef: MatDialogRef<AddonDetailComponent>,
-    private _dialog: MatDialog,
     private _addonService: AddonService,
     private _cdRef: ChangeDetectorRef,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
     private _sessionService: SessionService,
     private _linkService: LinkService,
+    private _addonUiService: AddonUiService,
     public gallery: Gallery
   ) {
     this._dependencies = this.getDependencies();
@@ -240,71 +241,17 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
       return;
     }
 
-    this.getRemoveAddonPrompt(addon.name)
-      .afterClosed()
+    this._addonUiService
+      .handleRemoveAddon(addon)
       .pipe(
         first(),
-        switchMap((result) => {
-          if (!result) {
-            return of(false);
-          }
-
-          if (this._addonService.getRequiredDependencies(addon).length === 0) {
-            return from(this._addonService.removeAddon(addon)).pipe(map(() => true));
-          } else {
-            return this.getRemoveDependenciesPrompt(addon.name, (addon.dependencies ?? []).length)
-              .afterClosed()
-              .pipe(
-                switchMap((result) => from(this._addonService.removeAddon(addon, result))),
-                map(() => true)
-              );
-          }
-        }),
-        map((shouldClose) => {
-          if (shouldClose) {
+        map((result) => {
+          if (result.removed) {
             this._dialogRef.close();
           }
         })
       )
       .subscribe();
-  }
-
-  private getRemoveAddonPrompt(addonName: string): MatDialogRef<ConfirmDialogComponent, any> {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE", {
-      addonName,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-
-    return this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title,
-        message: `${message1}\n\n${message2}`,
-      },
-    });
-  }
-
-  private getRemoveDependenciesPrompt(
-    addonName: string,
-    dependencyCount: number
-  ): MatDialogRef<ConfirmDialogComponent, any> {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_TITLE");
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_MESSAGE", {
-      addonName,
-      dependencyCount,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-
-    return this._dialog.open(ConfirmDialogComponent, {
-      data: {
-        title,
-        message: `${message1}\n\n${message2}`,
-      },
-    });
   }
 
   private getSelectedTabTypeFromIndex(index: number): DetailsTabType {

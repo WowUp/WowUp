@@ -69,6 +69,7 @@ import * as AddonUtils from "../../utils/addon.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { PushService } from "../../services/push/push.service";
+import { AddonUiService } from "../../services/addons/addon-ui.service";
 
 @Component({
   selector: "app-my-addons",
@@ -244,6 +245,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
     private _pushService: PushService,
+    private _addonUiService: AddonUiService,
     public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
@@ -684,73 +686,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onRemoveAddon(addon: Addon): void {
-    this.getRemoveAddonPrompt(addon.name)
-      .afterClosed()
+    this._addonUiService
+      .handleRemoveAddon(addon)
       .pipe(
         first(),
         switchMap((result) => {
-          if (!result) {
-            return of(undefined);
-          }
-
-          if (this.addonService.getRequiredDependencies(addon).length === 0) {
-            return from(this.addonService.removeAddon(addon)).pipe(
-              map(() => {
-                this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
-                  localeArgs: {
-                    addonName: addon.name,
-                  },
-                });
-              })
-            );
-          } else {
-            return this.getRemoveDependenciesPrompt(addon.name, (addon.dependencies ?? []).length)
-              .afterClosed()
-              .pipe(
-                switchMap((result) => from(this.addonService.removeAddon(addon, result))),
-                map(() => {
-                  this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
-                    localeArgs: {
-                      addonName: addon.name,
-                    },
-                  });
-                }),
-                switchMap(() => from(this.loadAddons()))
-              );
-          }
+          return result.dependenciesRemoved ? this.loadAddons() : of(undefined);
         })
       )
       .subscribe();
-  }
-
-  private getRemoveAddonPrompt(addonName: string): MatDialogRef<ConfirmDialogComponent, any> {
-    const title: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE", {
-      addonName,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-    const message = `${message1}\n\n${message2}`;
-
-    return this._dialogFactory.getConfirmDialog(title, message);
-  }
-
-  private getRemoveDependenciesPrompt(
-    addonName: string,
-    dependencyCount: number
-  ): MatDialogRef<ConfirmDialogComponent, any> {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_TITLE");
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_MESSAGE", {
-      addonName,
-      dependencyCount,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-    const message = `${message1}\n\n${message2}`;
-
-    return this._dialogFactory.getConfirmDialog(title, message);
   }
 
   public onRemoveAddons(listItems: AddonViewModel[]): void {
