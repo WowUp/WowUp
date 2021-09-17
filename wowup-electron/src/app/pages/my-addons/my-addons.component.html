@@ -56,10 +56,15 @@
           {{ "PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON" | translate }}
         </button>
         <!-- RESCAN -->
-        <button mat-flat-button color="primary"
+        <!-- <button mat-flat-button color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
           [disabled]="enableControls$ | async | invertBool" (click)="onReScan()">
           {{ "PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON" | translate }}
+        </button> -->
+        <!-- MORE ACTIONS -->
+        <button mat-icon-button color="accent" [matMenuTriggerFor]="pageActionMenu"
+          [disabled]="enableControls$ | async | invertBool">
+          <mat-icon svgIcon="fas:ellipsis-v"></mat-icon>
         </button>
       </div>
     </div>
@@ -73,9 +78,9 @@
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="hideGrid$ | async" [rowData]="rowDataG" [columnDefs]="columnDefs"
-    [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId" [frameworkComponents]="frameworkComponents"
-    [rowHeight]="63" [immutableData]="true" [rowClassRules]="rowClassRules"
+  <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="hideGrid$ | async" [rowData]="rowDataG"
+    [columnDefs]="columnDefs" [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId"
+    [frameworkComponents]="frameworkComponents" [rowHeight]="63" [immutableData]="true" [rowClassRules]="rowClassRules"
     [overlayNoRowsTemplate]="overlayNoRowsTemplate" (gridReady)="onGridReady($event)"
     (rowDoubleClicked)="onRowDoubleClicked($event)" (rowClicked)="onRowClicked($event)"
     (sortChanged)="onSortChanged($event)" (cellContextMenu)="onCellContext($event)"
@@ -126,8 +131,9 @@
       </mat-checkbox>
     </div>
     <!-- AUTO UPDATE NOTIFICATIONS -->
-    <div *ngIf="canSetAutoUpdateNotifications(listItem)" class="mat-menu-item"> 
-      <mat-checkbox [checked]="listItem.addon.autoUpdateNotificationsEnabled" (click)="onClickAutoUpdateAddonNotifications(listItem)">
+    <div *ngIf="canSetAutoUpdateNotifications(listItem)" class="mat-menu-item">
+      <mat-checkbox [checked]="listItem.addon.autoUpdateNotificationsEnabled"
+        (click)="onClickAutoUpdateAddonNotifications(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON" | translate }}
       </mat-checkbox>
     </div>
@@ -193,6 +199,16 @@
       </mat-radio-group>
     </mat-menu>
   </ng-template>
+</mat-menu>
+
+<!-- EXTRA PAGE ACTIONS MENU -->
+<mat-menu #pageActionMenu="matMenu">
+  <button mat-menu-item (click)="onReScan()">
+    <span>{{ "PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON" | translate }}</span>
+  </button>
+  <button *ngIf="FEATURE_ADDON_BROKER_ENABLED" mat-menu-item (click)="onClickImportExport()">
+    <span>Import/Export</span>
+  </button>
 </mat-menu>
 
 <!-- MULTI ADDON CONTEXT MENU -->

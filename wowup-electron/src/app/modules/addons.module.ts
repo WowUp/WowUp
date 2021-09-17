@@ -20,6 +20,7 @@ import { MyAddonsAddonCellComponent } from "../components/addons/my-addons-addon
 import { InstallFromUrlDialogComponent } from "../components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { DirectiveModule } from "./directive.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { AddonManageDialogComponent } from "../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     InstallFromProtocolDialogComponent,
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
+    AddonManageDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -62,6 +64,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
     InstallFromProtocolDialogComponent,
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
+    AddonManageDialogComponent,
   ],
   providers: [
     {
