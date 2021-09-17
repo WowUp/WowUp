@@ -80,7 +80,7 @@ import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import { getLastModifiedFileDate } from "./file.utils";
+import { getLastModifiedFileDate, remove } from "./file.utils";
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
@@ -359,11 +359,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_DELETE_DIRECTORY_CHANNEL, async (evt, filePath: string) => {
     log.info(`[FileRemove] ${filePath}`);
-    return new Promise((resolve, reject) => {
-      fs.remove(filePath, (err) => {
-        return err ? reject(err) : resolve(true);
-      });
-    });
+    return await remove(filePath);
   });
 
   handle(IPC_READ_FILE_CHANNEL, async (evt, filePath: string) => {

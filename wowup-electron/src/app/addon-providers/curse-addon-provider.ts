@@ -682,6 +682,11 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   private async isBlockedAuthor(author: CurseAuthor) {
+    // It looks like if the author is the owner the titleId is just null
+    if (author?.projectTitleId !== null && author?.projectTitleTitle !== null) {
+      return false;
+    }
+
     try {
       const blockList = await this._wowupApiService.getBlockList().toPromise();
       const blockedAuthorIds = _.map(blockList.curse.authors, (author) => author.authorId);
