@@ -97,7 +97,6 @@ import * as push from "./push";
 
 let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
-let PROXY_INFO: ProxyInfo | undefined = undefined;
 
 interface ProxyInfo {
   host: string;
@@ -152,14 +151,6 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   USER_AGENT = userAgent;
 
   log.info("process.versions", process.versions);
-
-  getProxyInfo(window)
-    .then((proxyInfo) => {
-      PROXY_INFO = proxyInfo;
-    })
-    .catch((e) => {
-      log.error(e);
-    });
 
   // Remove the pending URLs once read so they are only able to be gotten once
   handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
@@ -530,100 +521,104 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       savePath: "",
     };
 
-    try {
-      await fsp.mkdir(arg.outputFolder, { recursive: true });
-
-      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
-      status.savePath = savePath;
-      log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
-
-      // Store a function reference to this download in the global download map
-      // When electron starts downloading it, this function should be completed
-      _dlMap.set(arg.url, (evt, item, wc) => {
-        item.setSavePath(savePath);
-
-        item.on("updated", (event, state) => {
-          if (state === "interrupted") {
-            log.info("Download is interrupted but can be resumed");
-          } else if (state === "progressing") {
-            if (item.isPaused()) {
-              log.info("Download is paused");
-            } else {
-              log.info(`Received bytes: ${item.getReceivedBytes()}`);
-            }
-          }
-        });
-        item.once("done", (event, state) => {
-          item.removeAllListeners("updated");
-          if (state === "completed") {
-            log.info("Download successfully");
-            status.type = DownloadStatusType.Complete;
-          } else {
-            log.info(`Download failed: ${state}`);
-            status.type = DownloadStatusType.Error;
-            status.error = new Error(state);
-          }
-          (wc ?? window.webContents).send(arg.responseKey, status);
-        });
-      });
-
-      const session = window.webContents.session;
-      session.downloadURL(arg.url);
-    } catch (e) {
-      console.error(e);
-    }
-
     // try {
     //   await fsp.mkdir(arg.outputFolder, { recursive: true });
 
     //   const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
+    //   status.savePath = savePath;
     //   log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
-    //   const { data } = await axios({
-    //     url: arg.url,
-    //     method: "GET",
-    //     responseType: "stream",
-    //     headers: {
-    //       "User-Agent": USER_AGENT,
-    //     },
-    //     proxy: PROXY_INFO,
+    //   // Store a function reference to this download in the global download map
+    //   // When electron starts downloading it, this function should be completed
+    //   _dlMap.set(arg.url, (evt, item, wc) => {
+    //     item.setSavePath(savePath);
+
+    //     item.on("updated", (event, state) => {
+    //       if (state === "interrupted") {
+    //         log.info("Download is interrupted but can be resumed");
+    //       } else if (state === "progressing") {
+    //         if (item.isPaused()) {
+    //           log.info("Download is paused");
+    //         } else {
+    //           log.info(`Received bytes: ${item.getReceivedBytes()}`);
+    //         }
+    //       }
+    //     });
+    //     item.once("done", (event, state) => {
+    //       item.removeAllListeners("updated");
+    //       if (state === "completed") {
+    //         log.info("Download successfully");
+    //         status.type = DownloadStatusType.Complete;
+    //       } else {
+    //         log.info(`Download failed: ${state}`);
+    //         status.type = DownloadStatusType.Error;
+    //         status.error = new Error(state);
+    //       }
+    //       (wc ?? window.webContents).send(arg.responseKey, status);
+    //     });
     //   });
 
-    //   // const totalLength = headers["content-length"];
-    //   // Progress is not shown anywhere
-    //   // data.on("data", (chunk) => {
-    //   //   log.info("DLPROG", arg.responseKey);
-    //   // });
-
-    //   const writer = fs.createWriteStream(savePath);
-    //   data.pipe(writer);
-
-    //   await new Promise((resolve, reject) => {
-    //     writer.on("finish", resolve);
-    //     writer.on("error", reject);
-    //   });
-
-    //   const status: DownloadStatus = {
-    //     type: DownloadStatusType.Complete,
-    //     savePath,
-    //   };
-    //   window.webContents.send(arg.responseKey, status);
-    // } catch (err) {
-    //   log.error(err);
-    //   const status: DownloadStatus = {
-    //     type: DownloadStatusType.Error,
-    //     error: err,
-    //   };
-    //   window.webContents.send(arg.responseKey, status);
+    //   const session = window.webContents.session;
+    //   session.downloadURL(arg.url);
+    // } catch (e) {
+    //   console.error(e);
     // }
+
+    try {
+      await fsp.mkdir(arg.outputFolder, { recursive: true });
+
+      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
+      log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
+
+      const proxyInfo = await getProxyInfo(window, arg.url);
+      const { data: dataStream, headers } = await axios({
+        url: arg.url,
+        method: "GET",
+        responseType: "stream",
+        headers: {
+          "User-Agent": USER_AGENT,
+        },
+        proxy: proxyInfo,
+      });
+
+      let size = 0;
+      let percentMod = -1;
+      const fileLength = headers["content-length"] ?? 0;
+      const writer = fs.createWriteStream(savePath);
+      dataStream.on("data", (data) => {
+        writer.write(data, () => {
+          size += data.length;
+          const percent = fileLength <= 0 ? 0 : Math.floor((size / fileLength) * 100);
+          if (percent % 5 === 0 && percentMod !== percent) {
+            percentMod = percent;
+            log.debug(`Write: [${percent}] ${size}`);
+          }
+        });
+      });
+
+      await new Promise((resolve, reject) => {
+        dataStream.on("end", resolve);
+        dataStream.on("error", reject);
+      });
+
+      status.type = DownloadStatusType.Complete;
+      status.savePath = savePath;
+
+      window.webContents.send(arg.responseKey, status);
+    } catch (err) {
+      log.error(err);
+      status.type = DownloadStatusType.Error;
+      status.error = err;
+      window.webContents.send(arg.responseKey, status);
+    }
   }
 }
 
 // From: https://evandontje.com/2020/04/02/automatic-system-proxy-configuration-for-electron-applications/
-async function getProxyInfo(window: BrowserWindow): Promise<ProxyInfo> {
+async function getProxyInfo(window: BrowserWindow, url?: string): Promise<ProxyInfo> {
   const session = window.webContents.session;
 
-  const proxyUrl = await session.resolveProxy("https://wowup.io");
+  const proxyUrl = await session.resolveProxy(url || "https://wowup.io");
   // DIRECT means no proxy is configured
   if (proxyUrl === "DIRECT") {
     log.info("No proxy detected");
