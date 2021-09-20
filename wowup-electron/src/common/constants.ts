@@ -154,6 +154,7 @@ export const NO_SEARCH_RESULTS_ERROR = "no-search-results";
 export const NO_LATEST_SEARCH_RESULT_FILES_ERROR = "no-latest-search-result-files";
 
 // VALUES
+export const FEATURE_ADDON_BROKER_ENABLED = false;
 export const WINDOW_DEFAULT_WIDTH = 1280;
 export const WINDOW_DEFAULT_HEIGHT = 720;
 export const WINDOW_MIN_WIDTH = 940;

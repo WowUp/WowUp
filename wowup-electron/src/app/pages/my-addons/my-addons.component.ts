@@ -70,6 +70,7 @@ import { stringIncludes } from "../../utils/string.utils";
 import { SortOrder } from "../../models/wowup/sort-order";
 import { PushService } from "../../services/push/push.service";
 import { AddonUiService } from "../../services/addons/addon-ui.service";
+import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 
 @Component({
   selector: "app-my-addons",
@@ -661,6 +662,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return data.addon.id;
   };
 
+  public onClickImportExport(): void {
+    const dialogRef = this._dialogFactory.getDialog(AddonManageDialogComponent, {
+      data: {},
+    });
+
+    dialogRef.afterClosed().pipe(first()).subscribe();
+  }
+
   public onReScan(): void {
     const title = this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE");
     const message = this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION");
@@ -669,6 +678,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef
       .afterClosed()
       .pipe(
+        first(),
         switchMap((result) => {
           if (!result) {
             return of(undefined);
