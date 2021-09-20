@@ -1,10 +1,11 @@
-import * as fsp from "fs/promises";
-import * as path from "path";
-import * as log from "electron-log";
-import { max, sumBy } from "lodash";
-import { TreeNode } from "../src/common/models/ipc-events";
-import { isWin } from "./platform";
-import { exec } from "child_process";
+import { exec } from 'child_process';
+import * as log from 'electron-log';
+import * as fsp from 'fs/promises';
+import { max, sumBy } from 'lodash';
+import * as path from 'path';
+
+import { TreeNode } from '../src/common/models/ipc-events';
+import { isWin } from './platform';
 
 export async function exists(path: string): Promise<boolean> {
   try {
