@@ -16,6 +16,17 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.5",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with Google Drive preventing files from being deleted</li>
+      <li>Fix an issue with checking addon owners against the block list</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.4",
     html: `
     <div>
