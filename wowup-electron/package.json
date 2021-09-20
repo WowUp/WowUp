@@ -132,7 +132,7 @@
     "ag-grid-angular": "25.3.0",
     "ag-grid-community": "25.3.0",
     "auto-launch": "5.0.5",
-    "axios": "0.21.1",
+    "axios": "0.21.2",
     "compare-versions": "3.6.0",
     "core-js": "3.13.1",
     "electron-log": "4.3.5",
