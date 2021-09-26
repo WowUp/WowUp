@@ -5,6 +5,7 @@ import {
   dialog,
   ipcMain,
   IpcMainInvokeEvent,
+  net,
   OpenDialogOptions,
   Settings,
   shell,
@@ -521,85 +522,52 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       savePath: "",
     };
 
-    // try {
-    //   await fsp.mkdir(arg.outputFolder, { recursive: true });
-
-    //   const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
-    //   status.savePath = savePath;
-    //   log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
-
-    //   // Store a function reference to this download in the global download map
-    //   // When electron starts downloading it, this function should be completed
-    //   _dlMap.set(arg.url, (evt, item, wc) => {
-    //     item.setSavePath(savePath);
-
-    //     item.on("updated", (event, state) => {
-    //       if (state === "interrupted") {
-    //         log.info("Download is interrupted but can be resumed");
-    //       } else if (state === "progressing") {
-    //         if (item.isPaused()) {
-    //           log.info("Download is paused");
-    //         } else {
-    //           log.info(`Received bytes: ${item.getReceivedBytes()}`);
-    //         }
-    //       }
-    //     });
-    //     item.once("done", (event, state) => {
-    //       item.removeAllListeners("updated");
-    //       if (state === "completed") {
-    //         log.info("Download successfully");
-    //         status.type = DownloadStatusType.Complete;
-    //       } else {
-    //         log.info(`Download failed: ${state}`);
-    //         status.type = DownloadStatusType.Error;
-    //         status.error = new Error(state);
-    //       }
-    //       (wc ?? window.webContents).send(arg.responseKey, status);
-    //     });
-    //   });
-
-    //   const session = window.webContents.session;
-    //   session.downloadURL(arg.url);
-    // } catch (e) {
-    //   console.error(e);
-    // }
-
     try {
       await fsp.mkdir(arg.outputFolder, { recursive: true });
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
-      const proxyInfo = await getProxyInfo(window, arg.url);
-      const { data: dataStream, headers } = await axios({
-        url: arg.url,
-        method: "GET",
-        responseType: "stream",
-        headers: {
-          "User-Agent": USER_AGENT,
-        },
-        proxy: proxyInfo,
-      });
-
-      let size = 0;
-      let percentMod = -1;
-      const fileLength = headers["content-length"] ?? 0;
+      const url = new URL(arg.url).toString();
       const writer = fs.createWriteStream(savePath);
-      dataStream.on("data", (data) => {
-        writer.write(data, () => {
-          size += data.length;
-          const percent = fileLength <= 0 ? 0 : Math.floor((size / fileLength) * 100);
-          if (percent % 5 === 0 && percentMod !== percent) {
-            percentMod = percent;
-            log.debug(`Write: [${percent}] ${size}`);
-          }
-        });
-      });
 
-      await new Promise((resolve, reject) => {
-        dataStream.on("end", resolve);
-        dataStream.on("error", reject);
-      });
+      try {
+        await new Promise((resolve, reject) => {
+          let size = 0;
+          let percentMod = -1;
+
+          const req = net.request(url);
+          req.on("response", (response) => {
+            const fileLength = parseInt((response.headers["content-length"] as string) ?? "0", 10);
+
+            if (response.statusCode < 200 || response.statusCode >= 300) {
+              return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
+            }
+
+            response.on("data", (data) => {
+              writer.write(data, () => {
+                size += data.length;
+                const percent = fileLength <= 0 ? 0 : Math.floor((size / fileLength) * 100);
+                if (percent % 5 === 0 && percentMod !== percent) {
+                  percentMod = percent;
+                  log.debug(`Write: [${percent}] ${size}`);
+                }
+              });
+            });
+            response.on("end", () => {
+              console.log("No more data in response.");
+              return resolve(undefined);
+            });
+            response.on("error", (err) => {
+              return reject(err);
+            });
+          });
+          req.end();
+        });
+      } finally {
+        // always close stream
+        writer.end();
+      }
 
       status.type = DownloadStatusType.Complete;
       status.savePath = savePath;
