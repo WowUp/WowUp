@@ -421,7 +421,7 @@ export class WowUpAddonProvider extends AddonProvider {
     return {
       author: authors,
       externalId: representation.id.toString(),
-      externalUrl: representation.repository,
+      externalUrl: `${AppConfig.wowUpWebsiteUrl}/addons/${representation.id}`,
       name,
       providerName: this.name,
       thumbnailUrl: representation.image_url || representation.owner_image_url || "",
@@ -480,6 +480,9 @@ export class WowUpAddonProvider extends AddonProvider {
     }
 
     const screenshotUrls = this.getScreenshotUrls([matchedRelease]);
+    const externalUrl = scanResult.exactMatch
+      ? `${AppConfig.wowUpWebsiteUrl}/addons/${scanResult.exactMatch.id}`
+      : "unknown";
 
     return {
       id: uuidv4(),
@@ -490,7 +493,7 @@ export class WowUpAddonProvider extends AddonProvider {
       autoUpdateNotificationsEnabled: false,
       clientType: installation.clientType,
       downloadUrl: scanResult.exactMatch?.matched_release?.download_url ?? "",
-      externalUrl: scanResult.exactMatch?.repository ?? "unknown",
+      externalUrl,
       externalId: scanResult.exactMatch?.id.toString() ?? "unknown",
       gameVersion: getGameVersion(interfaceVer),
       installedAt: new Date(),
