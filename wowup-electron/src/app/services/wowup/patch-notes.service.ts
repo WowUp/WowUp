@@ -16,6 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.6",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Update Electron to 13.5.1 to fix the <a appExternalLink href="https://github.com/electron/electron/issues/31212">TukUI download issue</a></li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.5",
     html: `
     <div>
