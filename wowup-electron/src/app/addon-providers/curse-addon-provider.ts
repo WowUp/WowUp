@@ -915,6 +915,11 @@ export class CurseAddonProvider extends AddonProvider {
     const latestFiles = this.getLatestFiles(scanResult.searchResult, installation.clientType);
 
     const targetToc = this._tocService.getTocForGameType2(scanResult.addonFolder, installation.clientType);
+    if (!targetToc) {
+      console.error(scanResult.addonFolder.tocs);
+      throw new Error("Target toc not found");
+    }
+
     const gameVersion = AddonUtils.getGameVersion(targetToc.interface);
 
     let channelType = this.getChannelType(scanResult.exactMatch.file.releaseType);

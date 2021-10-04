@@ -161,6 +161,10 @@ if (app.isReady()) {
     // setTimeout(() => {
     createWindow();
     // }, 400);
+
+    // Preload native lib
+    const nativeAddon = require("../build/Release/addon.node");
+    nativeAddon.hello();
   });
 }
 
