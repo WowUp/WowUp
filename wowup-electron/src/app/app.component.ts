@@ -217,11 +217,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(
         first(),
         switchMap(() => from(this.createSystemTray())),
-        map(() => {
+        switchMap(() => {
           if (this._analyticsService.shouldPromptTelemetry) {
-            this.openDialog();
+            return of(this.openDialog());
           } else {
-            this._analyticsService.trackStartup();
+            return from(this._analyticsService.trackStartup());
           }
         }),
         catchError((e) => {
@@ -259,12 +259,18 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       disableClose: true,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this._analyticsService.telemetryEnabled = result;
-      if (result) {
-        this._analyticsService.trackStartup();
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          this._analyticsService.telemetryEnabled = result;
+          if (result) {
+            return from(this._analyticsService.trackStartup());
+          }
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   private openInstallFromUrlDialog(path?: string) {
@@ -305,7 +311,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       if (this.wowUpService.enableSystemNotifications) {
-        const addonsWithNotificationsEnabled = updatedAddons.filter(addon => addon.autoUpdateNotificationsEnabled === true);
+        const addonsWithNotificationsEnabled = updatedAddons.filter(
+          (addon) => addon.autoUpdateNotificationsEnabled === true
+        );
 
         // Windows notification only shows so many chars
         if (this.getAddonNamesLength(addonsWithNotificationsEnabled) > 60) {
