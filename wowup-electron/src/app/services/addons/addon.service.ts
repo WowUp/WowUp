@@ -430,8 +430,12 @@ export class AddonService {
     return _.filter(addon.dependencies, (dep) => dep.type === AddonDependencyType.Required);
   }
 
-  public getAllAddonsAvailableForUpdate(): Addon[] {
+  public getAllAddonsAvailableForUpdate(wowInstallation?: WowInstallation): Addon[] {
     return this._addonStorage.queryAll((addon) => {
+      if (typeof wowInstallation === "object" && wowInstallation.id !== addon.installationId) {
+        return false;
+      }
+
       return addon.isIgnored !== true && AddonUtils.needsUpdate(addon);
     });
   }
@@ -1386,7 +1390,7 @@ export class AddonService {
       return;
     }
 
-    const needsMigration = existingAddons.some(addon => this.needsMigration(addon));
+    const needsMigration = existingAddons.some((addon) => this.needsMigration(addon));
     if (!needsMigration) {
       console.log(`[MigrateInstall] ${installation.label} No addons needed to be migrated`);
       return;

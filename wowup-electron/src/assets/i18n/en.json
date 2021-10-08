@@ -331,6 +331,7 @@
         "SHOW_FOLDER": "Show Folder",
         "STABLE_ADDON_CHANNEL": "Stable"
       },
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{update} other{updates}} ",
       "ADDON_IS_CODE_REPOSITORY": "Addon appears to be a code repository",
       "ADDON_REMOVED_SNACKBAR": "Successfully removed: {addonName} ",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {

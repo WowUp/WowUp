@@ -95,9 +95,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _baseRowDataSrc = new BehaviorSubject<AddonViewModel[]>([]);
   private readonly _filterInputSrc = new BehaviorSubject<string>("");
   private readonly _spinnerMessageSrc = new BehaviorSubject<string>("");
+  private readonly _totalAvailableUpdateSrc = new BehaviorSubject<number>(0);
 
+  public readonly totalAvailableUpdateCt$ = this._totalAvailableUpdateSrc.asObservable();
   public readonly enableControls$ = this._enableControlsSrc.asObservable();
   public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
+
+  public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
 
   public readonly selectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
     map((wowInstall) => wowInstall?.id)
@@ -259,7 +263,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
     }</span>`;
 
-    this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
+    this.wowInstallations$ = combineLatest([
+      warcraftInstallationService.wowInstallations$,
+      addonService.anyUpdatesAvailable$,
+    ]).pipe(
+      map(([installations]) => {
+        let total = 0;
+        installations.forEach((inst) => {
+          inst.availableUpdateCount = this.addonService.getAllAddonsAvailableForUpdate(inst).length;
+          total += inst.availableUpdateCount;
+        });
+
+        this._totalAvailableUpdateSrc.next(total);
+        return installations;
+      })
+    );
 
     const addonInstalledSub = this.addonService.addonInstalled$
       .pipe(

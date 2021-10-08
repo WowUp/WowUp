@@ -554,6 +554,16 @@ mat-icon.success-icon {
   color: #fff;
 }
 
+.update-badge {
+  background-color: var(--background-primary);
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  font-size: 75%;
+  &.badge-lg {
+    font-size: 100%;
+  }
+}
+
 // MATERIAL OVERRIDES
 
 .no-input-border {
