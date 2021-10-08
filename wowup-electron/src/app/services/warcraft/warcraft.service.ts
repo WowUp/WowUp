@@ -226,6 +226,8 @@ export class WarcraftService {
         return constants.WOW_BETA_FOLDER;
       case WowClientType.ClassicBeta:
         return constants.WOW_CLASSIC_BETA_FOLDER;
+      case WowClientType.ClassicEraPtr:
+        return constants.WOW_CLASSIC_ERA_PTR_FOLDER;
       default:
         return "";
     }
@@ -309,6 +311,8 @@ export class WarcraftService {
         return WowClientType.Beta;
       case constants.WOW_CLASSIC_BETA_FOLDER:
         return WowClientType.ClassicBeta;
+      case constants.WOW_CLASSIC_ERA_PTR_FOLDER:
+        return WowClientType.ClassicEraPtr;
       default:
         return WowClientType.Retail;
     }

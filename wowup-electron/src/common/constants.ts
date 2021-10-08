@@ -172,6 +172,7 @@ export const WOW_BETA_FOLDER = "_beta_";
 export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
 export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
+export const WOW_CLASSIC_ERA_PTR_FOLDER = "_classic_era_ptr_";
 
 export const TAB_INDEX_MY_ADDONS = 0;
 export const TAB_INDEX_GET_ADDONS = 1;
