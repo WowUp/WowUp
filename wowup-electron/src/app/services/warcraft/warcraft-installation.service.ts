@@ -293,7 +293,7 @@ export class WarcraftInstallationService {
    * @deprecated
    */
   private async migrateLegacyInstallations(clientType: WowClientType): Promise<WowInstallation | undefined> {
-    if ([WowClientType.None, WowClientType.ClassicBeta].includes(clientType)) {
+    if ([WowClientType.None, WowClientType.ClassicBeta, WowClientType.ClassicEraPtr].includes(clientType)) {
       return undefined;
     }
 

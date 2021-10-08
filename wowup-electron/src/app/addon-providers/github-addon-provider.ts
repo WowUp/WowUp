@@ -110,7 +110,7 @@ export class GitHubAddonProvider extends AddonProvider {
       const result = await this.getLatestValidAsset(results, installation.clientType);
       console.log("result", result);
       if (!result) {
-        if ([WowClientType.ClassicEra].includes(installation.clientType)) {
+        if ([WowClientType.ClassicEra, WowClientType.ClassicEraPtr].includes(installation.clientType)) {
           throw new ClassicAssetMissingError(addonUri.toString());
         } else if (
           [WowClientType.Classic, WowClientType.ClassicBeta, WowClientType.ClassicPtr].includes(installation.clientType)
@@ -309,6 +309,7 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.ClassicPtr:
         return "bcc";
       case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
         return "classic";
       case WowClientType.Beta:
       case WowClientType.Retail:
@@ -346,6 +347,7 @@ export class GitHubAddonProvider extends AddonProvider {
       case WowClientType.Beta:
         return !isClassic && !isBurningCrusade;
       case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
         return isClassic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
