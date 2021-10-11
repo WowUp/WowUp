@@ -95,7 +95,6 @@ import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
 
-let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
 
 interface ProxyInfo {
@@ -148,8 +147,6 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 }
 
 export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
-  USER_AGENT = userAgent;
-
   log.info("process.versions", process.versions);
 
   // Remove the pending URLs once read so they are only able to be gotten once
@@ -579,29 +576,6 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       window.webContents.send(arg.responseKey, status);
     }
   }
-}
-
-// From: https://evandontje.com/2020/04/02/automatic-system-proxy-configuration-for-electron-applications/
-async function getProxyInfo(window: BrowserWindow, url?: string): Promise<ProxyInfo> {
-  const session = window.webContents.session;
-
-  const proxyUrl = await session.resolveProxy(url || "https://wowup.io");
-  // DIRECT means no proxy is configured
-  if (proxyUrl === "DIRECT") {
-    log.info("No proxy detected");
-    return;
-  }
-
-  log.info(`Proxy detected: ${proxyUrl}`);
-  const proxyUrlComponents = proxyUrl.split(":");
-
-  const host = proxyUrlComponents[0].split(" ")[1];
-  const port = parseInt(proxyUrlComponents[1], 10);
-
-  return {
-    host,
-    port,
-  };
 }
 
 // Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124

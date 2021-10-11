@@ -210,7 +210,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  public onSelectedIndexChange(index: number): void {
+  public onSelectedIndexChange(): void {
     // this.sessionService.selectedHomeTab = index;
   }
 
