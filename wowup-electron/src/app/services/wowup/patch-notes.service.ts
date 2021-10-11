@@ -16,6 +16,22 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.4.7",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+      <li>Add support for automatic detection of new Classic Era PTR client</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+      <li>Russian locale updates (Medok)</li>
+      <li>Spanish locale updates (SkollVargr)</li>
+      <li>Chinese locale updates (CyanoHao)</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.6",
     html: `
     <div>
