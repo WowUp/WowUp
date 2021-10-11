@@ -3,7 +3,7 @@ import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
-import { IPC_LIST_DISKS_WIN32, WOW_CLASSIC_ERA_FOLDER } from "../../../common/constants";
+import { IPC_LIST_DISKS_WIN32, WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER } from "../../../common/constants";
 
 const WOW_RETAIL_NAME = "Wow.exe";
 const WOW_RETAIL_PTR_NAME = "WowT.exe";
@@ -71,6 +71,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
       case WowClientType.RetailPtr:
         return WOW_RETAIL_PTR_NAME;
       case WowClientType.ClassicPtr:
+      case WowClientType.ClassicEraPtr:
         return WOW_CLASSIC_PTR_NAME;
       case WowClientType.Beta:
         return WOW_RETAIL_BETA_NAME;
@@ -95,7 +96,11 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
       case WOW_RETAIL_PTR_NAME:
         return WowClientType.RetailPtr;
       case WOW_CLASSIC_PTR_NAME:
-        return WowClientType.ClassicPtr;
+        if (binaryPath.toLowerCase().includes(WOW_CLASSIC_ERA_PTR_FOLDER)) {
+          return WowClientType.ClassicEraPtr;
+        } else {
+          return WowClientType.ClassicPtr;
+        }
       case WOW_RETAIL_BETA_NAME:
         return WowClientType.Beta;
       case WOW_CLASSIC_BETA_NAME:

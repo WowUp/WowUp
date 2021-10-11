@@ -6,5 +6,6 @@ export enum WowClientType {
   Beta,
   ClassicBeta,
   ClassicEra,
+  ClassicEraPtr,
   None,
 }
