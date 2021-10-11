@@ -417,6 +417,7 @@ export class TukUiAddonProvider extends AddonProvider {
   private getAddonsSuffix(clientType: WowClientType) {
     switch (clientType) {
       case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
         return "classic-addons";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
@@ -434,6 +435,7 @@ export class TukUiAddonProvider extends AddonProvider {
   private getAddonsCacheType(clientType: WowClientType) {
     switch (clientType) {
       case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
         return "classic";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:

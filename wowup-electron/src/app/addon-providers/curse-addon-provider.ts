@@ -65,17 +65,14 @@ const FEATURED_ADDONS_CACHE_TTL_SEC = AppConfig.featuredAddonsCacheTimeSec;
 const GAME_TYPE_LISTS = [
   {
     flavor: "wow_classic",
-    gameType: WowClientType.Classic,
-    matches: [WowClientType.ClassicEra],
+    matches: [WowClientType.ClassicEra, WowClientType.ClassicEraPtr],
   },
   {
     flavor: "wow_burning_crusade",
-    gameType: WowClientType.ClassicEra,
     matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
   },
   {
     flavor: "wow_retail",
-    gameType: WowClientType.Retail,
     matches: [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta],
   },
 ];
@@ -836,6 +833,7 @@ export class CurseAddonProvider extends AddonProvider {
   private getGameVersionRegex(clientType: WowClientType): RegExp {
     switch (clientType) {
       case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
         return /^1.\d+.\d+$/;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:
@@ -852,6 +850,7 @@ export class CurseAddonProvider extends AddonProvider {
   private getGameVersionFlavor(clientType: WowClientType): CurseGameVersionFlavor {
     switch (clientType) {
       case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
         return "wow_classic";
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:

@@ -482,6 +482,7 @@ export class WowUpAddonProvider extends AddonProvider {
   private getWowGameType(clientType: WowClientType): WowGameType {
     switch (clientType) {
       case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
         return WowGameType.Classic;
       case WowClientType.Classic:
       case WowClientType.ClassicPtr:

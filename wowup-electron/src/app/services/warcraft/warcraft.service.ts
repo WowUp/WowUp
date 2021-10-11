@@ -14,6 +14,7 @@ import {
   WOW_CLASSIC_PTR_FOLDER,
   WOW_RETAIL_FOLDER,
   WOW_RETAIL_PTR_FOLDER,
+  WOW_CLASSIC_ERA_PTR_FOLDER
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
@@ -249,6 +250,8 @@ export class WarcraftService {
         return WOW_BETA_FOLDER;
       case WowClientType.ClassicBeta:
         return WOW_CLASSIC_BETA_FOLDER;
+      case WowClientType.ClassicEraPtr:
+        return WOW_CLASSIC_ERA_PTR_FOLDER;
       default:
         return "";
     }
@@ -328,6 +331,8 @@ export class WarcraftService {
         return WowClientType.Beta;
       case WOW_CLASSIC_BETA_FOLDER:
         return WowClientType.ClassicBeta;
+      case WOW_CLASSIC_ERA_PTR_FOLDER:
+        return WowClientType.ClassicEraPtr;
       default:
         return WowClientType.Retail;
     }
