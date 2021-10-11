@@ -16,7 +16,6 @@ import { BehaviorSubject, combineLatest, from, fromEvent, Observable, of, Subjec
 import {
   catchError,
   debounceTime,
-  delay,
   distinctUntilChanged,
   filter,
   first,
@@ -37,7 +36,7 @@ import {
   ViewChild,
 } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
 import { TranslateService } from "@ngx-translate/core";
