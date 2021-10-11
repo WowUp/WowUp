@@ -87,7 +87,7 @@ describe("MyAddonsComponent", () => {
       selectedClientType$: new BehaviorSubject(WowClientType.Retail).asObservable(),
       targetFileInstallComplete$: new Subject<boolean>(),
       addonsChanged$: new BehaviorSubject([]),
-      selectedWowInstallation$: new BehaviorSubject(undefined),
+      selectedWowInstallation$: new BehaviorSubject({}),
     });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
