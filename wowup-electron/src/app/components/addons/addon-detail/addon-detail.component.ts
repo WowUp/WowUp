@@ -1,7 +1,7 @@
 import { last } from "lodash";
 import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
-import { BehaviorSubject, from, of, Subscription } from "rxjs";
-import { filter, first, map, switchMap, tap } from "rxjs/operators";
+import { BehaviorSubject, from, Subscription } from "rxjs";
+import { filter, first, map, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
