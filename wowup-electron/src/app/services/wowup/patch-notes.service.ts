@@ -54,6 +54,43 @@ const CHANGELOGS: ChangeLog[] = [
     </ul>`,
   },
   {
+    Version: "2.4.7",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+      <li>Add support for automatic detection of new Classic Era PTR client</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+      <li>Russian locale updates (Medok)</li>
+      <li>Spanish locale updates (SkollVargr)</li>
+      <li>Chinese locale updates (CyanoHao)</li>
+    </ul>
+    </div>`,
+  },
+  {
+    Version: "2.4.6",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Update Electron to 13.5.1 to fix the <a appExternalLink href="https://github.com/electron/electron/issues/31212">TukUI download issue</a></li>
+    </ul>
+    </div>`,
+  },
+  {
+    Version: "2.4.5",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with Google Drive preventing files from being deleted</li>
+      <li>Fix an issue with checking addon owners against the block list</li>
+    </ul>
+    </div>`,
+  },
+  {
     Version: "2.4.4",
     html: `
     <div>
