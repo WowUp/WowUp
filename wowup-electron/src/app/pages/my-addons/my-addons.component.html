@@ -11,13 +11,16 @@
     <div class="select-container">
       <mat-form-field>
         <mat-label>
-          <span>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</span>
-          <span
-            class="update-badge badge-lg ml-1"
-            translate
-            [translateParams]="{ count: totalAvailableUpdateCt$ | async }"
-            >PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_BADGE</span
-          >
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</div>
+            <div
+              class="update-badge badge-lg ml-1"
+              translate
+              [translateParams]="{ count: totalAvailableUpdateCt$ | async }"
+            >
+              PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_BADGE
+            </div>
+          </div>
         </mat-label>
         <mat-select
           class="select pointer"
@@ -30,16 +33,13 @@
             {{ (selectedWowInstallation$ | async).label }}
           </mat-select-trigger>
           <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
-            <div>
-              <span>{{ installation.label }}</span>
-              <span
-                *ngIf="installation.availableUpdateCount > 0"
-                class="update-badge ml-1"
-                translate
-                [translateParams]="{ count: installation.availableUpdateCount }"
-              >
-                PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_BADGE
-              </span>
+            <div class="d-flex">
+              <div class="flex-grow-1">{{ installation.label }}</div>
+              <div *ngIf="installation.availableUpdateCount > 0">
+                <div class="d-inline update-badge ml-1">
+                  {{ installation.availableUpdateCount }}
+                </div>
+              </div>
             </div>
           </mat-option>
         </mat-select>
