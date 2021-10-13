@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { getGameVersion } from "../utils/addon.utils";
 
 @Pipe({
   name: "invertBool",

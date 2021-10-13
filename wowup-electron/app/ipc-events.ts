@@ -97,11 +97,6 @@ import * as push from "./push";
 
 let PENDING_OPEN_URLS: string[] = [];
 
-interface ProxyInfo {
-  host: string;
-  port: number;
-}
-
 interface SymlinkDir {
   original: fs.Dirent;
   originalPath: string;

@@ -9,7 +9,6 @@ import { PreferenceStorageService } from "../storage/preference-storage.service"
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";
 import { map } from "rxjs/operators";
-import { WowUpApiService } from "../wowup-api/wowup-api.service";
 import { WowUpAccountService } from "../wowup/wowup-account.service";
 
 @Injectable({
