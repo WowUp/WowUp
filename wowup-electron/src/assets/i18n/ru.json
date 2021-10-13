@@ -114,17 +114,17 @@
       "UNKNOWN": "",
       "UPDATE": "Обновить",
       "UPTODATE": "Актуальная",
-      "WARNING": "Предупреждение"
+      "WARNING": "Внимание"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Резервное копирование",
+      "BACKINGUP": "Резервирование",
       "COMPLETE": "Установлена",
-      "DOWNLOADING": "Загружается",
+      "DOWNLOADING": "Загрузка",
       "ERROR": "Ошибка",
-      "INSTALLING": "Устанавливается",
+      "INSTALLING": "Установка",
       "PENDING": "В ожидании",
-      "UNINSTALLING": "Удаляется",
-      "UPDATING": "Обновляется..."
+      "UNINSTALLING": "Удаление",
+      "UPDATING": "Обновление..."
     },
     "ADDON_WARNING": {
       "GENERIC_DESCRIPTION": "Мы обнаружили неполадку с этой модификацией. Мы больше не способны обновлять эту модификацию или показывать её детали.",
