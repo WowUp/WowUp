@@ -32,6 +32,7 @@ const CHANGELOGS: ChangeLog[] = [
       <li>Added Mac M1 builds</li>
       <li>Added support for more multi-toc suffixes</li>
       <li>Added support for Classic Era PTR client</li>
+      <li>Added some badges to indicate number of updates and which client needs them</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
