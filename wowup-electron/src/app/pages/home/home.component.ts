@@ -210,10 +210,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  public onSelectedIndexChange(): void {
-    // this.sessionService.selectedHomeTab = index;
-  }
-
   private onAddonScanError = (error: AddonScanError) => {
     const durationMs = 4000;
     const errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SCAN_ERROR", {
