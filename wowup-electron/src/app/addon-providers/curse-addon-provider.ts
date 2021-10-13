@@ -309,12 +309,14 @@ export class CurseAddonProvider extends AddonProvider {
       return;
     }
 
+    const gameVersionFlavor = this.getGameVersionFlavor(installation.clientType);
     const fingerprintResponse = await this.getAddonsByFingerprintsW(scanResults.map((result) => result.fingerprint));
 
     for (const scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
-      scanResult.exactMatch = fingerprintResponse.exactMatches.find((exactMatch) =>
-        this.hasMatchingFingerprint(scanResult, exactMatch)
+      scanResult.exactMatch = fingerprintResponse.exactMatches.find(
+        (exactMatch) =>
+          this.hasMatchingFingerprint(scanResult, exactMatch) && exactMatch.file.gameVersionFlavor === gameVersionFlavor
       );
 
       // If the addon does not have an exact match, check the partial matches.
