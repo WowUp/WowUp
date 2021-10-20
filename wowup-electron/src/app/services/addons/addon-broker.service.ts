@@ -4,6 +4,7 @@ import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { getEnumName } from "../../utils/enum.utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
+import { AddonService } from "./addon.service";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
 
@@ -30,7 +31,7 @@ export interface ExportPayload {
   providedIn: "root",
 })
 export class AddonBrokerService {
-  public constructor(private _addonStorage: AddonStorageService) {}
+  public constructor(private _addonStorage: AddonStorageService, private _addonService: AddonService) {}
 
   public getExportSummary(installation: WowInstallation): ExportSummary {
     const addons = this._addonStorage.getAllForInstallationId(installation.id);
@@ -67,6 +68,14 @@ export class AddonBrokerService {
     }
 
     return payload;
+  }
+
+  public async getImportSummary(exportPayload: ExportPayload, installation: WowInstallation) {
+    if (!Array.isArray(exportPayload) || exportPayload.length === 0) {
+      return;
+    }
+    
+    const currentAddons = this._addonService.getAllAddons(installation);
   }
 
   private getExportAddon(addon: Addon): ExportAddon {

@@ -14,6 +14,7 @@
           <div class="d-flex align-items-center">
             <div class="flex-grow-1">{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</div>
             <div
+              *ngIf="(totalAvailableUpdateCt$ | async) > 0"
               class="update-badge badge-lg ml-1"
               translate
               [translateParams]="{ count: totalAvailableUpdateCt$ | async }"

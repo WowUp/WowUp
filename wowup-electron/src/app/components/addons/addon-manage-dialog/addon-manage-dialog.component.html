@@ -3,39 +3,53 @@
 </div>
 <mat-dialog-content>
   <mat-tab-group>
+    <!-- EXPORT -->
     <mat-tab label="Export">
       <div class="row align-items-center">
         <p *ngIf="exportSummary !== undefined" class="m-0 flex-grow-1">
-          <span>Active addons: {{exportSummary.activeCount}}</span>
-          <span class="text-warning"> Ignored addons: {{exportSummary.ignoreCount}}</span>
+          <span>Active addons: {{ exportSummary.activeCount }}</span>
+          <span class="text-warning"> Ignored addons: {{ exportSummary.ignoreCount }}</span>
         </p>
-        <button *ngIf="exportPayload !== undefined" mat-icon-button color="accent"
-          aria-label="Example icon button with a menu icon" [matTooltip]="'Copy export data'">
+        <button
+          *ngIf="exportPayload !== undefined"
+          mat-icon-button
+          color="accent"
+          aria-label="Example icon button with a menu icon"
+          [matTooltip]="'Copy export data'"
+        >
           <mat-icon svgIcon="fas:copy"></mat-icon>
         </button>
       </div>
       <div *ngIf="exportPayload !== undefined">
         <mat-form-field appearance="fill" class="w-100">
           <mat-label>Addon Export Data</mat-label>
-          <textarea matInput class="export-content" spellcheck="false"
-            readonly="readonly">{{ exportPayload | json }}</textarea>
+          <textarea matInput class="export-content" spellcheck="false" readonly="readonly">{{
+            exportPayload
+          }}</textarea>
         </mat-form-field>
       </div>
     </mat-tab>
+    <!-- IMPORT -->
     <mat-tab label="Import">
       <p></p>
       <div class="row align-items-center mb-1">
         <p class="m-0 flex-grow-1">
           <span>Paste WowUp addon export data into the field below to get started</span>
         </p>
-        <button *ngIf="exportPayload !== undefined" mat-flat-button color="accent"
-          aria-label="Example icon button with a menu icon" [matTooltip]="'Copy export data'">
+        <button
+          *ngIf="exportPayload !== undefined"
+          mat-flat-button
+          color="accent"
+          aria-label="Example icon button with a menu icon"
+          [matTooltip]="'Copy export data'"
+          (click)="onClickImport()"
+        >
           Import
         </button>
       </div>
       <mat-form-field appearance="fill" class="w-100">
-        <mat-label>Export data</mat-label>
-        <textarea matInput class="import-content" spellcheck="false"></textarea>
+        <mat-label>Import data</mat-label>
+        <textarea matInput class="import-content" spellcheck="false" [(ngModel)]="importData"></textarea>
       </mat-form-field>
     </mat-tab>
   </mat-tab-group>

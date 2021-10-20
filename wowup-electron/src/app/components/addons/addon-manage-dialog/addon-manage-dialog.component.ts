@@ -13,7 +13,8 @@ export class AddonManageDialogComponent implements OnInit {
   public readonly selectedInstallation: WowInstallation;
 
   public exportSummary: ExportSummary | undefined;
-  public exportPayload: ExportPayload | undefined;
+  public exportPayload!: string;
+  public importData: string = "";
 
   public constructor(
     private _addonSevice: AddonService,
@@ -25,6 +26,19 @@ export class AddonManageDialogComponent implements OnInit {
 
   public ngOnInit(): void {
     this.exportSummary = this._addonBrokerService.getExportSummary(this.selectedInstallation);
-    this.exportPayload = this._addonBrokerService.getExportPayload(this.selectedInstallation);
+
+    const payload = this._addonBrokerService.getExportPayload(this.selectedInstallation);
+    this.exportPayload = btoa(JSON.stringify(payload));
+  }
+
+  public async onClickImport() {
+    try {
+      const importJson: ExportPayload = JSON.parse(atob(this.importData));
+      console.debug(importJson);
+
+      await this._addonBrokerService.getImportSummary(importJson, this.selectedInstallation);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
