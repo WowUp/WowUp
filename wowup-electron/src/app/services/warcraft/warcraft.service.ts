@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 
 import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { ProductDb } from "../../models/warcraft/product-db";
 import { AddonFolder } from "../../models/wowup/addon-folder";
@@ -230,6 +230,25 @@ export class WarcraftService {
         return constants.WOW_CLASSIC_ERA_PTR_FOLDER;
       default:
         return "";
+    }
+  }
+
+  public getClientGroup(clientType: string | WowClientType): WowClientGroup {
+    const enumVal: WowClientType = typeof clientType === "string" ? WowClientType[clientType] : clientType;
+    switch (enumVal) {
+      case WowClientType.Beta:
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+        return WowClientGroup.Retail;
+      case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
+        return WowClientGroup.Classic;
+      case WowClientType.Classic:
+      case WowClientType.ClassicBeta:
+      case WowClientType.ClassicPtr:
+        return WowClientGroup.BurningCrusade;
+      default:
+        throw new Error(`unsupported client type: ${clientType}`);
     }
   }
 

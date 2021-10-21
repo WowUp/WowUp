@@ -1,4 +1,31 @@
 {
+  "ADDON_IMPORT": {
+    "ACTIVE_ADDON_COUNT": "Active addons: {count}",
+    "COPY_BUTTON": "Copy",
+    "DIALOG_TITLE": "Import/Export Addons: {clientType}",
+    "EXPORT_STRING_COPIED": "Export string copied to clipboard",
+    "EXPORT_TAB_LABEL": "Export",
+    "EXPORT_TEXT_LABEL": "Addon Export Data",
+    "GENERIC_IMPORT_ERROR": "An error occurred during import",
+    "IGNORED_ADDON_COUNT": "Ignored addons: {count}",
+    "IMPORT_ADDED_COUNT": "{count} added",
+    "IMPORT_BADGE_ADDED": "New",
+    "IMPORT_BADGE_CONFLICT": "Conflict",
+    "IMPORT_BADGE_NO_CHANGE": "No Change",
+    "IMPORT_BUTTON": "Import",
+    "IMPORT_CONFLICT_COUNT": "{count} in conflict",
+    "IMPORT_NO_CHANGE_COUNT": "{count} unchanged",
+    "IMPORT_STRING_INVALID": "Import string was invalid",
+    "IMPORT_TAB_LABEL": "Import",
+    "IMPORT_TEXT_INSTRUCTIONS": "Paste WowUp addon export data into the field below to get started",
+    "IMPORT_TEXT_LABEL": "Import data",
+    "IMPORT_TOTAL_COUNT": "Importing {count} {count, plural, =1{addon} other{addons}}",
+    "INSTALL_BUTTON": "Install",
+    "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
+    "PROVIDER_MISMATCH": "Addon provider does not match",
+    "RESET_BUTTON": "Reset",
+    "VERSION_MISMATCH": "Versions do not match"
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -339,6 +366,7 @@
       },
       "CHECK_UPDATES_BUTTON": "Verificar Atualizações",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Verificar atualizações recentes",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{update} other{updates}} ",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Exibir Colunas"

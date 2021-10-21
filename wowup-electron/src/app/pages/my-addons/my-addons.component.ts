@@ -13,16 +13,7 @@ import {
 import * as _ from "lodash";
 import { join } from "path";
 import { BehaviorSubject, combineLatest, from, fromEvent, Observable, of, Subject, Subscription, zip } from "rxjs";
-import {
-  catchError,
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  first,
-  map,
-  switchMap,
-  tap,
-} from "rxjs/operators";
+import { catchError, debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import {
@@ -681,6 +672,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickImportExport(): void {
     const dialogRef = this._dialogFactory.getDialog(AddonManageDialogComponent, {
+      disableClose: true,
       data: {},
     });
 

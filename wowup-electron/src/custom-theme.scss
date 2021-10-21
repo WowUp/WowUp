@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use "~@angular/material" as mat;
 @import "./variables.scss";
 @import "~@angular/material/theming";
 
@@ -11,6 +11,12 @@
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat.core();
+
+:root {
+  --success-color: rgb(25, 135, 84);
+  --warning-color: rgb(255, 193, 7);
+  --secondary-color: rgb(108, 117, 125);
+}
 
 $md-wowup-pallette: (
   50: #e8eaf6,
@@ -471,6 +477,10 @@ body {
   color: var(--text-3);
 }
 
+.text-success {
+  color: var(--success-color);
+}
+
 .text-primary-1 {
   color: var(--background-primary) !important;
 }
@@ -597,7 +607,6 @@ body {
   &.mat-primary {
     color: var(--control-color) !important;
   }
- 
 }
 
 .mat-icon-button {

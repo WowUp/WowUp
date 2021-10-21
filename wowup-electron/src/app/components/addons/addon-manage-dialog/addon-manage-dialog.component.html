@@ -1,28 +1,33 @@
 <div mat-dialog-title class="addon-manage-dialog">
-  <h2>Import/Export Addons: {{ selectedInstallation.label }}</h2>
+  <div class="d-flex">
+    <h2 class="flex-grow-1 m-0">
+      {{ "ADDON_IMPORT.DIALOG_TITLE" | translate: { clientType: selectedInstallation.label } }}
+    </h2>
+    <mat-icon
+      class="close-icon"
+      color="accent"
+      [mat-dialog-close]="true"
+      [ngStyle]="{ cursor: 'pointer' }"
+      svgIcon="fas:times"
+    >
+    </mat-icon>
+  </div>
 </div>
 <mat-dialog-content>
-  <mat-tab-group>
+  <mat-tab-group (selectedIndexChange)="selectedTab$.next($event)">
     <!-- EXPORT -->
-    <mat-tab label="Export">
+    <mat-tab [label]="'ADDON_IMPORT.EXPORT_TAB_LABEL' | translate">
       <div class="row align-items-center">
-        <p *ngIf="exportSummary !== undefined" class="m-0 flex-grow-1">
-          <span>Active addons: {{ exportSummary.activeCount }}</span>
-          <span class="text-warning"> Ignored addons: {{ exportSummary.ignoreCount }}</span>
+        <p *ngIf="exportSummary !== undefined" class="mt-3 flex-grow-1">
+          <span>{{ "ADDON_IMPORT.ACTIVE_ADDON_COUNT" | translate: { count: exportSummary.activeCount } }}</span>
+          <span *ngIf="exportSummary.ignoreCount > 0" class="text-warning">
+            {{ "ADDON_IMPORT.IGNORED_ADDON_COUNT" | translate: { count: exportSummary.ignoreCount } }}
+          </span>
         </p>
-        <button
-          *ngIf="exportPayload !== undefined"
-          mat-icon-button
-          color="accent"
-          aria-label="Example icon button with a menu icon"
-          [matTooltip]="'Copy export data'"
-        >
-          <mat-icon svgIcon="fas:copy"></mat-icon>
-        </button>
       </div>
       <div *ngIf="exportPayload !== undefined">
         <mat-form-field appearance="fill" class="w-100">
-          <mat-label>Addon Export Data</mat-label>
+          <mat-label>{{ "ADDON_IMPORT.EXPORT_TEXT_LABEL" | translate }}</mat-label>
           <textarea matInput class="export-content" spellcheck="false" readonly="readonly">{{
             exportPayload
           }}</textarea>
@@ -30,30 +35,91 @@
       </div>
     </mat-tab>
     <!-- IMPORT -->
-    <mat-tab label="Import">
-      <p></p>
-      <div class="row align-items-center mb-1">
-        <p class="m-0 flex-grow-1">
-          <span>Paste WowUp addon export data into the field below to get started</span>
-        </p>
-        <button
-          *ngIf="exportPayload !== undefined"
-          mat-flat-button
-          color="accent"
-          aria-label="Example icon button with a menu icon"
-          [matTooltip]="'Copy export data'"
-          (click)="onClickImport()"
-        >
-          Import
-        </button>
+    <mat-tab [label]="'ADDON_IMPORT.IMPORT_TAB_LABEL' | translate">
+      <!-- IMPORT FORM -->
+      <div *ngIf="(hasImportSummary$ | async) === false">
+        <div class="row align-items-center mb-1">
+          <p class="mt-3 flex-grow-1">
+            <span>{{ "ADDON_IMPORT.IMPORT_TEXT_INSTRUCTIONS" | translate }}</span>
+          </p>
+        </div>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>{{ "ADDON_IMPORT.IMPORT_TEXT_LABEL" | translate }}</mat-label>
+          <textarea matInput class="import-content" spellcheck="false" [(ngModel)]="importData"></textarea>
+        </mat-form-field>
       </div>
-      <mat-form-field appearance="fill" class="w-100">
-        <mat-label>Import data</mat-label>
-        <textarea matInput class="import-content" spellcheck="false" [(ngModel)]="importData"></textarea>
-      </mat-form-field>
+      <!-- IMPORT RESULT -->
+      <div *ngIf="hasImportSummary$ | async">
+        <p class="m-0 mt-3">
+          {{ "ADDON_IMPORT.IMPORT_TOTAL_COUNT" | translate: { count: importSummaryComparisonCt$ | async } }}
+        </p>
+        <p class="text-2">
+          <span *ngIf="(importSummaryConflictCt$ | async) > 0"
+            >{{ "ADDON_IMPORT.IMPORT_CONFLICT_COUNT" | translate: { count: importSummaryConflictCt$ | async } }}
+          </span>
+          <span *ngIf="(importSummaryAddedCt$ | async) > 0"
+            >{{ "ADDON_IMPORT.IMPORT_ADDED_COUNT" | translate: { count: importSummaryAddedCt$ | async } }}
+          </span>
+          <span *ngIf="(importSummaryNoChangeCt$ | async) > 0">
+            {{ "ADDON_IMPORT.IMPORT_NO_CHANGE_COUNT" | translate: { count: importSummaryNoChangeCt$ | async } }}
+          </span>
+        </p>
+        <div class="bg-secondary-2 rounded p-3">
+          <div *ngFor="let comp of importSummaryComparisons$ | async">
+            <div class="comparison-row" [ngClass]="[comp.state, comp.state === 'no-change' ? 'text-3' : '']">
+              <div>
+                <div *ngIf="comp.state === 'no-change'" class="rounded comp-badge no-change-badge">
+                  {{ "ADDON_IMPORT.IMPORT_BADGE_NO_CHANGE" | translate }}
+                </div>
+                <div *ngIf="comp.state === 'added'" class="rounded comp-badge added-badge">
+                  {{ "ADDON_IMPORT.IMPORT_BADGE_ADDED" | translate }}
+                </div>
+                <div *ngIf="comp.state === 'conflict'" class="rounded comp-badge conflict-badge">
+                  {{ "ADDON_IMPORT.IMPORT_BADGE_CONFLICT" | translate }}
+                </div>
+              </div>
+              <div>
+                <div class="comp-text">{{ comp.imported.name }}</div>
+                <small *ngIf="comp.state === 'conflict'" class="text-2">{{
+                  "ADDON_IMPORT." + comp.conflictReason | translate
+                }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </mat-tab>
   </mat-tab-group>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Close</button>
+<!-- EXPORT ACTIONS -->
+<mat-dialog-actions *ngIf="(selectedTab$ | async) === TAB_IDX_EXPORT">
+  <div class="flex-grow-1"></div>
+  <button
+    *ngIf="exportPayload !== undefined"
+    mat-flat-button
+    color="accent"
+    [cdkCopyToClipboard]="exportPayload"
+    (click)="onClickCopy()"
+  >
+    {{ "ADDON_IMPORT.COPY_BUTTON" | translate }}
+  </button>
+</mat-dialog-actions>
+<!-- IMPORT ACTIONS -->
+<mat-dialog-actions *ngIf="(selectedTab$ | async) === TAB_IDX_IMPORT">
+  <button *ngIf="hasImportSummary$ | async" mat-button color="warn" (click)="importSummary$.next(undefined)">
+    {{ "ADDON_IMPORT.RESET_BUTTON" | translate }}
+  </button>
+  <div class="flex-grow-1"></div>
+  <button
+    *ngIf="hasImportSummary$ | async"
+    mat-flat-button
+    color="accent"
+    [disabled]="(canInstall$ | async) === false"
+    (click)="onClickImport()"
+  >
+    {{ "ADDON_IMPORT.INSTALL_BUTTON" | translate }}
+  </button>
+  <button *ngIf="(hasImportSummary$ | async) === false" mat-flat-button color="accent" (click)="onClickImport()">
+    {{ "ADDON_IMPORT.IMPORT_BUTTON" | translate }}
+  </button>
 </mat-dialog-actions>

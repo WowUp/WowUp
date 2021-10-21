@@ -5,12 +5,43 @@
 .export-content {
   resize: none;
   width: 100%;
-  min-height: 300px;
+  min-height: 200px;
 }
 
 .import-content {
-    resize: none;
-    width: 100%;
-    min-height: 200px;
-  }
-  
+  resize: none;
+  width: 100%;
+  min-height: 200px;
+}
+
+.comparison-row {
+  margin: 0.5em 0;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid var(--background-secondary-1);
+  padding-bottom: 0.25em;
+  // align-items: center;
+}
+
+.comp-badge {
+  padding: 0.25em 0.5em;
+  margin-right: 0.5em;
+  font-size: 0.8em;
+}
+
+.comp-text {
+  padding: 0.25em 0;
+}
+
+.added-badge {
+  background-color: var(--success-color);
+}
+
+.conflict-badge {
+  background-color: var(--warning-color);
+  color: black;
+}
+
+.no-change-badge {
+  background-color: var(--background-secondary-1);
+}
