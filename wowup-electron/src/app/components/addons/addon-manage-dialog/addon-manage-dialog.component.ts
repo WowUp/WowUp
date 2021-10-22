@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
@@ -40,7 +40,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
 
   public exportSummary: ExportSummary | undefined;
   public exportPayload!: string;
-  public importData: string = "";
+  public importData = "";
   public installing$ = new BehaviorSubject<boolean>(false);
   public importSummary$ = new BehaviorSubject<ImportSummaryViewModel | undefined>(undefined);
   public hasImportSummary$ = this.importSummary$.pipe(map((summary) => summary !== undefined));
@@ -94,13 +94,13 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  public onClickCopy() {
+  public onClickCopy(): void {
     this._snackbarService.showSuccessSnackbar("ADDON_IMPORT.EXPORT_STRING_COPIED", {
       timeout: 2000,
     });
   }
 
-  public async onClickInstall() {
+  public async onClickInstall(): Promise<void> {
     try {
       this.installing$.next(true);
       await this._addonBrokerService.installImportSummary(this.importSummary$.value, this.selectedInstallation);
@@ -111,7 +111,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  public async onClickImport() {
+  public onClickImport(): void {
     let importJson: ExportPayload;
     try {
       importJson = this._addonBrokerService.parseImportString(this.importData);
@@ -125,7 +125,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const importSummary = await this._addonBrokerService.getImportSummary(importJson, this.selectedInstallation);
+      const importSummary = this._addonBrokerService.getImportSummary(importJson, this.selectedInstallation);
       console.debug(importSummary);
 
       if (importSummary.errorCode !== undefined) {

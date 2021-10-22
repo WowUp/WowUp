@@ -136,8 +136,4 @@ export class WtfService {
 
     return fsStats;
   }
-
-  public async getGlobalSavedVariables(installation: WowInstallation): Promise<void> {}
-
-  public async getMap(addon: Addon): Promise<void> {}
 }

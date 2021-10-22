@@ -10,7 +10,7 @@ import { getEnumName } from "../../utils/enum.utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
-import { BehaviorSubject, Subject } from "rxjs";
+import { Subject } from "rxjs";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
@@ -135,7 +135,7 @@ export class AddonBrokerService {
       }
 
       try {
-        const addon = await this._addonService.installBaseAddon(
+        await this._addonService.installBaseAddon(
           comp.imported.id,
           comp.imported.provider_name,
           installation,
@@ -153,7 +153,7 @@ export class AddonBrokerService {
     }
   }
 
-  public async getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): Promise<ImportSummary> {
+  public getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): ImportSummary {
     const summary: ImportSummary = {
       addedCt: 0,
       conflictCt: 0,
