@@ -1,14 +1,17 @@
 import _ from "lodash";
 
 import { Injectable } from "@angular/core";
+import { nanoid } from "nanoid";
 
 import { Addon } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { WowInstallation } from "../../models/wowup/wow-installation";
 import { getEnumName } from "../../utils/enum.utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
-import { AddonService } from "./addon.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
+import { AddonService } from "./addon.service";
+import { BehaviorSubject, Subject } from "rxjs";
+import { AddonInstallState } from "../../models/wowup/addon-install-state";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
 export type ImportState = "no-change" | "added" | "conflict";
@@ -43,10 +46,17 @@ export interface ImportSummary {
 }
 
 export interface ImportComparison {
+  id: string;
   original?: ExportAddon;
   imported: ExportAddon;
   state: ImportState;
   conflictReason?: ConflictReasonCode;
+}
+
+export interface InstallEvent {
+  comparisonId: string;
+  installState: AddonInstallState;
+  progress: number;
 }
 
 const ImportStateWeights: { [key: string]: number } = {
@@ -59,6 +69,10 @@ const ImportStateWeights: { [key: string]: number } = {
   providedIn: "root",
 })
 export class AddonBrokerService {
+  private readonly _addonInstallSrc = new Subject<InstallEvent>();
+
+  public readonly addonInstall$ = this._addonInstallSrc.asObservable();
+
   public constructor(
     private _addonStorage: AddonStorageService,
     private _addonService: AddonService,
@@ -114,6 +128,31 @@ export class AddonBrokerService {
     return importJson;
   }
 
+  public async installImportSummary(importSummary: ImportSummary, installation: WowInstallation): Promise<void> {
+    for (const comp of importSummary.comparisons) {
+      if (comp.state !== "added") {
+        continue;
+      }
+
+      try {
+        const addon = await this._addonService.installBaseAddon(
+          comp.imported.id,
+          comp.imported.provider_name,
+          installation,
+          (installState, progress) => {
+            this._addonInstallSrc.next({
+              comparisonId: comp.id,
+              installState,
+              progress,
+            });
+          }
+        );
+      } catch (e) {
+        console.error(`Failed to install imported addon`, e);
+      }
+    }
+  }
+
   public async getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): Promise<ImportSummary> {
     const summary: ImportSummary = {
       addedCt: 0,
@@ -135,6 +174,7 @@ export class AddonBrokerService {
     const currentAddons = this._addonService.getAllAddons(installation);
     for (const impAddon of exportPayload.addons) {
       const comparison: ImportComparison = {
+        id: nanoid(),
         imported: impAddon,
         state: "added",
       };
@@ -201,11 +241,9 @@ export class AddonBrokerService {
         return ["conflict", "PROVIDER_MISMATCH"];
       }
 
-      if (typeof comparison.imported.version_id === "string" && typeof comparison.original.version_id === "string") {
-        return comparison.imported.version_id !== comparison.original.version_id
-          ? ["conflict", "VERSION_MISMATCH"]
-          : ["no-change", undefined];
-      }
+      return comparison.imported.version_id !== comparison.original.version_id
+        ? ["conflict", "VERSION_MISMATCH"]
+        : ["no-change", undefined];
     }
 
     return ["added", undefined];

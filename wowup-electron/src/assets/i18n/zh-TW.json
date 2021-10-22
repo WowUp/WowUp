@@ -1,6 +1,8 @@
 {
   "ADDON_IMPORT": {
     "ACTIVE_ADDON_COUNT": "Active addons: {count}",
+    "ADDED_BADGE_TOOLTIP": "We will attempt to install this addon",
+    "CONFLICT_BADGE_TOOLTIP": "Addons in conflict will not be modified",
     "COPY_BUTTON": "Copy",
     "DIALOG_TITLE": "Import/Export Addons: {clientType}",
     "EXPORT_STRING_COPIED": "Export string copied to clipboard",
@@ -22,6 +24,7 @@
     "IMPORT_TOTAL_COUNT": "Importing {count} {count, plural, =1{addon} other{addons}}",
     "INSTALL_BUTTON": "Install",
     "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
+    "NO_CHANGE_BADGE_TOOLTIP": "You already have this addon installed",
     "PROVIDER_MISMATCH": "Addon provider does not match",
     "RESET_BUTTON": "Reset",
     "VERSION_MISMATCH": "Versions do not match"

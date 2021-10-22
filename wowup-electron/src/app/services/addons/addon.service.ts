@@ -398,6 +398,29 @@ export class AddonService {
     return _.orderBy(flatResults, "downloadCount").reverse();
   }
 
+  public async installBaseAddon(
+    externalId: string,
+    providerName: string,
+    installation: WowInstallation,
+    onUpdate: (installState: AddonInstallState, progress: number) => void = () => {},
+    targetFile?: AddonSearchResultFile
+  ): Promise<Addon | undefined> {
+    const existingAddon = this._addonStorage.getByExternalId(externalId, providerName, installation.id);
+    if (existingAddon) {
+      throw new Error("Addon already installed");
+    }
+
+    const addon = await this.getAddon(externalId, providerName, installation, targetFile).toPromise();
+
+    if (addon?.id !== undefined) {
+      await this._addonStorage.setAsync(addon.id, addon);
+      await this.installAddon(addon.id, onUpdate);
+      return addon;
+    }
+
+    return undefined;
+  }
+
   public async installPotentialAddon(
     potentialAddon: AddonSearchResult,
     installation: WowInstallation,

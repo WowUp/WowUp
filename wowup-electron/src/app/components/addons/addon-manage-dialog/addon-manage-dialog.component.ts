@@ -1,23 +1,37 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { BehaviorSubject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
+import { AddonInstallState } from "../../../models/wowup/addon-install-state";
 import { WowInstallation } from "../../../models/wowup/wow-installation";
 import {
   AddonBrokerService,
   ExportPayload,
   ExportSummary,
+  ImportComparison,
   ImportSummary,
 } from "../../../services/addons/addon-broker.service";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 
+interface ImportComparisonViewModel extends ImportComparison {
+  isInstalling?: boolean;
+  isCompleted?: boolean;
+  didError?: boolean;
+}
+
+interface ImportSummaryViewModel extends ImportSummary {
+  comparisons: ImportComparisonViewModel[];
+}
+
 @Component({
   selector: "app-addon-manage-dialog",
   templateUrl: "./addon-manage-dialog.component.html",
   styleUrls: ["./addon-manage-dialog.component.scss"],
 })
-export class AddonManageDialogComponent implements OnInit {
+export class AddonManageDialogComponent implements OnInit, OnDestroy {
+  private readonly _subscriptions: Subscription[] = [];
+
   public readonly selectedTab$ = new BehaviorSubject<number>(0);
 
   public readonly TAB_IDX_EXPORT = 0;
@@ -27,7 +41,8 @@ export class AddonManageDialogComponent implements OnInit {
   public exportSummary: ExportSummary | undefined;
   public exportPayload!: string;
   public importData: string = "";
-  public importSummary$ = new BehaviorSubject<ImportSummary | undefined>(undefined);
+  public installing$ = new BehaviorSubject<boolean>(false);
+  public importSummary$ = new BehaviorSubject<ImportSummaryViewModel | undefined>(undefined);
   public hasImportSummary$ = this.importSummary$.pipe(map((summary) => summary !== undefined));
   public importSummaryAddedCt$ = this.importSummary$.pipe(map((summary) => summary?.addedCt ?? 0));
   public importSummaryConflictCt$ = this.importSummary$.pipe(map((summary) => summary?.conflictCt ?? 0));
@@ -59,12 +74,41 @@ export class AddonManageDialogComponent implements OnInit {
 
     const payload = this._addonBrokerService.getExportPayload(this.selectedInstallation);
     this.exportPayload = btoa(JSON.stringify(payload));
+
+    const installSub = this._addonBrokerService.addonInstall$.subscribe((evt) => {
+      console.log("Install", evt);
+
+      const viewModel = { ...this.importSummary$.value };
+      const compVm = viewModel.comparisons.find((comp) => comp.id === evt.comparisonId);
+      compVm.isInstalling = true;
+      compVm.isCompleted = evt.installState === AddonInstallState.Complete;
+      compVm.didError = evt.installState === AddonInstallState.Error;
+
+      this.importSummary$.next(viewModel);
+    });
+
+    this._subscriptions.push(installSub);
+  }
+
+  public ngOnDestroy(): void {
+    this._subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   public onClickCopy() {
     this._snackbarService.showSuccessSnackbar("ADDON_IMPORT.EXPORT_STRING_COPIED", {
       timeout: 2000,
     });
+  }
+
+  public async onClickInstall() {
+    try {
+      this.installing$.next(true);
+      await this._addonBrokerService.installImportSummary(this.importSummary$.value, this.selectedInstallation);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.installing$.next(false);
+    }
   }
 
   public async onClickImport() {
@@ -91,12 +135,25 @@ export class AddonManageDialogComponent implements OnInit {
         return;
       }
 
-      this.importSummary$.next(importSummary);
+      const viewModel = this.getImportSummaryViewModel(importSummary);
+      this.importSummary$.next(viewModel);
     } catch (e) {
       console.error(e);
       this._snackbarService.showErrorSnackbar("ADDON_IMPORT.GENERIC_IMPORT_ERROR", {
         timeout: 2000,
       });
     }
+  }
+
+  private getImportSummaryViewModel(importSummary: ImportSummary): ImportSummaryViewModel {
+    const viewModel: ImportSummaryViewModel = { ...importSummary };
+
+    viewModel.comparisons.forEach((comp) => {
+      comp.isInstalling = false;
+      comp.didError = false;
+      comp.isCompleted = false;
+    });
+
+    return viewModel;
   }
 }
