@@ -13,6 +13,7 @@ import { WowClientOptionsComponent } from "../components/options/wow-client-opti
 import { WtfExplorerComponent } from "../components/options/wtf-explorer/wtf-explorer.component";
 import { MatModule } from "./mat-module";
 import { PipesModule } from "./pipes.module";
+import { DirectiveModule } from "./directive.module";
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { PipesModule } from "./pipes.module";
     OptionsWowSectionComponent,
     WowClientOptionsComponent,
   ],
-  imports: [CommonModule, FormsModule, TranslateModule, MatModule, TreeModule, PipesModule],
+  imports: [CommonModule, FormsModule, TranslateModule, MatModule, TreeModule, PipesModule, DirectiveModule],
   exports: [
     WtfExplorerComponent,
     AboutComponent,
