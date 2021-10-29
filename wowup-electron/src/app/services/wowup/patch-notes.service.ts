@@ -24,12 +24,12 @@ const CHANGELOGS: ChangeLog[] = [
       <li>Added the ability to turn off system notifications for individual addons (tellier-dev)</li>
       <li>Added the ability to remove addons from the details dialog on Get Addons tab (tellier-dev)</li>
       <li>
-      <div>The first stage of a set of cloud based features you've been asking for</div>
-      <img style="width: 70%; border: 1px solid #666666; border-radius: 4px;" loading="lazy" src="assets/images/patch/account-beta.png">
-      </li>
-      <li>
         <div>Added the ability to import/export a list of addons for a WoW client. The first step in backing up your list of addons or sharing them with your friends!</div>
         <img style="width: 70%; border: 1px solid #666666; border-radius: 4px;" loading="lazy" src="assets/images/patch/import-export-preview.png">
+      </li>
+      <li>
+        <div>Added the ability to create and restore backups, this is a work in progress.</div>
+        <img style="width: 70%; border: 1px solid #666666; border-radius: 4px;" loading="lazy" src="assets/images/patch/backup-preview.png">
       </li>
       <li>Added WowUpHub category support</li>
       <li>Added WowUpHub preview support</li>
