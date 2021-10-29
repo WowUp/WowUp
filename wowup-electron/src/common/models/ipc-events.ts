@@ -44,4 +44,5 @@ export interface TreeNode {
   isDirectory: boolean;
   children: TreeNode[];
   size: number;
+  hash?: string;
 }

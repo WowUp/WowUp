@@ -89,11 +89,28 @@ import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
 import * as fsp from "fs/promises";
 
-import { chmodDir, copyDir, getDirTree, getLastModifiedFileDate, readDirRecursive, remove } from "./file.utils";
+import {
+  chmodDir,
+  copyDir,
+  exists,
+  getDirTree,
+  getLastModifiedFileDate,
+  readDirRecursive,
+  readFileInZip,
+  remove,
+  zipFile,
+} from "./file.utils";
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
+import { WowInstallation } from "../src/common/warcraft/wow-installation";
+import {
+  BackupCreateRequest,
+  BackupGetExistingRequest,
+  GetDirectoryTreeRequest,
+} from "../src/common/models/ipc-request";
+import { BackupCreateResponse, BackupGetExistingResponse } from "../src/common/models/ipc-response";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -310,6 +327,11 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_LIST_FILES_CHANNEL, async (evt, sourcePath: string, filter: string) => {
+    const pathExists = await exists(sourcePath);
+    if (!pathExists) {
+      return [];
+    }
+
     const globFilter = globrex(filter);
     const results = await fsp.readdir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
@@ -363,6 +385,14 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return arg.outputFolder;
   });
 
+  handle("zip-file", async (evt, srcPath: string, destPath: string) => {
+    return await zipFile(srcPath, destPath);
+  });
+
+  handle("zip-read-file", async (evt, zipPath: string, filePath: string) => {
+    return await readFileInZip(zipPath, filePath);
+  });
+
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
     const stat = await fsp.lstat(arg.sourceFilePath);
@@ -409,8 +439,9 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return readDirRecursive(dirPath);
   });
 
-  handle(IPC_GET_DIRECTORY_TREE, (evt, dirPath: string): Promise<TreeNode> => {
-    return getDirTree(dirPath);
+  handle(IPC_GET_DIRECTORY_TREE, (evt, args: GetDirectoryTreeRequest): Promise<TreeNode> => {
+    log.debug(IPC_GET_DIRECTORY_TREE, args);
+    return getDirTree(args.dirPath, args.opts);
   });
 
   handle(IPC_MINIMIZE_WINDOW, () => {
@@ -482,6 +513,37 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_PUSH_SUBSCRIBE, async (evt, channel) => {
     return await push.subscribeToChannel(channel);
+  });
+
+  handle("backup-get-existing", async (evt, req: BackupGetExistingRequest) => {
+    const response: BackupGetExistingResponse = {
+      exists: false,
+    };
+
+    log.debug("backup-get-existing", req);
+
+    const backupFolder = path.join(req.backupPath, req.installation.id);
+    response.exists = await exists(backupFolder);
+    if (!response.exists) {
+      return response;
+    }
+
+    return response;
+  });
+
+  handle("backup-create", async (evt, req: BackupCreateRequest) => {
+    const response: BackupCreateResponse = {};
+
+    log.debug("backup-get-existing", req);
+
+    const backupFolder = path.join(req.backupPath, req.installation.id);
+    await fsp.mkdir(backupFolder, { recursive: true });
+
+    // TODO create backup tree
+
+    // TODO copy backup contents
+
+    return response;
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {

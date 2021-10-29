@@ -14,6 +14,7 @@ import {
   faInfoCircle,
   faCodeBranch,
   faCaretDown,
+  faExclamation,
   faExclamationTriangle,
   faCode,
   faCoins,
@@ -31,6 +32,8 @@ import {
   faUserCircle,
   faEllipsisV,
   faCopy,
+  faTrash,
+  faHistory,
 } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle, faClock, faCheckCircle as farCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-icons";
@@ -75,6 +78,9 @@ export class IconService {
     this.addSvg(faEllipsisV);
     this.addSvg(faCopy);
     this.addSvg(farCheckCircle);
+    this.addSvg(faExclamation);
+    this.addSvg(faTrash);
+    this.addSvg(faHistory);
   }
 
   private addSvg(icon: IconDefinition): void {

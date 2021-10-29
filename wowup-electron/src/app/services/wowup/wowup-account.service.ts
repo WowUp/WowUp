@@ -7,6 +7,7 @@ import {
   ACCT_FEATURE_KEYS,
   ACCT_PUSH_ENABLED_KEY,
   APP_PROTOCOL_NAME,
+  FEATURE_ACCOUNTS_ENABLED,
   IPC_PUSH_INIT,
   IPC_PUSH_REGISTER,
   IPC_PUSH_SUBSCRIBE,
@@ -52,6 +53,10 @@ export class WowUpAccountService {
     private _preferenceStorageService: PreferenceStorageService,
     private _wowUpApiService: WowUpApiService
   ) {
+    if (!FEATURE_ACCOUNTS_ENABLED) {
+      return;
+    }
+
     this.wowUpAuthTokenSrc
       .pipe(
         filter((token) => !!token && token.length > 10),

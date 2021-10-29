@@ -22,7 +22,7 @@ import { AddonChannelType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 

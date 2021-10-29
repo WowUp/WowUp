@@ -14,7 +14,7 @@ import {
 } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/models";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";

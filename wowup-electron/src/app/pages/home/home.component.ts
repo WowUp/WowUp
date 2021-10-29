@@ -22,7 +22,6 @@ import { PatchNotesDialogComponent } from "../../components/common/patch-notes-d
 import { AddonScanError } from "../../errors";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
@@ -31,6 +30,7 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getProtocol } from "../../utils/string.utils";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 
 @Component({
   selector: "app-home",

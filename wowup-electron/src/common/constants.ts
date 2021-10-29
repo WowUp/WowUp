@@ -1,5 +1,8 @@
 export const APP_USER_MODEL_ID = "io.wowup.jliddev"; // Bundle ID
 
+// FEATURES
+export const FEATURE_ACCOUNTS_ENABLED = false;
+
 export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
 export const ADDON_PROVIDER_CURSEFORGE = "Curse";
 export const ADDON_PROVIDER_GITHUB = "GitHub";

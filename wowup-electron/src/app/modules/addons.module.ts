@@ -21,6 +21,7 @@ import { InstallFromUrlDialogComponent } from "../components/addons/install-from
 import { DirectiveModule } from "./directive.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AddonManageDialogComponent } from "../components/addons/addon-manage-dialog/addon-manage-dialog.component";
+import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.component";
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { AddonManageDialogComponent } from "../components/addons/addon-manage-di
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
     AddonManageDialogComponent,
+    WtfBackupComponent,
   ],
   imports: [
     CommonModule,
@@ -65,6 +67,7 @@ import { AddonManageDialogComponent } from "../components/addons/addon-manage-di
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
     AddonManageDialogComponent,
+    WtfBackupComponent,
   ],
   providers: [
     {

@@ -535,6 +535,11 @@ body {
   }
 }
 
+.changelog {
+  a {
+    color: var(--control-color);
+  }
+}
 .tab-icon-inactive {
   svg {
     transition: fill 0.3s ease 0.1s;

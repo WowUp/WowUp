@@ -25,6 +25,7 @@ import { CopyFileRequest } from "../../../common/models/copy-file-request";
 import { UnzipRequest } from "../../../common/models/unzip-request";
 import { FsDirent, FsStats, TreeNode } from "../../../common/models/ipc-events";
 import { ElectronService } from "../electron/electron.service";
+import { GetDirectoryTreeOptions, GetDirectoryTreeRequest } from "../../../common/models/ipc-request";
 
 @Injectable({
   providedIn: "root",
@@ -127,8 +128,12 @@ export class FileService {
     return await this._electronService.invoke(IPC_LIST_DIR_RECURSIVE, dirPath);
   }
 
-  public async getDirectoryTree(dirPath: string): Promise<TreeNode> {
-    return await this._electronService.invoke(IPC_GET_DIRECTORY_TREE, dirPath);
+  public async getDirectoryTree(dirPath: string, opts?: GetDirectoryTreeOptions): Promise<TreeNode> {
+    const request: GetDirectoryTreeRequest = {
+      dirPath,
+      opts,
+    };
+    return await this._electronService.invoke(IPC_GET_DIRECTORY_TREE, request);
   }
 
   public async writeFile(sourcePath: string, contents: string): Promise<string> {
@@ -155,6 +160,10 @@ export class FileService {
     return this._electronService.invoke<string[]>(IPC_LIST_FILES_CHANNEL, sourcePath, filter);
   }
 
+  public readFileInZip(zipPath: string, filePath: string) {
+    return this._electronService.invoke<any>("zip-read-file", zipPath, filePath);
+  }
+
   public async unzipFile(zipFilePath: string, outputFolder: string): Promise<string> {
     console.log("unzipFile", zipFilePath);
 
@@ -165,5 +174,9 @@ export class FileService {
     };
 
     return await this._electronService.invoke(IPC_UNZIP_FILE_CHANNEL, request);
+  }
+
+  public async zipFile(srcPath: string, destPath: string) {
+    await this._electronService.invoke("zip-file", srcPath, destPath);
   }
 }

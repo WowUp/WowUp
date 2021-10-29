@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
 import { AddonInstallState } from "../../../models/wowup/addon-install-state";
-import { WowInstallation } from "../../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 import {
   AddonBrokerService,
   ExportPayload,

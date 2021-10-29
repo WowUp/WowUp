@@ -44,7 +44,7 @@ import { TableContextHeaderCellComponent } from "../../components/addons/table-c
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
@@ -61,6 +61,8 @@ import { SortOrder } from "../../models/wowup/sort-order";
 import { PushService } from "../../services/push/push.service";
 import { AddonUiService } from "../../services/addons/addon-ui.service";
 import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
+import { WtfService } from "../../services/wtf/wtf.service";
+import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
 
 @Component({
   selector: "app-my-addons",
@@ -241,6 +243,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _snackbarService: SnackbarService,
     private _pushService: PushService,
     private _addonUiService: AddonUiService,
+    private _wtfService: WtfService,
     public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
@@ -669,6 +672,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public getRowNodeId = (data: any) => {
     return data.addon.id;
   };
+
+  public onClickCreateBackup(): void {
+    const dialogRef = this._dialogFactory.getDialog(WtfBackupComponent, {
+      disableClose: true,
+      data: {},
+    });
+
+    dialogRef.afterClosed().pipe(first()).subscribe();
+  }
 
   public onClickImportExport(): void {
     const dialogRef = this._dialogFactory.getDialog(AddonManageDialogComponent, {

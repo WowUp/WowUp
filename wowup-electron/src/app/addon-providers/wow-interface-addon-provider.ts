@@ -13,7 +13,7 @@ import { AddonDetailsResponse } from "../models/wow-interface/addon-details-resp
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";

@@ -9,9 +9,9 @@ import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { WtfNode, WtfService } from "../../../services/wtf/wtf.service";
 import { removeExtension } from "../../../utils/string.utils";
 import { AddonFolder } from "../../../models/wowup/addon-folder";
-import { WowInstallation } from "../../../models/wowup/wow-installation";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { formatSize } from "../../../utils/number.utils";
+import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 
 interface SavedVariable {
   name: string;

@@ -4,7 +4,7 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { Injectable } from "@angular/core";
 
 import { SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";

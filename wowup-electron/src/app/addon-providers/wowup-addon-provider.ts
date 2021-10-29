@@ -23,7 +23,7 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";

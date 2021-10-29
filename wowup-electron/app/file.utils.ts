@@ -1,11 +1,34 @@
-import { exec } from 'child_process';
-import * as log from 'electron-log';
-import * as fsp from 'fs/promises';
-import { max, sumBy } from 'lodash';
-import * as path from 'path';
+import { exec } from "child_process";
+import * as log from "electron-log";
+import * as fsp from "fs/promises";
+import { max, sumBy } from "lodash";
+import * as path from "path";
+import * as crypto from "crypto";
+import * as AdmZip from "adm-zip";
 
-import { TreeNode } from '../src/common/models/ipc-events';
-import { isWin } from './platform';
+import { TreeNode } from "../src/common/models/ipc-events";
+import { GetDirectoryTreeOptions } from "../src/common/models/ipc-request";
+import { isWin } from "./platform";
+
+export function zipFile(srcPath: string, outPath: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    const zip = new AdmZip();
+    zip.addLocalFolder(srcPath);
+
+    zip.writeZip(outPath, (e) => {
+      return e ? reject(e) : resolve(true);
+    });
+  });
+}
+
+export function readFileInZip(zipPath: string, filePath: string) {
+  return new Promise((resolve, reject) => {
+    const zip = new AdmZip(zipPath);
+    zip.readAsTextAsync(filePath, (data, err) => {
+      return err ? reject(err) : resolve(data);
+    });
+  });
+}
 
 export async function exists(path: string): Promise<boolean> {
   try {
@@ -95,7 +118,7 @@ export async function readDirRecursive(sourcePath: string): Promise<string[]> {
   return dirFiles;
 }
 
-export async function getDirTree(sourcePath: string): Promise<TreeNode> {
+export async function getDirTree(sourcePath: string, opts?: GetDirectoryTreeOptions): Promise<TreeNode> {
   const files = await fsp.readdir(sourcePath, { withFileTypes: true });
 
   const node: TreeNode = {
@@ -109,10 +132,18 @@ export async function getDirTree(sourcePath: string): Promise<TreeNode> {
   for (const file of files) {
     const filePath = path.join(sourcePath, file.name);
     if (file.isDirectory()) {
-      const nestedNode = await getDirTree(filePath);
+      const nestedNode = await getDirTree(filePath, opts);
       node.children.push(nestedNode);
       node.size = sumBy(node.children, (n) => n.size);
+      if (opts?.includeHash) {
+        node.hash = hashString(node.children.map((n) => n.hash).join(""), "sha256");
+      }
     } else {
+      let hash = "";
+      if (opts?.includeHash) {
+        hash = await hashFile(filePath, "sha256");
+      }
+
       const stats = await fsp.stat(filePath);
       node.size += stats.size;
       node.children.push({
@@ -121,8 +152,13 @@ export async function getDirTree(sourcePath: string): Promise<TreeNode> {
         children: [],
         isDirectory: false,
         size: stats.size,
+        hash,
       });
     }
+  }
+
+  if (opts?.includeHash) {
+    node.hash = hashString(node.children.map((n) => n.hash).join(""), "sha256");
   }
 
   return node;
@@ -138,4 +174,15 @@ export async function getLastModifiedFileDate(sourcePath: string): Promise<numbe
 
   const latest = max(dates);
   return latest;
+}
+
+export function hashString(str: string | crypto.BinaryLike, alg = "md5") {
+  const md5 = crypto.createHash(alg);
+  md5.update(str);
+  return md5.digest("hex");
+}
+
+export async function hashFile(filePath: string, alg = "md5"): Promise<string> {
+  const text = await fsp.readFile(filePath);
+  return hashString(text, alg);
 }

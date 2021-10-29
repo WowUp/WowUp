@@ -4,6 +4,7 @@ import { map } from "rxjs/operators";
 import { Component, OnInit } from "@angular/core";
 
 import {
+  FEATURE_ACCOUNTS_ENABLED,
   TAB_INDEX_ABOUT,
   TAB_INDEX_GET_ADDONS,
   TAB_INDEX_MY_ADDONS,
@@ -33,6 +34,7 @@ interface Tab {
 export class HorizontalTabsComponent implements OnInit {
   public wowUpWebsiteUrl = AppConfig.wowUpWebsiteUrl;
   public TAB_INDEX_ACCOUNT = TAB_INDEX_ABOUT;
+  public FEATURE_ACCOUNTS_ENABLED = FEATURE_ACCOUNTS_ENABLED;
 
   public isAccountSelected$ = this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT));
 

@@ -34,7 +34,7 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";

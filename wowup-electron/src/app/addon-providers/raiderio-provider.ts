@@ -1,4 +1,4 @@
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 

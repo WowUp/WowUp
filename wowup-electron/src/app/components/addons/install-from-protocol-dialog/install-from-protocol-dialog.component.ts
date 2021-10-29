@@ -7,10 +7,10 @@ import { FormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
 import { ProtocolSearchResult } from "../../../models/wowup/protocol-search-result";
-import { WowInstallation } from "../../../models/wowup/wow-installation";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
+import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 
 export interface InstallFromProtocolDialogComponentData {
   protocol: string;

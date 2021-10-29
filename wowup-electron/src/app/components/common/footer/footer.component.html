@@ -7,13 +7,6 @@
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}">
     <mat-icon class="tab-icon tab-icon-inactive" svgIcon="fab:discord"></mat-icon>
   </a>
-  <!-- <div *ngIf="(sessionService.wowUpAuthenticated$ | async) === false">
-    <div class="bnet-btn bnet-btn-sm ml-2" (click)="onClickAccount()">Login</div>
-  </div>
-  <div *ngIf="(sessionService.wowUpAuthenticated$ | async)  === true" class="btn" (click)="onClickAccount()"
-    matTooltip="{{ 'You\'re logged in!' | translate }}">
-    {{accountDisplayName$ | async}}
-  </div> -->
   <p class="text-1">{{ sessionService.statusText$ | async }}</p>
   <div class="flex-grow-1"></div>
   <p class="mr-3">{{ sessionService.pageContextText$ | async }}</p>

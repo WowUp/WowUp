@@ -1,14 +1,19 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
+import { ElectronService } from "..";
 
 import { Addon } from "../../../common/entities/addon";
 import { FsStats, TreeNode } from "../../../common/models/ipc-events";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { BackupGetExistingRequest } from "../../../common/models/ipc-request";
+import { BackupGetExistingResponse } from "../../../common/models/ipc-response";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { FileService } from "../files/file.service";
+import { WowUpService } from "../wowup/wowup.service";
 
 const WTF_FOLDER = "WTF";
 const ACCOUNT_FOLDER = "Account";
 const SAVED_VARIABLES_FOLDER = "SavedVariables";
+const BACKUP_META_FILENAME = "wowup-meta.json";
 
 export interface FileStats {
   name: string;
@@ -27,15 +32,42 @@ export interface WtfNode extends TreeNode {
   children: WtfNode[];
 }
 
+export interface WtfBackupMetadataFile {
+  createdBy: string;
+  createdAt: number;
+  contents: WtfBackupMeta[];
+}
+
+export interface WtfBackupMeta {
+  path: string;
+  isDirectory: boolean;
+  size: number;
+  hash: string;
+}
+
+export interface WtfBackup {
+  location: string;
+  fileName: string;
+  size: number;
+  birthtimeMs: number;
+  error?: string;
+  metadata?: WtfBackupMetadataFile;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class WtfService {
-  public constructor(private _fileService: FileService) {}
+  public constructor(
+    private _fileService: FileService,
+    private _electronService: ElectronService,
+    private _wowUpService: WowUpService
+  ) {}
 
-  public async getWtfContents(installation: WowInstallation): Promise<WtfNode> {
+  // including the hash will make this operation much slower
+  public async getWtfContents(installation: WowInstallation, includeHash = false): Promise<WtfNode> {
     const wtfPath = this.getWtfPath(installation);
-    const tree = await this._fileService.getDirectoryTree(wtfPath);
+    const tree = await this._fileService.getDirectoryTree(wtfPath, { includeHash });
     return this.getWtfNode(tree);
   }
 
@@ -135,5 +167,140 @@ export class WtfService {
     });
 
     return fsStats;
+  }
+
+  public async getBackupList(installation: WowInstallation): Promise<WtfBackup[]> {
+    const wtfBackups: WtfBackup[] = [];
+
+    const backupZipFiles = await this.listBackupFiles(installation);
+    const fsStats = await this._fileService.statFiles(backupZipFiles);
+
+    for (let i = 0; i < backupZipFiles.length; i++) {
+      const zipFile = backupZipFiles[i];
+      const stat = fsStats[zipFile];
+
+      const wtfBackup: WtfBackup = {
+        location: zipFile,
+        fileName: path.basename(zipFile),
+        size: stat.size,
+        birthtimeMs: stat.birthtimeMs,
+      };
+
+      try {
+        const zipMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
+        const zipMetaData: WtfBackupMetadataFile = JSON.parse(zipMetaTxt);
+
+        if (!Array.isArray(zipMetaData.contents)) {
+          wtfBackup.error = "INVALID_CONTENTS";
+        } else if (typeof zipMetaData.createdAt !== "number") {
+          wtfBackup.error = "INVALID_CREATED_AT";
+        } else if (typeof zipMetaData.createdBy !== "string") {
+          wtfBackup.error = "INVALID_CREATED_BY";
+        }
+      } catch (e) {
+        console.error("Failed to process backup metadata", zipFile, e);
+        wtfBackup.error = "GENERIC_ERROR";
+      } finally {
+        wtfBackups.push(wtfBackup);
+      }
+    }
+
+    return wtfBackups;
+  }
+
+  public async createBackup(installation: WowInstallation): Promise<void> {
+    await this.createBackupDirectory(installation);
+
+    const metadataFilePath = await this.createBackupMetadataFile(installation);
+
+    try {
+      await this.createBackupZip(installation);
+    } finally {
+      // always delete the metadata file
+      await this._fileService.remove(metadataFilePath);
+    }
+  }
+
+  private async createBackupZip(installation: WowInstallation): Promise<void> {
+    const wtfPath = this.getWtfPath(installation);
+    const zipPath = path.join(this.getBackupPath(installation), `wtf_${Date.now()}.zip`);
+    this._fileService.zipFile(wtfPath, zipPath);
+  }
+
+  private async createBackupDirectory(installation: WowInstallation): Promise<void> {
+    const backupPath = this.getBackupPath(installation);
+    await this._fileService.createDirectory(backupPath);
+  }
+
+  private async createBackupMetadataFile(installation: WowInstallation): Promise<string> {
+    const wtfTree = await this.getWtfContents(installation, true);
+    const wtfList = this.flattenTree([wtfTree]);
+    console.debug(wtfList);
+
+    const backupMetadata: WtfBackupMetadataFile = {
+      contents: this.toBackupMeta(wtfList, installation),
+      createdAt: Date.now(),
+      createdBy: "manual",
+    };
+
+    return await this.writeWtfMetadataFile(backupMetadata, installation);
+  }
+
+  private async writeWtfMetadataFile(
+    backupMetadata: WtfBackupMetadataFile,
+    installation: WowInstallation
+  ): Promise<string> {
+    const wtfPath = this.getWtfPath(installation);
+
+    const metaPath = path.join(wtfPath, BACKUP_META_FILENAME);
+    await this._fileService.writeFile(metaPath, JSON.stringify(backupMetadata, null, 2));
+
+    return metaPath;
+  }
+
+  private async getBackup(installation: WowInstallation): Promise<BackupGetExistingResponse> {
+    const args: BackupGetExistingRequest = {
+      backupPath: this._wowUpService.wtfBackupFolder,
+      installation,
+    };
+    return await this._electronService.invoke("backup-get-existing", args);
+  }
+
+  private async listBackupFiles(installation: WowInstallation) {
+    const backupPath = this.getBackupPath(installation);
+    const zipFiles = await this._fileService.listFiles(backupPath, "*.zip");
+    return zipFiles.map((f) => path.join(backupPath, f));
+  }
+
+  private async createFullBackup(installation: WowInstallation): Promise<void> {}
+
+  private async backupNode(node: WtfNode, installation: WowInstallation) {
+    const wtfPath = this.getWtfPath(installation);
+    const nodeBase = node.path.replace(wtfPath, "");
+  }
+
+  public getBackupPath(installation: WowInstallation): string {
+    return path.join(this._wowUpService.wtfBackupFolder, installation.id);
+  }
+
+  private flattenTree(nodes: WtfNode[]): WtfNode[] {
+    return Array.prototype.concat.apply(
+      nodes,
+      nodes.map((n) => this.flattenTree(n.children))
+    );
+  }
+
+  private toBackupMeta(nodes: WtfNode[], installation: WowInstallation): WtfBackupMeta[] {
+    const wtfPath = this.getWtfPath(installation);
+
+    return nodes.map((n) => {
+      const nodeBase = n.path.replace(wtfPath, "");
+      return {
+        hash: n.hash,
+        isDirectory: n.isDirectory,
+        path: nodeBase,
+        size: n.size,
+      };
+    });
   }
 }

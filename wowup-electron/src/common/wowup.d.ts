@@ -38,6 +38,8 @@ declare type RendererChannels =
   | "curse-get-scan-results"
   | "wowup-get-scan-results"
   | "unzip-file"
+  | "zip-file"
+  | "zip-read-file"
   | "copy-file"
   | "delete-directory"
   | "list-disks-win32"
@@ -79,7 +81,9 @@ declare type RendererChannels =
   | "push-init"
   | "push-register"
   | "push-unregister"
-  | "push-subscribe";
+  | "push-subscribe"
+  | "backup-get-existing"
+  | "backup-create";
 
 declare global {
   interface Window {

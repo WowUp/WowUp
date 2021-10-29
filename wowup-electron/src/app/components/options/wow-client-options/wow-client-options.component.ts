@@ -9,12 +9,12 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { WowClientType } from "../../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../../common/wowup/models";
-import { WowInstallation } from "../../../models/wowup/wow-installation";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { getEnumList, getEnumName } from "../../../utils/enum.utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { SessionService } from "../../../services/session/session.service";
+import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 
 @Component({
   selector: "app-wow-client-options",

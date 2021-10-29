@@ -1,0 +1,28 @@
+.wtf-backup-dialog {
+  min-width: 600px;
+}
+
+.backup-list {
+  background-color: var(--background-secondary-2);
+  margin: 0;
+  overflow: auto;
+  padding: 0 1em;
+
+  .backup-list-item:not(:last-child) {
+    border-bottom: 1px solid var(--background-secondary-1);
+  }
+
+  .backup-list-item {
+    padding: 1em 0;
+    list-style: none;
+
+    .status-badge {
+      width: 20px;
+      height: 20px;
+    }
+
+    .title {
+      font-size: 1.2em;
+    }
+  }
+}

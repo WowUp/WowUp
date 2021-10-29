@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { DownloadCountPipe } from "../pipes/download-count.pipe";
 import { GetAddonListItemFilePropPipe } from "../pipes/get-addon-list-item-file-prop.pipe";
@@ -29,6 +30,6 @@ import { TrustHtmlPipe } from "../pipes/trust-html.pipe";
     InterfaceFormatPipe,
     InvertBoolPipe,
   ],
-  providers: [RelativeDurationPipe, GetAddonListItemFilePropPipe, DownloadCountPipe],
+  providers: [RelativeDurationPipe, GetAddonListItemFilePropPipe, DownloadCountPipe, DatePipe],
 })
 export class PipesModule {}

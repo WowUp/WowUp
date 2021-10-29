@@ -11,7 +11,7 @@ import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { ProductDb } from "../../models/warcraft/product-db";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { SelectItem } from "../../models/wowup/select-item";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";

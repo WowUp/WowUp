@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 
 import { Addon } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { getEnumName } from "../../utils/enum.utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
@@ -129,28 +129,53 @@ export class AddonBrokerService {
   }
 
   public async installImportSummary(importSummary: ImportSummary, installation: WowInstallation): Promise<void> {
-    for (const comp of importSummary.comparisons) {
-      if (comp.state !== "added") {
-        continue;
-      }
+    const comps = importSummary.comparisons.filter((comp) => comp.state === "added");
 
-      try {
-        await this._addonService.installBaseAddon(
-          comp.imported.id,
-          comp.imported.provider_name,
-          installation,
-          (installState, progress) => {
-            this._addonInstallSrc.next({
-              comparisonId: comp.id,
-              installState,
-              progress,
-            });
-          }
-        );
-      } catch (e) {
-        console.error(`Failed to install imported addon`, e);
-      }
-    }
+    const tasks = comps.map((comp) => {
+      return (async (c) => {
+        try {
+          await this._addonService.installBaseAddon(
+            c.imported.id,
+            c.imported.provider_name,
+            installation,
+            (installState, progress) => {
+              this._addonInstallSrc.next({
+                comparisonId: c.id,
+                installState,
+                progress,
+              });
+            }
+          );
+        } catch (e) {
+          console.error(`Failed to install imported addon`, e);
+        }
+      })(comp);
+    });
+
+    await Promise.all(tasks);
+
+    // for (const comp of importSummary.comparisons) {
+    //   if (comp.state !== "added") {
+    //     continue;
+    //   }
+
+    //   try {
+    //     await this._addonService.installBaseAddon(
+    //       comp.imported.id,
+    //       comp.imported.provider_name,
+    //       installation,
+    //       (installState, progress) => {
+    //         this._addonInstallSrc.next({
+    //           comparisonId: comp.id,
+    //           installState,
+    //           progress,
+    //         });
+    //       }
+    //     );
+    //   } catch (e) {
+    //     console.error(`Failed to install imported addon`, e);
+    //   }
+    // }
   }
 
   public getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): ImportSummary {

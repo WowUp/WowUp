@@ -61,6 +61,7 @@ export class WowUpService {
   public readonly applicationLogsFolderPath: string = window.logPath;
   public readonly applicationDownloadsFolderPath: string = join(this.applicationFolderPath, "downloads");
   public readonly applicationUpdaterPath: string = join(this.applicationFolderPath, this.updaterName);
+  public readonly wtfBackupFolder: string = join(this.applicationFolderPath, "wtf_backups");
 
   public readonly preferenceChange$ = this._preferenceChangeSrc.asObservable();
 

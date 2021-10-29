@@ -4,7 +4,7 @@ import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
 import { WowUpScanResult } from "../src/common/wowup/models";
-import { exists, readDirRecursive } from "./file.utils";
+import { exists, readDirRecursive, hashFile, hashString } from "./file.utils";
 import * as fsp from "fs/promises";
 
 const INVALID_PATH_CHARS = [
@@ -86,14 +86,14 @@ export class WowUpFolderScanner {
     const limit = pLimit(4);
     const tasks = _.map(matchingFiles, (file) =>
       limit(async () => {
-        return { hash: await this.hashFile(file), file };
+        return { hash: await hashFile(file), file };
       })
     );
     const fileFingerprints = await Promise.all(tasks);
 
     const fingerprintList = _.map(fileFingerprints, (ff) => ff.hash);
     const hashConcat = _.orderBy(fingerprintList).join("");
-    const fingerprint = this.hashString(hashConcat);
+    const fingerprint = hashString(hashConcat);
 
     const result: WowUpScanResult = {
       fileFingerprints: fingerprintList,
@@ -202,17 +202,6 @@ export class WowUpFolderScanner {
     } while (currentMatch);
 
     return matches;
-  }
-
-  private hashString(str: string | crypto.BinaryLike) {
-    const md5 = crypto.createHash("md5");
-    md5.update(str);
-    return md5.digest("hex");
-  }
-
-  private async hashFile(filePath: string): Promise<string> {
-    const text = await fsp.readFile(filePath);
-    return this.hashString(text);
   }
 
   private getRealPath(filePath: string) {

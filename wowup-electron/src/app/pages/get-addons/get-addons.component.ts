@@ -33,7 +33,6 @@ import { TableContextHeaderCellComponent } from "../../components/addons/table-c
 import { GenericProviderError } from "../../errors";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
 import { ColumnState } from "../../models/wowup/column-state";
-import { WowInstallation } from "../../models/wowup/wow-installation";
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
@@ -46,6 +45,7 @@ import { WarcraftService } from "../../services/warcraft/warcraft.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumKeys } from "../../utils/enum.utils";
 import { camelToSnakeCase } from "../../utils/string.utils";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 
 interface CategoryItem {
   category: AddonCategory;

@@ -46,7 +46,7 @@ import { AddonSearchResultFile } from "../../models/wowup/addon-search-result-fi
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ProtocolSearchResult } from "../../models/wowup/protocol-search-result";
 import { Toc } from "../../models/wowup/toc";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import * as AddonUtils from "../../utils/addon.utils";
 import { getEnumName } from "../../utils/enum.utils";
 import * as SearchResults from "../../utils/search-result.utils";
