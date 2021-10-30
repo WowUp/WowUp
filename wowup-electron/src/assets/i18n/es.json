@@ -1,33 +1,33 @@
 {
   "ADDON_IMPORT": {
-    "ACTIVE_ADDON_COUNT": "Active addons: {count}",
-    "ADDED_BADGE_TOOLTIP": "We will attempt to install this addon",
-    "CONFLICT_BADGE_TOOLTIP": "Addons in conflict will not be modified",
-    "COPY_BUTTON": "Copy",
-    "DIALOG_TITLE": "Import/Export Addons: {clientType}",
-    "EXPORT_STRING_COPIED": "Export string copied to clipboard",
-    "EXPORT_TAB_LABEL": "Export",
-    "EXPORT_TEXT_LABEL": "Addon Export Data",
-    "GENERIC_IMPORT_ERROR": "An error occurred during import",
-    "IGNORED_ADDON_COUNT": "Ignored addons: {count}",
-    "IMPORT_ADDED_COUNT": "{count} added",
-    "IMPORT_BADGE_ADDED": "New",
-    "IMPORT_BADGE_CONFLICT": "Conflict",
-    "IMPORT_BADGE_NO_CHANGE": "No Change",
-    "IMPORT_BUTTON": "Import",
-    "IMPORT_CONFLICT_COUNT": "{count} in conflict",
-    "IMPORT_NO_CHANGE_COUNT": "{count} unchanged",
-    "IMPORT_STRING_INVALID": "Import string was invalid",
-    "IMPORT_TAB_LABEL": "Import",
-    "IMPORT_TEXT_INSTRUCTIONS": "Paste WowUp addon export data into the field below to get started",
-    "IMPORT_TEXT_LABEL": "Import data",
-    "IMPORT_TOTAL_COUNT": "Importing {count} {count, plural, =1{addon} other{addons}}",
-    "INSTALL_BUTTON": "Install",
-    "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
-    "NO_CHANGE_BADGE_TOOLTIP": "You already have this addon installed",
-    "PROVIDER_MISMATCH": "Addon provider does not match",
-    "RESET_BUTTON": "Reset",
-    "VERSION_MISMATCH": "Versions do not match"
+    "ACTIVE_ADDON_COUNT": "Addons activos: {count}",
+    "ADDED_BADGE_TOOLTIP": "Intentaremos instalar este addon",
+    "CONFLICT_BADGE_TOOLTIP": "Los addons en conflicto no serán modificados",
+    "COPY_BUTTON": "Copiar",
+    "DIALOG_TITLE": "Importar/Exportar addons: {clientType}",
+    "EXPORT_STRING_COPIED": "Datos de exportación copiados al portapapeles",
+    "EXPORT_TAB_LABEL": "Exportar",
+    "EXPORT_TEXT_LABEL": "Datos de exportación de addons",
+    "GENERIC_IMPORT_ERROR": "Ocurrió un error durante la importación",
+    "IGNORED_ADDON_COUNT": "Addons ignorados: {count}",
+    "IMPORT_ADDED_COUNT": "{count} añadidos",
+    "IMPORT_BADGE_ADDED": "Nuevo",
+    "IMPORT_BADGE_CONFLICT": "En conflicto",
+    "IMPORT_BADGE_NO_CHANGE": "Sin cambios",
+    "IMPORT_BUTTON": "Importar",
+    "IMPORT_CONFLICT_COUNT": "{count} en conflicto",
+    "IMPORT_NO_CHANGE_COUNT": "{count} sin cambios",
+    "IMPORT_STRING_INVALID": "La cadena de importación no es válida",
+    "IMPORT_TAB_LABEL": "Importar",
+    "IMPORT_TEXT_INSTRUCTIONS": "Pegue los datos de exportación de WowUp en el campo inferior para comenzar",
+    "IMPORT_TEXT_LABEL": "Importar datos",
+    "IMPORT_TOTAL_COUNT": "Importando {count} {count, plural, =1{addon} other{addons}}",
+    "INSTALL_BUTTON": "Instalar",
+    "INVALID_CLIENT_TYPE": "La cadena de importación no concuerda con el tipo de cliente seleccionado",
+    "NO_CHANGE_BADGE_TOOLTIP": "Este addon ya está instalado",
+    "PROVIDER_MISMATCH": "El proveedor del addon no concuerda",
+    "RESET_BUTTON": "Reiniciar",
+    "VERSION_MISMATCH": "Las versiones no coinciden"
   },
   "APP": {
     "APP_MENU": {
@@ -369,7 +369,7 @@
       },
       "CHECK_UPDATES_BUTTON": "Buscar actualizaciones",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons instalados",
-      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{update} other{updates}} ",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{actualización} other{actualizaciones}} ",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Mostrar Columna"
@@ -528,19 +528,19 @@
     }
   },
   "WTF_BACKUP": {
-    "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
-    "CREATE_BACKUP_BUTTON": "Create Backup",
-    "DIALOG_TITLE": "WTF Settings Backup: {clientType}",
+    "BACKUP_COUNT_TEXT": "Se encontraron {count} {count, plural, =1{copia de seguridad} other{copias de seguridad}}",
+    "CREATE_BACKUP_BUTTON": "Crear copia de seguridad",
+    "DIALOG_TITLE": "Copia de seguridad de la carpeta de configuración WTF: {clientType}",
     "ERROR": {
-      "GENERIC_ERROR": "There was an issue processing this backup",
-      "INVALID_CONTENTS": "There was an issue processing this backup",
-      "INVALID_CREATED_AT": "There was an issue processing this backup",
-      "INVALID_CREATED_BY": "There was an issue processing this backup"
+      "GENERIC_ERROR": "Ocurrió un error procesando esta copia de seguridad",
+      "INVALID_CONTENTS": "Ocurrió un error procesando esta copia de seguridad",
+      "INVALID_CREATED_AT": "Ocurrió un error procesando esta copia de seguridad",
+      "INVALID_CREATED_BY": "Ocurrió un error procesando esta copia de seguridad"
     },
-    "SHOW_FOLDER_BUTTON": "Show Folder",
+    "SHOW_FOLDER_BUTTON": "Mostrar carpeta",
     "TOOL_TIP": {
-      "APPLY_BUTTON": "Apply this backup",
-      "DELETE_BUTTON": "Delete this backup"
+      "APPLY_BUTTON": "Aplicar esta copia de seguridad",
+      "DELETE_BUTTON": "Eliminar esta copia de seguridad"
     }
   }
 }
