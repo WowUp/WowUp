@@ -61,7 +61,6 @@ import { SortOrder } from "../../models/wowup/sort-order";
 import { PushService } from "../../services/push/push.service";
 import { AddonUiService } from "../../services/addons/addon-ui.service";
 import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
-import { WtfService } from "../../services/wtf/wtf.service";
 import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
 
 @Component({
@@ -243,7 +242,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _snackbarService: SnackbarService,
     private _pushService: PushService,
     private _addonUiService: AddonUiService,
-    private _wtfService: WtfService,
     public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
