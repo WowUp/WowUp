@@ -32,10 +32,15 @@
           <!-- ACTIONS -->
           <div *ngIf="backup.error" class="flex-shrink-0">{{ "WTF_BACKUP.ERROR." + backup.error | translate }}</div>
           <div *ngIf="backup.error === undefined" class="flex-shrink-0">
-            <button mat-icon-button [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate">
+            <button mat-icon-button [disabled]="true" [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate">
               <mat-icon svgIcon="fas:history"> </mat-icon>
             </button>
-            <button mat-icon-button color="warn" [matTooltip]="'WTF_BACKUP.TOOL_TIP.DELETE_BUTTON' | translate">
+            <button
+              mat-icon-button
+              color="warn"
+              [disabled]="true"
+              [matTooltip]="'WTF_BACKUP.TOOL_TIP.DELETE_BUTTON' | translate"
+            >
               <mat-icon svgIcon="fas:trash"> </mat-icon>
             </button>
           </div>
