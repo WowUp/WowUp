@@ -526,5 +526,21 @@
         "TITLE": "월드 오브 워크래프트"
       }
     }
+  },
+  "WTF_BACKUP": {
+    "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
+    "CREATE_BACKUP_BUTTON": "Create Backup",
+    "DIALOG_TITLE": "WTF Settings Backup: {clientType}",
+    "ERROR": {
+      "GENERIC_ERROR": "There was an issue processing this backup",
+      "INVALID_CONTENTS": "There was an issue processing this backup",
+      "INVALID_CREATED_AT": "There was an issue processing this backup",
+      "INVALID_CREATED_BY": "There was an issue processing this backup"
+    },
+    "SHOW_FOLDER_BUTTON": "Show Folder",
+    "TOOL_TIP": {
+      "APPLY_BUTTON": "Apply this backup",
+      "DELETE_BUTTON": "Delete this backup"
+    }
   }
 }
