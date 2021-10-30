@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { error } from "console";
 import { BehaviorSubject, from, of } from "rxjs";
 import { catchError, first, map, switchMap } from "rxjs/operators";
 import { WowInstallation } from "../../../../common/warcraft/wow-installation";
@@ -53,7 +52,7 @@ export class WtfBackupComponent implements OnInit {
     await this._electronService.openPath(backupPath);
   }
 
-  public async onClickDeleteBackup(backup: WtfBackupViewModel) {
+  public onClickDeleteBackup(backup: WtfBackupViewModel): void {
     const title = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.TITLE");
     const message = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.MESSAGE", { name: backup.title });
     const dialogRef = this._dialogFactory.getConfirmDialog(title, message);

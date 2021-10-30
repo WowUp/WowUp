@@ -10,7 +10,6 @@ import {
   ImportComparison,
   ImportSummary,
 } from "../../../services/addons/addon-broker.service";
-import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { ElectronService } from "../../../services";
