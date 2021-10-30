@@ -104,13 +104,7 @@ import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
-import { WowInstallation } from "../src/common/warcraft/wow-installation";
-import {
-  BackupCreateRequest,
-  BackupGetExistingRequest,
-  GetDirectoryTreeRequest,
-} from "../src/common/models/ipc-request";
-import { BackupCreateResponse, BackupGetExistingResponse } from "../src/common/models/ipc-response";
+import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -513,37 +507,6 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_PUSH_SUBSCRIBE, async (evt, channel) => {
     return await push.subscribeToChannel(channel);
-  });
-
-  handle("backup-get-existing", async (evt, req: BackupGetExistingRequest) => {
-    const response: BackupGetExistingResponse = {
-      exists: false,
-    };
-
-    log.debug("backup-get-existing", req);
-
-    const backupFolder = path.join(req.backupPath, req.installation.id);
-    response.exists = await exists(backupFolder);
-    if (!response.exists) {
-      return response;
-    }
-
-    return response;
-  });
-
-  handle("backup-create", async (evt, req: BackupCreateRequest) => {
-    const response: BackupCreateResponse = {};
-
-    log.debug("backup-get-existing", req);
-
-    const backupFolder = path.join(req.backupPath, req.installation.id);
-    await fsp.mkdir(backupFolder, { recursive: true });
-
-    // TODO create backup tree
-
-    // TODO copy backup contents
-
-    return response;
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {

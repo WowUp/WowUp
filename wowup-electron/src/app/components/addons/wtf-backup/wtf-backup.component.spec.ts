@@ -1,16 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { WtfBackupComponent } from './wtf-backup.component';
+import { WtfBackupComponent } from "./wtf-backup.component";
 
-describe('WtfBackupComponent', () => {
+describe("WtfBackupComponent", () => {
   let component: WtfBackupComponent;
   let fixture: ComponentFixture<WtfBackupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WtfBackupComponent ]
-    })
-    .compileComponents();
+      declarations: [WtfBackupComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -19,7 +18,7 @@ describe('WtfBackupComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

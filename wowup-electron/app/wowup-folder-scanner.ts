@@ -1,5 +1,4 @@
 import * as _ from "lodash";
-import * as crypto from "crypto";
 import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";

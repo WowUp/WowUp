@@ -160,7 +160,7 @@ export class FileService {
     return this._electronService.invoke<string[]>(IPC_LIST_FILES_CHANNEL, sourcePath, filter);
   }
 
-  public readFileInZip(zipPath: string, filePath: string) {
+  public readFileInZip(zipPath: string, filePath: string): Promise<string> {
     return this._electronService.invoke<any>("zip-read-file", zipPath, filePath);
   }
 
@@ -176,7 +176,7 @@ export class FileService {
     return await this._electronService.invoke(IPC_UNZIP_FILE_CHANNEL, request);
   }
 
-  public async zipFile(srcPath: string, destPath: string) {
+  public async zipFile(srcPath: string, destPath: string): Promise<void> {
     await this._electronService.invoke("zip-file", srcPath, destPath);
   }
 }

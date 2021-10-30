@@ -21,7 +21,7 @@ export function zipFile(srcPath: string, outPath: string): Promise<boolean> {
   });
 }
 
-export function readFileInZip(zipPath: string, filePath: string) {
+export function readFileInZip(zipPath: string, filePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const zip = new AdmZip(zipPath);
     zip.readAsTextAsync(filePath, (data, err) => {
@@ -176,7 +176,7 @@ export async function getLastModifiedFileDate(sourcePath: string): Promise<numbe
   return latest;
 }
 
-export function hashString(str: string | crypto.BinaryLike, alg = "md5") {
+export function hashString(str: string | crypto.BinaryLike, alg = "md5"): string {
   const md5 = crypto.createHash(alg);
   md5.update(str);
   return md5.digest("hex");

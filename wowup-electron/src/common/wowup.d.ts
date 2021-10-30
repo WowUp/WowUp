@@ -81,9 +81,7 @@ declare type RendererChannels =
   | "push-init"
   | "push-register"
   | "push-unregister"
-  | "push-subscribe"
-  | "backup-get-existing"
-  | "backup-create";
+  | "push-subscribe";
 
 declare global {
   interface Window {

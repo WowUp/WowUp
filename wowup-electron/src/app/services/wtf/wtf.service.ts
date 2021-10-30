@@ -2,10 +2,7 @@ import { Injectable } from "@angular/core";
 import * as path from "path";
 import { ElectronService } from "..";
 
-import { Addon } from "../../../common/entities/addon";
 import { FsStats, TreeNode } from "../../../common/models/ipc-events";
-import { BackupGetExistingRequest } from "../../../common/models/ipc-request";
-import { BackupGetExistingResponse } from "../../../common/models/ipc-response";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { FileService } from "../files/file.service";
 import { WowUpService } from "../wowup/wowup.service";
@@ -224,7 +221,7 @@ export class WtfService {
   private async createBackupZip(installation: WowInstallation): Promise<void> {
     const wtfPath = this.getWtfPath(installation);
     const zipPath = path.join(this.getBackupPath(installation), `wtf_${Date.now()}.zip`);
-    this._fileService.zipFile(wtfPath, zipPath);
+    await this._fileService.zipFile(wtfPath, zipPath);
   }
 
   private async createBackupDirectory(installation: WowInstallation): Promise<void> {
@@ -258,25 +255,10 @@ export class WtfService {
     return metaPath;
   }
 
-  private async getBackup(installation: WowInstallation): Promise<BackupGetExistingResponse> {
-    const args: BackupGetExistingRequest = {
-      backupPath: this._wowUpService.wtfBackupFolder,
-      installation,
-    };
-    return await this._electronService.invoke("backup-get-existing", args);
-  }
-
   private async listBackupFiles(installation: WowInstallation) {
     const backupPath = this.getBackupPath(installation);
     const zipFiles = await this._fileService.listFiles(backupPath, "*.zip");
     return zipFiles.map((f) => path.join(backupPath, f));
-  }
-
-  private async createFullBackup(installation: WowInstallation): Promise<void> {}
-
-  private async backupNode(node: WtfNode, installation: WowInstallation) {
-    const wtfPath = this.getWtfPath(installation);
-    const nodeBase = node.path.replace(wtfPath, "");
   }
 
   public getBackupPath(installation: WowInstallation): string {

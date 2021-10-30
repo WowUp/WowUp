@@ -28,7 +28,7 @@ export class WtfBackupComponent implements OnInit {
   public readonly backupCt$ = this.backups$.pipe(map((backups) => backups.length));
   public readonly backupPath: string;
 
-  constructor(
+  public constructor(
     private _electronService: ElectronService,
     private _sessionService: SessionService,
     private _wtfService: WtfService
@@ -37,16 +37,16 @@ export class WtfBackupComponent implements OnInit {
     this.backupPath = this._wtfService.getBackupPath(this.selectedInstallation);
   }
 
-  ngOnInit(): void {
-    this.loadBackups();
+  public ngOnInit(): void {
+    this.loadBackups().catch((e) => console.error(e));
   }
 
-  async onShowFolder(): Promise<void> {
+  public async onShowFolder(): Promise<void> {
     const backupPath = this._wtfService.getBackupPath(this.selectedInstallation);
     await this._electronService.openPath(backupPath);
   }
 
-  async onCreateBackup(): Promise<void> {
+  public async onCreateBackup(): Promise<void> {
     this.busy$.next(true);
     try {
       await this._wtfService.createBackup(this.selectedInstallation);
