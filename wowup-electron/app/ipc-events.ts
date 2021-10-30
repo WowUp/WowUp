@@ -1,6 +1,7 @@
 import {
   app,
   BrowserWindow,
+  clipboard,
   dialog,
   ipcMain,
   IpcMainInvokeEvent,
@@ -172,6 +173,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       return systemPreferences.getUserDefault(key, type);
     }
   );
+
+  handle("clipboard-read-text", (evt) => {
+    return clipboard.readText();
+  });
 
   handle(IPC_SHOW_DIRECTORY, async (evt, filePath: string): Promise<string> => {
     return await shell.openPath(filePath);

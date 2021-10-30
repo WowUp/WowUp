@@ -25,7 +25,7 @@
               <div class="title ml-1 flex-grow-1" [ngClass]="{ 'text-warning': backup.error }">{{ backup.title }}</div>
             </div>
             <div class="row text-2">
-              <div class="mr-3">{{ backup.date | localeDate: "medium" }}</div>
+              <div class="mr-3">{{ backup.date | relativeDuration }}</div>
               <div class="mr-3">{{ backup.size }}</div>
             </div>
           </div>
@@ -38,8 +38,9 @@
             <button
               mat-icon-button
               color="warn"
-              [disabled]="true"
+              [disabled]="busy$ | async"
               [matTooltip]="'WTF_BACKUP.TOOL_TIP.DELETE_BUTTON' | translate"
+              (click)="onClickDeleteBackup(backup)"
             >
               <mat-icon svgIcon="fas:trash"> </mat-icon>
             </button>

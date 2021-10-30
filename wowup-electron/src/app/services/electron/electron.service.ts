@@ -253,6 +253,10 @@ export class ElectronService {
     await this.invoke(IPC_WINDOW_LEAVE_FULLSCREEN);
   }
 
+  public async readClipboardText(): Promise<string> {
+    return await this.invoke("clipboard-read-text");
+  }
+
   public showNotification(title: string, options?: NotificationOptions): Notification {
     return new Notification(title, options);
   }

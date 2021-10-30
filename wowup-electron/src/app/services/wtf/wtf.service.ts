@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import * as path from "path";
-import { ElectronService } from "..";
 
 import { FsStats, TreeNode } from "../../../common/models/ipc-events";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
@@ -55,17 +54,21 @@ export interface WtfBackup {
   providedIn: "root",
 })
 export class WtfService {
-  public constructor(
-    private _fileService: FileService,
-    private _electronService: ElectronService,
-    private _wowUpService: WowUpService
-  ) {}
+  public constructor(private _fileService: FileService, private _wowUpService: WowUpService) {}
 
-  // including the hash will make this operation much slower
+  /**
+   * Get a nested tree of nodes for every file within the WTF structure
+   * including the hash will make this operation much slower
+   */
   public async getWtfContents(installation: WowInstallation, includeHash = false): Promise<WtfNode> {
-    const wtfPath = this.getWtfPath(installation);
-    const tree = await this._fileService.getDirectoryTree(wtfPath, { includeHash });
-    return this.getWtfNode(tree);
+    console.time("getWtfContents");
+    try {
+      const wtfPath = this.getWtfPath(installation);
+      const tree = await this._fileService.getDirectoryTree(wtfPath, { includeHash });
+      return this.getWtfNode(tree);
+    } finally {
+      console.timeEnd("getWtfContents");
+    }
   }
 
   public getWtfNode(treeNode: TreeNode): WtfNode {
@@ -167,42 +170,47 @@ export class WtfService {
   }
 
   public async getBackupList(installation: WowInstallation): Promise<WtfBackup[]> {
-    const wtfBackups: WtfBackup[] = [];
+    console.time("getBackupList");
+    try {
+      const wtfBackups: WtfBackup[] = [];
 
-    const backupZipFiles = await this.listBackupFiles(installation);
-    const fsStats = await this._fileService.statFiles(backupZipFiles);
+      const backupZipFiles = await this.listBackupFiles(installation);
+      const fsStats = await this._fileService.statFiles(backupZipFiles);
 
-    for (let i = 0; i < backupZipFiles.length; i++) {
-      const zipFile = backupZipFiles[i];
-      const stat = fsStats[zipFile];
+      for (let i = 0; i < backupZipFiles.length; i++) {
+        const zipFile = backupZipFiles[i];
+        const stat = fsStats[zipFile];
 
-      const wtfBackup: WtfBackup = {
-        location: zipFile,
-        fileName: path.basename(zipFile),
-        size: stat.size,
-        birthtimeMs: stat.birthtimeMs,
-      };
+        const wtfBackup: WtfBackup = {
+          location: zipFile,
+          fileName: path.basename(zipFile),
+          size: stat.size,
+          birthtimeMs: stat.birthtimeMs,
+        };
 
-      try {
-        const zipMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
-        const zipMetaData: WtfBackupMetadataFile = JSON.parse(zipMetaTxt);
+        try {
+          const zipMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
+          const zipMetaData: WtfBackupMetadataFile = JSON.parse(zipMetaTxt);
 
-        if (!Array.isArray(zipMetaData.contents)) {
-          wtfBackup.error = "INVALID_CONTENTS";
-        } else if (typeof zipMetaData.createdAt !== "number") {
-          wtfBackup.error = "INVALID_CREATED_AT";
-        } else if (typeof zipMetaData.createdBy !== "string") {
-          wtfBackup.error = "INVALID_CREATED_BY";
+          if (!Array.isArray(zipMetaData.contents)) {
+            wtfBackup.error = "INVALID_CONTENTS";
+          } else if (typeof zipMetaData.createdAt !== "number") {
+            wtfBackup.error = "INVALID_CREATED_AT";
+          } else if (typeof zipMetaData.createdBy !== "string") {
+            wtfBackup.error = "INVALID_CREATED_BY";
+          }
+        } catch (e) {
+          console.error("Failed to process backup metadata", zipFile, e);
+          wtfBackup.error = "GENERIC_ERROR";
+        } finally {
+          wtfBackups.push(wtfBackup);
         }
-      } catch (e) {
-        console.error("Failed to process backup metadata", zipFile, e);
-        wtfBackup.error = "GENERIC_ERROR";
-      } finally {
-        wtfBackups.push(wtfBackup);
       }
-    }
 
-    return wtfBackups;
+      return wtfBackups;
+    } finally {
+      console.timeEnd("getBackupList");
+    }
   }
 
   public async createBackup(installation: WowInstallation): Promise<void> {
@@ -218,10 +226,30 @@ export class WtfService {
     }
   }
 
+  /**
+   * Delete a backup zip file based on the given installation
+   */
+  public async deleteBackup(fileName: string, installation: WowInstallation): Promise<void> {
+    const backupPath = this.getBackupPath(installation);
+    const fullPath = path.join(backupPath, fileName);
+
+    const pathExists = await this._fileService.pathExists(fullPath);
+    if (!pathExists) {
+      throw new Error("path not found");
+    }
+
+    await this._fileService.remove(fullPath);
+  }
+
   private async createBackupZip(installation: WowInstallation): Promise<void> {
-    const wtfPath = this.getWtfPath(installation);
-    const zipPath = path.join(this.getBackupPath(installation), `wtf_${Date.now()}.zip`);
-    await this._fileService.zipFile(wtfPath, zipPath);
+    console.time("createBackupZip");
+    try {
+      const wtfPath = this.getWtfPath(installation);
+      const zipPath = path.join(this.getBackupPath(installation), `wtf_${Date.now()}.zip`);
+      await this._fileService.zipFile(wtfPath, zipPath);
+    } finally {
+      console.timeEnd("createBackupZip");
+    }
   }
 
   private async createBackupDirectory(installation: WowInstallation): Promise<void> {
@@ -232,7 +260,6 @@ export class WtfService {
   private async createBackupMetadataFile(installation: WowInstallation): Promise<string> {
     const wtfTree = await this.getWtfContents(installation, true);
     const wtfList = this.flattenTree([wtfTree]);
-    console.debug(wtfList);
 
     const backupMetadata: WtfBackupMetadataFile = {
       contents: this.toBackupMeta(wtfList, installation),

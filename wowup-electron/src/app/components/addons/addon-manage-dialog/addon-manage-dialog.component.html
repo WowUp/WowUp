@@ -112,7 +112,7 @@
   <button
     *ngIf="exportPayload !== undefined"
     mat-flat-button
-    color="accent"
+    color="primary"
     [cdkCopyToClipboard]="exportPayload"
     [disabled]="(installing$ | async) === true"
     (click)="onClickCopy()"
@@ -135,7 +135,7 @@
   <button
     *ngIf="hasImportSummary$ | async"
     mat-flat-button
-    color="accent"
+    color="primary"
     [disabled]="(canInstall$ | async) === false || (installing$ | async) === true"
     (click)="onClickInstall()"
   >
@@ -143,8 +143,17 @@
   </button>
   <button
     *ngIf="(hasImportSummary$ | async) === false"
-    mat-flat-button
+    mat-button
     color="accent"
+    [disabled]="(installing$ | async) === true"
+    (click)="onClickPaste()"
+  >
+    {{ "ADDON_IMPORT.PASTE_BUTTON" | translate }}
+  </button>
+  <button
+    *ngIf="(hasImportSummary$ | async) === false"
+    mat-flat-button
+    color="primary"
     [disabled]="(installing$ | async) === true"
     (click)="onClickImport()"
   >

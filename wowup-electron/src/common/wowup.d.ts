@@ -81,7 +81,8 @@ declare type RendererChannels =
   | "push-init"
   | "push-register"
   | "push-unregister"
-  | "push-subscribe";
+  | "push-subscribe"
+  | "clipboard-read-text";
 
 declare global {
   interface Window {

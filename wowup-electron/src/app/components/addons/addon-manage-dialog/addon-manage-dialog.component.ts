@@ -13,6 +13,7 @@ import {
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
 import { SnackbarService } from "../../../services/snackbar/snackbar.service";
+import { ElectronService } from "../../../services";
 
 interface ImportComparisonViewModel extends ImportComparison {
   isInstalling?: boolean;
@@ -61,7 +62,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
   );
 
   public constructor(
-    private _addonSevice: AddonService,
+    private _electronService: ElectronService,
     private _addonBrokerService: AddonBrokerService,
     private _sessionService: SessionService,
     private _snackbarService: SnackbarService
@@ -98,6 +99,19 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     this._snackbarService.showSuccessSnackbar("ADDON_IMPORT.EXPORT_STRING_COPIED", {
       timeout: 2000,
     });
+  }
+
+  public async onClickPaste(): Promise<void> {
+    try {
+      const txt = await this._electronService.readClipboardText();
+      this.importData = txt;
+
+      this._snackbarService.showSuccessSnackbar("ADDON_IMPORT.EXPORT_STRING_PASTED", {
+        timeout: 2000,
+      });
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public async onClickInstall(): Promise<void> {
