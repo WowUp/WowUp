@@ -6,6 +6,7 @@
     "COPY_BUTTON": "Copiar",
     "DIALOG_TITLE": "Importar/Exportar addons: {clientType}",
     "EXPORT_STRING_COPIED": "Datos de exportación copiados al portapapeles",
+    "EXPORT_STRING_PASTED": "Inserted clipboard contents",
     "EXPORT_TAB_LABEL": "Exportar",
     "EXPORT_TEXT_LABEL": "Datos de exportación de addons",
     "GENERIC_IMPORT_ERROR": "Ocurrió un error durante la importación",
@@ -25,6 +26,7 @@
     "INSTALL_BUTTON": "Instalar",
     "INVALID_CLIENT_TYPE": "La cadena de importación no concuerda con el tipo de cliente seleccionado",
     "NO_CHANGE_BADGE_TOOLTIP": "Este addon ya está instalado",
+    "PASTE_BUTTON": "Paste",
     "PROVIDER_MISMATCH": "El proveedor del addon no concuerda",
     "RESET_BUTTON": "Reiniciar",
     "VERSION_MISMATCH": "Las versiones no coinciden"
@@ -530,8 +532,13 @@
   "WTF_BACKUP": {
     "BACKUP_COUNT_TEXT": "Se encontraron {count} {count, plural, =1{copia de seguridad} other{copias de seguridad}}",
     "CREATE_BACKUP_BUTTON": "Crear copia de seguridad",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",
+      "TITLE": "Delete WTF Backup?"
+    },
     "DIALOG_TITLE": "Copia de seguridad de la carpeta de configuración WTF: {clientType}",
     "ERROR": {
+      "FAILED_TO_DELETE": "Failed to delete backup: {name}",
       "GENERIC_ERROR": "Ocurrió un error procesando esta copia de seguridad",
       "INVALID_CONTENTS": "Ocurrió un error procesando esta copia de seguridad",
       "INVALID_CREATED_AT": "Ocurrió un error procesando esta copia de seguridad",

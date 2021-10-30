@@ -6,6 +6,7 @@
     "COPY_BUTTON": "Copy",
     "DIALOG_TITLE": "Import/Export Addons: {clientType}",
     "EXPORT_STRING_COPIED": "Export string copied to clipboard",
+    "EXPORT_STRING_PASTED": "Inserted clipboard contents",
     "EXPORT_TAB_LABEL": "Export",
     "EXPORT_TEXT_LABEL": "Addon Export Data",
     "GENERIC_IMPORT_ERROR": "An error occurred during import",
@@ -25,6 +26,7 @@
     "INSTALL_BUTTON": "Install",
     "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
     "NO_CHANGE_BADGE_TOOLTIP": "You already have this addon installed",
+    "PASTE_BUTTON": "Paste",
     "PROVIDER_MISMATCH": "Addon provider does not match",
     "RESET_BUTTON": "Reset",
     "VERSION_MISMATCH": "Versions do not match"
@@ -530,8 +532,13 @@
   "WTF_BACKUP": {
     "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
     "CREATE_BACKUP_BUTTON": "Create Backup",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",
+      "TITLE": "Delete WTF Backup?"
+    },
     "DIALOG_TITLE": "WTF Settings Backup: {clientType}",
     "ERROR": {
+      "FAILED_TO_DELETE": "Failed to delete backup: {name}",
       "GENERIC_ERROR": "There was an issue processing this backup",
       "INVALID_CONTENTS": "There was an issue processing this backup",
       "INVALID_CREATED_AT": "There was an issue processing this backup",
