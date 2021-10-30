@@ -153,29 +153,6 @@ export class AddonBrokerService {
     });
 
     await Promise.all(tasks);
-
-    // for (const comp of importSummary.comparisons) {
-    //   if (comp.state !== "added") {
-    //     continue;
-    //   }
-
-    //   try {
-    //     await this._addonService.installBaseAddon(
-    //       comp.imported.id,
-    //       comp.imported.provider_name,
-    //       installation,
-    //       (installState, progress) => {
-    //         this._addonInstallSrc.next({
-    //           comparisonId: comp.id,
-    //           installState,
-    //           progress,
-    //         });
-    //       }
-    //     );
-    //   } catch (e) {
-    //     console.error(`Failed to install imported addon`, e);
-    //   }
-    // }
   }
 
   public getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): ImportSummary {
