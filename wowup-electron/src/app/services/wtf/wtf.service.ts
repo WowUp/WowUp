@@ -310,7 +310,7 @@ export class WtfService {
   private async isBackupApplicationValid(zipFile: string, installation: WowInstallation) {
     const srcMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
 
-    let srcMeta: WtfBackupMetadataFile = JSON.parse(srcMetaTxt);
+    const srcMeta: WtfBackupMetadataFile = JSON.parse(srcMetaTxt);
     let newMeta = await this.getBackupMetaList(installation);
 
     // since the metadata file is not considered when hashing the contents, ignore it

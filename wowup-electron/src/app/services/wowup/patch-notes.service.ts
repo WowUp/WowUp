@@ -31,6 +31,7 @@ const CHANGELOGS: ChangeLog[] = [
         <div>Added the ability to create and restore backups, this is a work in progress.</div>
         <img style="width: 70%; border: 1px solid #666666; border-radius: 4px;" loading="lazy" src="assets/images/patch/backup-preview.png">
       </li>
+      <li>Added a button to open the client folder for a WoW install</li>
       <li>Added WowUpHub category support</li>
       <li>Added WowUpHub preview support</li>
       <li>Added Mac M1 builds</li>
