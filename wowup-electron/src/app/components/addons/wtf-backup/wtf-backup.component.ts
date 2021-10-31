@@ -25,6 +25,8 @@ interface WtfBackupViewModel {
 export class WtfBackupComponent implements OnInit {
   public readonly busy$ = new BehaviorSubject<boolean>(false);
   public readonly backups$ = new BehaviorSubject<WtfBackupViewModel[]>([]);
+  public readonly busyText$ = new BehaviorSubject<string>("");
+  public readonly busyTextParams$ = new BehaviorSubject<any>({ count: "" });
 
   public readonly selectedInstallation: WowInstallation;
   public readonly hasBackups$ = this.backups$.pipe(map((backups) => backups.length > 0));
@@ -52,6 +54,35 @@ export class WtfBackupComponent implements OnInit {
     await this._electronService.openPath(backupPath);
   }
 
+  public onClickApplyBackup(backup: WtfBackupViewModel): void {
+    const title = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.TITLE");
+    const message = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.MESSAGE", { name: backup.title });
+    const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        first(),
+        switchMap((result) => {
+          if (!result) {
+            return of(undefined);
+          }
+
+          this.busy$.next(true);
+          this.busyText$.next("WTF_BACKUP.BUSY_TEXT.APPLYING_BACKUP");
+
+          return from(this._wtfService.applyBackup(backup.title, this.selectedInstallation));
+        }),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
+        })
+      )
+      .subscribe(() => {
+        this.busy$.next(false);
+      });
+  }
+
   public onClickDeleteBackup(backup: WtfBackupViewModel): void {
     const title = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.TITLE");
     const message = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.MESSAGE", { name: backup.title });
@@ -65,6 +96,9 @@ export class WtfBackupComponent implements OnInit {
           if (!result) {
             return of(undefined);
           }
+
+          this.busyText$.next("WTF_BACKUP.BUSY_TEXT.REMOVING_BACKUP");
+          this.busy$.next(true);
 
           return from(this._wtfService.deleteBackup(backup.title, this.selectedInstallation)).pipe(
             switchMap(() => from(this.loadBackups()))
@@ -82,23 +116,32 @@ export class WtfBackupComponent implements OnInit {
           return of(undefined);
         })
       )
-      .subscribe();
+      .subscribe(() => {
+        this.busy$.next(false);
+      });
   }
 
   public async onCreateBackup(): Promise<void> {
+    this.busyText$.next("WTF_BACKUP.BUSY_TEXT.CREATING_BACKUP");
     this.busy$.next(true);
+
     try {
-      await this._wtfService.createBackup(this.selectedInstallation);
+      await this._wtfService.createBackup(this.selectedInstallation, (count) => {
+        this.busyTextParams$.next({ count });
+      });
       await this.loadBackups();
     } catch (e) {
       console.error(e);
     } finally {
       this.busy$.next(false);
+      this.busyTextParams$.next({ count: "" });
     }
   }
 
   private async loadBackups() {
+    this.busyText$.next("WTF_BACKUP.BUSY_TEXT.LOADING_BACKUPS");
     this.busy$.next(true);
+
     try {
       const backups = await this._wtfService.getBackupList(this.selectedInstallation);
       const viewModels = backups.map((b) => this.toViewModel(b));

@@ -179,4 +179,8 @@ export class FileService {
   public async zipFile(srcPath: string, destPath: string): Promise<void> {
     await this._electronService.invoke("zip-file", srcPath, destPath);
   }
+
+  public async renameFile(srcPath: string, destPath: string): Promise<void> {
+    await this._electronService.invoke("rename-file", srcPath, destPath);
+  }
 }

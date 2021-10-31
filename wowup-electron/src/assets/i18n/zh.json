@@ -385,6 +385,7 @@
         "PATREON": "通过 Patreon 支持作者",
         "PAYPAL": "通过 PayPal 支持作者"
       },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多个提供方",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 个插件",
@@ -433,7 +434,8 @@
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客户端",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/经典怀旧服"
-      }
+      },
+      "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "共 {count} 条新闻",
@@ -520,6 +522,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "编辑",
         "MOVE_DOWN_BUTTON": "下移",
         "MOVE_UP_BUTTON": "上移",
+        "OPEN_FOLDER_BUTTON": "Open Folder",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "浏览",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",
         "RESCAN_CLIENTS_BUTTON": "重新扫描",
@@ -530,7 +533,17 @@
     }
   },
   "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "Are you sure you want to apply this backup to your interface settings?\n\nMake sure that the World of Warcraft game is not running before you apply a backup.\n\nThis operation cannot be undone.",
+      "TITLE": "Apply WTF Backup?"
+    },
     "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Applying backup...",
+      "CREATING_BACKUP": "Creating backup from {count} files...",
+      "LOADING_BACKUPS": "Loading backups...",
+      "REMOVING_BACKUP": "Removing backup..."
+    },
     "CREATE_BACKUP_BUTTON": "Create Backup",
     "DELETE_CONFIRMATION": {
       "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",

@@ -385,11 +385,18 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle("zip-file", async (evt, srcPath: string, destPath: string) => {
+    log.info(`[ZipFile]: '${srcPath} -> ${destPath}`);
     return await zipFile(srcPath, destPath);
   });
 
   handle("zip-read-file", async (evt, zipPath: string, filePath: string) => {
+    log.info(`[ZipReadFile]: '${zipPath} : ${filePath}`);
     return await readFileInZip(zipPath, filePath);
+  });
+
+  handle("rename-file", async (evt, srcPath: string, destPath: string) => {
+    log.info(`[RenameFile]: '${srcPath} -> ${destPath}`);
+    return await fsp.rename(srcPath, destPath);
   });
 
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {

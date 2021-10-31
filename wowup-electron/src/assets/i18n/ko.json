@@ -385,6 +385,7 @@
         "PATREON": "Patreon에서 제작자 지원하기",
         "PAYPAL": "PayPal에서 제작자 지원하기"
       },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
       "MULTIPLE_PROVIDERS_TOOLTIP": "복수의 제공자가 존재합니다",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count}개의 애드온",
@@ -433,7 +434,8 @@
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "모든 클라이언트 업데이트",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "리테일/클래식 업데이트"
-      }
+      },
+      "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "{count} news stories",
@@ -520,6 +522,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "MOVE_DOWN_BUTTON": "Move Down",
         "MOVE_UP_BUTTON": "Move Up",
+        "OPEN_FOLDER_BUTTON": "Open Folder",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "선택",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "재탐색",
@@ -530,7 +533,17 @@
     }
   },
   "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "Are you sure you want to apply this backup to your interface settings?\n\nMake sure that the World of Warcraft game is not running before you apply a backup.\n\nThis operation cannot be undone.",
+      "TITLE": "Apply WTF Backup?"
+    },
     "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Applying backup...",
+      "CREATING_BACKUP": "Creating backup from {count} files...",
+      "LOADING_BACKUPS": "Loading backups...",
+      "REMOVING_BACKUP": "Removing backup..."
+    },
     "CREATE_BACKUP_BUTTON": "Create Backup",
     "DELETE_CONFIRMATION": {
       "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",

@@ -5,16 +5,18 @@
 .backup-list {
   background-color: var(--background-secondary-2);
   margin: 0;
+  padding: 0;
   overflow: auto;
-  padding: 0 1em;
+  box-sizing: border-box;
 
   .backup-list-item:not(:last-child) {
     border-bottom: 1px solid var(--background-secondary-1);
   }
 
   .backup-list-item {
-    padding: 1em 0;
+    padding: 1em;
     list-style: none;
+    border-left: 3px solid transparent;
 
     .status-badge {
       width: 20px;
@@ -23,6 +25,11 @@
 
     .title {
       font-size: 1.2em;
+    }
+
+    &:hover {
+      border-left-color: var(--background-primary);
+      background-color: var(--background-secondary-1);
     }
   }
 }

@@ -385,6 +385,7 @@
         "PATREON": "Apoyar a este autor en Patreon",
         "PAYPAL": "Apoyar a este autor en PayPal"
       },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon está disponible en varios proveedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
@@ -433,7 +434,8 @@
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Actualizar todos los clientes",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Actualizar Retail/Classic"
-      }
+      },
+      "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "{count} titulares",
@@ -520,6 +522,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Editar",
         "MOVE_DOWN_BUTTON": "Mover abajo",
         "MOVE_UP_BUTTON": "Mover arriba",
+        "OPEN_FOLDER_BUTTON": "Open Folder",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seleccionar",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Eliminar",
         "RESCAN_CLIENTS_BUTTON": "Reescanear",
@@ -530,7 +533,17 @@
     }
   },
   "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "Are you sure you want to apply this backup to your interface settings?\n\nMake sure that the World of Warcraft game is not running before you apply a backup.\n\nThis operation cannot be undone.",
+      "TITLE": "Apply WTF Backup?"
+    },
     "BACKUP_COUNT_TEXT": "Se encontraron {count} {count, plural, =1{copia de seguridad} other{copias de seguridad}}",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Applying backup...",
+      "CREATING_BACKUP": "Creating backup from {count} files...",
+      "LOADING_BACKUPS": "Loading backups...",
+      "REMOVING_BACKUP": "Removing backup..."
+    },
     "CREATE_BACKUP_BUTTON": "Crear copia de seguridad",
     "DELETE_CONFIRMATION": {
       "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",

@@ -50,6 +50,7 @@ declare type RendererChannels =
   | "create-tray-menu"
   | "write-file"
   | "read-file"
+  | "rename-file"
   | "get-app-version"
   | "app-update-check-for-update"
   | "app-update-start-download"

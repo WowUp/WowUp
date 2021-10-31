@@ -1,3 +1,4 @@
+import { dirname } from "path";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 
@@ -8,13 +9,14 @@ import { MatSlideToggleChange } from "@angular/material/slide-toggle";
 import { TranslateService } from "@ngx-translate/core";
 
 import { WowClientType } from "../../../../common/warcraft/wow-client-type";
+import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 import { AddonChannelType } from "../../../../common/wowup/models";
+import { ElectronService } from "../../../services";
+import { SessionService } from "../../../services/session/session.service";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
+import { WarcraftService } from "../../../services/warcraft/warcraft.service";
 import { getEnumList, getEnumName } from "../../../utils/enum.utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
-import { WarcraftService } from "../../../services/warcraft/warcraft.service";
-import { SessionService } from "../../../services/session/session.service";
-import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 
 @Component({
   selector: "app-wow-client-options",
@@ -97,7 +99,8 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     private _translateService: TranslateService,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _warcraftService: WarcraftService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    private _electronService: ElectronService
   ) {
     this.addonChannelInfos = this.getAddonChannelInfos();
 
@@ -144,6 +147,14 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     }
 
     this.installationModel.defaultAutoUpdate = evt.checked;
+  }
+
+  public async onClickOpenFolder(): Promise<void> {
+    try {
+      await this._electronService.openExternal(dirname(this.installation.location));
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public onClickMoveUp(): void {

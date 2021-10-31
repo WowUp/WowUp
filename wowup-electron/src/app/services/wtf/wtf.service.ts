@@ -213,10 +213,20 @@ export class WtfService {
     }
   }
 
-  public async createBackup(installation: WowInstallation): Promise<void> {
+  /**
+   * Prepare the backup folder, create some back metadata for the backup, zip the wtf contents into a zip file
+   */
+  public async createBackup(installation: WowInstallation, status?: (int) => void): Promise<void> {
+    // ensure we have a directory to save our backup zip to
     await this.createBackupDirectory(installation);
 
-    const metadataFilePath = await this.createBackupMetadataFile(installation);
+    // delete any pre-existing meta file so it does not affect the overall hash
+    await this.deleteBackupMetadataFile(installation);
+
+    // create the hash output for the file tree
+    const [metadataFilePath, metadataFile] = await this.createBackupMetadataFile(installation);
+
+    status?.call(this, metadataFile.contents.length);
 
     try {
       await this.createBackupZip(installation);
@@ -241,6 +251,88 @@ export class WtfService {
     await this._fileService.remove(fullPath);
   }
 
+  /**
+   * Use the given backup zip file to carefully replace the user's existing WTF folder with what was inside the backup zip
+   * This operation should support a rollback feature up on failures
+   */
+  public async applyBackup(fileName: string, installation: WowInstallation): Promise<void> {
+    console.time("applyBackup");
+    try {
+      if (!fileName.endsWith(".zip")) {
+        throw new Error(`Invalid backup file: ${fileName}`);
+      }
+
+      const backupPath = this.getBackupPath(installation);
+      const wtfPath = this.getWtfPath(installation);
+      const fullPath = path.join(backupPath, fileName);
+
+      console.log(`Check backup zip location: ${fullPath}`);
+      const pathExists = await this._fileService.pathExists(fullPath);
+      if (!pathExists) {
+        throw new Error("path not found");
+      }
+
+      const wtfPathExists = await this._fileService.pathExists(wtfPath);
+      const wtfBackupPath = `${wtfPath}-wowup`;
+      if (wtfPathExists) {
+        console.log(`Rename current wtf folder: ${wtfPath}`);
+        await this._fileService.renameFile(wtfPath, wtfBackupPath);
+      }
+
+      console.log(`Unzip backup file: ${wtfPath}`);
+      try {
+        await this._fileService.unzipFile(fullPath, wtfPath);
+
+        // remove the metadata file, so that hashes will match
+        await this.deleteBackupMetadataFile(installation);
+
+        // validate that what we unzipped matches what was expected
+        console.log(`Validate backup result`);
+        await this.isBackupApplicationValid(fullPath, installation);
+      } catch (e) {
+        // Roll back the changes we made
+        console.log(`Rolling back changes`);
+        await this._fileService.deleteIfExists(wtfPath);
+        await this._fileService.renameFile(wtfBackupPath, wtfPath);
+        throw e;
+      }
+
+      console.log(`Removing soft backup: ${wtfBackupPath}`);
+      await this._fileService.deleteIfExists(wtfBackupPath);
+    } finally {
+      console.timeEnd("applyBackup");
+    }
+  }
+
+  /**
+   * Cross check the unzipped results against the metadata we have stored in the source zip file
+   */
+  private async isBackupApplicationValid(zipFile: string, installation: WowInstallation) {
+    const srcMetaTxt = await this._fileService.readFileInZip(zipFile, BACKUP_META_FILENAME);
+
+    let srcMeta: WtfBackupMetadataFile = JSON.parse(srcMetaTxt);
+    let newMeta = await this.getBackupMetaList(installation);
+
+    // since the metadata file is not considered when hashing the contents, ignore it
+    srcMeta.contents = srcMeta.contents.filter((sm) => !sm.path.endsWith(BACKUP_META_FILENAME));
+    newMeta = newMeta.filter((nm) => !nm.path.endsWith(BACKUP_META_FILENAME));
+
+    if (srcMeta.contents.length !== newMeta.length) {
+      throw new Error("Backup content count did not match");
+    }
+
+    for (const sm of srcMeta.contents) {
+      const nm = newMeta.find((n) => n.path === sm.path);
+      if (!nm) {
+        throw new Error(`Matching path not found" ${sm.path}`);
+      }
+
+      if (nm.hash !== sm.hash) {
+        throw new Error(`Hash mismatch found: ${sm.path} : ${nm.path}`);
+      }
+    }
+  }
+
   private async createBackupZip(installation: WowInstallation): Promise<void> {
     console.time("createBackupZip");
     try {
@@ -257,17 +349,28 @@ export class WtfService {
     await this._fileService.createDirectory(backupPath);
   }
 
-  private async createBackupMetadataFile(installation: WowInstallation): Promise<string> {
-    const wtfTree = await this.getWtfContents(installation, true);
-    const wtfList = this.flattenTree([wtfTree]);
-
+  private async createBackupMetadataFile(installation: WowInstallation): Promise<[string, WtfBackupMetadataFile]> {
+    const backupMetaList = await this.getBackupMetaList(installation);
     const backupMetadata: WtfBackupMetadataFile = {
-      contents: this.toBackupMeta(wtfList, installation),
+      contents: backupMetaList,
       createdAt: Date.now(),
       createdBy: "manual",
     };
 
-    return await this.writeWtfMetadataFile(backupMetadata, installation);
+    return [await this.writeWtfMetadataFile(backupMetadata, installation), backupMetadata];
+  }
+
+  private async deleteBackupMetadataFile(installation: WowInstallation) {
+    const wtfPath = this.getWtfPath(installation);
+    const metaPath = path.join(wtfPath, BACKUP_META_FILENAME);
+    await this._fileService.deleteIfExists(metaPath);
+  }
+
+  private async getBackupMetaList(installation: WowInstallation): Promise<WtfBackupMeta[]> {
+    const wtfTree = await this.getWtfContents(installation, true);
+    const wtfList = this.flattenTree([wtfTree]);
+
+    return this.toBackupMeta(wtfList, installation);
   }
 
   private async writeWtfMetadataFile(
@@ -282,16 +385,25 @@ export class WtfService {
     return metaPath;
   }
 
+  /**
+   * Get a list of all the zip files in our internal backup folder
+   */
   private async listBackupFiles(installation: WowInstallation) {
     const backupPath = this.getBackupPath(installation);
     const zipFiles = await this._fileService.listFiles(backupPath, "*.zip");
     return zipFiles.map((f) => path.join(backupPath, f));
   }
 
+  /**
+   * Get the path to our internal backup folder
+   */
   public getBackupPath(installation: WowInstallation): string {
     return path.join(this._wowUpService.wtfBackupFolder, installation.id);
   }
 
+  /**
+   * Convert a tree structure to a flat array
+   */
   private flattenTree(nodes: WtfNode[]): WtfNode[] {
     return Array.prototype.concat.apply(
       nodes,

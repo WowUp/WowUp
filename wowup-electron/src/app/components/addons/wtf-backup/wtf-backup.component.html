@@ -8,7 +8,16 @@
     </button>
   </div>
 </div>
-<mat-dialog-content>
+<mat-dialog-content *ngIf="busy$ | async">
+  <div class="row justify-content-center">
+    <div class="col align-items-center">
+      <mat-spinner diameter="55"></mat-spinner>
+      <div>{{ this.busyText$ | async | translate: (busyTextParams$ | async) }}</div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-content *ngIf="(busy$ | async) === false">
   <div *ngIf="(hasBackups$ | async) === false">
     <h4 class="mb-0">No backups were found at:</h4>
     <p class="text-2">{{ backupPath }}</p>
@@ -32,7 +41,12 @@
           <!-- ACTIONS -->
           <div *ngIf="backup.error" class="flex-shrink-0">{{ "WTF_BACKUP.ERROR." + backup.error | translate }}</div>
           <div *ngIf="backup.error === undefined" class="flex-shrink-0">
-            <button mat-icon-button [disabled]="true" [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate">
+            <button
+              mat-icon-button
+              [disabled]="busy$ | async"
+              [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate"
+              (click)="onClickApplyBackup(backup)"
+            >
               <mat-icon svgIcon="fas:history"> </mat-icon>
             </button>
             <button
