@@ -350,7 +350,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "Выбрано {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
+        "ADDONS_SELECTED": "{count, plural, one{Выбрана} other{Выбрано}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
         "ALPHA_ADDON_CHANNEL": "Альфа",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
         "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Уведомления включены",
