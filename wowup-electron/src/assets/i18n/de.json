@@ -1,35 +1,35 @@
 {
   "ADDON_IMPORT": {
-    "ACTIVE_ADDON_COUNT": "Active addons: {count}",
-    "ADDED_BADGE_TOOLTIP": "We will attempt to install this addon",
-    "CONFLICT_BADGE_TOOLTIP": "Addons in conflict will not be modified",
-    "COPY_BUTTON": "Copy",
+    "ACTIVE_ADDON_COUNT": "Aktive Addons: {count}",
+    "ADDED_BADGE_TOOLTIP": "Wir werden versuchen, dieses Addon zu installieren",
+    "CONFLICT_BADGE_TOOLTIP": "Addons in Konflikt werden nicht geändert",
+    "COPY_BUTTON": "Kopieren",
     "DIALOG_TITLE": "Import/Export Addons: {clientType}",
-    "EXPORT_STRING_COPIED": "Export string copied to clipboard",
-    "EXPORT_STRING_PASTED": "Inserted clipboard contents",
+    "EXPORT_STRING_COPIED": "Export Zeichenfolge in die Zwischenablage kopiert",
+    "EXPORT_STRING_PASTED": "Inhalt der Zwischenablage eingefügt",
     "EXPORT_TAB_LABEL": "Export",
-    "EXPORT_TEXT_LABEL": "Addon Export Data",
-    "GENERIC_IMPORT_ERROR": "An error occurred during import",
-    "IGNORED_ADDON_COUNT": "Ignored addons: {count}",
-    "IMPORT_ADDED_COUNT": "{count} added",
-    "IMPORT_BADGE_ADDED": "New",
-    "IMPORT_BADGE_CONFLICT": "Conflict",
-    "IMPORT_BADGE_NO_CHANGE": "No Change",
+    "EXPORT_TEXT_LABEL": "Addon Export Daten",
+    "GENERIC_IMPORT_ERROR": "Beim Import ist ein Fehler aufgetreten",
+    "IGNORED_ADDON_COUNT": "Ignorierte Addons: {count}",
+    "IMPORT_ADDED_COUNT": "{count} hinzugefügt",
+    "IMPORT_BADGE_ADDED": "Neu",
+    "IMPORT_BADGE_CONFLICT": "Konflikt",
+    "IMPORT_BADGE_NO_CHANGE": "Keine Änderung",
     "IMPORT_BUTTON": "Import",
-    "IMPORT_CONFLICT_COUNT": "{count} in conflict",
-    "IMPORT_NO_CHANGE_COUNT": "{count} unchanged",
-    "IMPORT_STRING_INVALID": "Import string was invalid",
+    "IMPORT_CONFLICT_COUNT": "{count} im Konflikt",
+    "IMPORT_NO_CHANGE_COUNT": "{count} ungeändert",
+    "IMPORT_STRING_INVALID": "Import Zeichenfolge war ungültig",
     "IMPORT_TAB_LABEL": "Import",
-    "IMPORT_TEXT_INSTRUCTIONS": "Paste WowUp addon export data into the field below to get started",
-    "IMPORT_TEXT_LABEL": "Import data",
-    "IMPORT_TOTAL_COUNT": "Importing {count} {count, plural, =1{addon} other{addons}}",
-    "INSTALL_BUTTON": "Install",
-    "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
-    "NO_CHANGE_BADGE_TOOLTIP": "You already have this addon installed",
-    "PASTE_BUTTON": "Paste",
-    "PROVIDER_MISMATCH": "Addon provider does not match",
-    "RESET_BUTTON": "Reset",
-    "VERSION_MISMATCH": "Versions do not match"
+    "IMPORT_TEXT_INSTRUCTIONS": "Füge die Wowup Addon-Exportdaten in das Feld unten ein, um zu beginnen",
+    "IMPORT_TEXT_LABEL": "Importdaten",
+    "IMPORT_TOTAL_COUNT": "Importiere {count} {count, plural, =1{Addon} other{Addons}}",
+    "INSTALL_BUTTON": "Installieren",
+    "INVALID_CLIENT_TYPE": "Import Zeichenfolge stimmt nicht mit dem ausgewählten Client-Typen überein",
+    "NO_CHANGE_BADGE_TOOLTIP": "Du hast diesen Addon bereits installiert",
+    "PASTE_BUTTON": "Einfügen",
+    "PROVIDER_MISMATCH": "Addon Anbieter stimmen nicht überein",
+    "RESET_BUTTON": "Zurücksetzen",
+    "VERSION_MISMATCH": "Versionen stimmen nicht überein"
   },
   "APP": {
     "APP_MENU": {
@@ -435,7 +435,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Alle Clients aktualisieren",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Retail/Classic aktualisieren"
       },
-      "WTF_BACKUP_BUTTON": "Interface Settings Backup"
+      "WTF_BACKUP_BUTTON": "Backup der Interface Einstellungen"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "{count} News",
@@ -522,7 +522,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Bearbeiten",
         "MOVE_DOWN_BUTTON": "Nach unten bewegen",
         "MOVE_UP_BUTTON": "Nach oben bewegen",
-        "OPEN_FOLDER_BUTTON": "Open Folder",
+        "OPEN_FOLDER_BUTTON": "Ordner öffnen",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Auswählen",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Entfernen",
         "RESCAN_CLIENTS_BUTTON": "Neu scannen",
@@ -534,35 +534,35 @@
   },
   "WTF_BACKUP": {
     "APPLY_CONFIRMATION": {
-      "MESSAGE": "Are you sure you want to apply this backup to your interface settings?\n\nMake sure that the World of Warcraft game is not running before you apply a backup.\n\nThis operation cannot be undone.",
-      "TITLE": "Apply WTF Backup?"
+      "MESSAGE": "Möchtest du diese Sicherung wirklich auf deine Interface Einstellungen anwenden?\n\nStelle sicher, dass World of Warcraft nicht ausgeführt wird, bevor du ein Backup anwendest.\n\nDieser Vorgang kann nicht rückgängig gemacht werden.",
+      "TITLE": "WTF-Backup anwenden?"
     },
-    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
-    "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
+    "BACKUP_APPLY_SUCCESS": "Sicherung erfolgreich angewendet: {name}",
+    "BACKUP_COUNT_TEXT": "{count} {count, plural, =1{Backup} other{Backups}} gefunden",
     "BUSY_TEXT": {
-      "APPLYING_BACKUP": "Applying backup...",
-      "CREATING_BACKUP": "Creating backup from {count} files...",
-      "LOADING_BACKUPS": "Loading backups...",
-      "REMOVING_BACKUP": "Removing backup..."
+      "APPLYING_BACKUP": "Backup wir angewendet...",
+      "CREATING_BACKUP": "Erstelle Backup von {count} Dateien...",
+      "LOADING_BACKUPS": "Backups werden geladen...",
+      "REMOVING_BACKUP": "Backup wird gelöscht..."
     },
-    "CREATE_BACKUP_BUTTON": "Create Backup",
+    "CREATE_BACKUP_BUTTON": "Backup erstellen",
     "DELETE_CONFIRMATION": {
-      "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",
-      "TITLE": "Delete WTF Backup?"
+      "MESSAGE": "Bist du sicher, dass du das Backup {name} löschen möchtest?\nDas kann nicht rückgängig gemacht werden.",
+      "TITLE": "WTF-Backup löschen?"
     },
-    "DIALOG_TITLE": "WTF Settings Backup: {clientType}",
+    "DIALOG_TITLE": "WTF Einstellungs Backup: {clientType}",
     "ERROR": {
-      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
-      "FAILED_TO_DELETE": "Failed to delete backup: {name}",
-      "GENERIC_ERROR": "There was an issue processing this backup",
-      "INVALID_CONTENTS": "There was an issue processing this backup",
-      "INVALID_CREATED_AT": "There was an issue processing this backup",
-      "INVALID_CREATED_BY": "There was an issue processing this backup"
+      "BACKUP_APPLY_FAILED": "Sicherung konnte nicht angewendet werden: {name}",
+      "FAILED_TO_DELETE": "Sicherung konnte nicht gelöscht werden: {name}",
+      "GENERIC_ERROR": "Bei der Verarbeitung dieses Backups ist ein Problem aufgetreten",
+      "INVALID_CONTENTS": "Bei der Verarbeitung dieses Backups ist ein Problem aufgetreten",
+      "INVALID_CREATED_AT": "Bei der Verarbeitung dieses Backups ist ein Problem aufgetreten",
+      "INVALID_CREATED_BY": "Bei der Verarbeitung dieses Backups ist ein Problem aufgetreten"
     },
-    "SHOW_FOLDER_BUTTON": "Show Folder",
+    "SHOW_FOLDER_BUTTON": "Ordner anzeigen",
     "TOOL_TIP": {
-      "APPLY_BUTTON": "Apply this backup",
-      "DELETE_BUTTON": "Delete this backup"
+      "APPLY_BUTTON": "Dieses Backup anwenden",
+      "DELETE_BUTTON": "Dieses Backup löschen"
     }
   }
 }
