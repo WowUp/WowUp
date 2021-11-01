@@ -47,8 +47,7 @@ describe("LocaleTest", () => {
     translate = TestBed.inject(TranslateService);
   });
 
-  LOCALES.forEach((k) => {
-    const locale = k.toLowerCase();
+  LOCALES.forEach((locale) => {
     describe(`${locale}:`, () => {
       beforeEach(async () => {
         await translate.use(locale).toPromise();
