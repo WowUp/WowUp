@@ -350,7 +350,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "Выбрано {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
+        "ADDONS_SELECTED": "{count, plural, one{Выбрана} other{Выбрано}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
         "ALPHA_ADDON_CHANNEL": "Альфа",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
         "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Уведомления включены",
@@ -435,7 +435,7 @@
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
       },
-      "WTF_BACKUP_BUTTON": "Резервное копирование настроек интерфейса"
+      "WTF_BACKUP_BUTTON": "Резервное копир. настр. интерфейса"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "{count} {count, plural, one{новость} few{новости} other{новостей}}",
@@ -534,11 +534,11 @@
   },
   "WTF_BACKUP": {
     "APPLY_CONFIRMATION": {
-      "MESSAGE": "Вы уверены, что хотите задействовать эту резервную копию к вашим настройкам интерфейса?\n\nУбедитесь, что клиент World of Warcraft не запущен во время применения резервной копии.\n\nЭто действие нельзя отменить.",
-      "TITLE": "Задействовать резервную копию WTF?"
+      "MESSAGE": "Вы уверены, что хотите применить эту резервную копию к вашим настройкам интерфейса?\n\nУбедитесь, что клиент World of Warcraft не запущен во время применения резервной копии.\n\nЭто действие нельзя отменить.",
+      "TITLE": "Применить резервную копию WTF?"
     },
-    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
-    "BACKUP_COUNT_TEXT": "{count, plural, =1{Найдена} other{Найдено}} {count} {count, plural, =1{резервная копия} few{резервных копии} other{резервных копий}}",
+    "BACKUP_APPLY_SUCCESS": "Успешно применена резервная копия: {name}",
+    "BACKUP_COUNT_TEXT": "{count, plural, =1{Найдена} other{Найдено}} {count} {count, plural, =1{резервная копия} few{резервные копии} other{резервных копий}}",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "Применение резервной копии...",
       "CREATING_BACKUP": "Создание резервной копии из {count} {count, plural, =1{файла} other{файлов}}...",
@@ -552,7 +552,7 @@
     },
     "DIALOG_TITLE": "Резервная копия настроек WTF: {clientType}",
     "ERROR": {
-      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
+      "BACKUP_APPLY_FAILED": "Не удалось применить резервную копию: {name}",
       "FAILED_TO_DELETE": "Не удалось удалить резервную копию: {name}",
       "GENERIC_ERROR": "При обработке этой резервной копии возникла проблема",
       "INVALID_CONTENTS": "При обработке этой резервной копии возникла проблема",
@@ -561,7 +561,7 @@
     },
     "SHOW_FOLDER_BUTTON": "Показать папку",
     "TOOL_TIP": {
-      "APPLY_BUTTON": "Задействовать эту резервную копию",
+      "APPLY_BUTTON": "Применить эту резервную копию",
       "DELETE_BUTTON": "Удалить эту резервную копию"
     }
   }
