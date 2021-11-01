@@ -537,6 +537,7 @@
       "MESSAGE": "確認要把這個備份還原到介面設定中嗎？\n\n還原之前務必關閉《魔獸世界》客戶端。\n\n此操作無法撤銷。",
       "TITLE": "是否還原 WTF 備份？"
     },
+    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
     "BACKUP_COUNT_TEXT": "找到 {count} 個備份",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "正在還原備份...",
@@ -551,6 +552,7 @@
     },
     "DIALOG_TITLE": "WTF 設定備份：{clientType}",
     "ERROR": {
+      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
       "FAILED_TO_DELETE": "刪除備份 {name} 失敗",
       "GENERIC_ERROR": "處理備份檔案時出現了一點問題",
       "INVALID_CONTENTS": "處理備份檔案時出現了一點問題",

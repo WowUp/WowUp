@@ -537,6 +537,7 @@
       "MESSAGE": "确认要把这个备份还原到界面设置中吗？\n\n还原之前务必关闭《魔兽世界》客户端。\n\n此操作无法撤销。",
       "TITLE": "是否还原 WTF 备份？"
     },
+    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
     "BACKUP_COUNT_TEXT": "找到 {count} 个备份",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "正在还原备份...",
@@ -551,6 +552,7 @@
     },
     "DIALOG_TITLE": "WTF 设置备份：{clientType}",
     "ERROR": {
+      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
       "FAILED_TO_DELETE": "删除备份 {name} 失败",
       "GENERIC_ERROR": "处理备份文件时出现了一点问题",
       "INVALID_CONTENTS": "处理备份文件时出现了一点问题",

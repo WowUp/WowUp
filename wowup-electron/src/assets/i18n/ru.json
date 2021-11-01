@@ -537,6 +537,7 @@
       "MESSAGE": "Вы уверены, что хотите задействовать эту резервную копию к вашим настройкам интерфейса?\n\nУбедитесь, что клиент World of Warcraft не запущен во время применения резервной копии.\n\nЭто действие нельзя отменить.",
       "TITLE": "Задействовать резервную копию WTF?"
     },
+    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
     "BACKUP_COUNT_TEXT": "{count, plural, =1{Найдена} other{Найдено}} {count} {count, plural, =1{резервная копия} few{резервных копии} other{резервных копий}}",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "Применение резервной копии...",
@@ -551,6 +552,7 @@
     },
     "DIALOG_TITLE": "Резервная копия настроек WTF: {clientType}",
     "ERROR": {
+      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
       "FAILED_TO_DELETE": "Не удалось удалить резервную копию: {name}",
       "GENERIC_ERROR": "При обработке этой резервной копии возникла проблема",
       "INVALID_CONTENTS": "При обработке этой резервной копии возникла проблема",

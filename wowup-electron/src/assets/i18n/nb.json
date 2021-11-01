@@ -537,6 +537,7 @@
       "MESSAGE": "Are you sure you want to apply this backup to your interface settings?\n\nMake sure that the World of Warcraft game is not running before you apply a backup.\n\nThis operation cannot be undone.",
       "TITLE": "Apply WTF Backup?"
     },
+    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
     "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "Applying backup...",
@@ -551,6 +552,7 @@
     },
     "DIALOG_TITLE": "WTF Settings Backup: {clientType}",
     "ERROR": {
+      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
       "FAILED_TO_DELETE": "Failed to delete backup: {name}",
       "GENERIC_ERROR": "There was an issue processing this backup",
       "INVALID_CONTENTS": "There was an issue processing this backup",

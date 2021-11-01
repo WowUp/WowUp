@@ -71,15 +71,31 @@ export class WtfBackupComponent implements OnInit {
           this.busy$.next(true);
           this.busyText$.next("WTF_BACKUP.BUSY_TEXT.APPLYING_BACKUP");
 
-          return from(this._wtfService.applyBackup(backup.title, this.selectedInstallation));
+          return from(this._wtfService.applyBackup(backup.title, this.selectedInstallation)).pipe(map(() => true));
         }),
         catchError((e) => {
           console.error(e);
-          return of(undefined);
+          this._snackbarService.showErrorSnackbar("WTF_BACKUP.ERROR.BACKUP_APPLY_FAILED", {
+            timeout: 2000,
+            localeArgs: {
+              name: backup.title,
+            },
+          });
+
+          return of(false);
         })
       )
-      .subscribe(() => {
+      .subscribe((result) => {
         this.busy$.next(false);
+
+        if (result === true) {
+          this._snackbarService.showSuccessSnackbar("WTF_BACKUP.BACKUP_APPLY_SUCCESS", {
+            timeout: 2000,
+            localeArgs: {
+              name: backup.title,
+            },
+          });
+        }
       });
   }
 
