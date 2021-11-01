@@ -538,7 +538,7 @@
       "TITLE": "Применить резервную копию WTF?"
     },
     "BACKUP_APPLY_SUCCESS": "Успешно применена резервная копия: {name}",
-    "BACKUP_COUNT_TEXT": "{count, plural, =1{Найдена} other{Найдено}} {count} {count, plural, =1{резервная копия} few{резервных копии} other{резервных копий}}",
+    "BACKUP_COUNT_TEXT": "{count, plural, =1{Найдена} other{Найдено}} {count} {count, plural, =1{резервная копия} few{резервные копии} other{резервных копий}}",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "Применение резервной копии...",
       "CREATING_BACKUP": "Создание резервной копии из {count} {count, plural, =1{файла} other{файлов}}...",
