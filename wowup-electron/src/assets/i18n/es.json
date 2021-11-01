@@ -537,7 +537,7 @@
       "MESSAGE": "¿Quiere restaurar esta copia de seguridad a su configuración de interfaz?\n\nAsegúrese que World of Warcraft no está en funcionamiento antes de iniciar la restauración.\n\nEsta operación no se puede deshacer.",
       "TITLE": "¿Restaurar copia de seguridad de la configuración WTF?"
     },
-    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
+    "BACKUP_APPLY_SUCCESS": "Copia de seguridad restaurada con éxito: {name}",
     "BACKUP_COUNT_TEXT": "Se {count, plural, =1{encontró} other{encontraron}} {count} {count, plural, =1{copia de seguridad} other{copias de seguridad}}",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "Restaurando copia de seguridad...",
@@ -552,7 +552,7 @@
     },
     "DIALOG_TITLE": "Copia de seguridad de la carpeta de configuración WTF: {clientType}",
     "ERROR": {
-      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
+      "BACKUP_APPLY_FAILED": "Error al restaurar la copia de seguridad: {name}",
       "FAILED_TO_DELETE": "Error al eliminar la copia de seguridad: {name}",
       "GENERIC_ERROR": "Ocurrió un error procesando esta copia de seguridad",
       "INVALID_CONTENTS": "Ocurrió un error procesando esta copia de seguridad",
