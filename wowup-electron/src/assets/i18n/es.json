@@ -6,7 +6,7 @@
     "COPY_BUTTON": "Copiar",
     "DIALOG_TITLE": "Importar/Exportar addons: {clientType}",
     "EXPORT_STRING_COPIED": "Datos de exportación copiados al portapapeles",
-    "EXPORT_STRING_PASTED": "Inserted clipboard contents",
+    "EXPORT_STRING_PASTED": "Se ha insertado el contenido del portapapeles",
     "EXPORT_TAB_LABEL": "Exportar",
     "EXPORT_TEXT_LABEL": "Datos de exportación de addons",
     "GENERIC_IMPORT_ERROR": "Ocurrió un error durante la importación",
@@ -21,12 +21,12 @@
     "IMPORT_STRING_INVALID": "La cadena de importación no es válida",
     "IMPORT_TAB_LABEL": "Importar",
     "IMPORT_TEXT_INSTRUCTIONS": "Pegue los datos de exportación de WowUp en el campo inferior para comenzar",
-    "IMPORT_TEXT_LABEL": "Importar datos",
+    "IMPORT_TEXT_LABEL": "Datos para la importación",
     "IMPORT_TOTAL_COUNT": "Importando {count} {count, plural, =1{addon} other{addons}}",
     "INSTALL_BUTTON": "Instalar",
     "INVALID_CLIENT_TYPE": "La cadena de importación no concuerda con el tipo de cliente seleccionado",
     "NO_CHANGE_BADGE_TOOLTIP": "Este addon ya está instalado",
-    "PASTE_BUTTON": "Paste",
+    "PASTE_BUTTON": "Pegar",
     "PROVIDER_MISMATCH": "El proveedor del addon no concuerda",
     "RESET_BUTTON": "Reiniciar",
     "VERSION_MISMATCH": "Las versiones no coinciden"
@@ -546,12 +546,12 @@
     },
     "CREATE_BACKUP_BUTTON": "Crear copia de seguridad",
     "DELETE_CONFIRMATION": {
-      "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",
-      "TITLE": "Delete WTF Backup?"
+      "MESSAGE": "Quiere eliminar la copia de seguridad {name}?\nEsta acción no se podrá deshacer.",
+      "TITLE": "¿Eliminar copia de seguridad de la carpeta WTF?"
     },
     "DIALOG_TITLE": "Copia de seguridad de la carpeta de configuración WTF: {clientType}",
     "ERROR": {
-      "FAILED_TO_DELETE": "Failed to delete backup: {name}",
+      "FAILED_TO_DELETE": "Error al eliminar la copia de seguridad: {name}",
       "GENERIC_ERROR": "Ocurrió un error procesando esta copia de seguridad",
       "INVALID_CONTENTS": "Ocurrió un error procesando esta copia de seguridad",
       "INVALID_CREATED_AT": "Ocurrió un error procesando esta copia de seguridad",
