@@ -11,7 +11,7 @@ const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pt", "ru", "zh
 const LOCALE_DIR = path.join(__dirname, "..", "..", "..", "..", "..", "..", "src", "assets", "i18n");
 
 class JsonTranslationLoader implements TranslateLoader {
-  getTranslation(code: string = ""): Observable<object> {
+  public getTranslation(code = ""): Observable<any> {
     const localeJson = fs.readFileSync(path.join(LOCALE_DIR, `${code.toLocaleLowerCase()}.json`), {
       encoding: "utf-8",
     });
