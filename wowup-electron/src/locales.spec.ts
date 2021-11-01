@@ -1,59 +1,81 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { TestBed, waitForAsync } from "@angular/core/testing";
+import { HttpClientModule } from "@angular/common/http";
+import { TestBed } from "@angular/core/testing";
 import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import fs from "fs";
+import path from "path";
+import flatten from "flat";
+import { Observable, of } from "rxjs";
 
 const LOCALES = ["cs", "de", "en", "es", "fr", "it", "ko", "nb", "pt", "ru", "zh-TW", "zh"];
+const LOCALE_DIR = path.join(__dirname, "..", "..", "..", "..", "..", "..", "src", "assets", "i18n");
 
-// AoT requires an exported function for factories
-export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+class JsonTranslationLoader implements TranslateLoader {
+  getTranslation(code: string = ""): Observable<object> {
+    const localeJson = fs.readFileSync(path.join(LOCALE_DIR, `${code.toLocaleLowerCase()}.json`), {
+      encoding: "utf-8",
+    });
+    const localeObj = JSON.parse(localeJson);
+
+    return of(localeObj);
+  }
 }
 
 describe("LocaleTest", () => {
   let translate: TranslateService;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [],
-        imports: [
-          HttpClientModule,
-          TranslateModule.forRoot({
-            loader: {
-              provide: TranslateLoader,
-              useFactory: httpLoaderFactory,
-              deps: [HttpClient],
-            },
-            compiler: {
-              provide: TranslateCompiler,
-              useClass: TranslateMessageFormatCompiler,
-            },
-          }),
-        ],
-        providers: [],
-      })
-        .compileComponents()
-        .catch((e) => console.error(e));
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [],
+      imports: [
+        HttpClientModule,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: JsonTranslationLoader },
+          compiler: {
+            provide: TranslateCompiler,
+            useClass: TranslateMessageFormatCompiler,
+          },
+        }),
+      ],
+      providers: [],
     })
-  );
+      .compileComponents()
+      .catch((e) => console.error(e));
+  });
 
   beforeEach(() => {
     translate = TestBed.inject(TranslateService);
   });
 
-  function checkLocale(locale: string) {
-    it(
-      `should load ${locale} locale`,
-      waitForAsync(async () => {
+  LOCALES.forEach((k) => {
+    const locale = k.toLowerCase();
+    describe(`${locale}:`, () => {
+      beforeEach(async () => {
         await translate.use(locale).toPromise();
-        expect(true).toBeTruthy();
-      })
-    );
-  }
+      });
 
-  for (const locale of LOCALES) {
-    checkLocale(locale);
+      const localeKeys = loadLocaleKeys(locale);
+      for (const lk of Object.keys(localeKeys)) {
+        it(`should have translated value ${locale}:${lk}`, async () => {
+          await translate
+            .get(lk, { count: 1, myriadCount: 2, rawCount: 3, addonNames: "test1, test2" })
+            .toPromise()
+            .catch((e) => console.error(e))
+            .then((translated) => {
+              expect(translated === lk).toBeFalse();
+            });
+        });
+      }
+    });
+  });
+
+  function loadLocaleKeys(locale: string): { [key: string]: string } {
+    const localeJson = fs.readFileSync(path.join(LOCALE_DIR, `${locale}.json`), {
+      encoding: "utf-8",
+    });
+    const localeObj = JSON.parse(localeJson);
+    const localeStrs: { [key: string]: string } = flatten(localeObj);
+
+    return localeStrs;
   }
 });

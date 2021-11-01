@@ -16,7 +16,7 @@
     "IMPORT_BADGE_CONFLICT": "Конфликтующая",
     "IMPORT_BADGE_NO_CHANGE": "Без изменений",
     "IMPORT_BUTTON": "Импорт",
-    "IMPORT_CONFLICT_COUNT": "{count} {count, plural, =1{конфликтует} others{конфликтуют}}",
+    "IMPORT_CONFLICT_COUNT": "{count} {count, plural, =1{конфликтует} other{конфликтуют}}",
     "IMPORT_NO_CHANGE_COUNT": "{count} без изменений",
     "IMPORT_STRING_INVALID": "Строка импорта неверна",
     "IMPORT_TAB_LABEL": "Импорт",

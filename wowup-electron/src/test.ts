@@ -11,7 +11,7 @@ jasmine.getEnv().addReporter({
     console.log(`suiteStarted: ${result.fullName}`);
   },
   specStarted: function (result) {
-    console.log(`specStarted: ${result.fullName}`);
+    // console.log(`specStarted: ${result.fullName}`);
   },
   specDone: function (result) {
     console.log(`specDone: ${result.fullName}`);
