@@ -12,7 +12,7 @@ const LOCALE_DIR = path.join(__dirname, "..", "..", "..", "..", "..", "..", "src
 
 class JsonTranslationLoader implements TranslateLoader {
   public getTranslation(code = ""): Observable<any> {
-    const localeJson = fs.readFileSync(path.join(LOCALE_DIR, `${code.toLocaleLowerCase()}.json`), {
+    const localeJson = fs.readFileSync(path.join(LOCALE_DIR, `${code}.json`), {
       encoding: "utf-8",
     });
     const localeObj = JSON.parse(localeJson);
@@ -47,8 +47,7 @@ describe("LocaleTest", () => {
     translate = TestBed.inject(TranslateService);
   });
 
-  LOCALES.forEach((k) => {
-    const locale = k.toLowerCase();
+  LOCALES.forEach((locale) => {
     describe(`${locale}:`, () => {
       beforeEach(async () => {
         await translate.use(locale).toPromise();
