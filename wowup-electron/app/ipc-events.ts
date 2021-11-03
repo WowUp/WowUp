@@ -204,6 +204,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return window.webContents?.setVisualZoomLevelLimits(minimumLevel, maximumLevel);
   });
 
+  handle("show-item-in-folder", (evt, path: string) => {
+    shell.showItemInFolder(path);
+  });
+
   handle(IPC_SET_ZOOM_FACTOR, (evt, zoomFactor: number) => {
     if (window?.webContents) {
       window.webContents.zoomFactor = zoomFactor;

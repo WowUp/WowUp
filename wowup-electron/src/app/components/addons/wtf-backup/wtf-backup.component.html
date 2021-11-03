@@ -1,4 +1,4 @@
-<div mat-dialog-title class="wtf-backup-dialog">
+<div mat-dialog-title class="">
   <div class="row align-items-center">
     <h2 class="flex-grow-1 m-0">
       {{ "WTF_BACKUP.DIALOG_TITLE" | translate: { clientType: selectedInstallation.label } }}
@@ -8,7 +8,7 @@
     </button>
   </div>
 </div>
-<mat-dialog-content *ngIf="busy$ | async">
+<mat-dialog-content *ngIf="busy$ | async" class="wtf-backup-dialog">
   <div class="row justify-content-center">
     <div class="col align-items-center">
       <mat-spinner diameter="55"></mat-spinner>
@@ -17,7 +17,7 @@
   </div>
 </mat-dialog-content>
 
-<mat-dialog-content *ngIf="(busy$ | async) === false">
+<mat-dialog-content *ngIf="(busy$ | async) === false" class="wtf-backup-dialog">
   <div *ngIf="(hasBackups$ | async) === false">
     <h4 class="mb-0">No backups were found at:</h4>
     <p class="text-2">{{ backupPath }}</p>
@@ -41,21 +41,12 @@
           <!-- ACTIONS -->
           <div *ngIf="backup.error" class="flex-shrink-0">{{ "WTF_BACKUP.ERROR." + backup.error | translate }}</div>
           <div *ngIf="backup.error === undefined" class="flex-shrink-0">
-            <button
-              mat-icon-button
-              [disabled]="busy$ | async"
-              [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate"
-              (click)="onClickApplyBackup(backup)"
-            >
+            <button mat-icon-button [disabled]="busy$ | async"
+              [matTooltip]="'WTF_BACKUP.TOOL_TIP.APPLY_BUTTON' | translate" (click)="onClickApplyBackup(backup)">
               <mat-icon svgIcon="fas:history"> </mat-icon>
             </button>
-            <button
-              mat-icon-button
-              color="warn"
-              [disabled]="busy$ | async"
-              [matTooltip]="'WTF_BACKUP.TOOL_TIP.DELETE_BUTTON' | translate"
-              (click)="onClickDeleteBackup(backup)"
-            >
+            <button mat-icon-button color="warn" [disabled]="busy$ | async"
+              [matTooltip]="'WTF_BACKUP.TOOL_TIP.DELETE_BUTTON' | translate" (click)="onClickDeleteBackup(backup)">
               <mat-icon svgIcon="fas:trash"> </mat-icon>
             </button>
           </div>

@@ -51,7 +51,7 @@ export class WtfBackupComponent implements OnInit {
 
   public async onShowFolder(): Promise<void> {
     const backupPath = this._wtfService.getBackupPath(this.selectedInstallation);
-    await this._electronService.openPath(backupPath);
+    await this._electronService.showItemInFolder(backupPath);
   }
 
   public onClickApplyBackup(backup: WtfBackupViewModel): void {

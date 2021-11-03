@@ -151,7 +151,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   public async onClickOpenFolder(): Promise<void> {
     try {
-      await this._electronService.openExternal(dirname(this.installation.location));
+      await this._electronService.showItemInFolder(dirname(this.installation.location));
     } catch (e) {
       console.error(e);
     }

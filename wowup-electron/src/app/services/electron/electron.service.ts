@@ -265,6 +265,10 @@ export class ElectronService {
     return await this.invoke(IPC_SHOW_OPEN_DIALOG, options);
   }
 
+  public async showItemInFolder(path: string): Promise<void> {
+    return await this.invoke("show-item-in-folder", path);
+  }
+
   public async getUserDefaultSystemPreference<T = any>(
     key: string,
     type: "string" | "boolean" | "integer" | "float" | "double" | "url" | "array" | "dictionary"
