@@ -39,7 +39,8 @@ export enum AddonWarningType {
 }
 
 export enum AddonCategory {
-  AllAddons,
+  Unknown,
+  AllAddons = 1,
   Achievements,
   ActionBars,
   AuctionEconomy,
@@ -112,4 +113,21 @@ export interface WowUpScanResult {
   fingerprint: string;
   folderName: string;
   path: string;
+}
+
+export type PushAction = "addon-update";
+
+export interface PushNotification<T extends PushNotificationData | string> {
+  action: PushAction;
+  sender: string;
+  message: string | T;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface PushNotificationData {}
+
+export interface AddonUpdatePushNotification extends PushNotificationData {
+  provider: string;
+  addonName: string;
+  addonId: string;
 }

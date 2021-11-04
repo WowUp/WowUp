@@ -4,24 +4,14 @@ import { filter, map } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 
-import { ElectronService } from "../";
-import {
-  BLIZZARD_AGENT_PATH_KEY,
-  WOW_BETA_FOLDER,
-  WOW_CLASSIC_BETA_FOLDER,
-  WOW_CLASSIC_ERA_FOLDER,
-  WOW_CLASSIC_FOLDER,
-  WOW_CLASSIC_PTR_FOLDER,
-  WOW_RETAIL_FOLDER,
-  WOW_RETAIL_PTR_FOLDER,
-  WOW_CLASSIC_ERA_PTR_FOLDER
-} from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { ElectronService } from "../electron/electron.service";
+import * as constants from "../../../common/constants";
+import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { ProductDb } from "../../models/warcraft/product-db";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { SelectItem } from "../../models/wowup/select-item";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
@@ -31,18 +21,6 @@ import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
 import { Toc } from "../../models/wowup/toc";
-
-// WOW STRINGS
-
-const ADDON_FOLDER_NAME = "AddOns";
-const INTERFACE_FOLDER_NAME = "Interface";
-
-// PREFERENCE KEYS
-const RETAIL_LOCATION_KEY = "wow_retail_location";
-const RETAIL_PTR_LOCATION_KEY = "wow_retail_ptr_location";
-const CLASSIC_LOCATION_KEY = "wow_classic_location";
-const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location";
-const BETA_LOCATION_KEY = "wow_beta_location";
 
 @Injectable({
   providedIn: "root",
@@ -54,8 +32,6 @@ export class WarcraftService {
   private readonly _allClientTypes = getEnumList<WowClientType>(WowClientType).filter(
     (clientType) => clientType !== WowClientType.None
   );
-
-  private _productDbPath = "";
 
   public readonly products$ = this._productsSrc.asObservable();
   public readonly productsReady$ = this.products$.pipe(filter((products) => Array.isArray(products)));
@@ -134,7 +110,7 @@ export class WarcraftService {
 
   public getAddonFolderPath(installation: WowInstallation): string {
     const installDir = path.dirname(installation.location);
-    return path.join(installDir, INTERFACE_FOLDER_NAME, ADDON_FOLDER_NAME);
+    return path.join(installDir, constants.WOW_INTERFACE_FOLDER_NAME, constants.WOW_ADDON_FOLDER_NAME);
   }
 
   public async listAddons(installation: WowInstallation, scanSymlinks = false): Promise<AddonFolder[]> {
@@ -219,13 +195,13 @@ export class WarcraftService {
   // }
 
   public async getBlizzardAgentPath(): Promise<string> {
-    const storedAgentPath = this._preferenceStorageService.get(BLIZZARD_AGENT_PATH_KEY);
+    const storedAgentPath = this._preferenceStorageService.get(constants.BLIZZARD_AGENT_PATH_KEY);
     if (storedAgentPath) {
       return storedAgentPath;
     }
 
     const agentPath = await this._impl.getBlizzardAgentPath();
-    this._preferenceStorageService.set(BLIZZARD_AGENT_PATH_KEY, agentPath);
+    this._preferenceStorageService.set(constants.BLIZZARD_AGENT_PATH_KEY, agentPath);
 
     return agentPath;
   }
@@ -237,38 +213,61 @@ export class WarcraftService {
   public getClientFolderName(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
-        return WOW_RETAIL_FOLDER;
+        return constants.WOW_RETAIL_FOLDER;
       case WowClientType.ClassicEra:
-        return WOW_CLASSIC_ERA_FOLDER;
+        return constants.WOW_CLASSIC_ERA_FOLDER;
       case WowClientType.Classic:
-        return WOW_CLASSIC_FOLDER;
+        return constants.WOW_CLASSIC_FOLDER;
       case WowClientType.RetailPtr:
-        return WOW_RETAIL_PTR_FOLDER;
+        return constants.WOW_RETAIL_PTR_FOLDER;
       case WowClientType.ClassicPtr:
-        return WOW_CLASSIC_PTR_FOLDER;
+        return constants.WOW_CLASSIC_PTR_FOLDER;
       case WowClientType.Beta:
-        return WOW_BETA_FOLDER;
+        return constants.WOW_BETA_FOLDER;
       case WowClientType.ClassicBeta:
-        return WOW_CLASSIC_BETA_FOLDER;
+        return constants.WOW_CLASSIC_BETA_FOLDER;
       case WowClientType.ClassicEraPtr:
-        return WOW_CLASSIC_ERA_PTR_FOLDER;
+        return constants.WOW_CLASSIC_ERA_PTR_FOLDER;
       default:
         return "";
     }
   }
 
+  public getClientGroup(clientType: string | WowClientType): WowClientGroup {
+    const enumVal: WowClientType = typeof clientType === "string" ? WowClientType[clientType] : clientType;
+    switch (enumVal) {
+      case WowClientType.Beta:
+      case WowClientType.Retail:
+      case WowClientType.RetailPtr:
+        return WowClientGroup.Retail;
+      case WowClientType.ClassicEra:
+      case WowClientType.ClassicEraPtr:
+        return WowClientGroup.Classic;
+      case WowClientType.Classic:
+      case WowClientType.ClassicBeta:
+      case WowClientType.ClassicPtr:
+        return WowClientGroup.BurningCrusade;
+      default:
+        throw new Error(`unsupported client type: ${clientType}`);
+    }
+  }
+
+  /**
+   * Get the old style preference key for a WoW client type
+   * @deprecated
+   */
   public getLegacyClientLocationKey(clientType: WowClientType): string {
     switch (clientType) {
       case WowClientType.Retail:
-        return RETAIL_LOCATION_KEY;
+        return constants.RETAIL_LOCATION_KEY;
       case WowClientType.ClassicEra:
-        return CLASSIC_LOCATION_KEY;
+        return constants.CLASSIC_LOCATION_KEY;
       case WowClientType.RetailPtr:
-        return RETAIL_PTR_LOCATION_KEY;
+        return constants.RETAIL_PTR_LOCATION_KEY;
       case WowClientType.ClassicPtr:
-        return CLASSIC_PTR_LOCATION_KEY;
+        return constants.CLASSIC_PTR_LOCATION_KEY;
       case WowClientType.Beta:
-        return BETA_LOCATION_KEY;
+        return constants.BETA_LOCATION_KEY;
       default:
         throw new Error(`Failed to get client location key: ${clientType}, ${getEnumName(WowClientType, clientType)}`);
     }
@@ -317,21 +316,21 @@ export class WarcraftService {
 
   private getClientTypeForFolderName(folderName: string): WowClientType {
     switch (folderName) {
-      case WOW_RETAIL_FOLDER:
+      case constants.WOW_RETAIL_FOLDER:
         return WowClientType.Retail;
-      case WOW_RETAIL_PTR_FOLDER:
+      case constants.WOW_RETAIL_PTR_FOLDER:
         return WowClientType.RetailPtr;
-      case WOW_CLASSIC_ERA_FOLDER:
+      case constants.WOW_CLASSIC_ERA_FOLDER:
         return WowClientType.ClassicEra;
-      case WOW_CLASSIC_FOLDER:
+      case constants.WOW_CLASSIC_FOLDER:
         return WowClientType.Classic;
-      case WOW_CLASSIC_PTR_FOLDER:
+      case constants.WOW_CLASSIC_PTR_FOLDER:
         return WowClientType.ClassicPtr;
-      case WOW_BETA_FOLDER:
+      case constants.WOW_BETA_FOLDER:
         return WowClientType.Beta;
-      case WOW_CLASSIC_BETA_FOLDER:
+      case constants.WOW_CLASSIC_BETA_FOLDER:
         return WowClientType.ClassicBeta;
-      case WOW_CLASSIC_ERA_PTR_FOLDER:
+      case constants.WOW_CLASSIC_ERA_PTR_FOLDER:
         return WowClientType.ClassicEraPtr;
       default:
         return WowClientType.Retail;

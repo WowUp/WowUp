@@ -1,27 +1,65 @@
-<div class="tab-container d-flex flex-col" [ngClass]="{
+<div
+  class="tab-container d-flex flex-col"
+  [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }" (click)="onTableBlur($event)">
+  }"
+  (click)="onTableBlur($event)"
+>
   <div class="control-container bg-secondary-3">
     <div class="select-container">
       <mat-form-field>
-        <mat-label>{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
-        <mat-select class="select pointer" [(value)]="selectedInstallationId" (selectionChange)="onClientChange()"
-          [disabled]="enableControls === false" [disableOptionCentering]="true">
+        <mat-label>
+          <div class="d-flex align-items-center">
+            <div class="flex-grow-1">{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</div>
+            <div
+              *ngIf="(totalAvailableUpdateCt$ | async) > 0"
+              class="update-badge badge-lg ml-1"
+              translate
+              [translateParams]="{ count: totalAvailableUpdateCt$ | async }"
+            >
+              PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_BADGE
+            </div>
+          </div>
+        </mat-label>
+        <mat-select
+          class="select pointer"
+          [value]="selectedWowInstallationId$ | async"
+          (selectionChange)="onClientChange($event)"
+          [disabled]="enableControls$ | async | invertBool"
+          [disableOptionCentering]="true"
+        >
+          <mat-select-trigger>
+            {{ (selectedWowInstallation$ | async).label }}
+          </mat-select-trigger>
           <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
-            {{ installation.label }}
+            <div class="d-flex">
+              <div class="flex-grow-1">{{ installation.label }}</div>
+              <div *ngIf="installation.availableUpdateCount > 0">
+                <div class="d-inline update-badge ml-1">
+                  {{ installation.availableUpdateCount }}
+                </div>
+              </div>
+            </div>
           </mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div class="right-container">
-      <div class="filter-container" *ngIf="selectedInstallation !== undefined">
+      <div class="filter-container" *ngIf="hasSelectedWowInstallationId$ | async">
         <mat-form-field>
           <mat-label>{{ "PAGES.MY_ADDONS.FILTER_LABEL" | translate }}</mat-label>
-          <input matInput (input)="filterInput$.next($event.target.value)" [(ngModel)]="filter" />
-          <button mat-button color="accent" *ngIf="filter" matSuffix mat-icon-button aria-label="Clear"
-            (click)="onClearFilter()">
+          <input #addonFilter matInput />
+          <button
+            mat-button
+            color="accent"
+            *ngIf="filterInput$ | async"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="onClickClearFilter()"
+          >
             <mat-icon svgIcon="fas:times"></mat-icon>
           </button>
         </mat-form-field>
@@ -29,15 +67,24 @@
       <div class="button-container">
         <!-- UPDATE ALL DROPDOWN -->
         <div class="row">
-          <button mat-flat-button color="primary" class="menu-button"
+          <button
+            mat-flat-button
+            color="primary"
+            class="menu-button"
             [matTooltip]="'PAGES.MY_ADDONS.UPDATE_ALL_BUTTON_TOOLTIP' | translate"
-            [disabled]="enableControls === false || enableUpdateAll === false" (click)="onUpdateAll()">
+            [disabled]="enableUpdateAll$ | async | invertBool"
+            (click)="onUpdateAll()"
+          >
             {{ "PAGES.MY_ADDONS.UPDATE_ALL_BUTTON" | translate }}
           </button>
           <div class="menu-button-divider"></div>
-          <button mat-flat-button color="primary" class="chip col justify-content-center"
+          <button
+            mat-flat-button
+            color="primary"
+            class="chip col justify-content-center"
             [matMenuTriggerFor]="updateAllMenu"
-            [disabled]="enableControls === false || (addonService.anyUpdatesAvailable$ | async)  === false">
+            [disabled]="enableUpdateExtra$ | async | invertBool"
+          >
             <mat-icon svgIcon="fas:caret-down"></mat-icon>
           </button>
         </div>
@@ -50,44 +97,73 @@
           </button>
         </mat-menu>
         <!-- CHECK UPDATES -->
-        <button mat-flat-button color="primary"
+        <button
+          mat-flat-button
+          color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON_TOOLTIP' | translate"
-          [disabled]="enableControls === false" (click)="onRefresh()">
+          [disabled]="enableControls$ | async | invertBool"
+          (click)="onRefresh()"
+        >
           {{ "PAGES.MY_ADDONS.CHECK_UPDATES_BUTTON" | translate }}
         </button>
         <!-- RESCAN -->
-        <button mat-flat-button color="primary"
+        <!-- <button mat-flat-button color="primary"
           [matTooltip]="'PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON_TOOLTIP' | translate"
-          [disabled]="enableControls === false" (click)="onReScan()">
+          [disabled]="enableControls$ | async | invertBool" (click)="onReScan()">
           {{ "PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON" | translate }}
+        </button> -->
+        <!-- MORE ACTIONS -->
+        <button
+          mat-icon-button
+          color="accent"
+          [matMenuTriggerFor]="pageActionMenu"
+          [disabled]="enableControls$ | async | invertBool"
+        >
+          <mat-icon svgIcon="fas:ellipsis-v"></mat-icon>
         </button>
       </div>
     </div>
   </div>
 
-  <div class="spinner-container flex-grow-1" *ngIf="isBusy === true">
-    <app-progress-spinner [message]="spinnerMessage"> </app-progress-spinner>
+  <div class="spinner-container flex-grow-1" *ngIf="isBusy$ | async">
+    <app-progress-spinner [message]="spinnerMessage$ | async"> </app-progress-spinner>
   </div>
 
-  <div *ngIf="isBusy === false && hasData === false" class="no-addons-container text-1 flex-grow-1">
+  <div *ngIf="showNoAddons$ | async" class="no-addons-container text-1 flex-grow-1">
     <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
   </div>
 
-  <ag-grid-angular class="wu-ag-table ag-theme-material" [hidden]="isBusy === true || hasData === false"
-    [rowData]="rowData" [columnDefs]="columnDefs" [rowSelection]="'multiple'" [getRowNodeId]="getRowNodeId"
-    [frameworkComponents]="frameworkComponents" [rowHeight]="65" [immutableData]="true" [rowClassRules]="rowClassRules"
-    [overlayNoRowsTemplate]="overlayNoRowsTemplate" (gridReady)="onGridReady($event)"
-    (rowDoubleClicked)="onRowDoubleClicked($event)" (rowClicked)="onRowClicked($event)"
-    (rowDataUpdated)="onRowDataChanged()" (sortChanged)="onSortChanged($event)"
-    (cellContextMenu)="onCellContext($event)" (keydown)="handleKeyboardEvent($event)"
-    (firstDataRendered)="onFirstDataRendered()">
+  <ag-grid-angular
+    class="wu-ag-table ag-theme-material"
+    [hidden]="hideGrid$ | async"
+    [rowData]="rowDataG"
+    [columnDefs]="columnDefs"
+    [rowSelection]="'multiple'"
+    [getRowNodeId]="getRowNodeId"
+    [frameworkComponents]="frameworkComponents"
+    [rowHeight]="63"
+    [immutableData]="true"
+    [rowClassRules]="rowClassRules"
+    [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+    (gridReady)="onGridReady($event)"
+    (rowDoubleClicked)="onRowDoubleClicked($event)"
+    (rowClicked)="onRowClicked($event)"
+    (sortChanged)="onSortChanged($event)"
+    (cellContextMenu)="onCellContext($event)"
+    (keydown)="handleKeyboardEvent($event)"
+    (firstDataRendered)="onFirstDataRendered()"
+  >
   </ag-grid-angular>
-
 </div>
 
 <!-- ADDON CONTEXT MENU -->
-<div style="visibility: hidden; position: fixed" #addonContextMenuTrigger="matMenuTrigger"
-  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="contextMenu"></div>
+<div
+  style="visibility: hidden; position: fixed"
+  #addonContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="contextMenu"
+></div>
 <mat-menu #contextMenu="matMenu" class="addon-context-menu bg-secondary-4">
   <ng-template matMenuContent let-listItem="listItem">
     <div class="addon-context-menu-header">
@@ -126,6 +202,15 @@
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
     </div>
+    <!-- AUTO UPDATE NOTIFICATIONS -->
+    <div *ngIf="canSetAutoUpdateNotifications(listItem)" class="mat-menu-item">
+      <mat-checkbox
+        [checked]="listItem.addon.autoUpdateNotificationsEnabled"
+        (click)="onClickAutoUpdateAddonNotifications(listItem)"
+      >
+        {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON" | translate }}
+      </mat-checkbox>
+    </div>
     <!-- CHANNEL SUBMENU -->
     <button *ngIf="addonService.canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
@@ -139,11 +224,16 @@
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.SHOW_FOLDER" | translate }}
     </button>
     <!-- VIEW IN PROVIDER -->
-    <a *ngIf="listItem.isUnMatched() === false" mat-menu-item appExternalLink [href]="listItem.addon.externalUrl"
-      (click)="closeContextMenu()">
+    <a
+      *ngIf="listItem.isUnMatched() === false"
+      mat-menu-item
+      appExternalLink
+      [href]="listItem.addon.externalUrl"
+      (click)="closeContextMenu()"
+    >
       <div class="row align-items-center">
         <div class="flex-grow-1 mr-3">
-          {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{listItem.addon.providerName}}
+          {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ listItem.addon.providerName }}
         </div>
         <div>
           <mat-icon class="open-in-browser-icon" svgIcon="fas:external-link-alt"></mat-icon>
@@ -160,8 +250,11 @@
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}
     </button>
     <mat-menu #addonChannels="matMenu" class="addon-context-menu bg-secondary-5">
-      <mat-radio-group class="vertical-radio-group" [ngModel]="listItem.addon.channelType"
-        (change)="onSelectedAddonChannelChange($event, listItem)">
+      <mat-radio-group
+        class="vertical-radio-group"
+        [ngModel]="listItem.addon.channelType"
+        (change)="onSelectedAddonChannelChange($event, listItem)"
+      >
         <mat-radio-button class="mat-menu-item" [value]="0">
           {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.STABLE_ADDON_CHANNEL" | translate }}
         </mat-radio-button>
@@ -175,14 +268,20 @@
     </mat-menu>
     <mat-menu #addonFolders="matMenu" class="addon-context-menu bg-secondary-4">
       <div *ngFor="let folder of listItem.addon.installedFolderList">
-        <button mat-menu-item (click)="onShowFolder(listItem.addon, folder)">{{folder}}</button>
+        <button mat-menu-item (click)="onShowFolder(listItem.addon, folder)">{{ folder }}</button>
       </div>
     </mat-menu>
     <mat-menu #addonProviders="matMenu" class="addon-context-menu">
-      <mat-radio-group class="vertical-radio-group" [value]="listItem.addon.providerName"
-        (change)="onSelectedProviderChange($event, listItem)">
-        <mat-radio-button *ngFor="let provider of addonUtils.getAllProviders(listItem.addon)" class="mat-menu-item"
-          [value]="provider.providerName">
+      <mat-radio-group
+        class="vertical-radio-group"
+        [value]="listItem.addon.providerName"
+        (change)="onSelectedProviderChange($event, listItem)"
+      >
+        <mat-radio-button
+          *ngFor="let provider of addonUtils.getAllProviders(listItem.addon)"
+          class="mat-menu-item"
+          [value]="provider.providerName"
+        >
           {{ provider.providerName }}
         </mat-radio-button>
       </mat-radio-group>
@@ -190,23 +289,49 @@
   </ng-template>
 </mat-menu>
 
+<!-- EXTRA PAGE ACTIONS MENU -->
+<mat-menu #pageActionMenu="matMenu">
+  <button mat-menu-item (click)="onReScan()">
+    <span>{{ "PAGES.MY_ADDONS.RESCAN_FOLDERS_BUTTON" | translate }}</span>
+  </button>
+  <button mat-menu-item (click)="onClickImportExport()">
+    <span>{{ "PAGES.MY_ADDONS.IMPORT_EXPORT_ADDONS_BUTTON" | translate }}</span>
+  </button>
+  <button mat-menu-item (click)="onClickCreateBackup()">
+    <span>{{ "PAGES.MY_ADDONS.WTF_BACKUP_BUTTON" | translate }}</span>
+  </button>
+</mat-menu>
+
 <!-- MULTI ADDON CONTEXT MENU -->
-<div style="visibility: hidden; position: fixed" #addonMultiContextMenuTrigger="matMenuTrigger"
-  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="multiContextMenu"></div>
-<mat-menu #multiContextMenu="matMenu" class="addon-context-menu  bg-secondary-4 text-1">
+<div
+  style="visibility: hidden; position: fixed"
+  #addonMultiContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="multiContextMenu"
+></div>
+<mat-menu #multiContextMenu="matMenu" class="addon-context-menu bg-secondary-4 text-1">
   <ng-template matMenuContent let-listItems="listItems">
     <div class="addon-context-menu-header" translate [translateParams]="{ count: listItems.length }">
       PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.ADDONS_SELECTED
     </div>
     <mat-divider></mat-divider>
     <!-- IGNORE -->
-    <mat-checkbox class="mat-menu-item" [indeterminate]="isIndeterminate(listItems, 'addon.isIgnored')"
-      [checked]="isAllItemsSelected(listItems, 'addon.isIgnored')" (click)="onClickIgnoreAddons(listItems)">
+    <mat-checkbox
+      class="mat-menu-item"
+      [indeterminate]="isIndeterminate(listItems, 'addon.isIgnored')"
+      [checked]="isAllItemsSelected(listItems, 'addon.isIgnored')"
+      (click)="onClickIgnoreAddons(listItems)"
+    >
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
     </mat-checkbox>
     <!-- AUTO UPDATE -->
-    <mat-checkbox class="mat-menu-item" [indeterminate]="isIndeterminate(listItems, 'addon.autoUpdateEnabled')"
-      [checked]="isAllItemsSelected(listItems, 'addon.autoUpdateEnabled')" (click)="onClickAutoUpdateAddons(listItems)">
+    <mat-checkbox
+      class="mat-menu-item"
+      [indeterminate]="isIndeterminate(listItems, 'addon.autoUpdateEnabled')"
+      [checked]="isAllItemsSelected(listItems, 'addon.autoUpdateEnabled')"
+      (click)="onClickAutoUpdateAddons(listItems)"
+    >
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.AUTO_UPDATE_ADDON_BUTTON" | translate }}
     </mat-checkbox>
     <!-- CHANNEL -->
@@ -238,9 +363,13 @@
 </mat-menu>
 
 <!-- COLUMN SHOW/HIDE MENU -->
-<div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
-  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
-</div>
+<div
+  style="visibility: hidden; position: fixed"
+  #columnContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="columnContextMenu"
+></div>
 <mat-menu #columnContextMenu="matMenu" class="addon-context-menu bg-secondary-4 text-1">
   <ng-template matMenuContent let-columns="columns">
     <div class="addon-context-menu-header">
@@ -249,8 +378,12 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    <mat-checkbox *ngFor="let column of columns" class="mat-menu-item" [checked]="column.visible"
-      (change)="onColumnVisibleChange($event, column)">
+    <mat-checkbox
+      *ngFor="let column of columns"
+      class="mat-menu-item"
+      [checked]="column.visible"
+      (change)="onColumnVisibleChange($event, column)"
+    >
       {{ column.display | translate }}
     </mat-checkbox>
   </ng-template>

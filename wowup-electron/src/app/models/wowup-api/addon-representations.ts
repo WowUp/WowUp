@@ -19,14 +19,11 @@ export interface WowUpAddonReleaseRepresentation {
   external_id: string;
   prerelease: boolean;
   body: string;
-  // game_version: string;
   game_versions: AddonReleaseGameVersion[];
   download_url: string;
   published_at: Date;
   addonFolders?: WowUpAddonReleaseFolderRepresentation[];
-  // game_type: WowGameType;
-  // toc_title?: string;
-  // toc_version?: string;
+  previews?: AddonPreviewRepresentation[];
 }
 
 export interface AddonReleaseGameVersion {
@@ -35,6 +32,11 @@ export interface AddonReleaseGameVersion {
   game_type: WowGameType;
   version: string;
   authors: string;
+}
+
+export interface AddonPreviewRepresentation {
+  url: string;
+  preview_type: string;
 }
 
 export interface WowUpAddonRepresentation {

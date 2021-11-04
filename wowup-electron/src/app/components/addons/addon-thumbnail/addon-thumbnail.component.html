@@ -1,0 +1,9 @@
+<div *ngIf="hasUrl() === true" class="addon-logo-container bg-secondary-3 rounded" [style.width]="size + 'px'"
+  [style.height]="size + 'px'">
+  <img [src]="url" loading="lazy" />
+</div>
+<div *ngIf="hasUrl() === false" class="addon-logo-container bg-secondary-3 rounded">
+  <div class="addon-logo-letter text-3">
+    {{ getLetter() }}
+  </div>
+</div>

@@ -1,5 +1,8 @@
 export const APP_USER_MODEL_ID = "io.wowup.jliddev"; // Bundle ID
 
+// FEATURES
+export const FEATURE_ACCOUNTS_ENABLED = false;
+
 export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
 export const ADDON_PROVIDER_CURSEFORGE = "Curse";
 export const ADDON_PROVIDER_GITHUB = "GitHub";
@@ -78,6 +81,8 @@ export const IPC_CUSTOM_PROTOCOL_RECEIVED = "custom-protocol-received";
 export const IPC_ADDONS_SAVE_ALL = "addons-save-all";
 export const IPC_GET_PENDING_OPEN_URLS = "get-pending-open-urls";
 export const IPC_GET_LATEST_DIR_UPDATE_TIME = "get-latest-dir-update-time";
+export const IPC_LIST_DIR_RECURSIVE = "list-dir-recursive";
+export const IPC_GET_DIRECTORY_TREE = "get-directory-tree";
 export const IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT = "system-preferences-get-user-default";
 export const IPC_SHOW_OPEN_DIALOG = "show-open-dialog";
 export const IPC_APP_UPDATE_STATE = "app-update-state";
@@ -85,6 +90,11 @@ export const IPC_APP_INSTALL_UPDATE = "app-install-update";
 export const IPC_APP_CHECK_UPDATE = "app-check-update";
 export const IPC_UPDATE_APP_BADGE = "update-app-badge";
 export const IPC_WINDOW_RESUME = "window-resume";
+export const IPC_PUSH_INIT = "push-init";
+export const IPC_PUSH_REGISTER = "push-register";
+export const IPC_PUSH_UNREGISTER = "push-unregister";
+export const IPC_PUSH_SUBSCRIBE = "push-subscribe";
+export const IPC_PUSH_NOTIFICATION = "push-notification";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
@@ -93,6 +103,7 @@ export const IPC_STORE_SET_OBJECT = "store-set-object";
 // STORES
 export const ADDON_STORE_NAME = "addons";
 export const PREFERENCE_STORE_NAME = "preferences";
+export const STORAGE_WOWUP_AUTH_TOKEN = "wowup-auth-token";
 
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
@@ -121,6 +132,14 @@ export const ADDON_MIGRATION_VERSION_KEY = "addon_migration_version";
 export const UPDATE_NOTES_POPUP_VERSION_KEY = "update_notes_popup_version";
 export const ENABLE_APP_BADGE_KEY = "enable_app_badge";
 export const TRUSTED_DOMAINS_KEY = "trusted_domains";
+export const RETAIL_LOCATION_KEY = "wow_retail_location"; // TODO remove, deprecated
+export const RETAIL_PTR_LOCATION_KEY = "wow_retail_ptr_location"; // TODO remove, deprecated
+export const CLASSIC_LOCATION_KEY = "wow_classic_location"; // TODO remove, deprecated
+export const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location"; // TODO remove, deprecated
+export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
+export const ACCT_PUSH_ENABLED_KEY = "acct_push_enabled";
+
+export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 
 // THEMES
 export const DEFAULT_THEME = "default-theme";
@@ -145,7 +164,8 @@ export const WINDOW_MIN_HEIGHT = 500;
 export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
 export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";
-
+export const DEFAULT_FILE_MODE = 0o655;
+export const DEFAULT_TRUSTED_DOMAINS = ["wowup.io", "dev.wowup.io", "discord.gg", "www.patreon.com", "github.com"];
 export const WOW_CLASSIC_FOLDER = "_classic_";
 export const WOW_CLASSIC_ERA_FOLDER = "_classic_era_";
 export const WOW_RETAIL_FOLDER = "_retail_";

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ADDON_PROVIDER_WOWUP_COMPANION, WOWUP_DATA_ADDON_FOLDER_NAME } from "../../common/constants";
 import { AddonChannelType } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { FileService } from "../services/files/file.service";
 import { TocService } from "../services/toc/toc.service";
 import { getGameVersion } from "../utils/addon.utils";
@@ -36,11 +36,12 @@ export class WowUpCompanionAddonProvider extends AddonProvider {
       return;
     }
 
-    const targetToc = this._tocService.getTocForGameType2(companion.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(companion, installation.clientType);
     const lastUpdatedAt = await this._fileService.getLatestDirUpdateTime(companion.path);
 
     companion.matchingAddon = {
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       channelType: AddonChannelType.Stable,
       clientType: installation.clientType,
       id: uuidv4(),

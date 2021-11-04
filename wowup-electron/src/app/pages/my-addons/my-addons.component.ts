@@ -12,13 +12,22 @@ import {
 } from "ag-grid-community";
 import * as _ from "lodash";
 import { join } from "path";
-import { from, Observable, of, Subject, Subscription, zip } from "rxjs";
-import { catchError, debounceTime, delay, first, map, switchMap, tap } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, from, fromEvent, Observable, of, Subject, Subscription, zip } from "rxjs";
+import { catchError, debounceTime, distinctUntilChanged, filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
 import { MatRadioChange } from "@angular/material/radio";
 import { TranslateService } from "@ngx-translate/core";
@@ -26,16 +35,16 @@ import { TranslateService } from "@ngx-translate/core";
 import { Addon } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonViewModel } from "../../business-objects/addon-view-model";
-import { CellWrapTextComponent } from "../../components/cell-wrap-text/cell-wrap-text.component";
-import { ConfirmDialogComponent } from "../../components/confirm-dialog/confirm-dialog.component";
-import { DateTooltipCellComponent } from "../../components/date-tooltip-cell/date-tooltip-cell.component";
-import { MyAddonStatusColumnComponent } from "../../components/my-addon-status-column/my-addon-status-column.component";
-import { MyAddonsAddonCellComponent } from "../../components/my-addons-addon-cell/my-addons-addon-cell.component";
-import { TableContextHeaderCellComponent } from "../../components/table-context-header-cell/table-context-header-cell.component";
+import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
+import { ConfirmDialogComponent } from "../../components/common/confirm-dialog/confirm-dialog.component";
+import { DateTooltipCellComponent } from "../../components/addons/date-tooltip-cell/date-tooltip-cell.component";
+import { MyAddonStatusColumnComponent } from "../../components/addons/my-addon-status-column/my-addon-status-column.component";
+import { MyAddonsAddonCellComponent } from "../../components/addons/my-addons-addon-cell/my-addons-addon-cell.component";
+import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { ColumnState } from "../../models/wowup/column-state";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { ElectronService } from "../../services";
 import { AddonService } from "../../services/addons/addon.service";
@@ -49,6 +58,10 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import * as AddonUtils from "../../utils/addon.utils";
 import { stringIncludes } from "../../utils/string.utils";
 import { SortOrder } from "../../models/wowup/sort-order";
+import { PushService } from "../../services/push/push.service";
+import { AddonUiService } from "../../services/addons/addon-ui.service";
+import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
+import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
 
 @Component({
   selector: "app-my-addons",
@@ -56,43 +69,100 @@ import { SortOrder } from "../../models/wowup/sort-order";
   styleUrls: ["./my-addons.component.scss"],
 })
 export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input("tabIndex") public tabIndex!: number;
+  @Input("tabIndex") public set tabIndex(value: number) {
+    this._tabIndexSrc.next(value);
+  }
 
   @ViewChild("addonContextMenuTrigger", { static: false }) public contextMenu!: MatMenuTrigger;
   @ViewChild("addonMultiContextMenuTrigger", { static: false }) public multiContextMenu!: MatMenuTrigger;
   @ViewChild("columnContextMenuTrigger", { static: false }) public columnContextMenu!: MatMenuTrigger;
+  @ViewChild("addonFilter") public addonFilter: ElementRef;
 
   // @HostListener("window:keydown", ["$event"])
   private readonly _operationErrorSrc = new Subject<Error>();
+  private readonly _isBusySrc = new BehaviorSubject<boolean>(true);
+  private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
+  private readonly _tabIndexSrc = new BehaviorSubject<number | undefined>(undefined);
+  private readonly _baseRowDataSrc = new BehaviorSubject<AddonViewModel[]>([]);
+  private readonly _filterInputSrc = new BehaviorSubject<string>("");
+  private readonly _spinnerMessageSrc = new BehaviorSubject<string>("");
+  private readonly _totalAvailableUpdateSrc = new BehaviorSubject<number>(0);
 
-  private _subscriptions: Subscription[] = [];
-  private isSelectedTab = false;
-  private _lazyLoaded = false;
-  private _isRefreshing = false;
-  private _baseRowData: AddonViewModel[] = [];
-  private _lastSelectionState: RowNode[] = [];
+  public readonly totalAvailableUpdateCt$ = this._totalAvailableUpdateSrc.asObservable();
+  public readonly enableControls$ = this._enableControlsSrc.asObservable();
+  public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
+
+  public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
+
+  public readonly selectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
+    map((wowInstall) => wowInstall?.id)
+  );
+
+  public readonly hasSelectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
+    map((wowInstall) => wowInstall !== undefined)
+  );
+
+  public readonly isBusy$ = this._isBusySrc.asObservable();
+  public readonly filterInput$ = this._filterInputSrc.asObservable();
+
+  public readonly rowData$ = combineLatest([this._baseRowDataSrc, this.filterInput$]).pipe(
+    debounceTime(0),
+    map(([rowData, filterVal]) => {
+      return this.filterAddons(rowData, filterVal);
+    })
+  );
+
+  public readonly hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
+  public readonly enableUpdateAll$ = combineLatest([this.enableControls$, this.rowData$]).pipe(
+    map(([enableControls, rowData]) => {
+      return enableControls && rowData.some((row) => AddonUtils.needsUpdate(row.addon));
+    })
+  );
+
+  public readonly enableUpdateExtra$ = combineLatest([
+    this.enableControls$,
+    this.addonService.anyUpdatesAvailable$,
+  ]).pipe(
+    map(([enableControls, updatesAvailable]) => {
+      return enableControls && updatesAvailable;
+    })
+  );
+
+  public readonly hideGrid$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
+    map(([isBusy, hasData]) => {
+      return isBusy || !hasData;
+    })
+  );
+
+  public readonly showNoAddons$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
+    map(([isBusy, hasData]) => {
+      return !isBusy && !hasData;
+    })
+  );
+
+  public readonly isSelectedTab$ = combineLatest([this._sessionService.selectedHomeTab$, this._tabIndexSrc]).pipe(
+    map(([selectedTab, ownTab]) => {
+      return selectedTab !== undefined && ownTab !== undefined && selectedTab === ownTab;
+    })
+  );
 
   public readonly operationError$ = this._operationErrorSrc.asObservable();
 
+  private _subscriptions: Subscription[] = [];
+  private _lazyLoaded = false;
+  private _isRefreshing = false;
+  private _lastSelectionState: RowNode[] = [];
+
   public updateAllContextMenu!: MatMenuTrigger;
-  public spinnerMessage = "";
   public contextMenuPosition = { x: "0px", y: "0px" };
-  public filter = "";
   public overlayNoRowsTemplate = "";
   public addonUtils = AddonUtils;
-  public selectedClient = WowClientType.None;
-  public selectedInstallation: WowInstallation | undefined = undefined;
-  public wowClientType = WowClientType;
   public overlayRef: OverlayRef | null = null;
-  public isBusy = true;
-  public enableControls = true;
+
   public wowInstallations$: Observable<WowInstallation[]>;
-  public selectedInstallationId!: string;
-  public rowData: AddonViewModel[] = [];
-  public filterInput$ = new Subject<string>();
-  public rowDataChange$ = new Subject<boolean>();
 
   // Grid
+  public rowDataG: any[] = [];
   public columnDefs: ColDef[] = [];
   public frameworkComponents = {};
   public gridApi!: GridApi;
@@ -162,14 +232,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.columns.filter((col) => col.visible).map((col) => col.name);
   }
 
-  public get enableUpdateAll(): boolean {
-    return _.some(this._baseRowData, (row) => AddonUtils.needsUpdate(row.addon));
-  }
-
-  public get hasData(): boolean {
-    return this._baseRowData.length > 0;
-  }
-
   public constructor(
     private _sessionService: SessionService,
     private _dialog: MatDialog,
@@ -178,6 +240,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _wowUpAddonService: WowUpAddonService,
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
+    private _pushService: PushService,
+    private _addonUiService: AddonUiService,
     public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
@@ -190,12 +254,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
     }</span>`;
 
-    this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
+    this.wowInstallations$ = combineLatest([
+      warcraftInstallationService.wowInstallations$,
+      addonService.anyUpdatesAvailable$,
+    ]).pipe(
+      map(([installations]) => {
+        let total = 0;
+        installations.forEach((inst) => {
+          inst.availableUpdateCount = this.addonService.getAllAddonsAvailableForUpdate(inst).length;
+          total += inst.availableUpdateCount;
+        });
 
-    // When the search input changes debounce it a little before searching
-    const filterInputSub = this.filterInput$.pipe(debounceTime(200)).subscribe(() => {
-      this.filterAddons();
-    });
+        this._totalAvailableUpdateSrc.next(total);
+        return installations;
+      })
+    );
 
     const addonInstalledSub = this.addonService.addonInstalled$
       .pipe(
@@ -211,13 +284,30 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe();
 
+    // If an update push comes in, check if we have any addons installed with any of the ids, if so refresh
+    const pushUpdateSub = this._pushService.addonUpdate$
+      .pipe(
+        debounceTime(5000),
+        filter((addons) => {
+          const addonIds = addons.map((addon) => addon.addonId);
+          return this.addonService.hasAnyWithExternalAddonIds(addonIds);
+        }),
+        switchMap(() => from(this.onRefresh()))
+      )
+      .subscribe();
+
     this._subscriptions.push(
-      this._sessionService.selectedHomeTab$.subscribe(this.onSelectedTabChange),
+      this.isSelectedTab$
+        .pipe(
+          filter((isSelected) => isSelected === true),
+          switchMap(this.onSelectedTabChange)
+        )
+        .subscribe(),
       this._sessionService.addonsChanged$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
       this._sessionService.targetFileInstallComplete$.pipe(switchMap(() => from(this.onRefresh()))).subscribe(),
+      pushUpdateSub,
       addonInstalledSub,
-      addonRemovedSub,
-      filterInputSub
+      addonRemovedSub
     );
 
     this.frameworkComponents = {
@@ -256,12 +346,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         columnDef.hide = !col.visible;
       }
     });
-
-    this.onSelectedTabChange(this._sessionService.getSelectedHomeTab());
   }
 
   public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  public onClickClearFilter(): void {
+    this.addonFilter.nativeElement.value = "";
+    this._filterInputSrc.next("");
   }
 
   public handleKeyboardEvent(event: KeyboardEvent): void {
@@ -280,10 +373,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return sortOrder;
     });
     this.wowUpService.setMyAddonsSortOrder(minimalState);
-  }
-
-  public onRowDataChanged(): void {
-    this.rowDataChange$.next(true);
   }
 
   public onFirstDataRendered(): void {
@@ -307,43 +396,55 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.loadSortOrder();
 
-    this.rowDataChange$.pipe(debounceTime(50)).subscribe(() => {
-      this.redrawRows();
-    });
+    this.rowData$
+      .pipe(
+        tap((data) => {
+          this.gridApi.setRowData(data);
+          this.setPageContextText();
+        })
+      )
+      .subscribe();
   }
 
   public ngAfterViewInit(): void {
+    this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
+
+    if (this.addonFilter?.nativeElement !== undefined) {
+      const addonFilterSub = fromEvent(this.addonFilter.nativeElement, "keyup")
+        .pipe(
+          filter(Boolean),
+          debounceTime(200),
+          distinctUntilChanged(),
+          tap(() => {
+            console.debug(this.addonFilter.nativeElement.value);
+            this._filterInputSrc.next(this.addonFilter.nativeElement.value);
+          })
+        )
+        .subscribe();
+
+      this._subscriptions.push(addonFilterSub);
+    }
+
     this._sessionService.autoUpdateComplete$
       .pipe(
         tap(() => console.log("Checking for addon updates...")),
-        switchMap(() => from(this.loadAddons(this.selectedInstallation)))
+        switchMap(() => from(this.loadAddons()))
       )
       .subscribe(() => {
         this._cdRef.markForCheck();
       });
   }
 
-  public onSelectedTabChange = (tabIndex: number): void => {
-    this.isSelectedTab = tabIndex === this.tabIndex;
-    if (!this.isSelectedTab) {
-      return;
-    }
-
+  public onSelectedTabChange = (): Observable<void> => {
     this.setPageContextText();
 
-    from(this.lazyLoad())
-      .pipe(
-        first(),
-        delay(400),
-        map(() => {
-          this.redrawRows();
-        }),
-        catchError((e) => {
-          console.error(e);
-          return of(undefined);
-        })
-      )
-      .subscribe();
+    return from(this.lazyLoad()).pipe(
+      first(),
+      catchError((e) => {
+        console.error(e);
+        return of(undefined);
+      })
+    );
   };
 
   // Get the translated value of the provider name (unknown)
@@ -364,24 +465,27 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this._isRefreshing = true;
-    this.isBusy = true;
-    this.enableControls = false;
+    this._isBusySrc.next(true);
+    this._enableControlsSrc.next(false);
 
     try {
       console.debug("onRefresh");
       await this.addonService.syncAllClients();
 
-      if (this.selectedInstallation) {
-        await this._wowUpAddonService.updateForInstallation(this.selectedInstallation);
+      const selectedWowInstall = this._sessionService.getSelectedWowInstallation();
+      if (selectedWowInstall !== undefined) {
+        await this._wowUpAddonService.updateForInstallation(selectedWowInstall);
       }
 
-      await this.loadAddons(this.selectedInstallation);
+      await this.loadAddons();
       await this.updateBadgeCount();
     } catch (e) {
       console.error(`Failed to refresh addons`, e);
     } finally {
-      this.isBusy = false;
-      this.enableControls = true;
+      this._isBusySrc.next(false);
+
+      this._enableControlsSrc.next(true);
+
       this._isRefreshing = false;
     }
   };
@@ -407,6 +511,20 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return listItem.addon.isIgnored === false && listItem.addon.warningType === undefined;
   }
 
+  public canSetAutoUpdateNotifications(listItem: AddonViewModel): boolean {
+    if (!listItem.addon) {
+      return false;
+    }
+
+    if (this.wowUpService.enableSystemNotifications === false) {
+      return false;
+    }
+
+    return (
+      listItem.addon.isIgnored === false && listItem.addon.warningType === undefined && listItem.addon.autoUpdateEnabled
+    );
+  }
+
   public canReInstall(listItem: AddonViewModel): boolean {
     if (!listItem.addon) {
       return false;
@@ -415,37 +533,25 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return listItem.addon.warningType === undefined && this.addonService.canReinstall(listItem.addon);
   }
 
-  /** Handle when the user enters new text into the filter box */
-  public filterAddons(): void {
-    if (this.filter.length === 0) {
-      this.rowData = this._baseRowData;
-      this._cdRef.detectChanges();
-      return;
+  public filterAddons(rowData: AddonViewModel[], filterVal: string): AddonViewModel[] {
+    if (filterVal.length === 0) {
+      return rowData;
     }
 
-    const filter = this.filter.trim().toLowerCase();
-    const filtered = _.filter(this._baseRowData, (row) => this.filterListItem(row, filter));
-
-    this.rowData = filtered;
-
-    this._cdRef.detectChanges();
-  }
-
-  // Handle when the user clicks the clear button on the filter input box
-  public onClearFilter(): void {
-    this.filter = "";
-    this.filterInput$.next(this.filter);
+    const filter = filterVal.trim().toLowerCase();
+    return rowData.filter((row) => this.filterListItem(row, filter));
   }
 
   // Handle when the user clicks the update all button
   public async onUpdateAll(): Promise<void> {
-    if (!this.selectedInstallation) {
+    const selectedWowInstall = this._sessionService.getSelectedWowInstallation();
+    if (selectedWowInstall === undefined) {
       return;
     }
 
-    this.enableControls = false;
+    this._enableControlsSrc.next(false);
 
-    const addons = await this.addonService.getAddons(this.selectedInstallation, false);
+    const addons = await this.addonService.getAddons(selectedWowInstall, false);
     try {
       const filteredAddons = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
 
@@ -462,7 +568,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error(err);
     }
 
-    this.enableControls = this.calculateControlState();
+    this._enableControlsSrc.next(this.calculateControlState());
   }
 
   // Handle when the user clicks the update all retail/classic button
@@ -524,6 +630,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public async onReInstallAddons(listItems: AddonViewModel[]): Promise<void> {
     try {
+      console.debug("onReInstallAddons", listItems);
       const tasks = _.map(listItems, (listItem) => this.addonService.installAddon(listItem.addon?.id ?? ""));
       await Promise.all(tasks);
     } catch (e) {
@@ -555,9 +662,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.gridColumnApi.setColumnVisible(column.name, event.checked);
 
     if (column.name === "latestVersion") {
-      const updates = [...this._baseRowData];
-      updates.forEach((update) => (update.showUpdate = !event.checked));
-      this.rowData = updates;
+      this._sessionService.myAddonsCompactVersion = !event.checked;
     }
   }
 
@@ -565,6 +670,24 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public getRowNodeId = (data: any) => {
     return data.addon.id;
   };
+
+  public onClickCreateBackup(): void {
+    const dialogRef = this._dialogFactory.getDialog(WtfBackupComponent, {
+      disableClose: true,
+      data: {},
+    });
+
+    dialogRef.afterClosed().pipe(first()).subscribe();
+  }
+
+  public onClickImportExport(): void {
+    const dialogRef = this._dialogFactory.getDialog(AddonManageDialogComponent, {
+      disableClose: true,
+      data: {},
+    });
+
+    dialogRef.afterClosed().pipe(first()).subscribe();
+  }
 
   public onReScan(): void {
     const title = this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE");
@@ -574,89 +697,33 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     dialogRef
       .afterClosed()
       .pipe(
-        switchMap((result) => {
-          if (!result) {
-            return of(undefined);
-          }
-
-          return from(this.loadAddons(this.selectedInstallation, true)).pipe(switchMap(() => from(this.onRefresh())));
-        })
-      )
-      .subscribe();
-  }
-
-  public onClientChange(): void {
-    this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
-  }
-
-  public onRemoveAddon(addon: Addon): void {
-    this.getRemoveAddonPrompt(addon.name)
-      .afterClosed()
-      .pipe(
         first(),
         switchMap((result) => {
           if (!result) {
             return of(undefined);
           }
 
-          if (this.addonService.getRequiredDependencies(addon).length === 0) {
-            return from(this.addonService.removeAddon(addon)).pipe(
-              map(() => {
-                this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
-                  localeArgs: {
-                    addonName: addon.name,
-                  },
-                });
-              })
-            );
-          } else {
-            return this.getRemoveDependenciesPrompt(addon.name, (addon.dependencies ?? []).length)
-              .afterClosed()
-              .pipe(
-                switchMap((result) => from(this.addonService.removeAddon(addon, result))),
-                map(() => {
-                  this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
-                    localeArgs: {
-                      addonName: addon.name,
-                    },
-                  });
-                }),
-                switchMap(() => from(this.loadAddons(this.selectedInstallation)))
-              );
-          }
+          console.log("Performing re-scan");
+          return from(this.loadAddons(true)).pipe(switchMap(() => from(this.onRefresh())));
         })
       )
       .subscribe();
   }
 
-  private getRemoveAddonPrompt(addonName: string): MatDialogRef<ConfirmDialogComponent, any> {
-    const title: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.TITLE", { count: 1 });
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ONE", {
-      addonName,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-    const message = `${message1}\n\n${message2}`;
-
-    return this._dialogFactory.getConfirmDialog(title, message);
+  public onClientChange(evt: any): void {
+    this._sessionService.setSelectedWowInstallation(evt.value);
   }
 
-  private getRemoveDependenciesPrompt(
-    addonName: string,
-    dependencyCount: number
-  ): MatDialogRef<ConfirmDialogComponent, any> {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_TITLE");
-    const message1: string = this._translateService.instant("PAGES.MY_ADDONS.UNINSTALL_POPUP.DEPENDENCY_MESSAGE", {
-      addonName,
-      dependencyCount,
-    });
-    const message2: string = this._translateService.instant(
-      "PAGES.MY_ADDONS.UNINSTALL_POPUP.CONFIRMATION_ACTION_EXPLANATION"
-    );
-    const message = `${message1}\n\n${message2}`;
-
-    return this._dialogFactory.getConfirmDialog(title, message);
+  public onRemoveAddon(addon: Addon): void {
+    this._addonUiService
+      .handleRemoveAddon(addon)
+      .pipe(
+        first(),
+        switchMap((result) => {
+          return result.dependenciesRemoved ? this.loadAddons() : of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   public onRemoveAddons(listItems: AddonViewModel[]): void {
@@ -703,7 +770,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickIgnoreAddons(listItems: AddonViewModel[]): void {
     const isIgnored = _.every(listItems, (listItem) => listItem.addon?.isIgnored === false);
-    const rows = [...this._baseRowData];
+    const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
       for (const listItem of listItems) {
         const row = _.find(rows, (r) => r.addon?.id === listItem.addon?.id);
@@ -720,7 +787,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.addonService.saveAddon(row.addon);
       }
 
-      this.rowData = rows;
+      this._baseRowDataSrc.next(rows);
     } catch (e) {
       console.error(`Failed to ignore addon(s)`, e);
     } finally {
@@ -730,6 +797,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onClickAutoUpdateAddon(listItem: AddonViewModel): void {
     this.onClickAutoUpdateAddons([listItem]);
+  }
+
+  public onClickAutoUpdateAddonNotifications(listItem: AddonViewModel): void {
+    this.onClickAutoUpdateAddonsNotifications([listItem]);
   }
 
   public onRowClicked(event: RowClickedEvent): void {
@@ -752,12 +823,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     evt.node.setSelected(true);
   }
 
+  private getModelById(rows: AddonViewModel[], model: AddonViewModel): AddonViewModel | undefined {
+    return rows.find((row) => row.addon?.id == model.addon?.id);
+  }
+
   public onClickAutoUpdateAddons(listItems: AddonViewModel[]): void {
     const isAutoUpdate = _.every(listItems, (listItem) => listItem.addon?.autoUpdateEnabled === false);
-    const rows = [...this._baseRowData];
+    const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
       for (const listItem of listItems) {
-        const row = _.find(rows, (r) => r.addon?.id === listItem.addon?.id);
+        const row = this.getModelById(rows, listItem);
         if (!row || !row.addon) {
           console.warn("Invalid row data");
           continue;
@@ -768,10 +843,38 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           row.addon.isIgnored = false;
         }
 
+        row.addon.autoUpdateNotificationsEnabled = isAutoUpdate;
+
         this.addonService.saveAddon(row.addon);
       }
 
-      this.rowData = rows;
+      this._baseRowDataSrc.next(rows);
+    } catch (e) {
+      console.error(e);
+      this._operationErrorSrc.next(e);
+    }
+  }
+
+  public onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): void {
+    const isAutoUpdateNofications = _.every(
+      listItems,
+      (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false
+    );
+    const rows = _.cloneDeep(this._baseRowDataSrc.value);
+    try {
+      for (const listItem of listItems) {
+        const row = _.find(rows, (r) => r.addon?.id === listItem.addon?.id);
+        if (!row || !row.addon) {
+          console.warn("Invalid row data for addon", listItem.addon?.id);
+          continue;
+        }
+
+        row.addon.autoUpdateNotificationsEnabled = isAutoUpdateNofications;
+
+        this.addonService.saveAddon(row.addon);
+      }
+
+      this._baseRowDataSrc.next(rows);
     } catch (e) {
       console.error(e);
       this._operationErrorSrc.next(e);
@@ -803,18 +906,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             return of(undefined);
           }
 
+          const selectedWowInstall = this._sessionService.getSelectedWowInstallation();
           const externalId = _.find(listItem.addon?.externalIds, (extId) => extId.providerName === evt.value);
-          if (!externalId || !this.selectedInstallation) {
+          if (!externalId || !selectedWowInstall) {
             throw new Error("External id not found");
           }
 
           return from(
-            this.addonService.setProvider(
-              listItem.addon,
-              externalId.id,
-              externalId.providerName,
-              this.selectedInstallation
-            )
+            this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, selectedWowInstall)
           );
         }),
         catchError((e) => {
@@ -888,8 +987,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this._lazyLoaded = true;
-    this.isBusy = true;
-    this.enableControls = false;
+    this._isBusySrc.next(true);
+
+    this._enableControlsSrc.next(false);
 
     // TODO this shouldn't be here
     await this.addonService.backfillAddons();
@@ -903,9 +1003,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             return of(undefined);
           }
 
-          this.selectedInstallation = installation;
-          this.selectedInstallationId = installation.id;
-          return from(this.loadAddons(this.selectedInstallation));
+          return from(this.loadAddons());
         }),
         catchError((e) => {
           console.error(`selectedInstallationSub failed`, e);
@@ -918,9 +1016,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async updateAllWithSpinner(...installations: WowInstallation[]): Promise<void> {
-    this.isBusy = true;
-    this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS");
-    this.enableControls = false;
+    this._isBusySrc.next(true);
+
+    this._spinnerMessageSrc.next(this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS"));
+    this._enableControlsSrc.next(false);
 
     let addons: Addon[] = [];
     let updatedCt = 0;
@@ -936,14 +1035,16 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       );
 
       if (addons.length === 0) {
-        await this.loadAddons(this.selectedInstallation);
+        await this.loadAddons();
         return;
       }
 
-      this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING", {
-        updateCount: updatedCt,
-        addonCount: addons.length,
-      });
+      this._spinnerMessageSrc.next(
+        this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING", {
+          updateCount: updatedCt,
+          addonCount: addons.length,
+        })
+      );
 
       for (const addon of addons) {
         if (!addon.id) {
@@ -959,24 +1060,27 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           continue;
         }
 
-        this.spinnerMessage = this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME", {
-          updateCount: updatedCt,
-          addonCount: addons.length,
-          clientType: installation.label,
-          addonName: addon.name,
-        });
+        this._spinnerMessageSrc.next(
+          this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING_WITH_ADDON_NAME", {
+            updateCount: updatedCt,
+            addonCount: addons.length,
+            clientType: installation.label,
+            addonName: addon.name,
+          })
+        );
 
         await this.addonService.updateAddon(addon.id);
       }
 
-      await this.loadAddons(this.selectedInstallation);
+      await this.loadAddons();
     } catch (err) {
       console.error("Failed to update classic/retail", err);
-      this.isBusy = false;
+      this._isBusySrc.next(false);
+
       this._cdRef.detectChanges();
     } finally {
-      this.spinnerMessage = "";
-      this.enableControls = this.calculateControlState();
+      this._spinnerMessageSrc.next("");
+      this._enableControlsSrc.next(this.calculateControlState());
     }
   }
 
@@ -985,20 +1089,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextMenuPosition.y = `${event.clientY as number}px`;
   }
 
-  private loadAddons = async (installation: WowInstallation | undefined, reScan = false): Promise<void> => {
+  private loadAddons = async (reScan = false): Promise<void> => {
+    const installation = this._sessionService.getSelectedWowInstallation();
     if (!installation) {
       return;
     }
 
-    this.isBusy = true;
-    this.enableControls = false;
+    this._isBusySrc.next(true);
+
+    this._enableControlsSrc.next(false);
 
     if (!installation) {
       console.warn("Skipping addon load installation unknown");
       return;
     }
 
-    this.rowData = this._baseRowData = [];
     this._cdRef.detectChanges();
 
     try {
@@ -1009,26 +1114,26 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       const rowData = this.formatAddons(addons);
-      this.enableControls = this.calculateControlState();
 
-      this._baseRowData = rowData;
-      this.rowData = this._baseRowData;
+      this._baseRowDataSrc.next(rowData);
 
-      this.isBusy = false;
       this.setPageContextText();
 
       this._cdRef.detectChanges();
     } catch (e) {
       console.error(e);
-      this.isBusy = false;
-      this.enableControls = this.calculateControlState();
     } finally {
+      this._isBusySrc.next(false);
       this._cdRef.detectChanges();
+      this._enableControlsSrc.next(this.calculateControlState());
     }
   };
 
+  private getLatestVersionColumnVisible(): boolean {
+    return this.columns.find((col) => col.name === "latestVersion")?.visible ?? true;
+  }
+
   private formatAddons(addons: Addon[]): AddonViewModel[] {
-    const showUpdate = !(this.columns.find((col) => col.name === "latestVersion")?.visible ?? true);
     const viewModels = addons.map((addon) => {
       const listItem = new AddonViewModel(addon);
 
@@ -1036,7 +1141,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         listItem.addon.installedVersion = "";
       }
 
-      listItem.showUpdate = showUpdate;
       return listItem;
     });
 
@@ -1055,54 +1159,58 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private setPageContextText() {
-    const itemsLength = this.rowData.length;
-    if (itemsLength === 0) {
-      return;
-    }
+    this.rowData$
+      .pipe(
+        first(),
+        map((data) => {
+          if (data.length === 0) {
+            return;
+          }
 
-    this._sessionService.setContextText(
-      this.tabIndex,
-      this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED", {
-        count: itemsLength,
-      })
-    );
+          this._sessionService.setContextText(
+            this._tabIndexSrc.value,
+            this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED", {
+              count: data.length,
+            })
+          );
+        })
+      )
+      .subscribe();
   }
 
   private onAddonInstalledEvent = (evt: AddonUpdateEvent) => {
-    try {
-      if (evt.addon.installationId !== this.selectedInstallationId) {
-        return;
-      }
-
-      if ([AddonInstallState.Complete, AddonInstallState.Error].includes(evt.installState) === false) {
-        this.enableControls = false;
-        return;
-      }
-
-      const idx = this._baseRowData.findIndex((r) => r.addon?.id === evt.addon.id);
-
-      // If we have a new addon, just put it at the end
-      if (idx === -1) {
-        this._baseRowData.push(new AddonViewModel(evt.addon));
-        this._baseRowData = _.orderBy(this._baseRowData, (row) => row.addon?.name);
-      } else {
-        this._baseRowData.splice(idx, 1, new AddonViewModel(evt.addon));
-      }
-
-      this.rowData = [...this._baseRowData];
-
-      this.enableControls = this.calculateControlState();
-    } finally {
-      this._cdRef.detectChanges();
+    if (evt.addon.installationId !== this._sessionService.getSelectedWowInstallation()?.id) {
+      return;
     }
+
+    if ([AddonInstallState.Complete, AddonInstallState.Error].includes(evt.installState) === false) {
+      this._enableControlsSrc.next(false);
+      return;
+    }
+
+    let rowData = _.cloneDeep(this._baseRowDataSrc.value);
+    const idx = rowData.findIndex((r) => r.addon?.id === evt.addon.id);
+
+    // If we have a new addon, just put it at the end
+    if (idx === -1) {
+      console.debug("Adding new addon to list");
+      rowData.push(new AddonViewModel(evt.addon));
+      rowData = _.orderBy(rowData, (row) => row.canonicalName);
+    } else {
+      rowData.splice(idx, 1, new AddonViewModel(evt.addon));
+    }
+
+    this._baseRowDataSrc.next(rowData);
+    this._enableControlsSrc.next(this.calculateControlState());
   };
 
   private onAddonRemoved = (addonId: string) => {
-    const listItemIdx = this._baseRowData.findIndex((li) => li.addon?.id === addonId);
-    this._baseRowData.splice(listItemIdx, 1);
+    const rowData = _.cloneDeep(this._baseRowDataSrc.value);
 
-    this.rowData = [...this._baseRowData];
-    this._cdRef.detectChanges();
+    const listItemIdx = rowData.findIndex((li) => li.addon?.id === addonId);
+    rowData.splice(listItemIdx, 1);
+
+    this._baseRowDataSrc.next(rowData);
   };
 
   private showErrorMessage(title: string, message: string) {
@@ -1147,13 +1255,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     ]);
   }
 
-  private redrawRows() {
-    this.gridApi?.redrawRows();
-    this.gridApi?.resetRowHeights();
-    this.autoSizeColumns();
-    this._cdRef.detectChanges();
-  }
-
   // If nodes have the same primary value, use the canonical name as a fallback
   private compareElement(nodeA: RowNode, nodeB: RowNode, prop: string): number {
     if (nodeA.data[prop] === nodeB.data[prop]) {
@@ -1182,26 +1283,24 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     return [
       {
-        field: "name",
+        cellRenderer: "myAddonRenderer",
+        field: "hash",
         flex: 2,
         minWidth: 300,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.ADDON_COLUMN_HEADER"),
         sortable: true,
-        autoHeight: true,
-        cellRenderer: "myAddonRenderer",
+        // autoHeight: true,
         colId: "name",
-        valueGetter: (params) => {
-          return params.data.canonicalName;
-        },
+        comparator: (va, vb, na, nb) => this.compareElement(na, nb, "canonicalName"),
         ...baseColumn,
       },
       {
-        field: "sortOrder",
-        width: 150,
-        sortable: true,
-        headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
         cellRenderer: "myAddonStatus",
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "sortOrder"),
+        field: "sortOrder",
+        headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.STATUS_COLUMN_HEADER"),
+        sortable: true,
+        width: 150,
         ...baseColumn,
       },
       {

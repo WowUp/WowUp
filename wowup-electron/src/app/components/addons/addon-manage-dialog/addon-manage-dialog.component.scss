@@ -1,0 +1,61 @@
+.addon-manage-dialog {
+  min-width: 600px;
+}
+
+.export-content {
+  resize: none;
+  width: 100%;
+  min-height: 200px;
+}
+
+.import-content {
+  resize: none;
+  width: 100%;
+  min-height: 200px;
+}
+
+.comparison-row {
+  margin: 0.5em 0;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid var(--background-secondary-1);
+  padding-bottom: 0.25em;
+  // align-items: center;
+}
+
+.comp-badge {
+  display: flex;
+  padding: 0.25em 0.5em;
+  margin-right: 0.5em;
+  font-size: 0.8em;
+  background-color: var(--background-secondary-1);
+
+  img {
+    width: 20px;
+  }
+
+  mat-icon {
+    height: 18px;
+  }
+}
+
+.comp-text {
+  padding: 0.25em 0;
+}
+
+.added-badge {
+  background-color: var(--success-color);
+}
+
+.conflict-badge {
+  background-color: var(--warning-color);
+  color: black;
+}
+
+.no-change-badge {
+  background-color: var(--background-secondary-1);
+}
+.success-icon {
+  text-align: center;
+  filter: invert(23%) sepia(99%) saturate(1821%) hue-rotate(104deg) brightness(96%) contrast(106%);
+}

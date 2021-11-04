@@ -9,3 +9,9 @@ export enum WowClientType {
   ClassicEraPtr,
   None,
 }
+
+export enum WowClientGroup {
+  Retail,
+  BurningCrusade,
+  Classic,
+}

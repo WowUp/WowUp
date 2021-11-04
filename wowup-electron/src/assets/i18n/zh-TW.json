@@ -1,4 +1,36 @@
 {
+  "ADDON_IMPORT": {
+    "ACTIVE_ADDON_COUNT": "當前插件數：{count}",
+    "ADDED_BADGE_TOOLTIP": "嘗試安裝此插件",
+    "CONFLICT_BADGE_TOOLTIP": "不會修改衝突的插件",
+    "COPY_BUTTON": "複製",
+    "DIALOG_TITLE": "匯入/匯出插件：{clientType}",
+    "EXPORT_STRING_COPIED": "匯出字串已複製到剪貼簿",
+    "EXPORT_STRING_PASTED": "剪貼簿內容已插入",
+    "EXPORT_TAB_LABEL": "匯出",
+    "EXPORT_TEXT_LABEL": "插件匯出資料",
+    "GENERIC_IMPORT_ERROR": "匯入時發生錯誤",
+    "IGNORED_ADDON_COUNT": "忽略的插件數：{count}",
+    "IMPORT_ADDED_COUNT": "增加了 {count} 個插件",
+    "IMPORT_BADGE_ADDED": "新增",
+    "IMPORT_BADGE_CONFLICT": "衝突",
+    "IMPORT_BADGE_NO_CHANGE": "無變化",
+    "IMPORT_BUTTON": "匯入",
+    "IMPORT_CONFLICT_COUNT": "有 {count} 個插件存在衝突",
+    "IMPORT_NO_CHANGE_COUNT": "{count} 個無變化",
+    "IMPORT_STRING_INVALID": "匯入字串無效",
+    "IMPORT_TAB_LABEL": "匯入",
+    "IMPORT_TEXT_INSTRUCTIONS": "把 WowUp 匯出字串貼上到下方以開始匯入",
+    "IMPORT_TEXT_LABEL": "匯入資料",
+    "IMPORT_TOTAL_COUNT": "正在匯入 {count} 個插件",
+    "INSTALL_BUTTON": "安裝",
+    "INVALID_CLIENT_TYPE": "匯入字串和客戶端型別不匹配",
+    "NO_CHANGE_BADGE_TOOLTIP": "此插件已安裝",
+    "PASTE_BUTTON": "貼上",
+    "PROVIDER_MISMATCH": "插件提供方不匹配",
+    "RESET_BUTTON": "重置",
+    "VERSION_MISMATCH": "版本號不匹配"
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -131,7 +163,7 @@
       "GENERIC_TOOLTIP": "檢測到此插件存在問題",
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 無法更新此插件或提供詳細資訊。",
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了該外掛的相關資訊，但不包含匹配當前遊戲版本的檔案。<br>一旦有匹配該遊戲版本的更新，此提示資訊將會消失。",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了該插件的相關資訊，但不包含匹配當前遊戲版本的檔案。<br>一旦有匹配該遊戲版本的更新，此提示資訊將會消失。",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 沒有匹配該遊戲版本的檔案"
     },
     "CLIENT_TYPES": {
@@ -176,6 +208,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "無法為戰網賬戶啟用實時更新。請稍後再試，或者到 Discord 上尋求幫助。",
       "ADDON_INSTALL_ERROR": "安裝插件 {addonName} 失敗。請稍後再試。",
       "ADDON_SCAN_ERROR": "在與 {providerName} 匹配插件資料夾時出現錯誤，請稍後再試。",
       "ADDON_SYNC_ERROR": "從 {providerName} 上檢查更新時出現錯誤。",
@@ -204,7 +237,7 @@
       "DESCRIPTION_NOT_FOUND": "未找到描述",
       "DESCRIPTION_TAB": "描述",
       "FUNDING_LINK_TITLE": "支援插件作者",
-      "IMAGES_TAB": "圖片",
+      "IMAGES_TAB": "預覽",
       "MISSING_DEPENDENCIES": "缺失的依賴項",
       "NO_CHANGELOG_TEXT": "更新記錄不可用",
       "VIEW_IN_BROWSER_BUTTON": "在瀏覽器中檢視",
@@ -275,6 +308,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "訪問網站！"
     },
+    "ACCOUNT": {
+      "BETA": "測試版",
+      "LOGIN_BUTTON": "立即登入！",
+      "LOGOUT_BUTTON": "登出",
+      "LOGOUT_CONFIRMATION_MESSAGE": "確定要登出嗎？本地賬戶資料將會被刪除，重新登入時將會同步回來。",
+      "LOGOUT_CONFIRMATION_TITLE": "是否登出？",
+      "MANAGE_ACCOUNT_BUTTON": "管理賬戶",
+      "TITLE": "賬戶"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "類別",
       "ADDON_CATEGORIES_MENU_TITLE": "插件類別",
@@ -298,7 +340,9 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "關於",
+      "ACCOUNT_TAB_TITLE": "賬戶",
       "GET_ADDONS_TAB_TITLE": "獲取插件",
+      "GUIDE_TAB_TITLE": "指南（英語）",
       "MIGRATING_ADDONS": "正在遷移插件...",
       "MY_ADDONS_TAB_TITLE": "我的插件",
       "NEWS_TAB_TITLE": "新聞（英語）",
@@ -309,6 +353,7 @@
         "ADDONS_SELECTED": "已選中 {count} 項",
         "ALPHA_ADDON_CHANNEL": "Alpha",
         "AUTO_UPDATE_ADDON_BUTTON": "自動更新",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "通知已開啟",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "更新通道",
         "IGNORE_ADDON_BUTTON": "忽略",
@@ -326,6 +371,7 @@
       },
       "CHECK_UPDATES_BUTTON": "檢查更新",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "檢查最新的插件更新",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} 個更新",
       "CLIENT_TYPE_SELECT_LABEL": "魔獸世界",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "顯示列表項"
@@ -339,6 +385,7 @@
         "PATREON": "通过 Patreon 支援作者",
         "PAYPAL": "通过 PayPal 支援作者"
       },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "匯入/匯出插件",
       "MULTIPLE_PROVIDERS_TOOLTIP": "此插件有多個提供方",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "共 {count} 個插件",
@@ -346,7 +393,7 @@
         "PATREON_SUPPORT": "透過 Patreon 向 WowUp 捐助（英語）",
         "SEARCH_RESULTS": "共 {count} 條結果",
         "VIEW_GITHUB": "在 GitHub 上檢視原始碼",
-        "VIEW_GUIDE": "訪問指南，探索 WowUp 的功能（英語）"
+        "VIEW_GUIDE": "訪問指南，探索 WowUp 的功能"
       },
       "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "缺失必要的依賴項",
       "RESCAN_FOLDERS_BUTTON": "重新掃描",
@@ -387,7 +434,8 @@
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "更新所有客戶端",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "更新正式服/經典懷舊服"
-      }
+      },
+      "WTF_BACKUP_BUTTON": "備份介面設定"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "共 {count} 條新聞",
@@ -406,7 +454,7 @@
         "CURRENT_LANGUAGE_LABEL": "當前語言",
         "CURSE_PROTOCOL_DESCRIPTION": "從 CurseForge 網站下載插件時，WowUp 將會接管安裝過程",
         "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下載連結",
-        "ENABLE_APP_BADGE_DESCRIPTION": "在應用程式圖示上用角標顯示可更新的外掛數量。",
+        "ENABLE_APP_BADGE_DESCRIPTION": "在應用程式圖示上用角標顯示可更新的插件數量。",
         "ENABLE_APP_BADGE_LABEL": "啟用數字角標通知",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "啟用系統通知",
@@ -452,6 +500,7 @@
         "TITLE": "除錯"
       },
       "TABS": {
+        "ABOUT": "關於",
         "ADDONS": "插件",
         "APPLICATION": "應用程式",
         "CLIENTS": "客戶端",
@@ -473,6 +522,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "編輯",
         "MOVE_DOWN_BUTTON": "下移",
         "MOVE_UP_BUTTON": "上移",
+        "OPEN_FOLDER_BUTTON": "在檔案管理器中顯示",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "瀏覽",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",
         "RESCAN_CLIENTS_BUTTON": "重新掃描",
@@ -480,6 +530,39 @@
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "儲存",
         "TITLE": "魔獸世界"
       }
+    }
+  },
+  "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "確認要把這個備份還原到介面設定中嗎？\n\n還原之前務必關閉《魔獸世界》客戶端。\n\n此操作無法撤銷。",
+      "TITLE": "是否還原 WTF 備份？"
+    },
+    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
+    "BACKUP_COUNT_TEXT": "找到 {count} 個備份",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "正在還原備份...",
+      "CREATING_BACKUP": "正在建立 {count} 個檔案的備份...",
+      "LOADING_BACKUPS": "正在讀取備份...",
+      "REMOVING_BACKUP": "正在刪除備份..."
+    },
+    "CREATE_BACKUP_BUTTON": "建立備份",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "確認要刪除備份 {name} 嗎？\n此操作無法撤銷。",
+      "TITLE": "是否刪除 WTF 備份？"
+    },
+    "DIALOG_TITLE": "WTF 設定備份：{clientType}",
+    "ERROR": {
+      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
+      "FAILED_TO_DELETE": "刪除備份 {name} 失敗",
+      "GENERIC_ERROR": "處理備份檔案時出現了一點問題",
+      "INVALID_CONTENTS": "處理備份檔案時出現了一點問題",
+      "INVALID_CREATED_AT": "處理備份檔案時出現了一點問題",
+      "INVALID_CREATED_BY": "處理備份檔案時出現了一點問題"
+    },
+    "SHOW_FOLDER_BUTTON": "在檔案管理器中顯示",
+    "TOOL_TIP": {
+      "APPLY_BUTTON": "還原此備份",
+      "DELETE_BUTTON": "刪除此備份"
     }
   }
 }

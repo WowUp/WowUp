@@ -1,4 +1,36 @@
 {
+  "ADDON_IMPORT": {
+    "ACTIVE_ADDON_COUNT": "Addons activos: {count}",
+    "ADDED_BADGE_TOOLTIP": "Intentaremos instalar este addon",
+    "CONFLICT_BADGE_TOOLTIP": "Los addons en conflicto no serán modificados",
+    "COPY_BUTTON": "Copiar",
+    "DIALOG_TITLE": "Importar/Exportar addons: {clientType}",
+    "EXPORT_STRING_COPIED": "Datos de exportación copiados al portapapeles",
+    "EXPORT_STRING_PASTED": "Se ha insertado el contenido del portapapeles",
+    "EXPORT_TAB_LABEL": "Exportar",
+    "EXPORT_TEXT_LABEL": "Datos de exportación de addons",
+    "GENERIC_IMPORT_ERROR": "Ocurrió un error durante la importación",
+    "IGNORED_ADDON_COUNT": "Addons ignorados: {count}",
+    "IMPORT_ADDED_COUNT": "{count} añadidos",
+    "IMPORT_BADGE_ADDED": "Nuevo",
+    "IMPORT_BADGE_CONFLICT": "En conflicto",
+    "IMPORT_BADGE_NO_CHANGE": "Sin cambios",
+    "IMPORT_BUTTON": "Importar",
+    "IMPORT_CONFLICT_COUNT": "{count} en conflicto",
+    "IMPORT_NO_CHANGE_COUNT": "{count} sin cambios",
+    "IMPORT_STRING_INVALID": "La cadena de importación no es válida",
+    "IMPORT_TAB_LABEL": "Importar",
+    "IMPORT_TEXT_INSTRUCTIONS": "Pegue los datos de exportación de WowUp en el campo inferior para comenzar",
+    "IMPORT_TEXT_LABEL": "Datos para la importación",
+    "IMPORT_TOTAL_COUNT": "Importando {count} {count, plural, =1{addon} other{addons}}",
+    "INSTALL_BUTTON": "Instalar",
+    "INVALID_CLIENT_TYPE": "La cadena de importación no concuerda con el tipo de cliente seleccionado",
+    "NO_CHANGE_BADGE_TOOLTIP": "Este addon ya está instalado",
+    "PASTE_BUTTON": "Pegar",
+    "PROVIDER_MISMATCH": "El proveedor del addon no concuerda",
+    "RESET_BUTTON": "Reiniciar",
+    "VERSION_MISMATCH": "Las versiones no coinciden"
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -176,6 +208,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "No se pudieron activar las actualizaciones instantáneas en su cuenta. Por favor, inténtelo de nuevo más tarde o contacte con nosotros en Discord.",
       "ADDON_INSTALL_ERROR": "Falló la instalación del addon {addonName}. Por favor, inténtelo de nuevo más tarde.",
       "ADDON_SCAN_ERROR": "Ocurrió un error al comparar sus carpetas de addons con {providerName}. Por favor, inténtelo de nuevo más tarde.",
       "ADDON_SYNC_ERROR": "Ocurrió un error al comprobar actualizaciones desde: {providerName}",
@@ -204,7 +237,7 @@
       "DESCRIPTION_NOT_FOUND": "Descripción no encontrada",
       "DESCRIPTION_TAB": "Descripción",
       "FUNDING_LINK_TITLE": "Apoyar a este autor",
-      "IMAGES_TAB": "Imágenes",
+      "IMAGES_TAB": "Previsualizaciones",
       "MISSING_DEPENDENCIES": "Dependencias no encontradas",
       "NO_CHANGELOG_TEXT": "No hay listado de cambios disponible",
       "VIEW_IN_BROWSER_BUTTON": "Ver en el navegador",
@@ -275,6 +308,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "¡Visite la página web!"
     },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "¡Iniciar sesión ahora!",
+      "LOGOUT_BUTTON": "Cerrar sesión",
+      "LOGOUT_CONFIRMATION_MESSAGE": "¿Quiere cerrar la sesión? Toda la información local sobre su cuenta será eliminada hasta que inicie sesión de nuevo.",
+      "LOGOUT_CONFIRMATION_TITLE": "¿Cerrar sesión?",
+      "MANAGE_ACCOUNT_BUTTON": "Administrar cuenta",
+      "TITLE": "Cuenta"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Categorías",
       "ADDON_CATEGORIES_MENU_TITLE": "Categorías de addons",
@@ -298,7 +340,9 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Acerca de",
+      "ACCOUNT_TAB_TITLE": "Cuenta",
       "GET_ADDONS_TAB_TITLE": "Obtener addons",
+      "GUIDE_TAB_TITLE": "Guía",
       "MIGRATING_ADDONS": "Migrando lista de addons...",
       "MY_ADDONS_TAB_TITLE": "Mis addons",
       "NEWS_TAB_TITLE": "Noticias",
@@ -309,6 +353,7 @@
         "ADDONS_SELECTED": "{count} {count, plural, =1{addon seleccionado} other{addons seleccionados}}",
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Actualización automática",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Mostrar notificaciones",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
@@ -326,6 +371,7 @@
       },
       "CHECK_UPDATES_BUTTON": "Buscar actualizaciones",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Busca las últimas actualizaciones de los addons instalados",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{actualización} other{actualizaciones}} ",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Mostrar Columna"
@@ -339,6 +385,7 @@
         "PATREON": "Apoyar a este autor en Patreon",
         "PAYPAL": "Apoyar a este autor en PayPal"
       },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Importar/Exportar addons",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Este addon está disponible en varios proveedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
@@ -387,7 +434,8 @@
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Actualizar todos los clientes",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Actualizar Retail/Classic"
-      }
+      },
+      "WTF_BACKUP_BUTTON": "Copia de seguridad"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "{count} titulares",
@@ -452,6 +500,7 @@
         "TITLE": "Depuración"
       },
       "TABS": {
+        "ABOUT": "Acerca de",
         "ADDONS": "Addons",
         "APPLICATION": "Aplicación",
         "CLIENTS": "Clientes",
@@ -473,6 +522,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Editar",
         "MOVE_DOWN_BUTTON": "Mover abajo",
         "MOVE_UP_BUTTON": "Mover arriba",
+        "OPEN_FOLDER_BUTTON": "Abrir carpeta",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seleccionar",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Eliminar",
         "RESCAN_CLIENTS_BUTTON": "Reescanear",
@@ -480,6 +530,39 @@
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Guardar",
         "TITLE": "World of Warcraft"
       }
+    }
+  },
+  "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "¿Quiere restaurar esta copia de seguridad a su configuración de interfaz?\n\nAsegúrese que World of Warcraft no está en funcionamiento antes de iniciar la restauración.\n\nEsta operación no se puede deshacer.",
+      "TITLE": "¿Restaurar copia de seguridad de la configuración WTF?"
+    },
+    "BACKUP_APPLY_SUCCESS": "Copia de seguridad restaurada con éxito: {name}",
+    "BACKUP_COUNT_TEXT": "Se {count, plural, =1{encontró} other{encontraron}} {count} {count, plural, =1{copia de seguridad} other{copias de seguridad}}",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Restaurando copia de seguridad...",
+      "CREATING_BACKUP": "Creando copia de seguridad de {count} archivos...",
+      "LOADING_BACKUPS": "Cargando copias de seguridad...",
+      "REMOVING_BACKUP": "Eliminando copia de seguridad..."
+    },
+    "CREATE_BACKUP_BUTTON": "Crear copia de seguridad",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "Quiere eliminar la copia de seguridad {name}?\nEsta acción no se podrá deshacer.",
+      "TITLE": "¿Eliminar copia de seguridad de la carpeta WTF?"
+    },
+    "DIALOG_TITLE": "Copia de seguridad de la carpeta de configuración WTF: {clientType}",
+    "ERROR": {
+      "BACKUP_APPLY_FAILED": "Error al restaurar la copia de seguridad: {name}",
+      "FAILED_TO_DELETE": "Error al eliminar la copia de seguridad: {name}",
+      "GENERIC_ERROR": "Ocurrió un error procesando esta copia de seguridad",
+      "INVALID_CONTENTS": "Ocurrió un error procesando esta copia de seguridad",
+      "INVALID_CREATED_AT": "Ocurrió un error procesando esta copia de seguridad",
+      "INVALID_CREATED_BY": "Ocurrió un error procesando esta copia de seguridad"
+    },
+    "SHOW_FOLDER_BUTTON": "Mostrar carpeta",
+    "TOOL_TIP": {
+      "APPLY_BUTTON": "Restaurar esta copia de seguridad",
+      "DELETE_BUTTON": "Eliminar esta copia de seguridad"
     }
   }
 }

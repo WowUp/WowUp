@@ -34,7 +34,6 @@ import {
   IPC_SET_ZOOM_LIMITS,
   IPC_SHOW_OPEN_DIALOG,
   IPC_SYSTEM_PREFERENCES_GET_USER_DEFAULT,
-  IPC_UPDATE_APP_BADGE,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
   IPC_WINDOW_MINIMIZED,
@@ -56,7 +55,7 @@ export class ElectronService {
   private readonly _windowMaximizedSrc = new BehaviorSubject(false);
   private readonly _windowMinimizedSrc = new BehaviorSubject(false);
   private readonly _powerMonitorSrc = new BehaviorSubject("");
-  private readonly _customProtocolSrc = new BehaviorSubject("");
+  public readonly _customProtocolSrc = new BehaviorSubject("");
   private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
   private readonly _windowResumedSrc = new Subject<void>();
 
@@ -254,12 +253,20 @@ export class ElectronService {
     await this.invoke(IPC_WINDOW_LEAVE_FULLSCREEN);
   }
 
+  public async readClipboardText(): Promise<string> {
+    return await this.invoke("clipboard-read-text");
+  }
+
   public showNotification(title: string, options?: NotificationOptions): Notification {
     return new Notification(title, options);
   }
 
   public async showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue> {
     return await this.invoke(IPC_SHOW_OPEN_DIALOG, options);
+  }
+
+  public async showItemInFolder(path: string): Promise<void> {
+    return await this.invoke("show-item-in-folder", path);
   }
 
   public async getUserDefaultSystemPreference<T = any>(

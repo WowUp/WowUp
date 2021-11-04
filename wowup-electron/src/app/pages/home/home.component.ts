@@ -17,12 +17,11 @@ import {
   TAB_INDEX_SETTINGS,
 } from "../../../common/constants";
 import { AppConfig } from "../../../environments/environment";
-import { InstallFromProtocolDialogComponent } from "../../components/install-from-protocol-dialog/install-from-protocol-dialog.component";
-import { PatchNotesDialogComponent } from "../../components/patch-notes-dialog/patch-notes-dialog.component";
+import { InstallFromProtocolDialogComponent } from "../../components/addons/install-from-protocol-dialog/install-from-protocol-dialog.component";
+import { PatchNotesDialogComponent } from "../../components/common/patch-notes-dialog/patch-notes-dialog.component";
 import { AddonScanError } from "../../errors";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
-import { WowInstallation } from "../../models/wowup/wow-installation";
 import { ElectronService } from "../../services";
 import { AddonService, ScanUpdate, ScanUpdateType } from "../../services/addons/addon.service";
 import { DialogFactory } from "../../services/dialog/dialog.factory";
@@ -31,7 +30,7 @@ import { SnackbarService } from "../../services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getProtocol } from "../../utils/string.utils";
-import { LightboxConfig } from "ngx-lightbox";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 
 @Component({
   selector: "app-home",
@@ -63,12 +62,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _snackBarService: SnackbarService,
     private _cdRef: ChangeDetectorRef,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _dialogFactory: DialogFactory,
-    private _lightboxConfig: LightboxConfig
+    private _dialogFactory: DialogFactory
   ) {
-    _lightboxConfig.fadeDuration = 0.3;
-    _lightboxConfig.resizeDuration = 0.3;
-
     const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
       this.hasWowClient = installations.length > 0;
     });
@@ -95,6 +90,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     try {
       switch (protocolName) {
         case APP_PROTOCOL_NAME:
+          break;
         case CURSE_PROTOCOL_NAME:
           await this.handleAddonInstallProtocol(protocol);
           break;
@@ -179,8 +175,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private async migrateAddons(installations: WowInstallation[]) {
-    const shouldMigrate = await this._wowupService.shouldMigrateAddons();
-    if (!installations || installations.length === 0 || !shouldMigrate) {
+    const shouldDeepMigrate = await this._wowupService.shouldMigrateAddons();
+    if (!installations || installations.length === 0) {
+      return installations;
+    }
+
+    if (!shouldDeepMigrate) {
       return installations;
     }
 
@@ -191,7 +191,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     try {
       for (const installation of installations) {
-        await this._addonService.migrate(installation);
+        await this._addonService.migrateDeep(installation);
       }
 
       await this._wowupService.setMigrationVersion();
@@ -209,10 +209,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       console.warn(e);
     }
   };
-
-  public onSelectedIndexChange(index: number): void {
-    this.sessionService.selectedHomeTab = index;
-  }
 
   private onAddonScanError = (error: AddonScanError) => {
     const durationMs = 4000;

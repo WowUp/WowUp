@@ -5,6 +5,8 @@ import { v4 as uuidV4 } from "uuid";
 import { AppConfig } from "../../../environments/environment";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { TELEMETRY_ENABLED_KEY } from "../../../common/constants";
+import { ElectronService } from "..";
+import { WowUpService } from "../wowup/wowup.service";
 
 @Injectable({
   providedIn: "root",
@@ -46,13 +48,22 @@ export class AnalyticsService {
     this._telemetryEnabledSrc.next(value);
   }
 
-  public constructor(private _preferenceStorageService: PreferenceStorageService) {
+  public constructor(
+    private _preferenceStorageService: PreferenceStorageService,
+    private _electronService: ElectronService,
+    private _wowUpService: WowUpService
+  ) {
     this._installId = this.loadInstallId();
     this._telemetryEnabledSrc.next(this.telemetryEnabled);
   }
 
-  public trackStartup(): void {
-    this.track("app-startup");
+  public async trackStartup(): Promise<void> {
+    const systemLocale = await this._electronService.getLocale();
+    const uiLocale = this._wowUpService.currentLanguage;
+    this.track("app-startup", {
+      systemLocale,
+      uiLocale,
+    });
   }
 
   public trackError(error: Error): void {

@@ -1,4 +1,4 @@
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
@@ -37,7 +37,7 @@ export class RaiderIoAddonProvider extends AddonProvider {
       return Promise.resolve(undefined);
     }
 
-    const targetToc = this._tocService.getTocForGameType2(raiderIo.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(raiderIo, installation.clientType);
     const dependencies = _.filter(addonFolders, (addonFolder) => this.isRaiderIoDependant(addonFolder));
     console.debug("RAIDER IO CLIENT FOUND", dependencies);
 
@@ -46,10 +46,11 @@ export class RaiderIoAddonProvider extends AddonProvider {
     const installedFolders = installedFolderList.join(",");
 
     for (const rioAddonFolder of rioAddonFolders) {
-      const subTargetToc = this._tocService.getTocForGameType2(rioAddonFolder.tocs, installation.clientType);
+      const subTargetToc = this._tocService.getTocForGameType2(rioAddonFolder, installation.clientType);
 
       rioAddonFolder.matchingAddon = {
         autoUpdateEnabled: false,
+        autoUpdateNotificationsEnabled: false,
         channelType: AddonChannelType.Stable,
         clientType: installation.clientType,
         id: uuidv4(),

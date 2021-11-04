@@ -37,3 +37,12 @@ export interface FsStats {
   ctime: Date;
   birthtime: Date;
 }
+
+export interface TreeNode {
+  name: string;
+  path: string;
+  isDirectory: boolean;
+  children: TreeNode[];
+  size: number;
+  hash?: string;
+}

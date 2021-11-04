@@ -33,7 +33,7 @@ import {
   WOWUP_LOGO_FILENAME,
 } from "../common/constants";
 import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
-import { TelemetryDialogComponent } from "./components/telemetry-dialog/telemetry-dialog.component";
+import { TelemetryDialogComponent } from "./components/common/telemetry-dialog/telemetry-dialog.component";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
@@ -44,13 +44,13 @@ import { ZoomDirection } from "./utils/zoom.utils";
 import { Addon } from "../common/entities/addon";
 import { AppConfig } from "../environments/environment";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
-import { InstallFromUrlDialogComponent } from "./components/install-from-url-dialog/install-from-url-dialog.component";
+import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
 import { ZoomService } from "./services/zoom/zoom.service";
-import { AlertDialogComponent } from "./components/alert-dialog/alert-dialog.component";
+import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
 import { AddonInstallState } from "./models/wowup/addon-install-state";
 
 @Component({
@@ -217,11 +217,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(
         first(),
         switchMap(() => from(this.createSystemTray())),
-        map(() => {
+        switchMap(() => {
           if (this._analyticsService.shouldPromptTelemetry) {
-            this.openDialog();
+            return of(this.openDialog());
           } else {
-            this._analyticsService.trackStartup();
+            return from(this._analyticsService.trackStartup());
           }
         }),
         catchError((e) => {
@@ -259,12 +259,18 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       disableClose: true,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this._analyticsService.telemetryEnabled = result;
-      if (result) {
-        this._analyticsService.trackStartup();
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          this._analyticsService.telemetryEnabled = result;
+          if (result) {
+            return from(this._analyticsService.trackStartup());
+          }
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   private openInstallFromUrlDialog(path?: string) {
@@ -305,11 +311,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       if (this.wowUpService.enableSystemNotifications) {
+        const addonsWithNotificationsEnabled = updatedAddons.filter(
+          (addon) => addon.autoUpdateNotificationsEnabled === true
+        );
+
         // Windows notification only shows so many chars
-        if (this.getAddonNamesLength(updatedAddons) > 60) {
-          await this.showManyAddonsAutoUpdated(updatedAddons);
+        if (this.getAddonNamesLength(addonsWithNotificationsEnabled) > 60) {
+          await this.showManyAddonsAutoUpdated(addonsWithNotificationsEnabled);
         } else {
-          await this.showFewAddonsAutoUpdated(updatedAddons);
+          await this.showFewAddonsAutoUpdated(addonsWithNotificationsEnabled);
         }
       } else {
         await this.checkQuitEnabled();

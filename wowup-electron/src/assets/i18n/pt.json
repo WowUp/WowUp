@@ -1,4 +1,36 @@
 {
+  "ADDON_IMPORT": {
+    "ACTIVE_ADDON_COUNT": "Active addons: {count}",
+    "ADDED_BADGE_TOOLTIP": "We will attempt to install this addon",
+    "CONFLICT_BADGE_TOOLTIP": "Addons in conflict will not be modified",
+    "COPY_BUTTON": "Copy",
+    "DIALOG_TITLE": "Import/Export Addons: {clientType}",
+    "EXPORT_STRING_COPIED": "Export string copied to clipboard",
+    "EXPORT_STRING_PASTED": "Inserted clipboard contents",
+    "EXPORT_TAB_LABEL": "Export",
+    "EXPORT_TEXT_LABEL": "Addon Export Data",
+    "GENERIC_IMPORT_ERROR": "An error occurred during import",
+    "IGNORED_ADDON_COUNT": "Ignored addons: {count}",
+    "IMPORT_ADDED_COUNT": "{count} added",
+    "IMPORT_BADGE_ADDED": "New",
+    "IMPORT_BADGE_CONFLICT": "Conflict",
+    "IMPORT_BADGE_NO_CHANGE": "No Change",
+    "IMPORT_BUTTON": "Import",
+    "IMPORT_CONFLICT_COUNT": "{count} in conflict",
+    "IMPORT_NO_CHANGE_COUNT": "{count} unchanged",
+    "IMPORT_STRING_INVALID": "Import string was invalid",
+    "IMPORT_TAB_LABEL": "Import",
+    "IMPORT_TEXT_INSTRUCTIONS": "Paste WowUp addon export data into the field below to get started",
+    "IMPORT_TEXT_LABEL": "Import data",
+    "IMPORT_TOTAL_COUNT": "Importing {count} {count, plural, =1{addon} other{addons}}",
+    "INSTALL_BUTTON": "Install",
+    "INVALID_CLIENT_TYPE": "Import string did not match your selected client type",
+    "NO_CHANGE_BADGE_TOOLTIP": "You already have this addon installed",
+    "PASTE_BUTTON": "Paste",
+    "PROVIDER_MISMATCH": "Addon provider does not match",
+    "RESET_BUTTON": "Reset",
+    "VERSION_MISMATCH": "Versions do not match"
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -176,6 +208,7 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
       "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
       "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
       "ADDON_SYNC_ERROR": "An error occurred checking for updates from: {providerName}",
@@ -204,7 +237,7 @@
       "DESCRIPTION_NOT_FOUND": "No description found",
       "DESCRIPTION_TAB": "Description",
       "FUNDING_LINK_TITLE": "Support this author",
-      "IMAGES_TAB": "Images",
+      "IMAGES_TAB": "Previews",
       "MISSING_DEPENDENCIES": "Missing dependencies",
       "NO_CHANGELOG_TEXT": "No changelog available",
       "VIEW_IN_BROWSER_BUTTON": "Visualizar no navegador",
@@ -275,6 +308,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Conheça o nosso site!"
     },
+    "ACCOUNT": {
+      "BETA": "Beta",
+      "LOGIN_BUTTON": "Login Now!",
+      "LOGOUT_BUTTON": "Logout",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Are you sure you want to log out? All of your local account data will be removed, until you login again.",
+      "LOGOUT_CONFIRMATION_TITLE": "Logout?",
+      "MANAGE_ACCOUNT_BUTTON": "Manage Account",
+      "TITLE": "Account"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Categories",
       "ADDON_CATEGORIES_MENU_TITLE": "Addon Categories",
@@ -298,7 +340,9 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "Sobre",
+      "ACCOUNT_TAB_TITLE": "Account",
       "GET_ADDONS_TAB_TITLE": "Obtenha Addons",
+      "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Migrating addons...",
       "MY_ADDONS_TAB_TITLE": "Meus Addons",
       "NEWS_TAB_TITLE": "News",
@@ -309,6 +353,7 @@
         "ADDONS_SELECTED": "{count} {count, plural, =1{Addon selecionado} other{Addons selecionados}}",
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Atualização Automática",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Notifications Enabled",
         "BETA_ADDON_CHANNEL": "Beta",
         "CHANNEL_SUBMENU_TITLE": "Canal",
         "IGNORE_ADDON_BUTTON": "Ignorar",
@@ -326,6 +371,7 @@
       },
       "CHECK_UPDATES_BUTTON": "Verificar Atualizações",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Verificar atualizações recentes",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{update} other{updates}} ",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Exibir Colunas"
@@ -339,6 +385,7 @@
         "PATREON": "Support this author on Patreon",
         "PAYPAL": "Support this author on PayPal"
       },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Export Addons",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Este Addon tem múltiplos provedores",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, =1{Addon} other{Addons}}",
@@ -387,7 +434,8 @@
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Atualizar todos os clientes",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Atualizar Retail/Clássico"
-      }
+      },
+      "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
       "PAGE_CONTEXT_FOOTER": "{count} news stories",
@@ -452,6 +500,7 @@
         "TITLE": "Depurar"
       },
       "TABS": {
+        "ABOUT": "About",
         "ADDONS": "Addons",
         "APPLICATION": "Aplicação",
         "CLIENTS": "Clientes",
@@ -473,6 +522,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "MOVE_DOWN_BUTTON": "Move Down",
         "MOVE_UP_BUTTON": "Move Up",
+        "OPEN_FOLDER_BUTTON": "Open Folder",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Selecionar",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
         "RESCAN_CLIENTS_BUTTON": "Reescanear",
@@ -480,6 +530,39 @@
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Save",
         "TITLE": "World of Warcraft"
       }
+    }
+  },
+  "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "Are you sure you want to apply this backup to your interface settings?\n\nMake sure that the World of Warcraft game is not running before you apply a backup.\n\nThis operation cannot be undone.",
+      "TITLE": "Apply WTF Backup?"
+    },
+    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
+    "BACKUP_COUNT_TEXT": "Found {count} {count, plural, =1{backup} other{backups}}",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Applying backup...",
+      "CREATING_BACKUP": "Creating backup from {count} files...",
+      "LOADING_BACKUPS": "Loading backups...",
+      "REMOVING_BACKUP": "Removing backup..."
+    },
+    "CREATE_BACKUP_BUTTON": "Create Backup",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "Are you sure you want to delete backup {name}?\nThis cannot be undone.",
+      "TITLE": "Delete WTF Backup?"
+    },
+    "DIALOG_TITLE": "WTF Settings Backup: {clientType}",
+    "ERROR": {
+      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
+      "FAILED_TO_DELETE": "Failed to delete backup: {name}",
+      "GENERIC_ERROR": "There was an issue processing this backup",
+      "INVALID_CONTENTS": "There was an issue processing this backup",
+      "INVALID_CREATED_AT": "There was an issue processing this backup",
+      "INVALID_CREATED_BY": "There was an issue processing this backup"
+    },
+    "SHOW_FOLDER_BUTTON": "Show Folder",
+    "TOOL_TIP": {
+      "APPLY_BUTTON": "Apply this backup",
+      "DELETE_BUTTON": "Delete this backup"
     }
   }
 }

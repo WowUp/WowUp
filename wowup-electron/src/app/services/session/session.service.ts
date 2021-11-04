@@ -4,10 +4,12 @@ import { BehaviorSubject, Subject } from "rxjs";
 import { Injectable } from "@angular/core";
 
 import { SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";
+import { map } from "rxjs/operators";
+import { WowUpAccountService } from "../wowup/wowup-account.service";
 
 @Injectable({
   providedIn: "root",
@@ -21,6 +23,7 @@ export class SessionService {
   private readonly _addonsChangedSrc = new Subject<boolean>();
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
+  private readonly _myAddonsCompactVersionSrc = new BehaviorSubject<boolean>(false);
 
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
@@ -36,10 +39,21 @@ export class SessionService {
   public readonly getAddonsHiddenColumns$ = this._getAddonsColumnsSrc.asObservable();
   public readonly targetFileInstallComplete$ = this._targetFileInstallCompleteSrc.asObservable();
   public readonly editingWowInstallationId$ = new BehaviorSubject<string>("");
+  public readonly wowUpAuthToken$ = this._wowUpAccountService.wowUpAuthTokenSrc.asObservable();
+  public readonly wowUpAccount$ = this._wowUpAccountService.wowUpAccountSrc.asObservable();
+  public readonly wowUpAccountPushEnabled$ = this._wowUpAccountService.accountPushSrc.asObservable();
+  public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
+
+  public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
+
+  public set myAddonsCompactVersion(val: boolean) {
+    this._myAddonsCompactVersionSrc.next(val);
+  }
 
   public constructor(
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _preferenceStorageService: PreferenceStorageService
+    private _preferenceStorageService: PreferenceStorageService,
+    private _wowUpAccountService: WowUpAccountService
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
@@ -47,6 +61,26 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$.subscribe((installations) =>
       this.onWowInstallationsChange(installations)
     );
+  }
+
+  public get wowUpAuthToken(): string {
+    return this._wowUpAccountService.wowUpAuthTokenSrc.value;
+  }
+
+  public login(): void {
+    this._wowUpAccountService.login();
+  }
+
+  public logout(): void {
+    this._wowUpAccountService.logout();
+  }
+
+  public async toggleAccountPush(enabled: boolean): Promise<void> {
+    return await this._wowUpAccountService.toggleAccountPush(enabled);
+  }
+
+  public isAuthenticated(): boolean {
+    return false;
   }
 
   public notifyTargetFileInstallComplete(): void {

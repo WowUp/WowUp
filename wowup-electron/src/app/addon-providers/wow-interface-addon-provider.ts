@@ -13,7 +13,7 @@ import { AddonDetailsResponse } from "../models/wow-interface/addon-details-resp
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { getGameVersion } from "../utils/addon.utils";
@@ -149,7 +149,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     const addonDetails = await this.getAllAddonDetails(addonIds);
 
     for (const addonFolder of wowiFolders) {
-      const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+      const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
       if (!targetToc?.wowInterfaceId) {
         continue;
       }
@@ -223,12 +223,13 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolder: AddonFolder
   ): Addon {
-    const targetToc = this._tocService.getTocForGameType2(addonFolder.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
 
     return {
       id: uuidv4(),
       author: response.author,
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       channelType: addonChannelType,
       clientType: installation.clientType,
       downloadUrl: response.downloadUri,

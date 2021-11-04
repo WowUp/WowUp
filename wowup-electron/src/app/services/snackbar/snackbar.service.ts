@@ -4,7 +4,7 @@ import { TranslateService } from "@ngx-translate/core";
 import {
   CenteredSnackbarComponent,
   CenteredSnackbarComponentData,
-} from "../../components/centered-snackbar/centered-snackbar.component";
+} from "../../components/common/centered-snackbar/centered-snackbar.component";
 
 export interface SnackbarConfig {
   timeout?: number;

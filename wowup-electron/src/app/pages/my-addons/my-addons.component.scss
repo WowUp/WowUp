@@ -1,7 +1,5 @@
-@import "../../../variables.scss";
-
 .wu-ag-table {
-  width: calc(100% - 6px);
+  width: 100%;
   height: calc(100% - 72px);
 }
 
@@ -81,77 +79,12 @@
 }
 
 .table-container {
+  height: calc(100% - 72px);
   overflow: auto;
+  overflow-x: hidden;
 
   table {
     width: 100%;
-  }
-
-  .addon-logo-container {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-right: 0.5em;
-    flex-shrink: 0;
-
-    .addon-logo {
-      width: 100%;
-    }
-  }
-
-  .addon-title {
-    font-weight: 400;
-    font-size: 1.1em;
-    word-break: break-all;
-    white-space: pre-wrap;
-  }
-
-  .game-version-cell {
-    min-width: 110px;
-  }
-
-  .installed-at-cell,
-  .released-at-cell {
-    min-width: 100px;
-  }
-
-  .status-column {
-    // display: flex;
-    width: 130px;
-    // align-items: center;
-
-    .auto-update-icon {
-      margin-left: 0.5em;
-    }
-
-    .progress-text {
-      text-align: center;
-    }
-
-    .addon-progress {
-      width: 110px;
-    }
-  }
-
-  .status-icon {
-    height: 11px;
-    width: 11px;
-  }
-
-  .addon-provider {
-    display: flex;
-    align-items: center;
-
-    .addon-provider-name {
-      margin-right: 0.25em;
-    }
-
-    .provider-logo {
-      width: 15px;
-      height: 15px;
-    }
   }
 
   .cell-padding {

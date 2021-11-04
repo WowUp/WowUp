@@ -1,0 +1,98 @@
+.addon-column {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+
+  .thumbnail-container {
+    margin-right: 11px;
+
+    .addon-logo-container {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      overflow: hidden;
+
+      .addon-logo {
+        width: 100%;
+      }
+
+      img {
+        height: 100%;
+      }
+    }
+
+    .addon-logo-letter {
+      font-size: 2em;
+      font-weight: 400;
+    }
+  }
+
+  .channel {
+    background: var(--background-secondary-4);
+    text-align: center;
+    font-weight: 400;
+    padding: 1px 4px;
+    border-radius: 4px;
+
+    &.beta {
+      color: var(--rare-color);
+    }
+
+    &.alpha {
+      color: var(--epic-color);
+    }
+  }
+
+  .addon-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 40px;
+    overflow: hidden;
+  }
+
+  .addon-title {
+    display: -webkit-box;
+    font-size: 16px;
+    line-height: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    white-space: normal;
+    word-break: break-word;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+      color: var(--text-2);
+    }
+  }
+
+  .addon-version {
+    color: var(--text-2);
+    font-size: 14px;
+    line-height: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .dependency-icon {
+    .mat-icon {
+      width: 11px;
+      height: 11px;
+    }
+  }
+}

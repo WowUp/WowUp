@@ -1,0 +1,116 @@
+<mat-card class="installation-card">
+  <div class="wow-install-logo-container">
+    <img [src]="wowLogoImage" />
+  </div>
+  <mat-card-title class="row">
+    <div *ngIf="(editMode$ | async) === false" class="flex-grow-1">{{ installationModel.label }}</div>
+    <mat-form-field *ngIf="(editMode$ | async) === true" class="no-input-border w-100">
+      <input matInput [(ngModel)]="installationModel.label" />
+    </mat-form-field>
+  </mat-card-title>
+  <mat-card-content>
+    <div class="row">
+      <mat-form-field class="grow folder-input">
+        <mat-label>{{
+          "PAGES.OPTIONS.WOW.CLIENT_TYPE_PATH_LABEL" | translate: { clientTypeName: (clientTypeName | translate) }
+        }}</mat-label>
+        <input matInput disabled [value]="installationModel.location" />
+        <mat-hint class="text-2">
+          {{
+            "PAGES.OPTIONS.WOW.CLIENT_TYPE_INPUT_HINT"
+              | translate
+                : {
+                    clientTypeName: (clientTypeName | translate)?.toLowerCase(),
+                    clientFolderName: executableName
+                  }
+          }}
+        </mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <div class="grow">
+        <p>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_LABEL" | translate }}</p>
+      </div>
+      <mat-form-field class="">
+        <mat-label>{{ "PAGES.OPTIONS.WOW.DEFAULT_ADDON_CHANNEL_SELECT_LABEL" | translate }}</mat-label>
+        <mat-select
+          [(value)]="installationModel.defaultAddonChannelType"
+          (selectionChange)="onDefaultAddonChannelChange($event)"
+          [disabled]="(editMode$ | async) !== true"
+        >
+          <mat-option *ngFor="let channel of addonChannelInfos" [value]="channel.type">{{
+            channel.name | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <div class="grow">
+        <p>{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_LABEL" | translate }}</p>
+        <small class="text-2">{{ "PAGES.OPTIONS.WOW.AUTO_UPDATE_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle
+        [(checked)]="installationModel.defaultAutoUpdate"
+        [disabled]="(editMode$ | async) !== true"
+        (change)="onDefaultAutoUpdateChange($event)"
+      >
+      </mat-slide-toggle>
+    </div>
+  </mat-card-content>
+  <mat-card-actions class="row">
+    <button
+      *ngIf="(editMode$ | async) === true"
+      mat-button
+      color="warn"
+      [disabled]="(isBusy$ | async) === true"
+      (click)="onClickRemove()"
+    >
+      {{ "PAGES.OPTIONS.WOW.REMOVE_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
+    </button>
+    <!-- OPEN FOLDER BUTTON -->
+    <div *ngIf="(editMode$ | async) === false">
+      <button mat-button color="primary" (click)="onClickOpenFolder()">
+        {{ "PAGES.OPTIONS.WOW.OPEN_FOLDER_BUTTON" | translate }}
+      </button>
+    </div>
+    <div class="flex-grow-1"></div>
+
+    <!-- NOT EDIT MODE -->
+    <div *ngIf="(editMode$ | async) === false">
+      <button
+        mat-button
+        *ngIf="installationIndex > 0"
+        [disabled]="(isBusy$ | async) === true"
+        [matTooltip]="'PAGES.OPTIONS.WOW.MOVE_UP_BUTTON' | translate"
+        (click)="onClickMoveUp()"
+      >
+        <mat-icon svgIcon="fas:angle-up"> </mat-icon>
+      </button>
+      <button
+        mat-button
+        *ngIf="installationIndex < (installationCount$ | async) - 1"
+        [disabled]="(isBusy$ | async) === true"
+        [matTooltip]="'PAGES.OPTIONS.WOW.MOVE_DOWN_BUTTON' | translate"
+        (click)="onClickMoveDown()"
+      >
+        <mat-icon svgIcon="fas:angle-down"> </mat-icon>
+      </button>
+    </div>
+    <!-- EDIT MODE -->
+    <div *ngIf="(editMode$ | async) === true">
+      <button mat-button [disabled]="(isBusy$ | async) === true" (click)="onClickCancel()">
+        {{ "PAGES.OPTIONS.WOW.CANCEL_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
+      </button>
+      <button mat-button color="primary" [disabled]="(isBusy$ | async) === true" (click)="onClickSave()">
+        {{ "PAGES.OPTIONS.WOW.SAVE_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
+      </button>
+    </div>
+
+    <!-- EDIT BUTTON -->
+    <div *ngIf="(editMode$ | async) === false">
+      <button mat-button color="primary" (click)="onClickEdit()">
+        {{ "PAGES.OPTIONS.WOW.EDIT_WOW_DIRECTORY_SELECT_BUTTON" | translate }}
+      </button>
+    </div>
+  </mat-card-actions>
+</mat-card>

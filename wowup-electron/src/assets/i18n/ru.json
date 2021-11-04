@@ -1,4 +1,36 @@
 {
+  "ADDON_IMPORT": {
+    "ACTIVE_ADDON_COUNT": "Активных модификаций: {count}",
+    "ADDED_BADGE_TOOLTIP": "Мы попытаемся установить эту модификацию",
+    "CONFLICT_BADGE_TOOLTIP": "Конфликтующие модификации не будут изменены",
+    "COPY_BUTTON": "Копировать",
+    "DIALOG_TITLE": "Импорт/Экспорт модификаций: {clientType}",
+    "EXPORT_STRING_COPIED": "Строка экспорта скопирована в буфер обмена",
+    "EXPORT_STRING_PASTED": "Введено содержание буфера обмена",
+    "EXPORT_TAB_LABEL": "Экспорт",
+    "EXPORT_TEXT_LABEL": "Данные экспорта модификаций",
+    "GENERIC_IMPORT_ERROR": "При импорте произошла ошибка",
+    "IGNORED_ADDON_COUNT": "Игнорируемых модификаций: {count}",
+    "IMPORT_ADDED_COUNT": "{count} {count, plural, =1{добавлена} other{добавлено}}",
+    "IMPORT_BADGE_ADDED": "Новая",
+    "IMPORT_BADGE_CONFLICT": "Конфликтующая",
+    "IMPORT_BADGE_NO_CHANGE": "Без изменений",
+    "IMPORT_BUTTON": "Импорт",
+    "IMPORT_CONFLICT_COUNT": "{count} {count, plural, =1{конфликтует} other{конфликтуют}}",
+    "IMPORT_NO_CHANGE_COUNT": "{count} без изменений",
+    "IMPORT_STRING_INVALID": "Строка импорта неверна",
+    "IMPORT_TAB_LABEL": "Импорт",
+    "IMPORT_TEXT_INSTRUCTIONS": "Вставьте данные экспорта модификаций в поле ниже, чтобы начать",
+    "IMPORT_TEXT_LABEL": "Данные импорта",
+    "IMPORT_TOTAL_COUNT": "Импорт {count} {count, plural, =1{модификации} other{модификаций}}",
+    "INSTALL_BUTTON": "Установить",
+    "INVALID_CLIENT_TYPE": "Строка импорта не совпадает с выбранным типом клиента",
+    "NO_CHANGE_BADGE_TOOLTIP": "У вас уже установлена эта модификация",
+    "PASTE_BUTTON": "Вставить",
+    "PROVIDER_MISMATCH": "Не совпадает источник модификации",
+    "RESET_BUTTON": "Очистить",
+    "VERSION_MISMATCH": "Не совпадают версии"
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -31,8 +63,8 @@
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Автоматические обновления",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Выйти из полноэкранного режима",
     "FULLSCREEN_SNACKBAR": {
-      "MAC": "Нажмите ^⌘F чтобы выйти из полнокэранного режима",
-      "WINDOWS": "Нажмите F11 чтобы выйти из полнокэранного режима"
+      "MAC": "Нажмите ^⌘F чтобы выйти из полноэкранного режима",
+      "WINDOWS": "Нажмите F11 чтобы выйти из полноэкранного режима"
     },
     "LINK_NAVIGATION": {
       "MESSAGE": "{url}\n\nВы уверены, что хотите открыть эту стороннюю ссылку в браузере по умолчанию?",
@@ -64,7 +96,7 @@
       "CHECKING_FOR_UPDATE": "Проверка на наличие обновления",
       "DOWNLOADED_TOOLTIP": "Установить обновление WowUp",
       "DOWNLOADING_UPDATE": "Загрузка обновления",
-      "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp чтобы установить обновление?",
+      "INSTALL_MESSAGE": "Вы хотите перезапустить WowUp, чтобы установить обновление?",
       "INSTALL_TITLE": "Для WowUp готово обновление",
       "NOT_AVAILABLE": "Последняя версия WowUp уже установлена",
       "PORTABLE_DOWNLOAD_MESSAGE": "Хотите вручную установить последнюю портативную версию?\n\nНужно будет закрыть приложение вручную и заменить его новой версией.",
@@ -114,25 +146,25 @@
       "UNKNOWN": "",
       "UPDATE": "Обновить",
       "UPTODATE": "Актуальная",
-      "WARNING": "Предупреждение"
+      "WARNING": "Внимание"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Резервное копирование",
+      "BACKINGUP": "Резервирование",
       "COMPLETE": "Установлена",
-      "DOWNLOADING": "Загружается",
+      "DOWNLOADING": "Загрузка",
       "ERROR": "Ошибка",
-      "INSTALLING": "Устанавливается",
+      "INSTALLING": "Установка",
       "PENDING": "В ожидании",
-      "UNINSTALLING": "Удаляется",
-      "UPDATING": "Обновляется..."
+      "UNINSTALLING": "Удаление",
+      "UPDATING": "Обновление..."
     },
     "ADDON_WARNING": {
       "GENERIC_DESCRIPTION": "Мы обнаружили неполадку с этой модификацией. Мы больше не способны обновлять эту модификацию или показывать её детали.",
       "GENERIC_TOOLTIP": "Мы обнаружили неполадку с этой модификацией",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация вероятно была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация вероятно была удалена источником",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} верно определил модификацию, однако, он не имеет каких-либо файлов соответствующих этой версии игры.<br>Это предупреждение исчезнет как только будет доступно обновление для данной версии игры.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов для соответствия версии игры"
+      "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация, вероятно, была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация, вероятно, была удалена источником",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} верно определил модификацию, однако он не имеет каких-либо файлов соответствующих этой версии игры.<br>Это предупреждение исчезнет как только будет доступно обновление для данной версии игры.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов, соответствующих версии игры"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",
@@ -176,13 +208,14 @@
       }
     },
     "ERRORS": {
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Не удалось включить мгновенные обновления для вашего аккаунта. Попробуйте позже или сообщите об этом в Discord.",
       "ADDON_INSTALL_ERROR": "Не удалось установить модификацию {addonName}. Попробуйте позже.",
       "ADDON_SCAN_ERROR": "Возникла ошибка при сравнении ваших папок с {providerName}, попробуйте позже.",
       "ADDON_SYNC_ERROR": "Возникла ошибка при проверке обновлений с: {providerName}",
       "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Произошла ошибка при проверке наличия обновлений для {addonName} из {providerName}, попробуйте позже.",
       "CHANGE_PROVIDER_ERROR": "Источник для {addonName} не удалось изменить на {providerName}",
       "GITHUB_LIMIT_ERROR": "Вы достигли лимит в {max} запросов к GitHub API.\nПодождите до {reset} и попробуйте снова.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Не удалось проверить обновления для {addonName}.\nУбедитесь что хранилище указано верно или установите игнорирование на эту модификацию."
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Не удалось проверить обновления для {addonName}.\nУбедитесь, что хранилище указано верно или установите игнорирование на эту модификацию."
     },
     "PROGRESS_SPINNER": {
       "LOADING": "Загрузка..."
@@ -191,7 +224,7 @@
     "SEARCH": {
       "NO_ADDONS": "Модификаций не найдено"
     },
-    "WOW_EXE_SELECTION_NAME": "Исполнительный файл WoW"
+    "WOW_EXE_SELECTION_NAME": "Исполняемый файл WoW"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
@@ -204,7 +237,7 @@
       "DESCRIPTION_NOT_FOUND": "Описание не найдено",
       "DESCRIPTION_TAB": "Описание",
       "FUNDING_LINK_TITLE": "Поддержать этого автора",
-      "IMAGES_TAB": "Изображения",
+      "IMAGES_TAB": "Просмотр",
       "MISSING_DEPENDENCIES": "Отсутствующие зависимости",
       "NO_CHANGELOG_TEXT": "Нет доступного списка изменений",
       "VIEW_IN_BROWSER_BUTTON": "Посмотреть в браузере",
@@ -232,17 +265,17 @@
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Ссылка на модификацию",
-      "ADDON_URL_INPUT_PLACEHOLDER": "Например ссылки GitHub или WowInterface",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Например, ссылки GitHub или WowInterface",
       "CLOSE_BUTTON": "Закрыть",
       "DESCRIPTION": "Если вы хотите установить модификацию непосредственно по ссылке, вставьте её ниже, чтобы начать.",
       "DOWNLOAD_COUNT": "{textCount} {shortCount, plural, one{загрузка} few{загрузки} other{загрузок}} на {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки {message}.\n\nНеобходим верный .zip файл в выпусках, чтобы WowUp мог загрузить его.",
-        "BURNING_CRUSADE_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nеобходим верный .zip файл с окончанием '-bc', чтобы WowUp мог загрузить его.",
+        "BURNING_CRUSADE_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-bc', чтобы WowUp мог загрузить его.",
         "CLASSIC_ASSET_NOT_FOUND": "Не найдено ресурсов для загрузки из {message}.\n\nНеобходим верный .zip файл с окончанием '-classic', чтобы WowUp мог загрузить его.",
         "FAILED_TO_CONNECT": "Не удается подключиться к API, подождите немного и повторите попытку.",
         "INSTALL_FAILED": "Что-то пошло не так при попытке установить модификацию, попытайтесь снова.\n\nЕсли это сообщение продолжает появляться, вы можете получить помощь в канале #wowup-support нашего Discord сообщества.",
-        "INVALID_URL": "Введенное значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
+        "INVALID_URL": "Введённое значение не является правильной ссылкой. Примеры правильных ссылок для модификаций:\n\t- https://github.com/WowUp/WowUp.Addon\n\t- https://www.wowinterface.com/downloads/info25610-8.3-014.html\n\t- https://www.curseforge.com/wow/addons/altoholic",
         "NO_ADDON_FOUND": "Модификация не была найдена, убедитесь что ваша ссылка указывает на правильную страницу.\n\nПри установке с GitHub, убедитесь, что в репозитории есть тег выпуска с zip-архивом, содержащим модификацию.",
         "NO_RELEASE_FOUND": "Не найдено выпусков для {message}.\n\nНеобходим верный выпуск с ресурсами в .zip файле, чтобы WowUp мог загрузить его.",
         "NO_SEARCH_RESULTS": "Поиск не дал результатов.",
@@ -275,6 +308,15 @@
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Посетите наш сайт!"
     },
+    "ACCOUNT": {
+      "BETA": "Бета",
+      "LOGIN_BUTTON": "Войдите!",
+      "LOGOUT_BUTTON": "Выход",
+      "LOGOUT_CONFIRMATION_MESSAGE": "Вы уверены что хотите выйти? Все локальные данные аккаунта будут удалены, до следующего входа.",
+      "LOGOUT_CONFIRMATION_TITLE": "Выйти?",
+      "MANAGE_ACCOUNT_BUTTON": "Управление аккаунтом",
+      "TITLE": "Аккаунт"
+    },
     "GET_ADDONS": {
       "ADDON_CATEGORIES_BUTTON": "Категории",
       "ADDON_CATEGORIES_MENU_TITLE": "Категории модификаций",
@@ -298,7 +340,9 @@
     },
     "HOME": {
       "ABOUT_TAB_TITLE": "О программе",
+      "ACCOUNT_TAB_TITLE": "Аккаунт",
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
+      "GUIDE_TAB_TITLE": "Руководство (англ.)",
       "MIGRATING_ADDONS": "Перенос модификаций...",
       "MY_ADDONS_TAB_TITLE": "Мои модификации",
       "NEWS_TAB_TITLE": "Новости",
@@ -306,9 +350,10 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "Выбрано {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
+        "ADDONS_SELECTED": "{count, plural, one{Выбрана} other{Выбрано}} {count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
         "ALPHA_ADDON_CHANNEL": "Альфа",
         "AUTO_UPDATE_ADDON_BUTTON": "Автообновление",
+        "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Уведомления включены",
         "BETA_ADDON_CHANNEL": "Бета",
         "CHANNEL_SUBMENU_TITLE": "Тип выпуска",
         "IGNORE_ADDON_BUTTON": "Пропускать",
@@ -319,16 +364,17 @@
         "STABLE_ADDON_CHANNEL": "Стабильная"
       },
       "ADDON_IS_CODE_REPOSITORY": "Модификация является репозиторием кода",
-      "ADDON_REMOVED_SNACKBAR": "Успешно удалёна: {addonName} ",
+      "ADDON_REMOVED_SNACKBAR": "Успешно удалена: {addonName}",
       "CHANGE_ADDON_PROVIDER_CONFIRMATION": {
         "MESSAGE": "Хотите изменить источник модификаций для {addonName} на {providerName}? Это действие удалит существующую модификацию и заменит её копией из нового источника.",
         "TITLE": "Изменить источник модификации?"
       },
       "CHECK_UPDATES_BUTTON": "Проверить обновления",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Проверить наличие последних обновлений модификации",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{обновление} few{обновления} other{обновлений}}",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
-        "TITLE": "Показать колонки"
+        "TITLE": "Показать столбцы"
       },
       "ERROR_SNACKBAR": "Произошла ошибка",
       "FILTER_LABEL": "Фильтр",
@@ -339,6 +385,7 @@
         "PATREON": "Поддержать этого автора на Patreon",
         "PAYPAL": "Поддержать этого автора на PayPal"
       },
+      "IMPORT_EXPORT_ADDONS_BUTTON": "Импорт/Экспорт модификаций",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Эта модификация имеет несколько источников",
       "PAGE_CONTEXT_FOOTER": {
         "ADDONS_INSTALLED": "{count} {count, plural, one{модификация} few{модификации} other{модификаций}}",
@@ -346,7 +393,7 @@
         "PATREON_SUPPORT": "Поддержите WowUp на Patreon",
         "SEARCH_RESULTS": "{count} {count, plural, one{результат} few{результата} other{результатов}}",
         "VIEW_GITHUB": "Просмотреть код на GitHub",
-        "VIEW_GUIDE": "Просмотрите наше руководство чтобы узнать что может WowUp"
+        "VIEW_GUIDE": "Просмотрите наше руководство, чтобы узнать что может WowUp"
       },
       "REQUIRED_DEPENDENCY_MISSING_TOOLTIP": "Нет необходимой зависимости",
       "RESCAN_FOLDERS_BUTTON": "Сканировать папки",
@@ -355,8 +402,8 @@
       "RESCAN_FOLDERS_CONFIRMATION_TITLE": "Начать повторное сканирование?",
       "SPINNER": {
         "GATHERING_ADDONS": "Сбор модификаций...",
-        "UPDATING": "Обновлено {updateCount} из {addonCount}",
-        "UPDATING_WITH_ADDON_NAME": "Обновлено {updateCount} из {addonCount}\n{clientType}: {addonName}"
+        "UPDATING": "{updateCount, plural, one{Обновлена} other{Обновлено}} {updateCount} из {addonCount}",
+        "UPDATING_WITH_ADDON_NAME": "{updateCount, plural, one{Обновлена} other{Обновлено}} {updateCount} из {addonCount}\n{clientType}: {addonName}"
       },
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Модификация",
@@ -387,17 +434,18 @@
       "UPDATE_ALL_CONTEXT_MENU": {
         "UPDATE_ALL_CLIENTS_BUTTON": "Обновить все клиенты",
         "UPDATE_RETAIL_CLASSIC_BUTTON": "Обновить Актуальный/Классический"
-      }
+      },
+      "WTF_BACKUP_BUTTON": "Резервное копир. настр. интерфейса"
     },
     "NEWS": {
-      "PAGE_CONTEXT_FOOTER": "{count} новостей",
+      "PAGE_CONTEXT_FOOTER": "{count} {count, plural, one{новость} few{новости} other{новостей}}",
       "REFRESH_TOOLTIP": "Обновить ленту новостей"
     },
     "OPTIONS": {
       "ADDON": {
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Выберите источники используемые для поиска и установки новых модификаций",
-          "FIELD_LABEL": "Включенные источники модификаций",
+          "FIELD_LABEL": "Включённые источники модификаций",
           "INPUT_LABEL": "Источники"
         },
         "TITLE": "Модификации"
@@ -406,8 +454,8 @@
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
         "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
         "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
-        "ENABLE_APP_BADGE_DESCRIPTION": "Show a badge on the app icon with the number of addons with available updates.",
-        "ENABLE_APP_BADGE_LABEL": "Enable app badge notification",
+        "ENABLE_APP_BADGE_DESCRIPTION": "Показывать количество доступных обновлений на значке приложения.",
+        "ENABLE_APP_BADGE_LABEL": "Включить уведомления на значке приложения",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Включить различные окна системных уведомлений, такие как автоматически обновлённые модификации.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Включить системные уведомления",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "При закрытии окна WowUp сворачивается в меню статуса.",
@@ -422,7 +470,7 @@
         "SET_LANGUAGE_DESCRIPTION": "Выберите язык для изменения",
         "SET_LANGUAGE_LABEL": "Установить язык приложения",
         "START_MINIMIZED_DESCRIPTION": "...и не будет показан на экране",
-        "START_MINIMIZED_LABEL": "Запускать WowUp свернутым",
+        "START_MINIMIZED_LABEL": "Запускать WowUp свёрнутым",
         "START_WITH_SYSTEM_DESCRIPTION": "WowUp будет запущен сразу после загрузки операционной системы...",
         "START_WITH_SYSTEM_LABEL": "Запускать WowUp вместе со стартом системы",
         "TELEMETRY_DESCRIPTION": "Помогите улучшить WowUp, отправив анонимные данные об установке и/или ошибках.",
@@ -430,7 +478,7 @@
         "THEME_DESCRIPTION": "Изменить цветовую тему по вкусу",
         "THEME_LABEL": "Цветовая тема",
         "TITLE": "Приложение",
-        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp может установить себя обработчиком установочных ссылок с CurseForge по умолчанию. Это может вызвать неполадки если вы используете приложение CurseForge, вы уверены что хотите продолжить?",
+        "USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION": "WowUp может назначить себя обработчиком установочных ссылок с CurseForge по умолчанию. Это может вызвать неполадки если вы используете приложение CurseForge, вы уверены что хотите продолжить?",
         "USE_CURSE_PROTOCOL_CONFIRMATION_LABEL": "Обрабатывать установки с CurseForge?",
         "USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL": "Хотите перезапустить приложение?",
         "USE_HARDWARE_ACCELERATION_DESCRIPTION": "Отключение аппаратного ускорения может решить проблемы с количеством кадров в секунду и исправить другие неполадки с приложением. Изменение этой настройки требует перезапуск приложения.",
@@ -438,7 +486,7 @@
         "USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION": "Для включения аппаратного ускорения нужен перезапуск приложения.",
         "USE_HARDWARE_ACCELERATION_LABEL": "Включить аппаратное ускорение",
         "USE_SYMLINK_SUPPORT": "Включить поддержку символических ссылок",
-        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Включение поддержки символических ссылок позволит WowUp распознавать их при повторном сканировании. Предупреждение: Если вы не знаете что такое символическая ссылка, то скорее всего вам это не нужно. При обновлении символические ссылки в настоящее время будут заменены фактической папкой, и ссылка будет потеряна.",
+        "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Включение поддержки символических ссылок позволит WowUp распознавать их при повторном сканировании. Предупреждение: Если вы не знаете что такое символическая ссылка, то, скорее всего, вам это не нужно. При обновлении символические ссылки в настоящее время будут заменены фактической папкой, и ссылка будет потеряна.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Включить поддержку символических ссылок?",
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке вашей модификации. Предупреждение: они будут заменены при обновлении/установке."
       },
@@ -452,6 +500,7 @@
         "TITLE": "Отладка"
       },
       "TABS": {
+        "ABOUT": "О приложении",
         "ADDONS": "Модификации",
         "APPLICATION": "Приложение",
         "CLIENTS": "Клиенты",
@@ -466,13 +515,14 @@
           "MESSAGE": "Вы точно хотите очистить путь установки для {clientName}? Это удалит всю хранимую информацию модификации для этого клиента.\n\nПапки ваших модификаций не будут удалены.",
           "TITLE": "Очистить место установки?"
         },
-        "CLIENT_TYPE_INPUT_HINT": "Папка которая содержит папку клиента {clientTypeName} – \"{clientFolderName}\"",
+        "CLIENT_TYPE_INPUT_HINT": "Директория которая содержит папку клиента {clientTypeName} – \"{clientFolderName}\"",
         "CLIENT_TYPE_PATH_LABEL": "Путь для {clientTypeName}",
         "DEFAULT_ADDON_CHANNEL_LABEL": "Тип выпуска модификации по умолчанию",
         "DEFAULT_ADDON_CHANNEL_SELECT_LABEL": "Тип выпуска модификации",
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Изменить",
         "MOVE_DOWN_BUTTON": "Переместить вниз",
         "MOVE_UP_BUTTON": "Переместить вверх",
+        "OPEN_FOLDER_BUTTON": "Открыть папку",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Удалить",
         "RESCAN_CLIENTS_BUTTON": "Повторное сканирование",
@@ -480,6 +530,39 @@
         "SAVE_WOW_DIRECTORY_SELECT_BUTTON": "Сохранить",
         "TITLE": "World of Warcraft"
       }
+    }
+  },
+  "WTF_BACKUP": {
+    "APPLY_CONFIRMATION": {
+      "MESSAGE": "Вы уверены, что хотите применить эту резервную копию к вашим настройкам интерфейса?\n\nУбедитесь, что клиент World of Warcraft не запущен во время применения резервной копии.\n\nЭто действие нельзя отменить.",
+      "TITLE": "Применить резервную копию WTF?"
+    },
+    "BACKUP_APPLY_SUCCESS": "Успешно применена резервная копия: {name}",
+    "BACKUP_COUNT_TEXT": "{count, plural, =1{Найдена} other{Найдено}} {count} {count, plural, =1{резервная копия} few{резервные копии} other{резервных копий}}",
+    "BUSY_TEXT": {
+      "APPLYING_BACKUP": "Применение резервной копии...",
+      "CREATING_BACKUP": "Создание резервной копии из {count} {count, plural, =1{файла} other{файлов}}...",
+      "LOADING_BACKUPS": "Загрузка резервных копий...",
+      "REMOVING_BACKUP": "Удаление резервной копии..."
+    },
+    "CREATE_BACKUP_BUTTON": "Создать резервную копию",
+    "DELETE_CONFIRMATION": {
+      "MESSAGE": "Вы уверены что хотите удалить резервную копию {name}?\nЭто действие нельзя отменить.",
+      "TITLE": "Удалить резервную копию WTF?"
+    },
+    "DIALOG_TITLE": "Резервная копия настроек WTF: {clientType}",
+    "ERROR": {
+      "BACKUP_APPLY_FAILED": "Не удалось применить резервную копию: {name}",
+      "FAILED_TO_DELETE": "Не удалось удалить резервную копию: {name}",
+      "GENERIC_ERROR": "При обработке этой резервной копии возникла проблема",
+      "INVALID_CONTENTS": "При обработке этой резервной копии возникла проблема",
+      "INVALID_CREATED_AT": "При обработке этой резервной копии возникла проблема",
+      "INVALID_CREATED_BY": "При обработке этой резервной копии возникла проблема"
+    },
+    "SHOW_FOLDER_BUTTON": "Показать папку",
+    "TOOL_TIP": {
+      "APPLY_BUTTON": "Применить эту резервную копию",
+      "DELETE_BUTTON": "Удалить эту резервную копию"
     }
   }
 }

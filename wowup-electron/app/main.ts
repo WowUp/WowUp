@@ -12,6 +12,7 @@ import { AppUpdater } from "./app-updater";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import {
+  APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
   CURRENT_THEME_KEY,
@@ -22,6 +23,7 @@ import {
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_SUSPEND,
   IPC_POWER_MONITOR_UNLOCK,
+  IPC_PUSH_NOTIFICATION,
   IPC_WINDOW_ENTER_FULLSCREEN,
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WINDOW_MAXIMIZED,
@@ -39,6 +41,7 @@ import { MainChannels } from "../src/common/wowup";
 import { AppOptions } from "../src/common/wowup/models";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
 import { windowStateManager } from "./window-state";
+import { pushEvents, PUSH_NOTIFICATION_EVENT } from "./push";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -63,6 +66,11 @@ process.on("unhandledRejection", (error) => {
   log.error("unhandledRejection", error);
 });
 
+// WINDOWS CERTS
+if (platform.isWin) {
+  require("win-ca");
+}
+
 // VARIABLES
 const startedAt = Date.now();
 const argv = minimist(process.argv.slice(1), {
@@ -81,6 +89,9 @@ let loadFailCount = 0;
 // APP MENU SETUP
 createAppMenu(win);
 
+// WowUp Protocol Handler
+app.setAsDefaultProtocolClient(APP_PROTOCOL_NAME);
+
 // Set the app ID so that our notifications work correctly on Windows
 app.setAppUserModelId(APP_USER_MODEL_ID);
 
@@ -91,8 +102,6 @@ if (preferenceStore.get(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY) === "false") {
 } else {
   log.info("Hardware acceleration enabled");
 }
-
-app.allowRendererProcessReuse = false;
 
 // Some servers don't supply good CORS headers for us, so we ignore them.
 app.commandLine.appendSwitch("disable-features", "OutOfBlinkCors");
@@ -152,6 +161,10 @@ if (app.isReady()) {
     // setTimeout(() => {
     createWindow();
     // }, 400);
+
+    // Preload native lib
+    const nativeAddon = require("../build/Release/addon.node");
+    nativeAddon.hello();
   });
 }
 
@@ -250,8 +263,11 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: argv.serve,
       webSecurity: false,
       nativeWindowOpen: true,
-      enableRemoteModule: false, // This is only required for electron store https://github.com/sindresorhus/electron-store/issues/152,
-      additionalArguments: [`--log-path=${LOG_PATH}`, `--user-data-path=${app.getPath("userData")}`],
+      additionalArguments: [
+        `--log-path=${LOG_PATH}`,
+        `--user-data-path=${app.getPath("userData")}`,
+        `--base-bg-color=${getBackgroundColor()}`,
+      ],
     },
     show: false,
   };
@@ -272,6 +288,10 @@ function createWindow(): BrowserWindow {
 
   initializeIpcHandlers(win, USER_AGENT);
   initializeStoreIpcHandlers();
+
+  pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
+    win.webContents.send(IPC_PUSH_NOTIFICATION, data);
+  });
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
@@ -342,6 +362,7 @@ function createWindow(): BrowserWindow {
 
   win.on("close", (e) => {
     if (appIsQuitting || preferenceStore.get(COLLAPSE_TO_TRAY_PREFERENCE_KEY) !== "true") {
+      pushEvents.removeAllListeners(PUSH_NOTIFICATION_EVENT);
       return;
     }
     e.preventDefault();

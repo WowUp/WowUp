@@ -1,0 +1,39 @@
+<div class="titlebar  text-1" [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }">
+  <div class="theme-logo">
+    <div class="logo-img"></div>
+  </div>
+  <div class="titlebar-drag-region" (dblclick)="onDblClick()"></div>
+  <div class="title-container">
+    <div>{{ (isFullscreen ? 'APP.WINDOW_TITLE_FULLSCREEN' : 'APP.WINDOW_TITLE') | translate }}</div>
+  </div>
+  <div *ngIf="electronService.isWin || electronService.isLinux" class="window-control-container row align-items-center">
+    <!-- <div class="bnet-control">
+      <a class="bnet-btn bnet-btn-sm" appExternalLink href="https://dev.wowup.io">Login with Battle.net</a>
+    </div> -->
+    <div *ngIf="isFullscreen === true" class="window-control hover-primary-2 text-2"
+      (click)="electronService.leaveFullScreen()">
+      <mat-icon class="icon" svgIcon="fas:compress-arrows-alt"
+        [matTooltip]="'APP.CLOSE_FULLSCREEN_BUTTON_TOOLTIP' | translate">
+      </mat-icon>
+    </div>
+    <div *ngIf="isFullscreen === false" class="window-control hover-primary-2"
+      (click)="electronService.minimizeWindow()">
+      <img src="assets/chrome-minimize.svg" />
+    </div>
+    <div *ngIf="isFullscreen === false && isMaximized === false" class="window-control hover-primary-2"
+      (click)="electronService.maximizeWindow()">
+      <img src="assets/chrome-maximize.svg" />
+    </div>
+    <div *ngIf="isFullscreen === false && isMaximized === true" class="window-control hover-primary-2"
+      (click)="electronService.unmaximizeWindow()">
+      <img src="assets/chrome-restore.svg" />
+    </div>
+    <div *ngIf="isFullscreen === false" class="window-control hover-primary-2" (click)="onClickClose()">
+      <img src="assets/chrome-close.svg" />
+    </div>
+  </div>
+</div>

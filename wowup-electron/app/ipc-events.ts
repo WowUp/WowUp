@@ -1,17 +1,17 @@
-import axios from "axios";
 import {
   app,
   BrowserWindow,
+  clipboard,
   dialog,
   ipcMain,
   IpcMainInvokeEvent,
+  net,
   OpenDialogOptions,
   Settings,
   shell,
   systemPreferences,
 } from "electron";
 import * as log from "electron-log";
-import * as fs from "fs-extra";
 import * as globrex from "globrex";
 import * as _ from "lodash";
 import { nanoid } from "nanoid";
@@ -20,6 +20,7 @@ import * as pLimit from "p-limit";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
+import * as fs from "fs";
 
 import {
   IPC_ADDONS_SAVE_ALL,
@@ -34,6 +35,7 @@ import {
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
   IPC_GET_ASSET_FILE_PATH,
+  IPC_GET_DIRECTORY_TREE,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
   IPC_GET_LAUNCH_ARGS,
   IPC_GET_LOCALE,
@@ -41,6 +43,7 @@ import {
   IPC_GET_PENDING_OPEN_URLS,
   IPC_GET_ZOOM_FACTOR,
   IPC_IS_DEFAULT_PROTOCOL_CLIENT,
+  IPC_LIST_DIR_RECURSIVE,
   IPC_LIST_DIRECTORIES_CHANNEL,
   IPC_LIST_DISKS_WIN32,
   IPC_LIST_ENTRIES,
@@ -67,6 +70,11 @@ import {
   IPC_WINDOW_LEAVE_FULLSCREEN,
   IPC_WOWUP_GET_SCAN_RESULTS,
   IPC_WRITE_FILE_CHANNEL,
+  DEFAULT_FILE_MODE,
+  IPC_PUSH_INIT,
+  IPC_PUSH_REGISTER,
+  IPC_PUSH_UNREGISTER,
+  IPC_PUSH_SUBSCRIBE,
 } from "../src/common/constants";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { Addon } from "../src/common/entities/addon";
@@ -74,18 +82,31 @@ import { CopyFileRequest } from "../src/common/models/copy-file-request";
 import { DownloadRequest } from "../src/common/models/download-request";
 import { DownloadStatus } from "../src/common/models/download-status";
 import { DownloadStatusType } from "../src/common/models/download-status-type";
-import { FsDirent, FsStats } from "../src/common/models/ipc-events";
+import { FsDirent, FsStats, TreeNode } from "../src/common/models/ipc-events";
 import { UnzipRequest } from "../src/common/models/unzip-request";
 import { RendererChannels } from "../src/common/wowup";
 import { MenuConfig, SystemTrayConfig, WowUpScanResult } from "../src/common/wowup/models";
 import { createAppMenu } from "./app-menu";
 import { CurseFolderScanner } from "./curse-folder-scanner";
-import { getLastModifiedFileDate, remove } from "./file.utils";
+import * as fsp from "fs/promises";
+
+import {
+  chmodDir,
+  copyDir,
+  exists,
+  getDirTree,
+  getLastModifiedFileDate,
+  readDirRecursive,
+  readFileInZip,
+  remove,
+  zipFile,
+} from "./file.utils";
 import { addonStore } from "./stores";
 import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
+import * as push from "./push";
+import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 
-let USER_AGENT = "";
 let PENDING_OPEN_URLS: string[] = [];
 
 interface SymlinkDir {
@@ -94,6 +115,8 @@ interface SymlinkDir {
   realPath: string;
   isDir: boolean;
 }
+
+const _dlMap = new Map<string, (evt: Electron.Event, item: Electron.DownloadItem, ec: Electron.WebContents) => void>();
 
 async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<SymlinkDir[]> {
   // Find and resolve symlinks found and return the folder names as
@@ -108,8 +131,8 @@ async function getSymlinkDirs(basePath: string, files: fs.Dirent[]): Promise<Sym
   });
 
   for (const symlinkDir of symlinkDirs) {
-    const realPath = await fs.realpath(symlinkDir.originalPath);
-    const lstat = await fs.lstat(realPath);
+    const realPath = await fsp.realpath(symlinkDir.originalPath);
+    const lstat = await fsp.lstat(realPath);
 
     symlinkDir.realPath = realPath;
     symlinkDir.isDir = lstat.isDirectory();
@@ -131,7 +154,7 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 }
 
 export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
-  USER_AGENT = userAgent;
+  log.info("process.versions", process.versions);
 
   // Remove the pending URLs once read so they are only able to be gotten once
   handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
@@ -151,6 +174,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
   );
 
+  handle("clipboard-read-text", (evt) => {
+    return clipboard.readText();
+  });
+
   handle(IPC_SHOW_DIRECTORY, async (evt, filePath: string): Promise<string> => {
     return await shell.openPath(filePath);
   });
@@ -161,7 +188,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_CREATE_DIRECTORY_CHANNEL, async (evt, directoryPath: string): Promise<boolean> => {
     log.info(`[CreateDirectory] '${directoryPath}'`);
-    await fs.ensureDir(directoryPath);
+    await fsp.mkdir(directoryPath, { recursive: true });
     return true;
   });
 
@@ -175,6 +202,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_SET_ZOOM_LIMITS, (evt, minimumLevel: number, maximumLevel: number) => {
     return window.webContents?.setVisualZoomLevelLimits(minimumLevel, maximumLevel);
+  });
+
+  handle("show-item-in-folder", (evt, path: string) => {
+    shell.showItemInFolder(path);
   });
 
   handle(IPC_SET_ZOOM_FACTOR, (evt, zoomFactor: number) => {
@@ -208,7 +239,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_READDIR, async (evt, dirPath: string): Promise<string[]> => {
-    return await fs.readdir(dirPath);
+    return await fsp.readdir(dirPath);
   });
 
   handle(IPC_IS_DEFAULT_PROTOCOL_CLIENT, (evt, protocol: string) => {
@@ -224,7 +255,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_LIST_DIRECTORIES_CHANNEL, async (evt, filePath: string, scanSymlinks: boolean) => {
-    const files = await fs.readdir(filePath, { withFileTypes: true });
+    const files = await fsp.readdir(filePath, { withFileTypes: true });
     let symlinkNames: string[] = [];
     if (scanSymlinks === true) {
       log.info("Scanning symlinks");
@@ -241,7 +272,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     const limit = pLimit(3);
     const tasks = _.map(filePaths, (path) =>
       limit(async () => {
-        const stats = await fs.stat(path);
+        const stats = await fsp.stat(path);
         const fsStats: FsStats = {
           atime: stats.atime,
           atimeMs: stats.atimeMs,
@@ -281,7 +312,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_LIST_ENTRIES, async (evt, sourcePath: string, filter: string) => {
     const globFilter = globrex(filter);
-    const results = await fs.readdir(sourcePath, { withFileTypes: true });
+    const results = await fsp.readdir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => {
       const dirEnt: FsDirent = {
@@ -299,8 +330,13 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_LIST_FILES_CHANNEL, async (evt, sourcePath: string, filter: string) => {
+    const pathExists = await exists(sourcePath);
+    if (!pathExists) {
+      return [];
+    }
+
     const globFilter = globrex(filter);
-    const results = await fs.readdir(sourcePath, { withFileTypes: true });
+    const results = await fsp.readdir(sourcePath, { withFileTypes: true });
     const matches = _.filter(results, (entry) => globFilter.regex.test(entry.name));
     return _.map(matches, (match) => match.name);
   });
@@ -311,7 +347,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
 
     try {
-      await fs.access(filePath);
+      await fsp.access(filePath);
     } catch (e) {
       if (e.code !== "ENOENT") {
         log.error(e);
@@ -347,13 +383,36 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
       });
     });
 
+    await chmodDir(arg.outputFolder, DEFAULT_FILE_MODE);
+
     return arg.outputFolder;
+  });
+
+  handle("zip-file", async (evt, srcPath: string, destPath: string) => {
+    log.info(`[ZipFile]: '${srcPath} -> ${destPath}`);
+    return await zipFile(srcPath, destPath);
+  });
+
+  handle("zip-read-file", async (evt, zipPath: string, filePath: string) => {
+    log.info(`[ZipReadFile]: '${zipPath} : ${filePath}`);
+    return await readFileInZip(zipPath, filePath);
+  });
+
+  handle("rename-file", async (evt, srcPath: string, destPath: string) => {
+    log.info(`[RenameFile]: '${srcPath} -> ${destPath}`);
+    return await fsp.rename(srcPath, destPath);
   });
 
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
-    await fs.copy(arg.sourceFilePath, arg.destinationFilePath);
-    await fs.chmod(arg.destinationFilePath, arg.destinationFileChmod);
+    const stat = await fsp.lstat(arg.sourceFilePath);
+    if (stat.isDirectory()) {
+      await copyDir(arg.sourceFilePath, arg.destinationFilePath);
+      await chmodDir(arg.destinationFilePath, DEFAULT_FILE_MODE);
+    } else {
+      await fsp.copyFile(arg.sourceFilePath, arg.destinationFilePath);
+      await fsp.chmod(arg.destinationFilePath, DEFAULT_FILE_MODE);
+    }
     return true;
   });
 
@@ -363,15 +422,15 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_READ_FILE_CHANNEL, async (evt, filePath: string) => {
-    return await fs.readFile(filePath, { encoding: "utf-8" });
+    return await fsp.readFile(filePath, { encoding: "utf-8" });
   });
 
   handle(IPC_READ_FILE_BUFFER_CHANNEL, async (evt, filePath: string) => {
-    return await fs.readFile(filePath);
+    return await fsp.readFile(filePath);
   });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
-    return await fs.writeFile(filePath, contents, { encoding: "utf-8" });
+    return await fsp.writeFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
   });
 
   handle(IPC_CREATE_TRAY_MENU_CHANNEL, (evt, config: SystemTrayConfig) => {
@@ -384,6 +443,15 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
 
   handle(IPC_GET_LATEST_DIR_UPDATE_TIME, (evt, dirPath: string) => {
     return getLastModifiedFileDate(dirPath);
+  });
+
+  handle(IPC_LIST_DIR_RECURSIVE, (evt, dirPath: string): Promise<string[]> => {
+    return readDirRecursive(dirPath);
+  });
+
+  handle(IPC_GET_DIRECTORY_TREE, (evt, args: GetDirectoryTreeRequest): Promise<TreeNode> => {
+    log.debug(IPC_GET_DIRECTORY_TREE, args);
+    return getDirTree(args.dirPath, args.opts);
   });
 
   handle(IPC_MINIMIZE_WINDOW, () => {
@@ -441,55 +509,111 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await dialog.showOpenDialog(options);
   });
 
+  handle(IPC_PUSH_INIT, () => {
+    return push.startPushService();
+  });
+
+  handle(IPC_PUSH_REGISTER, async (evt, appId: string) => {
+    return await push.registerForPush(appId);
+  });
+
+  handle(IPC_PUSH_UNREGISTER, async () => {
+    return await push.unregisterPush();
+  });
+
+  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel) => {
+    return await push.subscribeToChannel(channel);
+  });
+
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {
-    handleDownloadFile(arg).catch((e) => console.error(e));
+    handleDownloadFile(arg).catch((e) => console.error(e.toString()));
+  });
+
+  // In order to allow concurrent downloads, we have to get creative with this session handler
+  window.webContents.session.on("will-download", (evt, item, wc) => {
+    for (const key of _dlMap.keys()) {
+      log.info(`will-download: ${key}`);
+      if (!item.getURLChain().includes(key)) {
+        continue;
+      }
+
+      try {
+        const action = _dlMap.get(key);
+        action.call(null, evt, item, wc);
+      } catch (e) {
+        log.error(e);
+      } finally {
+        _dlMap.delete(key);
+      }
+    }
   });
 
   async function handleDownloadFile(arg: DownloadRequest) {
+    const status: DownloadStatus = {
+      type: DownloadStatusType.Pending,
+      savePath: "",
+    };
+
     try {
-      await fs.ensureDir(arg.outputFolder, 0o666);
+      await fsp.mkdir(arg.outputFolder, { recursive: true });
 
       const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
       log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
 
-      const { data } = await axios({
-        url: arg.url,
-        method: "GET",
-        responseType: "stream",
-        headers: {
-          "User-Agent": USER_AGENT,
-        },
-      });
-
-      // const totalLength = headers["content-length"];
-      // Progress is not shown anywhere
-      // data.on("data", (chunk) => {
-      //   log.info("DLPROG", arg.responseKey);
-      // });
-
+      const url = new URL(arg.url).toString();
       const writer = fs.createWriteStream(savePath);
-      data.pipe(writer);
 
-      await new Promise((resolve, reject) => {
-        writer.on("finish", resolve);
-        writer.on("error", reject);
-      });
+      try {
+        await new Promise((resolve, reject) => {
+          let size = 0;
+          let percentMod = -1;
 
-      const status: DownloadStatus = {
-        type: DownloadStatusType.Complete,
-        savePath,
-      };
+          const req = net.request(url);
+          req.on("response", (response) => {
+            const fileLength = parseInt((response.headers["content-length"] as string) ?? "0", 10);
+
+            if (response.statusCode < 200 || response.statusCode >= 300) {
+              return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
+            }
+
+            response.on("data", (data) => {
+              writer.write(data, () => {
+                size += data.length;
+                const percent = fileLength <= 0 ? 0 : Math.floor((size / fileLength) * 100);
+                if (percent % 5 === 0 && percentMod !== percent) {
+                  percentMod = percent;
+                  log.debug(`Write: [${percent}] ${size}`);
+                }
+              });
+            });
+            response.on("end", () => {
+              console.log("No more data in response.");
+              return resolve(undefined);
+            });
+            response.on("error", (err) => {
+              return reject(err);
+            });
+          });
+          req.end();
+        });
+      } finally {
+        // always close stream
+        writer.end();
+      }
+
+      status.type = DownloadStatusType.Complete;
+      status.savePath = savePath;
+
       window.webContents.send(arg.responseKey, status);
     } catch (err) {
       log.error(err);
-      const status: DownloadStatus = {
-        type: DownloadStatusType.Error,
-        error: err,
-      };
+      status.type = DownloadStatusType.Error;
+      status.error = err;
       window.webContents.send(arg.responseKey, status);
     }
   }
 }
+
 // Adapted from https://github.com/thejoshwolfe/yauzl/blob/96f0eb552c560632a754ae0e1701a7edacbda389/examples/unzip.js#L124
 function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -510,7 +634,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);
-        fs.mkdirp(dirPath, function () {
+        fs.mkdir(dirPath, { recursive: true }, function () {
           if (err) throw err;
           zipfile.readEntry();
         });
@@ -518,7 +642,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
         // ensure parent directory exists
         const filePath = path.join(targetDir, entry.fileName);
         const parentPath = path.join(targetDir, path.dirname(entry.fileName));
-        fs.mkdirp(parentPath, function () {
+        fs.mkdir(parentPath, { recursive: true }, function () {
           zipfile.openReadStream(entry, (err, readStream) => {
             if (err) {
               throw err;

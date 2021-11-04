@@ -68,6 +68,7 @@ export interface CurseSortableGameVersion {
   gameVersion: string;
   gameVersionReleaseDate: string;
   gameVersionName: string;
+  gameVersionTypeId: number;
 }
 
 export interface CurseDependency {

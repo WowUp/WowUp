@@ -1,0 +1,47 @@
+.control-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.authorized-container {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  width: 500px;
+
+  .toggle-row {
+    margin-top: 1em;
+  }
+}
+
+.account-container {
+  width: 400px;
+}
+
+.theme-logo {
+  content: "";
+  opacity: 0.02;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  .logo-img {
+    height: 100vh;
+    background-image: var(--theme-logo);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    background-size: contain;
+  }
+}

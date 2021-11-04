@@ -1,6 +1,8 @@
 //This css based on https://github.com/sindresorhus/github-markdown-css
 
 .markdown-body {
+  max-width: 979px;
+
   * {
     th {
       font-family: Roboto, Helvetica Neue, sans-serif;

@@ -36,6 +36,7 @@ function getArg(argKey: string): string {
 
 const LOG_PATH = getArg("log-path");
 const USER_DATA_PATH = getArg("user-data-path");
+const BASE_BG_COLOR = getArg("base-bg-color");
 
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
   return join(LOG_PATH, variables.fileName);
@@ -73,25 +74,30 @@ function openPath(path: string): Promise<string> {
   return shell.openPath(path);
 }
 
-if (window.opener === null) {
-  window.log = log;
-  window.libs = {
-    handlebars: require("handlebars"),
-    autoLaunch: require("auto-launch"),
-  };
-  window.userDataPath = USER_DATA_PATH;
-  window.logPath = LOG_PATH;
-  window.platform = process.platform;
-  window.wowup = {
-    onRendererEvent,
-    onceRendererEvent,
-    rendererSend,
-    rendererInvoke,
-    rendererOff,
-    rendererOn,
-    openExternal,
-    openPath,
-  };
-} else {
-  console.log("HAS OPENER");
+try {
+  if (window.opener === null) {
+    window.log = log;
+    window.baseBgColor = BASE_BG_COLOR;
+    window.libs = {
+      handlebars: require("handlebars"),
+      autoLaunch: require("auto-launch"),
+    };
+    window.userDataPath = USER_DATA_PATH;
+    window.logPath = LOG_PATH;
+    window.platform = process.platform;
+    window.wowup = {
+      onRendererEvent,
+      onceRendererEvent,
+      rendererSend,
+      rendererInvoke,
+      rendererOff,
+      rendererOn,
+      openExternal,
+      openPath,
+    };
+  } else {
+    console.log("HAS OPENER");
+  }
+} catch (e) {
+  log.error(e);
 }

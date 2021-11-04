@@ -1,10 +1,10 @@
 import * as path from "path";
-import * as fs from "fs-extra";
 import * as _ from "lodash";
 import * as log from "electron-log";
 import * as pLimit from "p-limit";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
-import { readDirRecursive } from "./file.utils";
+import { exists, readDirRecursive } from "./file.utils";
+import * as fsp from "fs/promises";
 
 const nativeAddon = require("../build/Release/addon.node");
 
@@ -56,7 +56,7 @@ export class CurseFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^/]+)[\\/]\1(-mainline|-bcc|-classic)?\.toc$/i;
+    return /^([^/]+)[\\/]\1([-|_](mainline|bcc|tbc|classic|vanilla))?\.toc$/i;
   }
 
   private get bindingsXmlRegex() {
@@ -139,13 +139,14 @@ export class CurseFolderScanner {
       return;
     }
 
-    if (!fs.existsSync(nativePath) || matchingFileList.indexOf(nativePath) !== -1) {
+    const pathExists = await exists(nativePath);
+    if (!pathExists || matchingFileList.indexOf(nativePath) !== -1) {
       return;
     }
 
     matchingFileList.push(nativePath);
 
-    let input = await fs.readFile(nativePath, { encoding: "utf-8" });
+    let input = await fsp.readFile(nativePath, { encoding: "utf-8" });
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -242,24 +243,10 @@ export class CurseFolderScanner {
     }
   }
 
-  private getFileHash(filePath: string): Promise<number> {
-    return new Promise((resolve, reject) => {
-      try {
-        fs.readFile(filePath, (err, buffer) => {
-          if (err) {
-            return reject(err);
-          }
-
-          const hash = nativeAddon.computeHash(buffer, buffer.length);
-
-          return resolve(hash);
-        });
-      } catch (err) {
-        log.error(err);
-        log.info(filePath);
-        return reject(err);
-      }
-    });
+  private async getFileHash(filePath: string): Promise<number> {
+    const buffer = await fsp.readFile(filePath);
+    const hash = nativeAddon.computeHash(buffer, buffer.length);
+    return hash;
   }
 
   private getRealPath(filePath: string) {

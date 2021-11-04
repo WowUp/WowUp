@@ -34,7 +34,7 @@ import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
@@ -65,14 +65,17 @@ const FEATURED_ADDONS_CACHE_TTL_SEC = AppConfig.featuredAddonsCacheTimeSec;
 const GAME_TYPE_LISTS = [
   {
     flavor: "wow_classic",
+    typeId: 67408,
     matches: [WowClientType.ClassicEra, WowClientType.ClassicEraPtr],
   },
   {
     flavor: "wow_burning_crusade",
+    typeId: 73246,
     matches: [WowClientType.Classic, WowClientType.ClassicPtr, WowClientType.ClassicBeta],
   },
   {
     flavor: "wow_retail",
+    typeId: 517,
     matches: [WowClientType.Retail, WowClientType.RetailPtr, WowClientType.Beta],
   },
 ];
@@ -144,6 +147,7 @@ export class CurseAddonProvider extends AddonProvider {
         return undefined;
       }
     }
+
     console.debug("addonResult", addonResult);
 
     const addonFileResponse = await this.getAddonFileById(protocolData.addonId, protocolData.fileId).toPromise();
@@ -312,8 +316,10 @@ export class CurseAddonProvider extends AddonProvider {
 
     for (const scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
-      scanResult.exactMatch = fingerprintResponse.exactMatches.find((exactMatch) =>
-        this.hasMatchingFingerprint(scanResult, exactMatch)
+      scanResult.exactMatch = fingerprintResponse.exactMatches.find(
+        (exactMatch) =>
+          this.hasMatchingFingerprint(scanResult, exactMatch) &&
+          this.isCompatible(installation.clientType, exactMatch.file)
       );
 
       // If the addon does not have an exact match, check the partial matches.
@@ -339,6 +345,7 @@ export class CurseAddonProvider extends AddonProvider {
       {
         fingerprints,
       },
+      undefined,
       AppConfig.wowUpHubHttpTimeoutMs
     );
 
@@ -686,7 +693,7 @@ export class CurseAddonProvider extends AddonProvider {
 
     try {
       const blockList = await this._wowupApiService.getBlockList().toPromise();
-      const blockedAuthorIds = _.map(blockList.curse.authors, (author) => author.authorId);
+      const blockedAuthorIds = blockList.curse.authors.map((author) => author.authorId);
       return blockedAuthorIds.includes(author.id.toString()) || blockedAuthorIds.includes(author.userId.toString());
     } catch (e) {
       return false;
@@ -813,61 +820,38 @@ export class CurseAddonProvider extends AddonProvider {
   }
 
   private isClientType(file: CurseFile, clientType: WowClientType) {
-    const clientTypeStr = this.getGameVersionFlavor(clientType);
     if (file.isAlternate) {
       return false;
     }
 
-    // If the version flavor is an exact match, use that
-    if (file.gameVersionFlavor === clientTypeStr) {
-      return true;
-    }
-
-    // This check was a workaround for CF not supporting multi toc, it causes odd behavior with legacy (12 year old) addons showing up as valid.
-    // Otherwise check if the game version array is close enough
-    // const gameVersionRegex = this.getGameVersionRegex(clientType);
-    // return file.gameVersion.some((gameVersion) => gameVersionRegex.test(gameVersion));
-    return false;
+    return this.isCompatible(clientType, file);
   }
 
-  private getGameVersionRegex(clientType: WowClientType): RegExp {
-    switch (clientType) {
-      case WowClientType.ClassicEra:
-      case WowClientType.ClassicEraPtr:
-        return /^1.\d+.\d+$/;
-      case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
-        return /^2.\d+.\d+$/;
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-      case WowClientType.Beta:
-      default:
-        return /^[3-9].\d+.\d+$/;
+  private getGameVersionTypeId(clientType: WowClientType): number {
+    const gameType = GAME_TYPE_LISTS.find((gtl) => gtl.matches.includes(clientType));
+    if (!gameType) {
+      throw new Error(`Game type not found: ${clientType}`);
     }
+
+    return gameType.typeId;
   }
 
   private getGameVersionFlavor(clientType: WowClientType): CurseGameVersionFlavor {
-    switch (clientType) {
-      case WowClientType.ClassicEra:
-      case WowClientType.ClassicEraPtr:
-        return "wow_classic";
-      case WowClientType.Classic:
-      case WowClientType.ClassicPtr:
-      case WowClientType.ClassicBeta:
-        return "wow_burning_crusade";
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-      case WowClientType.Beta:
-      default:
-        return "wow_retail";
+    const gameType = GAME_TYPE_LISTS.find((gtl) => gtl.matches.includes(clientType));
+    if (!gameType) {
+      throw new Error(`Game type not found: ${clientType}`);
     }
+
+    return gameType.flavor as CurseGameVersionFlavor;
   }
 
   private getValidClientTypes(file: CurseAddonFileResponse): WowClientType[] {
     const gameVersions: WowClientType[] = [];
 
-    const flavorMatches = GAME_TYPE_LISTS.find((list) => list.flavor === file.gameVersionFlavor)?.matches ?? [];
+    const flavorMatches =
+      GAME_TYPE_LISTS.find(
+        (list) => file.sortableGameVersion.find((sgv) => sgv.gameVersionTypeId === list.typeId) !== undefined
+      )?.matches ?? [];
     gameVersions.push(...flavorMatches);
 
     if (!Array.isArray(file.gameVersion) || file.gameVersion.length === 0) {
@@ -897,6 +881,24 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
+  private isCompatible(clientType: WowClientType, file: CurseFile): boolean {
+    if (Array.isArray(file.sortableGameVersion) && file.sortableGameVersion.length > 0) {
+      const gameVersionTypeId = this.getGameVersionTypeId(clientType);
+      return this.hasSortableGameVersion(file, gameVersionTypeId);
+    }
+
+    const gameVersionFlavor = this.getGameVersionFlavor(clientType);
+    console.debug(`Checking via game version flavor fallback`, gameVersionFlavor, file.displayName);
+    return file.gameVersionFlavor === gameVersionFlavor;
+  }
+
+  private hasSortableGameVersion(file: CurseFile, typeId: number): boolean {
+    if (!file.sortableGameVersion) {
+      console.debug(file);
+    }
+    return file.sortableGameVersion.find((sgv) => sgv.gameVersionTypeId === typeId) !== undefined;
+  }
+
   private getAddon(installation: WowInstallation, scanResult: AppCurseScanResult): Addon {
     if (!scanResult.exactMatch || !scanResult.searchResult) {
       throw new Error("No scan result exact match");
@@ -911,7 +913,12 @@ export class CurseAddonProvider extends AddonProvider {
 
     const latestFiles = this.getLatestFiles(scanResult.searchResult, installation.clientType);
 
-    const targetToc = this._tocService.getTocForGameType2(scanResult.addonFolder.tocs, installation.clientType);
+    const targetToc = this._tocService.getTocForGameType2(scanResult.addonFolder, installation.clientType);
+    if (!targetToc) {
+      console.error(scanResult.addonFolder.tocs);
+      throw new Error("Target toc not found");
+    }
+
     const gameVersion = AddonUtils.getGameVersion(targetToc.interface);
 
     let channelType = this.getChannelType(scanResult.exactMatch.file.releaseType);
@@ -934,6 +941,7 @@ export class CurseAddonProvider extends AddonProvider {
       name: scanResult.searchResult?.name ?? "unknown",
       channelType,
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       clientType: installation.clientType,
       downloadUrl: latestVersion?.downloadUrl ?? scanResult.exactMatch?.file.downloadUrl ?? "",
       externalUrl: scanResult.searchResult?.websiteUrl ?? "",

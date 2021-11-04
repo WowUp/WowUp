@@ -3,14 +3,13 @@ import { BehaviorSubject, Subject } from "rxjs";
 
 import { OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { httpLoaderFactory } from "../../app.module";
-import { MatModule } from "../../mat-module";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonUpdateEvent } from "../../models/wowup/addon-update-event";
 import { SortOrder } from "../../models/wowup/sort-order";
@@ -24,6 +23,20 @@ import { MyAddonsComponent } from "./my-addons.component";
 import { overrideIconModule } from "../../tests/mock-mat-icon";
 import { WarcraftInstallationService } from "../../services/warcraft/warcraft-installation.service";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
+import { PushService } from "../../services/push/push.service";
+import { InvertBoolPipe } from "../../pipes/inverse-bool.pipe";
+import { MatModule } from "../../modules/mat-module";
+import { AddonUiService } from "../../services/addons/addon-ui.service";
+
+export class MockElementRef extends ElementRef {
+  public constructor() {
+    super(null);
+  }
+}
+
+export function mockElementFactory(): ElementRef {
+  return new ElementRef({ nativeElement: jasmine.createSpyObj("nativeElement", ["value"]) });
+}
 
 describe("MyAddonsComponent", () => {
   let component: MyAddonsComponent;
@@ -35,8 +48,12 @@ describe("MyAddonsComponent", () => {
   let addonServiceSpy: any;
   let warcraftServiceSpy: any;
   let warcraftInstallationService: WarcraftInstallationService;
+  let pushService: PushService;
+  let addonUiService: AddonUiService;
 
   beforeEach(async () => {
+    addonUiService = jasmine.createSpyObj("AddonUiService", [""], {});
+
     wowUpAddonServiceSpy = jasmine.createSpyObj("WowUpAddonService", ["updateForClientType"], {
       persistUpdateInformationToWowUpAddon: () => {},
     });
@@ -52,6 +69,10 @@ describe("MyAddonsComponent", () => {
       }
     );
 
+    pushService = jasmine.createSpyObj("PushService", [""], {
+      addonUpdate$: new Subject<any>(),
+    });
+
     const testSortOrder: SortOrder = {
       colId: "name",
       sort: "asc",
@@ -66,6 +87,7 @@ describe("MyAddonsComponent", () => {
       selectedClientType$: new BehaviorSubject(WowClientType.Retail).asObservable(),
       targetFileInstallComplete$: new Subject<boolean>(),
       addonsChanged$: new BehaviorSubject([]),
+      selectedWowInstallation$: new BehaviorSubject({}),
     });
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
@@ -81,7 +103,7 @@ describe("MyAddonsComponent", () => {
     });
 
     let testBed = TestBed.configureTestingModule({
-      declarations: [MyAddonsComponent],
+      declarations: [MyAddonsComponent, InvertBoolPipe],
       imports: [
         MatModule,
         OverlayModule,
@@ -113,6 +135,8 @@ describe("MyAddonsComponent", () => {
           { provide: SessionService, useValue: sessionServiceSpy },
           { provide: WarcraftService, useValue: warcraftServiceSpy },
           { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
+          { provide: PushService, useValue: pushService },
+          { provide: AddonUiService, useValue: addonUiService },
         ],
       },
     });
@@ -121,6 +145,11 @@ describe("MyAddonsComponent", () => {
 
     fixture = TestBed.createComponent(MyAddonsComponent);
     component = fixture.componentInstance;
+
+    component.addonFilter = {
+      nativeElement: jasmine.createSpyObj("nativeElement", ["value"]),
+    };
+    console.debug("addonFilter", component.addonFilter);
 
     fixture.detectChanges();
   });
@@ -131,6 +160,7 @@ describe("MyAddonsComponent", () => {
   });
 
   it("should create", () => {
+    console.debug("addonFilter", component.addonFilter);
     expect(component).toBeTruthy();
   });
 });

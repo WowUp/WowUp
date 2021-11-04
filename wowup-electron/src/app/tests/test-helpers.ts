@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { MatModule } from "../mat-module";
+import { MatModule } from "../modules/mat-module";
 
 export function mockPreload(): void {
   window.wowup = {

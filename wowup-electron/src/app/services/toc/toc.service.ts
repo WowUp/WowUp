@@ -2,7 +2,9 @@ import { Injectable } from "@angular/core";
 import * as path from "path";
 
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { AddonFolder } from "../../models/wowup/addon-folder";
 import { Toc } from "../../models/wowup/toc";
+import { removeExtension } from "../../utils/string.utils";
 import { FileService } from "../files/file.service";
 
 const TOC_AUTHOR = "Author";
@@ -41,6 +43,7 @@ export class TocService {
 
     return {
       fileName,
+      filePath: tocPath,
       author: this.getValue(TOC_AUTHOR, tocText),
       curseProjectId: this.getValue(TOC_X_CURSE_PROJECT_ID, tocText),
       interface: this.getValue(TOC_INTERFACE, tocText),
@@ -118,47 +121,38 @@ export class TocService {
       case WowClientType.Beta:
       case WowClientType.Retail:
       case WowClientType.RetailPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-|_]mainline\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.ClassicEra:
       case WowClientType.ClassicEraPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-|_](classic|vanilla)\.toc$/gi.test(tfn)) || "";
         break;
       case WowClientType.Classic:
       case WowClientType.ClassicBeta:
       case WowClientType.ClassicPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn)) || "";
+        matchedToc = tocFileNames.find((tfn) => /.*[-|_](bcc|tbc)\.toc$/gi.test(tfn)) || "";
         break;
       default:
         break;
     }
 
-    return matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
+    return (
+      matchedToc || tocFileNames.find((tfn) => /.*(?<![-|_](classic|vanilla|bcc|tbc|mainline))\.toc$/gi.test(tfn)) || ""
+    );
   }
 
-  public getTocForGameType2(tocs: Toc[], clientType: WowClientType): Toc {
+  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): Toc {
     let matchedToc = "";
 
+    const tocs = addonFolder.tocs;
     const tocFileNames = tocs.map((toc) => toc.fileName);
-    switch (clientType) {
-      case WowClientType.Beta:
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-mainline\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.ClassicEra:
-        matchedToc = tocFileNames.find((tfn) => /.*-classic\.toc$/gi.test(tfn)) || "";
-        break;
-      case WowClientType.Classic:
-      case WowClientType.ClassicBeta:
-      case WowClientType.ClassicPtr:
-        matchedToc = tocFileNames.find((tfn) => /.*-bcc\.toc$/gi.test(tfn)) || "";
-        break;
-      default:
-        break;
-    }
+    matchedToc = this.getTocForGameType(tocFileNames, clientType);
 
-    matchedToc = matchedToc || tocFileNames.find((tfn) => /.*(?<!-classic|-bcc|-mainline)\.toc$/gi.test(tfn)) || "";
+    // If we still have no match, we need to return the toc that matches the folder name if it exists
+    // Example: All the things for TBC (ATT-Classic)
+    if (matchedToc === "") {
+      return tocs.find((toc) => removeExtension(toc.fileName).toLowerCase() === addonFolder.name.toLowerCase());
+    }
 
     return tocs.find((toc) => toc.fileName === matchedToc);
   }

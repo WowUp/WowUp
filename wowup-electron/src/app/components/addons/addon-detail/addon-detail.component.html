@@ -1,0 +1,92 @@
+<div mat-dialog-title class="addon-detail-view">
+  <div class="row align-items-start mb-1">
+    <div class="row justify-content-center bg-secondary-4 mr-3 icon flex-shrink-0"
+      [matTooltip]="('DIALOGS.ADDON_DETAILS.ADDON_ID_PREFIX' | translate) + displayExternalId"
+      [cdkCopyToClipboard]="fullExternalId" (click)="onClickExternalId()">
+      <div *ngIf="hasIconUrl === false" class=" text-3">
+        {{ thumbnailLetter }}
+      </div>
+
+      <img *ngIf="hasIconUrl === true" class="image" [src]="defaultImageUrl" alt="Addon Picture" />
+    </div>
+
+    <div class="flex-grow-1 mr-1">
+      <h2 class="m-0 title">{{ title }}</h2>
+      <h3 class="m-0">{{ 'DIALOGS.ADDON_DETAILS.BY_AUTHOR' | translate:{ authorName: subtitle } }}</h3>
+      <h4 class="m-0 text-2">{{ version }}</h4>
+    </div>
+    <mat-icon class="close-icon" color="accent" [mat-dialog-close]="true" [ngStyle]="{ cursor: 'pointer' }"
+      svgIcon="fas:times">
+    </mat-icon>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <div class="row align-items-start">
+  </div>
+
+  <div *ngIf="hasFundingLinks" class="funding-link-container p-1">
+    <h3 class="m-0">{{ 'DIALOGS.ADDON_DETAILS.FUNDING_LINK_TITLE' | translate }}</h3>
+    <div class="row align-items-center">
+      <app-funding-button *ngFor="let link of fundingLinks" [funding]="link"></app-funding-button>
+    </div>
+  </div>
+  <!-- MISSING DEPENDENCIES -->
+  <div *ngIf="isUnknownProvider && isMissingUnknownDependencies">
+    <h3>{{'DIALOGS.ADDON_DETAILS.MISSING_DEPENDENCIES' | translate}}</h3>
+    <ul>
+      <li *ngFor="let dependency of missingDependencies">{{dependency}}</li>
+    </ul>
+  </div>
+  <!-- DEPENDENCIES -->
+  <div *ngIf="hasRequiredDependencies" class="addon-dependencies rounded bg-secondary-4 text-1 row align-items-center">
+    <mat-icon svgIcon="fas:link" class="mr-1"></mat-icon>
+    <span translate [translateParams]="{ dependencyCount: requiredDependencyCount }">
+      DIALOGS.ADDON_DETAILS.DEPENDENCY_TEXT
+    </span>
+  </div>
+  <!-- TABS -->
+  <mat-tab-group #tabs *ngIf="isUnknownProvider === false" class="scroller" [selectedIndex]="selectedTabIndex"
+    (selectedTabChange)="onSelectedTabChange($event)">
+    <!-- SUMMARY -->
+    <mat-tab [label]="'DIALOGS.ADDON_DETAILS.DESCRIPTION_TAB' | translate">
+      <app-progress-spinner *ngIf="fetchingFullDescription === true"></app-progress-spinner>
+      <div #descriptionContainer class="markdown-body addon-summary text-1 mt-3" [innerHtml]="description$ | async">
+      </div>
+    </mat-tab>
+    <!-- CHANGELOG -->
+    <mat-tab *ngIf="canShowChangelog === true" [label]="'DIALOGS.ADDON_DETAILS.CHANGELOG_TAB' | translate">
+      <app-progress-spinner *ngIf="fetchingChangelog === true"></app-progress-spinner>
+      <div *ngIf="fetchingChangelog === false && hasChangeLog === false" class="mt-3">
+        {{'DIALOGS.ADDON_DETAILS.NO_CHANGELOG_TEXT' |
+        translate}}</div>
+      <div #changelogContainer class="markdown-body addon-changelog text-1 mt-3" [innerHTML]="changelog$ | async"></div>
+    </mat-tab>
+    <!-- SCREENSHOTS -->
+    <mat-tab *ngIf="previewItems.length > 0" [label]="'DIALOGS.ADDON_DETAILS.IMAGES_TAB' | translate">
+      <mat-grid-list class="image-grid pt-3" cols="4" rowHeight="1:1" gutterSize="3">
+        <mat-grid-tile *ngFor="let image of previewItems; index as i">
+          <div class="image-thumb-container ">
+            <img class="image-thumb mat-elevation-z8" [src]="image.data.thumb" [lightbox]="i">
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="isUnknownProvider === false">
+  <div class="row w-100">
+    <button *ngIf="showRemoveButton" mat-button color="warn" (click)="onClickRemoveAddon()"> {{
+      "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.REMOVE_ADDON_BUTTON" | translate }}</button>
+    <div class="flex-grow-1"></div>
+    <a #providerLink mat-button class="mr-3 text-1" appExternalLink [href]="externalUrl"
+      [matTooltip]="'DIALOGS.ADDON_DETAILS.VIEW_IN_BROWSER_BUTTON' | translate">{{
+      "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }}
+      {{ provider }}
+    </a>
+    <app-addon-install-button *ngIf="showInstallButton" [addonSearchResult]="model.searchResult"
+      (onViewUpdated)="onInstallUpdated()">
+    </app-addon-install-button>
+    <app-addon-update-button *ngIf="showUpdateButton" [listItem]="model.listItem"></app-addon-update-button>
+  </div>
+</mat-dialog-actions>

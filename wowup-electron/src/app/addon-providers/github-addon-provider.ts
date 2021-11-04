@@ -22,7 +22,7 @@ import { AddonChannelType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AddonProvider, GetAllResult } from "./addon-provider";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 
@@ -359,11 +359,11 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isClassicAsset(asset: GitHubAsset): boolean {
-    return asset.name.toLowerCase().endsWith("-classic.zip");
+    return /[-](classic|vanilla)\.zip$/i.test(asset.name);
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return asset.name.toLowerCase().endsWith("-bc.zip") || asset.name.toLowerCase().endsWith("-bcc.zip");
+    return /[-](bc|bcc|tbc)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

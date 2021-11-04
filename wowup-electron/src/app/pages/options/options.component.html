@@ -23,6 +23,12 @@
             <button mat-list-item (click)="optionTabIndex = 3">
               {{ "PAGES.OPTIONS.TABS.DEBUG" | translate }}
             </button>
+            <button mat-list-item (click)="optionTabIndex = 4">
+              {{ "WTF Explorer" | translate }}
+            </button>
+            <button mat-list-item (click)="optionTabIndex = 5">
+              {{ "PAGES.OPTIONS.TABS.ABOUT" | translate }}
+            </button>
           </mat-action-list>
         </div>
       </div>
@@ -42,6 +48,12 @@
             </mat-tab>
             <mat-tab label="Debug">
               <app-options-debug-section></app-options-debug-section>
+            </mat-tab>
+            <mat-tab label="WtfExplorer">
+              <app-wtf-explorer [active]="optionTabIndex === 4"></app-wtf-explorer>
+            </mat-tab>
+            <mat-tab label="About">
+              <app-about></app-about>
             </mat-tab>
           </mat-tab-group>
         </div>

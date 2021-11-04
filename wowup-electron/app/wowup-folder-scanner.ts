@@ -1,11 +1,10 @@
 import * as _ from "lodash";
-import * as crypto from "crypto";
-import * as fs from "fs-extra";
 import * as path from "path";
 import * as pLimit from "p-limit";
 import * as log from "electron-log";
 import { WowUpScanResult } from "../src/common/wowup/models";
-import { readDirRecursive } from "./file.utils";
+import { exists, readDirRecursive, hashFile, hashString } from "./file.utils";
+import * as fsp from "fs/promises";
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -61,7 +60,7 @@ export class WowUpFolderScanner {
   }
 
   private get tocFileRegex() {
-    return /^([^/]+)[\\/]\1(-mainline|-bcc|-classic)?\.toc$/i;
+    return /^([^/]+)[\\/]\1([-|_](mainline|bcc|tbc|classic|vanilla))?\.toc$/i;
   }
 
   private get bindingsXmlRegex() {
@@ -86,14 +85,14 @@ export class WowUpFolderScanner {
     const limit = pLimit(4);
     const tasks = _.map(matchingFiles, (file) =>
       limit(async () => {
-        return { hash: await this.hashFile(file), file };
+        return { hash: await hashFile(file), file };
       })
     );
     const fileFingerprints = await Promise.all(tasks);
 
     const fingerprintList = _.map(fileFingerprints, (ff) => ff.hash);
     const hashConcat = _.orderBy(fingerprintList).join("");
-    const fingerprint = this.hashString(hashConcat);
+    const fingerprint = hashString(hashConcat);
 
     const result: WowUpScanResult = {
       fileFingerprints: fingerprintList,
@@ -136,13 +135,14 @@ export class WowUpFolderScanner {
       return;
     }
 
-    if (!fs.existsSync(nativePath) || matchingFileList.indexOf(nativePath) !== -1) {
+    const pathExists = await exists(nativePath);
+    if (!pathExists || matchingFileList.indexOf(nativePath) !== -1) {
       return;
     }
 
     matchingFileList.push(nativePath);
 
-    let input = await fs.readFile(nativePath, { encoding: "utf-8" });
+    let input = await fsp.readFile(nativePath, { encoding: "utf-8" });
     input = this.removeComments(nativePath, input);
 
     const inclusions = this.getFileInclusionMatches(nativePath, input);
@@ -201,17 +201,6 @@ export class WowUpFolderScanner {
     } while (currentMatch);
 
     return matches;
-  }
-
-  private hashString(str: string | crypto.BinaryLike) {
-    const md5 = crypto.createHash("md5");
-    md5.update(str);
-    return md5.digest("hex");
-  }
-
-  private async hashFile(filePath: string): Promise<string> {
-    const text = await fs.readFile(filePath);
-    return this.hashString(text);
   }
 
   private getRealPath(filePath: string) {

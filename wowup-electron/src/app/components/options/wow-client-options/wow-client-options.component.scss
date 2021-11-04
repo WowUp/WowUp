@@ -1,0 +1,60 @@
+.installation-card {
+  box-sizing: border-box;
+  border: 3px solid transparent;
+
+  &:hover {
+    border: 3px solid var(--background-primary);
+  }
+}
+
+.wow-install-logo-container {
+  position: absolute;
+  right: 0.25em;
+  top: 0.25em;
+  height: 145px;
+
+  img {
+    height: 100%;
+    opacity: 0.08;
+  }
+}
+.option-card {
+  margin-top: 1em;
+  background-color: var(--background-secondary-2);
+}
+
+.title {
+  font-size: 1.5em;
+  flex-grow: 1;
+  margin-top: 1em;
+}
+
+p {
+  margin: 0;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.setting-section {
+  background-color: var(--background-secondary-4);
+}
+
+.folder-input {
+  margin-right: 1em;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  // margin: 1em 0;
+  // padding: 0.5em;
+  &.np {
+    padding: 0;
+  }
+  &.sub {
+    padding-left: 2em;
+  }
+}

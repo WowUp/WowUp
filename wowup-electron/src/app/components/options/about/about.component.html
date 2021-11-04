@@ -1,0 +1,47 @@
+<div class="about-container" [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }">
+  <!-- <div class="theme-logo">
+    <div class="logo-img"></div>
+  </div> -->
+  <div class="about">
+    <div class="header text-1">
+      <img class="logo mt-3 mat-elevation-z2" loading="lazy" src="assets/wowup_logo_purple.png" />
+      <h2>{{ "PAGES.ABOUT.TITLE" | translate }}</h2>
+      <div class="version text-2">v{{ versionNumber | async }}</div>
+      <div class="link-container">
+        <a appExternalLink mat-raised-button href="https://wowup.io" class="mr-3">
+          {{ "PAGES.ABOUT.WEBSITE_LINK_LABEL" | translate }}
+        </a>
+        <a appExternalLink mat-raised-button href="https://github.com/WowUp/WowUp">
+          <mat-icon svgIcon="fab:github"></mat-icon>
+          {{ "PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GITHUB" | translate }}
+        </a>
+      </div>
+    </div>
+    <div class="changelog-container  header-2 text-1">
+      <h2>{{ "PAGES.ABOUT.ATTRIBUTIONS_TITLE" | translate }}</h2>
+      <ul class="change-log-list">
+        <li class="changelog bg-secondary-4 border-primary mat-elevation-z8">
+          <p><a appExternalLink href="https://vectorified.com/wow-alliance-icon">Wow Alliance Icon</a></p>
+          <p><a appExternalLink href="https://vectorified.com/horde-logo-vector">Horde Logo Vector</a></p>
+        </li>
+      </ul>
+    </div>
+    <div class="changelog-container text-1">
+      <h2>
+        {{ "PAGES.ABOUT.CHANGE_LOG_SECTION_LABEL" | translate }}
+      </h2>
+      <ul #changelogContainer class="change-log-list">
+        <li class="changelog bg-secondary-4 border-primary mat-elevation-z8" *ngFor="let cl of changeLogs">
+          <div class="version selectable  mat-subheading-2">{{ cl.Version }}</div>
+          <pre *ngIf="cl.Description" class="description selectable">{{ cl.Description }}</pre>
+          <pre *ngIf="cl.changes" class="description selectable">{{ formatChanges(cl) }}</pre>
+          <div *ngIf="cl.html" class="selectable" [innerHTML]="cl.html | trustHtml"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

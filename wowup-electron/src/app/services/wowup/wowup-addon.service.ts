@@ -11,7 +11,7 @@ import {
 import { Addon } from "../../../common/entities/addon";
 import { AddonChannelType } from "../../../common/wowup/models";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
-import { WowInstallation } from "../../models/wowup/wow-installation";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { toInterfaceVersion } from "../../utils/addon.utils";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
 import { AddonService } from "../addons/addon.service";
@@ -207,7 +207,12 @@ export class WowUpAddonService {
   private async handleRawFileType(file: WowUpAddonFileProcessing, designatedPath: string) {
     const assetPath = path.join(WOWUP_ASSET_FOLDER_NAME, file.filename);
     const filePath = await this._fileService.getAssetFilePath(assetPath);
-    await this._fileService.copy(filePath, designatedPath);
+    const exists = await this._fileService.pathExists(designatedPath);
+    if (exists) {
+      console.log(`File exists, skipping copy: ${designatedPath}`);
+    } else {
+      await this._fileService.copy(filePath, designatedPath);
+    }
   }
 
   private getCompanionAddon(addons: Addon[]): Addon | undefined {

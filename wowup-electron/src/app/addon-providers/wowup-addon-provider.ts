@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ADDON_PROVIDER_HUB, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";
-import { AddonChannelType, WowUpScanResult } from "../../common/wowup/models";
+import { AddonCategory, AddonChannelType, WowUpScanResult } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
 import { WowUpAddonReleaseRepresentation, WowUpAddonRepresentation } from "../models/wowup-api/addon-representations";
@@ -14,6 +14,7 @@ import {
   GetFeaturedAddonsResponse,
   WowUpGetAddonReleaseResponse,
   WowUpGetAddonResponse,
+  WowUpGetAddonsResponse,
   WowUpSearchAddonsResponse,
 } from "../models/wowup-api/api-responses";
 import { GetAddonsByFingerprintResponse } from "../models/wowup-api/get-addons-by-fingerprint.response";
@@ -22,7 +23,7 @@ import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
-import { WowInstallation } from "../models/wowup/wow-installation";
+import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { ElectronService } from "../services";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
@@ -232,6 +233,17 @@ export class WowUpAddonProvider extends AddonProvider {
     );
   }
 
+  public async getCategory(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const gameType = this.getWowGameType(installation.clientType);
+    const response = await this.getAddonsByCategory(gameType, category);
+
+    const searchResults = _.map(response?.addons, (addon) => this.getSearchResult(addon, gameType)).filter(
+      (sr) => sr !== undefined
+    );
+
+    return searchResults;
+  }
+
   public async scan(
     installation: WowInstallation,
     addonChannelType: AddonChannelType,
@@ -302,6 +314,15 @@ export class WowUpAddonProvider extends AddonProvider {
 
     return scanResults;
   };
+
+  private async getAddonsByCategory(gameType: WowGameType, category: AddonCategory) {
+    const url = new URL(`${API_URL}/addons/category/${category}/${gameType}`);
+    return await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WowUpGetAddonsResponse>(url),
+      CHANGELOG_CACHE_TTL_SEC
+    );
+  }
 
   private async getAddonById(addonId: number | string) {
     const url = new URL(`${API_URL}/addons/${addonId}`);
@@ -400,18 +421,28 @@ export class WowUpAddonProvider extends AddonProvider {
     return {
       author: authors,
       externalId: representation.id.toString(),
-      externalUrl: representation.repository,
+      externalUrl: `${AppConfig.wowUpWebsiteUrl}/addons/${representation.id}`,
       name,
       providerName: this.name,
       thumbnailUrl: representation.image_url || representation.owner_image_url || "",
       downloadCount: representation.total_download_count,
       files: searchResultFiles,
       releasedAt: new Date(),
-      screenshotUrl: "",
-      screenshotUrls: [],
       summary: representation.description,
       fundingLinks: [...(representation?.funding_links ?? [])],
+      screenshotUrls: this.getScreenshotUrls(clientReleases),
     };
+  }
+
+  // Currently we only support images, so we filter for those
+  private getScreenshotUrls(releases: WowUpAddonReleaseRepresentation[]): string[] {
+    const urls = _.flatten(
+      releases.map((release) =>
+        release.previews?.filter((preview) => preview.preview_type === "image").map((preview) => preview.url)
+      )
+    ).filter((url) => !!url);
+
+    return _.uniq(urls);
   }
 
   private getAddon(
@@ -448,15 +479,21 @@ export class WowUpAddonProvider extends AddonProvider {
       throw new Error("Invalid matching version data");
     }
 
+    const screenshotUrls = this.getScreenshotUrls([matchedRelease]);
+    const externalUrl = scanResult.exactMatch
+      ? `${AppConfig.wowUpWebsiteUrl}/addons/${scanResult.exactMatch.id}`
+      : "unknown";
+
     return {
       id: uuidv4(),
       author: authors,
       name,
       channelType,
       autoUpdateEnabled: false,
+      autoUpdateNotificationsEnabled: false,
       clientType: installation.clientType,
       downloadUrl: scanResult.exactMatch?.matched_release?.download_url ?? "",
-      externalUrl: scanResult.exactMatch?.repository ?? "unknown",
+      externalUrl,
       externalId: scanResult.exactMatch?.id.toString() ?? "unknown",
       gameVersion: getGameVersion(interfaceVer),
       installedAt: new Date(),
@@ -476,6 +513,7 @@ export class WowUpAddonProvider extends AddonProvider {
       latestChangelog: scanResult.exactMatch?.matched_release?.body,
       externalLatestReleaseId: scanResult?.exactMatch?.matched_release?.id?.toString(),
       installationId: installation.id,
+      screenshotUrls,
     };
   }
 

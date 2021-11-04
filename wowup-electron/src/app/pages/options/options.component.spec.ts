@@ -7,8 +7,8 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../app.module";
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { MatModule } from "../../mat-module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { MatModule } from "../../modules/mat-module";
 
 describe("OptionsComponent", () => {
   let component: OptionsComponent;

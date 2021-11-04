@@ -1,0 +1,76 @@
+<div class="tab-container" [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }">
+  <div class="theme-logo">
+    <div class="logo-img"></div>
+  </div>
+  <div *ngIf="(sessionService.wowUpAuthenticated$ | async) === false" class="control-container text-1">
+    <div class="account-container p-3 bg-secondary-4 mat-elevation-z8 rounded">
+      <h1>{{'PAGES.ACCOUNT.TITLE' | translate}} <span class="text-control"><i><sup>{{'PAGES.ACCOUNT.BETA' |
+              translate}}</sup></i></span></h1>
+      <p>Login now to get the most out of your WowUp application.</p>
+      <p>We're working on bringing in some optional cloud based services that we think can really enhance your addon
+        management experience.</p>
+      <p>By clicking the login button you will be taken to the WowUp website to start the process.</p>
+      <div class="mt-3 row justify-content-center">
+        <button mat-flat-button color="primary" (click)="onClickLogin()">
+          {{ "PAGES.ACCOUNT.LOGIN_BUTTON" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="(sessionService.wowUpAuthenticated$ | async) === true" class="control-container text-1">
+    <div class="authorized-container p-3 bg-secondary-4 mat-elevation-z8 rounded">
+      <h1>{{'PAGES.ACCOUNT.TITLE' | translate}} <span class="text-control"><i><sup>{{'PAGES.ACCOUNT.BETA' |
+              translate}}</sup></i></span></h1>
+      <h3>You're logged in!</h3>
+      <p>You're now able to access our various cloud services to help you maximize your addon experience.</p>
+      <div class="toggle-row row align-items-center">
+        <div class="flex-grow-1">
+          <div>
+            {{ "Instant Updates" | translate }}
+          </div>
+          <small class="text-2">{{ "No more waiting for timers, get updates as soon as we see them" | translate
+            }}</small>
+        </div>
+        <mat-slide-toggle [checked]="sessionService.wowUpAccountPushEnabled$ | async" (change)="onToggleAccountPush($event)">
+        </mat-slide-toggle>
+      </div>
+      <div class="toggle-row row align-items-center">
+        <div class="flex-grow-1">
+          <div>
+            {{ "Cloud Addon Sync" | translate }}
+          </div>
+          <small class="text-2">{{ "The simplest way to manage your addon backups for all your machines" | translate
+            }}</small>
+        </div>
+        <mat-slide-toggle disabled>
+        </mat-slide-toggle>
+      </div>
+      <div class="toggle-row row align-items-center">
+        <div class="flex-grow-1">
+          <div>
+            {{ "Cloud Settings Sync" | translate }}
+          </div>
+          <small class="text-2">{{ "Easy to use, hopefully, way to manage your settings between characters and machines"
+            |
+            translate
+            }}</small>
+        </div>
+        <mat-slide-toggle disabled>
+        </mat-slide-toggle>
+      </div>
+      <div class="mt-3 row">
+        <button mat-button color="warn" class="mr-3" (click)="onClickLogout()">
+          {{ "PAGES.ACCOUNT.LOGOUT_BUTTON" | translate }}
+        </button>
+        <div class="flex-grow-1"></div>
+        <button mat-button color="primary" (click)="onClickManageAccount()">
+          {{ "PAGES.ACCOUNT.MANAGE_ACCOUNT_BUTTON" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

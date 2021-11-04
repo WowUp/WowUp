@@ -5,12 +5,14 @@ import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { TestBed } from "@angular/core/testing";
 import { MatDialog } from "@angular/material/dialog";
+import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 import { AppComponent } from "./app.component";
 import { httpLoaderFactory } from "./app.module";
-import { MatModule } from "./mat-module";
+import { AnimatedLogoComponent } from "./components/common/animated-logo/animated-logo.component";
+import { MatModule } from "./modules/mat-module";
 import { PreferenceChange } from "./models/wowup/preference-change";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
@@ -18,11 +20,9 @@ import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
 import { SessionService } from "./services/session/session.service";
 import { PreferenceStorageService } from "./services/storage/preference-storage.service";
-import { WowUpService } from "./services/wowup/wowup.service";
-import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-import { AnimatedLogoComponent } from "./components/animated-logo/animated-logo.component";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
+import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { WowUpService } from "./services/wowup/wowup.service";
 import { ZoomService } from "./services/zoom/zoom.service";
 
 describe("AppComponent", () => {

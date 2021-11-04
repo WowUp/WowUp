@@ -19,7 +19,8 @@ declare type MainChannels =
   | "request-install-from-url"
   | "custom-protocol-received"
   | "app-update-state"
-  | "window-resume";
+  | "window-resume"
+  | "push-notification";
 
 // Events that can be sent from renderer to main
 declare type RendererChannels =
@@ -37,6 +38,8 @@ declare type RendererChannels =
   | "curse-get-scan-results"
   | "wowup-get-scan-results"
   | "unzip-file"
+  | "zip-file"
+  | "zip-read-file"
   | "copy-file"
   | "delete-directory"
   | "list-disks-win32"
@@ -47,6 +50,7 @@ declare type RendererChannels =
   | "create-tray-menu"
   | "write-file"
   | "read-file"
+  | "rename-file"
   | "get-app-version"
   | "app-update-check-for-update"
   | "app-update-start-download"
@@ -72,7 +76,15 @@ declare type RendererChannels =
   | "system-preferences-get-user-default"
   | "show-open-dialog"
   | "app-install-update"
-  | "update-app-badge";
+  | "update-app-badge"
+  | "list-dir-recursive"
+  | "get-directory-tree"
+  | "push-init"
+  | "push-register"
+  | "push-unregister"
+  | "push-subscribe"
+  | "clipboard-read-text"
+  | "show-item-in-folder";
 
 declare global {
   interface Window {
@@ -81,6 +93,7 @@ declare global {
       handlebars: any;
       autoLaunch: any;
     };
+    baseBgColor: string;
     platform: string;
     userDataPath: string;
     logPath: string;
