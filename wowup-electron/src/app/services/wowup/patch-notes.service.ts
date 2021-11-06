@@ -22,6 +22,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">Hotfix</h4>
     <ul>
     <li>Fix an issue with the app locking up on startup sometimes</li>
+    <li>Update the Windows signing cert</li>
     </ul>
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
