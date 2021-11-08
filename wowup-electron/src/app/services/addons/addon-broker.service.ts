@@ -12,6 +12,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { AddonService } from "./addon.service";
 import { Subject } from "rxjs";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
+import { ElectronService } from "..";
 
 export type ExportReleaseType = "stable" | "beta" | "alpha";
 export type ImportState = "no-change" | "added" | "conflict";
@@ -76,7 +77,8 @@ export class AddonBrokerService {
   public constructor(
     private _addonStorage: AddonStorageService,
     private _addonService: AddonService,
-    private _warcraftService: WarcraftService
+    private _warcraftService: WarcraftService,
+    private _electronService: ElectronService
   ) {}
 
   public getExportSummary(installation: WowInstallation): ExportSummary {
@@ -116,12 +118,12 @@ export class AddonBrokerService {
     return payload;
   }
 
-  public parseImportString(importStr: string): ExportPayload {
+  public async parseImportString(importStr: string): Promise<ExportPayload> {
     let jsonStr: string = importStr;
     // try to detect JSON vs b64 json
     if (importStr.trim().charAt(0) !== "{") {
       // try to decode it from b64
-      jsonStr = atob(importStr);
+      jsonStr = await this._electronService.invoke("base64-decode", jsonStr);
     }
 
     const importJson: ExportPayload = JSON.parse(jsonStr);

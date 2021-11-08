@@ -84,7 +84,9 @@ declare type RendererChannels =
   | "push-unregister"
   | "push-subscribe"
   | "clipboard-read-text"
-  | "show-item-in-folder";
+  | "show-item-in-folder"
+  | "base64-encode"
+  | "base64-decode";
 
 declare global {
   interface Window {
