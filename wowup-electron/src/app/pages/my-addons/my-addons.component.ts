@@ -93,6 +93,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
 
   public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
+  
+  public readonly selectedWowInstallationLabel$ = this._sessionService.selectedWowInstallation$.pipe(
+    map((wowInstall) => wowInstall?.label ?? "")
+  );
 
   public readonly selectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
     map((wowInstall) => wowInstall?.id)

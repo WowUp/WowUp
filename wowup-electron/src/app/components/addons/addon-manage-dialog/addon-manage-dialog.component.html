@@ -9,7 +9,8 @@
   </div>
 </div>
 <mat-dialog-content>
-  <mat-tab-group (selectedIndexChange)="selectedTab$.next($event)">
+  <div *ngIf="(error$ | async) !== ''" class="text-warning">{{ "ADDON_IMPORT.GENERIC_IMPORT_ERROR" | translate }}</div>
+  <mat-tab-group *ngIf="(error$ | async) === ''" (selectedIndexChange)="selectedTab$.next($event)">
     <!-- EXPORT -->
     <mat-tab [label]="'ADDON_IMPORT.EXPORT_TAB_LABEL' | translate" [disabled]="(installing$ | async) === true">
       <div class="row align-items-center">

@@ -16,6 +16,55 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.5.1",
+    html: `
+    <div>
+    <h4 style="margin-top: 1em;">Hotfix</h4>
+    <ul>
+    <li>Update the Windows signing cert</li>
+    <li>Fix an issue with the app locking up on startup sometimes</li>
+    <li>Fix an issue with the import dialog failing to create an import string</li>
+    </ul>
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+      <li>Added the ability to turn off system notifications for individual addons (tellier-dev)</li>
+      <li>Added the ability to remove addons from the details dialog on Get Addons tab (tellier-dev)</li>
+      <li>
+        <div>Added the ability to import/export a list of addons for a WoW client. The first step in backing up your list of addons or sharing them with your friends!</div>
+        <img style="width: 70%; border: 1px solid #666666; border-radius: 4px;" loading="lazy" src="assets/images/patch/import-export-preview.png">
+      </li>
+      <li>
+        <div>Added the ability to create and restore backups, this is a work in progress.</div>
+        <img style="width: 70%; border: 1px solid #666666; border-radius: 4px;" loading="lazy" src="assets/images/patch/backup-preview.png">
+      </li>
+      <li>Added a button to open the client folder for a WoW install</li>
+      <li>Added WowUpHub category support</li>
+      <li>Added WowUpHub preview support</li>
+      <li>Added Mac M1 builds</li>
+      <li>Added support for more multi-toc suffixes</li>
+      <li>Added support for Classic Era PTR client</li>
+      <li>Added some badges to indicate number of updates and which client needs them</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+      <li>Fix an issue with addons being ignored by TukUI too early during a scan</li>
+      <li>Fix an issue with certain addons not being able to be re-scanned</li>
+      <li>Fix an issue with updating the same addon in multiple WoW clients at the same time</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+      <li>Spanish locale updates (SkollVargr)</li>
+      <li>Chinese locale updates (CyanoHao)</li>
+      <li>Russian locale updates (Medok)</li>
+      <li>German locale updates (Glow)</li>
+      <li>Tweak the tabs some more</li>
+      <li>Performance improvements for My Addons page</li>
+      <li>Images details tab is now Previews</li>
+      <li>Use a different lightbox library for previews</li>
+      <li>Expanded system proxy support</li>
+    </ul>`,
+  },
+  {
     Version: "2.5.0",
     html: `
     <div>

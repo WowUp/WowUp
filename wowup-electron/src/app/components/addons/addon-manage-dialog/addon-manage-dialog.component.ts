@@ -33,6 +33,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
   private readonly _subscriptions: Subscription[] = [];
 
   public readonly selectedTab$ = new BehaviorSubject<number>(0);
+  public readonly error$ = new BehaviorSubject<string>("");
 
   public readonly TAB_IDX_EXPORT = 0;
   public readonly TAB_IDX_IMPORT = 1;
@@ -70,24 +71,39 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.exportSummary = this._addonBrokerService.getExportSummary(this.selectedInstallation);
+    try {
+      this.exportSummary = this._addonBrokerService.getExportSummary(this.selectedInstallation);
 
-    const payload = this._addonBrokerService.getExportPayload(this.selectedInstallation);
-    this.exportPayload = btoa(JSON.stringify(payload));
+      const payload = this._addonBrokerService.getExportPayload(this.selectedInstallation);
 
-    const installSub = this._addonBrokerService.addonInstall$.subscribe((evt) => {
-      console.log("Install", evt);
+      this._electronService
+        .invoke("base64-encode", JSON.stringify(payload))
+        .then((b64) => {
+          console.debug("B64", b64);
+          this.exportPayload = b64;
+        })
+        .catch((e) => {
+          console.error(e);
+          this.error$.next(`ERROR`);
+        });
 
-      const viewModel = { ...this.importSummary$.value };
-      const compVm = viewModel.comparisons.find((comp) => comp.id === evt.comparisonId);
-      compVm.isInstalling = true;
-      compVm.isCompleted = evt.installState === AddonInstallState.Complete;
-      compVm.didError = evt.installState === AddonInstallState.Error;
+      const installSub = this._addonBrokerService.addonInstall$.subscribe((evt) => {
+        console.log("Install", evt);
 
-      this.importSummary$.next(viewModel);
-    });
+        const viewModel = { ...this.importSummary$.value };
+        const compVm = viewModel.comparisons.find((comp) => comp.id === evt.comparisonId);
+        compVm.isInstalling = true;
+        compVm.isCompleted = evt.installState === AddonInstallState.Complete;
+        compVm.didError = evt.installState === AddonInstallState.Error;
 
-    this._subscriptions.push(installSub);
+        this.importSummary$.next(viewModel);
+      });
+
+      this._subscriptions.push(installSub);
+    } catch (e) {
+      console.error(e);
+      this.error$.next(`ERROR`);
+    }
   }
 
   public ngOnDestroy(): void {
@@ -124,10 +140,10 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onClickImport(): void {
+  public async onClickImport(): Promise<void> {
     let importJson: ExportPayload;
     try {
-      importJson = this._addonBrokerService.parseImportString(this.importData);
+      importJson = await this._addonBrokerService.parseImportString(this.importData);
       console.debug(importJson);
     } catch (e) {
       console.error(e);

@@ -403,6 +403,16 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await fsp.rename(srcPath, destPath);
   });
 
+  handle("base64-encode", (evt, content: string) => {
+    const buff = Buffer.from(content);
+    return buff.toString("base64");
+  });
+
+  handle("base64-decode", (evt, content: string) => {
+    const buff = Buffer.from(content, "base64");
+    return buff.toString("utf-8");
+  });
+
   handle(IPC_COPY_FILE_CHANNEL, async (evt, arg: CopyFileRequest): Promise<boolean> => {
     log.info(`[FileCopy] '${arg.sourceFilePath}' -> '${arg.destinationFilePath}'`);
     const stat = await fsp.lstat(arg.sourceFilePath);

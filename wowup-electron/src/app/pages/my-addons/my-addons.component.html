@@ -31,7 +31,7 @@
           [disableOptionCentering]="true"
         >
           <mat-select-trigger>
-            {{ (selectedWowInstallation$ | async).label }}
+            {{ selectedWowInstallationLabel$ | async }}
           </mat-select-trigger>
           <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
             <div class="d-flex">
