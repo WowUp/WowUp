@@ -4,6 +4,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 export interface DialogData {
   title: string;
   message: string;
+  positiveKey?: string;
+  negativeKey?: string;
 }
 
 @Component({
@@ -12,8 +14,14 @@ export interface DialogData {
   styleUrls: ["./confirm-dialog.component.scss"],
 })
 export class ConfirmDialogComponent {
+  public positiveKey: string;
+  public negativeKey: string;
+
   public constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    this.positiveKey = data.positiveKey ?? "DIALOGS.CONFIRM.POSITIVE_BUTTON";
+    this.negativeKey = data.negativeKey ?? "DIALOGS.CONFIRM.NEGATIVE_BUTTON";
+  }
 }

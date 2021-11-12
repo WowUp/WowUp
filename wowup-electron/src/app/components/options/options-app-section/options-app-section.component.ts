@@ -27,10 +27,16 @@ import { ZOOM_SCALE } from "../../../utils/zoom.utils";
 import { ConfirmDialogComponent } from "../../common/confirm-dialog/confirm-dialog.component";
 import { ZoomService } from "../../../services/zoom/zoom.service";
 import { AddonService } from "../../../services/addons/addon.service";
+import { WowUpReleaseChannelType } from "../../../../common/wowup/wowup-release-channel-type";
 
 interface LocaleListItem {
   localeId: string;
   label: string;
+}
+
+interface ReleaseChannelViewModel {
+  value: WowUpReleaseChannelType;
+  labelKey: string;
 }
 
 @Component({
@@ -50,6 +56,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public useSymlinkMode = false;
   public telemetryEnabled = false;
   public useHardwareAcceleration = true;
+  public currentReleaseChannel = WowUpReleaseChannelType.Stable;
   public currentLanguage = "";
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
@@ -87,6 +94,11 @@ export class OptionsAppSectionComponent implements OnInit {
     },
   ];
 
+  public releaseChannels: ReleaseChannelViewModel[] = [
+    { value: WowUpReleaseChannelType.Stable, labelKey: "COMMON.ENUM.ADDON_CHANNEL_TYPE.STABLE" },
+    { value: WowUpReleaseChannelType.Beta, labelKey: "COMMON.ENUM.ADDON_CHANNEL_TYPE.BETA" },
+  ];
+
   public curseforgeProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(CURSE_PROTOCOL_NAME));
   public wowupProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(APP_PROTOCOL_NAME));
 
@@ -104,6 +116,8 @@ export class OptionsAppSectionComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
+    this.currentReleaseChannel = this.wowupService.wowUpReleaseChannel;
+
     this._analyticsService.telemetryEnabled$.subscribe((enabled) => {
       this.telemetryEnabled = enabled;
     });
@@ -285,6 +299,43 @@ export class OptionsAppSectionComponent implements OnInit {
       )
       .subscribe();
   };
+
+  public onReleaseChannelChange(evt: MatSelectChange) {
+    console.debug(evt);
+    // this._electronService.invoke("set-release-channel", channel);
+
+    const descriptionKey =
+      evt.source.value === WowUpReleaseChannelType.Beta
+        ? "PAGES.OPTIONS.APPLICATION.APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA"
+        : "PAGES.OPTIONS.APPLICATION.APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE";
+
+    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: this._translateService.instant("PAGES.OPTIONS.APPLICATION.APP_RELEASE_CHANNEL_CONFIRMATION_LABEL"),
+        message: this._translateService.instant(descriptionKey),
+        positiveKey: "PAGES.OPTIONS.APPLICATION.APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON",
+      },
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result) => {
+          if (!result) {
+            evt.source.value = this.wowupService.wowUpReleaseChannel;
+          } else {
+            this.wowupService.wowUpReleaseChannel = evt.source.value;
+          }
+
+          return of(undefined);
+        }),
+        catchError((error) => {
+          console.error(error);
+          return of(undefined);
+        })
+      )
+      .subscribe();
+  }
 
   public onCurrentLanguageChange = (evt: MatSelectChange): void => {
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {

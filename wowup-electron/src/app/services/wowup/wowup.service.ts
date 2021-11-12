@@ -42,11 +42,11 @@ import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { ColumnState } from "../../models/wowup/column-state";
 import { PreferenceChange } from "../../models/wowup/preference-change";
 import { SortOrder } from "../../models/wowup/sort-order";
-import { WowUpReleaseChannelType } from "../../models/wowup/wowup-release-channel-type";
 import { getEnumList, getEnumName } from "../../utils/enum.utils";
 import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { WowUpReleaseChannelType } from "../../../common/wowup/wowup-release-channel-type";
 
 @Injectable({
   providedIn: "root",
@@ -208,7 +208,12 @@ export class WowUpService {
   }
 
   public set wowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType) {
-    this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
+    this._electronService
+      .invoke("set-release-channel", releaseChannel)
+      .then(() => {
+        this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
+      })
+      .catch((e) => console.error(e));
   }
 
   public getAddonProviderStates(): AddonProviderState[] {
@@ -386,15 +391,6 @@ export class WowUpService {
   }
 
   private async setDefaultPreferences() {
-    this.setDefaultPreference(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, true);
-    this.setDefaultPreference(COLLAPSE_TO_TRAY_PREFERENCE_KEY, true);
-    this.setDefaultPreference(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY, true);
-    this.setDefaultPreference(CURRENT_THEME_KEY, DEFAULT_THEME);
-    this.setDefaultPreference(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, await this.getDefaultReleaseChannel());
-    this.setDefaultPreference(USE_SYMLINK_MODE_PREFERENCE_KEY, false);
-    this.setDefaultPreference(ENABLE_APP_BADGE_KEY, true);
-    this.setDefaultPreference(TRUSTED_DOMAINS_KEY, DEFAULT_TRUSTED_DOMAINS);
-    this.setDefaultPreference(ACCT_PUSH_ENABLED_KEY, false);
     this.setDefaultClientPreferences();
   }
 

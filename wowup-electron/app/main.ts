@@ -8,7 +8,7 @@ import { pathToFileURL } from "url";
 import { inspect } from "util";
 
 import { createAppMenu } from "./app-menu";
-import { AppUpdater } from "./app-updater";
+import { appUpdater } from "./app-updater";
 import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
 import * as platform from "./platform";
 import {
@@ -42,6 +42,7 @@ import { AppOptions } from "../src/common/wowup/models";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
 import { windowStateManager } from "./window-state";
 import { pushEvents, PUSH_NOTIFICATION_EVENT } from "./push";
+import { initializeDefaultPreferences } from "./preferences";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -83,8 +84,9 @@ log.info("USER_AGENT", USER_AGENT);
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
-let appUpdater: AppUpdater | undefined = undefined;
 let loadFailCount = 0;
+
+initializeDefaultPreferences();
 
 // APP MENU SETUP
 createAppMenu(win);
@@ -284,7 +286,7 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
-  appUpdater = new AppUpdater(win);
+  appUpdater.init(win);
 
   initializeIpcHandlers(win, USER_AGENT);
   initializeStoreIpcHandlers();

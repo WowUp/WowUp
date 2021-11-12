@@ -108,7 +108,7 @@ export const STORAGE_WOWUP_AUTH_TOKEN = "wowup-auth-token";
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
 export const COLLAPSE_TO_TRAY_PREFERENCE_KEY = "collapse_to_tray";
-export const WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY = "wowup_release_channel";
+export const WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY = "wowup_release_channel_2_6";
 export const DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX = "_default_addon_channel";
 export const DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX = "_default_auto_update";
 export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_client_type";

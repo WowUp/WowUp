@@ -86,7 +86,8 @@ declare type RendererChannels =
   | "clipboard-read-text"
   | "show-item-in-folder"
   | "base64-encode"
-  | "base64-decode";
+  | "base64-decode"
+  | "set-release-channel";
 
 declare global {
   interface Window {

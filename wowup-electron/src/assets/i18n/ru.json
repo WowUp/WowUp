@@ -451,6 +451,13 @@
         "TITLE": "Модификации"
       },
       "APPLICATION": {
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Switching to the Stable channel for the app will prevent you from receiving more Beta builds, the next update will be the next Stable release.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Setting the app release channel",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Yes, I understand",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Toggle between the Beta and Stable releases of the application",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
+        "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
         "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
         "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
