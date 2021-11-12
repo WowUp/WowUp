@@ -52,7 +52,6 @@ export class WarcraftInstallationService {
     from(this._warcraftService.getBlizzardAgentPath())
       .pipe(
         tap((blizzardAgentPath) => {
-          // On Linux this will be empty, as we dont know where the blizz database is
           this._blizzardAgentPath = blizzardAgentPath;
         }),
         switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
@@ -235,7 +234,13 @@ export class WarcraftInstallationService {
 
       const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
 
-      const fullProductPath = this.getFullProductPath(product.location, product.clientType);
+      let fullProductPath;
+      if (this._electronService.isLinux) {
+        fullProductPath = this.getFullLutrisProductPath(product.location, blizzardAgentPath, product.clientType);
+      } else {
+        fullProductPath = this.getFullProductPath(product.location, product.clientType);
+      }
+      console.log(fullProductPath)
       const wowInstallation: WowInstallation = {
         id: uuidv4(),
         clientType: product.clientType,
@@ -319,7 +324,12 @@ export class WarcraftInstallationService {
 
     const label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
 
-    const newLocation = this.getFullProductPath(legacyLocation, clientType);
+    let newLocation;
+    if (this._electronService.isLinux) {
+      newLocation = this.getFullLutrisProductPath(legacyLocation, this._blizzardAgentPath, clientType);
+    } else {
+      newLocation = this.getFullProductPath(legacyLocation, clientType);
+    }
 
     const newLocationExists = await this._fileService.pathExists(newLocation);
     if (!newLocationExists) {
@@ -345,6 +355,17 @@ export class WarcraftInstallationService {
     const clientFolderName = this._warcraftService.getClientFolderName(clientType);
     const executableName = this._warcraftService.getExecutableName(clientType);
     return path.join(location, clientFolderName, executableName);
+  }
+
+  private getFullLutrisProductPath(location: string, agentPath: string, clientType: WowClientType): string {
+    const clientFolderName = this._warcraftService.getClientFolderName(clientType);
+    const executableName = this._warcraftService.getExecutableName(clientType);
+    const agentPathPrefixRegex = new RegExp(`(.*drive_c)`);
+    console.log(`location: ${location} agentPath: ${agentPath} clienttype: ${clientType}`)
+    const regexResults = agentPathPrefixRegex.exec(agentPath)
+    console.log(regexResults)
+    const agentPathPrefix = regexResults[1].trim();
+    return path.join(agentPathPrefix, location.substr(3), clientFolderName, executableName);
   }
 
   private getLegacyDefaultAddonChannel(typeName: string): AddonChannelType {

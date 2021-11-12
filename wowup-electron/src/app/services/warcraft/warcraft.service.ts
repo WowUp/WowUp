@@ -260,6 +260,8 @@ export class WarcraftService {
     switch (clientType) {
       case WowClientType.Retail:
         return constants.RETAIL_LOCATION_KEY;
+      case WowClientType.Classic:
+        return constants.CLASSIC_LOCATION_KEY;
       case WowClientType.ClassicEra:
         return constants.CLASSIC_LOCATION_KEY;
       case WowClientType.RetailPtr:
@@ -274,7 +276,7 @@ export class WarcraftService {
   }
 
   private async decodeProducts(productDbPath: string) {
-    if (!productDbPath || this._electronService.isLinux) {
+    if (!productDbPath) {
       return [];
     }
 
@@ -308,7 +310,7 @@ export class WarcraftService {
     }
 
     if (this._electronService.isLinux) {
-      return new WarcraftServiceLinux();
+      return new WarcraftServiceLinux(this._electronService, this._fileService);
     }
 
     throw new Error("No warcraft service implementation found");
