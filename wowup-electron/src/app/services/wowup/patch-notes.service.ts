@@ -16,6 +16,14 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.6.0",
+    html: `
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+    <li>Added the ability to switch to Beta build release channel from the app</li>
+    </ul>`,
+  },
+  {
     Version: "2.5.1",
     html: `
     <div>
