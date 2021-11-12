@@ -16,9 +16,16 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.5.2",
+    html: `
+    <h4 style="margin-top: 1em;">Hotfix</h4>
+    <ul>
+    <li>Fix an issue with the guide url going to the wrong domain</li>
+    </ul>`,
+  },
+  {
     Version: "2.5.1",
     html: `
-    <div>
     <h4 style="margin-top: 1em;">Hotfix</h4>
     <ul>
     <li>Update the Windows signing cert</li>
