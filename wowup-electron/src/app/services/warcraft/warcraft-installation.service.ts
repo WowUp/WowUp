@@ -234,7 +234,7 @@ export class WarcraftInstallationService {
 
       const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
 
-      let fullProductPath;
+      let fullProductPath: string;
       if (this._electronService.isLinux) {
         fullProductPath = this.getFullLutrisProductPath(product.location, blizzardAgentPath, product.clientType);
       } else {
@@ -324,7 +324,7 @@ export class WarcraftInstallationService {
 
     const label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
 
-    let newLocation;
+    let newLocation: string;
     if (this._electronService.isLinux) {
       newLocation = this.getFullLutrisProductPath(legacyLocation, this._blizzardAgentPath, clientType);
     } else {
