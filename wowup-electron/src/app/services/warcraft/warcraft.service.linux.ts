@@ -22,7 +22,9 @@ const WOW_APP_NAMES = [
   WOW_CLASSIC_BETA_NAME,
 ];
 
-const LUTRIS_CONFIG_PATH = "/.config/lutris/system.yml"
+const LUTRIS_DEFAULT_LIBRARY_PATH = "/Games"
+const LUTRIS_CONFIG_PATH = "/.config/lutris";
+const LUTRIS_CONFIG_FILE = "system.yml";
 // Search in this order until products are found on one.
 // All WoW products can be found under any or all of them,
 // since each of them are essentially just Battle.net
@@ -30,7 +32,7 @@ const LUTRIS_CONFIG_PATH = "/.config/lutris/system.yml"
 const LUTRIS_WOW_DIRS = [
   "battlenet/drive_c",
   "world-of-warcraft/drive_c",
-  "world-of-warcraft-classic/drive_c"]
+  "world-of-warcraft-classic/drive_c"];
 
 // BLIZZARD STRINGS
 const WINDOWS_BLIZZARD_AGENT_PATH = "ProgramData/Battle.net/Agent";
@@ -74,17 +76,31 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
   }
 
   public async getLutrisWowProductPath(): Promise<string> {
-    const resolvedPath = path.join(os.homedir(), LUTRIS_CONFIG_PATH);
+    const lutrisConfigPath = path.join(os.homedir(), LUTRIS_CONFIG_PATH);
     try {
-      const lutrisConfigExists = await this._fileService.pathExists(resolvedPath);
-      if (lutrisConfigExists) {
-        const lutrisConfig = await this._fileService.readFile(resolvedPath);
-        const libraryPathRegex = new RegExp(`game_path: (.*)`);
-        const libraryPath = libraryPathRegex.exec(lutrisConfig)[1].trim();
+      const lutrisConfigPathExists = await this._fileService.pathExists(lutrisConfigPath);
+      if (lutrisConfigPathExists) {
+        const lutrisConfigFilePath = path.join(lutrisConfigPath, LUTRIS_CONFIG_FILE);
+        const lutrisConfigFileExists = await this._fileService.pathExists(lutrisConfigFilePath)
+        let libraryPath: string;
+        if (lutrisConfigFileExists) {
+          const lutrisConfig = await this._fileService.readFile(lutrisConfigFilePath);
+          const libraryPathRegex = new RegExp(`game_path: (.*)`);
+          const potentialLibraryPath = libraryPathRegex.exec(lutrisConfig)[1].trim();
+          const libraryPathExists = await this._fileService.pathExists(potentialLibraryPath);
+          if (libraryPathExists) {
+            libraryPath = potentialLibraryPath;
+          }
+        }
+        // If the system.yml file doesn't exist, or game_path entry does not exist within it,
+        // then use the default game installation path.
+        if (libraryPath.length == 0) {
+          libraryPath = path.join(os.homedir(), LUTRIS_DEFAULT_LIBRARY_PATH);
+        }
         const libraryPathExists = await this._fileService.pathExists(libraryPath);
         if (libraryPathExists) {
           for (const wowDir of LUTRIS_WOW_DIRS) {
-            const productPath = path.join(libraryPath, wowDir)
+            const productPath = path.join(libraryPath, wowDir);
             const productPathExists = await this._fileService.pathExists(productPath);
             if (productPathExists) {
               console.log(`Found WoW product in Lutris library at ${productPath}`);
