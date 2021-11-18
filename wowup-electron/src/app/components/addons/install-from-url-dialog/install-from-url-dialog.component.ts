@@ -17,6 +17,7 @@ import {
   GitHubLimitError,
   NoReleaseFoundError,
 } from "../../../errors";
+import { SearchByUrlResult } from "../../../addon-providers/addon-provider";
 
 interface DownloadCounts {
   count: number;
@@ -76,7 +77,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
     this.showInstallSpinner = true;
 
     this._installSubscription = from(
-      this._addonService.installPotentialAddon(this.addon, selectedInstallation)
+      this._addonService.installPotentialAddon(this.addon, selectedInstallation, undefined, this.addon.files[0])
     ).subscribe({
       next: () => {
         this.showInstallSpinner = false;
@@ -125,20 +126,22 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
         throw new Error(`Selected installation not found`);
       }
 
-      const importedAddon = await this._addonService.getAddonByUrl(url, selectedInstallation);
-      if (!importedAddon) {
+      const searchByUrlResult = await this._addonService.getAddonByUrl(url, selectedInstallation);
+      if (!searchByUrlResult) {
         throw new Error("Addon not found");
       }
 
-      this.addon = importedAddon;
+      this.addon = searchByUrlResult.searchResult;
       this.hasThumbnail = !!this.addon.thumbnailUrl;
       this.thumbnailLetter = this.addon.name.charAt(0).toUpperCase();
 
       const addonInstalled = this._addonService.isInstalled(
-        importedAddon.externalId,
-        importedAddon.providerName,
+        this.addon.externalId,
+        this.addon.providerName,
         selectedInstallation
       );
+
+      this.handleImportErrors(searchByUrlResult);
 
       if (addonInstalled) {
         this.showInstallSuccess = true;
@@ -187,6 +190,23 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
     }
   }
 
+  private handleImportErrors(result: SearchByUrlResult) {
+    if (!Array.isArray(result.errors)) {
+      return;
+    }
+
+    for (const error of result.errors) {
+      if (error instanceof AssetMissingError) {
+        const message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.IMPORT_ASSET_WARNING", {
+          zipName: result.searchResult.files[0].version,
+        });
+        const title = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.IMPORT_WARNING_TITLE");
+
+        this.showErrorMessage(message, title);
+      }
+    }
+  }
+
   private getUrlFromQuery(): URL | undefined {
     try {
       return new URL(this.query);
@@ -197,12 +217,14 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
     }
   }
 
-  private showErrorMessage(errorMessage: string) {
+  private showErrorMessage(errorMessage: string, title?: string) {
     const dialogRef = this._dialog.open(AlertDialogComponent, {
       minWidth: 250,
       data: {
-        title: this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.TITLE"),
+        title: title || this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.TITLE"),
         message: errorMessage,
+        positiveButtonStyle: "raised",
+        positiveButtonColor: "primary",
       },
     });
     dialogRef.afterClosed().subscribe();

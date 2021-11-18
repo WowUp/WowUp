@@ -96,7 +96,6 @@ export class WowUpAddonProvider extends AddonProvider {
     });
 
     // eslint-disable-next-line no-debugger
-    // debugger;
     for (const installation of installations) {
       const addonResults: AddonSearchResult[] = [];
       const gameType = this.getWowGameType(installation.clientType);

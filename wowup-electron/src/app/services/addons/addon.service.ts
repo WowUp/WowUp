@@ -33,7 +33,7 @@ import {
   AddonDependencyType,
   AddonWarningType,
 } from "../../../common/wowup/models";
-import { AddonProvider } from "../../addon-providers/addon-provider";
+import { AddonProvider, SearchByUrlResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
@@ -939,7 +939,7 @@ export class AddonService {
     return this._addonStorage.get(addonId);
   }
 
-  public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
+  public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<SearchByUrlResult> {
     const provider = this.getAddonProvider(url);
     if (!provider) {
       console.warn(`No provider found for url: ${url.toString()}`);

@@ -12,6 +12,10 @@ import { ElectronService } from "../electron/electron.service";
 export class DownloadService {
   public constructor(private _electronService: ElectronService) {}
 
+  /**
+   * Downloads a file URL to the specified folder, prepends UUID so there are no collisions
+   * @returns Saved file path
+   */
   public downloadZipFile(
     url: string,
     fileName: string,

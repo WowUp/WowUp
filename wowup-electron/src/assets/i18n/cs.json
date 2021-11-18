@@ -281,7 +281,9 @@
         "NO_SEARCH_RESULTS": "Hledání neodpovídá žádný addon.",
         "TITLE": "Instalace addonu se nepodařila"
       },
+      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
       "IMPORT_BUTTON": "Importovat",
+      "IMPORT_WARNING_TITLE": "Addon Import Warning",
       "INSTALL_BUTTON": "Instalovat",
       "INSTALL_SUCCESS_LABEL": "Úspěšně nainstalováno!",
       "SUPPORTED_SOURCES": "Podporuje WowInterface a GitHub",

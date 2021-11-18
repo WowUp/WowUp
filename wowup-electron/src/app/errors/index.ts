@@ -1,6 +1,8 @@
 export * from "./install-error";
-import { AddonWarningType } from "../../common/wowup/models";
 import { CustomError } from "ts-custom-error";
+
+import { AddonWarningType } from "../../common/wowup/models";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
 
 export class ErrorContainer extends CustomError {
   public readonly innerError?: Error;
@@ -13,9 +15,25 @@ export class ErrorContainer extends CustomError {
   }
 }
 
-export class ClassicAssetMissingError extends CustomError {}
+export class ClassicAssetMissingError extends CustomError {
+  public searchResult?: AddonSearchResult;
 
-export class BurningCrusadeAssetMissingError extends CustomError {}
+  constructor(message?: string, searchResult?: AddonSearchResult) {
+    super(message);
+
+    this.searchResult = searchResult;
+  }
+}
+
+export class BurningCrusadeAssetMissingError extends CustomError {
+  public searchResult?: AddonSearchResult;
+
+  constructor(message?: string, searchResult?: AddonSearchResult) {
+    super(message);
+
+    this.searchResult = searchResult;
+  }
+}
 
 export class AssetMissingError extends CustomError {}
 
