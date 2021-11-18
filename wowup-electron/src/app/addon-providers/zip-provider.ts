@@ -14,7 +14,7 @@ import { Toc } from "../models/wowup/toc";
 import { FileService } from "../services/files/file.service";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, SearchByUrlResult } from "./addon-provider";
 import { WowInstallation } from "../../common/warcraft/wow-installation";
 
 const VALID_ZIP_CONTENT_TYPES = ["application/zip", "application/x-zip-compressed", "application/octet-stream"];
@@ -101,7 +101,7 @@ export class ZipAddonProvider extends AddonProvider {
     return tocs;
   }
 
-  public async searchByUrl(addonUri: URL): Promise<AddonSearchResult | undefined> {
+  public async searchByUrl(addonUri: URL): Promise<SearchByUrlResult> {
     if (!addonUri.pathname.toLowerCase().endsWith(".zip")) {
       throw new Error(`Invalid zip URL ${addonUri.toString()}`);
     }
@@ -120,7 +120,10 @@ export class ZipAddonProvider extends AddonProvider {
       thumbnailUrl: "",
     };
 
-    return potentialAddon;
+    return {
+      errors: [],
+      searchResult: potentialAddon,
+    };
   }
 
   public getById(addonId: string): Observable<AddonSearchResult> {

@@ -19,7 +19,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { getGameVersion } from "../utils/addon.utils";
 import { convertBbcode } from "../utils/bbcode.utils";
 import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider, GetAllResult } from "./addon-provider";
+import { AddonProvider, GetAllResult, SearchByUrlResult } from "./addon-provider";
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 
@@ -96,7 +96,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
     }
   }
 
-  public async searchByUrl(addonUri: URL): Promise<AddonSearchResult> {
+  public async searchByUrl(addonUri: URL): Promise<SearchByUrlResult> {
     const addonId = this.getAddonId(addonUri);
     if (!addonId) {
       throw new Error(`Addon ID not found ${addonUri.toString()}`);
@@ -112,7 +112,10 @@ export class WowInterfaceAddonProvider extends AddonProvider {
       throw new Error(`Failed to create search result  ${addonUri.toString()}`);
     }
 
-    return searchResult;
+    return {
+      errors: [],
+      searchResult,
+    };
   }
 
   public getById(addonId: string): Observable<AddonSearchResult | undefined> {

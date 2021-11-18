@@ -41,7 +41,7 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { WowUpApiService } from "../services/wowup-api/wowup-api.service";
 import * as AddonUtils from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
-import { AddonProvider, GetAllBatchResult, GetAllResult } from "./addon-provider";
+import { AddonProvider, GetAllBatchResult, GetAllResult, SearchByUrlResult } from "./addon-provider";
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 
@@ -502,13 +502,18 @@ export class CurseAddonProvider extends AddonProvider {
     return searchResults;
   }
 
-  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
+  public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<SearchByUrlResult> {
     const slugRegex = /\/addons\/(.*?)(\/|$)/gi;
     const slugMatch = slugRegex.exec(addonUri.pathname);
     if (!slugMatch || slugMatch.length < 2) {
       return undefined;
     }
-    return await this.searchBySlug(slugMatch[1], installation.clientType);
+    const result = await this.searchBySlug(slugMatch[1], installation.clientType);
+
+    return {
+      errors: [],
+      searchResult: result,
+    };
   }
 
   private async searchBySlug(slug: string, clientType: WowClientType): Promise<AddonSearchResult | undefined> {

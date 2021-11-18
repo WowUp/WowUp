@@ -96,6 +96,7 @@ import {
   exists,
   getDirTree,
   getLastModifiedFileDate,
+  listZipFiles,
   readDirRecursive,
   readFileInZip,
   remove,
@@ -396,6 +397,11 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   handle("zip-read-file", async (evt, zipPath: string, filePath: string) => {
     log.info(`[ZipReadFile]: '${zipPath} : ${filePath}`);
     return await readFileInZip(zipPath, filePath);
+  });
+
+  handle("zip-list-files", (evt, zipPath: string, filter: string) => {
+    log.info(`[ZipListEntries]: '${zipPath}`);
+    return listZipFiles(zipPath, filter);
   });
 
   handle("rename-file", async (evt, srcPath: string, destPath: string) => {

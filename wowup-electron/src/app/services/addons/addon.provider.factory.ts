@@ -63,7 +63,7 @@ export class AddonProviderFactory {
   }
 
   public createGitHubAddonProvider(): GitHubAddonProvider {
-    return new GitHubAddonProvider(this._httpClient);
+    return new GitHubAddonProvider(this._httpClient, this._warcraftService);
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
