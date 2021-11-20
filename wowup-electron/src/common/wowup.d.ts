@@ -30,6 +30,7 @@ declare type RendererChannels =
   | "minimize-window"
   | "maximize-window"
   | "show-directory"
+  | "get-home-dir"
   | "get-asset-file-path"
   | "create-directory"
   | "list-directories"

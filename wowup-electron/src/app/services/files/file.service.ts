@@ -4,6 +4,7 @@ import {
   IPC_COPY_FILE_CHANNEL,
   IPC_CREATE_DIRECTORY_CHANNEL,
   IPC_DELETE_DIRECTORY_CHANNEL,
+  IPC_GET_HOME_DIR,
   IPC_GET_ASSET_FILE_PATH,
   IPC_LIST_DIRECTORIES_CHANNEL,
   IPC_PATH_EXISTS_CHANNEL,
@@ -33,6 +34,10 @@ import { ZipEntry } from "../../../common/models/ipc-response";
 })
 export class FileService {
   public constructor(private _electronService: ElectronService) {}
+
+  public getHomeDir(): Promise<string> {
+    return this._electronService.invoke(IPC_GET_HOME_DIR);
+  }
 
   public getAssetFilePath(fileName: string): Promise<string> {
     return this._electronService.invoke<string>(IPC_GET_ASSET_FILE_PATH, fileName);
