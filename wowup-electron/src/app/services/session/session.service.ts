@@ -24,6 +24,7 @@ export class SessionService {
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
   private readonly _myAddonsCompactVersionSrc = new BehaviorSubject<boolean>(false);
+  private readonly _adSpaceSrc = new BehaviorSubject<boolean>(false);
 
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
@@ -43,6 +44,7 @@ export class SessionService {
   public readonly wowUpAccount$ = this._wowUpAccountService.wowUpAccountSrc.asObservable();
   public readonly wowUpAccountPushEnabled$ = this._wowUpAccountService.accountPushSrc.asObservable();
   public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
+  public readonly adSpace$ = this._adSpaceSrc.asObservable(); // TODO this should be driven by the enabled providers
 
   public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
@@ -89,6 +91,10 @@ export class SessionService {
 
   public notifyAddonsChanged(): void {
     this._addonsChangedSrc.next(true);
+  }
+
+  public enableAdSpace(enabled: boolean): void {
+    this._adSpaceSrc.next(enabled);
   }
 
   public getSelectedDetailsTab(): DetailsTabType {

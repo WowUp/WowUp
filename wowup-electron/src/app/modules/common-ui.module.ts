@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
+
 import { AlertDialogComponent } from "../components/common/alert-dialog/alert-dialog.component";
 import { AnimatedLogoComponent } from "../components/common/animated-logo/animated-logo.component";
 import { CellWrapTextComponent } from "../components/common/cell-wrap-text/cell-wrap-text.component";
