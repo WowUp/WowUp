@@ -16,7 +16,8 @@ export type AddonProviderType =
   | "WowUpHub"
   | "RaiderIO"
   | "Zip"
-  | "WowUpCompanion";
+  | "WowUpCompanion"
+  | "Wago";
 
 export interface GetAllBatchResult {
   installationResults: { [installationId: string]: AddonSearchResult[] };

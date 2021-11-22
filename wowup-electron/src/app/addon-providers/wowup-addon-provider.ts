@@ -308,9 +308,7 @@ export class WowUpAddonProvider extends AddonProvider {
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-
     const scanResults: AppWowUpScanResult[] = await this._electronService.invoke(IPC_WOWUP_GET_SCAN_RESULTS, filePaths);
-
     return scanResults;
   };
 

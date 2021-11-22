@@ -30,7 +30,7 @@ export class WebviewComponent implements OnInit {
     const placeholder = document.createElement("div");
     placeholder.innerHTML = `
     <webview id="${this._id}" 
-      src="https://addons.wago.io/app_ads.html" 
+      src="https://addons.wago.io/wowup_ad" 
       httpreferrer="https://wago.io"
       style="width: 100%; height: 100%;"
       nodeintegration​="false"

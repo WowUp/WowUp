@@ -17,6 +17,7 @@ import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
+import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
 
 @Injectable({
   providedIn: "root",
@@ -35,6 +36,16 @@ export class AddonProviderFactory {
     private _warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService
   ) {}
+
+  public createWagoAddonProvider(): WagoAddonProvider {
+    return new WagoAddonProvider(
+      this._electronService,
+      this._cachingService,
+      this._networkService,
+      this._warcraftService,
+      this._tocService
+    );
+  }
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
     return new WowUpCompanionAddonProvider(this._fileService, this._tocService);
@@ -81,6 +92,7 @@ export class AddonProviderFactory {
         this.createRaiderIoAddonProvider(),
         this.createWowUpCompanionAddonProvider(),
         this.createWowUpAddonProvider(),
+        this.createWagoAddonProvider(),
         this.createCurseAddonProvider(),
         this.createTukUiAddonProvider(),
         this.createWowInterfaceAddonProvider(),

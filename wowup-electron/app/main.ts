@@ -270,6 +270,7 @@ function createWindow(): BrowserWindow {
         `--user-data-path=${app.getPath("userData")}`,
         `--base-bg-color=${getBackgroundColor()}`,
       ],
+      webviewTag: true,
     },
     show: false,
   };
@@ -299,6 +300,12 @@ function createWindow(): BrowserWindow {
   mainWindowManager.monitorState(win);
 
   win.webContents.userAgent = USER_AGENT;
+
+  win.webContents.on("will-attach-webview", (evt, webPreferences, params) => {
+    log.debug("will-attach-webview", webPreferences, params);
+    // in order for the wago token to be delivered this must be disabled
+    // webPreferences.contextIsolation = false;
+  });
 
   win.webContents.on("zoom-changed", (evt, zoomDirection) => {
     sendEventToContents(win, "zoom-changed", zoomDirection);

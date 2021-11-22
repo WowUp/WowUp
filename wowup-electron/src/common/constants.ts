@@ -11,6 +11,7 @@ export const ADDON_PROVIDER_TUKUI = "TukUI";
 export const ADDON_PROVIDER_UNKNOWN = "Unknown";
 export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
 export const ADDON_PROVIDER_HUB = "WowUpHub";
+export const ADDON_PROVIDER_WAGO = "Wago";
 export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
