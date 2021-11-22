@@ -49,7 +49,7 @@ export class AddonUiService {
             return this.getRemoveDependenciesPrompt(addon.name, (addon.dependencies ?? []).length)
               .afterClosed()
               .pipe(
-                switchMap((result) => from(this._addonService.removeAddon(addon, result))),
+                switchMap((result: boolean) => from(this._addonService.removeAddon(addon, result))),
                 map(() => {
                   this._snackbarService.showSuccessSnackbar("PAGES.MY_ADDONS.ADDON_REMOVED_SNACKBAR", {
                     localeArgs: {

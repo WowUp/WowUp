@@ -157,7 +157,7 @@ export class AddonService {
       next: (addonName) => {
         console.log("Install complete", addonName);
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error(error);
         this._installErrorSrc.next(error);
       },
@@ -381,7 +381,7 @@ export class AddonService {
         return await p.searchByQuery(query, installation);
       } catch (e) {
         console.error(`Failed during search: ${p.name}`, e);
-        this._searchErrorSrc.next(new GenericProviderError(e, p.name));
+        this._searchErrorSrc.next(new GenericProviderError(e as Error, p.name));
         return [];
       }
     });
@@ -1807,7 +1807,7 @@ export class AddonService {
           return await p.getFeaturedAddons(installation);
         } catch (e) {
           console.error(`Failed to get featured addons: ${p.name}`, e);
-          this._searchErrorSrc.next(new GenericProviderError(e, p.name));
+          this._searchErrorSrc.next(new GenericProviderError(e as Error, p.name));
           return [];
         }
       })

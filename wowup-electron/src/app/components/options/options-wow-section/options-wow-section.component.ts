@@ -76,9 +76,12 @@ export class OptionsWowSectionComponent implements OnInit {
   }
 
   private showInvalidWowApplication(selectedPath: string) {
-    const dialogMessage = this._translateService.instant("DIALOGS.SELECT_INSTALLATION.INVALID_INSTALLATION_PATH", {
-      selectedPath,
-    });
+    const dialogMessage: string = this._translateService.instant(
+      "DIALOGS.SELECT_INSTALLATION.INVALID_INSTALLATION_PATH",
+      {
+        selectedPath,
+      }
+    );
 
     this.showError(dialogMessage);
   }

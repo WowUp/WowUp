@@ -51,11 +51,15 @@ function onceRendererEvent(channel: string, listener: (event: IpcRendererEvent, 
 }
 
 function rendererSend(channel: string, ...args: any[]) {
+  /* eslint-disable @typescript-eslint/no-unsafe-argument */
   ipcRenderer.send(channel, ...args);
+  /* eslint-enable @typescript-eslint/no-unsafe-argument */
 }
 
 function rendererInvoke(channel: string, ...args: any[]): Promise<any> {
+  /* eslint-disable @typescript-eslint/no-unsafe-argument */
   return ipcRenderer.invoke(channel, ...args);
+  /* eslint-enable @typescript-eslint/no-unsafe-argument */
 }
 
 function rendererOff(event: string | symbol, listener: (...args: any[]) => void) {

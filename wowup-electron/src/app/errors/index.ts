@@ -18,7 +18,7 @@ export class ErrorContainer extends CustomError {
 export class ClassicAssetMissingError extends CustomError {
   public searchResult?: AddonSearchResult;
 
-  constructor(message?: string, searchResult?: AddonSearchResult) {
+  public constructor(message?: string, searchResult?: AddonSearchResult) {
     super(message);
 
     this.searchResult = searchResult;
@@ -28,7 +28,7 @@ export class ClassicAssetMissingError extends CustomError {
 export class BurningCrusadeAssetMissingError extends CustomError {
   public searchResult?: AddonSearchResult;
 
-  constructor(message?: string, searchResult?: AddonSearchResult) {
+  public constructor(message?: string, searchResult?: AddonSearchResult) {
     super(message);
 
     this.searchResult = searchResult;

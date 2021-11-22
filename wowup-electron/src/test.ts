@@ -10,7 +10,7 @@ jasmine.getEnv().addReporter({
   suiteStarted: function (result) {
     console.log(`suiteStarted: ${result.fullName}`);
   },
-  specStarted: function (result) {
+  specStarted: function () {
     // console.log(`specStarted: ${result.fullName}`);
   },
   specDone: function (result) {
@@ -24,7 +24,7 @@ jasmine.getEnv().addReporter({
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
-    teardown: { destroyAfterEach: false }
+  teardown: { destroyAfterEach: false },
 });
 // Then we find all the tests.
 const context = require.context("./", true, /\.spec\.ts$/);

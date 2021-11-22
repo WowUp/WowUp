@@ -154,7 +154,7 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
   PENDING_OPEN_URLS = openUrls;
 }
 
-export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
+export function initializeIpcHandlers(window: BrowserWindow): void {
   log.info("process.versions", process.versions);
 
   // Remove the pending URLs once read so they are only able to be gotten once
@@ -175,7 +175,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
   );
 
-  handle("clipboard-read-text", (evt) => {
+  handle("clipboard-read-text", () => {
     return clipboard.readText();
   });
 
@@ -537,7 +537,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await push.unregisterPush();
   });
 
-  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel) => {
+  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel: string) => {
     return await push.subscribeToChannel(channel);
   });
 
@@ -646,7 +646,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
     });
 
     zipfile.readEntry();
-    zipfile.on("entry", function (entry) {
+    zipfile.on("entry", function (entry: yauzl.Entry) {
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);

@@ -201,7 +201,8 @@ export class WowUpAddonService {
       this.compiledFiles[file.filename] = window.libs.handlebars.compile(templateContents);
     }
 
-    await this._fileService.writeFile(designatedPath, this.compiledFiles[file.filename](wowUpAddonData));
+    const fileData: string = this.compiledFiles[file.filename](wowUpAddonData).toString();
+    await this._fileService.writeFile(designatedPath, fileData);
   }
 
   private async handleRawFileType(file: WowUpAddonFileProcessing, designatedPath: string) {

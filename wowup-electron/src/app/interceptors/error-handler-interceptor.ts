@@ -8,6 +8,6 @@ export class ErrorHandlerInterceptor implements ErrorHandler {
   public handleError(error: Error): void {
     console.error("Caught error", error);
 
-    this._analytics.trackError((error as any).innerError ?? error);
+    this._analytics.trackError(((error as any).innerError as Error) ?? error);
   }
 }

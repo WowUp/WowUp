@@ -42,8 +42,8 @@ export class AccountPageComponent {
   };
 
   public onClickLogout(): void {
-    const title = this._translateService.instant("PAGES.ACCOUNT.LOGOUT_CONFIRMATION_TITLE");
-    const message = this._translateService.instant("PAGES.ACCOUNT.LOGOUT_CONFIRMATION_MESSAGE");
+    const title: string = this._translateService.instant("PAGES.ACCOUNT.LOGOUT_CONFIRMATION_TITLE");
+    const message: string = this._translateService.instant("PAGES.ACCOUNT.LOGOUT_CONFIRMATION_MESSAGE");
 
     const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
 

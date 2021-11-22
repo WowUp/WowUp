@@ -55,8 +55,10 @@ export class WtfBackupComponent implements OnInit {
   }
 
   public onClickApplyBackup(backup: WtfBackupViewModel): void {
-    const title = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.TITLE");
-    const message = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.MESSAGE", { name: backup.title });
+    const title: string = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.TITLE");
+    const message: string = this._translateService.instant("WTF_BACKUP.APPLY_CONFIRMATION.MESSAGE", {
+      name: backup.title,
+    });
     const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
 
     dialogRef
@@ -100,8 +102,10 @@ export class WtfBackupComponent implements OnInit {
   }
 
   public onClickDeleteBackup(backup: WtfBackupViewModel): void {
-    const title = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.TITLE");
-    const message = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.MESSAGE", { name: backup.title });
+    const title: string = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.TITLE");
+    const message: string = this._translateService.instant("WTF_BACKUP.DELETE_CONFIRMATION.MESSAGE", {
+      name: backup.title,
+    });
     const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
 
     dialogRef

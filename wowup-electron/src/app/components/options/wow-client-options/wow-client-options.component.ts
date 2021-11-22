@@ -232,7 +232,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   private getAddonChannelInfos(): { type: AddonChannelType; name: string }[] {
     return getEnumList(AddonChannelType).map((type: any) => {
-      const channelName = getEnumName(AddonChannelType, type).toUpperCase();
+      const channelName = getEnumName(AddonChannelType, type as number).toUpperCase();
       return {
         type: type,
         name: `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelName}`,
