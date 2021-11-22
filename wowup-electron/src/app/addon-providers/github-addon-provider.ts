@@ -90,7 +90,7 @@ export class GitHubAddonProvider extends AddonProvider {
           e.addonId = addonId;
         }
 
-        errors.push(e);
+        errors.push(e as Error);
       }
     }
 
@@ -398,7 +398,7 @@ export class GitHubAddonProvider extends AddonProvider {
         throw e;
       }
 
-      throw new GitHubFetchReleasesError(repositoryPath, e);
+      throw new GitHubFetchReleasesError(repositoryPath, e as Error);
     }
   }
 
@@ -418,7 +418,7 @@ export class GitHubAddonProvider extends AddonProvider {
         throw e;
       }
 
-      throw new GitHubFetchRepositoryError(repositoryPath, e);
+      throw new GitHubFetchRepositoryError(repositoryPath, e as Error);
     }
   }
 
@@ -454,8 +454,10 @@ export class GitHubAddonProvider extends AddonProvider {
     try {
       return await this._httpClient.get<T>(url.toString()).toPromise();
     } catch (e) {
-      this.handleRateLimitError(e);
-      this.handleNotFoundError(e);
+      if (e instanceof HttpErrorResponse) {
+        this.handleRateLimitError(e);
+        this.handleNotFoundError(e);
+      }
       throw e;
     }
   }

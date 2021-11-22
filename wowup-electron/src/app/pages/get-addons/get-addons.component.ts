@@ -77,9 +77,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public frameworkComponents = {};
   public columnTypes: {
     [key: string]: ColDef;
-  } = {
-    nonEditableColumn: { editable: false },
-  };
+  } = { nonEditableColumn: { editable: false } };
 
   public columnStates: ColumnState[] = [
     { name: "name", display: "PAGES.GET_ADDONS.TABLE.ADDON_COLUMN_HEADER", visible: true },
@@ -171,7 +169,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         }),
         catchError((error) => {
           console.error(error);
-          this.displayError(error);
+          this.displayError(error as Error);
           this._rowDataSrc.next([]);
           this._isBusySubject.next(false);
           return of(undefined);
@@ -288,7 +286,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
-    this.openDetailDialog(evt.data.searchResult, this.defaultAddonChannel);
+    this.openDetailDialog(evt.data.searchResult as AddonSearchResult, this.defaultAddonChannel);
     evt.node.setSelected(true);
   }
 
@@ -400,7 +398,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.DOWNLOAD_COUNT_COLUMN_HEADER"),
-        valueFormatter: (row) => this.downloadCountPipe.transform(row.data.downloadCount),
+        valueFormatter: (row) => this.downloadCountPipe.transform(row.data.downloadCount as number),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "downloadCount"),
         ...baseColumn,
       },
@@ -409,7 +407,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         flex: 1,
         sortable: true,
         headerName: this._translateService.instant("PAGES.GET_ADDONS.TABLE.RELEASED_AT_COLUMN_HEADER"),
-        valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.releasedAt),
+        valueFormatter: (row) => this.relativeDurationPipe.transform(row.data.releasedAt as string),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "releasedAt"),
         ...baseColumn,
       },
@@ -519,7 +517,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         }),
         catchError((error) => {
           console.error(error);
-          this.displayError(error);
+          this.displayError(error as Error);
           this._rowDataSrc.next([]);
           this._isBusySubject.next(false);
           return of(undefined);
@@ -600,7 +598,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   private setPageContextText(rowCount: number) {
-    const contextStr =
+    const contextStr: string =
       rowCount > 0
         ? this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.SEARCH_RESULTS", { count: rowCount })
         : "";

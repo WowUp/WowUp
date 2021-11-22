@@ -195,7 +195,7 @@ export class ElectronService {
     if (!this._opts) {
       console.debug("getAppOptions");
       // TODO check protocols here
-      const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
+      const launchArgs = await this.invoke<string[]>(IPC_GET_LAUNCH_ARGS);
       this._opts = (<any>minimist(launchArgs.slice(1), {
         boolean: ["hidden", "quit"],
         string: ["install"],
@@ -308,7 +308,9 @@ export class ElectronService {
 
   public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
     try {
+      /* eslint-disable @typescript-eslint/no-unsafe-argument */
       return await window.wowup.rendererInvoke(channel, ...args);
+      /* eslint-enable @typescript-eslint/no-unsafe-argument */
     } catch (e) {
       console.error("Invoke failed", e);
       throw e;
@@ -324,7 +326,9 @@ export class ElectronService {
   }
 
   public send(channel: string, ...args: any[]): void {
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     window.wowup.rendererSend(channel, ...args);
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
   }
 
   public openExternal(url: string, options?: OpenExternalOptions): Promise<void> {

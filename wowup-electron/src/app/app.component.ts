@@ -338,7 +338,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async showManyAddonsAutoUpdated(updatedAddons: Addon[]) {
     const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
-    const translated = await this._translateService
+    const translated: { [key: string]: string } = await this._translateService
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {
         count: updatedAddons.length,
       })
@@ -357,7 +357,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     const addonNames = _.map(updatedAddons, (addon) => addon.name);
     const addonText = _.join(addonNames, "\r\n");
     const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
-    const translated = await this._translateService
+    const translated: { [key: string]: string } = await this._translateService
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"], {
         addonNames: addonText,
       })
@@ -399,7 +399,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onAddonSyncError = (error: AddonSyncError) => {
-    let errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
+    let errorMessage: string = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
       providerName: error.providerName,
     });
 

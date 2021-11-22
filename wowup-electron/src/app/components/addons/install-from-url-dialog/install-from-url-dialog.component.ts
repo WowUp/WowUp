@@ -87,7 +87,9 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
         console.error(err);
         this.showInstallSpinner = false;
         this.showInstallButton = true;
-        this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED"));
+        this.showErrorMessage(
+          this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INSTALL_FAILED") as string
+        );
       },
     });
   }
@@ -153,7 +155,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
     } catch (err) {
       console.error(err);
 
-      let message = err.message;
+      let message: string = err.message;
       if (err instanceof HttpErrorResponse) {
         message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.NO_ADDON_FOUND");
       } else if (err.code && err.code === "EOPENBREAKER") {
@@ -197,10 +199,10 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
 
     for (const error of result.errors) {
       if (error instanceof AssetMissingError) {
-        const message = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.IMPORT_ASSET_WARNING", {
+        const message: string = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.IMPORT_ASSET_WARNING", {
           zipName: result.searchResult.files[0].version,
         });
-        const title = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.IMPORT_WARNING_TITLE");
+        const title: string = this._translateService.instant("DIALOGS.INSTALL_FROM_URL.IMPORT_WARNING_TITLE");
 
         this.showErrorMessage(message, title);
       }
@@ -212,7 +214,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       return new URL(this.query);
     } catch (err) {
       console.error(`Invalid url: ${this.query}`);
-      this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INVALID_URL"));
+      this.showErrorMessage(this._translateService.instant("DIALOGS.INSTALL_FROM_URL.ERROR.INVALID_URL") as string);
       return undefined;
     }
   }

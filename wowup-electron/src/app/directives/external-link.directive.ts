@@ -11,7 +11,7 @@ export class ExternalLinkDirective {
 
     const target = ($event as any).path?.find((t) => t.tagName === "A");
 
-    this._linkService.confirmLinkNavigation(target.href).subscribe();
+    this._linkService.confirmLinkNavigation(target.href as string).subscribe();
   }
 
   public constructor(private _linkService: LinkService) {}

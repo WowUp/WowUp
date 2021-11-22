@@ -75,7 +75,7 @@ export class WowInterfaceAddonProvider extends AddonProvider {
           errors.push(new SourceRemovedAddonError(addonId, error));
         } else {
           error.addonId = addonId;
-          errors.push(error);
+          errors.push(error as Error);
         }
       }
     }

@@ -183,13 +183,13 @@ export class WowUpAccountService {
   }
 
   public async registerForPush(authToken: string, pushAppId: string): Promise<string> {
-    const pushToken = await this._electronService.invoke(IPC_PUSH_REGISTER, pushAppId);
+    const pushToken = await this._electronService.invoke<string>(IPC_PUSH_REGISTER, pushAppId);
     await this._wowUpApiService.registerPushToken(authToken, pushToken, this._electronService.platform);
     return pushToken;
   }
 
   public async unregisterForPush(authToken: string, pushAppId: string): Promise<void> {
-    const pushToken = await this._electronService.invoke(IPC_PUSH_REGISTER, pushAppId);
+    const pushToken = await this._electronService.invoke<string>(IPC_PUSH_REGISTER, pushAppId);
     await this._electronService.invoke(IPC_PUSH_UNREGISTER);
     await this._wowUpApiService.removePushToken(authToken, pushToken);
   }

@@ -288,7 +288,7 @@ function createWindow(): BrowserWindow {
 
   appUpdater.init(win);
 
-  initializeIpcHandlers(win, USER_AGENT);
+  initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
 
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {

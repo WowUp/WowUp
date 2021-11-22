@@ -138,7 +138,7 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
       this.nodes$.next(wtfTree.children.map((tn) => this.getNode(tn, addonFolders)));
     } catch (e) {
       console.error(e);
-      this.error$.next(e.message);
+      this.error$.next(e.message as string);
     } finally {
       this.loading$.next(false);
     }
@@ -196,7 +196,7 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
       return accountMap;
     } catch (e) {
       console.error(e);
-      this.error$.next(e.message);
+      this.error$.next(e.message as string);
       return [];
     } finally {
       this.loading$.next(false);

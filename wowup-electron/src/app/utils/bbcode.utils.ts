@@ -57,7 +57,7 @@ const asListItems = (content: any) => {
 
 const bbpreset = createPreset({
   size: (node: any) => {
-    const keys = Object.keys(node.attrs);
+    const keys = Object.keys(node.attrs as unknown);
     const sizeKey = keys.map((key) => parseInt(key, 10)).find((num) => !isNaN(num) && isFinite(num));
 
     return {

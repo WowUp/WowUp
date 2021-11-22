@@ -96,7 +96,7 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
   }
 
   private setPageContextText(rowCount: number) {
-    const contextStr =
+    const contextStr: string =
       rowCount > 0 ? this._translateService.instant("PAGES.NEWS.PAGE_CONTEXT_FOOTER", { count: rowCount }) : "";
 
     this._sessionService.setContextText(this.tabIndex, contextStr);

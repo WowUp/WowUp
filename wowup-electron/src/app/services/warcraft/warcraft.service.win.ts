@@ -43,7 +43,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
     try {
       const diskInfo = await this._electronService.invoke(IPC_LIST_DISKS_WIN32);
       console.debug("diskInfo", diskInfo);
-      const driveNames = diskInfo.map((i) => i.mounted);
+      const driveNames: string[] = diskInfo.map((i) => i.mounted);
 
       for (const name of driveNames) {
         const agentPath = path.join(name, WINDOWS_BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
