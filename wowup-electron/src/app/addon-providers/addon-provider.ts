@@ -28,6 +28,11 @@ export interface GetAllResult {
   errors: Error[];
 }
 
+export interface SearchByUrlResult {
+  searchResult?: AddonSearchResult;
+  errors?: Error[];
+}
+
 export abstract class AddonProvider {
   public name: AddonProviderType = "Zip";
   public enabled = false;
@@ -72,8 +77,8 @@ export abstract class AddonProvider {
     return Promise.resolve([]);
   }
 
-  public searchByUrl(addonUri: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
-    return Promise.resolve(undefined);
+  public searchByUrl(addonUri: URL, installation: WowInstallation): Promise<SearchByUrlResult> {
+    return Promise.resolve({});
   }
 
   public searchProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {

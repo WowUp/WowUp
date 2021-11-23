@@ -7,7 +7,6 @@ import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
-  ACCT_PUSH_ENABLED_KEY,
   ADDON_MIGRATION_VERSION_KEY,
   ADDON_PROVIDERS_KEY,
   COLLAPSE_TO_TRAY_PREFERENCE_KEY,
@@ -71,9 +70,7 @@ export class WowUpService {
     private _fileService: FileService,
     private _translateService: TranslateService
   ) {
-    this.setDefaultPreferences()
-      // .then(() => console.debug("Set default preferences"))
-      .catch((e) => console.error("Failed to set default preferences", e));
+    this.setDefaultPreferences();
 
     this.createDownloadDirectory()
       .then(() => this.cleanupDownloads())
@@ -390,7 +387,7 @@ export class WowUpService {
     return `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
   }
 
-  private async setDefaultPreferences() {
+  private setDefaultPreferences() {
     this.setDefaultClientPreferences();
   }
 

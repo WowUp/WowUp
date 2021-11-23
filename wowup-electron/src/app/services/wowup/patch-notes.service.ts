@@ -21,6 +21,14 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
     <li>Added the ability to switch to Beta build release channel from the app</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Modified the GitHub install by URL feature to be more flexible for multi-toc addons</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+    <li>Fixed an issue with some addon IDs colliding between addon providers</li>
     </ul>`,
   },
   {

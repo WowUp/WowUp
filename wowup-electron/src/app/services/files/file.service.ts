@@ -26,6 +26,7 @@ import { UnzipRequest } from "../../../common/models/unzip-request";
 import { FsDirent, FsStats, TreeNode } from "../../../common/models/ipc-events";
 import { ElectronService } from "../electron/electron.service";
 import { GetDirectoryTreeOptions, GetDirectoryTreeRequest } from "../../../common/models/ipc-request";
+import { ZipEntry } from "../../../common/models/ipc-response";
 
 @Injectable({
   providedIn: "root",
@@ -160,8 +161,12 @@ export class FileService {
     return this._electronService.invoke<string[]>(IPC_LIST_FILES_CHANNEL, sourcePath, filter);
   }
 
+  public listZipFiles(sourcePath: string, filter: string): Promise<ZipEntry[]> {
+    return this._electronService.invoke<ZipEntry[]>("zip-list-files", sourcePath, filter);
+  }
+
   public readFileInZip(zipPath: string, filePath: string): Promise<string> {
-    return this._electronService.invoke<any>("zip-read-file", zipPath, filePath);
+    return this._electronService.invoke<string>("zip-read-file", zipPath, filePath);
   }
 
   public async unzipFile(zipFilePath: string, outputFolder: string): Promise<string> {

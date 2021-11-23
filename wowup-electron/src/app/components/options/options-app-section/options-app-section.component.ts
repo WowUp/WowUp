@@ -208,8 +208,10 @@ export class OptionsAppSectionComponent implements OnInit {
     }
 
     // Prompt the user that this may affect their existing CurseForge app
-    const title = this._translateService.instant("PAGES.OPTIONS.APPLICATION.USE_CURSE_PROTOCOL_CONFIRMATION_LABEL");
-    const message = this._translateService.instant(
+    const title: string = this._translateService.instant(
+      "PAGES.OPTIONS.APPLICATION.USE_CURSE_PROTOCOL_CONFIRMATION_LABEL"
+    );
+    const message: string = this._translateService.instant(
       "PAGES.OPTIONS.APPLICATION.USE_CURSE_PROTOCOL_CONFIRMATION_DESCRIPTION"
     );
 
@@ -235,10 +237,10 @@ export class OptionsAppSectionComponent implements OnInit {
   };
 
   public onUseHardwareAccelerationChange = (evt: MatSlideToggleChange): void => {
-    const title = this._translateService.instant(
+    const title: string = this._translateService.instant(
       "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_CONFIRMATION_LABEL"
     );
-    const message = this._translateService.instant(
+    const message: string = this._translateService.instant(
       evt.checked
         ? "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_ENABLE_CONFIRMATION_DESCRIPTION"
         : "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_DISABLE_CONFIRMATION_DESCRIPTION"
@@ -366,7 +368,7 @@ export class OptionsAppSectionComponent implements OnInit {
   };
 
   public onScaleChange = async (evt: MatSelectChange): Promise<void> => {
-    const newScale = evt.value;
+    const newScale = evt.value as number;
     await this._zoomService.setZoomFactor(newScale);
     this.currentScale = newScale;
   };

@@ -212,7 +212,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   private onAddonScanError = (error: AddonScanError) => {
     const durationMs = 4000;
-    const errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SCAN_ERROR", {
+    const errorMessage: string = this._translateService.instant("COMMON.ERRORS.ADDON_SCAN_ERROR", {
       providerName: error.providerName,
     });
 

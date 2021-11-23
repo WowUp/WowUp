@@ -40,7 +40,8 @@ export function getWowUpReleaseChannelPreference(): WowUpReleaseChannelType {
 function setDefaultPreference(key: string, defaultValue: any) {
   const pref = preferenceStore.get(key);
   if (pref === null || pref === undefined) {
-    log.info(`Setting default preference: ${key} -> ${defaultValue}`);
+    const valStr: string = defaultValue.toString();
+    log.info(`Setting default preference: ${key} -> ${valStr}`);
     if (Array.isArray(defaultValue)) {
       preferenceStore.set(key, defaultValue);
     } else {

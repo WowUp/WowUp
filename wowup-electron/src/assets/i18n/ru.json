@@ -281,7 +281,9 @@
         "NO_SEARCH_RESULTS": "Поиск не дал результатов.",
         "TITLE": "Установка модификации не удалась"
       },
+      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
       "IMPORT_BUTTON": "Импорт",
+      "IMPORT_WARNING_TITLE": "Addon Import Warning",
       "INSTALL_BUTTON": "Установить",
       "INSTALL_SUCCESS_LABEL": "Установлена!",
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",

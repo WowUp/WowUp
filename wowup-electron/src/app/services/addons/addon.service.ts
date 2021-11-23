@@ -33,7 +33,7 @@ import {
   AddonDependencyType,
   AddonWarningType,
 } from "../../../common/wowup/models";
-import { AddonProvider } from "../../addon-providers/addon-provider";
+import { AddonProvider, SearchByUrlResult } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
@@ -157,7 +157,7 @@ export class AddonService {
       next: (addonName) => {
         console.log("Install complete", addonName);
       },
-      error: (error) => {
+      error: (error: Error) => {
         console.error(error);
         this._installErrorSrc.next(error);
       },
@@ -238,6 +238,12 @@ export class AddonService {
 
   public isSameAddon(addon1: Addon, addon2: Addon): boolean {
     return addon1.externalId === addon2.externalId && addon1.providerName === addon2.providerName;
+  }
+
+  public addonMatchesSearchResult(addon1: Addon, addon2: AddonSearchResult): boolean {
+    return (
+      addon1?.externalId?.toString() === addon2?.externalId?.toString() && addon1.providerName === addon2.providerName
+    );
   }
 
   public async getCategoryPage(category: AddonCategory, installation: WowInstallation): Promise<AddonSearchResult[]> {
@@ -381,7 +387,7 @@ export class AddonService {
         return await p.searchByQuery(query, installation);
       } catch (e) {
         console.error(`Failed during search: ${p.name}`, e);
-        this._searchErrorSrc.next(new GenericProviderError(e, p.name));
+        this._searchErrorSrc.next(new GenericProviderError(e as Error, p.name));
         return [];
       }
     });
@@ -939,7 +945,7 @@ export class AddonService {
     return this._addonStorage.get(addonId);
   }
 
-  public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<AddonSearchResult | undefined> {
+  public async getAddonByUrl(url: URL, installation: WowInstallation): Promise<SearchByUrlResult> {
     const provider = this.getAddonProvider(url);
     if (!provider) {
       console.warn(`No provider found for url: ${url.toString()}`);
@@ -1129,25 +1135,25 @@ export class AddonService {
 
   /** Iterate over all the installed WoW clients and attempt to check for addon updates */
   public async syncAllClients(): Promise<void> {
+    console.debug("syncAllClients");
     const installations = this._warcraftInstallationService.getWowInstallations();
 
     await this.syncBatchProviders(installations);
 
-    for (const installation of installations) {
-      try {
-        await this.syncStandardProviders(installation);
-      } catch (e) {
-        console.error(e);
-      }
+    try {
+      await this.syncStandardProviders(installations);
+    } catch (e) {
+      console.error(e);
     }
   }
 
   /** Check for updates for all addons installed for the give WoW client */
   public async syncClient(installation: WowInstallation): Promise<void> {
+    console.debug("syncClient", installation.label);
     await this.syncBatchProviders([installation]);
 
     try {
-      await this.syncStandardProviders(installation);
+      await this.syncStandardProviders([installation]);
     } catch (e) {
       console.error(e);
     }
@@ -1162,6 +1168,7 @@ export class AddonService {
    * external addon IDs into a single request to each batch enabled provider
    * */
   private async syncBatchProviders(installations: WowInstallation[]) {
+    console.debug(`syncBatchProviders`);
     const batchedAddonProviders = this.getBatchAddonProviders();
 
     for (const provider of batchedAddonProviders) {
@@ -1199,28 +1206,30 @@ export class AddonService {
     }
   }
 
-  public async syncStandardProviders(installation: WowInstallation): Promise<boolean> {
-    console.info(`syncAddons ${installation.label}`);
+  public async syncStandardProviders(installations: WowInstallation[]): Promise<boolean> {
+    console.info(`syncStandardProviders`);
     let didSync = true;
-
-    // fetch all the addons for this WoW client
-    const addons = this._addonStorage.getAllForInstallationId(installation.id);
-    const validAddons = _.filter(addons, (addon) => addon.isIgnored === false);
 
     const addonProviders = this.getStandardAddonProviders();
     for (const provider of addonProviders) {
-      try {
-        await this.syncProviderAddons(installation, validAddons, provider);
-      } catch (e) {
-        console.error(`Failed to sync from provider: ${provider.name}`, e);
-        this._syncErrorSrc.next(
-          new AddonSyncError({
-            providerName: provider.name,
-            installationName: installation.label,
-            innerError: e,
-          })
-        );
-        didSync = false;
+      for (const installation of installations) {
+        // fetch all the addons for this WoW client
+        const addons = this._addonStorage.getAllForInstallationId(installation.id);
+        const validAddons = _.filter(addons, (addon) => addon.isIgnored === false);
+
+        try {
+          await this.syncProviderAddons(installation, validAddons, provider);
+        } catch (e) {
+          console.error(`Failed to sync from provider: ${provider.name}`, e);
+          this._syncErrorSrc.next(
+            new AddonSyncError({
+              providerName: provider.name,
+              installationName: installation.label,
+              innerError: e,
+            })
+          );
+          didSync = false;
+        }
       }
     }
 
@@ -1230,27 +1239,28 @@ export class AddonService {
   }
 
   private updateAddons(existingAddons: Addon[], newAddons: Addon[]) {
-    _.forEach(newAddons, (newAddon) => {
-      const existingAddon = _.find(
-        existingAddons,
+    for (const newAddon of newAddons) {
+      const existingAddon = existingAddons.find(
         (ea) =>
           ea.externalId?.toString() === newAddon.externalId?.toString() && ea.providerName == newAddon.providerName
       );
 
       if (!existingAddon) {
-        return;
+        continue;
       }
 
       newAddon.autoUpdateEnabled = existingAddon.autoUpdateEnabled;
       newAddon.isIgnored = existingAddon.isIgnored;
       newAddon.installedAt = existingAddon.installedAt;
       newAddon.channelType = existingAddon.channelType;
-    });
+    }
 
     return newAddons;
   }
 
   private async syncProviderAddons(installation: WowInstallation, addons: Addon[], addonProvider: AddonProvider) {
+    // console.debug(`syncProviderAddons`, installation.label, addonProvider.name);
+
     const providerAddonIds = this.getExternalIdsForProvider(addonProvider, addons);
     if (!providerAddonIds.length) {
       return;
@@ -1266,8 +1276,9 @@ export class AddonService {
     addons: Addon[],
     installation: WowInstallation
   ): Promise<void> {
+    // console.debug(`handleSyncResults`, installation.label, addonSearchResults);
     for (const result of addonSearchResults) {
-      const addon = addons.find((addon) => addon.externalId?.toString() === result?.externalId?.toString());
+      const addon = addons.find((addon) => this.addonMatchesSearchResult(addon, result));
       if (!addon) {
         continue;
       }
@@ -1347,7 +1358,7 @@ export class AddonService {
       const addonId = (error as any).addonId;
       let addon: Addon | undefined = undefined;
       if (addonId) {
-        addon = _.find(addons, (a) => a.externalId === addonId);
+        addon = _.find(addons, (a) => a.externalId === addonId && a.providerName === addonProvider.name);
       }
 
       if (error instanceof GenericProviderError && addon !== undefined) {
@@ -1383,17 +1394,10 @@ export class AddonService {
   }
 
   private getExternalIdsForProvider(addonProvider: AddonProvider, addons: Addon[]): string[] {
-    const filtered = addons.filter((addon) => addon.providerName === addonProvider.name);
-
-    const externalIds: string[] = [];
-    for (const addon of filtered) {
-      if (!addon.externalId) {
-        continue;
-      }
-
-      externalIds.push(addon.externalId);
-    }
-    return externalIds;
+    return addons
+      .filter((addon) => addon.providerName === addonProvider.name)
+      .map((f) => f.externalId)
+      .filter((id) => !!id);
   }
 
   private async removeGitFolders(addonFolders: AddonFolder[]) {
@@ -1545,7 +1549,8 @@ export class AddonService {
         totalCount: addonFolders.length,
       });
 
-      for (const provider of this.getEnabledAddonProviders()) {
+      const enabledProviders = this.getEnabledAddonProviders();
+      for (const provider of enabledProviders) {
         try {
           const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
           await provider.scan(installation, defaultAddonChannel, validFolders);
@@ -1807,7 +1812,7 @@ export class AddonService {
           return await p.getFeaturedAddons(installation);
         } catch (e) {
           console.error(`Failed to get featured addons: ${p.name}`, e);
-          this._searchErrorSrc.next(new GenericProviderError(e, p.name));
+          this._searchErrorSrc.next(new GenericProviderError(e as Error, p.name));
           return [];
         }
       })

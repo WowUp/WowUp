@@ -62,6 +62,7 @@ import { PushService } from "../../services/push/push.service";
 import { AddonUiService } from "../../services/addons/addon-ui.service";
 import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
+import { FromEventTarget } from "rxjs/internal/observable/fromEvent";
 
 @Component({
   selector: "app-my-addons",
@@ -93,7 +94,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
 
   public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
-  
+
   public readonly selectedWowInstallationLabel$ = this._sessionService.selectedWowInstallation$.pipe(
     map((wowInstall) => wowInstall?.label ?? "")
   );
@@ -414,14 +415,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
 
     if (this.addonFilter?.nativeElement !== undefined) {
-      const addonFilterSub = fromEvent(this.addonFilter.nativeElement, "keyup")
+      const addonFilterSub = fromEvent(this.addonFilter.nativeElement as FromEventTarget<unknown>, "keyup")
         .pipe(
           filter(Boolean),
           debounceTime(200),
           distinctUntilChanged(),
           tap(() => {
-            console.debug(this.addonFilter.nativeElement.value);
-            this._filterInputSrc.next(this.addonFilter.nativeElement.value);
+            const val: string = this.addonFilter.nativeElement.value.toString();
+            console.debug(val);
+            this._filterInputSrc.next(val);
           })
         )
         .subscribe();
@@ -694,8 +696,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onReScan(): void {
-    const title = this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE");
-    const message = this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION");
+    const title: string = this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_TITLE");
+    const message: string = this._translateService.instant("PAGES.MY_ADDONS.RESCAN_FOLDERS_CONFIRMATION_DESCRIPTION");
     const dialogRef = this._dialogFactory.getConfirmDialog(title, message);
 
     dialogRef
@@ -715,7 +717,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onClientChange(evt: any): void {
-    this._sessionService.setSelectedWowInstallation(evt.value);
+    const val: string = evt.value.toString();
+    this._sessionService.setSelectedWowInstallation(val);
   }
 
   public onRemoveAddon(addon: Addon): void {
@@ -823,7 +826,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
-    this._dialogFactory.getAddonDetailsDialog(evt.data);
+    this._dialogFactory.getAddonDetailsDialog(evt.data as AddonViewModel);
     evt.node.setSelected(true);
   }
 
@@ -855,7 +858,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._baseRowDataSrc.next(rows);
     } catch (e) {
       console.error(e);
-      this._operationErrorSrc.next(e);
+      this._operationErrorSrc.next(e as Error);
     }
   }
 
@@ -881,7 +884,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._baseRowDataSrc.next(rows);
     } catch (e) {
       console.error(e);
-      this._operationErrorSrc.next(e);
+      this._operationErrorSrc.next(e as Error);
     }
   }
 
@@ -922,8 +925,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         }),
         catchError((e) => {
           console.error(e);
-          const errorTitle = this._translateService.instant("DIALOGS.ALERT.ERROR_TITLE");
-          const errorMessage = this._translateService.instant("COMMON.ERRORS.CHANGE_PROVIDER_ERROR", messageData);
+          const errorTitle: string = this._translateService.instant("DIALOGS.ALERT.ERROR_TITLE");
+          const errorMessage: string = this._translateService.instant(
+            "COMMON.ERRORS.CHANGE_PROVIDER_ERROR",
+            messageData
+          );
           this.showErrorMessage(errorTitle, errorMessage);
           return of(undefined);
         })
@@ -1022,7 +1028,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private async updateAllWithSpinner(...installations: WowInstallation[]): Promise<void> {
     this._isBusySrc.next(true);
 
-    this._spinnerMessageSrc.next(this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS"));
+    this._spinnerMessageSrc.next(this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS") as string);
     this._enableControlsSrc.next(false);
 
     let addons: Addon[] = [];
@@ -1047,7 +1053,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         this._translateService.instant("PAGES.MY_ADDONS.SPINNER.UPDATING", {
           updateCount: updatedCt,
           addonCount: addons.length,
-        })
+        }) as string
       );
 
       for (const addon of addons) {
@@ -1070,7 +1076,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             addonCount: addons.length,
             clientType: installation.label,
             addonName: addon.name,
-          })
+          }) as string
         );
 
         await this.addonService.updateAddon(addon.id);
@@ -1175,7 +1181,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             this._tabIndexSrc.value,
             this._translateService.instant("PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.ADDONS_INSTALLED", {
               count: data.length,
-            })
+            }) as string
           );
         })
       )
@@ -1351,7 +1357,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         field: "providerName",
         sortable: true,
         headerName: this._translateService.instant("PAGES.MY_ADDONS.TABLE.PROVIDER_COLUMN_HEADER"),
-        valueFormatter: (row) => this.getProviderName(row.data.providerName),
+        valueFormatter: (row) => this.getProviderName(row.data.providerName as string),
         comparator: (va, vb, na, nb) => this.compareElement(na, nb, "providerName"),
         ...baseColumn,
       },

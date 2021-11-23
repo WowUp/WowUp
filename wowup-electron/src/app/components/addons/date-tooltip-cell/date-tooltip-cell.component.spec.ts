@@ -24,9 +24,11 @@ describe("DateTooltipCellComponent", () => {
     fixture = TestBed.createComponent(DateTooltipCellComponent);
     component = fixture.componentInstance;
 
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     component.agInit({
       value: new Date().getTime(),
     } as any);
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
 
     fixture.detectChanges();
   });

@@ -16,9 +16,11 @@ describe("CellWrapTextComponent", () => {
     fixture = TestBed.createComponent(CellWrapTextComponent);
     component = fixture.componentInstance;
 
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     component.agInit({
       value: "TEST",
     } as any);
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
 
     fixture.detectChanges();
   });

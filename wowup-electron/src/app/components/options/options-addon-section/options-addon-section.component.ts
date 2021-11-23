@@ -30,7 +30,9 @@ export class OptionsAddonSectionComponent implements OnInit {
         enabled: option.selected,
         canEdit: true,
       });
-      this._addonService.setProviderEnabled(option.value, option.selected);
+
+      const providerName: string = option.value;
+      this._addonService.setProviderEnabled(providerName, option.selected);
     });
   }
 

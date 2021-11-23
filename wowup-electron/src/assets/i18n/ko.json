@@ -281,7 +281,9 @@
         "NO_SEARCH_RESULTS": "검색 결과가 없습니다.",
         "TITLE": "애드온 설치 실패"
       },
+      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
       "IMPORT_BUTTON": "가져오기",
+      "IMPORT_WARNING_TITLE": "Addon Import Warning",
       "INSTALL_BUTTON": "설치",
       "INSTALL_SUCCESS_LABEL": "설치됨!",
       "SUPPORTED_SOURCES": "WowInterface 와 GitHub 주소가 지원됩니다",

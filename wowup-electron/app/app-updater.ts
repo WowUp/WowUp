@@ -44,7 +44,7 @@ class AppUpdater {
 
     ipcMain.handle("set-release-channel", (evt, channel: WowUpReleaseChannelType) => {
       autoUpdater.allowPrerelease = channel === WowUpReleaseChannelType.Beta;
-      log.info(`set-release-channel: allowPreRelease = ${autoUpdater.allowPrerelease}`);
+      log.info(`set-release-channel: allowPreRelease = ${autoUpdater.allowPrerelease.toString()}`);
     });
   }
 

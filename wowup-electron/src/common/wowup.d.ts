@@ -87,7 +87,8 @@ declare type RendererChannels =
   | "show-item-in-folder"
   | "base64-encode"
   | "base64-decode"
-  | "set-release-channel";
+  | "set-release-channel"
+  | "zip-list-files";
 
 declare global {
   interface Window {

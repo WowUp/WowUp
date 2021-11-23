@@ -96,6 +96,7 @@ import {
   exists,
   getDirTree,
   getLastModifiedFileDate,
+  listZipFiles,
   readDirRecursive,
   readFileInZip,
   remove,
@@ -153,7 +154,7 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
   PENDING_OPEN_URLS = openUrls;
 }
 
-export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
+export function initializeIpcHandlers(window: BrowserWindow): void {
   log.info("process.versions", process.versions);
 
   // Remove the pending URLs once read so they are only able to be gotten once
@@ -174,7 +175,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
   );
 
-  handle("clipboard-read-text", (evt) => {
+  handle("clipboard-read-text", () => {
     return clipboard.readText();
   });
 
@@ -215,7 +216,13 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
-    _.forEach(addons, (addon) => addonStore.set(addon.id, addon));
+    if (!Array.isArray(addons)) {
+      return;
+    }
+    
+    for (const addon of addons) {
+      addonStore.set(addon.id, addon);
+    }
   });
 
   handle(IPC_GET_APP_VERSION, () => {
@@ -398,6 +405,11 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await readFileInZip(zipPath, filePath);
   });
 
+  handle("zip-list-files", (evt, zipPath: string, filter: string) => {
+    log.info(`[ZipListEntries]: '${zipPath}`);
+    return listZipFiles(zipPath, filter);
+  });
+
   handle("rename-file", async (evt, srcPath: string, destPath: string) => {
     log.info(`[RenameFile]: '${srcPath} -> ${destPath}`);
     return await fsp.rename(srcPath, destPath);
@@ -531,7 +543,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await push.unregisterPush();
   });
 
-  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel) => {
+  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel: string) => {
     return await push.subscribeToChannel(channel);
   });
 
@@ -640,7 +652,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
     });
 
     zipfile.readEntry();
-    zipfile.on("entry", function (entry) {
+    zipfile.on("entry", function (entry: yauzl.Entry) {
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);
