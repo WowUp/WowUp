@@ -216,7 +216,13 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
-    _.forEach(addons, (addon) => addonStore.set(addon.id, addon));
+    if (!Array.isArray(addons)) {
+      return;
+    }
+    
+    for (const addon of addons) {
+      addonStore.set(addon.id, addon);
+    }
   });
 
   handle(IPC_GET_APP_VERSION, () => {
