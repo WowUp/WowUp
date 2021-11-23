@@ -10,6 +10,7 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { ColumnState } from "../../models/wowup/column-state";
 import { map } from "rxjs/operators";
 import { WowUpAccountService } from "../wowup/wowup-account.service";
+import { AddonService } from "../addons/addon.service";
 
 @Injectable({
   providedIn: "root",
@@ -55,7 +56,8 @@ export class SessionService {
   public constructor(
     private _warcraftInstallationService: WarcraftInstallationService,
     private _preferenceStorageService: PreferenceStorageService,
-    private _wowUpAccountService: WowUpAccountService
+    private _wowUpAccountService: WowUpAccountService,
+    private _addonService: AddonService
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
@@ -63,6 +65,17 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$.subscribe((installations) =>
       this.onWowInstallationsChange(installations)
     );
+
+    this._addonService.addonProviderChange$.subscribe((provider) => {
+      this.updateAdSpace();
+    });
+
+    this.updateAdSpace();
+  }
+
+  private updateAdSpace() {
+    const allProviders = this._addonService.getEnabledAddonProviders();
+    this._adSpaceSrc.next(allProviders.findIndex((p) => p.adRequired) !== -1);
   }
 
   public get wowUpAuthToken(): string {
@@ -91,10 +104,6 @@ export class SessionService {
 
   public notifyAddonsChanged(): void {
     this._addonsChangedSrc.next(true);
-  }
-
-  public enableAdSpace(enabled: boolean): void {
-    this._adSpaceSrc.next(enabled);
   }
 
   public getSelectedDetailsTab(): DetailsTabType {

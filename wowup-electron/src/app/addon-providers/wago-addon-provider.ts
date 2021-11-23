@@ -6,13 +6,18 @@ import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
 import { AddonProvider } from "./addon-provider";
 import { WowInstallation } from "../../common/warcraft/wow-installation";
-import { AddonChannelType } from "../../common/wowup/models";
+import { AddonChannelType, AdPageOptions } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
 import { AppWowUpScanResult } from "../models/wowup/app-wowup-scan-result";
 import { TocService } from "../services/toc/toc.service";
+import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
+import { Addon } from "../../common/entities/addon";
+import { convertBbcode } from "../utils/bbcode.utils";
 
 declare type WagoGameVersion = "retail" | "classic" | "bcc";
+declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
   hash: string; // hash fingerprint of the folder
@@ -26,12 +31,76 @@ interface WagoFingerprintRequest {
   addons: { [folder: string]: WagoFingerprintAddon };
 }
 
+interface WagoSearchResponse {
+  data: WagoSearchResponseItem[];
+}
+
+interface WagoSearchResponseItem {
+  display_name: string;
+  id: string;
+  releases: {
+    alpha?: WagoSearchResponseRelease;
+    beta?: WagoSearchResponseRelease;
+    stable?: WagoSearchResponseRelease;
+  };
+  summary: string;
+  thumbnail_image: string;
+}
+
+interface WagoSearchResponseRelease {
+  download_link: string;
+  label: string;
+  created_at: string;
+  logical_timestamp: number; // download link expiration time
+}
+
+interface WagoAddon {
+  id: string;
+  slug: string;
+  display_name: string;
+  thumbnail_image: string;
+  summary: string;
+  description: string;
+  website: string;
+  gallery: string[];
+  recent_releases: {
+    stable?: WagoRelease;
+    beta?: WagoRelease;
+    alpha?: WagoRelease;
+  };
+}
+
+interface WagoRelease {
+  label: string;
+  supported_retail_patch: string;
+  supported_classic_patch: string;
+  supported_bc_patch: string;
+  changelog: string;
+  stability: WagoStability;
+  download_link: string;
+}
+
+const WAGO_BASE_URL = "https://addons.wago.io/api/external";
+const WAGO_AD_URL = "https://addons.wago.io/wowup_ad";
+const WAGO_AD_REFERRER = "https://wago.io";
+const WAGO_AD_USER_AGENT =
+  "`Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36`"; // the ad requires a normal looking user agent
+const WAGO_AD_PRELOAD = "preload/wago.js";
+const WAGO_SEARCH_CACHE_TIME_SEC = 20;
+const WAGO_DETAILS_CACHE_TIME_SEC = 20;
+
 export class WagoAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
+
+  private _apiToken = "";
+  private _enabled = true;
 
   public readonly name = ADDON_PROVIDER_WAGO;
   public readonly forceIgnore = false;
   public enabled = true;
+  public authRequired = true;
+  public adRequired = true;
+  public allowEdit = true;
 
   public constructor(
     private _electronService: ElectronService,
@@ -47,6 +116,8 @@ export class WagoAddonProvider extends AddonProvider {
       AppConfig.defaultHttpResetTimeoutMs,
       AppConfig.wagoHttpTimeoutMs
     );
+
+    this._electronService.on("wago-token-received", this.onWagoTokenReceived);
   }
 
   public async scan(
@@ -84,6 +155,121 @@ export class WagoAddonProvider extends AddonProvider {
     console.debug(JSON.stringify(request, null, 2));
   }
 
+  public async searchByQuery(
+    query: string,
+    installation: WowInstallation,
+    channelType?: AddonChannelType
+  ): Promise<AddonSearchResult[]> {
+    if (!this._apiToken) {
+      console.warn("[wago] searchByQuery no api token found");
+      return [];
+    }
+
+    const url = new URL(`${WAGO_BASE_URL}/addons/_search`);
+    url.searchParams.set("query", query);
+    url.searchParams.set("game_version", this.getGameVersion(installation.clientType));
+    url.searchParams.set("stability", this.getStability(channelType));
+
+    const response = await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WagoSearchResponse>(url, this.getRequestHeaders()),
+      WAGO_SEARCH_CACHE_TIME_SEC
+    );
+
+    const searchResults = response.data?.map((item) => this.toSearchResult(item)) ?? [];
+
+    console.debug(`[wago] searchByQuery`, response, searchResults);
+
+    return searchResults;
+  }
+
+  public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
+    try {
+      const response = await this.getAddonById(externalId);
+      return convertBbcode(response?.description ?? "");
+    } catch (e) {
+      console.error(`[wago] failed to get description`, e);
+      return "";
+    }
+  }
+
+  public getAdPageParams(): AdPageOptions {
+    return {
+      pageUrl: WAGO_AD_URL,
+      referrer: WAGO_AD_REFERRER,
+      userAgent: WAGO_AD_USER_AGENT,
+      preloadFilePath: WAGO_AD_PRELOAD,
+    };
+  }
+
+  private async getAddonById(addonId: string) {
+    //https://addons.wago.io/api/external/addons/qv63o6bQ?game_version=retail&__debug__=true
+    const url = new URL(`${WAGO_BASE_URL}/addons/${addonId}`);
+    return await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WagoAddon>(url, this.getRequestHeaders()),
+      WAGO_DETAILS_CACHE_TIME_SEC
+    );
+  }
+
+  private toSearchResult(item: WagoSearchResponseItem): AddonSearchResult {
+    const releaseTypes = Object.keys(item.releases);
+    const searchResultFiles: AddonSearchResultFile[] = [];
+    for (const type of releaseTypes) {
+      searchResultFiles.push(this.toSearchResultFile(item.releases[type], type as WagoStability));
+    }
+
+    return {
+      author: "",
+      externalId: item.id,
+      externalUrl: "",
+      name: item.display_name,
+      providerName: this.name,
+      thumbnailUrl: item.thumbnail_image,
+      downloadCount: 0,
+      files: searchResultFiles,
+      releasedAt: new Date(),
+      summary: item.summary,
+    };
+  }
+
+  private toSearchResultFile(release: WagoSearchResponseRelease, stability: WagoStability): AddonSearchResultFile {
+    return {
+      channelType: this.getAddonChannelType(stability),
+      downloadUrl: release.download_link,
+      folders: [],
+      gameVersion: "",
+      releaseDate: new Date(release.created_at),
+      version: release.label,
+      dependencies: [],
+    };
+  }
+
+  private getAddonChannelType(stability: WagoStability): AddonChannelType {
+    switch (stability) {
+      case "alpha":
+        return AddonChannelType.Alpha;
+      case "beta":
+        return AddonChannelType.Beta;
+      case "stable":
+      default:
+        return AddonChannelType.Stable;
+    }
+  }
+
+  // Get the wago friendly name for our addon channel
+  private getStability(channelType: AddonChannelType): WagoStability {
+    switch (channelType) {
+      case AddonChannelType.Alpha:
+        return "alpha";
+      case AddonChannelType.Beta:
+        return "beta";
+      case AddonChannelType.Stable:
+      default:
+        return "stable";
+    }
+  }
+
   // The wago name for the client type
   private getGameVersion(clientType: WowClientType): WagoGameVersion {
     const clientGroup = this._warcraftService.getClientGroup(clientType);
@@ -105,4 +291,17 @@ export class WagoAddonProvider extends AddonProvider {
     const scanResults: AppWowUpScanResult[] = await this._electronService.invoke("wowup-get-scan-results", filePaths);
     return scanResults;
   };
+
+  private onWagoTokenReceived = (evt, token) => {
+    console.debug(`[wago] onWagoTokenReceived`, token);
+    this._apiToken = token;
+  };
+
+  private getRequestHeaders(): {
+    [header: string]: string | string[];
+  } {
+    return {
+      Authorization: `Bearer ${this._apiToken}`,
+    };
+  }
 }

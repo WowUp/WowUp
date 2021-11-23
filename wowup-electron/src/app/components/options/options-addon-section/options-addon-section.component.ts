@@ -20,7 +20,6 @@ export class OptionsAddonSectionComponent implements OnInit {
   public ngOnInit(): void {
     this.addonProviderStates = filter(this._addonService.getAddonProviderStates(), (provider) => provider.canEdit);
     this.enabledAddonProviders.setValue(this.getEnabledProviderNames());
-    console.debug("addonProviderStates", this.addonProviderStates);
   }
 
   public onProviderStateSelectionChange(event: MatSelectionListChange): void {

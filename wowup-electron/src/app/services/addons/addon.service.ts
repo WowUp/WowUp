@@ -100,6 +100,7 @@ export class AddonService {
   private readonly _searchErrorSrc = new Subject<GenericProviderError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
   private readonly _anyUpdatesAvailableSrc = new BehaviorSubject<boolean>(false);
+  private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
 
   private _activeInstalls: AddonUpdateEvent[] = [];
   private _subscriptions: Subscription[] = [];
@@ -112,6 +113,7 @@ export class AddonService {
   public readonly scanError$ = this._scanErrorSrc.asObservable();
   public readonly searchError$ = this._searchErrorSrc.asObservable();
   public readonly anyUpdatesAvailable$ = this._anyUpdatesAvailableSrc.asObservable();
+  public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
 
   public constructor(
     private _addonStorage: AddonStorageService,
@@ -126,6 +128,7 @@ export class AddonService {
   ) {
     // Create our base set of addon providers
     this._addonProviders = addonProviderFactory.getProviders();
+    console.debug("_addonProviders", this._addonProviders);
 
     // This should keep the current update queue state snapshot up to date
     const addonInstalledSub = this.addonInstalled$
@@ -1831,11 +1834,14 @@ export class AddonService {
     return !!this.getByExternalId(externalId, providerName, installation.id);
   }
 
+  // TODO move this to a different service
   public setProviderEnabled(providerName: string, enabled: boolean): void {
     const provider = this.getProvider(providerName);
     if (provider) {
       provider.enabled = enabled;
     }
+
+    this._addonProviderChangeSrc.next(provider);
   }
 
   private getProvider(providerName: string): AddonProvider | undefined {
@@ -2016,6 +2022,10 @@ export class AddonService {
 
   public getEnabledAddonProviders(): AddonProvider[] {
     return _.filter(this._addonProviders, (provider) => provider.enabled);
+  }
+
+  public getAdRequiredProviders(): AddonProvider[] {
+    return this.getEnabledAddonProviders().filter((provider) => provider.adRequired);
   }
 
   private trackInstallAction(installType: InstallType, addon: Addon) {

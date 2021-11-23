@@ -157,6 +157,12 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 export function initializeIpcHandlers(window: BrowserWindow): void {
   log.info("process.versions", process.versions);
 
+  // Just forward the token event out to the window
+  // this is not a handler, just a passive listener
+  ipcMain.on("wago-token-received", (evt, token) => {
+    window?.webContents?.send("wago-token-received", token);
+  });
+
   // Remove the pending URLs once read so they are only able to be gotten once
   handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
     const urls = PENDING_OPEN_URLS;
@@ -219,7 +225,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     if (!Array.isArray(addons)) {
       return;
     }
-    
+
     for (const addon of addons) {
       addonStore.set(addon.id, addon);
     }

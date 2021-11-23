@@ -35,7 +35,7 @@ import {
   ZOOM_FACTOR_KEY,
 } from "../common/constants";
 import { Addon } from "../common/entities/addon";
-import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
+import { AdPageOptions, AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
 import { AppConfig } from "../environments/environment";
 import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
@@ -83,6 +83,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public quitEnabled?: boolean;
   public showPreLoad = true;
+  public adPageParams: AdPageOptions[] = [];
 
   public constructor(
     private _addonService: AddonService,
@@ -133,6 +134,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe(() => {
             this.wowUpService.installUpdate();
           });
+      }
+    });
+
+    this.sessionService.adSpace$.subscribe((enabled) => {
+      if (enabled) {
+        const providers = this._addonService.getAdRequiredProviders();
+        this.adPageParams = providers
+          .map((provider) => provider.getAdPageParams())
+          .filter((param) => param !== undefined);
+      } else {
+        this.adPageParams = [];
       }
     });
   }
@@ -215,9 +227,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    // TODO this is driven by provider
-    this.sessionService.enableAdSpace(true);
-
     from(this.createAppMenu())
       .pipe(
         first(),

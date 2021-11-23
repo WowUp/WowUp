@@ -3,7 +3,7 @@ import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { Observable, of } from "rxjs";
 
 import { Addon } from "../../common/entities/addon";
-import { AddonCategory, AddonChannelType } from "../../common/wowup/models";
+import { AddonCategory, AddonChannelType, AdPageOptions } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
@@ -44,6 +44,8 @@ export abstract class AddonProvider {
   public allowViewAtSource = true;
   public canShowChangelog = true;
   public canBatchFetch = false;
+  public authRequired = false;
+  public adRequired = false;
 
   public getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
     return Promise.resolve({
@@ -118,5 +120,9 @@ export abstract class AddonProvider {
 
   public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     return Promise.resolve("");
+  }
+
+  public getAdPageParams(): AdPageOptions | undefined {
+    return undefined;
   }
 }
