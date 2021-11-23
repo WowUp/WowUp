@@ -34,7 +34,6 @@ const CHANGELOGS: ChangeLog[] = [
   {
     Version: "2.5.1",
     html: `
-    <div>
     <h4 style="margin-top: 1em;">Hotfix</h4>
     <ul>
     <li>Update the Windows signing cert</li>

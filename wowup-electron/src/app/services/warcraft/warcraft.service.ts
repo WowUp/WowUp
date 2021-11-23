@@ -99,6 +99,7 @@ export class WarcraftService {
    */
   public async getInstalledProducts(blizzardAgentPath: string): Promise<Map<WowClientType, InstalledProduct>> {
     const decodedProducts = await this.decodeProducts(blizzardAgentPath);
+    const resolvedProducts = this._impl.resolveProducts(decodedProducts, blizzardAgentPath);
     const dictionary = new Map<WowClientType, InstalledProduct>();
 
     for (const product of decodedProducts) {
