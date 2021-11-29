@@ -1,7 +1,8 @@
-import { AddonChannelType, AddonDependencyType } from "../../common/wowup/models";
-import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import * as _ from "lodash";
+
+import { AddonChannelType, AddonDependencyType } from "../../common/wowup/models";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
+import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 
 export function getLatestFile(

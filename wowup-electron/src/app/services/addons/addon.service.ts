@@ -445,12 +445,13 @@ export class AddonService {
       throw new Error("Addon already installed");
     }
 
-    const addon = await this.getAddon(
-      potentialAddon.externalId,
-      potentialAddon.providerName,
-      installation,
-      targetFile
-    ).toPromise();
+    const latestFile = SearchResults.getLatestFile(potentialAddon, installation.defaultAddonChannelType);
+    if (!latestFile) {
+      console.warn(`Latest file not found`);
+      return undefined;
+    }
+
+    const addon = this.createAddon(latestFile.folders[0], potentialAddon, targetFile ?? latestFile, installation);
 
     if (addon?.id !== undefined) {
       await this._addonStorage.setAsync(addon.id, addon);

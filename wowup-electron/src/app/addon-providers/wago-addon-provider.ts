@@ -4,7 +4,7 @@ import { ElectronService } from "../services";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { CachingService } from "../services/caching/caching-service";
 import { CircuitBreakerWrapper, NetworkService } from "../services/network/network.service";
-import { AddonProvider } from "./addon-provider";
+import { AddonProvider, GetAllResult } from "./addon-provider";
 import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { AddonChannelType, AdPageOptions } from "../../common/wowup/models";
 import { AddonFolder } from "../models/wowup/addon-folder";
@@ -14,7 +14,10 @@ import { TocService } from "../services/toc/toc.service";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultFile } from "../models/wowup/addon-search-result-file";
 import { Addon } from "../../common/entities/addon";
-import { convertBbcode } from "../utils/bbcode.utils";
+import { convertMarkdown } from "../utils/markdown.utlils";
+import { BehaviorSubject, from, Observable } from "rxjs";
+import { filter, first, map, tap, timeout } from "rxjs/operators";
+import _ from "lodash";
 
 declare type WagoGameVersion = "retail" | "classic" | "bcc";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -45,6 +48,9 @@ interface WagoSearchResponseItem {
   };
   summary: string;
   thumbnail_image: string;
+  authors: string[];
+  download_count: number;
+  website_url: string;
 }
 
 interface WagoSearchResponseRelease {
@@ -92,7 +98,7 @@ const WAGO_DETAILS_CACHE_TIME_SEC = 20;
 export class WagoAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
-  private _apiToken = "";
+  private _apiTokenSrc = new BehaviorSubject<string>("");
   private _enabled = true;
 
   public readonly name = ADDON_PROVIDER_WAGO;
@@ -160,8 +166,10 @@ export class WagoAddonProvider extends AddonProvider {
     installation: WowInstallation,
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
-    if (!this._apiToken) {
-      console.warn("[wago] searchByQuery no api token found");
+    try {
+      await this.ensureToken().toPromise();
+    } catch (e) {
+      console.error("[wago]", e);
       return [];
     }
 
@@ -184,11 +192,32 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
+    await this.ensureToken().toPromise();
+
     try {
       const response = await this.getAddonById(externalId);
-      return convertBbcode(response?.description ?? "");
+      return convertMarkdown(response?.description ?? "");
     } catch (e) {
       console.error(`[wago] failed to get description`, e);
+      return "";
+    }
+  }
+
+  public async getChangelog(
+    installation: WowInstallation,
+    externalId: string,
+    externalReleaseId: string
+  ): Promise<string> {
+    console.debug("[wago] getChangelog");
+    try {
+      const response = await this.getAddonById(externalId);
+
+      const releases = Object.values(response.recent_releases);
+      // _.sortBy(releases, rel => rel.)
+
+      return convertMarkdown(response?.description ?? "");
+    } catch (e) {
+      console.error("[wago] Failed to get changelog", e);
       return "";
     }
   }
@@ -202,8 +231,19 @@ export class WagoAddonProvider extends AddonProvider {
     };
   }
 
+  // used when checking for new addon updates
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
+    await this.ensureToken().toPromise();
+
+    console.debug(`[wago] getAll`);
+
+    return Promise.resolve({
+      errors: [],
+      searchResults: [],
+    });
+  }
+
   private async getAddonById(addonId: string) {
-    //https://addons.wago.io/api/external/addons/qv63o6bQ?game_version=retail&__debug__=true
     const url = new URL(`${WAGO_BASE_URL}/addons/${addonId}`);
     return await this._cachingService.transaction(
       url.toString(),
@@ -220,13 +260,13 @@ export class WagoAddonProvider extends AddonProvider {
     }
 
     return {
-      author: "",
+      author: item.authors.join(", "),
       externalId: item.id,
-      externalUrl: "",
+      externalUrl: item.website_url,
       name: item.display_name,
       providerName: this.name,
       thumbnailUrl: item.thumbnail_image,
-      downloadCount: 0,
+      downloadCount: item.download_count,
       files: searchResultFiles,
       releasedAt: new Date(),
       summary: item.summary,
@@ -294,14 +334,22 @@ export class WagoAddonProvider extends AddonProvider {
 
   private onWagoTokenReceived = (evt, token) => {
     console.debug(`[wago] onWagoTokenReceived`, token);
-    this._apiToken = token;
+    this._apiTokenSrc.next(token);
   };
 
   private getRequestHeaders(): {
     [header: string]: string | string[];
   } {
     return {
-      Authorization: `Bearer ${this._apiToken}`,
+      Authorization: `Bearer ${this._apiTokenSrc.value}`,
     };
+  }
+
+  private ensureToken(timeoutMs = 30000): Observable<string> {
+    return this._apiTokenSrc.pipe(
+      timeout(timeoutMs),
+      first((token) => token !== ""),
+      tap((token) => console.debug(`[wago] ensureToken`))
+    );
   }
 }
