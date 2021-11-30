@@ -369,6 +369,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onSortChanged(evt: SortChangedEvent): void {
     const columnState = evt.columnApi.getColumnState();
+    console.debug("columnState", columnState);
     const minimalState = columnState.map((column) => {
       const sortOrder: SortOrder = {
         colId: column.colId ?? "",
@@ -1249,7 +1250,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (savedSortOrder.length > 0) {
-      this.gridColumnApi.setColumnState(savedSortOrder);
+      this.gridColumnApi.applyColumnState({
+        state: savedSortOrder,
+      });
     }
   }
 
