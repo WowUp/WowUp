@@ -125,7 +125,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   public readonly showTable$ = combineLatest([this._sessionService.enableControls$, this.hasData$]).pipe(
     map(([enabled]) => {
-      console.debug("showTable$", enabled);
       return enabled === true;
     })
   );
