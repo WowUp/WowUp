@@ -6,6 +6,7 @@ import { AlertDialogComponent } from "../components/common/alert-dialog/alert-di
 import { AnimatedLogoComponent } from "../components/common/animated-logo/animated-logo.component";
 import { CellWrapTextComponent } from "../components/common/cell-wrap-text/cell-wrap-text.component";
 import { CenteredSnackbarComponent } from "../components/common/centered-snackbar/centered-snackbar.component";
+import { ClientSelectorComponent } from "../components/common/client-selector/client-selector.component";
 import { ConfirmDialogComponent } from "../components/common/confirm-dialog/confirm-dialog.component";
 import { ExternalUrlConfirmationDialogComponent } from "../components/common/external-url-confirmation-dialog/external-url-confirmation-dialog.component";
 import { PatchNotesDialogComponent } from "../components/common/patch-notes-dialog/patch-notes-dialog.component";
@@ -28,6 +29,7 @@ import { PipesModule } from "./pipes.module";
     TelemetryDialogComponent,
     CellWrapTextComponent,
     CenteredSnackbarComponent,
+    ClientSelectorComponent,
   ],
   imports: [CommonModule, FormsModule, TranslateModule, MatModule, PipesModule],
   exports: [
@@ -42,6 +44,7 @@ import { PipesModule } from "./pipes.module";
     TelemetryDialogComponent,
     CellWrapTextComponent,
     CenteredSnackbarComponent,
+    ClientSelectorComponent,
   ],
 })
 export class CommonUiModule {}

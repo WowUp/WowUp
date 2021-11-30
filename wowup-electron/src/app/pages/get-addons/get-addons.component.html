@@ -5,15 +5,7 @@
   }" (click)="onTableBlur($event)">
   <div class="control-container bg-secondary-3">
     <div class="select-container">
-      <mat-form-field>
-        <mat-label>{{ "PAGES.GET_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</mat-label>
-        <mat-select class="select" [(value)]="selectedInstallationId" (selectionChange)="onClientChange()"
-          [disabled]="(isBusy$ | async) === true" [disableOptionCentering]="true">
-          <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
-            {{ installation.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <app-client-selector></app-client-selector>
     </div>
     <div *ngIf="selectedAddonCategory?.category !== addonCategory.AllAddons" class="center-container text-1">
       <h4 class="m-0">
