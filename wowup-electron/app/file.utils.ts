@@ -120,11 +120,18 @@ async function rmdir(path: string): Promise<void> {
 }
 
 export async function readDirRecursive(sourcePath: string): Promise<string[]> {
+  let hardPath = sourcePath;
+
+  const sourceStats = await fsp.lstat(sourcePath);
+  if (sourceStats.isSymbolicLink()) {
+    hardPath = await fsp.readlink(sourcePath);
+  }
+
   const dirFiles: string[] = [];
-  const files = await fsp.readdir(sourcePath, { withFileTypes: true });
+  const files = await fsp.readdir(hardPath, { withFileTypes: true });
 
   for (const file of files) {
-    const filePath = path.join(sourcePath, file.name);
+    const filePath = path.join(hardPath, file.name);
     if (file.isDirectory()) {
       const nestedFiles = await readDirRecursive(filePath);
       dirFiles.push(...nestedFiles);
@@ -137,18 +144,25 @@ export async function readDirRecursive(sourcePath: string): Promise<string[]> {
 }
 
 export async function getDirTree(sourcePath: string, opts?: GetDirectoryTreeOptions): Promise<TreeNode> {
-  const files = await fsp.readdir(sourcePath, { withFileTypes: true });
+  let hardPath = sourcePath;
+
+  const dirStats = await fsp.lstat(sourcePath);
+  if (dirStats.isSymbolicLink()) {
+    hardPath = await fsp.readlink(sourcePath);
+  }
+
+  const files = await fsp.readdir(hardPath, { withFileTypes: true });
 
   const node: TreeNode = {
-    name: path.basename(sourcePath),
-    path: sourcePath,
+    name: path.basename(hardPath),
+    path: hardPath,
     children: [],
     isDirectory: true,
     size: 0,
   };
 
   for (const file of files) {
-    const filePath = path.join(sourcePath, file.name);
+    const filePath = path.join(hardPath, file.name);
     if (file.isDirectory()) {
       const nestedNode = await getDirTree(filePath, opts);
       node.children.push(nestedNode);
