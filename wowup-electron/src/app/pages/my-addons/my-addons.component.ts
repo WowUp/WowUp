@@ -82,7 +82,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   // @HostListener("window:keydown", ["$event"])
   private readonly _operationErrorSrc = new Subject<Error>();
   private readonly _isBusySrc = new BehaviorSubject<boolean>(true);
-  private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
   private readonly _tabIndexSrc = new BehaviorSubject<number | undefined>(undefined);
   private readonly _baseRowDataSrc = new BehaviorSubject<AddonViewModel[]>([]);
   private readonly _filterInputSrc = new BehaviorSubject<string>("");
@@ -90,7 +89,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _totalAvailableUpdateSrc = new BehaviorSubject<number>(0);
 
   public readonly totalAvailableUpdateCt$ = this._totalAvailableUpdateSrc.asObservable();
-  public readonly enableControls$ = this._enableControlsSrc.asObservable();
+  public readonly enableControls$ = this._sessionService.enableControls$;
   public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
 
   public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
@@ -472,7 +471,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._isRefreshing = true;
     this._isBusySrc.next(true);
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     try {
       console.debug("onRefresh");
@@ -490,7 +489,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     } finally {
       this._isBusySrc.next(false);
 
-      this._enableControlsSrc.next(true);
+      this._sessionService.setEnableControls(true);
 
       this._isRefreshing = false;
     }
@@ -555,7 +554,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     const addons = await this.addonService.getAddons(selectedWowInstall, false);
     try {
@@ -574,7 +573,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error(err);
     }
 
-    this._enableControlsSrc.next(this.calculateControlState());
+    this._sessionService.setEnableControls(this.calculateControlState());
   }
 
   // Handle when the user clicks the update all retail/classic button
@@ -999,7 +998,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._lazyLoaded = true;
     this._isBusySrc.next(true);
 
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     // TODO this shouldn't be here
     await this.addonService.backfillAddons();
@@ -1029,7 +1028,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._isBusySrc.next(true);
 
     this._spinnerMessageSrc.next(this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS") as string);
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     let addons: Addon[] = [];
     let updatedCt = 0;
@@ -1090,7 +1089,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._cdRef.detectChanges();
     } finally {
       this._spinnerMessageSrc.next("");
-      this._enableControlsSrc.next(this.calculateControlState());
+      this._sessionService.setEnableControls(this.calculateControlState());
     }
   }
 
@@ -1107,7 +1106,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._isBusySrc.next(true);
 
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     if (!installation) {
       console.warn("Skipping addon load installation unknown");
@@ -1135,7 +1134,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     } finally {
       this._isBusySrc.next(false);
       this._cdRef.detectChanges();
-      this._enableControlsSrc.next(this.calculateControlState());
+      this._sessionService.setEnableControls(this.calculateControlState());
     }
   };
 
@@ -1194,7 +1193,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if ([AddonInstallState.Complete, AddonInstallState.Error].includes(evt.installState) === false) {
-      this._enableControlsSrc.next(false);
+      this._sessionService.setEnableControls(false);
       return;
     }
 
@@ -1211,7 +1210,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this._baseRowDataSrc.next(rowData);
-    this._enableControlsSrc.next(this.calculateControlState());
+    this._sessionService.setEnableControls(this.calculateControlState());
   };
 
   private onAddonRemoved = (addonId: string) => {

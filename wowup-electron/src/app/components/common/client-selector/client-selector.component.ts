@@ -16,7 +16,7 @@ export class ClientSelectorComponent implements OnInit {
 
   public readonly totalAvailableUpdateCt$ = new BehaviorSubject<number>(0);
 
-  public readonly enableControls$ = new BehaviorSubject<boolean>(true);
+  public readonly enableControls$ = this._sessionService.enableControls$;
 
   public readonly selectedWowInstallationId$ = this._sessionService.selectedWowInstallation$.pipe(
     map((wowInstall) => wowInstall?.id)

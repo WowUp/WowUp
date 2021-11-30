@@ -24,6 +24,7 @@ export class SessionService {
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
   private readonly _myAddonsCompactVersionSrc = new BehaviorSubject<boolean>(false);
+  private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
 
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
@@ -43,6 +44,7 @@ export class SessionService {
   public readonly wowUpAccount$ = this._wowUpAccountService.wowUpAccountSrc.asObservable();
   public readonly wowUpAccountPushEnabled$ = this._wowUpAccountService.accountPushSrc.asObservable();
   public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
+  public readonly enableControls$ = this._enableControlsSrc.asObservable();
 
   public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
@@ -73,6 +75,10 @@ export class SessionService {
 
   public logout(): void {
     this._wowUpAccountService.logout();
+  }
+
+  public setEnableControls(enabled: boolean): void {
+    this._enableControlsSrc.next(enabled);
   }
 
   public async toggleAccountPush(enabled: boolean): Promise<void> {

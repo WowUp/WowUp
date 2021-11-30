@@ -66,7 +66,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab = false;
   private _lazyLoaded = false;
-  private _isBusySubject = new BehaviorSubject<boolean>(true);
   private _rowDataSrc = new BehaviorSubject<GetAddonListItem[]>([]);
   private _lastSelectionState: RowNode[] = [];
   private _selectedAddonCategory: CategoryItem | undefined;
@@ -74,6 +73,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public addonCategory = AddonCategory;
   public columnDefs: ColDef[] = [];
   public rowData$ = this._rowDataSrc.asObservable();
+  public enableControls$ = this._sessionService.enableControls$;
   public frameworkComponents = {};
   public columnTypes: {
     [key: string]: ColDef;
@@ -121,12 +121,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public wowInstallations$: Observable<WowInstallation[]>;
   public overlayNoRowsTemplate = "";
 
-  public isBusy$ = this._isBusySubject.asObservable();
   public hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
 
-  public readonly showTable$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
-    map(([isBusy]) => {
-      return isBusy === false;
+  public readonly showTable$ = combineLatest([this._sessionService.enableControls$, this.hasData$]).pipe(
+    map(([enabled]) => {
+      console.debug("showTable$", enabled);
+      return enabled === true;
     })
   );
 
@@ -152,7 +152,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
 
     of(true)
       .pipe(
@@ -165,13 +165,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
           return of(undefined);
         })
       )
@@ -499,7 +499,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
     this.resetCategory(true);
 
     if (!this.query) {
@@ -513,13 +513,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
           return of(undefined);
         })
       )
@@ -545,12 +545,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     if (this._addonService.getEnabledAddonProviders().length === 0) {
       this._rowDataSrc.next([]);
-      this._isBusySubject.next(false);
+      this._sessionService.setEnableControls(true);
       this._cdRef.detectChanges();
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
 
     this._addonService
       .getFeaturedAddons(installation)
@@ -564,7 +564,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         console.debug(`Loaded ${addons?.length ?? 0} addons`);
         const listItems = this.formatAddons(addons);
         this._rowDataSrc.next(listItems);
-        this._isBusySubject.next(false);
+        this._sessionService.setEnableControls(true);
       });
   }
 

@@ -1,20 +1,31 @@
-<div class="tab-container" [ngClass]="{
+<div
+  class="tab-container"
+  [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }" (click)="onTableBlur($event)">
+  }"
+  (click)="onTableBlur($event)"
+>
   <div class="control-container bg-secondary-3">
     <div class="select-container">
       <app-client-selector></app-client-selector>
     </div>
     <div *ngIf="selectedAddonCategory?.category !== addonCategory.AllAddons" class="center-container text-1">
       <h4 class="m-0">
-        {{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_SELECTED_TITLE' | translate: {category: (selectedAddonCategory?.localeKey
-        ?? "" |
-        translate)} }}
+        {{
+          "PAGES.GET_ADDONS.ADDON_CATEGORIES_SELECTED_TITLE"
+            | translate: { category: (selectedAddonCategory?.localeKey ?? "" | translate) }
+        }}
       </h4>
-      <button mat-button color="accent" mat-icon-button aria-label="Clear Category"
-        [matTooltip]="'PAGES.GET_ADDONS.RESET_CATEGORY_TOOLTIP' | translate" (click)="resetCategory()">
+      <button
+        mat-button
+        color="accent"
+        mat-icon-button
+        aria-label="Clear Category"
+        [matTooltip]="'PAGES.GET_ADDONS.RESET_CATEGORY_TOOLTIP' | translate"
+        (click)="resetCategory()"
+      >
         <mat-icon svgIcon="fas:times"></mat-icon>
       </button>
     </div>
@@ -22,66 +33,106 @@
       <div class="search-container">
         <mat-form-field>
           <mat-label>{{ "PAGES.GET_ADDONS.SEARCH_LABEL" | translate }}</mat-label>
-          <input matInput type="text" [(ngModel)]="query" [disabled]="(isBusy$ | async) === true"
-            (keyup.enter)="onSearch()" />
-          <button mat-button color="accent" *ngIf="query" matSuffix mat-icon-button aria-label="Clear"
-            (click)="onClearSearch()">
+          <input
+            matInput
+            type="text"
+            [(ngModel)]="query"
+            [disabled]="enableControls$ | async | invertBool"
+            (keyup.enter)="onSearch()"
+          />
+          <button
+            mat-button
+            color="accent"
+            *ngIf="query"
+            matSuffix
+            mat-icon-button
+            aria-label="Clear"
+            (click)="onClearSearch()"
+          >
             <mat-icon svgIcon="fas:times"></mat-icon>
           </button>
         </mat-form-field>
       </div>
       <div class="button-container">
-        <button mat-flat-button color="primary" [matTooltip]="'PAGES.GET_ADDONS.REFRESH_TOOLTIP' | translate"
-          [disabled]="(isBusy$ | async) === true" (click)="onRefresh()">
+        <button
+          mat-flat-button
+          color="primary"
+          [matTooltip]="'PAGES.GET_ADDONS.REFRESH_TOOLTIP' | translate"
+          [disabled]="enableControls$ | async | invertBool"
+          (click)="onRefresh()"
+        >
           {{ "PAGES.GET_ADDONS.REFRESH_BUTTON" | translate }}
         </button>
-        <button mat-flat-button color="primary" [matTooltip]="'PAGES.GET_ADDONS.INSTALL_FROM_URL_TOOLTIP' | translate"
-          [disabled]="(isBusy$ | async) === true" (click)="onInstallFromUrl()">
+        <button
+          mat-flat-button
+          color="primary"
+          [matTooltip]="'PAGES.GET_ADDONS.INSTALL_FROM_URL_TOOLTIP' | translate"
+          [disabled]="enableControls$ | async | invertBool"
+          (click)="onInstallFromUrl()"
+        >
           {{ "PAGES.GET_ADDONS.INSTALL_FROM_URL_BUTTON" | translate }}
         </button>
-        <button mat-flat-button color="primary" [matTooltip]="'PAGES.GET_ADDONS.ADDON_CATEGORIES_TOOLTIP' | translate"
-          [disabled]="(isBusy$ | async) === true" (click)="drawer.toggle()">
-          {{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_BUTTON' | translate }}
+        <button
+          mat-flat-button
+          color="primary"
+          [matTooltip]="'PAGES.GET_ADDONS.ADDON_CATEGORIES_TOOLTIP' | translate"
+          [disabled]="enableControls$ | async | invertBool"
+          (click)="drawer.toggle()"
+        >
+          {{ "PAGES.GET_ADDONS.ADDON_CATEGORIES_BUTTON" | translate }}
         </button>
       </div>
     </div>
   </div>
 
   <mat-drawer-container class="wu-ag-table bg-secondary-2" [hasBackdrop]="true">
-    <mat-drawer #drawer mode="over" position="end" [autoFocus]="false" style="padding-right: 0.25em;">
-      <h3 class="px-3">{{ 'PAGES.GET_ADDONS.ADDON_CATEGORIES_MENU_TITLE' | translate }}</h3>
+    <mat-drawer #drawer mode="over" position="end" [autoFocus]="false" style="padding-right: 0.25em">
+      <h3 class="px-3">{{ "PAGES.GET_ADDONS.ADDON_CATEGORIES_MENU_TITLE" | translate }}</h3>
       <mat-divider></mat-divider>
       <mat-action-list>
-        <button *ngFor="let item of addonCategories" mat-list-item
-          [ngClass]="{ 'text-control': selectedAddonCategory === item }" (click)="selectedAddonCategory = item">{{
-          item.localeKey | translate }}</button>
+        <button
+          *ngFor="let item of addonCategories"
+          mat-list-item
+          [ngClass]="{ 'text-control': selectedAddonCategory === item }"
+          (click)="selectedAddonCategory = item"
+        >
+          {{ item.localeKey | translate }}
+        </button>
       </mat-action-list>
     </mat-drawer>
     <mat-drawer-content>
-      <div class="spinner-container flex-grow-1" style="height: 100%" *ngIf="(isBusy$ | async) === true">
+      <div class="spinner-container flex-grow-1" style="height: 100%" *ngIf="(showTable$ | async) === false">
         <app-progress-spinner> </app-progress-spinner>
       </div>
 
-      <!-- <div *ngIf="(isBusy$ | async) === false && (hasData$ | async) === false"
-        class="no-addons-container flex-grow-1 text-1">
-        <h1>{{ "COMMON.SEARCH.NO_ADDONS" | translate }}</h1>
-      </div> -->
-
-      <ag-grid-angular class="ag-theme-material" style="height: 100%; padding-right: 0.25em;"
-        [hidden]="(showTable$ | async) === false" [rowData]="rowData$ | async" [columnDefs]="columnDefs"
-        [columnTypes]="columnTypes" [rowSelection]="'single'" [frameworkComponents]="frameworkComponents"
-        [overlayNoRowsTemplate]="overlayNoRowsTemplate" [rowHeight]="63" (rowDoubleClicked)="onRowDoubleClicked($event)"
-        (rowClicked)="onRowClicked($event)" (gridReady)="onGridReady($event)">
+      <ag-grid-angular
+        class="ag-theme-material"
+        style="height: 100%; padding-right: 0.25em"
+        [hidden]="(showTable$ | async) === false"
+        [rowData]="rowData$ | async"
+        [columnDefs]="columnDefs"
+        [columnTypes]="columnTypes"
+        [rowSelection]="'single'"
+        [frameworkComponents]="frameworkComponents"
+        [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+        [rowHeight]="63"
+        (rowDoubleClicked)="onRowDoubleClicked($event)"
+        (rowClicked)="onRowClicked($event)"
+        (gridReady)="onGridReady($event)"
+      >
       </ag-grid-angular>
     </mat-drawer-content>
   </mat-drawer-container>
-
 </div>
 
 <!-- COLUMNS CONTEXT MENU -->
-<div style="visibility: hidden; position: fixed" #columnContextMenuTrigger="matMenuTrigger"
-  [style.left]="contextMenuPosition.x" [style.top]="contextMenuPosition.y" [matMenuTriggerFor]="columnContextMenu">
-</div>
+<div
+  style="visibility: hidden; position: fixed"
+  #columnContextMenuTrigger="matMenuTrigger"
+  [style.left]="contextMenuPosition.x"
+  [style.top]="contextMenuPosition.y"
+  [matMenuTriggerFor]="columnContextMenu"
+></div>
 <mat-menu #columnContextMenu="matMenu" class="addon-context-menu text-1">
   <ng-template matMenuContent let-columns="columns">
     <div class="addon-context-menu-header">
@@ -90,8 +141,12 @@
       </div>
     </div>
     <mat-divider></mat-divider>
-    <mat-checkbox *ngFor="let column of columns" class="mat-menu-item" [checked]="column.visible"
-      (change)="onColumnVisibleChange($event, column)">
+    <mat-checkbox
+      *ngFor="let column of columns"
+      class="mat-menu-item"
+      [checked]="column.visible"
+      (change)="onColumnVisibleChange($event, column)"
+    >
       {{ column.display | translate }}
     </mat-checkbox>
   </ng-template>
