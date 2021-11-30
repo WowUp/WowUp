@@ -23,6 +23,7 @@ declare type WagoGameVersion = "retail" | "classic" | "bcc";
 declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
+  name: string; // the folder name
   hash: string; // hash fingerprint of the folder
   cf?: string; // curseforge toc id
   wowi?: string; // wow interface toc id
@@ -31,7 +32,7 @@ interface WagoFingerprintAddon {
 
 interface WagoFingerprintRequest {
   game_version: WagoGameVersion;
-  addons: { [folder: string]: WagoFingerprintAddon };
+  addons: WagoFingerprintAddon[];
 }
 
 interface WagoSearchResponse {
@@ -139,7 +140,7 @@ export class WagoAddonProvider extends AddonProvider {
 
     const request: WagoFingerprintRequest = {
       game_version: gameVersion,
-      addons: {},
+      addons: [],
     };
 
     scanResults.forEach((res) => {
@@ -147,6 +148,7 @@ export class WagoAddonProvider extends AddonProvider {
       const toc = this._tocService.getTocForGameType2(addonFolder, installation.clientType);
 
       const waddon: WagoFingerprintAddon = {
+        name: res.folderName,
         hash: res.fingerprint,
       };
 
@@ -154,11 +156,14 @@ export class WagoAddonProvider extends AddonProvider {
         waddon.wago = toc.wagoAddonId;
       }
 
-      request.addons[res.folderName] = waddon;
+      request.addons.push(waddon);
     });
 
     console.debug(`[wago] scan`, request);
     console.debug(JSON.stringify(request, null, 2));
+
+    const matchResult = await this.sendMatchesRequest(request);
+    console.debug(`[wago] matchResult`, matchResult);
   }
 
   public async searchByQuery(
@@ -248,6 +253,15 @@ export class WagoAddonProvider extends AddonProvider {
     return await this._cachingService.transaction(
       url.toString(),
       () => this._circuitBreaker.getJson<WagoAddon>(url, this.getRequestHeaders()),
+      WAGO_DETAILS_CACHE_TIME_SEC
+    );
+  }
+
+  private async sendMatchesRequest(request: WagoFingerprintRequest) {
+    const url = new URL(`${WAGO_BASE_URL}/addons/_match`);
+    return await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.postJson<any>(url, request, this.getRequestHeaders()),
       WAGO_DETAILS_CACHE_TIME_SEC
     );
   }
