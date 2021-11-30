@@ -18,7 +18,7 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatDrawer } from "@angular/material/sidenav";
 import { TranslateService } from "@ngx-translate/core";
 
-import { ADDON_PROVIDER_HUB } from "../../../common/constants";
+import { ADDON_PROVIDER_HUB, DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
@@ -103,14 +103,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     { name: "status", display: "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER", visible: true },
   ];
 
-  public get defaultAddonChannelKey(): string {
-    return "";
-    // return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.getSelectedWowInstallation());
-  }
-
   public get defaultAddonChannel(): AddonChannelType {
-    return AddonChannelType.Stable;
-    // return this._wowUpService.getDefaultAddonChannel(this._sessionService.getSelectedClientType());
+    return this._sessionService.getSelectedWowInstallation().defaultAddonChannelType;
   }
 
   public query = "";
@@ -461,7 +455,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
 
     const channelTypeSubscription = this._wowUpService.preferenceChange$
-      .pipe(filter((change) => change.key === this.defaultAddonChannelKey))
+      .pipe(filter((change) => change.key.indexOf(DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX) !== -1))
       .subscribe(() => {
         this.onSearch();
       });
