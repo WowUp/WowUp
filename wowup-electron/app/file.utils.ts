@@ -146,9 +146,16 @@ export async function readDirRecursive(sourcePath: string): Promise<string[]> {
 export async function getDirTree(sourcePath: string, opts?: GetDirectoryTreeOptions): Promise<TreeNode> {
   let hardPath = sourcePath;
 
-  const dirStats = await fsp.lstat(sourcePath);
+  // Check if a symlink was passed in, if so get the actual path
+  let dirStats = await fsp.lstat(sourcePath);
   if (dirStats.isSymbolicLink()) {
     hardPath = await fsp.readlink(sourcePath);
+  }
+
+  // Verify that a directory was passed in
+  dirStats = await fsp.lstat(hardPath);
+  if (!dirStats.isDirectory()) {
+    throw new Error(`getDirTree path was not a directory: ${hardPath}`);
   }
 
   const files = await fsp.readdir(hardPath, { withFileTypes: true });
@@ -215,6 +222,12 @@ export function hashString(str: string | crypto.BinaryLike, alg = "md5"): string
 }
 
 export async function hashFile(filePath: string, alg = "md5"): Promise<string> {
-  const text = await fsp.readFile(filePath);
-  return hashString(text, alg);
+  try {
+    const text = await fsp.readFile(filePath);
+    return hashString(text, alg);
+  } catch (e) {
+    log.error(`hashFile failed: ${filePath}`);
+    log.error(e);
+    throw e;
+  }
 }
