@@ -12,7 +12,7 @@ import { WarcraftInstallationService } from "../../../services/warcraft/warcraft
   styleUrls: ["./client-selector.component.scss"],
 })
 export class ClientSelectorComponent implements OnInit {
-  @Input() updates: boolean = false;
+  @Input() public updates = false;
 
   public readonly totalAvailableUpdateCt$ = new BehaviorSubject<number>(0);
 
@@ -42,13 +42,13 @@ export class ClientSelectorComponent implements OnInit {
     })
   );
 
-  constructor(
+  public constructor(
     private _addonService: AddonService,
     private _sessionService: SessionService,
     private _warcraftInstallationService: WarcraftInstallationService
   ) {}
 
-  ngOnInit(): void {}
+  public ngOnInit(): void {}
 
   public onClientChange(evt: any): void {
     const val: string = evt.value.toString();
