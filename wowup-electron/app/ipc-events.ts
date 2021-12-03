@@ -107,6 +107,7 @@ import { createTray, restoreWindow } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
+import { ProductDb } from "../src/common/wowup/product-db";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -219,7 +220,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     if (!Array.isArray(addons)) {
       return;
     }
-    
+
     for (const addon of addons) {
       addonStore.set(addon.id, addon);
     }
@@ -449,6 +450,16 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(IPC_READ_FILE_BUFFER_CHANNEL, async (evt, filePath: string) => {
     return await fsp.readFile(filePath);
+  });
+
+  handle("decode-product-db", async (evt, filePath: string) => {
+    const productDbData = await fsp.readFile(filePath);
+    const productDb = ProductDb.decode(productDbData);
+    setImmediate(() => {
+      console.log("productDb", JSON.stringify(productDb));
+    });
+
+    return productDb;
   });
 
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
