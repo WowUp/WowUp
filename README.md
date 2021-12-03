@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://wowup.io/assets/images/wowup_logo_purple.png" width="200" />
+  <img src="https://cdn.wowup.io/site/assets/images/wowup_logo_purple.png" width="200" />
 </p>
 
 # WowUp Client Repository
