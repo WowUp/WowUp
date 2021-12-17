@@ -303,6 +303,11 @@ function createWindow(): BrowserWindow {
 
   win.webContents.on("will-attach-webview", (evt, webPreferences, params) => {
     log.debug("will-attach-webview", webPreferences, params);
+
+    webPreferences.additionalArguments = [
+        `--log-path=${LOG_PATH}`
+    ];
+    
     // in order for the wago token to be delivered this must be disabled
     // webPreferences.contextIsolation = false;
   });
