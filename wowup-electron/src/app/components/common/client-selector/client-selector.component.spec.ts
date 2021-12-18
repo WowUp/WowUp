@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
@@ -18,13 +18,18 @@ describe("ClientSelectorComponent", () => {
   let warcraftInstallationService;
 
   beforeEach(async () => {
-    addonService = jasmine.createSpyObj("AddonService", [""], {});
+    addonService = jasmine.createSpyObj("AddonService", [""], {
+      anyUpdatesAvailable$: new BehaviorSubject(false),
+    });
 
     sessionService = jasmine.createSpyObj("SessionService", [""], {
       selectedWowInstallation$: new Observable(),
+      enableControls$: new BehaviorSubject(true),
     });
 
-    warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {});
+    warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
+      wowInstallations$: new BehaviorSubject([]),
+    });
 
     await TestBed.configureTestingModule({
       declarations: [ClientSelectorComponent],
