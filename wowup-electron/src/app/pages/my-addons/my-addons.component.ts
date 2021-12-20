@@ -62,6 +62,7 @@ import { PushService } from "../../services/push/push.service";
 import { AddonUiService } from "../../services/addons/addon-ui.service";
 import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
+import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
 
 @Component({
   selector: "app-my-addons",
@@ -414,7 +415,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
 
     if (this.addonFilter?.nativeElement !== undefined) {
-      const addonFilterSub = fromEvent(this.addonFilter.nativeElement, "keyup")
+      const addonFilterSub = fromEvent(this.addonFilter.nativeElement as HasEventTargetAddRemove<unknown>, "keyup")
         .pipe(
           filter(Boolean),
           debounceTime(200),
