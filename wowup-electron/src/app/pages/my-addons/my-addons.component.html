@@ -9,42 +9,7 @@
 >
   <div class="control-container bg-secondary-3">
     <div class="select-container">
-      <mat-form-field>
-        <mat-label>
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">{{ "PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL" | translate }}</div>
-            <div
-              *ngIf="(totalAvailableUpdateCt$ | async) > 0"
-              class="update-badge badge-lg ml-1"
-              translate
-              [translateParams]="{ count: totalAvailableUpdateCt$ | async }"
-            >
-              PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_BADGE
-            </div>
-          </div>
-        </mat-label>
-        <mat-select
-          class="select pointer"
-          [value]="selectedWowInstallationId$ | async"
-          (selectionChange)="onClientChange($event)"
-          [disabled]="enableControls$ | async | invertBool"
-          [disableOptionCentering]="true"
-        >
-          <mat-select-trigger>
-            {{ selectedWowInstallationLabel$ | async }}
-          </mat-select-trigger>
-          <mat-option [value]="installation.id" *ngFor="let installation of wowInstallations$ | async">
-            <div class="d-flex">
-              <div class="flex-grow-1">{{ installation.label }}</div>
-              <div *ngIf="installation.availableUpdateCount > 0">
-                <div class="d-inline update-badge ml-1">
-                  {{ installation.availableUpdateCount }}
-                </div>
-              </div>
-            </div>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <app-client-selector updates="true"></app-client-selector>
     </div>
     <div class="right-container">
       <div class="filter-container" *ngIf="hasSelectedWowInstallationId$ | async">
@@ -191,7 +156,7 @@
     </div>
     <mat-divider></mat-divider>
     <!-- IGNORE -->
-    <div *ngIf="addonService.isForceIgnore(listItem.addon) === false" class="mat-menu-item">
+    <div *ngIf="isForceIgnore(listItem.addon) === false" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.isIgnored" (click)="onClickIgnoreAddon(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
@@ -212,7 +177,7 @@
       </mat-checkbox>
     </div>
     <!-- CHANNEL SUBMENU -->
-    <button *ngIf="addonService.canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
+    <button *ngIf="canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
     </button>
     <!-- PROVIDER SUBMENU -->

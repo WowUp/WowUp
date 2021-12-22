@@ -89,7 +89,8 @@ declare type RendererChannels =
   | "base64-decode"
   | "set-release-channel"
   | "zip-list-files"
-  | "wago-token-received";
+  | "wago-token-received"
+  | "decode-product-db";
 
 declare global {
   interface Window {

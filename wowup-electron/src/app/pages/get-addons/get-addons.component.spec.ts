@@ -23,6 +23,10 @@ import { WarcraftInstallationService } from "../../services/warcraft/warcraft-in
 import { DownloadCountPipe } from "../../pipes/download-count.pipe";
 import { RelativeDurationPipe } from "../../pipes/relative-duration-pipe";
 import { MatModule } from "../../modules/mat-module";
+import { WowInstallation } from "../../../common/warcraft/wow-installation";
+import { AddonChannelType } from "../../../common/wowup/models";
+import { PipesModule } from "../../modules/pipes.module";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -34,14 +38,32 @@ describe("GetAddonsComponent", () => {
   let warcraftServiceSpy: any;
   let snackbarService: SnackbarService;
   let warcraftInstallationService: WarcraftInstallationService;
+  let addonProviderService: any;
 
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       getGetAddonsHiddenColumns: () => [],
     });
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {
-      selectedHomeTab$: new BehaviorSubject(0).asObservable(),
-    });
+    sessionServiceSpy = jasmine.createSpyObj(
+      "SessionService",
+      {
+        getSelectedWowInstallation: () => {
+          const inst: WowInstallation = {
+            defaultAddonChannelType: AddonChannelType.Stable,
+            id: "test",
+            clientType: WowClientType.Retail,
+            location: "C:/fake_wow",
+            label: "Wow Unit Test Client",
+            defaultAutoUpdate: false,
+            selected: true,
+          };
+          return inst;
+        },
+      },
+      {
+        selectedHomeTab$: new BehaviorSubject(0).asObservable(),
+      }
+    );
     warcraftServiceSpy = jasmine.createSpyObj("WarcraftService", [""], {
       installedClientTypesSelectItems$: new BehaviorSubject<WowClientType[] | undefined>(undefined).asObservable(),
     });
@@ -55,18 +77,20 @@ describe("GetAddonsComponent", () => {
     });
 
     snackbarService = jasmine.createSpyObj("SnackbarService", [""], {});
+    addonProviderService = jasmine.createSpyObj("AddonProviderFactory", [""], {});
 
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
       wowInstallations$: new BehaviorSubject<any[]>([]),
     });
 
     let testBed = TestBed.configureTestingModule({
-      declarations: [GetAddonsComponent, RelativeDurationPipe, DownloadCountPipe],
+      declarations: [GetAddonsComponent],
       imports: [
         MatModule,
         OverlayModule,
         BrowserAnimationsModule,
         HttpClientModule,
+        PipesModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -93,6 +117,7 @@ describe("GetAddonsComponent", () => {
           { provide: ElectronService, useValue: electronServiceSpy },
           { provide: WarcraftService, useValue: warcraftServiceSpy },
           { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
+          { provide: AddonProviderFactory, useValue: addonProviderService },
         ],
       },
     });

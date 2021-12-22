@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as path from "path";
 import { from, ReplaySubject, Subject } from "rxjs";
-import { map, switchMap, tap } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
@@ -55,7 +55,7 @@ export class WarcraftInstallationService {
           // On Linux this will be empty, as we dont know where the blizz database is
           this._blizzardAgentPath = blizzardAgentPath;
         }),
-        switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
+        // switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
         map((blizzardAgentPath) => this.importWowInstallations(blizzardAgentPath))
       )
       .subscribe();

@@ -201,7 +201,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     from(this.electronService.getAppOptions())
       .pipe(
         first(),
-        delay(2000),
         map((appOptions) => {
           this.showPreLoad = false;
           this.quitEnabled = appOptions.quit;

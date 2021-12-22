@@ -33,6 +33,7 @@ import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
+import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -92,6 +93,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
     private _dialogRef: MatDialogRef<AddonDetailComponent>,
     private _addonService: AddonService,
+    private _addonProviderService: AddonProviderFactory,
     private _cdRef: ChangeDetectorRef,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
@@ -121,7 +123,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public ngOnInit(): void {
-    this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
+    this.canShowChangelog = this._addonProviderService.canShowChangelog(this.getProviderName());
 
     this.selectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab());
 

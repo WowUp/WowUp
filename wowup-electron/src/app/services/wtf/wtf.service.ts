@@ -324,11 +324,13 @@ export class WtfService {
     for (const sm of srcMeta.contents) {
       const nm = newMeta.find((n) => n.path === sm.path);
       if (!nm) {
-        throw new Error(`Matching path not found" ${sm.path}`);
+        console.warn(`Matching path not found" ${sm.path}`);
+        continue;
       }
 
       if (nm.hash !== sm.hash) {
-        throw new Error(`Hash mismatch found: ${sm.path} : ${nm.path}`);
+        console.warn(`Hash mismatch found: ${sm.path} : ${nm.path}`);
+        continue;
       }
     }
   }

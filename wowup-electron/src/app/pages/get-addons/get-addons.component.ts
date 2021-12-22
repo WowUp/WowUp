@@ -18,7 +18,7 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatDrawer } from "@angular/material/sidenav";
 import { TranslateService } from "@ngx-translate/core";
 
-import { ADDON_PROVIDER_HUB } from "../../../common/constants";
+import { ADDON_PROVIDER_HUB, DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX } from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
@@ -46,6 +46,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumKeys } from "../../utils/enum.utils";
 import { camelToSnakeCase } from "../../utils/string.utils";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 
 interface CategoryItem {
   category: AddonCategory;
@@ -66,7 +67,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab = false;
   private _lazyLoaded = false;
-  private _isBusySubject = new BehaviorSubject<boolean>(true);
   private _rowDataSrc = new BehaviorSubject<GetAddonListItem[]>([]);
   private _lastSelectionState: RowNode[] = [];
   private _selectedAddonCategory: CategoryItem | undefined;
@@ -74,6 +74,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public addonCategory = AddonCategory;
   public columnDefs: ColDef[] = [];
   public rowData$ = this._rowDataSrc.asObservable();
+  public enableControls$ = this._sessionService.enableControls$;
   public frameworkComponents = {};
   public columnTypes: {
     [key: string]: ColDef;
@@ -103,14 +104,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     { name: "status", display: "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER", visible: true },
   ];
 
-  public get defaultAddonChannelKey(): string {
-    return "";
-    // return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.getSelectedWowInstallation());
-  }
-
   public get defaultAddonChannel(): AddonChannelType {
-    return AddonChannelType.Stable;
-    // return this._wowUpService.getDefaultAddonChannel(this._sessionService.getSelectedClientType());
+    return this._sessionService.getSelectedWowInstallation().defaultAddonChannelType;
   }
 
   public query = "";
@@ -121,12 +116,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public wowInstallations$: Observable<WowInstallation[]>;
   public overlayNoRowsTemplate = "";
 
-  public isBusy$ = this._isBusySubject.asObservable();
   public hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
 
-  public readonly showTable$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
-    map(([isBusy]) => {
-      return isBusy === false;
+  public readonly showTable$ = combineLatest([this._sessionService.enableControls$, this.hasData$]).pipe(
+    map(([enabled]) => {
+      return enabled === true;
     })
   );
 
@@ -152,7 +146,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
 
     of(true)
       .pipe(
@@ -165,13 +159,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
           return of(undefined);
         })
       )
@@ -179,6 +173,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public constructor(
+    private _addonProviderService: AddonProviderFactory,
     private _dialog: MatDialog,
     private _dialogFactory: DialogFactory,
     private _cdRef: ChangeDetectorRef,
@@ -462,7 +457,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
 
     const channelTypeSubscription = this._wowUpService.preferenceChange$
-      .pipe(filter((change) => change.key === this.defaultAddonChannelKey))
+      .pipe(filter((change) => change.key.indexOf(DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX) !== -1))
       .subscribe(() => {
         this.onSearch();
       });
@@ -499,7 +494,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
     this.resetCategory(true);
 
     if (!this.query) {
@@ -513,13 +508,13 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
-          this._isBusySubject.next(false);
+          this._sessionService.setEnableControls(true);
           return of(undefined);
         })
       )
@@ -543,14 +538,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this._addonService.getEnabledAddonProviders().length === 0) {
+    if (this._addonProviderService.getEnabledAddonProviders().length === 0) {
       this._rowDataSrc.next([]);
-      this._isBusySubject.next(false);
+      this._sessionService.setEnableControls(true);
       this._cdRef.detectChanges();
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
 
     this._addonService
       .getFeaturedAddons(installation)
@@ -564,7 +559,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         console.debug(`Loaded ${addons?.length ?? 0} addons`);
         const listItems = this.formatAddons(addons);
         this._rowDataSrc.next(listItems);
-        this._isBusySubject.next(false);
+        this._sessionService.setEnableControls(true);
       });
   }
 
