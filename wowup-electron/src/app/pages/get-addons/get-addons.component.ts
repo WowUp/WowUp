@@ -46,6 +46,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumKeys } from "../../utils/enum.utils";
 import { camelToSnakeCase } from "../../utils/string.utils";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 
 interface CategoryItem {
   category: AddonCategory;
@@ -172,6 +173,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public constructor(
+    private _addonProviderService: AddonProviderFactory,
     private _dialog: MatDialog,
     private _dialogFactory: DialogFactory,
     private _cdRef: ChangeDetectorRef,
@@ -536,7 +538,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this._addonService.getEnabledAddonProviders().length === 0) {
+    if (this._addonProviderService.getEnabledAddonProviders().length === 0) {
       this._rowDataSrc.next([]);
       this._sessionService.setEnableControls(true);
       this._cdRef.detectChanges();

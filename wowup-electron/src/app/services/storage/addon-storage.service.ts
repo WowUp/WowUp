@@ -81,7 +81,7 @@ export class AddonStorageService {
     });
   }
 
-  public getByExternalId(externalId: string, providerName: string, installationId: string): Addon {
+  public getByExternalId(externalId: string, providerName: string, installationId: string): Addon | undefined {
     const addons: Addon[] = [];
 
     for (const result of this._store) {

@@ -23,6 +23,7 @@ import { GalleryModule } from "ng-gallery";
 import { LightboxModule } from "ng-gallery/lightbox";
 import { MatModule } from "../../../modules/mat-module";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
+import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 
 describe("AddonDetailComponent", () => {
   let dialogModel: AddonDetailModel;
@@ -31,6 +32,7 @@ describe("AddonDetailComponent", () => {
   let wowUpService: WowUpService;
   let linkService: any;
   let addonUiService: any;
+  let addonProviderService: any;
 
   beforeEach(async () => {
     mockPreload();
@@ -48,6 +50,7 @@ describe("AddonDetailComponent", () => {
     addonUiService = jasmine.createSpyObj("AddonUiService", [""], {});
     wowUpService = jasmine.createSpyObj("WowUpService", [""], {});
     linkService = jasmine.createSpyObj("LinkService", [""], {});
+    addonProviderService = jasmine.createSpyObj("AddonProviderFactory", [""], {});
 
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedClientType", "getSelectedDetailsTab"], {
       getSelectedWowInstallation: () => "description",
@@ -96,6 +99,7 @@ describe("AddonDetailComponent", () => {
             useValue: wowUpService,
           },
           { provide: AddonUiService, useValue: addonUiService },
+          { provide: AddonProviderFactory, useValue: addonProviderService },
         ],
       },
     });

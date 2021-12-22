@@ -46,7 +46,9 @@
     "lint": "ng lint",
     "i18n": "sync-i18n --files ./src/assets/i18n/*.json --primary en --space 2 --finalnewline --lineendings CRLF --languages cs de es fr it nb pt ru zh zh-TW ko",
     "check-i18n": "npm run i18n -- --check",
-    "pretty": "npx prettier --write . && ng lint --fix"
+    "pretty": "npx prettier --write . && ng lint --fix",
+    "find-broken-test": "node ./test-fixer.js --find-break",
+    "restore-tests": "node ./test-fixer.js --repair"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "13.0.0",

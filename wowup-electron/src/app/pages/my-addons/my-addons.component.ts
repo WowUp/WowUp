@@ -63,6 +63,7 @@ import { AddonUiService } from "../../services/addons/addon-ui.service";
 import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 
 @Component({
   selector: "app-my-addons",
@@ -125,7 +126,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public readonly enableUpdateExtra$ = combineLatest([
     this.enableControls$,
-    this.addonService.anyUpdatesAvailable$,
+    this._addonService.anyUpdatesAvailable$,
   ]).pipe(
     map(([enableControls, updatesAvailable]) => {
       return enableControls && updatesAvailable;
@@ -237,6 +238,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public constructor(
+    private _addonService: AddonService,
+    private _addonProviderService: AddonProviderFactory,
+    private _addonUiService: AddonUiService,
     private _sessionService: SessionService,
     private _dialog: MatDialog,
     private _dialogFactory: DialogFactory,
@@ -245,8 +249,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
     private _pushService: PushService,
-    private _addonUiService: AddonUiService,
-    public addonService: AddonService,
     public electronService: ElectronService,
     public overlay: Overlay,
     public warcraftService: WarcraftService,
@@ -260,12 +262,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.wowInstallations$ = combineLatest([
       warcraftInstallationService.wowInstallations$,
-      addonService.anyUpdatesAvailable$,
+      _addonService.anyUpdatesAvailable$,
     ]).pipe(
       map(([installations]) => {
         let total = 0;
         installations.forEach((inst) => {
-          inst.availableUpdateCount = this.addonService.getAllAddonsAvailableForUpdate(inst).length;
+          inst.availableUpdateCount = this._addonService.getAllAddonsAvailableForUpdate(inst).length;
           total += inst.availableUpdateCount;
         });
 
@@ -274,14 +276,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     );
 
-    const addonInstalledSub = this.addonService.addonInstalled$
+    const addonInstalledSub = this._addonService.addonInstalled$
       .pipe(
         map((evt) => this.onAddonInstalledEvent(evt)),
         map(() => this.setPageContextText())
       )
       .subscribe();
 
-    const addonRemovedSub = this.addonService.addonRemoved$
+    const addonRemovedSub = this._addonService.addonRemoved$
       .pipe(
         map((evt) => this.onAddonRemoved(evt)),
         map(() => this.setPageContextText())
@@ -294,7 +296,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         debounceTime(5000),
         filter((addons) => {
           const addonIds = addons.map((addon) => addon.addonId);
-          return this.addonService.hasAnyWithExternalAddonIds(addonIds);
+          return this._addonService.hasAnyWithExternalAddonIds(addonIds);
         }),
         switchMap(() => from(this.onRefresh()))
       )
@@ -476,7 +478,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
       console.debug("onRefresh");
-      await this.addonService.syncAllClients();
+      await this._addonService.syncAllClients();
 
       const selectedWowInstall = this._sessionService.getSelectedWowInstallation();
       if (selectedWowInstall !== undefined) {
@@ -531,12 +533,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  public isForceIgnore(addon: Addon) {
+    return this._addonProviderService.isForceIgnore(addon.providerName);
+  }
+
   public canReInstall(listItem: AddonViewModel): boolean {
     if (!listItem.addon) {
       return false;
     }
 
-    return listItem.addon.warningType === undefined && this.addonService.canReinstall(listItem.addon);
+    return (
+      listItem.addon.warningType === undefined && this._addonProviderService.canReinstall(listItem.addon.providerName)
+    );
+  }
+
+  public canChangeChannel(addon: Addon) {
+    return this._addonProviderService.canChangeChannel(addon.providerName);
   }
 
   public filterAddons(rowData: AddonViewModel[], filterVal: string): AddonViewModel[] {
@@ -557,13 +569,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._sessionService.setEnableControls(false);
 
-    const addons = await this.addonService.getAddons(selectedWowInstall, false);
+    const addons = await this._addonService.getAddons(selectedWowInstall, false);
     try {
       const filteredAddons = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
-          await this.addonService.updateAddon(addon.id ?? "");
+          await this._addonService.updateAddon(addon.id ?? "");
         } catch (e) {
           console.error("Failed to install", e);
         }
@@ -637,7 +649,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public async onReInstallAddons(listItems: AddonViewModel[]): Promise<void> {
     try {
       console.debug("onReInstallAddons", listItems);
-      const tasks = _.map(listItems, (listItem) => this.addonService.installAddon(listItem.addon?.id ?? ""));
+      const tasks = _.map(listItems, (listItem) => this._addonService.installAddon(listItem.addon?.id ?? ""));
       await Promise.all(tasks);
     } catch (e) {
       console.error(`Failed to re-install addons`, e);
@@ -646,7 +658,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public async onShowFolder(addon: Addon, folder: string): Promise<void> {
     try {
-      const addonPath = this.addonService.getInstallBasePath(addon);
+      const addonPath = this._addonService.getInstallBasePath(addon);
       const folderPath = join(addonPath, folder);
       await this.electronService.openPath(folderPath);
     } catch (err) {
@@ -765,7 +777,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             return of(undefined);
           }
 
-          return zip(listItems.map((listItem) => from(this.addonService.removeAddon(listItem.addon))));
+          return zip(listItems.map((listItem) => from(this._addonService.removeAddon(listItem.addon))));
         })
       )
       .subscribe();
@@ -791,7 +803,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           row.addon.autoUpdateEnabled = false;
         }
 
-        this.addonService.saveAddon(row.addon);
+        this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -852,7 +864,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         row.addon.autoUpdateNotificationsEnabled = isAutoUpdate;
 
-        this.addonService.saveAddon(row.addon);
+        this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -878,7 +890,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         row.addon.autoUpdateNotificationsEnabled = isAutoUpdateNofications;
 
-        this.addonService.saveAddon(row.addon);
+        this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -920,7 +932,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           return from(
-            this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, selectedWowInstall)
+            this._addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, selectedWowInstall)
           );
         }),
         catchError((e) => {
@@ -957,7 +969,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         listItem.addon.channelType = evt.value;
-        this.addonService.saveAddon(listItem.addon);
+        this._addonService.saveAddon(listItem.addon);
       }
 
       await this.onRefresh();
@@ -1002,7 +1014,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.setEnableControls(false);
 
     // TODO this shouldn't be here
-    await this.addonService.backfillAddons();
+    await this._addonService.backfillAddons();
 
     const selectedInstallationSub = this._sessionService.selectedWowInstallation$
       .pipe(
@@ -1036,7 +1048,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     try {
       for (const installation of installations) {
-        addons = addons.concat(await this.addonService.getAddons(installation));
+        addons = addons.concat(await this._addonService.getAddons(installation));
       }
 
       // Only care about the ones that need to be updated/installed
@@ -1079,7 +1091,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }) as string
         );
 
-        await this.addonService.updateAddon(addon.id);
+        await this._addonService.updateAddon(addon.id);
       }
 
       await this.loadAddons();
@@ -1117,10 +1129,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._cdRef.detectChanges();
 
     try {
-      let addons = await this.addonService.getAddons(installation, reScan);
+      let addons = await this._addonService.getAddons(installation, reScan);
       if (reScan) {
-        await this.addonService.syncClient(installation);
-        addons = await this.addonService.getAddons(installation, false);
+        await this._addonService.syncClient(installation);
+        addons = await this._addonService.getAddons(installation, false);
       }
 
       const rowData = this.formatAddons(addons);
@@ -1228,11 +1240,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private calculateControlState(): boolean {
-    return !this.addonService.isInstalling();
+    return !this._addonService.isInstalling();
   }
 
   private async updateBadgeCount(): Promise<void> {
-    const ct = this.addonService.getAllAddonsAvailableForUpdate().length;
+    const ct = this._addonService.getAllAddonsAvailableForUpdate().length;
     console.debug("updateBadgeCount", ct);
     try {
       await this.wowUpService.updateAppBadgeCount(ct);

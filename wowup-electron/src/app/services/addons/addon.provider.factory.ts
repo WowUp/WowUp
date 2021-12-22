@@ -17,12 +17,14 @@ import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
+import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
 
 @Injectable({
   providedIn: "root",
 })
 export class AddonProviderFactory {
-  private _providers: AddonProvider[] = [];
+  private _providerMap: Map<string, AddonProvider> = new Map();
 
   public constructor(
     private _cachingService: CachingService,
@@ -34,7 +36,9 @@ export class AddonProviderFactory {
     private _tocService: TocService,
     private _warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService
-  ) {}
+  ) {
+    this.loadProviders();
+  }
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
     return new WowUpCompanionAddonProvider(this._fileService, this._tocService);
@@ -74,9 +78,112 @@ export class AddonProviderFactory {
     return new ZipAddonProvider(this._httpClient, this._fileService, this._tocService, this._warcraftService);
   }
 
-  public getProviders(): AddonProvider[] {
-    if (this._providers.length === 0) {
-      this._providers = [
+  public getProvider<T = AddonProvider>(providerName: string): T | undefined {
+    if (!providerName || !this.hasProvider(providerName)) {
+      return undefined;
+    }
+
+    return this._providerMap.get(providerName) as any;
+  }
+
+  public hasProvider(providerName: string): boolean {
+    return this._providerMap.has(providerName);
+  }
+
+  public getAddonProviderForUri(addonUri: URL): AddonProvider | undefined {
+    for (const ap of this._providerMap.values()) {
+      if (ap.isValidAddonUri(addonUri)) {
+        return ap;
+      }
+    }
+
+    return undefined;
+  }
+
+  public getEnabledAddonProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
+  public getBatchAddonProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled && ap.canBatchFetch) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
+  public getStandardAddonProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled && !ap.canBatchFetch) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
+  public getAddonProviderStates(): AddonProviderState[] {
+    const states: AddonProviderState[] = [];
+
+    this._providerMap.forEach((ap) => {
+      states.push({
+        providerName: ap.name,
+        enabled: ap.enabled,
+        canEdit: ap.allowEdit,
+      });
+    });
+
+    return states;
+  }
+
+  public canShowChangelog(providerName: string | undefined): boolean {
+    return this.getProvider(providerName)?.canShowChangelog ?? false;
+  }
+
+  public isForceIgnore(providerName: string): boolean {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return false;
+    }
+
+    return providerName === ADDON_PROVIDER_UNKNOWN || (provider?.forceIgnore ?? false);
+  }
+
+  public canReinstall(providerName: string): boolean {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return false;
+    }
+
+    return providerName !== ADDON_PROVIDER_UNKNOWN && (provider?.allowReinstall ?? false);
+  }
+
+  public canChangeChannel(providerName: string): boolean {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return false;
+    }
+
+    return providerName !== ADDON_PROVIDER_UNKNOWN && (provider?.allowChannelChange ?? false);
+  }
+
+  private loadProviders() {
+    if (this._providerMap.size === 0) {
+      const providers = [
         this.createZipAddonProvider(),
         this.createRaiderIoAddonProvider(),
         this.createWowUpCompanionAddonProvider(),
@@ -87,10 +194,11 @@ export class AddonProviderFactory {
         this.createGitHubAddonProvider(),
       ];
 
-      this._providers.forEach(this.setProviderState);
+      providers.forEach((provider) => {
+        this.setProviderState(provider);
+        this._providerMap.set(provider.name, provider);
+      });
     }
-
-    return this._providers;
   }
 
   private setProviderState = (provider: AddonProvider) => {

@@ -156,7 +156,7 @@
     </div>
     <mat-divider></mat-divider>
     <!-- IGNORE -->
-    <div *ngIf="addonService.isForceIgnore(listItem.addon) === false" class="mat-menu-item">
+    <div *ngIf="isForceIgnore(listItem.addon) === false" class="mat-menu-item">
       <mat-checkbox [checked]="listItem.addon.isIgnored" (click)="onClickIgnoreAddon(listItem)">
         {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.IGNORE_ADDON_BUTTON" | translate }}
       </mat-checkbox>
@@ -177,7 +177,7 @@
       </mat-checkbox>
     </div>
     <!-- CHANNEL SUBMENU -->
-    <button *ngIf="addonService.canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
+    <button *ngIf="canChangeChannel(listItem.addon)" mat-menu-item [matMenuTriggerFor]="addonChannels">
       {{ "PAGES.MY_ADDONS.ADDON_CONTEXT_MENU.CHANNEL_SUBMENU_TITLE" | translate }}
     </button>
     <!-- PROVIDER SUBMENU -->

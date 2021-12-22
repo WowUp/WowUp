@@ -26,6 +26,7 @@ import { MatModule } from "../../modules/mat-module";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { AddonChannelType } from "../../../common/wowup/models";
 import { PipesModule } from "../../modules/pipes.module";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 
 describe("GetAddonsComponent", () => {
   let component: GetAddonsComponent;
@@ -37,6 +38,7 @@ describe("GetAddonsComponent", () => {
   let warcraftServiceSpy: any;
   let snackbarService: SnackbarService;
   let warcraftInstallationService: WarcraftInstallationService;
+  let addonProviderService: any;
 
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
@@ -75,6 +77,7 @@ describe("GetAddonsComponent", () => {
     });
 
     snackbarService = jasmine.createSpyObj("SnackbarService", [""], {});
+    addonProviderService = jasmine.createSpyObj("AddonProviderFactory", [""], {});
 
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
       wowInstallations$: new BehaviorSubject<any[]>([]),
@@ -114,6 +117,7 @@ describe("GetAddonsComponent", () => {
           { provide: ElectronService, useValue: electronServiceSpy },
           { provide: WarcraftService, useValue: warcraftServiceSpy },
           { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
+          { provide: AddonProviderFactory, useValue: addonProviderService },
         ],
       },
     });
