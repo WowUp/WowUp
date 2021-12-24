@@ -54,6 +54,7 @@ import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { ZoomService } from "./services/zoom/zoom.service";
 import { ZoomDirection } from "./utils/zoom.utils";
+import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
 
 @Component({
   selector: "app-root",
@@ -87,6 +88,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public constructor(
     private _addonService: AddonService,
+    private _addonProviderService: AddonProviderFactory,
     private _analyticsService: AnalyticsService,
     private _cdRef: ChangeDetectorRef,
     private _dialog: MatDialog,
@@ -139,7 +141,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.sessionService.adSpace$.subscribe((enabled) => {
       if (enabled) {
-        const providers = this._addonService.getAdRequiredProviders();
+        const providers = this._addonProviderService.getAdRequiredProviders();
         this.adPageParams = providers
           .map((provider) => provider.getAdPageParams())
           .filter((param) => param !== undefined);

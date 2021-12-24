@@ -1,6 +1,6 @@
 import _ from "lodash";
-import { BehaviorSubject, from, Observable } from "rxjs";
-import { filter, first, map, tap, timeout } from "rxjs/operators";
+import { BehaviorSubject, firstValueFrom, Observable } from "rxjs";
+import { first, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { ADDON_PROVIDER_WAGO } from "../../common/constants";
@@ -23,7 +23,7 @@ import { getEnumName } from "../utils/enum.utils";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 
-declare type WagoGameVersion = "retail" | "classic" | "bcc";
+declare type WagoGameVersion = "retail" | "classic" | "bc";
 declare type WagoStability = "stable" | "beta" | "alpha";
 
 interface WagoFingerprintAddon {
@@ -43,14 +43,16 @@ interface WagoSearchResponse {
   data: WagoSearchResponseItem[];
 }
 
+interface WagoSearchReleasesResponse {
+  alpha?: WagoSearchResponseRelease;
+  beta?: WagoSearchResponseRelease;
+  stable?: WagoSearchResponseRelease;
+}
+
 interface WagoSearchResponseItem {
   display_name: string;
   id: string;
-  releases: {
-    alpha?: WagoSearchResponseRelease;
-    beta?: WagoSearchResponseRelease;
-    stable?: WagoSearchResponseRelease;
-  };
+  releases: WagoReleasesResponse;
   summary: string;
   thumbnail_image: string;
   authors: string[];
@@ -65,6 +67,12 @@ interface WagoSearchResponseRelease {
   logical_timestamp: number; // download link expiration time
 }
 
+interface WagoReleasesResponse {
+  alpha?: WagoRelease;
+  beta?: WagoRelease;
+  stable?: WagoRelease;
+}
+
 interface WagoAddon {
   id: string;
   slug: string;
@@ -74,11 +82,8 @@ interface WagoAddon {
   description: string;
   website: string;
   gallery: string[];
-  recent_releases: {
-    stable?: WagoRelease;
-    beta?: WagoRelease;
-    alpha?: WagoRelease;
-  };
+  recent_releases: WagoReleasesResponse;
+  recent_release?: WagoReleasesResponse; // probably a typo on the wago side, shows up in details route
 }
 
 interface WagoRelease {
@@ -138,7 +143,9 @@ export class WagoAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
   private _apiTokenSrc = new BehaviorSubject<string>("");
-  private _enabled = true;
+
+  // This is our internal http queue, prevents duplicated requests for some routes
+  private _requestQueue: Map<string, Promise<any>> = new Map();
 
   public readonly name = ADDON_PROVIDER_WAGO;
   public readonly forceIgnore = false;
@@ -146,6 +153,7 @@ export class WagoAddonProvider extends AddonProvider {
   public authRequired = true;
   public adRequired = true;
   public allowEdit = true;
+  public allowReinstall = true;
 
   public constructor(
     private _electronService: ElectronService,
@@ -163,6 +171,10 @@ export class WagoAddonProvider extends AddonProvider {
     );
 
     this._electronService.on("wago-token-received", this.onWagoTokenReceived);
+  }
+
+  public isValidAddonId(addonId: string): boolean {
+    return typeof addonId === "string" && addonId.length >= 8 && addonId.length <= 10;
   }
 
   public async scan(
@@ -198,7 +210,7 @@ export class WagoAddonProvider extends AddonProvider {
     });
 
     console.debug(`[wago] scan`, request);
-    console.debug(JSON.stringify(request, null, 2));
+    console.debug(JSON.stringify(request));
 
     const matchResult = await this.sendMatchesRequest(request);
     console.debug(`[wago] matchResult`, matchResult);
@@ -206,19 +218,29 @@ export class WagoAddonProvider extends AddonProvider {
     const scanResultMap = {};
 
     for (const scanResult of scanResults) {
-      const fingerprintMatches = matchResult.addons.filter((addon) => {
-        const mods = Object.values(addon.modules).filter((mod) => typeof mod.hash === "string");
-        return mods.findIndex((mod) => mod.hash === scanResult.fingerprint) !== -1;
-      });
+      try {
+        const fingerprintMatches = matchResult.addons.filter((addon) => {
+          // Sometimes the API can return an array with null elements
+          if (typeof addon !== "object" || addon === null) {
+            return false;
+          }
 
-      if (fingerprintMatches.length > 0) {
-        if (fingerprintMatches.length > 1) {
-          console.warn(`[wago] found multiple fingerprintMatches: ${scanResult.folderName}`);
+          const mods = Object.values(addon.modules).filter((mod) => typeof mod.hash === "string");
+          return mods.findIndex((mod) => mod.hash === scanResult.fingerprint) !== -1;
+        });
+
+        if (fingerprintMatches.length > 0) {
+          if (fingerprintMatches.length > 1) {
+            console.warn(`[wago] found multiple fingerprintMatches: ${scanResult.folderName}`);
+          }
+
+          scanResultMap[scanResult.folderName] = fingerprintMatches[0];
         }
-
-        scanResultMap[scanResult.folderName] = fingerprintMatches[0];
+        // console.debug(`[wago] fingerprintMatches`, fingerprintMatches);
+      } catch (e) {
+        console.error(`fingerprint scan failed`, matchResult);
+        throw e;
       }
-      console.debug(`[wago] fingerprintMatches`, fingerprintMatches);
     }
 
     for (const addonFolder of addonFolders) {
@@ -231,14 +253,14 @@ export class WagoAddonProvider extends AddonProvider {
         const match = scanResultMap[scanResult.folderName];
         const newAddon = this.toAddon(installation, addonChannelType, match);
 
-        // addonFolder.matchingAddon = newAddon;
+        addonFolder.matchingAddon = newAddon;
       } catch (e) {
         console.error(`[wago] scan result`, scanResult);
         console.error(`[wago] scan error`, e);
       }
     }
 
-    console.debug(`[wago] delta`, addonFolders)
+    console.debug(`[wago] delta`, addonFolders);
   }
 
   public async searchByQuery(
@@ -272,7 +294,7 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
-    await this.ensureToken().toPromise();
+    await firstValueFrom(this.ensureToken());
 
     try {
       const response = await this.getAddonById(externalId);
@@ -293,10 +315,20 @@ export class WagoAddonProvider extends AddonProvider {
       const response = await this.getAddonById(externalId);
       console.debug("[wago] getChangelog", response);
 
-      const releases = Object.values(response.recent_releases);
-      // _.sortBy(releases, rel => rel.)
+      let release: WagoRelease | undefined = response.recent_release.stable;
+      switch (installation.defaultAddonChannelType) {
+        case AddonChannelType.Alpha:
+          release = response.recent_release.alpha || release;
+          break;
+        case AddonChannelType.Beta:
+          release = response.recent_release.beta || release;
+          break;
+        default:
+          break;
+      }
 
-      return convertMarkdown(response?.description ?? "");
+      // if there is not a matching apparent release, return empty
+      return !!release ? convertMarkdown(release.changelog) : "";
     } catch (e) {
       console.error("[wago] Failed to get changelog", e);
       return "";
@@ -325,12 +357,25 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   private async getAddonById(addonId: string) {
-    const url = new URL(`${WAGO_BASE_URL}/addons/${addonId}`);
-    return await this._cachingService.transaction(
-      url.toString(),
-      () => this._circuitBreaker.getJson<WagoAddon>(url, this.getRequestHeaders()),
-      WAGO_DETAILS_CACHE_TIME_SEC
-    );
+    const url = new URL(`${WAGO_BASE_URL}/addons/${addonId}`).toString();
+
+    if (this._requestQueue.has(url)) {
+      return this._requestQueue.get(url);
+    }
+
+    const prom = this._cachingService
+      .transaction(
+        url,
+        () => this._circuitBreaker.getJson<WagoAddon>(url, this.getRequestHeaders()),
+        WAGO_DETAILS_CACHE_TIME_SEC
+      )
+      .finally(() => {
+        this._requestQueue.delete(url);
+      });
+
+    this._requestQueue.set(url, prom);
+
+    return await prom;
   }
 
   private async sendMatchesRequest(request: WagoFingerprintRequest) {
@@ -380,9 +425,14 @@ export class WagoAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     wagoScanAddon: WagoScanAddon
   ): Addon {
+    // Grab a ref to the recent release matching the id of the matched release, the objects do not appear to match.
+    const recentRelease = Object.values(wagoScanAddon.recent_releases).find(
+      (rr) => rr.id === wagoScanAddon.matched_release.id
+    );
+
     const authors = wagoScanAddon?.authors?.join(", ") ?? "";
     const name = wagoScanAddon?.name ?? "";
-    const downloadUrl = wagoScanAddon?.matched_release?.link ?? "";
+    const downloadUrl = wagoScanAddon?.matched_release?.link ?? recentRelease.link ?? "";
     const externalUrl = wagoScanAddon?.website_url ?? "";
     const externalId = wagoScanAddon?.id ?? "";
     const gameVersion = getGameVersion(wagoScanAddon?.matched_release?.patch);
@@ -466,7 +516,7 @@ export class WagoAddonProvider extends AddonProvider {
     const clientGroup = this._warcraftService.getClientGroup(clientType);
     switch (clientGroup) {
       case WowClientGroup.BurningCrusade:
-        return "bcc";
+        return "bc";
       case WowClientGroup.Classic:
         return "classic";
       case WowClientGroup.Retail:

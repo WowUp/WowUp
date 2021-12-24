@@ -11,6 +11,7 @@ import { ColumnState } from "../../models/wowup/column-state";
 import { map } from "rxjs/operators";
 import { WowUpAccountService } from "../wowup/wowup-account.service";
 import { AddonService } from "../addons/addon.service";
+import { AddonProviderFactory } from "../addons/addon.provider.factory";
 
 @Injectable({
   providedIn: "root",
@@ -59,7 +60,8 @@ export class SessionService {
     private _warcraftInstallationService: WarcraftInstallationService,
     private _preferenceStorageService: PreferenceStorageService,
     private _wowUpAccountService: WowUpAccountService,
-    private _addonService: AddonService
+    private _addonService: AddonService,
+    private _addonProviderService: AddonProviderFactory
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
@@ -76,7 +78,7 @@ export class SessionService {
   }
 
   private updateAdSpace() {
-    const allProviders = this._addonService.getEnabledAddonProviders();
+    const allProviders = this._addonProviderService.getEnabledAddonProviders();
     this._adSpaceSrc.next(allProviders.findIndex((p) => p.adRequired) !== -1);
   }
 

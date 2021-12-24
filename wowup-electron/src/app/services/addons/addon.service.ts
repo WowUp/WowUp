@@ -393,7 +393,7 @@ export class AddonService {
       return undefined;
     }
 
-    const addon = this.createAddon(latestFile.folders[0], potentialAddon, targetFile ?? latestFile, installation);
+    const addon = this.createAddon(potentialAddon, targetFile ?? latestFile, installation);
 
     if (addon?.id !== undefined) {
       await this._addonStorage.setAsync(addon.id, addon);
@@ -537,7 +537,7 @@ export class AddonService {
   ): Promise<void> {
     const addon = await this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
-      throw new Error("Addon not found or invalid");
+      throw new Error(`Addon not found or invalid: ${addonId}`);
     }
 
     onUpdate?.call(this, AddonInstallState.Pending, 0);
@@ -1848,7 +1848,7 @@ export class AddonService {
     const dependencies = latestFile.dependencies.map(this.createAddonDependency);
     const fundingLinks = Array.isArray(searchResult.fundingLinks) ? [...searchResult.fundingLinks] : [];
 
-    console.debug(`Create Addon: `, installation);
+    console.debug(`Create Addon: `, installation, latestFile);
 
     return {
       id: uuidv4(),

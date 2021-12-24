@@ -147,6 +147,18 @@ export class AddonProviderFactory {
     return providers;
   }
 
+  public getAdRequiredProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled && ap.adRequired) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
   public getAddonProviderStates(): AddonProviderState[] {
     const states: AddonProviderState[] = [];
 
