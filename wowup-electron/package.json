@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.6.0-beta.5",
+  "version": "2.6.0-beta.7",
   "description": "World of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
@@ -21,6 +21,7 @@
   },
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
+    "install:prod": "npm ci --only=prod --no-optional",
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
     "build": "npm run electron:serve-tsc && ng build --base-href ./",
@@ -33,10 +34,10 @@
     "electron:local": "npm run build:prod && npx electron .",
     "electron:build": "npm run build:prod && electron-builder build",
     "electron:build:local": "npm run build:prod && electron-builder build -c electron-builder-local.json",
-    "electron:publish": "npm run lint && npm run build:prod && electron-builder build --publish always",
+    "electron:publish": "npx electron-builder build --publish always",
     "electron:publish:linux": "docker-compose -f linux-compose.yml up",
     "electron:publish:never": "npm run electron:build && electron-builder --publish never",
-    "electron:publish:never:local": "npm run build:prod && electron-builder -c electron-builder-local.json --publish never ",
+    "electron:publish:never:local": "npx electron-builder -c electron-builder-local.json --publish never ",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "test:locales": "ng test --watch=false --include='src/locales.spec.ts'",
@@ -48,7 +49,9 @@
     "check-i18n": "npm run i18n -- --check",
     "pretty": "npx prettier --write . && ng lint --fix",
     "find-broken-test": "node ./test-fixer.js --find-break",
-    "restore-tests": "node ./test-fixer.js --repair"
+    "restore-tests": "node ./test-fixer.js --repair",
+    "package:prod": "npx gulp package",
+    "package:local": "npx gulp packageLocal"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "13.0.0",
@@ -83,6 +86,7 @@
     "conventional-changelog-cli": "2.1.1",
     "core-js": "3.17.2",
     "cross-env": "7.0.3",
+    "del": "6.0.0",
     "dotenv": "10.0.0",
     "electron": "16.0.5",
     "electron-builder": "22.14.5",
@@ -94,6 +98,7 @@
     "eslint-plugin-jsdoc": "37.0.3",
     "eslint-plugin-prefer-arrow": "1.2.3",
     "flat": "5.0.2",
+    "gulp": "4.0.2",
     "i18next-json-sync": "2.3.1",
     "ignore": "5.1.9",
     "jasmine-core": "3.9.0",

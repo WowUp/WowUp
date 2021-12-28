@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>{{ "WowUp Permissions Setup" | translate }}</h1>
+<form [formGroup]="consentOptions" (ngSubmit)="onSubmit($event)">
+  <div mat-dialog-content>
+    <p>{{ "Before we get started we need to setup a few permissions for the app." | translate }}</p>
+    <div class="mb-3">
+      <div>
+        <mat-slide-toggle formControlName="telemetry">Allow Telemetry</mat-slide-toggle>
+      </div>
+      <mat-hint>{{ "DIALOGS.TELEMETRY.DESCRIPTION" | translate }}</mat-hint>
+    </div>
+    <div>
+      <div>
+        <mat-slide-toggle formControlName="wagoProvider">Enable Wago.io Provider</mat-slide-toggle>
+      </div>
+      <mat-hint>{{
+        "Enabled the Wago.io addon provider, this will display an ad required to use their service. The ads directly benefit the authors of your favorite addons!"
+          | translate
+      }}</mat-hint>
+    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" type="submit" cdkFocusInitial>
+      {{ "Confirm" | translate }}
+    </button>
+  </div>
+</form>

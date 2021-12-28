@@ -1,32 +1,20 @@
-<div *ngIf="quitEnabled === false" class="app" [ngClass]="[wowUpService.currentTheme, electronService.platform]">
-  <app-titlebar class="bg-primary"></app-titlebar>
-  <app-horizontal-tabs></app-horizontal-tabs>
-  <div class="content">
+<div
+  *ngIf="(showPreLoad$ | async) === false && quitEnabled === false"
+  class="app"
+  [ngClass]="[wowUpService.currentTheme, electronService.platform]"
+>
+  <app-titlebar class="gtitle"></app-titlebar>
+  <!-- <app-horizontal-tabs></app-horizontal-tabs> -->
+  <app-vertical-tabs class="gtabs"></app-vertical-tabs>
+  <div class="content bg-secondary-3 gmain">
     <!-- <div class="tabs">
       <app-vertical-tabs></app-vertical-tabs>
     </div> -->
     <div class="main">
       <router-outlet></router-outlet>
     </div>
-    <div *ngIf="sessionService.adSpace$ | async" class="ad-space text-1 bg-secondary-3">
-      <div class="ad-details p-3">
-        <div class="center-col">
-          <div>
-            <h2>Why am I seeing this ad?</h2>
-            <p>
-              In order to use wago.io as an addon provider and support their authors for their hard work on your
-              favorite addons we are required to show this advertisement.
-            </p>
-            <p>If you do not want to see this ad, you can always disable wago.io as a provider in the options tab.</p>
-          </div>
-        </div>
-      </div>
-      <div class="ad">
-        <app-webview *ngFor="let params of adPageParams" [options]="params"></app-webview>
-      </div>
-    </div>
   </div>
-  <app-footer></app-footer>
+  <app-footer class="gfooter"></app-footer>
 </div>
 
-<app-animated-logo *ngIf="showPreLoad === true || quitEnabled === true"></app-animated-logo>
+<app-animated-logo *ngIf="(showPreLoad$ | async) === true || quitEnabled === true"></app-animated-logo>

@@ -12,7 +12,7 @@
     <small class="text-2">{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.DESCRIPTION" | translate }}</small>
     <div class="bg-secondary-3">
       <mat-selection-list #shoes (selectionChange)="onProviderStateSelectionChange($event)">
-        <mat-list-option *ngFor="let state of addonProviderStates" [value]="state.providerName"
+        <mat-list-option *ngFor="let state of addonProviderStates$ | async" [value]="state.providerName"
           [selected]="state.enabled">
           {{state.providerName}}
         </mat-list-option>

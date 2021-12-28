@@ -139,6 +139,7 @@ export const CLASSIC_LOCATION_KEY = "wow_classic_location"; // TODO remove, depr
 export const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location"; // TODO remove, deprecated
 export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
 export const ACCT_PUSH_ENABLED_KEY = "acct_push_enabled";
+export const WAGO_PROMPT_KEY = "wago_prompt";
 
 export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 

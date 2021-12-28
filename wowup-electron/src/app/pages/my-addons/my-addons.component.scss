@@ -1,12 +1,14 @@
 .wu-ag-table {
   width: 100%;
-  height: calc(100% - 72px);
+  height: calc(100% - 86px);
 }
 
 .control-container {
   display: flex;
   flex-direction: row;
   padding: 0 1em 0 1em;
+  margin: 1em 1em 0 1em;
+  border-radius: 4px;
 
   .select-container {
     padding-top: 1em;
@@ -79,7 +81,7 @@
 }
 
 .table-container {
-  height: calc(100% - 72px);
+  height: 100%;
   overflow: auto;
   overflow-x: hidden;
 

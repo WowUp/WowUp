@@ -216,6 +216,12 @@ mat-icon.success-icon {
   color: green;
 }
 
+.grow-tab-content {
+  .mat-tab-body-wrapper {
+    flex-grow: 1;
+  }
+}
+
 .mat-tab-label,
 .mat-tab-label-content,
 .mat-select-value,
@@ -266,13 +272,14 @@ mat-icon.success-icon {
 .tab-container {
   overflow: auto;
   overflow-x: hidden;
+  height: 100%;
 
   &.mac {
     height: calc(100vh - 95px);
   }
 
   &.windows {
-    height: calc(100vh - 103px);
+    // height: calc(100vh - 103px);
   }
 
   &.linux {

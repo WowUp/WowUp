@@ -20,6 +20,7 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
+    <li>Added the new <a appExternalLink href="https://addons.wago.io/">Wago.io</a> addon provider</li>
     <li>Added the ability to switch to Beta build release channel from the app</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>

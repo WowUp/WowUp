@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { from, of } from "rxjs";
+import { BehaviorSubject, from, of } from "rxjs";
 import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
 
 import { OverlayContainer } from "@angular/cdk/overlay";
@@ -55,6 +55,10 @@ import { WowUpService } from "./services/wowup/wowup.service";
 import { ZoomService } from "./services/zoom/zoom.service";
 import { ZoomDirection } from "./utils/zoom.utils";
 import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
+import {
+  ConsentDialogComponent,
+  ConsentDialogResult,
+} from "./components/common/consent-dialog/consent-dialog.component";
 
 @Component({
   selector: "app-root",
@@ -83,8 +87,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public quitEnabled?: boolean;
-  public showPreLoad = true;
-  public adPageParams: AdPageOptions[] = [];
+  public showPreLoad$ = new BehaviorSubject<boolean>(true);
 
   public constructor(
     private _addonService: AddonService,
@@ -136,17 +139,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           .subscribe(() => {
             this.wowUpService.installUpdate();
           });
-      }
-    });
-
-    this.sessionService.adSpace$.subscribe((enabled) => {
-      if (enabled) {
-        const providers = this._addonProviderService.getAdRequiredProviders();
-        this.adPageParams = providers
-          .map((provider) => provider.getAdPageParams())
-          .filter((param) => param !== undefined);
-      } else {
-        this.adPageParams = [];
       }
     });
   }
@@ -204,7 +196,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(
         first(),
         map((appOptions) => {
-          this.showPreLoad = false;
+          this.showPreLoad$.next(this.shouldShowConsentDialog());
           this.quitEnabled = appOptions.quit;
           this._cdRef.detectChanges();
         }),
@@ -233,8 +225,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         first(),
         switchMap(() => from(this.createSystemTray())),
         switchMap(() => {
-          if (this._analyticsService.shouldPromptTelemetry) {
-            return of(this.openDialog());
+          if (this.shouldShowConsentDialog()) {
+            return of(this.openConsentDialog());
           } else {
             return from(this._analyticsService.trackStartup());
           }
@@ -245,6 +237,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         })
       )
       .subscribe();
+  }
+
+  private shouldShowConsentDialog() {
+    return this._analyticsService.shouldPromptTelemetry || this._addonProviderService.shouldShowConsentDialog();
   }
 
   public ngOnDestroy(): void {
@@ -269,23 +265,29 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.openInstallFromUrlDialog(path);
   };
 
-  public openDialog(): void {
-    const dialogRef = this._dialog.open(TelemetryDialogComponent, {
+  public openConsentDialog(): void {
+    const dialogRef = this._dialog.open(ConsentDialogComponent, {
       disableClose: true,
     });
 
     dialogRef
       .afterClosed()
       .pipe(
-        switchMap((result) => {
-          this._analyticsService.telemetryEnabled = result;
-          if (result) {
+        switchMap((result: ConsentDialogResult) => {
+          this._addonProviderService.setProviderEnabled("Wago", result.wagoProvider);
+          this._addonProviderService.updateWagoConsent();
+
+          this._analyticsService.telemetryEnabled = result.telemetry;
+          if (result.telemetry) {
             return from(this._analyticsService.trackStartup());
           }
+
           return of(undefined);
         })
       )
-      .subscribe();
+      .subscribe(() => {
+        this.showPreLoad$.next(false);
+      });
   }
 
   private openInstallFromUrlDialog(path?: string) {

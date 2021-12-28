@@ -12,13 +12,14 @@
   }
 }
 .page-container {
-  height: 100%;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  // display: flex;
+  // flex-direction: column;
 }
 .tabs {
-  flex-grow: 1;
+  // flex-grow: 1;
+  height: 100%;
   overflow: hidden;
 }
 .preload-container {

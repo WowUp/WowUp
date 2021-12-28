@@ -70,7 +70,7 @@ export class SessionService {
       this.onWowInstallationsChange(installations)
     );
 
-    this._addonService.addonProviderChange$.subscribe((provider) => {
+    this._addonProviderService.addonProviderChange$.subscribe((provider) => {
       this.updateAdSpace();
     });
 
@@ -79,6 +79,7 @@ export class SessionService {
 
   private updateAdSpace() {
     const allProviders = this._addonProviderService.getEnabledAddonProviders();
+    console.debug("updateAdSpace", allProviders);
     this._adSpaceSrc.next(allProviders.findIndex((p) => p.adRequired) !== -1);
   }
 

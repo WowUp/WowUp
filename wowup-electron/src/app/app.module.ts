@@ -29,6 +29,7 @@ import { IconService } from "./services/icons/icon.service";
 import { HorizontalTabsComponent } from "./components/common/horizontal-tabs/horizontal-tabs.component";
 import { CommonUiModule } from "./modules/common-ui.module";
 import { FooterComponent } from "./components/common/footer/footer.component";
+import { VerticalTabsComponent } from "./components/common/vertical-tabs/vertical-tabs.component";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -42,7 +43,7 @@ export function initializeApp(wowupService: WowUpService) {
 }
 
 @NgModule({
-  declarations: [AppComponent, TitlebarComponent, FooterComponent, HorizontalTabsComponent],
+  declarations: [AppComponent, TitlebarComponent, FooterComponent, HorizontalTabsComponent, VerticalTabsComponent],
   imports: [
     BrowserModule,
     FormsModule,
