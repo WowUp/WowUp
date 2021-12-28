@@ -15,7 +15,7 @@ window-state.js
 src/**/*.js
 !src/karma.conf.js
 *.js.map
-*.js
+app/*.js
 !electron-build/*.js
 
 # dependencies
