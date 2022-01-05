@@ -1,10 +1,20 @@
-import { Injectable } from "@angular/core";
 import { v4 as uuidv4 } from "uuid";
+
+import { Injectable } from "@angular/core";
+
 import { IPC_DOWNLOAD_FILE_CHANNEL } from "../../../common/constants";
-import { DownloadRequest } from "../../../common/models/download-request";
+import { DownloadAuth, DownloadRequest } from "../../../common/models/download-request";
 import { DownloadStatus } from "../../../common/models/download-status";
 import { DownloadStatusType } from "../../../common/models/download-status-type";
 import { ElectronService } from "../electron/electron.service";
+
+export interface DownloadOptions {
+  auth?: DownloadAuth;
+  fileName: string;
+  outputFolder: string;
+  url: string;
+  onProgress?: (progress: number) => void;
+}
 
 @Injectable({
   providedIn: "root",
@@ -16,18 +26,14 @@ export class DownloadService {
    * Downloads a file URL to the specified folder, prepends UUID so there are no collisions
    * @returns Saved file path
    */
-  public downloadZipFile(
-    url: string,
-    fileName: string,
-    outputFolder: string,
-    onProgress?: (progress: number) => void
-  ): Promise<string> {
+  public downloadZipFile(downloadOptions: DownloadOptions): Promise<string> {
     return new Promise((resolve, reject) => {
       const request: DownloadRequest = {
-        url,
-        fileName,
-        outputFolder,
+        auth: downloadOptions.auth,
+        fileName: downloadOptions.fileName,
+        outputFolder: downloadOptions.outputFolder,
         responseKey: uuidv4(),
+        url: downloadOptions.url,
       };
 
       const eventHandler = (_evt: any, arg: DownloadStatus) => {
@@ -43,7 +49,7 @@ export class DownloadService {
             reject(arg.error);
             break;
           case DownloadStatusType.Progress:
-            onProgress?.call(null, arg.progress ?? 0);
+            downloadOptions.onProgress?.call(null, arg.progress ?? 0);
             break;
           default:
             break;

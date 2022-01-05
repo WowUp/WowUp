@@ -179,6 +179,12 @@ export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
 export const WOW_CLASSIC_ERA_PTR_FOLDER = "_classic_era_ptr_";
 
+export const YEAR_SECONDS = 31536000;
+export const MONTH_SECONDS = 2592000;
+export const DAY_SECONDS = 86400;
+export const HOUR_SECONDS = 3600;
+export const MINUTE_SECONDS = 60;
+
 export const TAB_INDEX_MY_ADDONS = 0;
 export const TAB_INDEX_GET_ADDONS = 1;
 export const TAB_INDEX_ABOUT = 2;

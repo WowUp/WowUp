@@ -31,6 +31,13 @@
     "RESET_BUTTON": "Reset",
     "VERSION_MISMATCH": "This addon is already installed, but the versions do not match"
   },
+  "ADS": {
+    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_DIALOG": {
+      "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and help support authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable Wago as a provider in the options tab.",
+      "TITLE": "Why am I seeing this ad?"
+    }
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -292,6 +299,19 @@
     "NEW_VERSION_POPUP": {
       "TITLE": "Patch Notes {versionNumber}"
     },
+    "PERMISSIONS": {
+      "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
+      "POSITIVE_BUTTON": "Confirm",
+      "TELEMETRY": {
+        "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
+        "TOGGLE_LABEL": "Allow Telemetry"
+      },
+      "TITLE": "WowUp Permissions Setup",
+      "WAGO": {
+        "DESCRIPTION": "Enable the Wago.io addon provider to help support the authors of your favorite addons! This will display a promotional panel required to use their service.\nBy opting in you agree to their <a appExternalLink href=\"{termsUrl}\" >Terms of Service</a> and <a appExternalLink href=\"{dataUrl}\" >Data Consent</a>.",
+        "TOGGLE_LABEL": "Enable Wago.io Provider"
+      }
+    },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "This does not appear to be a valid World of Warcraft application:\n{selectedPath}"
     },
@@ -445,6 +465,7 @@
     },
     "OPTIONS": {
       "ADDON": {
+        "AD_REQUIRED_HINT": "Ad required",
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Select which providers may be used to search for, and install new addons",
           "FIELD_LABEL": "Enabled Addon Providers",

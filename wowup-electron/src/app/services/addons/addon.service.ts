@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { nanoid } from "nanoid";
 import * as path from "path";
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from "rxjs";
+import { BehaviorSubject, firstValueFrom, forkJoin, from, Observable, of, Subject, Subscription } from "rxjs";
 import { catchError, filter, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
@@ -51,7 +51,7 @@ import { getEnumName } from "../../utils/enum.utils";
 import * as SearchResults from "../../utils/search-result.utils";
 import { capitalizeString } from "../../utils/string.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { DownloadService } from "../download/download.service";
+import { DownloadOptions, DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -402,7 +402,9 @@ export class AddonService {
   }
 
   public getRequiredDependencies(addon: Addon): AddonDependency[] {
-    return addon.dependencies.filter((dep) => dep.type === AddonDependencyType.Required);
+    return Array.isArray(addon.dependencies)
+      ? addon.dependencies.filter((dep) => dep.type === AddonDependencyType.Required)
+      : [];
   }
 
   public getAllAddonsAvailableForUpdate(wowInstallation?: WowInstallation): Addon[] {
@@ -621,11 +623,14 @@ export class AddonService {
     let unzippedDirectory = "";
 
     try {
-      downloadedFilePath = await this._downloadService.downloadZipFile(
-        addon.downloadUrl,
-        downloadFileName,
-        this._wowUpService.applicationDownloadsFolderPath
-      );
+      const downloadOptions: DownloadOptions = {
+        fileName: downloadFileName,
+        outputFolder: this._wowUpService.applicationDownloadsFolderPath,
+        url: addon.downloadUrl,
+        auth: addonProvider.getDownloadAuth(),
+      };
+
+      downloadedFilePath = await this._downloadService.downloadZipFile(downloadOptions);
 
       onUpdate?.call(this, AddonInstallState.BackingUp, 50);
       this._addonInstalledSrc.next({
@@ -909,6 +914,7 @@ export class AddonService {
     return provider.getById(externalId, installation).pipe(
       map((searchResult) => {
         if (!searchResult) {
+          console.warn("provider get by id returned nothing");
           return undefined;
         }
 
@@ -1665,7 +1671,7 @@ export class AddonService {
       throw new Error(ERROR_ADDON_ALREADY_INSTALLED);
     }
 
-    const externalAddon = await this.getAddon(externalId, providerName, installation).toPromise();
+    const externalAddon = await firstValueFrom(this.getAddon(externalId, providerName, installation));
     if (!externalAddon) {
       throw new Error(`External addon not found: ${providerName}|${externalId}`);
     }
@@ -1845,7 +1851,10 @@ export class AddonService {
       return undefined;
     }
 
-    const dependencies = latestFile.dependencies.map(this.createAddonDependency);
+    const dependencies = Array.isArray(latestFile.dependencies)
+      ? latestFile.dependencies.map(this.createAddonDependency)
+      : [];
+
     const fundingLinks = Array.isArray(searchResult.fundingLinks) ? [...searchResult.fundingLinks] : [];
 
     console.debug(`Create Addon: `, installation, latestFile);

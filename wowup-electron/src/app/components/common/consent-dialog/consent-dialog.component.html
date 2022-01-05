@@ -1,26 +1,32 @@
-<h1 mat-dialog-title>{{ "WowUp Permissions Setup" | translate }}</h1>
+<h1 mat-dialog-title>{{ "DIALOGS.PERMISSIONS.TITLE" | translate }}</h1>
 <form [formGroup]="consentOptions" (ngSubmit)="onSubmit($event)">
-  <div mat-dialog-content>
-    <p>{{ "Before we get started we need to setup a few permissions for the app." | translate }}</p>
+  <div mat-dialog-content #dialogContent>
+    <p>{{ "DIALOGS.PERMISSIONS.MESSAGE" | translate }}</p>
     <div class="mb-3">
       <div>
-        <mat-slide-toggle formControlName="telemetry">Allow Telemetry</mat-slide-toggle>
+        <mat-slide-toggle formControlName="telemetry">{{
+          "DIALOGS.PERMISSIONS.TELEMETRY.TOGGLE_LABEL" | translate
+        }}</mat-slide-toggle>
       </div>
-      <mat-hint>{{ "DIALOGS.TELEMETRY.DESCRIPTION" | translate }}</mat-hint>
+      <mat-hint>{{ "DIALOGS.PERMISSIONS.TELEMETRY.DESCRIPTION" | translate }}</mat-hint>
     </div>
     <div>
       <div>
-        <mat-slide-toggle formControlName="wagoProvider">Enable Wago.io Provider</mat-slide-toggle>
+        <mat-slide-toggle formControlName="wagoProvider">{{
+          "DIALOGS.PERMISSIONS.WAGO.TOGGLE_LABEL" | translate
+        }}</mat-slide-toggle>
       </div>
-      <mat-hint>{{
-        "Enabled the Wago.io addon provider, this will display an ad required to use their service. The ads directly benefit the authors of your favorite addons!"
-          | translate
-      }}</mat-hint>
+      <mat-hint
+        class="pre-wrap changelog"
+        [innerHTML]="
+          'DIALOGS.PERMISSIONS.WAGO.DESCRIPTION' | translate: { termsUrl: wagoTermsUrl, dataUrl: wagoDataUrl }
+        "
+      ></mat-hint>
     </div>
   </div>
   <div mat-dialog-actions align="end">
     <button mat-raised-button color="primary" type="submit" cdkFocusInitial>
-      {{ "Confirm" | translate }}
+      {{ "DIALOGS.PERMISSIONS.POSITIVE_BUTTON" | translate }}
     </button>
   </div>
 </form>

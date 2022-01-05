@@ -146,14 +146,13 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
   }
 
   public onClickAdExplainer(): void {
-    const dialogRef = this._dialog.open(AlertDialogComponent, {
+    this._dialog.open(AlertDialogComponent, {
       minWidth: 250,
+      maxWidth: 400,
       disableClose: true,
       data: {
-        title: this._translateService.instant("Why am I seeing this ad?"),
-        message: this._translateService.instant(
-          `In order to use wago.io as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.`
-        ),
+        title: this._translateService.instant("ADS.AD_EXPLAINER_DIALOG.TITLE"),
+        message: this._translateService.instant("ADS.AD_EXPLAINER_DIALOG.MESSAGE"),
       },
     });
   }

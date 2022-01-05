@@ -160,7 +160,9 @@ if (shouldFindBreak) {
   runFindBreak().catch((e) => {
     const allTests = getTests();
     const lastTestFile = allTests[allTests.length - 1];
+    const relativePath = lastTestFile.substr(lastTestFile.indexOf("src\\") + 4);
     console.error(`Failed test found: ${lastTestFile}`);
+    console.error(`ng test --watch=false --include='${relativePath}'`);
     console.error(e);
   });
 }

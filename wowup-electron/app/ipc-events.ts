@@ -158,6 +158,10 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
 export function initializeIpcHandlers(window: BrowserWindow): void {
   log.info("process.versions", process.versions);
 
+  ipcMain.on("webview-error", (evt, err, msg) => {
+    log.error("webview-error", err, msg);
+  });
+
   // Just forward the token event out to the window
   // this is not a handler, just a passive listener
   ipcMain.on("wago-token-received", (evt, token) => {
@@ -564,6 +568,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return await push.subscribeToChannel(channel);
   });
 
+  handle("get-focus", () => {
+    return window.isFocused();
+  });
+
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {
     handleDownloadFile(arg).catch((e) => console.error(e.toString()));
   });
@@ -596,10 +604,17 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     try {
       await fsp.mkdir(arg.outputFolder, { recursive: true });
 
-      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
-      log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
+      const downloadUrl = new URL(arg.url);
+      if (typeof arg.auth?.queryParams === "object") {
+        for (const [key, value] of Object.entries(arg.auth.queryParams)) {
+          downloadUrl.searchParams.set(key, value);
+        }
+      }
 
-      const url = new URL(arg.url).toString();
+      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
+      log.info(`[DownloadFile] '${downloadUrl.toString()}' -> '${savePath}'`);
+
+      const url = downloadUrl.toString();
       const writer = fs.createWriteStream(savePath);
 
       try {
@@ -607,13 +622,25 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
           let size = 0;
           let percentMod = -1;
 
-          const req = net.request(url);
+          const req = net.request({
+            url,
+            redirect: "manual",
+          });
+
+          if (typeof arg.auth?.headers === "object") {
+            for (const [key, value] of Object.entries(arg.auth.headers)) {
+              log.info(`Setting header: ${key}=${value}`);
+              req.setHeader(key, value);
+            }
+          }
+
+          req.on("redirect", (status, method, redirectUrl) => {
+            log.info(`[download] caught redirect`, status, redirectUrl);
+            req.followRedirect();
+          });
+
           req.on("response", (response) => {
             const fileLength = parseInt((response.headers["content-length"] as string) ?? "0", 10);
-
-            if (response.statusCode < 200 || response.statusCode >= 300) {
-              return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
-            }
 
             response.on("data", (data) => {
               writer.write(data, () => {
@@ -625,8 +652,14 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
                 }
               });
             });
+
             response.on("end", () => {
               console.log("No more data in response.");
+
+              if (response.statusCode < 200 || response.statusCode >= 300) {
+                return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
+              }
+
               return resolve(undefined);
             });
             response.on("error", (err) => {

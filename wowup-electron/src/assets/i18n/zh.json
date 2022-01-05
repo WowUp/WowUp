@@ -31,6 +31,13 @@
     "RESET_BUTTON": "重置",
     "VERSION_MISMATCH": "版本号不匹配"
   },
+  "ADS": {
+    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_DIALOG": {
+      "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.",
+      "TITLE": "Why am I seeing this ad?"
+    }
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -292,6 +299,19 @@
     "NEW_VERSION_POPUP": {
       "TITLE": "更新记录 {versionNumber}"
     },
+    "PERMISSIONS": {
+      "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
+      "POSITIVE_BUTTON": "Confirm",
+      "TELEMETRY": {
+        "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
+        "TOGGLE_LABEL": "Allow Telemetry"
+      },
+      "TITLE": "WowUp Permissions Setup",
+      "WAGO": {
+        "DESCRIPTION": "Enabled the Wago.io addon provider, this will display an ad required to use their service.\nThe ads directly benefit the authors of your favorite addons!",
+        "TOGGLE_LABEL": "Enable Wago.io Provider"
+      }
+    },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "此路径可能不是有效的《魔兽世界》应用程序：\n{selectedPath}"
     },
@@ -445,6 +465,7 @@
     },
     "OPTIONS": {
       "ADDON": {
+        "AD_REQUIRED_HINT": "Ad required",
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "选择从哪些提供方搜索和安装新插件",
           "FIELD_LABEL": "启用插件提供方",

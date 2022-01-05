@@ -5,16 +5,21 @@
 
   <!-- SET LANGUAGE -->
   <div>
-
     <div>
       {{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.FIELD_LABEL" | translate }}
     </div>
     <small class="text-2">{{ "PAGES.OPTIONS.ADDON.ENABLED_PROVIDERS.DESCRIPTION" | translate }}</small>
     <div class="bg-secondary-3">
       <mat-selection-list #shoes (selectionChange)="onProviderStateSelectionChange($event)">
-        <mat-list-option *ngFor="let state of addonProviderStates$ | async" [value]="state.providerName"
-          [selected]="state.enabled">
-          {{state.providerName}}
+        <mat-list-option
+          *ngFor="let state of addonProviderStates$ | async"
+          [value]="state.providerName"
+          [selected]="state.enabled"
+        >
+          <div>
+            {{ state.providerName }}
+            <span *ngIf="state.adRequired" class="text-3"> - {{ "PAGES.OPTIONS.ADDON.AD_REQUIRED_HINT" | translate }}</span>
+          </div>
         </mat-list-option>
       </mat-selection-list>
     </div>

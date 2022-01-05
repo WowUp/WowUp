@@ -24,14 +24,36 @@
         <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_DESCRIPTION" | translate }}</small>
       </div>
       <div>
-        <button id="dump-debug-btn" mat-flat-button color="primary" (click)="onLogDebugData()"
-          [disabled]="dumpingDebugData === true">
+        <button
+          id="dump-debug-btn"
+          mat-flat-button
+          color="primary"
+          (click)="onLogDebugData()"
+          [disabled]="dumpingDebugData === true"
+        >
           <span *ngIf="dumpingDebugData === false">{{ "PAGES.OPTIONS.DEBUG.DEBUG_DATA_BUTTON" | translate }}</span>
-          <div *ngIf="dumpingDebugData === true" [style.height]="'37px'" [style.width]="'100px'"
-            class="row align-items-center justify-content-center">
-            <mat-spinner [diameter]="30" color="warn" mode="indeterminate">
-            </mat-spinner>
+          <div
+            *ngIf="dumpingDebugData === true"
+            [style.height]="'37px'"
+            [style.width]="'100px'"
+            class="row align-items-center justify-content-center"
+          >
+            <mat-spinner [diameter]="30" color="warn" mode="indeterminate"> </mat-spinner>
           </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>{{ "Debug ad frame" | translate }}</div>
+        <small class="text-2">{{ "Show the dev tools for the ad frame" | translate }}</small>
+      </div>
+      <div>
+        <button mat-flat-button color="primary" (click)="onDebugAdFrame()">
+          {{ "Open Dev Tools" | translate }}
         </button>
       </div>
     </div>

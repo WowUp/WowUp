@@ -1,6 +1,7 @@
 import { HttpClientModule } from "@angular/common/http";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
+import { Subject } from "rxjs";
 import { MatModule } from "../../../modules/mat-module";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { AddonService } from "../../../services/addons/addon.service";
@@ -23,10 +24,13 @@ describe("OptionsAddonSectionComponent", () => {
 
     addonProviderService = jasmine.createSpyObj(
       "AddonProviderFactory",
+      {},
       {
-        getAddonProviderStates: () => [],
-      },
-      {}
+        addonProviderChange$: new Subject<any>(),
+        getAddonProviderStates() {
+          return [];
+        },
+      }
     );
 
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {

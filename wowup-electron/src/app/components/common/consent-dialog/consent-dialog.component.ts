@@ -1,6 +1,9 @@
-import { Component } from "@angular/core";
+import { AfterViewChecked, Component, ElementRef, ViewChild } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
+import { AppConfig } from "../../../../environments/environment";
+import { LinkService } from "../../../services/links/link.service";
+import { formatDynamicLinks } from "../../../utils/dom.utils";
 
 export interface ConsentDialogResult {
   telemetry: boolean;
@@ -12,14 +15,24 @@ export interface ConsentDialogResult {
   templateUrl: "./consent-dialog.component.html",
   styleUrls: ["./consent-dialog.component.scss"],
 })
-export class ConsentDialogComponent {
+export class ConsentDialogComponent implements AfterViewChecked {
+  @ViewChild("dialogContent", { read: ElementRef }) public dialogContent!: ElementRef;
+
   public consentOptions: FormGroup;
 
-  public constructor(public dialogRef: MatDialogRef<ConsentDialogComponent>) {
+  public readonly wagoTermsUrl = AppConfig.wago.termsUrl;
+  public readonly wagoDataUrl = AppConfig.wago.dataConsentUrl;
+
+  public constructor(public dialogRef: MatDialogRef<ConsentDialogComponent>, private _linkService: LinkService) {
     this.consentOptions = new FormGroup({
       telemetry: new FormControl(true),
-      wagoProvider: new FormControl(false),
+      wagoProvider: new FormControl(true),
     });
+  }
+
+  public ngAfterViewChecked(): void {
+    const descriptionContainer: HTMLDivElement = this.dialogContent?.nativeElement;
+    formatDynamicLinks(descriptionContainer, this.onOpenLink);
   }
 
   public onNoClick(): void {
@@ -33,4 +46,10 @@ export class ConsentDialogComponent {
 
     this.dialogRef.close(this.consentOptions.value);
   }
+
+  private onOpenLink = (element: HTMLAnchorElement): boolean => {
+    this._linkService.confirmLinkNavigation(element.href).subscribe();
+
+    return false;
+  };
 }

@@ -7,6 +7,7 @@ import { AddonCategory, AddonChannelType, AdPageOptions } from "../../common/wow
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
+import { DownloadAuth } from "../../common/models/download-request";
 
 export type AddonProviderType =
   | "Curse"
@@ -123,6 +124,10 @@ export abstract class AddonProvider {
   }
 
   public getAdPageParams(): AdPageOptions | undefined {
+    return undefined;
+  }
+
+  public getDownloadAuth(): DownloadAuth | undefined {
     return undefined;
   }
 }

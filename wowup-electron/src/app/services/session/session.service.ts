@@ -28,7 +28,6 @@ export class SessionService {
   private readonly _myAddonsCompactVersionSrc = new BehaviorSubject<boolean>(false);
   private readonly _adSpaceSrc = new BehaviorSubject<boolean>(false);
   private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
-
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
   private _selectedDetailTabType: DetailsTabType;
@@ -49,6 +48,7 @@ export class SessionService {
   public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
   public readonly adSpace$ = this._adSpaceSrc.asObservable(); // TODO this should be driven by the enabled providers
   public readonly enableControls$ = this._enableControlsSrc.asObservable();
+  public readonly debugAdFrame$ = new Subject<boolean>();
 
   public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
@@ -70,7 +70,7 @@ export class SessionService {
       this.onWowInstallationsChange(installations)
     );
 
-    this._addonProviderService.addonProviderChange$.subscribe((provider) => {
+    this._addonProviderService.addonProviderChange$.subscribe(() => {
       this.updateAdSpace();
     });
 

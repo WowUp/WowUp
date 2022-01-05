@@ -76,7 +76,9 @@
 
   <div class="spacer"></div>
   <div *ngIf="sessionService.adSpace$ | async" class="ad-space text-1 bg-secondary-3">
-    <button mat-button style="justify-self: center" (click)="onClickAdExplainer()">Why am I seeing this ad?</button>
+    <button mat-button style="justify-self: center" (click)="onClickAdExplainer()">
+      {{ "ADS.AD_EXPLAINER_BUTTON" | translate }}
+    </button>
     <div class="ad">
       <app-webview *ngFor="let params of adPageParams$ | async" [options]="params"></app-webview>
     </div>

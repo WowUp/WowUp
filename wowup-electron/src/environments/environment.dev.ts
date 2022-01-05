@@ -16,6 +16,10 @@ export const AppConfig = {
   azure: {
     applicationInsightsKey: "4a53e8d9-796c-4f80-b1a6-9a058374dd6d",
   },
+  wago: {
+    termsUrl: "https://addons.wago.io/agreements/terms-of-service",
+    dataConsentUrl: "https://addons.wago.io/agreements/wowup-data-consent",
+  },
   autoUpdateIntervalMs: 3600000, // 1 hour
   appUpdateIntervalMs: 3600000, // 1 hour
   defaultHttpTimeoutMs: 10000,

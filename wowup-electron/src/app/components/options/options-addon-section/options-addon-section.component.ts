@@ -1,10 +1,13 @@
-import { Component, NgZone, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { MatSelectionListChange } from "@angular/material/list";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { AddonProviderType } from "../../../addon-providers/addon-provider";
 import { BehaviorSubject } from "rxjs";
+
+interface AddonProviderStateModel extends AddonProviderState {
+  adRequired: boolean;
+}
 
 @Component({
   selector: "app-options-addon-section",
@@ -12,7 +15,7 @@ import { BehaviorSubject } from "rxjs";
   styleUrls: ["./options-addon-section.component.scss"],
 })
 export class OptionsAddonSectionComponent implements OnInit {
-  public addonProviderStates$ = new BehaviorSubject<AddonProviderState[]>([]);
+  public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
 
   public constructor(private _addonProviderService: AddonProviderFactory) {
     this._addonProviderService.addonProviderChange$.subscribe(() => {
@@ -32,8 +35,12 @@ export class OptionsAddonSectionComponent implements OnInit {
   }
 
   private loadProviderStates() {
-    this.addonProviderStates$.next(
-      this._addonProviderService.getAddonProviderStates().filter((provider) => provider.canEdit)
-    );
+    const providerStates = this._addonProviderService.getAddonProviderStates().filter((provider) => provider.canEdit);
+    const providerStateModels: AddonProviderStateModel[] = providerStates.map((state) => {
+      const provider = this._addonProviderService.getProvider(state.providerName);
+      return { ...state, adRequired: provider.adRequired };
+    });
+
+    this.addonProviderStates$.next(providerStateModels);
   }
 }

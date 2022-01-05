@@ -299,17 +299,38 @@ function createWindow(): BrowserWindow {
   // Keep track of window state
   mainWindowManager.monitorState(win);
 
+  win.on("blur", () => {
+    win.webContents.send("blur");
+  });
+
+  win.on("focus", () => {
+    win.webContents.send("focus");
+  });
+
   win.webContents.userAgent = USER_AGENT;
 
-  win.webContents.on("will-attach-webview", (evt, webPreferences, params) => {
-    log.debug("will-attach-webview", webPreferences, params);
+  win.webContents.on("will-attach-webview", (evt, webPreferences) => {
+    log.debug("will-attach-webview");
 
-    webPreferences.additionalArguments = [
-        `--log-path=${LOG_PATH}`
-    ];
-    
-    // in order for the wago token to be delivered this must be disabled
-    // webPreferences.contextIsolation = false;
+    webPreferences.additionalArguments = [`--log-path=${LOG_PATH}`];
+    webPreferences.contextIsolation = true;
+  });
+
+  win.webContents.on("did-attach-webview", (evt, webContents) => {
+    webContents.session.setUserAgent(webContents.userAgent);
+
+    webContents.on("did-fail-load", (evt, code, desc, url) => {
+      log.error("[webview] did-fail-load", code, desc, url);
+    });
+
+    webContents.on("will-navigate", (evt, url) => {
+      log.debug("[webview] will-navigate", url);
+    });
+
+    webContents.setWindowOpenHandler((details) => {
+      log.debug("[webview] new-window", details);
+      return { action: "allow" };
+    });
   });
 
   win.webContents.on("zoom-changed", (evt, zoomDirection) => {

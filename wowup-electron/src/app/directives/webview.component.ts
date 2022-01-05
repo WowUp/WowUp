@@ -1,27 +1,33 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from "@angular/core";
 import { nanoid } from "nanoid";
+import { Subject, takeUntil } from "rxjs";
 import { AdPageOptions } from "../../common/wowup/models";
 import { FileService } from "../services/files/file.service";
+import { SessionService } from "../services/session/session.service";
 
 @Directive({
   selector: "app-webview",
 })
 export class WebviewComponent implements OnInit, OnDestroy {
-  @Input("options") options: AdPageOptions;
+  @Input("options") public options: AdPageOptions;
 
+  private readonly destroy$: Subject<boolean> = new Subject<boolean>();
   private _tag: Electron.WebviewTag;
   private _id: string = nanoid();
   private _element: ElementRef;
 
-  constructor(el: ElementRef, private _fileService: FileService) {
+  public constructor(el: ElementRef, private _fileService: FileService, private _sessionService: SessionService) {
     this._element = el;
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.initWebview(this._element).catch((e) => console.error(e));
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+
     // Clean up the webview element
     if (this._tag) {
       if (this._tag.isDevToolsOpened()) {
@@ -35,12 +41,17 @@ export class WebviewComponent implements OnInit, OnDestroy {
 
   private async initWebview(element: ElementRef) {
     const pageReferrer = this.options.referrer ? `httpreferrer="${this.options.referrer}"` : "";
-    const userAgent = this.options.userAgent ? `useragent="${this.options.userAgent}"` : "";
+    const userAgent = this.options.userAgent ?? "";
     const preload = this.options.preloadFilePath
       ? `preload="${await this._fileService.getAssetFilePath(this.options.preloadFilePath)}"`
       : "";
+    const partition = this.options.partition ?? "memcache";
+
+    console.debug("initWebview", this.options);
 
     const placeholder = document.createElement("div");
+
+    /* eslint-disable no-irregular-whitespace */
     placeholder.innerHTML = `
     <webview id="${this._id}" 
       src="${this.options.pageUrl}" 
@@ -50,9 +61,11 @@ export class WebviewComponent implements OnInit, OnDestroy {
       nodeintegrationinsubframes​="false"
       plugins​="false"
       allowpopups​="false"
+      partition="${partition}"
       ${preload}
-      ${userAgent}>
+      useragent="${userAgent}">
     </webview>`;
+    /* eslint-enable no-irregular-whitespace */
 
     this._tag = placeholder.firstElementChild as Electron.WebviewTag;
 
@@ -62,6 +75,13 @@ export class WebviewComponent implements OnInit, OnDestroy {
 
   private onWebviewReady = () => {
     console.debug("onWebviewReady", this._tag);
+
+    this._sessionService.debugAdFrame$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (!this._tag.isDevToolsOpened()) {
+        this._tag?.openDevTools();
+      }
+    });
+
     this._tag.removeEventListener("dom-ready", this.onWebviewReady);
     // this._tag.openDevTools();
   };
