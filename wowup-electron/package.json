@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.6.0-beta.11",
+  "version": "2.6.0-beta.12",
   "description": "World of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
@@ -88,7 +88,7 @@
     "cross-env": "7.0.3",
     "del": "6.0.0",
     "dotenv": "10.0.0",
-    "electron": "16.0.5",
+    "electron": "16.0.6",
     "electron-builder": "22.14.5",
     "electron-notarize": "1.1.1",
     "electron-reload": "2.0.0-alpha.1",
