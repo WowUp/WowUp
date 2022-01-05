@@ -10,6 +10,8 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { ColumnState } from "../../models/wowup/column-state";
 import { map } from "rxjs/operators";
 import { WowUpAccountService } from "../wowup/wowup-account.service";
+import { AddonService } from "../addons/addon.service";
+import { AddonProviderFactory } from "../addons/addon.provider.factory";
 
 @Injectable({
   providedIn: "root",
@@ -24,8 +26,8 @@ export class SessionService {
   private readonly _myAddonsColumnsSrc = new BehaviorSubject<ColumnState[]>([]);
   private readonly _targetFileInstallCompleteSrc = new Subject<boolean>();
   private readonly _myAddonsCompactVersionSrc = new BehaviorSubject<boolean>(false);
+  private readonly _adSpaceSrc = new BehaviorSubject<boolean>(false);
   private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
-
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
 
   private _selectedDetailTabType: DetailsTabType;
@@ -44,7 +46,9 @@ export class SessionService {
   public readonly wowUpAccount$ = this._wowUpAccountService.wowUpAccountSrc.asObservable();
   public readonly wowUpAccountPushEnabled$ = this._wowUpAccountService.accountPushSrc.asObservable();
   public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
+  public readonly adSpace$ = this._adSpaceSrc.asObservable(); // TODO this should be driven by the enabled providers
   public readonly enableControls$ = this._enableControlsSrc.asObservable();
+  public readonly debugAdFrame$ = new Subject<boolean>();
 
   public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
@@ -55,7 +59,9 @@ export class SessionService {
   public constructor(
     private _warcraftInstallationService: WarcraftInstallationService,
     private _preferenceStorageService: PreferenceStorageService,
-    private _wowUpAccountService: WowUpAccountService
+    private _wowUpAccountService: WowUpAccountService,
+    private _addonService: AddonService,
+    private _addonProviderService: AddonProviderFactory
   ) {
     this._selectedDetailTabType =
       this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
@@ -63,6 +69,18 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$.subscribe((installations) =>
       this.onWowInstallationsChange(installations)
     );
+
+    this._addonProviderService.addonProviderChange$.subscribe(() => {
+      this.updateAdSpace();
+    });
+
+    this.updateAdSpace();
+  }
+
+  private updateAdSpace() {
+    const allProviders = this._addonProviderService.getEnabledAddonProviders();
+    console.debug("updateAdSpace", allProviders);
+    this._adSpaceSrc.next(allProviders.findIndex((p) => p.adRequired) !== -1);
   }
 
   public get wowUpAuthToken(): string {

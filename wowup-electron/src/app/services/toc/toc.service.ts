@@ -25,6 +25,7 @@ const TOC_X_TUKUI_PROJECTID = "X-Tukui-ProjectID"; // WowInterface
 const TOC_X_TUKUI_PROJECTFOLDERS = "X-Tukui-ProjectFolders"; // WowInterface
 const TOC_X_WEBSITE = "X-Website";
 const TOC_X_WOWI_ID = "X-WoWI-ID"; // WowInterface
+const TOC_X_WAGO_ID = "X-Wago-ID"; // WowInterface
 
 @Injectable({
   providedIn: "root",
@@ -54,6 +55,7 @@ export class TocService {
       category: this.getValue(TOC_X_CATEGORY, tocText),
       localizations: this.getValue(TOC_X_LOCALIZATIONS, tocText),
       wowInterfaceId: this.getValue(TOC_X_WOWI_ID, tocText),
+      wagoAddonId: this.getValue(TOC_X_WAGO_ID, tocText),
       dependencies,
       dependencyList,
       tukUiProjectId: this.getValue(TOC_X_TUKUI_PROJECTID, tocText),

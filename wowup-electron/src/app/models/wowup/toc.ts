@@ -12,6 +12,7 @@ export interface Toc {
   dependencies?: string;
   curseProjectId?: string;
   wowInterfaceId?: string;
+  wagoAddonId?: string;
   tukUiProjectId?: string;
   tukUiProjectFolders?: string;
   loadOnDemand?: string;

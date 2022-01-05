@@ -9,9 +9,14 @@ import { TranslateCompiler, TranslateLoader, TranslateModule } from "@ngx-transl
 import { httpLoaderFactory } from "../../../app.module";
 import { MatModule } from "../../../modules/mat-module";
 import { AlertDialogComponent } from "./alert-dialog.component";
+import { LinkService } from "../../../services/links/link.service";
 
 describe("AlertDialogComponent", () => {
+  let linkService: any;
+
   beforeEach(async () => {
+    linkService = jasmine.createSpyObj("LinkService", [""], {});
+
     await TestBed.configureTestingModule({
       declarations: [AlertDialogComponent],
       imports: [
@@ -33,6 +38,7 @@ describe("AlertDialogComponent", () => {
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
+        { provide: LinkService, useValue: linkService },
       ],
     }).compileComponents();
   });

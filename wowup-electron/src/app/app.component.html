@@ -1,7 +1,12 @@
-<div *ngIf="quitEnabled === false" class="app" [ngClass]="[wowUpService.currentTheme, electronService.platform]">
-  <app-titlebar class="bg-primary"></app-titlebar>
-  <app-horizontal-tabs></app-horizontal-tabs>
-  <div class="content">
+<div
+  *ngIf="(showPreLoad$ | async) === false && quitEnabled === false"
+  class="app"
+  [ngClass]="[wowUpService.currentTheme, electronService.platform]"
+>
+  <app-titlebar class="gtitle"></app-titlebar>
+  <!-- <app-horizontal-tabs></app-horizontal-tabs> -->
+  <app-vertical-tabs class="gtabs"></app-vertical-tabs>
+  <div class="content bg-secondary-3 gmain">
     <!-- <div class="tabs">
       <app-vertical-tabs></app-vertical-tabs>
     </div> -->
@@ -9,7 +14,7 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-  <app-footer></app-footer>
+  <app-footer class="gfooter"></app-footer>
 </div>
 
-<app-animated-logo *ngIf="showPreLoad === true || quitEnabled === true"></app-animated-logo>
+<app-animated-logo *ngIf="(showPreLoad$ | async) === true || quitEnabled === true"></app-animated-logo>

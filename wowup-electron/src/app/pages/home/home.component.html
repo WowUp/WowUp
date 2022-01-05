@@ -6,13 +6,14 @@
 <div *ngIf="appReady === true" class="page-container bg-secondary-2" [ngClass]="{ linux: electronService.isLinux }">
   <div class="tabs header-less-tabs">
     <mat-tab-group
+      class="h-100 grow-tab-content"
       mat-align-tabs="center"
       animationDuration="0ms"
       [backgroundColor]="'primary'"
       [disablePagination]="true"
       [selectedIndex]="sessionService.selectedHomeTab$ | async"
     >
-      <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.MY_ADDONS_TAB_TITLE' | translate">
+      <mat-tab class='h-100' [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.MY_ADDONS_TAB_TITLE' | translate">
         <app-my-addons [tabIndex]="TAB_INDEX_MY_ADDONS"></app-my-addons>
       </mat-tab>
       <mat-tab [disabled]="hasWowClient !== true" [label]="'PAGES.HOME.GET_ADDONS_TAB_TITLE' | translate">

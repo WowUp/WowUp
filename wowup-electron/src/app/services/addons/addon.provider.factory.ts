@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AddonProvider } from "../../addon-providers/addon-provider";
+import { AddonProvider, AddonProviderType } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
@@ -17,14 +17,21 @@ import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
+import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
 import { AddonProviderState } from "../../models/wowup/addon-provider-state";
-import { ADDON_PROVIDER_UNKNOWN } from "../../../common/constants";
+import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
+import { Subject } from "rxjs";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AddonProviderFactory {
+  private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
+
   private _providerMap: Map<string, AddonProvider> = new Map();
+
+  public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
 
   public constructor(
     private _cachingService: CachingService,
@@ -35,9 +42,48 @@ export class AddonProviderFactory {
     private _fileService: FileService,
     private _tocService: TocService,
     private _warcraftService: WarcraftService,
-    private _wowupApiService: WowUpApiService
+    private _wowupApiService: WowUpApiService,
+    private _preferenceStorageService: PreferenceStorageService
   ) {
     this.loadProviders();
+  }
+
+  public shouldShowConsentDialog(): boolean {
+    return this._preferenceStorageService.get(WAGO_PROMPT_KEY) === undefined;
+  }
+
+  public updateWagoConsent(): void {
+    return this._preferenceStorageService.set(WAGO_PROMPT_KEY, true);
+  }
+
+  public setProviderEnabled(type: AddonProviderType, enabled: boolean) {
+    if (!this._providerMap.has(type)) {
+      throw new Error("cannot set provider state, not found");
+    }
+
+    const provider = this._providerMap.get(type);
+    if (!provider.allowEdit) {
+      throw new Error(`this provider is not editable: ${type}`);
+    }
+
+    this._wowupService.setAddonProviderState({
+      providerName: type,
+      enabled: enabled,
+      canEdit: true,
+    });
+
+    provider.enabled = enabled;
+    this._addonProviderChangeSrc.next(provider);
+  }
+
+  public createWagoAddonProvider(): WagoAddonProvider {
+    return new WagoAddonProvider(
+      this._electronService,
+      this._cachingService,
+      this._networkService,
+      this._warcraftService,
+      this._tocService
+    );
   }
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
@@ -136,6 +182,18 @@ export class AddonProviderFactory {
     return providers;
   }
 
+  public getAdRequiredProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled && ap.adRequired) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
   public getAddonProviderStates(): AddonProviderState[] {
     const states: AddonProviderState[] = [];
 
@@ -188,6 +246,7 @@ export class AddonProviderFactory {
         this.createRaiderIoAddonProvider(),
         this.createWowUpCompanionAddonProvider(),
         this.createWowUpAddonProvider(),
+        this.createWagoAddonProvider(),
         this.createCurseAddonProvider(),
         this.createTukUiAddonProvider(),
         this.createWowInterfaceAddonProvider(),

@@ -58,6 +58,7 @@ export class ElectronService {
   public readonly _customProtocolSrc = new BehaviorSubject("");
   private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
   private readonly _windowResumedSrc = new Subject<void>();
+  private readonly _windowFocusedSrc = new BehaviorSubject<boolean>(true);
 
   private _appVersion = "";
   private _opts!: AppOptions;
@@ -68,6 +69,7 @@ export class ElectronService {
   public readonly customProtocol$ = this._customProtocolSrc.asObservable();
   public readonly appUpdate$ = this._appUpdateSrc.asObservable();
   public readonly windowResumed$ = this._windowResumedSrc.asObservable();
+  public readonly windowFocused$ = this._windowFocusedSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -122,6 +124,14 @@ export class ElectronService {
       this._windowMaximizedSrc.next(false);
     });
 
+    this.onRendererEvent("blur", () => {
+      this._windowFocusedSrc.next(false);
+    });
+
+    this.onRendererEvent("focus", () => {
+      this._windowFocusedSrc.next(true);
+    });
+
     this.onRendererEvent(IPC_CUSTOM_PROTOCOL_RECEIVED, (evt, protocol: string) => {
       console.debug(IPC_CUSTOM_PROTOCOL_RECEIVED, protocol);
       this._customProtocolSrc.next(protocol);
@@ -150,6 +160,13 @@ export class ElectronService {
     this.invoke(IPC_SET_ZOOM_LIMITS, 1, 1).catch((e) => {
       console.error("Failed to set zoom limits", e);
     });
+    
+
+    this.isWindowFocused()
+      .then((focused) => {
+        this._windowFocusedSrc.next(focused);
+      })
+      .catch(console.error);
   }
 
   private onWindowOnline = () => {
@@ -251,6 +268,10 @@ export class ElectronService {
 
   public async leaveFullScreen(): Promise<void> {
     await this.invoke(IPC_WINDOW_LEAVE_FULLSCREEN);
+  }
+
+  public async isWindowFocused(): Promise<boolean> {
+    return await this.invoke("get-focus");
   }
 
   public async readClipboardText(): Promise<string> {

@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { nanoid } from "nanoid";
 import * as path from "path";
-import { BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription } from "rxjs";
+import { BehaviorSubject, firstValueFrom, forkJoin, from, Observable, of, Subject, Subscription } from "rxjs";
 import { catchError, filter, first, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import * as slug from "slug";
 import { v4 as uuidv4 } from "uuid";
@@ -51,7 +51,7 @@ import { getEnumName } from "../../utils/enum.utils";
 import * as SearchResults from "../../utils/search-result.utils";
 import { capitalizeString } from "../../utils/string.utils";
 import { AnalyticsService } from "../analytics/analytics.service";
-import { DownloadService } from "../download/download.service";
+import { DownloadOptions, DownloadService } from "../download/download.service";
 import { FileService } from "../files/file.service";
 import { AddonStorageService } from "../storage/addon-storage.service";
 import { TocService } from "../toc/toc.service";
@@ -98,6 +98,7 @@ export class AddonService {
   private readonly _searchErrorSrc = new Subject<GenericProviderError>();
   private readonly _installQueue = new Subject<InstallQueueItem>();
   private readonly _anyUpdatesAvailableSrc = new BehaviorSubject<boolean>(false);
+  private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
 
   private _activeInstalls: AddonUpdateEvent[] = [];
   private _subscriptions: Subscription[] = [];
@@ -110,6 +111,7 @@ export class AddonService {
   public readonly scanError$ = this._scanErrorSrc.asObservable();
   public readonly searchError$ = this._searchErrorSrc.asObservable();
   public readonly anyUpdatesAvailable$ = this._anyUpdatesAvailableSrc.asObservable();
+  public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
 
   public constructor(
     private _addonStorage: AddonStorageService,
@@ -385,12 +387,13 @@ export class AddonService {
       throw new Error("Addon already installed");
     }
 
-    const addon = await this.getAddon(
-      potentialAddon.externalId,
-      potentialAddon.providerName,
-      installation,
-      targetFile
-    ).toPromise();
+    const latestFile = SearchResults.getLatestFile(potentialAddon, installation.defaultAddonChannelType);
+    if (!latestFile) {
+      console.warn(`Latest file not found`);
+      return undefined;
+    }
+
+    const addon = this.createAddon(potentialAddon, targetFile ?? latestFile, installation);
 
     if (addon?.id !== undefined) {
       await this._addonStorage.setAsync(addon.id, addon);
@@ -399,7 +402,9 @@ export class AddonService {
   }
 
   public getRequiredDependencies(addon: Addon): AddonDependency[] {
-    return addon.dependencies.filter((dep) => dep.type === AddonDependencyType.Required);
+    return Array.isArray(addon.dependencies)
+      ? addon.dependencies.filter((dep) => dep.type === AddonDependencyType.Required)
+      : [];
   }
 
   public getAllAddonsAvailableForUpdate(wowInstallation?: WowInstallation): Addon[] {
@@ -534,7 +539,7 @@ export class AddonService {
   ): Promise<void> {
     const addon = await this.getAddonById(addonId);
     if (addon == null || !addon.downloadUrl) {
-      throw new Error("Addon not found or invalid");
+      throw new Error(`Addon not found or invalid: ${addonId}`);
     }
 
     onUpdate?.call(this, AddonInstallState.Pending, 0);
@@ -618,11 +623,14 @@ export class AddonService {
     let unzippedDirectory = "";
 
     try {
-      downloadedFilePath = await this._downloadService.downloadZipFile(
-        addon.downloadUrl,
-        downloadFileName,
-        this._wowUpService.applicationDownloadsFolderPath
-      );
+      const downloadOptions: DownloadOptions = {
+        fileName: downloadFileName,
+        outputFolder: this._wowUpService.applicationDownloadsFolderPath,
+        url: addon.downloadUrl,
+        auth: addonProvider.getDownloadAuth(),
+      };
+
+      downloadedFilePath = await this._downloadService.downloadZipFile(downloadOptions);
 
       onUpdate?.call(this, AddonInstallState.BackingUp, 50);
       this._addonInstalledSrc.next({
@@ -906,6 +914,7 @@ export class AddonService {
     return provider.getById(externalId, installation).pipe(
       map((searchResult) => {
         if (!searchResult) {
+          console.warn("provider get by id returned nothing");
           return undefined;
         }
 
@@ -1662,7 +1671,7 @@ export class AddonService {
       throw new Error(ERROR_ADDON_ALREADY_INSTALLED);
     }
 
-    const externalAddon = await this.getAddon(externalId, providerName, installation).toPromise();
+    const externalAddon = await firstValueFrom(this.getAddon(externalId, providerName, installation));
     if (!externalAddon) {
       throw new Error(`External addon not found: ${providerName}|${externalId}`);
     }
@@ -1752,11 +1761,14 @@ export class AddonService {
     return !!this.getByExternalId(externalId, providerName, installation.id);
   }
 
+  // TODO move this to a different service
   public setProviderEnabled(providerName: string, enabled: boolean): void {
     const provider = this._addonProviderService.getProvider(providerName);
     if (provider) {
       provider.enabled = enabled;
     }
+
+    this._addonProviderChangeSrc.next(provider);
   }
 
   public async backfillAddons(): Promise<void> {
@@ -1839,10 +1851,13 @@ export class AddonService {
       return undefined;
     }
 
-    const dependencies = latestFile.dependencies.map(this.createAddonDependency);
+    const dependencies = Array.isArray(latestFile.dependencies)
+      ? latestFile.dependencies.map(this.createAddonDependency)
+      : [];
+
     const fundingLinks = Array.isArray(searchResult.fundingLinks) ? [...searchResult.fundingLinks] : [];
 
-    console.debug(`Create Addon: `, installation);
+    console.debug(`Create Addon: `, installation, latestFile);
 
     return {
       id: uuidv4(),
