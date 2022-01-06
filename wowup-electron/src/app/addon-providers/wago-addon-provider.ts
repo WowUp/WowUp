@@ -129,14 +129,19 @@ interface WagoScanResponse {
   addons: WagoScanAddon[];
 }
 
+interface WagoPopularAddonsResponse {
+  data: WagoSearchResponseItem[];
+}
+
 const WAGO_BASE_URL = "https://addons.wago.io/api/external";
 const WAGO_AD_URL = "https://addons.wago.io/wowup_ad";
 const WAGO_AD_REFERRER = "https://wago.io";
 const WAGO_AD_USER_AGENT =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"; // the ad requires a normal looking user agent
 const WAGO_AD_PRELOAD = "preload/wago.js";
-const WAGO_SEARCH_CACHE_TIME_SEC = 20;
-const WAGO_DETAILS_CACHE_TIME_SEC = 20;
+const WAGO_SEARCH_CACHE_TIME_SEC = 60;
+const WAGO_DETAILS_CACHE_TIME_SEC = 60;
+const WAGO_FEATURED_ADDONS_CACHE_TIME_SEC = 60;
 
 export class WagoAddonProvider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
@@ -260,6 +265,22 @@ export class WagoAddonProvider extends AddonProvider {
     }
 
     console.debug(`[wago] delta`, addonFolders);
+  }
+
+  public async getFeaturedAddons(installation: WowInstallation): Promise<AddonSearchResult[]> {
+    const url = new URL(`${WAGO_BASE_URL}/addons/popular`);
+    url.searchParams.set("game_version", this.getGameVersion(installation.clientType));
+
+    const response = await this._cachingService.transaction(
+      url.toString(),
+      () => this._circuitBreaker.getJson<WagoPopularAddonsResponse>(url, this.getRequestHeaders()),
+      WAGO_FEATURED_ADDONS_CACHE_TIME_SEC
+    );
+
+    console.debug(`[wago] getFeaturedAddons`, response);
+
+    const searchResults = response.data?.map((item) => this.toSearchResult(item)) ?? [];
+    return searchResults;
   }
 
   public async searchByQuery(
