@@ -32,6 +32,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Fixed an issue with some addon IDs colliding between addon providers</li>
+    <li>Try to fix the issue with duplicated addons</li>
     </ul>`,
   },
   {
