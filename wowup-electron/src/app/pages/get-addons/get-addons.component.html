@@ -110,7 +110,7 @@
         style="height: 100%; padding-right: 0.25em"
         [hidden]="(showTable$ | async) === false"
         [rowData]="rowData$ | async"
-        [columnDefs]="columnDefs"
+        [columnDefs]="columnDefs$ | async"
         [columnTypes]="columnTypes"
         [rowSelection]="'single'"
         [frameworkComponents]="frameworkComponents"

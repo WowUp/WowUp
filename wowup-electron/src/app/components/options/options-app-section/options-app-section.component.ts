@@ -164,12 +164,16 @@ export class OptionsAppSectionComponent implements OnInit {
     this.wowupService.enableSystemNotifications = evt.checked;
   };
 
-  public onToggleAppBadge = (evt: MatSlideToggleChange): void => {
+  public onToggleAppBadge = async (evt: MatSlideToggleChange): Promise<void> => {
     this.wowupService.enableAppBadge = evt.checked;
 
-    const count = evt.checked ? this._addonService.getAllAddonsAvailableForUpdate().length : 0;
+    let count = 0;
+    if (evt.checked) {
+      const addons = await this._addonService.getAllAddonsAvailableForUpdate();
+      count = addons.length;
+    }
 
-    this.wowupService.updateAppBadgeCount(count).catch((e) => console.error(e));
+    await this.wowupService.updateAppBadgeCount(count);
   };
 
   public onTelemetryChange = (evt: MatSlideToggleChange): void => {

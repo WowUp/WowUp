@@ -1,5 +1,3 @@
-import * as Store from "electron-store";
-
 import { Injectable } from "@angular/core";
 
 import {
@@ -7,6 +5,8 @@ import {
   ADDON_STORE_NAME,
   IPC_STORE_SET_OBJECT,
   IPC_STORE_GET_OBJECT,
+  IPC_STORE_REMOVE_OBJECT,
+  IPC_STORE_GET_ALL,
 } from "../../../common/constants";
 import { Addon } from "../../../common/entities/addon";
 import { ElectronService } from "../electron/electron.service";
@@ -15,20 +15,20 @@ import { ElectronService } from "../electron/electron.service";
   providedIn: "root",
 })
 export class AddonStorageService {
-  private readonly _store = new Store({
-    name: "addons",
-  });
-
   public constructor(private _electronService: ElectronService) {}
-
-  public query<T>(action: (store: Store) => T): T {
-    return action(this._store);
+  private async getStore(): Promise<Addon[]> {
+    return await this._electronService.invoke(IPC_STORE_GET_ALL, ADDON_STORE_NAME);
   }
 
-  public queryAll(action: (item: Addon) => boolean): Addon[] {
+  public async queryAsync<T>(action: (store: Addon[]) => T): Promise<T> {
+    const store = await this.getStore();
+    return action(store);
+  }
+
+  public async queryAllAsync(action: (item: Addon) => boolean): Promise<Addon[]> {
     const addons: Addon[] = [];
-    for (const item of this._store) {
-      const addon = item[1] as Addon;
+    const store = await this.getStore();
+    for (const addon of store) {
       if (action(addon)) {
         addons.push(addon);
       }
@@ -38,8 +38,8 @@ export class AddonStorageService {
   }
 
   public async saveAll(addons: Addon[]): Promise<void> {
+    console.debug(`[addon-storage] save all: ${addons?.length ?? 0}`);
     await this._electronService.invoke(IPC_ADDONS_SAVE_ALL, addons);
-    // addons.forEach((addon) => this.set(addon.id, addon));
   }
 
   public setAsync(key: string | undefined, value: Addon): Promise<void> {
@@ -50,42 +50,36 @@ export class AddonStorageService {
     return this._electronService.invoke(IPC_STORE_SET_OBJECT, ADDON_STORE_NAME, key, value);
   }
 
-  public set(key: string | undefined, value: Addon): void {
-    if (!key) {
-      return;
-    }
-
-    this._store.set(key, value);
-  }
-
   public get(key: string): Promise<Addon> {
     return this._electronService.invoke(IPC_STORE_GET_OBJECT, ADDON_STORE_NAME, key);
   }
 
-  public removeAll(...addons: Addon[]): void {
-    addons.forEach((addon) => this.remove(addon));
-  }
-
-  public remove(addon: Addon): void {
-    if (addon.id) {
-      this._store.delete(addon.id);
+  public async removeAllAsync(...addons: Addon[]): Promise<void> {
+    for (const addon of addons) {
+      await this.removeAsync(addon);
     }
   }
 
-  public removeAllForInstallation(installationId: string): void {
-    const addons = this.getAllForInstallationId(installationId);
-    addons.forEach((addon) => {
-      if (addon.id) {
-        this._store.delete(addon.id);
-      }
-    });
+  public async removeAsync(addon: Addon): Promise<void> {
+    if (addon.id) {
+      await this._electronService.invoke(IPC_STORE_REMOVE_OBJECT, ADDON_STORE_NAME, addon.id);
+    }
   }
 
-  public getByExternalId(externalId: string, providerName: string, installationId: string): Addon | undefined {
-    const addons: Addon[] = [];
+  public async removeAllForInstallationAsync(installationId: string): Promise<void> {
+    const addons = await this.getAllForInstallationIdAsync(installationId);
+    await this.removeAllAsync(...addons);
+  }
 
-    for (const result of this._store) {
-      const addon = result[1] as Addon;
+  public async getByExternalIdAsync(
+    externalId: string,
+    providerName: string,
+    installationId: string
+  ): Promise<Addon | undefined> {
+    const addons: Addon[] = [];
+    const store = await this.getStore();
+
+    for (const addon of store) {
       if (
         addon.installationId === installationId &&
         addon.externalId === externalId &&
@@ -99,22 +93,18 @@ export class AddonStorageService {
     return addons[0];
   }
 
-  public getAll(): Addon[] {
-    const addons: Addon[] = [];
-
-    for (const result of this._store) {
-      const addon = result[1] as Addon;
-      addons.push(addon);
-    }
-
-    return addons;
+  public async getAll(): Promise<Addon[]> {
+    return await this.getStore();
   }
 
-  public getAllForInstallationId(installationId: string, validator?: (addon: Addon) => boolean): Addon[] {
+  public async getAllForInstallationIdAsync(
+    installationId: string,
+    validator?: (addon: Addon) => boolean
+  ): Promise<Addon[]> {
     const addons: Addon[] = [];
+    const store = await this.getStore();
 
-    for (const result of this._store) {
-      const addon = result[1] as Addon;
+    for (const addon of store) {
       if (addon.installationId === installationId && (!validator || validator(addon))) {
         addons.push(addon);
       }
@@ -123,11 +113,11 @@ export class AddonStorageService {
     return addons;
   }
 
-  public getAllForProvider(providerName: string, validator?: (addon: Addon) => boolean): Addon[] {
+  public async getAllForProviderAsync(providerName: string, validator?: (addon: Addon) => boolean): Promise<Addon[]> {
     const addons: Addon[] = [];
+    const store = await this.getStore();
 
-    for (const result of this._store) {
-      const addon = result[1] as Addon;
+    for (const addon of store) {
       if (addon.providerName === providerName && (!validator || validator(addon))) {
         addons.push(addon);
       }

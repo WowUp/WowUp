@@ -1,8 +1,8 @@
 <app-progress-button
-  [value]="progressValue"
-  [showProgress]="showProgress"
-  [disable]="disableButton"
+  [value]="progressValue$ | async"
+  [showProgress]="showProgress$ | async"
+  [disable]="disableButton$ | async"
   (btnClick)="onInstallUpdateClick()"
 >
-  {{ buttonText }}
+  {{ buttonText$ | async }}
 </app-progress-button>

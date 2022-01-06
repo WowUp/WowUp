@@ -1,6 +1,7 @@
 import { BehaviorSubject, firstValueFrom, from, Observable } from "rxjs";
 import { first, map, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
+import _ from "lodash";
 
 import { ADDON_PROVIDER_WAGO } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
@@ -101,6 +102,11 @@ interface WagoScanRelease {
   label: string;
   patch: string;
   link?: string;
+}
+
+interface WagoScanReleaseSortable extends WagoScanRelease {
+  stability: string;
+  addonChannelType: AddonChannelType;
 }
 
 interface WagoScanModule {
@@ -517,15 +523,18 @@ export class WagoAddonProvider extends AddonProvider {
       installedFolders.push(key);
     }
 
-    const latestVersion = wagoScanAddon?.recent_releases?.stable?.label ?? "";
-    const externalLatestReleaseId = wagoScanAddon?.recent_releases?.stable?.id ?? undefined;
-    const externalChannel = getEnumName(AddonChannelType, addonChannelType);
+    // Sort the releases by release date, then find the first one that has a valid channel type
+    const releaseList: WagoScanReleaseSortable[] = this.getSortedReleaseList(wagoScanAddon);
+    const validVersion = releaseList.find((rel) => rel.addonChannelType <= addonChannelType);
+    const latestVersion = validVersion.label;
+    const externalLatestReleaseId = validVersion.id;
+    const externalChannel = getEnumName(AddonChannelType, validVersion.addonChannelType);
 
     return {
       id: uuidv4(),
       author: authors,
       name,
-      channelType: addonChannelType,
+      channelType: validVersion.addonChannelType,
       autoUpdateEnabled: false,
       autoUpdateNotificationsEnabled: false,
       clientType: installation.clientType,
@@ -548,6 +557,18 @@ export class WagoAddonProvider extends AddonProvider {
       externalLatestReleaseId,
       installationId: installation.id,
     };
+  }
+
+  /** Convert a stability map of addons into a sorted list of addons */
+  private getSortedReleaseList(wagoScanAddon: WagoScanAddon): WagoScanReleaseSortable[] {
+    let releaseList: WagoScanReleaseSortable[] = [];
+    for (let [key, value] of Object.entries(wagoScanAddon.recent_releases)) {
+      releaseList.push({ ...value, stability: key, addonChannelType: this.getAddonChannelType(key as WagoStability) });
+    }
+
+    releaseList = _.sortBy(releaseList, (rel) => new Date(rel.created_at).getTime()).reverse();
+
+    return releaseList;
   }
 
   private getAddonChannelType(stability: WagoStability): AddonChannelType {

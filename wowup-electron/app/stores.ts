@@ -2,7 +2,9 @@ import { ipcMain, IpcMainInvokeEvent } from "electron";
 import * as Store from "electron-store";
 import {
   ADDON_STORE_NAME,
+  IPC_STORE_GET_ALL,
   IPC_STORE_GET_OBJECT,
+  IPC_STORE_REMOVE_OBJECT,
   IPC_STORE_SET_OBJECT,
   PREFERENCE_STORE_NAME,
 } from "../src/common/constants";
@@ -20,6 +22,19 @@ const stores: { [storeName: string]: Store } = {
 
 export function initializeStoreIpcHandlers(): void {
   // Return the store value for a specific key
+  ipcMain.handle(IPC_STORE_GET_ALL, (evt: IpcMainInvokeEvent, storeName: string): any => {
+    const store = stores[storeName];
+
+    const items = [];
+    for (const result of store) {
+      const item = result[1];
+      items.push(item);
+    }
+
+    return items;
+  });
+
+  // Return the store value for a specific key
   ipcMain.handle(IPC_STORE_GET_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string): any => {
     const store = stores[storeName];
     return store ? store.get(key, undefined) : undefined;
@@ -29,5 +44,11 @@ export function initializeStoreIpcHandlers(): void {
   ipcMain.handle(IPC_STORE_SET_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string, value: any): void => {
     const store = stores[storeName];
     store?.set(key, value);
+  });
+
+  // Remove the store value for a specific key
+  ipcMain.handle(IPC_STORE_REMOVE_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string): void => {
+    const store = stores[storeName];
+    store?.delete(key);
   });
 }

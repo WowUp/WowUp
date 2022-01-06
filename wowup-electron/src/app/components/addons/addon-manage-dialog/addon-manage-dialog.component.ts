@@ -71,39 +71,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    try {
-      this.exportSummary = this._addonBrokerService.getExportSummary(this.selectedInstallation);
-
-      const payload = this._addonBrokerService.getExportPayload(this.selectedInstallation);
-
-      this._electronService
-        .invoke("base64-encode", JSON.stringify(payload))
-        .then((b64) => {
-          console.debug("B64", b64);
-          this.exportPayload = b64;
-        })
-        .catch((e) => {
-          console.error(e);
-          this.error$.next(`ERROR`);
-        });
-
-      const installSub = this._addonBrokerService.addonInstall$.subscribe((evt) => {
-        console.log("Install", evt);
-
-        const viewModel = { ...this.importSummary$.value };
-        const compVm = viewModel.comparisons.find((comp) => comp.id === evt.comparisonId);
-        compVm.isInstalling = true;
-        compVm.isCompleted = evt.installState === AddonInstallState.Complete;
-        compVm.didError = evt.installState === AddonInstallState.Error;
-
-        this.importSummary$.next(viewModel);
-      });
-
-      this._subscriptions.push(installSub);
-    } catch (e) {
-      console.error(e);
-      this.error$.next(`ERROR`);
-    }
+    this.initAsync().catch((e) => console.error(e));
   }
 
   public ngOnDestroy(): void {
@@ -154,7 +122,7 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const importSummary = this._addonBrokerService.getImportSummary(importJson, this.selectedInstallation);
+      const importSummary = await this._addonBrokerService.getImportSummary(importJson, this.selectedInstallation);
       console.debug(importSummary);
 
       if (importSummary.errorCode !== undefined) {
@@ -171,6 +139,42 @@ export class AddonManageDialogComponent implements OnInit, OnDestroy {
       this._snackbarService.showErrorSnackbar("ADDON_IMPORT.GENERIC_IMPORT_ERROR", {
         timeout: 2000,
       });
+    }
+  }
+
+  private async initAsync() {
+    try {
+      this.exportSummary = await this._addonBrokerService.getExportSummary(this.selectedInstallation);
+
+      const payload = await this._addonBrokerService.getExportPayload(this.selectedInstallation);
+
+      this._electronService
+        .invoke("base64-encode", JSON.stringify(payload))
+        .then((b64) => {
+          console.debug("B64", b64);
+          this.exportPayload = b64;
+        })
+        .catch((e) => {
+          console.error(e);
+          this.error$.next(`ERROR`);
+        });
+
+      const installSub = this._addonBrokerService.addonInstall$.subscribe((evt) => {
+        console.log("Install", evt);
+
+        const viewModel = { ...this.importSummary$.value };
+        const compVm = viewModel.comparisons.find((comp) => comp.id === evt.comparisonId);
+        compVm.isInstalling = true;
+        compVm.isCompleted = evt.installState === AddonInstallState.Complete;
+        compVm.didError = evt.installState === AddonInstallState.Error;
+
+        this.importSummary$.next(viewModel);
+      });
+
+      this._subscriptions.push(installSub);
+    } catch (e) {
+      console.error(e);
+      this.error$.next(`ERROR`);
     }
   }
 

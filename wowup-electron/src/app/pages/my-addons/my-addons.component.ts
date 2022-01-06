@@ -22,6 +22,7 @@ import {
   Component,
   ElementRef,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -168,7 +169,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Grid
   public rowDataG: any[] = [];
-  public columnDefs: ColDef[] = [];
+  public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
   public frameworkComponents = {};
   public gridApi!: GridApi;
   public gridColumnApi!: ColumnApi;
@@ -249,6 +250,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
     private _pushService: PushService,
+    private _ngZone: NgZone,
     public electronService: ElectronService,
     public overlay: Overlay,
     public warcraftService: WarcraftService,
@@ -263,18 +265,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.wowInstallations$ = combineLatest([
       warcraftInstallationService.wowInstallations$,
       _addonService.anyUpdatesAvailable$,
-    ]).pipe(
-      map(([installations]) => {
-        let total = 0;
-        installations.forEach((inst) => {
-          inst.availableUpdateCount = this._addonService.getAllAddonsAvailableForUpdate(inst).length;
-          total += inst.availableUpdateCount;
-        });
-
-        this._totalAvailableUpdateSrc.next(total);
-        return installations;
-      })
-    );
+    ]).pipe(switchMap(([installations]) => from(this.mapInstallations(installations))));
 
     const addonInstalledSub = this._addonService.addonInstalled$
       .pipe(
@@ -294,10 +285,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const pushUpdateSub = this._pushService.addonUpdate$
       .pipe(
         debounceTime(5000),
-        filter((addons) => {
+        switchMap((addons) => {
           const addonIds = addons.map((addon) => addon.addonId);
-          return this._addonService.hasAnyWithExternalAddonIds(addonIds);
+          return from(this._addonService.hasAnyWithExternalAddonIds(addonIds));
         }),
+        filter((hasAny) => hasAny),
         switchMap(() => from(this.onRefresh()))
       )
       .subscribe();
@@ -324,7 +316,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       dateTooltipCell: DateTooltipCellComponent,
     };
 
-    this.columnDefs = this.createColumns();
+    this.columnDefs$.next(this.createColumns());
   }
 
   public ngOnInit(): void {
@@ -336,22 +328,31 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     );
 
-    const columnStates = this.wowUpService.getMyAddonsHiddenColumns();
-    this.columns.forEach((col) => {
-      if (!col.allowToggle) {
-        return;
-      }
+    this.wowUpService
+      .getMyAddonsHiddenColumns()
+      .then((columnStates) => {
+        const colDefs = [...this.columnDefs$.value];
 
-      const state = _.find(columnStates, (cs) => cs.name === col.name);
-      if (state) {
-        col.visible = state.visible;
-      }
+        this.columns.forEach((col) => {
+          if (!col.allowToggle) {
+            return;
+          }
 
-      const columnDef = _.find(this.columnDefs, (cd) => cd.field === col.name);
-      if (columnDef) {
-        columnDef.hide = !col.visible;
-      }
-    });
+          const state = _.find(columnStates, (cs) => cs.name === col.name);
+          if (state) {
+            col.visible = state.visible;
+          }
+
+          const columnDef = _.find(colDefs, (cd) => cd.field === col.name);
+          if (columnDef) {
+            columnDef.hide = !col.visible;
+          }
+        });
+
+        this.columnDefs$.next(colDefs);
+        this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
+      })
+      .catch((e) => console.error(e));
   }
 
   public ngOnDestroy(): void {
@@ -590,19 +591,19 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // Handle when the user clicks the update all retail/classic button
-  public onUpdateAllRetailClassic(): void {
-    const installations = this.warcraftInstallationService
-      .getWowInstallations()
-      .filter(
-        (installation) =>
-          installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra
-      );
+  public async onUpdateAllRetailClassic(): Promise<void> {
+    let installations = await this.warcraftInstallationService.getWowInstallationsAsync();
+    installations = installations.filter(
+      (installation) =>
+        installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra
+    );
     this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }
 
   // Handle when the user clicks update all clients button
-  public onUpdateAllClients(): void {
-    this.updateAllWithSpinner(...this.warcraftInstallationService.getWowInstallations()).catch((e) => console.error(e));
+  public async onUpdateAllClients(): Promise<void> {
+    const installations = await this.warcraftInstallationService.getWowInstallationsAsync();
+    this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }
 
   public onHeaderContext = (event: MouseEvent): void => {
@@ -787,7 +788,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onClickIgnoreAddons([listItem]);
   }
 
-  public onClickIgnoreAddons(listItems: AddonViewModel[]): void {
+  public async onClickIgnoreAddons(listItems: AddonViewModel[]): Promise<void> {
     const isIgnored = _.every(listItems, (listItem) => listItem.addon?.isIgnored === false);
     const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
@@ -803,7 +804,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           row.addon.autoUpdateEnabled = false;
         }
 
-        this._addonService.saveAddon(row.addon);
+        await this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -846,7 +847,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return rows.find((row) => row.addon?.id == model.addon?.id);
   }
 
-  public onClickAutoUpdateAddons(listItems: AddonViewModel[]): void {
+  public async onClickAutoUpdateAddons(listItems: AddonViewModel[]): Promise<void> {
     const isAutoUpdate = _.every(listItems, (listItem) => listItem.addon?.autoUpdateEnabled === false);
     const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
@@ -864,7 +865,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         row.addon.autoUpdateNotificationsEnabled = isAutoUpdate;
 
-        this._addonService.saveAddon(row.addon);
+        await this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -874,7 +875,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): void {
+  public async onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): Promise<void> {
     const isAutoUpdateNofications = _.every(
       listItems,
       (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false
@@ -890,7 +891,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         row.addon.autoUpdateNotificationsEnabled = isAutoUpdateNofications;
 
-        this._addonService.saveAddon(row.addon);
+        await this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -969,7 +970,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         listItem.addon.channelType = evt.value;
-        this._addonService.saveAddon(listItem.addon);
+        await this._addonService.saveAddon(listItem.addon);
       }
 
       await this.onRefresh();
@@ -1243,8 +1244,21 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return !this._addonService.isInstalling();
   }
 
+  private async mapInstallations(installations: WowInstallation[]): Promise<WowInstallation[]> {
+    let total = 0;
+    for (const inst of installations) {
+      const addons = await this._addonService.getAllAddonsAvailableForUpdate(inst);
+      inst.availableUpdateCount = addons.length;
+      total += inst.availableUpdateCount;
+    }
+
+    this._totalAvailableUpdateSrc.next(total);
+    return installations;
+  }
+
   private async updateBadgeCount(): Promise<void> {
-    const ct = this._addonService.getAllAddonsAvailableForUpdate().length;
+    const addons = await this._addonService.getAllAddonsAvailableForUpdate();
+    const ct = addons.length;
     console.debug("updateBadgeCount", ct);
     try {
       await this.wowUpService.updateAppBadgeCount(ct);
@@ -1253,8 +1267,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private loadSortOrder() {
-    let savedSortOrder = this.wowUpService.getMyAddonsSortOrder();
+  private async loadSortOrder(): Promise<void> {
+    let savedSortOrder = await this.wowUpService.getMyAddonsSortOrder();
     if (!Array.isArray(savedSortOrder) || savedSortOrder.length < 2) {
       console.info(`Legacy or missing sort order fixed`);
       this.wowUpService.setMyAddonsSortOrder([]);

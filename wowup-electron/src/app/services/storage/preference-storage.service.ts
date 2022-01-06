@@ -39,10 +39,6 @@ export class PreferenceStorageService {
     return this._electronService.invoke(IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME, key);
   }
 
-  public getObject<T>(key: string): T | undefined {
-    return this._store.get(key, undefined) as T;
-  }
-
   public remove(key: string): void {
     this._store.delete(key);
   }

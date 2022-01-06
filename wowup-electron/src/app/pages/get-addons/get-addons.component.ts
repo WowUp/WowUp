@@ -8,10 +8,10 @@ import {
   RowNode,
 } from "ag-grid-community";
 import * as _ from "lodash";
-import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, from, Observable, of, Subject, Subscription } from "rxjs";
 import { catchError, filter, first, map, switchMap } from "rxjs/operators";
 
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
@@ -76,7 +76,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _selectedAddonCategory: CategoryItem | undefined;
 
   public addonCategory = AddonCategory;
-  public columnDefs: ColDef[] = [];
+  public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
   public rowData$ = this._rowDataSrc.asObservable();
   public enableControls$ = this._sessionService.enableControls$;
   public frameworkComponents = {};
@@ -122,7 +122,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   public hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
 
-  public readonly showTable$ = combineLatest([this._sessionService.enableControls$, this.hasData$]).pipe(
+  private _showTableSrc = new BehaviorSubject<boolean>(false);
+  public readonly showTable$ = combineLatest([this._showTableSrc, this.hasData$]).pipe(
     map(([enabled]) => {
       return enabled === true;
     })
@@ -151,6 +152,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     }
 
     this._sessionService.setEnableControls(false);
+    this._showTableSrc.next(false);
 
     of(true)
       .pipe(
@@ -163,12 +165,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
+          this._showTableSrc.next(true);
           this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
+          this._showTableSrc.next(true);
           this._sessionService.setEnableControls(true);
           return of(undefined);
         })
@@ -225,7 +229,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       wrapTextCell: CellWrapTextComponent,
     };
 
-    this.columnDefs = this.createColumns();
+    this.columnDefs$.next(this.createColumns());
 
     this.addonCategories = this.buildCategories();
     this.selectedAddonCategory = this.addonCategories[0];
@@ -295,22 +299,29 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const columnStates = this._wowUpService.getGetAddonsHiddenColumns();
-    this.columnStates.forEach((col) => {
-      if (!col.allowToggle) {
-        return;
-      }
+    this._wowUpService
+      .getGetAddonsHiddenColumns()
+      .then((columnStates) => {
+        const colDefs = [...this.columnDefs$.value];
+        this.columnStates.forEach((col) => {
+          if (!col.allowToggle) {
+            return;
+          }
 
-      const state = _.find(columnStates, (cs) => cs.name === col.name);
-      if (state) {
-        col.visible = state.visible;
-      }
+          const state = _.find(columnStates, (cs) => cs.name === col.name);
+          if (state) {
+            col.visible = state.visible;
+          }
 
-      const columnDef = _.find(this.columnDefs, (cd) => cd.field === col.name);
-      if (columnDef) {
-        columnDef.hide = !col.visible;
-      }
-    });
+          const columnDef = _.find(colDefs, (cd) => cd.field === col.name);
+          if (columnDef) {
+            columnDef.hide = !col.visible;
+          }
+        });
+
+        this.columnDefs$.next(colDefs);
+      })
+      .catch((e) => console.error(e));
   }
 
   public ngOnDestroy(): void {
@@ -499,6 +510,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     }
 
     this._sessionService.setEnableControls(false);
+    this._showTableSrc.next(false);
     this.resetCategory(true);
 
     if (!this.query) {
@@ -512,12 +524,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
+          this._showTableSrc.next(true);
           this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
+          this._showTableSrc.next(true);
           this._sessionService.setEnableControls(true);
           return of(undefined);
         })
@@ -549,6 +563,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this._showTableSrc.next(false);
     this._sessionService.setEnableControls(false);
 
     this._addonService
@@ -563,6 +578,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         console.debug(`Loaded ${addons?.length ?? 0} addons`);
         const listItems = this.formatAddons(addons);
         this._rowDataSrc.next(listItems);
+        this._showTableSrc.next(true);
         this._sessionService.setEnableControls(true);
       });
   }

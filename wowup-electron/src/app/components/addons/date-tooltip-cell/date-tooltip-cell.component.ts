@@ -33,6 +33,9 @@ export class DateTooltipCellComponent implements AgRendererComponent, OnDestroy 
         }
 
         const [fmt, val] = getRelativeDateFormat(this.params.value as string);
+        if (!fmt) {
+          return this.relativeTime$.next("ERR");
+        }
         this.relativeTime$.next(this._translateService.instant(fmt, val) as string);
       });
   }

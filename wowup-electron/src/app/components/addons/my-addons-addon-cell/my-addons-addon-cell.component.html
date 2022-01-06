@@ -5,13 +5,15 @@
     </div>
     <div class="version-container">
       <div class="title-container">
-        <a class="addon-title hover-text-2" (click)="viewDetails()"
-          [ngClass]="{ 'text-3': isIgnored$ | async, 'text-warning': hasWarning$ | async }">{{
-          name$ | async
-          }}</a>
+        <a
+          class="addon-title hover-text-2"
+          (click)="viewDetails()"
+          [ngClass]="{ 'text-3': isIgnored$ | async, 'text-warning': hasWarning$ | async }"
+          >{{ name$ | async }}</a
+        >
       </div>
 
-      <div class="addon-version text-2 row align-items-center" [ngClass]="{ 'ignored': isIgnored$ | async }">
+      <div class="addon-version text-2 row align-items-center" [ngClass]="{ ignored: isIgnored$ | async }">
         <div *ngIf="hasFundingLinks$ | async" class="addon-funding mr-2">
           <app-funding-button *ngFor="let link of fundingLinks$ | async" [funding]="link" size="small">
           </app-funding-button>
@@ -20,43 +22,66 @@
           {{ channelTranslationKey$ | async | translate }}
         </div>
         <div *ngIf="hasMultipleProviders$ | async" class="mr-2">
-          <mat-icon class="auto-update-icon" svgIcon="fas:code-branch"
-            [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate">
+          <mat-icon
+            class="auto-update-icon"
+            svgIcon="fas:code-branch"
+            [matTooltip]="'PAGES.MY_ADDONS.MULTIPLE_PROVIDERS_TOOLTIP' | translate"
+          >
           </mat-icon>
         </div>
         <div *ngIf="autoUpdateEnabled$ | async" class="mr-2">
-          <mat-icon class="auto-update-icon text-2"
-            [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate" svgIcon="far:clock">
+          <mat-icon
+            class="auto-update-icon text-2"
+            [matTooltip]="'PAGES.MY_ADDONS.TABLE.AUTO_UPDATE_ICON_TOOLTIP' | translate"
+            svgIcon="far:clock"
+          >
           </mat-icon>
         </div>
-        <div *ngIf="hasRequiredDependencies$ | async" class="mr-2"
-          [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate: (dependencyTooltip$ | async)">
+        <div
+          *ngIf="hasRequiredDependencies$ | async"
+          class="mr-2"
+          [matTooltip]="'COMMON.DEPENDENCY.TOOLTIP' | translate: (dependencyTooltip$ | async)"
+        >
           <mat-icon class="auto-update-icon" svgIcon="fas:link"></mat-icon>
         </div>
         <div *ngIf="isLoadOnDemand$ | async" class="mr-2">
-          <mat-icon class="auto-update-icon text-warning"
+          <mat-icon
+            class="auto-update-icon text-warning"
             [matTooltip]="'PAGES.MY_ADDONS.REQUIRED_DEPENDENCY_MISSING_TOOLTIP' | translate"
-            svgIcon="fas:exclamation-triangle">
+            svgIcon="fas:exclamation-triangle"
+          >
           </mat-icon>
         </div>
         <div *ngIf="hasWarning$ | async" class="mr-2">
-          <mat-icon class="auto-update-icon text-warning" [matTooltip]="getWarningText(listItem)"
-            svgIcon="fas:exclamation-triangle">
+          <mat-icon
+            class="auto-update-icon text-warning"
+            [matTooltip]="getWarningText(listItem)"
+            svgIcon="fas:exclamation-triangle"
+          >
           </mat-icon>
         </div>
         <div *ngIf="hasIgnoreReason$ | async" class="mr-2">
-          <mat-icon class="auto-update-icon" [matTooltip]="ignoreTooltipKey$ | async | translate"
-            [style.color]="'#ff9800'" [svgIcon]="ignoreIcon$ | async">
+          <mat-icon
+            class="auto-update-icon"
+            [matTooltip]="ignoreTooltipKey$ | async | translate"
+            [style.color]="'#ff9800'"
+            [svgIcon]="ignoreIcon$ | async"
+          >
           </mat-icon>
         </div>
         <!-- If no warning and not ignored for some specific reason, default to this -->
         <div *ngIf="isUnknownAddon$ | async" class="mr-2">
-          <mat-icon class="auto-update-icon" [matTooltip]="'PAGES.MY_ADDONS.UNKNOWN_ADDON_INFO_TOOLTIP' | translate"
-            [matTooltipClass]="['text-center']" [style.color]="'#ff9800'" svgIcon="fas:exclamation-triangle">
+          <mat-icon
+            class="auto-update-icon"
+            [matTooltip]="'PAGES.MY_ADDONS.UNKNOWN_ADDON_INFO_TOOLTIP' | translate"
+            [matTooltipClass]="['text-center']"
+            [style.color]="'#ff9800'"
+            svgIcon="fas:exclamation-triangle"
+          >
           </mat-icon>
         </div>
         {{ installedVersion$ | async }}
-        <div *ngIf="showUpdateVersion$ | async" class="text-1  row">
+        <div *ngIf="showUpdateVersion$ | async" class="text-1 row">
           <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
           <div class="bg-secondary-4 text-2 rounded px-1">{{ latestVersion$ | async }}</div>
         </div>

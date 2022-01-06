@@ -63,8 +63,12 @@ export class SessionService {
     private _addonService: AddonService,
     private _addonProviderService: AddonProviderFactory
   ) {
-    this._selectedDetailTabType =
-      this._preferenceStorageService.getObject<DetailsTabType>(SELECTED_DETAILS_TAB_KEY) || "description";
+    this._preferenceStorageService
+      .getObjectAsync<DetailsTabType>(SELECTED_DETAILS_TAB_KEY)
+      .then((obj) => {
+        this._selectedDetailTabType = obj || "description";
+      })
+      .catch((e) => console.error(e));
 
     this._warcraftInstallationService.wowInstallations$.subscribe((installations) =>
       this.onWowInstallationsChange(installations)

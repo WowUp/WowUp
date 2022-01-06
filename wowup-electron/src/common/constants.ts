@@ -99,7 +99,9 @@ export const IPC_PUSH_NOTIFICATION = "push-notification";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
+export const IPC_STORE_GET_ALL = "store-get-all";
 export const IPC_STORE_SET_OBJECT = "store-set-object";
+export const IPC_STORE_REMOVE_OBJECT = "store-remove-object";
 
 // STORES
 export const ADDON_STORE_NAME = "addons";

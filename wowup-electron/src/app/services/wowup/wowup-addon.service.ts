@@ -86,7 +86,7 @@ export class WowUpAddonService {
   }
 
   public async updateForAllClientTypes(): Promise<void> {
-    const installations = this._warcraftInstallationService.getWowInstallations();
+    const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
 
     for (const installation of installations) {
       try {
@@ -98,7 +98,7 @@ export class WowUpAddonService {
   }
 
   public async updateForInstallation(installation: WowInstallation): Promise<void> {
-    const addons = this._addonService.getAllAddons(installation);
+    const addons = await this._addonService.getAllAddons(installation);
     if (addons.length === 0) {
       console.log(`WowUpAddonService: No addons to sync ${installation.label}`);
       return;
@@ -123,7 +123,7 @@ export class WowUpAddonService {
 
     if (companionAddon) {
       const updatedCompanion: Addon = { ...companionAddon };
-      this._addonService.saveAddon(updatedCompanion);
+      await this._addonService.saveAddon(updatedCompanion);
     }
   }
 

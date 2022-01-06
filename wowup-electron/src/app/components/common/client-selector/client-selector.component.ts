@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, switchMap } from "rxjs/operators";
 import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 import { AddonService } from "../../../services/addons/addon.service";
 import { SessionService } from "../../../services/session/session.service";
@@ -29,18 +29,7 @@ export class ClientSelectorComponent implements OnInit {
   public wowInstallations$: Observable<WowInstallation[]> = combineLatest([
     this._warcraftInstallationService.wowInstallations$,
     this._addonService.anyUpdatesAvailable$,
-  ]).pipe(
-    map(([installations]) => {
-      let total = 0;
-      installations.forEach((inst) => {
-        inst.availableUpdateCount = this._addonService.getAllAddonsAvailableForUpdate(inst).length;
-        total += inst.availableUpdateCount;
-      });
-
-      this.totalAvailableUpdateCt$.next(total);
-      return installations;
-    })
-  );
+  ]).pipe(switchMap(([installations]) => this.mapInstallations(installations)));
 
   public constructor(
     private _addonService: AddonService,
@@ -53,5 +42,17 @@ export class ClientSelectorComponent implements OnInit {
   public onClientChange(evt: any): void {
     const val: string = evt.value.toString();
     this._sessionService.setSelectedWowInstallation(val);
+  }
+
+  private async mapInstallations(installations: WowInstallation[]): Promise<WowInstallation[]> {
+    let total = 0;
+    for (const inst of installations) {
+      const addons = await this._addonService.getAllAddonsAvailableForUpdate(inst);
+      inst.availableUpdateCount = addons.length;
+      total += inst.availableUpdateCount;
+    }
+
+    this.totalAvailableUpdateCt$.next(total);
+    return installations;
   }
 }

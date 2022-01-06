@@ -133,7 +133,9 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     this.showUpdateButton = !!this.model.listItem;
 
-    this.showRemoveButton = this.isAddonInstalled();
+    this.isAddonInstalled()
+      .then((isInstalled) => (this.showRemoveButton = isInstalled))
+      .catch((e) => console.error(e));
 
     this.title = this.model.listItem?.addon?.name || this.model.searchResult?.name || "UNKNOWN";
 
@@ -209,7 +211,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     });
   }
 
-  public onClickRemoveAddon(): void {
+  public async onClickRemoveAddon(): Promise<void> {
     let addon: Addon = null;
 
     // Addon is expected to be available through the model when browsing My Addons tab
@@ -234,7 +236,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
         return;
       }
 
-      addon = this._addonService.getByExternalId(externalId, providerName, selectedInstallation.id);
+      addon = await this._addonService.getByExternalId(externalId, providerName, selectedInstallation.id);
     }
 
     if (!addon) {
@@ -396,7 +398,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     return SearchResult.getLatestFile(this.model.searchResult, this.model.channelType ?? AddonChannelType.Stable);
   }
 
-  private isAddonInstalled(): boolean {
+  private async isAddonInstalled(): Promise<boolean> {
     const selectedInstallation = this._sessionService.getSelectedWowInstallation();
     if (!selectedInstallation) {
       console.warn("No selected installation");
@@ -407,7 +409,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     const providerName = this.model.searchResult?.providerName ?? this.model.listItem?.addon?.providerName ?? "";
 
     if (externalId && providerName) {
-      return this._addonService.isInstalled(externalId, providerName, selectedInstallation);
+      return await this._addonService.isInstalled(externalId, providerName, selectedInstallation);
     }
 
     console.warn("Invalid list item addon when verifying if installed");

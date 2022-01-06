@@ -260,8 +260,8 @@ export class AddonProviderFactory {
     }
   }
 
-  private setProviderState = (provider: AddonProvider) => {
-    const state = this._wowupService.getAddonProviderState(provider.name);
+  private setProviderState = async (provider: AddonProvider): Promise<void> => {
+    const state = await this._wowupService.getAddonProviderState(provider.name);
     if (state) {
       provider.enabled = state.enabled;
     }

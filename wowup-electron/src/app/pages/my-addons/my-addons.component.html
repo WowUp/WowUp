@@ -102,7 +102,7 @@
     class="wu-ag-table ag-theme-material"
     [hidden]="hideGrid$ | async"
     [rowData]="rowDataG"
-    [columnDefs]="columnDefs"
+    [columnDefs]="columnDefs$ | async"
     [rowSelection]="'multiple'"
     [getRowNodeId]="getRowNodeId"
     [frameworkComponents]="frameworkComponents"

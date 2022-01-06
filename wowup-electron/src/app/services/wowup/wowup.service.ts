@@ -213,21 +213,22 @@ export class WowUpService {
       .catch((e) => console.error(e));
   }
 
-  public getAddonProviderStates(): AddonProviderState[] {
-    return this._preferenceStorageService.getObject<AddonProviderState[]>(ADDON_PROVIDERS_KEY) || [];
+  public async getAddonProviderStates(): Promise<AddonProviderState[]> {
+    const obj = await this._preferenceStorageService.getObjectAsync<AddonProviderState[]>(ADDON_PROVIDERS_KEY);
+    return obj || [];
   }
 
-  public getAddonProviderState(providerName: string): AddonProviderState | undefined {
-    const preference = this.getAddonProviderStates();
+  public async getAddonProviderState(providerName: string): Promise<AddonProviderState | undefined> {
+    const preference = await this.getAddonProviderStates();
     return _.find(preference, (pref) => pref.providerName === providerName.toLowerCase());
   }
 
-  public setAddonProviderState(state: AddonProviderState): void {
+  public async setAddonProviderState(state: AddonProviderState): Promise<void> {
     const key = ADDON_PROVIDERS_KEY;
     const stateCpy = { ...state };
     stateCpy.providerName = stateCpy.providerName.toLowerCase();
 
-    const preference = this.getAddonProviderStates();
+    const preference = await this.getAddonProviderStates();
     const stateIndex = _.findIndex(preference, (pref) => pref.providerName === stateCpy.providerName);
 
     if (stateIndex === -1) {
@@ -275,35 +276,37 @@ export class WowUpService {
     await this._electronService.invoke(IPC_UPDATE_APP_BADGE, count);
   }
 
-  public getMyAddonsHiddenColumns(): ColumnState[] {
-    return this._preferenceStorageService.getObject<ColumnState[]>(MY_ADDONS_HIDDEN_COLUMNS_KEY) || [];
+  public async getMyAddonsHiddenColumns(): Promise<ColumnState[]> {
+    const obj = await this._preferenceStorageService.getObjectAsync<ColumnState[]>(MY_ADDONS_HIDDEN_COLUMNS_KEY);
+    return obj || [];
   }
 
   public setMyAddonsHiddenColumns(columnStates: ColumnState[]): void {
     this._preferenceStorageService.setObject(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
-  public getMyAddonsSortOrder(): SortOrder[] {
-    return this._preferenceStorageService.getObject<SortOrder[]>(MY_ADDONS_SORT_ORDER) ?? [];
+  public async getMyAddonsSortOrder(): Promise<SortOrder[]> {
+    const obj = await this._preferenceStorageService.getObjectAsync<SortOrder[]>(MY_ADDONS_SORT_ORDER);
+    return obj ?? [];
   }
 
   public setMyAddonsSortOrder(sortOrder: SortOrder[]): void {
     this._preferenceStorageService.setObject(MY_ADDONS_SORT_ORDER, sortOrder);
   }
 
-  public getGetAddonsHiddenColumns(): ColumnState[] {
-    return this._preferenceStorageService.getObject<ColumnState[]>(GET_ADDONS_HIDDEN_COLUMNS_KEY) || [];
+  public async getGetAddonsHiddenColumns(): Promise<ColumnState[]> {
+    return (await this._preferenceStorageService.getObjectAsync<ColumnState[]>(GET_ADDONS_HIDDEN_COLUMNS_KEY)) || [];
   }
 
   public setGetAddonsHiddenColumns(columnStates: ColumnState[]): void {
     this._preferenceStorageService.setObject(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
-  public get getAddonsSortOrder(): SortOrder | undefined {
-    return this._preferenceStorageService.getObject<SortOrder>(GET_ADDONS_SORT_ORDER);
+  public async getAddonsSortOrder(): Promise<SortOrder | undefined> {
+    return await this._preferenceStorageService.getObjectAsync<SortOrder>(GET_ADDONS_SORT_ORDER);
   }
 
-  public set getAddonsSortOrder(sortOrder: SortOrder | undefined) {
+  public setAddonsSortOrder(sortOrder: SortOrder | undefined) {
     this._preferenceStorageService.setObject(GET_ADDONS_SORT_ORDER, sortOrder);
   }
 
