@@ -82,7 +82,7 @@ describe("MyAddonsComponent", () => {
     };
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       myAddonsSortOrder: testSortOrder,
-      getMyAddonsHiddenColumns: () => [],
+      getMyAddonsHiddenColumns: () => Promise.resolve([]),
     });
     sessionServiceSpy = jasmine.createSpyObj("SessionService", ["getSelectedHomeTab"], {
       selectedHomeTab$: new BehaviorSubject(0).asObservable(),

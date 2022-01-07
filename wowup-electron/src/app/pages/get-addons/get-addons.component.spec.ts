@@ -42,7 +42,7 @@ describe("GetAddonsComponent", () => {
 
   beforeEach(async () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
-      getGetAddonsHiddenColumns: () => [],
+      getGetAddonsHiddenColumns: () => Promise.resolve([]),
     });
     sessionServiceSpy = jasmine.createSpyObj(
       "SessionService",

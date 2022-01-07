@@ -170,6 +170,15 @@ if (app.isReady()) {
   });
 }
 
+app.on("web-contents-created", (evt, contents) => {
+  if (contents.getType() === "webview") {
+    contents.on("new-window", function (newWindowEvent, url) {
+      log.info("block");
+      newWindowEvent.preventDefault();
+    });
+  }
+});
+
 app.on("before-quit", () => {
   win = null;
   appIsQuitting = true;

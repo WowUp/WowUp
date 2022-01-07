@@ -41,18 +41,18 @@ contextBridge.exposeInMainWorld("wago", {
 });
 
 setTimeout(() => {
-  console.info(`[wago-preload] setTimeout reloading`);
+  console.log(`[wago-preload] setTimeout reloading`);
   window.location.reload();
 }, RELOAD_PERIOD_MS);
 
-console.info(`[wago-preload] init`);
-console.info(`[wago-preload] next reload`, new Date(Date.now() + RELOAD_PERIOD_MS).toLocaleString());
+console.log(`[wago-preload] init`);
+console.log(`[wago-preload] next reload`, new Date(Date.now() + RELOAD_PERIOD_MS).toLocaleString());
 
 document.addEventListener("click", (evt) => {
   if (evt.target.href) {
-    console.info("[wago] ad click", evt.target.href, evt.target.target);
+    console.log("[wago] ad click", evt.target.href, evt.target.target);
     if (evt.target.target === "_blank") {
-      console.info(`[wago] ad requests window`);
+      console.log(`[wago] ad requests window`);
       // TODO forward this up to the 3rd party consent confirmation box
     }
   }
@@ -71,4 +71,8 @@ window.addEventListener(
 window.onerror = function (msg, url, lineNo, columnNo, error) {
   console.error(`[wago-preload] error:`, msg, url, lineNo, columnNo, error);
   return false;
+};
+
+window.open = (url, targe, features) => {
+  console.log("window.open!");
 };
