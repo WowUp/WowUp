@@ -14,6 +14,7 @@ import { ExternalUrlConfirmationDialogComponent } from "../components/common/ext
 import { PatchNotesDialogComponent } from "../components/common/patch-notes-dialog/patch-notes-dialog.component";
 import { ProgressButtonComponent } from "../components/common/progress-button/progress-button.component";
 import { TelemetryDialogComponent } from "../components/common/telemetry-dialog/telemetry-dialog.component";
+import { WebViewComponent } from "../components/common/webview/webview.component";
 import { ProgressSpinnerComponent } from "../components/progress-spinner/progress-spinner.component";
 import { MatModule } from "./mat-module";
 import { PipesModule } from "./pipes.module";
@@ -33,6 +34,7 @@ import { PipesModule } from "./pipes.module";
     CellWrapTextComponent,
     CenteredSnackbarComponent,
     ClientSelectorComponent,
+    WebViewComponent,
   ],
   imports: [CommonModule, FormsModule, TranslateModule, MatModule, PipesModule, ReactiveFormsModule],
   exports: [
@@ -49,6 +51,7 @@ import { PipesModule } from "./pipes.module";
     CellWrapTextComponent,
     CenteredSnackbarComponent,
     ClientSelectorComponent,
+    WebViewComponent,
   ],
 })
 export class CommonUiModule {}
