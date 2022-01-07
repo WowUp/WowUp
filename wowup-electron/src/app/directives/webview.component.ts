@@ -2,7 +2,9 @@ import { Directive, ElementRef, Input, OnDestroy, OnInit } from "@angular/core";
 import { nanoid } from "nanoid";
 import { Subject, takeUntil } from "rxjs";
 import { AdPageOptions } from "../../common/wowup/models";
+import { ElectronService } from "../services";
 import { FileService } from "../services/files/file.service";
+import { LinkService } from "../services/links/link.service";
 import { SessionService } from "../services/session/session.service";
 
 @Directive({
@@ -16,17 +18,26 @@ export class WebviewComponent implements OnInit, OnDestroy {
   private _id: string = nanoid();
   private _element: ElementRef;
 
-  public constructor(el: ElementRef, private _fileService: FileService, private _sessionService: SessionService) {
+  public constructor(
+    el: ElementRef,
+    private _fileService: FileService,
+    private _linkService: LinkService,
+    private _sessionService: SessionService,
+    private _electronService: ElectronService
+  ) {
     this._element = el;
   }
 
   public ngOnInit(): void {
     this.initWebview(this._element).catch((e) => console.error(e));
+    this._electronService.on("webview-new-window", this.onWebviewNewWindow);
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+
+    this._electronService.off("webview-new-window", this.onWebviewNewWindow);
 
     // Clean up the webview element
     if (this._tag) {
@@ -84,5 +95,10 @@ export class WebviewComponent implements OnInit, OnDestroy {
 
     this._tag.removeEventListener("dom-ready", this.onWebviewReady);
     // this._tag.openDevTools();
+  };
+
+  private onWebviewNewWindow = (evt, details: Electron.HandlerDetails) => {
+    console.debug(`webview-new-window`, details);
+    this._linkService.confirmLinkNavigation(details.url).subscribe();
   };
 }

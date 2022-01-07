@@ -170,15 +170,6 @@ if (app.isReady()) {
   });
 }
 
-app.on("web-contents-created", (evt, contents) => {
-  if (contents.getType() === "webview") {
-    contents.on("new-window", function (newWindowEvent, url) {
-      log.info("block");
-      newWindowEvent.preventDefault();
-    });
-  }
-});
-
 app.on("before-quit", () => {
   win = null;
   appIsQuitting = true;
@@ -323,6 +314,7 @@ function createWindow(): BrowserWindow {
 
     webPreferences.additionalArguments = [`--log-path=${LOG_PATH}`];
     webPreferences.contextIsolation = true;
+    webPreferences.nativeWindowOpen = false; // Without this the new-window event does not fire
   });
 
   win.webContents.on("did-attach-webview", (evt, webContents) => {
@@ -334,11 +326,13 @@ function createWindow(): BrowserWindow {
 
     webContents.on("will-navigate", (evt, url) => {
       log.debug("[webview] will-navigate", url);
+      evt.preventDefault(); // block the webview from navigating at all
     });
 
     webContents.setWindowOpenHandler((details) => {
-      log.debug("[webview] new-window", details);
-      return { action: "allow" };
+      log.debug("[webview] new-window");
+      win.webContents.send("webview-new-window", details); // forward this new window to the app for processing
+      return { action: "deny" };
     });
   });
 

@@ -48,16 +48,6 @@ setTimeout(() => {
 console.log(`[wago-preload] init`);
 console.log(`[wago-preload] next reload`, new Date(Date.now() + RELOAD_PERIOD_MS).toLocaleString());
 
-document.addEventListener("click", (evt) => {
-  if (evt.target.href) {
-    console.log("[wago] ad click", evt.target.href, evt.target.target);
-    if (evt.target.target === "_blank") {
-      console.log(`[wago] ad requests window`);
-      // TODO forward this up to the 3rd party consent confirmation box
-    }
-  }
-});
-
 window.addEventListener(
   "error",
   function (e) {
@@ -71,8 +61,4 @@ window.addEventListener(
 window.onerror = function (msg, url, lineNo, columnNo, error) {
   console.error(`[wago-preload] error:`, msg, url, lineNo, columnNo, error);
   return false;
-};
-
-window.open = (url, targe, features) => {
-  console.log("window.open!");
 };

@@ -357,13 +357,13 @@ export class WowUpService {
     return trustedDomains ?? [];
   }
 
-  public async isTrustedDomain(href: string | URL): Promise<boolean> {
+  public async isTrustedDomain(href: string | URL, domains?: string[]): Promise<boolean> {
     const url = href instanceof URL ? href : new URL(href);
     if (DEFAULT_TRUSTED_DOMAINS.includes(url.hostname)) {
       return true;
     }
 
-    const trustedDomains = await this.getTrustedDomains();
+    const trustedDomains = domains || (await this.getTrustedDomains());
     return trustedDomains.includes(url.hostname);
   }
 

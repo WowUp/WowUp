@@ -1,5 +1,5 @@
 import { from, Observable, of } from "rxjs";
-import { catchError, first, switchMap } from "rxjs/operators";
+import { catchError, first, map, switchMap } from "rxjs/operators";
 
 import { Injectable } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -34,13 +34,16 @@ export class LinkService {
   }
 
   public confirmLinkNavigation(href: string): Observable<any> {
-    return from(this._wowUpService.isTrustedDomain(href)).pipe(
+    return from(this._wowUpService.getTrustedDomains()).pipe(
       first(),
-      switchMap((isTrusted) => {
+      switchMap((domains) =>
+        from(this._wowUpService.isTrustedDomain(href, domains)).pipe(map((isTrusted) => ({ isTrusted, domains })))
+      ),
+      switchMap(({ isTrusted, domains }) => {
         if (isTrusted) {
           return from(this.openExternalLink(href));
         } else {
-          return this.showLinkNavigationDialog(href);
+          return this.showLinkNavigationDialog(href, domains);
         }
       }),
       catchError((e) => {
@@ -50,12 +53,13 @@ export class LinkService {
     );
   }
 
-  private showLinkNavigationDialog(href: string): Observable<any> {
+  private showLinkNavigationDialog(href: string, domains: string[]): Observable<any> {
     const dialogRef = this._dialog.open(ExternalUrlConfirmationDialogComponent, {
       data: {
         title: this._translateService.instant("APP.LINK_NAVIGATION.TITLE"),
         message: this._translateService.instant("APP.LINK_NAVIGATION.MESSAGE", { url: href }),
         url: href,
+        domains,
       },
     });
 

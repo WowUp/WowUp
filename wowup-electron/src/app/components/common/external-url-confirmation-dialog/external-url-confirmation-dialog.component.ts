@@ -9,6 +9,7 @@ export interface DialogData {
   title: string;
   message: string;
   url: string;
+  domains: string[];
 }
 
 export interface DialogResult {
@@ -37,16 +38,21 @@ export class ExternalUrlConfirmationDialogComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    from(this._wowupService.getTrustedDomains())
-      .pipe(
-        first(),
-        map((trustedDomains) => {
-          this._trustedDomains = trustedDomains;
+    if (this.data.domains) {
+      this._trustedDomains = this.data.domains;
+      this.trustDomain = this._trustedDomains.includes(this.domain);
+    } else {
+      from(this._wowupService.getTrustedDomains())
+        .pipe(
+          first(),
+          map((trustedDomains) => {
+            this._trustedDomains = trustedDomains;
 
-          this.trustDomain = this._trustedDomains.includes(this.domain);
-        })
-      )
-      .subscribe();
+            this.trustDomain = this._trustedDomains.includes(this.domain);
+          })
+        )
+        .subscribe();
+    }
   }
 
   public onConfirm(success: boolean): void {
