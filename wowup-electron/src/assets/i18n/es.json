@@ -32,10 +32,10 @@
     "VERSION_MISMATCH": "Las versiones no coinciden"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_BUTTON": "¿Por qué estoy viendo este anuncio?",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.",
-      "TITLE": "Why am I seeing this ad?"
+      "MESSAGE": "Para poder usar <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> como proveedor de addons y apoyar a sus autores por su duro trabajo, se nos requiere mostrar esta.\n\nSi no quiere ver estos anuncios, puede desactivar el proveedor wago.io en la pestaña de Opciones.",
+      "TITLE": "¿Por qué estoy viendo este anuncio?"
     }
   },
   "APP": {
@@ -300,16 +300,16 @@
       "TITLE": "Notas de la versión {versionNumber}"
     },
     "PERMISSIONS": {
-      "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
-      "POSITIVE_BUTTON": "Confirm",
+      "MESSAGE": "Antes de empezar, necesitamos configurar algunos permisos para la aplicación.",
+      "POSITIVE_BUTTON": "Confirmar",
       "TELEMETRY": {
-        "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
-        "TOGGLE_LABEL": "Allow Telemetry"
+        "DESCRIPTION": "¿Ayudar a mejorar WowUp enviando datos anónimos de instalación y/o error?",
+        "TOGGLE_LABEL": "Permitir telemetría"
       },
-      "TITLE": "WowUp Permissions Setup",
+      "TITLE": "Configuración de permisos de WowUp",
       "WAGO": {
-        "DESCRIPTION": "Enabled the Wago.io addon provider, this will display an ad required to use their service.\nThe ads directly benefit the authors of your favorite addons!",
-        "TOGGLE_LABEL": "Enable Wago.io Provider"
+        "DESCRIPTION": "¿Activar el proveedor de addons Wago.io? Esto hará que se muestre un anuncio requerido para usar el servicio.\n¡Dicha publicidad beneficia directamente a los autores tus addons favoritos!",
+        "TOGGLE_LABEL": "Activar Wago.io como proveedor"
       }
     },
     "SELECT_INSTALLATION": {
@@ -465,7 +465,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad required",
+        "AD_REQUIRED_HINT": "Anuncio requerido",
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Determina qué proveedores serán utilizados para la búsqueda e instalación de nuevos addons.",
           "FIELD_LABEL": "Selección de proveedores de addons",
@@ -478,7 +478,7 @@
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Cambiar al canal Estable evitará que reciba más versiones Beta. La próxima actualización de la aplicación se realizará cuando se lance la siguiente versión Estable.",
         "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Configuración del canal de publicación de WowUp",
         "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Sí, lo entiendo",
-        "APP_RELEASE_CHANNEL_DESCRIPTION": "Cambia entre las versiones Beta y Estable de la aplicaciónToggle between the Beta and Stable releases of the application",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Cambia entre las versiones Beta y Estable de la aplicación",
         "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Canal",
         "APP_RELEASE_CHANNEL_LABEL": "Canal de publicación de la aplicación",
         "CURRENT_LANGUAGE_LABEL": "Idioma actual",
