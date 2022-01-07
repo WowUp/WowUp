@@ -1,14 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { nanoid } from "nanoid";
 import { Subject, takeUntil } from "rxjs";
 import { AdPageOptions } from "../../../../common/wowup/models";
@@ -21,9 +11,8 @@ import { SessionService } from "../../../services/session/session.service";
   selector: "app-webview",
   templateUrl: "./webview.component.html",
   styleUrls: ["./webview.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WebViewComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WebViewComponent implements OnDestroy, AfterViewInit {
   @Input("options") public options: AdPageOptions;
 
   @ViewChild("webviewContainer", { read: ElementRef }) public webviewContainer!: ElementRef;
@@ -41,14 +30,12 @@ export class WebViewComponent implements OnInit, OnDestroy, AfterViewInit {
     private _ngZone: NgZone
   ) {}
 
-  ngAfterViewInit(): void {
+  public ngAfterViewInit(): void {
     this.initWebview(this.webviewContainer).catch((e) => console.error(e));
     this._electronService.on("webview-new-window", this.onWebviewNewWindow);
   }
 
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
 
@@ -62,7 +49,7 @@ export class WebViewComponent implements OnInit, OnDestroy, AfterViewInit {
       this._tag = undefined;
     }
 
-    // this._element.nativeElement.innerHTML = 0;
+    this.webviewContainer.nativeElement.innerHTML = 0;
   }
 
   private async initWebview(element: ElementRef) {
