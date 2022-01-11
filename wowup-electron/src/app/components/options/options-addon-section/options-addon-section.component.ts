@@ -27,11 +27,11 @@ export class OptionsAddonSectionComponent implements OnInit {
     this.loadProviderStates();
   }
 
-  public onProviderStateSelectionChange(event: MatSelectionListChange): void {
-    event.options.forEach((option) => {
+  public async onProviderStateSelectionChange(event: MatSelectionListChange): Promise<void> {
+    for (const option of event.options) {
       const providerName: AddonProviderType = option.value;
-      this._addonProviderService.setProviderEnabled(providerName, option.selected);
-    });
+      await this._addonProviderService.setProviderEnabled(providerName, option.selected);
+    }
   }
 
   private loadProviderStates() {

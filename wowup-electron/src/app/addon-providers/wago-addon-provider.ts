@@ -23,6 +23,7 @@ import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
+import { SourceRemovedAddonError } from "../errors";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -139,6 +140,15 @@ interface WagoPopularAddonsResponse {
   data: WagoSearchResponseItem[];
 }
 
+interface WagoRecentsRequest {
+  game_version: WagoGameVersion;
+  addons: string[];
+}
+
+interface WagoRecentsResponse {
+  addons: { [addonId: string]: WagoScanAddon };
+}
+
 const WAGO_BASE_URL = "https://addons.wago.io/api/external";
 const WAGO_AD_URL = "https://addons.wago.io/wowup_ad";
 const WAGO_AD_REFERRER = "https://wago.io";
@@ -164,13 +174,14 @@ export class WagoAddonProvider extends AddonProvider {
   public adRequired = true;
   public allowEdit = true;
   public allowReinstall = true;
+  public allowChannelChange = true;
 
   public constructor(
     private _electronService: ElectronService,
     private _cachingService: CachingService,
-    private _networkService: NetworkService,
     private _warcraftService: WarcraftService,
-    private _tocService: TocService
+    private _tocService: TocService,
+    _networkService: NetworkService
   ) {
     super();
 
@@ -193,10 +204,7 @@ export class WagoAddonProvider extends AddonProvider {
     addonFolders: AddonFolder[]
   ): Promise<void> {
     const gameVersion = this.getGameVersion(installation.clientType);
-
-    console.time("WagoScan");
     const scanResults = await this.getScanResults(addonFolders);
-    console.timeEnd("WagoScan");
 
     const request: WagoFingerprintRequest = {
       game_version: gameVersion,
@@ -222,7 +230,7 @@ export class WagoAddonProvider extends AddonProvider {
     console.debug(`[wago] scan`, request);
     console.debug(JSON.stringify(request));
 
-    const matchResult = await this.sendMatchesRequest(request);
+    const matchResult = await this.sendMatchesRequest(installation, request);
     console.debug(`[wago] matchResult`, matchResult);
 
     const scanResultMap: { [folder: string]: WagoScanAddon } = {};
@@ -278,7 +286,7 @@ export class WagoAddonProvider extends AddonProvider {
     url.searchParams.set("game_version", this.getGameVersion(installation.clientType));
 
     const response = await this._cachingService.transaction(
-      url.toString(),
+      `${installation.id}|${url.toString()}`,
       () => this._circuitBreaker.getJson<WagoPopularAddonsResponse>(url, this.getRequestHeaders()),
       WAGO_FEATURED_ADDONS_CACHE_TIME_SEC
     );
@@ -307,7 +315,7 @@ export class WagoAddonProvider extends AddonProvider {
     url.searchParams.set("stability", this.getStability(channelType));
 
     const response = await this._cachingService.transaction(
-      url.toString(),
+      `${installation.id}|${query}|${url.toString()}`,
       () => this._circuitBreaker.getJson<WagoSearchResponse>(url, this.getRequestHeaders()),
       WAGO_SEARCH_CACHE_TIME_SEC
     );
@@ -371,14 +379,36 @@ export class WagoAddonProvider extends AddonProvider {
   }
 
   // used when checking for new addon updates
-  public async getAll(): Promise<GetAllResult> {
+  public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
     await this.ensureToken().toPromise();
 
-    console.debug(`[wago] getAll`);
+    const url = new URL(`${WAGO_BASE_URL}/addons/_recents`).toString();
+    const request: WagoRecentsRequest = {
+      game_version: this.getGameVersion(installation.clientType),
+      addons: [...addonIds],
+    };
+
+    const response = await this._cachingService.transaction(
+      `${installation.id}|${url.toString()}`,
+      () => this._circuitBreaker.postJson<WagoRecentsResponse>(url, request, this.getRequestHeaders()),
+      WAGO_DETAILS_CACHE_TIME_SEC
+    );
+
+    const searchResults: AddonSearchResult[] = [];
+    for (const [addonId, addon] of Object.entries(response.addons)) {
+      searchResults.push(this.toSearchResultFromScan(addon));
+    }
+
+    const missingAddonIds = _.filter(
+      addonIds,
+      (addonId) => _.find(searchResults, (sr) => sr.externalId === addonId) === undefined
+    );
+
+    const deletedErrors = _.map(missingAddonIds, (addonId) => new SourceRemovedAddonError(addonId, undefined));
 
     return Promise.resolve({
-      errors: [],
-      searchResults: [],
+      errors: [...deletedErrors],
+      searchResults,
     });
   }
 
@@ -412,13 +442,37 @@ export class WagoAddonProvider extends AddonProvider {
     return await prom;
   }
 
-  private async sendMatchesRequest(request: WagoFingerprintRequest) {
+  private async sendMatchesRequest(installation: WowInstallation, request: WagoFingerprintRequest) {
     const url = new URL(`${WAGO_BASE_URL}/addons/_match`);
     return await this._cachingService.transaction(
-      url.toString(),
+      `${installation.id}|${url.toString()}`,
       () => this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders()),
       WAGO_DETAILS_CACHE_TIME_SEC
     );
+  }
+
+  private toSearchResultFromScan(item: WagoScanAddon): AddonSearchResult {
+    const releaseObj = item.recent_releases;
+    const releaseTypes = Object.keys(releaseObj);
+    const searchResultFiles: AddonSearchResultFile[] = [];
+    for (const type of releaseTypes) {
+      if (releaseObj[type] !== null) {
+        searchResultFiles.push(this.toSearchResultFileFromDetails(releaseObj[type], type as WagoStability));
+      }
+    }
+
+    return {
+      author: item.authors.join(", "),
+      externalId: item.id,
+      externalUrl: item.website_url,
+      name: item.name,
+      providerName: this.name,
+      thumbnailUrl: item.thumbnail,
+      downloadCount: 0,
+      files: searchResultFiles,
+      releasedAt: new Date(),
+      summary: "",
+    };
   }
 
   private toSearchResultFromDetails(item: WagoAddon): AddonSearchResult {
@@ -502,7 +556,6 @@ export class WagoAddonProvider extends AddonProvider {
 
     const authors = wagoScanAddon?.authors?.join(", ") ?? "";
     const name = wagoScanAddon?.name ?? "";
-    const downloadUrl = wagoScanAddon?.matched_release?.link ?? wagoScanAddon.matched_release.link ?? "";
     const externalUrl = wagoScanAddon?.website_url ?? "";
     const externalId = wagoScanAddon?.id ?? "";
     const gameVersion = getGameVersion(wagoScanAddon?.matched_release?.patch);
@@ -529,6 +582,7 @@ export class WagoAddonProvider extends AddonProvider {
     const latestVersion = validVersion.label;
     const externalLatestReleaseId = validVersion.id;
     const externalChannel = getEnumName(AddonChannelType, validVersion.addonChannelType);
+    const downloadUrl = validVersion.link ?? "";
 
     return {
       id: uuidv4(),
@@ -562,7 +616,7 @@ export class WagoAddonProvider extends AddonProvider {
   /** Convert a stability map of addons into a sorted list of addons */
   private getSortedReleaseList(wagoScanAddon: WagoScanAddon): WagoScanReleaseSortable[] {
     let releaseList: WagoScanReleaseSortable[] = [];
-    for (let [key, value] of Object.entries(wagoScanAddon.recent_releases)) {
+    for (const [key, value] of Object.entries(wagoScanAddon.recent_releases)) {
       releaseList.push({ ...value, stability: key, addonChannelType: this.getAddonChannelType(key as WagoStability) });
     }
 

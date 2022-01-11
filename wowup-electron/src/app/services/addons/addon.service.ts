@@ -1210,7 +1210,7 @@ export class AddonService {
     }
 
     const getAllResult = await addonProvider.getAll(installation, providerAddonIds);
-    this.handleSyncErrors(installation, getAllResult.errors, addonProvider, addons);
+    await this.handleSyncErrors(installation, getAllResult.errors, addonProvider, addons);
     await this.handleSyncResults(getAllResult.searchResults, addons, installation);
   }
 

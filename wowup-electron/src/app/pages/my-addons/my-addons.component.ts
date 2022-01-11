@@ -402,7 +402,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       defaultState: { sort: null },
     });
 
-    this.loadSortOrder();
+    this.loadSortOrder().catch((e) => console.error(e));
 
     this.rowData$
       .pipe(
@@ -729,9 +729,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  public onClientChange(evt: any): void {
+  public async onClientChange(evt: any): Promise<void> {
     const val: string = evt.value.toString();
-    this._sessionService.setSelectedWowInstallation(val);
+    await this._sessionService.setSelectedWowInstallation(val);
   }
 
   public onRemoveAddon(addon: Addon): void {
@@ -784,8 +784,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  public onClickIgnoreAddon(listItem: AddonViewModel): void {
-    this.onClickIgnoreAddons([listItem]);
+  public async onClickIgnoreAddon(listItem: AddonViewModel): Promise<void> {
+    await this.onClickIgnoreAddons([listItem]);
   }
 
   public async onClickIgnoreAddons(listItems: AddonViewModel[]): Promise<void> {
@@ -815,12 +815,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onClickAutoUpdateAddon(listItem: AddonViewModel): void {
-    this.onClickAutoUpdateAddons([listItem]);
+  public async onClickAutoUpdateAddon(listItem: AddonViewModel): Promise<void> {
+    await this.onClickAutoUpdateAddons([listItem]);
   }
 
-  public onClickAutoUpdateAddonNotifications(listItem: AddonViewModel): void {
-    this.onClickAutoUpdateAddonsNotifications([listItem]);
+  public async onClickAutoUpdateAddonNotifications(listItem: AddonViewModel): Promise<void> {
+    await this.onClickAutoUpdateAddonsNotifications([listItem]);
   }
 
   public onRowClicked(event: RowClickedEvent): void {

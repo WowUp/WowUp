@@ -178,7 +178,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this._editModeSrc.next(false);
   }
 
-  public onClickSave(): void {
+  public async onClickSave(): Promise<void> {
     if (!this.installationModel) {
       return;
     }
@@ -189,7 +189,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
       this.installation = { ...this.installationModel };
       if (this.installation) {
-        this._warcraftInstallationService.updateWowInstallation(this.installation);
+        await this._warcraftInstallationService.updateWowInstallation(this.installation);
       }
 
       // if (saveAutoUpdate) {

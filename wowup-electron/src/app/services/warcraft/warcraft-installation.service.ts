@@ -248,7 +248,7 @@ export class WarcraftInstallationService {
       };
 
       try {
-        this.addInstallation(wowInstallation, false);
+        await this.addInstallation(wowInstallation, false);
       } catch (e) {
         // Ignore duplicate error
       }
@@ -338,7 +338,7 @@ export class WarcraftInstallationService {
       selected: false,
     };
 
-    this.addInstallation(installation, false);
+    await this.addInstallation(installation, false);
 
     return installation;
   }

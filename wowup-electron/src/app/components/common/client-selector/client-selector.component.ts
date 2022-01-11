@@ -39,9 +39,9 @@ export class ClientSelectorComponent implements OnInit {
 
   public ngOnInit(): void {}
 
-  public onClientChange(evt: any): void {
+  public async onClientChange(evt: any): Promise<void> {
     const val: string = evt.value.toString();
-    this._sessionService.setSelectedWowInstallation(val);
+    await this._sessionService.setSelectedWowInstallation(val);
   }
 
   private async mapInstallations(installations: WowInstallation[]): Promise<WowInstallation[]> {

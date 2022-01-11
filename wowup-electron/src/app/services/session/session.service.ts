@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, from, Subject } from "rxjs";
 
 import { Injectable } from "@angular/core";
 
@@ -8,7 +8,7 @@ import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
 import { ColumnState } from "../../models/wowup/column-state";
-import { map } from "rxjs/operators";
+import { map, switchMap } from "rxjs/operators";
 import { WowUpAccountService } from "../wowup/wowup-account.service";
 import { AddonService } from "../addons/addon.service";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
@@ -70,9 +70,9 @@ export class SessionService {
       })
       .catch((e) => console.error(e));
 
-    this._warcraftInstallationService.wowInstallations$.subscribe((installations) =>
-      this.onWowInstallationsChange(installations)
-    );
+    this._warcraftInstallationService.wowInstallations$
+      .pipe(switchMap((installations) => from(this.onWowInstallationsChange(installations))))
+      .subscribe();
 
     this._addonProviderService.addonProviderChange$.subscribe(() => {
       this.updateAdSpace();
@@ -128,7 +128,7 @@ export class SessionService {
     this._preferenceStorageService.set(SELECTED_DETAILS_TAB_KEY, tabType);
   }
 
-  public onWowInstallationsChange(wowInstallations: WowInstallation[]): void {
+  public async onWowInstallationsChange(wowInstallations: WowInstallation[]): Promise<void> {
     if (wowInstallations.length === 0) {
       this._selectedHomeTabSrc.next(TAB_INDEX_SETTINGS);
       return;
@@ -138,7 +138,7 @@ export class SessionService {
     if (!selectedInstall) {
       selectedInstall = _.first(wowInstallations);
       if (selectedInstall) {
-        this.setSelectedWowInstallation(selectedInstall.id);
+        await this.setSelectedWowInstallation(selectedInstall.id);
       }
     }
 
@@ -172,7 +172,7 @@ export class SessionService {
     this._selectedHomeTabSrc.next(tabIndex);
   }
 
-  public setSelectedWowInstallation(installationId: string): void {
+  public async setSelectedWowInstallation(installationId: string): Promise<void> {
     if (!installationId) {
       return;
     }
@@ -182,7 +182,7 @@ export class SessionService {
       return;
     }
 
-    this._warcraftInstallationService.setSelectedWowInstallation(installation);
+    await this._warcraftInstallationService.setSelectedWowInstallation(installation);
     this._selectedWowInstallationSrc.next(installation);
   }
 

@@ -8,10 +8,10 @@ import {
   RowNode,
 } from "ag-grid-community";
 import * as _ from "lodash";
-import { BehaviorSubject, combineLatest, from, Observable, of, Subject, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } from "rxjs";
 import { catchError, filter, first, map, switchMap } from "rxjs/operators";
 
-import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
 import { MatDialog } from "@angular/material/dialog";
 import { MatMenuTrigger } from "@angular/material/menu";
@@ -487,8 +487,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onClientChange(): void {
-    this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
+  public async onClientChange(): Promise<void> {
+    await this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
   }
 
   public onRefresh(): void {

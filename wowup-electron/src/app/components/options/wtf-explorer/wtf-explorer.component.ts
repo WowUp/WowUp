@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { BehaviorSubject, from } from "rxjs";
-import { first, map, switchMap } from "rxjs/operators";
+import { first, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 

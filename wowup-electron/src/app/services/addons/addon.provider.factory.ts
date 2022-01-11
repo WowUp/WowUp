@@ -44,8 +44,29 @@ export class AddonProviderFactory {
     private _warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService,
     private _preferenceStorageService: PreferenceStorageService
-  ) {
-    this.loadProviders();
+  ) {}
+
+  /** This is part of the APP_INITIALIZER and called before the app is bootstrapped */
+  public async loadProviders(): Promise<void> {
+    if (this._providerMap.size !== 0) {
+      return;
+    }
+    const providers = [
+      this.createZipAddonProvider(),
+      this.createRaiderIoAddonProvider(),
+      this.createWowUpCompanionAddonProvider(),
+      this.createWowUpAddonProvider(),
+      this.createWagoAddonProvider(),
+      this.createCurseAddonProvider(),
+      this.createTukUiAddonProvider(),
+      this.createWowInterfaceAddonProvider(),
+      this.createGitHubAddonProvider(),
+    ];
+
+    for (const provider of providers) {
+      await this.setProviderState(provider);
+      this._providerMap.set(provider.name, provider);
+    }
   }
 
   public shouldShowConsentDialog(): boolean {
@@ -56,7 +77,7 @@ export class AddonProviderFactory {
     return this._preferenceStorageService.set(WAGO_PROMPT_KEY, true);
   }
 
-  public setProviderEnabled(type: AddonProviderType, enabled: boolean) {
+  public async setProviderEnabled(type: AddonProviderType, enabled: boolean): Promise<void> {
     if (!this._providerMap.has(type)) {
       throw new Error("cannot set provider state, not found");
     }
@@ -66,7 +87,7 @@ export class AddonProviderFactory {
       throw new Error(`this provider is not editable: ${type}`);
     }
 
-    this._wowupService.setAddonProviderState({
+    await this._wowupService.setAddonProviderState({
       providerName: type,
       enabled: enabled,
       canEdit: true,
@@ -80,9 +101,9 @@ export class AddonProviderFactory {
     return new WagoAddonProvider(
       this._electronService,
       this._cachingService,
-      this._networkService,
       this._warcraftService,
-      this._tocService
+      this._tocService,
+      this._networkService
     );
   }
 
@@ -237,27 +258,6 @@ export class AddonProviderFactory {
     }
 
     return providerName !== ADDON_PROVIDER_UNKNOWN && (provider?.allowChannelChange ?? false);
-  }
-
-  private loadProviders() {
-    if (this._providerMap.size === 0) {
-      const providers = [
-        this.createZipAddonProvider(),
-        this.createRaiderIoAddonProvider(),
-        this.createWowUpCompanionAddonProvider(),
-        this.createWowUpAddonProvider(),
-        this.createWagoAddonProvider(),
-        this.createCurseAddonProvider(),
-        this.createTukUiAddonProvider(),
-        this.createWowInterfaceAddonProvider(),
-        this.createGitHubAddonProvider(),
-      ];
-
-      providers.forEach((provider) => {
-        this.setProviderState(provider);
-        this._providerMap.set(provider.name, provider);
-      });
-    }
   }
 
   private setProviderState = async (provider: AddonProvider): Promise<void> => {

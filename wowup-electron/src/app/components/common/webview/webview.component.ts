@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from "@angular/core";
 import { nanoid } from "nanoid";
 import { Subject, takeUntil } from "rxjs";
 import { AdPageOptions } from "../../../../common/wowup/models";

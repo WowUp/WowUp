@@ -72,7 +72,7 @@ export class OptionsWowSectionComponent implements OnInit {
     const wowInstallation = await this._warcraftInstallationService.createWowInstallationForPath(selectedPath);
     console.log("wowInstallation", wowInstallation);
 
-    this._warcraftInstallationService.addInstallation(wowInstallation);
+    await this._warcraftInstallationService.addInstallation(wowInstallation);
   }
 
   private showInvalidWowApplication(selectedPath: string) {
