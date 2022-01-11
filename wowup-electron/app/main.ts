@@ -326,7 +326,11 @@ function createWindow(): BrowserWindow {
 
     webContents.on("will-navigate", (evt, url) => {
       log.debug("[webview] will-navigate", url);
-      evt.preventDefault(); // block the webview from navigating at all
+      if (webContents.getURL() === url) {
+        log.debug(`[webview] reload detected`);
+      } else {
+        evt.preventDefault(); // block the webview from navigating at all
+      }
     });
 
     webContents.setWindowOpenHandler((details) => {
