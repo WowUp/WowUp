@@ -457,7 +457,9 @@ export class WagoAddonProvider extends AddonProvider {
     const searchResultFiles: AddonSearchResultFile[] = [];
     for (const type of releaseTypes) {
       if (releaseObj[type] !== null) {
-        searchResultFiles.push(this.toSearchResultFileFromDetails(releaseObj[type], type as WagoStability));
+        searchResultFiles.push(
+          this.toSearchResultFileFromDetails(releaseObj[type] as WagoRelease, type as WagoStability)
+        );
       }
     }
 
