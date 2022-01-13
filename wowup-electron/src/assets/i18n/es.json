@@ -34,7 +34,7 @@
   "ADS": {
     "AD_EXPLAINER_BUTTON": "¿Por qué estoy viendo este anuncio?",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "Para poder usar <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> como proveedor de addons y apoyar a sus autores por su duro trabajo, se nos requiere mostrar esta.\n\nSi no quiere ver estos anuncios, puede desactivar el proveedor wago.io en la pestaña de Opciones.",
+      "MESSAGE": "Para poder usar <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> como proveedor de addons y apoyar a sus autores por su duro trabajo, se nos requiere mostrar esta publicidad.\n\nSi no quiere ver estos anuncios, puede desactivar el proveedor wago.io en la pestaña de Opciones.",
       "TITLE": "¿Por qué estoy viendo este anuncio?"
     }
   },
