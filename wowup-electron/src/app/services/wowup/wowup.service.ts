@@ -129,11 +129,12 @@ export class WowUpService {
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
-  public get currentTheme(): string {
-    return this._preferenceStorageService.get(CURRENT_THEME_KEY) || DEFAULT_THEME;
+  public async getCurrentTheme(): Promise<string> {
+    const theme = await this._preferenceStorageService.getAsync(CURRENT_THEME_KEY);
+    return theme || DEFAULT_THEME;
   }
 
-  public set currentTheme(value: string) {
+  public async setCurrentTheme(value: string): Promise<void> {
     const key = CURRENT_THEME_KEY;
     this._preferenceStorageService.set(key, value);
     this._preferenceChangeSrc.next({ key, value: value });
@@ -316,7 +317,7 @@ export class WowUpService {
   }
 
   public async shouldShowNewVersionNotes(): Promise<boolean> {
-    const popupVersion = this._preferenceStorageService.get(UPDATE_NOTES_POPUP_VERSION_KEY);
+    const popupVersion = await this._preferenceStorageService.getAsync(UPDATE_NOTES_POPUP_VERSION_KEY);
     return popupVersion !== (await this._electronService.getVersionNumber());
   }
 
@@ -326,7 +327,7 @@ export class WowUpService {
   }
 
   public async shouldMigrateAddons(): Promise<boolean> {
-    const migrateVersion = this._preferenceStorageService.get(ADDON_MIGRATION_VERSION_KEY);
+    const migrateVersion = await this._preferenceStorageService.getAsync(ADDON_MIGRATION_VERSION_KEY);
     return migrateVersion !== (await this._electronService.getVersionNumber());
   }
 

@@ -23,8 +23,8 @@ export class PreferenceStorageService {
     this._store.set(key, value.toString());
   }
 
-  public get(key: string): string {
-    return this._store.get(key) as string;
+  public getAsync(key: string): Promise<string> {
+    return this._electronService.invoke(IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME, key);
   }
 
   public findByKey(key: string): string {

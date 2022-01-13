@@ -552,6 +552,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "编辑",
         "MOVE_DOWN_BUTTON": "下移",
         "MOVE_UP_BUTTON": "上移",
+        "NO_CLIENTS_FOUND_TEXT": "No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client manually",
         "OPEN_FOLDER_BUTTON": "在文件管理器中显示",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "浏览",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",

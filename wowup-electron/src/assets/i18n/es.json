@@ -552,6 +552,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Editar",
         "MOVE_DOWN_BUTTON": "Mover abajo",
         "MOVE_UP_BUTTON": "Mover arriba",
+        "NO_CLIENTS_FOUND_TEXT": "No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client manually",
         "OPEN_FOLDER_BUTTON": "Abrir carpeta",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seleccionar",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Eliminar",

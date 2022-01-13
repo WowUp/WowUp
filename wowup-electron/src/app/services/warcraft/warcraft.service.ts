@@ -177,7 +177,7 @@ export class WarcraftService {
   }
 
   public async getBlizzardAgentPath(): Promise<string> {
-    const storedAgentPath = this._preferenceStorageService.get(constants.BLIZZARD_AGENT_PATH_KEY);
+    const storedAgentPath = await this._preferenceStorageService.getAsync(constants.BLIZZARD_AGENT_PATH_KEY);
     if (storedAgentPath) {
       return storedAgentPath;
     }

@@ -69,8 +69,8 @@ export class AddonProviderFactory {
     }
   }
 
-  public shouldShowConsentDialog(): boolean {
-    return this._preferenceStorageService.get(WAGO_PROMPT_KEY) === undefined;
+  public async shouldShowConsentDialog(): Promise<boolean> {
+    return this._preferenceStorageService.getAsync(WAGO_PROMPT_KEY) === undefined;
   }
 
   public updateWagoConsent(): void {

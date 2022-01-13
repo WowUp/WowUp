@@ -1,5 +1,5 @@
 import { from, of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, first, map, switchMap } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -102,6 +102,20 @@ export class OptionsAppSectionComponent implements OnInit {
   public curseforgeProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(CURSE_PROTOCOL_NAME));
   public wowupProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(APP_PROTOCOL_NAME));
 
+  private _currentTheme: string;
+  public get currentTheme() {
+    return this._currentTheme;
+  }
+
+  public set currentTheme(theme: string) {
+    this.wowupService
+      .setCurrentTheme(theme)
+      .then(() => {
+        this._currentTheme = theme;
+      })
+      .catch(console.error);
+  }
+
   public constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
@@ -116,6 +130,7 @@ export class OptionsAppSectionComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
+    this.currentTheme = this.sessionService.currentTheme;
     this.currentReleaseChannel = this.wowupService.wowUpReleaseChannel;
 
     this._analyticsService.telemetryEnabled$.subscribe((enabled) => {

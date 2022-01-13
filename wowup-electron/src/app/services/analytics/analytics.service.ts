@@ -24,8 +24,8 @@ export class AnalyticsService {
     return this._installId;
   }
 
-  public get shouldPromptTelemetry(): boolean {
-    return this._preferenceStorageService.get(TELEMETRY_ENABLED_KEY) === undefined;
+  public async shouldPromptTelemetry(): Promise<boolean> {
+    return (await this._preferenceStorageService.getAsync(TELEMETRY_ENABLED_KEY)) === undefined;
   }
 
   public get telemetryEnabled(): boolean {

@@ -552,6 +552,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Edit",
         "MOVE_DOWN_BUTTON": "Move Down",
         "MOVE_UP_BUTTON": "Move Up",
+        "NO_CLIENTS_FOUND_TEXT": "No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client manually",
         "OPEN_FOLDER_BUTTON": "Open Folder",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Vybrat",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Remove",
