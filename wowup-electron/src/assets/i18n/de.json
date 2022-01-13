@@ -32,10 +32,10 @@
     "VERSION_MISMATCH": "Versionen stimmen nicht überein"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_BUTTON": "Warum sehe ich diese Werbung?",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.",
-      "TITLE": "Why am I seeing this ad?"
+      "MESSAGE": "Um <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> als Addon-Anbieter zu nutzen und seine Autoren für ihre harte Arbeit an deinen bevorzugten Addons zu unterstützen, müssen wir diese Werbung zeigen.\n\nWenn du diese Werbung nicht sehen möchtest, kannst du wago.io jederzeit als Addon-Anbieter in den Einstellungen deaktivieren."
+      "TITLE": "Warum sehe ich diese Werbung?"
     }
   },
   "APP": {
@@ -288,9 +288,9 @@
         "NO_SEARCH_RESULTS": "Es wurden keine Suchergebnisse gefunden.",
         "TITLE": "Installation fehlgeschlagen"
       },
-      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
+      "IMPORT_ASSET_WARNING": "Wir konnten nicht überprüfen, ob die neueste Version dieses Add-ons mit deinem ausgewählten Client kompatibel ist.\n\nAber wir haben eine ZIP-Datei \"{zipName}\" gefunden.\n\nDie Installation erfolgt auf eigene Gefahr.",
       "IMPORT_BUTTON": "Importieren",
-      "IMPORT_WARNING_TITLE": "Addon Import Warning",
+      "IMPORT_WARNING_TITLE": "Addon Import Warnung",
       "INSTALL_BUTTON": "Installieren",
       "INSTALL_SUCCESS_LABEL": "Installiert!",
       "SUPPORTED_SOURCES": "Unterstützt WowInterface und GitHub",
@@ -300,16 +300,16 @@
       "TITLE": "Neu in Version {versionNumber}"
     },
     "PERMISSIONS": {
-      "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
-      "POSITIVE_BUTTON": "Confirm",
+      "MESSAGE": "Bevor wir beginnen, müssen wir einige Berechtigungen für die App einrichten.",
+      "POSITIVE_BUTTON": "Bestätigen",
       "TELEMETRY": {
-        "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
-        "TOGGLE_LABEL": "Allow Telemetry"
+        "DESCRIPTION": "Möchest Du helfen, WowUp zu verbessern, indem anonyme Installationsdaten und/oder Fehler gesendet werden?",
+        "TOGGLE_LABEL": "Telemetrie zulassen"
       },
-      "TITLE": "WowUp Permissions Setup",
+      "TITLE": "Einrichtung der WowUp-Berechtigungen",
       "WAGO": {
-        "DESCRIPTION": "Enabled the Wago.io addon provider, this will display an ad required to use their service.\nThe ads directly benefit the authors of your favorite addons!",
-        "TOGGLE_LABEL": "Enable Wago.io Provider"
+        "DESCRIPTION": "Wenn der Addon-Anbieter Wago.io aktiviert ist, wird eine Werbung angezeigt, die für die Nutzung deren Dienste erforderlich ist.\nDie Anzeigen kommen direkt den Autoren deiner Lieblings-Addons zugute!",
+        "TOGGLE_LABEL": "Aktiviere Wago.io Addon-Anbieter"
       }
     },
     "SELECT_INSTALLATION": {
@@ -474,13 +474,13 @@
         "TITLE": "Addons"
       },
       "APPLICATION": {
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Switching to the Stable channel for the app will prevent you from receiving more Beta builds, the next update will be the next Stable release.",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Setting the app release channel",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Yes, I understand",
-        "APP_RELEASE_CHANNEL_DESCRIPTION": "Toggle between the Beta and Stable releases of the application",
-        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
-        "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Wenn du zum Beta-Kanal wechseln, erhälst du experimentelle Builds, die Fehlerbehebungen sowie neue und kommende Funktionen enthalten. Du kannst nur zur aktuellen stabilen Version zurückkehren, indem du deine vorhandene Anwendung deinstallierst und von wowup.io neu installierst.\n\nSolange der Beta-Kanal funktionsfähig ist, verwende ihn auf eigene Gefahr.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Wenn du zum Stabilen-Kanal der Anwendung wechselst, erhältst du keine weiteren Beta-Builds. Das nächste Update wird die nächste Stabile-Version sein.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Einstellen des App-Release-Kanals",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Ja ich verstehe",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Wechseln zwischen der Beta- und Stabilen-Versionen der Anwendung",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
+        "APP_RELEASE_CHANNEL_LABEL": "App-Release-Kanal",
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
         "CURSE_PROTOCOL_DESCRIPTION": "Beim Herunterladen von Addons von der CurseForge-Website übernimmt WowUp die Installation",
         "CURSE_PROTOCOL_LABEL": "CurseForge-Download-Links verarbeiten",
