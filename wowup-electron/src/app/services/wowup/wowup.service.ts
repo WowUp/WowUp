@@ -23,7 +23,6 @@ import {
   IPC_APP_INSTALL_UPDATE,
   IPC_GET_APP_VERSION,
   IPC_UPDATE_APP_BADGE,
-  LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
   MY_ADDONS_SORT_ORDER,
   SELECTED_LANGUAGE_PREFERENCE_KEY,
@@ -125,7 +124,7 @@ export class WowUpService {
 
   public async setCollapseToTray(value: boolean): Promise<void> {
     const key = COLLAPSE_TO_TRAY_PREFERENCE_KEY;
-    this._preferenceStorageService.setAsync(key, value);
+    await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
@@ -141,7 +140,7 @@ export class WowUpService {
   }
 
   public async getUseHardwareAcceleration(): Promise<boolean> {
-    const preference = this._preferenceStorageService.findByKey(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY);
+    const preference = await this._preferenceStorageService.getAsync(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -152,7 +151,7 @@ export class WowUpService {
   }
 
   public async getUseSymlinkMode(): Promise<boolean> {
-    const preference = this._preferenceStorageService.findByKey(USE_SYMLINK_MODE_PREFERENCE_KEY);
+    const preference = await this._preferenceStorageService.getAsync(USE_SYMLINK_MODE_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -163,7 +162,7 @@ export class WowUpService {
   }
 
   public async getCurrentLanguage(): Promise<string> {
-    const preference = this._preferenceStorageService.findByKey(SELECTED_LANGUAGE_PREFERENCE_KEY);
+    const preference = await this._preferenceStorageService.getAsync(SELECTED_LANGUAGE_PREFERENCE_KEY);
     console.log("Set Language Preference: " + preference);
     return preference;
   }
@@ -251,8 +250,8 @@ export class WowUpService {
   }
 
   public async getEnableAppBadge(): Promise<boolean> {
-    const appBadge = this._preferenceStorageService.findByKey(ENABLE_APP_BADGE_KEY);
-    return appBadge === true.toString();
+    const appBadge = await this._preferenceStorageService.getAsync(ENABLE_APP_BADGE_KEY);
+    return appBadge === "true";
   }
 
   public async setEnableAppBadge(enabled: boolean): Promise<void> {
