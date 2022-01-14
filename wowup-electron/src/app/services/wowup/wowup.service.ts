@@ -70,7 +70,7 @@ export class WowUpService {
     private _fileService: FileService,
     private _translateService: TranslateService
   ) {
-    this.setDefaultPreferences();
+    this.setDefaultClientPreferences().catch(console.error);
 
     this.createDownloadDirectory()
       .then(() => this.cleanupDownloads())
@@ -98,16 +98,17 @@ export class WowUpService {
    */
   public async initializeLanguage(): Promise<void> {
     console.log("Language setup start");
-    const langCode = this.currentLanguage || (await this._electronService.getLocale());
+    const currentLang = await this.getCurrentLanguage();
+    const langCode = currentLang || (await this._electronService.getLocale());
 
     this._translateService.setDefaultLang("en");
     try {
       await this._translateService.use(langCode).toPromise();
       console.log(`using locale ${langCode}`);
-      this.currentLanguage = langCode;
+      await this.setCurrentLanguage(langCode);
     } catch (e) {
       console.warn(`Language ${langCode} not found defaulting to english`);
-      this.currentLanguage = "en";
+      await this.setCurrentLanguage("en");
       await this._translateService.use("en").toPromise();
     }
 
@@ -118,58 +119,58 @@ export class WowUpService {
     return this._availableVersion;
   }
 
-  public get collapseToTray(): boolean {
-    const preference = this._preferenceStorageService.findByKey(COLLAPSE_TO_TRAY_PREFERENCE_KEY);
-    return preference === "true";
+  public async getCollapseToTray(): Promise<boolean> {
+    return (await this._preferenceStorageService.getAsync(COLLAPSE_TO_TRAY_PREFERENCE_KEY)) === "true";
   }
 
-  public set collapseToTray(value: boolean) {
+  public async setCollapseToTray(value: boolean): Promise<void> {
     const key = COLLAPSE_TO_TRAY_PREFERENCE_KEY;
-    this._preferenceStorageService.set(key, value);
+    this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
-  public get currentTheme(): string {
-    return this._preferenceStorageService.get(CURRENT_THEME_KEY) || DEFAULT_THEME;
+  public async getCurrentTheme(): Promise<string> {
+    const theme = await this._preferenceStorageService.getAsync(CURRENT_THEME_KEY);
+    return theme || DEFAULT_THEME;
   }
 
-  public set currentTheme(value: string) {
+  public async setCurrentTheme(value: string): Promise<void> {
     const key = CURRENT_THEME_KEY;
-    this._preferenceStorageService.set(key, value);
+    await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value });
   }
 
-  public get useHardwareAcceleration(): boolean {
+  public async getUseHardwareAcceleration(): Promise<boolean> {
     const preference = this._preferenceStorageService.findByKey(USE_HARDWARE_ACCELERATION_PREFERENCE_KEY);
     return preference === "true";
   }
 
-  public set useHardwareAcceleration(value: boolean) {
+  public async setUseHardwareAcceleration(value: boolean) {
     const key = USE_HARDWARE_ACCELERATION_PREFERENCE_KEY;
-    this._preferenceStorageService.set(key, value);
+    await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
-  public get useSymlinkMode(): boolean {
+  public async getUseSymlinkMode(): Promise<boolean> {
     const preference = this._preferenceStorageService.findByKey(USE_SYMLINK_MODE_PREFERENCE_KEY);
     return preference === "true";
   }
 
-  public set useSymlinkMode(value: boolean) {
+  public async setUseSymlinkMode(value: boolean): Promise<void> {
     const key = USE_SYMLINK_MODE_PREFERENCE_KEY;
-    this._preferenceStorageService.set(key, value);
+    await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
-  public get currentLanguage(): string {
+  public async getCurrentLanguage(): Promise<string> {
     const preference = this._preferenceStorageService.findByKey(SELECTED_LANGUAGE_PREFERENCE_KEY);
     console.log("Set Language Preference: " + preference);
     return preference;
   }
 
-  public set currentLanguage(value: string) {
+  public async setCurrentLanguage(value: string): Promise<void> {
     const key = SELECTED_LANGUAGE_PREFERENCE_KEY;
-    this._preferenceStorageService.set(key, value);
+    await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
@@ -180,7 +181,7 @@ export class WowUpService {
 
   public async setStartWithSystem(value: boolean): Promise<void> {
     const key = START_WITH_SYSTEM_PREFERENCE_KEY;
-    this._preferenceStorageService.set(key, value);
+    await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
 
     await this.setAutoStartup();
@@ -193,7 +194,7 @@ export class WowUpService {
 
   public async setStartMinimized(value: boolean): Promise<void> {
     const key = START_MINIMIZED_PREFERENCE_KEY;
-    this._preferenceStorageService.set(key, value);
+    await this._preferenceStorageService.setAsync(key, value);
     this._preferenceChangeSrc.next({ key, value: value.toString() });
 
     await this.setAutoStartup();
@@ -208,7 +209,7 @@ export class WowUpService {
     this._electronService
       .invoke("set-release-channel", releaseChannel)
       .then(() => {
-        this._preferenceStorageService.set(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
+        return this._preferenceStorageService.setAsync(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
       })
       .catch((e) => console.error(e));
   }
@@ -241,34 +242,27 @@ export class WowUpService {
     this._preferenceChangeSrc.next({ key, value: preference.toString() });
   }
 
-  public getLastSelectedClientType(): WowClientType {
-    const preference = this._preferenceStorageService.findByKey(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY);
-    const value = parseInt(preference, 10);
-    return isNaN(value) ? WowClientType.None : (value as WowClientType);
+  public async getEnableSystemNotifications(): Promise<boolean> {
+    return await this._preferenceStorageService.getAsync(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY);
   }
 
-  public setLastSelectedClientType(clientType: WowClientType): void {
-    this._preferenceStorageService.set(LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY, clientType);
+  public async setEnableSystemNotifications(enabled: boolean): Promise<void> {
+    await this._preferenceStorageService.setAsync(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, enabled);
   }
 
-  public get enableSystemNotifications(): boolean {
-    return this._preferenceStorageService.findByKey(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY) === true.toString();
+  public async getEnableAppBadge(): Promise<boolean> {
+    const appBadge = this._preferenceStorageService.findByKey(ENABLE_APP_BADGE_KEY);
+    return appBadge === true.toString();
   }
 
-  public set enableSystemNotifications(enabled: boolean) {
-    this._preferenceStorageService.set(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY, enabled);
-  }
-
-  public get enableAppBadge(): boolean {
-    return this._preferenceStorageService.findByKey(ENABLE_APP_BADGE_KEY) === true.toString();
-  }
-
-  public set enableAppBadge(enabled: boolean) {
-    this._preferenceStorageService.set(ENABLE_APP_BADGE_KEY, enabled);
+  public async setEnableAppBadge(enabled: boolean): Promise<void> {
+    await this._preferenceStorageService.setAsync(ENABLE_APP_BADGE_KEY, enabled);
   }
 
   public async updateAppBadgeCount(count: number): Promise<void> {
-    if (count > 0 && !this.enableAppBadge) {
+    const badgeEnabled = await this.getEnableAppBadge();
+    if (count > 0 && !badgeEnabled) {
+      console.debug("app badge disabled");
       return;
     }
 
@@ -316,23 +310,23 @@ export class WowUpService {
   }
 
   public async shouldShowNewVersionNotes(): Promise<boolean> {
-    const popupVersion = this._preferenceStorageService.get(UPDATE_NOTES_POPUP_VERSION_KEY);
+    const popupVersion = await this._preferenceStorageService.getAsync(UPDATE_NOTES_POPUP_VERSION_KEY);
     return popupVersion !== (await this._electronService.getVersionNumber());
   }
 
   public async setNewVersionNotes(): Promise<void> {
     const versionNumber = await this._electronService.getVersionNumber();
-    this._preferenceStorageService.set(UPDATE_NOTES_POPUP_VERSION_KEY, versionNumber);
+    await this._preferenceStorageService.setAsync(UPDATE_NOTES_POPUP_VERSION_KEY, versionNumber);
   }
 
   public async shouldMigrateAddons(): Promise<boolean> {
-    const migrateVersion = this._preferenceStorageService.get(ADDON_MIGRATION_VERSION_KEY);
+    const migrateVersion = await this._preferenceStorageService.getAsync(ADDON_MIGRATION_VERSION_KEY);
     return migrateVersion !== (await this._electronService.getVersionNumber());
   }
 
   public async setMigrationVersion(): Promise<void> {
     const versionNumber = await this._electronService.getVersionNumber();
-    this._preferenceStorageService.set(ADDON_MIGRATION_VERSION_KEY, versionNumber);
+    await this._preferenceStorageService.setAsync(ADDON_MIGRATION_VERSION_KEY, versionNumber);
   }
 
   public async showLogsFolder(): Promise<void> {
@@ -374,13 +368,13 @@ export class WowUpService {
     this._preferenceStorageService.setObject(TRUSTED_DOMAINS_KEY, trustedDomains);
   }
 
-  private setDefaultPreference(key: string, defaultValue: any) {
+  private async setDefaultPreference(key: string, defaultValue: any): Promise<void> {
     const pref = this._preferenceStorageService.findByKey(key);
     if (pref === null || pref === undefined) {
       if (Array.isArray(defaultValue)) {
         this._preferenceStorageService.setObject(key, defaultValue);
       } else {
-        this._preferenceStorageService.set(key, defaultValue.toString());
+        await this._preferenceStorageService.setAsync(key, defaultValue.toString());
       }
     }
   }
@@ -390,19 +384,15 @@ export class WowUpService {
     return `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
   }
 
-  private setDefaultPreferences() {
-    this.setDefaultClientPreferences();
-  }
-
-  private setDefaultClientPreferences() {
+  private async setDefaultClientPreferences(): Promise<void> {
     const keys = getEnumList<WowClientType>(WowClientType).filter((key) => key !== WowClientType.None);
-    keys.forEach((key) => {
+    for (const key of keys) {
       const preferenceKey = this.getClientDefaultAddonChannelKey(key);
-      this.setDefaultPreference(preferenceKey, AddonChannelType.Stable);
+      await this.setDefaultPreference(preferenceKey, AddonChannelType.Stable);
 
       const autoUpdateKey = this.getClientDefaultAutoUpdateKey(key);
-      this.setDefaultPreference(autoUpdateKey, false);
-    });
+      await this.setDefaultPreference(autoUpdateKey, false);
+    }
   }
 
   private async getDefaultReleaseChannel() {

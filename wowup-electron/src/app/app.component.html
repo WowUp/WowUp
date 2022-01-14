@@ -1,7 +1,7 @@
 <div
   *ngIf="(showPreLoad$ | async) === false && quitEnabled === false"
   class="app"
-  [ngClass]="[wowUpService.currentTheme, electronService.platform]"
+  [ngClass]="[sessionService.currentTheme$ | async, electronService.platform]"
 >
   <app-titlebar class="gtitle"></app-titlebar>
   <!-- <app-horizontal-tabs></app-horizontal-tabs> -->

@@ -201,8 +201,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._cdRef.detectChanges();
   }
 
-  public onSelectedTabChange(evt: MatTabChangeEvent): void {
-    this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
+  public async onSelectedTabChange(evt: MatTabChangeEvent): Promise<void> {
+    await this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
   }
 
   public onClickExternalId(): void {

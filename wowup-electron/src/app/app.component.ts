@@ -143,13 +143,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
-    if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
-      this._zoomService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
-    }
+    this.loadZoom().catch(console.error);
+
+    this.wowUpService
+      .getCurrentTheme()
+      .then((theme) => {
+        this.overlayContainer.getContainerElement().classList.add(theme);
+      })
+      .catch(console.error);
 
     this.overlayContainer.getContainerElement().classList.add(this.electronService.platform);
-    this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
 
     this.wowUpService.preferenceChange$.pipe(filter((pref) => pref.key === CURRENT_THEME_KEY)).subscribe((pref) => {
       this.overlayContainer
@@ -166,6 +169,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
+
+    this._addonService.addonAction$
+      .pipe(
+        filter((action) => action.type === "sync" || action.type === "scan"),
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
 
     //If the window is restored update the badge number
     this.electronService.windowResumed$
@@ -194,8 +204,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     from(this.electronService.getAppOptions())
       .pipe(
         first(),
-        map((appOptions) => {
-          this.showPreLoad$.next(this.shouldShowConsentDialog());
+        switchMap((appOptions) => {
+          return from(this.shouldShowConsentDialog()).pipe(map((showConsent) => ({ appOptions, showConsent })));
+        }),
+        map(({ appOptions, showConsent }) => {
+          this.showPreLoad$.next(showConsent);
           this.quitEnabled = appOptions.quit;
           this._cdRef.detectChanges();
         }),
@@ -218,13 +231,22 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  private async loadZoom() {
+    const zoomPref = await this._preferenceStore.getAsync(ZOOM_FACTOR_KEY);
+    const zoomFactor = parseFloat(zoomPref);
+    if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
+      this._zoomService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
+    }
+  }
+
   public ngAfterViewInit(): void {
     from(this.createAppMenu())
       .pipe(
         first(),
         switchMap(() => from(this.createSystemTray())),
-        switchMap(() => {
-          if (this.shouldShowConsentDialog()) {
+        switchMap(() => from(this.shouldShowConsentDialog())),
+        switchMap((shouldPrompt) => {
+          if (shouldPrompt) {
             return of(this.openConsentDialog());
           } else {
             return from(this._analyticsService.trackStartup());
@@ -238,8 +260,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  private shouldShowConsentDialog() {
-    return this._analyticsService.shouldPromptTelemetry || this._addonProviderService.shouldShowConsentDialog();
+  private async shouldShowConsentDialog(): Promise<boolean> {
+    const shouldPromptTelemetry = await this._analyticsService.shouldPromptTelemetry();
+    const shouldShowConsentDialog = await this._addonProviderService.shouldShowConsentDialog();
+    return shouldPromptTelemetry || shouldShowConsentDialog;
   }
 
   public ngOnDestroy(): void {
@@ -278,7 +302,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         switchMap((result: ConsentDialogResult) => {
           this._addonProviderService.updateWagoConsent();
 
-          this._analyticsService.telemetryEnabled = result.telemetry;
+          this._analyticsService.setTelemetryEnabled(result.telemetry).catch(console.error);
           if (result.telemetry) {
             return from(this._analyticsService.trackStartup());
           }
@@ -328,7 +352,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      if (this.wowUpService.enableSystemNotifications) {
+      const enableSystemNotifications = await this.wowUpService.getEnableSystemNotifications();
+      if (enableSystemNotifications) {
         const addonsWithNotificationsEnabled = updatedAddons.filter(
           (addon) => addon.autoUpdateNotificationsEnabled === true
         );

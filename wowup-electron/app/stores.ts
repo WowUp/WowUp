@@ -43,7 +43,12 @@ export function initializeStoreIpcHandlers(): void {
   // Set the store value for a specific key
   ipcMain.handle(IPC_STORE_SET_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string, value: any): void => {
     const store = stores[storeName];
-    store?.set(key, value);
+
+    if (typeof value === "object" || Array.isArray(value)) {
+      store?.set(key, value);
+    } else {
+      store?.set(key, value.toString());
+    }
   });
 
   // Remove the store value for a specific key

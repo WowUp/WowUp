@@ -3,7 +3,7 @@ import { BehaviorSubject, from, Subject } from "rxjs";
 
 import { Injectable } from "@angular/core";
 
-import { SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
+import { CURRENT_THEME_KEY, SELECTED_DETAILS_TAB_KEY, TAB_INDEX_SETTINGS } from "../../../common/constants";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftInstallationService } from "../warcraft/warcraft-installation.service";
@@ -12,6 +12,7 @@ import { map, switchMap } from "rxjs/operators";
 import { WowUpAccountService } from "../wowup/wowup-account.service";
 import { AddonService } from "../addons/addon.service";
 import { AddonProviderFactory } from "../addons/addon.provider.factory";
+import { WowUpService } from "../wowup/wowup.service";
 
 @Injectable({
   providedIn: "root",
@@ -29,6 +30,7 @@ export class SessionService {
   private readonly _adSpaceSrc = new BehaviorSubject<boolean>(false);
   private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
   private readonly _getAddonsColumnsSrc = new Subject<ColumnState>();
+  private readonly _currentThemeSrc = new BehaviorSubject<string>("default-theme");
 
   private _selectedDetailTabType: DetailsTabType;
 
@@ -49,6 +51,7 @@ export class SessionService {
   public readonly adSpace$ = this._adSpaceSrc.asObservable(); // TODO this should be driven by the enabled providers
   public readonly enableControls$ = this._enableControlsSrc.asObservable();
   public readonly debugAdFrame$ = new Subject<boolean>();
+  public readonly currentTheme$ = this._currentThemeSrc.asObservable();
 
   public readonly wowUpAuthenticated$ = this.wowUpAccount$.pipe(map((account) => account !== undefined));
 
@@ -60,6 +63,7 @@ export class SessionService {
     private _warcraftInstallationService: WarcraftInstallationService,
     private _preferenceStorageService: PreferenceStorageService,
     private _wowUpAccountService: WowUpAccountService,
+    private _wowUpService: WowUpService,
     private _addonService: AddonService,
     private _addonProviderService: AddonProviderFactory
   ) {
@@ -73,6 +77,19 @@ export class SessionService {
     this._warcraftInstallationService.wowInstallations$
       .pipe(switchMap((installations) => from(this.onWowInstallationsChange(installations))))
       .subscribe();
+
+    this._wowUpService.preferenceChange$.subscribe((change) => {
+      if (change.key === CURRENT_THEME_KEY) {
+        this._currentThemeSrc.next(change.value);
+      }
+    });
+
+    this._wowUpService
+      .getCurrentTheme()
+      .then((theme) => {
+        this._currentThemeSrc.next(theme);
+      })
+      .catch(console.error);
 
     this._addonProviderService.addonProviderChange$.subscribe(() => {
       this.updateAdSpace();
@@ -89,6 +106,10 @@ export class SessionService {
 
   public get wowUpAuthToken(): string {
     return this._wowUpAccountService.wowUpAuthTokenSrc.value;
+  }
+
+  public get currentTheme(): string {
+    return this._currentThemeSrc.value;
   }
 
   public login(): void {
@@ -123,9 +144,9 @@ export class SessionService {
     return this._selectedDetailTabType;
   }
 
-  public setSelectedDetailsTab(tabType: DetailsTabType): void {
+  public async setSelectedDetailsTab(tabType: DetailsTabType) {
     this._selectedDetailTabType = tabType;
-    this._preferenceStorageService.set(SELECTED_DETAILS_TAB_KEY, tabType);
+    await this._preferenceStorageService.setAsync(SELECTED_DETAILS_TAB_KEY, tabType);
   }
 
   public async onWowInstallationsChange(wowInstallations: WowInstallation[]): Promise<void> {

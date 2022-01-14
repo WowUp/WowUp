@@ -32,10 +32,10 @@
     "VERSION_MISMATCH": "版本号不匹配"
   },
   "ADS": {
-    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_BUTTON": "为什么会看见广告？",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.",
-      "TITLE": "Why am I seeing this ad?"
+      "MESSAGE": "显示此广告是为了支持 <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> 上辛勤工作、开发出优秀插件的作者们。如果不想看到此广告，可以在 “选项” 中禁用 Wago.io 提供方。",
+      "TITLE": "为什么会看见广告？"
     }
   },
   "APP": {
@@ -288,9 +288,9 @@
         "NO_SEARCH_RESULTS": "无搜索结果。",
         "TITLE": "插件安装失败"
       },
-      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
+      "IMPORT_ASSET_WARNING": "已找到此插件的最新版本压缩包 “{zipName}”，但无法验证它是否兼容此《魔兽世界》客户端。\n\n如要安装，请自担风险。",
       "IMPORT_BUTTON": "导入",
-      "IMPORT_WARNING_TITLE": "Addon Import Warning",
+      "IMPORT_WARNING_TITLE": "导入插件警告",
       "INSTALL_BUTTON": "安装",
       "INSTALL_SUCCESS_LABEL": "安装成功！",
       "SUPPORTED_SOURCES": "支持 WowInterface 和 GitHub",
@@ -300,16 +300,16 @@
       "TITLE": "更新记录 {versionNumber}"
     },
     "PERMISSIONS": {
-      "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
-      "POSITIVE_BUTTON": "Confirm",
+      "MESSAGE": "在开始使用 WowUp 之前，请设置此应用程序的权限。",
+      "POSITIVE_BUTTON": "确认",
       "TELEMETRY": {
-        "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
-        "TOGGLE_LABEL": "Allow Telemetry"
+        "DESCRIPTION": "是否发送匿名的插件统计数据和错误报告以帮助改进 WowUp？",
+        "TOGGLE_LABEL": "允许遥测"
       },
-      "TITLE": "WowUp Permissions Setup",
+      "TITLE": "WowUp 权限设置",
       "WAGO": {
-        "DESCRIPTION": "Enabled the Wago.io addon provider, this will display an ad required to use their service.\nThe ads directly benefit the authors of your favorite addons!",
-        "TOGGLE_LABEL": "Enable Wago.io Provider"
+        "DESCRIPTION": "启用 Wago.io 插件提供方。启用此选项将会显示一个广告，以支持你喜欢的插件的作者。",
+        "TOGGLE_LABEL": "启用 Wago.io 提供方"
       }
     },
     "SELECT_INSTALLATION": {
@@ -465,7 +465,7 @@
     },
     "OPTIONS": {
       "ADDON": {
-        "AD_REQUIRED_HINT": "Ad required",
+        "AD_REQUIRED_HINT": "启用此项会显示广告",
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "选择从哪些提供方搜索和安装新插件",
           "FIELD_LABEL": "启用插件提供方",
@@ -474,13 +474,13 @@
         "TITLE": "插件"
       },
       "APPLICATION": {
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Switching to the Stable channel for the app will prevent you from receiving more Beta builds, the next update will be the next Stable release.",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Setting the app release channel",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Yes, I understand",
-        "APP_RELEASE_CHANNEL_DESCRIPTION": "Toggle between the Beta and Stable releases of the application",
-        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
-        "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "切换到 Beta 通道后，将会收到包含最新的错误修正和功能的版本。要切换回稳定版本，只能卸载 WowUp 并重新安装。\n\n尽管 Beta 通道通常能正常工作，但仍需自担风险。",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "切换到稳定版通道后，将会停止接受 Beta 版本。切换到稳定版通道不会回退到上一个稳定版，而是在下一个稳定版发布后更新到稳定版。",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "设置应用程序更新通道",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "我明白了",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "切换此应用程序的稳定版和 Beta 通道",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "更新通道",
+        "APP_RELEASE_CHANNEL_LABEL": "应用程序更新通道",
         "CURRENT_LANGUAGE_LABEL": "当前语言",
         "CURSE_PROTOCOL_DESCRIPTION": "从 CurseForge 网站下载插件时，WowUp 将会接管安装过程",
         "CURSE_PROTOCOL_LABEL": "接管 CurseForge 下载链接",
@@ -552,6 +552,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "编辑",
         "MOVE_DOWN_BUTTON": "下移",
         "MOVE_UP_BUTTON": "上移",
+        "NO_CLIENTS_FOUND_TEXT": "No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client manually",
         "OPEN_FOLDER_BUTTON": "在文件管理器中显示",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "浏览",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "移除",
@@ -567,7 +568,7 @@
       "MESSAGE": "确认要把这个备份还原到界面设置中吗？\n\n还原之前务必关闭《魔兽世界》客户端。\n\n此操作无法撤销。",
       "TITLE": "是否还原 WTF 备份？"
     },
-    "BACKUP_APPLY_SUCCESS": "Successfully applied backup: {name}",
+    "BACKUP_APPLY_SUCCESS": "还原备份 {name} 成功",
     "BACKUP_COUNT_TEXT": "找到 {count} 个备份",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "正在还原备份...",
@@ -582,7 +583,7 @@
     },
     "DIALOG_TITLE": "WTF 设置备份：{clientType}",
     "ERROR": {
-      "BACKUP_APPLY_FAILED": "Failed to apply backup: {name}",
+      "BACKUP_APPLY_FAILED": "还原备份 {name} 失败",
       "FAILED_TO_DELETE": "删除备份 {name} 失败",
       "GENERIC_ERROR": "处理备份文件时出现了一点问题",
       "INVALID_CONTENTS": "处理备份文件时出现了一点问题",

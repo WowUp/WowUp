@@ -34,7 +34,7 @@
   "ADS": {
     "AD_EXPLAINER_BUTTON": "Почему я вижу эту рекламу?",
     "AD_EXPLAINER_DIALOG": {
-      "MESSAGE": "Чтобы использовать <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> в виде источника модификаций и для поддержки их авторов за тяжелый труд над вашими любимыми модификациями, мы должны показывать эту рекламу.\n\nЕсли вы не хотите видеть эту рекламу, то вы всегда можете отключить wago.io как источник модификаций во вкладке настроек.",
+      "MESSAGE": "Чтобы использовать <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> в виде источника модификаций и для поддержки их авторов за тяжёлый труд над вашими любимыми модификациями, мы должны показывать эту рекламу.\n\nЕсли вы не хотите видеть эту рекламу, то вы всегда можете отключить wago.io как источник модификаций во вкладке настроек.",
       "TITLE": "Почему я вижу эту рекламу?"
     }
   },
@@ -93,7 +93,7 @@
     "THEME": {
       "ALLIANCE": "Альянс",
       "DEFAULT": "По умолчанию",
-      "GROUP_DARK": "Темные",
+      "GROUP_DARK": "Тёмные",
       "GROUP_LIGHT": "Светлые",
       "HORDE": "Орда"
     },
@@ -467,7 +467,7 @@
       "ADDON": {
         "AD_REQUIRED_HINT": "Необходима реклама",
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Выберите источники используемые для поиска и установки новых модификаций",
+          "DESCRIPTION": "Выберите источники, используемые для поиска и установки новых модификаций",
           "FIELD_LABEL": "Включённые источники модификаций",
           "INPUT_LABEL": "Источники"
         },
@@ -525,7 +525,7 @@
         "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Его можно найти в последнем лог-файле, если необходимо.",
         "DEBUG_DATA_LABEL": "Отладка данных",
         "LOG_FILES_BUTTON": "Показать лог-файлы",
-        "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую последние несколько лог-файлов.",
+        "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую несколько последних лог-файлов.",
         "LOG_FILES_LABEL": "Файлы логов",
         "TITLE": "Отладка"
       },
@@ -552,6 +552,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Изменить",
         "MOVE_DOWN_BUTTON": "Переместить вниз",
         "MOVE_UP_BUTTON": "Переместить вверх",
+        "NO_CLIENTS_FOUND_TEXT": "No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client manually",
         "OPEN_FOLDER_BUTTON": "Открыть папку",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Удалить",
