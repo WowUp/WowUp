@@ -75,6 +75,12 @@ export interface ScanUpdate {
 
 type InstallType = "install" | "update" | "remove";
 
+export type AddonActionType = "scan" | "sync";
+export interface AddonActionEvent {
+  type: AddonActionType;
+  addon?: Addon;
+}
+
 interface InstallQueueItem {
   addonId: string;
   onUpdate: (installState: AddonInstallState, progress: number) => void | undefined;
@@ -89,6 +95,7 @@ const IGNORED_FOLDER_NAMES = ["__MACOSX"];
   providedIn: "root",
 })
 export class AddonService {
+  private readonly _addonActionSrc = new Subject<AddonActionEvent>();
   private readonly _addonInstalledSrc = new Subject<AddonUpdateEvent>();
   private readonly _addonRemovedSrc = new Subject<string>();
   private readonly _scanUpdateSrc = new BehaviorSubject<ScanUpdate>({ type: ScanUpdateType.Unknown });
@@ -103,6 +110,7 @@ export class AddonService {
   private _activeInstalls: AddonUpdateEvent[] = [];
   private _subscriptions: Subscription[] = [];
 
+  public readonly addonAction$ = this._addonActionSrc.asObservable();
   public readonly addonInstalled$ = this._addonInstalledSrc.asObservable();
   public readonly addonRemoved$ = this._addonRemovedSrc.asObservable();
   public readonly scanUpdate$ = this._scanUpdateSrc.asObservable();
@@ -772,7 +780,9 @@ export class AddonService {
     const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
     for (const installation of installations) {
       const clientTypeName = getEnumName(WowClientType, installation.clientType);
-      const addonFolders = await this._warcraftService.listAddons(installation, this._wowUpService.useSymlinkMode);
+
+      const useSymlinkMode = await this._wowUpService.getUseSymlinkMode();
+      const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
 
       const curseMap = {};
       const curseScanResults = await curseProvider.getScanResults(addonFolders);
@@ -1042,6 +1052,8 @@ export class AddonService {
 
     await this._addonStorage.saveAll(addons);
 
+    this._addonActionSrc.next({ type: "scan" });
+
     return addons;
   }
 
@@ -1081,12 +1093,13 @@ export class AddonService {
     console.debug("syncAllClients");
     const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
 
-    await this.syncBatchProviders(installations);
-
     try {
+      await this.syncBatchProviders(installations);
       await this.syncStandardProviders(installations);
     } catch (e) {
       console.error(e);
+    } finally {
+      this._addonActionSrc.next({ type: "sync" });
     }
   }
 
@@ -1148,7 +1161,7 @@ export class AddonService {
     }
   }
 
-  public async syncStandardProviders(installations: WowInstallation[]): Promise<boolean> {
+  private async syncStandardProviders(installations: WowInstallation[]): Promise<boolean> {
     console.info(`syncStandardProviders`);
     let didSync = true;
 
@@ -1482,7 +1495,9 @@ export class AddonService {
 
     try {
       const defaultAddonChannel = installation.defaultAddonChannelType;
-      const addonFolders = await this._warcraftService.listAddons(installation, this._wowUpService.useSymlinkMode);
+
+      const useSymlinkMode = await this._wowUpService.getUseSymlinkMode();
+      const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
 
       await this.removeGitFolders(addonFolders);
 

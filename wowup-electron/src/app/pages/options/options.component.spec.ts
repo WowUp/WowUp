@@ -9,14 +9,21 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../modules/mat-module";
+import { SessionService } from "../../services/session/session.service";
+import { BehaviorSubject } from "rxjs";
 
 describe("OptionsComponent", () => {
   let component: OptionsComponent;
   let fixture: ComponentFixture<OptionsComponent>;
   let electronServiceSpy: any;
   let wowUpServiceSpy: any;
+  let sessionService: any;
 
   beforeEach(async () => {
+    sessionService = jasmine.createSpyObj("SessionService", [""], {
+      currentTheme$: new BehaviorSubject("default-theme"),
+    });
+
     wowUpServiceSpy = jasmine.createSpyObj(
       "WowUpService",
       {},
@@ -53,8 +60,9 @@ describe("OptionsComponent", () => {
       .overrideComponent(OptionsComponent, {
         set: {
           providers: [
-            { provide: WowUpService, useValue: wowUpServiceSpy },
             { provide: ElectronService, useValue: electronServiceSpy },
+            { provide: SessionService, useValue: sessionService },
+            { provide: WowUpService, useValue: wowUpServiceSpy },
           ],
         },
       })

@@ -144,9 +144,9 @@ export class SessionService {
     return this._selectedDetailTabType;
   }
 
-  public setSelectedDetailsTab(tabType: DetailsTabType): void {
+  public async setSelectedDetailsTab(tabType: DetailsTabType) {
     this._selectedDetailTabType = tabType;
-    this._preferenceStorageService.set(SELECTED_DETAILS_TAB_KEY, tabType);
+    await this._preferenceStorageService.setAsync(SELECTED_DETAILS_TAB_KEY, tabType);
   }
 
   public async onWowInstallationsChange(wowInstallations: WowInstallation[]): Promise<void> {

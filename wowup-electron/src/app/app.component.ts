@@ -170,6 +170,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
 
+    this._addonService.addonAction$
+      .pipe(
+        filter((action) => action.type === "sync" || action.type === "scan"),
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
+
     //If the window is restored update the badge number
     this.electronService.windowResumed$
       .pipe(
@@ -295,7 +302,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         switchMap((result: ConsentDialogResult) => {
           this._addonProviderService.updateWagoConsent();
 
-          this._analyticsService.telemetryEnabled = result.telemetry;
+          this._analyticsService.setTelemetryEnabled(result.telemetry).catch(console.error);
           if (result.telemetry) {
             return from(this._analyticsService.trackStartup());
           }
@@ -345,7 +352,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      if (this.wowUpService.enableSystemNotifications) {
+      const enableSystemNotifications = await this.wowUpService.getEnableSystemNotifications();
+      if (enableSystemNotifications) {
         const addonsWithNotificationsEnabled = updatedAddons.filter(
           (addon) => addon.autoUpdateNotificationsEnabled === true
         );
