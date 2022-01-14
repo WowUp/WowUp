@@ -35,7 +35,7 @@ export class ZoomService {
   public setZoomFactor = async (zoomFactor: number): Promise<void> => {
     await this._electronService.invoke(IPC_SET_ZOOM_FACTOR, zoomFactor);
     this._zoomFactorChangeSrc.next(zoomFactor);
-    this._preferenceStorageService.set(ZOOM_FACTOR_KEY, zoomFactor);
+    await this._preferenceStorageService.setAsync(ZOOM_FACTOR_KEY, zoomFactor);
   };
 
   private async onWindowZoomChanged(zoomDirection: string) {

@@ -520,12 +520,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return listItem.addon.isIgnored === false && listItem.addon.warningType === undefined;
   }
 
-  public canSetAutoUpdateNotifications(listItem: AddonViewModel): boolean {
+  public async canSetAutoUpdateNotifications(listItem: AddonViewModel): Promise<boolean> {
     if (!listItem.addon) {
       return false;
     }
 
-    if (this.wowUpService.enableSystemNotifications === false) {
+    const enableSystemNotifications = await this.wowUpService.getEnableSystemNotifications();
+    if (enableSystemNotifications === false) {
       return false;
     }
 

@@ -183,7 +183,7 @@ export class WarcraftService {
     }
 
     const agentPath = await this._impl.getBlizzardAgentPath();
-    this._preferenceStorageService.set(constants.BLIZZARD_AGENT_PATH_KEY, agentPath);
+    await this._preferenceStorageService.setAsync(constants.BLIZZARD_AGENT_PATH_KEY, agentPath);
 
     return agentPath;
   }
