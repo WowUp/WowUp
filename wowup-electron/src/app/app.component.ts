@@ -299,9 +299,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         switchMap((result: ConsentDialogResult) =>
           from(this._addonProviderService.setProviderEnabled("Wago", result.wagoProvider)).pipe(map(() => result))
         ),
+        switchMap((result) => from(this._addonProviderService.updateWagoConsent()).pipe(map(() => result))),
         switchMap((result: ConsentDialogResult) => {
-          this._addonProviderService.updateWagoConsent();
-
           this._analyticsService.setTelemetryEnabled(result.telemetry).catch(console.error);
           if (result.telemetry) {
             return from(this._analyticsService.trackStartup());

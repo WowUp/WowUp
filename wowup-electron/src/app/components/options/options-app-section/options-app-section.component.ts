@@ -1,5 +1,5 @@
 import { BehaviorSubject, from, of } from "rxjs";
-import { catchError, first, map, switchMap } from "rxjs/operators";
+import { catchError, map, switchMap } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -433,7 +433,7 @@ export class OptionsAppSectionComponent implements OnInit {
             return of(undefined);
           }
 
-          return from(this.wowupService.setCurrentLanguage(evt.value)).pipe(map(() => evt.value));
+          return from(this.wowupService.setCurrentLanguage(evt.value as string)).pipe(map(() => evt.value as string));
         }),
         switchMap((result) => {
           this.currentLanguage$.next(result);
