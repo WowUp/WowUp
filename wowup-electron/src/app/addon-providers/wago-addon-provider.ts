@@ -395,7 +395,7 @@ export class WagoAddonProvider extends AddonProvider {
     );
 
     const searchResults: AddonSearchResult[] = [];
-    for (const [addonId, addon] of Object.entries(response.addons)) {
+    for (const [, addon] of Object.entries(response.addons)) {
       searchResults.push(this.toSearchResultFromScan(addon));
     }
 

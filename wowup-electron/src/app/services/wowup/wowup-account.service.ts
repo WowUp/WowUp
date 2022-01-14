@@ -32,7 +32,8 @@ export class WowUpAccountService {
   public readonly accountPushSrc = new BehaviorSubject<boolean>(false);
 
   public async getAccountPushEnabled(): Promise<boolean> {
-    return this._preferenceStorageService.findByKey(ACCT_PUSH_ENABLED_KEY) === true.toString();
+    const pref = await this._preferenceStorageService.getAsync(ACCT_PUSH_ENABLED_KEY);
+    return pref === "true";
   }
 
   public async setAccountPushEnabled(enabled: boolean) {
@@ -92,7 +93,7 @@ export class WowUpAccountService {
 
   public logout(): void {
     this.clearAuthToken();
-    this.resetAccountPreferences();
+    this.resetAccountPreferences().catch(console.error);
   }
 
   private onAuthTokenChanged = async (token: string) => {
