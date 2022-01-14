@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { AddonService } from "../../../services/addons/addon.service";
+import { SessionService } from "../../../services/session/session.service";
 import { WowUpService } from "../../../services/wowup/wowup.service";
 
 @Component({
@@ -13,7 +14,8 @@ export class OptionsDebugSectionComponent {
   public constructor(
     private _cdRef: ChangeDetectorRef,
     private _addonService: AddonService,
-    private _wowupService: WowUpService
+    private _wowupService: WowUpService,
+    private _sessionService: SessionService
   ) {}
 
   public async onShowLogs(): Promise<void> {
@@ -30,5 +32,9 @@ export class OptionsDebugSectionComponent {
       this.dumpingDebugData = false;
       this._cdRef.detectChanges();
     }
+  }
+
+  public onDebugAdFrame(): void {
+    this._sessionService.debugAdFrame$.next(true);
   }
 }

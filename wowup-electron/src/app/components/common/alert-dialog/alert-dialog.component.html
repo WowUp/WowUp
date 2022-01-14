@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>{{ data.title }}</h1>
 <div mat-dialog-content>
-  <pre class="message" [innerHTML]="data.message"></pre>
+  <pre #dialogContent class="message changelog" [innerHTML]="data.message"></pre>
 </div>
 <div mat-dialog-actions [ngSwitch]="data.positiveButtonStyle" align="end">
   <button

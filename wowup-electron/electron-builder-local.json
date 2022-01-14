@@ -8,44 +8,10 @@
   "generateUpdatesFilesForAllChannels": true,
   "publish": ["github"],
   "nodeGypRebuild": true,
-  "files": [
-    "**/*",
-    "**\\*",
-    "build/Release/*.node",
-    "src/common/**/*.js",
-    "!**/*.ts",
-    "!**/*.scss",
-    "!**/*.map",
-    "!*.code-workspace",
-    "!LICENSE.md",
-    "!package.json",
-    "!package-lock.json",
-    "!src/app/*",
-    "!src/assets/*",
-    "!src/environments/*",
-    "!src/*.html",
-    "!src/*.js",
-    "!src/*.json",
-    "!e2e/",
-    "!hooks/",
-    "!angular.json",
-    "!_config.yml",
-    "!karma.conf.js",
-    "!tsconfig.json",
-    "!tslint.json",
-    "!**/.vscode/*",
-    "!node_modules/@angular",
-    "!node_modules/win-ca/pem",
-    "!native/",
-    "!*.npmrc",
-    "!*.eslintrc.json",
-    "!binding.gyp",
-    "!angular.webpack.js",
-    "!tsconfig*.json"
-  ],
+  "files": ["dist/**/*.*", "assets/**/*.*", "app/**/*.js", "src/common/**/*.js", "build/Release/*.node"],
   "win": {
     "icon": "electron-build/icon.ico",
-    "target": ["nsis"],
+    "target": ["nsis", "portable"],
     "forceCodeSigning": false,
     "publisherName": "WowUp LLC"
   },
@@ -60,18 +26,7 @@
         "target": "default",
         "arch": ["x64", "arm64"]
       }
-    ],
-    "hardenedRuntime": true,
-    "entitlements": "./electron-build/entitlements.mac.plist",
-    "extendInfo": {
-      "CFBundleURLTypes": [
-        {
-          "CFBundleTypeRole": "Shell",
-          "CFBundleURLName": "CurseForge",
-          "CFBundleURLSchemes": "curseforge"
-        }
-      ]
-    }
+    ]
   },
   "linux": {
     "icon": "electron-build/icon.icns",

@@ -27,7 +27,13 @@ describe("InstallFromProtocolDialogComponent", () => {
   let dialogModel: InstallFromProtocolDialogComponentData;
 
   beforeEach(async () => {
-    addonService = jasmine.createSpyObj("AddonService", [""], {});
+    addonService = jasmine.createSpyObj(
+      "AddonService",
+      {
+        getAddonForProtocol: () => Promise.resolve(undefined),
+      },
+      {}
+    );
 
     sessionService = jasmine.createSpyObj("SessionService", [""], {});
 

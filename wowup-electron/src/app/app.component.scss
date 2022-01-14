@@ -1,14 +1,37 @@
 .app {
   height: 100vh;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "title title"
+    "tabs main"
+    "tabs footer";
+
+  .gtitle {
+    grid-area: title;
+  }
+
+  .gtabs {
+    grid-area: tabs;
+  }
+
+  .gmain {
+    grid-area: main;
+  }
+
+  .gfooter {
+    grid-area: footer;
+  }
 
   .content {
     flex-grow: 1;
     overflow: auto;
     display: flex;
     flex-direction: row;
+
+    border-radius: 4px;
 
     .tabs {
       flex-shrink: 0;

@@ -2,7 +2,7 @@ import * as Store from "electron-store";
 
 import { Injectable } from "@angular/core";
 
-import { IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME } from "../../../common/constants";
+import { IPC_STORE_GET_OBJECT, IPC_STORE_SET_OBJECT, PREFERENCE_STORE_NAME } from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 
 @Injectable({
@@ -19,17 +19,18 @@ export class PreferenceStorageService {
     return action(this._store);
   }
 
-  public set(key: string, value: unknown): void {
-    this._store.set(key, value.toString());
+  public async setAsync(key: string, value: unknown): Promise<void> {
+    return await this._electronService.invoke(IPC_STORE_SET_OBJECT, PREFERENCE_STORE_NAME, key, value);
   }
 
-  public get(key: string): string {
-    return this._store.get(key) as string;
+  public getAsync<T = string>(key: string): Promise<T> {
+    return this._electronService.invoke(IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME, key);
   }
 
   public findByKey(key: string): string {
     return this._store.get(key) as string;
   }
+
 
   public setObject<T>(key: string, object: T): void {
     this._store.set(key, object);
@@ -37,10 +38,6 @@ export class PreferenceStorageService {
 
   public getObjectAsync<T>(key: string): Promise<T | undefined> {
     return this._electronService.invoke(IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME, key);
-  }
-
-  public getObject<T>(key: string): T | undefined {
-    return this._store.get(key, undefined) as T;
   }
 
   public remove(key: string): void {

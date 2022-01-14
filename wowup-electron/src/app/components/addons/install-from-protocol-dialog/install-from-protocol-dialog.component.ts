@@ -133,7 +133,7 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
 
       this.addon = searchResult;
 
-      this.validWowInstallations = this._warcraftInstallationService.getWowInstallationsByClientTypes(
+      this.validWowInstallations = await this._warcraftInstallationService.getWowInstallationsByClientTypes(
         searchResult.validClientTypes
       );
       if (this.validWowInstallations.length === 0) {
@@ -141,13 +141,13 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
         return;
       }
 
-      this.validWowInstallations.forEach((installation) => {
-        installation.isInstalled = this._addonService.isInstalled(
+      for (const installation of this.validWowInstallations) {
+        installation.isInstalled = await this._addonService.isInstalled(
           this.addon.externalId,
           this.addon.providerName,
           installation
         );
-      });
+      }
 
       if (this.validWowInstallations.length === 0) {
         return;

@@ -1,5 +1,5 @@
-import { from, of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { BehaviorSubject, from, of } from "rxjs";
+import { catchError, first, map, switchMap } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -48,16 +48,11 @@ export class OptionsAppSectionComponent implements OnInit {
   public readonly curseProtocolName = CURSE_PROTOCOL_NAME;
   public readonly wowupProtocolName = APP_PROTOCOL_NAME;
 
-  public collapseToTray = false;
   public minimizeOnCloseDescription = "";
   public startMinimized = false;
   public startWithSystem = false;
   public protocolRegistered = false;
-  public useSymlinkMode = false;
-  public telemetryEnabled = false;
-  public useHardwareAcceleration = true;
   public currentReleaseChannel = WowUpReleaseChannelType.Stable;
-  public currentLanguage = "";
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
   public languages: LocaleListItem[] = [
@@ -102,6 +97,28 @@ export class OptionsAppSectionComponent implements OnInit {
   public curseforgeProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(CURSE_PROTOCOL_NAME));
   public wowupProtocolHandled$ = from(this.electronService.isDefaultProtocolClient(APP_PROTOCOL_NAME));
 
+  private _currentTheme: string;
+  public get currentTheme() {
+    return this._currentTheme;
+  }
+
+  public set currentTheme(theme: string) {
+    this.wowupService
+      .setCurrentTheme(theme)
+      .then(() => {
+        this._currentTheme = theme;
+      })
+      .catch(console.error);
+  }
+
+  public enableSystemNotifications$ = new BehaviorSubject(false);
+  public currentLanguage$ = new BehaviorSubject("");
+  public useSymlinkMode$ = new BehaviorSubject(false);
+  public useHardwareAcceleration$ = new BehaviorSubject(false);
+  public telemetryEnabled$ = new BehaviorSubject(false);
+  public collapseToTray$ = new BehaviorSubject(false);
+  public enableAppBadge$ = new BehaviorSubject(false);
+
   public constructor(
     private _analyticsService: AnalyticsService,
     private _dialog: MatDialog,
@@ -116,10 +133,11 @@ export class OptionsAppSectionComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
+    this.currentTheme = this.sessionService.currentTheme;
     this.currentReleaseChannel = this.wowupService.wowUpReleaseChannel;
 
     this._analyticsService.telemetryEnabled$.subscribe((enabled) => {
-      this.telemetryEnabled = enabled;
+      this.telemetryEnabled$.next(enabled);
     });
 
     const minimizeOnCloseKey = this.electronService.isWin
@@ -130,13 +148,58 @@ export class OptionsAppSectionComponent implements OnInit {
       this.minimizeOnCloseDescription = translatedStr;
     });
 
-    this.telemetryEnabled = this._analyticsService.telemetryEnabled;
-    this.collapseToTray = this.wowupService.collapseToTray;
-    this.useHardwareAcceleration = this.wowupService.useHardwareAcceleration;
+    this._analyticsService
+      .getTelemetryEnabled()
+      .then((enabled) => {
+        this.telemetryEnabled$.next(enabled);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getCollapseToTray()
+      .then((collapse) => {
+        console.log("getCollapseToTray", collapse);
+        this.collapseToTray$.next(collapse);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getEnableSystemNotifications()
+      .then((enabled) => {
+        this.enableSystemNotifications$.next(enabled);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getCurrentLanguage()
+      .then((curlang) => {
+        this.currentLanguage$.next(curlang);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getUseSymlinkMode()
+      .then((useSymlink) => {
+        this.useSymlinkMode$.next(useSymlink);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getUseHardwareAcceleration()
+      .then((useHwAccel) => {
+        this.useHardwareAcceleration$.next(useHwAccel);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getEnableAppBadge()
+      .then((enabled) => {
+        this.enableAppBadge$.next(enabled);
+      })
+      .catch(console.error);
+
     this.startWithSystem = this.wowupService.getStartWithSystem();
     this.startMinimized = this.wowupService.startMinimized;
-    this.currentLanguage = this.wowupService.currentLanguage;
-    this.useSymlinkMode = this.wowupService.useSymlinkMode;
 
     this.initScale().catch((e) => console.error(e));
 
@@ -161,23 +224,34 @@ export class OptionsAppSectionComponent implements OnInit {
   }
 
   public onEnableSystemNotifications = (evt: MatSlideToggleChange): void => {
-    this.wowupService.enableSystemNotifications = evt.checked;
+    this.wowupService
+      .setEnableSystemNotifications(evt.checked)
+      .then(() => {
+        this.enableSystemNotifications$.next(evt.checked);
+      })
+      .catch(console.error);
   };
 
-  public onToggleAppBadge = (evt: MatSlideToggleChange): void => {
-    this.wowupService.enableAppBadge = evt.checked;
+  public onToggleAppBadge = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setEnableAppBadge(evt.checked);
+    this.enableAppBadge$.next(evt.checked);
 
-    const count = evt.checked ? this._addonService.getAllAddonsAvailableForUpdate().length : 0;
+    let count = 0;
+    if (evt.checked) {
+      const addons = await this._addonService.getAllAddonsAvailableForUpdate();
+      count = addons.length;
+    }
 
-    this.wowupService.updateAppBadgeCount(count).catch((e) => console.error(e));
+    await this.wowupService.updateAppBadgeCount(count);
   };
 
-  public onTelemetryChange = (evt: MatSlideToggleChange): void => {
-    this._analyticsService.telemetryEnabled = evt.checked;
+  public onTelemetryChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this._analyticsService.setTelemetryEnabled(evt.checked);
   };
 
-  public onCollapseChange = (evt: MatSlideToggleChange): void => {
-    this.wowupService.collapseToTray = evt.checked;
+  public onCollapseChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setCollapseToTray(evt.checked);
+    this.collapseToTray$.next(evt.checked);
   };
 
   public onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
@@ -257,8 +331,9 @@ export class OptionsAppSectionComponent implements OnInit {
             return of(undefined);
           }
 
-          this.wowupService.useHardwareAcceleration = evt.checked;
-          return from(this.electronService.restartApplication());
+          return from(this.wowupService.setUseHardwareAcceleration(evt.checked)).pipe(
+            switchMap(() => from(this.electronService.restartApplication()))
+          );
         }),
         catchError((error) => {
           console.error(error);
@@ -268,9 +343,9 @@ export class OptionsAppSectionComponent implements OnInit {
       .subscribe();
   };
 
-  public onSymlinkModeChange = (evt: MatSlideToggleChange): void => {
+  public onSymlinkModeChange = async (evt: MatSlideToggleChange): Promise<void> => {
     if (evt.checked === false) {
-      this.wowupService.useSymlinkMode = false;
+      await this.wowupService.setUseSymlinkMode(false);
       return;
     }
 
@@ -286,13 +361,15 @@ export class OptionsAppSectionComponent implements OnInit {
     dialogRef
       .afterClosed()
       .pipe(
-        map((result) => {
+        switchMap((result) => {
           if (!result) {
             evt.source.checked = !evt.source.checked;
             return of(undefined);
           }
 
-          this.wowupService.useSymlinkMode = evt.checked;
+          return from(this.wowupService.setUseSymlinkMode(evt.checked)).pipe(
+            map(() => this.useSymlinkMode$.next(evt.checked))
+          );
         }),
         catchError((error) => {
           console.error(error);
@@ -352,11 +429,14 @@ export class OptionsAppSectionComponent implements OnInit {
       .pipe(
         switchMap((result) => {
           if (!result) {
-            evt.source.value = this.wowupService.currentLanguage;
+            evt.source.value = this.currentLanguage$.value;
             return of(undefined);
           }
 
-          this.wowupService.currentLanguage = evt.value;
+          return from(this.wowupService.setCurrentLanguage(evt.value)).pipe(map(() => evt.value));
+        }),
+        switchMap((result) => {
+          this.currentLanguage$.next(result);
           return from(this.electronService.restartApplication());
         }),
         catchError((error) => {

@@ -137,7 +137,7 @@ export class InstallFromUrlDialogComponent implements OnDestroy {
       this.hasThumbnail = !!this.addon.thumbnailUrl;
       this.thumbnailLetter = this.addon.name.charAt(0).toUpperCase();
 
-      const addonInstalled = this._addonService.isInstalled(
+      const addonInstalled = await this._addonService.isInstalled(
         this.addon.externalId,
         this.addon.providerName,
         selectedInstallation

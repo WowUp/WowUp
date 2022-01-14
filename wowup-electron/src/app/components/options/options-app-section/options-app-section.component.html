@@ -13,7 +13,7 @@
       </div>
       <mat-form-field class="">
         <mat-label>{{ "PAGES.OPTIONS.APPLICATION.CURRENT_LANGUAGE_LABEL" | translate }}</mat-label>
-        <mat-select [value]="currentLanguage" (selectionChange)="onCurrentLanguageChange($event)">
+        <mat-select [value]="currentLanguage$ | async" (selectionChange)="onCurrentLanguageChange($event)">
           <mat-option *ngFor="let language of languages" [value]="language.localeId">
             {{ language.label }}
           </mat-option>
@@ -34,7 +34,7 @@
       </div>
       <mat-form-field class="">
         <mat-label>{{ "PAGES.OPTIONS.APPLICATION.THEME_LABEL" | translate }}</mat-label>
-        <mat-select [(value)]="wowupService.currentTheme">
+        <mat-select [(value)]="currentTheme">
           <mat-optgroup *ngFor="let themeGroup of themeGroups" [label]="themeGroup.name | translate">
             <mat-option *ngFor="let theme of themeGroup.themes" [value]="theme.class">
               {{ theme.display | translate }}
@@ -53,7 +53,7 @@
           {{ "PAGES.OPTIONS.APPLICATION.TELEMETRY_LABEL" | translate }}
         </div>
       </div>
-      <mat-slide-toggle [checked]="telemetryEnabled" (change)="onTelemetryChange($event)"></mat-slide-toggle>
+      <mat-slide-toggle [checked]="telemetryEnabled$ | async" (change)="onTelemetryChange($event)"></mat-slide-toggle>
     </div>
     <small class="text-2">
       {{ "PAGES.OPTIONS.APPLICATION.TELEMETRY_DESCRIPTION" | translate }}
@@ -68,28 +68,9 @@
           {{ "PAGES.OPTIONS.APPLICATION.MINIMIZE_ON_CLOSE_LABEL" | translate }}
         </div>
       </div>
-      <mat-slide-toggle [(checked)]="collapseToTray" (change)="onCollapseChange($event)"> </mat-slide-toggle>
+      <mat-slide-toggle [checked]="collapseToTray$ | async" (change)="onCollapseChange($event)"> </mat-slide-toggle>
     </div>
     <small class="text-2">{{ minimizeOnCloseDescription }}</small>
-    <div class="divider"></div>
-  </div>
-  <!-- APP BADGE -->
-  <div class="toggle">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div class="label">
-          {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL" | translate }}
-        </div>
-      </div>
-      <mat-slide-toggle
-        [checked]="wowupService.enableSystemNotifications"
-        (change)="onEnableSystemNotifications($event)"
-      >
-      </mat-slide-toggle>
-    </div>
-    <small class="text-2">
-      {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION" | translate }}
-    </small>
     <div class="divider"></div>
   </div>
   <!-- SYSTEM NOTIFICATIONS -->
@@ -97,10 +78,26 @@
     <div class="row align-items-center">
       <div class="flex-grow-1">
         <div class="label">
+          {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_LABEL" | translate }}
+        </div>
+      </div>
+      <mat-slide-toggle [checked]="enableSystemNotifications$ | async" (change)="onEnableSystemNotifications($event)">
+      </mat-slide-toggle>
+    </div>
+    <small class="text-2">
+      {{ "PAGES.OPTIONS.APPLICATION.ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION" | translate }}
+    </small>
+    <div class="divider"></div>
+  </div>
+  <!-- APP BADGE -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div class="label">
           {{ "PAGES.OPTIONS.APPLICATION.ENABLE_APP_BADGE_LABEL" | translate }}
         </div>
       </div>
-      <mat-slide-toggle [checked]="wowupService.enableAppBadge" (change)="onToggleAppBadge($event)"> </mat-slide-toggle>
+      <mat-slide-toggle [checked]="enableAppBadge$ | async" (change)="onToggleAppBadge($event)"> </mat-slide-toggle>
     </div>
     <small class="text-2">
       {{ "PAGES.OPTIONS.APPLICATION.ENABLE_APP_BADGE_DESCRIPTION" | translate }}
@@ -115,7 +112,7 @@
           {{ "PAGES.OPTIONS.APPLICATION.USE_HARDWARE_ACCELERATION_LABEL" | translate }}
         </div>
       </div>
-      <mat-slide-toggle [(checked)]="useHardwareAcceleration" (change)="onUseHardwareAccelerationChange($event)">
+      <mat-slide-toggle [checked]="useHardwareAcceleration$ | async" (change)="onUseHardwareAccelerationChange($event)">
       </mat-slide-toggle>
     </div>
     <small
@@ -132,7 +129,7 @@
           {{ "PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT" | translate }}
         </div>
       </div>
-      <mat-slide-toggle [(checked)]="useSymlinkMode" (change)="onSymlinkModeChange($event)"> </mat-slide-toggle>
+      <mat-slide-toggle [checked]="useSymlinkMode$ | async" (change)="onSymlinkModeChange($event)"> </mat-slide-toggle>
     </div>
     <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.USE_SYMLINK_SUPPORT_DESCRIPTION" | translate }}</small>
     <div class="divider"></div>

@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>{{ "DIALOGS.PERMISSIONS.TITLE" | translate }}</h1>
+<form [formGroup]="consentOptions" (ngSubmit)="onSubmit($event)">
+  <div mat-dialog-content #dialogContent>
+    <p>{{ "DIALOGS.PERMISSIONS.MESSAGE" | translate }}</p>
+    <div class="mb-3">
+      <div>
+        <mat-slide-toggle formControlName="telemetry">{{
+          "DIALOGS.PERMISSIONS.TELEMETRY.TOGGLE_LABEL" | translate
+        }}</mat-slide-toggle>
+      </div>
+      <mat-hint>{{ "DIALOGS.PERMISSIONS.TELEMETRY.DESCRIPTION" | translate }}</mat-hint>
+    </div>
+    <div>
+      <div>
+        <mat-slide-toggle formControlName="wagoProvider">{{
+          "DIALOGS.PERMISSIONS.WAGO.TOGGLE_LABEL" | translate
+        }}</mat-slide-toggle>
+      </div>
+      <mat-hint
+        class="pre-wrap changelog"
+        [innerHTML]="
+          'DIALOGS.PERMISSIONS.WAGO.DESCRIPTION' | translate: { termsUrl: wagoTermsUrl, dataUrl: wagoDataUrl }
+        "
+      ></mat-hint>
+    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" type="submit" cdkFocusInitial>
+      {{ "DIALOGS.PERMISSIONS.POSITIVE_BUTTON" | translate }}
+    </button>
+  </div>
+</form>

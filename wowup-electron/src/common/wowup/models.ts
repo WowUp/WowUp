@@ -131,3 +131,12 @@ export interface AddonUpdatePushNotification extends PushNotificationData {
   addonName: string;
   addonId: string;
 }
+
+export interface AdPageOptions {
+  pageUrl: string;
+  referrer?: string;
+  userAgent?: string;
+  partition?: string;
+  preloadFilePath?: string;
+  explanationKey?: string; // locale key of the translated explanation of this ad
+}

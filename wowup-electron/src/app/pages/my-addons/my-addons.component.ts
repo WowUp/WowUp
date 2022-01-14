@@ -22,6 +22,7 @@ import {
   Component,
   ElementRef,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -62,7 +63,8 @@ import { PushService } from "../../services/push/push.service";
 import { AddonUiService } from "../../services/addons/addon-ui.service";
 import { AddonManageDialogComponent } from "../../components/addons/addon-manage-dialog/addon-manage-dialog.component";
 import { WtfBackupComponent } from "../../components/addons/wtf-backup/wtf-backup.component";
-import { FromEventTarget } from "rxjs/internal/observable/fromEvent";
+import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 
 @Component({
   selector: "app-my-addons",
@@ -82,7 +84,6 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   // @HostListener("window:keydown", ["$event"])
   private readonly _operationErrorSrc = new Subject<Error>();
   private readonly _isBusySrc = new BehaviorSubject<boolean>(true);
-  private readonly _enableControlsSrc = new BehaviorSubject<boolean>(false);
   private readonly _tabIndexSrc = new BehaviorSubject<number | undefined>(undefined);
   private readonly _baseRowDataSrc = new BehaviorSubject<AddonViewModel[]>([]);
   private readonly _filterInputSrc = new BehaviorSubject<string>("");
@@ -90,7 +91,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _totalAvailableUpdateSrc = new BehaviorSubject<number>(0);
 
   public readonly totalAvailableUpdateCt$ = this._totalAvailableUpdateSrc.asObservable();
-  public readonly enableControls$ = this._enableControlsSrc.asObservable();
+  public readonly enableControls$ = this._sessionService.enableControls$;
   public readonly spinnerMessage$ = this._spinnerMessageSrc.asObservable();
 
   public readonly selectedWowInstallation$ = this._sessionService.selectedWowInstallation$;
@@ -126,7 +127,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public readonly enableUpdateExtra$ = combineLatest([
     this.enableControls$,
-    this.addonService.anyUpdatesAvailable$,
+    this._addonService.anyUpdatesAvailable$,
   ]).pipe(
     map(([enableControls, updatesAvailable]) => {
       return enableControls && updatesAvailable;
@@ -168,7 +169,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Grid
   public rowDataG: any[] = [];
-  public columnDefs: ColDef[] = [];
+  public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
   public frameworkComponents = {};
   public gridApi!: GridApi;
   public gridColumnApi!: ColumnApi;
@@ -238,6 +239,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public constructor(
+    private _addonService: AddonService,
+    private _addonProviderService: AddonProviderFactory,
+    private _addonUiService: AddonUiService,
     private _sessionService: SessionService,
     private _dialog: MatDialog,
     private _dialogFactory: DialogFactory,
@@ -246,8 +250,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     private _translateService: TranslateService,
     private _snackbarService: SnackbarService,
     private _pushService: PushService,
-    private _addonUiService: AddonUiService,
-    public addonService: AddonService,
+    private _ngZone: NgZone,
     public electronService: ElectronService,
     public overlay: Overlay,
     public warcraftService: WarcraftService,
@@ -261,28 +264,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.wowInstallations$ = combineLatest([
       warcraftInstallationService.wowInstallations$,
-      addonService.anyUpdatesAvailable$,
-    ]).pipe(
-      map(([installations]) => {
-        let total = 0;
-        installations.forEach((inst) => {
-          inst.availableUpdateCount = this.addonService.getAllAddonsAvailableForUpdate(inst).length;
-          total += inst.availableUpdateCount;
-        });
+      _addonService.anyUpdatesAvailable$,
+    ]).pipe(switchMap(([installations]) => from(this.mapInstallations(installations))));
 
-        this._totalAvailableUpdateSrc.next(total);
-        return installations;
-      })
-    );
-
-    const addonInstalledSub = this.addonService.addonInstalled$
+    const addonInstalledSub = this._addonService.addonInstalled$
       .pipe(
         map((evt) => this.onAddonInstalledEvent(evt)),
         map(() => this.setPageContextText())
       )
       .subscribe();
 
-    const addonRemovedSub = this.addonService.addonRemoved$
+    const addonRemovedSub = this._addonService.addonRemoved$
       .pipe(
         map((evt) => this.onAddonRemoved(evt)),
         map(() => this.setPageContextText())
@@ -293,10 +285,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const pushUpdateSub = this._pushService.addonUpdate$
       .pipe(
         debounceTime(5000),
-        filter((addons) => {
+        switchMap((addons) => {
           const addonIds = addons.map((addon) => addon.addonId);
-          return this.addonService.hasAnyWithExternalAddonIds(addonIds);
+          return from(this._addonService.hasAnyWithExternalAddonIds(addonIds));
         }),
+        filter((hasAny) => hasAny),
         switchMap(() => from(this.onRefresh()))
       )
       .subscribe();
@@ -323,7 +316,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       dateTooltipCell: DateTooltipCellComponent,
     };
 
-    this.columnDefs = this.createColumns();
+    this.columnDefs$.next(this.createColumns());
   }
 
   public ngOnInit(): void {
@@ -335,22 +328,31 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     );
 
-    const columnStates = this.wowUpService.getMyAddonsHiddenColumns();
-    this.columns.forEach((col) => {
-      if (!col.allowToggle) {
-        return;
-      }
+    this.wowUpService
+      .getMyAddonsHiddenColumns()
+      .then((columnStates) => {
+        const colDefs = [...this.columnDefs$.value];
 
-      const state = _.find(columnStates, (cs) => cs.name === col.name);
-      if (state) {
-        col.visible = state.visible;
-      }
+        this.columns.forEach((col) => {
+          if (!col.allowToggle) {
+            return;
+          }
 
-      const columnDef = _.find(this.columnDefs, (cd) => cd.field === col.name);
-      if (columnDef) {
-        columnDef.hide = !col.visible;
-      }
-    });
+          const state = _.find(columnStates, (cs) => cs.name === col.name);
+          if (state) {
+            col.visible = state.visible;
+          }
+
+          const columnDef = _.find(colDefs, (cd) => cd.field === col.name);
+          if (columnDef) {
+            columnDef.hide = !col.visible;
+          }
+        });
+
+        this.columnDefs$.next(colDefs);
+        this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
+      })
+      .catch((e) => console.error(e));
   }
 
   public ngOnDestroy(): void {
@@ -370,6 +372,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public onSortChanged(evt: SortChangedEvent): void {
     const columnState = evt.columnApi.getColumnState();
+    console.debug("columnState", columnState);
     const minimalState = columnState.map((column) => {
       const sortOrder: SortOrder = {
         colId: column.colId ?? "",
@@ -399,7 +402,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       defaultState: { sort: null },
     });
 
-    this.loadSortOrder();
+    this.loadSortOrder().catch((e) => console.error(e));
 
     this.rowData$
       .pipe(
@@ -415,7 +418,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._sessionService.myAddonsCompactVersion = !this.getLatestVersionColumnVisible();
 
     if (this.addonFilter?.nativeElement !== undefined) {
-      const addonFilterSub = fromEvent(this.addonFilter.nativeElement as FromEventTarget<unknown>, "keyup")
+      const addonFilterSub = fromEvent(this.addonFilter.nativeElement as HasEventTargetAddRemove<unknown>, "keyup")
         .pipe(
           filter(Boolean),
           debounceTime(200),
@@ -472,11 +475,11 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._isRefreshing = true;
     this._isBusySrc.next(true);
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     try {
       console.debug("onRefresh");
-      await this.addonService.syncAllClients();
+      await this._addonService.syncAllClients();
 
       const selectedWowInstall = this._sessionService.getSelectedWowInstallation();
       if (selectedWowInstall !== undefined) {
@@ -490,7 +493,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     } finally {
       this._isBusySrc.next(false);
 
-      this._enableControlsSrc.next(true);
+      this._sessionService.setEnableControls(true);
 
       this._isRefreshing = false;
     }
@@ -517,12 +520,13 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return listItem.addon.isIgnored === false && listItem.addon.warningType === undefined;
   }
 
-  public canSetAutoUpdateNotifications(listItem: AddonViewModel): boolean {
+  public async canSetAutoUpdateNotifications(listItem: AddonViewModel): Promise<boolean> {
     if (!listItem.addon) {
       return false;
     }
 
-    if (this.wowUpService.enableSystemNotifications === false) {
+    const enableSystemNotifications = await this.wowUpService.getEnableSystemNotifications();
+    if (enableSystemNotifications === false) {
       return false;
     }
 
@@ -531,12 +535,22 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  public isForceIgnore(addon: Addon) {
+    return this._addonProviderService.isForceIgnore(addon.providerName);
+  }
+
   public canReInstall(listItem: AddonViewModel): boolean {
     if (!listItem.addon) {
       return false;
     }
 
-    return listItem.addon.warningType === undefined && this.addonService.canReinstall(listItem.addon);
+    return (
+      listItem.addon.warningType === undefined && this._addonProviderService.canReinstall(listItem.addon.providerName)
+    );
+  }
+
+  public canChangeChannel(addon: Addon) {
+    return this._addonProviderService.canChangeChannel(addon.providerName);
   }
 
   public filterAddons(rowData: AddonViewModel[], filterVal: string): AddonViewModel[] {
@@ -555,15 +569,15 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
-    const addons = await this.addonService.getAddons(selectedWowInstall, false);
+    const addons = await this._addonService.getAddons(selectedWowInstall, false);
     try {
       const filteredAddons = _.filter(addons, (addon) => AddonUtils.needsUpdate(addon));
 
       const promises = _.map(filteredAddons, async (addon) => {
         try {
-          await this.addonService.updateAddon(addon.id ?? "");
+          await this._addonService.updateAddon(addon.id ?? "");
         } catch (e) {
           console.error("Failed to install", e);
         }
@@ -574,23 +588,23 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error(err);
     }
 
-    this._enableControlsSrc.next(this.calculateControlState());
+    this._sessionService.setEnableControls(this.calculateControlState());
   }
 
   // Handle when the user clicks the update all retail/classic button
-  public onUpdateAllRetailClassic(): void {
-    const installations = this.warcraftInstallationService
-      .getWowInstallations()
-      .filter(
-        (installation) =>
-          installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra
-      );
+  public async onUpdateAllRetailClassic(): Promise<void> {
+    let installations = await this.warcraftInstallationService.getWowInstallationsAsync();
+    installations = installations.filter(
+      (installation) =>
+        installation.clientType === WowClientType.Retail || installation.clientType === WowClientType.ClassicEra
+    );
     this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }
 
   // Handle when the user clicks update all clients button
-  public onUpdateAllClients(): void {
-    this.updateAllWithSpinner(...this.warcraftInstallationService.getWowInstallations()).catch((e) => console.error(e));
+  public async onUpdateAllClients(): Promise<void> {
+    const installations = await this.warcraftInstallationService.getWowInstallationsAsync();
+    this.updateAllWithSpinner(...installations).catch((e) => console.error(e));
   }
 
   public onHeaderContext = (event: MouseEvent): void => {
@@ -637,7 +651,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   public async onReInstallAddons(listItems: AddonViewModel[]): Promise<void> {
     try {
       console.debug("onReInstallAddons", listItems);
-      const tasks = _.map(listItems, (listItem) => this.addonService.installAddon(listItem.addon?.id ?? ""));
+      const tasks = _.map(listItems, (listItem) => this._addonService.installAddon(listItem.addon?.id ?? ""));
       await Promise.all(tasks);
     } catch (e) {
       console.error(`Failed to re-install addons`, e);
@@ -646,7 +660,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public async onShowFolder(addon: Addon, folder: string): Promise<void> {
     try {
-      const addonPath = this.addonService.getInstallBasePath(addon);
+      const addonPath = this._addonService.getInstallBasePath(addon);
       const folderPath = join(addonPath, folder);
       await this.electronService.openPath(folderPath);
     } catch (err) {
@@ -716,9 +730,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe();
   }
 
-  public onClientChange(evt: any): void {
+  public async onClientChange(evt: any): Promise<void> {
     const val: string = evt.value.toString();
-    this._sessionService.setSelectedWowInstallation(val);
+    await this._sessionService.setSelectedWowInstallation(val);
   }
 
   public onRemoveAddon(addon: Addon): void {
@@ -765,17 +779,17 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
             return of(undefined);
           }
 
-          return zip(listItems.map((listItem) => from(this.addonService.removeAddon(listItem.addon))));
+          return zip(listItems.map((listItem) => from(this._addonService.removeAddon(listItem.addon))));
         })
       )
       .subscribe();
   }
 
-  public onClickIgnoreAddon(listItem: AddonViewModel): void {
-    this.onClickIgnoreAddons([listItem]);
+  public async onClickIgnoreAddon(listItem: AddonViewModel): Promise<void> {
+    await this.onClickIgnoreAddons([listItem]);
   }
 
-  public onClickIgnoreAddons(listItems: AddonViewModel[]): void {
+  public async onClickIgnoreAddons(listItems: AddonViewModel[]): Promise<void> {
     const isIgnored = _.every(listItems, (listItem) => listItem.addon?.isIgnored === false);
     const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
@@ -791,7 +805,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           row.addon.autoUpdateEnabled = false;
         }
 
-        this.addonService.saveAddon(row.addon);
+        await this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -802,12 +816,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onClickAutoUpdateAddon(listItem: AddonViewModel): void {
-    this.onClickAutoUpdateAddons([listItem]);
+  public async onClickAutoUpdateAddon(listItem: AddonViewModel): Promise<void> {
+    await this.onClickAutoUpdateAddons([listItem]);
   }
 
-  public onClickAutoUpdateAddonNotifications(listItem: AddonViewModel): void {
-    this.onClickAutoUpdateAddonsNotifications([listItem]);
+  public async onClickAutoUpdateAddonNotifications(listItem: AddonViewModel): Promise<void> {
+    await this.onClickAutoUpdateAddonsNotifications([listItem]);
   }
 
   public onRowClicked(event: RowClickedEvent): void {
@@ -834,7 +848,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     return rows.find((row) => row.addon?.id == model.addon?.id);
   }
 
-  public onClickAutoUpdateAddons(listItems: AddonViewModel[]): void {
+  public async onClickAutoUpdateAddons(listItems: AddonViewModel[]): Promise<void> {
     const isAutoUpdate = _.every(listItems, (listItem) => listItem.addon?.autoUpdateEnabled === false);
     const rows = _.cloneDeep(this._baseRowDataSrc.value);
     try {
@@ -852,7 +866,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         row.addon.autoUpdateNotificationsEnabled = isAutoUpdate;
 
-        this.addonService.saveAddon(row.addon);
+        await this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -862,7 +876,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): void {
+  public async onClickAutoUpdateAddonsNotifications(listItems: AddonViewModel[]): Promise<void> {
     const isAutoUpdateNofications = _.every(
       listItems,
       (listItem) => listItem.addon?.autoUpdateNotificationsEnabled === false
@@ -878,7 +892,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         row.addon.autoUpdateNotificationsEnabled = isAutoUpdateNofications;
 
-        this.addonService.saveAddon(row.addon);
+        await this._addonService.saveAddon(row.addon);
       }
 
       this._baseRowDataSrc.next(rows);
@@ -920,7 +934,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           return from(
-            this.addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, selectedWowInstall)
+            this._addonService.setProvider(listItem.addon, externalId.id, externalId.providerName, selectedWowInstall)
           );
         }),
         catchError((e) => {
@@ -957,7 +971,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         listItem.addon.channelType = evt.value;
-        this.addonService.saveAddon(listItem.addon);
+        await this._addonService.saveAddon(listItem.addon);
       }
 
       await this.onRefresh();
@@ -999,10 +1013,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._lazyLoaded = true;
     this._isBusySrc.next(true);
 
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     // TODO this shouldn't be here
-    await this.addonService.backfillAddons();
+    await this._addonService.backfillAddons();
 
     const selectedInstallationSub = this._sessionService.selectedWowInstallation$
       .pipe(
@@ -1029,14 +1043,14 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._isBusySrc.next(true);
 
     this._spinnerMessageSrc.next(this._translateService.instant("PAGES.MY_ADDONS.SPINNER.GATHERING_ADDONS") as string);
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     let addons: Addon[] = [];
     let updatedCt = 0;
 
     try {
       for (const installation of installations) {
-        addons = addons.concat(await this.addonService.getAddons(installation));
+        addons = addons.concat(await this._addonService.getAddons(installation));
       }
 
       // Only care about the ones that need to be updated/installed
@@ -1079,7 +1093,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
           }) as string
         );
 
-        await this.addonService.updateAddon(addon.id);
+        await this._addonService.updateAddon(addon.id);
       }
 
       await this.loadAddons();
@@ -1090,7 +1104,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       this._cdRef.detectChanges();
     } finally {
       this._spinnerMessageSrc.next("");
-      this._enableControlsSrc.next(this.calculateControlState());
+      this._sessionService.setEnableControls(this.calculateControlState());
     }
   }
 
@@ -1107,7 +1121,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this._isBusySrc.next(true);
 
-    this._enableControlsSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     if (!installation) {
       console.warn("Skipping addon load installation unknown");
@@ -1117,10 +1131,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._cdRef.detectChanges();
 
     try {
-      let addons = await this.addonService.getAddons(installation, reScan);
+      let addons = await this._addonService.getAddons(installation, reScan);
       if (reScan) {
-        await this.addonService.syncClient(installation);
-        addons = await this.addonService.getAddons(installation, false);
+        await this._addonService.syncClient(installation);
+        addons = await this._addonService.getAddons(installation, false);
       }
 
       const rowData = this.formatAddons(addons);
@@ -1135,7 +1149,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     } finally {
       this._isBusySrc.next(false);
       this._cdRef.detectChanges();
-      this._enableControlsSrc.next(this.calculateControlState());
+      this._sessionService.setEnableControls(this.calculateControlState());
     }
   };
 
@@ -1194,7 +1208,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if ([AddonInstallState.Complete, AddonInstallState.Error].includes(evt.installState) === false) {
-      this._enableControlsSrc.next(false);
+      this._sessionService.setEnableControls(false);
       return;
     }
 
@@ -1211,7 +1225,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     this._baseRowDataSrc.next(rowData);
-    this._enableControlsSrc.next(this.calculateControlState());
+    this._sessionService.setEnableControls(this.calculateControlState());
   };
 
   private onAddonRemoved = (addonId: string) => {
@@ -1228,11 +1242,24 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private calculateControlState(): boolean {
-    return !this.addonService.isInstalling();
+    return !this._addonService.isInstalling();
+  }
+
+  private async mapInstallations(installations: WowInstallation[]): Promise<WowInstallation[]> {
+    let total = 0;
+    for (const inst of installations) {
+      const addons = await this._addonService.getAllAddonsAvailableForUpdate(inst);
+      inst.availableUpdateCount = addons.length;
+      total += inst.availableUpdateCount;
+    }
+
+    this._totalAvailableUpdateSrc.next(total);
+    return installations;
   }
 
   private async updateBadgeCount(): Promise<void> {
-    const ct = this.addonService.getAllAddonsAvailableForUpdate().length;
+    const addons = await this._addonService.getAllAddonsAvailableForUpdate();
+    const ct = addons.length;
     console.debug("updateBadgeCount", ct);
     try {
       await this.wowUpService.updateAppBadgeCount(ct);
@@ -1241,8 +1268,8 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private loadSortOrder() {
-    let savedSortOrder = this.wowUpService.getMyAddonsSortOrder();
+  private async loadSortOrder(): Promise<void> {
+    let savedSortOrder = await this.wowUpService.getMyAddonsSortOrder();
     if (!Array.isArray(savedSortOrder) || savedSortOrder.length < 2) {
       console.info(`Legacy or missing sort order fixed`);
       this.wowUpService.setMyAddonsSortOrder([]);
@@ -1250,7 +1277,9 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (savedSortOrder.length > 0) {
-      this.gridColumnApi.setColumnState(savedSortOrder);
+      this.gridColumnApi.applyColumnState({
+        state: savedSortOrder,
+      });
     }
   }
 

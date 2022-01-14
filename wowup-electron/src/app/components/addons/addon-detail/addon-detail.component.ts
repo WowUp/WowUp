@@ -33,6 +33,7 @@ import { SnackbarService } from "../../../services/snackbar/snackbar.service";
 import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
+import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -92,6 +93,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     @Inject(MAT_DIALOG_DATA) public model: AddonDetailModel,
     private _dialogRef: MatDialogRef<AddonDetailComponent>,
     private _addonService: AddonService,
+    private _addonProviderService: AddonProviderFactory,
     private _cdRef: ChangeDetectorRef,
     private _snackbarService: SnackbarService,
     private _translateService: TranslateService,
@@ -121,7 +123,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public ngOnInit(): void {
-    this.canShowChangelog = this._addonService.canShowChangelog(this.getProviderName());
+    this.canShowChangelog = this._addonProviderService.canShowChangelog(this.getProviderName());
 
     this.selectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab());
 
@@ -131,7 +133,9 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     this.showUpdateButton = !!this.model.listItem;
 
-    this.showRemoveButton = this.isAddonInstalled();
+    this.isAddonInstalled()
+      .then((isInstalled) => (this.showRemoveButton = isInstalled))
+      .catch((e) => console.error(e));
 
     this.title = this.model.listItem?.addon?.name || this.model.searchResult?.name || "UNKNOWN";
 
@@ -197,8 +201,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._cdRef.detectChanges();
   }
 
-  public onSelectedTabChange(evt: MatTabChangeEvent): void {
-    this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
+  public async onSelectedTabChange(evt: MatTabChangeEvent): Promise<void> {
+    await this._sessionService.setSelectedDetailsTab(this.getSelectedTabTypeFromIndex(evt.index));
   }
 
   public onClickExternalId(): void {
@@ -207,7 +211,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     });
   }
 
-  public onClickRemoveAddon(): void {
+  public async onClickRemoveAddon(): Promise<void> {
     let addon: Addon = null;
 
     // Addon is expected to be available through the model when browsing My Addons tab
@@ -232,7 +236,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
         return;
       }
 
-      addon = this._addonService.getByExternalId(externalId, providerName, selectedInstallation.id);
+      addon = await this._addonService.getByExternalId(externalId, providerName, selectedInstallation.id);
     }
 
     if (!addon) {
@@ -394,7 +398,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     return SearchResult.getLatestFile(this.model.searchResult, this.model.channelType ?? AddonChannelType.Stable);
   }
 
-  private isAddonInstalled(): boolean {
+  private async isAddonInstalled(): Promise<boolean> {
     const selectedInstallation = this._sessionService.getSelectedWowInstallation();
     if (!selectedInstallation) {
       console.warn("No selected installation");
@@ -405,7 +409,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     const providerName = this.model.searchResult?.providerName ?? this.model.listItem?.addon?.providerName ?? "";
 
     if (externalId && providerName) {
-      return this._addonService.isInstalled(externalId, providerName, selectedInstallation);
+      return await this._addonService.isInstalled(externalId, providerName, selectedInstallation);
     }
 
     console.warn("Invalid list item addon when verifying if installed");

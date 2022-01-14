@@ -81,8 +81,8 @@ export class AddonBrokerService {
     private _electronService: ElectronService
   ) {}
 
-  public getExportSummary(installation: WowInstallation): ExportSummary {
-    const addons = this._addonStorage.getAllForInstallationId(installation.id);
+  public async getExportSummary(installation: WowInstallation): Promise<ExportSummary> {
+    const addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
 
     // If an addon is ignored, ignore it.
     const addonCt = addons.filter((addon) => !this.addonIsIgnored(addon)).length;
@@ -96,16 +96,15 @@ export class AddonBrokerService {
     };
   }
 
-  public getExportPayload(installation: WowInstallation): ExportPayload {
+  public async getExportPayload(installation: WowInstallation): Promise<ExportPayload> {
     const payload: ExportPayload = {
       collection_name: `WowUp_export_${Date.now()}`,
       client_type: this.getClientType(installation.clientType),
       addons: [],
     };
 
-    const addons = this._addonStorage
-      .getAllForInstallationId(installation.id)
-      .filter((addon) => !this.addonIsIgnored(addon));
+    let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
+    addons = addons.filter((addon) => !this.addonIsIgnored(addon));
 
     for (const addon of addons) {
       try {
@@ -157,7 +156,7 @@ export class AddonBrokerService {
     await Promise.all(tasks);
   }
 
-  public getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): ImportSummary {
+  public async getImportSummary(exportPayload: ExportPayload, installation: WowInstallation): Promise<ImportSummary> {
     const summary: ImportSummary = {
       addedCt: 0,
       conflictCt: 0,
@@ -175,7 +174,7 @@ export class AddonBrokerService {
       return summary;
     }
 
-    const currentAddons = this._addonService.getAllAddons(installation);
+    const currentAddons = await this._addonService.getAllAddons(installation);
     for (const impAddon of exportPayload.addons) {
       const comparison: ImportComparison = {
         id: nanoid(),

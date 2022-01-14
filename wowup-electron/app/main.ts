@@ -270,6 +270,7 @@ function createWindow(): BrowserWindow {
         `--user-data-path=${app.getPath("userData")}`,
         `--base-bg-color=${getBackgroundColor()}`,
       ],
+      webviewTag: true,
     },
     show: false,
   };
@@ -298,7 +299,46 @@ function createWindow(): BrowserWindow {
   // Keep track of window state
   mainWindowManager.monitorState(win);
 
+  win.on("blur", () => {
+    win.webContents.send("blur");
+  });
+
+  win.on("focus", () => {
+    win.webContents.send("focus");
+  });
+
   win.webContents.userAgent = USER_AGENT;
+
+  win.webContents.on("will-attach-webview", (evt, webPreferences) => {
+    log.debug("will-attach-webview");
+
+    webPreferences.additionalArguments = [`--log-path=${LOG_PATH}`];
+    webPreferences.contextIsolation = true;
+    webPreferences.nativeWindowOpen = false; // Without this the new-window event does not fire
+  });
+
+  win.webContents.on("did-attach-webview", (evt, webContents) => {
+    webContents.session.setUserAgent(webContents.userAgent);
+
+    webContents.on("did-fail-load", (evt, code, desc, url) => {
+      log.error("[webview] did-fail-load", code, desc, url);
+    });
+
+    webContents.on("will-navigate", (evt, url) => {
+      log.debug("[webview] will-navigate", url);
+      if (webContents.getURL() === url) {
+        log.debug(`[webview] reload detected`);
+      } else {
+        evt.preventDefault(); // block the webview from navigating at all
+      }
+    });
+
+    webContents.setWindowOpenHandler((details) => {
+      log.debug("[webview] new-window");
+      win.webContents.send("webview-new-window", details); // forward this new window to the app for processing
+      return { action: "deny" };
+    });
+  });
 
   win.webContents.on("zoom-changed", (evt, zoomDirection) => {
     sendEventToContents(win, "zoom-changed", zoomDirection);

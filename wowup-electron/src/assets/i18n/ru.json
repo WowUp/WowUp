@@ -31,6 +31,13 @@
     "RESET_BUTTON": "Очистить",
     "VERSION_MISMATCH": "Не совпадают версии"
   },
+  "ADS": {
+    "AD_EXPLAINER_BUTTON": "Почему я вижу эту рекламу?",
+    "AD_EXPLAINER_DIALOG": {
+      "MESSAGE": "Чтобы использовать <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> в виде источника модификаций и для поддержки их авторов за тяжёлый труд над вашими любимыми модификациями, мы должны показывать эту рекламу.\n\nЕсли вы не хотите видеть эту рекламу, то вы всегда можете отключить wago.io как источник модификаций во вкладке настроек.",
+      "TITLE": "Почему я вижу эту рекламу?"
+    }
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -86,7 +93,7 @@
     "THEME": {
       "ALLIANCE": "Альянс",
       "DEFAULT": "По умолчанию",
-      "GROUP_DARK": "Темные",
+      "GROUP_DARK": "Тёмные",
       "GROUP_LIGHT": "Светлые",
       "HORDE": "Орда"
     },
@@ -281,9 +288,9 @@
         "NO_SEARCH_RESULTS": "Поиск не дал результатов.",
         "TITLE": "Установка модификации не удалась"
       },
-      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
+      "IMPORT_ASSET_WARNING": "Мы не смогли убедиться в совместимости последнего выпуска этой модификации с выбранным вами клиентом.\n\nНо мы нашли zip файл \"{zipName}\".\n\nУстанавливайте его на свой страх и риск.",
       "IMPORT_BUTTON": "Импорт",
-      "IMPORT_WARNING_TITLE": "Addon Import Warning",
+      "IMPORT_WARNING_TITLE": "Предупреждение импорта модификаций",
       "INSTALL_BUTTON": "Установить",
       "INSTALL_SUCCESS_LABEL": "Установлена!",
       "SUPPORTED_SOURCES": "Поддерживаются WowInterface и GitHub",
@@ -291,6 +298,19 @@
     },
     "NEW_VERSION_POPUP": {
       "TITLE": "Список изменений в версии {versionNumber}"
+    },
+    "PERMISSIONS": {
+      "MESSAGE": "Прежде чем мы начнем, нам нужно настроить несколько разрешений для приложения.",
+      "POSITIVE_BUTTON": "Подтвердить",
+      "TELEMETRY": {
+        "DESCRIPTION": "Хотите помочь улучшить WowUp, анонимно отправляя данные об установке и ошибках?",
+        "TOGGLE_LABEL": "Разрешить телеметрию"
+      },
+      "TITLE": "Установка разрешений для WowUp",
+      "WAGO": {
+        "DESCRIPTION": "Включение источника модификаций Wago.io будет отображать рекламу, необходимую для использования их сервиса.\nРеклама приносит прямую прибыль авторам ваших любимых модификаций!",
+        "TOGGLE_LABEL": "Включить источник Wago.io"
+      }
     },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "Данный путь является неверным для приложения World of Warcraft:\n{selectedPath}"
@@ -445,21 +465,22 @@
     },
     "OPTIONS": {
       "ADDON": {
+        "AD_REQUIRED_HINT": "Необходима реклама",
         "ENABLED_PROVIDERS": {
-          "DESCRIPTION": "Выберите источники используемые для поиска и установки новых модификаций",
+          "DESCRIPTION": "Выберите источники, используемые для поиска и установки новых модификаций",
           "FIELD_LABEL": "Включённые источники модификаций",
           "INPUT_LABEL": "Источники"
         },
         "TITLE": "Модификации"
       },
       "APPLICATION": {
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Switching to the Stable channel for the app will prevent you from receiving more Beta builds, the next update will be the next Stable release.",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Setting the app release channel",
-        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Yes, I understand",
-        "APP_RELEASE_CHANNEL_DESCRIPTION": "Toggle between the Beta and Stable releases of the application",
-        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
-        "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Переключение на канал Бета позволит вам получать экспериментальные сборки, которые содержат исправления неполадок, а также новые и грядущие возможности. Вы сможете вернуться к текущей стабильной версии лишь удалив ваше существующее приложение и переустановив его с wowup.io.\n\nПоскольку канал Бета содержит версии, находящиеся в разработке, используйте его на свой страх и риск.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Переключение на канал Стабильная запретит приложению получать бета-сборки, следующим обновлением будет следующая стабильная версия.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Установка канала выпуска приложения",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Да, я понимаю",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Переключение между бета-версией и стабильной версией приложения",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Канал",
+        "APP_RELEASE_CHANNEL_LABEL": "Канал выпуска приложения",
         "CURRENT_LANGUAGE_LABEL": "Текущий язык",
         "CURSE_PROTOCOL_DESCRIPTION": "При загрузке модификаций с сайта CurseForge, WowUp будет брать установку на себя.",
         "CURSE_PROTOCOL_LABEL": "Обрабатывать ссылки на установку с CurseForge",
@@ -504,7 +525,7 @@
         "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Его можно найти в последнем лог-файле, если необходимо.",
         "DEBUG_DATA_LABEL": "Отладка данных",
         "LOG_FILES_BUTTON": "Показать лог-файлы",
-        "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую последние несколько лог-файлов.",
+        "LOG_FILES_DESCRIPTION": "Открыть папку, содержащую несколько последних лог-файлов.",
         "LOG_FILES_LABEL": "Файлы логов",
         "TITLE": "Отладка"
       },
@@ -531,6 +552,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Изменить",
         "MOVE_DOWN_BUTTON": "Переместить вниз",
         "MOVE_UP_BUTTON": "Переместить вверх",
+        "NO_CLIENTS_FOUND_TEXT": "No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client manually",
         "OPEN_FOLDER_BUTTON": "Открыть папку",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Выбрать",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Удалить",

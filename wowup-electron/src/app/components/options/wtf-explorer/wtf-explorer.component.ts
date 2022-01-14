@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { BehaviorSubject, from } from "rxjs";
-import { first } from "rxjs/operators";
+import { first, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 
@@ -113,14 +113,21 @@ export class WtfExplorerComponent implements OnInit, OnDestroy {
   private lazyLoad() {
     this.loading$.next(true);
     this.error$.next("");
-    this.installations = this._warcraftInstallationService.getWowInstallations();
+    from(this._warcraftInstallationService.getWowInstallationsAsync())
+      .pipe(
+        first(),
+        switchMap((installations) => {
+          this.installations = installations;
 
-    const installation = this.installations[0];
-    this.selectedInstallationId = installation?.id ?? "";
+          const installation = this.installations[0];
+          this.selectedInstallationId = installation?.id ?? "";
 
-    this.wtfPath = this._wtfService.getWtfPath(installation);
+          this.wtfPath = this._wtfService.getWtfPath(installation);
 
-    from(this.loadWtfStructure(installation)).pipe(first()).subscribe();
+          return from(this.loadWtfStructure(installation));
+        })
+      )
+      .subscribe();
 
     // from(this.loadAccounts(installation))
     //   .pipe(first())

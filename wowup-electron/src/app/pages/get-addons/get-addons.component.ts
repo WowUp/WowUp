@@ -18,7 +18,11 @@ import { MatMenuTrigger } from "@angular/material/menu";
 import { MatDrawer } from "@angular/material/sidenav";
 import { TranslateService } from "@ngx-translate/core";
 
-import { ADDON_PROVIDER_HUB } from "../../../common/constants";
+import {
+  ADDON_PROVIDER_HUB,
+  ADDON_PROVIDER_WAGO,
+  DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
+} from "../../../common/constants";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
@@ -46,6 +50,7 @@ import { WowUpService } from "../../services/wowup/wowup.service";
 import { getEnumKeys } from "../../utils/enum.utils";
 import { camelToSnakeCase } from "../../utils/string.utils";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
+import { AddonProviderFactory } from "../../services/addons/addon.provider.factory";
 
 interface CategoryItem {
   category: AddonCategory;
@@ -66,14 +71,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
   private _isSelectedTab = false;
   private _lazyLoaded = false;
-  private _isBusySubject = new BehaviorSubject<boolean>(true);
   private _rowDataSrc = new BehaviorSubject<GetAddonListItem[]>([]);
   private _lastSelectionState: RowNode[] = [];
   private _selectedAddonCategory: CategoryItem | undefined;
 
   public addonCategory = AddonCategory;
-  public columnDefs: ColDef[] = [];
+  public columnDefs$ = new BehaviorSubject<ColDef[]>([]);
   public rowData$ = this._rowDataSrc.asObservable();
+  public enableControls$ = this._sessionService.enableControls$;
   public frameworkComponents = {};
   public columnTypes: {
     [key: string]: ColDef;
@@ -103,14 +108,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     { name: "status", display: "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER", visible: true },
   ];
 
-  public get defaultAddonChannelKey(): string {
-    return "";
-    // return this._wowUpService.getClientDefaultAddonChannelKey(this._sessionService.getSelectedWowInstallation());
-  }
-
   public get defaultAddonChannel(): AddonChannelType {
-    return AddonChannelType.Stable;
-    // return this._wowUpService.getDefaultAddonChannel(this._sessionService.getSelectedClientType());
+    return this._sessionService.getSelectedWowInstallation().defaultAddonChannelType;
   }
 
   public query = "";
@@ -121,12 +120,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   public wowInstallations$: Observable<WowInstallation[]>;
   public overlayNoRowsTemplate = "";
 
-  public isBusy$ = this._isBusySubject.asObservable();
   public hasData$ = this.rowData$.pipe(map((data) => data.length > 0));
 
-  public readonly showTable$ = combineLatest([this.isBusy$, this.hasData$]).pipe(
-    map(([isBusy]) => {
-      return isBusy === false;
+  private _showTableSrc = new BehaviorSubject<boolean>(false);
+  public readonly showTable$ = combineLatest([this._showTableSrc, this.hasData$]).pipe(
+    map(([enabled]) => {
+      return enabled === true;
     })
   );
 
@@ -152,7 +151,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
+    this._showTableSrc.next(false);
 
     of(true)
       .pipe(
@@ -165,13 +165,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
-          this._isBusySubject.next(false);
+          this._showTableSrc.next(true);
+          this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
-          this._isBusySubject.next(false);
+          this._showTableSrc.next(true);
+          this._sessionService.setEnableControls(true);
           return of(undefined);
         })
       )
@@ -179,6 +181,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public constructor(
+    private _addonProviderService: AddonProviderFactory,
     private _dialog: MatDialog,
     private _dialogFactory: DialogFactory,
     private _cdRef: ChangeDetectorRef,
@@ -226,7 +229,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       wrapTextCell: CellWrapTextComponent,
     };
 
-    this.columnDefs = this.createColumns();
+    this.columnDefs$.next(this.createColumns());
 
     this.addonCategories = this.buildCategories();
     this.selectedAddonCategory = this.addonCategories[0];
@@ -296,22 +299,29 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const columnStates = this._wowUpService.getGetAddonsHiddenColumns();
-    this.columnStates.forEach((col) => {
-      if (!col.allowToggle) {
-        return;
-      }
+    this._wowUpService
+      .getGetAddonsHiddenColumns()
+      .then((columnStates) => {
+        const colDefs = [...this.columnDefs$.value];
+        this.columnStates.forEach((col) => {
+          if (!col.allowToggle) {
+            return;
+          }
 
-      const state = _.find(columnStates, (cs) => cs.name === col.name);
-      if (state) {
-        col.visible = state.visible;
-      }
+          const state = _.find(columnStates, (cs) => cs.name === col.name);
+          if (state) {
+            col.visible = state.visible;
+          }
 
-      const columnDef = _.find(this.columnDefs, (cd) => cd.field === col.name);
-      if (columnDef) {
-        columnDef.hide = !col.visible;
-      }
-    });
+          const columnDef = _.find(colDefs, (cd) => cd.field === col.name);
+          if (columnDef) {
+            columnDef.hide = !col.visible;
+          }
+        });
+
+        this.columnDefs$.next(colDefs);
+      })
+      .catch((e) => console.error(e));
   }
 
   public ngOnDestroy(): void {
@@ -462,7 +472,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
 
     const channelTypeSubscription = this._wowUpService.preferenceChange$
-      .pipe(filter((change) => change.key === this.defaultAddonChannelKey))
+      .pipe(filter((change) => change.key.indexOf(DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX) !== -1))
       .subscribe(() => {
         this.onSearch();
       });
@@ -477,8 +487,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onClientChange(): void {
-    this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
+  public async onClientChange(): Promise<void> {
+    await this._sessionService.setSelectedWowInstallation(this.selectedInstallationId);
   }
 
   public onRefresh(): void {
@@ -499,7 +509,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._sessionService.setEnableControls(false);
+    this._showTableSrc.next(false);
     this.resetCategory(true);
 
     if (!this.query) {
@@ -513,13 +524,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         map((searchResults) => {
           const searchListItems = this.formatAddons(searchResults);
           this._rowDataSrc.next(searchListItems);
-          this._isBusySubject.next(false);
+          this._showTableSrc.next(true);
+          this._sessionService.setEnableControls(true);
         }),
         catchError((error) => {
           console.error(error);
           this.displayError(error as Error);
           this._rowDataSrc.next([]);
-          this._isBusySubject.next(false);
+          this._showTableSrc.next(true);
+          this._sessionService.setEnableControls(true);
           return of(undefined);
         })
       )
@@ -543,14 +556,15 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this._addonService.getEnabledAddonProviders().length === 0) {
+    if (this._addonProviderService.getEnabledAddonProviders().length === 0) {
       this._rowDataSrc.next([]);
-      this._isBusySubject.next(false);
+      this._sessionService.setEnableControls(true);
       this._cdRef.detectChanges();
       return;
     }
 
-    this._isBusySubject.next(true);
+    this._showTableSrc.next(false);
+    this._sessionService.setEnableControls(false);
 
     this._addonService
       .getFeaturedAddons(installation)
@@ -564,7 +578,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         console.debug(`Loaded ${addons?.length ?? 0} addons`);
         const listItems = this.formatAddons(addons);
         this._rowDataSrc.next(listItems);
-        this._isBusySubject.next(false);
+        this._showTableSrc.next(true);
+        this._sessionService.setEnableControls(true);
       });
   }
 
@@ -592,8 +607,12 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     // If sorting by download count, push Hub addons to the top for exposure for now.
     return _.orderBy(
       addons,
-      [(sr) => (sr.providerName === ADDON_PROVIDER_HUB ? 1 : 0), "downloadCount"],
-      ["desc", "desc"]
+      [
+        (sr) => (sr.providerName === ADDON_PROVIDER_HUB ? 1 : 0),
+        (sr) => (sr.providerName === ADDON_PROVIDER_WAGO ? 1 : 0),
+        "downloadCount",
+      ],
+      ["desc", "desc", "desc"]
     );
   }
 

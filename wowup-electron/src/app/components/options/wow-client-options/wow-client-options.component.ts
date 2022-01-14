@@ -1,6 +1,6 @@
 import { dirname } from "path";
-import { BehaviorSubject, Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { filter, map, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -178,7 +178,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this._editModeSrc.next(false);
   }
 
-  public onClickSave(): void {
+  public async onClickSave(): Promise<void> {
     if (!this.installationModel) {
       return;
     }
@@ -189,7 +189,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
       this.installation = { ...this.installationModel };
       if (this.installation) {
-        this._warcraftInstallationService.updateWowInstallation(this.installation);
+        await this._warcraftInstallationService.updateWowInstallation(this.installation);
       }
 
       // if (saveAutoUpdate) {
@@ -217,13 +217,13 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(
-        map((result) => {
+        switchMap((result) => {
           if (!result) {
-            return;
+            return of(undefined);
           }
 
           if (this.installation) {
-            this._warcraftInstallationService.removeWowInstallation(this.installation);
+            return from(this._warcraftInstallationService.removeWowInstallation(this.installation));
           }
         })
       )

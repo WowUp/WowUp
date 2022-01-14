@@ -29,20 +29,30 @@ import { IconService } from "./services/icons/icon.service";
 import { HorizontalTabsComponent } from "./components/common/horizontal-tabs/horizontal-tabs.component";
 import { CommonUiModule } from "./modules/common-ui.module";
 import { FooterComponent } from "./components/common/footer/footer.component";
+import { VerticalTabsComponent } from "./components/common/vertical-tabs/vertical-tabs.component";
+import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
 
 // AoT requires an exported function for factories
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
-export function initializeApp(wowupService: WowUpService) {
+export function initializeApp(
+  wowupService: WowUpService,
+  wowUpApiService: WowUpApiService,
+  addonService: AddonService,
+  warcraftInstallationService: WarcraftInstallationService,
+  iconService: IconService,
+  addonProviderFactory: AddonProviderFactory
+) {
   return async (): Promise<void> => {
     await wowupService.initializeLanguage();
+    await addonProviderFactory.loadProviders();
   };
 }
 
 @NgModule({
-  declarations: [AppComponent, TitlebarComponent, FooterComponent, HorizontalTabsComponent],
+  declarations: [AppComponent, TitlebarComponent, FooterComponent, HorizontalTabsComponent, VerticalTabsComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -70,7 +80,14 @@ export function initializeApp(wowupService: WowUpService) {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
-      deps: [WowUpService, WowUpApiService, AddonService, WarcraftInstallationService, IconService],
+      deps: [
+        WowUpService,
+        WowUpApiService,
+        AddonService,
+        WarcraftInstallationService,
+        IconService,
+        AddonProviderFactory,
+      ],
       multi: true,
     },
     {
