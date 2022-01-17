@@ -102,7 +102,7 @@ export class WarcraftService {
     const resolvedProducts = this._impl.resolveProducts(decodedProducts, blizzardAgentPath);
     const dictionary = new Map<WowClientType, InstalledProduct>();
 
-    for (const product of decodedProducts) {
+    for (const product of resolvedProducts) {
       dictionary.set(product.clientType, product);
     }
 

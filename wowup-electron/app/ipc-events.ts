@@ -499,7 +499,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
     return getDirTree(args.dirPath, args.opts);
   });
 
-  handle(IPC_GET_HOME_DIR, (): String => {
+  handle(IPC_GET_HOME_DIR, (): string => {
     return os.homedir();
   });
 

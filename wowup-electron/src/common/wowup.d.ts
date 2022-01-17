@@ -47,6 +47,7 @@ declare type RendererChannels =
   | "get-asset-file-path"
   | "get-directory-tree"
   | "get-focus"
+  | "get-home-dir"
   | "get-latest-dir-update-time"
   | "get-launch-args"
   | "get-locale"

@@ -76,7 +76,7 @@ export class WarcraftServiceLinux implements WarcraftServiceImpl {
     const resolvedProducts: InstalledProduct[] = [];
     const agentPathPrefixRegex = new RegExp(`(.*drive_c)`);
     for (const product of decodedProducts) {
-      console.log(`location: ${location} agentPath: ${agentPath}`);
+      console.log(`location: ${location.toString()} agentPath: ${agentPath}`);
       const agentPathPrefix = agentPathPrefixRegex.exec(agentPath)[1].trim();
       resolvedProducts.push(
         {

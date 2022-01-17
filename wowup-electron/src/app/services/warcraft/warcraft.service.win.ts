@@ -4,7 +4,7 @@ import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import { IPC_LIST_DISKS_WIN32, WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER } from "../../../common/constants";
-import { InstalledProduct } from '../../models/warcraft/installed-product';
+import { InstalledProduct } from "../../models/warcraft/installed-product";
 
 const WOW_RETAIL_NAME = "Wow.exe";
 const WOW_RETAIL_PTR_NAME = "WowT.exe";
@@ -111,7 +111,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
     }
   }
 
-  public resolveProducts(decodedProducts: InstalledProduct[], agentPath: string): InstalledProduct[] {
+  public resolveProducts(decodedProducts: InstalledProduct[]): InstalledProduct[] {
     return decodedProducts;
   }
 }

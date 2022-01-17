@@ -94,7 +94,7 @@ export class WarcraftServiceMac implements WarcraftServiceImpl {
     }
   }
 
-  public resolveProducts(decodedProducts: InstalledProduct[], agentPath: string): InstalledProduct[] {
+  public resolveProducts(decodedProducts: InstalledProduct[]): InstalledProduct[] {
     return decodedProducts;
   }
 }
