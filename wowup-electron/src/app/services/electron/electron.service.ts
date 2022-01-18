@@ -160,7 +160,6 @@ export class ElectronService {
     this.invoke(IPC_SET_ZOOM_LIMITS, 1, 1).catch((e) => {
       console.error("Failed to set zoom limits", e);
     });
-    
 
     this.isWindowFocused()
       .then((focused) => {
@@ -336,6 +335,10 @@ export class ElectronService {
       console.error("Invoke failed", e);
       throw e;
     }
+  }
+
+  public sendSync<T>(channel: string, ...args: any[]): T {
+    return window.wowup.rendererSendSync(channel, ...args) as T;
   }
 
   public on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {

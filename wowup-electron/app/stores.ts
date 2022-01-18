@@ -4,6 +4,7 @@ import {
   ADDON_STORE_NAME,
   IPC_STORE_GET_ALL,
   IPC_STORE_GET_OBJECT,
+  IPC_STORE_GET_OBJECT_SYNC,
   IPC_STORE_REMOVE_OBJECT,
   IPC_STORE_SET_OBJECT,
   PREFERENCE_STORE_NAME,
@@ -38,6 +39,11 @@ export function initializeStoreIpcHandlers(): void {
   ipcMain.handle(IPC_STORE_GET_OBJECT, (evt: IpcMainInvokeEvent, storeName: string, key: string): any => {
     const store = stores[storeName];
     return store ? store.get(key, undefined) : undefined;
+  });
+
+  ipcMain.on(IPC_STORE_GET_OBJECT_SYNC, (evt, storeName: string, key: string) => {
+    const store = stores[storeName];
+    evt.returnValue = store ? store.get(key, undefined) : undefined;
   });
 
   // Set the store value for a specific key

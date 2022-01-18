@@ -1,4 +1,4 @@
-import { BehaviorSubject, from, of } from "rxjs";
+import { BehaviorSubject, firstValueFrom, from, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
@@ -49,10 +49,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public readonly wowupProtocolName = APP_PROTOCOL_NAME;
 
   public minimizeOnCloseDescription = "";
-  public startMinimized = false;
-  public startWithSystem = false;
   public protocolRegistered = false;
-  public currentReleaseChannel = WowUpReleaseChannelType.Stable;
   public zoomScale = ZOOM_SCALE;
   public currentScale = 1;
   public languages: LocaleListItem[] = [
@@ -118,6 +115,9 @@ export class OptionsAppSectionComponent implements OnInit {
   public telemetryEnabled$ = new BehaviorSubject(false);
   public collapseToTray$ = new BehaviorSubject(false);
   public enableAppBadge$ = new BehaviorSubject(false);
+  public startWithSystem$ = new BehaviorSubject(false);
+  public startMinimized$ = new BehaviorSubject(false);
+  public currentReleaseChannel$ = new BehaviorSubject(WowUpReleaseChannelType.Stable);
 
   public constructor(
     private _analyticsService: AnalyticsService,
@@ -134,7 +134,13 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public ngOnInit(): void {
     this.currentTheme = this.sessionService.currentTheme;
-    this.currentReleaseChannel = this.wowupService.wowUpReleaseChannel;
+
+    this.wowupService
+      .getWowUpReleaseChannel()
+      .then((channel) => {
+        this.currentReleaseChannel$.next(channel);
+      })
+      .catch(console.error);
 
     this._analyticsService.telemetryEnabled$.subscribe((enabled) => {
       this.telemetryEnabled$.next(enabled);
@@ -198,8 +204,19 @@ export class OptionsAppSectionComponent implements OnInit {
       })
       .catch(console.error);
 
-    this.startWithSystem = this.wowupService.getStartWithSystem();
-    this.startMinimized = this.wowupService.startMinimized;
+    this.wowupService
+      .getStartWithSystem()
+      .then((enabled) => {
+        this.startWithSystem$.next(enabled);
+      })
+      .catch(console.error);
+
+    this.wowupService
+      .getStartMinimized()
+      .then((enabled) => {
+        this.startMinimized$.next(enabled);
+      })
+      .catch(console.error);
 
     this.initScale().catch((e) => console.error(e));
 
@@ -256,15 +273,12 @@ export class OptionsAppSectionComponent implements OnInit {
 
   public onStartWithSystemChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setStartWithSystem(evt.checked);
-    if (!evt.checked) {
-      this.startMinimized = false;
-    } else {
-      this.startMinimized = this.wowupService.startMinimized;
-    }
+    this.startWithSystem$.next(evt.checked);
   };
 
   public onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setStartMinimized(evt.checked);
+    this.startMinimized$.next(evt.checked);
   };
 
   public onProtocolHandlerChange = (evt: MatSlideToggleChange, protocol: string): void => {
@@ -379,7 +393,7 @@ export class OptionsAppSectionComponent implements OnInit {
       .subscribe();
   };
 
-  public onReleaseChannelChange(evt: MatSelectChange) {
+  public async onReleaseChannelChange(evt: MatSelectChange): Promise<void> {
     console.debug(evt);
     // this._electronService.invoke("set-release-channel", channel);
 
@@ -396,24 +410,19 @@ export class OptionsAppSectionComponent implements OnInit {
       },
     });
 
-    dialogRef
-      .afterClosed()
-      .pipe(
-        switchMap((result) => {
-          if (!result) {
-            evt.source.value = this.wowupService.wowUpReleaseChannel;
-          } else {
-            this.wowupService.wowUpReleaseChannel = evt.source.value;
-          }
+    try {
+      const result = await firstValueFrom(dialogRef.afterClosed());
 
-          return of(undefined);
-        }),
-        catchError((error) => {
-          console.error(error);
-          return of(undefined);
-        })
-      )
-      .subscribe();
+      if (!result) {
+        evt.source.value = await this.wowupService.getWowUpReleaseChannel();
+      } else {
+        await this.wowupService.setWowUpReleaseChannel(evt.source.value);
+      }
+
+      this.currentReleaseChannel$.next(evt.source.value);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public onCurrentLanguageChange = (evt: MatSelectChange): void => {

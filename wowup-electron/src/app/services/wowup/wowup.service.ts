@@ -173,8 +173,8 @@ export class WowUpService {
     this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
-  public getStartWithSystem(): boolean {
-    const preference = this._preferenceStorageService.findByKey(START_WITH_SYSTEM_PREFERENCE_KEY);
+  public async getStartWithSystem(): Promise<boolean> {
+    const preference = await this._preferenceStorageService.getAsync(START_WITH_SYSTEM_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -186,8 +186,8 @@ export class WowUpService {
     await this.setAutoStartup();
   }
 
-  public get startMinimized(): boolean {
-    const preference = this._preferenceStorageService.findByKey(START_MINIMIZED_PREFERENCE_KEY);
+  public async getStartMinimized(): Promise<boolean> {
+    const preference = await this._preferenceStorageService.getAsync(START_MINIMIZED_PREFERENCE_KEY);
     return preference === "true";
   }
 
@@ -199,18 +199,18 @@ export class WowUpService {
     await this.setAutoStartup();
   }
 
-  public get wowUpReleaseChannel(): WowUpReleaseChannelType {
-    const preference = this._preferenceStorageService.findByKey(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY);
+  public async getWowUpReleaseChannel(): Promise<WowUpReleaseChannelType> {
+    const preference = await this._preferenceStorageService.getAsync(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY);
     return parseInt(preference, 10) as WowUpReleaseChannelType;
   }
 
-  public set wowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType) {
-    this._electronService
-      .invoke("set-release-channel", releaseChannel)
-      .then(() => {
-        return this._preferenceStorageService.setAsync(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
-      })
-      .catch((e) => console.error(e));
+  public async setWowUpReleaseChannel(releaseChannel: WowUpReleaseChannelType): Promise<void> {
+    try {
+      await this._electronService.invoke("set-release-channel", releaseChannel);
+      return this._preferenceStorageService.setAsync(WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY, releaseChannel);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public async getAddonProviderStates(): Promise<AddonProviderState[]> {
@@ -368,10 +368,10 @@ export class WowUpService {
   }
 
   private async setDefaultPreference(key: string, defaultValue: any): Promise<void> {
-    const pref = this._preferenceStorageService.findByKey(key);
+    const pref = await this._preferenceStorageService.getAsync(key);
     if (pref === null || pref === undefined) {
       if (Array.isArray(defaultValue)) {
-        this._preferenceStorageService.setObject(key, defaultValue);
+        await this._preferenceStorageService.setAsync(key, defaultValue);
       } else {
         await this._preferenceStorageService.setAsync(key, defaultValue.toString());
       }
@@ -421,22 +421,25 @@ export class WowUpService {
   }
 
   private async setAutoStartup(): Promise<void> {
+    const startMinimized = await this.getStartMinimized();
+    const startWithSystem = await this.getStartWithSystem();
+
     if (this._electronService.isLinux) {
       const autoLauncher = new window.libs.autoLaunch({
         name: "WowUp",
-        isHidden: this.startMinimized,
+        isHidden: startMinimized,
       });
 
-      if (this.getStartWithSystem()) {
+      if (startWithSystem) {
         autoLauncher.enable();
       } else {
         autoLauncher.disable();
       }
     } else {
       await this._electronService.setLoginItemSettings({
-        openAtLogin: this.getStartWithSystem(),
-        openAsHidden: this._electronService.isMac ? this.startMinimized : false,
-        args: this._electronService.isWin ? (this.startMinimized ? ["--hidden"] : []) : [],
+        openAtLogin: startWithSystem,
+        openAsHidden: this._electronService.isMac ? startMinimized : false,
+        args: this._electronService.isWin ? (startMinimized ? ["--hidden"] : []) : [],
       });
     }
   }

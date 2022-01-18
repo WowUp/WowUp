@@ -89,7 +89,7 @@ export class AnalyticsService {
   }
 
   private loadInstallId() {
-    let installId = this._preferenceStorageService.findByKey(this.installIdPreferenceKey);
+    let installId = this._preferenceStorageService.getSync(this.installIdPreferenceKey);
     if (installId) {
       return installId;
     }

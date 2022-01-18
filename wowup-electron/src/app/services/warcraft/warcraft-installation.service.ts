@@ -307,7 +307,7 @@ export class WarcraftInstallationService {
     }
 
     const legacyLocationKey = this._warcraftService.getLegacyClientLocationKey(clientType);
-    const legacyLocation = this._preferenceStorageService.findByKey(legacyLocationKey);
+    const legacyLocation = await this._preferenceStorageService.getAsync(legacyLocationKey);
     if (!legacyLocation) {
       // console.debug(`Legacy ${typeName}: nothing to migrate`);
       return undefined;
@@ -315,8 +315,8 @@ export class WarcraftInstallationService {
 
     console.log(`Migrating legacy ${typeName} installation`);
 
-    const legacyDefaultChannel = this.getLegacyDefaultAddonChannel(typeName);
-    const legacyDefaultAutoUpdate = this.getLegacyDefaultAutoUpdate(typeName);
+    const legacyDefaultChannel = await this.getLegacyDefaultAddonChannel(typeName);
+    const legacyDefaultAutoUpdate = await this.getLegacyDefaultAutoUpdate(typeName);
 
     const label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
 
@@ -348,13 +348,15 @@ export class WarcraftInstallationService {
     return path.join(location, clientFolderName, executableName);
   }
 
-  private getLegacyDefaultAddonChannel(typeName: string): AddonChannelType {
+  private async getLegacyDefaultAddonChannel(typeName: string): Promise<AddonChannelType> {
     const legacyDefaultChannelKey = `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
-    return parseInt(this._preferenceStorageService.findByKey(legacyDefaultChannelKey), 10) as AddonChannelType;
+    const pref = await this._preferenceStorageService.getAsync(legacyDefaultChannelKey);
+    return parseInt(pref, 10) as AddonChannelType;
   }
 
-  private getLegacyDefaultAutoUpdate(typeName: string): boolean {
+  private async getLegacyDefaultAutoUpdate(typeName: string): Promise<boolean> {
     const legacyDefaultAutoUpdateKey = `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
-    return this._preferenceStorageService.findByKey(legacyDefaultAutoUpdateKey) === true.toString();
+    const pref = await this._preferenceStorageService.getAsync(legacyDefaultAutoUpdateKey);
+    return pref === "true";
   }
 }
