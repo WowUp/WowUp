@@ -26,6 +26,10 @@ const CHANGELOGS: ChangeLog[] = [
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
+    <li>Spanish locale updates (SkollVargr)</li>
+    <li>Chinese locale updates (CyanoHao)</li>
+    <li>Russian locale updates (Medok)</li>
+    <li>German locale updates (Glow)</li>
     <li>Updated At text on the My Addons page should now keep itself up to date</li>
     <li>Modified the GitHub install by URL feature to be more flexible for multi-toc addons</li>
     <li>App now starts up much faster</li>
