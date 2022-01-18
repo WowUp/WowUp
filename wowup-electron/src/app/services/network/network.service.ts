@@ -1,6 +1,6 @@
 import * as CircuitBreaker from "opossum";
 import { firstValueFrom, from, Observable, Subject } from "rxjs";
-import { delay, first, switchMap, timeout } from "rxjs/operators";
+import { first, timeout } from "rxjs/operators";
 
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
@@ -120,16 +120,16 @@ export class CircuitBreakerWrapper {
   };
 }
 /** Useful when wanting to test HTTP timeout conditions */
-function mockTimeout<T>(data?: T, timeout = 10000): Observable<T> {
-  console.debug("mockTimeout", timeout);
-  const prom = new Promise<T>((resolve, reject) => {
-    setTimeout(() => {
-      resolve(data);
-    }, timeout);
-  });
+// function mockTimeout<T>(data?: T, timeout = 10000): Observable<T> {
+//   console.debug("mockTimeout", timeout);
+//   const prom = new Promise<T>((resolve, reject) => {
+//     setTimeout(() => {
+//       resolve(data);
+//     }, timeout);
+//   });
 
-  return from(prom);
-}
+//   return from(prom);
+// }
 
 @Injectable({
   providedIn: "root",
