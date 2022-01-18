@@ -370,7 +370,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onSortChanged(evt: SortChangedEvent): void {
+  public async onSortChanged(evt: SortChangedEvent): Promise<void> {
     const columnState = evt.columnApi.getColumnState();
     console.debug("columnState", columnState);
     const minimalState = columnState.map((column) => {
@@ -380,7 +380,12 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
       };
       return sortOrder;
     });
-    this.wowUpService.setMyAddonsSortOrder(minimalState);
+
+    try {
+      await this.wowUpService.setMyAddonsSortOrder(minimalState);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public onFirstDataRendered(): void {
@@ -668,7 +673,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState): void {
+  public async onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState): Promise<void> {
     const colState = this.columns.find((col) => col.name === column.name);
     if (!colState) {
       console.warn(`Column state not found: ${column.name}`);
@@ -677,7 +682,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     colState.visible = event.checked;
 
-    this.wowUpService.setMyAddonsHiddenColumns([...this.columns]);
+    await this.wowUpService.setMyAddonsHiddenColumns([...this.columns]);
 
     this.gridColumnApi.setColumnVisible(column.name, event.checked);
 
@@ -1272,7 +1277,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     let savedSortOrder = await this.wowUpService.getMyAddonsSortOrder();
     if (!Array.isArray(savedSortOrder) || savedSortOrder.length < 2) {
       console.info(`Legacy or missing sort order fixed`);
-      this.wowUpService.setMyAddonsSortOrder([]);
+      await this.wowUpService.setMyAddonsSortOrder([]);
       savedSortOrder = [];
     }
 

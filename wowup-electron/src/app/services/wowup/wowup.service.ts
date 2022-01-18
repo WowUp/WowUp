@@ -237,7 +237,7 @@ export class WowUpService {
       preference[stateIndex] = stateCpy;
     }
 
-    this._preferenceStorageService.setObject(key, preference);
+    await this._preferenceStorageService.setAsync(key, preference);
     this._preferenceChangeSrc.next({ key, value: preference.toString() });
   }
 
@@ -274,8 +274,8 @@ export class WowUpService {
     return obj || [];
   }
 
-  public setMyAddonsHiddenColumns(columnStates: ColumnState[]): void {
-    this._preferenceStorageService.setObject(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
+  public async setMyAddonsHiddenColumns(columnStates: ColumnState[]): Promise<void> {
+    await this._preferenceStorageService.setAsync(MY_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
   public async getMyAddonsSortOrder(): Promise<SortOrder[]> {
@@ -283,24 +283,20 @@ export class WowUpService {
     return obj ?? [];
   }
 
-  public setMyAddonsSortOrder(sortOrder: SortOrder[]): void {
-    this._preferenceStorageService.setObject(MY_ADDONS_SORT_ORDER, sortOrder);
+  public async setMyAddonsSortOrder(sortOrder: SortOrder[]): Promise<void> {
+    await this._preferenceStorageService.setAsync(MY_ADDONS_SORT_ORDER, sortOrder);
   }
 
   public async getGetAddonsHiddenColumns(): Promise<ColumnState[]> {
     return (await this._preferenceStorageService.getObjectAsync<ColumnState[]>(GET_ADDONS_HIDDEN_COLUMNS_KEY)) || [];
   }
 
-  public setGetAddonsHiddenColumns(columnStates: ColumnState[]): void {
-    this._preferenceStorageService.setObject(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
+  public async setGetAddonsHiddenColumns(columnStates: ColumnState[]): Promise<void> {
+    await this._preferenceStorageService.setAsync(GET_ADDONS_HIDDEN_COLUMNS_KEY, columnStates);
   }
 
   public async getAddonsSortOrder(): Promise<SortOrder | undefined> {
     return await this._preferenceStorageService.getObjectAsync<SortOrder>(GET_ADDONS_SORT_ORDER);
-  }
-
-  public setAddonsSortOrder(sortOrder: SortOrder | undefined) {
-    this._preferenceStorageService.setObject(GET_ADDONS_SORT_ORDER, sortOrder);
   }
 
   public getClientDefaultAddonChannelKey(clientType: WowClientType): string {
@@ -364,7 +360,7 @@ export class WowUpService {
     let trustedDomains = await this._preferenceStorageService.getObjectAsync<string[]>(TRUSTED_DOMAINS_KEY);
     trustedDomains = _.uniq([...trustedDomains, domain]);
 
-    this._preferenceStorageService.setObject(TRUSTED_DOMAINS_KEY, trustedDomains);
+    await this._preferenceStorageService.setAsync(TRUSTED_DOMAINS_KEY, trustedDomains);
   }
 
   private async setDefaultPreference(key: string, defaultValue: any): Promise<void> {

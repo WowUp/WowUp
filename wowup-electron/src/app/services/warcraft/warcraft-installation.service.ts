@@ -60,7 +60,7 @@ export class WarcraftInstallationService {
       .subscribe();
   }
 
-  public reOrderInstallation(installationId: string, direction: number): void {
+  public async reOrderInstallation(installationId: string, direction: number): Promise<void> {
     const originIndex = this._wowInstallations.findIndex((installation) => installation.id === installationId);
     if (originIndex === -1) {
       console.warn("Installation not found to re-order", installationId);
@@ -80,7 +80,7 @@ export class WarcraftInstallationService {
       installationCpy[newIndex],
     ];
 
-    this.setWowInstallations(installationCpy);
+    await this.setWowInstallations(installationCpy);
     this._wowInstallationsSrc.next(installationCpy);
   }
 
@@ -108,9 +108,9 @@ export class WarcraftInstallationService {
     return _.filter(installations, (installation) => clientTypes.includes(installation.clientType));
   }
 
-  public setWowInstallations(wowInstallations: WowInstallation[]): void {
+  public async setWowInstallations(wowInstallations: WowInstallation[]): Promise<void> {
     console.log(`Setting wow installations: ${wowInstallations.length}`);
-    this._preferenceStorageService.setObject(WOW_INSTALLATIONS_KEY, wowInstallations);
+    await this._preferenceStorageService.setAsync(WOW_INSTALLATIONS_KEY, wowInstallations);
   }
 
   public async setSelectedWowInstallation(wowInstallation: WowInstallation): Promise<void> {
@@ -119,7 +119,7 @@ export class WarcraftInstallationService {
       installation.selected = installation.id === wowInstallation.id;
     });
 
-    this.setWowInstallations(allInstallations);
+    await this.setWowInstallations(allInstallations);
   }
 
   public async updateWowInstallation(wowInstallation: WowInstallation): Promise<void> {
@@ -132,7 +132,7 @@ export class WarcraftInstallationService {
 
     storedInstallations.splice(matchIndex, 1, wowInstallation);
 
-    this.setWowInstallations(storedInstallations);
+    await this.setWowInstallations(storedInstallations);
     this._wowInstallationsSrc.next(storedInstallations);
   }
 
@@ -174,7 +174,7 @@ export class WarcraftInstallationService {
 
     existingInstallations.push(installation);
 
-    this.setWowInstallations(existingInstallations);
+    await this.setWowInstallations(existingInstallations);
 
     if (notify) {
       this._wowInstallationsSrc.next(existingInstallations);
@@ -190,7 +190,7 @@ export class WarcraftInstallationService {
 
     _.remove(installations, (inst) => inst.id === installation.id);
 
-    this.setWowInstallations(installations);
+    await this.setWowInstallations(installations);
     this._wowInstallationsSrc.next(installations);
   }
 

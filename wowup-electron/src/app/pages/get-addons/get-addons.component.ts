@@ -348,14 +348,14 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     this.contextMenuPosition.y = `${event.clientY}px`;
   }
 
-  public onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState): void {
+  public async onColumnVisibleChange(event: MatCheckboxChange, column: ColumnState): Promise<void> {
     const colState = this.columnStates.find((col) => col.name === column.name);
     if (!colState) {
       return;
     }
 
     colState.visible = event.checked;
-    this._wowUpService.setGetAddonsHiddenColumns([...this.columnStates]);
+    await this._wowUpService.setGetAddonsHiddenColumns([...this.columnStates]);
 
     this.gridColumnApi.setColumnVisible(column.name, event.checked);
   }

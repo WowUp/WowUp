@@ -10,9 +10,6 @@ import {
   PREFERENCE_STORE_NAME,
 } from "../src/common/constants";
 
-// https://github.com/sindresorhus/electron-store#initrenderer
-Store.initRenderer();
-
 export const addonStore = new Store({ name: ADDON_STORE_NAME });
 export const preferenceStore = new Store({ name: PREFERENCE_STORE_NAME });
 

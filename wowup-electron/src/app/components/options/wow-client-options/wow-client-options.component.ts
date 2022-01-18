@@ -158,11 +158,11 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   }
 
   public onClickMoveUp(): void {
-    this._warcraftInstallationService.reOrderInstallation(this.installationId, -1);
+    this._warcraftInstallationService.reOrderInstallation(this.installationId, -1).catch(console.error);
   }
 
   public onClickMoveDown(): void {
-    this._warcraftInstallationService.reOrderInstallation(this.installationId, 1);
+    this._warcraftInstallationService.reOrderInstallation(this.installationId, 1).catch(console.error);
   }
 
   public onClickEdit(): void {
