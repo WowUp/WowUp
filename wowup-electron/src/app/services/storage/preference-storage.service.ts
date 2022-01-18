@@ -1,5 +1,3 @@
-import * as Store from "electron-store";
-
 import { Injectable } from "@angular/core";
 
 import {

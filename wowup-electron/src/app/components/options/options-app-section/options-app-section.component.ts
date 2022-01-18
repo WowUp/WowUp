@@ -416,10 +416,10 @@ export class OptionsAppSectionComponent implements OnInit {
       if (!result) {
         evt.source.value = await this.wowupService.getWowUpReleaseChannel();
       } else {
-        await this.wowupService.setWowUpReleaseChannel(evt.source.value);
+        await this.wowupService.setWowUpReleaseChannel(evt.source.value as WowUpReleaseChannelType);
       }
 
-      this.currentReleaseChannel$.next(evt.source.value);
+      this.currentReleaseChannel$.next(evt.source.value as WowUpReleaseChannelType);
     } catch (e) {
       console.error(e);
     }

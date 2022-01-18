@@ -338,7 +338,9 @@ export class ElectronService {
   }
 
   public sendSync<T>(channel: string, ...args: any[]): T {
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     return window.wowup.rendererSendSync(channel, ...args) as T;
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
   }
 
   public on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {

@@ -69,6 +69,9 @@ describe("OptionsAppSectionComponent", () => {
       getUseSymlinkMode: () => Promise.resolve(false),
       getUseHardwareAcceleration: () => Promise.resolve(false),
       getEnableAppBadge: () => Promise.resolve(false),
+      getWowUpReleaseChannel: () => Promise.resolve(false),
+      getStartWithSystem: () => Promise.resolve(false),
+      getStartMinimized: () => Promise.resolve(false),
     });
 
     await TestBed.configureTestingModule({
