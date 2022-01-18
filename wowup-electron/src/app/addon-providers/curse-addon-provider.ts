@@ -100,7 +100,11 @@ export class CurseAddonProvider extends AddonProvider {
   ) {
     super();
 
-    this._circuitBreaker = _networkService.getCircuitBreaker(`${this.name}_main`);
+    this._circuitBreaker = _networkService.getCircuitBreaker(
+      `${this.name}_main`,
+      undefined,
+      AppConfig.curseforge.httpTimeoutMs
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

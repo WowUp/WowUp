@@ -1128,35 +1128,39 @@ export class AddonService {
     const batchedAddonProviders = this._addonProviderService.getBatchAddonProviders();
 
     for (const provider of batchedAddonProviders) {
-      // Get a list of all installed addons for this provider across all WoW installs
-      const allAddons = await this._addonStorage.getAllForProviderAsync(provider.name);
-      const batchedAddons = allAddons.filter((addon) => addon.isIgnored === false);
+      try {
+        // Get a list of all installed addons for this provider across all WoW installs
+        const allAddons = await this._addonStorage.getAllForProviderAsync(provider.name);
+        const batchedAddons = allAddons.filter((addon) => addon.isIgnored === false);
 
-      const addonIds = this.getExternalIds(batchedAddons);
-      const searchResults = await provider.getAllBatch(installations, addonIds);
+        const addonIds = this.getExternalIds(batchedAddons);
+        const searchResults = await provider.getAllBatch(installations, addonIds);
 
-      // Process the errors for each installation
-      for (const key of Object.keys(searchResults.errors)) {
-        const errors = searchResults.errors[key];
-        if (errors.length === 0) {
-          continue;
+        // Process the errors for each installation
+        for (const key of Object.keys(searchResults.errors)) {
+          const errors = searchResults.errors[key];
+          if (errors.length === 0) {
+            continue;
+          }
+
+          const installation = installations.find((i) => i.id === key);
+          const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
+          await this.handleSyncErrors(installation, errors, provider, installationAddons);
         }
 
-        const installation = installations.find((i) => i.id === key);
-        const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
-        await this.handleSyncErrors(installation, errors, provider, installationAddons);
-      }
+        // Process the update results for each installation
+        for (const key of Object.keys(searchResults.installationResults)) {
+          const addonSearchResults = searchResults.installationResults[key];
+          if (addonSearchResults.length === 0) {
+            continue;
+          }
 
-      // Process the update results for each installation
-      for (const key of Object.keys(searchResults.installationResults)) {
-        const addonSearchResults = searchResults.installationResults[key];
-        if (addonSearchResults.length === 0) {
-          continue;
+          const installation = installations.find((i) => i.id === key);
+          const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
+          await this.handleSyncResults(addonSearchResults, installationAddons, installation);
         }
-
-        const installation = installations.find((i) => i.id === key);
-        const installationAddons = batchedAddons.filter((addon) => addon.installationId === key);
-        await this.handleSyncResults(addonSearchResults, installationAddons, installation);
+      } catch (e) {
+        console.error(e);
       }
     }
   }

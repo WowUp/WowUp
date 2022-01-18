@@ -1,6 +1,6 @@
 import * as CircuitBreaker from "opossum";
-import { Subject } from "rxjs";
-import { first, timeout } from "rxjs/operators";
+import { firstValueFrom, from, Observable, Subject } from "rxjs";
+import { delay, first, switchMap, timeout } from "rxjs/operators";
 
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
@@ -29,6 +29,7 @@ export class CircuitBreakerWrapper {
     this._httpClient = httpClient;
     this._defaultTimeoutMs = httpTimeoutMs;
     this._cb = new CircuitBreaker(this.internalAction, {
+      timeout: httpTimeoutMs,
       resetTimeout: resetTimeoutMs,
       errorFilter: (err) => {
         // Don't trip the breaker on a 404
@@ -55,19 +56,21 @@ export class CircuitBreakerWrapper {
     timeoutMs?: number
   ): Promise<T> {
     return this.fire(() =>
-      this._httpClient
-        .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS, ...headers } })
-        .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
-        .toPromise()
+      firstValueFrom(
+        this._httpClient
+          .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS, ...headers } })
+          .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
+      )
     );
   }
 
   public getText(url: URL | string, timeoutMs?: number): Promise<string> {
     return this.fire(() =>
-      this._httpClient
-        .get(url.toString(), { responseType: "text", headers: { ...CACHE_CONTROL_HEADERS } })
-        .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
-        .toPromise()
+      firstValueFrom(
+        this._httpClient
+          .get(url.toString(), { responseType: "text", headers: { ...CACHE_CONTROL_HEADERS } })
+          .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
+      )
     );
   }
 
@@ -80,11 +83,18 @@ export class CircuitBreakerWrapper {
     timeoutMs?: number
   ): Promise<T> {
     const cheaders = headers || {};
+    const ctimeout = timeoutMs ?? this._defaultTimeoutMs;
+
+    console.debug("postJson", url.toString(), ctimeout);
+
     return this.fire<T>(() =>
-      this._httpClient
-        .post<T>(url.toString(), body, { headers: { ...cheaders } })
-        .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
-        .toPromise()
+      firstValueFrom(
+        this._httpClient.post<T>(url.toString(), body, { headers: { ...cheaders } }).pipe(
+          first(),
+          // switchMap((r) => mockTimeout<T>(r, 30000)),
+          timeout(ctimeout)
+        )
+      )
     );
   }
 
@@ -97,16 +107,28 @@ export class CircuitBreakerWrapper {
   ): Promise<T> {
     const cheaders = headers || {};
     return this.fire<T>(() =>
-      this._httpClient
-        .delete<T>(url.toString(), { headers: { ...cheaders } })
-        .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
-        .toPromise()
+      firstValueFrom(
+        this._httpClient
+          .delete<T>(url.toString(), { headers: { ...cheaders } })
+          .pipe(first(), timeout(timeoutMs ?? this._defaultTimeoutMs))
+      )
     );
   }
 
   private internalAction = (action: () => Promise<any>) => {
     return action?.call(this);
   };
+}
+/** Useful when wanting to test HTTP timeout conditions */
+function mockTimeout<T>(data?: T, timeout = 10000): Observable<T> {
+  console.debug("mockTimeout", timeout);
+  const prom = new Promise<T>((resolve, reject) => {
+    setTimeout(() => {
+      resolve(data);
+    }, timeout);
+  });
+
+  return from(prom);
 }
 
 @Injectable({
@@ -124,20 +146,23 @@ export class NetworkService {
     resetTimeoutMs: number = AppConfig.defaultHttpResetTimeoutMs,
     httpTimeoutMs: number = AppConfig.defaultHttpTimeoutMs
   ): CircuitBreakerWrapper {
+    console.debug("Create circuit breaker", name, resetTimeoutMs, httpTimeoutMs);
     return new CircuitBreakerWrapper(name, this._httpClient, resetTimeoutMs, httpTimeoutMs);
   }
 
-  public async getJson<T>(url: URL | string, timeoutMs?: number): Promise<T> {
-    return await this._httpClient
-      .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS } })
-      .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
-      .toPromise();
+  public getJson<T>(url: URL | string, timeoutMs?: number): Promise<T> {
+    return firstValueFrom(
+      this._httpClient
+        .get<T>(url.toString(), { headers: { ...CACHE_CONTROL_HEADERS } })
+        .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
+    );
   }
 
-  public async getText(url: URL | string, timeoutMs?: number): Promise<string> {
-    return await this._httpClient
-      .get(url.toString(), { responseType: "text", headers: { ...CACHE_CONTROL_HEADERS } })
-      .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
-      .toPromise();
+  public getText(url: URL | string, timeoutMs?: number): Promise<string> {
+    return firstValueFrom(
+      this._httpClient
+        .get(url.toString(), { responseType: "text", headers: { ...CACHE_CONTROL_HEADERS } })
+        .pipe(first(), timeout(timeoutMs ?? AppConfig.defaultHttpTimeoutMs))
+    );
   }
 }
