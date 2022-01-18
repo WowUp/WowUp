@@ -29,10 +29,12 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Updated At text on the My Addons page should now keep itself up to date</li>
     <li>Modified the GitHub install by URL feature to be more flexible for multi-toc addons</li>
     <li>App now starts up much faster</li>
+    <li>Increased the timeout for the CurseForge provider</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Fixed an issue with some addon IDs colliding between addon providers</li>
+    <li>Fixed an issue with a provider being able to block update checks</li>
     <li>Try to fix the issue with duplicated addons</li>
     </ul>`,
   },
