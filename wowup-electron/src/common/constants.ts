@@ -42,6 +42,7 @@ export const IPC_CURSE_HASH_FILE_CHANNEL = "curse-hash-file";
 export const IPC_SHOW_DIRECTORY = "show-directory";
 export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const IPC_WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
+export const IPC_GET_HOME_DIR = "get-home-dir";
 export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const IPC_CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
 export const IPC_LIST_DISKS_WIN32 = "list-disks-win32";

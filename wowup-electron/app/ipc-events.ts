@@ -21,6 +21,7 @@ import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
 import * as fs from "fs";
+import * as os from "os";
 
 import {
   IPC_ADDONS_SAVE_ALL,
@@ -34,6 +35,7 @@ import {
   IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
+  IPC_GET_HOME_DIR,
   IPC_GET_ASSET_FILE_PATH,
   IPC_GET_DIRECTORY_TREE,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
@@ -495,6 +497,10 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_GET_DIRECTORY_TREE, (evt, args: GetDirectoryTreeRequest): Promise<TreeNode> => {
     log.debug(IPC_GET_DIRECTORY_TREE, args);
     return getDirTree(args.dirPath, args.opts);
+  });
+
+  handle(IPC_GET_HOME_DIR, (): string => {
+    return os.homedir();
   });
 
   handle(IPC_MINIMIZE_WINDOW, () => {

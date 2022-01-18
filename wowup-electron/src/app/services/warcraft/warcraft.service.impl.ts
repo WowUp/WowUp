@@ -1,4 +1,5 @@
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { InstalledProduct } from '../../models/warcraft/installed-product';
 
 export interface WarcraftServiceImpl {
   getExecutableExtension(): string;
@@ -6,4 +7,5 @@ export interface WarcraftServiceImpl {
   getBlizzardAgentPath(): Promise<string>;
   getExecutableName(clientType: WowClientType): string;
   getClientType(binaryPath: string): WowClientType;
+  resolveProducts(decodedProducts: InstalledProduct[], agentPath: string): InstalledProduct[];
 }

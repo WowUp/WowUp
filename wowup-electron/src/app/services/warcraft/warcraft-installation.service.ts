@@ -52,7 +52,6 @@ export class WarcraftInstallationService {
     from(this._warcraftService.getBlizzardAgentPath())
       .pipe(
         tap((blizzardAgentPath) => {
-          // On Linux this will be empty, as we dont know where the blizz database is
           this._blizzardAgentPath = blizzardAgentPath;
         }),
         // switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
