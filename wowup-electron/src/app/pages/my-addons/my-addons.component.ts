@@ -1136,11 +1136,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     this._cdRef.detectChanges();
 
     try {
-      let addons = await this._addonService.getAddons(installation, reScan);
-      if (reScan) {
-        await this._addonService.syncClient(installation);
-        addons = await this._addonService.getAddons(installation, false);
-      }
+      let addons: Addon[] = [];
+      addons = await this._addonService.getAddons(installation, reScan);
+
+      console.log("addons", addons);
 
       const rowData = this.formatAddons(addons);
 

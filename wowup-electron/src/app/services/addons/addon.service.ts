@@ -982,12 +982,22 @@ export class AddonService {
 
       const addonFolderPath = this._warcraftService.getAddonFolderPath(installation);
 
+      let failureCt = 0;
       for (const directory of installedDirectories) {
         const addonDirectory = path.join(addonFolderPath, directory);
         console.log(
           `[RemoveAddonDirectory] ${addon.providerName ?? ""} ${addon.externalId ?? "NO_EXT_ID"} ${addonDirectory}`
         );
-        await this._fileService.remove(addonDirectory);
+        try {
+          await this._fileService.remove(addonDirectory);
+        } catch (e) {
+          console.error(e);
+          failureCt += 1;
+        }
+      }
+
+      if (failureCt === installedDirectories.length) {
+        throw new Error("Failed to remove all directories");
       }
     }
 
@@ -1131,6 +1141,10 @@ export class AddonService {
       try {
         // Get a list of all installed addons for this provider across all WoW installs
         const allAddons = await this._addonStorage.getAllForProviderAsync(provider.name);
+        if (allAddons.length === 0) {
+          continue;
+        }
+
         const batchedAddons = allAddons.filter((addon) => addon.isIgnored === false);
 
         const addonIds = this.getExternalIds(batchedAddons);
@@ -1502,6 +1516,10 @@ export class AddonService {
 
       const useSymlinkMode = await this._wowUpService.getUseSymlinkMode();
       const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
+
+      if (addonFolders.length === 0) {
+        return [];
+      }
 
       await this.removeGitFolders(addonFolders);
 

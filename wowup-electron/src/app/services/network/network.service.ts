@@ -85,8 +85,6 @@ export class CircuitBreakerWrapper {
     const cheaders = headers || {};
     const ctimeout = timeoutMs ?? this._defaultTimeoutMs;
 
-    console.debug("postJson", url.toString(), ctimeout);
-
     return this.fire<T>(() =>
       firstValueFrom(
         this._httpClient.post<T>(url.toString(), body, { headers: { ...cheaders } }).pipe(
