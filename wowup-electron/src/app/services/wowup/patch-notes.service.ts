@@ -34,6 +34,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Modified the GitHub install by URL feature to be more flexible for multi-toc addons</li>
     <li>App now starts up much faster</li>
     <li>Increased the timeout for the CurseForge provider</li>
+    <li>Simplify Re-Scan logic</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
