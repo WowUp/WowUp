@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.wowup.io/site/assets/images/wowup_white_lg_nopad.png" width="200" />
+  <img src="https://cdn.wowup.io/site/assets/icons/android-chrome-512x512.png" width="200" />
 </p>
 
 # WowUp Client Repository
