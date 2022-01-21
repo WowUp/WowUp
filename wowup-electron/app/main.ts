@@ -7,10 +7,6 @@ import { join } from "path";
 import { pathToFileURL } from "url";
 import { inspect } from "util";
 
-import { createAppMenu } from "./app-menu";
-import { appUpdater } from "./app-updater";
-import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
-import * as platform from "./platform";
 import {
   APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
@@ -39,10 +35,14 @@ import {
 } from "../src/common/constants";
 import { MainChannels } from "../src/common/wowup";
 import { AppOptions } from "../src/common/wowup/models";
-import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
-import { windowStateManager } from "./window-state";
-import { pushEvents, PUSH_NOTIFICATION_EVENT } from "./push";
+import { createAppMenu } from "./app-menu";
+import { appUpdater } from "./app-updater";
+import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
+import * as platform from "./platform";
 import { initializeDefaultPreferences } from "./preferences";
+import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
+import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
+import { restoreWindow, windowStateManager } from "./window-state";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -122,11 +122,7 @@ if (!singleInstanceLock) {
       return;
     }
 
-    if (win.isMinimized()) {
-      win.restore();
-    } else if (!win.isVisible() && !platform.isMac) {
-      win.show();
-    }
+    restoreWindow(win);
 
     win.focus();
 
