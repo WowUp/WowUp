@@ -28,15 +28,6 @@
       [ngClass]="{'tab-icon-active': tab.isSelected$ | async }" [svgIcon]="tab.icon">
     </mat-icon> -->
   </div>
-  <a
-    appExternalLink
-    class="text-1 tab hover-bg-secondary-2"
-    [href]="wowUpWebsiteUrl + '/guide'"
-    matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}"
-  >
-    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="far:question-circle"></mat-icon>
-    <div class="tab-title">{{ "PAGES.HOME.GUIDE_TAB_TITLE" | translate }}</div>
-  </a>
 
   <!-- ACCOUNT TAB -->
   <div
@@ -75,10 +66,42 @@
   </div>
 
   <div class="spacer"></div>
+  <!-- LINKS -->
+
+  <a
+    appExternalLink
+    class="text-1 tab hover-bg-secondary-2"
+    [href]="wowUpWebsiteUrl + '/guide'"
+    matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}"
+  >
+    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="far:question-circle"></mat-icon>
+    <div class="tab-title">{{ "PAGES.HOME.GUIDE_TAB_TITLE" | translate }}</div>
+  </a>
+
+  <a
+    appExternalLink
+    class="tab btn"
+    href="https://discord.gg/rk4F5aD"
+    matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.JOIN_DISCORD' | translate }}"
+  >
+    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="fab:discord"></mat-icon>
+    <div class="tab-title">{{ "PAGES.HOME.DISCORD_TAB_TITLE" | translate }}</div>
+  </a>
+
+  <a
+    appExternalLink
+    class="tab btn patreon-link"
+    href="https://www.patreon.com/jliddev"
+    matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate }}"
+  >
+    <img class="patron-img" src="assets/Digital-Patreon-Wordmark_FieryCoral.png" />
+  </a>
+
+  <!-- AD FRAME -->
   <div *ngIf="sessionService.adSpace$ | async" class="ad-space text-1 bg-secondary-3">
-    <button mat-button style="justify-self: center" (click)="onClickAdExplainer()">
+    <div class="tab hover-bg-secondary-2" style="" (click)="onClickAdExplainer()">
       {{ "ADS.AD_EXPLAINER_BUTTON" | translate }}
-    </button>
+    </div>
     <div class="ad">
       <app-webview *ngFor="let params of adPageParams$ | async" [options]="params"></app-webview>
     </div>

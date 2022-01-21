@@ -363,6 +363,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Acerca de",
       "ACCOUNT_TAB_TITLE": "Cuenta",
+      "DISCORD_TAB_TITLE": "Discord",
       "GET_ADDONS_TAB_TITLE": "Obtener addons",
       "GUIDE_TAB_TITLE": "Guía",
       "MIGRATING_ADDONS": "Migrando lista de addons...",

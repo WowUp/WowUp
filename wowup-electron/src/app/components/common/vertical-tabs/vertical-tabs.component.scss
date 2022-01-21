@@ -1,3 +1,9 @@
+.patreon-link {
+  .patron-img {
+    height: 25px;
+  }
+}
+
 .tab-strip {
   box-sizing: border-box;
   display: flex;
@@ -5,13 +11,6 @@
   max-width: 300px;
   height: 100%;
   padding-top: calc(1em + 50px);
-
-  .patreon-link {
-    padding: 0 0.25em;
-    .patron-img {
-      height: 25px;
-    }
-  }
 
   .tab {
     min-width: 40px;
@@ -26,6 +25,11 @@
     border-top-right-radius: 4px;
     text-decoration: none;
     border-left: 0.5em solid transparent;
+
+    a {
+      display: flex;
+      align-items: center;
+    }
 
     .icon-active {
       svg {
