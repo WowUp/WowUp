@@ -22,8 +22,16 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
     <li>Added the ability to automatically discover WoW installs for Lutris users (fultonm)</li>
     <li>
-    <div>Added the new <a appExternalLink href="https://addons.wago.io/">Wago.io</a> addon provider</div>
-    <img src="https://cdn.wowup.io/images/wago-logo.svg" style="width: 100px; border-radius: 4px;" />
+      <div>Added the new <a appExternalLink href="https://addons.wago.io/">Wago.io</a> addon provider</div>
+      <a appExternalLink href="https://addons.wago.io/">
+        <img src="https://cdn.wowup.io/images/wago-logo.svg" style="width: 100px; border-radius: 4px;" />
+      </a> 
+    </li>
+    <li>
+      <div>New app layout courtesy of our friends at <a appExternalLink href="https://www.warcrafttavern.com">Warcraft Tavern</a>.</div>
+      <a appExternalLink href="https://www.warcrafttavern.com">
+        <img style="width: 200px;" loading="lazy" src="https://www.warcrafttavern.com/wp-content/uploads/2020/10/Warcraft-Tavern-Logo-768x246.png">
+      </a>
     </li>
     <li>Added the ability to switch to Beta build release channel from the app</li>
     </ul>
