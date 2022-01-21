@@ -51,6 +51,7 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
     <li>Fixed an issue with some addon IDs colliding between addon providers</li>
     <li>Fixed an issue with a provider being able to block update checks</li>
+    <li>Fixed an issue with restoring the window from a pinned shortcut on the taskbar</li>
     <li>Try to fix the issue with duplicated addons</li>
     </ul>`,
   },
