@@ -105,11 +105,12 @@ import {
   zipFile,
 } from "./file.utils";
 import { addonStore } from "./stores";
-import { createTray, restoreWindow } from "./system-tray";
+import { createTray } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { ProductDb } from "../src/common/wowup/product-db";
+import { restoreWindow } from "./window-state";
 
 let PENDING_OPEN_URLS: string[] = [];
 
