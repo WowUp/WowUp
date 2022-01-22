@@ -21,6 +21,7 @@ import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
 import * as fs from "fs";
+import * as os from "os";
 
 import {
   IPC_ADDONS_SAVE_ALL,
@@ -34,6 +35,7 @@ import {
   IPC_DOWNLOAD_FILE_CHANNEL,
   IPC_FOCUS_WINDOW,
   IPC_GET_APP_VERSION,
+  IPC_GET_HOME_DIR,
   IPC_GET_ASSET_FILE_PATH,
   IPC_GET_DIRECTORY_TREE,
   IPC_GET_LATEST_DIR_UPDATE_TIME,
@@ -96,16 +98,19 @@ import {
   exists,
   getDirTree,
   getLastModifiedFileDate,
+  listZipFiles,
   readDirRecursive,
   readFileInZip,
   remove,
   zipFile,
 } from "./file.utils";
 import { addonStore } from "./stores";
-import { createTray, restoreWindow } from "./system-tray";
+import { createTray } from "./system-tray";
 import { WowUpFolderScanner } from "./wowup-folder-scanner";
 import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
+import { ProductDb } from "../src/common/wowup/product-db";
+import { restoreWindow } from "./window-state";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -153,8 +158,18 @@ export function setPendingOpenUrl(...openUrls: string[]): void {
   PENDING_OPEN_URLS = openUrls;
 }
 
-export function initializeIpcHandlers(window: BrowserWindow, userAgent: string): void {
+export function initializeIpcHandlers(window: BrowserWindow): void {
   log.info("process.versions", process.versions);
+
+  ipcMain.on("webview-error", (evt, err, msg) => {
+    log.error("webview-error", err, msg);
+  });
+
+  // Just forward the token event out to the window
+  // this is not a handler, just a passive listener
+  ipcMain.on("wago-token-received", (evt, token) => {
+    window?.webContents?.send("wago-token-received", token);
+  });
 
   // Remove the pending URLs once read so they are only able to be gotten once
   handle(IPC_GET_PENDING_OPEN_URLS, (): string[] => {
@@ -174,7 +189,7 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     }
   );
 
-  handle("clipboard-read-text", (evt) => {
+  handle("clipboard-read-text", () => {
     return clipboard.readText();
   });
 
@@ -215,7 +230,13 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   });
 
   handle(IPC_ADDONS_SAVE_ALL, (evt, addons: Addon[]) => {
-    _.forEach(addons, (addon) => addonStore.set(addon.id, addon));
+    if (!Array.isArray(addons)) {
+      return;
+    }
+
+    for (const addon of addons) {
+      addonStore.set(addon.id, addon);
+    }
   });
 
   handle(IPC_GET_APP_VERSION, () => {
@@ -398,6 +419,11 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await readFileInZip(zipPath, filePath);
   });
 
+  handle("zip-list-files", (evt, zipPath: string, filter: string) => {
+    log.info(`[ZipListEntries]: '${zipPath}`);
+    return listZipFiles(zipPath, filter);
+  });
+
   handle("rename-file", async (evt, srcPath: string, destPath: string) => {
     log.info(`[RenameFile]: '${srcPath} -> ${destPath}`);
     return await fsp.rename(srcPath, destPath);
@@ -439,6 +465,16 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await fsp.readFile(filePath);
   });
 
+  handle("decode-product-db", async (evt, filePath: string) => {
+    const productDbData = await fsp.readFile(filePath);
+    const productDb = ProductDb.decode(productDbData);
+    setImmediate(() => {
+      console.log("productDb", JSON.stringify(productDb));
+    });
+
+    return productDb;
+  });
+
   handle(IPC_WRITE_FILE_CHANNEL, async (evt, filePath: string, contents: string) => {
     return await fsp.writeFile(filePath, contents, { encoding: "utf-8", mode: DEFAULT_FILE_MODE });
   });
@@ -462,6 +498,10 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
   handle(IPC_GET_DIRECTORY_TREE, (evt, args: GetDirectoryTreeRequest): Promise<TreeNode> => {
     log.debug(IPC_GET_DIRECTORY_TREE, args);
     return getDirTree(args.dirPath, args.opts);
+  });
+
+  handle(IPC_GET_HOME_DIR, (): string => {
+    return os.homedir();
   });
 
   handle(IPC_MINIMIZE_WINDOW, () => {
@@ -531,8 +571,12 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     return await push.unregisterPush();
   });
 
-  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel) => {
+  handle(IPC_PUSH_SUBSCRIBE, async (evt, channel: string) => {
     return await push.subscribeToChannel(channel);
+  });
+
+  handle("get-focus", () => {
+    return window.isFocused();
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {
@@ -567,10 +611,17 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
     try {
       await fsp.mkdir(arg.outputFolder, { recursive: true });
 
-      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
-      log.info(`[DownloadFile] '${arg.url}' -> '${savePath}'`);
+      const downloadUrl = new URL(arg.url);
+      if (typeof arg.auth?.queryParams === "object") {
+        for (const [key, value] of Object.entries(arg.auth.queryParams)) {
+          downloadUrl.searchParams.set(key, value);
+        }
+      }
 
-      const url = new URL(arg.url).toString();
+      const savePath = path.join(arg.outputFolder, `${nanoid()}-${arg.fileName}`);
+      log.info(`[DownloadFile] '${downloadUrl.toString()}' -> '${savePath}'`);
+
+      const url = downloadUrl.toString();
       const writer = fs.createWriteStream(savePath);
 
       try {
@@ -578,13 +629,25 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
           let size = 0;
           let percentMod = -1;
 
-          const req = net.request(url);
+          const req = net.request({
+            url,
+            redirect: "manual",
+          });
+
+          if (typeof arg.auth?.headers === "object") {
+            for (const [key, value] of Object.entries(arg.auth.headers)) {
+              log.info(`Setting header: ${key}=${value}`);
+              req.setHeader(key, value);
+            }
+          }
+
+          req.on("redirect", (status, method, redirectUrl) => {
+            log.info(`[download] caught redirect`, status, redirectUrl);
+            req.followRedirect();
+          });
+
           req.on("response", (response) => {
             const fileLength = parseInt((response.headers["content-length"] as string) ?? "0", 10);
-
-            if (response.statusCode < 200 || response.statusCode >= 300) {
-              return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
-            }
 
             response.on("data", (data) => {
               writer.write(data, () => {
@@ -596,8 +659,14 @@ export function initializeIpcHandlers(window: BrowserWindow, userAgent: string):
                 }
               });
             });
+
             response.on("end", () => {
               console.log("No more data in response.");
+
+              if (response.statusCode < 200 || response.statusCode >= 300) {
+                return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
+              }
+
               return resolve(undefined);
             });
             response.on("error", (err) => {
@@ -640,7 +709,7 @@ function handleZipFile(err: Error, zipfile: yauzl.ZipFile, targetDir: string): P
     });
 
     zipfile.readEntry();
-    zipfile.on("entry", function (entry) {
+    zipfile.on("entry", function (entry: yauzl.Entry) {
       if (/\/$/.test(entry.fileName)) {
         // directory file names end with '/'
         const dirPath = path.join(targetDir, entry.fileName);

@@ -58,6 +58,7 @@ export class ElectronService {
   public readonly _customProtocolSrc = new BehaviorSubject("");
   private readonly _appUpdateSrc = new ReplaySubject<AppUpdateEvent>();
   private readonly _windowResumedSrc = new Subject<void>();
+  private readonly _windowFocusedSrc = new BehaviorSubject<boolean>(true);
 
   private _appVersion = "";
   private _opts!: AppOptions;
@@ -68,6 +69,7 @@ export class ElectronService {
   public readonly customProtocol$ = this._customProtocolSrc.asObservable();
   public readonly appUpdate$ = this._appUpdateSrc.asObservable();
   public readonly windowResumed$ = this._windowResumedSrc.asObservable();
+  public readonly windowFocused$ = this._windowFocusedSrc.asObservable();
   public readonly isWin = process.platform === "win32";
   public readonly isMac = process.platform === "darwin";
   public readonly isLinux = process.platform === "linux";
@@ -122,6 +124,14 @@ export class ElectronService {
       this._windowMaximizedSrc.next(false);
     });
 
+    this.onRendererEvent("blur", () => {
+      this._windowFocusedSrc.next(false);
+    });
+
+    this.onRendererEvent("focus", () => {
+      this._windowFocusedSrc.next(true);
+    });
+
     this.onRendererEvent(IPC_CUSTOM_PROTOCOL_RECEIVED, (evt, protocol: string) => {
       console.debug(IPC_CUSTOM_PROTOCOL_RECEIVED, protocol);
       this._customProtocolSrc.next(protocol);
@@ -150,6 +160,12 @@ export class ElectronService {
     this.invoke(IPC_SET_ZOOM_LIMITS, 1, 1).catch((e) => {
       console.error("Failed to set zoom limits", e);
     });
+
+    this.isWindowFocused()
+      .then((focused) => {
+        this._windowFocusedSrc.next(focused);
+      })
+      .catch(console.error);
   }
 
   private onWindowOnline = () => {
@@ -195,7 +211,7 @@ export class ElectronService {
     if (!this._opts) {
       console.debug("getAppOptions");
       // TODO check protocols here
-      const launchArgs = await this.invoke(IPC_GET_LAUNCH_ARGS);
+      const launchArgs = await this.invoke<string[]>(IPC_GET_LAUNCH_ARGS);
       this._opts = (<any>minimist(launchArgs.slice(1), {
         boolean: ["hidden", "quit"],
         string: ["install"],
@@ -253,6 +269,10 @@ export class ElectronService {
     await this.invoke(IPC_WINDOW_LEAVE_FULLSCREEN);
   }
 
+  public async isWindowFocused(): Promise<boolean> {
+    return await this.invoke("get-focus");
+  }
+
   public async readClipboardText(): Promise<string> {
     return await this.invoke("clipboard-read-text");
   }
@@ -308,11 +328,19 @@ export class ElectronService {
 
   public async invoke<T = any>(channel: RendererChannels, ...args: any[]): Promise<T> {
     try {
+      /* eslint-disable @typescript-eslint/no-unsafe-argument */
       return await window.wowup.rendererInvoke(channel, ...args);
+      /* eslint-enable @typescript-eslint/no-unsafe-argument */
     } catch (e) {
       console.error("Invoke failed", e);
       throw e;
     }
+  }
+
+  public sendSync<T>(channel: string, ...args: any[]): T {
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
+    return window.wowup.rendererSendSync(channel, ...args) as T;
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
   }
 
   public on(channel: string, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
@@ -324,7 +352,9 @@ export class ElectronService {
   }
 
   public send(channel: string, ...args: any[]): void {
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     window.wowup.rendererSend(channel, ...args);
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
   }
 
   public openExternal(url: string, options?: OpenExternalOptions): Promise<void> {

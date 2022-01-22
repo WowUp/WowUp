@@ -7,10 +7,6 @@ import { join } from "path";
 import { pathToFileURL } from "url";
 import { inspect } from "util";
 
-import { createAppMenu } from "./app-menu";
-import { AppUpdater } from "./app-updater";
-import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
-import * as platform from "./platform";
 import {
   APP_PROTOCOL_NAME,
   APP_USER_MODEL_ID,
@@ -39,9 +35,14 @@ import {
 } from "../src/common/constants";
 import { MainChannels } from "../src/common/wowup";
 import { AppOptions } from "../src/common/wowup/models";
+import { createAppMenu } from "./app-menu";
+import { appUpdater } from "./app-updater";
+import { initializeIpcHandlers, setPendingOpenUrl } from "./ipc-events";
+import * as platform from "./platform";
+import { initializeDefaultPreferences } from "./preferences";
+import { PUSH_NOTIFICATION_EVENT, pushEvents } from "./push";
 import { initializeStoreIpcHandlers, preferenceStore } from "./stores";
-import { windowStateManager } from "./window-state";
-import { pushEvents, PUSH_NOTIFICATION_EVENT } from "./push";
+import { restoreWindow, windowStateManager } from "./window-state";
 
 // LOGGING SETUP
 // Override the default log path so they aren't a pain to find on Mac
@@ -83,8 +84,9 @@ log.info("USER_AGENT", USER_AGENT);
 
 let appIsQuitting = false;
 let win: BrowserWindow = null;
-let appUpdater: AppUpdater | undefined = undefined;
 let loadFailCount = 0;
+
+initializeDefaultPreferences();
 
 // APP MENU SETUP
 createAppMenu(win);
@@ -120,11 +122,7 @@ if (!singleInstanceLock) {
       return;
     }
 
-    if (win.isMinimized()) {
-      win.restore();
-    } else if (!win.isVisible() && !platform.isMac) {
-      win.show();
-    }
+    restoreWindow(win);
 
     win.focus();
 
@@ -268,6 +266,7 @@ function createWindow(): BrowserWindow {
         `--user-data-path=${app.getPath("userData")}`,
         `--base-bg-color=${getBackgroundColor()}`,
       ],
+      webviewTag: true,
     },
     show: false,
   };
@@ -284,9 +283,9 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow(windowOptions);
 
-  appUpdater = new AppUpdater(win);
+  appUpdater.init(win);
 
-  initializeIpcHandlers(win, USER_AGENT);
+  initializeIpcHandlers(win);
   initializeStoreIpcHandlers();
 
   pushEvents.on(PUSH_NOTIFICATION_EVENT, (data) => {
@@ -296,7 +295,46 @@ function createWindow(): BrowserWindow {
   // Keep track of window state
   mainWindowManager.monitorState(win);
 
+  win.on("blur", () => {
+    win.webContents.send("blur");
+  });
+
+  win.on("focus", () => {
+    win.webContents.send("focus");
+  });
+
   win.webContents.userAgent = USER_AGENT;
+
+  win.webContents.on("will-attach-webview", (evt, webPreferences) => {
+    log.debug("will-attach-webview");
+
+    webPreferences.additionalArguments = [`--log-path=${LOG_PATH}`];
+    webPreferences.contextIsolation = true;
+    webPreferences.nativeWindowOpen = false; // Without this the new-window event does not fire
+  });
+
+  win.webContents.on("did-attach-webview", (evt, webContents) => {
+    webContents.session.setUserAgent(webContents.userAgent);
+
+    webContents.on("did-fail-load", (evt, code, desc, url) => {
+      log.error("[webview] did-fail-load", code, desc, url);
+    });
+
+    webContents.on("will-navigate", (evt, url) => {
+      log.debug("[webview] will-navigate", url);
+      if (webContents.getURL() === url) {
+        log.debug(`[webview] reload detected`);
+      } else {
+        evt.preventDefault(); // block the webview from navigating at all
+      }
+    });
+
+    webContents.setWindowOpenHandler((details) => {
+      log.debug("[webview] new-window");
+      win.webContents.send("webview-new-window", details); // forward this new window to the app for processing
+      return { action: "deny" };
+    });
+  });
 
   win.webContents.on("zoom-changed", (evt, zoomDirection) => {
     sendEventToContents(win, "zoom-changed", zoomDirection);

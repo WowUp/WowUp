@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AddonProvider } from "../../addon-providers/addon-provider";
+import { AddonProvider, AddonProviderType } from "../../addon-providers/addon-provider";
 import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
@@ -17,12 +17,21 @@ import { FileService } from "../files/file.service";
 import { TocService } from "../toc/toc.service";
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpApiService } from "../wowup-api/wowup-api.service";
+import { WagoAddonProvider } from "../../addon-providers/wago-addon-provider";
+import { AddonProviderState } from "../../models/wowup/addon-provider-state";
+import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
+import { Subject } from "rxjs";
+import { PreferenceStorageService } from "../storage/preference-storage.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AddonProviderFactory {
-  private _providers: AddonProvider[] = [];
+  private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
+
+  private _providerMap: Map<string, AddonProvider> = new Map();
+
+  public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
 
   public constructor(
     private _cachingService: CachingService,
@@ -33,8 +42,70 @@ export class AddonProviderFactory {
     private _fileService: FileService,
     private _tocService: TocService,
     private _warcraftService: WarcraftService,
-    private _wowupApiService: WowUpApiService
+    private _wowupApiService: WowUpApiService,
+    private _preferenceStorageService: PreferenceStorageService
   ) {}
+
+  /** This is part of the APP_INITIALIZER and called before the app is bootstrapped */
+  public async loadProviders(): Promise<void> {
+    if (this._providerMap.size !== 0) {
+      return;
+    }
+    const providers = [
+      this.createZipAddonProvider(),
+      this.createRaiderIoAddonProvider(),
+      this.createWowUpCompanionAddonProvider(),
+      this.createWowUpAddonProvider(),
+      this.createWagoAddonProvider(),
+      this.createCurseAddonProvider(),
+      this.createTukUiAddonProvider(),
+      this.createWowInterfaceAddonProvider(),
+      this.createGitHubAddonProvider(),
+    ];
+
+    for (const provider of providers) {
+      await this.setProviderState(provider);
+      this._providerMap.set(provider.name, provider);
+    }
+  }
+
+  public async shouldShowConsentDialog(): Promise<boolean> {
+    return (await this._preferenceStorageService.getAsync(WAGO_PROMPT_KEY)) === undefined;
+  }
+
+  public async updateWagoConsent(): Promise<void> {
+    return await this._preferenceStorageService.setAsync(WAGO_PROMPT_KEY, true);
+  }
+
+  public async setProviderEnabled(type: AddonProviderType, enabled: boolean): Promise<void> {
+    if (!this._providerMap.has(type)) {
+      throw new Error("cannot set provider state, not found");
+    }
+
+    const provider = this._providerMap.get(type);
+    if (!provider.allowEdit) {
+      throw new Error(`this provider is not editable: ${type}`);
+    }
+
+    await this._wowupService.setAddonProviderState({
+      providerName: type,
+      enabled: enabled,
+      canEdit: true,
+    });
+
+    provider.enabled = enabled;
+    this._addonProviderChangeSrc.next(provider);
+  }
+
+  public createWagoAddonProvider(): WagoAddonProvider {
+    return new WagoAddonProvider(
+      this._electronService,
+      this._cachingService,
+      this._warcraftService,
+      this._tocService,
+      this._networkService
+    );
+  }
 
   public createWowUpCompanionAddonProvider(): WowUpCompanionAddonProvider {
     return new WowUpCompanionAddonProvider(this._fileService, this._tocService);
@@ -63,7 +134,7 @@ export class AddonProviderFactory {
   }
 
   public createGitHubAddonProvider(): GitHubAddonProvider {
-    return new GitHubAddonProvider(this._httpClient);
+    return new GitHubAddonProvider(this._httpClient, this._warcraftService);
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
@@ -74,27 +145,123 @@ export class AddonProviderFactory {
     return new ZipAddonProvider(this._httpClient, this._fileService, this._tocService, this._warcraftService);
   }
 
-  public getProviders(): AddonProvider[] {
-    if (this._providers.length === 0) {
-      this._providers = [
-        this.createZipAddonProvider(),
-        this.createRaiderIoAddonProvider(),
-        this.createWowUpCompanionAddonProvider(),
-        this.createWowUpAddonProvider(),
-        this.createCurseAddonProvider(),
-        this.createTukUiAddonProvider(),
-        this.createWowInterfaceAddonProvider(),
-        this.createGitHubAddonProvider(),
-      ];
-
-      this._providers.forEach(this.setProviderState);
+  public getProvider<T = AddonProvider>(providerName: string): T | undefined {
+    if (!providerName || !this.hasProvider(providerName)) {
+      return undefined;
     }
 
-    return this._providers;
+    return this._providerMap.get(providerName) as any;
   }
 
-  private setProviderState = (provider: AddonProvider) => {
-    const state = this._wowupService.getAddonProviderState(provider.name);
+  public hasProvider(providerName: string): boolean {
+    return this._providerMap.has(providerName);
+  }
+
+  public getAddonProviderForUri(addonUri: URL): AddonProvider | undefined {
+    for (const ap of this._providerMap.values()) {
+      if (ap.isValidAddonUri(addonUri)) {
+        return ap;
+      }
+    }
+
+    return undefined;
+  }
+
+  public getEnabledAddonProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
+  public getBatchAddonProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled && ap.canBatchFetch) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
+  public getStandardAddonProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled && !ap.canBatchFetch) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
+  public getAdRequiredProviders(): AddonProvider[] {
+    const providers: AddonProvider[] = [];
+
+    this._providerMap.forEach((ap) => {
+      if (ap.enabled && ap.adRequired) {
+        providers.push(ap);
+      }
+    });
+
+    return providers;
+  }
+
+  public getAddonProviderStates(): AddonProviderState[] {
+    const states: AddonProviderState[] = [];
+
+    this._providerMap.forEach((ap) => {
+      states.push({
+        providerName: ap.name,
+        enabled: ap.enabled,
+        canEdit: ap.allowEdit,
+      });
+    });
+
+    return states;
+  }
+
+  public canShowChangelog(providerName: string | undefined): boolean {
+    return this.getProvider(providerName)?.canShowChangelog ?? false;
+  }
+
+  public isForceIgnore(providerName: string): boolean {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return false;
+    }
+
+    return providerName === ADDON_PROVIDER_UNKNOWN || (provider?.forceIgnore ?? false);
+  }
+
+  public canReinstall(providerName: string): boolean {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return false;
+    }
+
+    return providerName !== ADDON_PROVIDER_UNKNOWN && (provider?.allowReinstall ?? false);
+  }
+
+  public canChangeChannel(providerName: string): boolean {
+    const provider = this.getProvider(providerName);
+    if (!provider) {
+      return false;
+    }
+
+    return providerName !== ADDON_PROVIDER_UNKNOWN && (provider?.allowChannelChange ?? false);
+  }
+
+  private setProviderState = async (provider: AddonProvider): Promise<void> => {
+    const state = await this._wowupService.getAddonProviderState(provider.name);
     if (state) {
       provider.enabled = state.enabled;
     }

@@ -11,6 +11,7 @@ export const ADDON_PROVIDER_TUKUI = "TukUI";
 export const ADDON_PROVIDER_UNKNOWN = "Unknown";
 export const ADDON_PROVIDER_HUB_LEGACY = "Hub";
 export const ADDON_PROVIDER_HUB = "WowUpHub";
+export const ADDON_PROVIDER_WAGO = "Wago";
 export const ADDON_PROVIDER_WOWUP_COMPANION = "WowUpCompanion";
 export const ADDON_PROVIDER_ZIP = "Zip";
 
@@ -41,6 +42,7 @@ export const IPC_CURSE_HASH_FILE_CHANNEL = "curse-hash-file";
 export const IPC_SHOW_DIRECTORY = "show-directory";
 export const IPC_CURSE_GET_SCAN_RESULTS = "curse-get-scan-results";
 export const IPC_WOWUP_GET_SCAN_RESULTS = "wowup-get-scan-results";
+export const IPC_GET_HOME_DIR = "get-home-dir";
 export const IPC_GET_ASSET_FILE_PATH = "get-asset-file-path";
 export const IPC_CREATE_TRAY_MENU_CHANNEL = "create-tray-menu";
 export const IPC_LIST_DISKS_WIN32 = "list-disks-win32";
@@ -98,7 +100,10 @@ export const IPC_PUSH_NOTIFICATION = "push-notification";
 
 // IPC STORAGE
 export const IPC_STORE_GET_OBJECT = "store-get-object";
+export const IPC_STORE_GET_OBJECT_SYNC = "store-get-object-sync";
+export const IPC_STORE_GET_ALL = "store-get-all";
 export const IPC_STORE_SET_OBJECT = "store-set-object";
+export const IPC_STORE_REMOVE_OBJECT = "store-remove-object";
 
 // STORES
 export const ADDON_STORE_NAME = "addons";
@@ -108,7 +113,7 @@ export const STORAGE_WOWUP_AUTH_TOKEN = "wowup-auth-token";
 // PREFERENCES
 export const ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY = "enable_system_notifications";
 export const COLLAPSE_TO_TRAY_PREFERENCE_KEY = "collapse_to_tray";
-export const WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY = "wowup_release_channel";
+export const WOWUP_RELEASE_CHANNEL_PREFERENCE_KEY = "wowup_release_channel_2_6";
 export const DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX = "_default_addon_channel";
 export const DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX = "_default_auto_update";
 export const LAST_SELECTED_WOW_CLIENT_TYPE_PREFERENCE_KEY = "last_selected_client_type";
@@ -138,6 +143,7 @@ export const CLASSIC_LOCATION_KEY = "wow_classic_location"; // TODO remove, depr
 export const CLASSIC_PTR_LOCATION_KEY = "wow_classic_ptr_location"; // TODO remove, deprecated
 export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
 export const ACCT_PUSH_ENABLED_KEY = "acct_push_enabled";
+export const WAGO_PROMPT_KEY = "wago_prompt";
 
 export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 
@@ -176,6 +182,12 @@ export const WOW_CLASSIC_BETA_FOLDER = "_classic_beta_";
 export const WOW_ADDON_FOLDER_NAME = "AddOns";
 export const WOW_INTERFACE_FOLDER_NAME = "Interface";
 export const WOW_CLASSIC_ERA_PTR_FOLDER = "_classic_era_ptr_";
+
+export const YEAR_SECONDS = 31536000;
+export const MONTH_SECONDS = 2592000;
+export const DAY_SECONDS = 86400;
+export const HOUR_SECONDS = 3600;
+export const MINUTE_SECONDS = 60;
 
 export const TAB_INDEX_MY_ADDONS = 0;
 export const TAB_INDEX_GET_ADDONS = 1;

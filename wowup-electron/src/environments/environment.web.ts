@@ -9,9 +9,12 @@ export const AppConfig = {
   wowUpWebsiteUrl: "https://dev.wowup.io",
   wowUpApiUrl: "https://api.dev.wowup.io",
   wowUpHubUrl: "https://hub.dev.wowup.io",
-  googleAnalyticsId: "UA-92563227-4",
   warcraftTavernNewsFeedUrl:
     "https://www.warcrafttavern.com/?call_custom_simple_rss=1&csrp_post_type=wow-classic-news,tbc-classic-news,retail-news&csrp_thumbnail_size=medium",
   newsRefreshIntervalMs: 3600000, // 1 hour
   featuredAddonsCacheTimeSec: 30, // 30 sec
+  wago: {
+    termsUrl: "https://addons.wago.io/agreements/terms-of-service",
+    dataConsentUrl: "https://addons.wago.io/agreements/wowup-data-consent",
+  },
 };

@@ -26,6 +26,7 @@ describe("TableContextHeaderCellComponent", () => {
     fixture = TestBed.createComponent(TableContextHeaderCellComponent);
     component = fixture.componentInstance;
 
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     component.agInit({
       column: {
         addEventListener: () => {},
@@ -33,6 +34,7 @@ describe("TableContextHeaderCellComponent", () => {
         isSortDescending: () => false,
       },
     } as any);
+    /* eslint-enable @typescript-eslint/no-unsafe-argument */
 
     fixture.detectChanges();
   });

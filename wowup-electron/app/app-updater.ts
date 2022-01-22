@@ -3,17 +3,19 @@ import * as log from "electron-log";
 import { autoUpdater } from "electron-updater";
 import { IPC_APP_CHECK_UPDATE, IPC_APP_INSTALL_UPDATE, IPC_APP_UPDATE_STATE } from "../src/common/constants";
 import { AppUpdateDownloadProgress, AppUpdateEvent, AppUpdateState } from "../src/common/wowup/models";
+import { WowUpReleaseChannelType } from "../src/common/wowup/wowup-release-channel-type";
+import { getWowUpReleaseChannelPreference } from "./preferences";
 
-export class AppUpdater {
+class AppUpdater {
   private _win: BrowserWindow;
 
-  public constructor(win: BrowserWindow) {
+  public dispose(): void {}
+
+  public init(win: BrowserWindow) {
     this._win = win;
     this.initUpdater();
     this.initIpcHandlers();
   }
-
-  public dispose(): void {}
 
   public async checkForUpdates(): Promise<void> {
     try {
@@ -39,11 +41,17 @@ export class AppUpdater {
       });
       autoUpdater.quitAndInstall();
     });
+
+    ipcMain.handle("set-release-channel", (evt, channel: WowUpReleaseChannelType) => {
+      autoUpdater.allowPrerelease = channel === WowUpReleaseChannelType.Beta;
+      log.info(`set-release-channel: allowPreRelease = ${autoUpdater.allowPrerelease.toString()}`);
+    });
   }
 
   private initUpdater() {
     autoUpdater.logger = log;
     autoUpdater.autoDownload = true;
+    autoUpdater.allowPrerelease = getWowUpReleaseChannelPreference() === WowUpReleaseChannelType.Beta;
 
     autoUpdater.on("checking-for-update", () => {
       log.info("autoUpdater checking-for-update");
@@ -54,8 +62,8 @@ export class AppUpdater {
       this._win?.webContents?.send(IPC_APP_UPDATE_STATE, evt);
     });
 
-    autoUpdater.on("update-available", () => {
-      log.info("autoUpdater update-available");
+    autoUpdater.on("update-available", (info) => {
+      log.info("autoUpdater update-available", info);
       const evt: AppUpdateEvent = {
         state: AppUpdateState.UpdateAvailable,
       };
@@ -63,8 +71,8 @@ export class AppUpdater {
       this._win?.webContents?.send(IPC_APP_UPDATE_STATE, evt);
     });
 
-    autoUpdater.on("update-not-available", () => {
-      log.info("autoUpdater update-not-available");
+    autoUpdater.on("update-not-available", (info) => {
+      log.info("autoUpdater update-not-available", info);
       const evt: AppUpdateEvent = {
         state: AppUpdateState.UpdateNotAvailable,
       };
@@ -102,76 +110,4 @@ export class AppUpdater {
   }
 }
 
-// export const checkForUpdates = async (win: BrowserWindow): Promise<UpdateCheckResult> => {
-//   let result = undefined;
-//   try {
-//     win.webContents.send(APP_UPDATE_CHECK_START);
-//     result = await autoUpdater.checkForUpdates();
-//   } catch (e) {
-//     console.error(e);
-//   } finally {
-//     win.webContents.send(APP_UPDATE_CHECK_END);
-//   }
-
-//   return result;
-// };
-
-// Example: https://github.com/electron-userland/electron-builder/blob/docs/encapsulated%20manual%20update%20via%20menu.js
-// export function initializeAppUpdater(win: BrowserWindow): void {
-//   autoUpdater.logger = log;
-//   autoUpdater.autoDownload = true;
-//   // autoUpdater.allowPrerelease = true;
-
-//   autoUpdater.on("update-available", () => {
-//     log.info(APP_UPDATE_AVAILABLE);
-//     win.webContents.send(APP_UPDATE_AVAILABLE);
-//   });
-
-//   autoUpdater.on("update-not-available", () => {
-//     log.info(APP_UPDATE_AVAILABLE);
-//     win.webContents.send(APP_UPDATE_NOT_AVAILABLE);
-//   });
-
-//   autoUpdater.on("update-downloaded", () => {
-//     log.info(APP_UPDATE_DOWNLOADED);
-//     win.webContents.send(APP_UPDATE_DOWNLOADED);
-//   });
-
-//   autoUpdater.on("error", (e) => {
-//     if (e.message.indexOf("dev-app-update.yml") !== -1) {
-//       return;
-//     }
-
-//     log.error(APP_UPDATE_ERROR, e);
-//     win.webContents.send(APP_UPDATE_ERROR, e);
-//   });
-// }
-
-// export function initializeAppUpdateIpcHandlers(win: BrowserWindow): void {
-//   ipcMain.handle(APP_UPDATE_START_DOWNLOAD, async () => {
-//     log.info(APP_UPDATE_START_DOWNLOAD);
-//     win.webContents.send(APP_UPDATE_START_DOWNLOAD);
-//     return await autoUpdater.downloadUpdate();
-//   });
-
-//   // Used this solution for Mac support
-//   // https://github.com/electron-userland/electron-builder/issues/1604#issuecomment-372091881
-//   ipcMain.handle(APP_UPDATE_INSTALL, () => {
-//     log.info(APP_UPDATE_INSTALL);
-//     app.removeAllListeners("window-all-closed");
-//     const browserWindows = BrowserWindow.getAllWindows();
-//     browserWindows.forEach(function (browserWindow) {
-//       browserWindow.removeAllListeners("close");
-//     });
-//     autoUpdater.quitAndInstall();
-//   });
-
-//   ipcMain.handle(APP_UPDATE_CHECK_FOR_UPDATE, async () => {
-//     log.info(APP_UPDATE_CHECK_FOR_UPDATE);
-//     try {
-//       return await checkForUpdates(win);
-//     } catch (e) {
-//       console.error(e);
-//     }
-//   });
-// }
+export const appUpdater = new AppUpdater();

@@ -1,4 +1,4 @@
-import { Subscription } from "rxjs";
+import { BehaviorSubject, Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
@@ -22,10 +22,10 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
 
   private _subscriptions: Subscription[] = [];
 
-  public disableButton = false;
-  public showProgress = false;
-  public progressValue = 0;
-  public buttonText = "";
+  public disableButton$ = new BehaviorSubject<boolean>(false);
+  public showProgress$ = new BehaviorSubject<boolean>(false);
+  public progressValue$ = new BehaviorSubject<number>(0);
+  public buttonText$ = new BehaviorSubject<string>("");
 
   public constructor(
     private _addonService: AddonService,
@@ -47,13 +47,13 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const isInstalled = this._addonService.isInstalled(
-      this.addonSearchResult.externalId,
-      this.addonSearchResult.providerName,
-      selectedInstallation
-    );
-    this.disableButton = isInstalled;
-    this.buttonText = this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown);
+    this._addonService
+      .isInstalled(this.addonSearchResult.externalId, this.addonSearchResult.providerName, selectedInstallation)
+      .then((isInstalled) => {
+        this.disableButton$.next(isInstalled);
+        this.buttonText$.next(this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown));
+      })
+      .catch((e) => console.error(e));
   }
 
   public ngOnDestroy(): void {
@@ -100,21 +100,21 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.disableButton = true;
+    this.disableButton$.next(true);
     try {
       await this._addonService.installPotentialAddon(this.addonSearchResult, selectedInstallation);
     } catch (e) {
       console.error("onInstallUpdateClick failed", e);
       console.error(this.addonSearchResult);
-      this.disableButton = false;
+      this.disableButton$.next(false);
     }
   }
 
   private onAddonInstalledUpdate = (evt: AddonUpdateEvent): void => {
-    this.showProgress = this.getIsButtonActive(evt.installState);
-    this.disableButton = this.getIsButtonDisabled(evt.installState);
-    this.progressValue = evt.progress;
-    this.buttonText = this.getButtonText(evt.installState);
+    this.showProgress$.next(this.getIsButtonActive(evt.installState));
+    this.disableButton$.next(this.getIsButtonDisabled(evt.installState));
+    this.progressValue$.next(evt.progress);
+    this.buttonText$.next(this.getButtonText(evt.installState));
     this.onViewUpdated.emit(true);
     this._cdRef.detectChanges();
   };

@@ -31,12 +31,13 @@ export class WowUpAccountService {
   public readonly wowUpAccountSrc = new BehaviorSubject<WowUpGetAccountResponse | undefined>(undefined);
   public readonly accountPushSrc = new BehaviorSubject<boolean>(false);
 
-  public get accountPushEnabled(): boolean {
-    return this._preferenceStorageService.findByKey(ACCT_PUSH_ENABLED_KEY) === true.toString();
+  public async getAccountPushEnabled(): Promise<boolean> {
+    const pref = await this._preferenceStorageService.getAsync(ACCT_PUSH_ENABLED_KEY);
+    return pref === "true";
   }
 
-  public set accountPushEnabled(enabled: boolean) {
-    this._preferenceStorageService.set(ACCT_PUSH_ENABLED_KEY, enabled);
+  public async setAccountPushEnabled(enabled: boolean) {
+    await this._preferenceStorageService.setAsync(ACCT_PUSH_ENABLED_KEY, enabled);
   }
 
   public get authToken(): string {
@@ -73,11 +74,15 @@ export class WowUpAccountService {
 
     this.loadAuthToken();
 
-    console.debug("accountPushEnabled", this.accountPushEnabled);
-    if (this.accountPushEnabled) {
-      this.initializePush().catch((e) => console.error(e));
-      this.accountPushSrc.next(true);
-    }
+    this.getAccountPushEnabled()
+      .then((pushEnabled) => {
+        console.debug("accountPushEnabled", pushEnabled);
+        if (pushEnabled) {
+          this.initializePush().catch((e) => console.error(e));
+          this.accountPushSrc.next(true);
+        }
+      })
+      .catch(console.error);
   }
 
   public login(): void {
@@ -88,7 +93,7 @@ export class WowUpAccountService {
 
   public logout(): void {
     this.clearAuthToken();
-    this.resetAccountPreferences();
+    this.resetAccountPreferences().catch(console.error);
   }
 
   private onAuthTokenChanged = async (token: string) => {
@@ -97,7 +102,8 @@ export class WowUpAccountService {
       console.debug("Account", account);
       this.wowUpAccountSrc.next(account);
 
-      if (this.accountPushEnabled) {
+      const pushEnabled = await this.getAccountPushEnabled();
+      if (pushEnabled) {
         await this.toggleAccountPush(true);
       }
     } catch (e) {
@@ -163,7 +169,8 @@ export class WowUpAccountService {
       } else {
         await this.unregisterForPush(this.authToken, this.account.config.pushAppId);
       }
-      this.accountPushEnabled = enabled;
+
+      await this.setAccountPushEnabled(enabled);
     } catch (e) {
       console.error("Failed to toggle account push", e);
       throw e;
@@ -171,9 +178,9 @@ export class WowUpAccountService {
   }
 
   // LOCAL PREFERENCES
-  private resetAccountPreferences(): void {
+  private async resetAccountPreferences(): Promise<void> {
     for (const key of ACCT_FEATURE_KEYS) {
-      this._preferenceStorageService.set(key, false);
+      await this._preferenceStorageService.setAsync(key, false);
     }
   }
 
@@ -183,13 +190,13 @@ export class WowUpAccountService {
   }
 
   public async registerForPush(authToken: string, pushAppId: string): Promise<string> {
-    const pushToken = await this._electronService.invoke(IPC_PUSH_REGISTER, pushAppId);
+    const pushToken = await this._electronService.invoke<string>(IPC_PUSH_REGISTER, pushAppId);
     await this._wowUpApiService.registerPushToken(authToken, pushToken, this._electronService.platform);
     return pushToken;
   }
 
   public async unregisterForPush(authToken: string, pushAppId: string): Promise<void> {
-    const pushToken = await this._electronService.invoke(IPC_PUSH_REGISTER, pushAppId);
+    const pushToken = await this._electronService.invoke<string>(IPC_PUSH_REGISTER, pushAppId);
     await this._electronService.invoke(IPC_PUSH_UNREGISTER);
     await this._wowUpApiService.removePushToken(authToken, pushToken);
   }

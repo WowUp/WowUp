@@ -1,6 +1,8 @@
-import { BrowserWindow, Rectangle, screen } from "electron";
+import { app, BrowserWindow, Rectangle, screen } from "electron";
 import * as log from "electron-log";
-import { MIN_VISIBLE_ON_SCREEN } from "../src/common/constants";
+
+import { IPC_WINDOW_RESUME, MIN_VISIBLE_ON_SCREEN } from "../src/common/constants";
+import * as platform from "./platform";
 import { preferenceStore } from "./stores";
 
 export interface WindowState extends Rectangle {
@@ -15,6 +17,17 @@ export interface WindowState extends Rectangle {
 
 interface WuWindowState extends WindowState {
   monitorState: (win: BrowserWindow) => void;
+}
+
+export function restoreWindow(window: BrowserWindow): void {
+  window?.show();
+  window?.setSkipTaskbar(false);
+
+  if (platform.isMac) {
+    app.dock.show().catch((e) => log.error(`Failed to show on Mac dock`, e));
+  }
+
+  window?.webContents?.send(IPC_WINDOW_RESUME);
 }
 
 export function windowStateManager(

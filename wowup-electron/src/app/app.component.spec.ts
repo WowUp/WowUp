@@ -1,5 +1,5 @@
 import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
-import { Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 import { OverlayContainer, OverlayModule } from "@angular/cdk/overlay";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
@@ -24,6 +24,7 @@ import { WarcraftInstallationService } from "./services/warcraft/warcraft-instal
 import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
 import { WowUpService } from "./services/wowup/wowup.service";
 import { ZoomService } from "./services/zoom/zoom.service";
+import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
 
 describe("AppComponent", () => {
   let addonServiceSpy: AddonService;
@@ -36,6 +37,7 @@ describe("AppComponent", () => {
   let wowUpAddonServiceSpy: WowUpAddonService;
   let warcraftInstallationService: WarcraftInstallationService;
   let zoomService: ZoomService;
+  let addonProviderService: any;
 
   beforeEach(async () => {
     wowUpAddonServiceSpy = jasmine.createSpyObj(
@@ -49,6 +51,14 @@ describe("AppComponent", () => {
     addonServiceSpy = jasmine.createSpyObj("AddonService", ["processAutoUpdates", "syncAllClients"], {
       syncError$: new Subject(),
     });
+
+    addonProviderService = jasmine.createSpyObj(
+      "AddonProviderFactory",
+      {
+        getAdRequiredProviders: () => [],
+      },
+      {}
+    );
 
     warcraftInstallationService = jasmine.createSpyObj("WarcraftInstallationService", [""], {
       wowInstallations$: new Subject(),
@@ -68,7 +78,9 @@ describe("AppComponent", () => {
     wowUpServiceSpy = jasmine.createSpyObj("WowUpService", [""], {
       preferenceChange$: new Subject<PreferenceChange>().asObservable(),
     });
-    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["autoUpdateComplete"]);
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", ["autoUpdateComplete"], {
+      adSpace$: new BehaviorSubject(false),
+    });
     fileServiceSpy = jasmine.createSpyObj("FileService", [""]);
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", ["trackStartup"]);
     preferenceStorageSpy = jasmine.createSpyObj("PreferenceStorageService", ["get"], {});
@@ -110,6 +122,7 @@ describe("AppComponent", () => {
             { provide: WowUpAddonService, useValue: wowUpAddonServiceSpy },
             { provide: WarcraftInstallationService, useValue: warcraftInstallationService },
             { provide: ZoomService, useValue: zoomService },
+            { provide: AddonProviderFactory, useValue: addonProviderService },
           ],
         },
       })

@@ -13,7 +13,7 @@ export class PushService {
   public readonly addonUpdate$ = this._addonUpdateSrc.asObservable();
 
   public constructor(private _electronService: ElectronService) {
-    this._electronService.onRendererEvent(IPC_PUSH_NOTIFICATION, (evt, data) => {
+    this._electronService.onRendererEvent(IPC_PUSH_NOTIFICATION, (evt, data: PushNotification<any>) => {
       try {
         this.parsePushNotification(data);
       } catch (e) {
@@ -25,7 +25,7 @@ export class PushService {
   private parsePushNotification(data: PushNotification<any>) {
     switch (data.action) {
       case "addon-update":
-        this.parseAddonUpdateNotification(data);
+        this.parseAddonUpdateNotification(data as PushNotification<AddonUpdatePushNotification[]>);
         break;
       default:
         console.warn("Unhandled push notification", data.action);

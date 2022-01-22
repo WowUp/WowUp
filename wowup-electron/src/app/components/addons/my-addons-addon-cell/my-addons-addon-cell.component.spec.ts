@@ -11,6 +11,7 @@ import { AddonViewModel } from "../../../business-objects/addon-view-model";
 import { MatModule } from "../../../modules/mat-module";
 import { SessionService } from "../../../services/session/session.service";
 import { MyAddonsAddonCellComponent } from "./my-addons-addon-cell.component";
+import { BehaviorSubject } from "rxjs";
 
 describe("MyAddonsAddonCellComponent", () => {
   let component: MyAddonsAddonCellComponent;
@@ -18,7 +19,9 @@ describe("MyAddonsAddonCellComponent", () => {
   let sessionService: SessionService;
 
   beforeEach(async () => {
-    sessionService = jasmine.createSpyObj("SessionService", [""], {});
+    sessionService = jasmine.createSpyObj("SessionService", [""], {
+      myAddonsCompactVersion$: new BehaviorSubject(false),
+    });
 
     await TestBed.configureTestingModule({
       declarations: [MyAddonsAddonCellComponent],

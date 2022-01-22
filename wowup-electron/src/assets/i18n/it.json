@@ -31,6 +31,13 @@
     "RESET_BUTTON": "Reset",
     "VERSION_MISMATCH": "Versions do not match"
   },
+  "ADS": {
+    "AD_EXPLAINER_BUTTON": "Why am I seeing this ad?",
+    "AD_EXPLAINER_DIALOG": {
+      "MESSAGE": "In order to use <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> as an addon provider and support their authors for their hard work on your favorite addons we are required to show this advertisement.\n\nIf you do not want to see this ad, you can always disable wago.io as a provider in the options tab.",
+      "TITLE": "Why am I seeing this ad?"
+    }
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -281,7 +288,9 @@
         "NO_SEARCH_RESULTS": "Nessun risultato dalla ricerca.",
         "TITLE": "Installazione dell'Addon Fallita"
       },
+      "IMPORT_ASSET_WARNING": "We were unable to verify if the latest release of this addon is compatible with your selected client.\n\nBut we did find a zip file \"{zipName}\".\n\nInstall at your own risk.",
       "IMPORT_BUTTON": "Importa",
+      "IMPORT_WARNING_TITLE": "Addon Import Warning",
       "INSTALL_BUTTON": "Installa",
       "INSTALL_SUCCESS_LABEL": "Installato!",
       "SUPPORTED_SOURCES": "(Supporta WowInterface e GitHub)",
@@ -289,6 +298,19 @@
     },
     "NEW_VERSION_POPUP": {
       "TITLE": "Note della Patch {versionNumber}"
+    },
+    "PERMISSIONS": {
+      "MESSAGE": "Before we get started we need to setup a few permissions for the app.",
+      "POSITIVE_BUTTON": "Confirm",
+      "TELEMETRY": {
+        "DESCRIPTION": "Help improve WowUp by sending anonymous app install data and/or errors?",
+        "TOGGLE_LABEL": "Allow Telemetry"
+      },
+      "TITLE": "WowUp Permissions Setup",
+      "WAGO": {
+        "DESCRIPTION": "Enabled the Wago.io addon provider, this will display an ad required to use their service.\nThe ads directly benefit the authors of your favorite addons!",
+        "TOGGLE_LABEL": "Enable Wago.io Provider"
+      }
     },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "Questa non sembra essere una applicazione valida di World of Warcraft :\n{selectedPath}"
@@ -341,6 +363,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Informazioni",
       "ACCOUNT_TAB_TITLE": "Account",
+      "DISCORD_TAB_TITLE": "Discord",
       "GET_ADDONS_TAB_TITLE": "Ottieni Addons",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Trasferimento degli addons in corso...",
@@ -443,6 +466,7 @@
     },
     "OPTIONS": {
       "ADDON": {
+        "AD_REQUIRED_HINT": "Ad required",
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Selezionare quali providers utilizzare per cercare ed installare nuovi addons",
           "FIELD_LABEL": "Abilita Providers degli Addons",
@@ -451,6 +475,13 @@
         "TITLE": "Addons"
       },
       "APPLICATION": {
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. you may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Switching to the Stable channel for the app will prevent you from receiving more Beta builds, the next update will be the next Stable release.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Setting the app release channel",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Yes, I understand",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Toggle between the Beta and Stable releases of the application",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Channel",
+        "APP_RELEASE_CHANNEL_LABEL": "Application Release Channel",
         "CURRENT_LANGUAGE_LABEL": "Lingua Corrente",
         "CURSE_PROTOCOL_DESCRIPTION": "Quando si scaricano addons dal sito Web CurseForge, WowUp ne gestirà l'installazione",
         "CURSE_PROTOCOL_LABEL": "Gestisci i link dei downloads da CurseForge",
@@ -522,6 +553,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Modifica",
         "MOVE_DOWN_BUTTON": "Muovi in Giù",
         "MOVE_UP_BUTTON": "Muovi in Su",
+        "NO_CLIENTS_FOUND_TEXT": "No World of Warcraft installations found, please make sure your Battle.net client is up to date or add a client manually",
         "OPEN_FOLDER_BUTTON": "Open Folder",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Seleziona",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Rimuovi",

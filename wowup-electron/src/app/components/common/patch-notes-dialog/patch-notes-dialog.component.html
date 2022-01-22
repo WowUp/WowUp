@@ -1,8 +1,9 @@
 <h1 mat-dialog-title>{{ title | async }}</h1>
-<mat-dialog-content class="mat-typography">
-    <div #descriptionContainer [innerHTML]="(changeLog.html ?? '') | trustHtml"></div>
+<mat-dialog-content class="mat-typography changelog">
+  <div #descriptionContainer [innerHTML]="changeLog.html ?? '' | trustHtml"></div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>{{ 'DIALOGS.ALERT.POSITIVE_BUTTON' | translate
-        }}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>
+    {{ "DIALOGS.ALERT.POSITIVE_BUTTON" | translate }}
+  </button>
 </mat-dialog-actions>

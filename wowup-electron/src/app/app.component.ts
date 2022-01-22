@@ -1,3 +1,8 @@
+import * as _ from "lodash";
+import { BehaviorSubject, from, of } from "rxjs";
+import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
+
+import { OverlayContainer } from "@angular/cdk/overlay";
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -9,49 +14,50 @@ import {
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import { from, of } from "rxjs";
-import { catchError, delay, filter, first, map, switchMap } from "rxjs/operators";
-import * as _ from "lodash";
+
 import {
   ALLIANCE_LIGHT_THEME,
   ALLIANCE_THEME,
-  IPC_CREATE_APP_MENU_CHANNEL,
-  IPC_CREATE_TRAY_MENU_CHANNEL,
   CURRENT_THEME_KEY,
   DEFAULT_LIGHT_THEME,
   DEFAULT_THEME,
   HORDE_LIGHT_THEME,
   HORDE_THEME,
+  IPC_CREATE_APP_MENU_CHANNEL,
+  IPC_CREATE_TRAY_MENU_CHANNEL,
   IPC_MENU_ZOOM_IN_CHANNEL,
   IPC_MENU_ZOOM_OUT_CHANNEL,
   IPC_MENU_ZOOM_RESET_CHANNEL,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
-  ZOOM_FACTOR_KEY,
   IPC_REQUEST_INSTALL_FROM_URL,
   WOWUP_LOGO_FILENAME,
+  ZOOM_FACTOR_KEY,
 } from "../common/constants";
+import { Addon } from "../common/entities/addon";
 import { AppUpdateState, MenuConfig, SystemTrayConfig } from "../common/wowup/models";
-import { TelemetryDialogComponent } from "./components/common/telemetry-dialog/telemetry-dialog.component";
+import { AppConfig } from "../environments/environment";
+import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
+import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
+import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
+import { AddonInstallState } from "./models/wowup/addon-install-state";
 import { ElectronService } from "./services";
 import { AddonService } from "./services/addons/addon.service";
 import { AnalyticsService } from "./services/analytics/analytics.service";
 import { FileService } from "./services/files/file.service";
-import { WowUpService } from "./services/wowup/wowup.service";
 import { SessionService } from "./services/session/session.service";
-import { ZoomDirection } from "./utils/zoom.utils";
-import { Addon } from "../common/entities/addon";
-import { AppConfig } from "../environments/environment";
-import { PreferenceStorageService } from "./services/storage/preference-storage.service";
-import { InstallFromUrlDialogComponent } from "./components/addons/install-from-url-dialog/install-from-url-dialog.component";
-import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
-import { AddonSyncError, GitHubFetchReleasesError, GitHubFetchRepositoryError, GitHubLimitError } from "./errors";
 import { SnackbarService } from "./services/snackbar/snackbar.service";
+import { PreferenceStorageService } from "./services/storage/preference-storage.service";
 import { WarcraftInstallationService } from "./services/warcraft/warcraft-installation.service";
+import { WowUpAddonService } from "./services/wowup/wowup-addon.service";
+import { WowUpService } from "./services/wowup/wowup.service";
 import { ZoomService } from "./services/zoom/zoom.service";
-import { AlertDialogComponent } from "./components/common/alert-dialog/alert-dialog.component";
-import { AddonInstallState } from "./models/wowup/addon-install-state";
+import { ZoomDirection } from "./utils/zoom.utils";
+import { AddonProviderFactory } from "./services/addons/addon.provider.factory";
+import {
+  ConsentDialogComponent,
+  ConsentDialogResult,
+} from "./components/common/consent-dialog/consent-dialog.component";
 
 @Component({
   selector: "app-root",
@@ -80,23 +86,24 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public quitEnabled?: boolean;
-  public showPreLoad = true;
+  public showPreLoad$ = new BehaviorSubject<boolean>(true);
 
   public constructor(
-    private _analyticsService: AnalyticsService,
-    public electronService: ElectronService,
-    private _fileService: FileService,
-    private translate: TranslateService,
-    private _dialog: MatDialog,
     private _addonService: AddonService,
-    private _sessionService: SessionService,
-    private _preferenceStore: PreferenceStorageService,
+    private _addonProviderService: AddonProviderFactory,
+    private _analyticsService: AnalyticsService,
     private _cdRef: ChangeDetectorRef,
-    private _wowupAddonService: WowUpAddonService,
+    private _dialog: MatDialog,
+    private _fileService: FileService,
+    private _preferenceStore: PreferenceStorageService,
     private _snackbarService: SnackbarService,
+    private _translateService: TranslateService,
     private _warcraftInstallationService: WarcraftInstallationService,
+    private _wowupAddonService: WowUpAddonService,
     private _zoomService: ZoomService,
+    public electronService: ElectronService,
     public overlayContainer: OverlayContainer,
+    public sessionService: SessionService,
     public wowUpService: WowUpService
   ) {
     this._warcraftInstallationService.wowInstallations$
@@ -117,8 +124,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           minWidth: 250,
           disableClose: true,
           data: {
-            title: this.translate.instant("APP.WOWUP_UPDATE.INSTALL_TITLE"),
-            message: this.translate.instant("APP.WOWUP_UPDATE.SNACKBAR_TEXT"),
+            title: this._translateService.instant("APP.WOWUP_UPDATE.INSTALL_TITLE"),
+            message: this._translateService.instant("APP.WOWUP_UPDATE.SNACKBAR_TEXT"),
             positiveButton: "APP.WOWUP_UPDATE.DOWNLOADED_TOOLTIP",
             positiveButtonColor: "primary",
             positiveButtonStyle: "raised",
@@ -136,13 +143,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    const zoomFactor = parseFloat(this._preferenceStore.get(ZOOM_FACTOR_KEY));
-    if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
-      this._zoomService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
-    }
+    this.loadZoom().catch(console.error);
+
+    this.wowUpService
+      .getCurrentTheme()
+      .then((theme) => {
+        this.overlayContainer.getContainerElement().classList.add(theme);
+      })
+      .catch(console.error);
 
     this.overlayContainer.getContainerElement().classList.add(this.electronService.platform);
-    this.overlayContainer.getContainerElement().classList.add(this.wowUpService.currentTheme);
 
     this.wowUpService.preferenceChange$.pipe(filter((pref) => pref.key === CURRENT_THEME_KEY)).subscribe((pref) => {
       this.overlayContainer
@@ -159,6 +169,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     this._addonService.syncError$.subscribe(this.onAddonSyncError);
+
+    this._addonService.addonAction$
+      .pipe(
+        filter((action) => action.type === "sync" || action.type === "scan"),
+        switchMap(() => from(this.updateBadgeCount()))
+      )
+      .subscribe();
 
     //If the window is restored update the badge number
     this.electronService.windowResumed$
@@ -187,9 +204,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     from(this.electronService.getAppOptions())
       .pipe(
         first(),
-        delay(2000),
-        map((appOptions) => {
-          this.showPreLoad = false;
+        switchMap((appOptions) => {
+          return from(this.shouldShowConsentDialog()).pipe(map((showConsent) => ({ appOptions, showConsent })));
+        }),
+        map(({ appOptions, showConsent }) => {
+          this.showPreLoad$.next(showConsent);
           this.quitEnabled = appOptions.quit;
           this._cdRef.detectChanges();
         }),
@@ -212,14 +231,23 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  private async loadZoom() {
+    const zoomPref = await this._preferenceStore.getAsync(ZOOM_FACTOR_KEY);
+    const zoomFactor = parseFloat(zoomPref);
+    if (!isNaN(zoomFactor) && isFinite(zoomFactor)) {
+      this._zoomService.setZoomFactor(zoomFactor).catch((e) => console.error(e));
+    }
+  }
+
   public ngAfterViewInit(): void {
     from(this.createAppMenu())
       .pipe(
         first(),
         switchMap(() => from(this.createSystemTray())),
-        switchMap(() => {
-          if (this._analyticsService.shouldPromptTelemetry) {
-            return of(this.openDialog());
+        switchMap(() => from(this.shouldShowConsentDialog())),
+        switchMap((shouldPrompt) => {
+          if (shouldPrompt) {
+            return of(this.openConsentDialog());
           } else {
             return from(this._analyticsService.trackStartup());
           }
@@ -230,6 +258,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         })
       )
       .subscribe();
+  }
+
+  private async shouldShowConsentDialog(): Promise<boolean> {
+    const shouldPromptTelemetry = await this._analyticsService.shouldPromptTelemetry();
+    const shouldShowConsentDialog = await this._addonProviderService.shouldShowConsentDialog();
+    return shouldPromptTelemetry || shouldShowConsentDialog;
   }
 
   public ngOnDestroy(): void {
@@ -254,23 +288,30 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.openInstallFromUrlDialog(path);
   };
 
-  public openDialog(): void {
-    const dialogRef = this._dialog.open(TelemetryDialogComponent, {
+  public openConsentDialog(): void {
+    const dialogRef = this._dialog.open(ConsentDialogComponent, {
       disableClose: true,
     });
 
     dialogRef
       .afterClosed()
       .pipe(
-        switchMap((result) => {
-          this._analyticsService.telemetryEnabled = result;
-          if (result) {
+        switchMap((result: ConsentDialogResult) =>
+          from(this._addonProviderService.setProviderEnabled("Wago", result.wagoProvider)).pipe(map(() => result))
+        ),
+        switchMap((result) => from(this._addonProviderService.updateWagoConsent()).pipe(map(() => result))),
+        switchMap((result: ConsentDialogResult) => {
+          this._analyticsService.setTelemetryEnabled(result.telemetry).catch(console.error);
+          if (result.telemetry) {
             return from(this._analyticsService.trackStartup());
           }
+
           return of(undefined);
         })
       )
-      .subscribe();
+      .subscribe(() => {
+        this.showPreLoad$.next(false);
+      });
   }
 
   private openInstallFromUrlDialog(path?: string) {
@@ -310,7 +351,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      if (this.wowUpService.enableSystemNotifications) {
+      const enableSystemNotifications = await this.wowUpService.getEnableSystemNotifications();
+      if (enableSystemNotifications) {
         const addonsWithNotificationsEnabled = updatedAddons.filter(
           (addon) => addon.autoUpdateNotificationsEnabled === true
         );
@@ -327,13 +369,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     } catch (e) {
       console.error("Error during auto update", e);
     } finally {
-      this._sessionService.autoUpdateComplete();
+      this.sessionService.autoUpdateComplete();
     }
   };
 
   private async showManyAddonsAutoUpdated(updatedAddons: Addon[]) {
     const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
-    const translated = await this.translate
+    const translated: { [key: string]: string } = await this._translateService
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_NOTIFICATION_BODY"], {
         count: updatedAddons.length,
       })
@@ -352,7 +394,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     const addonNames = _.map(updatedAddons, (addon) => addon.name);
     const addonText = _.join(addonNames, "\r\n");
     const iconPath = await this._fileService.getAssetFilePath(WOWUP_LOGO_FILENAME);
-    const translated = await this.translate
+    const translated: { [key: string]: string } = await this._translateService
       .get(["APP.AUTO_UPDATE_NOTIFICATION_TITLE", "APP.AUTO_UPDATE_FEW_NOTIFICATION_BODY"], {
         addonNames: addonText,
       })
@@ -394,12 +436,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private onAddonSyncError = (error: AddonSyncError) => {
-    let errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
+    let errorMessage: string = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_ERROR", {
       providerName: error.providerName,
     });
 
     if (error.addonName) {
-      errorMessage = this.translate.instant("COMMON.ERRORS.ADDON_SYNC_FULL_ERROR", {
+      errorMessage = this._translateService.instant("COMMON.ERRORS.ADDON_SYNC_FULL_ERROR", {
         installationName: error.installationName,
         providerName: error.providerName,
         addonName: error.addonName,
@@ -410,7 +452,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       const err = error.innerError;
       const max = err.rateLimitMax;
       const reset = new Date(err.rateLimitReset * 1000).toLocaleString();
-      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
+      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_LIMIT_ERROR", {
         max,
         reset,
       });
@@ -418,7 +460,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       error.innerError instanceof GitHubFetchReleasesError ||
       error.innerError instanceof GitHubFetchRepositoryError
     ) {
-      errorMessage = this.translate.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
+      errorMessage = this._translateService.instant("COMMON.ERRORS.GITHUB_REPOSITORY_FETCH_ERROR", {
         addonName: error.addonName,
       });
     } else if (error instanceof AddonSyncError) {
@@ -457,7 +499,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     const windowKey = "APP.APP_MENU.WINDOW.LABEL";
     const windowCloseKey = "APP.APP_MENU.WINDOW.CLOSE";
 
-    const result = await this.translate
+    const result = await this._translateService
       .get([
         editKey,
         viewKey,
@@ -511,7 +553,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private async createSystemTray() {
     console.log("Creating tray");
-    const result = await this.translate.get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"]).toPromise();
+    const result = await this._translateService
+      .get(["APP.SYSTEM_TRAY.QUIT_ACTION", "APP.SYSTEM_TRAY.SHOW_ACTION"])
+      .toPromise();
 
     const config: SystemTrayConfig = {
       quitLabel: result["APP.SYSTEM_TRAY.QUIT_ACTION"],
@@ -528,7 +572,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private async updateBadgeCount(): Promise<void> {
-    const ct = this._addonService.getAllAddonsAvailableForUpdate().length;
+    const addons = await this._addonService.getAllAddonsAvailableForUpdate();
+    const ct = addons.length;
     try {
       await this.wowUpService.updateAppBadgeCount(ct);
     } catch (e) {

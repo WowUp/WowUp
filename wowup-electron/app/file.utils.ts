@@ -5,10 +5,12 @@ import { max, sumBy } from "lodash";
 import * as path from "path";
 import * as crypto from "crypto";
 import * as AdmZip from "adm-zip";
+import * as globrex from "globrex";
 
 import { TreeNode } from "../src/common/models/ipc-events";
 import { GetDirectoryTreeOptions } from "../src/common/models/ipc-request";
 import { isWin } from "./platform";
+import { ZipEntry } from "../src/common/models/ipc-response";
 
 export function zipFile(srcPath: string, outPath: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -27,6 +29,22 @@ export function readFileInZip(zipPath: string, filePath: string): Promise<string
     zip.readAsTextAsync(filePath, (data, err) => {
       return err ? reject(err) : resolve(data);
     });
+  });
+}
+
+export function listZipFiles(zipPath: string, filter: string): ZipEntry[] {
+  const zip = new AdmZip(zipPath);
+  const entries = zip.getEntries();
+
+  const globFilter = globrex(filter);
+  const matches = entries.filter((entry) => globFilter.regex.test(entry.name));
+
+  return matches.map((entry) => {
+    return {
+      isDirectory: entry.isDirectory,
+      name: entry.name,
+      path: entry.entryName,
+    };
   });
 }
 
@@ -102,11 +120,18 @@ async function rmdir(path: string): Promise<void> {
 }
 
 export async function readDirRecursive(sourcePath: string): Promise<string[]> {
+  let hardPath = sourcePath;
+
+  const sourceStats = await fsp.lstat(sourcePath);
+  if (sourceStats.isSymbolicLink()) {
+    hardPath = await fsp.readlink(sourcePath);
+  }
+
   const dirFiles: string[] = [];
-  const files = await fsp.readdir(sourcePath, { withFileTypes: true });
+  const files = await fsp.readdir(hardPath, { withFileTypes: true });
 
   for (const file of files) {
-    const filePath = path.join(sourcePath, file.name);
+    const filePath = path.join(hardPath, file.name);
     if (file.isDirectory()) {
       const nestedFiles = await readDirRecursive(filePath);
       dirFiles.push(...nestedFiles);
@@ -119,18 +144,32 @@ export async function readDirRecursive(sourcePath: string): Promise<string[]> {
 }
 
 export async function getDirTree(sourcePath: string, opts?: GetDirectoryTreeOptions): Promise<TreeNode> {
-  const files = await fsp.readdir(sourcePath, { withFileTypes: true });
+  let hardPath = sourcePath;
+
+  // Check if a symlink was passed in, if so get the actual path
+  let dirStats = await fsp.lstat(sourcePath);
+  if (dirStats.isSymbolicLink()) {
+    hardPath = await fsp.readlink(sourcePath);
+  }
+
+  // Verify that a directory was passed in
+  dirStats = await fsp.lstat(hardPath);
+  if (!dirStats.isDirectory()) {
+    throw new Error(`getDirTree path was not a directory: ${hardPath}`);
+  }
+
+  const files = await fsp.readdir(hardPath, { withFileTypes: true });
 
   const node: TreeNode = {
-    name: path.basename(sourcePath),
-    path: sourcePath,
+    name: path.basename(hardPath),
+    path: hardPath,
     children: [],
     isDirectory: true,
     size: 0,
   };
 
   for (const file of files) {
-    const filePath = path.join(sourcePath, file.name);
+    const filePath = path.join(hardPath, file.name);
     if (file.isDirectory()) {
       const nestedNode = await getDirTree(filePath, opts);
       node.children.push(nestedNode);
@@ -183,6 +222,12 @@ export function hashString(str: string | crypto.BinaryLike, alg = "md5"): string
 }
 
 export async function hashFile(filePath: string, alg = "md5"): Promise<string> {
-  const text = await fsp.readFile(filePath);
-  return hashString(text, alg);
+  try {
+    const text = await fsp.readFile(filePath);
+    return hashString(text, alg);
+  } catch (e) {
+    log.error(`hashFile failed: ${filePath}`);
+    log.error(e);
+    throw e;
+  }
 }

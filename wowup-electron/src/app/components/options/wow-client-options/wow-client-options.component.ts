@@ -1,6 +1,6 @@
 import { dirname } from "path";
-import { BehaviorSubject, Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { BehaviorSubject, from, of, Subscription } from "rxjs";
+import { filter, map, switchMap } from "rxjs/operators";
 
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -158,11 +158,11 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
   }
 
   public onClickMoveUp(): void {
-    this._warcraftInstallationService.reOrderInstallation(this.installationId, -1);
+    this._warcraftInstallationService.reOrderInstallation(this.installationId, -1).catch(console.error);
   }
 
   public onClickMoveDown(): void {
-    this._warcraftInstallationService.reOrderInstallation(this.installationId, 1);
+    this._warcraftInstallationService.reOrderInstallation(this.installationId, 1).catch(console.error);
   }
 
   public onClickEdit(): void {
@@ -178,7 +178,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     this._editModeSrc.next(false);
   }
 
-  public onClickSave(): void {
+  public async onClickSave(): Promise<void> {
     if (!this.installationModel) {
       return;
     }
@@ -189,7 +189,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
       this.installation = { ...this.installationModel };
       if (this.installation) {
-        this._warcraftInstallationService.updateWowInstallation(this.installation);
+        await this._warcraftInstallationService.updateWowInstallation(this.installation);
       }
 
       // if (saveAutoUpdate) {
@@ -217,13 +217,13 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
     dialogRef
       .afterClosed()
       .pipe(
-        map((result) => {
+        switchMap((result) => {
           if (!result) {
-            return;
+            return of(undefined);
           }
 
           if (this.installation) {
-            this._warcraftInstallationService.removeWowInstallation(this.installation);
+            return from(this._warcraftInstallationService.removeWowInstallation(this.installation));
           }
         })
       )
@@ -232,7 +232,7 @@ export class WowClientOptionsComponent implements OnInit, OnDestroy {
 
   private getAddonChannelInfos(): { type: AddonChannelType; name: string }[] {
     return getEnumList(AddonChannelType).map((type: any) => {
-      const channelName = getEnumName(AddonChannelType, type).toUpperCase();
+      const channelName = getEnumName(AddonChannelType, type as number).toUpperCase();
       return {
         type: type,
         name: `COMMON.ENUM.ADDON_CHANNEL_TYPE.${channelName}`,

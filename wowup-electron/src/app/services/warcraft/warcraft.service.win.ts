@@ -4,6 +4,7 @@ import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { WarcraftServiceImpl } from "./warcraft.service.impl";
 import { IPC_LIST_DISKS_WIN32, WOW_CLASSIC_ERA_FOLDER, WOW_CLASSIC_ERA_PTR_FOLDER } from "../../../common/constants";
+import { InstalledProduct } from "../../models/warcraft/installed-product";
 
 const WOW_RETAIL_NAME = "Wow.exe";
 const WOW_RETAIL_PTR_NAME = "WowT.exe";
@@ -43,7 +44,7 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
     try {
       const diskInfo = await this._electronService.invoke(IPC_LIST_DISKS_WIN32);
       console.debug("diskInfo", diskInfo);
-      const driveNames = diskInfo.map((i) => i.mounted);
+      const driveNames: string[] = diskInfo.map((i) => i.mounted);
 
       for (const name of driveNames) {
         const agentPath = path.join(name, WINDOWS_BLIZZARD_AGENT_PATH, BLIZZARD_PRODUCT_DB_NAME);
@@ -108,5 +109,9 @@ export class WarcraftServiceWin implements WarcraftServiceImpl {
       default:
         return WowClientType.None;
     }
+  }
+
+  public resolveProducts(decodedProducts: InstalledProduct[]): InstalledProduct[] {
+    return decodedProducts;
   }
 }

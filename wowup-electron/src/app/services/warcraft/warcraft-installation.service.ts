@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as path from "path";
 import { from, ReplaySubject, Subject } from "rxjs";
-import { map, switchMap, tap } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
 import { Injectable } from "@angular/core";
@@ -52,16 +52,15 @@ export class WarcraftInstallationService {
     from(this._warcraftService.getBlizzardAgentPath())
       .pipe(
         tap((blizzardAgentPath) => {
-          // On Linux this will be empty, as we dont know where the blizz database is
           this._blizzardAgentPath = blizzardAgentPath;
         }),
-        switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
+        // switchMap((blizzardAgentPath) => this.migrateAllLegacyInstallations(blizzardAgentPath)),
         map((blizzardAgentPath) => this.importWowInstallations(blizzardAgentPath))
       )
       .subscribe();
   }
 
-  public reOrderInstallation(installationId: string, direction: number): void {
+  public async reOrderInstallation(installationId: string, direction: number): Promise<void> {
     const originIndex = this._wowInstallations.findIndex((installation) => installation.id === installationId);
     if (originIndex === -1) {
       console.warn("Installation not found to re-order", installationId);
@@ -81,17 +80,13 @@ export class WarcraftInstallationService {
       installationCpy[newIndex],
     ];
 
-    this.setWowInstallations(installationCpy);
+    await this.setWowInstallations(installationCpy);
     this._wowInstallationsSrc.next(installationCpy);
   }
 
   public async getWowInstallationsAsync(): Promise<WowInstallation[]> {
     const results = await this._preferenceStorageService.getObjectAsync<WowInstallation[]>(WOW_INSTALLATIONS_KEY);
     return results || [];
-  }
-
-  public getWowInstallations(): WowInstallation[] {
-    return this._preferenceStorageService.getObject<WowInstallation[]>(WOW_INSTALLATIONS_KEY) || [];
   }
 
   public getWowInstallation(installationId: string | undefined): WowInstallation | undefined {
@@ -103,34 +98,33 @@ export class WarcraftInstallationService {
     return this._wowInstallations.find((installation) => installation.id === installationId);
   }
 
-  public getWowInstallationsByClientType(clientType: WowClientType): WowInstallation[] {
-    return _.filter(this.getWowInstallations(), (installation) => installation.clientType === clientType);
+  public async getWowInstallationsByClientType(clientType: WowClientType): Promise<WowInstallation[]> {
+    const installations = await this.getWowInstallationsAsync();
+    return _.filter(installations, (installation) => installation.clientType === clientType);
   }
 
-  public getWowInstallationsByClientTypes(clientTypes: WowClientType[]): WowInstallation[] {
-    return _.filter(this.getWowInstallations(), (installation) => clientTypes.includes(installation.clientType));
+  public async getWowInstallationsByClientTypes(clientTypes: WowClientType[]): Promise<WowInstallation[]> {
+    const installations = await this.getWowInstallationsAsync();
+    return _.filter(installations, (installation) => clientTypes.includes(installation.clientType));
   }
 
-  public setWowInstallations(wowInstallations: WowInstallation[]): void {
+  public async setWowInstallations(wowInstallations: WowInstallation[]): Promise<void> {
     console.log(`Setting wow installations: ${wowInstallations.length}`);
-    this._preferenceStorageService.setObject(WOW_INSTALLATIONS_KEY, wowInstallations);
+    await this._preferenceStorageService.setAsync(WOW_INSTALLATIONS_KEY, wowInstallations);
   }
 
-  public setSelectedWowInstallation(wowInstallation: WowInstallation): void {
-    const allInstallations = this.getWowInstallations();
+  public async setSelectedWowInstallation(wowInstallation: WowInstallation): Promise<void> {
+    const allInstallations = await this.getWowInstallationsAsync();
     _.forEach(allInstallations, (installation) => {
       installation.selected = installation.id === wowInstallation.id;
     });
 
-    this.setWowInstallations(allInstallations);
+    await this.setWowInstallations(allInstallations);
   }
 
-  public updateWowInstallation(wowInstallation: WowInstallation): void {
-    const storedInstallations = this.getWowInstallations();
-    const matchIndex = _.findIndex(
-      this.getWowInstallations(),
-      (installation) => installation.id === wowInstallation.id
-    );
+  public async updateWowInstallation(wowInstallation: WowInstallation): Promise<void> {
+    const storedInstallations = await this.getWowInstallationsAsync();
+    const matchIndex = _.findIndex(storedInstallations, (installation) => installation.id === wowInstallation.id);
 
     if (matchIndex === -1) {
       throw new Error("No installation to update");
@@ -138,7 +132,7 @@ export class WarcraftInstallationService {
 
     storedInstallations.splice(matchIndex, 1, wowInstallation);
 
-    this.setWowInstallations(storedInstallations);
+    await this.setWowInstallations(storedInstallations);
     this._wowInstallationsSrc.next(storedInstallations);
   }
 
@@ -171,8 +165,8 @@ export class WarcraftInstallationService {
     return selectedPath;
   }
 
-  public addInstallation(installation: WowInstallation, notify = true): void {
-    const existingInstallations = this.getWowInstallations();
+  public async addInstallation(installation: WowInstallation, notify = true): Promise<void> {
+    const existingInstallations = await this.getWowInstallationsAsync();
     const exists = _.findIndex(existingInstallations, (inst) => inst.location === installation.location) !== -1;
     if (exists) {
       throw new Error(`Installation already exists: ${installation.location}`);
@@ -180,15 +174,15 @@ export class WarcraftInstallationService {
 
     existingInstallations.push(installation);
 
-    this.setWowInstallations(existingInstallations);
+    await this.setWowInstallations(existingInstallations);
 
     if (notify) {
       this._wowInstallationsSrc.next(existingInstallations);
     }
   }
 
-  public removeWowInstallation(installation: WowInstallation): void {
-    const installations = this.getWowInstallations();
+  public async removeWowInstallation(installation: WowInstallation): Promise<void> {
+    const installations = await this.getWowInstallationsAsync();
     const installationExists = _.findIndex(installations, (inst) => inst.id === installation.id) !== -1;
     if (!installationExists) {
       throw new Error(`Installation does not exist: ${installation.id}`);
@@ -196,14 +190,14 @@ export class WarcraftInstallationService {
 
     _.remove(installations, (inst) => inst.id === installation.id);
 
-    this.setWowInstallations(installations);
+    await this.setWowInstallations(installations);
     this._wowInstallationsSrc.next(installations);
   }
 
   public async createWowInstallationForPath(applicationPath: string): Promise<WowInstallation> {
     const clientType = this._warcraftService.getClientTypeForBinary(applicationPath);
     const typeName = getEnumName(WowClientType, clientType);
-    const currentInstallations = this.getWowInstallationsByClientType(clientType);
+    const currentInstallations = await this.getWowInstallationsByClientType(clientType);
 
     const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
 
@@ -223,7 +217,8 @@ export class WarcraftInstallationService {
   public async importWowInstallations(blizzardAgentPath: string): Promise<void> {
     if (!blizzardAgentPath) {
       console.log(`Cannot import wow installations, no agent path`);
-      this._wowInstallationsSrc.next(this.getWowInstallations());
+      const installations = await this.getWowInstallationsAsync();
+      this._wowInstallationsSrc.next(installations);
       return;
     }
 
@@ -231,11 +226,16 @@ export class WarcraftInstallationService {
 
     for (const product of Array.from(installedProducts.values())) {
       const typeName = getEnumName(WowClientType, product.clientType);
-      const currentInstallations = this.getWowInstallationsByClientType(product.clientType);
+      const currentInstallations = await this.getWowInstallationsByClientType(product.clientType);
 
       const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
 
       const fullProductPath = this.getFullProductPath(product.location, product.clientType);
+
+      if (currentInstallations.some((inst) => inst.location === fullProductPath)) {
+        continue;
+      }
+
       const wowInstallation: WowInstallation = {
         id: uuidv4(),
         clientType: product.clientType,
@@ -247,13 +247,14 @@ export class WarcraftInstallationService {
       };
 
       try {
-        this.addInstallation(wowInstallation, false);
+        await this.addInstallation(wowInstallation, false);
       } catch (e) {
         // Ignore duplicate error
       }
     }
 
-    this._wowInstallationsSrc.next(this.getWowInstallations());
+    const wowInstallations = await this.getWowInstallationsAsync();
+    this._wowInstallationsSrc.next(wowInstallations);
   }
 
   private async getNewInstallLabel(typeName: string, installCt: number): Promise<string> {
@@ -299,14 +300,14 @@ export class WarcraftInstallationService {
 
     const typeName = getEnumName(WowClientType, clientType);
 
-    const existingInstallations = this.getWowInstallationsByClientType(clientType);
+    const existingInstallations = await this.getWowInstallationsByClientType(clientType);
     if (existingInstallations.length > 0) {
       // console.debug(`Existing install exists for: ${typeName}`);
       return undefined;
     }
 
     const legacyLocationKey = this._warcraftService.getLegacyClientLocationKey(clientType);
-    const legacyLocation = this._preferenceStorageService.findByKey(legacyLocationKey);
+    const legacyLocation = await this._preferenceStorageService.getAsync(legacyLocationKey);
     if (!legacyLocation) {
       // console.debug(`Legacy ${typeName}: nothing to migrate`);
       return undefined;
@@ -314,8 +315,8 @@ export class WarcraftInstallationService {
 
     console.log(`Migrating legacy ${typeName} installation`);
 
-    const legacyDefaultChannel = this.getLegacyDefaultAddonChannel(typeName);
-    const legacyDefaultAutoUpdate = this.getLegacyDefaultAutoUpdate(typeName);
+    const legacyDefaultChannel = await this.getLegacyDefaultAddonChannel(typeName);
+    const legacyDefaultAutoUpdate = await this.getLegacyDefaultAutoUpdate(typeName);
 
     const label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
 
@@ -336,7 +337,7 @@ export class WarcraftInstallationService {
       selected: false,
     };
 
-    this.addInstallation(installation, false);
+    await this.addInstallation(installation, false);
 
     return installation;
   }
@@ -347,13 +348,15 @@ export class WarcraftInstallationService {
     return path.join(location, clientFolderName, executableName);
   }
 
-  private getLegacyDefaultAddonChannel(typeName: string): AddonChannelType {
+  private async getLegacyDefaultAddonChannel(typeName: string): Promise<AddonChannelType> {
     const legacyDefaultChannelKey = `${typeName}${DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
-    return parseInt(this._preferenceStorageService.findByKey(legacyDefaultChannelKey), 10) as AddonChannelType;
+    const pref = await this._preferenceStorageService.getAsync(legacyDefaultChannelKey);
+    return parseInt(pref, 10) as AddonChannelType;
   }
 
-  private getLegacyDefaultAutoUpdate(typeName: string): boolean {
+  private async getLegacyDefaultAutoUpdate(typeName: string): Promise<boolean> {
     const legacyDefaultAutoUpdateKey = `${typeName}${DEFAULT_AUTO_UPDATE_PREFERENCE_KEY_SUFFIX}`.toLowerCase();
-    return this._preferenceStorageService.findByKey(legacyDefaultAutoUpdateKey) === true.toString();
+    const pref = await this._preferenceStorageService.getAsync(legacyDefaultAutoUpdateKey);
+    return pref === "true";
   }
 }

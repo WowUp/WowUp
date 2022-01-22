@@ -8,16 +8,19 @@ import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-comp
 import { httpLoaderFactory } from "../../../app.module";
 import { NoopAnimationsModule } from "@angular/platform-browser/animations";
 import { MatModule } from "../../../modules/mat-module";
+import { SessionService } from "../../../services/session/session.service";
 
 describe("OptionsDebugSectionComponent", () => {
   let component: OptionsDebugSectionComponent;
   let fixture: ComponentFixture<OptionsDebugSectionComponent>;
   let addonServiceSpy: any;
   let wowUpServiceSpy: any;
+  let sessionService: any;
 
   beforeEach(async () => {
     addonServiceSpy = jasmine.createSpyObj(AddonService, ["logDebugData"]);
     wowUpServiceSpy = jasmine.createSpyObj(WowUpService, ["showLogsFolder"]);
+    sessionService = jasmine.createSpyObj("SessionService", [""], {});
 
     await TestBed.configureTestingModule({
       declarations: [OptionsDebugSectionComponent],
@@ -43,6 +46,7 @@ describe("OptionsDebugSectionComponent", () => {
           providers: [
             { provide: AddonService, useValue: addonServiceSpy },
             { provide: WowUpService, useValue: wowUpServiceSpy },
+            { provide: SessionService, useValue: sessionService },
           ],
         },
       })

@@ -8,7 +8,6 @@ import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
 import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
-import { ProductDb } from "../../models/warcraft/product-db";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { SelectItem } from "../../models/wowup/select-item";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
@@ -21,6 +20,7 @@ import { WarcraftServiceLinux } from "./warcraft.service.linux";
 import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
 import { Toc } from "../../models/wowup/toc";
+import { ProductDb } from "../../../common/wowup/product-db";
 
 @Injectable({
   providedIn: "root",
@@ -99,9 +99,10 @@ export class WarcraftService {
    */
   public async getInstalledProducts(blizzardAgentPath: string): Promise<Map<WowClientType, InstalledProduct>> {
     const decodedProducts = await this.decodeProducts(blizzardAgentPath);
+    const resolvedProducts = this._impl.resolveProducts(decodedProducts, blizzardAgentPath);
     const dictionary = new Map<WowClientType, InstalledProduct>();
 
-    for (const product of decodedProducts) {
+    for (const product of resolvedProducts) {
       dictionary.set(product.clientType, product);
     }
 
@@ -176,32 +177,14 @@ export class WarcraftService {
     }
   }
 
-  // public getClientRelativePath(clientType: WowClientType, folderPath: string): string {
-  //   const clientFolderName = this.getClientFolderName(clientType);
-  //   const clientFolderIdx = folderPath.indexOf(clientFolderName);
-  //   const relativePath = clientFolderIdx === -1 ? folderPath : folderPath.substring(0, clientFolderIdx);
-
-  //   return path.normalize(relativePath);
-  // }
-
-  // private async isClientFolder(clientType: WowClientType, folderPath: string) {
-  //   const clientFolderName = this.getClientFolderName(clientType);
-  //   const relativePath = this.getClientRelativePath(clientType, folderPath);
-
-  //   const executableName = this.getExecutableName(clientType);
-  //   const executablePath = path.join(relativePath, clientFolderName, executableName);
-
-  //   return await this._fileService.pathExists(executablePath);
-  // }
-
   public async getBlizzardAgentPath(): Promise<string> {
-    const storedAgentPath = this._preferenceStorageService.get(constants.BLIZZARD_AGENT_PATH_KEY);
+    const storedAgentPath = await this._preferenceStorageService.getAsync(constants.BLIZZARD_AGENT_PATH_KEY);
     if (storedAgentPath) {
       return storedAgentPath;
     }
 
     const agentPath = await this._impl.getBlizzardAgentPath();
-    this._preferenceStorageService.set(constants.BLIZZARD_AGENT_PATH_KEY, agentPath);
+    await this._preferenceStorageService.setAsync(constants.BLIZZARD_AGENT_PATH_KEY, agentPath);
 
     return agentPath;
   }
@@ -260,6 +243,8 @@ export class WarcraftService {
     switch (clientType) {
       case WowClientType.Retail:
         return constants.RETAIL_LOCATION_KEY;
+      case WowClientType.Classic:
+        return constants.CLASSIC_LOCATION_KEY;
       case WowClientType.ClassicEra:
         return constants.CLASSIC_LOCATION_KEY;
       case WowClientType.RetailPtr:
@@ -274,14 +259,13 @@ export class WarcraftService {
   }
 
   private async decodeProducts(productDbPath: string) {
-    if (!productDbPath || this._electronService.isLinux) {
+    if (!productDbPath) {
       return [];
     }
 
     try {
-      const productDbData = await this._fileService.readFileBuffer(productDbPath);
-      const productDb = ProductDb.decode(productDbData);
-      console.log("productDb", JSON.stringify(productDb));
+      const productDb = await this._electronService.invoke<ProductDb>("decode-product-db", productDbPath);
+
       const wowProducts: InstalledProduct[] = productDb.products
         .filter((p) => p.family === "wow")
         .map((p) => ({
@@ -308,7 +292,7 @@ export class WarcraftService {
     }
 
     if (this._electronService.isLinux) {
-      return new WarcraftServiceLinux();
+      return new WarcraftServiceLinux(this._electronService, this._fileService);
     }
 
     throw new Error("No warcraft service implementation found");

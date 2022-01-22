@@ -1,6 +1,6 @@
-@use "~@angular/material" as mat;
+@use "@angular/material" as mat;
 @import "./variables.scss";
-@import "~@angular/material/theming";
+@import "@angular/material/theming";
 
 @import "~ag-grid-community/dist/styles/ag-grid.css";
 @import "~ag-grid-community/dist/styles/ag-theme-material/sass//ag-theme-material-mixin";

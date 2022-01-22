@@ -1,13 +1,16 @@
-<div class="tab-container" [ngClass]="{
+<div
+  class="tab-container"
+  [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
     linux: electronService.isLinux
-  }">
+  }"
+>
   <div class="nav-container bg-secondary-4">
     <div class="theme-logo">
       <div class="logo-img"></div>
     </div>
-    <div class="nav-item-container" [ngClass]="[wowUpService.currentTheme]">
+    <div class="nav-item-container" [ngClass]="[sessionService.currentTheme$ | async]">
       <div class="nav-item-list-wrap">
         <div class="nav-item-list">
           <mat-action-list>

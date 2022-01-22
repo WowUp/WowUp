@@ -6,11 +6,9 @@ import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { WowClientType } from "../../../../common/warcraft/wow-client-type";
-import { WowUpReleaseChannelType } from "../../../models/wowup/wowup-release-channel-type";
 import { WarcraftInstallationService } from "../../../services/warcraft/warcraft-installation.service";
 import { WarcraftService } from "../../../services/warcraft/warcraft.service";
-import { WowUpService } from "../../../services/wowup/wowup.service";
-import { getEnumList, getEnumName } from "../../../utils/enum.utils";
+import { getEnumList } from "../../../utils/enum.utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
 import { WowInstallation } from "../../../../common/warcraft/wow-installation";
 
@@ -25,29 +23,17 @@ export class OptionsWowSectionComponent implements OnInit {
   ) as WowClientType[];
 
   public wowInstallations$: Observable<WowInstallation[]>;
-  public wowUpReleaseChannel!: WowUpReleaseChannelType;
-
-  public wowUpReleaseChannels: {
-    type: WowUpReleaseChannelType;
-    name: string;
-  }[] = getEnumList<WowUpReleaseChannelType>(WowUpReleaseChannelType).map((type: WowUpReleaseChannelType) => ({
-    type,
-    name: getEnumName(WowUpReleaseChannelType, type),
-  }));
 
   public constructor(
     private _dialog: MatDialog,
     private _warcraftService: WarcraftService,
-    private _wowupService: WowUpService,
     private _warcraftInstallationService: WarcraftInstallationService,
     private _translateService: TranslateService
   ) {
     this.wowInstallations$ = _warcraftInstallationService.wowInstallations$;
   }
 
-  public ngOnInit(): void {
-    this.wowUpReleaseChannel = this._wowupService.wowUpReleaseChannel;
-  }
+  public ngOnInit(): void {}
 
   public onReScan = (): void => {
     this._warcraftInstallationService
@@ -86,13 +72,16 @@ export class OptionsWowSectionComponent implements OnInit {
     const wowInstallation = await this._warcraftInstallationService.createWowInstallationForPath(selectedPath);
     console.log("wowInstallation", wowInstallation);
 
-    this._warcraftInstallationService.addInstallation(wowInstallation);
+    await this._warcraftInstallationService.addInstallation(wowInstallation);
   }
 
   private showInvalidWowApplication(selectedPath: string) {
-    const dialogMessage = this._translateService.instant("DIALOGS.SELECT_INSTALLATION.INVALID_INSTALLATION_PATH", {
-      selectedPath,
-    });
+    const dialogMessage: string = this._translateService.instant(
+      "DIALOGS.SELECT_INSTALLATION.INVALID_INSTALLATION_PATH",
+      {
+        selectedPath,
+      }
+    );
 
     this.showError(dialogMessage);
   }

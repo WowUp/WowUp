@@ -95,8 +95,6 @@ export class WowUpAddonProvider extends AddonProvider {
       addonIds: addonIdList,
     });
 
-    // eslint-disable-next-line no-debugger
-    // debugger;
     for (const installation of installations) {
       const addonResults: AddonSearchResult[] = [];
       const gameType = this.getWowGameType(installation.clientType);
@@ -309,9 +307,7 @@ export class WowUpAddonProvider extends AddonProvider {
 
   public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppWowUpScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-
     const scanResults: AppWowUpScanResult[] = await this._electronService.invoke(IPC_WOWUP_GET_SCAN_RESULTS, filePaths);
-
     return scanResults;
   };
 

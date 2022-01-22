@@ -4,6 +4,7 @@ import {
   IPC_COPY_FILE_CHANNEL,
   IPC_CREATE_DIRECTORY_CHANNEL,
   IPC_DELETE_DIRECTORY_CHANNEL,
+  IPC_GET_HOME_DIR,
   IPC_GET_ASSET_FILE_PATH,
   IPC_LIST_DIRECTORIES_CHANNEL,
   IPC_PATH_EXISTS_CHANNEL,
@@ -26,12 +27,17 @@ import { UnzipRequest } from "../../../common/models/unzip-request";
 import { FsDirent, FsStats, TreeNode } from "../../../common/models/ipc-events";
 import { ElectronService } from "../electron/electron.service";
 import { GetDirectoryTreeOptions, GetDirectoryTreeRequest } from "../../../common/models/ipc-request";
+import { ZipEntry } from "../../../common/models/ipc-response";
 
 @Injectable({
   providedIn: "root",
 })
 export class FileService {
   public constructor(private _electronService: ElectronService) {}
+
+  public getHomeDir(): Promise<string> {
+    return this._electronService.invoke(IPC_GET_HOME_DIR);
+  }
 
   public getAssetFilePath(fileName: string): Promise<string> {
     return this._electronService.invoke<string>(IPC_GET_ASSET_FILE_PATH, fileName);
@@ -160,8 +166,12 @@ export class FileService {
     return this._electronService.invoke<string[]>(IPC_LIST_FILES_CHANNEL, sourcePath, filter);
   }
 
+  public listZipFiles(sourcePath: string, filter: string): Promise<ZipEntry[]> {
+    return this._electronService.invoke<ZipEntry[]>("zip-list-files", sourcePath, filter);
+  }
+
   public readFileInZip(zipPath: string, filePath: string): Promise<string> {
-    return this._electronService.invoke<any>("zip-read-file", zipPath, filePath);
+    return this._electronService.invoke<string>("zip-read-file", zipPath, filePath);
   }
 
   public async unzipFile(zipFilePath: string, outputFolder: string): Promise<string> {

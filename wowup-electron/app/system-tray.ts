@@ -1,10 +1,10 @@
 import { app, BrowserWindow, Menu, Tray } from "electron";
-import * as log from "electron-log";
 import * as path from "path";
 
-import * as platform from "./platform";
-import { IPC_WINDOW_RESUME, WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
+import { WOWUP_LOGO_FILENAME, WOWUP_LOGO_MAC_SYSTEM_TRAY } from "../src/common/constants";
 import { SystemTrayConfig } from "../src/common/wowup/models";
+import * as platform from "./platform";
+import { restoreWindow } from "./window-state";
 
 let _trayRef: Tray;
 
@@ -51,15 +51,4 @@ export function createTray(window: BrowserWindow, config: SystemTrayConfig): boo
   _trayRef.setContextMenu(contextMenu);
 
   return true;
-}
-
-export function restoreWindow(window: BrowserWindow): void {
-  window?.show();
-  window?.setSkipTaskbar(false);
-
-  if (platform.isMac) {
-    app.dock.show().catch((e) => log.error(`Failed to show on Mac dock`, e));
-  }
-
-  window?.webContents?.send(IPC_WINDOW_RESUME);
 }

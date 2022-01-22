@@ -31,8 +31,11 @@ describe("OptionsAppSectionComponent", () => {
   beforeEach(async () => {
     addonService = jasmine.createSpyObj("AddonService", [""], {});
 
+    sessionServiceSpy = jasmine.createSpyObj("SessionService", [""], {});
+
     analyticsServiceSpy = jasmine.createSpyObj("AnalyticsService", [""], {
       telemetryEnabled$: new BehaviorSubject(false).asObservable(),
+      getTelemetryEnabled: () => Promise.resolve(false),
     });
 
     zoomService = jasmine.createSpyObj("ZoomService", [""], {
@@ -59,6 +62,16 @@ describe("OptionsAppSectionComponent", () => {
       startWithSystem: false,
       startMinimized: false,
       currentLanguage: false,
+      setCurrentTheme: () => Promise.resolve(),
+      getCollapseToTray: () => Promise.resolve(false),
+      getEnableSystemNotifications: () => Promise.resolve(false),
+      getCurrentLanguage: () => Promise.resolve("en"),
+      getUseSymlinkMode: () => Promise.resolve(false),
+      getUseHardwareAcceleration: () => Promise.resolve(false),
+      getEnableAppBadge: () => Promise.resolve(false),
+      getWowUpReleaseChannel: () => Promise.resolve(false),
+      getStartWithSystem: () => Promise.resolve(false),
+      getStartMinimized: () => Promise.resolve(false),
     });
 
     await TestBed.configureTestingModule({

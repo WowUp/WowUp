@@ -31,6 +31,13 @@
     "RESET_BUTTON": "Zurücksetzen",
     "VERSION_MISMATCH": "Versionen stimmen nicht überein"
   },
+  "ADS": {
+    "AD_EXPLAINER_BUTTON": "Warum sehe ich diese Werbung?",
+    "AD_EXPLAINER_DIALOG": {
+      "MESSAGE": "Um <a appExternalLink href=\"https://addons.wago.io/\">wago.io</a> als Addon-Anbieter zu nutzen und seine Autoren für ihre harte Arbeit an deinen bevorzugten Addons zu unterstützen, müssen wir diese Werbung zeigen.\n\nWenn du diese Werbung nicht sehen möchtest, kannst du wago.io jederzeit als Addon-Anbieter in den Einstellungen deaktivieren.",
+      "TITLE": "Warum sehe ich diese Werbung?"
+    }
+  },
   "APP": {
     "APP_MENU": {
       "EDIT": {
@@ -281,7 +288,9 @@
         "NO_SEARCH_RESULTS": "Es wurden keine Suchergebnisse gefunden.",
         "TITLE": "Installation fehlgeschlagen"
       },
+      "IMPORT_ASSET_WARNING": "Wir konnten nicht überprüfen, ob die neueste Version dieses Add-ons mit deinem ausgewählten Client kompatibel ist.\n\nAber wir haben eine ZIP-Datei \"{zipName}\" gefunden.\n\nDie Installation erfolgt auf eigene Gefahr.",
       "IMPORT_BUTTON": "Importieren",
+      "IMPORT_WARNING_TITLE": "Addon Import Warnung",
       "INSTALL_BUTTON": "Installieren",
       "INSTALL_SUCCESS_LABEL": "Installiert!",
       "SUPPORTED_SOURCES": "Unterstützt WowInterface und GitHub",
@@ -289,6 +298,19 @@
     },
     "NEW_VERSION_POPUP": {
       "TITLE": "Neu in Version {versionNumber}"
+    },
+    "PERMISSIONS": {
+      "MESSAGE": "Bevor wir beginnen, müssen wir einige Berechtigungen für die App einrichten.",
+      "POSITIVE_BUTTON": "Bestätigen",
+      "TELEMETRY": {
+        "DESCRIPTION": "Möchest Du helfen, WowUp zu verbessern, indem anonyme Installationsdaten und/oder Fehler gesendet werden?",
+        "TOGGLE_LABEL": "Telemetrie zulassen"
+      },
+      "TITLE": "Einrichtung der WowUp-Berechtigungen",
+      "WAGO": {
+        "DESCRIPTION": "Wenn der Addon-Anbieter Wago.io aktiviert ist, wird eine Werbung angezeigt, die für die Nutzung deren Dienste erforderlich ist.\nDie Anzeigen kommen direkt den Autoren deiner Lieblings-Addons zugute!",
+        "TOGGLE_LABEL": "Aktiviere Wago.io Addon-Anbieter"
+      }
     },
     "SELECT_INSTALLATION": {
       "INVALID_INSTALLATION_PATH": "Dies scheint keine gültige World of Warcraft-Anwendung zu sein:\n{selectedPath}"
@@ -341,6 +363,7 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
       "ACCOUNT_TAB_TITLE": "Konto",
+      "DISCORD_TAB_TITLE": "Discord",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Addons werden migriert...",
@@ -443,6 +466,7 @@
     },
     "OPTIONS": {
       "ADDON": {
+        "AD_REQUIRED_HINT": "Ad required",
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Wähle aus, welche Addon-Anbieter zur Suche und Installation neuer Addons genutzt werden können",
           "FIELD_LABEL": "Aktivierte Addon-Anbieter",
@@ -451,6 +475,13 @@
         "TITLE": "Addons"
       },
       "APPLICATION": {
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Wenn du zum Beta-Kanal wechseln, erhälst du experimentelle Builds, die Fehlerbehebungen sowie neue und kommende Funktionen enthalten. Du kannst nur zur aktuellen stabilen Version zurückkehren, indem du deine vorhandene Anwendung deinstallierst und von wowup.io neu installierst.\n\nSolange der Beta-Kanal funktionsfähig ist, verwende ihn auf eigene Gefahr.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_STABLE": "Wenn du zum Stabilen-Kanal der Anwendung wechselst, erhältst du keine weiteren Beta-Builds. Das nächste Update wird die nächste Stabile-Version sein.",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_LABEL": "Einstellen des App-Release-Kanals",
+        "APP_RELEASE_CHANNEL_CONFIRMATION_POSITIVE_BUTTON": "Ja ich verstehe",
+        "APP_RELEASE_CHANNEL_DESCRIPTION": "Wechseln zwischen der Beta- und Stabilen-Versionen der Anwendung",
+        "APP_RELEASE_CHANNEL_DROPDOWN_LABEL": "Kanal",
+        "APP_RELEASE_CHANNEL_LABEL": "App-Release-Kanal",
         "CURRENT_LANGUAGE_LABEL": "Aktuelle Sprache",
         "CURSE_PROTOCOL_DESCRIPTION": "Beim Herunterladen von Addons von der CurseForge-Website übernimmt WowUp die Installation",
         "CURSE_PROTOCOL_LABEL": "CurseForge-Download-Links verarbeiten",
@@ -522,6 +553,7 @@
         "EDIT_WOW_DIRECTORY_SELECT_BUTTON": "Bearbeiten",
         "MOVE_DOWN_BUTTON": "Nach unten bewegen",
         "MOVE_UP_BUTTON": "Nach oben bewegen",
+        "NO_CLIENTS_FOUND_TEXT": "Keine World of Warcraft Installation gefunden. Stelle sicher, dass dein Battle.net-Client auf dem neusten Stand ist oder fügen einen Client manuell hinzu",
         "OPEN_FOLDER_BUTTON": "Ordner öffnen",
         "OPEN_WOW_DIRECTORY_SELECT_BUTTON": "Auswählen",
         "REMOVE_WOW_DIRECTORY_SELECT_BUTTON": "Entfernen",

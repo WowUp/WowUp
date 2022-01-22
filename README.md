@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.wowup.io/site/assets/images/wowup_logo_purple.png" width="200" />
+  <img src="https://cdn.wowup.io/site/assets/icons/android-chrome-512x512.png" width="200" />
 </p>
 
 # WowUp Client Repository
@@ -9,7 +9,7 @@
 This is the repository for all our [WowUp](https://wowup.io) client side code for Windows, Mac, and Linux.
 
 ## WowUp
-![image](https://user-images.githubusercontent.com/20467484/123314651-74b21700-d4f0-11eb-816b-1dccaced5602.png)
+![image](https://user-images.githubusercontent.com/20467484/150164985-673d02da-e7ec-42aa-b77d-655c8e3117ff.png)
 
 WowUp is the community centered World of Warcraft addon updater. We attempt to bring the addon community together in an easy to use updater application. We have an ever growing list of supported features.
 

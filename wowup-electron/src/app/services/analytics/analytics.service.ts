@@ -24,27 +24,24 @@ export class AnalyticsService {
     return this._installId;
   }
 
-  public get shouldPromptTelemetry(): boolean {
-    return this._preferenceStorageService.get(TELEMETRY_ENABLED_KEY) === undefined;
+  public async shouldPromptTelemetry(): Promise<boolean> {
+    return (await this._preferenceStorageService.getAsync(TELEMETRY_ENABLED_KEY)) === undefined;
   }
 
-  public get telemetryEnabled(): boolean {
-    const preference = this._preferenceStorageService.findByKey(TELEMETRY_ENABLED_KEY);
-    const value = preference === true.toString();
-
-    this.configureAppInsights(value);
-
-    return value;
+  public async getTelemetryEnabled(): Promise<boolean> {
+    const enabled = await this._preferenceStorageService.getAsync<boolean>(TELEMETRY_ENABLED_KEY);
+    this.configureAppInsights(enabled);
+    return enabled;
   }
 
-  public set telemetryEnabled(value: boolean) {
+  public async setTelemetryEnabled(value: boolean) {
     console.log(`Set telemetry enabled: ${value.toString()}`);
 
     if (this._insights) {
       this._insights.appInsights.config.disableTelemetry = value;
     }
 
-    this._preferenceStorageService.set(TELEMETRY_ENABLED_KEY, value);
+    await this._preferenceStorageService.setAsync(TELEMETRY_ENABLED_KEY, value);
     this._telemetryEnabledSrc.next(value);
   }
 
@@ -54,12 +51,17 @@ export class AnalyticsService {
     private _wowUpService: WowUpService
   ) {
     this._installId = this.loadInstallId();
-    this._telemetryEnabledSrc.next(this.telemetryEnabled);
+
+    this.getTelemetryEnabled()
+      .then((enabled) => {
+        this._telemetryEnabledSrc.next(enabled);
+      })
+      .catch(console.error);
   }
 
   public async trackStartup(): Promise<void> {
     const systemLocale = await this._electronService.getLocale();
-    const uiLocale = this._wowUpService.currentLanguage;
+    const uiLocale = await this._wowUpService.getCurrentLanguage();
     this.track("app-startup", {
       systemLocale,
       uiLocale,
@@ -67,7 +69,7 @@ export class AnalyticsService {
   }
 
   public trackError(error: Error): void {
-    if (!this.telemetryEnabled) {
+    if (!this._telemetryEnabledSrc.value) {
       return;
     }
 
@@ -75,7 +77,7 @@ export class AnalyticsService {
   }
 
   private track(name: string, properties = undefined) {
-    if (!this.telemetryEnabled) {
+    if (this._telemetryEnabledSrc.value) {
       return;
     }
 
@@ -87,13 +89,13 @@ export class AnalyticsService {
   }
 
   private loadInstallId() {
-    let installId = this._preferenceStorageService.findByKey(this.installIdPreferenceKey);
+    let installId = this._preferenceStorageService.getSync(this.installIdPreferenceKey);
     if (installId) {
       return installId;
     }
 
     installId = uuidV4();
-    this._preferenceStorageService.set(this.installIdPreferenceKey, installId);
+    this._preferenceStorageService.setAsync(this.installIdPreferenceKey, installId).catch(console.error);
 
     return installId;
   }
@@ -115,7 +117,7 @@ export class AnalyticsService {
 
     // If telemetry is off, don't let it track anything
     this._insights.addTelemetryInitializer(() => {
-      if (!this.telemetryEnabled) {
+      if (!this._telemetryEnabledSrc.value) {
         return false;
       }
     });

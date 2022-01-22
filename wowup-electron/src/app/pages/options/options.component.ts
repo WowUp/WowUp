@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { ElectronService } from "../../services";
+import { SessionService } from "../../services/session/session.service";
 import { WowUpService } from "../../services/wowup/wowup.service";
 
 @Component({
@@ -13,5 +14,9 @@ export class OptionsComponent {
 
   public optionTabIndex = 0;
 
-  public constructor(public wowUpService: WowUpService, public electronService: ElectronService) {}
+  public constructor(
+    public wowUpService: WowUpService,
+    public sessionService: SessionService,
+    public electronService: ElectronService
+  ) {}
 }

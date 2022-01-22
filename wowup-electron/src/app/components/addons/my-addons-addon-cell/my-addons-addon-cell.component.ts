@@ -126,7 +126,7 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   ) {}
 
   public agInit(params: ICellRendererParams): void {
-    this._listItemSrc.next(params.data);
+    this._listItemSrc.next(params.data as AddonViewModel);
   }
 
   public refresh(): boolean {
