@@ -294,6 +294,7 @@ function createWindow(): BrowserWindow {
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
+  
 
   win.on("blur", () => {
     win.webContents.send("blur");
@@ -315,6 +316,16 @@ function createWindow(): BrowserWindow {
 
   win.webContents.on("did-attach-webview", (evt, webContents) => {
     webContents.session.setUserAgent(webContents.userAgent);
+
+    webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
+      log.warn('setPermissionRequestHandler', permission);
+      return callback(false);
+    });
+
+    webContents.session.setPermissionCheckHandler((contents, permission, origin, details)=> {
+      log.warn('setPermissionCheckHandler', permission, origin);
+      return false;
+    })
 
     webContents.on("did-fail-load", (evt, code, desc, url) => {
       log.error("[webview] did-fail-load", code, desc, url);
@@ -379,6 +390,17 @@ function createWindow(): BrowserWindow {
     if (canStartHidden()) {
       return;
     }
+
+    win.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
+      log.warn('win setPermissionRequestHandler', permission);
+      return callback(false);
+    });
+
+    win.webContents.session.setPermissionCheckHandler((contents, permission, origin, details)=> {
+      log.warn('win setPermissionCheckHandler', permission, origin);
+      return false;
+    })
+
     win.show();
   });
 
