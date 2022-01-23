@@ -108,8 +108,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     { name: "status", display: "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER", visible: true },
   ];
 
-  public get defaultAddonChannel(): AddonChannelType {
-    return this._sessionService.getSelectedWowInstallation().defaultAddonChannelType;
+  public get defaultAddonChannel(): AddonChannelType | undefined {
+    return this._sessionService.getSelectedWowInstallation()?.defaultAddonChannelType;
   }
 
   public query = "";
@@ -289,6 +289,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
+    const defaultChannel = this.defaultAddonChannel;
+    if (!defaultChannel) {
+      return;
+    }
+
     this.openDetailDialog(evt.data.searchResult as AddonSearchResult, this.defaultAddonChannel);
     evt.node.setSelected(true);
   }

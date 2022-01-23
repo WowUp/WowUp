@@ -294,7 +294,6 @@ function createWindow(): BrowserWindow {
 
   // Keep track of window state
   mainWindowManager.monitorState(win);
-  
 
   win.on("blur", () => {
     win.webContents.send("blur");
@@ -318,14 +317,14 @@ function createWindow(): BrowserWindow {
     webContents.session.setUserAgent(webContents.userAgent);
 
     webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-      log.warn('setPermissionRequestHandler', permission);
+      log.warn("setPermissionRequestHandler", permission);
       return callback(false);
     });
 
-    webContents.session.setPermissionCheckHandler((contents, permission, origin, details)=> {
-      log.warn('setPermissionCheckHandler', permission, origin);
+    webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+      log.warn("setPermissionCheckHandler", permission, origin);
       return false;
-    })
+    });
 
     webContents.on("did-fail-load", (evt, code, desc, url) => {
       log.error("[webview] did-fail-load", code, desc, url);
@@ -392,14 +391,14 @@ function createWindow(): BrowserWindow {
     }
 
     win.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-      log.warn('win setPermissionRequestHandler', permission);
+      log.warn("win setPermissionRequestHandler", permission);
       return callback(false);
     });
 
-    win.webContents.session.setPermissionCheckHandler((contents, permission, origin, details)=> {
-      log.warn('win setPermissionCheckHandler', permission, origin);
+    win.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+      log.warn("win setPermissionCheckHandler", permission, origin);
       return false;
-    })
+    });
 
     win.show();
   });

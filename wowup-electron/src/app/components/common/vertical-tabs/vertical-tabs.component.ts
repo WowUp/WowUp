@@ -149,9 +149,12 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this._preferences.getAsync(PREF_TABS_COLLAPSED).then((val) => {
-      this.isCollapsedSrc.next(val === TRUE_STR);
-    });
+    this._preferences
+      .getAsync(PREF_TABS_COLLAPSED)
+      .then((val) => {
+        this.isCollapsedSrc.next(val === TRUE_STR);
+      })
+      .catch(console.error);
   }
 
   public ngOnDestroy(): void {
