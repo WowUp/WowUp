@@ -363,7 +363,9 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "關於",
       "ACCOUNT_TAB_TITLE": "賬戶",
+      "COLLAPSE_BUTTON_TITLE": "Collapse",
       "DISCORD_TAB_TITLE": "Discord",
+      "EXPAND_BUTTON_TITLE": "Expand",
       "GET_ADDONS_TAB_TITLE": "獲取插件",
       "GUIDE_TAB_TITLE": "指南（英語）",
       "MIGRATING_ADDONS": "正在遷移插件...",

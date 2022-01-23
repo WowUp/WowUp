@@ -363,7 +363,9 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "O programu",
       "ACCOUNT_TAB_TITLE": "Account",
+      "COLLAPSE_BUTTON_TITLE": "Collapse",
       "DISCORD_TAB_TITLE": "Discord",
+      "EXPAND_BUTTON_TITLE": "Expand",
       "GET_ADDONS_TAB_TITLE": "Stáhnout nové addony",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Migruji addony...",
