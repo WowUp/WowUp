@@ -196,8 +196,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     public relativeDurationPipe: RelativeDurationPipe,
     public downloadCountPipe: DownloadCountPipe
   ) {
-    this.overlayNoRowsTemplate = `<span class="text-1 mat-h1">${_translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
-      }</span>`;
+    this.overlayNoRowsTemplate = `<span class="text-1 mat-h1">${
+      _translateService.instant("COMMON.SEARCH.NO_ADDONS") as string
+    }</span>`;
 
     this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
 
