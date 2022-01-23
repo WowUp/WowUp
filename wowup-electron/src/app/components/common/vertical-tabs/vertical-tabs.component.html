@@ -3,7 +3,8 @@
   [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
-    linux: electronService.isLinux
+    linux: electronService.isLinux,
+    collapsed: (isCollapsed$ | async)
   }"
 >
   <div class="theme-logo-glow"></div>
@@ -94,8 +95,36 @@
     href="https://www.patreon.com/jliddev"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.PATREON_SUPPORT' | translate }}"
   >
-    <img class="patron-img" src="assets/Digital-Patreon-Wordmark_FieryCoral.png" />
+    <img *ngIf="(isCollapsed$ | async) === true" class="patron-img" src="assets/images/patreon_logo_small.png" />
+    <img
+      *ngIf="(isCollapsed$ | async) === false"
+      class="patron-img"
+      src="assets/Digital-Patreon-Wordmark_FieryCoral.png"
+    />
   </a>
+
+  <div
+    *ngIf="(sessionService.adSpace$ | async) === false"
+    class="tab hover-bg-secondary-2"
+    (click)="toggleCollapse()"
+    matTooltip="{{ (isCollapsed$ | async) ? ('PAGES.HOME.EXPAND_BUTTON_TITLE' | translate) : '' }}"
+  >
+    <mat-icon
+      *ngIf="(isCollapsed$ | async) === true"
+      class="tab-icon tab-icon-inactive"
+      [svgIcon]="'far:caret-square-right'"
+    >
+    </mat-icon>
+
+    <mat-icon
+      *ngIf="(isCollapsed$ | async) === false"
+      class="tab-icon tab-icon-inactive"
+      [svgIcon]="'far:caret-square-left'"
+    >
+    </mat-icon>
+
+    <div class="tab-title">{{ "PAGES.HOME.COLLAPSE_BUTTON_TITLE" | translate }}</div>
+  </div>
 
   <!-- AD FRAME -->
   <div *ngIf="sessionService.adSpace$ | async" class="ad-space text-1 bg-secondary-3">
