@@ -363,9 +363,9 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "О программе",
       "ACCOUNT_TAB_TITLE": "Аккаунт",
-      "COLLAPSE_BUTTON_TITLE": "Collapse",
+      "COLLAPSE_BUTTON_TITLE": "Свернуть",
       "DISCORD_TAB_TITLE": "Discord",
-      "EXPAND_BUTTON_TITLE": "Expand",
+      "EXPAND_BUTTON_TITLE": "Развернуть",
       "GET_ADDONS_TAB_TITLE": "Получить модификации",
       "GUIDE_TAB_TITLE": "Руководство (англ.)",
       "MIGRATING_ADDONS": "Перенос модификаций...",
