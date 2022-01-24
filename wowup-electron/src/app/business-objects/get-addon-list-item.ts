@@ -30,7 +30,7 @@ export class GetAddonListItem {
     this.downloadCount = this.searchResult.downloadCount || 0;
     this.canonicalName = this.name.toLowerCase();
 
-    if (defaultAddonChannel) {
+    if (defaultAddonChannel !== undefined) {
       const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
       this.latestAddonChannel = latestFile?.channelType ?? AddonChannelType.Stable;
 

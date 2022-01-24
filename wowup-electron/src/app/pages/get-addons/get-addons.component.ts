@@ -109,7 +109,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   ];
 
   public get defaultAddonChannel(): AddonChannelType | undefined {
-    return this._sessionService.getSelectedWowInstallation()?.defaultAddonChannelType;
+    const installation = this._sessionService.getSelectedWowInstallation();
+    return installation?.defaultAddonChannelType ?? undefined;
   }
 
   public query = "";
@@ -290,7 +291,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
     const defaultChannel = this.defaultAddonChannel;
-    if (!defaultChannel) {
+    if (defaultChannel === undefined) {
       return;
     }
 
@@ -580,7 +581,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((addons) => {
-        console.debug(`Loaded ${addons?.length ?? 0} addons`);
         const listItems = this.formatAddons(addons);
         this._rowDataSrc.next(listItems);
         this._showTableSrc.next(true);

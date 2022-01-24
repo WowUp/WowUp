@@ -64,9 +64,10 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.MY_ADDONS_TAB_TITLE",
     icon: "fas:dice-d6",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_MY_ADDONS)),
-    isDisabled$: this._warcraftInstallationService.wowInstallations$.pipe(
-      map((installations) => installations.length === 0)
-    ),
+    isDisabled$: combineLatest([
+      this._warcraftInstallationService.wowInstallations$,
+      this.sessionService.enableControls$,
+    ]).pipe(map(([installations, enableControls]) => !enableControls || installations.length === 0)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_MY_ADDONS;
     },
@@ -77,9 +78,10 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.GET_ADDONS_TAB_TITLE",
     icon: "fas:search",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_GET_ADDONS)),
-    isDisabled$: this._warcraftInstallationService.wowInstallations$.pipe(
-      map((installations) => installations.length === 0)
-    ),
+    isDisabled$: combineLatest([
+      this._warcraftInstallationService.wowInstallations$,
+      this.sessionService.enableControls$,
+    ]).pipe(map(([installations, enableControls]) => !enableControls || installations.length === 0)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_GET_ADDONS;
     },
@@ -90,7 +92,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.ACCOUNT_TAB_TITLE",
     icon: "fas:user-circle",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT)),
-    isDisabled$: of(false),
+    isDisabled$: this.sessionService.enableControls$.pipe(map((enabled) => !enabled)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_ABOUT;
     },
@@ -102,7 +104,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     icon: "fas:newspaper",
     badge: true,
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_NEWS)),
-    isDisabled$: of(false),
+    isDisabled$: this.sessionService.enableControls$.pipe(map((enabled) => !enabled)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_NEWS;
     },
@@ -113,7 +115,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.OPTIONS_TAB_TITLE",
     icon: "fas:cog",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_SETTINGS)),
-    isDisabled$: of(false),
+    isDisabled$: this.sessionService.enableControls$.pipe(map((enabled) => !enabled)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_SETTINGS;
     },
