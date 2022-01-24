@@ -20,6 +20,7 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4>Changes</h4>
     <ul>
+    <li>Chinese locale updates (CyanoHao)</li>
     <li>Russian locale updates (Medok)</li>
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Added the ability to collapse the sidebar if no ad is required</li>
