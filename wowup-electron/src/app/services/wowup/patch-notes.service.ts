@@ -16,6 +16,22 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.6.1",
+    html: `
+    <h4>Changes</h4>
+    <ul>
+    <li>Chinese locale updates (CyanoHao)</li>
+    <li>Russian locale updates (Medok)</li>
+    <li>Spanish locale updates (SkollVargr)</li>
+    <li>Added the ability to collapse the sidebar if no ad is required</li>
+    </ul>
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fixed an issue with having no clients locking up the app</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.6.0",
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>

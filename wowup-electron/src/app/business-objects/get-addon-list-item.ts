@@ -21,7 +21,7 @@ export class GetAddonListItem {
     return this.searchResult.externalId;
   }
 
-  public constructor(searchResult: AddonSearchResult, defaultAddonChannel: AddonChannelType) {
+  public constructor(searchResult: AddonSearchResult, defaultAddonChannel?: AddonChannelType) {
     this.searchResult = searchResult;
     this.author = this.searchResult.author;
     this.name = this.searchResult.name;
@@ -30,9 +30,11 @@ export class GetAddonListItem {
     this.downloadCount = this.searchResult.downloadCount || 0;
     this.canonicalName = this.name.toLowerCase();
 
-    const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
-    this.latestAddonChannel = latestFile?.channelType ?? AddonChannelType.Stable;
+    if (defaultAddonChannel !== undefined) {
+      const latestFile = SearchResults.getLatestFile(searchResult, defaultAddonChannel);
+      this.latestAddonChannel = latestFile?.channelType ?? AddonChannelType.Stable;
 
-    this.releasedAt = new Date(latestFile?.releaseDate ?? new Date()).getTime();
+      this.releasedAt = new Date(latestFile?.releaseDate ?? new Date()).getTime();
+    }
   }
 }

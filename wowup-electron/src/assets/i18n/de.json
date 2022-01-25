@@ -363,7 +363,9 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
       "ACCOUNT_TAB_TITLE": "Konto",
+      "COLLAPSE_BUTTON_TITLE": "Collapse",
       "DISCORD_TAB_TITLE": "Discord",
+      "EXPAND_BUTTON_TITLE": "Expand",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Addons werden migriert...",

@@ -29,14 +29,12 @@ export class AnalyticsService {
   }
 
   public async getTelemetryEnabled(): Promise<boolean> {
-    const enabled = await this._preferenceStorageService.getAsync<boolean>(TELEMETRY_ENABLED_KEY);
+    const enabled = await this._preferenceStorageService.getBool(TELEMETRY_ENABLED_KEY);
     this.configureAppInsights(enabled);
     return enabled;
   }
 
   public async setTelemetryEnabled(value: boolean) {
-    console.log(`Set telemetry enabled: ${value.toString()}`);
-
     if (this._insights) {
       this._insights.appInsights.config.disableTelemetry = value;
     }
@@ -77,7 +75,7 @@ export class AnalyticsService {
   }
 
   private track(name: string, properties = undefined) {
-    if (this._telemetryEnabledSrc.value) {
+    if (!this._telemetryEnabledSrc.value) {
       return;
     }
 

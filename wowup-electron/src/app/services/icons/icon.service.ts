@@ -35,7 +35,13 @@ import {
   faTrash,
   faHistory,
 } from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle, faClock, faCheckCircle as farCheckCircle } from "@fortawesome/free-regular-svg-icons";
+import {
+  faQuestionCircle,
+  faClock,
+  faCheckCircle as farCheckCircle,
+  faCaretSquareRight,
+  faCaretSquareLeft,
+} from "@fortawesome/free-regular-svg-icons";
 import { faDiscord, faGithub, faPatreon } from "@fortawesome/free-brands-svg-icons";
 
 @Injectable({
@@ -81,6 +87,8 @@ export class IconService {
     this.addSvg(faExclamation);
     this.addSvg(faTrash);
     this.addSvg(faHistory);
+    this.addSvg(faCaretSquareRight);
+    this.addSvg(faCaretSquareLeft);
   }
 
   private addSvg(icon: IconDefinition): void {

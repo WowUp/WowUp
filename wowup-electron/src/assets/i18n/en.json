@@ -363,7 +363,9 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "About",
       "ACCOUNT_TAB_TITLE": "Account",
+      "COLLAPSE_BUTTON_TITLE": "Collapse",
       "DISCORD_TAB_TITLE": "Discord",
+      "EXPAND_BUTTON_TITLE": "Expand",
       "GET_ADDONS_TAB_TITLE": "Get Addons",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Migrating addons...",

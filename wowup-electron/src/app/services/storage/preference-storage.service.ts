@@ -5,6 +5,7 @@ import {
   IPC_STORE_GET_OBJECT_SYNC,
   IPC_STORE_SET_OBJECT,
   PREFERENCE_STORE_NAME,
+  TRUE_STR,
 } from "../../../common/constants";
 import { ElectronService } from "../electron/electron.service";
 
@@ -13,6 +14,11 @@ import { ElectronService } from "../electron/electron.service";
 })
 export class PreferenceStorageService {
   public constructor(private _electronService: ElectronService) {}
+
+  public async getBool(key: string): Promise<boolean> {
+    const val = await this.getAsync(key);
+    return val === TRUE_STR;
+  }
 
   public getAsync<T = string>(key: string): Promise<T> {
     return this._electronService.invoke(IPC_STORE_GET_OBJECT, PREFERENCE_STORE_NAME, key);

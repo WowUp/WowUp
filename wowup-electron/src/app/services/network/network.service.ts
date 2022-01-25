@@ -1,5 +1,5 @@
 import * as CircuitBreaker from "opossum";
-import { firstValueFrom, from, Observable, Subject } from "rxjs";
+import { firstValueFrom, Subject } from "rxjs";
 import { first, timeout } from "rxjs/operators";
 
 import { HttpClient } from "@angular/common/http";

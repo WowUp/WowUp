@@ -108,8 +108,9 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     { name: "status", display: "PAGES.GET_ADDONS.TABLE.STATUS_COLUMN_HEADER", visible: true },
   ];
 
-  public get defaultAddonChannel(): AddonChannelType {
-    return this._sessionService.getSelectedWowInstallation().defaultAddonChannelType;
+  public get defaultAddonChannel(): AddonChannelType | undefined {
+    const installation = this._sessionService.getSelectedWowInstallation();
+    return installation?.defaultAddonChannelType ?? undefined;
   }
 
   public query = "";
@@ -289,6 +290,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public onRowDoubleClicked(evt: RowDoubleClickedEvent): void {
+    const defaultChannel = this.defaultAddonChannel;
+    if (defaultChannel === undefined) {
+      return;
+    }
+
     this.openDetailDialog(evt.data.searchResult as AddonSearchResult, this.defaultAddonChannel);
     evt.node.setSelected(true);
   }
@@ -575,7 +581,6 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((addons) => {
-        console.debug(`Loaded ${addons?.length ?? 0} addons`);
         const listItems = this.formatAddons(addons);
         this._rowDataSrc.next(listItems);
         this._showTableSrc.next(true);

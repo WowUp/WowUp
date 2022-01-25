@@ -1,15 +1,17 @@
-import { BehaviorSubject, Observable, of, Subject } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 
 import { Component, OnDestroy, OnInit } from "@angular/core";
 
 import {
   FEATURE_ACCOUNTS_ENABLED,
+  PREF_TABS_COLLAPSED,
   TAB_INDEX_ABOUT,
   TAB_INDEX_GET_ADDONS,
   TAB_INDEX_MY_ADDONS,
   TAB_INDEX_NEWS,
   TAB_INDEX_SETTINGS,
+  TRUE_STR,
 } from "../../../../common/constants";
 import { AppConfig } from "../../../../environments/environment";
 import { ElectronService } from "../../../services";
@@ -20,6 +22,7 @@ import { AddonProviderFactory } from "../../../services/addons/addon.provider.fa
 import { MatDialog } from "@angular/material/dialog";
 import { AlertDialogComponent } from "../alert-dialog/alert-dialog.component";
 import { TranslateService } from "@ngx-translate/core";
+import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
 
 interface Tab {
   titleKey?: string;
@@ -43,6 +46,16 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
   public TAB_INDEX_ACCOUNT = TAB_INDEX_ABOUT;
   public FEATURE_ACCOUNTS_ENABLED = FEATURE_ACCOUNTS_ENABLED;
   public adPageParams$ = new BehaviorSubject<AdPageOptions[]>([]);
+  public isCollapsedSrc = new BehaviorSubject(false);
+
+  public isCollapsed$ = combineLatest([this.isCollapsedSrc, this.sessionService.adSpace$]).pipe(
+    map(([isCollapsed, adSpace]) => {
+      if (adSpace) {
+        return false;
+      }
+      return isCollapsed;
+    })
+  );
 
   public isAccountSelected$ = this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT));
 
@@ -51,9 +64,10 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.MY_ADDONS_TAB_TITLE",
     icon: "fas:dice-d6",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_MY_ADDONS)),
-    isDisabled$: this._warcraftInstallationService.wowInstallations$.pipe(
-      map((installations) => installations.length === 0)
-    ),
+    isDisabled$: combineLatest([
+      this._warcraftInstallationService.wowInstallations$,
+      this.sessionService.enableControls$,
+    ]).pipe(map(([installations, enableControls]) => !enableControls || installations.length === 0)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_MY_ADDONS;
     },
@@ -64,9 +78,10 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.GET_ADDONS_TAB_TITLE",
     icon: "fas:search",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_GET_ADDONS)),
-    isDisabled$: this._warcraftInstallationService.wowInstallations$.pipe(
-      map((installations) => installations.length === 0)
-    ),
+    isDisabled$: combineLatest([
+      this._warcraftInstallationService.wowInstallations$,
+      this.sessionService.enableControls$,
+    ]).pipe(map(([installations, enableControls]) => !enableControls || installations.length === 0)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_GET_ADDONS;
     },
@@ -77,7 +92,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.ACCOUNT_TAB_TITLE",
     icon: "fas:user-circle",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_ABOUT)),
-    isDisabled$: of(false),
+    isDisabled$: this.sessionService.enableControls$.pipe(map((enabled) => !enabled)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_ABOUT;
     },
@@ -89,7 +104,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     icon: "fas:newspaper",
     badge: true,
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_NEWS)),
-    isDisabled$: of(false),
+    isDisabled$: this.sessionService.enableControls$.pipe(map((enabled) => !enabled)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_NEWS;
     },
@@ -100,7 +115,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     tooltipKey: "PAGES.HOME.OPTIONS_TAB_TITLE",
     icon: "fas:cog",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_SETTINGS)),
-    isDisabled$: of(false),
+    isDisabled$: this.sessionService.enableControls$.pipe(map((enabled) => !enabled)),
     onClick: (): void => {
       this.sessionService.selectedHomeTab = TAB_INDEX_SETTINGS;
     },
@@ -116,7 +131,8 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     private _dialog: MatDialog,
     private _translateService: TranslateService,
     private _addonProviderService: AddonProviderFactory,
-    private _warcraftInstallationService: WarcraftInstallationService
+    private _warcraftInstallationService: WarcraftInstallationService,
+    private _preferences: PreferenceStorageService
   ) {
     this.sessionService.adSpace$.pipe(takeUntil(this.destroy$)).subscribe((enabled) => {
       if (enabled) {
@@ -134,11 +150,28 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnInit(): void {}
+  public ngOnInit(): void {
+    this._preferences
+      .getAsync(PREF_TABS_COLLAPSED)
+      .then((val) => {
+        this.isCollapsedSrc.next(val === TRUE_STR);
+      })
+      .catch(console.error);
+  }
 
   public ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  public async toggleCollapse(): Promise<void> {
+    try {
+      const nextVal = !this.isCollapsedSrc.value;
+      await this._preferences.setAsync(PREF_TABS_COLLAPSED, nextVal);
+      this.isCollapsedSrc.next(!this.isCollapsedSrc.value);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   public onClickTab(tabIndex: number): void {
