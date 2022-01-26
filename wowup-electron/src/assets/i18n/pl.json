@@ -129,49 +129,49 @@
       "CLASS": "Klasa",
       "COMBAT": "Walka",
       "COMPANIONS": "Towarzysze",
-      "DATA_EXPORT": "Eksport danych", ---------------------------------- below translating work
-      "DEVELOPMENT_TOOLS": "Development Tools",
-      "GUILD": "Guild",
-      "LIBRARIES": "Libraries",
-      "MAIL": "Mail",
-      "MAP_MINIMAP": "Map & Minimap",
-      "MISCELLANEOUS": "Miscellaneous",
-      "MISSIONS": "Missions",
-      "PLUGINS": "Plugins",
-      "PROFESSIONS": "Professions",
+      "DATA_EXPORT": "Eksport danych",
+      "DEVELOPMENT_TOOLS": "Narzędzia programistyczne",
+      "GUILD": "Gildia",
+      "LIBRARIES": "Bibliotetki",
+      "MAIL": "Poczta",
+      "MAP_MINIMAP": "Mapa & Minimapa",
+      "MISCELLANEOUS": "Pozostałe",
+      "MISSIONS": "Misje",
+      "PLUGINS": "Wtyczki",
+      "PROFESSIONS": "Profesje",
       "PVP": "PVP",
-      "QUESTS_LEVELING": "Quests & Leveling",
+      "QUESTS_LEVELING": "Zadania & Leveling",
       "ROLEPLAY": "Roleplay",
-      "TOOLTIPS": "Tooltips",
-      "UNIT_FRAMES": "Unit Frames"
+      "TOOLTIPS": "Podpowiedzi",
+      "UNIT_FRAMES": "Unit Framesy"
     },
     "ADDON_STATE": {
-      "IGNORED": "Ignored",
-      "INSTALL": "Install",
-      "PENDING": "Pending",
-      "UNINSTALL": "Uninstall",
+      "IGNORED": "Zignorowany",
+      "INSTALL": "Zainstaluj",
+      "PENDING": "W toku",
+      "UNINSTALL": "Odinstaluj",
       "UNKNOWN": "",
-      "UPDATE": "Update",
-      "UPTODATE": "Up to date",
-      "WARNING": "Warning"
+      "UPDATE": "Aktualizacja",
+      "UPTODATE": "Aktualny",
+      "WARNING": "Ostrzeżenie"
     },
     "ADDON_STATUS": {
-      "BACKINGUP": "Backing Up",
-      "COMPLETE": "Installed",
-      "DOWNLOADING": "Downloading",
-      "ERROR": "Error",
-      "INSTALLING": "Installing",
-      "PENDING": "Pending",
-      "UNINSTALLING": "Uninstalling",
-      "UPDATING": "Updating..."
+      "BACKINGUP": "Tworzenie kopii zapasowej",
+      "COMPLETE": "Zainstalowany",
+      "DOWNLOADING": "Pobieranie",
+      "ERROR": "Błąd",
+      "INSTALLING": "Instalowanie",
+      "PENDING": "W toku",
+      "UNINSTALLING": "Odinstalowanie",
+      "UPDATING": "Aktualizowanie..."
     },
     "ADDON_WARNING": {
-      "GENERIC_DESCRIPTION": "We have detected an issue with this addon. We are no longer able to update this addon or provide details.",
-      "GENERIC_TOOLTIP": "We have detected an issue with this addon",
-      "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} did not return the addon when we requested it.<br>We are no longer able to update this addon or provide details until {providerName} fixes it.",
-      "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} is not returning this addon as expected",
-      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "GENERIC_DESCRIPTION": "Wykryto problem z tym addonem. Nie możemy zaktualizować tego addonu czy zapewnić szczegółów.",
+      "GENERIC_TOOLTIP": "Wykryto problem z tym addonem",
+      "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} nie zwróciliśmy addonu gdy o to prosiliśmy.<br>Nie możemy zaktualizować tego addonu czy zapewnić szczegółów dopóki {providerName} nie naprawi go.",
+      "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} nie zwraca tego dodatku zgodnie z oczekiwaniami",
+      "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} prawidłowo zwrócił ten addon, lecz nie ma żadnych pasujących plików do tej wersji.<br>Kiedy będzie aktualizacja wspierająca tę wersje, komunikat powienien zniknąć.",
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} nie ma żadnych pasujących plików dla tej wersji gry"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -187,96 +187,97 @@
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, =1{day} other{days}} ago",
       "HOURS_AGO": "{count} {count, plural, =1{hour} other{hours}} ago",
-      "JUST_NOW": "Just now",
+      "JUST_NOW": "Przed chwilą",
       "MONTHS_AGO": "{count} {count, plural, =1{month} other{months}} ago",
       "YEARS_AGO": "{count} {count, plural, =1{year} other{years}} ago",
-      "YESTERDAY": "Yesterday"
+      "YESTERDAY": "Wczoraj"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} potrzebuje {dependencyCount, plural, =1{dependency} inne{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "few",
+      "e+0": "kilka",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} thousand",
-      "e+4": "{count} thousand",
-      "e+5": "{count} thousand",
-      "e+6": "{count} million",
-      "e+7": "{count} million",
-      "e+8": "{count} million",
-      "e+9": "{count} billion"
+      "e+3": "{count} tysiąc",
+      "e+4": "{count} tysiąc",
+      "e+5": "{count} tysiąc",
+      "e+6": "{count} milion",
+      "e+7": "{count} milion",
+      "e+8": "{count} milion",
+      "e+9": "{count} bilion"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
-        "ALPHA": "Alpha",
+        "ALPHA": "Alfa",
         "BETA": "Beta",
-        "STABLE": "Stable"
+        "STABLE": "Stabilne"
       }
     },
     "ERRORS": {
-      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Failed to toggle instant updates for your account. Please try again later, or reach out on Discord.",
-      "ADDON_INSTALL_ERROR": "Failed to install addon, {addonName}. Please try again later.",
-      "ADDON_SCAN_ERROR": "An error occurred matching your addon folders with {providerName}, please try again later.",
-      "ADDON_SYNC_ERROR": "An error occurred checking for updates from {providerName}, please try again later.",
-      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: An error occurred checking for updates to {addonName} from {providerName}, please try again later.",
-      "CHANGE_PROVIDER_ERROR": "Failed to change provider for {addonName} to {providerName}",
-      "GITHUB_LIMIT_ERROR": "You have reached your GitHub API limit of {max} requests.\nPlease wait until {reset} and try again.",
-      "GITHUB_REPOSITORY_FETCH_ERROR": "Failed to check updates for {addonName}.\nPlease verify that the repository is correct or set this addon to be ignored."
+      "ACCOUNT_PUSH_TOGGLE_FAILED_ERROR": "Nie można włączyć natychmiastowych aktualizacji dla twojego konta. Proszę spróbować póżniej lub dołąćzyć na naszego Discorda.",
+      "ADDON_INSTALL_ERROR": "Nie można zainstalować addona, {addonName}. Proszę spróbować póżniej.",
+      "ADDON_SCAN_ERROR": "Wystąpił błąd pasującego folderu addonu z {providerName}, proszę spróbować póżniej.",
+      "ADDON_SYNC_ERROR": "Wystąpił bląd w sprawdzaniu aktualizacji z {providerName}, proszę spróbować póżniej.",
+      "ADDON_SYNC_FULL_ERROR": "[{installationName}]: Wystąpił bląd w sprawdzaniu aktualizacji dla {addonName} z {providerName}, proszę spróbować póżniej.",
+      "CHANGE_PROVIDER_ERROR": "Nie udało się zmienić dostawcy addonu {addonName} na {providerName}",
+      "GITHUB_LIMIT_ERROR": "Osiągnąłeś swój GitHub API limit z {max} prób.\nPoczekaj dopóki {reset} i spróbuj ponownie.",
+      "GITHUB_REPOSITORY_FETCH_ERROR": "Nie można sprawdzić aktualizacji dla {addonName}.\nProszę sprawdzić czy repozytorium jest poprawne lub zingnoruj ten addon."
     },
     "PROGRESS_SPINNER": {
-      "LOADING": "Loading..."
+      "LOADING": "Ładowanie..."
     },
-    "PROVIDER_ERROR": "Error contacting {providerName}",
+    "PROVIDER_ERROR": "Błąd, kontakt z {providerName}",
     "SEARCH": {
-      "NO_ADDONS": "No addons found"
+      "NO_ADDONS": "Nie znaleziono addonów"
     },
-    "WOW_EXE_SELECTION_NAME": "WoW Executable"
+    "WOW_EXE_SELECTION_NAME": "Ścieżka do pliku WoW"
   },
   "DIALOGS": {
     "ADDON_DETAILS": {
       "ADDON_ID_PREFIX": "Addon ID:",
-      "BY_AUTHOR": "By {authorName}",
-      "CHANGELOG_TAB": "Changelog",
-      "COPY_ADDON_ID_SNACKBAR": "Addon ID copied to clipboard",
-      "COPY_ADDON_ID_TOOLTIP": "Copy addon ID to clipboard",
-      "DEPENDENCY_TEXT": "This addon has {dependencyCount} required {dependencyCount, plural, =1{dependency} other{dependencies}}",
-      "DESCRIPTION_NOT_FOUND": "No description found",
-      "DESCRIPTION_TAB": "Description",
-      "FUNDING_LINK_TITLE": "Support this author",
-      "IMAGES_TAB": "Previews",
-      "MISSING_DEPENDENCIES": "Missing dependencies",
-      "NO_CHANGELOG_TEXT": "No changelog available",
-      "VIEW_IN_BROWSER_BUTTON": "View in browser",
-      "VIEW_ON_PROVIDER_PREFIX": "View on"
+      "BY_AUTHOR": "Przez {authorName}",
+      "CHANGELOG_TAB": "Lista zmian",
+      "COPY_ADDON_ID_SNACKBAR": "Addon ID skopiowany do schowka",
+      "COPY_ADDON_ID_TOOLTIP": "Skopiuj ID addonu do schowka",
+      "DEPENDENCY_TEXT": "Ten addon ma {dependencyCount} potrzebowanych {dependencyCount, plural, =1{dependency} innych{dependencies}}",
+      "DESCRIPTION_NOT_FOUND": "Nie znaleziono opisu",
+      "DESCRIPTION_TAB": "Opis",
+      "FUNDING_LINK_TITLE": "Wspieraj tego autora",
+      "IMAGES_TAB": "Podglądy",
+      "MISSING_DEPENDENCIES": "Brakujące zależnośći",
+      "NO_CHANGELOG_TEXT": "Brak listy zmian",
+      "VIEW_IN_BROWSER_BUTTON": "Otwórz w przeglądarce",
+      "VIEW_ON_PROVIDER_PREFIX": "Otwórz w"
     },
     "ALERT": {
-      "ERROR_TITLE": "Error",
-      "POSITIVE_BUTTON": "Okay"
+      "ERROR_TITLE": "Błąd",
+      "POSITIVE_BUTTON": "Okej"
     },
     "CONFIRM": {
-      "NEGATIVE_BUTTON": "No",
-      "POSITIVE_BUTTON": "Yes"
+      "NEGATIVE_BUTTON": "Nie",
+      "POSITIVE_BUTTON": "Tak"
     },
     "INSTALL_FROM_PROTOCOL": {
-      "ADDON_INSTALLED": "Addon is installed!",
-      "ADDON_INSTALLING": "Installing addon",
-      "CANCEL_BUTTON": "Close",
+      "ADDON_INSTALLED": "Addon zainstalowany!",
+      "ADDON_INSTALLING": "Instalowanie addonu",
+      "CANCEL_BUTTON": "Zamknij",
       "ERRORS": {
-        "ADDON_NOT_FOUND": "No addon was found for the protocol: {protocol}",
-        "GENERIC": "Error fetching data for protocol: {protocol}",
-        "NO_VALID_WOW_INSTALLATIONS": "No WoW client installed for protocol: {protocol}"
+        "ADDON_NOT_FOUND": "Żaden addon nie został znaleziony dla protokołu: {protocol}",
+        "GENERIC": "Błąd pobierania danych dla protokołu: {protocol}",
+        "NO_VALID_WOW_INSTALLATIONS": "Brak zainstalowanych klientów WoW dla protokołu: {protocol}"
       },
-      "INSTALL_BUTTON": "Install",
-      "TITLE": "Install Addon From {providerName}"
+      "INSTALL_BUTTON": "Zainstaluj",
+      "TITLE": "Zainstaluj addon z {providerName}"
     },
     "INSTALL_FROM_URL": {
       "ADDON_URL_INPUT_LABEL": "Addon URL",
-      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub or WowInterface URL",
-      "CLOSE_BUTTON": "Close",
-      "DESCRIPTION": "If you want to install an addon directly from a URL paste it below to get started.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
+      "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub lub WowInterface URL",
+      "CLOSE_BUTTON": "Zamknij",
+      "DESCRIPTION": "Jeżeli chcesz zainstalować addon bezpośrednio z linka, wklej go poniżej aby zacząć.",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} inne{downloads}} na {provider}",
       "ERROR": {
+        --------------------------below translating work ---------------------------------- below translating work--------------------------
         "ASSET_NOT_FOUND": "No asset was found to download {message}.\n\nA valid zip file is required to be in the release in order for WowUp to download it.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-bc' is required in order for WowUp to download it.",
         "CLASSIC_ASSET_NOT_FOUND": "No asset was found to download from {message}.\n\nA valid zip file ending with '-classic' is required in order for WowUp to download it.",
