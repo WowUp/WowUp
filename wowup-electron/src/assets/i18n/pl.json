@@ -289,7 +289,7 @@
         "TITLE": "Instalacja addonu nie powiodła się"
       },
       "IMPORT_ASSET_WARNING": "Nie mogliśmy zwerifikować czy najnowsza wersja tego addonu jest kompatybilna z twoim zaznaczonym klientem.\n\nAle znaleźliśmy plik zip \"{zipName}\".\n\nInstalacja na własną odpowiedzialność.",
-      "IMPORT_BUTTON": "Importuj", -----------------------------------------------
+      "IMPORT_BUTTON": "Importuj",
       "IMPORT_WARNING_TITLE": "Ostrzeżenie importu addonu",
       "INSTALL_BUTTON": "Instaluj",
       "INSTALL_SUCCESS_LABEL": "Zainstalowany!",
