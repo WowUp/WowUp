@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { AddonProvider, AddonProviderType } from "../../addon-providers/addon-provider";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+// import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
@@ -22,6 +22,7 @@ import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
 import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
 
 @Injectable({
   providedIn: "root",
@@ -115,11 +116,12 @@ export class AddonProviderFactory {
     return new RaiderIoAddonProvider(this._tocService);
   }
 
-  public createCurseAddonProvider(): CurseAddonProvider {
-    return new CurseAddonProvider(
+  public createCurseAddonProvider(): CurseAddonV2Provider {
+    return new CurseAddonV2Provider(
       this._cachingService,
       this._electronService,
       this._wowupApiService,
+      this._warcraftService,
       this._tocService,
       this._networkService
     );
