@@ -144,7 +144,7 @@
     "@fortawesome/free-brands-svg-icons": "5.15.4",
     "@fortawesome/free-regular-svg-icons": "5.15.4",
     "@fortawesome/free-solid-svg-icons": "5.15.4",
-    "@microsoft/applicationinsights-web": "2.7.2",
+    "@microsoft/applicationinsights-web": "2.7.3",
     "adm-zip": "0.5.9",
     "ag-grid-angular": "26.2.0",
     "ag-grid-community": "26.2.1",
