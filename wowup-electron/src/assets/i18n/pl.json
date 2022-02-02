@@ -193,7 +193,7 @@
       "YESTERDAY": "Wczoraj"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} potrzebuje {dependencyCount, plural, =1{dependency} inne{dependencies}}"
+      "TOOLTIP": "{dependencyCount} potrzebuje {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
       "e+0": "kilka",
@@ -240,7 +240,7 @@
       "CHANGELOG_TAB": "Lista zmian",
       "COPY_ADDON_ID_SNACKBAR": "Addon ID skopiowany do schowka",
       "COPY_ADDON_ID_TOOLTIP": "Skopiuj ID addonu do schowka",
-      "DEPENDENCY_TEXT": "Ten addon ma {dependencyCount} potrzebowanych {dependencyCount, plural, =1{dependency} innych{dependencies}}",
+      "DEPENDENCY_TEXT": "Ten addon ma {dependencyCount} potrzebowanych {dependencyCount, plural, =1{dependency} other{dependencies}}",
       "DESCRIPTION_NOT_FOUND": "Nie znaleziono opisu",
       "DESCRIPTION_TAB": "Opis",
       "FUNDING_LINK_TITLE": "Wspieraj tego autora",
@@ -275,7 +275,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub lub WowInterface URL",
       "CLOSE_BUTTON": "Zamknij",
       "DESCRIPTION": "Jeżeli chcesz zainstalować addon bezpośrednio z linka, wklej go poniżej aby zacząć.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} inne{downloads}} na {provider}",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać {message}.\n\nA Potrzebny jest prawidłowy plik zip w wydaniu aby pobrać go dla WowUp.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać z {message}.\n\nA prawidłowy plik zip z konćówką '-bc' jest potrzebny aby pobrać go dla WowUp.",
