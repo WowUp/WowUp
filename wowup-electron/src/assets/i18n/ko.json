@@ -175,11 +175,11 @@
     },
     "CLIENT_TYPES": {
       "BETA": "베타",
-      "CLASSIC": "클래식",
+      "CLASSIC": "불타는 성전",
       "CLASSICBETA": "클래식 베타",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "클래식 PTR",
+      "CLASSICERA": "Classic Vanilla",
+      "CLASSICERAPTR": "Classic SoM PTR",
+      "CLASSICPTR": "불타는 성전 PTR",
       "RETAIL": "리테일",
       "RETAILPTR": "리테일 PTR"
     },

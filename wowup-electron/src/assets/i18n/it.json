@@ -175,11 +175,11 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "Classic",
+      "CLASSIC": "Classic TBC",
       "CLASSICBETA": "Classic Beta",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "Classic Era PTR",
-      "CLASSICPTR": "Classic PTR",
+      "CLASSICERA": "Classic Vanilla",
+      "CLASSICERAPTR": "Classic SoM PTR",
+      "CLASSICPTR": "Classic TBC PTR",
       "RETAIL": "Retail",
       "RETAILPTR": "Retail PTR"
     },

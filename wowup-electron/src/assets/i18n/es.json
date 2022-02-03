@@ -175,11 +175,11 @@
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
-      "CLASSIC": "Classic",
+      "CLASSIC": "Classic TBC",
       "CLASSICBETA": "Beta Classic",
-      "CLASSICERA": "Classic Era",
-      "CLASSICERAPTR": "RPP Classic Era",
-      "CLASSICPTR": "RPP Classic",
+      "CLASSICERA": "Classic Vanilla",
+      "CLASSICERAPTR": "RPP Classic SoM",
+      "CLASSICPTR": "RPP Classic TBC",
       "RETAIL": "Retail",
       "RETAILPTR": "RPP Retail"
     },

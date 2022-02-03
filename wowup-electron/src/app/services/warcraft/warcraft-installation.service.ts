@@ -46,6 +46,15 @@ export class WarcraftInstallationService {
     private _electronService: ElectronService
   ) {
     this._wowInstallationsSrc.subscribe((installations) => {
+      installations.forEach(installation => {
+        // fallback to default label
+        if (!installation.label) {
+          const typeName = getEnumName(WowClientType, installation.clientType);
+          this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).subscribe(
+            value => installation.label = value
+          );
+        }
+      })
       this._wowInstallations = installations;
     });
 
@@ -199,7 +208,8 @@ export class WarcraftInstallationService {
     const typeName = getEnumName(WowClientType, clientType);
     const currentInstallations = await this.getWowInstallationsByClientType(clientType);
 
-    const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
+    const label = currentInstallations.length == 0 ? null :
+      await this.getNewInstallLabel(typeName, currentInstallations.length);
 
     const installation: WowInstallation = {
       id: uuidv4(),
@@ -228,7 +238,8 @@ export class WarcraftInstallationService {
       const typeName = getEnumName(WowClientType, product.clientType);
       const currentInstallations = await this.getWowInstallationsByClientType(product.clientType);
 
-      const label = await this.getNewInstallLabel(typeName, currentInstallations.length);
+      const label = currentInstallations.length == 0 ? null :
+        await this.getNewInstallLabel(typeName, currentInstallations.length);
 
       const fullProductPath = this.getFullProductPath(product.location, product.clientType);
 
@@ -318,8 +329,6 @@ export class WarcraftInstallationService {
     const legacyDefaultChannel = await this.getLegacyDefaultAddonChannel(typeName);
     const legacyDefaultAutoUpdate = await this.getLegacyDefaultAutoUpdate(typeName);
 
-    const label = await this._translateService.get(`COMMON.CLIENT_TYPES.${typeName.toUpperCase()}`).toPromise();
-
     const newLocation = this.getFullProductPath(legacyLocation, clientType);
 
     const newLocationExists = await this._fileService.pathExists(newLocation);
@@ -332,7 +341,7 @@ export class WarcraftInstallationService {
       clientType,
       defaultAddonChannelType: legacyDefaultChannel,
       defaultAutoUpdate: legacyDefaultAutoUpdate,
-      label,
+      label: null,
       location: newLocation,
       selected: false,
     };
