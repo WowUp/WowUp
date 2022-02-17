@@ -150,6 +150,8 @@
       "INSTALL": "Install",
       "PENDING": "Pending",
       "UNINSTALL": "Uninstall",
+      "UNAVAILABLE": "Unavailable",
+      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
       "UNKNOWN": "",
       "UPDATE": "Update",
       "UPTODATE": "Up to date",
@@ -474,7 +476,12 @@
           "FIELD_LABEL": "Enabled Addon Providers",
           "INPUT_LABEL": "Providers"
         },
-        "TITLE": "Addons"
+        "TITLE": "Addons",
+        "CURSE_FORGE_V2": {
+          "PROVIDER_NOTE": "API Key Required",
+          "API_KEY_TITLE": "CurseForge API Key",
+          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API."
+        }
       },
       "APPLICATION": {
         "APP_RELEASE_CHANNEL_CONFIRMATION_DESCRIPTION_BETA": "Switching to the Beta channel will allow you to receive experimental builds that contain bug fixes, as well as new and upcoming features. You may only go back to the current stable version by uninstalling your existing app and re-installing from wowup.io.\n\nWhile the Beta channel is functional, use at your own risk.",

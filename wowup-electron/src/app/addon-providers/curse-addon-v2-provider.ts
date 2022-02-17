@@ -2,12 +2,14 @@ import * as _ from "lodash";
 import { from, Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
+import { CF2GetFeaturedModsRequest, CF2GetFingerprintMatchesRequest, CFV2Client } from "curseforge-v2";
 
 import {
-  ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_CURSEFORGEV2,
   IPC_CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
+  PREF_CF2_API_KEY,
 } from "../../common/constants";
 import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
 import { CurseAddonCategory, CurseGameVersionFlavor } from "../../common/curse/curse-models";
@@ -16,7 +18,7 @@ import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-
 import { AddonCategory, AddonChannelType, AddonDependencyType, AddonWarningType } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
-import { AppCurseScanResult } from "../models/curse/app-curse-scan-result";
+import { AppCurseV2ScanResult } from "../models/curse/app-curse-scan-result";
 import { AddonFolder } from "../models/wowup/addon-folder";
 import { AddonSearchResult } from "../models/wowup/addon-search-result";
 import { AddonSearchResultDependency } from "../models/wowup/addon-search-result-dependency";
@@ -53,6 +55,8 @@ import {
   CF2WowGameVersionType,
 } from "../models/curse/curse-api-v2";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
+import { PreferenceStorageService } from "../services/storage/preference-storage.service";
+import { TranslateService } from "@ngx-translate/core";
 
 interface ProtocolData {
   addonId: number;
@@ -84,12 +88,16 @@ const GAME_TYPE_LISTS = [
 export class CurseAddonV2Provider extends AddonProvider {
   private readonly _circuitBreaker: CircuitBreakerWrapper;
 
-  public readonly name = ADDON_PROVIDER_CURSEFORGE;
+  private _cfClient: CFV2Client;
+
+  public readonly name = ADDON_PROVIDER_CURSEFORGEV2;
   public readonly forceIgnore = false;
   public readonly allowReinstall = true;
   public readonly allowChannelChange = true;
   public readonly allowEdit = true;
   public readonly canBatchFetch = true;
+  public readonly providerNote = 'PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.PROVIDER_NOTE';
+
   public enabled = true;
 
   public constructor(
@@ -98,6 +106,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     private _wowupApiService: WowUpApiService,
     private _warcraftService: WarcraftService,
     private _tocService: TocService,
+    private _preferenceStorageService: PreferenceStorageService,
     _networkService: NetworkService
   ) {
     super();
@@ -204,7 +213,7 @@ export class CurseAddonV2Provider extends AddonProvider {
         },
         CHANGELOG_CACHE_TTL_SEC
       );
-      
+
       return response.data;
     } catch (e) {
       console.error("Failed to get changelog", e);
@@ -270,14 +279,14 @@ export class CurseAddonV2Provider extends AddonProvider {
     }
   }
 
-  public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseScanResult[]> => {
+  public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseV2ScanResult[]> => {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
     const scanResults: CurseFolderScanResult[] = await this._electronService.invoke(
       IPC_CURSE_GET_SCAN_RESULTS,
       filePaths
     );
 
-    const appScanResults: AppCurseScanResult[] = scanResults.map((scanResult) => {
+    const appScanResults: AppCurseV2ScanResult[] = scanResults.map((scanResult) => {
       const addonFolder = addonFolders.find((af) => af.path === scanResult.directory);
 
       return Object.assign({}, scanResult, { addonFolder });
@@ -316,20 +325,23 @@ export class CurseAddonV2Provider extends AddonProvider {
     return description.replace(href, destination);
   }
 
-  private async mapAddonFolders(scanResults: AppCurseScanResult[], installation: WowInstallation) {
+  private async mapAddonFolders(scanResults: AppCurseV2ScanResult[], installation: WowInstallation) {
     if (!installation) {
       return;
     }
 
     const fingerprintResponse = await this.getAddonsByFingerprints(scanResults.map((result) => result.fingerprint));
+    if (fingerprintResponse === undefined) {
+      return;
+    }
 
     for (const scanResult of scanResults) {
       // Curse can deliver the wrong result sometimes, ensure the result matches the client type
-      scanResult.exactMatch = fingerprintResponse.exactMatches.find(
-        (exactMatch) =>
-          this.hasMatchingFingerprint(scanResult, exactMatch) &&
-          this.isCompatible(installation.clientType, exactMatch.file)
-      );
+      scanResult.exactMatch = fingerprintResponse.exactMatches.find((exactMatch) => {
+        const hasMatchingFingerprint = this.hasMatchingFingerprint(scanResult, exactMatch);
+        const isCompatible = this.isCompatible(installation.clientType, exactMatch.file);
+        return hasMatchingFingerprint && isCompatible;
+      });
 
       // If the addon does not have an exact match, check the partial matches.
       if (!scanResult.exactMatch && fingerprintResponse.partialMatches) {
@@ -340,7 +352,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     }
   }
 
-  private hasMatchingFingerprint(scanResult: AppCurseScanResult, exactMatch: CF2FingerprintMatch) {
+  private hasMatchingFingerprint(scanResult: AppCurseV2ScanResult, exactMatch: CF2FingerprintMatch) {
     return exactMatch.file.modules.some((m) => m.fingerprint === scanResult.fingerprint);
   }
 
@@ -370,14 +382,21 @@ export class CurseAddonV2Provider extends AddonProvider {
   //   return response;
   // }
 
-  private async getAddonsByFingerprints(fingerprints: number[]): Promise<CF2FingerprintsMatchesResult> {
-    const url = `${API_URL}/fingerprints`;
-
+  private async getAddonsByFingerprints(fingerprints: number[]): Promise<CF2FingerprintsMatchesResult | undefined> {
     console.log(`Curse Fetching fingerprints`, JSON.stringify(fingerprints));
 
-    const result = await this._circuitBreaker.postJson<CF2GetFingerprintMatchesResponse>(url, fingerprints);
+    const client = await this.getClient();
+    if (!client) {
+      return undefined;
+    }
 
-    return result.data;
+    const request: CF2GetFingerprintMatchesRequest = {
+      fingerprints,
+    };
+
+    const result = await this._circuitBreaker.fire(() => client.getFingerprintMatches(request));
+
+    return result?.data?.data;
   }
 
   private async getAllIds(addonIds: number[]): Promise<CF2Addon[]> {
@@ -669,6 +688,7 @@ export class CurseAddonV2Provider extends AddonProvider {
         downloadCount: result.downloadCount,
         summary: result.summary,
         screenshotUrls: this.getScreenshotUrls(result),
+        externallyBlocked: result.allowModDistribution === false,
       };
 
       return searchResult;
@@ -745,32 +765,35 @@ export class CurseAddonV2Provider extends AddonProvider {
   }
 
   private async getFeaturedAddonList(wowInstallation: WowInstallation): Promise<CF2Addon[]> {
-    const gameVersionTypeId = this.getGameVersionTypeId(wowInstallation.clientType);
-    const url = `${API_URL}/mods/featured`;
-
-    const body = {
-      gameId: 1,
-      gameVersionTypeId: gameVersionTypeId,
-      // featuredCount: 6,
-      // popularCount: 50,
-      // updatedCount: 50,
-    };
-
-    const cacheKey = `${gameVersionTypeId}-${url}`;
-    const result = await this._cachingService.transaction(
-      cacheKey,
-      () => this._circuitBreaker.postJson<CF2FeaturedModsResponse>(url, body),
-      FEATURED_ADDONS_CACHE_TTL_SEC
-    );
-
-    if (!result) {
+    const client = await this.getClient();
+    if (!client) {
       return [];
     }
 
-    // Remove duplicate addons that are already in the popular list from the recents list
-    const uniqueRecent = result.data.recentlyUpdated.filter((ru) => !result.data.popular.some((p) => p.id === ru.id));
+    const gameVersionTypeId = this.getGameVersionTypeId(wowInstallation.clientType);
 
-    return [...result.data.popular, ...uniqueRecent];
+    const request: CF2GetFeaturedModsRequest = {
+      gameId: 1,
+      gameVersionTypeId,
+      excludedModIds: [],
+    };
+
+    const cacheKey = `getFeaturedAddonList-${JSON.stringify(request)}`;
+    const result = await this._cachingService.transaction(
+      cacheKey,
+      () => client.getFeaturedMods(request),
+      FEATURED_ADDONS_CACHE_TTL_SEC
+    );
+
+    if (!result || result.statusCode !== 200) {
+      return [];
+    }
+
+    const body = result.data;
+    // Remove duplicate addons that are already in the popular list from the recents list
+    const uniqueRecent = body.data.recentlyUpdated.filter((ru) => !body.data.popular.some((p) => p.id === ru.id));
+
+    return [...body.data.popular, ...uniqueRecent];
   }
 
   private async getCategoryAddons(
@@ -907,7 +930,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     return file.sortableGameVersions.find((sgv) => sgv.gameVersionTypeId === typeId) !== undefined;
   }
 
-  private getAddon(installation: WowInstallation, scanResult: AppCurseScanResult): Addon {
+  private getAddon(installation: WowInstallation, scanResult: AppCurseV2ScanResult): Addon {
     if (!scanResult.exactMatch || !scanResult.searchResult) {
       throw new Error("No scan result exact match");
     }
@@ -1039,7 +1062,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     }
   }
 
-  getCFGameVersionType(clientType: WowClientType): CF2WowGameVersionType {
+  private getCFGameVersionType(clientType: WowClientType): CF2WowGameVersionType {
     const clientGroup = this._warcraftService.getClientGroup(clientType);
 
     switch (clientGroup) {
@@ -1052,5 +1075,22 @@ export class CurseAddonV2Provider extends AddonProvider {
       default:
         throw new Error(`invalid game type: ${clientGroup}`);
     }
+  }
+
+  private async getClient(): Promise<CFV2Client | undefined> {
+    if (this._cfClient) {
+      return this._cfClient;
+    }
+
+    const apiKey = await this._preferenceStorageService.getAsync(PREF_CF2_API_KEY);
+    if (typeof apiKey !== "string" || apiKey.length === 0) {
+      return undefined;
+    }
+
+    this._cfClient = new CFV2Client({
+      apiKey,
+    });
+
+    return this._cfClient;
   }
 }

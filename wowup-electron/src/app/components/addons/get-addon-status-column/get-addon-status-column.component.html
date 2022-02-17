@@ -1,4 +1,13 @@
 <div class="addon-status-column">
-  <app-addon-install-button [addonSearchResult]="addonSearchResult" (onViewUpdated)="onInstallButtonUpdated()">
+  <div *ngIf="addonSearchResult.externallyBlocked === true">
+    <div class="unavailable" [matTooltip]="'COMMON.ADDON_STATE.UNAVAILABLE_TOOLTIP' | translate">
+      {{ "COMMON.ADDON_STATE.UNAVAILABLE" | translate }}
+    </div>
+  </div>
+  <app-addon-install-button
+    *ngIf="addonSearchResult.externallyBlocked !== true"
+    [addonSearchResult]="addonSearchResult"
+    (onViewUpdated)="onInstallButtonUpdated()"
+  >
   </app-addon-install-button>
 </div>

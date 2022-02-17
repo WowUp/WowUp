@@ -23,6 +23,7 @@ import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constan
 import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
+import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 
 @Injectable({
   providedIn: "root",
@@ -59,6 +60,7 @@ export class AddonProviderFactory {
       this.createWowUpAddonProvider(),
       this.createWagoAddonProvider(),
       this.createCurseAddonProvider(),
+      this.createCurseV2AddonProvider(),
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
       this.createGitHubAddonProvider(),
@@ -116,13 +118,24 @@ export class AddonProviderFactory {
     return new RaiderIoAddonProvider(this._tocService);
   }
 
-  public createCurseAddonProvider(): CurseAddonV2Provider {
+  public createCurseAddonProvider(): CurseAddonProvider {
+    return new CurseAddonProvider(
+      this._cachingService,
+      this._electronService,
+      this._wowupApiService,
+      this._tocService,
+      this._networkService
+    );
+  }
+
+  public createCurseV2AddonProvider(): CurseAddonV2Provider {
     return new CurseAddonV2Provider(
       this._cachingService,
       this._electronService,
       this._wowupApiService,
       this._warcraftService,
       this._tocService,
+      this._preferenceStorageService,
       this._networkService
     );
   }

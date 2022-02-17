@@ -11,6 +11,7 @@ import { DownloadAuth } from "../../common/models/download-request";
 
 export type AddonProviderType =
   | "Curse"
+  | "CurseV2"
   | "GitHub"
   | "TukUI"
   | "WowInterface"
@@ -47,6 +48,7 @@ export abstract class AddonProvider {
   public canBatchFetch = false;
   public authRequired = false;
   public adRequired = false;
+  public providerNote = "";
 
   public getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
     return Promise.resolve({
