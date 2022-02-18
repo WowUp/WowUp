@@ -448,11 +448,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   private async sendMatchesRequest(installation: WowInstallation, request: WagoFingerprintRequest) {
     const url = new URL(`${WAGO_BASE_URL}/addons/_match`);
-    return await this._cachingService.transaction(
-      `${installation.id}|${url.toString()}`,
-      () => this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders()),
-      WAGO_DETAILS_CACHE_TIME_SEC
-    );
+    return await this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders());
   }
 
   private toSearchResultFromScan(item: WagoScanAddon): AddonSearchResult {
