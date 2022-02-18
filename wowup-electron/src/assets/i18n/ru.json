@@ -149,6 +149,8 @@
       "IGNORED": "Игнорируется",
       "INSTALL": "Установить",
       "PENDING": "В ожидании",
+      "UNAVAILABLE": "Unavailable",
+      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
       "UNINSTALL": "Удалить",
       "UNKNOWN": "",
       "UPDATE": "Обновить",
@@ -469,6 +471,11 @@
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Необходима реклама",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
+          "API_KEY_TITLE": "CurseForge API Key",
+          "PROVIDER_NOTE": "API Key Required"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Выберите источники, используемые для поиска и установки новых модификаций",
           "FIELD_LABEL": "Включённые источники модификаций",
