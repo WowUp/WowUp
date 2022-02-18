@@ -16,16 +16,38 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.7.0",
+    html: `
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+    <li>New CurseForge V2 addon provider, requires that they give you a key</li>
+    <li>New Polish language support (nydas3k)</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>German locale updates (Glow)</li>
+    <li>Portuguese locale updates (TheLastDarkthorne)</li>
+    <li>Wago is now a trusted domain by default (Artemis)</li>
+    <li>Fix an issue with caching Wago scan results</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+    <li>My Addons spinner is now centered</li>
+    <li>Updated a bunch of dependencies</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.6.1",
     html: `
-    <h4>Changes</h4>
+    <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
     <li>Chinese locale updates (CyanoHao)</li>
     <li>Russian locale updates (Medok)</li>
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Added the ability to collapse the sidebar if no ad is required</li>
     </ul>
-    <h4>Fixes</h4>
+    <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Fixed an issue with having no clients locking up the app</li>
     </ul>
