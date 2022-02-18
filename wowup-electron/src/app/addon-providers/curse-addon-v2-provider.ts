@@ -1,8 +1,23 @@
 import * as _ from "lodash";
 import { from, Observable, of } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
-import { CF2GetFeaturedModsRequest, CF2GetFingerprintMatchesRequest, CFV2Client } from "curseforge-v2";
+import {
+  CF2Addon,
+  CF2Author,
+  CF2File,
+  CF2FileDependency,
+  CF2FileRelationType,
+  CF2FileReleaseType,
+  CF2FingerprintMatch,
+  CF2FingerprintsMatchesResult,
+  CF2GetFeaturedModsRequest,
+  CF2GetFingerprintMatchesRequest,
+  CF2GetModsRequest,
+  CF2SearchModsParams,
+  CF2WowGameVersionType,
+  CFV2Client,
+} from "curseforge-v2";
 
 import {
   ADDON_PROVIDER_CURSEFORGEV2,
@@ -34,36 +49,14 @@ import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllBatchResult, GetAllResult, SearchByUrlResult } from "./addon-provider";
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
-import {
-  CF2Addon,
-  CF2Author,
-  CF2FeaturedModsResponse,
-  CF2File,
-  CF2FileDependency,
-  CF2FileRelationType,
-  CF2FileReleaseType,
-  CF2FingerprintMatch,
-  CF2FingerprintsMatchesResult,
-  CF2GetAddonResponse,
-  CF2GetFingerprintMatchesResponse,
-  CF2GetModDescriptionResponse,
-  CF2GetModFileChangelogResponse,
-  CF2GetModFileResponse,
-  CF2GetModsRequest,
-  CF2GetModsResponse,
-  CF2SearchModsResponse,
-  CF2WowGameVersionType,
-} from "../models/curse/curse-api-v2";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { PreferenceStorageService } from "../services/storage/preference-storage.service";
-import { TranslateService } from "@ngx-translate/core";
 
 interface ProtocolData {
   addonId: number;
   fileId: number;
 }
 
-const API_URL = `${AppConfig.curseforge.apiUrl}/v2`;
 const CHANGELOG_CACHE_TTL_SEC = 30 * 60;
 const FEATURED_ADDONS_CACHE_TTL_SEC = AppConfig.featuredAddonsCacheTimeSec;
 
@@ -96,7 +89,7 @@ export class CurseAddonV2Provider extends AddonProvider {
   public readonly allowChannelChange = true;
   public readonly allowEdit = true;
   public readonly canBatchFetch = true;
-  public readonly providerNote = 'PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.PROVIDER_NOTE';
+  public readonly providerNote = "PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.PROVIDER_NOTE";
 
   public enabled = true;
 
@@ -121,17 +114,18 @@ export class CurseAddonV2Provider extends AddonProvider {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async getDescription(installation: WowInstallation, externalId: string, addon?: Addon): Promise<string> {
     try {
+      const client = await this.getClient();
+
       const cacheKey = `${this.name}_description_${externalId}`;
       const response = await this._cachingService.transaction(
         cacheKey,
         () => {
-          const url = new URL(`${API_URL}/mods/${externalId}/description`);
-          return this._circuitBreaker.getJson<CF2GetModDescriptionResponse>(url);
+          return client.getModDescription(parseInt(externalId, 10));
         },
         CHANGELOG_CACHE_TTL_SEC
       );
 
-      const description = this.standardizeDescription(response.data);
+      const description = this.standardizeDescription(response.data.data);
 
       return description;
     } catch (e) {
@@ -203,18 +197,18 @@ export class CurseAddonV2Provider extends AddonProvider {
     externalReleaseId: string
   ): Promise<string> {
     try {
+      const client = await this.getClient();
       const cacheKey = `${this.name}_changelog_${externalId}_${externalReleaseId}`;
 
       const response = await this._cachingService.transaction(
         cacheKey,
         () => {
-          const url = new URL(`${API_URL}/mods/${externalId}/files/${externalReleaseId}/changelog`);
-          return this._circuitBreaker.getJson<CF2GetModFileChangelogResponse>(url);
+          return client.getModFileChangelog(parseInt(externalId, 10), parseInt(externalReleaseId, 10));
         },
         CHANGELOG_CACHE_TTL_SEC
       );
 
-      return response.data;
+      return response.data.data;
     } catch (e) {
       console.error("Failed to get changelog", e);
     }
@@ -356,32 +350,6 @@ export class CurseAddonV2Provider extends AddonProvider {
     return exactMatch.file.modules.some((m) => m.fingerprint === scanResult.fingerprint);
   }
 
-  // private async getAddonsByFingerprintsW(fingerprints: number[]) {
-  //   const url = `${AppConfig.wowUpHubUrl}/curseforge/addons/fingerprint`;
-
-  //   console.log(`Wowup Fetching fingerprints`, JSON.stringify(fingerprints));
-
-  //   const response = await this._circuitBreaker.postJson<WowUpCurseFingerprintsResponse>(
-  //     url,
-  //     {
-  //       fingerprints,
-  //     },
-  //     undefined,
-  //     AppConfig.wowUpHubHttpTimeoutMs
-  //   );
-
-  //   const matchesCpy = [];
-  //   for (const match of response.exactMatches) {
-  //     const isBlocked = await this.isBlockedAuthorId(match.authorIds);
-  //     if (!isBlocked) {
-  //       matchesCpy.push(match);
-  //     }
-  //   }
-  //   response.exactMatches = matchesCpy;
-
-  //   return response;
-  // }
-
   private async getAddonsByFingerprints(fingerprints: number[]): Promise<CF2FingerprintsMatchesResult | undefined> {
     console.log(`Curse Fetching fingerprints`, JSON.stringify(fingerprints));
 
@@ -408,13 +376,13 @@ export class CurseAddonV2Provider extends AddonProvider {
       modIds: addonIds,
     };
 
-    const url = `${API_URL}/mods`;
-    // console.log(`Fetching addon info ${url} ${addonIds.length}`);
-    const response = await this._circuitBreaker.postJson<CF2GetModsResponse>(url, request);
+    const client = await this.getClient();
 
-    await this.removeBlockedItems(response.data);
+    const response = await this._circuitBreaker.fire(() => client.getMods(request));
 
-    return response.data;
+    await this.removeBlockedItems(response.data.data);
+
+    return response.data.data;
   }
 
   public async getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
@@ -598,15 +566,17 @@ export class CurseAddonV2Provider extends AddonProvider {
     return searchResults;
   }
 
-  private async getSearchResults(query: string, client: WowClientType): Promise<CF2Addon[]> {
-    const url = new URL(`${API_URL}/mods/search`);
-    url.searchParams.set("gameId", "1");
-    url.searchParams.set("searchFilter", query);
-    url.searchParams.set("gameVersionTypeId", this.getCFGameVersionType(client).toString());
+  private async getSearchResults(query: string, clientType: WowClientType): Promise<CF2Addon[]> {
+    const request: CF2SearchModsParams = {
+      gameId: 1,
+      searchFilter: query,
+      gameVersionTypeId: this.getCFGameVersionType(clientType),
+    };
 
-    const response = await this._circuitBreaker.getJson<CF2SearchModsResponse>(url);
+    const client = await this.getClient();
+    const response = await this._circuitBreaker.fire(() => client.searchMods(request));
 
-    return response.data;
+    return response.data.data;
   }
 
   public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
@@ -627,10 +597,11 @@ export class CurseAddonV2Provider extends AddonProvider {
   }
 
   private getByIdBase(addonId: string): Observable<CF2Addon | undefined> {
-    const url = `${API_URL}/mods/${addonId}`;
-
-    return from(this._circuitBreaker.getJson<CF2GetAddonResponse>(url)).pipe(
-      map((response) => response.data),
+    return from(this.getClient()).pipe(
+      switchMap((client) => {
+        return from(this._circuitBreaker.fire(() => client.getMod(parseInt(addonId, 10))));
+      }),
+      map((response) => response.data.data),
       catchError((e) => {
         // We want to eat things like 400/500 responses
         console.error(e);
@@ -640,9 +611,14 @@ export class CurseAddonV2Provider extends AddonProvider {
   }
 
   private getAddonFileById(addonId: string | number, fileId: string | number): Observable<CF2File> {
-    const url = `${API_URL}/mods/${addonId}/files/${fileId}`;
-
-    return from(this._circuitBreaker.getJson<CF2GetModFileResponse>(url)).pipe(map((response) => response.data));
+    return from(this.getClient()).pipe(
+      switchMap((client) =>
+        from(
+          this._circuitBreaker.fire(() => client.getModFile(parseInt(addonId as any, 10), parseInt(fileId as any, 10)))
+        )
+      ),
+      map((response) => response.data.data)
+    );
   }
 
   public isValidAddonUri(addonUri: URL): boolean {
@@ -712,19 +688,6 @@ export class CurseAddonV2Provider extends AddonProvider {
     }
 
     _.remove(searchResults, (sr) => blockedResults.includes(sr.id));
-  }
-
-  private async isBlockedAuthorId(authorId: string | string[]): Promise<boolean> {
-    try {
-      const blockList = await this._wowupApiService.getBlockList().toPromise();
-      const blockedAuthorIds = _.map(blockList.curse.authors, (author) => author.authorId);
-      if (Array.isArray(authorId)) {
-        return blockedAuthorIds.some((blockedAuthorId) => authorId.includes(blockedAuthorId));
-      }
-      return blockedAuthorIds.includes(authorId);
-    } catch (e) {
-      return false;
-    }
   }
 
   private async isBlockedAuthor(author: CF2Author) {
@@ -802,22 +765,23 @@ export class CurseAddonV2Provider extends AddonProvider {
     pageSize: number,
     pageNumber: number
   ): Promise<CF2Addon[]> {
-    //https://addons-ecs.forgesvc.net/api/v2/addon/search?gameId=1&categoryId=1018&pageSize=20&index=0&sort=1&sortDescending=true&gameVersionFlavor=wow_retail
-    const url = new URL(`${API_URL}/mods/search`);
-    url.searchParams.set("gameId", "1");
-    url.searchParams.set("categoryId", category.toString());
-    url.searchParams.set("pageSize", pageSize.toString());
-    url.searchParams.set("index", pageNumber.toString());
-    url.searchParams.set("sort", "1");
-    url.searchParams.set("sortDescending", "true");
-    url.searchParams.set("gameVersionTypeId", gameVersionFlavor.toString());
+    const request: CF2SearchModsParams = {
+      gameId: 1,
+      categoryId: category,
+      pageSize: pageSize,
+      index: pageNumber,
+      sortOrder: "desc",
+      gameVersionTypeId: gameVersionFlavor,
+    };
 
-    const urlStr = url.toString();
-    const result = await this._cachingService.transaction(urlStr, () =>
-      this._circuitBreaker.getJson<CF2SearchModsResponse>(urlStr)
+    const cacheKey = JSON.stringify(request);
+
+    const client = await this.getClient();
+    const result = await this._cachingService.transaction(cacheKey, () =>
+      this._circuitBreaker.fire(() => client.searchMods(request))
     );
 
-    return result?.data ?? [];
+    return result?.data?.data ?? [];
   }
 
   private getChannelType(releaseType: CF2FileReleaseType): AddonChannelType {
