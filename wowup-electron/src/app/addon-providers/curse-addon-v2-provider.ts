@@ -485,7 +485,6 @@ export class CurseAddonV2Provider extends AddonProvider {
   ): Promise<AddonSearchResult[]> {
     const searchResults: AddonSearchResult[] = [];
 
-    const gameVersionType = this.getGameVersionTypeId(installation.clientType);
     const response = await this.getSearchResults(query, installation.clientType);
 
     await this.removeBlockedItems(response);
@@ -614,7 +613,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     return from(this.getClient()).pipe(
       switchMap((client) =>
         from(
-          this._circuitBreaker.fire(() => client.getModFile(parseInt(addonId as any, 10), parseInt(fileId as any, 10)))
+          this._circuitBreaker.fire(() => client.getModFile(parseInt(`${addonId}`, 10), parseInt(`${fileId}`, 10)))
         )
       ),
       map((response) => response.data.data)
@@ -1037,7 +1036,7 @@ export class CurseAddonV2Provider extends AddonProvider {
       case WowClientGroup.Retail:
         return CF2WowGameVersionType.Retail;
       default:
-        throw new Error(`invalid game type: ${clientGroup}`);
+        throw new Error(`invalid game type: ${clientGroup as string}`);
     }
   }
 

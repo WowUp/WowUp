@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AddonProviderState } from "../../../models/wowup/addon-provider-state";
 import { MatSelectionListChange } from "@angular/material/list";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { AddonProviderType } from "../../../addon-providers/addon-provider";
-import { BehaviorSubject, catchError, debounceTime, first, from, map, of } from "rxjs";
+import { BehaviorSubject, catchError, debounceTime, first, from, map, of, Subject, switchMap, takeUntil } from "rxjs";
 import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
 import { PREF_CF2_API_KEY } from "../../../../common/constants";
 import { FormControl, FormGroup } from "@angular/forms";
@@ -18,7 +18,9 @@ interface AddonProviderStateModel extends AddonProviderState {
   templateUrl: "./options-addon-section.component.html",
   styleUrls: ["./options-addon-section.component.scss"],
 })
-export class OptionsAddonSectionComponent implements OnInit {
+export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
+  private destroy$: Subject<boolean> = new Subject<boolean>();
+
   public addonProviderStates$ = new BehaviorSubject<AddonProviderStateModel[]>([]);
 
   public preferenceForm = new FormGroup({
@@ -33,20 +35,32 @@ export class OptionsAddonSectionComponent implements OnInit {
       this.loadProviderStates();
     });
 
-    this.preferenceForm.valueChanges.pipe(debounceTime(300)).subscribe(async (ch) => {
-      try {
-        if (ch.cfV2ApiKey) {
-          this._preferenceStorageService.setAsync(PREF_CF2_API_KEY, ch.cfV2ApiKey);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    });
+    this.preferenceForm.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(300),
+        switchMap((ch) => {
+          if (ch.cfV2ApiKey) {
+            return from(this._preferenceStorageService.setAsync(PREF_CF2_API_KEY, ch.cfV2ApiKey));
+          }
+          return of(undefined);
+        }),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
+        })
+      )
+      .subscribe();
   }
 
   public ngOnInit(): void {
     this.loadProviderStates();
     this.loadCfV2ApiKey();
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   public async onProviderStateSelectionChange(event: MatSelectionListChange): Promise<void> {

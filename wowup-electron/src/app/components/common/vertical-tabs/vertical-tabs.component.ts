@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, Subject } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 
 import { Component, OnDestroy, OnInit } from "@angular/core";
