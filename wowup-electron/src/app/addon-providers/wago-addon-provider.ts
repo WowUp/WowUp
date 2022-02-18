@@ -203,6 +203,10 @@ export class WagoAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
+    if (!_.some(addonFolders)) {
+      return;
+    }
+
     const gameVersion = this.getGameVersion(installation.clientType);
     const scanResults = await this.getScanResults(addonFolders);
 

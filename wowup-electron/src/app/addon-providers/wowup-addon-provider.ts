@@ -375,7 +375,7 @@ export class WowUpAddonProvider extends AddonProvider {
       return undefined;
     }
 
-    const version = matchingVersion?.version ?? release.tag_name;
+    const version = matchingVersion?.version || release.tag_name || "";
 
     return {
       channelType: this.getAddonReleaseChannel(release),
@@ -466,13 +466,13 @@ export class WowUpAddonProvider extends AddonProvider {
       );
     }
 
-    const name = matchingVersion?.title ?? scanResult.exactMatch?.repository_name;
-    const version = matchingVersion?.version ?? scanResult.exactMatch?.matched_release?.tag_name;
-    const authors = matchingVersion?.authors ?? scanResult.exactMatch?.owner_name ?? "";
+    const name = matchingVersion?.title || scanResult.exactMatch?.repository_name;
+    const version = matchingVersion?.version || scanResult.exactMatch?.matched_release?.tag_name || "";
+    const authors = matchingVersion?.authors || scanResult.exactMatch?.owner_name || "";
     const interfaceVer = matchingVersion?.interface;
 
     if (!name || !version || !interfaceVer) {
-      throw new Error("Invalid matching version data");
+      throw new Error(`Invalid matching version data: name ${name}, version ${version}, interfaceVer ${interfaceVer}`);
     }
 
     const screenshotUrls = this.getScreenshotUrls([matchedRelease]);

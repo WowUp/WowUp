@@ -5,6 +5,7 @@ export const FEATURE_ACCOUNTS_ENABLED = false;
 
 export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
 export const ADDON_PROVIDER_CURSEFORGE = "Curse";
+export const ADDON_PROVIDER_CURSEFORGEV2 = "CurseV2";
 export const ADDON_PROVIDER_GITHUB = "GitHub";
 export const ADDON_PROVIDER_RAIDERIO = "RaiderIO";
 export const ADDON_PROVIDER_TUKUI = "TukUI";
@@ -145,6 +146,7 @@ export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
 export const ACCT_PUSH_ENABLED_KEY = "acct_push_enabled";
 export const WAGO_PROMPT_KEY = "wago_prompt";
 export const PREF_TABS_COLLAPSED = "tabs_collapsed";
+export const PREF_CF2_API_KEY = "cf2_api_key";
 
 export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 

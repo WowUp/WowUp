@@ -149,6 +149,8 @@
       "IGNORED": "Ignorován",
       "INSTALL": "Instalovat",
       "PENDING": "Pending",
+      "UNAVAILABLE": "Unavailable",
+      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
       "UNINSTALL": "Odinstalovat",
       "UNKNOWN": "",
       "UPDATE": "Aktualizovat",
@@ -469,6 +471,11 @@
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Ad required",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
+          "API_KEY_TITLE": "CurseForge API Key",
+          "PROVIDER_NOTE": "API Key Required"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Vyberte poskytovatele addonů, kteří budou použiti pro vyhledávání a instalaci addonů",
           "FIELD_LABEL": "Povolení poskytovatelé addonů",

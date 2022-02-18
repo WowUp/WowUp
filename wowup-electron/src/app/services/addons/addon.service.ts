@@ -34,7 +34,7 @@ import {
   AddonWarningType,
 } from "../../../common/wowup/models";
 import { AddonProvider, SearchByUrlResult } from "../../addon-providers/addon-provider";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+// import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
 import { AddonFolder } from "../../models/wowup/addon-folder";
@@ -59,6 +59,7 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
 
 export enum ScanUpdateType {
   Start,
@@ -773,7 +774,7 @@ export class AddonService {
   };
 
   public async logDebugData(): Promise<void> {
-    const curseProvider = this._addonProviderService.getProvider<CurseAddonProvider>(ADDON_PROVIDER_CURSEFORGE);
+    const curseProvider = this._addonProviderService.getProvider<CurseAddonV2Provider>(ADDON_PROVIDER_CURSEFORGE);
     const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
 
     const clientMap = {};
