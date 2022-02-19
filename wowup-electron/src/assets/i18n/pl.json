@@ -118,7 +118,7 @@
   "COMMON": {
     "ADDON_CATEGORIES": {
       "ACHIEVEMENTS": "Osiągnięcia",
-      "ACTION_BARS": "Paski umięjętnośći",
+      "ACTION_BARS": "Paski umięjętności",
       "ALL_ADDONS": "Wszystkie addony",
       "AUCTION_ECONOMY": "Aukcja & Ekonomia",
       "BAGS_INVENTORY": "Plecak & Ekwipunek",
@@ -189,23 +189,23 @@
       "HOURS_AGO": "{count} {count, plural, =1{godzina} other{godzin}} temu",
       "JUST_NOW": "Przed chwilą",
       "MONTHS_AGO": "{count} {count, plural, =1{miesiąc} other{miesięcy}} temu",
-      "YEARS_AGO": "{count} {count, plural, =1{rok} other{lata}} temu",
+      "YEARS_AGO": "{count} {count, plural, =1{rok} other{lat}} temu",
       "YESTERDAY": "Wczoraj"
     },
     "DEPENDENCY": {
       "TOOLTIP": "{dependencyCount} potrzebuje {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "{count}",
+      "e+0": "kilka",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count, plural, one{tysiąc} other{{count} tysięcy}}",
-      "e+4": "{count, plural, one{tysiąc} other{{count} tysięcy}}",
-      "e+5": "{count, plural, one{tysiąc} other{{count} tysięcy}}",
-      "e+6": "{count, plural, one{milion} other{{count} milionów}}",
-      "e+7": "{count, plural, one{milion} other{{count} milionów}}",
-      "e+8": "{count, plural, one{milion} other{{count} milionów}}",
-      "e+9": "{count, plural, one{miliard} other{{count} miliardów}}"
+      "e+3": "{count} tys.",
+      "e+4": "{count} tys.",
+      "e+5": "{count} tys.",
+      "e+6": "{count} mln",
+      "e+7": "{count} mln",
+      "e+8": "{count} mln",
+      "e+9": "{count} mld"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
@@ -245,7 +245,7 @@
       "DESCRIPTION_TAB": "Opis",
       "FUNDING_LINK_TITLE": "Wspieraj tego autora",
       "IMAGES_TAB": "Podglądy",
-      "MISSING_DEPENDENCIES": "Brakujące zależnośći",
+      "MISSING_DEPENDENCIES": "Brakujące zależności",
       "NO_CHANGELOG_TEXT": "Brak listy zmian",
       "VIEW_IN_BROWSER_BUTTON": "Otwórz w przeglądarce",
       "VIEW_ON_PROVIDER_PREFIX": "Otwórz w"
@@ -413,10 +413,10 @@
       "IMPORT_EXPORT_ADDONS_BUTTON": "Import/Eksport addonów",
       "MULTIPLE_PROVIDERS_TOOLTIP": "Ten addon ma wielu dostawców",
       "PAGE_CONTEXT_FOOTER": {
-        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addons}}",
+        "ADDONS_INSTALLED": "{count} {count, plural, =1{addon} other{addonów}}",
         "JOIN_DISCORD": "Porozmawiaj z nami na Discordzie",
         "PATREON_SUPPORT": "Wspieraj WowUp na Patreonie",
-        "SEARCH_RESULTS": "{count} {count, plural, =1{result} other{results}}",
+        "SEARCH_RESULTS": "{count} {count, plural, =1{wynik} other{wyników}}",
         "VIEW_GITHUB": "Sprawdź kod na GitHubie",
         "VIEW_GUIDE": "Sprawdź nasz przewodnik, aby zobaczyć, co potrafi WowUp."
       },
@@ -463,7 +463,7 @@
       "WTF_BACKUP_BUTTON": "Ustawienia kopii zapasowej interfejsu"
     },
     "NEWS": {
-      "PAGE_CONTEXT_FOOTER": "{count} nowośći",
+      "PAGE_CONTEXT_FOOTER": "{count} nowości",
       "REFRESH_TOOLTIP": "Odśwież kanał wiadomości"
     },
     "OPTIONS": {
