@@ -149,8 +149,8 @@
       "IGNORED": "忽略",
       "INSTALL": "安装",
       "PENDING": "等待中",
-      "UNAVAILABLE": "Unavailable",
-      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
+      "UNAVAILABLE": "不可用",
+      "UNAVAILABLE_TOOLTIP": "插件作者或提供方将该插件的状态设为不可用",
       "UNINSTALL": "卸载",
       "UNKNOWN": "未知",
       "UPDATE": "更新",
@@ -472,9 +472,9 @@
       "ADDON": {
         "AD_REQUIRED_HINT": "启用此项会显示广告",
         "CURSE_FORGE_V2": {
-          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
-          "API_KEY_TITLE": "CurseForge API Key",
-          "PROVIDER_NOTE": "API Key Required"
+          "API_KEY_DESCRIPTION": "如果申请过 CurseForge API 密钥，请填入此处以连接到 CurseForge API。",
+          "API_KEY_TITLE": "CurseForge API 密钥",
+          "PROVIDER_NOTE": "需要 API 密钥"
         },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "选择从哪些提供方搜索和安装新插件",
