@@ -27,6 +27,7 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
     <li>German locale updates (Glow)</li>
     <li>Portuguese locale updates (TheLastDarkthorne)</li>
+    <li>Russian locale updates (Medok)</li>
     <li>Wago is now a trusted domain by default (Artemis)</li>
     <li>Fix an issue with caching Wago scan results</li>
     </ul>
