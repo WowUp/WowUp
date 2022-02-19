@@ -40,7 +40,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         debounceTime(300),
         switchMap((ch) => {
-          if (ch.cfV2ApiKey) {
+          if ('cfV2ApiKey' in ch) {
             return from(this._sensitiveStorageService.setAsync(PREF_CF2_API_KEY, ch.cfV2ApiKey));
           }
           return of(undefined);
