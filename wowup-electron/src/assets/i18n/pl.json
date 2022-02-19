@@ -122,7 +122,7 @@
       "ALL_ADDONS": "Wszystkie addony",
       "AUCTION_ECONOMY": "Aukcja & Ekonomia",
       "BAGS_INVENTORY": "Plecak & Ekwipunek",
-      "BOSS_ENCOUNTERS": "Spotkania z bossami",
+      "BOSS_ENCOUNTERS": "Starcia z bossami",
       "BUFFS_DEBUFFS": "Buffy & Debuffy",
       "BUNDLES": "Pakiety",
       "CHAT_COMMUNICATION": "Czat & Komunikacja",
@@ -185,33 +185,33 @@
     },
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
-      "DAYS_AGO": "{count} {count, plural, =1{day} other{days}} ago",
-      "HOURS_AGO": "{count} {count, plural, =1{hour} other{hours}} ago",
+      "DAYS_AGO": "{count} {count, plural, =1{dzień} other{dni}} temu",
+      "HOURS_AGO": "{count} {count, plural, =1{godzina} other{godzin}} temu",
       "JUST_NOW": "Przed chwilą",
-      "MONTHS_AGO": "{count} {count, plural, =1{month} other{months}} ago",
-      "YEARS_AGO": "{count} {count, plural, =1{year} other{years}} ago",
+      "MONTHS_AGO": "{count} {count, plural, =1{miesiąc} other{miesięcy}} temu",
+      "YEARS_AGO": "{count} {count, plural, =1{rok} other{lata}} temu",
       "YESTERDAY": "Wczoraj"
     },
     "DEPENDENCY": {
       "TOOLTIP": "{dependencyCount} potrzebuje {dependencyCount, plural, =1{dependency} other{dependencies}}"
     },
     "DOWNLOAD_COUNT": {
-      "e+0": "kilka",
+      "e+0": "{count}",
       "e+1": "{count}",
       "e+2": "{count}",
-      "e+3": "{count} tysiąc",
-      "e+4": "{count} tysiąc",
-      "e+5": "{count} tysiąc",
-      "e+6": "{count} milion",
-      "e+7": "{count} milion",
-      "e+8": "{count} milion",
-      "e+9": "{count} bilion"
+      "e+3": "{count, plural, one{tysiąc} other{{count} tysięcy}}",
+      "e+4": "{count, plural, one{tysiąc} other{{count} tysięcy}}",
+      "e+5": "{count, plural, one{tysiąc} other{{count} tysięcy}}",
+      "e+6": "{count, plural, one{milion} other{{count} milionów}}",
+      "e+7": "{count, plural, one{milion} other{{count} milionów}}",
+      "e+8": "{count, plural, one{milion} other{{count} milionów}}",
+      "e+9": "{count, plural, one{miliard} other{{count} miliardów}}"
     },
     "ENUM": {
       "ADDON_CHANNEL_TYPE": {
         "ALPHA": "Alfa",
         "BETA": "Beta",
-        "STABLE": "Stabilne"
+        "STABLE": "Stabilna"
       }
     },
     "ERRORS": {
@@ -353,7 +353,7 @@
       "SEARCH_LABEL": "Szukaj",
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
-        "AUTHOR_COLUMN_HEADER": "Autor(rzy)",
+        "AUTHOR_COLUMN_HEADER": "Autor(-rzy)",
         "DOWNLOAD_COUNT_COLUMN_HEADER": "Pobieranie",
         "PROVIDER_COLUMN_HEADER": "Dostawca",
         "RELEASED_AT_COLUMN_HEADER": "Wydano w",
@@ -434,15 +434,15 @@
         "ADDON_COLUMN_HEADER": "Addon",
         "ADDON_INSTALL_BUTTON": "Instaluj",
         "ADDON_UPDATE_BUTTON": "Aktualizuj",
-        "AUTHOR_COLUMN_HEADER": "Autor(rzy)",
+        "AUTHOR_COLUMN_HEADER": "Autor(-rzy)",
         "AUTO_UPDATE_ICON_TOOLTIP": "Automatyczna aktualizacja włączona",
         "GAME_VERSION_COLUMN_HEADER": "Wersja gry",
         "LATEST_VERSION_COLUMN_HEADER": "Ostatnia wersja",
         "PROVIDER_COLUMN_HEADER": "Dostawca",
         "PROVIDER_RELEASE_CHANNEL": "Kanał dostawcy",
-        "RELEASED_AT_COLUMN_HEADER": "Wydane w",
+        "RELEASED_AT_COLUMN_HEADER": "Wydany",
         "STATUS_COLUMN_HEADER": "Status",
-        "UPDATED_AT_COLUMN_HEADER": "Zaktualizowany w"
+        "UPDATED_AT_COLUMN_HEADER": "Zaktualizowany"
       },
       "UNINSTALL_POPUP": {
         "CONFIRMATION_ACTION_EXPLANATION": "Usunięcie addonu przez WowUp usunie zaznaczony addon z twojego folderu interfejs/addony. Ustawienia postaci dla tego addonu nie zostaną usunięte.",
