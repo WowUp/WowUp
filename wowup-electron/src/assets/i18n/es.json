@@ -149,8 +149,8 @@
       "IGNORED": "Ignorado",
       "INSTALL": "Instalar",
       "PENDING": "Pendiente",
-      "UNAVAILABLE": "Unavailable",
-      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
+      "UNAVAILABLE": "No disponible",
+      "UNAVAILABLE_TOOLTIP": "El autor o proveedor ha marcado este addon como no disponible",
       "UNINSTALL": "Desinstalar",
       "UNKNOWN": "",
       "UPDATE": "Actualizar",
@@ -472,9 +472,9 @@
       "ADDON": {
         "AD_REQUIRED_HINT": "Anuncio requerido",
         "CURSE_FORGE_V2": {
-          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
-          "API_KEY_TITLE": "CurseForge API Key",
-          "PROVIDER_NOTE": "API Key Required"
+          "API_KEY_DESCRIPTION": "Si ha solicitado una clave para la API de CurseForge, puede introducirla aquí para conectar con ella.",
+          "API_KEY_TITLE": "Clave de API CurseForge",
+          "PROVIDER_NOTE": "Clave de API requerida"
         },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Determina qué proveedores serán utilizados para la búsqueda e instalación de nuevos addons.",
