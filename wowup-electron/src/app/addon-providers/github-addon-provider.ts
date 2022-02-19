@@ -376,11 +376,11 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isClassicAsset(asset: GitHubAsset): boolean {
-    return /[-](classic|vanilla)\.zip$/i.test(asset.name);
+    return /[-|_](classic|vanilla)\.zip$/i.test(asset.name);
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return /[-](bc|bcc|tbc)\.zip$/i.test(asset.name);
+    return /[-|_](bc|bcc|tbc)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {
