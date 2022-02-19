@@ -4,7 +4,7 @@ import { MatSelectionListChange } from "@angular/material/list";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
 import { AddonProviderType } from "../../../addon-providers/addon-provider";
 import { BehaviorSubject, catchError, debounceTime, first, from, map, of, Subject, switchMap, takeUntil } from "rxjs";
-import { PreferenceStorageService } from "../../../services/storage/preference-storage.service";
+import { SensitiveStorageService } from "../../../services/storage/sensitive-storage.service";
 import { PREF_CF2_API_KEY } from "../../../../common/constants";
 import { FormControl, FormGroup } from "@angular/forms";
 
@@ -29,7 +29,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
 
   public constructor(
     private _addonProviderService: AddonProviderFactory,
-    private _preferenceStorageService: PreferenceStorageService
+    private _sensitiveStorageService: SensitiveStorageService
   ) {
     this._addonProviderService.addonProviderChange$.subscribe(() => {
       this.loadProviderStates();
@@ -41,7 +41,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
         debounceTime(300),
         switchMap((ch) => {
           if (ch.cfV2ApiKey) {
-            return from(this._preferenceStorageService.setAsync(PREF_CF2_API_KEY, ch.cfV2ApiKey));
+            return from(this._sensitiveStorageService.setAsync(PREF_CF2_API_KEY, ch.cfV2ApiKey));
           }
           return of(undefined);
         }),
@@ -71,7 +71,7 @@ export class OptionsAddonSectionComponent implements OnInit, OnDestroy {
   }
 
   private loadCfV2ApiKey() {
-    from(this._preferenceStorageService.getAsync(PREF_CF2_API_KEY))
+    from(this._sensitiveStorageService.getAsync(PREF_CF2_API_KEY))
       .pipe(
         first(),
         map((apiKey) => {

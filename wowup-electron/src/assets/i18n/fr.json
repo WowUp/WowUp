@@ -531,6 +531,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "Dump des données de débogage",
         "DEBUG_DATA_DESCRIPTION": "Log les données de débogage pour aider à diagnostiquer les problèmes potentiels. Cela peut être trouvé dans votre dernier fichier journal pour les curieux.",
         "DEBUG_DATA_LABEL": "Déboguer les données",

@@ -50,7 +50,7 @@ import { AddonProvider, GetAllBatchResult, GetAllResult, SearchByUrlResult } fro
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { PreferenceStorageService } from "../services/storage/preference-storage.service";
+import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 
 interface ProtocolData {
   addonId: number;
@@ -99,7 +99,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     private _wowupApiService: WowUpApiService,
     private _warcraftService: WarcraftService,
     private _tocService: TocService,
-    private _preferenceStorageService: PreferenceStorageService,
+    private _sensitiveStorageService: SensitiveStorageService,
     _networkService: NetworkService
   ) {
     super();
@@ -1045,7 +1045,7 @@ export class CurseAddonV2Provider extends AddonProvider {
       return this._cfClient;
     }
 
-    const apiKey = await this._preferenceStorageService.getAsync(PREF_CF2_API_KEY);
+    const apiKey = await this._sensitiveStorageService.getAsync(PREF_CF2_API_KEY);
     if (typeof apiKey !== "string" || apiKey.length === 0) {
       return undefined;
     }

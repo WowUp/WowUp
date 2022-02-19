@@ -328,6 +328,10 @@ export class WowUpService {
     await this._fileService.showDirectory(this.applicationLogsFolderPath);
   }
 
+  public async showConfigFolder(): Promise<void> {
+    await this._fileService.showDirectory(this.applicationFolderPath);
+  }
+
   public checkForAppUpdate(): void {
     this._electronService.send(IPC_APP_CHECK_UPDATE);
   }
