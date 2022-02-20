@@ -1618,7 +1618,7 @@ export class AddonService {
 
     const externalIds: AddonExternalId[] = [];
     for (const [key, value] of Object.entries(ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP)) {
-      this.insertExternalId(externalIds, key, toc[value]);
+      this.insertExternalId(externalIds, key, toc[value] as string);
     }
 
     //If the addon does not include the current external id add it
