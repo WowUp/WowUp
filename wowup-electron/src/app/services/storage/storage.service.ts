@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject } from "rxjs";
+import { Subject } from "rxjs";
 import {
   IPC_STORE_GET_OBJECT,
   IPC_STORE_GET_OBJECT_SYNC,

@@ -111,11 +111,9 @@ export class CurseAddonV2Provider extends AddonProvider {
     );
 
     // Pick up a CF2 api key change at runtime to force a new client to be created
-    this._sensitiveStorageService.change$
-      .pipe(filter((change) => change.key === PREF_CF2_API_KEY))
-      .subscribe((change) => {
-        this._cfClient = undefined;
-      });
+    this._sensitiveStorageService.change$.pipe(filter((change) => change.key === PREF_CF2_API_KEY)).subscribe(() => {
+      this._cfClient = undefined;
+    });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -62,7 +62,6 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
-import { entries } from "lodash";
 
 export enum ScanUpdateType {
   Start,
