@@ -22,7 +22,7 @@
     "IMPORT_TAB_LABEL": "Import",
     "IMPORT_TEXT_INSTRUCTIONS": "Wklej zawartość danych addonu WowUp do okienka poniżej aby zacząć",
     "IMPORT_TEXT_LABEL": "Import danych",
-    "IMPORT_TOTAL_COUNT": "Importowanie {count} {count, plural, =1{addon} other{addons}}",
+    "IMPORT_TOTAL_COUNT": "Importowanie {count} {count, plural, =1{addonu} other{addonów}}",
     "INSTALL_BUTTON": "Zainstaluj",
     "INVALID_CLIENT_TYPE": "Zawartość importu nie jest zgodna z klientem",
     "NO_CHANGE_BADGE_TOOLTIP": "Masz już zainstalowany ten addon",
@@ -66,7 +66,7 @@
       }
     },
     "AUTO_UPDATE_FEW_NOTIFICATION_BODY": "Automatycznie zaktaulizowane\r\n{addonNames}",
-    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatycznie zaktaulizowane {count} {count, plural, =1{addon} other{addons}}.",
+    "AUTO_UPDATE_NOTIFICATION_BODY": "Automatycznie zaktualizowano {count} {count, plural, =1{addon} other{addonów}}.",
     "AUTO_UPDATE_NOTIFICATION_TITLE": "Automatyczna aktualizacja",
     "CLOSE_FULLSCREEN_BUTTON_TOOLTIP": "Opuść pełny ekran",
     "FULLSCREEN_SNACKBAR": {
@@ -149,8 +149,8 @@
       "IGNORED": "Zignorowany",
       "INSTALL": "Zainstaluj",
       "PENDING": "W toku",
-      "UNAVAILABLE": "Unavailable",
-      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
+      "UNAVAILABLE": "Niedostępny",
+      "UNAVAILABLE_TOOLTIP": "Ten autor lub dostawca uczynił ten addon niedostępnym.",
       "UNINSTALL": "Odinstaluj",
       "UNKNOWN": "",
       "UPDATE": "Aktualizacja",
@@ -188,14 +188,14 @@
     "DATES": {
       "DATETIME_SHORT": "{d, date, short} {d, time, short}",
       "DAYS_AGO": "{count} {count, plural, =1{dzień} other{dni}} temu",
-      "HOURS_AGO": "{count} {count, plural, =1{godzina} other{godzin}} temu",
+      "HOURS_AGO": "{count} {count, plural, =1{godzinę} other{godziny}} temu",
       "JUST_NOW": "Przed chwilą",
       "MONTHS_AGO": "{count} {count, plural, =1{miesiąc} other{miesięcy}} temu",
-      "YEARS_AGO": "{count} {count, plural, =1{rok} other{lat}} temu",
+      "YEARS_AGO": "{count} {count, plural, =1{rok} other{lata}} temu",
       "YESTERDAY": "Wczoraj"
     },
     "DEPENDENCY": {
-      "TOOLTIP": "{dependencyCount} potrzebuje {dependencyCount, plural, =1{dependency} other{dependencies}}"
+      "TOOLTIP": "{dependencyCount} potrzebuje {dependencyCount, plural, =1{zależność} other{zależności}}"
     },
     "DOWNLOAD_COUNT": {
       "e+0": "kilka",
@@ -242,7 +242,7 @@
       "CHANGELOG_TAB": "Lista zmian",
       "COPY_ADDON_ID_SNACKBAR": "Addon ID skopiowany do schowka",
       "COPY_ADDON_ID_TOOLTIP": "Skopiuj ID addonu do schowka",
-      "DEPENDENCY_TEXT": "Ten addon ma {dependencyCount} potrzebowanych {dependencyCount, plural, =1{dependency} other{dependencies}}",
+      "DEPENDENCY_TEXT": "Ten addon potrzebuje {dependencyCount} {dependencyCount, plural, =1{zależność} other{zależności}}",
       "DESCRIPTION_NOT_FOUND": "Nie znaleziono opisu",
       "DESCRIPTION_TAB": "Opis",
       "FUNDING_LINK_TITLE": "Wspieraj tego autora",
@@ -277,7 +277,7 @@
       "ADDON_URL_INPUT_PLACEHOLDER": "Ex. GitHub lub WowInterface URL",
       "CLOSE_BUTTON": "Zamknij",
       "DESCRIPTION": "Jeżeli chcesz zainstalować addon bezpośrednio z linka, wklej go poniżej aby zacząć.",
-      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{download} other{downloads}} on {provider}",
+      "DOWNLOAD_COUNT": "{textCount} {count, plural, =1{pobranie} other{pobrań}} u {provider}",
       "ERROR": {
         "ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać {message}.\n\nA Potrzebny jest prawidłowy plik zip w wydaniu aby pobrać go dla WowUp.",
         "BURNING_CRUSADE_ASSET_NOT_FOUND": "Nie znaleziono zasobów aby pobrać z {message}.\n\nA prawidłowy plik zip z konćówką '-bc' jest potrzebny aby pobrać go dla WowUp.",
@@ -377,7 +377,7 @@
     },
     "MY_ADDONS": {
       "ADDON_CONTEXT_MENU": {
-        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addons}} selected",
+        "ADDONS_SELECTED": "{count} {count, plural, =1{addon} other{addonów}} zaznaczono",
         "ALPHA_ADDON_CHANNEL": "Alfa",
         "AUTO_UPDATE_ADDON_BUTTON": "Automatyczna aktualizacja",
         "AUTO_UPDATE_ADDON_NOTIFICATIONS_ENABLED_BUTTON": "Powiadomienia włączone",
@@ -398,7 +398,7 @@
       },
       "CHECK_UPDATES_BUTTON": "Sprawdź aktualizacje",
       "CHECK_UPDATES_BUTTON_TOOLTIP": "Sprawdź najnowsze aktualizacje addonów",
-      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{update} other{updates}} ",
+      "CLIENT_TYPE_SELECT_BADGE": "{count} {count, plural, =1{aktualizacja} other{aktualizacje}} ",
       "CLIENT_TYPE_SELECT_LABEL": "World of Warcraft",
       "COLUMNS_CONTEXT_MENU": {
         "TITLE": "Pokaż kolumny"
@@ -451,9 +451,9 @@
         "CONFIRMATION_LESS_THAN_THREE": "Czy na pewno chcesz usunąć {count} addonów?",
         "CONFIRMATION_MORE_THAN_THREE": "Czy na pewno chcesz usunąć wybrane {count} addony?",
         "CONFIRMATION_ONE": "Czy na pewno chcesz usunąć {addonName}?",
-        "DEPENDENCY_MESSAGE": "{addonName} ma {dependencyCount} {dependencyCount, plural, =1{dependency} other{dependencies}}. Czy chcesz je również usunąć?",
+        "DEPENDENCY_MESSAGE": "{addonName} ma {dependencyCount} {dependencyCount, plural, =1{zależność} other{zależności}}. Czy chcesz je również usunąć?",
         "DEPENDENCY_TITLE": "Usunąć zależności addonów?",
-        "TITLE": "Odinstaluj {count, plural, =1{Addon} other{Addons}}?"
+        "TITLE": "Odinstaluj {count, plural, =1{addon} other{addonów}}?"
       },
       "UNKNOWN_ADDON_INFO_TOOLTIP": "Zainstalowany addon nie pasuje do żadnego z skonfigurowanych dostawców",
       "UPDATE_ALL_BUTTON": "Aktualizuj wszystko",
@@ -472,9 +472,9 @@
       "ADDON": {
         "AD_REQUIRED_HINT": "Reklama wymagana",
         "CURSE_FORGE_V2": {
-          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
-          "API_KEY_TITLE": "CurseForge API Key",
-          "PROVIDER_NOTE": "API Key Required"
+          "API_KEY_DESCRIPTION": "Jeśli zażądałeś klucza API CurseForge, możesz go wprowadzić tutaj, aby połączyć się z API.",
+          "API_KEY_TITLE": "Klucz API CurseForge",
+          "PROVIDER_NOTE": "Wymagany klucz API"
         },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Wybierz, którzy dostawcy mogą być używani do wyszukiwania i instalowania nowych addonów",
@@ -531,9 +531,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Pozwól WowUp na skanowanie folderów z symlinkami w folderze addonów. Ostrzeżenie: zostaną one zastąpione podczas aktualizacji/instalacji."
       },
       "DEBUG": {
-        "CONFIG_FILES_BUTTON": "Show Config Files",
-        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
-        "CONFIG_FILES_LABEL": "Config Files",
+        "CONFIG_FILES_BUTTON": "Pokaż pliki konfiguracyjne",
+        "CONFIG_FILES_DESCRIPTION": "Otwórz folder, w którym przechowywane są na przykład pliki addons.json oraz preferences.json.",
+        "CONFIG_FILES_LABEL": "Pliki konfiguracyjne",
         "DEBUG_DATA_BUTTON": "Zrzut danych debugowania",
         "DEBUG_DATA_DESCRIPTION": "Rejestruj dane debugowania, aby pomóc w diagnozowaniu potencjalnych problemów. Można je znaleźć w najnowszym pliku dziennika dla ciekawskich.",
         "DEBUG_DATA_LABEL": "Dane debugowania",
@@ -582,7 +582,7 @@
       "TITLE": "Zastosować kopię zapasową WTF?"
     },
     "BACKUP_APPLY_SUCCESS": "Pomyślne zastosowanie kopii zapasowej: {name}",
-    "BACKUP_COUNT_TEXT": "Znaleziono {count} {count, plural, =1{backup} other{backups}}",
+    "BACKUP_COUNT_TEXT": "Znaleziono {count} {count, plural, =1{kopię zapasową} other{kopie zapasowe}}",
     "BUSY_TEXT": {
       "APPLYING_BACKUP": "Stosowanie kopii zapasowej...",
       "CREATING_BACKUP": "Tworzenie kopii zapasowej z {count} plików...",
