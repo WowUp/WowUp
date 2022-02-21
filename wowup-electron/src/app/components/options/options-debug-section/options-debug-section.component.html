@@ -16,6 +16,20 @@
       </div>
     </div>
   </div>
+  <!-- SHOW CONFIG FILES -->
+  <div class="section">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>{{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_LABEL" | translate }}</div>
+        <small class="text-2">{{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_DESCRIPTION" | translate }}</small>
+      </div>
+      <div>
+        <button id="show-config-btn" mat-flat-button color="primary" (click)="onShowConfig()">
+          {{ "PAGES.OPTIONS.DEBUG.CONFIG_FILES_BUTTON" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
   <!-- DUMP DEBUG DATA -->
   <div class="section">
     <div class="row align-items-center">

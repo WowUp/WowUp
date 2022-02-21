@@ -531,6 +531,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permitir ao WowUp escanear pastas symlink na sua pasta de Addons. Aviso: elas serão substituidas quando atualizar/instalar."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "Esvaziar log de depuração de dados",
         "DEBUG_DATA_DESCRIPTION": "Registra os dados de depuração e ajuda a diagnosticar problemas potenciais. Apenas por o curiosidade, isso pode ser encontrado em seu último arquivo de registro.",
         "DEBUG_DATA_LABEL": "Depurar Dados",

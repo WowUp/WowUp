@@ -531,6 +531,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "允许 WowUp 扫描插件所在路径下的符号链接。警告：符号链接在安装或更新插件时会被替换。"
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "转储调试数据",
         "DEBUG_DATA_DESCRIPTION": "记录调试数据以帮助诊断潜在的问题。调试数据可以在最新的日志文件中找到。",
         "DEBUG_DATA_LABEL": "调试数据",

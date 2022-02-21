@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { from, Observable, of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, filter, map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import {
   CF2Addon,
@@ -50,7 +50,7 @@ import { AddonProvider, GetAllBatchResult, GetAllResult, SearchByUrlResult } fro
 import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
-import { PreferenceStorageService } from "../services/storage/preference-storage.service";
+import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 
 interface ProtocolData {
   addonId: number;
@@ -99,7 +99,7 @@ export class CurseAddonV2Provider extends AddonProvider {
     private _wowupApiService: WowUpApiService,
     private _warcraftService: WarcraftService,
     private _tocService: TocService,
-    private _preferenceStorageService: PreferenceStorageService,
+    private _sensitiveStorageService: SensitiveStorageService,
     _networkService: NetworkService
   ) {
     super();
@@ -109,6 +109,13 @@ export class CurseAddonV2Provider extends AddonProvider {
       undefined,
       AppConfig.curseforge.httpTimeoutMs
     );
+
+    // Pick up a CF2 api key change at runtime to force a new client to be created
+    this._sensitiveStorageService.change$
+      .pipe(filter((change) => change.key === PREF_CF2_API_KEY))
+      .subscribe((change) => {
+        this._cfClient = undefined;
+      });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -612,9 +619,7 @@ export class CurseAddonV2Provider extends AddonProvider {
   private getAddonFileById(addonId: string | number, fileId: string | number): Observable<CF2File> {
     return from(this.getClient()).pipe(
       switchMap((client) =>
-        from(
-          this._circuitBreaker.fire(() => client.getModFile(parseInt(`${addonId}`, 10), parseInt(`${fileId}`, 10)))
-        )
+        from(this._circuitBreaker.fire(() => client.getModFile(parseInt(`${addonId}`, 10), parseInt(`${fileId}`, 10))))
       ),
       map((response) => response.data.data)
     );
@@ -1045,7 +1050,7 @@ export class CurseAddonV2Provider extends AddonProvider {
       return this._cfClient;
     }
 
-    const apiKey = await this._preferenceStorageService.getAsync(PREF_CF2_API_KEY);
+    const apiKey = await this._sensitiveStorageService.getAsync(PREF_CF2_API_KEY);
     if (typeof apiKey !== "string" || apiKey.length === 0) {
       return undefined;
     }

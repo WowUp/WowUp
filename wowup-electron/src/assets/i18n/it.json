@@ -531,6 +531,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Consenti a WowUp di scansionare le cartelle dei symlinks nella cartella dell'addon. Attenzione: verranno sostituiti durante l'aggiornamento/installazione."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
         "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questi dati possono essere trovati nei tuoi ultimi file di log.",
         "DEBUG_DATA_LABEL": "Dati di Debug",
