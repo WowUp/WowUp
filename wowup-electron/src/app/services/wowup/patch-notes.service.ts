@@ -28,11 +28,17 @@ const CHANGELOGS: ChangeLog[] = [
     <li>German locale updates (Glow)</li>
     <li>Portuguese locale updates (TheLastDarkthorne)</li>
     <li>Russian locale updates (Medok)</li>
+    <li>Spanish locale updates (SkollVargr)</li>
+    <li>Chinese locale updates (CyanoHao)</li>
     <li>Wago is now a trusted domain by default (Artemis)</li>
     <li>Fix an issue with caching Wago scan results</li>
+    <li>Addon detail/changelog text is now selectable</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
+    <li>Wago addon IDs should now work as expected when swapping providers</li>
+    <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
+    <li>Github install supports octet stream content type zips</li>
     <li>My Addons spinner is now centered</li>
     <li>Updated a bunch of dependencies</li>
     </ul>
