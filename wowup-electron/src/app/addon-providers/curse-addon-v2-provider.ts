@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { from, Observable, of } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, filter, map, switchMap } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import {
   CF2Addon,
@@ -109,6 +109,13 @@ export class CurseAddonV2Provider extends AddonProvider {
       undefined,
       AppConfig.curseforge.httpTimeoutMs
     );
+
+    // Pick up a CF2 api key change at runtime to force a new client to be created
+    this._sensitiveStorageService.change$
+      .pipe(filter((change) => change.key === PREF_CF2_API_KEY))
+      .subscribe((change) => {
+        this._cfClient = undefined;
+      });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -612,9 +619,7 @@ export class CurseAddonV2Provider extends AddonProvider {
   private getAddonFileById(addonId: string | number, fileId: string | number): Observable<CF2File> {
     return from(this.getClient()).pipe(
       switchMap((client) =>
-        from(
-          this._circuitBreaker.fire(() => client.getModFile(parseInt(`${addonId}`, 10), parseInt(`${fileId}`, 10)))
-        )
+        from(this._circuitBreaker.fire(() => client.getModFile(parseInt(`${addonId}`, 10), parseInt(`${fileId}`, 10))))
       ),
       map((response) => response.data.data)
     );
