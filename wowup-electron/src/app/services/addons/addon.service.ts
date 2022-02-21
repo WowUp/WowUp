@@ -10,11 +10,13 @@ import { Injectable } from "@angular/core";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_CURSEFORGEV2,
   ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_HUB_LEGACY,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
+  ADDON_PROVIDER_WAGO,
   ADDON_PROVIDER_WOWINTERFACE,
   ADDON_PROVIDER_WOWUP_COMPANION,
   ADDON_PROVIDER_ZIP,
@@ -60,6 +62,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
+import { entries } from "lodash";
 
 export enum ScanUpdateType {
   Start,
@@ -91,6 +94,14 @@ interface InstallQueueItem {
 }
 
 const IGNORED_FOLDER_NAMES = ["__MACOSX"];
+
+const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP = {
+  [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
+  [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
+  [ADDON_PROVIDER_CURSEFORGE]: "curseProjectId",
+  [ADDON_PROVIDER_CURSEFORGEV2]: "curseProjectId",
+  [ADDON_PROVIDER_WAGO]: "wagoAddonId",
+};
 
 @Injectable({
   providedIn: "root",
@@ -1606,9 +1617,9 @@ export class AddonService {
     }
 
     const externalIds: AddonExternalId[] = [];
-    this.insertExternalId(externalIds, ADDON_PROVIDER_WOWINTERFACE, toc.wowInterfaceId);
-    this.insertExternalId(externalIds, ADDON_PROVIDER_TUKUI, toc.tukUiProjectId);
-    this.insertExternalId(externalIds, ADDON_PROVIDER_CURSEFORGE, toc.curseProjectId);
+    for (const [key, value] of Object.entries(ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP)) {
+      this.insertExternalId(externalIds, key, toc[value] as string);
+    }
 
     //If the addon does not include the current external id add it
     if (!this.containsOwnExternalId(addon, externalIds)) {

@@ -195,6 +195,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public ngOnDestroy(): void {
     this._subscriptions.forEach((sub) => sub.unsubscribe());
+    window.getSelection()?.empty();
   }
 
   public onInstallUpdated(): void {

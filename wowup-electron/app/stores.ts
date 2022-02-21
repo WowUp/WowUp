@@ -8,14 +8,17 @@ import {
   IPC_STORE_REMOVE_OBJECT,
   IPC_STORE_SET_OBJECT,
   PREFERENCE_STORE_NAME,
+  SENSITIVE_STORE_NAME,
 } from "../src/common/constants";
 
 export const addonStore = new Store({ name: ADDON_STORE_NAME });
 export const preferenceStore = new Store({ name: PREFERENCE_STORE_NAME });
+export const sensitiveStore = new Store({ name: SENSITIVE_STORE_NAME });
 
 const stores: { [storeName: string]: Store } = {
   [ADDON_STORE_NAME]: addonStore,
   [PREFERENCE_STORE_NAME]: preferenceStore,
+  [SENSITIVE_STORE_NAME]: sensitiveStore,
 };
 
 export function initializeStoreIpcHandlers(): void {

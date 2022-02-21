@@ -109,6 +109,7 @@ export const IPC_STORE_REMOVE_OBJECT = "store-remove-object";
 // STORES
 export const ADDON_STORE_NAME = "addons";
 export const PREFERENCE_STORE_NAME = "preferences";
+export const SENSITIVE_STORE_NAME = "sensitive";
 export const STORAGE_WOWUP_AUTH_TOKEN = "wowup-auth-token";
 
 // PREFERENCES

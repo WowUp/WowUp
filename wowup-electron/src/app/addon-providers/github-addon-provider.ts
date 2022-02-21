@@ -50,7 +50,11 @@ interface ReleaseMetaItemMetadata {
 }
 
 const API_URL = "https://api.github.com/repos";
-const RELEASE_CONTENT_TYPES = ["application/x-zip-compressed", "application/zip"];
+const RELEASE_CONTENT_TYPES = {
+  XZIP: "application/x-zip-compressed",
+  ZIP: "application/zip",
+  OCTET_STREAM: "application/octet-stream",
+};
 const HEADER_RATE_LIMIT_MAX = "x-ratelimit-limit";
 const HEADER_RATE_LIMIT_REMAINING = "x-ratelimit-remaining";
 const HEADER_RATE_LIMIT_RESET = "x-ratelimit-reset";
@@ -351,7 +355,15 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isValidContentType(asset: GitHubAsset): boolean {
-    return RELEASE_CONTENT_TYPES.some((ct) => ct == asset.content_type);
+    if ([RELEASE_CONTENT_TYPES.ZIP, RELEASE_CONTENT_TYPES.XZIP].includes(asset.content_type)) {
+      return true;
+    }
+
+    if (RELEASE_CONTENT_TYPES.OCTET_STREAM === asset.content_type && asset.browser_download_url.endsWith(".zip")) {
+      return true;
+    }
+
+    return false;
   }
 
   private isValidClientType(clientType: WowClientType, asset: GitHubAsset): boolean {
@@ -376,11 +388,11 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isClassicAsset(asset: GitHubAsset): boolean {
-    return /[-](classic|vanilla)\.zip$/i.test(asset.name);
+    return /[-|_](classic|vanilla)\.zip$/i.test(asset.name);
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return /[-](bc|bcc|tbc)\.zip$/i.test(asset.name);
+    return /[-|_](bc|bcc|tbc)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

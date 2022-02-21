@@ -149,6 +149,8 @@
       "IGNORED": "Zignorowany",
       "INSTALL": "Zainstaluj",
       "PENDING": "W toku",
+      "UNAVAILABLE": "Unavailable",
+      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
       "UNINSTALL": "Odinstaluj",
       "UNKNOWN": "",
       "UPDATE": "Aktualizacja",
@@ -469,6 +471,11 @@
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Reklama wymagana",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
+          "API_KEY_TITLE": "CurseForge API Key",
+          "PROVIDER_NOTE": "API Key Required"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Wybierz, którzy dostawcy mogą być używani do wyszukiwania i instalowania nowych addonów",
           "FIELD_LABEL": "Włączone addony dostawców",
@@ -524,6 +531,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Pozwól WowUp na skanowanie folderów z symlinkami w folderze addonów. Ostrzeżenie: zostaną one zastąpione podczas aktualizacji/instalacji."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "Zrzut danych debugowania",
         "DEBUG_DATA_DESCRIPTION": "Rejestruj dane debugowania, aby pomóc w diagnozowaniu potencjalnych problemów. Można je znaleźć w najnowszym pliku dziennika dla ciekawskich.",
         "DEBUG_DATA_LABEL": "Dane debugowania",
