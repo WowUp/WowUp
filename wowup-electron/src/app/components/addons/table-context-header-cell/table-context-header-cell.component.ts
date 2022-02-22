@@ -46,12 +46,12 @@ export class TableContextHeaderCellComponent implements IHeaderAngularComp {
     this.params.setSort(nextSort, event.shiftKey);
   }
 
-  private getNextSort(sorted: string): string {
+  private getNextSort(sorted: string): "asc" | "desc" | null {
     switch (sorted) {
       case "asc":
         return "desc";
       case "desc":
-        return "";
+        return null;
       default:
         return "asc";
     }
