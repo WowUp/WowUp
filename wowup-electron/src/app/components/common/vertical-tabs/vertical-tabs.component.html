@@ -1,5 +1,5 @@
 <div
-  class="tab-strip bg-secondary-3 text-1"
+  class="tab-strip bg-secondary-2 text-1"
   [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
@@ -127,8 +127,8 @@
   </div>
 
   <!-- AD FRAME -->
-  <div *ngIf="sessionService.adSpace$ | async" class="ad-space text-1 bg-secondary-3">
-    <div class="tab hover-bg-secondary-2" style="" (click)="onClickAdExplainer()">
+  <div *ngIf="sessionService.adSpace$ | async" class="ad-space text-1 bg-secondary-2">
+    <div class="tab hover-bg-secondary-4" style="" (click)="onClickAdExplainer()">
       {{ "ADS.AD_EXPLAINER_BUTTON" | translate }}
     </div>
     <div class="ad">

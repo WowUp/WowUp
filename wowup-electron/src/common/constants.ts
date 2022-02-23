@@ -159,7 +159,7 @@ export const HORDE_LIGHT_THEME = "horde-theme-light-theme";
 export const ALLIANCE_THEME = "alliance-theme";
 export const ALLIANCE_LIGHT_THEME = "alliance-theme-light-theme";
 export const DEFAULT_BG_COLOR = "#444444";
-export const DEFAULT_LIGHT_BG_COLOR = "#ebedef";
+export const DEFAULT_LIGHT_BG_COLOR = "#f3f3f3";
 
 // ERRORS
 export const ERROR_ADDON_ALREADY_INSTALLED = "error-addon-already-installed";
