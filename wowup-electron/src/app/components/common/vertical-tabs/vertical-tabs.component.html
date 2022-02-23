@@ -39,7 +39,7 @@
   >
     <mat-icon
       class="tab-icon tab-icon-inactive"
-      svgIcon="fas:user-circle"
+      svgIcon="fas:circle-user"
       [ngClass]="{ 'tab-icon-active': isAccountSelected$ | async }"
     >
     </mat-icon>
@@ -75,7 +75,7 @@
     [href]="wowUpWebsiteUrl + '/guide'"
     matTooltip="{{ 'PAGES.MY_ADDONS.PAGE_CONTEXT_FOOTER.VIEW_GUIDE' | translate }}"
   >
-    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="far:question-circle"></mat-icon>
+    <mat-icon class="tab-icon tab-icon-inactive" svgIcon="far:circle-question"></mat-icon>
     <div class="tab-title">{{ "PAGES.HOME.GUIDE_TAB_TITLE" | translate }}</div>
   </a>
 
@@ -112,14 +112,14 @@
     <mat-icon
       *ngIf="(isCollapsed$ | async) === true"
       class="tab-icon tab-icon-inactive"
-      [svgIcon]="'far:caret-square-right'"
+      [svgIcon]="'far:square-caret-right'"
     >
     </mat-icon>
 
     <mat-icon
       *ngIf="(isCollapsed$ | async) === false"
       class="tab-icon tab-icon-inactive"
-      [svgIcon]="'far:caret-square-left'"
+      [svgIcon]="'far:square-caret-left'"
     >
     </mat-icon>
 

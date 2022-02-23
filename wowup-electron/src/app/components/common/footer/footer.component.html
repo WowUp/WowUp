@@ -26,13 +26,13 @@
     <div *ngSwitchCase="appUpdateState.Downloaded">
       <button class="footer-button update-button text-1" matTooltip="{{ updateIconTooltip | translate }}"
         (click)="onClickInstallUpdate()">
-        <mat-icon svgIcon="fas:sync-alt"></mat-icon>
+        <mat-icon svgIcon="fas:rotate"></mat-icon>
         {{ 'APP.WOWUP_UPDATE.SNACKBAR_ACTION' | translate }}
       </button>
     </div>
     <div *ngSwitchDefault class="btn text-1" (click)="onClickCheckForUpdates()"
       matTooltip="{{ 'APP.SYSTEM_TRAY.CHECK_UPDATE' | translate }}">
-      <mat-icon svgIcon="fas:sync-alt"></mat-icon>
+      <mat-icon svgIcon="fas:rotate"></mat-icon>
     </div>
   </div>
 </footer>

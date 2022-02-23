@@ -25,7 +25,7 @@
             aria-label="Clear"
             (click)="onClickClearFilter()"
           >
-            <mat-icon svgIcon="fas:times"></mat-icon>
+            <mat-icon svgIcon="fas:xmark"></mat-icon>
           </button>
         </mat-form-field>
       </div>
@@ -84,7 +84,7 @@
           [matMenuTriggerFor]="pageActionMenu"
           [disabled]="enableControls$ | async | invertBool"
         >
-          <mat-icon svgIcon="fas:ellipsis-v"></mat-icon>
+          <mat-icon svgIcon="fas:ellipsis-vertical"></mat-icon>
         </button>
       </div>
     </div>
@@ -201,7 +201,7 @@
           {{ "DIALOGS.ADDON_DETAILS.VIEW_ON_PROVIDER_PREFIX" | translate }} {{ listItem.addon.providerName }}
         </div>
         <div>
-          <mat-icon class="open-in-browser-icon" svgIcon="fas:external-link-alt"></mat-icon>
+          <mat-icon class="open-in-browser-icon" svgIcon="fas:up-right-from-square"></mat-icon>
         </div>
       </div>
     </a>

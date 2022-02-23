@@ -328,6 +328,7 @@ function createWindow(): BrowserWindow {
 
     webContents.on("did-fail-load", (evt, code, desc, url) => {
       log.error("[webview] did-fail-load", code, desc, url);
+      setTimeout(() => webContents.reload(), 2000);
     });
 
     webContents.on("will-navigate", (evt, url) => {
