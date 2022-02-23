@@ -36,6 +36,8 @@ const CHANGELOGS: ChangeLog[] = [
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
+    <li>Light theme can be read again</li>
+    <li>Fixed an issue with Wago provider not working properly on Mac</li>
     <li>Wago addon IDs should now work as expected when swapping providers</li>
     <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
     <li>Github install supports octet stream content type zips</li>
