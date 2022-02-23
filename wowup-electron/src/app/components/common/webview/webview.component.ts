@@ -56,7 +56,7 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
     const pageReferrer = this.options.referrer ? `httpreferrer="${this.options.referrer}"` : "";
     const userAgent = this.options.userAgent ?? "";
     const preload = this.options.preloadFilePath
-      ? `preload="${await this._fileService.getAssetFilePath(this.options.preloadFilePath)}"`
+      ? `preload="file://${await this._fileService.getAssetFilePath(this.options.preloadFilePath)}"`
       : "";
     const partition = this.options.partition ?? "memcache";
 
