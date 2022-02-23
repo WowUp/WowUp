@@ -3,7 +3,7 @@
     <app-progress-spinner [message]="preloadSpinnerKey | translate"> </app-progress-spinner>
   </div>
 </div>
-<div *ngIf="appReady === true" class="page-container bg-secondary-2" [ngClass]="{ linux: electronService.isLinux }">
+<div *ngIf="appReady === true" class="page-container bg-secondary" [ngClass]="{ linux: electronService.isLinux }">
   <div class="tabs header-less-tabs">
     <mat-tab-group
       class="h-100 grow-tab-content"

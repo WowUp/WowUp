@@ -69,12 +69,12 @@
 
     .icon-active {
       svg {
-        fill: var(--tab-text) !important;
+        fill: var(--text-1) !important;
       }
     }
 
     .tab-title {
-      color: var(--text-4);
+      color: var(--text-2);
       margin: 0;
       padding: 0;
       line-height: 1em;
@@ -97,11 +97,6 @@
       transition: margin-right 0.3s ease 0.1s;
     }
 
-    &:hover {
-      cursor: pointer;
-      background-color: var(--background-primary-2);
-    }
-
     &.selected {
       border-left: 0.5em solid var(--background-primary);
       //   background-color: var(--background-primary-3);
@@ -111,10 +106,15 @@
       }
 
       .tab-title {
-        color: var(--tab-text);
+        color: var(--text-1);
         max-width: 200px;
         // margin-left: 0.5em;
       }
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: var(--background-secondary-4);
     }
 
     &.disabled {

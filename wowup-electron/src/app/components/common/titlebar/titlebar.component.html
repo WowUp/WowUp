@@ -1,5 +1,5 @@
 <div
-  class="titlebar bg-secondary-3 text-1"
+  class="titlebar bg-secondary-2 text-1"
   [ngClass]="{
     mac: electronService.isMac,
     windows: electronService.isWin,
@@ -24,7 +24,7 @@
     >
       <mat-icon
         class="icon"
-        svgIcon="fas:compress-arrows-alt"
+        svgIcon="fas:minimize"
         [matTooltip]="'APP.CLOSE_FULLSCREEN_BUTTON_TOOLTIP' | translate"
       >
       </mat-icon>

@@ -224,6 +224,7 @@ body {
   --patreon-color: #e64049;
   --github-color: #9032ad;
   --wow-gold-color: #ffcc00;
+  --text-white: #ffffff;
 }
 
 .default-theme {
@@ -260,7 +261,7 @@ body {
   --background-primary-2: #504fa1;
   --background-primary-3: #383773;
   --background-secondary-1: #ffffff;
-  --background-secondary-2: #f2f3f5;
+  --background-secondary-2: #f3f3f3;
   --background-secondary-3: #ebedef;
   --background-secondary-4: #e3e5e8;
   --background-secondary-5: #caccce;
@@ -275,7 +276,7 @@ body {
   --warn-color: #f44336;
   --tab-text: #ffffff;
   --tab-disabled: #ffffff;
-  --tab-inactive: #bbbbbb;
+  --tab-inactive: #777;
   --divider-color: #aaaaaa;
   --grid-border: #cccccc;
   --footer-hover: #cccccc;
@@ -318,7 +319,7 @@ body {
   --background-primary-2: #9d3939;
   --background-primary-3: #5c0606;
   --background-secondary-1: #ffffff;
-  --background-secondary-2: #f2f3f5;
+  --background-secondary-2: #f3f3f3;
   --background-secondary-3: #ebedef;
   --background-secondary-4: #e3e5e8;
   --background-secondary-5: #caccce;
@@ -333,7 +334,7 @@ body {
   --warn-color: #f44336;
   --tab-text: #ffffff;
   --tab-disabled: #ffffff;
-  --tab-inactive: #bbbbbb;
+  --tab-inactive: #777;
   --divider-color: #aaaaaa;
   --grid-border: #cccccc;
   --footer-hover: #cccccc;
@@ -375,7 +376,7 @@ body {
   --background-primary-2: #394c70;
   --background-primary-3: #06102c;
   --background-secondary-1: #ffffff;
-  --background-secondary-2: #f2f3f5;
+  --background-secondary-2: #f3f3f3;
   --background-secondary-3: #ebedef;
   --background-secondary-4: #e3e5e8;
   --background-secondary-5: #caccce;
@@ -390,7 +391,7 @@ body {
   --warn-color: #f44336;
   --tab-text: #ffffff;
   --tab-disabled: #ffffff;
-  --tab-inactive: #bbbbbb;
+  --tab-inactive: #777;
   --divider-color: #aaaaaa;
   --grid-border: #cccccc;
   --footer-hover: #cccccc;
@@ -457,6 +458,10 @@ body {
 
 .border-primary {
   border-color: var(--background-primary);
+}
+
+.text-white {
+  color: var(--text-white);
 }
 
 .text-1 {
@@ -540,6 +545,15 @@ body {
     color: var(--control-color);
   }
 }
+
+// .tab {
+//   &:hover {
+//     svg {
+//       fill: var(--text-white);
+//     }
+//   }
+// }
+
 .tab-icon-inactive {
   svg {
     transition: fill 0.3s ease 0.1s;
@@ -550,7 +564,7 @@ body {
 .tab-icon-active {
   svg {
     transition: fill 0.3s ease 0.1s;
-    fill: var(--tab-text);
+    fill: var(--text-1);
   }
 }
 
@@ -571,6 +585,22 @@ body {
   background: var(--background-primary);
   background: linear-gradient(146deg, var(--background-primary) 0%, var(--background-primary-2) 100%);
   min-height: 40px;
+}
+
+div[class*="light-theme"] {
+  .window-control {
+    &:hover {
+      background-color: var(--background-secondary-5);
+    }
+
+    img {
+      filter: invert(100%);
+    }
+  }
+
+  .logo-img {
+    filter: invert(100%);
+  }
 }
 
 // MATERIAL STYLES
@@ -770,9 +800,9 @@ div.tree > tree-node > div > .node-wrapper > tree-node-expander > .toggle-childr
       foreground-color: var(--text-1),
       disabled-foreground-color: rgba(var(--text-1), 0.38),
       secondary-foreground-color: rgba(var(--text-1), 0.54),
-      background-color: var(--background-secondary-2),
+      background-color: var(--background-secondary),
       modal-overlay-background-color: rgba(var(--background-secondary-2), 0.66),
-      header-background-color: var(--background-secondary-2),
+      header-background-color: var(--background-secondary),
       header-cell-hover-background-color: hsl(var(--background-secondary-2), 95%),
       row-hover-color: var(--background-secondary-2),
       row-border-color: var(--grid-border),

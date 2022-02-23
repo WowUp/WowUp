@@ -376,7 +376,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const minimalState = columnState.map((column) => {
       const sortOrder: SortOrder = {
         colId: column.colId ?? "",
-        sort: column.sort ?? "",
+        sort: column.sort ?? null,
       };
       return sortOrder;
     });
