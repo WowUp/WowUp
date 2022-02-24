@@ -87,7 +87,7 @@
     "cross-env": "7.0.3",
     "del": "6.0.0",
     "dotenv": "16.0.0",
-    "electron": "17.0.1",
+    "electron": "17.1.0",
     "electron-builder": "22.14.13",
     "electron-notarize": "1.1.1",
     "electron-reload": "2.0.0-alpha.1",
