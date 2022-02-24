@@ -34,7 +34,7 @@
     "electron:local": "npm run build:prod && npx electron .",
     "electron:build": "npm run build:prod && electron-builder build",
     "electron:build:local": "npm run build:prod && electron-builder build -c electron-builder-local.json",
-    "electron:publish": "npm run lint && npm run build:prod && electron-builder build",
+    "electron:publish": "npm run lint && npm run build:prod && electron-builder build --publish onTagOrDraft",
     "electron:publish:linux": "docker-compose -f linux-compose.yml up",
     "electron:publish:never": "npm run electron:build && electron-builder --publish never",
     "electron:publish:never:local": "npx electron-builder -c electron-builder-local.json --publish never ",
