@@ -7,7 +7,7 @@
   }"
   (click)="onTableBlur($event)"
 >
-  <div class="control-container bg-secondary-3">
+  <div class="control-container bg-secondary-2">
     <div class="select-container">
       <app-client-selector></app-client-selector>
     </div>
@@ -100,7 +100,7 @@
         </button>
       </mat-action-list>
     </mat-drawer>
-    <mat-drawer-content>
+    <mat-drawer-content class="bg-secondary">
       <div class="spinner-container flex-grow-1" style="height: 100%" *ngIf="(showTable$ | async) === false">
         <app-progress-spinner> </app-progress-spinner>
       </div>
