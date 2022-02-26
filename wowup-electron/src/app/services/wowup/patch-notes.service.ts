@@ -43,8 +43,15 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Github install supports octet stream content type zips</li>
     <li>My Addons spinner is now centered</li>
     <li>Updated a bunch of dependencies</li>
-    </ul>
-    `,
+    </ul>`,
+  },
+  {
+    Version: "2.6.2",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fixed an issue with Wago addons updating incorrectly</li>
+    </ul>`,
   },
   {
     Version: "2.6.1",
