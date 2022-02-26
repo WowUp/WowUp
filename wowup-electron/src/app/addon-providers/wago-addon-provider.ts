@@ -453,13 +453,11 @@ export class WagoAddonProvider extends AddonProvider {
 
   private toSearchResultFromScan(item: WagoScanAddon): AddonSearchResult {
     const releaseObj = item.recent_releases;
-    const releaseTypes = Object.keys(releaseObj);
+    const releaseTypes = Object.keys(releaseObj) as WagoStability[];
     const searchResultFiles: AddonSearchResultFile[] = [];
     for (const type of releaseTypes) {
       if (releaseObj[type] !== null) {
-        searchResultFiles.push(
-          this.toSearchResultFileFromDetails(releaseObj[type] as WagoRelease, type as WagoStability)
-        );
+        searchResultFiles.push(this.toSearchResultFile(releaseObj[type], type));
       }
     }
 
@@ -479,11 +477,11 @@ export class WagoAddonProvider extends AddonProvider {
 
   private toSearchResultFromDetails(item: WagoAddon): AddonSearchResult {
     const releaseObj = item.recent_releases ?? item.recent_release;
-    const releaseTypes = Object.keys(releaseObj);
+    const releaseTypes = Object.keys(releaseObj) as WagoStability[];
     const searchResultFiles: AddonSearchResultFile[] = [];
     for (const type of releaseTypes) {
       if (releaseObj[type] !== null) {
-        searchResultFiles.push(this.toSearchResultFileFromDetails(releaseObj[type], type as WagoStability));
+        searchResultFiles.push(this.toSearchResultFile(releaseObj[type], type));
       }
     }
 
@@ -498,18 +496,6 @@ export class WagoAddonProvider extends AddonProvider {
       files: searchResultFiles,
       releasedAt: new Date(),
       summary: item.summary,
-    };
-  }
-
-  private toSearchResultFileFromDetails(release: WagoRelease, stability: WagoStability): AddonSearchResultFile {
-    return {
-      channelType: this.getAddonChannelType(stability),
-      downloadUrl: release.download_link,
-      folders: [],
-      gameVersion: "",
-      releaseDate: new Date(release.created_at),
-      version: release.label,
-      dependencies: [],
     };
   }
 
@@ -534,10 +520,13 @@ export class WagoAddonProvider extends AddonProvider {
     };
   }
 
-  private toSearchResultFile(release: WagoSearchResponseRelease, stability: WagoStability): AddonSearchResultFile {
+  private toSearchResultFile(
+    release: WagoSearchResponseRelease | WagoRelease | WagoScanRelease,
+    stability: WagoStability
+  ): AddonSearchResultFile {
     return {
       channelType: this.getAddonChannelType(stability),
-      downloadUrl: release.download_link,
+      downloadUrl: (release as any).download_link || (release as any).link,
       folders: [],
       gameVersion: "",
       releaseDate: new Date(release.created_at),
