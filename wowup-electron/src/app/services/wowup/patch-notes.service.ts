@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.6.2",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fixed an issue with Wago addons updating incorrectly</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.6.1",
     html: `
     <h4>Changes</h4>
