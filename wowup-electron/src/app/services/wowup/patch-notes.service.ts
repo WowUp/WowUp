@@ -39,12 +39,20 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Light theme can be read again</li>
     <li>Fixed an issue with Wago provider not working properly on Mac</li>
     <li>Wago addon IDs should now work as expected when swapping providers</li>
+    <li>Fix an issue with desktop notifications appearing if they were disabled</li>
     <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
     <li>Github install supports octet stream content type zips</li>
     <li>My Addons spinner is now centered</li>
     <li>Updated a bunch of dependencies</li>
-    </ul>
-    `,
+    </ul>`,
+  },
+  {
+    Version: "2.6.2",
+    html: `
+    <h4>Fixes</h4>
+    <ul>
+    <li>Fixed an issue with Wago addons updating incorrectly</li>
+    </ul>`,
   },
   {
     Version: "2.6.1",
