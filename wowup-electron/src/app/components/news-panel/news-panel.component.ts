@@ -4,11 +4,12 @@ import { catchError, delay, first, map, switchMap } from "rxjs/operators";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
+import { AppConfig } from "../../../environments/environment";
 import { ElectronService } from "../../services/electron/electron.service";
+import { LinkService } from "../../services/links/link.service";
 import { NewsItem, NewsService } from "../../services/news/news.service";
 import { SessionService } from "../../services/session/session.service";
-import { AppConfig } from "../../../environments/environment";
-import { LinkService } from "../../services/links/link.service";
+import { SnackbarService } from "../../services/snackbar/snackbar.service";
 
 @Component({
   selector: "app-news-panel",
@@ -30,7 +31,8 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
     public electronService: ElectronService,
     private _sessionService: SessionService,
     private _translateService: TranslateService,
-    private _linkService: LinkService
+    private _linkService: LinkService,
+    private _snackbarService: SnackbarService
   ) {
     const homeTabSub = _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
       this._isSelectedTab = tabIndex === this.tabIndex;
@@ -79,6 +81,15 @@ export class NewsPanelComponent implements OnInit, OnDestroy {
 
   public onClickItem(item: NewsItem): void {
     this._linkService.confirmLinkNavigation(item.link).subscribe();
+  }
+
+  public onClickLink(item: NewsItem, evt: MouseEvent): void {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    this._snackbarService.showSuccessSnackbar("PAGES.NEWS.NEWS_LINK_COPY_TOAST", {
+      timeout: 2000,
+    });
   }
 
   private lazyLoad(): void {
