@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { defer, firstValueFrom, from, mergeAll, mergeMap, Observable, toArray } from "rxjs";
+import { firstValueFrom, from, mergeMap, Observable, toArray } from "rxjs";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
