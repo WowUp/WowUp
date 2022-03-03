@@ -298,8 +298,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       )
     );
 
-    console.log(IPC_STAT_FILES_CHANNEL, taskResults.length);
-
     taskResults.forEach((r) => (results[r.path] = r.fsStats));
 
     return results;
@@ -564,7 +562,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {
-    handleDownloadFile(arg).catch((e) => console.error(e.toString()));
+    handleDownloadFile(arg).catch((e) => log.error(e.toString()));
   });
 
   // In order to allow concurrent downloads, we have to get creative with this session handler
@@ -677,8 +675,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
             });
 
             response.on("end", () => {
-              console.log("No more data in response.");
-
               if (response.statusCode < 200 || response.statusCode >= 300) {
                 return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
               }
