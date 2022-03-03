@@ -327,7 +327,7 @@
   },
   "PAGES": {
     "ABOUT": {
-      "ATTRIBUTIONS_TITLE": "Wkłady",
+      "ATTRIBUTIONS_TITLE": "Podziękowania",
       "CHANGE_LOG_SECTION_LABEL": "Lista zmian",
       "TITLE": "WowUp.io",
       "WEBSITE_LINK_LABEL": "Sprawdź stronę!"
@@ -356,9 +356,9 @@
       "TABLE": {
         "ADDON_COLUMN_HEADER": "Addon",
         "AUTHOR_COLUMN_HEADER": "Autor(-rzy)",
-        "DOWNLOAD_COUNT_COLUMN_HEADER": "Pobieranie",
+        "DOWNLOAD_COUNT_COLUMN_HEADER": "Pobrania",
         "PROVIDER_COLUMN_HEADER": "Dostawca",
-        "RELEASED_AT_COLUMN_HEADER": "Wydano w",
+        "RELEASED_AT_COLUMN_HEADER": "Wydany",
         "STATUS_COLUMN_HEADER": "Status"
       }
     },
@@ -404,7 +404,7 @@
         "TITLE": "Pokaż kolumny"
       },
       "ERROR_SNACKBAR": "Wystąpił błąd",
-      "FILTER_LABEL": "Filtr",
+      "FILTER_LABEL": "Filtruj",
       "FUNDING_TOOLTIP": {
         "CUSTOM": "Wesprzyj tego autora",
         "GENERIC": "Wesprzyj tego autora na {platform}",
