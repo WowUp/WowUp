@@ -465,6 +465,8 @@
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "News link copied to clipboard",
+      "NEWS_LINK_COPY_TOOLTIP": "Copy news link",
       "PAGE_CONTEXT_FOOTER": "{count} nuove storie",
       "REFRESH_TOOLTIP": "Aggiorna feed notizie"
     },

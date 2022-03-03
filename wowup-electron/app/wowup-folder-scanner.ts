@@ -1,10 +1,10 @@
 import * as _ from "lodash";
 import * as path from "path";
-import * as pLimit from "p-limit";
 import * as log from "electron-log";
 import { WowUpScanResult } from "../src/common/wowup/models";
 import { exists, readDirRecursive, hashFile, hashString } from "./file.utils";
 import * as fsp from "fs/promises";
+import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 
 const INVALID_PATH_CHARS = [
   "|",
@@ -82,13 +82,16 @@ export class WowUpFolderScanner {
     let matchingFiles = await this.getMatchingFiles(this._folderPath, files);
     matchingFiles = _.orderBy(matchingFiles, [(f) => f.toLowerCase()], ["asc"]);
 
-    const limit = pLimit(4);
-    const tasks = _.map(matchingFiles, (file) =>
-      limit(async () => {
-        return { hash: await hashFile(file), file };
-      })
+    async function toFileHash(file: string) {
+      return { hash: await hashFile(file), file };
+    }
+
+    const fileFingerprints = await firstValueFrom(
+      from(matchingFiles).pipe(
+        mergeMap((file) => from(toFileHash(file)), 3),
+        toArray()
+      )
     );
-    const fileFingerprints = await Promise.all(tasks);
 
     const fingerprintList = _.map(fileFingerprints, (ff) => ff.hash);
     const hashConcat = _.orderBy(fingerprintList).join("");

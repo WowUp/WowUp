@@ -1,8 +1,11 @@
-<div class="tab-container news-container" [ngClass]="{
-  mac: electronService.isMac,
-  windows: electronService.isWin,
-  linux: electronService.isLinux
-}">
+<div
+  class="tab-container news-container"
+  [ngClass]="{
+    mac: electronService.isMac,
+    windows: electronService.isWin,
+    linux: electronService.isLinux
+  }"
+>
   <div class="theme-logo">
     <div class="logo-img"></div>
   </div>
@@ -11,19 +14,40 @@
     <app-progress-spinner></app-progress-spinner>
   </div>
   <div [hidden]="isBusy" class="news-list text-1">
-    <div *ngFor="let news of newsService.newsItems$ | async" class="news-item  mat-elevation-z8"
-      (click)="onClickItem(news)">
+    <div
+      *ngFor="let news of newsService.newsItems$ | async"
+      class="news-item mat-elevation-z8"
+      (click)="onClickItem(news)"
+    >
       <div class="thumbnail" [style.backgroundImage]="'url(' + news.thumbnail + ')'"></div>
       <div>
         <h2 [innerHtml]="news.title"></h2>
-        <p>{{news.publishedAt | localeDate}} - {{news.publishedBy}}</p>
+        <div class="row align-items-center">
+          <p class="m-0">{{ news.publishedAt | localeDate }} - {{ news.publishedBy }}</p>
+          <button
+            mat-icon-button
+            class="ml-2"
+            aria-label="Copy news link"
+            [matTooltip]="'PAGES.NEWS.NEWS_LINK_COPY_TOOLTIP' | translate"
+            [cdkCopyToClipboard]="news.link"
+            (click)="onClickLink(news, $event)"
+          >
+            <mat-icon svgIcon="fas:link"></mat-icon>
+          </button>
+        </div>
         <p class="description" [innerHtml]="news.description"></p>
       </div>
     </div>
   </div>
   <div class="fab-container">
-    <button mat-fab class="mat-elevation-z8" color="primary" [disabled]="isBusy"
-      [matTooltip]="'PAGES.NEWS.REFRESH_TOOLTIP' | translate" (click)="onClickRefresh()">
+    <button
+      mat-fab
+      class="mat-elevation-z8"
+      color="primary"
+      [disabled]="isBusy"
+      [matTooltip]="'PAGES.NEWS.REFRESH_TOOLTIP' | translate"
+      (click)="onClickRefresh()"
+    >
       <mat-icon svgIcon="fas:rotate"></mat-icon>
     </button>
   </div>

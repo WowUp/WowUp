@@ -1,10 +1,10 @@
 import * as path from "path";
 import * as _ from "lodash";
 import * as log from "electron-log";
-import * as pLimit from "p-limit";
 import { CurseFolderScanResult } from "../src/common/curse/curse-folder-scan-result";
 import { exists, readDirRecursive } from "./file.utils";
 import * as fsp from "fs/promises";
+import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 
 const nativeAddon = require("../build/Release/addon.node");
 
@@ -74,30 +74,30 @@ export class CurseFolderScanner {
   public async scanFolder(folderPath: string): Promise<CurseFolderScanResult> {
     const fileList = await readDirRecursive(folderPath);
     fileList.forEach((fp) => (this._fileMap[fp.toLowerCase()] = fp));
-    // log.debug("listAllFiles", folderPath, fileList.length);
 
     let matchingFiles = await this.getMatchingFiles(folderPath, fileList);
     matchingFiles = _.orderBy(matchingFiles, [(f) => f.toLowerCase()], ["asc"]);
-    // log.debug("matchingFiles", matchingFiles.length);
 
-    const limit = pLimit(4);
-    const tasks = _.map(matchingFiles, (path) =>
-      limit(async () => {
-        try {
-          return await this.getFileHash(path);
-        } catch (e) {
-          log.error(`Failed to get filehash: ${path}`, e);
-          return -1;
-        }
-      })
+    const toFileHash = async (path: string) => {
+      try {
+        return await this.getFileHash(path);
+      } catch (e) {
+        log.error(`Failed to get filehash: ${path}`, e);
+        return -1;
+      }
+    };
+
+    let individualFingerprints = await firstValueFrom(
+      from(matchingFiles).pipe(
+        mergeMap((file) => from(toFileHash(file)), 3),
+        toArray()
+      )
     );
 
-    let individualFingerprints = await Promise.all(tasks);
     individualFingerprints = _.filter(individualFingerprints, (fp) => fp >= 0);
 
     const hashConcat = _.orderBy(individualFingerprints).join("");
     const fingerprint = this.getStringHash(hashConcat);
-    // log.debug("fingerprint", fingerprint);
 
     return {
       directory: folderPath,
