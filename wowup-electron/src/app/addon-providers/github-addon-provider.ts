@@ -85,8 +85,6 @@ export class GitHubAddonProvider extends AddonProvider {
       searchResults: _.concat(taskResults.map((tr) => tr.searchResult).filter((sr) => !!sr)),
     };
 
-    console.log(this.name, `getAll`, result);
-
     return result;
   }
 
