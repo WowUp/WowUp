@@ -22,6 +22,7 @@ const CHANGELOGS: ChangeLog[] = [
     <ul>
     <li>New CurseForge V2 addon provider, requires that they give you a key</li>
     <li>New Polish language support (nydas3k)</li>
+    <li>New copy news link button</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
@@ -31,13 +32,14 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Chinese locale updates (CyanoHao)</li>
     <li>Wago is now a trusted domain by default (Artemis)</li>
-    <li>Fix an issue with caching Wago scan results</li>
+    <li>Installing via GitHub URL is now more aggressive</li>
     <li>Addon detail/changelog text is now selectable</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Light theme can be read again</li>
     <li>Fixed an issue with Wago provider not working properly on Mac</li>
+    <li>Fix an issue with caching Wago scan results</li>
     <li>Wago addon IDs should now work as expected when swapping providers</li>
     <li>Fix an issue with desktop notifications appearing if they were disabled</li>
     <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
