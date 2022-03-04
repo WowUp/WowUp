@@ -249,9 +249,7 @@ export class WowUpAddonProvider extends AddonProvider {
   ): Promise<void> {
     const gameType = this.getWowGameType(installation.clientType);
 
-    console.time("WowUpScan");
-    const scanResults = await this.getScanResults(addonFolders);
-    console.timeEnd("WowUpScan");
+    const scanResults = addonFolders.map((af) => af.wowUpScanResults).filter((sr) => sr !== undefined);
 
     const fingerprints = scanResults.map((result) => result.fingerprint);
     console.log("[WowUpFingerprints]", JSON.stringify(fingerprints));

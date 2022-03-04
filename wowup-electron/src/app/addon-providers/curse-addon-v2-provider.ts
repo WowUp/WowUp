@@ -21,12 +21,10 @@ import {
 
 import {
   ADDON_PROVIDER_CURSEFORGEV2,
-  IPC_CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
   PREF_CF2_API_KEY,
 } from "../../common/constants";
-import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
 import { CurseAddonCategory, CurseGameVersionFlavor } from "../../common/curse/curse-models";
 import { Addon } from "../../common/entities/addon";
 import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
@@ -234,9 +232,7 @@ export class CurseAddonV2Provider extends AddonProvider {
       return;
     }
 
-    console.time("CFScan");
-    const scanResults = await this.getScanResults(addonFolders);
-    console.timeEnd("CFScan");
+    const scanResults = this.getScanResults(addonFolders);
 
     await this.mapAddonFolders(scanResults, installation);
 
@@ -278,12 +274,8 @@ export class CurseAddonV2Provider extends AddonProvider {
     }
   }
 
-  public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseV2ScanResult[]> => {
-    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: CurseFolderScanResult[] = await this._electronService.invoke(
-      IPC_CURSE_GET_SCAN_RESULTS,
-      filePaths
-    );
+  public getScanResults = (addonFolders: AddonFolder[]): AppCurseV2ScanResult[] => {
+    const scanResults = addonFolders.map((af) => af.cfScanResults).filter((sr) => sr !== undefined);
 
     const appScanResults: AppCurseV2ScanResult[] = scanResults.map((scanResult) => {
       const addonFolder = addonFolders.find((af) => af.path === scanResult.directory);
