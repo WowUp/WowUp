@@ -62,6 +62,7 @@ import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
 import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
+import { AddonFingerprintService } from "./addon-fingerprint.service";
 
 export enum ScanUpdateType {
   Start,
@@ -141,7 +142,8 @@ export class AddonService {
     private _fileService: FileService,
     private _tocService: TocService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _addonProviderService: AddonProviderFactory
+    private _addonProviderService: AddonProviderFactory,
+    private _addonFingerprintService: AddonFingerprintService
   ) {
     // This should keep the current update queue state snapshot up to date
     const addonInstalledSub = this.addonInstalled$
@@ -1534,6 +1536,9 @@ export class AddonService {
 
       await this.removeGitFolders(addonFolders);
 
+      // Get all the fingerprints we might need
+      await this._addonFingerprintService.getFingerprints(addonFolders);
+
       this._scanUpdateSrc.next({
         type: ScanUpdateType.Update,
         currentCount: 0,
@@ -1544,6 +1549,7 @@ export class AddonService {
       for (const provider of enabledProviders) {
         try {
           const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
+
           await provider.scan(installation, defaultAddonChannel, validFolders);
         } catch (e) {
           console.error(e);

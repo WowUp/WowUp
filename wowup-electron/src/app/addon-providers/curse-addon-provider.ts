@@ -221,9 +221,7 @@ export class CurseAddonProvider extends AddonProvider {
       return;
     }
 
-    console.time("CFScan");
-    const scanResults = await this.getScanResults(addonFolders);
-    console.timeEnd("CFScan");
+    const scanResults = this.getScanResults(addonFolders);
 
     await this.mapAddonFolders(scanResults, installation);
 
@@ -265,12 +263,8 @@ export class CurseAddonProvider extends AddonProvider {
     }
   }
 
-  public getScanResults = async (addonFolders: AddonFolder[]): Promise<AppCurseScanResult[]> => {
-    const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
-    const scanResults: CurseFolderScanResult[] = await this._electronService.invoke(
-      IPC_CURSE_GET_SCAN_RESULTS,
-      filePaths
-    );
+  public getScanResults = (addonFolders: AddonFolder[]): AppCurseScanResult[] => {
+    const scanResults = addonFolders.map((af) => af.cfScanResults).filter((sr) => sr !== undefined);
 
     const appScanResults: AppCurseScanResult[] = scanResults.map((scanResult) => {
       const addonFolder = addonFolders.find((af) => af.path === scanResult.directory);

@@ -208,7 +208,7 @@ export class WagoAddonProvider extends AddonProvider {
     }
 
     const gameVersion = this.getGameVersion(installation.clientType);
-    const scanResults = await this.getScanResults(addonFolders);
+    const scanResults = addonFolders.map((af) => af.wowUpScanResults).filter((sr) => sr !== undefined);
 
     const request: WagoFingerprintRequest = {
       game_version: gameVersion,
