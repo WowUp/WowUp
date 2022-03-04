@@ -34,6 +34,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Wago is now a trusted domain by default (Artemis)</li>
     <li>Installing via GitHub URL is now more aggressive</li>
     <li>Addon detail/changelog text is now selectable</li>
+    <li>Re-scanning addons is now faster</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
