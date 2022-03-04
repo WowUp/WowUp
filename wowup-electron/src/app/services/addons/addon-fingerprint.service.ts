@@ -9,9 +9,9 @@ import { ElectronService } from "../electron/electron.service";
   providedIn: "root",
 })
 export class AddonFingerprintService {
-  constructor(private _electronService: ElectronService) {}
+  public constructor(private _electronService: ElectronService) {}
 
-  async getFingerprints(addonFolders: AddonFolder[]) {
+  public async getFingerprints(addonFolders: AddonFolder[]) {
     const filePaths = addonFolders.map((addonFolder) => addonFolder.path);
 
     console.time("WowUpScan");

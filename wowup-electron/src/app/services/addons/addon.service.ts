@@ -798,7 +798,7 @@ export class AddonService {
       const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
 
       const curseMap = {};
-      const curseScanResults = await curseProvider.getScanResults(addonFolders);
+      const curseScanResults = curseProvider.getScanResults(addonFolders);
       curseScanResults.forEach((sr) => (curseMap[sr.folderName] = sr.fingerprint));
 
       const hubMap = {};

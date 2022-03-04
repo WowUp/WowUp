@@ -5,11 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
-  IPC_CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
 } from "../../common/constants";
-import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
 import { CurseAddonCategory, CurseGameVersionFlavor } from "../../common/curse/curse-models";
 import { Addon } from "../../common/entities/addon";
 import { WowClientType } from "../../common/warcraft/wow-client-type";

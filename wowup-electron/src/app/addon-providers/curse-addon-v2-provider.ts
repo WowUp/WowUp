@@ -21,12 +21,10 @@ import {
 
 import {
   ADDON_PROVIDER_CURSEFORGEV2,
-  IPC_CURSE_GET_SCAN_RESULTS,
   NO_LATEST_SEARCH_RESULT_FILES_ERROR,
   NO_SEARCH_RESULTS_ERROR,
   PREF_CF2_API_KEY,
 } from "../../common/constants";
-import { CurseFolderScanResult } from "../../common/curse/curse-folder-scan-result";
 import { CurseAddonCategory, CurseGameVersionFlavor } from "../../common/curse/curse-models";
 import { Addon } from "../../common/entities/addon";
 import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
