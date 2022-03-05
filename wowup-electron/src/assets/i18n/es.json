@@ -465,8 +465,8 @@
       "WTF_BACKUP_BUTTON": "Copia de seguridad"
     },
     "NEWS": {
-      "NEWS_LINK_COPY_TOAST": "News link copied to clipboard",
-      "NEWS_LINK_COPY_TOOLTIP": "Copy news link",
+      "NEWS_LINK_COPY_TOAST": "Enlace de la noticia copiado al portapapeles",
+      "NEWS_LINK_COPY_TOOLTIP": "Copiar enlace de la noticia",
       "PAGE_CONTEXT_FOOTER": "{count} titulares",
       "REFRESH_TOOLTIP": "Actualizar titulares"
     },
