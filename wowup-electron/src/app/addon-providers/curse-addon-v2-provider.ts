@@ -813,7 +813,10 @@ export class CurseAddonV2Provider extends AddonProvider {
   }
 
   private getLatestFiles(result: CF2Addon, clientType: WowClientType): CF2File[] {
-    const filtered = result.latestFiles.filter((latestFile) => this.isClientType(latestFile, clientType));
+    console.debug("[cf2] getLatestFiles", result);
+    const filtered = result.latestFiles.filter(
+      (latestFile) => latestFile.exposeAsAlternative !== true && this.isClientType(latestFile, clientType)
+    );
     return _.sortBy(filtered, (latestFile) => latestFile.id).reverse();
   }
 
