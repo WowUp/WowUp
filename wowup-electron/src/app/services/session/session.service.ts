@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { BehaviorSubject, combineLatest, from, Subject } from "rxjs";
 
 import { Injectable } from "@angular/core";
 
@@ -49,7 +49,9 @@ export class SessionService {
   public readonly wowUpAccountPushEnabled$ = this._wowUpAccountService.accountPushSrc.asObservable();
   public readonly myAddonsCompactVersion$ = this._myAddonsCompactVersionSrc.asObservable();
   public readonly adSpace$ = this._adSpaceSrc.asObservable(); // TODO this should be driven by the enabled providers
-  public readonly enableControls$ = this._enableControlsSrc.asObservable();
+  public readonly enableControls$ = combineLatest([this._enableControlsSrc, this._addonService.syncing$]).pipe(
+    map(([enable, syncing]) => enable && !syncing)
+  );
   public readonly debugAdFrame$ = new Subject<boolean>();
   public readonly currentTheme$ = this._currentThemeSrc.asObservable();
 
