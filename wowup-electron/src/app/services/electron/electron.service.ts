@@ -133,7 +133,6 @@ export class ElectronService {
     });
 
     this.onRendererEvent(IPC_CUSTOM_PROTOCOL_RECEIVED, (evt, protocol: string) => {
-      console.debug(IPC_CUSTOM_PROTOCOL_RECEIVED, protocol);
       this._customProtocolSrc.next(protocol);
     });
 

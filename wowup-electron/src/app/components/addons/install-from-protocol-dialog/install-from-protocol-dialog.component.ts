@@ -133,9 +133,18 @@ export class InstallFromProtocolDialogComponent implements OnInit, AfterViewInit
 
       this.addon = searchResult;
 
-      this.validWowInstallations = await this._warcraftInstallationService.getWowInstallationsByClientTypes(
-        searchResult.validClientTypes
-      );
+      if (Array.isArray(searchResult.validClientGroups)) {
+        this.validWowInstallations = await this._warcraftInstallationService.getWowInstallationsByClientGroups(
+          searchResult.validClientGroups
+        );
+      } else if (Array.isArray(searchResult.validClientTypes)) {
+        this.validWowInstallations = await this._warcraftInstallationService.getWowInstallationsByClientTypes(
+          searchResult.validClientTypes
+        );
+      } else {
+        throw new Error("No valid clients found");
+      }
+
       if (this.validWowInstallations.length === 0) {
         this.error = ERROR_NO_VALID_WOW_INSTALLATIONS;
         return;

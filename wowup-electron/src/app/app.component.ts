@@ -58,6 +58,7 @@ import {
   ConsentDialogComponent,
   ConsentDialogResult,
 } from "./components/common/consent-dialog/consent-dialog.component";
+import { WowUpProtocolService } from "./services/wowup/wowup-protocol.service";
 
 @Component({
   selector: "app-root",
@@ -101,6 +102,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private _warcraftInstallationService: WarcraftInstallationService,
     private _wowupAddonService: WowUpAddonService,
     private _zoomService: ZoomService,
+    private _wowUpProtocolService: WowUpProtocolService,
     public electronService: ElectronService,
     public overlayContainer: OverlayContainer,
     public sessionService: SessionService,
@@ -140,6 +142,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
           });
       }
     });
+
+    this._wowUpProtocolService.initialize();
   }
 
   public ngOnInit(): void {

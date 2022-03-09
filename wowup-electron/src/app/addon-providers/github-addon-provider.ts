@@ -26,6 +26,7 @@ import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
+import { getWowClientGroup } from "../../common/warcraft";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline";
 
@@ -126,7 +127,7 @@ export class GitHubAddonProvider extends AddonProvider {
       searchResult: undefined,
     };
 
-    const clientGroup = this._warcraftService.getClientGroup(installation.clientType);
+    const clientGroup = getWowClientGroup(installation.clientType);
 
     try {
       const results = await this.getReleases(repoPath);

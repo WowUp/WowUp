@@ -49,6 +49,7 @@ import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
+import { getWowClientGroup } from "../../common/warcraft";
 
 interface ProtocolData {
   addonId: number;
@@ -1021,7 +1022,7 @@ export class CurseAddonV2Provider extends AddonProvider {
   }
 
   private getCFGameVersionType(clientType: WowClientType): CF2WowGameVersionType {
-    const clientGroup = this._warcraftService.getClientGroup(clientType);
+    const clientGroup = getWowClientGroup(clientType);
 
     switch (clientGroup) {
       case WowClientGroup.BurningCrusade:
