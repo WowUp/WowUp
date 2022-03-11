@@ -465,8 +465,8 @@
       "WTF_BACKUP_BUTTON": "Ustawienia kopii zapasowej interfejsu"
     },
     "NEWS": {
-      "NEWS_LINK_COPY_TOAST": "News link copied to clipboard",
-      "NEWS_LINK_COPY_TOOLTIP": "Copy news link",
+      "NEWS_LINK_COPY_TOAST": "Link do wiadomości skopiowany do schowka",
+      "NEWS_LINK_COPY_TOOLTIP": "Skopiuj link wiadomości",
       "PAGE_CONTEXT_FOOTER": "{count} nowości",
       "REFRESH_TOOLTIP": "Odśwież kanał wiadomości"
     },
