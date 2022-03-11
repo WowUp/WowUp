@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import _ from "lodash";
 import { catchError, filter, first, of, switchMap, tap } from "rxjs";
 import { APP_PROTOCOL_NAME } from "../../../common/constants";
 import { InstallFromProtocolDialogComponent } from "../../components/addons/install-from-protocol-dialog/install-from-protocol-dialog.component";

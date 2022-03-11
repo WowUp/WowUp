@@ -1,12 +1,11 @@
 import { from, of, Subscription } from "rxjs";
-import { catchError, filter, first, map, switchMap } from "rxjs/operators";
+import { catchError, filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
-  APP_PROTOCOL_NAME,
   CURSE_PROTOCOL_NAME,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
@@ -73,7 +72,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     const customProtocolSub = this.electronService.customProtocol$
       .pipe(
         filter((protocol) => getProtocol(protocol) === CURSE_PROTOCOL_NAME),
-        switchMap((protocol) => this.handleAddonInstallProtocol(protocol)),
+        tap((protocol) => this.handleAddonInstallProtocol(protocol)),
         catchError((e) => {
           console.error(e);
           return of(undefined);
@@ -91,7 +90,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this._subscriptions.push(customProtocolSub, wowInstalledSub, scanErrorSub, scanUpdateSub, addonInstallErrorSub);
   }
 
-  private async handleAddonInstallProtocol(protocol: string) {
+  private  handleAddonInstallProtocol(protocol: string) {
     const dialog = this._dialogFactory.getDialog(InstallFromProtocolDialogComponent, {
       disableClose: true,
       data: {

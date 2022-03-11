@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 
 import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
-import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { SelectItem } from "../../models/wowup/select-item";
@@ -21,7 +21,6 @@ import { WarcraftServiceMac } from "./warcraft.service.mac";
 import { WarcraftServiceWin } from "./warcraft.service.win";
 import { Toc } from "../../models/wowup/toc";
 import { ProductDb } from "../../../common/wowup/product-db";
-import { getWowClientFolderName } from "../../../common/warcraft";
 
 @Injectable({
   providedIn: "root",
