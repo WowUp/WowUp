@@ -20,8 +20,9 @@ const CHANGELOGS: ChangeLog[] = [
     html: `
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
-    <li>New CurseForge V2 addon provider, requires that they give you a key</li>
     <li>New Polish language support (nydas3k)</li>
+    <li>New support for installing from the <a appExternalLink href="https://dev.wowup.io">WowUp website</a></li>
+    <li>New CurseForge V2 addon provider, requires that they give you a key</li>
     <li>New copy news link button</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
@@ -42,9 +43,11 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Fixed an issue with Wago provider not working properly on Mac</li>
     <li>Fix an issue with caching Wago scan results</li>
     <li>Wago addon IDs should now work as expected when swapping providers</li>
+    <li>Fix an issue with showing the wrong folder name for some TukUI addons</li>
     <li>Fix an issue with desktop notifications appearing if they were disabled</li>
     <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
     <li>Github install supports octet stream content type zips</li>
+    <li>Spinner is now shown during scan at app startup</li>
     <li>My Addons spinner is now centered</li>
     <li>Updated a bunch of dependencies</li>
     </ul>`,
