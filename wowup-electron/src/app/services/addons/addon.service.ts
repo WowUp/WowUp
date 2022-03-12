@@ -118,6 +118,7 @@ export class AddonService {
   private readonly _installQueue = new Subject<InstallQueueItem>();
   private readonly _anyUpdatesAvailableSrc = new BehaviorSubject<boolean>(false);
   private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
+  private readonly _syncingSrc = new BehaviorSubject<boolean>(false);
 
   private _activeInstalls: AddonUpdateEvent[] = [];
   private _subscriptions: Subscription[] = [];
@@ -132,6 +133,7 @@ export class AddonService {
   public readonly searchError$ = this._searchErrorSrc.asObservable();
   public readonly anyUpdatesAvailable$ = this._anyUpdatesAvailableSrc.asObservable();
   public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
+  public readonly syncing$ = this._syncingSrc.asObservable();
 
   public constructor(
     private _addonStorage: AddonStorageService,
@@ -1114,6 +1116,8 @@ export class AddonService {
   /** Iterate over all the installed WoW clients and attempt to check for addon updates */
   public async syncAllClients(): Promise<void> {
     console.debug("syncAllClients");
+    this._syncingSrc.next(true);
+
     const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
 
     try {
@@ -1122,6 +1126,7 @@ export class AddonService {
     } catch (e) {
       console.error(e);
     } finally {
+      this._syncingSrc.next(false);
       this._addonActionSrc.next({ type: "sync" });
     }
   }

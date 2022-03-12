@@ -6,7 +6,7 @@ import { Injectable } from "@angular/core";
 
 import { ElectronService } from "../electron/electron.service";
 import * as constants from "../../../common/constants";
-import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
+import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { InstalledProduct } from "../../models/warcraft/installed-product";
 import { AddonFolder } from "../../models/wowup/addon-folder";
 import { SelectItem } from "../../models/wowup/select-item";
@@ -191,48 +191,6 @@ export class WarcraftService {
 
   public getClientTypeForBinary(binaryPath: string): WowClientType {
     return this._impl.getClientType(binaryPath);
-  }
-
-  public getClientFolderName(clientType: WowClientType): string {
-    switch (clientType) {
-      case WowClientType.Retail:
-        return constants.WOW_RETAIL_FOLDER;
-      case WowClientType.ClassicEra:
-        return constants.WOW_CLASSIC_ERA_FOLDER;
-      case WowClientType.Classic:
-        return constants.WOW_CLASSIC_FOLDER;
-      case WowClientType.RetailPtr:
-        return constants.WOW_RETAIL_PTR_FOLDER;
-      case WowClientType.ClassicPtr:
-        return constants.WOW_CLASSIC_PTR_FOLDER;
-      case WowClientType.Beta:
-        return constants.WOW_BETA_FOLDER;
-      case WowClientType.ClassicBeta:
-        return constants.WOW_CLASSIC_BETA_FOLDER;
-      case WowClientType.ClassicEraPtr:
-        return constants.WOW_CLASSIC_ERA_PTR_FOLDER;
-      default:
-        return "";
-    }
-  }
-
-  public getClientGroup(clientType: string | WowClientType): WowClientGroup {
-    const enumVal: WowClientType = typeof clientType === "string" ? WowClientType[clientType] : clientType;
-    switch (enumVal) {
-      case WowClientType.Beta:
-      case WowClientType.Retail:
-      case WowClientType.RetailPtr:
-        return WowClientGroup.Retail;
-      case WowClientType.ClassicEra:
-      case WowClientType.ClassicEraPtr:
-        return WowClientGroup.Classic;
-      case WowClientType.Classic:
-      case WowClientType.ClassicBeta:
-      case WowClientType.ClassicPtr:
-        return WowClientGroup.BurningCrusade;
-      default:
-        throw new Error(`unsupported client type: ${clientType}`);
-    }
   }
 
   /**

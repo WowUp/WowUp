@@ -3,13 +3,17 @@ import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 
-import { ADDON_PROVIDER_HUB, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
+import { ADDON_PROVIDER_HUB, APP_PROTOCOL_NAME, IPC_WOWUP_GET_SCAN_RESULTS } from "../../common/constants";
 import { Addon } from "../../common/entities/addon";
-import { WowClientType } from "../../common/warcraft/wow-client-type";
+import { WowClientGroup, WowClientType } from "../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType, WowUpScanResult } from "../../common/wowup/models";
 import { AppConfig } from "../../environments/environment";
 import { SourceRemovedAddonError } from "../errors";
-import { WowUpAddonReleaseRepresentation, WowUpAddonRepresentation } from "../models/wowup-api/addon-representations";
+import {
+  AddonReleaseGameVersion,
+  WowUpAddonReleaseRepresentation,
+  WowUpAddonRepresentation,
+} from "../models/wowup-api/addon-representations";
 import {
   GetFeaturedAddonsResponse,
   WowUpGetAddonReleaseResponse,
@@ -30,6 +34,12 @@ import { CircuitBreakerWrapper, NetworkService } from "../services/network/netwo
 import { getGameVersion } from "../utils/addon.utils";
 import { getEnumName } from "../utils/enum.utils";
 import { AddonProvider, GetAllBatchResult, GetAllResult } from "./addon-provider";
+import { ProtocolSearchResult } from "../models/wowup/protocol-search-result";
+
+interface ProtocolData {
+  addonId: string;
+  releaseId: string;
+}
 
 const API_URL = AppConfig.wowUpHubUrl;
 const FEATURED_ADDONS_CACHE_TTL_SEC = AppConfig.featuredAddonsCacheTimeSec;
@@ -77,6 +87,55 @@ export class WowUpAddonProvider extends AddonProvider {
 
   public shouldMigrate(addon: Addon): boolean {
     return !addon.installedExternalReleaseId;
+  }
+
+  public isValidProtocol(protocol: string): boolean {
+    return protocol.toLowerCase().startsWith(`${APP_PROTOCOL_NAME}://`);
+  }
+
+  public async searchProtocol(protocol: string): Promise<ProtocolSearchResult | undefined> {
+    const protocolData = this.parseProtocol(protocol);
+    if (!protocolData.addonId || !protocolData.releaseId) {
+      throw new Error("Invalid protocol data");
+    }
+
+    const addonResult = await this.getAddonById(protocolData.addonId);
+    if (!addonResult) {
+      throw new Error(`Failed to get addon data: ${protocolData.addonId}`);
+    }
+
+    console.debug("addonResult", addonResult);
+
+    const addonFileResponse = await this.getReleaseById(protocolData.addonId, protocolData.releaseId);
+    console.debug("targetFile", addonFileResponse);
+
+    if (!addonFileResponse) {
+      throw new Error("Failed to get target file");
+    }
+
+    const addonSearchResult = this.getSearchResultWithReleases(addonResult.addon, [addonFileResponse.release]);
+    if (!addonSearchResult) {
+      throw new Error("Addon search result not created");
+    }
+
+    const searchResult: ProtocolSearchResult = {
+      protocol,
+      protocolAddonId: protocolData.addonId.toString(),
+      protocolReleaseId: protocolData.releaseId.toString(),
+      validClientGroups: _.map(addonFileResponse.release.game_versions, (gv) => this.getWowClientGroup(gv.game_type)),
+      ...addonSearchResult,
+    };
+
+    console.debug("searchResult", searchResult);
+    return searchResult;
+  }
+
+  private parseProtocol(protocol: string): ProtocolData {
+    const url = new URL(protocol);
+    return {
+      addonId: url.searchParams.get("addonId") || "",
+      releaseId: url.searchParams.get("releaseId") || "",
+    };
   }
 
   public async getAllBatch(installations: WowInstallation[], addonIds: string[]): Promise<GetAllBatchResult> {
@@ -373,6 +432,13 @@ export class WowUpAddonProvider extends AddonProvider {
       return undefined;
     }
 
+    return this.getSearchResultFileWithVersion(release, matchingVersion);
+  }
+
+  private getSearchResultFileWithVersion(
+    release: WowUpAddonReleaseRepresentation,
+    matchingVersion: AddonReleaseGameVersion
+  ): AddonSearchResultFile | undefined {
     const version = matchingVersion?.version || release.tag_name || "";
 
     return {
@@ -425,6 +491,37 @@ export class WowUpAddonProvider extends AddonProvider {
       summary: representation.description,
       fundingLinks: [...(representation?.funding_links ?? [])],
       screenshotUrls: this.getScreenshotUrls(clientReleases),
+    };
+  }
+
+  private getSearchResultWithReleases(
+    representation: WowUpAddonRepresentation,
+    releases: WowUpAddonReleaseRepresentation[]
+  ): AddonSearchResult | undefined {
+    const searchResultFiles: AddonSearchResultFile[] = _.flatMap(releases, (release) =>
+      _.map(release.game_versions, (gv) => this.getSearchResultFileWithVersion(release, gv))
+    ).filter((sr) => sr !== undefined);
+
+    if (searchResultFiles.length === 0) {
+      return undefined;
+    }
+
+    const name = _.first(searchResultFiles)?.title ?? representation.repository_name;
+    const authors = _.first(searchResultFiles)?.authors ?? representation.owner_name ?? "";
+
+    return {
+      author: authors,
+      externalId: representation.id.toString(),
+      externalUrl: `${AppConfig.wowUpWebsiteUrl}/addons/${representation.id}`,
+      name,
+      providerName: this.name,
+      thumbnailUrl: representation.image_url || representation.owner_image_url || "",
+      downloadCount: representation.total_download_count,
+      files: searchResultFiles,
+      releasedAt: new Date(),
+      summary: representation.description,
+      fundingLinks: [...(representation?.funding_links ?? [])],
+      screenshotUrls: this.getScreenshotUrls(releases),
     };
   }
 
@@ -525,6 +622,17 @@ export class WowUpAddonProvider extends AddonProvider {
       case WowClientType.Beta:
       default:
         return WowGameType.Retail;
+    }
+  }
+
+  private getWowClientGroup(gameType: WowGameType): WowClientGroup {
+    switch (gameType) {
+      case WowGameType.BurningCrusade:
+        return WowClientGroup.BurningCrusade;
+      case WowGameType.Classic:
+        return WowClientGroup.Classic;
+      case WowGameType.Retail:
+        return WowClientGroup.Retail;
     }
   }
 }

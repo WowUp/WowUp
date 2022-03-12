@@ -12,7 +12,7 @@ import {
   DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX,
   WOW_INSTALLATIONS_KEY,
 } from "../../../common/constants";
-import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { WowClientGroup, WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonChannelType } from "../../../common/wowup/models";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { getEnumName } from "../../utils/enum.utils";
@@ -20,6 +20,7 @@ import { ElectronService } from "../electron/electron.service";
 import { FileService } from "../files/file.service";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
 import { WarcraftService } from "./warcraft.service";
+import { getWowClientFolderName, getWowClientGroup } from "../../../common/warcraft";
 
 @Injectable({
   providedIn: "root",
@@ -106,6 +107,14 @@ export class WarcraftInstallationService {
   public async getWowInstallationsByClientTypes(clientTypes: WowClientType[]): Promise<WowInstallation[]> {
     const installations = await this.getWowInstallationsAsync();
     return _.filter(installations, (installation) => clientTypes.includes(installation.clientType));
+  }
+
+  public async getWowInstallationsByClientGroups(clientGroups: WowClientGroup[]): Promise<WowInstallation[]> {
+    const installations = await this.getWowInstallationsAsync();
+    return _.filter(installations, (installation) => {
+      const clientGroup = getWowClientGroup(installation.clientType);
+      return clientGroups.includes(clientGroup);
+    });
   }
 
   public async setWowInstallations(wowInstallations: WowInstallation[]): Promise<void> {
@@ -343,7 +352,7 @@ export class WarcraftInstallationService {
   }
 
   private getFullProductPath(location: string, clientType: WowClientType): string {
-    const clientFolderName = this._warcraftService.getClientFolderName(clientType);
+    const clientFolderName = getWowClientFolderName(clientType);
     const executableName = this._warcraftService.getExecutableName(clientType);
     return path.join(location, clientFolderName, executableName);
   }

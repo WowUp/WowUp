@@ -24,6 +24,7 @@ import { getEnumName } from "../utils/enum.utils";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { SourceRemovedAddonError } from "../errors";
+import { getWowClientGroup } from "../../common/warcraft";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -643,7 +644,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   // The wago name for the client type
   private getGameVersion(clientType: WowClientType): WagoGameVersion {
-    const clientGroup = this._warcraftService.getClientGroup(clientType);
+    const clientGroup = getWowClientGroup(clientType);
     switch (clientGroup) {
       case WowClientGroup.BurningCrusade:
         return "bc";

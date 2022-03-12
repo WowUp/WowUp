@@ -49,6 +49,7 @@ import { strictFilter } from "../utils/array.utils";
 import { TocService } from "../services/toc/toc.service";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
+import { getWowClientGroup } from "../../common/warcraft";
 
 interface ProtocolData {
   addonId: number;
@@ -812,7 +813,9 @@ export class CurseAddonV2Provider extends AddonProvider {
   }
 
   private getLatestFiles(result: CF2Addon, clientType: WowClientType): CF2File[] {
-    const filtered = result.latestFiles.filter((latestFile) => this.isClientType(latestFile, clientType));
+    const filtered = result.latestFiles.filter(
+      (latestFile) => latestFile.exposeAsAlternative !== true && this.isClientType(latestFile, clientType)
+    );
     return _.sortBy(filtered, (latestFile) => latestFile.id).reverse();
   }
 
@@ -1021,7 +1024,7 @@ export class CurseAddonV2Provider extends AddonProvider {
   }
 
   private getCFGameVersionType(clientType: WowClientType): CF2WowGameVersionType {
-    const clientGroup = this._warcraftService.getClientGroup(clientType);
+    const clientGroup = getWowClientGroup(clientType);
 
     switch (clientGroup) {
       case WowClientGroup.BurningCrusade:
