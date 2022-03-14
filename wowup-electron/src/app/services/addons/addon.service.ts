@@ -1611,6 +1611,7 @@ export class AddonService {
 
         addon.latestChangelog = undefined;
         addon.latestChangelogVersion = undefined;
+        addon.channelType = installation.defaultAddonChannelType;
       });
 
       return addonList;
