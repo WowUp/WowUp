@@ -465,8 +465,8 @@
       "WTF_BACKUP_BUTTON": "備份介面設定"
     },
     "NEWS": {
-      "NEWS_LINK_COPY_TOAST": "News link copied to clipboard",
-      "NEWS_LINK_COPY_TOOLTIP": "Copy news link",
+      "NEWS_LINK_COPY_TOAST": "新聞連結已複製到剪貼簿",
+      "NEWS_LINK_COPY_TOOLTIP": "複製新聞連結",
       "PAGE_CONTEXT_FOOTER": "共 {count} 條新聞",
       "REFRESH_TOOLTIP": "重新整理資訊流"
     },
