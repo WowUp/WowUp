@@ -44,6 +44,7 @@ export abstract class AddonProvider {
   public allowChannelChange = false;
   public allowEdit = false;
   public allowViewAtSource = true;
+  public allowReScan = true;
   public canShowChangelog = true;
   public canBatchFetch = false;
   public authRequired = false;

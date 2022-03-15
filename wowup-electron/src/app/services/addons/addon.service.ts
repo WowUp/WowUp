@@ -1068,7 +1068,7 @@ export class AddonService {
     let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
 
     // Collect info on filesystem addons
-    const newAddons = await this.scanAddons(installation);
+    const newAddons = await this.scanAddons(installation, addons);
 
     await this._addonStorage.removeAllForInstallationAsync(installation.id);
 
@@ -1402,6 +1402,34 @@ export class AddonService {
     }
   }
 
+  /**
+   * Determine any addons who have providers with re-scanning disabled then remove any addon folders that match those addons
+   * Ex: GitHub addons should remain as they cannot be re-scanned at this time via toc
+   */
+  private removeNonRescanFolders(addonFolders: AddonFolder[], currentAddons: Addon[]): Addon[] {
+    const remainingAddons: Addon[] = [];
+    const removedAddonFolders: AddonFolder[] = [];
+
+    for (const currentAddon of currentAddons) {
+      const provider = this._addonProviderService.getProvider(currentAddon.providerName);
+      if (provider.allowReScan === true) {
+        continue;
+      }
+
+      const removed = _.remove(addonFolders, (af) => currentAddon.installedFolderList.includes(af.name));
+      removedAddonFolders.push(...removed);
+
+      remainingAddons.push(currentAddon);
+    }
+
+    console.log(
+      `Removed ${removedAddonFolders.length} NonRescan folders: ${removedAddonFolders.map((af) => af.name).join(", ")}`
+    );
+    console.log(`Kept ${remainingAddons.length} NonRescan addons: ${remainingAddons.map((ad) => ad.name).join(", ")}`);
+
+    return remainingAddons;
+  }
+
   private async migrateLocalAddons(installation: WowInstallation): Promise<void> {
     const existingAddons = await this.getAllAddons(installation);
     if (!existingAddons.length) {
@@ -1520,7 +1548,9 @@ export class AddonService {
     console.log(`Auto update set complete`);
   }
 
-  private async scanAddons(installation: WowInstallation): Promise<Addon[]> {
+  private async scanAddons(installation: WowInstallation, currentAddons?: Addon[]): Promise<Addon[]> {
+    const addonList: Addon[] = [];
+
     if (!installation) {
       return [];
     }
@@ -1540,6 +1570,11 @@ export class AddonService {
       }
 
       await this.removeGitFolders(addonFolders);
+
+      if (Array.isArray(currentAddons)) {
+        const skippedAddons = this.removeNonRescanFolders(addonFolders, currentAddons);
+        addonList.push(...skippedAddons);
+      }
 
       // Get all the fingerprints we might need
       await this._addonFingerprintService.getFingerprints(addonFolders);
@@ -1585,7 +1620,6 @@ export class AddonService {
 
       console.debug("matchedGroups", matchedGroups);
 
-      const addonList: Addon[] = [];
       for (const value of Object.values(matchedGroups)) {
         const ordered = _.orderBy(value, (v) => v.matchingAddon?.externalIds?.length ?? 0).reverse();
         const first = ordered[0];
