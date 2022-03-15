@@ -1,10 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/wowup-electron"
     schedule:
       interval: "daily"
     target-branch: "develop"
-    # Labels on pull requests for security and version updates
-    labels:
-      - "npm dependencies"
