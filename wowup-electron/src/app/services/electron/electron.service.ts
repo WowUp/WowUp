@@ -228,7 +228,7 @@ export class ElectronService {
   }
 
   public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
-    window.wowup.onRendererEvent(channel, listener);
+    window.wowup?.onRendererEvent(channel, listener);
   }
 
   public async getLocale(): Promise<string> {

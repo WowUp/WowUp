@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { join } from "path";
+import { basename, join } from "path";
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -25,6 +25,7 @@ export class ZipAddonProvider extends AddonProvider {
   public readonly allowReinstall = false;
   public readonly allowChannelChange = false;
   public readonly allowEdit = false;
+  public readonly allowReScan = false;
   public readonly canShowChangelog = false;
   public enabled = true;
 
@@ -109,6 +110,17 @@ export class ZipAddonProvider extends AddonProvider {
     await this.validateUrlContentType(addonUri);
 
     const fileName = _.last(addonUri.pathname.split("/")) ?? "unknown";
+    const fileNameNoExt = basename(fileName, ".zip");
+
+    const potentialFile: AddonSearchResultFile = {
+      channelType: AddonChannelType.Stable,
+      downloadUrl: addonUri.toString(),
+      folders: [fileNameNoExt],
+      gameVersion: "",
+      version: fileNameNoExt,
+      releaseDate: new Date(),
+      changelog: "",
+    };
 
     const potentialAddon: AddonSearchResult = {
       author: addonUri.hostname,
@@ -118,6 +130,7 @@ export class ZipAddonProvider extends AddonProvider {
       name: fileName,
       providerName: this.name,
       thumbnailUrl: "",
+      files: [potentialFile],
     };
 
     return {

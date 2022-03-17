@@ -67,6 +67,7 @@ export class GitHubAddonProvider extends AddonProvider {
   public readonly allowReinstall = true;
   public readonly allowChannelChange = false;
   public readonly allowEdit = false;
+  public readonly allowReScan = false;
   public enabled = true;
 
   public constructor(private _httpClient: HttpClient, private _warcraftService: WarcraftService) {
