@@ -24,6 +24,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>New support for installing from the <a appExternalLink href="https://dev.wowup.io">WowUp website</a></li>
     <li>New CurseForge V2 addon provider, requires that they give you a key</li>
     <li>New copy news link button</li>
+    <li>GitHub/Zip addons should now survive a re-scan</li>
     </ul>
     <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
@@ -45,6 +46,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Wago addon IDs should now work as expected when swapping providers</li>
     <li>Fix an issue with showing the wrong folder name for some TukUI addons</li>
     <li>Fix an issue with desktop notifications appearing if they were disabled</li>
+    <li>Fix an issue with install direct zip URL not working</li>
     <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
     <li>Github install supports octet stream content type zips</li>
     <li>Spinner is now shown during scan at app startup</li>
