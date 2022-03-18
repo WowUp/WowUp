@@ -40,13 +40,7 @@ contextBridge.exposeInMainWorld("wago", {
   },
 });
 
-setTimeout(() => {
-  console.log(`[wago-preload] setTimeout reloading`);
-  window.location.reload();
-}, RELOAD_PERIOD_MS);
-
 console.log(`[wago-preload] init`);
-console.log(`[wago-preload] next reload`, new Date(Date.now() + RELOAD_PERIOD_MS).toLocaleString());
 
 window.addEventListener(
   "error",
