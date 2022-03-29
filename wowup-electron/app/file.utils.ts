@@ -11,6 +11,20 @@ import { TreeNode } from "../src/common/models/ipc-events";
 import { GetDirectoryTreeOptions } from "../src/common/models/ipc-request";
 import { isWin } from "./platform";
 import { ZipEntry } from "../src/common/models/ipc-response";
+import {
+  firstValueFrom,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  pipe,
+  range,
+  retryWhen,
+  throwError,
+  timer,
+  zip,
+} from "rxjs";
 
 export function zipFile(srcPath: string, outPath: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -105,18 +119,40 @@ export async function remove(path: string): Promise<void> {
  */
 async function rmdir(path: string): Promise<void> {
   if (isWin) {
-    await new Promise((resolve, reject) => {
-      exec(`rmdir "${path}" /s /q`, (err, stdout, stderr) => {
-        if (err || stdout.length || stderr.length) {
-          log.error("rmdir fallback failed", err, stdout, stderr);
-          return reject(new Error("rmdir fallback failed"));
-        }
-        resolve(undefined);
-      });
-    });
+    await rmdirWin(path);
   } else {
     await fsp.rm(path, { recursive: true, force: true });
   }
+}
+
+async function rmdirWin(path: string, retryCount = 0, lastError = null): Promise<void> {
+  if (retryCount > 10) throw new Error(lastError);
+
+  try {
+    return executeWinRm(path);
+  } catch (e) {
+    log.error("rmdirWin", path, retryCount, e);
+    await delay(retryCount);
+    return rmdirWin(path, retryCount + 1, e);
+  }
+}
+
+function delay(retryCount: number, period = 500) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, period * retryCount);
+  });
+}
+
+function executeWinRm(path: string) {
+  return new Promise<void>((resolve, reject) => {
+    exec(`rmdir "${path}" /s /q`, (err, stdout, stderr) => {
+      if (err || stdout.length || stderr.length) {
+        log.error("rmdir fallback failed", err, stdout, stderr);
+        return reject(new Error("rmdir fallback failed"));
+      }
+      resolve(undefined);
+    });
+  });
 }
 
 export async function readDirRecursive(sourcePath: string): Promise<string[]> {
