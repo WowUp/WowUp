@@ -84,6 +84,10 @@ function openPath(path: string): Promise<string> {
   return shell.openPath(path);
 }
 
+window.addEventListener("auxclick", (event) => {
+  event.preventDefault();
+});
+
 try {
   if (window.opener === null) {
     window.log = log;
