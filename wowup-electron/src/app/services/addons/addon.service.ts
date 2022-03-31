@@ -1412,7 +1412,7 @@ export class AddonService {
 
     for (const currentAddon of currentAddons) {
       const provider = this._addonProviderService.getProvider(currentAddon.providerName);
-      if (provider.allowReScan === true) {
+      if (provider === undefined || provider.allowReScan === true) {
         continue;
       }
 
