@@ -1075,6 +1075,7 @@ export class AddonService {
     // Map the old installation addon settings to the new ones
     addons = this.updateAddons(addons, newAddons);
 
+    console.debug("addons", addons);
     await this._addonStorage.saveAll(addons);
 
     this._addonActionSrc.next({ type: "scan" });
@@ -1298,7 +1299,14 @@ export class AddonService {
         addon.summary = result.summary;
         addon.thumbnailUrl = result.thumbnailUrl;
         addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
-        addon.warningType = undefined;
+
+        if (
+          addon.warningType &&
+          [AddonWarningType.MissingOnProvider, AddonWarningType.NoProviderFiles].includes(addon.warningType)
+        ) {
+          addon.warningType = undefined;
+        }
+
         addon.screenshotUrls = result.screenshotUrls;
 
         // Check for a new download URL
@@ -1606,10 +1614,14 @@ export class AddonService {
       const matchedAddonFolderNames = matchedAddonFolders.map((mf) => mf.name);
 
       matchedAddonFolders.forEach((maf) => {
-        if (maf.matchingAddon) {
-          const targetToc = this._tocService.getTocForGameType2(maf, installation.clientType);
-          this.setExternalIds(maf.matchingAddon, targetToc);
+        const targetToc = this._tocService.getTocForGameType2(maf, installation.clientType);
+
+        if (!targetToc.fileName.startsWith(maf.name)) {
+          console.warn("TOC NAME MISMATCH", maf.name, targetToc.fileName);
+          maf.matchingAddon.warningType = AddonWarningType.TocNameMismatch;
         }
+
+        this.setExternalIds(maf.matchingAddon, targetToc);
       });
 
       const matchedGroups = _.groupBy(
@@ -1647,6 +1659,8 @@ export class AddonService {
         addon.latestChangelogVersion = undefined;
         addon.channelType = installation.defaultAddonChannelType;
       });
+
+      console.debug(addonList);
 
       return addonList;
     } finally {

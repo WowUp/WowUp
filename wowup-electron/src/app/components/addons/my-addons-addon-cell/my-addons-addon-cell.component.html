@@ -55,7 +55,7 @@
         <div *ngIf="hasWarning$ | async" class="mr-2">
           <mat-icon
             class="auto-update-icon text-warning"
-            [matTooltip]="getWarningText(listItem)"
+            [matTooltip]="warningText$ | async"
             svgIcon="fas:triangle-exclamation"
           >
           </mat-icon>
