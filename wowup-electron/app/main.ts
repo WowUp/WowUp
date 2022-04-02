@@ -323,7 +323,8 @@ function createWindow(): BrowserWindow {
 
     webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
       log.warn("setPermissionCheckHandler", permission, origin);
-      return false;
+
+      return ["background-sync"].includes(permission);
     });
 
     webContents.on("did-fail-load", (evt, code, desc, url) => {

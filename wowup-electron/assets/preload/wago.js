@@ -46,8 +46,9 @@ window.addEventListener(
   "error",
   function (e) {
     const errMsg = e.error?.toString() || "unknown error on " + window.location;
-    console.error(`[wago-preload] error listener:`, errMsg);
+    console.error(`[wago-preload] error listener:`, e.message, errMsg);
     ipcRenderer.send("webview-error", inspect(e.error), e.message);
+    window.setTimeout(() => window.location.reload(), 2000);
   },
   true
 );
