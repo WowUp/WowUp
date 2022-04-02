@@ -173,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "Dieses Addon scheint entweder vom Autor oder vom Addon-Anbieter entfernt worden zu sein.<br>Wir können dieses Addon nicht mehr aktualisieren oder Details bereitstellen.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Dieses Addon scheint vom Anbieter entfernt worden zu sein",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} hat dieses Addon ordnungsgemäß zurückgegeben, es gab jedoch keine Dateien, die mit dieser Spielversion übereinstimmen.<br>Sobald es ein Update gibt, das zu dieser Spielversion passt, sollte diese Warnung verschwinden.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hatte keine passenden Spielversionsdateien"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hatte keine passenden Spielversionsdateien",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",

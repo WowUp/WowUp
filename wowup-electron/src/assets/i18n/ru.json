@@ -173,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация, вероятно, была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация, вероятно, была удалена источником",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} верно определил модификацию, однако он не имеет каких-либо файлов соответствующих этой версии игры.<br>Это предупреждение исчезнет как только будет доступно обновление для данной версии игры.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов, соответствующих версии игры"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов, соответствующих версии игры",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",

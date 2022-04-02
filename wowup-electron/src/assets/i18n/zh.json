@@ -173,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 无法更新此插件或提供详细信息。",
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了该插件的相关信息，但不包含匹配当前游戏版本的文件。<br>一旦有匹配该游戏版本的更新，此提示信息将会消失。",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 没有匹配该游戏版本的文件"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 没有匹配该游戏版本的文件",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",

@@ -173,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "Questo addon sembra essere stato rimosso dal suo autore o dal provider.<br>Non siamo più in grado di aggiornare questo addon o di fornire dettagli.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Questo addon sembra essere stato rimosso dal provider",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} ha restituito questo addon correttamente, ma non c'erano file corrispondenti a questa versione del gioco.<br>Non appena ci sarà un aggiornamento che si adatta a questa versione del gioco, questo avviso dovrebbe scomparire.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} non aveva files corrispondenti alla versione di gioco "
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} non aveva files corrispondenti alla versione di gioco ",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",

@@ -173,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "{providerName} nie zwróciliśmy addonu gdy o to prosiliśmy.<br>Nie możemy zaktualizować tego addonu czy zapewnić szczegółów dopóki {providerName} nie naprawi go.",
       "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} nie zwraca tego dodatku zgodnie z oczekiwaniami",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} prawidłowo zwrócił ten addon, lecz nie ma żadnych pasujących plików do tej wersji.<br>Kiedy będzie aktualizacja wspierająca tę wersje, komunikat powienien zniknąć.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} nie ma żadnych pasujących plików dla tej wersji gry"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} nie ma żadnych pasujących plików dla tej wersji gry",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
