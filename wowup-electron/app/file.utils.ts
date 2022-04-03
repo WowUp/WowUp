@@ -11,20 +11,6 @@ import { TreeNode } from "../src/common/models/ipc-events";
 import { GetDirectoryTreeOptions } from "../src/common/models/ipc-request";
 import { isWin } from "./platform";
 import { ZipEntry } from "../src/common/models/ipc-response";
-import {
-  firstValueFrom,
-  from,
-  map,
-  mergeMap,
-  Observable,
-  of,
-  pipe,
-  range,
-  retryWhen,
-  throwError,
-  timer,
-  zip,
-} from "rxjs";
 
 export function zipFile(srcPath: string, outPath: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -125,15 +111,17 @@ async function rmdir(path: string): Promise<void> {
   }
 }
 
-async function rmdirWin(path: string, retryCount = 0, lastError = null): Promise<void> {
-  if (retryCount > 10) throw new Error(lastError);
+async function rmdirWin(path: string, retryCount = 0, lastError: Error = null): Promise<void> {
+  if (retryCount > 10) {
+    throw new Error(lastError?.toString());
+  }
 
   try {
     return executeWinRm(path);
   } catch (e) {
     log.error("rmdirWin", path, retryCount, e);
     await delay(retryCount);
-    return rmdirWin(path, retryCount + 1, e);
+    return rmdirWin(path, retryCount + 1, e as Error);
   }
 }
 
