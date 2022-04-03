@@ -37,6 +37,8 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Installing via GitHub URL is now more aggressive</li>
     <li>Addon detail/changelog text is now selectable</li>
     <li>Re-scanning addons is now faster</li>
+    <li>Addons with folder name/toc mismatches will now be marked with a warning</li>
+    <li>Middle clicking a website link will no longer open the link in a WowUp window</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
@@ -47,6 +49,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Fix an issue with showing the wrong folder name for some TukUI addons</li>
     <li>Fix an issue with desktop notifications appearing if they were disabled</li>
     <li>Fix an issue with install direct zip URL not working</li>
+    <li>Fix an issue with unmatched addons breaking the re-scan process</li>
     <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
     <li>Github install supports octet stream content type zips</li>
     <li>Spinner is now shown during scan at app startup</li>
