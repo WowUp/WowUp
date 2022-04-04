@@ -27,7 +27,7 @@ const CHANGELOGS: ChangeLog[] = [
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
     <li>New Polish language support (nydas3k)</li>
-    <li>New support for installing from the <a appExternalLink href="https://dev.wowup.io">WowUp website</a></li>
+    <li>New support for installing from the <a appExternalLink href="https://wowup.io">WowUp website</a></li>
     <li>New CurseForge V2 addon provider</li>
     <li>New copy news link button</li>
     <li>GitHub/Zip addons should now survive a re-scan</li>
