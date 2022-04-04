@@ -18,11 +18,17 @@ const CHANGELOGS: ChangeLog[] = [
   {
     Version: "2.7.0",
     html: `
+    <h2 class="text-warning">Important CurseForge Changes</h2>
+    <p>
+    CurseForge will soon end the ability for WowUp to show or update their addons.<br>
+    In order to continue using CurseForge you will need to be granted a key by them.<br>
+    <a href="https://support.curseforge.com/en/support/solutions/articles/9000208346-about-the-curseforge-api-and-how-to-apply-for-a-key">Read more here</a>
+    </p>
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
     <li>New Polish language support (nydas3k)</li>
     <li>New support for installing from the <a appExternalLink href="https://dev.wowup.io">WowUp website</a></li>
-    <li>New CurseForge V2 addon provider, requires that they give you a key</li>
+    <li>New CurseForge V2 addon provider</li>
     <li>New copy news link button</li>
     <li>GitHub/Zip addons should now survive a re-scan</li>
     </ul>
