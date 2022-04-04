@@ -3,7 +3,6 @@ const log = require("electron-log");
 const { join } = require("path");
 const { inspect } = require("util");
 
-const RELOAD_PERIOD_MS = 10 * 60 * 1000;
 const LOG_PATH = getArg("log-path");
 
 function getArg(argKey) {
@@ -33,15 +32,6 @@ console.error = function (...data) {
 };
 /* eslint-enable @typescript-eslint/no-unsafe-argument */
 
-contextBridge.exposeInMainWorld("wago", {
-  provideApiKey: (key) => {
-    console.debug(`[wago-preload] got key`);
-    ipcRenderer.send("wago-token-received", key);
-  },
-});
-
-console.log(`[wago-preload] init`);
-
 window.addEventListener(
   "error",
   function (e) {
@@ -57,3 +47,20 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
   console.error(`[wago-preload] error:`, msg, url, lineNo, columnNo, error);
   return false;
 };
+
+contextBridge.exposeInMainWorld("wago", {
+  provideApiKey: (key) => {
+    window.clearTimeout(keyExpectedTimeout);
+    console.debug(`[wago-preload] got key`);
+    ipcRenderer.send("wago-token-received", key);
+  },
+});
+
+// If the api key does not get populated after a certain time, reload
+// Can happen if the page returns bad responses (500 etc)
+let keyExpectedTimeout = setTimeout(() => {
+  console.log("[wago-preload] failed to get key in time, reloading");
+  window.location.reload();
+}, 30000);
+
+console.log(`[wago-preload] init`);
