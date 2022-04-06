@@ -22,6 +22,10 @@ export class OptionsDebugSectionComponent {
     await this._wowupService.showLogsFolder();
   }
 
+  public async onShowConfig(): Promise<void> {
+    await this._wowupService.showConfigFolder();
+  }
+
   public async onLogDebugData(): Promise<void> {
     try {
       this.dumpingDebugData = true;

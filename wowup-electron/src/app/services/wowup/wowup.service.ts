@@ -242,7 +242,7 @@ export class WowUpService {
   }
 
   public async getEnableSystemNotifications(): Promise<boolean> {
-    return await this._preferenceStorageService.getAsync(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY);
+    return await this._preferenceStorageService.getBool(ENABLE_SYSTEM_NOTIFICATIONS_PREFERENCE_KEY);
   }
 
   public async setEnableSystemNotifications(enabled: boolean): Promise<void> {
@@ -250,8 +250,7 @@ export class WowUpService {
   }
 
   public async getEnableAppBadge(): Promise<boolean> {
-    const appBadge = await this._preferenceStorageService.getAsync(ENABLE_APP_BADGE_KEY);
-    return appBadge === "true";
+    return await this._preferenceStorageService.getBool(ENABLE_APP_BADGE_KEY);
   }
 
   public async setEnableAppBadge(enabled: boolean): Promise<void> {
@@ -326,6 +325,10 @@ export class WowUpService {
 
   public async showLogsFolder(): Promise<void> {
     await this._fileService.showDirectory(this.applicationLogsFolderPath);
+  }
+
+  public async showConfigFolder(): Promise<void> {
+    await this._fileService.showDirectory(this.applicationFolderPath);
   }
 
   public checkForAppUpdate(): void {

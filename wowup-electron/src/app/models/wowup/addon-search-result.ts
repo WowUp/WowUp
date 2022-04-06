@@ -15,4 +15,5 @@ export interface AddonSearchResult {
   releasedAt?: Date;
   fundingLinks?: AddonFundingLink[];
   changelog?: string;
+  externallyBlocked?: boolean;
 }

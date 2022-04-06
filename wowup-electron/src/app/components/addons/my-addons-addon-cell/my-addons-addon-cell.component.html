@@ -48,15 +48,15 @@
           <mat-icon
             class="auto-update-icon text-warning"
             [matTooltip]="'PAGES.MY_ADDONS.REQUIRED_DEPENDENCY_MISSING_TOOLTIP' | translate"
-            svgIcon="fas:exclamation-triangle"
+            svgIcon="fas:triangle-exclamation"
           >
           </mat-icon>
         </div>
         <div *ngIf="hasWarning$ | async" class="mr-2">
           <mat-icon
             class="auto-update-icon text-warning"
-            [matTooltip]="getWarningText(listItem)"
-            svgIcon="fas:exclamation-triangle"
+            [matTooltip]="warningText$ | async"
+            svgIcon="fas:triangle-exclamation"
           >
           </mat-icon>
         </div>
@@ -76,7 +76,7 @@
             [matTooltip]="'PAGES.MY_ADDONS.UNKNOWN_ADDON_INFO_TOOLTIP' | translate"
             [matTooltipClass]="['text-center']"
             [style.color]="'#ff9800'"
-            svgIcon="fas:exclamation-triangle"
+            svgIcon="fas:triangle-exclamation"
           >
           </mat-icon>
         </div>

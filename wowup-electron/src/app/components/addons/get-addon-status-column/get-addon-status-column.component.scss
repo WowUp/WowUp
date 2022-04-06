@@ -5,3 +5,9 @@
   align-items: center;
   height: 62px;
 }
+.unavailable {
+  background-color: var(--background-secondary-3);
+  display: inline;
+  padding: 1em;
+  border-radius: 4px;
+}

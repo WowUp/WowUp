@@ -16,7 +16,6 @@ import * as globrex from "globrex";
 import * as _ from "lodash";
 import { nanoid } from "nanoid";
 import * as nodeDiskInfo from "node-disk-info";
-import * as pLimit from "p-limit";
 import * as path from "path";
 import { Transform } from "stream";
 import * as yauzl from "yauzl";
@@ -111,6 +110,7 @@ import * as push from "./push";
 import { GetDirectoryTreeRequest } from "../src/common/models/ipc-request";
 import { ProductDb } from "../src/common/wowup/product-db";
 import { restoreWindow } from "./window-state";
+import { firstValueFrom, from, mergeMap, toArray } from "rxjs";
 
 let PENDING_OPEN_URLS: string[] = [];
 
@@ -290,42 +290,14 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
 
   handle(IPC_STAT_FILES_CHANNEL, async (evt, filePaths: string[]) => {
     const results: { [path: string]: FsStats } = {};
-    const limit = pLimit(3);
-    const tasks = _.map(filePaths, (path) =>
-      limit(async () => {
-        const stats = await fsp.stat(path);
-        const fsStats: FsStats = {
-          atime: stats.atime,
-          atimeMs: stats.atimeMs,
-          birthtime: stats.birthtime,
-          birthtimeMs: stats.birthtimeMs,
-          blksize: stats.blksize,
-          blocks: stats.blocks,
-          ctime: stats.ctime,
-          ctimeMs: stats.ctimeMs,
-          dev: stats.dev,
-          gid: stats.gid,
-          ino: stats.ino,
-          isBlockDevice: stats.isBlockDevice(),
-          isCharacterDevice: stats.isCharacterDevice(),
-          isDirectory: stats.isDirectory(),
-          isFIFO: stats.isFIFO(),
-          isFile: stats.isFile(),
-          isSocket: stats.isSocket(),
-          isSymbolicLink: stats.isSymbolicLink(),
-          mode: stats.mode,
-          mtime: stats.mtime,
-          mtimeMs: stats.mtimeMs,
-          nlink: stats.nlink,
-          rdev: stats.rdev,
-          size: stats.size,
-          uid: stats.uid,
-        };
-        return { path, fsStats };
-      })
+
+    const taskResults = await firstValueFrom(
+      from(filePaths).pipe(
+        mergeMap((filePath) => from(statFile(filePath)), 3),
+        toArray()
+      )
     );
 
-    const taskResults = await Promise.all(tasks);
     taskResults.forEach((r) => (results[r.path] = r.fsStats));
 
     return results;
@@ -382,9 +354,14 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   handle(IPC_CURSE_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<CurseFolderScanResult[]> => {
     // Scan addon folders in parallel for speed!?
     try {
-      const limit = pLimit(2);
-      const tasks = _.map(filePaths, (folder) => limit(() => new CurseFolderScanner().scanFolder(folder)));
-      return await Promise.all(tasks);
+      const taskResults = await firstValueFrom(
+        from(filePaths).pipe(
+          mergeMap((folder) => from(new CurseFolderScanner().scanFolder(folder)), 2),
+          toArray()
+        )
+      );
+
+      return taskResults;
     } catch (e) {
       log.error("Failed during curse scan", e);
       throw e;
@@ -392,9 +369,14 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   handle(IPC_WOWUP_GET_SCAN_RESULTS, async (evt, filePaths: string[]): Promise<WowUpScanResult[]> => {
-    const limit = pLimit(2);
-    const tasks = _.map(filePaths, (folder) => limit(() => new WowUpFolderScanner(folder).scanFolder()));
-    return await Promise.all(tasks);
+    const taskResults = await firstValueFrom(
+      from(filePaths).pipe(
+        mergeMap((folder) => from(new WowUpFolderScanner(folder).scanFolder()), 3),
+        toArray()
+      )
+    );
+
+    return taskResults;
   });
 
   handle(IPC_UNZIP_FILE_CHANNEL, async (evt, arg: UnzipRequest) => {
@@ -580,7 +562,7 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
   });
 
   ipcMain.on(IPC_DOWNLOAD_FILE_CHANNEL, (evt, arg: DownloadRequest) => {
-    handleDownloadFile(arg).catch((e) => console.error(e.toString()));
+    handleDownloadFile(arg).catch((e) => log.error(e.toString()));
   });
 
   // In order to allow concurrent downloads, we have to get creative with this session handler
@@ -601,6 +583,38 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
       }
     }
   });
+
+  async function statFile(filePath: string) {
+    const stats = await fsp.stat(filePath);
+    const fsStats: FsStats = {
+      atime: stats.atime,
+      atimeMs: stats.atimeMs,
+      birthtime: stats.birthtime,
+      birthtimeMs: stats.birthtimeMs,
+      blksize: stats.blksize,
+      blocks: stats.blocks,
+      ctime: stats.ctime,
+      ctimeMs: stats.ctimeMs,
+      dev: stats.dev,
+      gid: stats.gid,
+      ino: stats.ino,
+      isBlockDevice: stats.isBlockDevice(),
+      isCharacterDevice: stats.isCharacterDevice(),
+      isDirectory: stats.isDirectory(),
+      isFIFO: stats.isFIFO(),
+      isFile: stats.isFile(),
+      isSocket: stats.isSocket(),
+      isSymbolicLink: stats.isSymbolicLink(),
+      mode: stats.mode,
+      mtime: stats.mtime,
+      mtimeMs: stats.mtimeMs,
+      nlink: stats.nlink,
+      rdev: stats.rdev,
+      size: stats.size,
+      uid: stats.uid,
+    };
+    return { path: filePath, fsStats };
+  }
 
   async function handleDownloadFile(arg: DownloadRequest) {
     const status: DownloadStatus = {
@@ -661,8 +675,6 @@ export function initializeIpcHandlers(window: BrowserWindow): void {
             });
 
             response.on("end", () => {
-              console.log("No more data in response.");
-
               if (response.statusCode < 200 || response.statusCode >= 300) {
                 return reject(new Error(`Invalid response (${response.statusCode}): ${url}`));
               }

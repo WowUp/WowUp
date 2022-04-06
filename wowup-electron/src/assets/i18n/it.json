@@ -149,6 +149,8 @@
       "IGNORED": "Ignorato",
       "INSTALL": "Installa",
       "PENDING": "In attesa",
+      "UNAVAILABLE": "Unavailable",
+      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
       "UNINSTALL": "Disinstalla",
       "UNKNOWN": "Sconosciuto",
       "UPDATE": "Aggiorna",
@@ -171,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "Questo addon sembra essere stato rimosso dal suo autore o dal provider.<br>Non siamo più in grado di aggiornare questo addon o di fornire dettagli.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Questo addon sembra essere stato rimosso dal provider",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} ha restituito questo addon correttamente, ma non c'erano file corrispondenti a questa versione del gioco.<br>Non appena ci sarà un aggiornamento che si adatta a questa versione del gioco, questo avviso dovrebbe scomparire.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} non aveva files corrispondenti alla versione di gioco "
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} non aveva files corrispondenti alla versione di gioco ",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -463,12 +467,19 @@
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "News link copied to clipboard",
+      "NEWS_LINK_COPY_TOOLTIP": "Copy news link",
       "PAGE_CONTEXT_FOOTER": "{count} nuove storie",
       "REFRESH_TOOLTIP": "Aggiorna feed notizie"
     },
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Ad required",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
+          "API_KEY_TITLE": "CurseForge API Key",
+          "PROVIDER_NOTE": "API Key Required"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Selezionare quali providers utilizzare per cercare ed installare nuovi addons",
           "FIELD_LABEL": "Abilita Providers degli Addons",
@@ -524,6 +535,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Consenti a WowUp di scansionare le cartelle dei symlinks nella cartella dell'addon. Attenzione: verranno sostituiti durante l'aggiornamento/installazione."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "Dump Dati Di Debug",
         "DEBUG_DATA_DESCRIPTION": "Registra i dati di debug per aiutare a diagnosticare potenziali problemi. Questi dati possono essere trovati nei tuoi ultimi file di log.",
         "DEBUG_DATA_LABEL": "Dati di Debug",

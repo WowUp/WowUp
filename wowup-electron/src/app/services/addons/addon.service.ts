@@ -10,11 +10,13 @@ import { Injectable } from "@angular/core";
 
 import {
   ADDON_PROVIDER_CURSEFORGE,
+  ADDON_PROVIDER_CURSEFORGEV2,
   ADDON_PROVIDER_HUB,
   ADDON_PROVIDER_HUB_LEGACY,
   ADDON_PROVIDER_RAIDERIO,
   ADDON_PROVIDER_TUKUI,
   ADDON_PROVIDER_UNKNOWN,
+  ADDON_PROVIDER_WAGO,
   ADDON_PROVIDER_WOWINTERFACE,
   ADDON_PROVIDER_WOWUP_COMPANION,
   ADDON_PROVIDER_ZIP,
@@ -34,7 +36,7 @@ import {
   AddonWarningType,
 } from "../../../common/wowup/models";
 import { AddonProvider, SearchByUrlResult } from "../../addon-providers/addon-provider";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+// import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { WowUpAddonProvider } from "../../addon-providers/wowup-addon-provider";
 import { AddonScanError, AddonSyncError, GenericProviderError } from "../../errors";
 import { AddonFolder } from "../../models/wowup/addon-folder";
@@ -59,6 +61,8 @@ import { WarcraftInstallationService } from "../warcraft/warcraft-installation.s
 import { WarcraftService } from "../warcraft/warcraft.service";
 import { WowUpService } from "../wowup/wowup.service";
 import { AddonProviderFactory } from "./addon.provider.factory";
+import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
+import { AddonFingerprintService } from "./addon-fingerprint.service";
 
 export enum ScanUpdateType {
   Start,
@@ -91,6 +95,14 @@ interface InstallQueueItem {
 
 const IGNORED_FOLDER_NAMES = ["__MACOSX"];
 
+const ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP = {
+  [ADDON_PROVIDER_WOWINTERFACE]: "wowInterfaceId",
+  [ADDON_PROVIDER_TUKUI]: "tukUiProjectId",
+  [ADDON_PROVIDER_CURSEFORGE]: "curseProjectId",
+  [ADDON_PROVIDER_CURSEFORGEV2]: "curseProjectId",
+  [ADDON_PROVIDER_WAGO]: "wagoAddonId",
+};
+
 @Injectable({
   providedIn: "root",
 })
@@ -106,6 +118,7 @@ export class AddonService {
   private readonly _installQueue = new Subject<InstallQueueItem>();
   private readonly _anyUpdatesAvailableSrc = new BehaviorSubject<boolean>(false);
   private readonly _addonProviderChangeSrc = new Subject<AddonProvider>();
+  private readonly _syncingSrc = new BehaviorSubject<boolean>(false);
 
   private _activeInstalls: AddonUpdateEvent[] = [];
   private _subscriptions: Subscription[] = [];
@@ -120,6 +133,7 @@ export class AddonService {
   public readonly searchError$ = this._searchErrorSrc.asObservable();
   public readonly anyUpdatesAvailable$ = this._anyUpdatesAvailableSrc.asObservable();
   public readonly addonProviderChange$ = this._addonProviderChangeSrc.asObservable();
+  public readonly syncing$ = this._syncingSrc.asObservable();
 
   public constructor(
     private _addonStorage: AddonStorageService,
@@ -130,7 +144,8 @@ export class AddonService {
     private _fileService: FileService,
     private _tocService: TocService,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _addonProviderService: AddonProviderFactory
+    private _addonProviderService: AddonProviderFactory,
+    private _addonFingerprintService: AddonFingerprintService
   ) {
     // This should keep the current update queue state snapshot up to date
     const addonInstalledSub = this.addonInstalled$
@@ -773,7 +788,7 @@ export class AddonService {
   };
 
   public async logDebugData(): Promise<void> {
-    const curseProvider = this._addonProviderService.getProvider<CurseAddonProvider>(ADDON_PROVIDER_CURSEFORGE);
+    const curseProvider = this._addonProviderService.getProvider<CurseAddonV2Provider>(ADDON_PROVIDER_CURSEFORGE);
     const hubProvider = this._addonProviderService.getProvider<WowUpAddonProvider>(ADDON_PROVIDER_HUB);
 
     const clientMap = {};
@@ -785,7 +800,7 @@ export class AddonService {
       const addonFolders = await this._warcraftService.listAddons(installation, useSymlinkMode);
 
       const curseMap = {};
-      const curseScanResults = await curseProvider.getScanResults(addonFolders);
+      const curseScanResults = curseProvider.getScanResults(addonFolders);
       curseScanResults.forEach((sr) => (curseMap[sr.folderName] = sr.fingerprint));
 
       const hubMap = {};
@@ -1053,13 +1068,14 @@ export class AddonService {
     let addons = await this._addonStorage.getAllForInstallationIdAsync(installation.id);
 
     // Collect info on filesystem addons
-    const newAddons = await this.scanAddons(installation);
+    const newAddons = await this.scanAddons(installation, addons);
 
     await this._addonStorage.removeAllForInstallationAsync(installation.id);
 
     // Map the old installation addon settings to the new ones
     addons = this.updateAddons(addons, newAddons);
 
+    console.debug("addons", addons);
     await this._addonStorage.saveAll(addons);
 
     this._addonActionSrc.next({ type: "scan" });
@@ -1101,6 +1117,8 @@ export class AddonService {
   /** Iterate over all the installed WoW clients and attempt to check for addon updates */
   public async syncAllClients(): Promise<void> {
     console.debug("syncAllClients");
+    this._syncingSrc.next(true);
+
     const installations = await this._warcraftInstallationService.getWowInstallationsAsync();
 
     try {
@@ -1109,6 +1127,7 @@ export class AddonService {
     } catch (e) {
       console.error(e);
     } finally {
+      this._syncingSrc.next(false);
       this._addonActionSrc.next({ type: "sync" });
     }
   }
@@ -1280,7 +1299,14 @@ export class AddonService {
         addon.summary = result.summary;
         addon.thumbnailUrl = result.thumbnailUrl;
         addon.latestChangelog = latestFile?.changelog || addon.latestChangelog;
-        addon.warningType = undefined;
+
+        if (
+          addon.warningType &&
+          [AddonWarningType.MissingOnProvider, AddonWarningType.NoProviderFiles].includes(addon.warningType)
+        ) {
+          addon.warningType = undefined;
+        }
+
         addon.screenshotUrls = result.screenshotUrls;
 
         // Check for a new download URL
@@ -1382,6 +1408,34 @@ export class AddonService {
         addonFolder.ignoreReason = "git_repo";
       }
     }
+  }
+
+  /**
+   * Determine any addons who have providers with re-scanning disabled then remove any addon folders that match those addons
+   * Ex: GitHub addons should remain as they cannot be re-scanned at this time via toc
+   */
+  private removeNonRescanFolders(addonFolders: AddonFolder[], currentAddons: Addon[]): Addon[] {
+    const remainingAddons: Addon[] = [];
+    const removedAddonFolders: AddonFolder[] = [];
+
+    for (const currentAddon of currentAddons) {
+      const provider = this._addonProviderService.getProvider(currentAddon.providerName);
+      if (provider === undefined || provider.allowReScan === true) {
+        continue;
+      }
+
+      const removed = _.remove(addonFolders, (af) => currentAddon.installedFolderList.includes(af.name));
+      removedAddonFolders.push(...removed);
+
+      remainingAddons.push(currentAddon);
+    }
+
+    console.log(
+      `Removed ${removedAddonFolders.length} NonRescan folders: ${removedAddonFolders.map((af) => af.name).join(", ")}`
+    );
+    console.log(`Kept ${remainingAddons.length} NonRescan addons: ${remainingAddons.map((ad) => ad.name).join(", ")}`);
+
+    return remainingAddons;
   }
 
   private async migrateLocalAddons(installation: WowInstallation): Promise<void> {
@@ -1502,7 +1556,9 @@ export class AddonService {
     console.log(`Auto update set complete`);
   }
 
-  private async scanAddons(installation: WowInstallation): Promise<Addon[]> {
+  private async scanAddons(installation: WowInstallation, currentAddons?: Addon[]): Promise<Addon[]> {
+    const addonList: Addon[] = [];
+
     if (!installation) {
       return [];
     }
@@ -1523,6 +1579,14 @@ export class AddonService {
 
       await this.removeGitFolders(addonFolders);
 
+      if (Array.isArray(currentAddons)) {
+        const skippedAddons = this.removeNonRescanFolders(addonFolders, currentAddons);
+        addonList.push(...skippedAddons);
+      }
+
+      // Get all the fingerprints we might need
+      await this._addonFingerprintService.getFingerprints(addonFolders);
+
       this._scanUpdateSrc.next({
         type: ScanUpdateType.Update,
         currentCount: 0,
@@ -1533,6 +1597,7 @@ export class AddonService {
       for (const provider of enabledProviders) {
         try {
           const validFolders = addonFolders.filter((af) => !af.ignoreReason && !af.matchingAddon && af.tocs.length > 0);
+
           await provider.scan(installation, defaultAddonChannel, validFolders);
         } catch (e) {
           console.error(e);
@@ -1549,10 +1614,14 @@ export class AddonService {
       const matchedAddonFolderNames = matchedAddonFolders.map((mf) => mf.name);
 
       matchedAddonFolders.forEach((maf) => {
-        if (maf.matchingAddon) {
-          const targetToc = this._tocService.getTocForGameType2(maf, installation.clientType);
-          this.setExternalIds(maf.matchingAddon, targetToc);
+        const targetToc = this._tocService.getTocForGameType2(maf, installation.clientType);
+
+        if (!targetToc.fileName.startsWith(maf.name)) {
+          console.warn("TOC NAME MISMATCH", maf.name, targetToc.fileName);
+          maf.matchingAddon.warningType = AddonWarningType.TocNameMismatch;
         }
+
+        this.setExternalIds(maf.matchingAddon, targetToc);
       });
 
       const matchedGroups = _.groupBy(
@@ -1563,7 +1632,6 @@ export class AddonService {
 
       console.debug("matchedGroups", matchedGroups);
 
-      const addonList: Addon[] = [];
       for (const value of Object.values(matchedGroups)) {
         const ordered = _.orderBy(value, (v) => v.matchingAddon?.externalIds?.length ?? 0).reverse();
         const first = ordered[0];
@@ -1589,7 +1657,10 @@ export class AddonService {
 
         addon.latestChangelog = undefined;
         addon.latestChangelogVersion = undefined;
+        addon.channelType = installation.defaultAddonChannelType;
       });
+
+      console.debug(addonList);
 
       return addonList;
     } finally {
@@ -1605,9 +1676,9 @@ export class AddonService {
     }
 
     const externalIds: AddonExternalId[] = [];
-    this.insertExternalId(externalIds, ADDON_PROVIDER_WOWINTERFACE, toc.wowInterfaceId);
-    this.insertExternalId(externalIds, ADDON_PROVIDER_TUKUI, toc.tukUiProjectId);
-    this.insertExternalId(externalIds, ADDON_PROVIDER_CURSEFORGE, toc.curseProjectId);
+    for (const [key, value] of Object.entries(ADDON_PROVIDER_TOC_EXTERNAL_ID_MAP)) {
+      this.insertExternalId(externalIds, key, toc[value] as string);
+    }
 
     //If the addon does not include the current external id add it
     if (!this.containsOwnExternalId(addon, externalIds)) {

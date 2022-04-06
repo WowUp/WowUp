@@ -113,6 +113,8 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
         return "COMMON.ADDON_WARNING.MISSING_ON_PROVIDER_DESCRIPTION";
       case AddonWarningType.NoProviderFiles:
         return "COMMON.ADDON_WARNING.NO_PROVIDER_FILES_DESCRIPTION";
+      case AddonWarningType.TocNameMismatch:
+        return "COMMON.ADDON_WARNING.TOC_NAME_MISMATCH_DESCRIPTION";
       default:
         return "COMMON.ADDON_WARNING.GENERIC_DESCRIPTION";
     }

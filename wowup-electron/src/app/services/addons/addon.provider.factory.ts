@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { AddonProvider, AddonProviderType } from "../../addon-providers/addon-provider";
-import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
 import { GitHubAddonProvider } from "../../addon-providers/github-addon-provider";
 import { TukUiAddonProvider } from "../../addon-providers/tukui-addon-provider";
 import { WowInterfaceAddonProvider } from "../../addon-providers/wow-interface-addon-provider";
@@ -22,6 +21,9 @@ import { AddonProviderState } from "../../models/wowup/addon-provider-state";
 import { ADDON_PROVIDER_UNKNOWN, WAGO_PROMPT_KEY } from "../../../common/constants";
 import { Subject } from "rxjs";
 import { PreferenceStorageService } from "../storage/preference-storage.service";
+import { CurseAddonV2Provider } from "../../addon-providers/curse-addon-v2-provider";
+import { CurseAddonProvider } from "../../addon-providers/curse-addon-provider";
+import { SensitiveStorageService } from "../storage/sensitive-storage.service";
 
 @Injectable({
   providedIn: "root",
@@ -43,7 +45,8 @@ export class AddonProviderFactory {
     private _tocService: TocService,
     private _warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService,
-    private _preferenceStorageService: PreferenceStorageService
+    private _preferenceStorageService: PreferenceStorageService,
+    private _sensitiveStorageService: SensitiveStorageService,
   ) {}
 
   /** This is part of the APP_INITIALIZER and called before the app is bootstrapped */
@@ -58,6 +61,7 @@ export class AddonProviderFactory {
       this.createWowUpAddonProvider(),
       this.createWagoAddonProvider(),
       this.createCurseAddonProvider(),
+      this.createCurseV2AddonProvider(),
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
       this.createGitHubAddonProvider(),
@@ -121,6 +125,18 @@ export class AddonProviderFactory {
       this._electronService,
       this._wowupApiService,
       this._tocService,
+      this._networkService
+    );
+  }
+
+  public createCurseV2AddonProvider(): CurseAddonV2Provider {
+    return new CurseAddonV2Provider(
+      this._cachingService,
+      this._electronService,
+      this._wowupApiService,
+      this._warcraftService,
+      this._tocService,
+      this._sensitiveStorageService,
       this._networkService
     );
   }

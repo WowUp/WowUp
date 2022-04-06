@@ -16,25 +16,72 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.7.0",
+    html: `
+    <h2 class="text-warning">Important CurseForge Changes</h2>
+    <p>
+    CurseForge will soon end the ability for WowUp to show or update their addons.<br>
+    In order to continue using CurseForge you will need to be granted a key by them.<br>
+    <a href="https://support.curseforge.com/en/support/solutions/articles/9000208346-about-the-curseforge-api-and-how-to-apply-for-a-key">Read more here</a>
+    </p>
+    <h4 style="margin-top: 1em;">New Features</h4>
+    <ul>
+    <li>New Polish language support (nydas3k)</li>
+    <li>New support for installing from the <a appExternalLink href="https://wowup.io">WowUp website</a></li>
+    <li>New CurseForge V2 addon provider</li>
+    <li>New copy news link button</li>
+    <li>GitHub/Zip addons should now survive a re-scan</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>German locale updates (Glow)</li>
+    <li>Portuguese locale updates (TheLastDarkthorne)</li>
+    <li>Russian locale updates (Medok)</li>
+    <li>Spanish locale updates (SkollVargr)</li>
+    <li>Chinese locale updates (CyanoHao)</li>
+    <li>Wago is now a trusted domain by default (Artemis)</li>
+    <li>Installing via GitHub URL is now more aggressive</li>
+    <li>Addon detail/changelog text is now selectable</li>
+    <li>Re-scanning addons is now faster</li>
+    <li>Addons with folder name/toc mismatches will now be marked with a warning</li>
+    <li>Middle clicking a website link will no longer open the link in a WowUp window</li>
+    </ul>
+    <h4 style="margin-top: 1em;">Fixes</h4>
+    <ul>
+    <li>Light theme can be read again</li>
+    <li>Fixed an issue with Wago provider not working properly on Mac</li>
+    <li>Fix an issue with caching Wago scan results</li>
+    <li>Wago addon IDs should now work as expected when swapping providers</li>
+    <li>Fix an issue with showing the wrong folder name for some TukUI addons</li>
+    <li>Fix an issue with desktop notifications appearing if they were disabled</li>
+    <li>Fix an issue with install direct zip URL not working</li>
+    <li>Fix an issue with unmatched addons breaking the re-scan process</li>
+    <li>Github install supports _classic, _vanilla, _tbc, _bc, and _bcc zip files</li>
+    <li>Github install supports octet stream content type zips</li>
+    <li>Spinner is now shown during scan at app startup</li>
+    <li>My Addons spinner is now centered</li>
+    <li>Updated a bunch of dependencies</li>
+    </ul>`,
+  },
+  {
     Version: "2.6.2",
     html: `
     <h4>Fixes</h4>
     <ul>
     <li>Fixed an issue with Wago addons updating incorrectly</li>
-    </ul>
-    `,
+    </ul>`,
   },
   {
     Version: "2.6.1",
     html: `
-    <h4>Changes</h4>
+    <h4 style="margin-top: 1em;">Changes</h4>
     <ul>
     <li>Chinese locale updates (CyanoHao)</li>
     <li>Russian locale updates (Medok)</li>
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Added the ability to collapse the sidebar if no ad is required</li>
     </ul>
-    <h4>Fixes</h4>
+    <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>
     <li>Fixed an issue with having no clients locking up the app</li>
     </ul>

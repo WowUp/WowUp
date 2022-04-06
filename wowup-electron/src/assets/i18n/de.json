@@ -149,6 +149,8 @@
       "IGNORED": "Ignoriert",
       "INSTALL": "Installieren",
       "PENDING": "Ausstehend",
+      "UNAVAILABLE": "Nicht verfügbar",
+      "UNAVAILABLE_TOOLTIP": "Dieser Autor oder Anbieter hat dieses Addon nicht verfügbar gemacht",
       "UNINSTALL": "Deinstallieren",
       "UNKNOWN": "Unbekannt",
       "UPDATE": "Aktualisieren",
@@ -171,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "Dieses Addon scheint entweder vom Autor oder vom Addon-Anbieter entfernt worden zu sein.<br>Wir können dieses Addon nicht mehr aktualisieren oder Details bereitstellen.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Dieses Addon scheint vom Anbieter entfernt worden zu sein",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} hat dieses Addon ordnungsgemäß zurückgegeben, es gab jedoch keine Dateien, die mit dieser Spielversion übereinstimmen.<br>Sobald es ein Update gibt, das zu dieser Spielversion passt, sollte diese Warnung verschwinden.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hatte keine passenden Spielversionsdateien"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hatte keine passenden Spielversionsdateien",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "Der Ordnername dieses Addons stimmte nicht mit der erwarteten TOC-Datei überein, es können Probleme mit diesem Addon im Spiel auftreten.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "Der Ordner dieses Addons stimmt nicht mit der TOC-Datei überein"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -363,9 +367,9 @@
     "HOME": {
       "ABOUT_TAB_TITLE": "Über WowUp",
       "ACCOUNT_TAB_TITLE": "Konto",
-      "COLLAPSE_BUTTON_TITLE": "Collapse",
+      "COLLAPSE_BUTTON_TITLE": "Reduzieren",
       "DISCORD_TAB_TITLE": "Discord",
-      "EXPAND_BUTTON_TITLE": "Expand",
+      "EXPAND_BUTTON_TITLE": "Erweitern",
       "GET_ADDONS_TAB_TITLE": "Addons installieren",
       "GUIDE_TAB_TITLE": "Guide",
       "MIGRATING_ADDONS": "Addons werden migriert...",
@@ -463,12 +467,19 @@
       "WTF_BACKUP_BUTTON": "Backup der Interface Einstellungen"
     },
     "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "Nachrichtenlink in die Zwischenablage kopiert",
+      "NEWS_LINK_COPY_TOOLTIP": "Nachrichtenlink kopieren",
       "PAGE_CONTEXT_FOOTER": "{count} News",
       "REFRESH_TOOLTIP": "Newsfeed aktualisieren"
     },
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Ad required",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
+          "API_KEY_TITLE": "CurseForge API Key",
+          "PROVIDER_NOTE": "API Key Required"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Wähle aus, welche Addon-Anbieter zur Suche und Installation neuer Addons genutzt werden können",
           "FIELD_LABEL": "Aktivierte Addon-Anbieter",
@@ -524,6 +535,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Konfigurationsdateien anzeigen",
+        "CONFIG_FILES_DESCRIPTION": "Öffne den Ordner, in dem beispielsweise deine addons.json und preferences.json gespeichert sind.",
+        "CONFIG_FILES_LABEL": "Konfigurationsdateien",
         "DEBUG_DATA_BUTTON": "Debug-Daten speichern",
         "DEBUG_DATA_DESCRIPTION": "Protokolliere Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies findest Du in Deiner aktuellen Protokolldatei (für Neugierige).",
         "DEBUG_DATA_LABEL": "Debug-Daten",

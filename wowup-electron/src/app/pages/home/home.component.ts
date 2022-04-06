@@ -1,12 +1,11 @@
-import { from, Subscription } from "rxjs";
-import { filter, first, map, switchMap } from "rxjs/operators";
+import { from, of, Subscription } from "rxjs";
+import { catchError, filter, first, map, switchMap, tap } from "rxjs/operators";
 
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 
 import {
-  APP_PROTOCOL_NAME,
   CURSE_PROTOCOL_NAME,
   IPC_POWER_MONITOR_RESUME,
   IPC_POWER_MONITOR_UNLOCK,
@@ -31,6 +30,7 @@ import { WarcraftInstallationService } from "../../services/warcraft/warcraft-in
 import { WowUpService } from "../../services/wowup/wowup.service";
 import { getProtocol } from "../../utils/string.utils";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
+import { WowUpProtocolService } from "../../services/wowup/wowup-protocol.service";
 
 @Component({
   selector: "app-home",
@@ -62,7 +62,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     private _snackBarService: SnackbarService,
     private _cdRef: ChangeDetectorRef,
     private _warcraftInstallationService: WarcraftInstallationService,
-    private _dialogFactory: DialogFactory
+    private _dialogFactory: DialogFactory,
+    private _wowUpProtocolService: WowUpProtocolService
   ) {
     const wowInstalledSub = this._warcraftInstallationService.wowInstallations$.subscribe((installations) => {
       this.hasWowClient = installations.length > 0;
@@ -70,8 +71,12 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
     const customProtocolSub = this.electronService.customProtocol$
       .pipe(
-        filter((protocol) => !!protocol),
-        switchMap((protocol) => from(this.handleCustomProtocol(protocol)))
+        filter((protocol) => getProtocol(protocol) === CURSE_PROTOCOL_NAME),
+        tap((protocol) => this.handleAddonInstallProtocol(protocol)),
+        catchError((e) => {
+          console.error(e);
+          return of(undefined);
+        })
       )
       .subscribe();
 
@@ -85,25 +90,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     this._subscriptions.push(customProtocolSub, wowInstalledSub, scanErrorSub, scanUpdateSub, addonInstallErrorSub);
   }
 
-  private handleCustomProtocol = async (protocol: string): Promise<void> => {
-    const protocolName = getProtocol(protocol);
-    try {
-      switch (protocolName) {
-        case APP_PROTOCOL_NAME:
-          break;
-        case CURSE_PROTOCOL_NAME:
-          await this.handleAddonInstallProtocol(protocol);
-          break;
-        default:
-          console.warn(`Unknown protocol: ${protocol}`);
-          return;
-      }
-    } catch (e) {
-      console.error(`Failed to handle protocol`, e);
-    }
-  };
-
-  private async handleAddonInstallProtocol(protocol: string) {
+  private  handleAddonInstallProtocol(protocol: string) {
     const dialog = this._dialogFactory.getDialog(InstallFromProtocolDialogComponent, {
       disableClose: true,
       data: {
@@ -111,7 +98,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       },
     });
 
-    await dialog.afterClosed().toPromise();
+    return dialog.afterClosed().pipe(first());
   }
 
   public ngAfterViewInit(): void {

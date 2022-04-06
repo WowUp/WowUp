@@ -7,7 +7,7 @@
   }"
   (click)="onTableBlur($event)"
 >
-  <div class="control-container bg-secondary-3">
+  <div class="control-container bg-secondary-2">
     <div class="select-container">
       <app-client-selector></app-client-selector>
     </div>
@@ -26,7 +26,7 @@
         [matTooltip]="'PAGES.GET_ADDONS.RESET_CATEGORY_TOOLTIP' | translate"
         (click)="resetCategory()"
       >
-        <mat-icon svgIcon="fas:times"></mat-icon>
+        <mat-icon svgIcon="fas:xmark"></mat-icon>
       </button>
     </div>
     <div class="right-container">
@@ -49,7 +49,7 @@
             aria-label="Clear"
             (click)="onClearSearch()"
           >
-            <mat-icon svgIcon="fas:times"></mat-icon>
+            <mat-icon svgIcon="fas:xmark"></mat-icon>
           </button>
         </mat-form-field>
       </div>
@@ -100,7 +100,7 @@
         </button>
       </mat-action-list>
     </mat-drawer>
-    <mat-drawer-content>
+    <mat-drawer-content class="bg-secondary">
       <div class="spinner-container flex-grow-1" style="height: 100%" *ngIf="(showTable$ | async) === false">
         <app-progress-spinner> </app-progress-spinner>
       </div>

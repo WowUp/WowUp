@@ -54,7 +54,7 @@ export class HorizontalTabsComponent implements OnInit {
   private getAddonsTab: Tab = {
     titleKey: "PAGES.HOME.GET_ADDONS_TAB_TITLE",
     tooltipKey: "PAGES.HOME.GET_ADDONS_TAB_TITLE",
-    icon: "fas:search",
+    icon: "fas:magnifying-glass",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_GET_ADDONS)),
     isDisabled$: this._warcraftInstallationService.wowInstallations$.pipe(
       map((installations) => installations.length === 0)
@@ -90,7 +90,7 @@ export class HorizontalTabsComponent implements OnInit {
   private settingsTab: Tab = {
     titleKey: "PAGES.HOME.OPTIONS_TAB_TITLE",
     tooltipKey: "PAGES.HOME.OPTIONS_TAB_TITLE",
-    icon: "fas:cog",
+    icon: "fas:gear",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_SETTINGS)),
     isDisabled$: of(false),
     onClick: (): void => {

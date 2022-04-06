@@ -36,6 +36,7 @@ export interface AppUpdateDownloadProgress {
 export enum AddonWarningType {
   MissingOnProvider = "missing-on-provider",
   NoProviderFiles = "no-provider-files",
+  TocNameMismatch = "toc-name-mismatch",
 }
 
 export enum AddonCategory {

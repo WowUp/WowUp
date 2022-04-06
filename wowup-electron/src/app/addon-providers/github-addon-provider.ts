@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { from, Observable } from "rxjs";
+import { firstValueFrom, from, mergeMap, Observable, toArray } from "rxjs";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
@@ -26,6 +26,7 @@ import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
+import { getWowClientGroup } from "../../common/warcraft";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline";
 
@@ -50,7 +51,11 @@ interface ReleaseMetaItemMetadata {
 }
 
 const API_URL = "https://api.github.com/repos";
-const RELEASE_CONTENT_TYPES = ["application/x-zip-compressed", "application/zip"];
+const RELEASE_CONTENT_TYPES = {
+  XZIP: "application/x-zip-compressed",
+  ZIP: "application/zip",
+  OCTET_STREAM: "application/octet-stream",
+};
 const HEADER_RATE_LIMIT_MAX = "x-ratelimit-limit";
 const HEADER_RATE_LIMIT_REMAINING = "x-ratelimit-remaining";
 const HEADER_RATE_LIMIT_RESET = "x-ratelimit-reset";
@@ -62,6 +67,7 @@ export class GitHubAddonProvider extends AddonProvider {
   public readonly allowReinstall = true;
   public readonly allowChannelChange = false;
   public readonly allowEdit = false;
+  public readonly allowReScan = false;
   public enabled = true;
 
   public constructor(private _httpClient: HttpClient, private _warcraftService: WarcraftService) {
@@ -69,35 +75,46 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
-    const searchResults: AddonSearchResult[] = [];
-    const errors: Error[] = [];
+    const taskResults = await firstValueFrom(
+      from(addonIds).pipe(
+        mergeMap((addonId) => from(this.handleGetAllItem(addonId, installation)), 3),
+        toArray()
+      )
+    );
 
-    for (const addonId of addonIds) {
-      try {
-        const result = await this.getByIdAsync(addonId, installation.clientType);
-        if (result == null) {
-          continue;
-        }
+    const result: GetAllResult = {
+      errors: _.concat(taskResults.map((tr) => tr.error).filter((e) => !!e)),
+      searchResults: _.concat(taskResults.map((tr) => tr.searchResult).filter((sr) => !!sr)),
+    };
 
-        searchResults.push(result);
-      } catch (e) {
-        // If we're at the limit, just give up the loop
-        if (e instanceof GitHubLimitError) {
-          throw e;
-        }
+    return result;
+  }
 
-        if (e instanceof SourceRemovedAddonError) {
-          e.addonId = addonId;
-        }
+  private async handleGetAllItem(
+    addonId: string,
+    installation: WowInstallation
+  ): Promise<{ searchResult: AddonSearchResult; error: Error }> {
+    const result = {
+      searchResult: undefined,
+      error: undefined,
+    };
 
-        errors.push(e as Error);
+    try {
+      result.searchResult = await this.getByIdAsync(addonId, installation.clientType);
+    } catch (e) {
+      // If we're at the limit, just give up the loop
+      if (e instanceof GitHubLimitError) {
+        throw e;
       }
+
+      if (e instanceof SourceRemovedAddonError) {
+        e.addonId = addonId;
+      }
+
+      result.error = e as Error;
     }
 
-    return {
-      errors,
-      searchResults,
-    };
+    return result;
   }
 
   public async searchByUrl(addonUri: URL, installation: WowInstallation): Promise<SearchByUrlResult> {
@@ -111,7 +128,7 @@ export class GitHubAddonProvider extends AddonProvider {
       searchResult: undefined,
     };
 
-    const clientGroup = this._warcraftService.getClientGroup(installation.clientType);
+    const clientGroup = getWowClientGroup(installation.clientType);
 
     try {
       const results = await this.getReleases(repoPath);
@@ -237,22 +254,30 @@ export class GitHubAddonProvider extends AddonProvider {
   ): Promise<{ matchedAsset: GitHubAsset; release: GitHubRelease; latestAsset: GitHubAsset }> {
     let sortedReleases = releases.filter((r) => !r.draft);
     sortedReleases = _.sortBy(sortedReleases, (release) => new Date(release.published_at)).reverse();
+    sortedReleases = _.take(sortedReleases, 5);
 
     let validAsset: GitHubAsset | undefined = undefined;
     let sortedAssets: GitHubAsset[] = [];
+    let latestRelease: GitHubRelease = undefined;
 
-    const latestRelease = sortedReleases[0];
-    if (latestRelease) {
-      sortedAssets = this.getSortedAssets(latestRelease);
-      if (this.hasReleaseMetadata(latestRelease)) {
-        console.log(`Checking release metadata: ${latestRelease.name}`);
-        const metadata = await this.getReleaseMetadata(latestRelease);
-        validAsset = this.getValidAssetFromMetadata(latestRelease, clientType, metadata);
+    for (const release of sortedReleases) {
+      sortedAssets = this.getSortedAssets(release);
+      let iAsset: GitHubAsset | undefined = undefined;
+      if (this.hasReleaseMetadata(release)) {
+        console.log(`Checking release metadata: ${release.name}`);
+        const metadata = await this.getReleaseMetadata(release);
+        iAsset = this.getValidAssetFromMetadata(release, clientType, metadata);
       }
 
       // If we didn't find an asset with metadata, try the old way
-      if (!validAsset) {
-        validAsset = this.getValidAsset(latestRelease, clientType);
+      if (!iAsset) {
+        iAsset = this.getValidAsset(release, clientType);
+      }
+
+      if (iAsset) {
+        validAsset = iAsset;
+        latestRelease = release;
+        break;
       }
     }
 
@@ -351,7 +376,15 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isValidContentType(asset: GitHubAsset): boolean {
-    return RELEASE_CONTENT_TYPES.some((ct) => ct == asset.content_type);
+    if ([RELEASE_CONTENT_TYPES.ZIP, RELEASE_CONTENT_TYPES.XZIP].includes(asset.content_type)) {
+      return true;
+    }
+
+    if (RELEASE_CONTENT_TYPES.OCTET_STREAM === asset.content_type && asset.browser_download_url.endsWith(".zip")) {
+      return true;
+    }
+
+    return false;
   }
 
   private isValidClientType(clientType: WowClientType, asset: GitHubAsset): boolean {
@@ -376,11 +409,11 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   private isClassicAsset(asset: GitHubAsset): boolean {
-    return /[-](classic|vanilla)\.zip$/i.test(asset.name);
+    return /[-|_](classic|vanilla)\.zip$/i.test(asset.name);
   }
 
   private isBurningCrusadeAsset(asset: GitHubAsset): boolean {
-    return /[-](bc|bcc|tbc)\.zip$/i.test(asset.name);
+    return /[-|_](bc|bcc|tbc)\.zip$/i.test(asset.name);
   }
 
   private getAddonName(addonId: string): string {

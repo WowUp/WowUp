@@ -149,6 +149,8 @@
       "IGNORED": "Ignorado",
       "INSTALL": "Instalar",
       "PENDING": "Pendiente",
+      "UNAVAILABLE": "No disponible",
+      "UNAVAILABLE_TOOLTIP": "El autor o proveedor ha marcado este addon como no disponible",
       "UNINSTALL": "Desinstalar",
       "UNKNOWN": "",
       "UPDATE": "Actualizar",
@@ -171,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "Este addon parece haber sido eliminado por el autor o el proveedor.<br>No es posible actualizarlo ni proveer detalles.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Este addon parece haber sido eliminado por el proveedor",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} informa disponer de este addon, sin embargo, no posee ningún archivo que corresponda a esta versión del juego.<br>Una vez esté disponible una actualización que corresponda a esta versión del juego esta advertencia debería desaparecer.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} no dispone de ningún archivo que se corresponda con la versión del juego"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} no dispone de ningún archivo que se corresponda con la versión del juego",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -463,12 +467,19 @@
       "WTF_BACKUP_BUTTON": "Copia de seguridad"
     },
     "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "Enlace de la noticia copiado al portapapeles",
+      "NEWS_LINK_COPY_TOOLTIP": "Copiar enlace de la noticia",
       "PAGE_CONTEXT_FOOTER": "{count} titulares",
       "REFRESH_TOOLTIP": "Actualizar titulares"
     },
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Anuncio requerido",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "Si ha solicitado una clave para la API de CurseForge, puede introducirla aquí para conectar con ella.",
+          "API_KEY_TITLE": "Clave de API CurseForge",
+          "PROVIDER_NOTE": "Clave de API requerida"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Determina qué proveedores serán utilizados para la búsqueda e instalación de nuevos addons.",
           "FIELD_LABEL": "Selección de proveedores de addons",
@@ -524,6 +535,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Mostrar archivos de configuración",
+        "CONFIG_FILES_DESCRIPTION": "Abre la carpeta donde se encuentra almacenado addons.json y preferences.json por ejemplo.",
+        "CONFIG_FILES_LABEL": "Archivos de configuración",
         "DEBUG_DATA_BUTTON": "Eliminar datos de depuración",
         "DEBUG_DATA_DESCRIPTION": "Registra datos de depuración y ayuda a diagnosticar problemas potenciales. Puede curiosearlo abriendo el último archivo de registro.",
         "DEBUG_DATA_LABEL": "Datos de depuración",

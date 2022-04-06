@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TreeModule } from "@circlon/angular-tree-component";
 import { TranslateModule } from "@ngx-translate/core";
 
@@ -25,7 +25,16 @@ import { DirectiveModule } from "./directive.module";
     OptionsWowSectionComponent,
     WowClientOptionsComponent,
   ],
-  imports: [CommonModule, FormsModule, TranslateModule, MatModule, TreeModule, PipesModule, DirectiveModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatModule,
+    TreeModule,
+    PipesModule,
+    DirectiveModule,
+  ],
   exports: [
     WtfExplorerComponent,
     AboutComponent,

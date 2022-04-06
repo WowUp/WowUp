@@ -68,6 +68,7 @@
 }
 
 .no-addons-container {
+  height: calc(100% - 86px);
   display: flex;
   color: var(--text-1);
   justify-content: center;
@@ -75,6 +76,7 @@
   align-items: center;
 }
 .spinner-container {
+  height: calc(100% - 86px);
   display: flex;
   align-items: center;
   justify-content: center;

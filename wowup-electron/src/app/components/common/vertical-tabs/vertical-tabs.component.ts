@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, Subject } from "rxjs";
 import { map, takeUntil } from "rxjs/operators";
 
 import { Component, OnDestroy, OnInit } from "@angular/core";
@@ -76,7 +76,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
   private getAddonsTab: Tab = {
     titleKey: "PAGES.HOME.GET_ADDONS_TAB_TITLE",
     tooltipKey: "PAGES.HOME.GET_ADDONS_TAB_TITLE",
-    icon: "fas:search",
+    icon: "fas:magnifying-glass",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_GET_ADDONS)),
     isDisabled$: combineLatest([
       this._warcraftInstallationService.wowInstallations$,
@@ -113,7 +113,7 @@ export class VerticalTabsComponent implements OnInit, OnDestroy {
   private settingsTab: Tab = {
     titleKey: "PAGES.HOME.OPTIONS_TAB_TITLE",
     tooltipKey: "PAGES.HOME.OPTIONS_TAB_TITLE",
-    icon: "fas:cog",
+    icon: "fas:gear",
     isSelected$: this.sessionService.selectedHomeTab$.pipe(map((result) => result === TAB_INDEX_SETTINGS)),
     isDisabled$: this.sessionService.enableControls$.pipe(map((enabled) => !enabled)),
     onClick: (): void => {

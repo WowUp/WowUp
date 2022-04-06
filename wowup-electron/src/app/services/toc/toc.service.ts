@@ -3,29 +3,9 @@ import * as path from "path";
 
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonFolder } from "../../models/wowup/addon-folder";
-import { Toc } from "../../models/wowup/toc";
+import * as tocModels from "../../models/wowup/toc";
 import { removeExtension } from "../../utils/string.utils";
 import { FileService } from "../files/file.service";
-
-const TOC_AUTHOR = "Author";
-const TOC_DEPENDENCIES = "Dependencies";
-const TOC_INTERFACE = "Interface";
-const TOC_NOTES = "Notes";
-const TOC_REQUIRED_DEPS = "RequiredDeps";
-const TOC_TITLE = "Title";
-const TOC_VERSION = "Version";
-const TOC_WEBSITE = "Website";
-const TOC_X_ADDON_PROVIDER = "X-AddonProvider"; // Raider.IO
-const TOC_X_CATEGORY = "X-Category";
-const TOC_X_CURSE_PROJECT_ID = "X-Curse-Project-ID"; // CurseForge
-const TOC_X_LOADONDEMAND = "LoadOnDemand";
-const TOC_X_LOCALIZATIONS = "X-Localizations";
-const TOC_X_PART_OF = "X-Part-Of";
-const TOC_X_TUKUI_PROJECTID = "X-Tukui-ProjectID"; // WowInterface
-const TOC_X_TUKUI_PROJECTFOLDERS = "X-Tukui-ProjectFolders"; // WowInterface
-const TOC_X_WEBSITE = "X-Website";
-const TOC_X_WOWI_ID = "X-WoWI-ID"; // WowInterface
-const TOC_X_WAGO_ID = "X-Wago-ID"; // WowInterface
 
 @Injectable({
   providedIn: "root",
@@ -33,36 +13,37 @@ const TOC_X_WAGO_ID = "X-Wago-ID"; // WowInterface
 export class TocService {
   public constructor(private _fileService: FileService) {}
 
-  public async parse(tocPath: string): Promise<Toc> {
+  public async parse(tocPath: string): Promise<tocModels.Toc> {
     const fileName = path.basename(tocPath);
     let tocText = await this._fileService.readFile(tocPath);
     tocText = tocText.trim();
 
-    const dependencies = this.getValue(TOC_DEPENDENCIES, tocText) || this.getValue(TOC_REQUIRED_DEPS, tocText);
+    const dependencies =
+      this.getValue(tocModels.TOC_DEPENDENCIES, tocText) || this.getValue(tocModels.TOC_REQUIRED_DEPS, tocText);
 
     const dependencyList: string[] = this.getDependencyList(tocText);
 
     return {
       fileName,
       filePath: tocPath,
-      author: this.getValue(TOC_AUTHOR, tocText),
-      curseProjectId: this.getValue(TOC_X_CURSE_PROJECT_ID, tocText),
-      interface: this.getValue(TOC_INTERFACE, tocText),
-      title: this.getValue(TOC_TITLE, tocText),
+      author: this.getValue(tocModels.TOC_AUTHOR, tocText),
+      curseProjectId: this.getValue(tocModels.TOC_X_CURSE_PROJECT_ID, tocText),
+      interface: this.getValue(tocModels.TOC_INTERFACE, tocText),
+      title: this.getValue(tocModels.TOC_TITLE, tocText),
       website: this.getWebsite(tocText),
-      version: this.getValue(TOC_VERSION, tocText),
-      partOf: this.getValue(TOC_X_PART_OF, tocText),
-      category: this.getValue(TOC_X_CATEGORY, tocText),
-      localizations: this.getValue(TOC_X_LOCALIZATIONS, tocText),
-      wowInterfaceId: this.getValue(TOC_X_WOWI_ID, tocText),
-      wagoAddonId: this.getValue(TOC_X_WAGO_ID, tocText),
+      version: this.getValue(tocModels.TOC_VERSION, tocText),
+      partOf: this.getValue(tocModels.TOC_X_PART_OF, tocText),
+      category: this.getValue(tocModels.TOC_X_CATEGORY, tocText),
+      localizations: this.getValue(tocModels.TOC_X_LOCALIZATIONS, tocText),
+      wowInterfaceId: this.getValue(tocModels.TOC_X_WOWI_ID, tocText),
+      wagoAddonId: this.getValue(tocModels.TOC_X_WAGO_ID, tocText),
       dependencies,
       dependencyList,
-      tukUiProjectId: this.getValue(TOC_X_TUKUI_PROJECTID, tocText),
-      tukUiProjectFolders: this.getValue(TOC_X_TUKUI_PROJECTFOLDERS, tocText),
-      loadOnDemand: this.getValue(TOC_X_LOADONDEMAND, tocText),
-      addonProvider: this.getValue(TOC_X_ADDON_PROVIDER, tocText),
-      notes: this.getValue(TOC_NOTES, tocText),
+      tukUiProjectId: this.getValue(tocModels.TOC_X_TUKUI_PROJECTID, tocText),
+      tukUiProjectFolders: this.getValue(tocModels.TOC_X_TUKUI_PROJECTFOLDERS, tocText),
+      loadOnDemand: this.getValue(tocModels.TOC_X_LOADONDEMAND, tocText),
+      addonProvider: this.getValue(tocModels.TOC_X_ADDON_PROVIDER, tocText),
+      notes: this.getValue(tocModels.TOC_NOTES, tocText),
     };
   }
 
@@ -89,8 +70,12 @@ export class TocService {
   /**
    * Return all valid tocs from a given base directory combined with the installation folders for the given client type
    */
-  public async getAllTocs(baseDir: string, installedFolders: string[], clientType: WowClientType): Promise<Toc[]> {
-    const tocs: Toc[] = [];
+  public async getAllTocs(
+    baseDir: string,
+    installedFolders: string[],
+    clientType: WowClientType
+  ): Promise<tocModels.Toc[]> {
+    const tocs: tocModels.Toc[] = [];
 
     for (const dir of installedFolders) {
       const dirPath = path.join(baseDir, dir);
@@ -143,7 +128,7 @@ export class TocService {
     );
   }
 
-  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): Toc {
+  public getTocForGameType2(addonFolder: AddonFolder, clientType: WowClientType): tocModels.Toc {
     let matchedToc = "";
 
     const tocs = addonFolder.tocs;
@@ -160,12 +145,12 @@ export class TocService {
   }
 
   private getWebsite(tocText: string) {
-    return this.getValue(TOC_WEBSITE, tocText) || this.getValue(TOC_X_WEBSITE, tocText);
+    return this.getValue(tocModels.TOC_WEBSITE, tocText) || this.getValue(tocModels.TOC_X_WEBSITE, tocText);
   }
 
   private getDependencyList(tocText: string) {
-    const dependencies = this.getValue(TOC_DEPENDENCIES, tocText);
-    const requiredDeps = this.getValue(TOC_REQUIRED_DEPS, tocText);
+    const dependencies = this.getValue(tocModels.TOC_DEPENDENCIES, tocText);
+    const requiredDeps = this.getValue(tocModels.TOC_REQUIRED_DEPS, tocText);
 
     const deps = [...dependencies.split(","), ...requiredDeps.split(",")].filter((dep) => !!dep);
 

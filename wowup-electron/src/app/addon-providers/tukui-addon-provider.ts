@@ -174,11 +174,11 @@ export class TukUiAddonProvider extends AddonProvider {
 
       matches.push({ ...tukUiAddon });
 
-      const installedFolders = targetToc.tukUiProjectFolders ? targetToc.tukUiProjectFolders : tukUiAddon.name;
+      const installedFolders = targetToc.tukUiProjectFolders ? targetToc.tukUiProjectFolders : addonFolder.name;
 
       const installedFolderList = targetToc.tukUiProjectFolders
         ? targetToc.tukUiProjectFolders.split(",").map((f) => f.trim())
-        : [tukUiAddon.name];
+        : [addonFolder.name];
 
       addonFolder.matchingAddon = {
         autoUpdateEnabled: false,

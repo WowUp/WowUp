@@ -42,6 +42,13 @@ export function getProtocol(arg: string): string | null {
   return match !== null && match.length > 1 ? match[1] : null;
 }
 
+export function getProtocolParts(protocol: string) {
+  return new URL(protocol).pathname
+    .split("/")
+    .filter((part) => !!part)
+    .map((part) => part.toLowerCase());
+}
+
 export function getRelativeDateFormat(value: string): [string, object | undefined] {
   if (!value) {
     return ["", undefined];

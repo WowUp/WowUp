@@ -5,7 +5,7 @@
         <div class="flex-grow-1" translate>PAGES.MY_ADDONS.CLIENT_TYPE_SELECT_LABEL</div>
         <div
           *ngIf="updates && (totalAvailableUpdateCt$ | async) > 0"
-          class="update-badge badge-lg ml-1"
+          class="update-badge badge-lg ml-1 text-white"
           translate
           [translateParams]="{ count: totalAvailableUpdateCt$ | async }"
         >
@@ -27,7 +27,7 @@
         <div class="d-flex">
           <div class="flex-grow-1">{{ installation.label }}</div>
           <div *ngIf="updates && installation.availableUpdateCount > 0">
-            <div class="d-inline update-badge ml-1">
+            <div class="d-inline update-badge ml-1 text-white">
               {{ installation.availableUpdateCount }}
             </div>
           </div>

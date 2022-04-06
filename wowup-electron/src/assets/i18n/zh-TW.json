@@ -149,6 +149,8 @@
       "IGNORED": "忽略",
       "INSTALL": "安裝",
       "PENDING": "等待中",
+      "UNAVAILABLE": "不可用",
+      "UNAVAILABLE_TOOLTIP": "插件作者或提供方將該插件的狀態設為不可用",
       "UNINSTALL": "解除安裝",
       "UNKNOWN": "未知",
       "UPDATE": "更新",
@@ -171,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "此插件可能已被作者或提供方移除。<br>WowUp 無法更新此插件或提供詳細資訊。",
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了該插件的相關資訊，但不包含匹配當前遊戲版本的檔案。<br>一旦有匹配該遊戲版本的更新，此提示資訊將會消失。",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 沒有匹配該遊戲版本的檔案"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 沒有匹配該遊戲版本的檔案",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -463,12 +467,19 @@
       "WTF_BACKUP_BUTTON": "備份介面設定"
     },
     "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "新聞連結已複製到剪貼簿",
+      "NEWS_LINK_COPY_TOOLTIP": "複製新聞連結",
       "PAGE_CONTEXT_FOOTER": "共 {count} 條新聞",
       "REFRESH_TOOLTIP": "重新整理資訊流"
     },
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "啟用此項會顯示廣告",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "如果申請過 CurseForge API 金鑰，請填入此處以連線到 CurseForge API。",
+          "API_KEY_TITLE": "CurseForge API 金鑰",
+          "PROVIDER_NOTE": "需要 API 金鑰"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "選擇從哪些提供方搜尋和安裝新插件",
           "FIELD_LABEL": "啟用插件提供方",
@@ -524,6 +535,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。"
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "轉儲除錯資料",
         "DEBUG_DATA_DESCRIPTION": "記錄除錯資料以幫助診斷潛在的問題。除錯資料可以在最新的日誌檔案中找到。",
         "DEBUG_DATA_LABEL": "除錯資料",

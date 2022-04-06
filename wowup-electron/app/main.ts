@@ -322,12 +322,17 @@ function createWindow(): BrowserWindow {
     });
 
     webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+      if (["background-sync"].includes(permission)) {
+        return true;
+      }
+
       log.warn("setPermissionCheckHandler", permission, origin);
       return false;
     });
 
     webContents.on("did-fail-load", (evt, code, desc, url) => {
       log.error("[webview] did-fail-load", code, desc, url);
+      setTimeout(() => webContents.reload(), 2000);
     });
 
     webContents.on("will-navigate", (evt, url) => {
@@ -390,15 +395,15 @@ function createWindow(): BrowserWindow {
       return;
     }
 
-    win.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
-      log.warn("win setPermissionRequestHandler", permission);
-      return callback(false);
-    });
+    // win.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
+    //   log.warn("win setPermissionRequestHandler", permission);
+    //   return callback(false);
+    // });
 
-    win.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
-      log.warn("win setPermissionCheckHandler", permission, origin);
-      return false;
-    });
+    // win.webContents.session.setPermissionCheckHandler((contents, permission, origin) => {
+    //   log.warn("win setPermissionCheckHandler", permission, origin);
+    //   return false;
+    // });
 
     win.show();
   });

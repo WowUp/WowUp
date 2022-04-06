@@ -24,6 +24,7 @@ import { getEnumName } from "../utils/enum.utils";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { SourceRemovedAddonError } from "../errors";
+import { getWowClientGroup } from "../../common/warcraft";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -203,8 +204,12 @@ export class WagoAddonProvider extends AddonProvider {
     addonChannelType: AddonChannelType,
     addonFolders: AddonFolder[]
   ): Promise<void> {
+    if (!_.some(addonFolders)) {
+      return;
+    }
+
     const gameVersion = this.getGameVersion(installation.clientType);
-    const scanResults = await this.getScanResults(addonFolders);
+    const scanResults = addonFolders.map((af) => af.wowUpScanResults).filter((sr) => sr !== undefined);
 
     const request: WagoFingerprintRequest = {
       game_version: gameVersion,
@@ -444,11 +449,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   private async sendMatchesRequest(installation: WowInstallation, request: WagoFingerprintRequest) {
     const url = new URL(`${WAGO_BASE_URL}/addons/_match`);
-    return await this._cachingService.transaction(
-      `${installation.id}|${url.toString()}`,
-      () => this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders()),
-      WAGO_DETAILS_CACHE_TIME_SEC
-    );
+    return await this._circuitBreaker.postJson<WagoScanResponse>(url, request, this.getRequestHeaders());
   }
 
   private toSearchResultFromScan(item: WagoScanAddon): AddonSearchResult {
@@ -643,7 +644,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   // The wago name for the client type
   private getGameVersion(clientType: WowClientType): WagoGameVersion {
-    const clientGroup = this._warcraftService.getClientGroup(clientType);
+    const clientGroup = getWowClientGroup(clientType);
     switch (clientGroup) {
       case WowClientGroup.BurningCrusade:
         return "bc";

@@ -174,12 +174,13 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
   }
 
   public getWarningText(item: AddonViewModel): string {
-    if (!this.hasWarning(item)) {
-      return "";
+    console.log(item);
+    if (!this.hasWarning(this._listItemSrc.value)) {
+      return "data";
     }
 
     const toolTipParams = {
-      providerName: item.providerName,
+      providerName: this._listItemSrc.value.providerName,
     };
 
     switch (item.addon.warningType) {
@@ -187,6 +188,8 @@ export class MyAddonsAddonCellComponent implements AgRendererComponent {
         return this._translateService.instant("COMMON.ADDON_WARNING.MISSING_ON_PROVIDER_TOOLTIP", toolTipParams);
       case AddonWarningType.NoProviderFiles:
         return this._translateService.instant("COMMON.ADDON_WARNING.NO_PROVIDER_FILES_TOOLTIP", toolTipParams);
+      case AddonWarningType.TocNameMismatch:
+        return this._translateService.instant("COMMON.ADDON_WARNING.TOC_NAME_MISMATCH_TOOLTIP", toolTipParams);
       default:
         return this._translateService.instant("COMMON.ADDON_WARNING.GENERIC_TOOLTIP", toolTipParams);
     }

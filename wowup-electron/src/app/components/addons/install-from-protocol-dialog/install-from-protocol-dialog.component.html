@@ -21,7 +21,7 @@
         <mat-option *ngFor="let installation of validWowInstallations" [value]="installation.id"
           [disabled]="installation.isInstalled">{{ installation.label
           }}
-          <mat-icon *ngIf="installation.isInstalled" class="option-icon success-icon" svgIcon="fas:check-circle">
+          <mat-icon *ngIf="installation.isInstalled" class="option-icon success-icon" svgIcon="fas:circle-check">
           </mat-icon>
         </mat-option>
       </mat-select>

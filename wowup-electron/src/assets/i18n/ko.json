@@ -149,6 +149,8 @@
       "IGNORED": "제외됨",
       "INSTALL": "설치",
       "PENDING": "Pending",
+      "UNAVAILABLE": "Unavailable",
+      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
       "UNINSTALL": "삭제",
       "UNKNOWN": "",
       "UPDATE": "업데이트",
@@ -171,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "This addon appears to have been removed by either the author or the addon provider.<br>We are no longer able to update this addon or provide details.",
       "MISSING_ON_PROVIDER_TOOLTIP": "This addon appears to have been removed by the provider",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} properly returned this addon, however, it did not have any files matching this game version.<br>Once there is an update matching this game version this warning should go away.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} did not have any matching game version files",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "베타",
@@ -463,12 +467,19 @@
       "WTF_BACKUP_BUTTON": "Interface Settings Backup"
     },
     "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "News link copied to clipboard",
+      "NEWS_LINK_COPY_TOOLTIP": "Copy news link",
       "PAGE_CONTEXT_FOOTER": "{count} news stories",
       "REFRESH_TOOLTIP": "Refresh news feed"
     },
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Ad required",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "If you have requested a CurseForge API key you can input it here to connect to their API.",
+          "API_KEY_TITLE": "CurseForge API Key",
+          "PROVIDER_NOTE": "API Key Required"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "애드온을 검색하고 설치할 때 사용할 애드온 제공자를 선택하세요",
           "FIELD_LABEL": "활성화된 애드온 제공자들",
@@ -524,6 +535,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Allow WowUp to scan symlink folders in your addon folder. Warning: they will be replaced when updating/installing."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Show Config Files",
+        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
+        "CONFIG_FILES_LABEL": "Config Files",
         "DEBUG_DATA_BUTTON": "디버그 데이터 덤프",
         "DEBUG_DATA_DESCRIPTION": "잠재적인 문제를 진단하는데 도움을 주기 위해 디버그 데이터를 기록합니다. 궁금하시다면 최신 로그 파일에서 확인하실 수 있습니다.",
         "DEBUG_DATA_LABEL": "디버그 데이터",

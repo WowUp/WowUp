@@ -133,7 +133,6 @@ export class ElectronService {
     });
 
     this.onRendererEvent(IPC_CUSTOM_PROTOCOL_RECEIVED, (evt, protocol: string) => {
-      console.debug(IPC_CUSTOM_PROTOCOL_RECEIVED, protocol);
       this._customProtocolSrc.next(protocol);
     });
 
@@ -229,7 +228,7 @@ export class ElectronService {
   }
 
   public onRendererEvent(channel: MainChannels, listener: (event: IpcRendererEvent, ...args: any[]) => void): void {
-    window.wowup.onRendererEvent(channel, listener);
+    window.wowup?.onRendererEvent(channel, listener);
   }
 
   public async getLocale(): Promise<string> {

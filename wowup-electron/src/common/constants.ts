@@ -5,6 +5,7 @@ export const FEATURE_ACCOUNTS_ENABLED = false;
 
 export const ADDON_PROVIDER_WOWINTERFACE = "WowInterface";
 export const ADDON_PROVIDER_CURSEFORGE = "Curse";
+export const ADDON_PROVIDER_CURSEFORGEV2 = "CurseV2";
 export const ADDON_PROVIDER_GITHUB = "GitHub";
 export const ADDON_PROVIDER_RAIDERIO = "RaiderIO";
 export const ADDON_PROVIDER_TUKUI = "TukUI";
@@ -108,6 +109,7 @@ export const IPC_STORE_REMOVE_OBJECT = "store-remove-object";
 // STORES
 export const ADDON_STORE_NAME = "addons";
 export const PREFERENCE_STORE_NAME = "preferences";
+export const SENSITIVE_STORE_NAME = "sensitive";
 export const STORAGE_WOWUP_AUTH_TOKEN = "wowup-auth-token";
 
 // PREFERENCES
@@ -145,6 +147,7 @@ export const BETA_LOCATION_KEY = "wow_beta_location"; // TODO remove, deprecated
 export const ACCT_PUSH_ENABLED_KEY = "acct_push_enabled";
 export const WAGO_PROMPT_KEY = "wago_prompt";
 export const PREF_TABS_COLLAPSED = "tabs_collapsed";
+export const PREF_CF2_API_KEY = "cf2_api_key";
 
 export const ACCT_FEATURE_KEYS = [ACCT_PUSH_ENABLED_KEY];
 
@@ -156,7 +159,7 @@ export const HORDE_LIGHT_THEME = "horde-theme-light-theme";
 export const ALLIANCE_THEME = "alliance-theme";
 export const ALLIANCE_LIGHT_THEME = "alliance-theme-light-theme";
 export const DEFAULT_BG_COLOR = "#444444";
-export const DEFAULT_LIGHT_BG_COLOR = "#ebedef";
+export const DEFAULT_LIGHT_BG_COLOR = "#f3f3f3";
 
 // ERRORS
 export const ERROR_ADDON_ALREADY_INSTALLED = "error-addon-already-installed";
@@ -172,7 +175,7 @@ export const MIN_VISIBLE_ON_SCREEN = 32;
 export const WOWUP_LOGO_FILENAME = "wowup_logo_purple.png";
 export const WOWUP_LOGO_MAC_SYSTEM_TRAY = "wowupBlackLgNopadTemplate.png";
 export const DEFAULT_FILE_MODE = 0o655;
-export const DEFAULT_TRUSTED_DOMAINS = ["wowup.io", "dev.wowup.io", "discord.gg", "www.patreon.com", "github.com"];
+export const DEFAULT_TRUSTED_DOMAINS = ["wowup.io", "dev.wowup.io", "discord.gg", "www.patreon.com", "github.com", "wago.io", "addons.wago.io"];
 export const WOW_CLASSIC_FOLDER = "_classic_";
 export const WOW_CLASSIC_ERA_FOLDER = "_classic_era_";
 export const WOW_RETAIL_FOLDER = "_retail_";

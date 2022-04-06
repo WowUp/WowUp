@@ -149,6 +149,8 @@
       "IGNORED": "Игнорируется",
       "INSTALL": "Установить",
       "PENDING": "В ожидании",
+      "UNAVAILABLE": "Недоступна",
+      "UNAVAILABLE_TOOLTIP": "Этот автор или источник сделал эту модификацию недоступной",
       "UNINSTALL": "Удалить",
       "UNKNOWN": "",
       "UPDATE": "Обновить",
@@ -171,7 +173,9 @@
       "MISSING_ON_PROVIDER_DESCRIPTION": "Эта модификация, вероятно, была удалена автором или источником модификаций.<br>Мы больше не способны обновлять эту модификацию или показывать её детали.",
       "MISSING_ON_PROVIDER_TOOLTIP": "Эта модификация, вероятно, была удалена источником",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} верно определил модификацию, однако он не имеет каких-либо файлов соответствующих этой версии игры.<br>Это предупреждение исчезнет как только будет доступно обновление для данной версии игры.",
-      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов, соответствующих версии игры"
+      "NO_PROVIDER_FILES_TOOLTIP": "{providerName} не имеет файлов, соответствующих версии игры",
+      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Бета",
@@ -463,12 +467,19 @@
       "WTF_BACKUP_BUTTON": "Резервное копир. настр. интерфейса"
     },
     "NEWS": {
+      "NEWS_LINK_COPY_TOAST": "Ссылка на новость скопирована в буфер обмена",
+      "NEWS_LINK_COPY_TOOLTIP": "Скопировать ссылку на новость",
       "PAGE_CONTEXT_FOOTER": "{count} {count, plural, one{новость} few{новости} other{новостей}}",
       "REFRESH_TOOLTIP": "Обновить ленту новостей"
     },
     "OPTIONS": {
       "ADDON": {
         "AD_REQUIRED_HINT": "Необходима реклама",
+        "CURSE_FORGE_V2": {
+          "API_KEY_DESCRIPTION": "Если вы запросили ключ CurseForge API, вы можете ввести его здесь, чтобы подключиться к их API.",
+          "API_KEY_TITLE": "Ключ CurseForge API",
+          "PROVIDER_NOTE": "Необходим ключ API"
+        },
         "ENABLED_PROVIDERS": {
           "DESCRIPTION": "Выберите источники, используемые для поиска и установки новых модификаций",
           "FIELD_LABEL": "Включённые источники модификаций",
@@ -524,6 +535,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Разрешает WowUp сканировать папки символических ссылок в папке вашей модификации. Предупреждение: они будут заменены при обновлении/установке."
       },
       "DEBUG": {
+        "CONFIG_FILES_BUTTON": "Показать файлы настроек",
+        "CONFIG_FILES_DESCRIPTION": "Открыть папку, в которой хранятся ваши файлы addons.json и preferences.json.",
+        "CONFIG_FILES_LABEL": "Файлы настроек",
         "DEBUG_DATA_BUTTON": "Дамп отладочных данных",
         "DEBUG_DATA_DESCRIPTION": "Записывать отладочные данные, чтобы помочь в диагностике потенциальных проблем. Его можно найти в последнем лог-файле, если необходимо.",
         "DEBUG_DATA_LABEL": "Отладка данных",

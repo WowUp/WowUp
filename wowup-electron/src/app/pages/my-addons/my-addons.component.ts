@@ -108,7 +108,10 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     map((wowInstall) => wowInstall !== undefined)
   );
 
-  public readonly isBusy$ = this._isBusySrc.asObservable();
+  public readonly isBusy$ = combineLatest([this._isBusySrc, this._addonService.syncing$]).pipe(
+    map((vals) => _.some(vals))
+  );
+
   public readonly filterInput$ = this._filterInputSrc.asObservable();
 
   public readonly rowData$ = combineLatest([this._baseRowDataSrc, this.filterInput$]).pipe(
@@ -376,7 +379,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
     const minimalState = columnState.map((column) => {
       const sortOrder: SortOrder = {
         colId: column.colId ?? "",
-        sort: column.sort ?? "",
+        sort: column.sort ?? null,
       };
       return sortOrder;
     });

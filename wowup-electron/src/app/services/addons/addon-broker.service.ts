@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 
 import { Addon } from "../../../common/entities/addon";
 import { WowClientType } from "../../../common/warcraft/wow-client-type";
+import { getWowClientGroup } from "../../../common/warcraft";
 import { WowInstallation } from "../../../common/warcraft/wow-installation";
 import { getEnumName } from "../../utils/enum.utils";
 import { AddonStorageService } from "../storage/addon-storage.service";
@@ -232,8 +233,8 @@ export class AddonBrokerService {
   }
 
   private isSameClient(srcClient: WowClientType, targetClient: string) {
-    const srcGroup = this._warcraftService.getClientGroup(srcClient);
-    const targetGroup = this._warcraftService.getClientGroup(targetClient);
+    const srcGroup = getWowClientGroup(srcClient);
+    const targetGroup = getWowClientGroup(targetClient);
 
     return srcGroup === targetGroup;
   }
