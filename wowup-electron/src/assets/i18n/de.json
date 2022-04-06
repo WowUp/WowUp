@@ -149,8 +149,8 @@
       "IGNORED": "Ignoriert",
       "INSTALL": "Installieren",
       "PENDING": "Ausstehend",
-      "UNAVAILABLE": "Unavailable",
-      "UNAVAILABLE_TOOLTIP": "This author or provider has made this addon unavailable",
+      "UNAVAILABLE": "Nicht verfügbar",
+      "UNAVAILABLE_TOOLTIP": "Dieser Autor oder Anbieter hat dieses Addon nicht verfügbar gemacht",
       "UNINSTALL": "Deinstallieren",
       "UNKNOWN": "Unbekannt",
       "UPDATE": "Aktualisieren",
@@ -174,8 +174,8 @@
       "MISSING_ON_PROVIDER_TOOLTIP": "Dieses Addon scheint vom Anbieter entfernt worden zu sein",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} hat dieses Addon ordnungsgemäß zurückgegeben, es gab jedoch keine Dateien, die mit dieser Spielversion übereinstimmen.<br>Sobald es ein Update gibt, das zu dieser Spielversion passt, sollte diese Warnung verschwinden.",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} hatte keine passenden Spielversionsdateien",
-      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
-      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
+      "TOC_NAME_MISMATCH_DESCRIPTION": "Der Ordnername dieses Addons stimmte nicht mit der erwarteten TOC-Datei überein, es können Probleme mit diesem Addon im Spiel auftreten.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "Der Ordner dieses Addons stimmt nicht mit der TOC-Datei überein"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -467,8 +467,8 @@
       "WTF_BACKUP_BUTTON": "Backup der Interface Einstellungen"
     },
     "NEWS": {
-      "NEWS_LINK_COPY_TOAST": "News link copied to clipboard",
-      "NEWS_LINK_COPY_TOOLTIP": "Copy news link",
+      "NEWS_LINK_COPY_TOAST": "Nachrichtenlink in die Zwischenablage kopiert",
+      "NEWS_LINK_COPY_TOOLTIP": "Nachrichtenlink kopieren",
       "PAGE_CONTEXT_FOOTER": "{count} News",
       "REFRESH_TOOLTIP": "Newsfeed aktualisieren"
     },
@@ -535,9 +535,9 @@
         "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt."
       },
       "DEBUG": {
-        "CONFIG_FILES_BUTTON": "Show Config Files",
-        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
-        "CONFIG_FILES_LABEL": "Config Files",
+        "CONFIG_FILES_BUTTON": "Konfigurationsdateien anzeigen",
+        "CONFIG_FILES_DESCRIPTION": "Öffne den Ordner, in dem beispielsweise deine addons.json und preferences.json gespeichert sind.",
+        "CONFIG_FILES_LABEL": "Konfigurationsdateien",
         "DEBUG_DATA_BUTTON": "Debug-Daten speichern",
         "DEBUG_DATA_DESCRIPTION": "Protokolliere Debug-Daten, um mögliche Probleme zu diagnostizieren. Dies findest Du in Deiner aktuellen Protokolldatei (für Neugierige).",
         "DEBUG_DATA_LABEL": "Debug-Daten",
