@@ -70,7 +70,7 @@
     "@types/globrex": "0.1.1",
     "@types/jasmine": "3.10.3",
     "@types/jasminewd2": "2.0.10",
-    "@types/lodash": "4.14.179",
+    "@types/lodash": "4.14.181",
     "@types/markdown-it": "12.2.3",
     "@types/mocha": "9.1.0",
     "@types/node": "16.11.10",
