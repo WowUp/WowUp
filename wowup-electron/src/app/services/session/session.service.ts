@@ -102,7 +102,6 @@ export class SessionService {
 
   private updateAdSpace() {
     const allProviders = this._addonProviderService.getEnabledAddonProviders();
-    console.debug("updateAdSpace", allProviders);
     this._adSpaceSrc.next(allProviders.findIndex((p) => p.adRequired) !== -1);
   }
 

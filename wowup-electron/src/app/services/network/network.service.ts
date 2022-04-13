@@ -19,6 +19,8 @@ export class CircuitBreakerWrapper {
   private readonly _httpClient: HttpClient;
   private readonly _defaultTimeoutMs: number;
 
+  private _state = "closed";
+
   public constructor(
     name: string,
     httpClient: HttpClient,
@@ -33,15 +35,21 @@ export class CircuitBreakerWrapper {
       resetTimeout: resetTimeoutMs,
       errorFilter: (err) => {
         // Don't trip the breaker on a 404
-        return err.status >= 400 && err.status < 500;
+        return err.status === 404;
       },
     });
     this._cb.on("open", () => {
       console.log(`${name} circuit breaker open`);
+      this._state = "open";
     });
     this._cb.on("close", () => {
       console.log(`${name} circuit breaker close`);
+      this._state = "closed";
     });
+  }
+
+  public isOpen() {
+    return this._state === "open";
   }
 
   public async fire<TOUT>(action: () => Promise<TOUT>): Promise<TOUT> {
