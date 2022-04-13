@@ -42,5 +42,6 @@
   "linux": {
     "icon": "electron-build/icon.icns",
     "target": ["AppImage"]
+    "asarUnpack": ["build/Release/addon.node"]
   }
 }
