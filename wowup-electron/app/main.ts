@@ -260,7 +260,6 @@ function createWindow(): BrowserWindow {
       contextIsolation: false,
       allowRunningInsecureContent: argv.serve,
       webSecurity: false,
-      nativeWindowOpen: true,
       additionalArguments: [
         `--log-path=${LOG_PATH}`,
         `--user-data-path=${app.getPath("userData")}`,
@@ -310,7 +309,6 @@ function createWindow(): BrowserWindow {
 
     webPreferences.additionalArguments = [`--log-path=${LOG_PATH}`];
     webPreferences.contextIsolation = true;
-    webPreferences.nativeWindowOpen = false; // Without this the new-window event does not fire
   });
 
   win.webContents.on("did-attach-webview", (evt, webContents) => {
@@ -344,8 +342,10 @@ function createWindow(): BrowserWindow {
       }
     });
 
+    // webview allowpopups must be enabled for any link to work
+    // https://www.electronjs.org/docs/latest/api/webview-tag#allowpopups
     webContents.setWindowOpenHandler((details) => {
-      log.debug("[webview] new-window");
+      log.debug("[webview] setWindowOpenHandler");
       win.webContents.send("webview-new-window", details); // forward this new window to the app for processing
       return { action: "deny" };
     });
