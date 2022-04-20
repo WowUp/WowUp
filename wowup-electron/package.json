@@ -114,7 +114,7 @@
     "prettier": "2.6.2",
     "spectron": "19.0.0",
     "ts-node": "10.7.0",
-    "typescript": "4.5.5",
+    "typescript": "4.6.3",
     "wait-on": "6.0.1",
     "webdriver-manager": "12.1.8"
   },
