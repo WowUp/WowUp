@@ -1,4 +1,4 @@
-import { BehaviorSubject, firstValueFrom, from, Observable, of, Subscription } from "rxjs";
+import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
 import { catchError, first, map, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
@@ -25,7 +25,6 @@ import { convertMarkdown } from "../utils/markdown.utlils";
 import { AddonProvider, GetAllResult } from "./addon-provider";
 import { SourceRemovedAddonError } from "../errors";
 import { getWowClientGroup } from "../../common/warcraft";
-import { FileService } from "../services/files/file.service";
 
 declare type WagoGameVersion = "retail" | "classic" | "bc";
 declare type WagoStability = "stable" | "beta" | "alpha";
@@ -687,7 +686,7 @@ export class WagoAddonProvider extends AddonProvider {
       timeout(timeoutMs),
       first((token) => token !== ""),
       tap(() => console.log(`[wago] ensureToken`)),
-      catchError((e) => {
+      catchError(() => {
         console.error("[wago] no token received after timeout");
         return of("");
       })
