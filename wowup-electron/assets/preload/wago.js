@@ -5,6 +5,8 @@ const { inspect } = require("util");
 
 const LOG_PATH = getArg("log-path");
 
+let keyExpectedTimeout = 0;
+
 function getArg(argKey) {
   for (const arg of window.process.argv) {
     const [key, val] = arg.split("=");
@@ -58,7 +60,7 @@ contextBridge.exposeInMainWorld("wago", {
 
 // If the api key does not get populated after a certain time, reload
 // Can happen if the page returns bad responses (500 etc)
-let keyExpectedTimeout = setTimeout(() => {
+keyExpectedTimeout = window.setTimeout(() => {
   console.log("[wago-preload] failed to get key in time, reloading");
   window.location.reload();
 }, 30000);

@@ -174,8 +174,8 @@
       "MISSING_ON_PROVIDER_TOOLTIP": "此插件可能已被提供方移除",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} 返回了該插件的相關資訊，但不包含匹配當前遊戲版本的檔案。<br>一旦有匹配該遊戲版本的更新，此提示資訊將會消失。",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} 沒有匹配該遊戲版本的檔案",
-      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
-      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
+      "TOC_NAME_MISMATCH_DESCRIPTION": "此插件的資料夾名字和 TOC 檔案中記錄的名字不匹配，遊戲中可能會出現一些問題。",
+      "TOC_NAME_MISMATCH_TOOLTIP": "插件資料夾和 TOC 不匹配"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",

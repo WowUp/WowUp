@@ -22,7 +22,7 @@ const CHANGELOGS: ChangeLog[] = [
     <p>
     CurseForge will soon end the ability for WowUp to show or update their addons.<br>
     In order to continue using CurseForge you will need to be granted a key by them.<br>
-    <a href="https://support.curseforge.com/en/support/solutions/articles/9000208346-about-the-curseforge-api-and-how-to-apply-for-a-key">Read more here</a>
+    <a href="https://www.patreon.com/posts/wowup-2-7-and-64891456">Read more here</a>
     </p>
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>

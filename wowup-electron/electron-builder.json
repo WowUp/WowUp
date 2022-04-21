@@ -41,6 +41,7 @@
   },
   "linux": {
     "icon": "electron-build/icon.icns",
-    "target": ["AppImage"]
+    "target": ["AppImage"],
+    "asarUnpack": "**/*.node"
   }
 }
