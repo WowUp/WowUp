@@ -72,6 +72,7 @@ describe("OptionsAppSectionComponent", () => {
       getWowUpReleaseChannel: () => Promise.resolve(false),
       getStartWithSystem: () => Promise.resolve(false),
       getStartMinimized: () => Promise.resolve(false),
+      getKeepLastAddonDetailTab: () => Promise.resolve(false),
     });
 
     await TestBed.configureTestingModule({
