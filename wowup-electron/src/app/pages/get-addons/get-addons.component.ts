@@ -8,8 +8,8 @@ import {
   RowNode,
 } from "ag-grid-community";
 import * as _ from "lodash";
-import { BehaviorSubject, combineLatest, from, Observable, of, Subscription } from "rxjs";
-import { catchError, filter, first, map, switchMap } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, from, Observable, of, Subject } from "rxjs";
+import { catchError, filter, first, map, switchMap, takeUntil } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { MatCheckboxChange } from "@angular/material/checkbox";
@@ -68,7 +68,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   @ViewChild("columnContextMenuTrigger") public columnContextMenu!: MatMenuTrigger;
   @ViewChild("drawer") public drawer!: MatDrawer;
 
-  private _subscriptions: Subscription[] = [];
+  private readonly _destroy$ = new Subject<boolean>();
+
   private _isSelectedTab = false;
   private _lazyLoaded = false;
   private _rowDataSrc = new BehaviorSubject<GetAddonListItem[]>([]);
@@ -203,7 +204,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this.wowInstallations$ = warcraftInstallationService.wowInstallations$;
 
-    const homeTabSub = _sessionService.selectedHomeTab$.subscribe((tabIndex) => {
+    _sessionService.selectedHomeTab$.pipe(takeUntil(this._destroy$)).subscribe((tabIndex) => {
       this._isSelectedTab = tabIndex === this.tabIndex;
       if (!this._isSelectedTab) {
         return;
@@ -213,15 +214,16 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       this.lazyLoad();
     });
 
-    const rowDataSub = this.rowData$.pipe(map((rowData) => this.setPageContextText(rowData.length))).subscribe();
+    this.rowData$
+      .pipe(
+        takeUntil(this._destroy$),
+        map((rowData) => this.setPageContextText(rowData.length))
+      )
+      .subscribe();
 
-    this._subscriptions.push(
-      homeTabSub,
-      rowDataSub,
-      this._addonService.searchError$.subscribe((error) => {
-        this.displayError(error);
-      })
-    );
+    this._addonService.searchError$.pipe(takeUntil(this._destroy$)).subscribe((error) => {
+      this.displayError(error);
+    });
 
     this.frameworkComponents = {
       potentialAddonRenderer: PotentialAddonTableColumnComponent,
@@ -331,8 +333,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
-    this._subscriptions = [];
+    this._destroy$.next(true);
   }
 
   public onStatusColumnUpdated(): void {
@@ -463,27 +464,30 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
 
     this._lazyLoaded = true;
 
-    const selectedInstallationSub = this._sessionService.selectedWowInstallation$.subscribe((installation) => {
+    this._sessionService.selectedWowInstallation$.pipe(takeUntil(this._destroy$)).subscribe((installation) => {
       if (!installation) {
         return;
       }
+
+      this.query = "";
 
       this.selectedInstallation = installation;
       this.selectedInstallationId = installation.id;
       this.loadPopularAddons(this.selectedInstallation);
     });
 
-    const addonRemovedSubscription = this._addonService.addonRemoved$.subscribe(() => {
+    this._addonService.addonRemoved$.pipe(takeUntil(this._destroy$)).subscribe(() => {
       this.onRefresh();
     });
 
-    const channelTypeSubscription = this._wowUpService.preferenceChange$
-      .pipe(filter((change) => change.key.indexOf(DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX) !== -1))
+    this._wowUpService.preferenceChange$
+      .pipe(
+        takeUntil(this._destroy$),
+        filter((change) => change.key.indexOf(DEFAULT_CHANNEL_PREFERENCE_KEY_SUFFIX) !== -1)
+      )
       .subscribe(() => {
         this.onSearch();
       });
-
-    this._subscriptions.push(selectedInstallationSub, addonRemovedSubscription, channelTypeSubscription);
   }
 
   public onInstallFromUrl(): void {
@@ -502,9 +506,11 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.onClearSearch();
-
-    this.loadPopularAddons(this.selectedInstallation);
+    if (this.query) {
+      this.onSearch();
+    } else {
+      this.loadPopularAddons(this.selectedInstallation);
+    }
   }
 
   public onClearSearch(): void {
