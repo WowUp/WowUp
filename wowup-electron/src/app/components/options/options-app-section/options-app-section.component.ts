@@ -119,6 +119,7 @@ export class OptionsAppSectionComponent implements OnInit {
   public startWithSystem$ = new BehaviorSubject(false);
   public startMinimized$ = new BehaviorSubject(false);
   public currentReleaseChannel$ = new BehaviorSubject(WowUpReleaseChannelType.Stable);
+  public keepAddonDetailTab$ = new BehaviorSubject(false);
 
   public constructor(
     private _analyticsService: AnalyticsService,
@@ -219,6 +220,13 @@ export class OptionsAppSectionComponent implements OnInit {
       })
       .catch(console.error);
 
+    this.wowupService
+      .getKeepLastAddonDetailTab()
+      .then((enabled) => {
+        this.keepAddonDetailTab$.next(enabled);
+      })
+      .catch(console.error);
+
     this.initScale().catch((e) => console.error(e));
 
     this._zoomService.zoomFactor$.subscribe((zoomFactor) => {
@@ -280,6 +288,11 @@ export class OptionsAppSectionComponent implements OnInit {
   public onStartMinimizedChange = async (evt: MatSlideToggleChange): Promise<void> => {
     await this.wowupService.setStartMinimized(evt.checked);
     this.startMinimized$.next(evt.checked);
+  };
+
+  public onKeepAddonDetailTabChange = async (evt: MatSlideToggleChange): Promise<void> => {
+    await this.wowupService.setKeepLastAddonDetailTab(evt.checked);
+    this.keepAddonDetailTab$.next(evt.checked);
   };
 
   public onProtocolHandlerChange = (evt: MatSlideToggleChange, protocol: string): void => {

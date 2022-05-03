@@ -34,6 +34,7 @@ import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
+import { WowUpService } from "../../../services/wowup/wowup.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -62,7 +63,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   public readonly description$ = this._descriptionSrc.asObservable();
   public fetchingChangelog = true;
   public fetchingFullDescription = true;
-  public selectedTabIndex = 0;
+  public selectedTabIndex;
   public requiredDependencyCount = 0;
   public canShowChangelog = true;
   public hasIconUrl = false;
@@ -100,6 +101,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _sessionService: SessionService,
     private _linkService: LinkService,
     private _addonUiService: AddonUiService,
+    private _wowupService: WowUpService,
     public gallery: Gallery
   ) {
     this._dependencies = this.getDependencies();
@@ -124,8 +126,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public ngOnInit(): void {
     this.canShowChangelog = this._addonProviderService.canShowChangelog(this.getProviderName());
-
-    this.selectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab());
 
     this.thumbnailLetter = this.getThumbnailLetter();
 
@@ -182,6 +182,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     });
 
     this.gallery.ref().load(this.previewItems);
+
+    this.selectInitialTab().catch(console.error);
   }
 
   public ngAfterViewInit(): void {}
@@ -259,11 +261,29 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   private getSelectedTabTypeFromIndex(index: number): DetailsTabType {
-    return index === 0 ? "description" : "changelog";
+    switch (index) {
+      case 0:
+        return "description";
+      case 1:
+        return "changelog";
+      case 2:
+        return "previews";
+      default:
+        return "description";
+    }
   }
 
   private getSelectedTabTypeIndex(tabType: DetailsTabType): number {
-    return tabType === "description" ? 0 : 1;
+    switch (tabType) {
+      case "description":
+        return 0;
+      case "changelog":
+        return 1;
+      case "previews":
+        return this.previewItems.length === 0 ? 0 : 2;
+      default:
+        return 0;
+    }
   }
 
   private getThumbnailLetter(): string {
@@ -414,5 +434,13 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
 
     console.warn("Invalid list item addon when verifying if installed");
+  }
+
+  private async selectInitialTab(): Promise<void> {
+    const shouldUseLastTab = await this._wowupService.getKeepLastAddonDetailTab();
+    this.selectedTabIndex = shouldUseLastTab
+      ? this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab())
+      : 0;
+    this._cdRef.detectChanges();
   }
 }

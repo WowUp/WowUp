@@ -23,6 +23,7 @@ import {
   IPC_APP_INSTALL_UPDATE,
   IPC_GET_APP_VERSION,
   IPC_UPDATE_APP_BADGE,
+  KEEP_ADDON_DETAIL_TAB_PREFERENCE_KEY,
   MY_ADDONS_HIDDEN_COLUMNS_KEY,
   MY_ADDONS_SORT_ORDER,
   SELECTED_LANGUAGE_PREFERENCE_KEY,
@@ -211,6 +212,17 @@ export class WowUpService {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  public async getKeepLastAddonDetailTab(): Promise<boolean> {
+    const preference = await this._preferenceStorageService.getAsync(KEEP_ADDON_DETAIL_TAB_PREFERENCE_KEY);
+    return preference === "true";
+  }
+
+  public async setKeepLastAddonDetailTab(value: boolean): Promise<void> {
+    const key = KEEP_ADDON_DETAIL_TAB_PREFERENCE_KEY;
+    await this._preferenceStorageService.setAsync(key, value);
+    this._preferenceChangeSrc.next({ key, value: value.toString() });
   }
 
   public async getAddonProviderStates(): Promise<AddonProviderState[]> {
