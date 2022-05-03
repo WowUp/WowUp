@@ -1,7 +1,7 @@
 import { last } from "lodash";
 import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
-import { BehaviorSubject, from, Subscription } from "rxjs";
-import { filter, first, map, tap } from "rxjs/operators";
+import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject, Subscription } from "rxjs";
+import { catchError, filter, first, map, takeUntil, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
@@ -58,6 +58,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   private readonly _dependencies: AddonSearchResultDependency[];
   private readonly _changelogSrc = new BehaviorSubject<string>("");
   private readonly _descriptionSrc = new BehaviorSubject<string>("");
+  private readonly _destroy$ = new Subject<boolean>();
 
   public readonly changelog$ = this._changelogSrc.asObservable();
   public readonly description$ = this._descriptionSrc.asObservable();
@@ -183,7 +184,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     this.gallery.ref().load(this.previewItems);
 
-    this.selectInitialTab().catch(console.error);
+    this.selectInitialTab().subscribe();
   }
 
   public ngAfterViewInit(): void {}
@@ -196,6 +197,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public ngOnDestroy(): void {
+    this._destroy$.next(true);
     this._subscriptions.forEach((sub) => sub.unsubscribe());
     window.getSelection()?.empty();
   }
@@ -436,11 +438,20 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     console.warn("Invalid list item addon when verifying if installed");
   }
 
-  private async selectInitialTab(): Promise<void> {
-    const shouldUseLastTab = await this._wowupService.getKeepLastAddonDetailTab();
-    this.selectedTabIndex = shouldUseLastTab
-      ? this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab())
-      : 0;
-    this._cdRef.detectChanges();
+  private selectInitialTab(): Observable<void> {
+    return from(this._wowupService.getKeepLastAddonDetailTab()).pipe(
+      takeUntil(this._destroy$),
+      first(),
+      map((shouldUseLastTab) => {
+        this.selectedTabIndex = shouldUseLastTab
+          ? this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab())
+          : 0;
+        this._cdRef.detectChanges();
+      }),
+      catchError((e) => {
+        console.error(e);
+        return of(undefined);
+      })
+    );
   }
 }

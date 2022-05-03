@@ -166,6 +166,20 @@
     </div>
     <div class="divider"></div>
   </div>
+  <!-- KEEP LAST OPENED TAB -->
+  <div class="toggle">
+    <div class="row align-items-center">
+      <div class="flex-grow-1">
+        <div>
+          {{ "PAGES.OPTIONS.APPLICATION.KEEP_LAST_OPENED_TAB_LABEL" | translate }}
+        </div>
+        <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.KEEP_LAST_OPENED_TAB_DESCRIPTION" | translate }}</small>
+      </div>
+      <mat-slide-toggle [checked]="keepAddonDetailTab$ | async" (change)="onKeepAddonDetailTabChange($event)">
+      </mat-slide-toggle>
+    </div>
+    <div class="divider"></div>
+  </div>
   <!-- SCALE -->
   <div class="toggle">
     <div class="row row align-items-center">
@@ -229,23 +243,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-    </div>
-    <div class="divider"></div>
-  </div>
-  <!-- KEEP LAST OPENED TAB -->
-  <div class="toggle">
-    <div class="row align-items-center">
-      <div class="flex-grow-1">
-        <div>
-          {{ "PAGES.OPTIONS.APPLICATION.KEEP_LAST_OPENED_TAB_LABEL" | translate }}
-        </div>
-        <small class="text-2">{{ "PAGES.OPTIONS.APPLICATION.KEEP_LAST_OPENED_TAB_DESCRIPTION" | translate }}</small>
-      </div>
-      <mat-slide-toggle
-        [checked]="keepAddonDetailTab$ | async"
-        (change)="onKeepAddonDetailTabChange($event)"
-      >
-      </mat-slide-toggle>
     </div>
     <div class="divider"></div>
   </div>
