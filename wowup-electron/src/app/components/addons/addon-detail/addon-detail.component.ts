@@ -183,7 +183,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
     this.gallery.ref().load(this.previewItems);
 
-    this.selectInitialTab();
+    this.selectInitialTab().catch(console.error);
   }
 
   public ngAfterViewInit(): void {}
