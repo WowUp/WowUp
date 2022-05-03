@@ -8,7 +8,7 @@ import {
   RowNode,
 } from "ag-grid-community";
 import * as _ from "lodash";
-import { BehaviorSubject, combineLatest, from, Observable, of, Subject, Subscription } from "rxjs";
+import { BehaviorSubject, combineLatest, from, Observable, of, Subject } from "rxjs";
 import { catchError, filter, first, map, switchMap, takeUntil } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from "@angular/core";
