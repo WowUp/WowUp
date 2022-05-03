@@ -502,6 +502,8 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.onClearSearch();
+
     this.loadPopularAddons(this.selectedInstallation);
   }
 
