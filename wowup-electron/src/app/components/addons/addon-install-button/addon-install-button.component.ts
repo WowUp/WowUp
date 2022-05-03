@@ -54,7 +54,7 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
         this.disableButton$.next(this.addonSearchResult.externallyBlocked || isInstalled);
 
         if (this.addonSearchResult.externallyBlocked) {
-          this.buttonText$.next(this._translate.instant("COMMON.ADDON_STATE.UNAVAILABLE"));
+          this.buttonText$.next(this._translate.instant("COMMON.ADDON_STATE.UNAVAILABLE") as string);
         } else {
           this.buttonText$.next(
             this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown)

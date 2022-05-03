@@ -1,6 +1,6 @@
 import { last } from "lodash";
 import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
-import { BehaviorSubject, firstValueFrom, from, Observable, of, Subject, Subscription } from "rxjs";
+import { BehaviorSubject,  from, Observable, of, Subject } from "rxjs";
 import { catchError, filter, first, map, takeUntil, tap } from "rxjs/operators";
 
 import {
