@@ -54,7 +54,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   @ViewChild("providerLink", { read: ElementRef }) public providerLink!: ElementRef;
   @ViewChild("tabs", { static: false }) public tabGroup!: MatTabGroup;
 
-  private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
   private readonly _changelogSrc = new BehaviorSubject<string>("");
   private readonly _descriptionSrc = new BehaviorSubject<string>("");
@@ -107,25 +106,31 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   ) {
     this._dependencies = this.getDependencies();
 
-    const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(filter(this.isSameAddon))
+    this._addonService.addonInstalled$
+      .pipe(takeUntil(this._destroy$), filter(this.isSameAddon))
       .subscribe(this.onAddonInstalledUpdate);
 
-    const changelogSub = from(this.getChangelog())
-      .pipe(tap(() => (this.fetchingChangelog = false)))
+    from(this.getChangelog())
+      .pipe(
+        takeUntil(this._destroy$),
+        tap(() => (this.fetchingChangelog = false))
+      )
       .subscribe((changelog) => {
         this.hasChangeLog = !!changelog;
         this._changelogSrc.next(changelog);
       });
 
-    const fullDescriptionSub = from(this.getFullDescription())
-      .pipe(tap(() => (this.fetchingFullDescription = false)))
+    from(this.getFullDescription())
+      .pipe(
+        takeUntil(this._destroy$),
+        tap(() => (this.fetchingFullDescription = false))
+      )
       .subscribe((description) => this._descriptionSrc.next(description));
-
-    this._subscriptions.push(changelogSub, fullDescriptionSub, addonInstalledSub);
   }
 
   public ngOnInit(): void {
+    console.log('model', this.model);
+    
     this.canShowChangelog = this._addonProviderService.canShowChangelog(this.getProviderName());
 
     this.thumbnailLetter = this.getThumbnailLetter();
@@ -198,7 +203,6 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public ngOnDestroy(): void {
     this._destroy$.next(true);
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
     window.getSelection()?.empty();
   }
 
@@ -252,6 +256,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._addonUiService
       .handleRemoveAddon(addon)
       .pipe(
+        takeUntil(this._destroy$),
         first(),
         map((result) => {
           if (result.removed) {
