@@ -309,6 +309,8 @@ function createWindow(): BrowserWindow {
 
     webPreferences.additionalArguments = [`--log-path=${LOG_PATH}`];
     webPreferences.contextIsolation = true;
+    webPreferences.plugins = false;
+    webPreferences.webgl = false;
   });
 
   win.webContents.on("did-attach-webview", (evt, webContents) => {
@@ -330,7 +332,10 @@ function createWindow(): BrowserWindow {
 
     webContents.on("did-fail-load", (evt, code, desc, url) => {
       log.error("[webview] did-fail-load", code, desc, url);
-      setTimeout(() => webContents.reload(), 2000);
+      setTimeout(() => {
+        log.error("[webview] reload");
+        webContents.reload();
+      }, 2000);
     });
 
     webContents.on("will-navigate", (evt, url) => {
