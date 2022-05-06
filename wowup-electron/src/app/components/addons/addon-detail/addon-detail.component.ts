@@ -203,6 +203,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
 
   public ngOnDestroy(): void {
     this._destroy$.next(true);
+    this._destroy$.complete();
     window.getSelection()?.empty();
   }
 
