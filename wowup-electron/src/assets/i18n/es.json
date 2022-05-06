@@ -532,7 +532,9 @@
         "USE_SYMLINK_SUPPORT": "Activar soporte de enlaces simbólicos (symlink)",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Activar el soporte de enlaces simbólicos permite a WowUp reconocerlos durante el reescaneo.\n\nAdvertencia: Si no sabe lo que es un enlace simbólico, no necesita activar esto. Al actualizar addons, los enlaces simbólicos serán reemplazados por copias de las carpetas y el enlace se perderá.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "¿Activar soporte de enlaces simbólicos?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons.",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Keep last opened tab",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "When opening an addon detail page, automatically select the last opened tab"
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Mostrar archivos de configuración",

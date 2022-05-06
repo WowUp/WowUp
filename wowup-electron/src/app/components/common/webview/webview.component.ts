@@ -73,7 +73,7 @@ export class WebViewComponent implements OnDestroy, AfterViewInit {
       nodeintegration​="false"
       nodeintegrationinsubframes​="false"
       plugins​="false"
-      allowpopups​="false"
+      allowpopups
       partition="${partition}"
       ${preload}
       useragent="${userAgent}">

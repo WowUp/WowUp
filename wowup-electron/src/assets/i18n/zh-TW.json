@@ -532,12 +532,14 @@
         "USE_SYMLINK_SUPPORT": "啟用符號連結",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "啟用符號連結使得 WowUp 在重新掃描時識別符號連結。警告：如果您不知道什麼是符號連結，請禁用此項。在當前版本中，符號連結將會在更新插件時被刪除，並被替換為真正的資料夾。",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "啟用符號連結？",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。",
+        "KEEP_LAST_OPENED_TAB_LABEL": "記住上一次開啟的選項卡",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "開啟插件詳情頁時，自動切換到上一次開啟的選項卡"
       },
       "DEBUG": {
-        "CONFIG_FILES_BUTTON": "Show Config Files",
-        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
-        "CONFIG_FILES_LABEL": "Config Files",
+        "CONFIG_FILES_BUTTON": "顯示配置檔案",
+        "CONFIG_FILES_DESCRIPTION": "開啟儲存 addons.json、preferences.json 等配置檔案的資料夾。",
+        "CONFIG_FILES_LABEL": "配置檔案",
         "DEBUG_DATA_BUTTON": "轉儲除錯資料",
         "DEBUG_DATA_DESCRIPTION": "記錄除錯資料以幫助診斷潛在的問題。除錯資料可以在最新的日誌檔案中找到。",
         "DEBUG_DATA_LABEL": "除錯資料",

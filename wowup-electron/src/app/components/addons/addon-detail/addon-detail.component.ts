@@ -1,7 +1,7 @@
 import { last } from "lodash";
 import { Gallery, GalleryItem, ImageItem } from "ng-gallery";
-import { BehaviorSubject, from, Subscription } from "rxjs";
-import { filter, first, map, tap } from "rxjs/operators";
+import { BehaviorSubject,  from, Observable, of, Subject } from "rxjs";
+import { catchError, filter, first, map, takeUntil, tap } from "rxjs/operators";
 
 import {
   AfterViewChecked,
@@ -34,6 +34,7 @@ import { formatDynamicLinks } from "../../../utils/dom.utils";
 import * as SearchResult from "../../../utils/search-result.utils";
 import { AddonUiService } from "../../../services/addons/addon-ui.service";
 import { AddonProviderFactory } from "../../../services/addons/addon.provider.factory";
+import { WowUpService } from "../../../services/wowup/wowup.service";
 
 export interface AddonDetailModel {
   listItem?: AddonViewModel;
@@ -53,16 +54,16 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   @ViewChild("providerLink", { read: ElementRef }) public providerLink!: ElementRef;
   @ViewChild("tabs", { static: false }) public tabGroup!: MatTabGroup;
 
-  private readonly _subscriptions: Subscription[] = [];
   private readonly _dependencies: AddonSearchResultDependency[];
   private readonly _changelogSrc = new BehaviorSubject<string>("");
   private readonly _descriptionSrc = new BehaviorSubject<string>("");
+  private readonly _destroy$ = new Subject<boolean>();
 
   public readonly changelog$ = this._changelogSrc.asObservable();
   public readonly description$ = this._descriptionSrc.asObservable();
   public fetchingChangelog = true;
   public fetchingFullDescription = true;
-  public selectedTabIndex = 0;
+  public selectedTabIndex;
   public requiredDependencyCount = 0;
   public canShowChangelog = true;
   public hasIconUrl = false;
@@ -100,32 +101,37 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     private _sessionService: SessionService,
     private _linkService: LinkService,
     private _addonUiService: AddonUiService,
+    private _wowupService: WowUpService,
     public gallery: Gallery
   ) {
     this._dependencies = this.getDependencies();
 
-    const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(filter(this.isSameAddon))
+    this._addonService.addonInstalled$
+      .pipe(takeUntil(this._destroy$), filter(this.isSameAddon))
       .subscribe(this.onAddonInstalledUpdate);
 
-    const changelogSub = from(this.getChangelog())
-      .pipe(tap(() => (this.fetchingChangelog = false)))
+    from(this.getChangelog())
+      .pipe(
+        takeUntil(this._destroy$),
+        tap(() => (this.fetchingChangelog = false))
+      )
       .subscribe((changelog) => {
         this.hasChangeLog = !!changelog;
         this._changelogSrc.next(changelog);
       });
 
-    const fullDescriptionSub = from(this.getFullDescription())
-      .pipe(tap(() => (this.fetchingFullDescription = false)))
+    from(this.getFullDescription())
+      .pipe(
+        takeUntil(this._destroy$),
+        tap(() => (this.fetchingFullDescription = false))
+      )
       .subscribe((description) => this._descriptionSrc.next(description));
-
-    this._subscriptions.push(changelogSub, fullDescriptionSub, addonInstalledSub);
   }
 
   public ngOnInit(): void {
+    console.log('model', this.model);
+    
     this.canShowChangelog = this._addonProviderService.canShowChangelog(this.getProviderName());
-
-    this.selectedTabIndex = this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab());
 
     this.thumbnailLetter = this.getThumbnailLetter();
 
@@ -182,6 +188,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     });
 
     this.gallery.ref().load(this.previewItems);
+
+    this.selectInitialTab().subscribe();
   }
 
   public ngAfterViewInit(): void {}
@@ -194,7 +202,8 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   public ngOnDestroy(): void {
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._destroy$.next(true);
+    this._destroy$.complete();
     window.getSelection()?.empty();
   }
 
@@ -248,6 +257,7 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     this._addonUiService
       .handleRemoveAddon(addon)
       .pipe(
+        takeUntil(this._destroy$),
         first(),
         map((result) => {
           if (result.removed) {
@@ -259,11 +269,29 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
   }
 
   private getSelectedTabTypeFromIndex(index: number): DetailsTabType {
-    return index === 0 ? "description" : "changelog";
+    switch (index) {
+      case 0:
+        return "description";
+      case 1:
+        return "changelog";
+      case 2:
+        return "previews";
+      default:
+        return "description";
+    }
   }
 
   private getSelectedTabTypeIndex(tabType: DetailsTabType): number {
-    return tabType === "description" ? 0 : 1;
+    switch (tabType) {
+      case "description":
+        return 0;
+      case "changelog":
+        return 1;
+      case "previews":
+        return this.previewItems.length === 0 ? 0 : 2;
+      default:
+        return 0;
+    }
   }
 
   private getThumbnailLetter(): string {
@@ -414,5 +442,22 @@ export class AddonDetailComponent implements OnInit, OnDestroy, AfterViewChecked
     }
 
     console.warn("Invalid list item addon when verifying if installed");
+  }
+
+  private selectInitialTab(): Observable<void> {
+    return from(this._wowupService.getKeepLastAddonDetailTab()).pipe(
+      takeUntil(this._destroy$),
+      first(),
+      map((shouldUseLastTab) => {
+        this.selectedTabIndex = shouldUseLastTab
+          ? this.getSelectedTabTypeIndex(this._sessionService.getSelectedDetailsTab())
+          : 0;
+        this._cdRef.detectChanges();
+      }),
+      catchError((e) => {
+        console.error(e);
+        return of(undefined);
+      })
+    );
   }
 }

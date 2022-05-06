@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { GetAddonListItemFilePropPipe } from "../../../pipes/get-addon-list-item-file-prop.pipe";
 import { DialogFactory } from "../../../services/dialog/dialog.factory";
-import { PotentialAddonTableColumnComponent } from "./potential-addon-table-column.component";
+import { PotentialAddonTableCellComponent } from "./potential-addon-table-cell.component";
 
 describe("PotentialAddonTableColumnComponent", () => {
   let dialogFactory: DialogFactory;
@@ -10,7 +10,7 @@ describe("PotentialAddonTableColumnComponent", () => {
     dialogFactory = jasmine.createSpyObj("DialogFactory", [""], {});
 
     await TestBed.configureTestingModule({
-      declarations: [PotentialAddonTableColumnComponent, GetAddonListItemFilePropPipe],
+      declarations: [PotentialAddonTableCellComponent, GetAddonListItemFilePropPipe],
       imports: [
         // MatModule,
         // NoopAnimationsModule,
@@ -30,7 +30,7 @@ describe("PotentialAddonTableColumnComponent", () => {
       ],
       providers: [GetAddonListItemFilePropPipe],
     })
-      .overrideComponent(PotentialAddonTableColumnComponent, {
+      .overrideComponent(PotentialAddonTableCellComponent, {
         set: {
           providers: [{ provide: DialogFactory, useValue: dialogFactory }],
         },
@@ -39,7 +39,7 @@ describe("PotentialAddonTableColumnComponent", () => {
   });
 
   it("should create", () => {
-    const fixture = TestBed.createComponent(PotentialAddonTableColumnComponent);
+    const fixture = TestBed.createComponent(PotentialAddonTableCellComponent);
     const component = fixture.componentInstance;
     expect(component).toBeTruthy();
   });

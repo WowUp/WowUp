@@ -10,11 +10,11 @@ import { httpLoaderFactory } from "../../../app.module";
 import { MatModule } from "../../../modules/mat-module";
 import { AddonUpdateEvent } from "../../../models/wowup/addon-update-event";
 import { AddonService } from "../../../services/addons/addon.service";
-import { MyAddonStatusColumnComponent } from "./my-addon-status-column.component";
+import { MyAddonStatusCellComponent } from "./my-addon-status-cell.component";
 
-describe("MyAddonStatusColumnComponent", () => {
-  let component: MyAddonStatusColumnComponent;
-  let fixture: ComponentFixture<MyAddonStatusColumnComponent>;
+describe("MyAddonStatusCellComponent", () => {
+  let component: MyAddonStatusCellComponent;
+  let fixture: ComponentFixture<MyAddonStatusCellComponent>;
   let addonServiceSpy: AddonService;
 
   beforeEach(async () => {
@@ -31,7 +31,7 @@ describe("MyAddonStatusColumnComponent", () => {
     );
 
     await TestBed.configureTestingModule({
-      declarations: [MyAddonStatusColumnComponent],
+      declarations: [MyAddonStatusCellComponent],
       providers: [MatDialog],
       imports: [
         MatModule,
@@ -49,7 +49,7 @@ describe("MyAddonStatusColumnComponent", () => {
         }),
       ],
     })
-      .overrideComponent(MyAddonStatusColumnComponent, {
+      .overrideComponent(MyAddonStatusCellComponent, {
         set: {
           providers: [{ provide: AddonService, useValue: addonServiceSpy }],
         },
@@ -58,7 +58,7 @@ describe("MyAddonStatusColumnComponent", () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MyAddonStatusColumnComponent);
+    fixture = TestBed.createComponent(MyAddonStatusCellComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

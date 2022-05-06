@@ -90,7 +90,8 @@ export class CurseAddonV2Provider extends AddonProvider {
   public readonly canBatchFetch = true;
   public readonly providerNote = "PAGES.OPTIONS.ADDON.CURSE_FORGE_V2.PROVIDER_NOTE";
 
-  public enabled = true;
+  // Disabled by default due to requiring a key
+  public enabled = false; 
 
   public constructor(
     private _cachingService: CachingService,

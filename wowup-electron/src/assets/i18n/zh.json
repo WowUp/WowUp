@@ -532,12 +532,14 @@
         "USE_SYMLINK_SUPPORT": "启用符号链接",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "启用符号链接使得 WowUp 在重新扫描时识别符号链接。警告：如果您不知道什么是符号链接，请禁用此项。在当前版本中，符号链接将会在更新插件时被删除，并被替换为真正的文件夹。",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "启用符号链接？",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允许 WowUp 扫描插件所在路径下的符号链接。警告：符号链接在安装或更新插件时会被替换。"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允许 WowUp 扫描插件所在路径下的符号链接。警告：符号链接在安装或更新插件时会被替换。",
+        "KEEP_LAST_OPENED_TAB_LABEL": "记住上一次打开的选项卡",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "打开插件详情页时，自动切换到上一次打开的选项卡"
       },
       "DEBUG": {
-        "CONFIG_FILES_BUTTON": "Show Config Files",
-        "CONFIG_FILES_DESCRIPTION": "Open the folder where for example your addons.json and preferences.json are stored.",
-        "CONFIG_FILES_LABEL": "Config Files",
+        "CONFIG_FILES_BUTTON": "显示配置文件",
+        "CONFIG_FILES_DESCRIPTION": "打开存储 addons.json、preferences.json 等配置文件的文件夹。",
+        "CONFIG_FILES_LABEL": "配置文件",
         "DEBUG_DATA_BUTTON": "转储调试数据",
         "DEBUG_DATA_DESCRIPTION": "记录调试数据以帮助诊断潜在的问题。调试数据可以在最新的日志文件中找到。",
         "DEBUG_DATA_LABEL": "调试数据",

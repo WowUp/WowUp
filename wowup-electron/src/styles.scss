@@ -494,6 +494,14 @@ mat-icon.success-icon {
   text-overflow: ellipsis;
 }
 
+.max-lines-3 {
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
 .cell-center-text {
   display: flex;
   flex-wrap: nowrap;

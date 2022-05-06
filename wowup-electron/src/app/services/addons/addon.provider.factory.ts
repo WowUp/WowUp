@@ -46,7 +46,7 @@ export class AddonProviderFactory {
     private _warcraftService: WarcraftService,
     private _wowupApiService: WowUpApiService,
     private _preferenceStorageService: PreferenceStorageService,
-    private _sensitiveStorageService: SensitiveStorageService,
+    private _sensitiveStorageService: SensitiveStorageService
   ) {}
 
   /** This is part of the APP_INITIALIZER and called before the app is bootstrapped */

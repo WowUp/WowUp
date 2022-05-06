@@ -5,8 +5,8 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TranslateModule } from "@ngx-translate/core";
 
-import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-column/get-addon-status-column.component";
-import { PotentialAddonTableColumnComponent } from "../../components/addons/potential-addon-table-column/potential-addon-table-column.component";
+import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-cell/get-addon-status-cell.component";
+import { PotentialAddonTableCellComponent } from "../../components/addons/potential-addon-table-cell/potential-addon-table-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { NewsPanelComponent } from "../../components/news-panel/news-panel.component";
 import { DirectiveModule } from "../../modules/directive.module";
@@ -44,7 +44,7 @@ import { HomeComponent } from "./home.component";
     FormsModule,
     OptionsModule,
     AgGridModule.withComponents([
-      PotentialAddonTableColumnComponent,
+      PotentialAddonTableCellComponent,
       GetAddonStatusColumnComponent,
       TableContextHeaderCellComponent,
     ]),
