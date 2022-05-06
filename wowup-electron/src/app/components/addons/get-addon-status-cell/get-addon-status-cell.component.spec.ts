@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { GetAddonStatusColumnComponent } from "./get-addon-status-column.component";
+import { GetAddonStatusColumnComponent } from "./get-addon-status-cell.component";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 describe("GetAddonStatusColumnComponent", () => {

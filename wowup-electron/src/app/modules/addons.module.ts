@@ -11,7 +11,7 @@ import { MatModule } from "./mat-module";
 import { CommonUiModule } from "./common-ui.module";
 import { PipesModule } from "./pipes.module";
 import { FundingButtonComponent } from "../components/addons/funding-button/funding-button.component";
-import { GetAddonStatusColumnComponent } from "../components/addons/get-addon-status-column/get-addon-status-column.component";
+import { GetAddonStatusColumnComponent } from "../components/addons/get-addon-status-cell/get-addon-status-cell.component";
 import { PotentialAddonTableCellComponent } from "../components/addons/potential-addon-table-cell/potential-addon-table-cell.component";
 import { TableContextHeaderCellComponent } from "../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { MyAddonStatusCellComponent } from "../components/addons/my-addon-status-cell/my-addon-status-cell.component";

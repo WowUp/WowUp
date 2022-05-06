@@ -6,9 +6,9 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { AddonSearchResult } from "../../../models/wowup/addon-search-result";
 
 @Component({
-  selector: "app-get-addon-status-column",
-  templateUrl: "./get-addon-status-column.component.html",
-  styleUrls: ["./get-addon-status-column.component.scss"],
+  selector: "app-get-addon-status-cell",
+  templateUrl: "./get-addon-status-cell.component.html",
+  styleUrls: ["./get-addon-status-cell.component.scss"],
 })
 export class GetAddonStatusColumnComponent implements AgRendererComponent {
   @Input() public addonSearchResult!: AddonSearchResult;

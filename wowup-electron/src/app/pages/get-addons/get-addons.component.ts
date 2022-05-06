@@ -27,7 +27,7 @@ import { WowClientType } from "../../../common/warcraft/wow-client-type";
 import { AddonCategory, AddonChannelType } from "../../../common/wowup/models";
 import { GetAddonListItem } from "../../business-objects/get-addon-list-item";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
-import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-column/get-addon-status-column.component";
+import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-cell/get-addon-status-cell.component";
 import { InstallFromUrlDialogComponent } from "../../components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import {
   PotentialAddonTableCellComponent,
