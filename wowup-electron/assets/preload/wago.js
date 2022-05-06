@@ -10,7 +10,7 @@ const BACKOFF_SET_KEY = "wago-backoff-set";
 const BACKOFF_RESET_AGE = 5 * 60000;
 const BACKOFF_MAX_WAIT = 2 * 60000;
 
-let keyExpectedTimeout = 0;
+let keyExpectedTimeout = undefined;
 
 function getArg(argKey) {
   for (const arg of window.process.argv) {
@@ -45,7 +45,10 @@ window.addEventListener(
     const errMsg = e.error?.toString() || "unknown error on " + window.location;
     console.error(`[wago-preload] error listener:`, e.message, errMsg);
     ipcRenderer.send("webview-error", inspect(e.error), e.message);
-    backoffReload();
+
+    if (keyExpectedTimeout != undefined) {
+      backoffReload();
+    }
   },
   true
 );
@@ -58,6 +61,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 contextBridge.exposeInMainWorld("wago", {
   provideApiKey: (key) => {
     window.clearTimeout(keyExpectedTimeout);
+    keyExpectedTimeout = undefined;
     console.debug(`[wago-preload] got key`);
     ipcRenderer.send("wago-token-received", key);
   },
