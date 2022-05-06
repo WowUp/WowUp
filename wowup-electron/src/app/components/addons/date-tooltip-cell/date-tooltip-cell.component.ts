@@ -12,7 +12,7 @@ import { getRelativeDateFormat } from "../../../utils/string.utils";
   styleUrls: ["./date-tooltip-cell.component.scss"],
 })
 export class DateTooltipCellComponent implements AgRendererComponent, OnDestroy {
-  private _destroy$: Subject<boolean> = new Subject<boolean>();
+  private readonly _destroy$: Subject<boolean> = new Subject<boolean>();
 
   public params!: ICellRendererParams;
   public time$ = new BehaviorSubject<string>(new Date().toISOString());
@@ -42,7 +42,7 @@ export class DateTooltipCellComponent implements AgRendererComponent, OnDestroy 
 
   public ngOnDestroy(): void {
     this._destroy$.next(true);
-    this._destroy$.unsubscribe();
+    this._destroy$.complete();
   }
 
   public refresh(): boolean {
