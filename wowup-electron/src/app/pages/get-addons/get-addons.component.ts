@@ -30,9 +30,9 @@ import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/ce
 import { GetAddonStatusColumnComponent } from "../../components/addons/get-addon-status-column/get-addon-status-column.component";
 import { InstallFromUrlDialogComponent } from "../../components/addons/install-from-url-dialog/install-from-url-dialog.component";
 import {
-  PotentialAddonTableColumnComponent,
+  PotentialAddonTableCellComponent,
   PotentialAddonViewDetailsEvent,
-} from "../../components/addons/potential-addon-table-column/potential-addon-table-column.component";
+} from "../../components/addons/potential-addon-table-cell/potential-addon-table-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { GenericProviderError } from "../../errors";
 import { AddonSearchResult } from "../../models/wowup/addon-search-result";
@@ -226,7 +226,7 @@ export class GetAddonsComponent implements OnInit, OnDestroy {
     });
 
     this.frameworkComponents = {
-      potentialAddonRenderer: PotentialAddonTableColumnComponent,
+      potentialAddonRenderer: PotentialAddonTableCellComponent,
       statusRenderer: GetAddonStatusColumnComponent,
       contextHeader: TableContextHeaderCellComponent,
       wrapTextCell: CellWrapTextComponent,

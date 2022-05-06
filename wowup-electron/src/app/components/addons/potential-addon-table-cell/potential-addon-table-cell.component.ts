@@ -18,11 +18,11 @@ export interface PotentialAddonViewDetailsEvent {
 }
 
 @Component({
-  selector: "app-potential-addon-table-column",
-  templateUrl: "./potential-addon-table-column.component.html",
-  styleUrls: ["./potential-addon-table-column.component.scss"],
+  selector: "app-potential-addon-table-cell",
+  templateUrl: "./potential-addon-table-cell.component.html",
+  styleUrls: ["./potential-addon-table-cell.component.scss"],
 })
-export class PotentialAddonTableColumnComponent implements AgRendererComponent, OnChanges {
+export class PotentialAddonTableCellComponent implements AgRendererComponent, OnChanges {
   @Input("addon") public addon!: GetAddonListItem;
   @Input() public channel!: AddonChannelType;
   @Input() public clientType!: WowClientType;
