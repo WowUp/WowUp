@@ -14,7 +14,7 @@ import { FundingButtonComponent } from "../components/addons/funding-button/fund
 import { GetAddonStatusColumnComponent } from "../components/addons/get-addon-status-column/get-addon-status-column.component";
 import { PotentialAddonTableColumnComponent } from "../components/addons/potential-addon-table-column/potential-addon-table-column.component";
 import { TableContextHeaderCellComponent } from "../components/addons/table-context-header-cell/table-context-header-cell.component";
-import { MyAddonStatusColumnComponent } from "../components/addons/my-addon-status-column/my-addon-status-column.component";
+import { MyAddonStatusCellComponent } from "../components/addons/my-addon-status-cell/my-addon-status-cell.component";
 import { InstallFromProtocolDialogComponent } from "../components/addons/install-from-protocol-dialog/install-from-protocol-dialog.component";
 import { MyAddonsAddonCellComponent } from "../components/addons/my-addons-addon-cell/my-addons-addon-cell.component";
 import { InstallFromUrlDialogComponent } from "../components/addons/install-from-url-dialog/install-from-url-dialog.component";
@@ -34,7 +34,7 @@ import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.c
     GetAddonStatusColumnComponent,
     PotentialAddonTableColumnComponent,
     TableContextHeaderCellComponent,
-    MyAddonStatusColumnComponent,
+    MyAddonStatusCellComponent,
     InstallFromProtocolDialogComponent,
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,
@@ -62,7 +62,7 @@ import { WtfBackupComponent } from "../components/addons/wtf-backup/wtf-backup.c
     GetAddonStatusColumnComponent,
     PotentialAddonTableColumnComponent,
     TableContextHeaderCellComponent,
-    MyAddonStatusColumnComponent,
+    MyAddonStatusCellComponent,
     InstallFromProtocolDialogComponent,
     MyAddonsAddonCellComponent,
     InstallFromUrlDialogComponent,

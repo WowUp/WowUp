@@ -1,6 +1,6 @@
 import { AgRendererComponent } from "ag-grid-angular";
 import { ICellRendererParams } from "ag-grid-community";
-import { Subject, Subscription } from "rxjs";
+import { Subject } from "rxjs";
 import { filter, takeUntil } from "rxjs/operators";
 
 import { Component, NgZone, OnDestroy } from "@angular/core";
@@ -16,11 +16,11 @@ import * as AddonUtils from "../../../utils/addon.utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
 
 @Component({
-  selector: "app-my-addon-status-column",
-  templateUrl: "./my-addon-status-column.component.html",
-  styleUrls: ["./my-addon-status-column.component.scss"],
+  selector: "app-my-addon-status-cell",
+  templateUrl: "./my-addon-status-cell.component.html",
+  styleUrls: ["./my-addon-status-cell.component.scss"],
 })
-export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDestroy {
+export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestroy {
   private readonly _destroy$: Subject<boolean> = new Subject<boolean>();
 
   public listItem!: AddonViewModel;

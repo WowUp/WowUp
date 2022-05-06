@@ -39,7 +39,7 @@ import { AddonViewModel } from "../../business-objects/addon-view-model";
 import { CellWrapTextComponent } from "../../components/common/cell-wrap-text/cell-wrap-text.component";
 import { ConfirmDialogComponent } from "../../components/common/confirm-dialog/confirm-dialog.component";
 import { DateTooltipCellComponent } from "../../components/addons/date-tooltip-cell/date-tooltip-cell.component";
-import { MyAddonStatusColumnComponent } from "../../components/addons/my-addon-status-column/my-addon-status-column.component";
+import { MyAddonStatusCellComponent } from "../../components/addons/my-addon-status-cell/my-addon-status-cell.component";
 import { MyAddonsAddonCellComponent } from "../../components/addons/my-addons-addon-cell/my-addons-addon-cell.component";
 import { TableContextHeaderCellComponent } from "../../components/addons/table-context-header-cell/table-context-header-cell.component";
 import { AddonInstallState } from "../../models/wowup/addon-install-state";
@@ -313,7 +313,7 @@ export class MyAddonsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.frameworkComponents = {
       myAddonRenderer: MyAddonsAddonCellComponent,
-      myAddonStatus: MyAddonStatusColumnComponent,
+      myAddonStatus: MyAddonStatusCellComponent,
       contextHeader: TableContextHeaderCellComponent,
       wrapTextCell: CellWrapTextComponent,
       dateTooltipCell: DateTooltipCellComponent,
