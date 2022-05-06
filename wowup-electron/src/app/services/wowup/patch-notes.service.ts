@@ -21,8 +21,8 @@ const CHANGELOGS: ChangeLog[] = [
     <h2 class="text-warning">Important CurseForge Changes</h2>
     <p>
     CurseForge will soon end the ability for WowUp to show or update their addons.<br>
-    In order to continue using CurseForge you will need to be granted a key by them.<br>
-    <a href="https://www.patreon.com/posts/wowup-2-7-and-64891456">Read more here</a>
+    Read more about how to migrate your addons as best we can on our website.<br>
+    <a href="https://wowup.io/guide/wowup/curseforge-migration">Read more here</a>
     </p>
     <h4 style="margin-top: 1em;">New Features</h4>
     <ul>
