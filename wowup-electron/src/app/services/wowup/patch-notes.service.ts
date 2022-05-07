@@ -34,6 +34,7 @@ const CHANGELOGS: ChangeLog[] = [
     <li>Russian locale updates (Medok, Valdemar)</li>
     <li>Spanish locale updates (SkollVargr)</li>
     <li>Chinese locale updates (CyanoHao)</li>
+    <li>Polish locale updates (nydas3k)</li>
     </ul>
     <h4 style="margin-top: 1em;">Fixes</h4>
     <ul>

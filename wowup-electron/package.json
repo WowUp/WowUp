@@ -1,7 +1,7 @@
 {
   "name": "wowup",
   "productName": "WowUp",
-  "version": "2.7.1-beta.4",
+  "version": "2.7.1-beta",
   "description": "World of Warcraft addon updater",
   "homepage": "https://wowup.io",
   "author": {
