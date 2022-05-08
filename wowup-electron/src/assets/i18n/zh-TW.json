@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "否",
       "POSITIVE_BUTTON": "是"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
+      "NEGATIVE_BUTTON": "Manually Re-Scan",
+      "POSITIVE_BUTTON": "Automatically Re-Scan",
+      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
+      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
+      "TITLE": "CurseForge Migration"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "插件已安裝！",
       "ADDON_INSTALLING": "正在安裝插件",
@@ -502,6 +510,8 @@
         "ENABLE_APP_BADGE_LABEL": "啟用數字角標通知",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "啟用各種系統通知彈窗，如自動更新插件通知。",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "啟用系統通知",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "開啟插件詳情頁時，自動切換到上一次開啟的選項卡",
+        "KEEP_LAST_OPENED_TAB_LABEL": "記住上一次開啟的選項卡",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "關閉 WowUp 視窗時，最小化到選單欄。",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "關閉 WowUp 視窗時，最小化到系統托盤。",
         "MINIMIZE_ON_CLOSE_LABEL": "關閉時最小化",
@@ -532,9 +542,7 @@
         "USE_SYMLINK_SUPPORT": "啟用符號連結",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "啟用符號連結使得 WowUp 在重新掃描時識別符號連結。警告：如果您不知道什麼是符號連結，請禁用此項。在當前版本中，符號連結將會在更新插件時被刪除，並被替換為真正的資料夾。",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "啟用符號連結？",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。",
-        "KEEP_LAST_OPENED_TAB_LABEL": "記住上一次開啟的選項卡",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "開啟插件詳情頁時，自動切換到上一次開啟的選項卡"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "允許 WowUp 掃描插件所在路徑下的符號連結。警告：符號連結在安裝或更新插件時會被替換。"
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "顯示配置檔案",
