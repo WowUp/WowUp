@@ -16,6 +16,15 @@ export class PatchNotesService {
 
 const CHANGELOGS: ChangeLog[] = [
   {
+    Version: "2.8.0",
+    html: `
+    <h4 style="margin-top: 1em;">Changes</h4>
+    <ul>
+    <li>Curse addon provider removed</li>
+    </ul>
+    `,
+  },
+  {
     Version: "2.7.1",
     html: `
     <h2 class="text-warning">Important CurseForge Changes</h2>

@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "No",
       "POSITIVE_BUTTON": "Sí"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
+      "NEGATIVE_BUTTON": "Manually Re-Scan",
+      "POSITIVE_BUTTON": "Automatically Re-Scan",
+      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
+      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
+      "TITLE": "CurseForge Migration"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "¡Addon instalado!",
       "ADDON_INSTALLING": "Instalando addon",
@@ -502,6 +510,8 @@
         "ENABLE_APP_BADGE_LABEL": "Activar contador en el icono",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Activa varios mensajes de notificación del sistema, tales como cuando los addons son actualizados automáticamente.",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Activar notificaciones del sistema",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Al abrir los detalles de un addon, selecciona automáticamente la última pestaña abierta.",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Recordar la última pestaña abierta",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Al cerrar la ventana de WowUp, minimizarla a la barra de menú",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Al cerrar la ventana de WowUp, minimizarla a la bandeja del sistema.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimizar al cerrar",
@@ -532,9 +542,7 @@
         "USE_SYMLINK_SUPPORT": "Activar soporte de enlaces simbólicos (symlink)",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Activar el soporte de enlaces simbólicos permite a WowUp reconocerlos durante el reescaneo.\n\nAdvertencia: Si no sabe lo que es un enlace simbólico, no necesita activar esto. Al actualizar addons, los enlaces simbólicos serán reemplazados por copias de las carpetas y el enlace se perderá.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "¿Activar soporte de enlaces simbólicos?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons.",
-        "KEEP_LAST_OPENED_TAB_LABEL": "Recordar la última pestaña abierta",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Al abrir los detalles de un addon, selecciona automáticamente la última pestaña abierta."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Permite a WowUp escanear enlaces simbólicos en la carpeta de addons.\nAdvertecia: Los enlaces serán reemplazados al actualizar/instalar los addons."
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Mostrar archivos de configuración",

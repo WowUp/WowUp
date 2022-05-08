@@ -262,6 +262,14 @@
       "NEGATIVE_BUTTON": "Nein",
       "POSITIVE_BUTTON": "Ja"
     },
+    "CURSE_MIGRATION": {
+      "MESSAGE": "The CurseForge API has been shutdown so WowUp can no longer fetch addon information from it.<br/>Unfortunately, this means that the CurseForge provider has been removed and your addons from CurseForge will no longer be updated.<br/>It is recommended that you perform a re-scan in order to see what addons can be found on other providers.<br/>The Re-Scan process make take a while.<br/><a appExternalLink href=\"https://wowup.io/guide/wowup/curseforge-migration\">Read more here.</a>",
+      "NEGATIVE_BUTTON": "Manually Re-Scan",
+      "POSITIVE_BUTTON": "Automatically Re-Scan",
+      "RE_SCAN_ERROR": "The automatic Re-Scan failed, please try again manually.",
+      "RE_SCAN_SUCCESS": "The automatic Re-Scan has finished you're ready to go.",
+      "TITLE": "CurseForge Migration"
+    },
     "INSTALL_FROM_PROTOCOL": {
       "ADDON_INSTALLED": "Addon installiert!",
       "ADDON_INSTALLING": "Addon wird installiert",
@@ -502,6 +510,8 @@
         "ENABLE_APP_BADGE_LABEL": "App-Badge-Benachrichtigung aktivieren",
         "ENABLE_SYSTEM_NOTIFICATIONS_DESCRIPTION": "Aktivieren/Deaktivieren verschiedener Systembenachrichtigungen",
         "ENABLE_SYSTEM_NOTIFICATIONS_LABEL": "Systembenachrichtigungen aktivieren",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Beim Öffnen einer AddOn-Detailansicht wird automatisch der zuletzt geöffnete Tab ausgewählt",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Zuletzt geöffneten Tab beibehalten",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_MAC": "Beim Schließen WowUp in die Menüleiste minimieren",
         "MINIMIZE_ON_CLOSE_DESCRIPTION_WINDOWS": "Beim Schließen des WowUp-Fensters in den Benachrichtigungsbereich der Taskleiste minimieren.",
         "MINIMIZE_ON_CLOSE_LABEL": "Minimieren beim Schließen",
@@ -532,9 +542,7 @@
         "USE_SYMLINK_SUPPORT": "Symlink-Unterstützung aktivieren",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Durch das Aktivieren der Symlink-Unterstützung kann WowUp Symlinks erkennen, wenn ein erneuter Scan durchgeführt wird. Warnung: Wenn Du nicht weißt, was ein Symlink ist, brauchst Du dies nicht. Beim Aktualisieren werden Symlinks derzeit durch einen tatsächlichen Ordner ersetzt und der Link geht verloren.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Symlink-Unterstützung aktivieren?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt.",
-        "KEEP_LAST_OPENED_TAB_LABEL": "Zuletzt geöffneten Tab beibehalten",
-        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Beim Öffnen einer AddOn-Detailansicht wird automatisch der zuletzt geöffnete Tab ausgewählt"
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Erlaubt WowUp Symlink-Ordner in deinem Addon-Ordner zu scannen. Warnung: Diese werden beim Aktualisieren/Installieren ersetzt."
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Konfigurationsdateien anzeigen",

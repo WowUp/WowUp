@@ -1083,6 +1083,14 @@ export class AddonService {
     return addons;
   }
 
+  public async getProviderAddons(providerName: string): Promise<Addon[]> {
+    if (!providerName) {
+      return [];
+    }
+
+    return await this._addonStorage.getAllForProviderAsync(providerName);
+  }
+
   public async getAddons(installation: WowInstallation, rescan = false): Promise<Addon[]> {
     if (!installation) {
       return [];
