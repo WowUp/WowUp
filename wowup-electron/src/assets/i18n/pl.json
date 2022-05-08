@@ -118,7 +118,7 @@
   "COMMON": {
     "ADDON_CATEGORIES": {
       "ACHIEVEMENTS": "Osiągnięcia",
-      "ACTION_BARS": "Paski umięjętności",
+      "ACTION_BARS": "Paski umiejętności",
       "ALL_ADDONS": "Wszystkie addony",
       "AUCTION_ECONOMY": "Aukcja & Ekonomia",
       "BAGS_INVENTORY": "Plecak & Ekwipunek",
@@ -174,8 +174,8 @@
       "MISSING_ON_PROVIDER_TOOLTIP": "{providerName} nie zwraca tego dodatku zgodnie z oczekiwaniami",
       "NO_PROVIDER_FILES_DESCRIPTION": "{providerName} prawidłowo zwrócił ten addon, lecz nie ma żadnych pasujących plików do tej wersji.<br>Kiedy będzie aktualizacja wspierająca tę wersje, komunikat powienien zniknąć.",
       "NO_PROVIDER_FILES_TOOLTIP": "{providerName} nie ma żadnych pasujących plików dla tej wersji gry",
-      "TOC_NAME_MISMATCH_DESCRIPTION": "This addon's folder name did not match with the expected toc file, you may experience issues with this addon in-game.",
-      "TOC_NAME_MISMATCH_TOOLTIP": "This addon's folder does not match the toc"
+      "TOC_NAME_MISMATCH_DESCRIPTION": "Nazwa folderu tego addonu nie jest zgodna z oczekiwanym plikiem toc, w związku z czym mogą wystąpić problemy z tym addonem w grze.",
+      "TOC_NAME_MISMATCH_TOOLTIP": "Folder tego addonu nie jest zgodny z toc"
     },
     "CLIENT_TYPES": {
       "BETA": "Beta",
@@ -532,7 +532,9 @@
         "USE_SYMLINK_SUPPORT": "Włącz obsługę Symlink",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "Włączenie obsługi symlink pozwoli WowUp na rozpoznawanie symlinków podczas ponownego skanowania. Ostrzeżenie: Jeśli nie wiesz, co to jest symlink, nie potrzebujesz tego. Podczas aktualizacji symlink będzie obecnie zastępowany rzeczywistym folderem, a link zostanie utracony.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Włączyć obsługę symlink?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Pozwól WowUp na skanowanie folderów z symlinkami w folderze addonów. Ostrzeżenie: zostaną one zastąpione podczas aktualizacji/instalacji."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Pozwól WowUp na skanowanie folderów z symlinkami w folderze addonów. Ostrzeżenie: zostaną one zastąpione podczas aktualizacji/instalacji.",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Zachowaj ostatnio otwartą kartę",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "Podczas otwierania strony szczegółów addonu, automatycznie wybieraj ostatnio otwartą kartę"
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Pokaż pliki konfiguracyjne",

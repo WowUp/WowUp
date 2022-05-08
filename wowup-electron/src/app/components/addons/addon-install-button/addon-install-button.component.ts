@@ -1,5 +1,5 @@
-import { BehaviorSubject, Subscription } from "rxjs";
-import { filter } from "rxjs/operators";
+import { BehaviorSubject, Subject } from "rxjs";
+import { filter, takeUntil } from "rxjs/operators";
 
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -20,10 +20,11 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
 
   @Output() public onViewUpdated: EventEmitter<boolean> = new EventEmitter();
 
-  private _subscriptions: Subscription[] = [];
+  private readonly _destroy$ = new Subject<boolean>();
 
   public disableButton$ = new BehaviorSubject<boolean>(false);
   public showProgress$ = new BehaviorSubject<boolean>(false);
+  public unavailable$ = new BehaviorSubject<boolean>(false);
   public progressValue$ = new BehaviorSubject<number>(0);
   public buttonText$ = new BehaviorSubject<string>("");
 
@@ -33,11 +34,9 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
     private _translate: TranslateService,
     private _cdRef: ChangeDetectorRef
   ) {
-    const addonInstalledSub = this._addonService.addonInstalled$
-      .pipe(filter(this.isSameAddon))
+    this._addonService.addonInstalled$
+      .pipe(takeUntil(this._destroy$), filter(this.isSameAddon))
       .subscribe(this.onAddonInstalledUpdate);
-
-    this._subscriptions.push(addonInstalledSub);
   }
 
   public ngOnInit(): void {
@@ -47,17 +46,26 @@ export class AddonInstallButtonComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.unavailable$.next(this.addonSearchResult.externallyBlocked);
+
     this._addonService
       .isInstalled(this.addonSearchResult.externalId, this.addonSearchResult.providerName, selectedInstallation)
       .then((isInstalled) => {
-        this.disableButton$.next(isInstalled);
-        this.buttonText$.next(this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown));
+        this.disableButton$.next(this.addonSearchResult.externallyBlocked || isInstalled);
+
+        if (this.addonSearchResult.externallyBlocked) {
+          this.buttonText$.next(this._translate.instant("COMMON.ADDON_STATE.UNAVAILABLE") as string);
+        } else {
+          this.buttonText$.next(
+            this.getButtonText(isInstalled ? AddonInstallState.Complete : AddonInstallState.Unknown)
+          );
+        }
       })
       .catch((e) => console.error(e));
   }
 
   public ngOnDestroy(): void {
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._destroy$.next(true);
   }
 
   public getIsButtonActive(installState: AddonInstallState): boolean {

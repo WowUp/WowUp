@@ -55,7 +55,7 @@
   <!-- TABS -->
   <mat-tab-group
     #tabs
-    *ngIf="isUnknownProvider === false"
+    *ngIf="selectedTabIndex!=undefined && isUnknownProvider === false"
     class="scroller"
     [selectedIndex]="selectedTabIndex"
     (selectedTabChange)="onSelectedTabChange($event)"

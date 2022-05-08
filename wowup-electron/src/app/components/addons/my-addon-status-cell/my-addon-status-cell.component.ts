@@ -1,7 +1,7 @@
 import { AgRendererComponent } from "ag-grid-angular";
 import { ICellRendererParams } from "ag-grid-community";
-import { Subscription } from "rxjs";
-import { filter } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { filter, takeUntil } from "rxjs/operators";
 
 import { Component, NgZone, OnDestroy } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
@@ -16,12 +16,12 @@ import * as AddonUtils from "../../../utils/addon.utils";
 import { AlertDialogComponent } from "../../common/alert-dialog/alert-dialog.component";
 
 @Component({
-  selector: "app-my-addon-status-column",
-  templateUrl: "./my-addon-status-column.component.html",
-  styleUrls: ["./my-addon-status-column.component.scss"],
+  selector: "app-my-addon-status-cell",
+  templateUrl: "./my-addon-status-cell.component.html",
+  styleUrls: ["./my-addon-status-cell.component.scss"],
 })
-export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDestroy {
-  private _subscriptions: Subscription[] = [];
+export class MyAddonStatusCellComponent implements AgRendererComponent, OnDestroy {
+  private readonly _destroy$: Subject<boolean> = new Subject<boolean>();
 
   public listItem!: AddonViewModel;
   public warningType?: AddonWarningType;
@@ -38,8 +38,9 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
     private _translateService: TranslateService,
     private _ngZone: NgZone
   ) {
-    const addonInstalledSub = this._addonService.addonInstalled$
+    this._addonService.addonInstalled$
       .pipe(
+        takeUntil(this._destroy$),
         filter(
           (evt) =>
             evt.addon.externalId === this.listItem.addon?.externalId &&
@@ -59,8 +60,6 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
           this.statusText = this.getStatusText(evt.addon);
         });
       });
-
-    this._subscriptions.push(addonInstalledSub);
   }
 
   public agInit(params: ICellRendererParams): void {
@@ -74,7 +73,8 @@ export class MyAddonStatusColumnComponent implements AgRendererComponent, OnDest
   }
 
   public ngOnDestroy(): void {
-    this._subscriptions.forEach((sub) => sub.unsubscribe());
+    this._destroy$.next(true);
+    this._destroy$.complete();
   }
 
   public refresh(): boolean {

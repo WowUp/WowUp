@@ -532,7 +532,9 @@
         "USE_SYMLINK_SUPPORT": "Abilita il Supporto Symlink",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_DESCRIPTION": "L'abilitazione del supporto symlink consentirà a WowUp di riconoscere i symlinks durante l'esecuzione di una nuova scansione. Attenzione: se non sai cos'è un symlink, puoi anche non procedere. Durante l'aggiornamento, i symlinks verranno sostituiti con una cartella reale e il collegamento viene perso.",
         "USE_SYMLINK_SUPPORT_CONFIRMATION_LABEL": "Abilitare il supporto symlink?",
-        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Consenti a WowUp di scansionare le cartelle dei symlinks nella cartella dell'addon. Attenzione: verranno sostituiti durante l'aggiornamento/installazione."
+        "USE_SYMLINK_SUPPORT_DESCRIPTION": "Consenti a WowUp di scansionare le cartelle dei symlinks nella cartella dell'addon. Attenzione: verranno sostituiti durante l'aggiornamento/installazione.",
+        "KEEP_LAST_OPENED_TAB_LABEL": "Keep last opened tab",
+        "KEEP_LAST_OPENED_TAB_DESCRIPTION": "When opening an addon detail page, automatically select the last opened tab"
       },
       "DEBUG": {
         "CONFIG_FILES_BUTTON": "Show Config Files",

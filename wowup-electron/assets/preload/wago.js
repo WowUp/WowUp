@@ -5,6 +5,13 @@ const { inspect } = require("util");
 
 const LOG_PATH = getArg("log-path");
 
+const BACKOFF_KEY = "wago-backoff";
+const BACKOFF_SET_KEY = "wago-backoff-set";
+const BACKOFF_RESET_AGE = 5 * 60000;
+const BACKOFF_MAX_WAIT = 2 * 60000;
+
+let keyExpectedTimeout = undefined;
+
 function getArg(argKey) {
   for (const arg of window.process.argv) {
     const [key, val] = arg.split("=");
@@ -38,7 +45,10 @@ window.addEventListener(
     const errMsg = e.error?.toString() || "unknown error on " + window.location;
     console.error(`[wago-preload] error listener:`, e.message, errMsg);
     ipcRenderer.send("webview-error", inspect(e.error), e.message);
-    window.setTimeout(() => window.location.reload(), 2000);
+
+    if (keyExpectedTimeout != undefined) {
+      backoffReload();
+    }
   },
   true
 );
@@ -51,6 +61,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
 contextBridge.exposeInMainWorld("wago", {
   provideApiKey: (key) => {
     window.clearTimeout(keyExpectedTimeout);
+    keyExpectedTimeout = undefined;
     console.debug(`[wago-preload] got key`);
     ipcRenderer.send("wago-token-received", key);
   },
@@ -58,9 +69,31 @@ contextBridge.exposeInMainWorld("wago", {
 
 // If the api key does not get populated after a certain time, reload
 // Can happen if the page returns bad responses (500 etc)
-let keyExpectedTimeout = setTimeout(() => {
+keyExpectedTimeout = window.setTimeout(() => {
   console.log("[wago-preload] failed to get key in time, reloading");
-  window.location.reload();
+  backoffReload();
 }, 30000);
 
-console.log(`[wago-preload] init`);
+console.log(`[wago-preload] init`, window.location.href);
+
+function backoffReload() {
+  let backoffSet = window.sessionStorage.getItem("wago-backoff-set");
+  backoffSet = backoffSet ? parseInt(backoffSet, 10) : 0;
+
+  let backoff = window.sessionStorage.getItem(BACKOFF_KEY);
+  backoff = Math.min(backoff ? parseInt(backoff, 10) * 2 : 2000, BACKOFF_MAX_WAIT);
+
+  // If the backoff time is old, reset the backoff
+  if (Date.now() - backoffSet > BACKOFF_RESET_AGE) {
+    backoff = 2000;
+  }
+
+  console.log("[wago] setting reload backoff", backoff);
+  window.sessionStorage.setItem(BACKOFF_KEY, backoff);
+  window.sessionStorage.setItem(BACKOFF_SET_KEY, Date.now().toString());
+
+  // Wait the calculated time
+  window.setTimeout(() => {
+    window.location.reload();
+  }, backoff);
+}

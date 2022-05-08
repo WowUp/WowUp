@@ -61,7 +61,7 @@
           [disabled]="enableControls$ | async | invertBool"
           (click)="onRefresh()"
         >
-          {{ "PAGES.GET_ADDONS.REFRESH_BUTTON" | translate }}
+          {{ (query ? "PAGES.GET_ADDONS.SEARCH_LABEL" : "PAGES.GET_ADDONS.REFRESH_BUTTON") | translate }}
         </button>
         <button
           mat-flat-button

@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>{{ data.title }}</h1>
 <mat-dialog-content class="mat-typography">
-    <pre class="message">{{data.message}}</pre>
+    <pre class="message max-lines-3">{{data.message}}</pre>
     <section class="mb-3">
         <mat-checkbox [(ngModel)]="trustDomain">{{"DIALOGS.TRUST_DOMAIN_CHECKBOX" | translate }}</mat-checkbox>
     </section>

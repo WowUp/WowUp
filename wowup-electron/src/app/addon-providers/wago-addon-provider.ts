@@ -1,5 +1,5 @@
-import { BehaviorSubject, firstValueFrom, from, Observable } from "rxjs";
-import { first, map, tap, timeout } from "rxjs/operators";
+import { BehaviorSubject, firstValueFrom, from, Observable, of } from "rxjs";
+import { catchError, first, map, tap, timeout } from "rxjs/operators";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
@@ -308,7 +308,7 @@ export class WagoAddonProvider extends AddonProvider {
     channelType?: AddonChannelType
   ): Promise<AddonSearchResult[]> {
     try {
-      await this.ensureToken().toPromise();
+      await firstValueFrom(this.ensureToken());
     } catch (e) {
       console.error("[wago]", e);
       return [];
@@ -385,7 +385,7 @@ export class WagoAddonProvider extends AddonProvider {
 
   // used when checking for new addon updates
   public async getAll(installation: WowInstallation, addonIds: string[]): Promise<GetAllResult> {
-    await this.ensureToken().toPromise();
+    await firstValueFrom(this.ensureToken());
 
     const url = new URL(`${WAGO_BASE_URL}/addons/_recents`).toString();
     const request: WagoRecentsRequest = {
@@ -677,11 +677,19 @@ export class WagoAddonProvider extends AddonProvider {
     };
   }
 
-  private ensureToken(timeoutMs = 30000): Observable<string> {
+  private ensureToken(timeoutMs = 10000): Observable<string> {
+    if (this._circuitBreaker.isOpen()) {
+      throw new Error("[wago] circuit breaker is open");
+    }
+
     return this._apiTokenSrc.pipe(
       timeout(timeoutMs),
       first((token) => token !== ""),
-      tap(() => console.log(`[wago] ensureToken`))
+      tap(() => console.log(`[wago] ensureToken`)),
+      catchError(() => {
+        console.error("[wago] no token received after timeout");
+        return of("");
+      })
     );
   }
 }
