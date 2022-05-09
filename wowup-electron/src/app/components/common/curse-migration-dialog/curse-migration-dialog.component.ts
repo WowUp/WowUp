@@ -55,6 +55,7 @@ export class CurseMigrationDialogComponent implements AfterViewChecked {
         );
         if (addons.length > 0) {
           console.log("wowInstall", wowInstall);
+          //   await this._addonService.rescanInstallation(wowInstall);
         }
       }
     } catch (e) {

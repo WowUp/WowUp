@@ -60,7 +60,7 @@ export class AddonProviderFactory {
       this.createWowUpCompanionAddonProvider(),
       this.createWowUpAddonProvider(),
       this.createWagoAddonProvider(),
-      // this.createCurseAddonProvider(),
+      this.createCurseAddonProvider(),
       this.createCurseV2AddonProvider(),
       this.createTukUiAddonProvider(),
       this.createWowInterfaceAddonProvider(),
