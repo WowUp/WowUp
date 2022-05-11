@@ -100,7 +100,7 @@ export class GitHubAddonProvider extends AddonProvider {
     };
 
     try {
-      result.searchResult = await this.getByIdAsync(addonId, installation.clientType);
+      result.searchResult = await this.getByIdAsync(addonId, installation);
     } catch (e) {
       // If we're at the limit, just give up the loop
       if (e instanceof GitHubLimitError) {
@@ -132,7 +132,15 @@ export class GitHubAddonProvider extends AddonProvider {
 
     try {
       const results = await this.getReleases(repoPath);
-      const result = await this.getLatestValidAsset(results, installation.clientType);
+
+      const prereleaseRes = results.filter((res) => res.prerelease);
+      const stableRes = results.filter((res) => !res.prerelease);
+      let checkRes = stableRes.length === 0 ? prereleaseRes : stableRes;
+      if (installation.defaultAddonChannelType !== AddonChannelType.Stable) {
+        checkRes = results;
+      }
+
+      const result = await this.getLatestValidAsset(checkRes, installation.clientType);
       console.log("result", result);
       if (!result.matchedAsset && !result.latestAsset) {
         if (WowClientGroup.Classic === clientGroup) {
@@ -189,17 +197,24 @@ export class GitHubAddonProvider extends AddonProvider {
   }
 
   public getById(addonId: string, installation: WowInstallation): Observable<AddonSearchResult | undefined> {
-    return from(this.getByIdAsync(addonId, installation.clientType));
+    return from(this.getByIdAsync(addonId, installation));
   }
 
-  private async getByIdAsync(addonId: string, clientType: WowClientType) {
+  private async getByIdAsync(addonId: string, installation: WowInstallation) {
     const repository = await this.getRepository(addonId);
     const releases = await this.getReleases(addonId);
     if (!releases?.length) {
       return undefined;
     }
 
-    const assetResult = await this.getLatestValidAsset(releases, clientType);
+    const prereleaseRes = releases.filter((res) => res.prerelease);
+    const stableRes = releases.filter((res) => !res.prerelease);
+    let checkRes = stableRes.length === 0 ? prereleaseRes : stableRes;
+    if (installation.defaultAddonChannelType !== AddonChannelType.Stable) {
+      checkRes = releases;
+    }
+
+    const assetResult = await this.getLatestValidAsset(releases, installation.clientType);
     if (!assetResult.matchedAsset && !assetResult.latestAsset) {
       return undefined;
     }
