@@ -25,7 +25,6 @@ import { AddonProvider, GetAllResult, SearchByUrlResult } from "./addon-provider
 import { WowInstallation } from "../../common/warcraft/wow-installation";
 import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
-import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { getWowClientGroup } from "../../common/warcraft";
 import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 
