@@ -134,8 +134,6 @@
       <div *ngIf="listItem.hasThumbnail === true" class="thumbnail bg-secondary-3">
         <img [src]="listItem.addon.thumbnailUrl" loading="lazy" />
       </div>
-      <!-- <div *ngIf="listItem.hasThumbnail === true" class="thumbnail"
-        [style.backgroundImage]="'url(' + listItem.addon.thumbnailUrl + ')'"></div> -->
       <div *ngIf="listItem.hasThumbnail === false" class="thumbnail">
         <div class="thumbnail-letter">
           {{ listItem.thumbnailLetter }}
@@ -145,11 +143,6 @@
         <div class="addon-name text-1">{{ listItem.addon.name }}</div>
         <div class="row text-2">
           <div class="addon-version">{{ listItem.addon.installedVersion }}</div>
-          <!-- <div class="addon-update-available row"
-            *ngIf="listItem.addon.latestVersion !== listItem.addon.installedVersion">
-            <mat-icon class="upgrade-icon" svgIcon="fas:play"></mat-icon>
-            <div class="bg-secondary-4 text-2 rounded px-1">{{ listItem.addon.latestVersion }}</div>
-          </div> -->
         </div>
       </div>
     </div>
