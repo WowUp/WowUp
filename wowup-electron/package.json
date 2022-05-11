@@ -68,7 +68,7 @@
     "@types/archiver": "5.3.1",
     "@types/flat": "5.0.2",
     "@types/globrex": "0.1.2",
-    "@types/jasmine": "4.0.2",
+    "@types/jasmine": "4.0.3",
     "@types/jasminewd2": "2.0.10",
     "@types/lodash": "4.14.181",
     "@types/markdown-it": "12.2.3",
