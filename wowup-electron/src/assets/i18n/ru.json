@@ -493,6 +493,11 @@
           "FIELD_LABEL": "Включённые источники модификаций",
           "INPUT_LABEL": "Источники"
         },
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "MESSAGE": "A personal access token will increase the amount of GitHub API calls you can make, it is freely available. <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token\">Learn More</a>",
+          "PLACEHOLDER": "Personal Access Token",
+          "TITLE": "GitHub Personal Access Token"
+        },
         "TITLE": "Модификации"
       },
       "APPLICATION": {

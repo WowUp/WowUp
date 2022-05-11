@@ -3,7 +3,7 @@ import { firstValueFrom, from, mergeMap, Observable, toArray } from "rxjs";
 
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
-import { ADDON_PROVIDER_GITHUB } from "../../common/constants";
+import { ADDON_PROVIDER_GITHUB, PREF_GITHUB_PERSONAL_ACCESS_TOKEN } from "../../common/constants";
 import {
   AssetMissingError,
   BurningCrusadeAssetMissingError,
@@ -27,6 +27,7 @@ import { convertMarkdown } from "../utils/markdown.utlils";
 import { strictFilterBy } from "../utils/array.utils";
 import { WarcraftService } from "../services/warcraft/warcraft.service";
 import { getWowClientGroup } from "../../common/warcraft";
+import { SensitiveStorageService } from "../services/storage/sensitive-storage.service";
 
 type MetadataFlavor = "bcc" | "classic" | "mainline";
 
@@ -70,7 +71,7 @@ export class GitHubAddonProvider extends AddonProvider {
   public readonly allowReScan = false;
   public enabled = true;
 
-  public constructor(private _httpClient: HttpClient, private _warcraftService: WarcraftService) {
+  public constructor(private _httpClient: HttpClient, private _sensitiveStorageService: SensitiveStorageService) {
     super();
   }
 
@@ -485,7 +486,14 @@ export class GitHubAddonProvider extends AddonProvider {
 
   private async getWithRateLimit<T>(url: URL | string): Promise<T> {
     try {
-      return await this._httpClient.get<T>(url.toString()).toPromise();
+      const personalAccessToken = await this._sensitiveStorageService.getAsync(PREF_GITHUB_PERSONAL_ACCESS_TOKEN);
+      const headers: any = {};
+
+      if (personalAccessToken) {
+        headers.Authorization = `token ${personalAccessToken}`;
+      }
+
+      return await firstValueFrom(this._httpClient.get<T>(url.toString(), { headers }));
     } catch (e) {
       if (e instanceof HttpErrorResponse) {
         this.handleRateLimitError(e);

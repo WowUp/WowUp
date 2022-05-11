@@ -150,7 +150,7 @@ export class AddonProviderFactory {
   }
 
   public createGitHubAddonProvider(): GitHubAddonProvider {
-    return new GitHubAddonProvider(this._httpClient, this._warcraftService);
+    return new GitHubAddonProvider(this._httpClient, this._sensitiveStorageService);
   }
 
   public createWowUpAddonProvider(): WowUpAddonProvider {
