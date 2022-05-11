@@ -199,16 +199,11 @@ export class GitHubAddonProvider extends AddonProvider {
       return undefined;
     }
 
-    const latestRelease = this.getLatestRelease(releases);
-    if (!latestRelease) {
-      return undefined;
-    }
-    console.debug("latestRelease", latestRelease);
-
-    const assetResult = await this.getLatestValidAsset([latestRelease], clientType);
+    const assetResult = await this.getLatestValidAsset(releases, clientType);
     if (!assetResult.matchedAsset && !assetResult.latestAsset) {
       return undefined;
     }
+    console.debug("assetResult", assetResult);
 
     const author = repository.owner.login;
     const authorImageUrl = repository.owner.avatar_url;
@@ -223,7 +218,7 @@ export class GitHubAddonProvider extends AddonProvider {
       gameVersion: "",
       version: asset.name,
       releaseDate: new Date(asset.created_at),
-      changelog: convertMarkdown(latestRelease.body),
+      changelog: convertMarkdown(assetResult.release.body),
     };
 
     const searchResult: AddonSearchResult = {
